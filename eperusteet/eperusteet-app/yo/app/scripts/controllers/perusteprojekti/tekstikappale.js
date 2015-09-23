@@ -355,13 +355,16 @@ angular.module('eperusteApp')
             cb();
           });
         },
-        save: function (kommentti) {
+        asyncSave: function (kommentti, cb) {
           $scope.editableTekstikappale.metadata = {kommentti: kommentti};
           PerusteenOsat.saveTekstikappale({
             osanId: $scope.editableTekstikappale.id
-          }, $scope.editableTekstikappale, saveCb, Notifikaatiot.serverCb);
-          $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
-          $scope.isNew = false;
+          }, $scope.editableTekstikappale, function(res) {
+            saveCb(res);
+            $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
+            $scope.isNew = false;
+            cb();
+          }, Notifikaatiot.serverCb);
         },
         cancel: function () {
           if (!TekstikappaleOperations.wasDeleted()) {

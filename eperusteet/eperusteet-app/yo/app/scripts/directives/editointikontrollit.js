@@ -60,12 +60,12 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit, $timeout) {
-
+  .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit) {
     $scope.kommentti = '';
     $scope.hideControls = true;
+
     function setEditControls() {
-      if(Editointikontrollit.editingEnabled()) {
+      if (Editointikontrollit.editingEnabled()) {
         $scope.hideControls = false;
       } else {
         $scope.hideControls = true;
@@ -73,9 +73,7 @@ angular.module('eperusteApp')
       }
     }
 
-    setEditControls();
-
-    $scope.$on('$stateChangeSuccess', function() {
+    $scope.$on('$stateChangeStart', function() {
       Editointikontrollit.unregisterCallback();
       setEditControls();
     });
@@ -90,10 +88,9 @@ angular.module('eperusteApp')
       $scope.editStarted = true;
       $scope.setMargins();
       $scope.kommentti = '';
-      $timeout(function () {
-        $scope.updatePosition();
-      });
+      $scope.updatePosition();
     });
+
     $scope.$on('disableEditing', function () {
       $scope.editStarted = false;
       $scope.setMargins();

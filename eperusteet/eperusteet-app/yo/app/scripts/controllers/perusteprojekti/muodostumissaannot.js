@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
+  .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams, $timeout,
     PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
     Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
     virheService, PerusteProjektiSivunavi, perusteprojektiTiedot, $q, Varmistusdialogi, Algoritmit,
@@ -59,36 +59,7 @@ angular.module('eperusteApp')
       Lukitus.tarkista($scope.rakenne.$peruste.id, $scope, $scope.suoritustapa);
     };
 
-    function haeRakenne(cb, versio) {
-      cb = cb || angular.noop;
-      haeVersiot(true, function() {
-        var revNumber = VersionHelper.select($scope.versiot, versio);
-        if (versio && !$scope.versiot.latest) {
-          if (!revNumber) {
-            errorCb();
-          } else {
-            PerusteenRakenne.haeTutkinnonosatVersioByPeruste($scope.peruste.id, $scope.suoritustapa, revNumber, function(tutkinnonOsat) {
-              var vastaus = PerusteenRakenne.pilkoTutkinnonOsat(tutkinnonOsat, {});
-              $scope.tutkinnonOsat = vastaus.tutkinnonOsat;
-              VersionHelper.changeRakenne($scope.versiot, {id: $scope.peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
-                $scope.rakenne.rakenne = response;
-                $scope.rakenne.$resolved = true;
-                $scope.rakenne.$suoritustapa = $scope.suoritustapa;
-                $scope.rakenne.$peruste = $scope.peruste;
-                $scope.rakenne.tutkinnonOsat = vastaus.tutkinnonOsat;
-                $scope.rakenne.tutkinnonOsaViitteet = vastaus.tutkinnonOsaViitteet;
-                cb();
-              });
-            });
-
-          }
-        } else {
-          PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
-            successCb(res);
-            cb();
-          });
-        }
-      });
+    function haeRakenne(versio) {
       Algoritmit.kaikilleLapsisolmuille($scope.sisalto, 'lapset', function (lapsi) {
         if (lapsi.perusteenOsa && lapsi.perusteenOsa.tunniste === 'rakenne') {
           muodostumisOtsikko = _.cloneDeep(lapsi.perusteenOsa);
@@ -96,12 +67,87 @@ angular.module('eperusteApp')
           return true;
         }
       });
+      return $q(function(resolve) {
+        haeVersiot(true, function() {
+          var revNumber = VersionHelper.select($scope.versiot, versio);
+          if (versio && !$scope.versiot.latest) {
+            if (!revNumber) {
+              errorCb();
+            }
+            else {
+              PerusteenRakenne.haeTutkinnonosatVersioByPeruste($scope.peruste.id, $scope.suoritustapa, revNumber, function(tutkinnonOsat) {
+                var vastaus = PerusteenRakenne.pilkoTutkinnonOsat(tutkinnonOsat, {});
+                $scope.tutkinnonOsat = vastaus.tutkinnonOsat;
+                VersionHelper.changeRakenne($scope.versiot, {id: $scope.peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
+                  $scope.rakenne.rakenne = response;
+                  $scope.rakenne.$resolved = true;
+                  $scope.rakenne.$suoritustapa = $scope.suoritustapa;
+                  $scope.rakenne.$peruste = $scope.peruste;
+                  $scope.rakenne.tutkinnonOsat = vastaus.tutkinnonOsat;
+                  $scope.rakenne.tutkinnonOsaViitteet = vastaus.tutkinnonOsaViitteet;
+                  resolve();
+                });
+              });
+            }
+          }
+          else {
+            PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
+              successCb(res);
+              resolve();
+            });
+          }
+        });
+      });
     }
+
     $scope.haeRakenne = haeRakenne;
     var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
-    haeRakenne(angular.noop, versio);
 
-    function tallennaRakenne(rakenne) {
+    haeRakenne(versio).then(function() {
+      Editointikontrollit.registerCallback({
+        edit: function() {
+          $scope.editoi = true;
+        },
+        asyncValidate: function(cb) {
+          lukitse(function() {
+            if (Muodostumissaannot.skratchpadNotEmpty()) {
+              leikelautaDialogi(cb);
+            } else {
+              cb();
+            }
+          });
+        },
+        asyncSave: function(kommentti, cb) {
+          $scope.rakenne.rakenne.metadata = { kommentti: kommentti };
+          cb();
+          tallennaRakenne($scope.rakenne, function() {
+            $scope.editoi = false;
+          });
+        },
+        cancel: function() {
+          Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+          haeRakenne().then(function() {
+            $scope.editoi = false;
+          });
+        },
+        canCancel: function () {
+          var deferred = $q.defer();
+          if (Muodostumissaannot.skratchpadNotEmpty()) {
+            leikelautaDialogi(function () {
+              deferred.resolve();
+            }, function () {
+              deferred.reject();
+            });
+          } else {
+            deferred.resolve();
+          }
+          return deferred.promise;
+        }
+      });
+    });
+
+    function tallennaRakenne(rakenne, cb) {
+      cb = cb || _.noop;
       // TODO Jos tallennettaisiin otsikkotekstikappale viitteen läpi, ei tarvitsisi erillistä perusteenosalukkoa.
       // TODO optimointi: älä tallenna otsikkoa jos sitä ei muutettu
       var otsikkoId = $scope.rakenne.muodostumisOtsikko.id;
@@ -126,9 +172,11 @@ angular.module('eperusteApp')
             VersionHelper.setUrl($scope.versiot);
           });
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+          cb();
         },
         function() {
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+          cb();
         }
       );
 
@@ -154,7 +202,7 @@ angular.module('eperusteApp')
     };
 
     $scope.revert = function () {
-      haeRakenne(function () {
+      haeRakenne().then(function () {
         Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         haeVersiot(true);
       });
@@ -162,8 +210,11 @@ angular.module('eperusteApp')
 
     $scope.muokkaa = function() {
       lukitse(function() {
-        haeRakenne(function() {
-          $scope.rakenne.rakenne.$virheetMaara = Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsaViitteet, $scope.tutkinnonOsat);
+        haeRakenne().then(function() {
+          $scope.rakenne.rakenne.$virheetMaara = Muodostumissaannot.validoiRyhma(
+              $scope.rakenne.rakenne,
+              $scope.rakenne.tutkinnonOsaViitteet,
+              $scope.tutkinnonOsat);
           Editointikontrollit.startEditing();
           $scope.editoi = true;
         });
@@ -180,45 +231,6 @@ angular.module('eperusteApp')
         primaryBtn: 'poistu-sivulta'
       })();
     };
-
-    Editointikontrollit.registerCallback({
-      edit: function() {
-        $scope.editoi = true;
-      },
-      asyncValidate: function(cb) {
-        lukitse(function() {
-          if (Muodostumissaannot.skratchpadNotEmpty()) {
-            leikelautaDialogi(cb);
-          } else {
-            cb();
-          }
-        });
-      },
-      save: function(kommentti) {
-        $scope.rakenne.rakenne.metadata = { kommentti: kommentti };
-        tallennaRakenne($scope.rakenne);
-        $scope.editoi = false;
-      },
-      cancel: function() {
-        Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-        haeRakenne(function() {
-          $scope.editoi = false;
-        });
-      },
-      canCancel: function () {
-        var deferred = $q.defer();
-        if (Muodostumissaannot.skratchpadNotEmpty()) {
-          leikelautaDialogi(function () {
-            deferred.resolve();
-          }, function () {
-            deferred.reject();
-          });
-        } else {
-          deferred.resolve();
-        }
-        return deferred.promise;
-      }
-    });
 
     $scope.$watch('rakenne.rakenne', function(uusirakenne) {
       if ($scope.editoi) {

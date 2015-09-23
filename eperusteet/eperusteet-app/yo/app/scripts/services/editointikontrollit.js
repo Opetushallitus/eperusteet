@@ -32,7 +32,7 @@
  *             If promise is resolved, canceling continues.
  */
 angular.module('eperusteApp')
-  .factory('Editointikontrollit', function($rootScope, $q, $timeout, Utils, Notifikaatiot) {
+  .factory('Editointikontrollit', function($rootScope, $q, Utils, Notifikaatiot) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -57,7 +57,7 @@ angular.module('eperusteApp')
 
     return {
       startEditing: function() {
-        if(scope.editingCallback) {
+        if (scope.editingCallback) {
           scope.editingCallback.edit();
           setEditMode(true);
         }
@@ -83,12 +83,20 @@ angular.module('eperusteApp')
           else { return true; }
         }
 
+        function afterSave() {
+          setEditMode(false);
+          $rootScope.$broadcast('disableEditing');
+        }
+
         function after() {
           if (!scope.editingCallback.validate || scope.editingCallback.validate(mandatoryFieldValidator)) {
-            scope.editingCallback.save(kommentti);
-            setEditMode(false);
-            $rootScope.$broadcast('disableEditing');
-            return;
+            if (scope.editingCallback.asyncSave) {
+              scope.editingCallback.asyncSave(kommentti, afterSave);
+            }
+            else {
+              scope.editingCallback.save(kommentti);
+              afterSave();
+            }
           }
           else {
             Notifikaatiot.varoitus(err || 'mandatory-odottamaton-virhe');
@@ -99,7 +107,9 @@ angular.module('eperusteApp')
           if (_.isFunction(scope.editingCallback.asyncValidate)) {
             scope.editingCallback.asyncValidate(after);
           }
-          else { after(); }
+          else {
+            after();
+          }
         }
 
         $rootScope.$broadcast('notifyCKEditor');
@@ -122,34 +132,33 @@ angular.module('eperusteApp')
         }
       },
       registerCallback: function(callback) {
-        if(!callback ||
-            !angular.isFunction(callback.edit) ||
-            !angular.isFunction(callback.save) ||
-            !angular.isFunction(callback.cancel)) {
+        if (!callback ||
+            !_.isFunction(callback.edit) ||
+            (!_.isFunction(callback.save) && !_.isFunction(callback.asyncSave)) ||
+            !_.isFunction(callback.cancel)) {
           console.error('callback-function invalid');
           throw 'editCallback-function invalid';
         }
-        if (!angular.isFunction(callback.notify)) {
-          callback.notify = angular.noop;
-        }
-        editmodeListener = null;
-        $timeout(function() {
-          scope.editingCallback = callback;
-          scope.editModeDefer.resolve(scope.editMode);
-          cbListener();
-        }, 0);
 
+        if (callback.asyncSave) {
+          callback.save = _.noop;
+        }
+
+        if (!_.isFunction(callback.notify)) {
+          callback.notify = _.noop;
+        }
+
+        editmodeListener = null;
+        scope.editingCallback = callback;
+        scope.editModeDefer.resolve(scope.editMode);
+        cbListener();
       },
       unregisterCallback: function() {
         scope.editingCallback = null;
         setEditMode(false);
       },
       editingEnabled: function() {
-        if(scope.editingCallback) {
-          return true;
-        } else {
-          return false;
-        }
+        return !!scope.editingCallback;
       },
       registerCallbackListener: function(callbackListener) {
         cbListener = callbackListener;
