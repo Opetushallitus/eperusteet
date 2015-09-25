@@ -14,15 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-/* global _ */
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
+/// <reference path="../../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
-  .service('TekstikappaleOperations', function (YleinenData, PerusteenOsaViitteet,
-    Editointikontrollit, Notifikaatiot, $state, SuoritustapaSisalto, TutkinnonOsaEditMode,
-    PerusopetusService, $stateParams) {
+  .service('TekstikappaleOperations', function(
+      $state,
+      Editointikontrollit: EditointiKontrollitI,
+      Notifikaatiot,
+      PerusopetusService,
+      PerusteenOsaViitteet,
+      SuoritustapaSisalto,
+      TutkinnonOsaEditMode,
+      YleinenData,
+      $stateParams) {
     var peruste = null;
     var deleteDone = false;
 

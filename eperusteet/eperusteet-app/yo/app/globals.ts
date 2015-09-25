@@ -1,4 +1,5 @@
 // Temporary workaraund
+/// <reference path="./ts_packages/tsd.d.ts" />
 declare var angular: any;
 declare var _: any;
 declare var CKEDITOR: any;
