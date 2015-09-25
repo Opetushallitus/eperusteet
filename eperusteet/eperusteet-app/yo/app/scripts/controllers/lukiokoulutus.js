@@ -49,7 +49,6 @@ angular.module('eperusteApp')
       _.each($scope.datat.opetus.lapset, function (area) {
         area.$type = 'ep-parts';
         area.$url = $state.href('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: area.tyyppi});
-        $log.info("URL: " + area.$url + ", " + area.tyyppi);
 
         area.$orderFn = Utils.nameSort;
 
