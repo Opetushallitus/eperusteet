@@ -61,7 +61,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams) {
+  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams, $log) {
     $scope.menuCollapsed = true;
     $scope.onSectionChange = _.isFunction($scope.onSectionChange) ? $scope.onSectionChange : angular.noop;
 

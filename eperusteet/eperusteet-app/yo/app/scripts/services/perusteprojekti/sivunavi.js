@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils) {
+    $state, $location, YleinenData, PerusopetusService, LukiokoulutusService, Kaanna, $timeout, Utils, $log) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
@@ -134,18 +134,33 @@ angular.module('eperusteApp')
 
   var buildTree = function () {
     items = [];
-    if (perusteenTyyppi === 'YL') {
-      var tiedot = service.getYlTiedot();
-      _.each(PerusopetusService.LABELS, function (key, label) {
-        items.push({
-          label: label,
-          link: [STATE_OSALISTAUS, {suoritustapa: 'perusopetus', osanTyyppi: key}]
+    switch (perusteenTyyppi) {
+      case 'YL': {
+        var tiedot = service.getYlTiedot();
+        _.each(PerusopetusService.LABELS, function (key, label) {
+          items.push({
+            label: label,
+            link: [STATE_OSALISTAUS, {suoritustapa: 'perusopetus', osanTyyppi: key}]
+          });
+          mapYL(tiedot[key], key);
         });
-        mapYL(tiedot[key], key);
-      });
-    }
-    else if (perusteenTyyppi === 'AM'){
-      items = _.clone(AM_ITEMS);
+        break;
+      }
+      case 'LU': {
+        var tiedot = service.getYlTiedot();
+        _.each(LukiokoulutusService.LABELS, function (key, label) {
+          items.push({
+            label: label,
+            link: [STATE_OSALISTAUS, {suoritustapa: 'lukiokoulutus', osanTyyppi: key}]
+          });
+          mapYL(tiedot[key], key);
+        });
+        break;
+      }
+      case 'AM':
+        items = _.clone(AM_ITEMS);
+        break;
+      default:break;
     }
     processNode(data.projekti.peruste.sisalto);
     $timeout(function () {
@@ -157,7 +172,10 @@ angular.module('eperusteApp')
     data.projekti = service.getProjekti();
     data.projekti.peruste = service.getPeruste();
     data.projekti.peruste.sisalto = service.getSisalto();
-    perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : YleinenData.isSimple(data.projekti.peruste) ? 'ESI' : 'AM';
+    perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL'
+            : YleinenData.isLukiokoulutus(data.projekti.peruste) ? 'LU'
+            : YleinenData.isSimple(data.projekti.peruste) ? 'ESI'
+            : 'AM';
     callbacks.typeChanged(perusteenTyyppi);
     buildTree();
   };
