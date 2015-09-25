@@ -6,3 +6,7 @@ app/bower_components
 .netbeans.xml
 *~
 
+app/**/*.js
+app/**/*.map
+test/spec/**/*.js
+test/spec/**/*.map
