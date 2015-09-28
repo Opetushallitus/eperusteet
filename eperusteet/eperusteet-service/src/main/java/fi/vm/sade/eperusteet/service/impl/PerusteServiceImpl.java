@@ -833,7 +833,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 || ekoulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
             peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
         } else if (ekoulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS ) {
-            st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIO, LaajuusYksikko.KURSSI);
+            st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS, LaajuusYksikko.KURSSI);
             peruste.setLukioOpetuksenPerusteenSisalto(new LukioOpetuksenPerusteenSisalto());
         }
 

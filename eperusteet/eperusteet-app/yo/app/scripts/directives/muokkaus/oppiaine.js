@@ -29,9 +29,11 @@ angular.module('eperusteApp')
     };
   })
 
-  .service('OppimaaraHelper', function (PerusopetusService) {
+  .service('OppimaaraHelper', function (PerusopetusService, LukiokoulutusService) {
     var instance = null;
     var params = {};
+    var suoritustapa;
+
     function OppimaaraHelperImpl(oppiaine) {
       this.oppiaine = oppiaine;
     }
@@ -39,6 +41,7 @@ angular.module('eperusteApp')
     this.init = function (oppiaine, stateParams) {
       instance = new OppimaaraHelperImpl(oppiaine);
       params = _.clone(stateParams);
+      suoritustapa = stateParams.suoritustapa;
       return instance;
     };
 
@@ -52,8 +55,11 @@ angular.module('eperusteApp')
     };
 
     this.getBackState = function () {
-      return instance ? ['root.perusteprojekti.suoritustapa.osaalue', params] :
-      ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: 'perusopetus', osanTyyppi: PerusopetusService.OPPIAINEET}];
+      var isLukio = suoritustapa == 'lukiokoulutus';
+      return instance ? ['root.perusteprojekti.suoritustapa.' + (isLukio ? 'lukio' : '') + 'osaalue', params] :
+      ['root.perusteprojekti.suoritustapa.' + (isLukio ? 'lukioosat': 'osalistaus'),
+          {suoritustapa: suoritustapa,
+            osanTyyppi: isLukio ? LukiokoulutusService.OPPIAINEET_OPPIMAARAT : PerusopetusService.OPPIAINEET}];
     };
 
     this.presave = function (model) {

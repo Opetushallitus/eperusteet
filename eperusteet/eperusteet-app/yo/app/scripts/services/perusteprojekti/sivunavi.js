@@ -24,6 +24,7 @@ angular.module('eperusteApp')
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
   var STATE_OSALISTAUS = 'root.perusteprojekti.suoritustapa.osalistaus';
+  var STATE_LUKIOOSALISTAUS = 'root.perusteprojekti.suoritustapa.lukioosat';
   var STATE_OSAALUE = 'root.perusteprojekti.suoritustapa.osaalue';
   var isTutkinnonosatActive = function () {
     return $state.is(STATE_OSAT) || $state.is(STATE_TUTKINNON_OSA);
@@ -151,7 +152,7 @@ angular.module('eperusteApp')
         _.each(LukiokoulutusService.LABELS, function (key, label) {
           items.push({
             label: label,
-            link: [STATE_OSALISTAUS, {suoritustapa: 'lukiokoulutus', osanTyyppi: key}]
+            link: [STATE_LUKIOOSALISTAUS, {suoritustapa: 'lukiokoulutus', osanTyyppi: key}]
           });
           mapYL(tiedot[key], key);
         });

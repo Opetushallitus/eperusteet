@@ -34,7 +34,7 @@ angular.module('eperusteApp')
   .service('virheService', function ($state) {
     var data = {};
 
-    this.setData = function(data) { data = data; };
+    this.setData = function(d) { data = d; };
     this.getData = function() { return data; };
 
     this.virhe = function(virhe) {
