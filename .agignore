@@ -24,5 +24,13 @@ npm-debug.log
 /tools/lokalisointi/*.txt
 /tools/lokalisointi/*.json
 
-*.js.map
+**/node_modules/**
+**/bower_components/**
+dist
+.tmp
+.sass-cache
+.netbeans.xml
+*~
 *.js
+*.map
+*.dump

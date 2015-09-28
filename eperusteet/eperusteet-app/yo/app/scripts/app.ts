@@ -14,6 +14,8 @@
  * European Union Public Licence for more details.
  */
 
+/// <reference path="../ts_packages/tsd.d.ts" />
+
 angular.module('eperusteApp', [
   'ngRoute',
   'ngSanitize',
@@ -139,6 +141,16 @@ angular.module('eperusteApp', [
           return {};
         }
       }});
+    _.mixin({instaReject: function(val?): Promise<any> {
+      return new Promise(function(resolve, reject) {
+        reject(val);
+      });
+    }});
+    _.mixin({instaResolve: function(val?): Promise<any> {
+      return new Promise(function(resolve, reject) {
+        resolve(val);
+      });
+    }});
     _.mixin({set: function(obj, field) {
         return function(value) {
           obj[field] = value;

@@ -20,7 +20,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams, $timeout,
-    PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
+    PerusteenRakenne, Notifikaatiot, Editointikontrollit: EditointiKontrollitI, PerusteProjektiService,
     Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
     virheService, PerusteProjektiSivunavi, perusteprojektiTiedot, $q, Varmistusdialogi, Algoritmit,
     PerusteenOsat) {
@@ -106,82 +106,96 @@ angular.module('eperusteApp')
 
     haeRakenne(versio).then(function() {
       Editointikontrollit.registerCallback({
-        edit: function() {
+        edit: () => {
           $scope.editoi = true;
+          return _.instaResolve(_);
         },
-        asyncValidate: function(cb) {
-          lukitse(function() {
+        validate: () => {
+          return new Promise((resolve, reject) => {
+            lukitse(function() {
+              if (Muodostumissaannot.skratchpadNotEmpty()) {
+                leikelautaDialogi().then(resolve);
+              } else {
+                resolve(_);
+              }
+            });
+          });
+        },
+        save: (kommentti) => {
+          return new Promise((resolve, reject) => {
+            $scope.rakenne.rakenne.metadata = {
+              kommentti: kommentti
+            };
+
+            // FIXME jossain timeout
+            resolve(_);
+            tallennaRakenne($scope.rakenne).then(() => {
+              $scope.editoi = false;
+            });
+          });
+        },
+        cancel: () => {
+          return new Promise((resolve, reject) => {
+            const after = () => {
+              Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+              haeRakenne()
+                .then(() => {
+                  $scope.editoi = false;
+                  resolve(_);
+                })
+                .catch(reject);
+            }
+
             if (Muodostumissaannot.skratchpadNotEmpty()) {
-              leikelautaDialogi(cb);
-            } else {
-              cb();
+              leikelautaDialogi()
+                .then(after)
+                .catch(reject);
+            }
+            else {
+              after();
             }
           });
-        },
-        asyncSave: function(kommentti, cb) {
-          $scope.rakenne.rakenne.metadata = { kommentti: kommentti };
-          cb();
-          tallennaRakenne($scope.rakenne, function() {
-            $scope.editoi = false;
-          });
-        },
-        cancel: function() {
-          Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-          haeRakenne().then(function() {
-            $scope.editoi = false;
-          });
-        },
-        canCancel: function () {
-          var deferred = $q.defer();
-          if (Muodostumissaannot.skratchpadNotEmpty()) {
-            leikelautaDialogi(function () {
-              deferred.resolve();
-            }, function () {
-              deferred.reject();
-            });
-          } else {
-            deferred.resolve();
-          }
-          return deferred.promise;
         }
       });
     });
 
-    function tallennaRakenne(rakenne, cb) {
-      cb = cb || _.noop;
-      // TODO Jos tallennettaisiin otsikkotekstikappale viitteen läpi, ei tarvitsisi erillistä perusteenosalukkoa.
-      // TODO optimointi: älä tallenna otsikkoa jos sitä ei muutettu
-      var otsikkoId = $scope.rakenne.muodostumisOtsikko.id;
-      Lukitus.lukitsePerusteenosa(otsikkoId, function () {
-        PerusteenOsat.saveTekstikappale({osanId: otsikkoId},
-          $scope.rakenne.muodostumisOtsikko, function () {
-          PerusteProjektiSivunavi.refresh();
-          Lukitus.vapautaPerusteenosa(otsikkoId);
-        }, function (res) {
-          Lukitus.vapautaPerusteenosa(otsikkoId);
-          Notifikaatiot.serverCb(res);
-        });
-      });
-
-      PerusteenRakenne.tallennaRakenne(
-        rakenne,
-        rakenne.$peruste.id,
-        $scope.suoritustapa,
-        function() {
-          Notifikaatiot.onnistui('tallennus-onnistui');
-          haeVersiot(true, function() {
-            VersionHelper.setUrl($scope.versiot);
+    // FIXME: Refaktoroi alemmat funktiot promiseiksi
+    function tallennaRakenne(rakenne) {
+      return new Promise((resolve, reject) => {
+        // TODO Jos tallennettaisiin otsikkotekstikappale viitteen läpi, ei tarvitsisi erillistä perusteenosalukkoa.
+        // TODO optimointi: älä tallenna otsikkoa jos sitä ei muutettu
+        var otsikkoId = $scope.rakenne.muodostumisOtsikko.id;
+        Lukitus.lukitsePerusteenosa(otsikkoId, function () {
+          PerusteenOsat.saveTekstikappale({osanId: otsikkoId},
+            $scope.rakenne.muodostumisOtsikko, function () {
+            PerusteProjektiSivunavi.refresh();
+            Lukitus.vapautaPerusteenosa(otsikkoId);
+          }, function (res) {
+            Lukitus.vapautaPerusteenosa(otsikkoId);
+            Notifikaatiot.serverCb(res);
           });
-          Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-          cb();
-        },
-        function() {
-          Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-          cb();
-        }
-      );
+        });
 
-      $scope.isLocked = false;
+        PerusteenRakenne.tallennaRakenne(
+          rakenne,
+          rakenne.$peruste.id,
+          $scope.suoritustapa,
+          function() {
+            Notifikaatiot.onnistui('tallennus-onnistui');
+            haeVersiot(true, function() {
+              VersionHelper.setUrl($scope.versiot);
+            });
+            Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+            resolve(_);
+          },
+          function() {
+            Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+            resolve(_);
+          }
+        );
+
+        $scope.isLocked = false;
+      });
     }
 
     function haeVersiot(force = false, cb = _.noop) {
@@ -222,15 +236,17 @@ angular.module('eperusteApp')
       });
     };
 
-    function leikelautaDialogi(successCb, failureCb = _.noop) {
-      Varmistusdialogi.dialogi({
-        otsikko: 'vahvista-liikkuminen',
-        teksti: 'leikelauta-varoitus',
-        lisaTeksti: 'haluatko-jatkaa',
-        successCb: successCb,
-        failureCb: failureCb || angular.noop,
-        primaryBtn: 'poistu-sivulta'
-      })();
+    function leikelautaDialogi() {
+      return new Promise((resolve, reject) => {
+        Varmistusdialogi.dialogi({
+          otsikko: 'vahvista-liikkuminen',
+          teksti: 'leikelauta-varoitus',
+          lisaTeksti: 'haluatko-jatkaa',
+          successCb: resolve,
+          failureCb: reject,
+          primaryBtn: 'poistu-sivulta'
+        })();
+      });
     };
 
     $scope.$watch('rakenne.rakenne', function(uusirakenne) {

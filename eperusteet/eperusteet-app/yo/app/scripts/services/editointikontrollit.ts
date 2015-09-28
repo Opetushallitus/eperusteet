@@ -1,18 +1,17 @@
 /// <reference path="../../ts_packages/tsd.d.ts" />
 
 interface EditointiKontrollitCallbacks {
-  edit: () => Promise<boolean>;
-  save: any;
-  cancel: any;
-  notify: any;
-  // validate: (validator: any) => boolean;
-  validate: (validator: any) => Promise<boolean>;
+  edit: () => Promise<any>;
+  save: (kommentti?: string) => Promise<any>;
+  cancel: () => Promise<any>;
+  notify?: (mode?) => void;
+  validate?: (validator?) => Promise<any>;
 }
 
 interface EditointiKontrollitI {
-  startEditing: () => void;
-  saveEditing: (kommentti: string) => void;
-  cancelEditing: (tilanvaihto: boolean) => void;
+  startEditing: () => Promise<any>;
+  saveEditing: (kommentti: string) => Promise<any>;
+  cancelEditing: (tilanvaihto?: boolean) => Promise<any>;
   registerCallback: (callback: EditointiKontrollitCallbacks) => void;
   unregisterCallback: () => void;
   editingEnabled: () => boolean;
@@ -20,6 +19,7 @@ interface EditointiKontrollitI {
   registerEditModeListener: (listener: any) => void;
   getEditModePromise: () => any;
   getEditMode: () => boolean;
+  lastModified: any;
 };
 
 
@@ -63,96 +63,96 @@ angular.module('eperusteApp')
 
     var result: any = {};
 
-    result.startEditing = function() {
-      if (scope.editingCallback) {
-        scope.editingCallback.edit();
-        setEditMode(true);
+    // Temporary checking solution for programmer sanity
+    function validateEditingCallback(reject) {
+      if (!scope.editingCallback) {
+        console.error('You should provide editing callbacks before calling this');
+        reject(_);
+        throw {};
       }
-      $rootScope.$broadcast('enableEditing');
+    }
+
+    result.startEditing = function() {
+      return new Promise((resolve, reject) => {
+        validateEditingCallback(reject);
+        scope.editingCallback.edit().then(() => {
+          setEditMode(true);
+          $rootScope.$broadcast('enableEditing');
+          resolve(_);
+        });
+      });
     };
 
     result.saveEditing = function(kommentti: string) {
-      $rootScope.$broadcast('editointikontrollit:preSave');
-      var err;
+      return new Promise((resolve, reject) => {
+        validateEditingCallback(reject);
+        $rootScope.$broadcast('editointikontrollit:preSave');
+        var err;
 
-      function mandatoryFieldValidator(fields, target) {
-        err = undefined;
-        var fieldsf = _.filter(fields || [], function(field) { return field.mandatory; });
-
-        if (!target) { return false; }
-        else if (_.isString(target)) { return !_.isEmpty(target); }
-        else if (_.isObject(target) && !_.isEmpty(target) && !_.isEmpty(fieldsf)) {
-          return _.all(fieldsf, function(field) {
-            var valid = Utils.hasLocalizedText(target[field.path]);
-            if (!valid) { err = field.mandatoryMessage; }
-            return valid;
+        function mandatoryFieldValidator(fields, target) {
+          err = undefined;
+          let fieldsf = _.filter(fields || [], function(field) {
+            return field.mandatory;
           });
-        }
-        else { return true; }
-      }
 
-      function afterSave() {
-        setEditMode(false);
-        $rootScope.$broadcast('disableEditing');
-      }
-
-      function after() {
-        if (!scope.editingCallback.validate || scope.editingCallback.validate(mandatoryFieldValidator)) {
-          if (scope.editingCallback.asyncSave) {
-            scope.editingCallback.asyncSave(kommentti, afterSave);
+          if (!target) {
+            return false;
+          }
+          else if (_.isString(target)) {
+            return !_.isEmpty(target);
+          }
+          else if (_.isObject(target) && !_.isEmpty(target) && !_.isEmpty(fieldsf)) {
+            return _.all(fieldsf, function(field) {
+              var valid = Utils.hasLocalizedText(target[field.path]);
+              if (!valid) {
+                err = field.mandatoryMessage;
+              }
+              return valid;
+            });
           }
           else {
-            scope.editingCallback.save(kommentti);
-            afterSave();
+            return true;
           }
         }
-        else {
-          Notifikaatiot.varoitus(err || 'mandatory-odottamaton-virhe');
-        }
-      }
 
-      if (scope.editingCallback) {
-        if (_.isFunction(scope.editingCallback.asyncValidate)) {
-          scope.editingCallback.asyncValidate(after);
-        }
-        else {
-          after();
-        }
-      }
-
-      $rootScope.$broadcast('notifyCKEditor');
+        scope.editingCallback.validate(mandatoryFieldValidator)
+          .then(() => {
+            $rootScope.$broadcast('notifyCKEditor');
+            return scope.editingCallback.save(kommentti)
+          })
+          .then(() => {
+            $rootScope.$broadcast('notifyCKEditor');
+            setEditMode(false);
+            $rootScope.$broadcast('disableEditing');
+          })
+          .catch(() => {
+            if (err) {
+              Notifikaatiot.varoitus(err || 'mandatory-odottamaton-virhe');
+            }
+          });
+      });
     };
 
-    result.cancelEditing = function(tilanvaihto) {
+    result.cancelEditing = function(tilanvaihto = false) {
       function doCancel() {
         setEditMode(false);
-        if (scope.editingCallback) {
-          scope.editingCallback.cancel();
-        }
         $rootScope.$broadcast('disableEditing');
         $rootScope.$broadcast('notifyCKEditor');
       }
-      if (scope.editingCallback) {
-        if (_.isFunction(scope.editingCallback.canCancel) && !tilanvaihto) {
-          scope.editingCallback.canCancel().then(doCancel);
-        } else {
+
+      return new Promise((resolve, reject) => {
+        validateEditingCallback(reject);
+        if (tilanvaihto) {
           doCancel();
         }
-      }
+        else {
+          scope.editingCallback.cancel().then(doCancel).catch(_.noop);
+        }
+      });
     };
 
     result.registerCallback = function(callback: EditointiKontrollitCallbacks) {
-      // if (!callback ||
-      //     !_.isFunction(callback.edit) ||
-      //     (!_.isFunction(callback.save) && !_.isFunction(callback.asyncSave)) ||
-      //     !_.isFunction(callback.cancel)) {
-      //   console.error('callback-function invalid');
-      //   throw 'editCallback-function invalid';
-      // }
-
-      if (!_.isFunction(callback.notify)) {
-        callback.notify = _.noop;
-      }
+      callback.notify = callback.notify || _.noop;
 
       editmodeListener = null;
       scope.editingCallback = callback;
@@ -186,3 +186,5 @@ angular.module('eperusteApp')
     };
     return result;
   });
+
+

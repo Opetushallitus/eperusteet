@@ -19,6 +19,7 @@
 angular.module('eperusteApp')
   .service('Varmistusdialogi', function($modal) {
 
+    // FIXME: Promise
     function dialogi(options) {
       return function(success, failure) {
         var resolve = {

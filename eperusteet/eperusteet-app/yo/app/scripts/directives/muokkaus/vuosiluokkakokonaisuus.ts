@@ -31,7 +31,7 @@ angular.module('eperusteApp')
   })
 
   .controller('VuosiluokkakokonaisuusController', function ($scope, PerusopetusService,
-    Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet,
+    Editointikontrollit: EditointiKontrollitI, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet,
     CloneHelper, Lukitus, $timeout, $state, $stateParams, Varmistusdialogi, Utils,
     Notifikaatiot, Kieli, $rootScope) {
     $scope.editableModel = {};
@@ -60,11 +60,11 @@ angular.module('eperusteApp')
       return $scope.model.tila === 'julkaistu';
     };
 
-    $scope.canAdd = function () {
+    $scope.canAdd = function() {
       return true;
     };
 
-    var successCb = function (res) {
+    var successCb = function(res) {
       PerusopetusService.clearCache();
       $scope.editableModel = res;
       Lukitus.vapauta();
@@ -83,52 +83,68 @@ angular.module('eperusteApp')
       'paikallisestiPaatettavatAsiat'
     ]);
 
-    var editingCallbacks = {
-      edit: function() {
+    Editointikontrollit.registerCallback({
+      edit: () => {
         mapModel();
         cloner.clone($scope.editableModel);
+        return _.instaResolve();
       },
-      asyncValidate: function (cb) {
-        if ($scope.editableModel.id) {
-          Lukitus.lukitse(cb);
-        } else {
-          cb();
-        }
+      validate: (cb) => {
+        return new Promise((resolve, reject) => {
+          if ($scope.editableModel.id) {
+            Lukitus.lukitse(resolve);
+          }
+          else {
+            resolve(_);
+          }
+        });
       },
-      save: function () {
-        if ($scope.editableModel.id) {
-          $scope.editableModel.$save({
-            perusteId: PerusopetusService.getPerusteId()
-          }, successCb, Notifikaatiot.serverCb);
-        } else {
-          Vuosiluokkakokonaisuudet.save({
-            perusteId: PerusopetusService.getPerusteId()
-          }, $scope.editableModel, function (res) {
-            successCb(res);
-            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
-          }, Notifikaatiot.serverCb);
-        }
+      save: () => {
+        return new Promise((resolve, reject) => {
+          if ($scope.editableModel.id) {
+            $scope.editableModel.$save({
+              perusteId: PerusopetusService.getPerusteId()
+            }, () => {
+              successCb(null);
+              resolve(_);
+            }, (err) => {
+              Notifikaatiot.serverCb(err);
+              reject(_);
+            });
+          }
+          else {
+            Vuosiluokkakokonaisuudet.save({
+              perusteId: PerusopetusService.getPerusteId()
+            }, $scope.editableModel, (res) => {
+              successCb(res);
+              resolve(_);
+              $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
+            }, (err) => {
+              Notifikaatiot.serverCb(err);
+              reject(_);
+            });
+          }
+        });
       },
-      cancel: function () {
-        cloner.restore($scope.editableModel);
-        if ($scope.isNew) {
-          $timeout(function () {
-            $scope.goToListView();
-          });
-        } else {
-          Lukitus.vapauta();
-          $state.go($state.current.name, {}, {reload: true});
-        }
+      cancel: () => {
+        return new Promise((resolve, reject) => {
+          cloner.restore($scope.editableModel);
+          resolve(_);
+          if ($scope.isNew) {
+            $timeout(() => {
+              $scope.goToListView();
+            });
+          }
+          else {
+            Lukitus.vapauta();
+            $state.go($state.current.name, {}, {reload: true});
+          }
+        });
       },
-      notify: function (mode) {
+      notify: (mode) => {
         $scope.editEnabled = mode;
-      },
-      validate: function () {
-        return true;
       }
-    };
-
-    Editointikontrollit.registerCallback(editingCallbacks);
+    });
 
     $scope.goToListView = function () {
       $state.go('root.perusteprojekti.suoritustapa.osalistaus', {

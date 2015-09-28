@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('EsiopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
-    TekstikappaleOperations, SuoritustapaSisalto, TutkinnonOsaEditMode, Notifikaatiot, $stateParams, Editointikontrollit, YleinenData) {
+    TekstikappaleOperations, SuoritustapaSisalto, TutkinnonOsaEditMode, Notifikaatiot, $stateParams, Editointikontrollit: EditointiKontrollitI, YleinenData) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
@@ -79,22 +79,30 @@ angular.module('eperusteApp')
     };
 
     Editointikontrollit.registerCallback({
-      edit: function() {
+      edit: () => {
         $scope.rajaus = '';
         $scope.avaaSuljeKaikki(true);
+        return _.instaResolve();
       },
-      save: function() {
-        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
-          Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
+      save: () => {
+        return new Promise((resolve, reject) => {
+          TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, () => {
+            Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
+            resolve(_);
+          });
         });
       },
-      cancel: function() {
-        $state.go($state.current.name, $stateParams, {
-          reload: true
+      cancel: () => {
+        return new Promise((resolve, reject) => {
+          $state.go($state.current.name, $stateParams, {
+            reload: true
+          });
         });
       },
-      validate: function() { return true; },
-      notify: function (value) {
+      validate: () => {
+        return _.instaResolve(true);
+      },
+      notify: (value) => {
         $scope.editing = value;
       }
     });

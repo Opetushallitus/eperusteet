@@ -52,36 +52,39 @@ angular.module('eperusteApp')
 
   .controller('PerusteenTiedotCtrl', function($scope, $stateParams, $state,
     Koodisto, Perusteet, YleinenData, PerusteProjektiService,
-    perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
+    perusteprojektiTiedot, Notifikaatiot, Editointikontrollit: EditointiKontrollitI, Kaanna,
     Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal,
     PerusteenTutkintonimikkeet, valittavatKielet, Kieli) {
 
     $scope.editEnabled = false;
-    var editingCallbacks = {
-      edit: function () {
+    Editointikontrollit.registerCallback({
+      edit: () => {
         fixTimefield('siirtymaPaattyy');
         fixTimefield('voimassaoloAlkaa');
         fixTimefield('voimassaoloLoppuu');
         $scope.editablePeruste = angular.copy($scope.peruste);
+        return _.instaResolve();
       },
-      save: function () {
-        $scope.tallennaPeruste();
+      save: () => {
+        return $scope.tallennaPeruste();
       },
-      validate: function () {
-        return $scope.projektinPerusteForm.$valid && !_.isEmpty($scope.editablePeruste.kielet);
+      validate: () => {
+        return $scope.projektinPerusteForm.$valid && !_.isEmpty($scope.editablePeruste.kielet) ?
+          _.instaResolve() :
+          _.instaReject();
       },
-      cancel: function () {
+      cancel: () => {
         $scope.editablePeruste = $scope.peruste;
+        return _.instaResolve();
       },
-      notify: function (mode) {
+      notify: (mode) => {
         $scope.editEnabled = mode;
         // Fix msd-elastic issue of setting incorrect initial height
-        $timeout(function () {
+        $timeout(() => {
           $rootScope.$broadcast('elastic:adjust');
         });
       }
-    };
-    Editointikontrollit.registerCallback(editingCallbacks);
+    });
 
     $scope.voiMuokata = function () {
       // TODO Vain omistaja/sihteeri voi muokata
@@ -293,13 +296,19 @@ angular.module('eperusteApp')
       }, Notifikaatiot.fataali);
     };
 
-    $scope.tallennaPeruste = function() {
-      Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, function(vastaus) {
-        $scope.peruste = vastaus;
-        PerusteProjektiService.update();
-        Notifikaatiot.onnistui('tallennettu');
-      }, function() {
-        Notifikaatiot.fataali('tallentaminen-epaonnistui');
+    $scope.tallennaPeruste = () => {
+      return new Promise((resolve, reject) => {
+        Perusteet.save({
+          perusteId: $scope.peruste.id
+        }, $scope.editablePeruste, (vastaus) => {
+          $scope.peruste = vastaus;
+          PerusteProjektiService.update();
+          Notifikaatiot.onnistui('tallennettu');
+          resolve(_);
+        }, () => {
+          Notifikaatiot.fataali('tallentaminen-epaonnistui');
+          reject(_);
+        });
       });
     };
 

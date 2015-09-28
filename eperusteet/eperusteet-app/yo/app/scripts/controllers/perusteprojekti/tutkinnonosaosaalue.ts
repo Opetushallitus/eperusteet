@@ -4,7 +4,7 @@
 /// <reference path="../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
-  .controller('TutkinnonOsaOsaAlueCtrl', function ($scope, $state, $stateParams, Editointikontrollit,
+  .controller('TutkinnonOsaOsaAlueCtrl', function ($scope, $state, $stateParams, Editointikontrollit: EditointiKontrollitI,
     TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils, Koodisto) {
     $scope.osaamistavoitepuu = [];
     var tempId = 0;
@@ -86,50 +86,6 @@ angular.module('eperusteApp')
       }
     };
 
-
-    var osaAlueCallbacks = {
-      edit: function () {
-        TutkinnonOsanOsaAlue.get({viiteId: $stateParams.tutkinnonOsaViiteId, osaalueenId: $stateParams.osaAlueId}, function(vastaus) {
-          $scope.osaAlue = vastaus;
-          luoOsaamistavoitepuu();
-        }, function (virhe){
-          Notifikaatiot.serverCb(virhe);
-          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
-        });
-      },
-      cancel: function () {
-        Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
-        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
-      },
-      save: function () {
-        $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
-        TutkinnonOsanOsaAlue.save({
-          viiteId: $stateParams.tutkinnonOsaViiteId,
-          osaalueenId: $stateParams.osaAlueId
-        }, $scope.osaAlue, function () {
-          Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
-          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
-        }, function(virhe) {
-          Notifikaatiot.serverCb(virhe);
-          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
-        });
-      },
-      validate: function () {
-        var valid = true;
-        if (Utils.hasLocalizedText($scope.osaAlue.nimi)) {
-          valid = true;
-        } else {
-          return false;
-        }
-        _.each($scope.osaamistavoitepuu, function(osaamistavoite) {
-          if (!Utils.hasLocalizedText(osaamistavoite.nimi)) {
-            valid = false;
-          }
-        });
-        return valid;
-      }
-    };
-
     var kokoaOsaamistavoitteet = function() {
       var osaamistavoitteet = [];
       _.each($scope.osaamistavoitepuu, function(osaamistavoite) {
@@ -165,8 +121,62 @@ angular.module('eperusteApp')
       Lukitus.lukitsePerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId, cb);
     }
 
-    Editointikontrollit.registerCallback(osaAlueCallbacks);
-    lukitse(function () {
+    Editointikontrollit.registerCallback({
+      edit: () => {
+        return new Promise((resolve, reject) => {
+          TutkinnonOsanOsaAlue.get({
+            viiteId: $stateParams.tutkinnonOsaViiteId,
+            osaalueenId: $stateParams.osaAlueId
+          }, (vastaus) => {
+            $scope.osaAlue = vastaus;
+            luoOsaamistavoitepuu();
+            resolve(_);
+          }, (virhe) => {
+            reject(_);
+            Notifikaatiot.serverCb(virhe);
+            $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
+          });
+        });
+      },
+      cancel: () => {
+        return new Promise((resolve, reject) => {
+          Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
+          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
+        });
+      },
+      save: () => {
+        return new Promise((resolve, reject) => {
+          $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
+          TutkinnonOsanOsaAlue.save({
+            viiteId: $stateParams.tutkinnonOsaViiteId,
+            osaalueenId: $stateParams.osaAlueId
+          }, $scope.osaAlue, () => {
+            resolve(_);
+            Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
+            $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
+          }, (virhe) => {
+            reject(_);
+            Notifikaatiot.serverCb(virhe);
+            // FIXME: Tämän ei varmaan pitäisi olla tässä?
+            // $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
+          });
+        });
+      },
+      validate: () => {
+        return new Promise((resolve, reject) => {
+          if (Utils.hasLocalizedText($scope.osaAlue.nimi) && _.all($scope.osaamistavoitepuu, (osaamistavoite) => {
+            return Utils.hasLocalizedText(osaamistavoite.nimi);
+          })) {
+            resolve(_);
+          }
+          else {
+            reject(_);
+          }
+        });
+      }
+    });
+
+    lukitse(() => {
       Editointikontrollit.startEditing();
     });
 

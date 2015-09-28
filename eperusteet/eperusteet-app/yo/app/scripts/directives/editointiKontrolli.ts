@@ -16,7 +16,7 @@
 
 'use strict';
 angular.module('eperusteApp')
-  .directive('editointiKontrolli', function($rootScope, Editointikontrollit) {
+  .directive('editointiKontrolli', function($rootScope, Editointikontrollit: EditointiKontrollitI) {
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {

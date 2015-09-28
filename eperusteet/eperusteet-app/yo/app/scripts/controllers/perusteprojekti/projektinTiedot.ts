@@ -62,21 +62,34 @@ angular.module('eperusteApp')
   })
   .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout, $translate,
     PerusteprojektiResource, PerusteProjektiService, perusteprojektiTiedot, Notifikaatiot,
-    Perusteet, Editointikontrollit, Organisaatioryhmat) {
+    Perusteet, Editointikontrollit: EditointiKontrollitI, Organisaatioryhmat) {
     PerusteProjektiService.watcher($scope, 'projekti');
     $scope.lang = $translate.use() || $translate.preferredLanguage();
     $scope.editEnabled = false;
     $scope.$ryhmaNimi = '';
     var originalProjekti = null;
 
-    var editingCallbacks = {
-      edit: function () { originalProjekti = PerusteProjektiService.get(); },
-      save: function () { $scope.tallennaPerusteprojekti(); },
-      validate: function () { return $scope.perusteprojektiForm.$valid; },
-      cancel: function () { $scope.projekti = originalProjekti; },
-      notify: function (mode) { $scope.editEnabled = mode; }
-    };
-    Editointikontrollit.registerCallback(editingCallbacks);
+    Editointikontrollit.registerCallback({
+      edit: () => {
+        originalProjekti = PerusteProjektiService.get();
+        return _.instaResolve();
+      },
+      save: () => {
+        return $scope.tallennaPerusteprojekti();
+      },
+      validate: () => {
+        return $scope.perusteprojektiForm.$valid ?
+          _.instaResolve() :
+          _.instaReject();
+      },
+      cancel: () => {
+        $scope.projekti = originalProjekti;
+        return _.instaResolve();
+      },
+      notify: (mode) => {
+        $scope.editEnabled = mode;
+      }
+    });
 
     $scope.pohja = function () {
       return $state.is('root.perusteprojektiwizard.pohja') || ($scope.peruste && $scope.peruste.tyyppi === 'pohja');
@@ -136,32 +149,38 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.tallennaPerusteprojekti = function() {
-      var projekti = PerusteProjektiService.get();
+    $scope.tallennaPerusteprojekti = () => {
+      return new Promise((resolve, reject) => {
+        var projekti = PerusteProjektiService.get();
 
-      if (projekti.id) {
-        delete projekti.koulutustyyppi;
-        delete projekti.laajuusYksikko;
-      }
-      else { projekti.id = null; }
+        if (projekti.id) {
+          delete projekti.koulutustyyppi;
+          delete projekti.laajuusYksikko;
+        }
+        else { projekti.id = null; }
 
-      if ($scope.pohja()) {
-        projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi', 'ryhmaOid', 'perusteId'), {
-          tyyppi: 'pohja'
+        if ($scope.pohja()) {
+          projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi', 'ryhmaOid', 'perusteId'), {
+            tyyppi: 'pohja'
+          });
+        }
+
+        PerusteprojektiResource.update(projekti, function(vastaus) {
+          resolve(_);
+          if ($scope.wizardissa()) {
+            PerusteProjektiService.goToProjektiState(vastaus, projekti);
+          }
+          else {
+            Notifikaatiot.onnistui('tallennettu');
+            $scope.projekti = vastaus;
+            perusteprojektiTiedot.setProjekti(vastaus);
+            PerusteProjektiService.update();
+          }
+        }, (err) => {
+          Notifikaatiot.serverCb(err)
+          reject(_);
         });
-      }
-
-      PerusteprojektiResource.update(projekti, function(vastaus) {
-        if ($scope.wizardissa()) {
-          PerusteProjektiService.goToProjektiState(vastaus, projekti);
-        }
-        else {
-          Notifikaatiot.onnistui('tallennettu');
-          $scope.projekti = vastaus;
-          perusteprojektiTiedot.setProjekti(vastaus);
-          PerusteProjektiService.update();
-        }
-      }, Notifikaatiot.serverCb);
+      });
     };
   })
   .controller('TyoryhmanTuontiModalCtrl', function($scope, $modalInstance, $translate, Organisaatioryhmat, Algoritmit) {

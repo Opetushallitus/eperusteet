@@ -20,7 +20,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
-      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, VlkUtils) {
+      PerusopetusService, TekstikappaleOperations, Editointikontrollit: EditointiKontrollitI, $stateParams, Notifikaatiot, Utils, VlkUtils) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
@@ -39,10 +39,10 @@ angular.module('eperusteApp')
             osanTyyppi: 'osaaminen'
           }) :
           $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
-              suoritustapa: 'perusopetus',
-              perusteenOsaViiteId: lapsi.id,
-              versio: ''
-            });
+            suoritustapa: 'perusopetus',
+            perusteenOsaViiteId: lapsi.id,
+            versio: ''
+          });
       });
     }, true);
 
@@ -116,22 +116,35 @@ angular.module('eperusteApp')
     };
 
     Editointikontrollit.registerCallback({
-      edit: function() {
-        $scope.rajaus = '';
-        $scope.avaaSuljeKaikki(true);
-      },
-      save: function() {
-        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
-          Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
+      edit: () => {
+        return new Promise((resolve, reject) => {
+          $scope.rajaus = '';
+          $scope.avaaSuljeKaikki(true);
+          resolve(_);
         });
       },
-      cancel: function() {
-        $state.go($state.current.name, $stateParams, {
-          reload: true
+      save: () => {
+        return new Promise((resolve, reject) => {
+          TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
+            resolve(_);
+            Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
+          });
         });
       },
-      validate: function() { return true; },
-      notify: function (value) {
+      cancel: () => {
+        return new Promise((resolve, reject) => {
+          resolve(_);
+          $state.go($state.current.name, $stateParams, {
+            reload: true
+          });
+        });
+      },
+      validate: () => {
+        return new Promise((resolve, reject) => {
+            resolve(_);
+        });
+      },
+      notify: (value) => {
         $scope.editing = value;
       }
     });

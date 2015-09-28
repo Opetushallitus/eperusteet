@@ -60,7 +60,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit) {
+  .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit: EditointiKontrollitI) {
     $scope.kommentti = '';
     $scope.hideControls = true;
 
@@ -97,12 +97,12 @@ angular.module('eperusteApp')
     });
 
     $scope.start = function() {
-      Editointikontrollit.startEditing();
+      Editointikontrollit.startEditing().then(_.noop);
     };
     $scope.save = function() {
-      Editointikontrollit.saveEditing($scope.kommentti);
+      Editointikontrollit.saveEditing($scope.kommentti).then(_.noop);
     };
     $scope.cancel = function() {
-      Editointikontrollit.cancelEditing();
+      Editointikontrollit.cancelEditing(false).then(_.noop);
     };
   });

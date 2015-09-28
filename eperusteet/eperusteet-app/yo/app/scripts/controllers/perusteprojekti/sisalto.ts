@@ -23,7 +23,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $timeout,
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
-    Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi, Projektiryhma,
+    Editointikontrollit: EditointiKontrollitI, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi, Projektiryhma,
     PerusteprojektiTyoryhmat, TekstikappaleOperations, SuoritustavanSisalto, $location) {
     $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
     function lisaaSisalto(method, sisalto, cb) {
@@ -163,25 +163,36 @@ angular.module('eperusteApp')
     }());
 
     Editointikontrollit.registerCallback({
-      edit: function() {
-        $scope.muokkausTutkintokohtaisetOsat = true;
-        $scope.rajaus = '';
-        $scope.avaaSuljeKaikki(true);
-      },
-      save: function() {
-        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
-          $scope.muokkausTutkintokohtaisetOsat = false;
-          Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
-          PerusteProjektiSivunavi.refresh(true);
+      edit: () => {
+        return new Promise((resolve, reject) => {
+          $scope.muokkausTutkintokohtaisetOsat = true;
+          $scope.rajaus = '';
+          $scope.avaaSuljeKaikki(true);
         });
       },
-      cancel: function() {
-        $state.go($state.current.name, $stateParams, {
-          reload: true
+      save: () => {
+        return new Promise((resolve, reject) => {
+          TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
+            $scope.muokkausTutkintokohtaisetOsat = false;
+            Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
+            PerusteProjektiSivunavi.refresh(true);
+          });
         });
       },
-      validate: function() { return true; },
-      notify: angular.noop
+      cancel: () => {
+        return new Promise((resolve, reject) => {
+          resolve(_);
+          $state.go($state.current.name, $stateParams, {
+            reload: true
+          });
+        });
+      },
+      validate: () => {
+        return new Promise((resolve, reject) => {
+          resolve(_);
+        });
+      },
+      notify: _.noop
     });
 
     $scope.aloitaMuokkaus = function() {

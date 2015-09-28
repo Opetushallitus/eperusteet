@@ -88,7 +88,7 @@ angular.module('eperusteApp')
 
   })
   .controller('muokkausTutkinnonosaCtrl', function($scope, $state, $stateParams, $rootScope,
-    $q, Editointikontrollit, PerusteenOsat, PerusteenRakenne, PerusteTutkinnonosa,
+    $q, Editointikontrollit: EditointiKontrollitI, PerusteenOsat, PerusteenRakenne, PerusteTutkinnonosa,
     TutkinnonOsaEditMode, $timeout, Varmistusdialogi, VersionHelper, Lukitus,
     MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, PerusteProjektiSivunavi,
     Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
@@ -174,13 +174,15 @@ angular.module('eperusteApp')
       Lukitus.lukitsePerusteenosa($scope.tutkinnonOsaViite.tutkinnonOsa.id, cb);
     }
 
-    function fetch(cb) {
+    function fetch() {
       // NOTE! Pitäisikö hakea tutkinnonosaviite eikä tutkinnonosaa
-      cb = cb || angular.noop;
-      PerusteenOsat.get({ osanId: $scope.tutkinnonOsaViite.tutkinnonOsa.id }, function(res) {
-        $scope.tutkinnonOsaViite.tutkinnonOsa = res;
-        console.log(res);
-        cb(res);
+      return new Promise((resolve, reject) => {
+        PerusteenOsat.get({
+          osanId: $scope.tutkinnonOsaViite.tutkinnonOsa.id
+        }, function(res) {
+          $scope.tutkinnonOsaViite.tutkinnonOsa = res;
+          resolve(res);
+        }, reject);
       });
     }
 
@@ -288,16 +290,16 @@ angular.module('eperusteApp')
     }
 
     var tutke2 = {
-      fetch: function () {
+      fetch: () => {
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2') {
           if (Tutke2OsaData.get()) {
-            Tutke2OsaData.get().fetch();
-        }
+            return Tutke2OsaData.get().fetch();
+          }
         }
       },
-      mergeOsaAlueet: function (tutkinnonOsa) {
+      mergeOsaAlueet: (tutkinnonOsa) => {
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2') {
-          tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function (osaAlue) {
+          tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, (osaAlue) => {
             var item: any = { nimi: osaAlue.nimi };
             if (osaAlue.id) {
               item.id = osaAlue.id;
@@ -306,9 +308,9 @@ angular.module('eperusteApp')
           });
         }
       },
-      validate: function() {
+      validate: () => {
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2') {
-          return _.all(_.map(Tutke2OsaData.get().$editing, function (item) {
+          return _.all(_.map(Tutke2OsaData.get().$editing, (item) => {
             return Utils.hasLocalizedText(item.nimi);
           }));
         } else {
@@ -318,59 +320,80 @@ angular.module('eperusteApp')
     };
 
     var normalCallbacks = {
-      edit: function() {
-        tutke2.fetch();
+      edit: () => {
+        return new Promise((resolve, reject) => {
+          tutke2.fetch().then(resolve).catch(reject);
+        });
       },
-      asyncValidate: function(cb) {
-        lukitse(function() { cb(); });
+      validate: () => {
+        return new Promise((resolve, reject) => {
+          if (!Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi)) {
+            $scope.nimiValidationError = true;
+          }
+          if ($scope.tutkinnonOsaHeaderForm.$valid && tutke2.validate()) {
+            lukitse(resolve);
+          }
+          else {
+            reject(_);
+          }
+        });
       },
-      save: function(kommentti) {
-        tutke2.mergeOsaAlueet($scope.editableTutkinnonOsaViite.tutkinnonOsa);
-        $scope.editableTutkinnonOsaViite.metadata = { kommentti: kommentti };
-        if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.id) {
-          PerusteTutkinnonosa.save({perusteId: $scope.peruste.id, suoritustapa: $stateParams.suoritustapa, osanId: $scope.editableTutkinnonOsaViite.tutkinnonOsa.id},
-          $scope.editableTutkinnonOsaViite, function(response){
-            $scope.editableTutkinnonOsaViite = angular.copy(response);
-            $scope.tutkinnonOsaViite = angular.copy(response);
-            Editointikontrollit.lastModified = response;
-            saveCb(response.tutkinnonOsa);
-            getRakenne();
-
-            tutkinnonOsaDefer = $q.defer();
-            $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-            tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
-          }, Notifikaatiot.serverCb);
-        }
-        else {
-          PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsaViite.tutkinnonOsa, function(response) {
-            Editointikontrollit.lastModified = response;
-            saveCb(response);
-            getRakenne();
-          }, Notifikaatiot.serverCb);
-        }
-        $scope.isNew = false;
-      },
-      cancel: function() {
-        if ($scope.isNew) {
-          doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsaViite.tutkinnonOsa.id].id);
+      save: (kommentti) => {
+        return new Promise((resolve, reject) => {
+          tutke2.mergeOsaAlueet($scope.editableTutkinnonOsaViite.tutkinnonOsa);
+          $scope.editableTutkinnonOsaViite.metadata = { kommentti: kommentti };
+          if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.id) {
+            PerusteTutkinnonosa.save({
+              perusteId: $scope.peruste.id,
+              suoritustapa: $stateParams.suoritustapa,
+              osanId: $scope.editableTutkinnonOsaViite.tutkinnonOsa.id
+            }, $scope.editableTutkinnonOsaViite, (response) => {
+              $scope.editableTutkinnonOsaViite = angular.copy(response);
+              $scope.tutkinnonOsaViite = angular.copy(response);
+              Editointikontrollit.lastModified = response;
+              saveCb(response.tutkinnonOsa);
+              getRakenne();
+              tutkinnonOsaDefer = $q.defer();
+              $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
+              tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
+              resolve(_);
+            }, (err) => {
+              Notifikaatiot.serverCb(err);
+              reject(_);
+            });
+          }
+          else {
+            PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsaViite.tutkinnonOsa, (response) => {
+              resolve(_);
+              Editointikontrollit.lastModified = response; // Miksi?
+              saveCb(response);
+              getRakenne();
+            }, (err) => {
+              Notifikaatiot.serverCb(err);
+              reject(_);
+            });
+          }
           $scope.isNew = false;
-        }
-        else {
-          tutke2.fetch();
-          fetch(function() {
-            refreshPromise();
-            Lukitus.vapautaPerusteenosa($scope.tutkinnonOsaViite.tutkinnonOsa.id);
-          });
-        }
+        });
       },
-      notify: function (mode) {
+      cancel: () => {
+        return new Promise((resolve, reject) => {
+          if ($scope.isNew) {
+            doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsaViite.tutkinnonOsa.id].id);
+            $scope.isNew = false;
+          }
+          else {
+            tutke2.fetch().then(() => {
+              fetch().then(() => {
+                refreshPromise();
+                Lukitus.vapautaPerusteenosa($scope.tutkinnonOsaViite.tutkinnonOsa.id);
+              });
+            });
+          }
+        });
+      },
+      notify: (mode) => {
         $scope.editEnabled = mode;
-      },
-      validate: function () {
-        if (!Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi)) {
-          $scope.nimiValidationError = true;
-        }
-        return $scope.tutkinnonOsaHeaderForm.$valid && tutke2.validate();
       }
     };
 
@@ -409,7 +432,7 @@ angular.module('eperusteApp')
     $scope.muokkaa = function () {
       Editointikontrollit.registerCallback(normalCallbacks);
       lukitse(function() {
-        fetch(function() {
+        fetch().then(() => {
           Editointikontrollit.startEditing();
           refreshPromise();
         });

@@ -155,7 +155,7 @@ angular.module('eperusteApp')
   })
 
   .controller('OsanMuokkausController', function($scope, $stateParams, $compile, OsanMuokkausHelper,
-      Editointikontrollit, $rootScope) {
+      Editointikontrollit: EditointiKontrollitI, $rootScope) {
     $scope.objekti = OsanMuokkausHelper.getModel();
 
     if (!$scope.objekti) {

@@ -149,35 +149,29 @@ angular.module('eperusteApp')
       VersionHelper.getPerusteenosaVersions(this.versiot, {id: tutkinnonOsaId}, true, angular.noop);
     }
 
-    Tutke2OsaImpl.prototype.fetch = function () {
+    Tutke2OsaImpl.prototype.fetch = () => {
       var that = this;
       var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
-      var deferred = $q.defer();
-
-      if (versio) {
-        that.versiot = {};
-        VersionHelper.getTutkinnonOsaViiteVersions(that.versiot, {id: $stateParams.tutkinnonOsaViiteId}, true, function () {
-          var revNumber = VersionHelper.select(that.versiot, versio);
-          that.params.versioId = revNumber;
-          TutkinnonOsanOsaAlue.versioList(that.params, function (data) {
+      return new Promise((resolve, reject) => {
+        if (versio) {
+          that.versiot = {};
+          VersionHelper.getTutkinnonOsaViiteVersions(that.versiot, {id: $stateParams.tutkinnonOsaViiteId}, true, function () {
+            var revNumber = VersionHelper.select(that.versiot, versio);
+            that.params.versioId = revNumber;
+            TutkinnonOsanOsaAlue.versioList(that.params, function (data) {
+              that.osaAlueet = data;
+              kasitteleOsaAlueet(that);
+              resolve(_);
+            }, reject);
+          });
+        } else {
+          TutkinnonOsanOsaAlue.list(this.params, function (data) {
             that.osaAlueet = data;
             kasitteleOsaAlueet(that);
-            deferred.resolve();
-          }, function () {
-            deferred.reject();
-          });
-        });
-      } else {
-        TutkinnonOsanOsaAlue.list(this.params, function (data) {
-          that.osaAlueet = data;
-          kasitteleOsaAlueet(that);
-          deferred.resolve();
-        }, function () {
-          deferred.reject();
-        });
-      }
-
-      return deferred.promise;
+            resolve(_);
+          }, reject);
+        }
+      });
     };
 
     function collectKielet(field, kielet) {

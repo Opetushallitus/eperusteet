@@ -38,7 +38,7 @@ angular.module('eperusteApp')
   })
 
   .controller('OsallinenOsaController', function ($scope, $state, VersionHelper, $q, Lukitus,
-      Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout,
+      Editointikontrollit: EditointiKontrollitI, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout,
       $stateParams) {
     $scope.isLocked = false;
     $scope.isNew = $stateParams.osanId === 'uusi';

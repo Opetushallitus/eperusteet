@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-/// <reference path="../../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .service('TekstikappaleOperations', function(
       $state,
@@ -123,7 +121,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('muokkausTekstikappaleCtrl', function ($scope, $q, Editointikontrollit, PerusteenOsat,
+  .controller('muokkausTekstikappaleCtrl', function ($scope, $q, Editointikontrollit: EditointiKontrollitI, PerusteenOsat,
     Notifikaatiot, VersionHelper, Lukitus, TutkinnonOsaEditMode,
     Varmistusdialogi, Kaanna, PerusteprojektiTiedotService, $stateParams,
     Utils, PerusteProjektiSivunavi, YleinenData, $rootScope, Kommentit,
@@ -350,47 +348,61 @@ angular.module('eperusteApp')
       $scope.editableTekstikappale = angular.copy(kappale);
 
       Editointikontrollit.registerCallback({
-        edit: function () {
-          fetch(function () {
-            refreshPromise();
-          });
-        },
-        asyncValidate: function (cb) {
-          lukitse(function () {
-            cb();
-          });
-        },
-        asyncSave: function (kommentti, cb) {
-          $scope.editableTekstikappale.metadata = {kommentti: kommentti};
-          PerusteenOsat.saveTekstikappale({
-            osanId: $scope.editableTekstikappale.id
-          }, $scope.editableTekstikappale, function(res) {
-            saveCb(res);
-            $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
-            $scope.isNew = false;
-            cb();
-          }, Notifikaatiot.serverCb);
-        },
-        cancel: function () {
-          if (!TekstikappaleOperations.wasDeleted()) {
-            Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
-              if ($scope.isNew) {
-                doDelete(true);
-              }
-              else {
-                fetch(function () {
-                  refreshPromise();
-                });
-              }
-              $scope.isNew = false;
+        edit: () => {
+          return new Promise((resolve, reject) => {
+            fetch(function () {
+              refreshPromise();
+              resolve(_);
             });
-          }
+          });
+        },
+        validate: function (cb) {
+          return new Promise((resolve, reject) => {
+            lukitse(resolve);
+          });
+        },
+        save: (kommentti) => {
+          return new Promise((resolve, reject) => {
+            $scope.editableTekstikappale.metadata = {
+              kommentti: kommentti
+            };
+
+            PerusteenOsat.saveTekstikappale({
+              osanId: $scope.editableTekstikappale.id
+            }, $scope.editableTekstikappale, (res) => {
+              resolve(_);
+              $scope.tekstikappale = res;
+              $scope.isNew = false;
+              saveCb(res);
+            }, (err) => {
+              Notifikaatiot.serverCb(err);
+              reject(_);
+            });
+          });
+        },
+        cancel: () => {
+          return new Promise((resolve, reject) => {
+            if (!TekstikappaleOperations.wasDeleted()) {
+              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, () => {
+                if ($scope.isNew) {
+                  doDelete(true);
+                  resolve(_);
+                }
+                else {
+                  resolve(_);
+                  fetch(function () {
+                    refreshPromise();
+                  });
+                }
+              });
+            }
+            else {
+              resolve(_);
+            }
+          });
         },
         notify: function (mode) {
           $scope.editEnabled = mode;
-        },
-        validate: function (mandatoryValidator) {
-          return mandatoryValidator($scope.fields, $scope.editableTekstikappale);
         }
       });
 
@@ -416,7 +428,6 @@ angular.module('eperusteApp')
     };
 
     $scope.addLapsi = function () {
-      console.log('moro');
       TekstikappaleOperations.addChild($scope.viiteId(), $stateParams.suoritustapa);
     };
 
@@ -450,7 +461,6 @@ angular.module('eperusteApp')
 
     $scope.poista = function () {
       var nimi = Kaanna.kaanna($scope.tekstikappale.nimi);
-
       Varmistusdialogi.dialogi({
         successCb: doDelete,
         otsikko: 'poista-tekstikappale-otsikko',
