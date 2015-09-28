@@ -74,8 +74,9 @@ angular.module('eperusteApp')
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
   .service('Lukitus', function($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout,
-    Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-    LukkoOppiaine, LukkoLukioOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
+      Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
+      LukkoOppiaine, LukkoLukioOppiaine, PerusopetusService, LukiokoulutusService,
+      LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
 
     var lukitsin = null;
     var etag = null;
@@ -283,8 +284,16 @@ angular.module('eperusteApp')
       lukitse(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
     }
 
+    function lukitseLukioOppiaine(id, ch) {
+      lukitse(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, ch)
+    }
+
     function vapautaOppiaine(id, cb) {
       vapauta(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
+    }
+
+    function vapautaLukioOppiaine(id, cb) {
+      vapauta(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, cb);
     }
 
     function lukitseOppiaineenVuosiluokkakokonaisuus(oppiaineId, vuosiluokkaId, cb) {
@@ -315,7 +324,9 @@ angular.module('eperusteApp')
       vapautaPerusteenosa: vapautaPerusteenosa,
 
       lukitseOppiaine: lukitseOppiaine,
+      lukitseLukioOppiaine: lukitseLukioOppiaine,
       vapautaOppiaine: vapautaOppiaine,
+      vapautaLukioOppiaine: vapautaLukioOppiaine,
       lukitseOppiaineenVuosiluokkakokonaisuus: lukitseOppiaineenVuosiluokkakokonaisuus,
       vapautaOppiaineenVuosiluokkakokonaisuus: vapautaOppiaineenVuosiluokkakokonaisuus,
       lukitsePerusteenosaByTutkinnonOsaViite: lukitsePerusteenosaByTutkinnonOsaViite,

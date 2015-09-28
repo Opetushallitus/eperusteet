@@ -136,7 +136,8 @@ angular.module('eperusteApp')
 )
 .controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService,
                                                 virheService) {
-    $scope.sisaltoState = _.find(LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
+    $scope.sisaltoState = _.find(
+      LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
       $log.error("LukioOsalistausController osaTyyppi: "+ $stateParams.osanTyyppi);
       virheService.virhe('virhe-sivua-ei-löytynyt');
