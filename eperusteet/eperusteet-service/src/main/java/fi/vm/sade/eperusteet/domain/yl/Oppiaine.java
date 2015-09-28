@@ -61,6 +61,18 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tehtava;
 
+    @Getter
+    @Setter
+    @JoinColumn(name = "tavoitteet_id", nullable = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private TekstiOsa tavoitteet;
+
+    @Getter
+    @Setter
+    @JoinColumn(name = "arviointi_id", nullable = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private TekstiOsa arviointi;
+
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @NotNull(groups = Strict.class)
     @Size(min = 1, groups = Strict.class)

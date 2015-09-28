@@ -29,6 +29,9 @@ import lombok.Setter;
 @Setter
 public class OppiaineDto extends OppiaineBaseDto {
     private Optional<TekstiOsaDto> tehtava;
+    private Optional<TekstiOsaDto> tavoitteet;
+    private Optional<TekstiOsaDto> arviointi;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<OppiaineSuppeaDto> oppimaarat;
     private Set<OpetuksenKohdealueDto> kohdealueet;

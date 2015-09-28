@@ -735,6 +735,8 @@
 
     "opetuksen-sisallot": "Opetuksen sisällöt",
     "opetuksen-kohdealueet": "Opetuksen tavoitealueet",
+
+
     "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
     "laaja-alainen-osaaminen-kuvaus": "Laaja-alaisen osaamisen kuvaus",
     "laaja-alaiset-osaamiset": "Laaja-alaiset osaamiset",
@@ -785,6 +787,8 @@
     "nimi-on-pakollinen": "Otsikko on pakollinen.",
 
     "oppiaine-osio-tehtava": "Oppiaineen tehtävä",
+    "oppiaine-osio-tavoitteet": "Opetuksen tavoitteet",
+    "oppiaine-osio-lukio-arviointi": "Arviointi",
     "oppiaine-osio-osaalue": "Osa-alue",
     "oppiaine-osio-tyotavat": "Oppimisympäristöt ja työtavat",
     "oppiaine-osio-ohjaus": "Ohjaus ja tuki",

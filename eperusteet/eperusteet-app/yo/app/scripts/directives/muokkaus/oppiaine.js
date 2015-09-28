@@ -525,6 +525,19 @@ angular.module('eperusteApp')
     };
   })
 
+  .directive('lukioOppiaineenOsiot', function () {
+    return {
+      restrict: 'AE',
+      scope: {
+        model: '=lukioOppiaineenOsiot',
+        fields: '=',
+        vuosiluokkakokonaisuudet: '='
+      },
+      controller: 'LukioOppiaineenOsiotController',
+      templateUrl: 'views/directives/lukiokoulutus/oppiaineenosiot.html'
+    };
+  })
+
   .controller('OppiaineenOsiotController', function ($scope, MuokkausUtils, Varmistusdialogi, VlkUtils) {
     $scope.activeVuosiluokat = [];
     $scope.activeOsiot = [];
@@ -638,13 +651,13 @@ angular.module('eperusteApp')
   })
 
   .controller('LukioOppiaineController', function ($scope, LukiokoulutusService, Kaanna, Notifikaatiot,
-                                              PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
+                                              PerusteProjektiSivunavi, LukionOppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
                                               CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
-                                              Koodisto, MuokkausUtils, $document) {
+                                              Koodisto, MuokkausUtils, $document, $log) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.nameSort = Utils.nameSort;
-    $scope.yleisetosat = ['tehtava', 'osaalue'];
+    $scope.yleisetosat = ['tehtava', 'tavoitteet', 'arviointi'];
     $scope.activeTab = parseInt($stateParams.tabId, 10);
     var creatingNewOppimaara = !!OppimaaraHelper.instance();
     $scope.oppimaaraRequested = false;
@@ -679,7 +692,7 @@ angular.module('eperusteApp')
       tabHelper.changeInited = false;
     }
 
-    var cloner = CloneHelper.init(['koosteinen', 'nimi', 'tehtava', 'vuosiluokkakokonaisuudet']);
+    var cloner = CloneHelper.init(['koosteinen', 'nimi', 'tehtava', 'tavoitteet', 'arviointi']);
 
     $scope.openKoodisto = Koodisto.modaali(function(koodisto) {
       MuokkausUtils.nestedSet($scope.editableModel, 'koodiUri', ',', koodisto.koodiUri);
@@ -705,7 +718,7 @@ angular.module('eperusteApp')
     // TODO: mergeä saveOppiaineen kanssa
     function saveVanhaOppiaine() {
       Lukitus.lukitse(function() {
-        Oppiaineet.save({
+        LukionOppiaineet.save({
           perusteId: LukiokoulutusService.getPerusteId()
         }, $scope.editableModel, function() {
           Lukitus.vapauta();
@@ -756,7 +769,7 @@ angular.module('eperusteApp')
         if ($scope.editableModel.id) {
           saveOppiaine();
         } else {
-          Oppiaineet.save({
+          LukionOppiaineet.save({
             perusteId: LukiokoulutusService.getPerusteId()
           }, $scope.editableModel, function(res) {
             $scope.editableModel = res;
@@ -820,6 +833,8 @@ angular.module('eperusteApp')
       ProjektinMurupolkuService.setCustom(oppiaineLink);
     }
 
+
+
     $scope.data = {
       options: {
         title: function () { return $scope.editableModel.nimi; },
@@ -848,14 +863,12 @@ angular.module('eperusteApp')
           }
         ],
         addFieldCb: function (field) {
-          if (field.path === 'tehtava' || field.path === 'osaalue') {
-            $scope.editableModel[field.path] = {
-              otsikko: field.path === 'tehtava' ? {fi: 'Oppiaineen tehtävä'} : {fi: 'Osa-alue'},
-              teksti: {fi: ''}
-            };
-          }
+          $scope.editableModel[field.path] = {
+            otsikko: {fi: Kaanna.kaanna(field.localeKey)},
+            teksti: {fi: ''}
+          };
         },
-        fieldRenderer: '<div ng-show="editEnabled" oppiaineen-osiot="editableModel" fields="config.fields"></div>',
+        fieldRenderer: '<div ng-show="editEnabled" lukio-oppiaineen-osiot="editableModel" fields="config.fields"></div>',
         fields: [
           {
             path: 'tehtava',
@@ -866,6 +879,26 @@ angular.module('eperusteApp')
             collapsible: true,
             isolateEdit: true,
             order: 100
+          },
+          {
+            path: 'tavoitteet',
+            localeKey: 'oppiaine-osio-tavoitteet',
+            type: 'editor-area',
+            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
+            localized: true,
+            collapsible: true,
+            isolateEdit: true,
+            order: 200
+          },
+          {
+            path: 'arviointi',
+            localeKey: 'oppiaine-osio-lukio-arviointi',
+            type: 'editor-area',
+            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
+            localized: true,
+            collapsible: true,
+            isolateEdit: true,
+            order: 300
           }
         ],
         editingCallbacks: callbacks
@@ -919,6 +952,56 @@ angular.module('eperusteApp')
     $scope.getTitle = getTitle;
 
     $q.all([modelPromise]);
+  })
+
+  .controller('LukioOppiaineenOsiotController', function ($scope, MuokkausUtils, Varmistusdialogi, VlkUtils, $log) {
+    $scope.activeOsiot = [];
+
+    function verifyRemove(cb) {
+      Varmistusdialogi.dialogi({
+        otsikko: 'vahvista-poisto',
+        teksti: 'poistetaanko-oppiaineen-osio',
+        primaryBtn: 'poista',
+        successCb: cb
+      })();
+    }
+
+    $scope.removeOsio = function (osio) {
+      verifyRemove(function () {
+        osio.field.visible = false;
+        osio.field.$added = false;
+        MuokkausUtils.nestedSet($scope.model, osio.field.path, '.', null);
+      });
+    };
+
+    $scope.vlkOrderFn = VlkUtils.orderFn;
+
+    function getField(value) {
+      return _.find($scope.fields, function (field) {
+        return field.path === value;
+      });
+    }
+
+    function setOsio(key) {
+      if (MuokkausUtils.hasValue($scope.model, key)) {
+        var field = getField(key);
+        if (field) {
+          $scope.activeOsiot.push({model: $scope.model[key], field: field});
+          field.visible = true;
+        }
+      }
+    }
+
+    function mapModel() {
+      $scope.activeOsiot = [];
+      setOsio('tehtava');
+      setOsio('tavoitteet');
+      setOsio('arviointi');
+    }
+
+    $scope.$watch('model', function () {
+      mapModel();
+    }, true);
   })
 
 ;
