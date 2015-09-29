@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -42,6 +44,14 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Audited
 @Table(name = "yl_oppiaine")
 public class Oppiaine extends AbstractAuditedReferenceableEntity {
+
+    public static Predicate<Oppiaine> inLukioPeruste(long perusteId) {
+        return inLukioPerusteDirect(perusteId).or(oa -> oa.getOppiaine() != null
+                && inLukioPeruste(perusteId).test(oa.getOppiaine()));
+    }
+    private static Predicate<Oppiaine> inLukioPerusteDirect(long perusteId) {
+        return oa -> oa.getLukioSisallot().stream().anyMatch(s -> s.getPeruste().getId().equals(perusteId));
+    }
 
     @NotNull
     @Column(updatable = false)
@@ -120,6 +130,13 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @Getter
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<OppiaineLukiokurssi> lukiokurssit = new HashSet<>(0);
+
+    @Getter
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "yl_lukioopetuksen_perusteen_sisalto_yl_oppiaine",
+            inverseJoinColumns = @JoinColumn(name = "sisalto_id", nullable = false, updatable = false),
+            joinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
+    private Set<LukioOpetuksenPerusteenSisalto> lukioSisallot = new HashSet<>(0);
 
     /**
      * Palauttaa oppimäärät

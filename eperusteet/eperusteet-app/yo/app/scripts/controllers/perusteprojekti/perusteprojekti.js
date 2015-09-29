@@ -269,6 +269,14 @@ angular.module('eperusteApp')
         templateUrl: 'views/partials/perusteprojekti/tiedot.html',
         controller: 'ProjektinTiedotCtrl',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService'}
+      })
+      .state('root.perusteprojekti.suoritustapa.lisaaLukioKurssi', {
+        url: '/lukiokurssi/luo',
+        templateUrl: 'views/partials/lukio/lisaaKurssi.html',
+        controller: 'LisaaLukioKurssiController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
       });
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,

@@ -912,6 +912,13 @@
 
     "opetuksen-yleiset-tavoitteet": "Opetuksen yleiset tavoitteet",
     "aihekokonaisuudet": "Aihekokonaisuudet",
-    "oppiaineet-oppimaarat": "Oppiaineet ja oppimäärät"
+    "oppiaineet-oppimaarat": "Oppiaineet ja oppimäärät",
 
+    "lisaa-kurssi": "Lisää kurssi",
+    "lisaa-kurssi-title": "Luo lukiokurssi",
+    "lisaa-kurssi-nimi-header": "Nimi",
+    "lisaa-kurssi-tyyppi-header": "Tyyppi",
+    "lisaa-kurssi-koodi-header": "Koodi",
+    "lisaa-kurssi-action": "luo kurssi",
+    "lisaa-kurssi-peruuta": "Peruuta"
 }

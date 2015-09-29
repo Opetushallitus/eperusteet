@@ -37,8 +37,9 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT DISTINCT p.id FROM Peruste p " +
         "LEFT JOIN p.suoritustavat s " +
         "LEFT JOIN p.perusopetuksenPerusteenSisalto ps " +
+        "LEFT JOIN p.lukioOpetuksenPerusteenSisalto ls " +
         "LEFT JOIN p.esiopetuksenPerusteenSisalto eps " +
-        "WHERE p.tila = ?2 AND (s.sisalto.id IN ?1 OR ps.sisalto.id IN ?1 OR eps.sisalto.id IN ?1)")
+        "WHERE p.tila = ?2 AND (s.sisalto.id IN ?1 OR ps.sisalto.id IN ?1 OR eps.sisalto.id IN ?1 OR ls.id IN ?1)")
     Set<Long> findBySisaltoRoots(Iterable<? extends Number> rootIds, PerusteTila tila);
 
     @Query("SELECT DISTINCT p.id FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat to WHERE p.tila = ?2 AND to.tutkinnonOsa.id = ?1")

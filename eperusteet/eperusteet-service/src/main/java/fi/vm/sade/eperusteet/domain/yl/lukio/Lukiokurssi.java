@@ -27,6 +27,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * User: tommiratamaa
@@ -38,13 +39,21 @@ import java.util.Set;
 @PrimaryKeyJoinColumn(name = "id")
 @Table(name = "yl_lukiokurssi", schema = "public")
 public class Lukiokurssi extends Kurssi {
+    public static Predicate<Lukiokurssi> inPeruste(long perusteId) {
+        return kurssi -> kurssi.getPerusteenSisalto().getPeruste().getId().equals(perusteId);
+    }
 
     @Getter
     @Setter
-    @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private LukiokurssiTyyppi tyyppi;
+
+    @Getter
+    @Setter
+    @JoinColumn(name = "sisalto_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LukioOpetuksenPerusteenSisalto perusteenSisalto;
 
     @Getter
     @Setter

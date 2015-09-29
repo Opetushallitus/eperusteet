@@ -18,8 +18,12 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .service('LukiokoulutusService', function (LukionOppiaineet, $q, Notifikaatiot,
-      LukiokoulutuksenSisalto, LukiokoulutuksenYleisetTavoitteet, $log) {
+  .service('LukiokoulutusService', function (LukionOppiaineet,
+                                             $q,
+                                             Notifikaatiot,
+                                             LukiokoulutuksenSisalto,
+                                             LukiokoulutuksenYleisetTavoitteet,
+                                             $log) {
 
     this.OPETUKSEN_YLEISET_TAVOITTEET = 'opetuksen_yleiset_tavoitteet';
     this.AIHEKOKONAISUUDET = 'aihekokonaisuudet';
@@ -172,4 +176,8 @@ angular.module('eperusteApp')
               return {};
       }
     };
+  })
+
+  .service('LukioKurssiService', function(LukioKurssit) {
+
   });

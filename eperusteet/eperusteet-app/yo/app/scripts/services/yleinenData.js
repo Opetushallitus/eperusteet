@@ -18,7 +18,7 @@
 /*global _, moment*/
 
 angular.module('eperusteApp')
-  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna) {
+  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna, $q) {
     this.dateOptions = {
       'year-format': 'yy',
       //'month-format': 'M',
@@ -220,5 +220,36 @@ angular.module('eperusteApp')
     this.valitseKieli = function(teksti) {
       return Kaanna.kaannaSisalto(teksti);
     };
+
+    var kurssityypitDefer = $q.defer();
+    /**
+     * @returns Promise<LukiokurssityyppiSelectOption>
+     */
+    this.lukioKurssityypit = _.constant(kurssityypitDefer.promise);
+    // TODO: get form backend/koodisto?
+    kurssityypitDefer.resolve([
+      {
+        nimi: {
+          fi: 'Pakollinen'
+        },
+        koodi: 'kurssityyppi_FOO',
+        tyyppi: 'PAKOLLINEN'
+      },
+      {
+        nimi: {
+          fi: 'Valtakunnallinen syventävä'
+        },
+        koodi: 'kurssityyppi_BAR',
+        tyyppi: 'VALTAKUNNALLINEN_SYVENTAVA'
+      },
+      {
+        nimi: {
+          fi: 'Valtakunnallinen soveltava'
+        },
+        koodi: 'kurssityyppi_BAZ',
+        tyyppi: 'VALTAKUNNALLINEN_SOVELTAVA'
+      }
+    ]);
+
 
   });
