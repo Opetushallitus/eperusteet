@@ -88,7 +88,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @ResponseStatus(HttpStatus.CREATED)
     public RedirectView addKurssi(@PathVariable("perusteId") final Long perusteId,
             @RequestBody LukioKurssiLuontiDto kurssi) {
-        return new RedirectView("/"+kurssit.luoLukiokurssi(perusteId, kurssi), true);
+        return new RedirectView("kurssit/"+kurssit.luoLukiokurssi(perusteId, kurssi), true);
     }
 
     @RequestMapping(value = "/kurssit", method = GET)

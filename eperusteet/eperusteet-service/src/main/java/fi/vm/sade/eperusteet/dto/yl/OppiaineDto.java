@@ -17,6 +17,8 @@ package fi.vm.sade.eperusteet.dto.yl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Optional;
+
+import java.util.Date;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;

@@ -45,6 +45,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.impl.generator.JavassistCompilerStrategy;
@@ -136,7 +137,11 @@ public class DtoMapperConfig {
         //YL
         factory.classMap(OppiaineDto.class, Oppiaine.class)
             .mapNulls(false)
-            .fieldBToA(Oppiaine_.vuosiluokkakokonaisuudet.getName(), Oppiaine_.vuosiluokkakokonaisuudet.getName())
+                .fieldBToA(Oppiaine_.vuosiluokkakokonaisuudet.getName(), Oppiaine_.vuosiluokkakokonaisuudet.getName())
+            .byDefault()
+            .register();
+        factory.classMap(OppiaineSuppeaDto.class, Oppiaine.class)
+                .fieldBToA(Oppiaine_.muokattu.getName(), Oppiaine_.muokattu.getName())
             .byDefault()
             .register();
 

@@ -112,6 +112,10 @@ angular.module('eperusteApp')
       oppimaarat: {method: 'GET', isArray: true, url: baseUrl + '/oppimaarat'}
     });
   })
+  .factory('LukioKurssit', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit';
+    return $resource(baseUrl);
+  })
   .factory('OppiaineenVuosiluokkakokonaisuudet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:osanId', {
       osanId: '@id'

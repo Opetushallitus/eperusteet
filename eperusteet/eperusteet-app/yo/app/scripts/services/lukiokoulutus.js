@@ -166,18 +166,79 @@ angular.module('eperusteApp')
         return promisify(cached[tyyppi]);
       }
       switch(tyyppi) {
-        case this.OPETUKSEN_YLEISET_TAVOITTEET:
-        case this.AIHEKOKONAISUUDET:
         case this.OPPIAINEET_OPPIMAARAT:
           return LukionOppiaineet.query(commonParams(), function (data) {
             cached[tyyppi] = data;
           }).$promise;
+        case this.OPETUKSEN_YLEISET_TAVOITTEET:
+            // TODO:
+        case this.AIHEKOKONAISUUDET:
+             // TODO:
         default:
-              return {};
+          var d = $q.defer();
+          d.resolve([]);
+          return d.promise;
       }
     };
   })
 
-  .service('LukioKurssiService', function(LukioKurssit) {
+  .service('LukioKurssiService', function(LukioKurssit, Lukitus, Notifikaatiot, LukiokoulutusService, $translate,
+                                          $q, $log) {
 
+    /**
+     * Lists kurssit and related oppiaineet with jarjestys for given peruste.
+     *
+     * @param perusteId <number> id of Peruste
+     * @return Promise<LukioKurssiListausDto[]>
+     */
+    var listByPeruste = function(perusteId, cb) {
+      return LukioKurssit.query({
+          perusteId: perusteId,
+          kieli: $translate.use().toUpperCase()
+      }, cb).$promise;
+    };
+
+    /**
+     * Saves a new Lukiokurssi and related oppiaineet
+     *
+     * @param kurssi <LukioKurssiLuontiDto>
+     * @return Promise<LukiokurssiMuokkausDto>
+     */
+    var save = function(kurssi) {
+      var d = $q.defer();
+      LukioKurssit.save({
+        perusteId: LukiokoulutusService.getPerusteId()
+      }, kurssi, function(kurssinTiedot) {
+        Notifikaatiot.onnistui('tallennus-onnistui');
+        d.resolve(kurssinTiedot);
+      }, Notifikaatiot.serverCb);
+      return d.promise;
+    };
+
+    /**
+     * Locks and updates Lukiokurssi and related oppiaineet
+     *
+     * @param kurssi <LukiokurssiMuokkausDto>
+     * @return Promise<LukiokurssiMuokkausDto>
+     */
+    var update = function(kurssi) {
+      var d = $q.defer();
+      Lukitus.lukitse(function () {
+        LukioKurssit.update({
+          perusteId: LukiokoulutusService.getPerusteId()
+        }, kurssi, function(kurssinTiedot) {
+          Lukitus.vapauta(function() {
+            Notifikaatiot.onnistui('tallennus-onnistui');
+            d.resolve(kurssinTiedot);
+          });
+        }, Notifikaatiot.serverCb);
+      });
+      return d.promise;
+    };
+
+    return {
+      listByPeruste: listByPeruste,
+      save: save,
+      update: update
+    };
   });

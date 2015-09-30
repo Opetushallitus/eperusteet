@@ -38,8 +38,6 @@ import java.util.List;
 @Builder
 public class LukioKurssiLuontiDto implements Serializable {
     @NotNull
-    private Long perusteId;
-    @NotNull
     private LukiokurssiTyyppi tyyppi;
     private List<JarjestettyOppiaineDto> oppiaineet = new ArrayList<>();
     @NotNull
@@ -50,4 +48,25 @@ public class LukioKurssiLuontiDto implements Serializable {
     private Optional<LokalisoituTekstiDto> kuvaus;
     private Optional<LokalisoituTekstiDto> tavoitteet;
     private Optional<LokalisoituTekstiDto> sisallot;
+
+    public LukioKurssiLuontiDto() {
+    }
+
+    public LukioKurssiLuontiDto(LukiokurssiTyyppi tyyppi,
+                                List<JarjestettyOppiaineDto> oppiaineet,
+                                LokalisoituTekstiDto nimi,
+                                String koodiArvo, String koodiUri,
+                                Optional<LokalisoituTekstiDto> kurssityypinKvaus,
+                                Optional<LokalisoituTekstiDto> kuvaus,
+                                Optional<LokalisoituTekstiDto> tavoitteet,
+                                Optional<LokalisoituTekstiDto> sisallot) {
+        this.tyyppi = tyyppi;
+        this.nimi = nimi;
+        this.koodiArvo = koodiArvo;
+        this.koodiUri = koodiUri;
+        this.kurssityypinKvaus = kurssityypinKvaus;
+        this.kuvaus = kuvaus;
+        this.tavoitteet = tavoitteet;
+        this.sisallot = sisallot;
+    }
 }

@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('LukiokoulutussisaltoController',
-  function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
+  function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto, LukioKurssiService,
       LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, $log) {
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
@@ -135,7 +135,7 @@ angular.module('eperusteApp')
   }
 )
 .controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService,
-                                                virheService) {
+                                                virheService, LukioKurssiService, $log) {
     $scope.sisaltoState = _.find(
       LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
@@ -143,10 +143,19 @@ angular.module('eperusteApp')
       virheService.virhe('virhe-sivua-ei-löytynyt');
       return;
     }
+    $scope.kurssit = [];
     $scope.osaAlueet = [];
     LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function (res) {
       $scope.osaAlueet = res;
+      if ($scope.isOppiaineet()) {
+        LukioKurssiService.listByPeruste($scope.peruste.id).then(function(kurssit) {
+          $scope.kurssit = kurssit;
+        });
+      }
     });
+    $scope.isOppiaineet = function() {
+      return $stateParams.osanTyyppi == LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
+    };
 
     $scope.options = {};
 
@@ -197,6 +206,7 @@ angular.module('eperusteApp')
                                                      $q,
                                                      $stateParams,
                                                      LukiokoulutusService,
+                                                     LukioKurssiService,
                                                      YleinenData,
                                                      MuokkausUtils,
                                                      Koodisto) {
@@ -224,7 +234,12 @@ angular.module('eperusteApp')
     });
 
     $scope.save = function() {
-
+      LukioKurssiService.save($scope.kurssi).then(function(kurssiId) {
+        $scope.back();
+      });
     };
 
+    $scope.back = function() {
+      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT});
+    }
   });

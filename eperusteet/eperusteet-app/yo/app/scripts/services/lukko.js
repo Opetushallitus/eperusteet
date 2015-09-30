@@ -44,6 +44,12 @@ angular.module('eperusteApp')
       perusteId: '@perusteId'
     });
   })
+  .factory('LukkoLukiokurssi', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssi/:kurssiId/lukko', {
+      kurssiId: '@kurssiId',
+      perusteId: '@perusteId'
+    });
+  })
   .factory('LukkoLaajaalainenOsaaminen', function (SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/laajaalaisetosaamiset/:osanId/lukko', {
       osanId: '@osanId',
@@ -75,7 +81,7 @@ angular.module('eperusteApp')
   })
   .service('Lukitus', function($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout,
       Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-      LukkoOppiaine, LukkoLukioOppiaine, PerusopetusService, LukiokoulutusService,
+      LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, PerusopetusService, LukiokoulutusService,
       LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
 
     var lukitsin = null;
@@ -296,6 +302,14 @@ angular.module('eperusteApp')
       vapauta(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, cb);
     }
 
+    function lukitseLukioKurssi(id, ch) {
+      lukitse(LukkoLukiokurssi, {perusteId: LukiokoulutusService.getPerusteId(), kurssiId: id}, ch);
+    }
+
+    function vapautaLukioKurssi(id, ch) {
+      vapauta(LukkoLukiokurssi, {perusteId: LukiokoulutusService.getPerusteId(), kurssiId: id}, ch);
+    }
+
     function lukitseOppiaineenVuosiluokkakokonaisuus(oppiaineId, vuosiluokkaId, cb) {
       lukitse(LukkoOppiaineenVuosiluokkakokonaisuus, {
         perusteId: PerusopetusService.getPerusteId(),
@@ -326,6 +340,8 @@ angular.module('eperusteApp')
       lukitseOppiaine: lukitseOppiaine,
       lukitseLukioOppiaine: lukitseLukioOppiaine,
       vapautaOppiaine: vapautaOppiaine,
+      lukitseLukioKurssi: lukitseLukioKurssi,
+      vapautaLukioKurssi: vapautaLukioKurssi,
       vapautaLukioOppiaine: vapautaLukioOppiaine,
       lukitseOppiaineenVuosiluokkakokonaisuus: lukitseOppiaineenVuosiluokkakokonaisuus,
       vapautaOppiaineenVuosiluokkakokonaisuus: vapautaOppiaineenVuosiluokkakokonaisuus,
