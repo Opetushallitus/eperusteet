@@ -61,6 +61,7 @@ public class LukioKurssiLuontiDto implements Serializable {
                                 Optional<LokalisoituTekstiDto> tavoitteet,
                                 Optional<LokalisoituTekstiDto> sisallot) {
         this.tyyppi = tyyppi;
+        this.oppiaineet = oppiaineet;
         this.nimi = nimi;
         this.koodiArvo = koodiArvo;
         this.koodiUri = koodiUri;
