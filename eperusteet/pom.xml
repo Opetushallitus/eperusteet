@@ -6,6 +6,7 @@
     <artifactId>build-parent</artifactId>
     <version>13.0-SNAPSHOT</version>
   </parent>
+
   <groupId>fi.vm.sade.eperusteet</groupId>
   <artifactId>eperusteet</artifactId>
   <packaging>pom</packaging>
@@ -23,16 +24,18 @@
     </license>
   </licenses>
   <url>http://www.oph.fi/oppijanpalvelut</url>
+
   <modules>
     <module>eperusteet-service</module>
     <module>eperusteet-app</module>
   </modules>
+
   <properties>
     <tomcat.version>7.0.47</tomcat.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.fileEncoding>UTF-8</project.build.fileEncoding>
-    <checkstyle.plugin.version>2.16</checkstyle.plugin.version>
   </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -205,4 +208,61 @@
       </plugins>
     </pluginManagement>
   </build>
+
+
+  <profiles>
+
+    <profile>
+      <id>checkstyle</id>
+      <properties>
+        <checkstyle.plugin.version>2.16</checkstyle.plugin.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <configuration>
+              <excludes>${checkstyle.excludes}</excludes>
+              <configLocation>${checkstyle.configLocation}</configLocation>
+              <failsOnError>${checkstyle.failsOnError}</failsOnError>
+              <consoleOutput>${checkstyle.consoleOutput}</consoleOutput>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>5.9</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>${checkstyle.plugin.version}</version>
+            <configuration>
+              <excludes>${checkstyle.excludes}</excludes>
+              <configLocation>${checkstyle.configLocation}</configLocation>
+              <failsOnError>${checkstyle.failsOnError}</failsOnError>
+              <consoleOutput>${checkstyle.consoleOutput}</consoleOutput>
+            </configuration>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+  </profiles>
+
 </project>
