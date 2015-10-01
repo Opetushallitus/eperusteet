@@ -113,8 +113,8 @@ angular.module('eperusteApp')
     });
   })
   .factory('LukioKurssit', function($resource, SERVICE_LOC) {
-    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit';
-    return $resource(baseUrl);
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit/:osanId';
+    return $resource(baseUrl, {osanId: '@id'});
   })
   .factory('OppiaineenVuosiluokkakokonaisuudet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:osanId', {

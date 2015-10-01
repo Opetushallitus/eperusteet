@@ -169,19 +169,15 @@ angular.module('eperusteApp')
     };
 
     $scope.add = function () {
+      if ($stateParams.osanTyyppi == LukiokoulutusService.KURSSIT) {
+        $state.go('root.perusteprojekti.suoritustapa.lisaaLukioKurssi');
+        return;
+      }
       $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
         osanTyyppi: $stateParams.osanTyyppi,
         osanId: 'uusi',
         tabId: 0
       });
-    };
-
-    $scope.addKurssi = function() {
-      $state.go('root.perusteprojekti.suoritustapa.lisaaLukioKurssi');
-    };
-
-    $scope.isNaytaLisaaKurssi = function () {
-      return $stateParams.osanTyyppi == LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
     };
   })
   .controller('LukioOsaAlueController', function ($scope, $q, $stateParams, LukiokoulutusService,
@@ -241,6 +237,6 @@ angular.module('eperusteApp')
     };
 
     $scope.back = function() {
-      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT});
+      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.KURSSIT});
     }
   });

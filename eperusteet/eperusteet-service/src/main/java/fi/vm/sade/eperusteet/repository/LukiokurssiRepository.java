@@ -36,7 +36,8 @@ public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukio
             "   kurssi.id," +
             "   kurssi.koodiArvo," +
             "   nimiTeksti.teksti," +
-            "   kuvausTeksti.teksti" +
+            "   kuvausTeksti.teksti, " +
+            "   kurssi.muokattu " +
             ") FROM Lukiokurssi kurssi" +
             "   INNER JOIN kurssi.nimi nimi " +
             "   LEFT JOIN nimi.teksti nimiTeksti ON nimiTeksti.kieli = ?2 " +

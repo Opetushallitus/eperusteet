@@ -22,18 +22,21 @@ angular.module('eperusteApp')
                                              $q,
                                              Notifikaatiot,
                                              LukiokoulutuksenSisalto,
+                                             LukioKurssit,
                                              LukiokoulutuksenYleisetTavoitteet,
                                              LukiokoulutuksenAihekokonaisuudet,
-                                             $log) {
+                                             $log, $translate) {
 
     this.OPETUKSEN_YLEISET_TAVOITTEET = 'opetuksen_yleiset_tavoitteet';
     this.AIHEKOKONAISUUDET = 'aihekokonaisuudet';
     this.OPPIAINEET_OPPIMAARAT = 'oppiaineet_oppimaarat';
+    this.KURSSIT = "kurssit";
 
     this.LABELS = {
       'opetuksen-yleiset-tavoitteet': this.OPETUKSEN_YLEISET_TAVOITTEET,
       'aihekokonaisuudet': this.AIHEKOKONAISUUDET,
-      'oppiaineet-oppimaarat': this.OPPIAINEET_OPPIMAARAT
+      'oppiaineet-oppimaarat': this.OPPIAINEET_OPPIMAARAT,
+      'lukiokurssit': this.KURSSIT
     };
 
     var tiedot = null;
@@ -64,6 +67,12 @@ angular.module('eperusteApp')
         label: 'oppiaineet-oppimaarat',
         emptyPlaceholder: 'tyhja-placeholder-oppiaineet-oppimaarat',
         addLabel: 'lisaa-oppiaine'
+      },
+      {
+        tyyppi: this.KURSSIT,
+        label: 'lukiokurssit',
+        emptyPlaceholder: 'tyhja-placeholder-kurssit',
+        addLabel: 'lisaa-kurssi'
       }
     ];
 
@@ -104,6 +113,8 @@ angular.module('eperusteApp')
           return getOsaGeneric(LukiokoulutuksenAihekokonaisuudet, params);
         case this.OPPIAINEET_OPPIMAARAT:
           return getOsaGeneric(LukionOppiaineet, params);
+        case this.KURSSIT:
+          return getOsaGeneric(LukioKurssit, params);
         case 'tekstikappale':
           return getOsaGeneric(LukiokoulutuksenSisalto, params);
         default:
@@ -171,10 +182,14 @@ angular.module('eperusteApp')
           return LukionOppiaineet.query(commonParams(), function (data) {
             cached[tyyppi] = data;
           }).$promise;
+        case this.KURSSIT:
+          return LukioKurssit.query(commonParams({kieli: $translate.use().toUpperCase()}), function(data) {
+            cached[tyyppi] = data;
+          }).$promise;
         case this.OPETUKSEN_YLEISET_TAVOITTEET:
-            // TODO:
+          // TODO:
         case this.AIHEKOKONAISUUDET:
-             // TODO:
+          // TODO:
         default:
           var d = $q.defer();
           d.resolve([]);

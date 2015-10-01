@@ -21,6 +21,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,14 +37,16 @@ public class LukiokurssiListausDto implements Serializable  {
     private String koodiArvo;
     private String nimi;
     private String kuvaus;
+    private Date muokattu;
 
     public LukiokurssiListausDto() {
     }
 
-    public LukiokurssiListausDto(Long id, String koodiArvo, String nimi, String kuvaus) {
+    public LukiokurssiListausDto(Long id, String koodiArvo, String nimi, String kuvaus, Date muokattu) {
         this.id = id;
         this.koodiArvo = koodiArvo;
         this.nimi = nimi;
         this.kuvaus = kuvaus;
+        this.muokattu = muokattu;
     }
 }

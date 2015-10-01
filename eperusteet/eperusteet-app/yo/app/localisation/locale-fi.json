@@ -919,6 +919,8 @@
     "lisaa-aihekokonaisuus": "Lisää aihekokonaisuus",
     "tyhja-placeholder-oppiaineet-oppimaarat": "Oppimääriä ei ole lisätty.",
 
+    "lukiokurssit": "Kurssit",
+    "tyhja-placeholder-kurssit": "Kursseja ei ole lisätty",
     "lisaa-kurssi": "Lisää kurssi",
     "lisaa-kurssi-title": "Luo lukiokurssi",
     "lisaa-kurssi-nimi-header": "Nimi",
