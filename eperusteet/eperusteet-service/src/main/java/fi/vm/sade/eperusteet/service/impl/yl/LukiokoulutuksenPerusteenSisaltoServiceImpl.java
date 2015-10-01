@@ -16,16 +16,13 @@
 
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetDto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
-import fi.vm.sade.eperusteet.repository.LukioOpetuksenPerusteenSisaltoRepository;
-import fi.vm.sade.eperusteet.service.yl.LukioOpetuksenPerusteenSisaltoService;
+import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
+import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * User: tommiratamaa
@@ -33,23 +30,23 @@ import java.util.List;
  * Time: 15.33
  */
 @Service
-public class LukioOpetuksenPerusteenSisaltoServiceImpl
-        extends AbstractOppiaineOpetuksenSisaltoService<LukioOpetuksenPerusteenSisalto>
-        implements LukioOpetuksenPerusteenSisaltoService {
+public class LukiokoulutuksenPerusteenSisaltoServiceImpl
+        extends AbstractOppiaineOpetuksenSisaltoService<LukiokoulutuksenPerusteenSisalto>
+        implements LukiokoulutuksenPerusteenSisaltoService {
 
     @Autowired
-    private LukioOpetuksenPerusteenSisaltoRepository sisaltoRepository;
+    private LukiokoulutuksenPerusteenSisaltoRepository sisaltoRepository;
 
     @Override
-    protected LukioOpetuksenPerusteenSisalto getByPerusteId(Long perusteId) {
-        LukioOpetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+    protected LukiokoulutuksenPerusteenSisalto getByPerusteId(Long perusteId) {
+        LukiokoulutuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Sisaltoä annetulle perusteelle ei ole olemassa");
         return sisalto;
     }
 
     @Override
     public AihekokonaisuudetDto getAihekokonaisuudet(Long perusteId) {
-        LukioOpetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        LukiokoulutuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Sisaltoä annetulle perusteelle ei ole olemassa");
         return mapper.map(sisalto.getAihekokonaisuudet(), AihekokonaisuudetDto.class);
     }

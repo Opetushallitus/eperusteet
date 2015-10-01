@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import lombok.Getter;
 import lombok.Setter;
@@ -133,10 +133,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "yl_lukioopetuksen_perusteen_sisalto_yl_oppiaine",
+    @JoinTable(name = "yl_lukiokoulutuksen_perusteen_sisalto_yl_oppiaine",
             inverseJoinColumns = @JoinColumn(name = "sisalto_id", nullable = false, updatable = false),
             joinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
-    private Set<LukioOpetuksenPerusteenSisalto> lukioSisallot = new HashSet<>(0);
+    private Set<LukiokoulutuksenPerusteenSisalto> lukioSisallot = new HashSet<>(0);
 
     /**
      * Palauttaa oppimäärät

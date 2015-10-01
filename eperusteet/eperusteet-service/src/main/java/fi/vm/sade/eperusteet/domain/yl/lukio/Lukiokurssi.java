@@ -53,7 +53,7 @@ public class Lukiokurssi extends Kurssi {
     @Setter
     @JoinColumn(name = "sisalto_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private LukioOpetuksenPerusteenSisalto perusteenSisalto;
+    private LukiokoulutuksenPerusteenSisalto perusteenSisalto;
 
     @Getter
     @Setter

@@ -35,8 +35,8 @@ import java.util.Set;
  */
 @Entity
 @Audited
-@Table(name = "yl_lukioopetuksen_perusteen_sisalto", schema = "public")
-public class LukioOpetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto {
+@Table(name = "yl_lukiokoulutuksen_perusteen_sisalto", schema = "public")
+public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
@@ -54,7 +54,7 @@ public class LukioOpetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     @Getter
     @Audited
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "yl_lukioopetuksen_perusteen_sisalto_yl_oppiaine", joinColumns = @JoinColumn(name = "sisalto_id", nullable = false, updatable = false),
+    @JoinTable(name = "yl_lukiokoulutuksen_perusteen_sisalto_yl_oppiaine", joinColumns = @JoinColumn(name = "sisalto_id", nullable = false, updatable = false),
         inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
     private Set<Oppiaine> oppiaineet = new HashSet<>(0);
 
@@ -68,8 +68,8 @@ public class LukioOpetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     @JoinColumn(name="aihekokonaisuudet_id")
     private Aihekokonaisuudet aihekokonaisuudet;
 
-    public LukioOpetuksenPerusteenSisalto kloonaa(Peruste peruste) {
-        LukioOpetuksenPerusteenSisalto kopio = new LukioOpetuksenPerusteenSisalto();
+    public LukiokoulutuksenPerusteenSisalto kloonaa(Peruste peruste) {
+        LukiokoulutuksenPerusteenSisalto kopio = new LukiokoulutuksenPerusteenSisalto();
         kopio.peruste = peruste;
         kopio.sisalto = this.sisalto.kloonaa();
         kopio.aihekokonaisuudet =  this.aihekokonaisuudet.kloonaa();

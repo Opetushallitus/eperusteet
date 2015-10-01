@@ -20,8 +20,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.Date;
@@ -164,7 +163,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @Getter
     @OneToOne(mappedBy = "peruste", optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private LukioOpetuksenPerusteenSisalto lukioOpetuksenPerusteenSisalto;
+    private LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto;
 
     @Getter
     @Enumerated(EnumType.STRING)
@@ -239,7 +238,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         } else if (suoritustapakoodi.equals(Suoritustapakoodi.PERUSOPETUS)) {
             viite = this.getPerusopetuksenPerusteenSisalto().getSisalto();
         } else if(suoritustapakoodi.equals(Suoritustapakoodi.LUKIOKOULUTUS)) {
-            viite = this.getLukioOpetuksenPerusteenSisalto().getSisalto();
+            viite = this.getLukiokoulutuksenPerusteenSisalto().getSisalto();
         }
         return viite;
     }
@@ -254,10 +253,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         this.esiopetuksenPerusteenSisalto.setPeruste(this);
     }
 
-    public void setLukioOpetuksenPerusteenSisalto(LukioOpetuksenPerusteenSisalto lukioOpetuksenPerusteenSisalto) {
-        this.lukioOpetuksenPerusteenSisalto = lukioOpetuksenPerusteenSisalto;
-        if (lukioOpetuksenPerusteenSisalto != null) {
-            lukioOpetuksenPerusteenSisalto.setPeruste(this);
+    public void setLukiokoulutuksenPerusteenSisalto(LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto) {
+        this.lukiokoulutuksenPerusteenSisalto = lukiokoulutuksenPerusteenSisalto;
+        if (lukiokoulutuksenPerusteenSisalto != null) {
+            lukiokoulutuksenPerusteenSisalto.setPeruste(this);
         }
     }
 
@@ -278,8 +277,8 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             return esiopetuksenPerusteenSisalto.containsViite(viite);
         }
 
-        return lukioOpetuksenPerusteenSisalto != null
-                && lukioOpetuksenPerusteenSisalto.containsViite(viite);
+        return lukiokoulutuksenPerusteenSisalto != null
+                && lukiokoulutuksenPerusteenSisalto.containsViite(viite);
 
     }
 

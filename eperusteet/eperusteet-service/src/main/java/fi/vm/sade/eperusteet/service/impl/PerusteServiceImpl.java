@@ -22,7 +22,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.*;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -834,7 +834,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
         } else if (ekoulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS ) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS, LaajuusYksikko.KURSSI);
-            peruste.setLukioOpetuksenPerusteenSisalto(new LukioOpetuksenPerusteenSisalto());
+            peruste.setLukiokoulutuksenPerusteenSisalto(new LukiokoulutuksenPerusteenSisalto());
         }
 
         if (st != null) {

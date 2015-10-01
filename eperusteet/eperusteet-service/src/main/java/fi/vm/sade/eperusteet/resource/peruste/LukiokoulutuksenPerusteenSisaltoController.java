@@ -24,7 +24,6 @@ import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
-import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.yl.*;
@@ -50,7 +49,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class LukiokoulutuksenPerusteenSisaltoController {
 
     @Autowired
-    private LukioOpetuksenPerusteenSisaltoService sisallot;
+    private LukiokoulutuksenPerusteenSisaltoService sisallot;
 
     @Autowired
     private OppiaineService oppiaineet;

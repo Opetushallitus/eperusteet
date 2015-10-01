@@ -16,17 +16,12 @@
 
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
-import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
-import org.springframework.data.repository.NoRepositoryBean;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 
 /**
  * User: tommiratamaa
  * Date: 21.9.15
- * Time: 13.41
+ * Time: 11.33
  */
-@NoRepositoryBean
-public interface OppiaineOpetuksenSisaltoRepository<Type extends AbstractOppiaineOpetuksenSisalto>
-        extends JpaWithVersioningRepository<Type, Long> {
-    Type findByPerusteId(Long perusteId);
+public interface LukiokoulutuksenPerusteenSisaltoRepository extends OppiaineSisaltoRepository<LukiokoulutuksenPerusteenSisalto> {
 }

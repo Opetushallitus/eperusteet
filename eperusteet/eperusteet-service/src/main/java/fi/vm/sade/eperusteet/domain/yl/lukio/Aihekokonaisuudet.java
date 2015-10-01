@@ -60,7 +60,7 @@ public class Aihekokonaisuudet extends AbstractAuditedReferenceableEntity {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinColumn(name = "sisalto_id", nullable = false)
-    private LukioOpetuksenPerusteenSisalto sisalto;
+    private LukiokoulutuksenPerusteenSisalto sisalto;
 
     @Getter
     @OneToMany(mappedBy = "aihekokonaisuudet", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

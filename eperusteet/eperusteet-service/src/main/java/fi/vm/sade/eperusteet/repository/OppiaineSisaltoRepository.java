@@ -16,12 +16,17 @@
 
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
+import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
 /**
  * User: tommiratamaa
  * Date: 21.9.15
- * Time: 11.33
+ * Time: 13.41
  */
-public interface LukioOpetuksenPerusteenSisaltoRepository extends OppiaineOpetuksenSisaltoRepository<LukioOpetuksenPerusteenSisalto>  {
+@NoRepositoryBean
+public interface OppiaineSisaltoRepository<Type extends AbstractOppiaineOpetuksenSisalto>
+        extends JpaWithVersioningRepository<Type, Long> {
+    Type findByPerusteId(Long perusteId);
 }

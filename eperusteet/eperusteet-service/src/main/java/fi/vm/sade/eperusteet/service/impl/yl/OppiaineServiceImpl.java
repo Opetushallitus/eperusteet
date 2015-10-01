@@ -233,7 +233,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         //TODO. ei toimi jos palautettava versio viittaa poistettuihin entiteetteihin
         //(keskeinensisältöalue, vuosiluokkakokonaisuus, laaja-alainen osaaminen)
         //sama ongelma on toki updatessakin (ei voi luoda uusia sisältöalueta ja viitata niihin tavoitteista)
-        OppiaineOpetuksenSisaltoRepository<?> repository = tyyppi.getRepository(applicationContext);
+        OppiaineSisaltoRepository<?> repository = tyyppi.getRepository(applicationContext);
         AbstractOppiaineOpetuksenSisalto sisalto = repository.findByPerusteId(perusteId);
         sisalto = repository.findRevision(sisalto.getId(), revisio);
         Oppiaine aine = oppiaineRepository.findRevision(oppiaineId, revisio);

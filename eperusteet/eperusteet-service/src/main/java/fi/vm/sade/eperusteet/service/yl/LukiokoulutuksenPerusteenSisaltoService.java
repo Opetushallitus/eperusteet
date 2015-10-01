@@ -28,7 +28,7 @@ import java.util.List;
  * Date: 21.9.15
  * Time: 15.33
  */
-public interface LukioOpetuksenPerusteenSisaltoService extends OppiainePerusteenSisaltoService {
+public interface LukiokoulutuksenPerusteenSisaltoService extends OppiainePerusteenSisaltoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     AihekokonaisuudetDto getAihekokonaisuudet(Long perusteId);

@@ -17,11 +17,11 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import fi.vm.sade.eperusteet.dto.yl.*;
-import fi.vm.sade.eperusteet.repository.LukioOpetuksenPerusteenSisaltoRepository;
+import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +60,7 @@ public class KurssiServiceImpl implements KurssiService {
     private OppiaineRepository oppiaineRepository;
 
     @Autowired
-    private LukioOpetuksenPerusteenSisaltoRepository lukioSisaltoRepository;
+    private LukiokoulutuksenPerusteenSisaltoRepository lukioSisaltoRepository;
 
     @Autowired
     private LukiokurssiRepository lukiokurssiRepository;
@@ -92,7 +91,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Override
     @Transactional
     public long luoLukiokurssi(long perusteId, LukioKurssiLuontiDto kurssiDto) throws BusinessRuleViolationException {
-        LukioOpetuksenPerusteenSisalto sisalto = found(lukioSisaltoRepository.findByPerusteId(perusteId),
+        LukiokoulutuksenPerusteenSisalto sisalto = found(lukioSisaltoRepository.findByPerusteId(perusteId),
                 () -> new BusinessRuleViolationException("Perustetta ei ole."));
         lukioSisaltoRepository.lock(sisalto, false);
 
