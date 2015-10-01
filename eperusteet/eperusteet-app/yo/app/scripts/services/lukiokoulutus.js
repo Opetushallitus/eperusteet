@@ -23,6 +23,7 @@ angular.module('eperusteApp')
                                              Notifikaatiot,
                                              LukiokoulutuksenSisalto,
                                              LukiokoulutuksenYleisetTavoitteet,
+                                             LukiokoulutuksenAihekokonaisuudet,
                                              $log) {
 
     this.OPETUKSEN_YLEISET_TAVOITTEET = 'opetuksen_yleiset_tavoitteet';
@@ -100,7 +101,7 @@ angular.module('eperusteApp')
         case this.OPETUKSEN_YLEISET_TAVOITTEET:
           return getOsaGeneric(LukiokoulutuksenYleisetTavoitteet, params);
         case this.AIHEKOKONAISUUDET:
-          return getOsaGeneric(LukionOppiaineet, params);
+          return getOsaGeneric(LukiokoulutuksenAihekokonaisuudet, params);
         case this.OPPIAINEET_OPPIMAARAT:
           return getOsaGeneric(LukionOppiaineet, params);
         case 'tekstikappale':

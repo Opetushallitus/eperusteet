@@ -913,6 +913,11 @@
     "opetuksen-yleiset-tavoitteet": "Opetuksen yleiset tavoitteet",
     "aihekokonaisuudet": "Aihekokonaisuudet",
     "oppiaineet-oppimaarat": "Oppiaineet ja oppimäärät",
+    "tyhja-placeholder-opetuksen-yleiset-tavoitteet": "Opetuksen yleisiä tavoitteita ei ole lisätty.",
+    "lisaa-opetuksen-yleinen-tavoite": "Lisää opetuksen yleinen tavoite",
+    "tyhja-placeholder-aihekokonaisuudet": "Aihekokonaisuuksia ei ole lisätty.",
+    "lisaa-aihekokonaisuus": "Lisää aihekokonaisuus",
+    "tyhja-placeholder-oppiaineet-oppimaarat": "Oppimääriä ei ole lisätty.",
 
     "lisaa-kurssi": "Lisää kurssi",
     "lisaa-kurssi-title": "Luo lukiokurssi",

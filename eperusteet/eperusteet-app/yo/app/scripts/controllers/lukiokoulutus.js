@@ -144,6 +144,7 @@ angular.module('eperusteApp')
       return;
     }
     $scope.kurssit = [];
+    $scope.aihekokonaisuudet = [];
     $scope.osaAlueet = [];
     LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function (res) {
       $scope.osaAlueet = res;
