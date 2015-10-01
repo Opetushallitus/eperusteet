@@ -34,13 +34,17 @@ angular.module('eperusteApp')
       lukitse: function (and) {
         Lukitus.lukitseOppiaine(oppiaine.id, function() {
           isLocked = true;
-          if (and) and();
+          if (and) {
+            and();
+          }
         });
       },
       vapauta: function (and) {
         Lukitus.vapautaOppiaine(oppiaine.id, function () {
           isLocked = false;
-          if (and) and();
+          if (and) {
+            and();
+          }
         });
       }
     };
@@ -59,8 +63,8 @@ angular.module('eperusteApp')
 
     function setup(uusiModel, uusiPath, uusiOppiaine, cb) {
       cb = cb || angular.noop;
-      oppiaine = ($stateParams.osanTyyppi === PerusopetusService.OPPIAINEET
-            || $stateParams.osanTyyppi == LukiokoulutusService.OPPIAINEET_OPPIMAARAT) ? uusiModel : null;
+      oppiaine = ($stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ||
+                $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT) ? uusiModel : null;
       if (uusiOppiaine) {
         oppiaine = uusiOppiaine;
       }
@@ -72,7 +76,7 @@ angular.module('eperusteApp')
       var promises = [];
       var usesVuosiluokkas = false,
           usesOsaamiset = false;
-      if ($stateParams.suoritustapa == 'lukiokoulutus') {
+      if ($stateParams.suoritustapa === 'lukiokoulutus') {
         oppiaineLukitus = {
           lukitse: function (and) {
             Lukitus.lukitseLukioOppiaine(oppiaine.id, function() {

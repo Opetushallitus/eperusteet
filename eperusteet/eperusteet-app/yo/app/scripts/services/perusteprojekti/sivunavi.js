@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-    $state, $location, YleinenData, PerusopetusService, LukiokoulutusService, Kaanna, $timeout, Utils, $log) {
+        $state, $location, YleinenData, PerusopetusService, LukiokoulutusService, Kaanna, $timeout, Utils) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
@@ -137,24 +137,24 @@ angular.module('eperusteApp')
     items = [];
     switch (perusteenTyyppi) {
       case 'YL': {
-        var tiedot = service.getYlTiedot();
+        var tiedot1 = service.getYlTiedot();
         _.each(PerusopetusService.LABELS, function (key, label) {
           items.push({
             label: label,
             link: [STATE_OSALISTAUS, {suoritustapa: 'perusopetus', osanTyyppi: key}]
           });
-          mapYL(tiedot[key], key);
+          mapYL(tiedot1[key], key);
         });
         break;
       }
       case 'LU': {
-        var tiedot = service.getYlTiedot();
+        var tiedot2 = service.getYlTiedot();
         _.each(LukiokoulutusService.LABELS, function (key, label) {
           items.push({
             label: label,
             link: [STATE_LUKIOOSALISTAUS, {suoritustapa: 'lukiokoulutus', osanTyyppi: key}]
           });
-          mapYL(tiedot[key], key);
+          mapYL(tiedot2[key], key);
         });
         break;
       }

@@ -291,7 +291,7 @@ angular.module('eperusteApp')
     }
 
     function lukitseLukioOppiaine(id, ch) {
-      lukitse(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, ch)
+      lukitse(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, ch);
     }
 
     function vapautaOppiaine(id, cb) {

@@ -27,7 +27,7 @@ angular.module('eperusteApp')
           'koulutusalaService': 'Koulutusalat',
           'opintoalaService': 'Opintoalat',
           'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', '$log', function(perusteprojektiTiedot, $stateParams, $log) {
+          'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', '$log', function(perusteprojektiTiedot, $stateParams) {
               return perusteprojektiTiedot.alustaProjektinTiedot($stateParams);
             }],
           'perusteprojektiOikeudet': 'PerusteprojektiOikeudetService',

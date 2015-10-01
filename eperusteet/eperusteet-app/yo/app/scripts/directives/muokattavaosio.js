@@ -53,8 +53,8 @@ angular.module('eperusteApp')
     $scope.$watch('model', update, true);
 
     $scope.edit = function() {
-      $log.info("Go root.perusteprojekti.suoritustapa.muokkaus from "+$scope.path+" with suoritustapa="
-        + $stateParams.suoritustapa +", tyyppi=" + $scope.type + ", id="+$scope.realModel.id);
+      $log.info('Go root.perusteprojekti.suoritustapa.muokkaus from '+$scope.path+' with suoritustapa=' +
+        $stateParams.suoritustapa +', tyyppi=' + $scope.type + ', id='+$scope.realModel.id);
       OsanMuokkausHelper.setup($scope.model, $scope.path, $scope.oppiaine, function() {
         $state.go('root.perusteprojekti.suoritustapa.muokkaus', {
           suoritustapa: $stateParams.suoritustapa,

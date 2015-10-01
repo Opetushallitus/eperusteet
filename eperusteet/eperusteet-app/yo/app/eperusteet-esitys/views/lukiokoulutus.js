@@ -94,7 +94,7 @@
    $scope.processOppiaine = function (oppiaine, inSisallot) {
      $scope.valittuOppiaine = {};
      $scope.valittuOppiaine.oppiaine = oppiaine;
-     $scope.oppimaarat = epMenuBuilder.filteredOppimaarat(oppiaine, vlkIds);
+     $scope.oppimaarat = epMenuBuilder.filteredOppimaarat(oppiaine, null);
      paivitaTavoitteet(inSisallot);
    };
 
@@ -134,7 +134,7 @@
          vlk.$selected = _.isEmpty(value.vlk) || _.contains(value.vlk, vlk.value);
        });
        epMenuBuilder.rakennaSisallotOppiaineet(oppiaineet, $scope.navi.sections[2].model.sections, selectedFilters(0));
-       epPerusopetusStateService.setState($scope.navi);
+       epLukiokoulutusStateService.setState($scope.navi);
      }
    });
 

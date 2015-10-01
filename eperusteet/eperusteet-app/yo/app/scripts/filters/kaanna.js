@@ -71,10 +71,10 @@ angular.module('eperusteApp')
         var original = getAttr(attrs.kaanna, scope) || el.text();
         var postfix = attrs.kaannaPostfix;
         if (postfix) {
-          postfix = " " + postfix;
+          postfix = ' ' + postfix;
         }
         if (!postfix && attrs.vaaditaan !== undefined) {
-          postfix = " *";
+          postfix = ' *';
         }
         if (_.isObject(original)) {
           el.text(Kaanna.kaannaSisalto(original)+postfix);

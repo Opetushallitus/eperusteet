@@ -158,8 +158,7 @@ angular.module('eperusteet.esitys')
     return state;
   };
 })
-.service('epLukiokoulutusStateService', function ($state, $stateParams, epSivunaviUtils, $rootScope,
-                                                  epEsitysSettings) {
+.service('epLukiokoulutusStateService', function ($state, $stateParams, epSivunaviUtils, $rootScope) {
     var state = {};
     var section = null;
 

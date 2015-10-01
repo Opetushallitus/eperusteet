@@ -30,7 +30,7 @@ angular.module('eperusteApp')
     this.OPETUKSEN_YLEISET_TAVOITTEET = 'opetuksen_yleiset_tavoitteet';
     this.AIHEKOKONAISUUDET = 'aihekokonaisuudet';
     this.OPPIAINEET_OPPIMAARAT = 'oppiaineet_oppimaarat';
-    this.KURSSIT = "kurssit";
+    this.KURSSIT = 'kurssit';
 
     this.LABELS = {
       'opetuksen-yleiset-tavoitteet': this.OPETUKSEN_YLEISET_TAVOITTEET,
@@ -187,13 +187,11 @@ angular.module('eperusteApp')
             cached[tyyppi] = data;
           }).$promise;
         case this.OPETUKSEN_YLEISET_TAVOITTEET:
-          // TODO:
+          return promisify([]);
         case this.AIHEKOKONAISUUDET:
-          // TODO:
+          return promisify([]);
         default:
-          var d = $q.defer();
-          d.resolve([]);
-          return d.promise;
+          return promisify([]);
       }
     };
   })

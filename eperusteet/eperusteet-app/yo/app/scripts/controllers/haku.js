@@ -291,7 +291,7 @@ angular.module('eperusteApp')
         .value();
     }, Notifikaatiot.serverCb);
   })
-  .controller('LukiokoulutusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot, YleinenData) {
+  .controller('LukiokoulutusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot) {
     $scope.lista = [];
     $q.all([
       Perusteet.get({ tyyppi: 'koulutustyyppi_2' }).$promise,

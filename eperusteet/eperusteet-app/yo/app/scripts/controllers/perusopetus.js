@@ -140,7 +140,7 @@ angular.module('eperusteApp')
       virheService, $log) {
     $scope.sisaltoState = _.find(PerusopetusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
-      $log.error("Tyyppi: "+ $stateParams.osanTyyppi);
+      $log.error('Tyyppi: '+ $stateParams.osanTyyppi);
       virheService.virhe('virhe-sivua-ei-löytynyt');
       return;
     }

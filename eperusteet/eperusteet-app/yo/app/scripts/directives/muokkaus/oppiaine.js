@@ -55,7 +55,7 @@ angular.module('eperusteApp')
     };
 
     this.getBackState = function () {
-      var isLukio = suoritustapa == 'lukiokoulutus';
+      var isLukio = suoritustapa === 'lukiokoulutus';
       return instance ? ['root.perusteprojekti.suoritustapa.' + (isLukio ? 'lukio' : '') + 'osaalue', params] :
       ['root.perusteprojekti.suoritustapa.' + (isLukio ? 'lukioosat': 'osalistaus'),
           {suoritustapa: suoritustapa,
@@ -651,9 +651,11 @@ angular.module('eperusteApp')
   })
 
   .controller('LukioOppiaineController', function ($scope, LukiokoulutusService, Kaanna, Notifikaatiot,
-                                              PerusteProjektiSivunavi, LukionOppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
-                                              CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
-                                              Koodisto, MuokkausUtils, $document, $log) {
+                                              PerusteProjektiSivunavi, LukionOppiaineet, $timeout, $state,
+                                              $stateParams, $q, YleinenData, tabHelper,
+                                              CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus,
+                                              VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
+                                              Koodisto, MuokkausUtils, $document) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.nameSort = Utils.nameSort;
@@ -932,7 +934,8 @@ angular.module('eperusteApp')
 
     var modelPromise = $scope.model.then(function (data) {
       $scope.editableModel = angular.copy(data);
-      if (!_.isObject($scope.editableModel._oppiaine) && $scope.oppiaineMap && $scope.oppiaineMap[$scope.editableModel._oppiaine]) {
+      if (!_.isObject($scope.editableModel._oppiaine) && $scope.oppiaineMap &&
+            $scope.oppiaineMap[$scope.editableModel._oppiaine]) {
         $scope.$oppiaineenNimi = $scope.oppiaineMap[$scope.editableModel._oppiaine].nimi;
       }
       else if (creatingNewOppimaara && !$scope.editableModel._oppiaine) {
@@ -954,7 +957,7 @@ angular.module('eperusteApp')
     $q.all([modelPromise]);
   })
 
-  .controller('LukioOppiaineenOsiotController', function ($scope, MuokkausUtils, Varmistusdialogi, VlkUtils, $log) {
+  .controller('LukioOppiaineenOsiotController', function ($scope, MuokkausUtils, Varmistusdialogi, VlkUtils) {
     $scope.activeOsiot = [];
 
     function verifyRemove(cb) {
@@ -1002,6 +1005,4 @@ angular.module('eperusteApp')
     $scope.$watch('model', function () {
       mapModel();
     }, true);
-  })
-
-;
+  });
