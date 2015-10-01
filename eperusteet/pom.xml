@@ -31,6 +31,7 @@
     <tomcat.version>7.0.47</tomcat.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.fileEncoding>UTF-8</project.build.fileEncoding>
+    <checkstyle.plugin.version>2.16</checkstyle.plugin.version>
   </properties>
   <build>
     <plugins>
