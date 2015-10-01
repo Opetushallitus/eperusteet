@@ -81,13 +81,17 @@ angular.module('eperusteApp')
           lukitse: function (and) {
             Lukitus.lukitseLukioOppiaine(oppiaine.id, function() {
               isLocked = true;
-              if (and) and();
+              if (and) {
+                and();
+              }
             });
           },
           vapauta: function (and) {
             Lukitus.vapautaLukioOppiaine(oppiaine.id, function () {
               isLocked = false;
-              if (and) and();
+              if (and) {
+                and();
+              }
             });
           }
         };

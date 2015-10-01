@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .service('LukiokoulutusService', function (LukionOppiaineet,
-                                             $q,
+                                             $q, SuoritustapaSisalto,
                                              Notifikaatiot,
                                              LukiokoulutuksenSisalto,
                                              LukioKurssit,
@@ -166,7 +166,7 @@ angular.module('eperusteApp')
     };
 
     this.getSisalto = function () {
-      return SuoritustapaSisalto.get(commonParams({suoritustapa: suoritustapa}));
+      return SuoritustapaSisalto.get(commonParams({suoritustapa: 'lukiokoulutus'}));
     };
 
     this.clearCache = function () {
@@ -196,8 +196,8 @@ angular.module('eperusteApp')
     };
   })
 
-  .service('LukioKurssiService', function(LukioKurssit, Lukitus, Notifikaatiot, LukiokoulutusService, $translate,
-                                          $q, $log) {
+  .service('LukioKurssiService', function(LukioKurssit, Lukitus, Notifikaatiot,
+                                          LukiokoulutusService, $translate, $q) {
 
     /**
      * Lists kurssit and related oppiaineet with jarjestys for given peruste.
