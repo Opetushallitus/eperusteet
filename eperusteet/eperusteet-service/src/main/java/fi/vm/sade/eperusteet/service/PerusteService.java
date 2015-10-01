@@ -22,6 +22,8 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -163,4 +165,5 @@ public interface PerusteService {
 
     @PreAuthorize("permitAll()")
     public Revision getLastModifiedRevision(final Long id);
+
 }

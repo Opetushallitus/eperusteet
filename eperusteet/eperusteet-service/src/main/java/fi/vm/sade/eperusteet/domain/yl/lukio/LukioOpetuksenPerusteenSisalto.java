@@ -63,10 +63,16 @@ public class LukioOpetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
             mappedBy = "perusteenSisalto")
     private Set<Lukiokurssi> kurssit = new HashSet<>(0);
 
+    @Getter
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name="aihekokonaisuudet_id")
+    private Aihekokonaisuudet aihekokonaisuudet;
+
     public LukioOpetuksenPerusteenSisalto kloonaa(Peruste peruste) {
         LukioOpetuksenPerusteenSisalto kopio = new LukioOpetuksenPerusteenSisalto();
         kopio.peruste = peruste;
         kopio.sisalto = this.sisalto.kloonaa();
+        kopio.aihekokonaisuudet =  this.aihekokonaisuudet.kloonaa();
         return kopio;
     }
 }

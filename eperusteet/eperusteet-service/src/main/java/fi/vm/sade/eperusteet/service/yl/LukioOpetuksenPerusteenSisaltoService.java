@@ -16,10 +16,24 @@
 
 package fi.vm.sade.eperusteet.service.yl;
 
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
+
 /**
  * User: tommiratamaa
  * Date: 21.9.15
  * Time: 15.33
  */
 public interface LukioOpetuksenPerusteenSisaltoService extends OppiainePerusteenSisaltoService {
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    AihekokonaisuudetDto getAihekokonaisuudet(Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    YleisetTavoitteetDto getYleisetTavoitteet(Long perusteId);
+
 }

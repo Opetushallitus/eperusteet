@@ -162,7 +162,21 @@ angular.module('eperusteApp')
     });
   })
   .factory('LukiokoulutuksenYleisetTavoitteet', function($resource, SERVICE_LOC) {
-    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/sisalto';
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/yleisettavoitteet';
+    return $resource(baseUrl + '/:osanId', {
+      osanId: '@id',
+      perusteId: '@perusteId'
+    }, {
+      root: {method: 'GET', isArray: false, url: baseUrl},
+      addChild: {
+        method: 'POST',
+        url: baseUrl + '/:osanId/lapset'
+      },
+      updateViitteet: {method: 'POST', url: baseUrl + '/:osanId'}
+    });
+  })
+  .factory('LukiokoulutuksenAihekokonaisuudet', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet';
     return $resource(baseUrl + '/:osanId', {
       osanId: '@id',
       perusteId: '@perusteId'

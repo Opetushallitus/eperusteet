@@ -17,10 +17,15 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.LukioOpetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.service.yl.LukioOpetuksenPerusteenSisaltoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * User: tommiratamaa
@@ -38,7 +43,19 @@ public class LukioOpetuksenPerusteenSisaltoServiceImpl
     @Override
     protected LukioOpetuksenPerusteenSisalto getByPerusteId(Long perusteId) {
         LukioOpetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Perustetta ei ole olemassa");
+        assertExists(sisalto, "Sisaltoä annetulle perusteelle ei ole olemassa");
         return sisalto;
+    }
+
+    @Override
+    public AihekokonaisuudetDto getAihekokonaisuudet(Long perusteId) {
+        LukioOpetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        assertExists(sisalto, "Sisaltoä annetulle perusteelle ei ole olemassa");
+        return mapper.map(sisalto.getAihekokonaisuudet(), AihekokonaisuudetDto.class);
+    }
+
+    @Override
+    public YleisetTavoitteetDto getYleisetTavoitteet(Long perusteId) {
+        return null;
     }
 }

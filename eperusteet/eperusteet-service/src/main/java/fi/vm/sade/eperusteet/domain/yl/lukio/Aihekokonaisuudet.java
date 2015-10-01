@@ -16,11 +16,8 @@
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
-import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -32,14 +29,12 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * User: tommiratamaa
- * Date: 9.9.15
- * Time: 10.05
+ * Created by jsikio on 28.9.2015.
  */
 @Entity
 @Audited
-@Table(name = "yl_aihekokonaisuus", schema = "public")
-public class Aihekokonaisuus extends AbstractAuditedReferenceableEntity {
+@Table(name = "yl_aihekokonaisuudet", schema = "public")
+public class Aihekokonaisuudet extends AbstractAuditedReferenceableEntity {
 
     @Column(nullable = false, unique = true, updatable = false)
     @Getter
@@ -48,7 +43,7 @@ public class Aihekokonaisuus extends AbstractAuditedReferenceableEntity {
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ValidHtml(whitelist = WhitelistType.MINIMAL)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "otsikko_id", nullable = false)
     private TekstiPalanen otsikko;
@@ -63,21 +58,26 @@ public class Aihekokonaisuus extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
-    private Long jnro;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "sisalto_id", nullable = false)
+    private LukioOpetuksenPerusteenSisalto sisalto;
 
     @Getter
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "aihekokonaisuudet_id", nullable = false)
-    private Aihekokonaisuudet aihekokonaisuudet;
+    @OneToMany(mappedBy = "aihekokonaisuudet", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OrderBy("jnro")
+    private Set<Aihekokonaisuus> aihekokonaisuudet = new HashSet<>(0);
 
-    public Aihekokonaisuus kloonaa() {
-        Aihekokonaisuus klooni = new Aihekokonaisuus();
-        klooni.setJnro(this.getJnro());
-        klooni.setOtsikko(this.getOtsikko());
-        klooni.setAihekokonaisuudet(this.getAihekokonaisuudet());
+    public Aihekokonaisuudet kloonaa() {
+
+        Aihekokonaisuudet klooni = new Aihekokonaisuudet();
         klooni.setYleiskuvaus(this.getYleiskuvaus());
+        klooni.setOtsikko(this.getOtsikko());
+
+        for( Aihekokonaisuus aihekokonaisuus : this.aihekokonaisuudet ) {
+            klooni.aihekokonaisuudet.add( aihekokonaisuus.kloonaa() );
+        }
 
         return klooni;
     }
+
 }
