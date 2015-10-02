@@ -927,5 +927,7 @@
     "lisaa-kurssi-tyyppi-header": "Tyyppi",
     "lisaa-kurssi-koodi-header": "Koodi",
     "lisaa-kurssi-action": "luo kurssi",
-    "lisaa-kurssi-peruuta": "Peruuta"
+    "lisaa-kurssi-peruuta": "Peruuta",
+    "lukio-liitamattomat-kurssit": "Liittämät kurssit",
+    "lukio-etsi-oppiaineista": "Etsi oppiaineista..."
 }

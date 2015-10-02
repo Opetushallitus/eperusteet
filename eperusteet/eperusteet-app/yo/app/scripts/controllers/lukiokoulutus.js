@@ -135,7 +135,8 @@ angular.module('eperusteApp')
   }
 )
 .controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService,
-                                                virheService, LukioKurssiService, $log) {
+                                                virheService, LukioKurssiService, $log, $q, $translate,
+                                                $rootScope, $timeout) {
     $scope.sisaltoState = _.find(
       LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
@@ -146,18 +147,16 @@ angular.module('eperusteApp')
     $scope.kurssit = [];
     $scope.aihekokonaisuudet = [];
     $scope.osaAlueet = [];
-    LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function (res) {
-      $scope.osaAlueet = res;
-      if ($scope.isOppiaineet()) {
-        LukioKurssiService.listByPeruste($scope.peruste.id).then(function(kurssit) {
-          $scope.kurssit = kurssit;
-        });
-      }
-    });
+    var kurssitProvider = LukioKurssiService.listByPeruste($scope.peruste.id);
     $scope.isOppiaineet = function() {
       return $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
     };
 
+    if (!$scope.isOppiaineet()) {
+      LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function (res) {
+        $scope.osaAlueet = res;
+      });
+    }
     $scope.options = {};
 
     $scope.createUrl = function (value) {
@@ -179,6 +178,177 @@ angular.module('eperusteApp')
         tabId: 0
       });
     };
+
+    $scope.treehelpers = {
+      haku: '',
+      defaultCollapsed: true
+    };
+    $scope.treeRoot = {
+      id: -1,
+      jnro: 1,
+      root:true,
+      $$collapsed: true,
+      nimi: 'Juuri',
+      oppimaarat: [],
+      kurssit: []
+    };
+
+    function matchesHaku(item, haku) {
+      if (!haku) {
+        return true;
+      }
+      var val = item.nimi;
+      if (_.isObject(item.nimi)) {
+        val = val[$translate.use().toLowerCase()];
+      }
+      return val.toLowerCase().indexOf(haku.toLowerCase()) !== -1;
+    }
+    function parents(item, fn) {
+      var p = item.$$parentNodes;
+      if (p && p.length) {
+        _.each(p, function(i) {
+          fn(i);
+          parents(i, fn);
+        });
+      }
+    }
+    function forEachProp(n, fn, props, defaults) {
+      if (props && !_.isArray(props)) {
+        if (_.isFunction(props)) {
+          props = props(n);
+        }
+      }
+      _.each(props || defaults, function (p) {
+        if (n[p]) {
+          fn(n[p]);
+        }
+      });
+    }
+    function forEachChild(n, fn, props) {
+      forEachProp(n, function(e) {
+        _.each(e, function(c) {
+          fn(c, n);
+        });
+      }, props, ['oppimaarat', 'kurssit']);
+    }
+    function travelse(n, fn, props, parent) {
+      if (_.isArray(n)) {
+        _.each(n, function(i) {
+          travelse(i, fn, props, parent);
+        });
+      } else {
+        fn(n, parent);
+        forEachChild(n, function(c, p) {
+          travelse(c, fn, props, p);
+        }, props);
+      }
+    }
+    function updateTree(fn) {
+      if (fn) {
+        travelse($scope.treeRoot, fn);
+      }
+      $rootScope.$broadcast('genericTree:refresh');
+    }
+    function piilotaHaunPerusteella(item) {
+      $log.info('Haetaan ', item);
+      item.$$hide = !matchesHaku(item, $scope.treehelpers.haku);
+      if (!item.$$hide) {
+        parents(item, function(i) {
+          i.$$hide = false;
+        });
+      }
+    }
+    function setParent(n, parent) {
+      if (parent) {
+        if (n.$$parentNodes) {
+          n.$$parentNodes.push(parent);
+        } else {
+          n.$$parentNodes = [parent];
+        }
+      }
+    }
+    $scope.treeHaku = function() {
+      $timeout(function() {
+        $log.info('Haku ', $scope.treehelpers.haku);
+        updateTree(piilotaHaunPerusteella);
+      });
+    };
+    var templateAround = function(tmpl) {
+      return '<div ng-show="!node.$$hide">'+tmpl+'</div>';
+    };
+
+    $scope.treeOsatProvider = $q(function(resolve) {
+      var treeScope = {
+        root: function() {
+          $log.info('Set root.');
+          var droot = $q.defer();
+          LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function(oppiaineet) {
+            kurssitProvider.then(function(kurssit) {
+              $log.info('Kurssit: ', kurssit);
+              $scope.treeRoot.oppimaarat = oppiaineet;
+              $scope.treeRoot.kurssit = _.filter(kurssit, function(k) {
+                return k.oppiaineet.length === 0;
+              });
+              travelse($scope.treeRoot, function(n, parent) {
+                n.$$collapsed = $scope.treehelpers.defaultCollapsed;
+                n.$$hide = false;
+                setParent(n, parent);
+                if (!n.oppiaineet && !n.kurssit) {
+                  n.kurssit = _.filter(kurssit, function(k) {
+                    return _.map(k.oppiaineet, 'oppiaineId').indexOf(n.id) !== -1;
+                  });
+                }
+              });
+              droot.resolve($scope.treeRoot);
+            });
+          });
+          return droot.promise;
+        },
+        hidden: _.constant(false),
+        template: function(n) {
+          var commonPart = '<span class="treehandle">H</span>',
+            collabsibleCommon = commonPart + '<span ng-click="toggle(node)" class="colorbox suljettu">' +
+            '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+            '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
+            '</span>';
+          if (n.oppiaineet) {
+            if (n.oppiaineet.length === 0) {
+              return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid yellowgreen;">' +
+                commonPart + ' Liittämätön kurssi {{ node.nimi | kaanna }} {{ node.id }}</div>', n);
+            }
+            return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid yellowgreen;">' +
+              commonPart + ' {{ node.nimi | kaanna }} {{ node.id }}</div>', n);
+          } else {
+            return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid black;">' +
+              collabsibleCommon + '<a ng-click="goto(node)">{{ node.nimi | kaanna }}</a></div>', n);
+          }
+        },
+        children: function(node) {
+          var children = [];
+          if (node.$$collapsed) {
+            forEachChild(node, function(c) {
+              children.push(c);
+            });
+          }
+          $log.info('Children for ', node, ' are ', children);
+          return $q.when(children);
+        },
+        extension: function(node, scope) {
+          scope.testClick = function() {
+            $log.info('hello world', node);
+          };
+          scope.toggle = function(node) {
+            node.$$collapsed = !node.$$collapsed;
+            $rootScope.$broadcast('genericTree:refresh');
+          };
+          scope.goto = function(node) {
+            $log.info("Goto: ", node);
+          };
+        },
+        useUiSortable: _.constant(true)
+      };
+      resolve(treeScope);
+    });
   })
   .controller('LukioOsaAlueController', function ($scope, $q, $stateParams, LukiokoulutusService,
                                                   ProjektinMurupolkuService) {
@@ -207,6 +377,7 @@ angular.module('eperusteApp')
                                                      YleinenData,
                                                      MuokkausUtils,
                                                      Koodisto) {
+
     $scope.kurssityypit = [];
     function init() {
       $scope.kurssi = {

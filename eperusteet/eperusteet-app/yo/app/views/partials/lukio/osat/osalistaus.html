@@ -7,6 +7,22 @@
 
         <h1 kaanna="sisaltoState.label"></h1>
         <div osalistaus="osaAlueet" search-placeholder="etsi-sisallosta" empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
-             show-laajuus="false" url-generator="createUrl(value)" options="options"></div>
+             show-laajuus="false" url-generator="createUrl(value)" options="options"
+             ng-if="!isOppiaineet()"></div>
+        <div ng-if="isOppiaineet()">
+          <div style="float: left;width: 60%" class="tree col-lg-6 col-md-8 col-xs-12">
+            <div class="tree-con">
+              <rajaus size="small" classes="puun-rajaus" model="treehelpers.haku"
+                      callback="treeHaku()"
+                      placeholder="{{ 'lukio-etsi-oppiaineista' || kaanna }}"></rajaus>
+            </div>
+            <generic-tree tree-provider="treeOsatProvider"></generic-tree>
+          </div>
+          <div style="float:left; width: 25%;margin-left: 5%">
+
+            <h2 kaanna="lukio-liitamattomat-kurssit"></h2>
+            <div draggable="true" data-drag-enabled="true">Draggable</div>
+          </div>
+        </div>
     </div>
 </div>
