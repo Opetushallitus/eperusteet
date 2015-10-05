@@ -233,7 +233,22 @@ angular.module('eperusteApp')
           }
         }
       })
-
+      .state('root.selaus.perusopetus.tekstikappale', {
+        url: '/tekstikappale/:tekstikappaleId',
+        templateUrl: 'eperusteet-esitys/views/tekstikappale.html',
+        controller: 'epPerusopetusTekstikappaleController',
+        resolve: {
+          tekstikappaleId: function ($stateParams) {
+            return $stateParams.tekstikappaleId;
+          },
+          tekstikappale: function (tekstikappaleId, PerusteenOsat) {
+            return PerusteenOsat.getByViite({viiteId: tekstikappaleId}).$promise;
+          },
+          lapset: function (sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
+            return epTekstikappaleChildResolver.get(sisalto[4], tekstikappaleId);
+          }
+        }
+      })
       .state('root.selaus.lukiokoulutus.tekstikappale', {
         url: '/tekstikappale/:tekstikappaleId',
         templateUrl: 'eperusteet-esitys/views/tekstikappale.html',

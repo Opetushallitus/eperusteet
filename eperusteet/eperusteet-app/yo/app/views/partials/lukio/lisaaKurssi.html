@@ -28,7 +28,7 @@
         </select>
       </div>
 
-      <label for="nimi-input" class="header" kaanna="lisaa-kurssi-nimi-header" vaaditaan></label>
+      <label for="nimi-input" class="header" kaanna="'lisaa-kurssi-nimi-header'" vaaditaan></label>
       <input id="nimi-input" class="form-control" ng-model="kurssi.nimi" slocalized required
         ng-enter="save()"/>
       <p class="alert alert-error" ng-show="(lisaaKurssiForm.$error.required && lisaaKurssiForm.$error.required[1].$dirty)"

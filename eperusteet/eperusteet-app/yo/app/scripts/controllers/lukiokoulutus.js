@@ -192,73 +192,52 @@ angular.module('eperusteApp')
 
     $scope.treehelpers = {
       haku: '',
-      defaultCollapsed: true
+      defaultCollapsed: false
     };
     $scope.treeRoot = {
       id: -1,
       jnro: 1,
       root:true,
-      $$collapsed: true,
+      $$collapsed: false,
       nimi: 'Juuri',
       oppimaarat: [],
-      kurssit: []
+      kurssit: [],
+      lapset: []
     };
 
-    function matchesHaku(item, haku) {
+    function matchesHaku(node, haku) {
       if (!haku) {
         return true;
       }
-      var val = item.nimi;
-      if (_.isObject(item.nimi)) {
+      var val = node.nimi;
+      if (_.isObject(node.nimi)) {
         val = val[$translate.use().toLowerCase()];
       }
       return val.toLowerCase().indexOf(haku.toLowerCase()) !== -1;
     }
-    function parents(item, fn) {
-      var p = item.$$parentNodes;
-      if (p && p.length) {
-        _.each(p, function(i) {
-          fn(i);
-          parents(i, fn);
-        });
+    function parents(node, fn) {
+      node = node.$$nodeParent;
+      while (node != null) {
+        fn(node);
+        node = node.$$nodeParent;
       }
     }
-    function forEachProp(n, fn, props, defaults) {
-      if (props && !_.isArray(props)) {
-        if (_.isFunction(props)) {
-          props = props(n);
-        }
-      }
-      _.each(props || defaults, function (p) {
-        if (n[p]) {
-          fn(n[p]);
-        }
-      });
-    }
-    function forEachChild(n, fn, props) {
-      forEachProp(n, function(e) {
-        _.each(e, function(c) {
-          fn(c, n);
-        });
-      }, props, ['oppimaarat', 'kurssit']);
-    }
-    function travelse(n, fn, props, parent) {
-      if (_.isArray(n)) {
-        _.each(n, function(i) {
-          travelse(i, fn, props, parent);
+    function traverse(node, fn, parent) {
+      if (_.isArray(node)) {
+        _.each(node, function(i) {
+          traverse(i, fn, parent);
         });
       } else {
-        fn(n, parent);
-        forEachChild(n, function(c, p) {
-          travelse(c, fn, props, p);
-        }, props);
+        fn(node, parent);
+        _.each(node.lapset, function(c) {
+          traverse(c, fn, node);
+        });
       }
     }
     function updateTree(fn) {
       if (fn) {
-        travelse($scope.treeRoot, fn);
+        traverse($scope.treeRoot, fn);
       }
-      $rootScope.$broadcast('genericTree:refresh');
     }
     function piilotaHaunPerusteella(item) {
       $log.info('Haetaan ', item);
@@ -269,15 +248,6 @@ angular.module('eperusteApp')
         });
       }
     }
-    function setParent(n, parent) {
-      if (parent) {
-        if (n.$$parentNodes) {
-          n.$$parentNodes.push(parent);
-        } else {
-          n.$$parentNodes = [parent];
-        }
-      }
-    }
     $scope.treeHaku = function() {
       $timeout(function() {
         $log.info('Haku ', $scope.treehelpers.haku);
@@ -285,39 +255,66 @@ angular.module('eperusteApp')
       });
     };
     var templateAround = function(tmpl) {
-      return '<div ng-show="!node.$$hide">'+tmpl+'</div>';
+      return '<div>'+tmpl+'</div>';
     };
+
+    $scope.liittamattomatKurssitConfig = {
+      connectWith: '.recursivetreeLiittamattomat',
+      handle: '.treehandle',
+      cursorAt: { top : 2, left: 2 },
+      cursor: 'move',
+      delay: 100,
+      disabled: false,
+      tolerance: 'pointer'
+    };
+    $scope.kurssiTreeConfig = {
+      connectWith: '.recursivetreeLiittamattomat'
+    };
+    $scope.liittamattomatKurssit = [];
 
     $scope.treeOsatProvider = $q(function(resolve) {
       var treeScope = {
         root: function() {
           $log.info('Set root.');
-          var droot = $q.defer();
-          LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function(oppiaineet) {
-            kurssitProvider.then(function(kurssit) {
-              $log.info('Kurssit: ', kurssit);
-              $scope.treeRoot.oppimaarat = oppiaineet;
-              $scope.treeRoot.kurssit = _.filter(kurssit, function(k) {
-                return k.oppiaineet.length === 0;
-              });
-              travelse($scope.treeRoot, function(n, parent) {
-                n.$$collapsed = $scope.treehelpers.defaultCollapsed;
-                n.$$hide = false;
-                setParent(n, parent);
-                if (!n.oppiaineet && !n.kurssit) {
-                  n.kurssit = _.filter(kurssit, function(k) {
-                    return _.map(k.oppiaineet, 'oppiaineId').indexOf(n.id) !== -1;
+          return $q(function (resolveRoot) {
+              LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function (oppiaineet) {
+                kurssitProvider.then(function (kurssit) {
+                  $log.info('Kurssit: ', kurssit);
+                  $scope.treeRoot.oppimaarat = oppiaineet;
+                  $scope.treeRoot.kurssit = [];
+                  _.each(kurssit, function(kurssi) {
+                    kurssi.$$hide = false;
+                    kurssi.$$collapsed = false;
                   });
-                }
+                  $scope.liittamattomatKurssit = _.cloneDeep(_.filter(kurssit, function (k) {
+                    return k.oppiaineet.length === 0;
+                  }));
+                  traverse($scope.treeRoot, function (node) {
+                    node.$$collapsed = $scope.treehelpers.defaultCollapsed;
+                    node.$$hide = false;
+                    if (!node.oppiaineet && !node.kurssit) {
+                      node.kurssit =  _(kurssit)
+                        .filter(function (kurssi) {
+                          return _.any(kurssi.oppiaineet, function (oa) {
+                            return oa.oppiaineId === node.id;
+                          });
+                        })
+                        .map(_.cloneDeep)
+                        .value();
+                    }
+                    node.lapset = _.union(node.oppimaarat || [], node.kurssit || []);
+                  });
+                  resolveRoot($scope.treeRoot);
+                });
               });
-              droot.resolve($scope.treeRoot);
-            });
-          });
-          return droot.promise;
+            }
+          );
         },
-        hidden: _.constant(false),
+        hidden: function(node) {
+          return node.$$hide || node.$$nodeParent.$$collapsed;
+        },
         template: function(n) {
-          var commonPart = '<span class="treehandle">H</span>',
+          var commonPart = '<span icon-role="drag" class="treehandle"></span>',
             collabsibleCommon = commonPart + '<span ng-click="toggle(node)" class="colorbox suljettu">' +
             '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
             '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
@@ -335,14 +332,7 @@ angular.module('eperusteApp')
           }
         },
         children: function(node) {
-          var children = [];
-          if (node.$$collapsed) {
-            forEachChild(node, function(c) {
-              children.push(c);
-            });
-          }
-          $log.info('Children for ', node, ' are ', children);
-          return $q.when(children);
+          return $q.when(node.lapset);
         },
         extension: function(node, scope) {
           scope.testClick = function() {
@@ -350,7 +340,7 @@ angular.module('eperusteApp')
           };
           scope.toggle = function(node) {
             node.$$collapsed = !node.$$collapsed;
-            $rootScope.$broadcast('genericTree:refresh');
+            //$rootScope.$broadcast('genericTree:refresh');
           };
           scope.goto = function(node) {
             $log.info("Goto: ", node);

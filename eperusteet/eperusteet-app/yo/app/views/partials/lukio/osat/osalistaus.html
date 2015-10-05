@@ -24,13 +24,19 @@
                         callback="treeHaku()"
                         placeholder="{{ 'lukio-etsi-oppiaineista' || kaanna }}"></rajaus>
               </div>
-              <generic-tree tree-provider="treeOsatProvider"></generic-tree>
+              <generic-tree tree-provider="treeOsatProvider"
+                            ui-sortable-config="kurssiTreeConfig"></generic-tree>
             </div>
             <div style="float:left; width: 25%;margin-left: 5%">
 
-              <h2 kaanna="lukio-liitamattomat-kurssit"></h2>
-              <div draggable="true" data-drag-enabled="true">Draggable</div>
+            <h2 kaanna="lukio-liitamattomat-kurssit"></h2>
+            <div ui-sortable="liittamattomatKurssitConfig" ng-model="liittamattomatKurssit" class="recursivetreeLiittamattomat">
+              <div ng-repeat="kurssi in liittamattomatKurssit">
+                <span class="treehandle" icon-role="drag"></span>
+                <span kaanna="kurssi.nimi"></span>
+              </div>
             </div>
           </div>
+         </div>
       </div>
 </div>

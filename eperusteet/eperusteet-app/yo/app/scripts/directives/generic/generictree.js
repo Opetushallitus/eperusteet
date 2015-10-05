@@ -56,7 +56,7 @@ angular.module('eperusteApp')
             var template = '';
             template += getTemplate(node);
             if (children) {
-              template += '<div ui-sortable="uiSortableConfig" id="recursivetree" ng-model="children">';
+              template += '<div ui-sortable="uiSortableConfig" class="recursivetreeLiittamattomat" ng-model="children">';
               scope.children = children;
               if (!_.isEmpty(children)) {
                 template += '' +
@@ -73,7 +73,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('genericTree', function($compile, $q, $templateCache, Notifikaatiot) {
+  .directive('genericTree', function($compile, $q, $templateCache, Notifikaatiot, $log) {
     return {
       restrict: 'E',
       replace: true,
@@ -108,7 +108,7 @@ angular.module('eperusteApp')
               cursorAt: { top : 2, left: 2 },
               cursor: 'move',
               delay: 100,
-              disabled: scope.tprovider.useUiSortable(),
+              disabled: !scope.tprovider.useUiSortable(),
               tolerance: 'pointer',
               // placeholder: 'placeholder',
               // // start: function(e, ui) {
@@ -117,6 +117,7 @@ angular.module('eperusteApp')
               // // cancel: '.ui-state-disabled',
               // // update: TreeDragAndDrop.update
             }, scope.uiSortableConfig || {});
+            $log.info('DISABLED', scope.sortableConfig.disabled);
 
             console.log('forcing redraw');
             element.empty();
