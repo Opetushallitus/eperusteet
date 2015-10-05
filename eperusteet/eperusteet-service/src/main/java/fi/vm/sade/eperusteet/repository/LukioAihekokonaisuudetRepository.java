@@ -14,23 +14,14 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.yl;
+package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
-import org.springframework.security.access.prepost.PreAuthorize;
+import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
+import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**
- * User: tommiratamaa
- * Date: 21.9.15
- * Time: 15.33
+ * User: jsikio
  */
-public interface LukiokoulutuksenPerusteenSisaltoService extends OppiainePerusteenSisaltoService {
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    AihekokonaisuudetYleiskuvausDto getAihekokonaisuudet(Long perusteId);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    YleisetTavoitteetDto getYleisetTavoitteet(Long perusteId);
+public interface LukioAihekokonaisuudetRepository extends JpaWithVersioningRepository<Aihekokonaisuudet, Long> {
 
 }

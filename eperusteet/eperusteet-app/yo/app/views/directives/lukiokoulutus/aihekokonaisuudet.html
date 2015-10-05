@@ -1,0 +1,38 @@
+<!-- aihekokonaisuudet.html -->
+<div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
+  <div id="ck-toolbar-top"></div>
+  <div id="ck-toolbar-bottom"></div>
+</div>
+<div class="row">
+  <div class="col-md-12 ep-sisalto-inner">
+
+    <div class="action-buttons" ng-if="!editEnabled">
+      <button class="btn btn-default" icon-role="edit" ng-click="edit()" kaanna="muokkaa"
+              oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+    </div>
+    <div ng-if="!editEnabled">
+      <h1><span kaanna="otsikko"/>: {{aihekokonaisuudet.otsikko | kaanna}}</h1>
+      <div>{{aihekokonaisuudet.yleiskuvaus | kaanna}}</div>
+    </div>
+
+    <div ng-if="editEnabled">
+
+      <form name="aihekokonaisuudetYleiskuvausForm" role="form">
+
+        <label for="otsikko-input" class="header" kaanna="lisaa-aihekokonaisuus-otsikko-header" vaaditaan></label>
+        <input id="otsikko-input" class="form-control" ng-model="aihekokonaisuudet.otsikko" slocalized required />
+        <p class="alert alert-error" ng-show="(aihekokonaisuudetYleiskuvausForm.$error.required && aihekokonaisuudetYleiskuvausForm.$error.required[1].$dirty)"
+           kaanna>Otsikko on pakollinen tieto</p>
+
+        <label for="yleiskuvaus-input" class="header" kaanna="lisaa-aihekokonaisuus-yleiskuvaus-header"></label>
+        <textarea id="yleiskuvaus-input" class="form-control" ng-model="aihekokonaisuudet.yleiskuvaus" slocalized />
+
+        <div style="margin-top: 30px;"></div>
+        <button class="btn btn-default ng-binding" ng-click="cancel()" kaanna="peruuta"></button>
+        <button role="button" ng-click="save()" class="btn btn-primary" kaanna="tallenna"></button>
+      </form>
+
+    </div>
+
+  </div>
+</div>

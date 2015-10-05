@@ -929,5 +929,13 @@
     "lisaa-kurssi-action": "luo kurssi",
     "lisaa-kurssi-peruuta": "Peruuta",
     "lukio-liitamattomat-kurssit": "Liittämät kurssit",
-    "lukio-etsi-oppiaineista": "Etsi oppiaineista..."
+    "lukio-etsi-oppiaineista": "Etsi oppiaineista...",
+
+    "lisaa-aihekokonaisuus-title": "Lisää aihekokonaisuus",
+    "lisaa-aihekokonaisuus-otsikko-header": "Aihekokonaisuuden otsikko",
+    "lisaa-aihekokonaisuus-yleiskuvaus-header": "Aihekokonaisuuden kuvaus",
+    "lisaa-aihekokonaisuus-action": "Lisää aihekokonaisuus",
+    "muokkaa-aihekokonaisuus-title": "Muokkaa aihekokonaisuutta",
+    "muokkaa-aihekokonaisuus-action": "Tallenna",
+    "jnro": "Järjestysnumero"
 }

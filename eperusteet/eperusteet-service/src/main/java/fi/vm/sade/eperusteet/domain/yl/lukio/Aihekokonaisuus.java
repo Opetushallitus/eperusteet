@@ -30,6 +30,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 /**
  * User: tommiratamaa
@@ -40,6 +41,10 @@ import java.util.UUID;
 @Audited
 @Table(name = "yl_aihekokonaisuus", schema = "public")
 public class Aihekokonaisuus extends AbstractAuditedReferenceableEntity {
+
+    public static Predicate<Aihekokonaisuus> inPeruste(long perusteId) {
+        return aihekokonaisuus -> aihekokonaisuus.getAihekokonaisuudet().getSisalto().getPeruste().getId().equals(perusteId);
+    }
 
     @Column(nullable = false, unique = true, updatable = false)
     @Getter

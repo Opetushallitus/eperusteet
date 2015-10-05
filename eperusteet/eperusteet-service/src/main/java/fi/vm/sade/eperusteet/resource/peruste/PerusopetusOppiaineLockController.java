@@ -25,8 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static fi.vm.sade.eperusteet.resource.peruste.PerusopetusOppiaineLockController.BASE;
-
 /**
  *
  * @author jhyoty
@@ -34,8 +32,8 @@ import static fi.vm.sade.eperusteet.resource.peruste.PerusopetusOppiaineLockCont
 @RestController
 @InternalApi
 @RequestMapping(value = {
-    BASE + "/lukko",
-    BASE + "/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko"
+        PerusopetusOppiaineLockController.BASE + "/lukko",
+        PerusopetusOppiaineLockController.BASE + "/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko"
 })
 public class PerusopetusOppiaineLockController extends AbstractLockController<OppiaineLockContext>{
     static final String BASE = "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}";

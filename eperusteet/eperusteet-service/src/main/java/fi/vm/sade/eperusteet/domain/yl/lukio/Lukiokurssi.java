@@ -61,7 +61,7 @@ public class Lukiokurssi extends Kurssi {
     @ValidHtml(whitelist = WhitelistType.SIMPLIFIED)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "kurssityypin_kuvaus_id")
-    private TekstiPalanen kurssityypinKvaus;
+    private TekstiPalanen kurssityypinKuvaus;
 
     @Getter
     @Setter

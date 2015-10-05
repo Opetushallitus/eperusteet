@@ -64,9 +64,10 @@ public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenS
     private Set<Lukiokurssi> kurssit = new HashSet<>(0);
 
     @Getter
+    @Setter
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name="aihekokonaisuudet_id")
-    private Aihekokonaisuudet aihekokonaisuudet;
+    private Aihekokonaisuudet aihekokonaisuudet = new Aihekokonaisuudet();
 
     public LukiokoulutuksenPerusteenSisalto kloonaa(Peruste peruste) {
         LukiokoulutuksenPerusteenSisalto kopio = new LukiokoulutuksenPerusteenSisalto();

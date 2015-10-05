@@ -50,6 +50,12 @@ angular.module('eperusteApp')
       perusteId: '@perusteId'
     });
   })
+  .factory('LukkoLukioAihekokonaisuudet', function (SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet/:osanId/lukko', {
+      osanId: '@osanId',
+      perusteId: '@perusteId'
+    });
+  })
   .factory('LukkoLaajaalainenOsaaminen', function (SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/laajaalaisetosaamiset/:osanId/lukko', {
       osanId: '@osanId',
@@ -81,8 +87,8 @@ angular.module('eperusteApp')
   })
   .service('Lukitus', function($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout,
       Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-      LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, PerusopetusService, LukiokoulutusService,
-      LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
+      LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
+      LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, $log) {
 
     var lukitsin = null;
     var etag = null;
@@ -101,6 +107,7 @@ angular.module('eperusteApp')
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.lukioosaalue') {
         switch($stateParams.osanTyyppi) {
           case 'oppiaineet_oppimaarat':return LukkoLukioOppiaine;
+          case 'aihekokonaisuudet':return LukkoLukioAihekokonaisuudet;
           default: return null;
         }
       }

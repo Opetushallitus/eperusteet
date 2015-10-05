@@ -161,32 +161,20 @@ angular.module('eperusteApp')
       updateViitteet: {method: 'POST', url: baseUrl + '/:osanId'}
     });
   })
-  .factory('LukiokoulutuksenYleisetTavoitteet', function($resource, SERVICE_LOC) {
+  .factory('LukiokoulutusYleisetTavoitteet', function($resource, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/yleisettavoitteet';
-    return $resource(baseUrl + '/:osanId', {
-      osanId: '@id',
+    return $resource(baseUrl, {
       perusteId: '@perusteId'
-    }, {
-      root: {method: 'GET', isArray: false, url: baseUrl},
-      addChild: {
-        method: 'POST',
-        url: baseUrl + '/:osanId/lapset'
-      },
-      updateViitteet: {method: 'POST', url: baseUrl + '/:osanId'}
     });
   })
-  .factory('LukiokoulutuksenAihekokonaisuudet', function($resource, SERVICE_LOC) {
-    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet';
-    return $resource(baseUrl + '/:osanId', {
-      osanId: '@id',
-      perusteId: '@perusteId'
-    }, {
-      root: {method: 'GET', isArray: false, url: baseUrl},
-      addChild: {
-        method: 'POST',
-        url: baseUrl + '/:osanId/lapset'
-      },
-      updateViitteet: {method: 'POST', url: baseUrl + '/:osanId'}
+  .factory('LukiokoulutusAihekokonaisuudet', function($resource, $translate, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet/:osanId';
+    return $resource(baseUrl, {
+      osanId: '@osanId',
+      perusteId: '@perusteId'}, {
+      saveAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/aihekokonaisuus'},
+      getAihekokonaisuudetYleiskuvaus: {method: 'GET', isArray: false, url: baseUrl + '/yleiskuvaus'},
+      saveAihekokonaisuudetYleiskuvaus: {method: 'POST', isArray: false, url: baseUrl + '/yleiskuvaus'}
     });
   })
   .service('SuoritustavanSisalto', function($modal, $state, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {

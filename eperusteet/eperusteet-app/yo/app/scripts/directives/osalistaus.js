@@ -26,6 +26,7 @@ angular.module('eperusteApp')
     ];
     this.ORDER_LAAJUUS = [{value: 'laajuus', label: 'laajuus'}];
     this.ORDER_JARJESTYS = [{value: 'jarjestys', label: 'tutkinnonosa-jarjestysnumero'}];
+    this.ORDER_JNRO = [{value: 'jnro', label: 'jnro'}];
     this.get = function (withLaajuus, koulutustyyppi) {
       var ret = withLaajuus ? this.ORDER_OPTIONS.concat(this.ORDER_LAAJUUS) : this.ORDER_OPTIONS;
       if (koulutustyyppi) {
@@ -33,8 +34,12 @@ angular.module('eperusteApp')
       }
       return ret;
     };
+    this.getWithJnro = function() {
+      var ret = this.ORDER_OPTIONS.concat(this.ORDER_JNRO);
+      return ret;
+    }
   })
-  .directive('osalistaus', function(OrderHelper, $compile) {
+  .directive('osalistaus', function(OrderHelper, $compile, $stateParams) {
     return {
       templateUrl: 'views/directives/osalistaus.html',
       restrict: 'A',
@@ -55,7 +60,9 @@ angular.module('eperusteApp')
         }
         attrs.$observe('showLaajuus', function (value) {
           scope.hasLaajuus = value === 'true';
-          scope.jarjestysOptions = OrderHelper.get(scope.hasLaajuus, scope.koulutustyyppi);
+          if( $stateParams.osanTyyppi != 'aihekokonaisuudet' ) {
+            scope.jarjestysOptions = OrderHelper.get(scope.hasLaajuus, scope.koulutustyyppi);
+          }
         });
         attrs.$observe('yksikko', function (value) {
           scope.unit = value;
@@ -63,7 +70,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('OsalistausDirectiveController', function($scope, Kaanna, Algoritmit, OrderHelper, Profiili) {
+  .controller('OsalistausDirectiveController', function($scope, $stateParams, Kaanna, Algoritmit, OrderHelper, Profiili, $log) {
     var defaultPreferences = {
       nakymatyyli: 'palikka'
     };
@@ -87,7 +94,12 @@ angular.module('eperusteApp')
       term: '',
       placeholder: $scope.searchPlaceholder || ''
     };
-    $scope.jarjestysOptions = OrderHelper.get(null, $scope.koulutustyyppi);
+
+    if( $stateParams.osanTyyppi === 'aihekokonaisuudet' ) {
+      $scope.jarjestysOptions = OrderHelper.getWithJnro();
+    } else {
+      $scope.jarjestysOptions = OrderHelper.get(null, $scope.koulutustyyppi);
+    }
 
     $scope.searchChanged = function(term) {
       $scope.search.term = term;
@@ -107,9 +119,16 @@ angular.module('eperusteApp')
       switch($scope.jarjestysTapa) {
         case 'nimi': return Kaanna.kaanna(data.nimi);
         case 'laajuus': return data.laajuus;
-        case 'oletus': return data.jnro;
+        case 'oletus':
+          if( $stateParams.osanTyyppi === 'aihekokonaisuudet' ) {
+            return data.jnro;
+          }
+          else {
+            break;
+          }
         case 'muokattu': return data.muokattu;
         case 'jarjestys': return data.jarjestys;
+        case 'jnro': return data.jnro;
         default: break;
       }
     };

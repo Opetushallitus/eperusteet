@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -926,6 +927,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         return peruste;
     }
+
+    @Override
+    public YleisetTavoitteetDto getYleisetTavoitteet(Long perusteId) {
+        //TODO!
+        return null;
+    }
+
+
 
     private static class VisitorImpl implements AbstractRakenneOsaDto.Visitor {
 
