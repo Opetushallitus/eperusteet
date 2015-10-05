@@ -277,6 +277,14 @@ angular.module('eperusteApp')
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible(false);
         }]
+      })
+      .state('root.perusteprojekti.suoritustapa.kurssi', {
+        url: '/lukiokurssi/:kurssiId',
+        templateUrl: 'views/partials/lukio/kurssi.html',
+        controller: 'NaytaLukiokurssiController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(true);
+        }]
       });
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,

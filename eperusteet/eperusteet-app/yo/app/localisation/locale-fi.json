@@ -937,5 +937,7 @@
     "lisaa-aihekokonaisuus-action": "Lisää aihekokonaisuus",
     "muokkaa-aihekokonaisuus-title": "Muokkaa aihekokonaisuutta",
     "muokkaa-aihekokonaisuus-action": "Tallenna",
-    "jnro": "Järjestysnumero"
+    "jnro": "Järjestysnumero",
+
+    "kurssi-title": "Kurssi"
 }

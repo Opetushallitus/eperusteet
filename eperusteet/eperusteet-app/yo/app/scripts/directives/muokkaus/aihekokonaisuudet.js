@@ -106,7 +106,6 @@ angular.module('eperusteApp')
                                                           LukioAihekokonaisuudetService,
                                                           PerusteProjektiSivunavi,
                                                           LukiokoulutusService) {
-
     function init() {
       LukiokoulutusService.getOsa($stateParams).then(function(aihekokonaisuus) {
         $scope.aihekokonaisuus = aihekokonaisuus;

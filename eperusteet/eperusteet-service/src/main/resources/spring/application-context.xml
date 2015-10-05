@@ -64,6 +64,7 @@
     <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>
 
     <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
+    <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>
     <tx:annotation-driven/>
     <cache:annotation-driven />
     <aop:aspectj-autoproxy  />

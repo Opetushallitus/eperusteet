@@ -20,6 +20,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Builder;
 
+import java.io.Serializable;
+
 /**
  * User: tommiratamaa
  * Date: 29.9.15
@@ -28,7 +30,7 @@ import lombok.experimental.Builder;
 @Getter
 @Setter
 @Builder
-public class JarjestettyOppiaineDto {
+public class JarjestettyOppiaineDto implements Serializable {
     private Long oppiaineId;
     private Integer jarjestys;
 
@@ -39,5 +41,4 @@ public class JarjestettyOppiaineDto {
         this.oppiaineId = oppiaineId;
         this.jarjestys = jarjestys;
     }
-
 }

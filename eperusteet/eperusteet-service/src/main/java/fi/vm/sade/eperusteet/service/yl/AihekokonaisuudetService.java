@@ -34,7 +34,7 @@ import java.util.List;
 public interface AihekokonaisuudetService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<AihekokonaisuusListausDto> getAihekokonaisuudet(Long perusteId, Kieli kieli);
+    List<AihekokonaisuusListausDto> getAihekokonaisuudet(Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     AihekokonaisuudetYleiskuvausDto getAihekokonaisuudetYleiskuvaus(Long perusteId);

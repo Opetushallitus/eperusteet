@@ -16,13 +16,24 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.dto.LokalisointiDto;
+import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.TekstiPalanenRepositoryCustom;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  *
@@ -38,6 +49,9 @@ public class LokalisointiServiceImpl implements LokalisointiService {
 
     @Value("${lokalisointi.service.category:eperusteet}")
     private String category;
+
+    @Autowired
+    private TekstiPalanenRepositoryCustom tekstiPalanenRepository;
 
 
     @Override
@@ -59,6 +73,19 @@ public class LokalisointiServiceImpl implements LokalisointiService {
             return re[0];
         }
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public <T extends Lokalisoitava, C extends Collection<T>> C lokalisoi(C list) {
+        Map<Long,List<LokalisoituTekstiDto>> byId = list.stream().flatMap(Lokalisoitava::lokalisoitavatTekstit)
+                .filter(v -> v != null && v.getId() != null).collect(groupingBy(LokalisoituTekstiDto::getId));
+        if (!byId.isEmpty()) {
+            tekstiPalanenRepository.findLokalisoitavatTekstit(byId.keySet())
+                .stream().forEach(haettu -> byId.get(haettu.getId())
+                    .stream().forEach(palanen -> palanen.getTekstit().put(haettu.getKieli(), haettu.getTeksti())));
+        }
+        return list;
     }
 
 }

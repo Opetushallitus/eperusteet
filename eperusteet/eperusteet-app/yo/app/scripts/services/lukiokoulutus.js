@@ -183,7 +183,7 @@ angular.module('eperusteApp')
             cached[tyyppi] = data;
           }).$promise;
         case this.KURSSIT:
-          return LukioKurssit.query(commonParams({kieli: $translate.use().toUpperCase()}), function(data) {
+          return LukioKurssit.query(commonParams(), function(data) {
             cached[tyyppi] = data;
           }).$promise;
         case this.OPETUKSEN_YLEISET_TAVOITTEET:
@@ -191,7 +191,7 @@ angular.module('eperusteApp')
             cached[tyyppi] = data;
           }).$promise;
         case this.AIHEKOKONAISUUDET:
-          return LukiokoulutusAihekokonaisuudet.query(commonParams({kieli: $translate.use().toUpperCase()}), function (data) {
+          return LukiokoulutusAihekokonaisuudet.query(commonParams(), function (data) {
             cached[tyyppi] = data;
           }).$promise;
         default:
@@ -211,9 +211,16 @@ angular.module('eperusteApp')
      */
     var listByPeruste = function(perusteId, cb) {
       return LukioKurssit.query({
-          perusteId: perusteId,
-          kieli: $translate.use().toUpperCase()
+          perusteId: perusteId
       }, cb).$promise;
+    };
+
+    /**
+     * @param id of kurssi
+     * @return Promise<LukiokurssiMuokkausDto>
+     */
+    var get = function(id) {
+      return LukioKurssit.get({osanId: id, perusteId: LukiokoulutusService.getPerusteId()});
     };
 
     /**
@@ -256,6 +263,7 @@ angular.module('eperusteApp')
 
     return {
       listByPeruste: listByPeruste,
+      get: get,
       save: save,
       update: update
     };
@@ -323,8 +331,7 @@ angular.module('eperusteApp')
 
     var getAihekokonaisuus = function(aihekokonaisuusId,cb) {
       return LukiokoulutusAihekokonaisuudet.query({
-        aihekokonaisuusId: aihekokonaisuusId,
-        kieli: $translate.use().toUpperCase()
+        aihekokonaisuusId: aihekokonaisuusId
       }, cb).$promise;
     };
 
@@ -333,7 +340,6 @@ angular.module('eperusteApp')
         perusteId: LukiokoulutusService.getPerusteId()
       }).$promise;
     };
-
 
     return {
       saveAihekokonaisuus: saveAihekokonaisuus,

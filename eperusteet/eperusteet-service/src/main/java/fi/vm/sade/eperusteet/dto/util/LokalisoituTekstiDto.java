@@ -29,6 +29,7 @@ import lombok.Getter;
  * @author jhyoty
  */
 public class LokalisoituTekstiDto {
+    private static final Map<Kieli,String> emptyMap = new EnumMap<>(Kieli.class);
 
     @Getter
     private final Long id;
@@ -77,4 +78,7 @@ public class LokalisoituTekstiDto {
         return tekstit.get(kieli);
     }
 
+    public static LokalisoituTekstiDto localizeLaterById(Long id) {
+        return id == null ? null : new LokalisoituTekstiDto(id, emptyMap);
+    }
 }

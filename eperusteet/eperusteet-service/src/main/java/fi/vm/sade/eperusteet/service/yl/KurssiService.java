@@ -34,7 +34,7 @@ import java.util.List;
 public interface KurssiService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId, Kieli kieli);
+    List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     LukiokurssiMuokkausDto getLukiokurssiMuokkausById(long perusteId, long kurssiId) throws NotExistsException;

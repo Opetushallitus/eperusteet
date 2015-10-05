@@ -101,9 +101,8 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/kurssit", method = GET)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<LukiokurssiListausDto>> listKurssit(@PathVariable("perusteId") final Long perusteId,
-                                                                   @RequestParam("kieli") Kieli kieli) {
-        return handleGet(perusteId, () -> kurssit.findLukiokurssitByPerusteId(perusteId, kieli));
+    public ResponseEntity<List<LukiokurssiListausDto>> listKurssit(@PathVariable("perusteId") final Long perusteId) {
+        return handleGet(perusteId, () -> kurssit.findLukiokurssitByPerusteId(perusteId));
     }
 
     @RequestMapping(value = "/kurssit/{id}", method = GET)
@@ -207,12 +206,11 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/aihekokonaisuudet", method = GET)
     public ResponseEntity<List<AihekokonaisuusListausDto>> getAihekokonaisuudet(
-            @PathVariable("perusteId") final Long perusteId,
-            @RequestParam("kieli") Kieli kieli) {
+            @PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, new Supplier<List<AihekokonaisuusListausDto>>() {
             @Override
             public List<AihekokonaisuusListausDto> get() {
-                return aihekokonaisuudet.getAihekokonaisuudet(perusteId, kieli);
+                return aihekokonaisuudet.getAihekokonaisuudet(perusteId);
             }
         });
     }

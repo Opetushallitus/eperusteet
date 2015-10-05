@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
+import fi.vm.sade.eperusteet.service.LokalisointiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -65,16 +66,21 @@ public class KurssiServiceImpl implements KurssiService {
     @Autowired
     private LukiokurssiRepository lukiokurssiRepository;
 
+    @Autowired
+    private LokalisointiService lokalisointiService;
+
+
     @Override
     @Transactional(readOnly = true)
-    public List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId, Kieli kieli) {
-        List<LukiokurssiListausDto> kurssit = lukiokurssiRepository.findLukiokurssitByPerusteId(perusteId, kieli);
+    public List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId) {
+        List<LukiokurssiListausDto> kurssit = lukiokurssiRepository.findLukiokurssitByPerusteId(perusteId);
         Map<Long,LukiokurssiListausDto> kurssitById = kurssit.stream()
                 .collect(toMap(LukiokurssiListausDto::getId, k -> k));
         lukiokurssiRepository.findKurssiOppaineRelationsByPerusteId(perusteId).stream()
                 .forEachOrdered(oak -> kurssitById.get(oak.getKurssiId()).getOppiaineet().add(
-                        new JarjestettyOppiaineDto(oak.getOppiaineId(), oak.getJarjestys())));
-        return kurssit;
+                        new NimettyJarjestettyOppiaineDto(oak.getOppiaineId(), oak.getJarjestys(),
+                                oak.getOppiaineNimiId())));
+        return lokalisointiService.lokalisoi(kurssit);
     }
 
     @Override

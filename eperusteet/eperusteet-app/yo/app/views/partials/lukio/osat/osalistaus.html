@@ -1,42 +1,26 @@
 <!-- osalistaus.html -->
 <div class="row">
-    <div class="col-md-12 ep-sisalto-inner">
-        <div class="action-buttons">
-            <button icon-role="add" class="floater btn" ng-click="add()" kaanna="sisaltoState.addLabel"></button>
-        </div>
+  <div class="col-md-12 ep-sisalto-inner">
+    <div class="action-buttons">
+      <button icon-role="add" class="floater btn" ng-click="add()" kaanna="sisaltoState.addLabel"></button>
+    </div>
 
-        <h1 kaanna="sisaltoState.label"></h1>
+    <h1 kaanna="sisaltoState.label"></h1>
 
-        <div ng-if="isOpetuksenTavoitteet()">
-          <lukio-muokkaus-tavoitteet model="dataObject" versiot="versiot" />
-        </div>
-        <div ng-if="isAihekokonaisuus()">
-          <lukio-muokkaus-aihekokonaisuudet model="dataObject" versiot="versiot" />
-        </div>
+    <div ng-if="isOpetuksenTavoitteet()">
+      <lukio-muokkaus-tavoitteet model="dataObject" versiot="versiot"/>
+    </div>
+    <div ng-if="isAihekokonaisuus()">
+      <lukio-muokkaus-aihekokonaisuudet model="dataObject" versiot="versiot"/>
+    </div>
 
-        <div osalistaus="osaAlueet" search-placeholder="etsi-sisallosta" empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
-               show-laajuus="false" url-generator="createUrl(value)" options="options"
-               ng-if="!isOppiaineet() && !isOpetuksenTavoitteet() && !isAihekokonaisuus()"></div>
-          <div ng-if="isOppiaineet()">
-            <div style="float: left;width: 60%" class="tree col-lg-6 col-md-8 col-xs-12">
-              <div class="tree-con">
-                <rajaus size="small" classes="puun-rajaus" model="treehelpers.haku"
-                        callback="treeHaku()"
-                        placeholder="{{ 'lukio-etsi-oppiaineista' || kaanna }}"></rajaus>
-              </div>
-              <generic-tree tree-provider="treeOsatProvider"
-                            ui-sortable-config="kurssiTreeConfig"></generic-tree>
-            </div>
-            <div style="float:left; width: 25%;margin-left: 5%">
+    <div osalistaus="osaAlueet" search-placeholder="etsi-sisallosta"
+         empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
+         show-laajuus="false" url-generator="createUrl(value)" options="options"
+         ng-if="isPerusOsalistaus()"></div>
 
-            <h2 kaanna="lukio-liitamattomat-kurssit"></h2>
-            <div ui-sortable="liittamattomatKurssitConfig" ng-model="liittamattomatKurssit" class="recursivetreeLiittamattomat">
-              <div ng-repeat="kurssi in liittamattomatKurssit">
-                <span class="treehandle" icon-role="drag"></span>
-                <span kaanna="kurssi.nimi"></span>
-              </div>
-            </div>
-          </div>
-         </div>
-      </div>
+    <div ng-if="isOppiaineet()">
+      <lukio-oppiaineet/>
+    </div>
+  </div>
 </div>

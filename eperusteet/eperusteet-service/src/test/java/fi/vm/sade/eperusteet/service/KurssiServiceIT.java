@@ -82,7 +82,7 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         long id = kurssiService.luoLukiokurssi(perusteId, LukioKurssiLuontiDto.builder()
                 .tyyppi(LukiokurssiTyyppi.PAKOLLINEN)
                 .oppiaineet(asList(
-                        new JarjestettyOppiaineDto(suomiRef.getId(), 1)
+                    new JarjestettyOppiaineDto(suomiRef.getId(), 1)
                 ))
                 .nimi(teksti(fi("Äidinkielen perusteet"), sv("Finska ett")))
                 .koodiArvo("AI1")
@@ -98,7 +98,7 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         
         muokkausDto.getOppiaineet().add(new JarjestettyOppiaineDto(saameRef.getId(), 1));
         kurssiService.muokkaaLukiokurssia(perusteId, muokkausDto);
-        List<LukiokurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId, Kieli.FI);
+        List<LukiokurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId);
         assertEquals(1, list.size());
         assertEquals("Äidinkielen perusteet", list.get(0).getNimi());
         assertEquals("AI1", list.get(0).getKoodiArvo());

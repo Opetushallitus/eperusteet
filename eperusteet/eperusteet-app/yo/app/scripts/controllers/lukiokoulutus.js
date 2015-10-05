@@ -137,8 +137,7 @@ angular.module('eperusteApp')
   }
 )
 .controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService,
-                                                virheService, LukioKurssiService, $log, $q, $translate,
-                                                $rootScope, $timeout) {
+                                                virheService, LukioKurssiService, $log) {
     $scope.sisaltoState = _.find(
       LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
@@ -150,7 +149,6 @@ angular.module('eperusteApp')
     $scope.kurssit = [];
     $scope.aihekokonaisuudet = [];
     $scope.osaAlueet = [];
-    var kurssitProvider = LukioKurssiService.listByPeruste($scope.peruste.id);
     $scope.isOppiaineet = function() {
       return $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
     };
@@ -163,6 +161,10 @@ angular.module('eperusteApp')
       return $stateParams.osanTyyppi === LukiokoulutusService.OPETUKSEN_YLEISET_TAVOITTEET;
     };
 
+    $scope.isPerusOsalistaus = function() {
+      return !$scope.isOppiaineet() && !$scope.isOpetuksenTavoitteet() && !$scope.isAihekokonaisuus();
+    };
+
     if (!$scope.isOppiaineet()) {
       LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function (res) {
         $scope.osaAlueet = res;
@@ -171,6 +173,11 @@ angular.module('eperusteApp')
     $scope.options = {};
 
     $scope.createUrl = function (value) {
+      if ($stateParams.osanTyyppi === LukiokoulutusService.KURSSIT) {
+        return $state.href('root.perusteprojekti.suoritustapa.kurssi', {
+          kurssiId: value.id
+        });
+      }
       return $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', {
         osanTyyppi: $stateParams.osanTyyppi,
         osanId: value.id,
@@ -189,6 +196,35 @@ angular.module('eperusteApp')
         tabId: 0
       });
     };
+
+  })
+  .controller('LukioOsaAlueController', function ($scope, $q, $stateParams, LukiokoulutusService,
+                                                  ProjektinMurupolkuService) {
+    $scope.isOppiaine = $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
+    $scope.isAihekokonaisuus = $stateParams.osanTyyppi === LukiokoulutusService.AIHEKOKONAISUUDET;
+    $scope.versiot = {latest: true};
+    $scope.dataObject = LukiokoulutusService.getOsa($stateParams);
+    var labels = _.invert(LukiokoulutusService.LABELS);
+    ProjektinMurupolkuService.set('osanTyyppi', $stateParams.osanTyyppi, labels[$stateParams.osanTyyppi]);
+    $scope.dataObject.then(function (res) {
+      ProjektinMurupolkuService.set('osanId', $stateParams.osanId, res.nimi);
+    });
+  })
+
+  .directive('lukioOppiaineet', function() {
+    return {
+      templateUrl: 'views/directives/lukiokoulutus/oppiaineet.html',
+      restrict: 'E',
+      scope: {
+      },
+      controller: 'LukioOppiaineKurssiPuuController'
+    };
+  })
+  .controller('LukioOppiaineKurssiPuuController', function($scope, $stateParams, $q, $translate,
+                                                           $rootScope, $timeout, $log,
+                                                           LukioKurssiService, LukiokoulutusService,
+                                                           $state) {
+    var kurssitProvider = LukioKurssiService.listByPeruste(LukiokoulutusService.getPerusteId());
 
     $scope.treehelpers = {
       haku: '',
@@ -222,21 +258,21 @@ angular.module('eperusteApp')
         node = node.$$nodeParent;
       }
     }
-    function traverse(node, fn, parent) {
+    function traverse(node, ch, fn, parent) {
       if (_.isArray(node)) {
         _.each(node, function(i) {
-          traverse(i, fn, parent);
+          traverse(i, ch, fn, parent);
         });
       } else {
         fn(node, parent);
-        _.each(node.lapset, function(c) {
-          traverse(c, fn, node);
+        _.each(ch(node), function(c) {
+          traverse(c, ch, fn, node);
         });
       }
     }
     function updateTree(fn) {
       if (fn) {
-        traverse($scope.treeRoot, fn);
+        traverse($scope.treeRoot, _.property('lapset'), fn);
       }
     }
     function piilotaHaunPerusteella(item) {
@@ -265,7 +301,8 @@ angular.module('eperusteApp')
       cursor: 'move',
       delay: 100,
       disabled: false,
-      tolerance: 'pointer'
+      tolerance: 'pointer',
+      dtype: 'peruste'
     };
     $scope.kurssiTreeConfig = {
       connectWith: '.recursivetreeLiittamattomat'
@@ -284,15 +321,18 @@ angular.module('eperusteApp')
                   $scope.treeRoot.kurssit = [];
                   _.each(kurssit, function(kurssi) {
                     kurssi.$$hide = false;
-                    kurssi.$$collapsed = false;
+                    kurssi.$$collapsed = $scope.treehelpers.defaultCollapsed;
+                    kurssi.dtype = 'kurssi';
                   });
+                  $scope.treeRoot.lapset = _.union($scope.treeRoot.oppimaarat, $scope.treeRoot.kurssit);
                   $scope.liittamattomatKurssit = _.cloneDeep(_.filter(kurssit, function (k) {
                     return k.oppiaineet.length === 0;
                   }));
-                  traverse($scope.treeRoot, function (node) {
-                    node.$$collapsed = $scope.treehelpers.defaultCollapsed;
+                  traverse($scope.treeRoot, _.property('lapset'), function (node) {
                     node.$$hide = false;
-                    if (!node.oppiaineet && !node.kurssit) {
+                    node.$$collapsed = $scope.treehelpers.defaultCollapsed;
+                    node.dtype = !node.oppiaineet ? 'oppiaine' : 'kurssi';
+                    if (node.dtype === 'oppiaine') {
                       node.kurssit =  _(kurssit)
                         .filter(function (kurssi) {
                           return _.any(kurssi.oppiaineet, function (oa) {
@@ -316,16 +356,16 @@ angular.module('eperusteApp')
         template: function(n) {
           var commonPart = '<span icon-role="drag" class="treehandle"></span>',
             collabsibleCommon = commonPart + '<span ng-click="toggle(node)" class="colorbox suljettu">' +
-            '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
-            '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
-            '</span>';
+              '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+              '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
+              '</span>';
           if (n.oppiaineet) {
             if (n.oppiaineet.length === 0) {
               return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid yellowgreen;">' +
-                commonPart + ' Liittämätön kurssi {{ node.nimi | kaanna }} {{ node.id }}</div>', n);
+                commonPart + ' <a ng-click="goto(node)">{{ node.nimi | kaanna }} {{ node.id }}</a></div>', n);
             }
             return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid yellowgreen;">' +
-              commonPart + ' {{ node.nimi | kaanna }} {{ node.id }}</div>', n);
+              commonPart + ' <a ng-click="goto(node)">{{ node.nimi | kaanna }}</a></div>', n);
           } else {
             return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid black;">' +
               collabsibleCommon + '<a ng-click="goto(node)">{{ node.nimi | kaanna }}</a></div>', n);
@@ -344,71 +384,21 @@ angular.module('eperusteApp')
           };
           scope.goto = function(node) {
             $log.info('Goto: ', node);
+            if (node.dtype === 'kurssi') {
+              $state.go('root.perusteprojekti.suoritustapa.kurssi', {
+                kurssiId: node.id
+              });
+            } else if(node.dtype === 'oppiaine') {
+              $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
+                osanId: node.id,
+                osanTyyppi: 'oppiaineet_oppimaarat',
+                tabId: 0
+              });
+            }
           };
         },
         useUiSortable: _.constant(true)
       };
       resolve(treeScope);
     });
-  })
-  .controller('LukioOsaAlueController', function ($scope, $q, $stateParams, LukiokoulutusService,
-                                                  ProjektinMurupolkuService) {
-    $scope.isOppiaine = $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
-    $scope.isAihekokonaisuus = $stateParams.osanTyyppi === LukiokoulutusService.AIHEKOKONAISUUDET;
-    $scope.versiot = {latest: true};
-    $scope.dataObject = LukiokoulutusService.getOsa($stateParams);
-    var labels = _.invert(LukiokoulutusService.LABELS);
-    ProjektinMurupolkuService.set('osanTyyppi', $stateParams.osanTyyppi, labels[$stateParams.osanTyyppi]);
-    $scope.dataObject.then(function (res) {
-      ProjektinMurupolkuService.set('osanId', $stateParams.osanId, res.nimi);
-    });
-  })
-
-
-  // --------------------------------------------------------------------------------------------------------
-  // Kurssit
-  // --------------------------------------------------------------------------------------------------------
-
-  .controller('LisaaLukioKurssiController', function($scope,
-                                                     $state,
-                                                     $q,
-                                                     $stateParams,
-                                                     LukiokoulutusService,
-                                                     LukioKurssiService,
-                                                     YleinenData,
-                                                     MuokkausUtils,
-                                                     Koodisto) {
-
-    $scope.kurssityypit = [];
-    function init() {
-      $scope.kurssi = {
-        nimi: {fi: ''},
-        tyyppi: 'PAKOLLINEN',
-        koodiUri: null,
-        koodiArvo: null
-      };
-      YleinenData.lukioKurssityypit().then(function(tyypit) {
-        $scope.kurssityypit = tyypit;
-      });
-    }
-    init();
-
-    $scope.openKoodisto = Koodisto.modaali(function(koodisto) {
-      MuokkausUtils.nestedSet($scope.kurssi, 'koodiUri', ',', koodisto.koodiUri);
-      MuokkausUtils.nestedSet($scope.kurssi, 'koodiArvo', ',', koodisto.koodiArvo);
-    }, {
-      tyyppi: function() { return 'lukionkurssit'; },
-      ylarelaatioTyyppi: function() { return ''; },
-      tarkista: _.constant(true)
-    });
-
-    $scope.save = function() {
-      LukioKurssiService.save($scope.kurssi).then(function() {
-        $scope.back();
-      });
-    };
-
-    $scope.back = function() {
-      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.KURSSIT});
-    };
   });

@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.repository.LukioAihekokonaisuudetRepository;
 import fi.vm.sade.eperusteet.repository.LukioAihekokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.LokalisointiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -66,11 +67,15 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     @Autowired
     private PerusteRepository perusteet;
 
+    @Autowired
+    private LokalisointiService lokalisointiService;
+
 
     @Override
     @Transactional( readOnly = true)
-    public List<AihekokonaisuusListausDto> getAihekokonaisuudet(Long perusteId, Kieli kieli) {
-        return lukioAihekokonaisuusRepository.findAihekokonaisuudetByPerusteId(perusteId, kieli);
+    public List<AihekokonaisuusListausDto> getAihekokonaisuudet(Long perusteId) {
+        return lokalisointiService.lokalisoi(
+                lukioAihekokonaisuusRepository.findAihekokonaisuudetByPerusteId(perusteId));
     }
 
 
