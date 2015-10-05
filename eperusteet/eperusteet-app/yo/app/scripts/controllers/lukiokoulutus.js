@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .controller('LukiokoulutussisaltoController',
   function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto, LukioKurssiService,
-      LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, $log) {
+      LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils) {
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -217,7 +217,7 @@ angular.module('eperusteApp')
     }
     function parents(node, fn) {
       node = node.$$nodeParent;
-      while (node != null) {
+      while (node !== null) {
         fn(node);
         node = node.$$nodeParent;
       }
@@ -343,7 +343,7 @@ angular.module('eperusteApp')
             //$rootScope.$broadcast('genericTree:refresh');
           };
           scope.goto = function(node) {
-            $log.info("Goto: ", node);
+            $log.info('Goto: ', node);
           };
         },
         useUiSortable: _.constant(true)

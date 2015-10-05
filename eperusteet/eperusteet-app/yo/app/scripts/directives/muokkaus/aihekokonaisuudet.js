@@ -15,7 +15,6 @@
 */
 
 'use strict';
-/* global _ */
 
 angular.module('eperusteApp')
 
@@ -36,7 +35,7 @@ angular.module('eperusteApp')
   })
 
   .controller('LukioAihekokonaisuudetController', function ($scope, LukioAihekokonaisuudetService,
-                                                            PerusteProjektiSivunavi, $log) {
+                                                            PerusteProjektiSivunavi) {
     function init() {
       LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvaus().then(function(aihekokonaisuudet) {
         $scope.aihekokonaisuudet = aihekokonaisuudet;
@@ -44,7 +43,6 @@ angular.module('eperusteApp')
       $scope.editEnabled = false;
       PerusteProjektiSivunavi.setVisible(true);
     }
-
 
     init();
     $scope.editEnabled = false;
@@ -107,21 +105,7 @@ angular.module('eperusteApp')
                                                           $stateParams,
                                                           LukioAihekokonaisuudetService,
                                                           PerusteProjektiSivunavi,
-                                                          LukiokoulutusService,
-                                                          $log) {
-
-    $scope.isNew = false;
-    $scope.editEnabled = false;
-    $scope.versiot = {latest: true};
-    $scope.aihekokonaisuus = {};
-
-    if( $stateParams.osanId === "uusi" ) {
-      $scope.editEnabled = true;
-      $scope.isNew = true;
-      PerusteProjektiSivunavi.setVisible(false);
-    } else {
-      init();
-    }
+                                                          LukiokoulutusService) {
 
     function init() {
       LukiokoulutusService.getOsa($stateParams).then(function(aihekokonaisuus) {
@@ -131,10 +115,23 @@ angular.module('eperusteApp')
       PerusteProjektiSivunavi.setVisible(true);
     }
 
+    $scope.isNew = false;
+    $scope.editEnabled = false;
+    $scope.versiot = {latest: true};
+    $scope.aihekokonaisuus = {};
+
+    if( $stateParams.osanId === 'uusi') {
+      $scope.editEnabled = true;
+      $scope.isNew = true;
+      PerusteProjektiSivunavi.setVisible(false);
+    } else {
+      init();
+    }
+
     $scope.edit = function() {
       $scope.editEnabled = true;
       PerusteProjektiSivunavi.setVisible(false);
-    }
+    };
 
     $scope.cancel = function() {
       if( $scope.isNew ) {
@@ -142,7 +139,7 @@ angular.module('eperusteApp')
       } else {
         init();
       }
-    }
+    };
 
     $scope.save = function() {
       LukioAihekokonaisuudetService.saveAihekokonaisuus($scope.aihekokonaisuus).then(function() {

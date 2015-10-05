@@ -265,7 +265,6 @@ angular.module('eperusteApp')
                      Notifikaatiot, LukiokoulutusService, $translate,
                      $q) {
 
-
     /**
      * Tallentaa yhden aihekokonaisuuden
      *
@@ -281,7 +280,7 @@ angular.module('eperusteApp')
         d.resolve(aihekokonaisuusTiedot);
       }, Notifikaatiot.serverCb);
       return d.promise;
-    }
+    };
 
     /**
      * Tallentaa aihekokobaisuudet yleiskuvauksen
@@ -298,7 +297,7 @@ angular.module('eperusteApp')
         d.resolve(aihekokonaisuudetYleiskuvausTiedot);
       }, Notifikaatiot.serverCb);
       return d.promise;
-    }
+    };
 
     /**
      *
