@@ -18,6 +18,9 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusListausDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
@@ -58,10 +61,16 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     private KurssiService kurssit;
 
     @Autowired
+    private AihekokonaisuudetService aihekokonaisuudet;
+
+    @Autowired
     private PerusteenOsaViiteService viittet;
 
     @Autowired
     private PerusteService perusteet;
+
+    @Autowired
+    private AihekokonaisuudetService aihekokonaisuudetService;
 
     @RequestMapping(value = "/oppiaineet", method = GET)
     public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(
@@ -193,6 +202,70 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id) {
         return viittet.kloonaaTekstiKappale(perusteId, id);
+    }
+
+
+    @RequestMapping(value = "/aihekokonaisuudet", method = GET)
+    public ResponseEntity<List<AihekokonaisuusListausDto>> getAihekokonaisuudet(
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestParam("kieli") Kieli kieli) {
+        return handleGet(perusteId, new Supplier<List<AihekokonaisuusListausDto>>() {
+            @Override
+            public List<AihekokonaisuusListausDto> get() {
+                return aihekokonaisuudet.getAihekokonaisuudet(perusteId, kieli);
+            }
+        });
+    }
+
+    @RequestMapping(value = "/aihekokonaisuudet/yleiskuvaus", method = GET)
+    public ResponseEntity<AihekokonaisuudetYleiskuvausDto> getAihekokonaisuudetYleiskuvaus(
+            @PathVariable("perusteId") final Long perusteId) {
+        return handleGet(perusteId, new Supplier<AihekokonaisuudetYleiskuvausDto>() {
+            @Override
+            public AihekokonaisuudetYleiskuvausDto get() {
+                return aihekokonaisuudet.getAihekokonaisuudetYleiskuvaus(perusteId);
+            }
+        });
+    }
+
+    @RequestMapping(value = "/aihekokonaisuudet/yleiskuvaus", method = POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public RedirectView updateAihekokonaisuudetYleiskuvaus(
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody AihekokonaisuudetYleiskuvausDto AihekokonaisuudetYleiskuvausDto) {
+        aihekokonaisuudet.tallennaYleiskuvaus(perusteId, AihekokonaisuudetYleiskuvausDto);
+        return new RedirectView("yleiskuvaus", true);
+    }
+
+    @RequestMapping(value = "/aihekokonaisuudet/{id}", method = GET)
+    public ResponseEntity<LukioAihekokonaisuusMuokkausDto> getAihekokonaisuus(@PathVariable("perusteId") final Long perusteId,
+                                                                              @PathVariable("id") final Long id) {
+        return handleGet(perusteId, () -> aihekokonaisuudet.getLukioAihekokobaisuusMuokkausById(perusteId, id));
+    }
+
+    @RequestMapping(value = "/aihekokonaisuudet/aihekokonaisuus", method = POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public RedirectView addAihekokonaisuus(@PathVariable("perusteId") final Long perusteId,
+                                  @RequestBody LukioAihekokonaisuusLuontiDto aihekokonaisuusLuontiDto) {
+        return new RedirectView(""+aihekokonaisuudet.luoAihekokonaisuus(perusteId, aihekokonaisuusLuontiDto), true);
+    }
+
+    @RequestMapping(value = "/aihekokonaisuudet/aihekokonaisuus/{id}", method = GET)
+    public ResponseEntity<LukioAihekokonaisuusMuokkausDto> getAihekokonaisuusById(@PathVariable("perusteId") final Long perusteId,
+                                                                              @PathVariable("id") final Long id) {
+        return handleGet(perusteId, () -> aihekokonaisuudet.getLukioAihekokobaisuusMuokkausById(perusteId, id));
+    }
+
+
+    @RequestMapping(value = "/yleisettavoitteet", method = GET)
+    public ResponseEntity<YleisetTavoitteetDto> getYleisetTavoitteet(
+            @PathVariable("perusteId") final Long perusteId) {
+        return handleGet(perusteId, new Supplier<YleisetTavoitteetDto>() {
+            @Override
+            public YleisetTavoitteetDto get() {
+                return perusteet.getYleisetTavoitteet(perusteId);
+            }
+        });
     }
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, Supplier<T> response) {

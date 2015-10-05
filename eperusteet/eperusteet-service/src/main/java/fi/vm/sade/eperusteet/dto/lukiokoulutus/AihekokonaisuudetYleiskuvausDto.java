@@ -19,6 +19,8 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,12 +29,9 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class AihekokonaisuudetDto {
-
+public class AihekokonaisuudetYleiskuvausDto implements Serializable {
     private Long id;
-    private UUID tunniste;
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto yleiskuvaus;
-    private List<AihekokonaisuusDto> aihekokonaisuudet;
-
+    private Date muokattu;
 }

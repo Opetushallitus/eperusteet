@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .controller('LukiokoulutussisaltoController',
   function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto, LukioKurssiService,
-      LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils) {
+      LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, $log) {
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -33,11 +33,13 @@ angular.module('eperusteApp')
     });
 
     $scope.$watch('peruste.sisalto', function () {
-      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function () {
-        $state.href('root.perusteprojekti.suoritustapa.lukioosat', {
-          osanTyyppi: 'osaaminen'
+      if( !_.isEmpty($scope.peruste.sisalto) ) {
+        Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function () {
+          $state.href('root.perusteprojekti.suoritustapa.lukioosat', {
+            osanTyyppi: 'osaaminen'
+          });
         });
-      });
+      }
     }, true);
 
     $scope.datat = {
@@ -143,6 +145,7 @@ angular.module('eperusteApp')
       virheService.virhe('virhe-sivua-ei-löytynyt');
       return;
     }
+
     $scope.kurssit = [];
     $scope.aihekokonaisuudet = [];
     $scope.osaAlueet = [];
@@ -156,6 +159,14 @@ angular.module('eperusteApp')
     });
     $scope.isOppiaineet = function() {
       return $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
+    };
+
+    $scope.isAihekokonaisuus = function() {
+      return $stateParams.osanTyyppi === LukiokoulutusService.AIHEKOKONAISUUDET;
+    };
+
+    $scope.isOpetuksenTavoitteet = function() {
+      return $stateParams.osanTyyppi === LukiokoulutusService.OPETUKSEN_YLEISET_TAVOITTEET;
     };
 
     $scope.options = {};

@@ -927,5 +927,14 @@
     "lisaa-kurssi-tyyppi-header": "Tyyppi",
     "lisaa-kurssi-koodi-header": "Koodi",
     "lisaa-kurssi-action": "luo kurssi",
-    "lisaa-kurssi-peruuta": "Peruuta"
+    "lisaa-kurssi-peruuta": "Peruuta",
+
+
+    "lisaa-aihekokonaisuus-title": "Lisää aihekokonaisuus",
+    "lisaa-aihekokonaisuus-otsikko-header": "Aihekokonaisuuden otsikko",
+    "lisaa-aihekokonaisuus-yleiskuvaus-header": "Aihekokonaisuuden kuvaus",
+    "lisaa-aihekokonaisuus-action": "Lisää aihekokonaisuus",
+    "muokkaa-aihekokonaisuus-title": "Muokkaa aihekokonaisuutta",
+    "muokkaa-aihekokonaisuus-action": "Tallenna",
+    "jnro": "Järjestysnumero"
 }

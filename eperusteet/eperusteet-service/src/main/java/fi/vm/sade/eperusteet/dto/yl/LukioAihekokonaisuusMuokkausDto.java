@@ -14,23 +14,26 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.yl;
+package fi.vm.sade.eperusteet.dto.yl;
 
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
-import org.springframework.security.access.prepost.PreAuthorize;
+import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
- * User: tommiratamaa
- * Date: 21.9.15
- * Time: 15.33
+ * User: jsikio
  */
-public interface LukiokoulutuksenPerusteenSisaltoService extends OppiainePerusteenSisaltoService {
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    AihekokonaisuudetYleiskuvausDto getAihekokonaisuudet(Long perusteId);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    YleisetTavoitteetDto getYleisetTavoitteet(Long perusteId);
-
+@Getter
+@Setter
+public class LukioAihekokonaisuusMuokkausDto implements Serializable {
+    @NotNull
+    private Long id;
+    @NotNull
+    private LokalisoituTekstiDto otsikko;
+    private Optional<LokalisoituTekstiDto> yleiskuvaus;
+    private Long jnro;
 }

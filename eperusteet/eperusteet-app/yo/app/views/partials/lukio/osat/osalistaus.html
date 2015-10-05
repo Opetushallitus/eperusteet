@@ -6,7 +6,16 @@
         </div>
 
         <h1 kaanna="sisaltoState.label"></h1>
-        <div osalistaus="osaAlueet" search-placeholder="etsi-sisallosta" empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
-             show-laajuus="false" url-generator="createUrl(value)" options="options"></div>
+
+      <div ng-if="isOpetuksenTavoitteet()">
+        <lukio-muokkaus-tavoitteet model="dataObject" versiot="versiot" />
+      </div>
+      <div ng-if="isAihekokonaisuus()">
+        <lukio-muokkaus-aihekokonaisuudet model="dataObject" versiot="versiot" />
+      </div>
+
+      <div osalistaus="osaAlueet" search-placeholder="etsi-sisallosta" empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
+           show-laajuus="false" url-generator="createUrl(value)" options="options"></div>
+
     </div>
 </div>

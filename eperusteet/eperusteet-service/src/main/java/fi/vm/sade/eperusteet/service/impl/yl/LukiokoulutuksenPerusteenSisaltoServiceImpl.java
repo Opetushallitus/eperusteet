@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
@@ -45,10 +45,10 @@ public class LukiokoulutuksenPerusteenSisaltoServiceImpl
     }
 
     @Override
-    public AihekokonaisuudetDto getAihekokonaisuudet(Long perusteId) {
+    public AihekokonaisuudetYleiskuvausDto getAihekokonaisuudet(Long perusteId) {
         LukiokoulutuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Sisaltoä annetulle perusteelle ei ole olemassa");
-        return mapper.map(sisalto.getAihekokonaisuudet(), AihekokonaisuudetDto.class);
+        return mapper.map(sisalto.getAihekokonaisuudet(), AihekokonaisuudetYleiskuvausDto.class);
     }
 
     @Override
