@@ -29,6 +29,7 @@ public interface LokalisointiService {
     @PreAuthorize("isAuthenticated()")
     LokalisointiDto get(String key, String locale);
 
+    @PreAuthorize("isAuthenticated()")
     <T extends Lokalisoitava, C extends Collection<T>> C lokalisoi(C list);
 }
 

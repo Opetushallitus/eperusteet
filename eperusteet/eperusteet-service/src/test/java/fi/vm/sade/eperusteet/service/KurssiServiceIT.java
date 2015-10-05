@@ -100,7 +100,7 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         kurssiService.muokkaaLukiokurssia(perusteId, muokkausDto);
         List<LukiokurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId);
         assertEquals(1, list.size());
-        assertEquals("Äidinkielen perusteet", list.get(0).getNimi());
+        assertEquals("Äidinkielen perusteet", list.get(0).getNimi().get(Kieli.FI));
         assertEquals("AI1", list.get(0).getKoodiArvo());
         assertEquals(2, list.get(0).getOppiaineet().size());
         assertTrue(list.get(0).getOppiaineet().stream().map(JarjestettyOppiaineDto::getOppiaineId)

@@ -24,8 +24,7 @@ angular.module('eperusteApp')
                                              LukiokoulutuksenSisalto,
                                              LukioKurssit,
                                              LukiokoulutusYleisetTavoitteet,
-                                             LukiokoulutusAihekokonaisuudet,
-                                             $log, $translate) {
+                                             LukiokoulutusAihekokonaisuudet) {
 
     this.OPETUKSEN_YLEISET_TAVOITTEET = 'opetuksen_yleiset_tavoitteet';
     this.AIHEKOKONAISUUDET = 'aihekokonaisuudet';
