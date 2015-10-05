@@ -21,6 +21,8 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus;
 import fi.vm.sade.eperusteet.repository.LukioAihekokonaisuusRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.Suoritustavalle;
+import fi.vm.sade.eperusteet.service.impl.AbstractLockService;
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuusLockContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,14 +33,12 @@ import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
  * User: jsikio
  */
 @Service
-@Suoritustavalle(Suoritustapakoodi.LUKIOKOULUTUS)
 @LockCtx(AihekokonaisuusLockContext.class)
-public class LukioAihekokonaisuusLockService extends AbstractAihekokonaisuusLockService {
+public class LukioAihekokonaisuusLockService extends AbstractLockService<AihekokonaisuusLockContext> {
 
     @Autowired
     private LukioAihekokonaisuusRepository lukioAihekokonaisuusRepository;
 
-    @Override
     protected Aihekokonaisuus getAihekokonaisuus(AihekokonaisuusLockContext ctx) {
         return found(lukioAihekokonaisuusRepository.getOne(ctx.getAihekokonaisuusId()), Aihekokonaisuus.inPeruste(ctx.getPerusteId()));
     }
@@ -47,4 +47,25 @@ public class LukioAihekokonaisuusLockService extends AbstractAihekokonaisuusLock
     protected int latestRevision(AihekokonaisuusLockContext ctx) {
         return lukioAihekokonaisuusRepository.getLatestRevisionId(ctx.getAihekokonaisuusId()).getNumero();
     }
+
+    @Override
+    protected Long getLockId(AihekokonaisuusLockContext ctx) {
+        return ctx.getAihekokonaisuusId();
+    }
+
+    @Override
+    protected Long validateCtx(AihekokonaisuusLockContext ctx, boolean readOnly) {
+        checkPermissionToPEruste(ctx, readOnly);
+        Aihekokonaisuus aihekokonaisuus = getAihekokonaisuus(ctx);
+        return aihekokonaisuus.getId();
+    }
+
+    protected void checkPermissionToPEruste(AihekokonaisuusLockContext ctx, boolean readOnly) {
+        if ( readOnly ) {
+            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
+        } else {
+            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);
+        }
+    }
+
 }
