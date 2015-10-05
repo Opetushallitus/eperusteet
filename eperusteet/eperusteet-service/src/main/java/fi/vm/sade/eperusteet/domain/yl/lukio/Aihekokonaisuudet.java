@@ -45,7 +45,7 @@ public class Aihekokonaisuudet extends AbstractAuditedReferenceableEntity {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "otsikko_id", nullable = false)
+    @JoinColumn(name = "otsikko_id")
     private TekstiPalanen otsikko;
 
     @Getter
@@ -59,7 +59,7 @@ public class Aihekokonaisuudet extends AbstractAuditedReferenceableEntity {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "sisalto_id", nullable = false)
+    @JoinColumn(name = "sisalto_id")
     private LukiokoulutuksenPerusteenSisalto sisalto;
 
     @Getter
