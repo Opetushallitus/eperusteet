@@ -16,29 +16,35 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Builder;
 
-import java.io.Serializable;
+import java.util.stream.Stream;
+
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterById;
 
 /**
  * User: tommiratamaa
- * Date: 29.9.15
- * Time: 18.08
+ * Date: 5.10.15
+ * Time: 20.41
  */
 @Getter
 @Setter
-@Builder
-public class JarjestettyOppiaineDto implements Serializable {
-    private Long oppiaineId;
-    private Integer jarjestys;
+public class KurssinOppiaineNimettyDto extends KurssinOppiaineDto implements Lokalisoitava {
+    protected LokalisoituTekstiDto oppiaineNimi;
 
-    public JarjestettyOppiaineDto() {
+    public KurssinOppiaineNimettyDto() {
     }
 
-    public JarjestettyOppiaineDto(Long oppiaineId, Integer jarjestys) {
-        this.oppiaineId = oppiaineId;
-        this.jarjestys = jarjestys;
+    public KurssinOppiaineNimettyDto(Long oppiaineId, Integer jarjestys, Long oppiaineNimiId) {
+        super(oppiaineId, jarjestys);
+        this.oppiaineNimi = localizeLaterById(oppiaineNimiId);
+    }
+
+    @Override
+    public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {
+        return Stream.of(oppiaineNimi);
     }
 }

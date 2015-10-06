@@ -14,32 +14,27 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.service.mapping;
 
-import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.stream.Stream;
+import ma.glasnost.orika.converter.BidirectionalConverter;
+import ma.glasnost.orika.metadata.Type;
 
 /**
+ * For conveniance if you want to convert different DTOs to others in test etc.
+ *
  * User: tommiratamaa
- * Date: 5.10.15
- * Time: 20.41
+ * Date: 6.10.15
+ * Time: 13.54
  */
-@Getter
-@Setter
-public class NimettyJarjestettyOppiaineDto extends JarjestettyOppiaineDto implements Lokalisoitava {
-    private LokalisoituTekstiDto oppiaineNimi;
-
-    public NimettyJarjestettyOppiaineDto(Long oppiaineId, Integer jarjestys, Long oppiaineNimiId) {
-        super(oppiaineId, jarjestys);
-        this.oppiaineNimi = LokalisoituTekstiDto.localizeLaterById(oppiaineNimiId);
+public class LokalisoituTekstiDtoCopyConverter extends BidirectionalConverter<LokalisoituTekstiDto,LokalisoituTekstiDto> {
+    @Override
+    public LokalisoituTekstiDto convertTo(LokalisoituTekstiDto source, Type<LokalisoituTekstiDto> destinationType) {
+        return convertFrom(source, destinationType);
     }
 
     @Override
-    public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {
-        return Stream.of(oppiaineNimi);
+    public LokalisoituTekstiDto convertFrom(LokalisoituTekstiDto source, Type<LokalisoituTekstiDto> destinationType) {
+        return new LokalisoituTekstiDto(source.getId(), source.getTekstit());
     }
 }

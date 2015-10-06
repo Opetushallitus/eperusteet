@@ -15,10 +15,46 @@
   ~  European Union Public Licence for more details.
   -->
 
-<div class="lisaa-kurssi">
+<div class="kurssi-view">
+
+  <div>
+    <div ng-if="!kurssi.oppiaineet.length">
+      <a ng-bind="'lukiokurssit' | kaanna" ng-click="gotoKurssit()"></a>
+      / <span ng-bind="kurssi.nimi | kaanna"></span>
+    </div>
+    <div ng-repeat="oppiaine in kurssi.oppiaineet">
+      <span>
+        <a ng-bind="'lukiokurssit' | kaanna" ng-click="gotoKurssit()"></a>
+      </span>
+      <span ng-repeat="i in oppiaineMurupolkuItems(oppiaine)">
+         / <a ng-bind="i.oppiaineNimi | kaanna" ng-click="goto(oppiaine)"></a>
+      </span>
+      / <span ng-bind="kurssi.nimi | kaanna"></span>
+    </div>
+  </div>
+
   <h2>
     <kaanna kaanna="kurssi-title"></kaanna> <span ng-bind="kurssi.nimi | kaanna"></span>
   </h2>
+  <div class="action-buttons">
+    <button class="btn btn-default rivinappi" icon-role="edit" ng-bind="'muokkaa' | kaanna"
+            oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+            ng-click="gotoMuokkaa()"></button>
+  </div>
+  <div class="clear">
+    <hr/>
+  </div>
+  <table class="description">
+    <thead>
+    <tr>
+      <th kaanna="'kurssi-koodi'">
+      </th>
+      <td>
+        <span ng-bind="kurssi.koodiArvo || ('ei-asetettu' | kaanna)"></span>
+      </td>
+    </tr>
+    </thead>
+  </table>
 
 
 </div>

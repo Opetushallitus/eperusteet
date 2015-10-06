@@ -44,12 +44,15 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import ma.glasnost.orika.metadata.Type;
 import ma.glasnost.orika.unenhance.HibernateUnenhanceStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -74,6 +77,7 @@ public class DtoMapperConfig {
 
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
         factory.getConverterFactory().registerConverter(cachedEntityConverter);
+        factory.getConverterFactory().registerConverter(new LokalisoituTekstiDtoCopyConverter());
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
         factory.getConverterFactory().registerConverter(new TypeNameConverter());

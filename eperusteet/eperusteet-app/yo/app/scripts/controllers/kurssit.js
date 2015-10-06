@@ -61,6 +61,54 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('NaytaLukiokurssiController', function($scope, LukioKurssiService, $stateParams) {
+  .controller('NaytaLukiokurssiController', function($scope, $state, LukioKurssiService, $stateParams) {
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
+
+    $scope.oppiaineMurupolkuItems = function(oppiaine) {
+      var ls = [];
+      while (oppiaine.vanhempi) {
+        oppiaine = oppiaine.vanhempi;
+        ls.push(oppiaine);
+      }
+      return _(ls).reverse().value();
+    };
+
+    $scope.goto = function(oppiaine) {
+      $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
+        osanId: oppiaine.oppiaineId,
+        osanTyyppi: 'oppiaineet_oppimaarat',
+        tabId: 0
+      });
+    };
+    $scope.gotoKurssit = function() {
+      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {
+        osanTyyppi: 'kurssit'
+      });
+    };
+    $scope.gotoMuokkaa = function() {
+      $state.go('root.perusteprojekti.suoritustapa.muokkaakurssia', {
+        kurssiId: $stateParams.kurssiId
+      });
+    };
+  })
+
+  .controller('MuokkaaLukiokurssiaController', function($scope, $state, LukioKurssiService, $stateParams,
+              YleinenData) {
+
+    $scope.kurssityypit = [];
+    function init() {
+      $scope.kurssi = {
+        nimi: {fi: ''},
+        tyyppi: 'PAKOLLINEN',
+        koodiUri: null,
+        koodiArvo: null
+      };
+      YleinenData.lukioKurssityypit().then(function(tyypit) {
+        $scope.kurssityypit = tyypit;
+      });
+    }
+    init();
+
+    $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
+
   });

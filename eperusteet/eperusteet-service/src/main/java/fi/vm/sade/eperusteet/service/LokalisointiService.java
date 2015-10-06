@@ -31,6 +31,9 @@ public interface LokalisointiService {
 
     @PreAuthorize("isAuthenticated()")
     <T extends Lokalisoitava, C extends Collection<T>> C lokalisoi(C list);
+
+    @PreAuthorize("isAuthenticated()")
+    <T extends Lokalisoitava> T lokalisoi(T list);
 }
 
 

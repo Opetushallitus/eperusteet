@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
@@ -74,24 +74,44 @@ public class KurssiServiceImpl implements KurssiService {
     @Transactional(readOnly = true)
     public List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId) {
         List<LukiokurssiListausDto> kurssit = lukiokurssiRepository.findLukiokurssitByPerusteId(perusteId);
+        return lokalisointiService.lokalisoi(kurssitWithOppiaineet(perusteId, kurssit));
+    }
+
+    private List<LukiokurssiListausDto> kurssitWithOppiaineet(long perusteId, List<LukiokurssiListausDto> kurssit) {
         Map<Long,LukiokurssiListausDto> kurssitById = kurssit.stream()
                 .collect(toMap(LukiokurssiListausDto::getId, k -> k));
         lukiokurssiRepository.findKurssiOppaineRelationsByPerusteId(perusteId).stream()
                 .forEachOrdered(oak -> kurssitById.get(oak.getKurssiId()).getOppiaineet().add(
-                        new NimettyJarjestettyOppiaineDto(oak.getOppiaineId(), oak.getJarjestys(),
+                        new KurssinOppiaineNimettyDto(oak.getOppiaineId(), oak.getJarjestys(),
                                 oak.getOppiaineNimiId())));
+        return kurssit;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LukiokurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId) {
+        List<LukiokurssiListausDto> kurssit = lukiokurssiRepository.findLukiokurssitByPerusteAndOppiaineId(perusteId, oppiaineId);
         return lokalisointiService.lokalisoi(kurssit);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public LukiokurssiMuokkausDto getLukiokurssiMuokkausById(long perusteId, long kurssiId) throws NotExistsException {
+    public LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException {
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
-        LukiokurssiMuokkausDto dto = mapper.map(kurssi, new LukiokurssiMuokkausDto());
-        dto.setOppiaineet(kurssi.getOppiaineet().stream()
-                .map(luoa -> new JarjestettyOppiaineDto(luoa.getOppiaine().getId(), luoa.getJarjestys()))
-                .sorted(comparing(JarjestettyOppiaineDto::getOppiaineId)).collect(toList()));
-        return dto;
+        LukiokurssiTarkasteleDto dto = mapper.map(kurssi, new LukiokurssiTarkasteleDto());
+        dto.setOppiaineet(kurssi.getOppiaineet().stream().map(this::oppaineTarkasteluDto)
+                .sorted(comparing(KurssinOppiaineDto::getOppiaineId)).collect(toList()));
+        return lokalisointiService.lokalisoi(dto);
+    }
+
+    private KurssinOppiaineTarkasteluDto oppaineTarkasteluDto(OppiaineLukiokurssi oa) {
+        return new KurssinOppiaineTarkasteluDto(oa.getOppiaine().getId(), oa.getJarjestys(),
+                oa.getOppiaine().getNimi().getId(), vanhempi(oa.getOppiaine()));
+    }
+
+    private OppiaineVanhempiDto vanhempi(Oppiaine oppiaine) {
+        return oppiaine != null ? new OppiaineVanhempiDto(oppiaine.getId(), oppiaine.getNimi().getId(),
+                vanhempi(oppiaine.getOppiaine())) : null;
     }
 
     @Override
@@ -108,9 +128,9 @@ public class KurssiServiceImpl implements KurssiService {
         return kurssi.getId();
     }
 
-    private void mergeOppiaineet(long perusteId, Lukiokurssi kurssi, List<JarjestettyOppiaineDto> from) {
+    private<T extends KurssinOppiaineDto> void mergeOppiaineet(long perusteId, Lukiokurssi kurssi, List<T> from) {
         Set<OppiaineLukiokurssi> to = kurssi.getOppiaineet();
-        Map<Long, JarjestettyOppiaineDto> newByOppiaine = from.stream().collect(toMap(JarjestettyOppiaineDto::getOppiaineId, olk -> olk));
+        Map<Long, T> newByOppiaine = from.stream().collect(toMap(KurssinOppiaineDto::getOppiaineId, olk -> olk));
         to.removeIf(olk -> !newByOppiaine.containsKey(olk.getOppiaine().getId()));
         to.stream().forEach(existing -> {
             Long oppiaineId = existing.getOppiaine().getId();

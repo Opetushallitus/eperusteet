@@ -275,13 +275,21 @@ angular.module('eperusteApp')
         templateUrl: 'views/partials/lukio/lisaaKurssi.html',
         controller: 'LisaaLukioKurssiController',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
+          PerusteProjektiSivunavi.setVisible(true);
         }]
       })
       .state('root.perusteprojekti.suoritustapa.kurssi', {
         url: '/lukiokurssi/:kurssiId',
         templateUrl: 'views/partials/lukio/kurssi.html',
         controller: 'NaytaLukiokurssiController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(true);
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.muokkaakurssia', {
+        url: '/lukiokurssi/:kurssiId/muokkaa',
+        templateUrl: 'views/partials/lukio/muokkaaKurssia.html',
+        controller: 'MuokkaaLukiokurssiaController',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible(true);
         }]

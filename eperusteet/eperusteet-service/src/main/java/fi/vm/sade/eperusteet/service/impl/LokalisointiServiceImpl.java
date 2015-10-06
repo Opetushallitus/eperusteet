@@ -32,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -78,14 +79,27 @@ public class LokalisointiServiceImpl implements LokalisointiService {
     @Override
     @Transactional(readOnly = true)
     public <T extends Lokalisoitava, C extends Collection<T>> C lokalisoi(C list) {
-        Map<Long,List<LokalisoituTekstiDto>> byId = list.stream().flatMap(Lokalisoitava::lokalisoitavatTekstit)
+        lokalisoi(list.stream().flatMap(Lokalisoitava::lokalisoitavatTekstit));
+        return list;
+    }
+
+    protected void lokalisoi(Stream<LokalisoituTekstiDto> lokalisoitava) {
+        Map<Long,List<LokalisoituTekstiDto>> byId = lokalisoitava
                 .filter(v -> v != null && v.getId() != null).collect(groupingBy(LokalisoituTekstiDto::getId));
         if (!byId.isEmpty()) {
             tekstiPalanenRepository.findLokalisoitavatTekstit(byId.keySet())
                 .stream().forEach(haettu -> byId.get(haettu.getId())
                     .stream().forEach(palanen -> palanen.getTekstit().put(haettu.getKieli(), haettu.getTeksti())));
         }
-        return list;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public <T extends Lokalisoitava> T lokalisoi(T dto) {
+        if (dto != null) {
+            lokalisoi(dto.lokalisoitavatTekstit());
+        }
+        return dto;
     }
 
 }

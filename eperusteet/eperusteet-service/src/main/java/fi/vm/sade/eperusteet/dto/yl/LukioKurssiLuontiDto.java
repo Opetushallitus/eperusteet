@@ -39,7 +39,7 @@ import java.util.List;
 public class LukioKurssiLuontiDto implements Serializable {
     @NotNull
     private LukiokurssiTyyppi tyyppi;
-    private List<JarjestettyOppiaineDto> oppiaineet = new ArrayList<>();
+    private List<KurssinOppiaineDto> oppiaineet = new ArrayList<>();
     @NotNull
     private LokalisoituTekstiDto nimi;
     private String koodiArvo;
@@ -53,7 +53,7 @@ public class LukioKurssiLuontiDto implements Serializable {
     }
 
     public LukioKurssiLuontiDto(LukiokurssiTyyppi tyyppi,
-                                List<JarjestettyOppiaineDto> oppiaineet,
+                                List<KurssinOppiaineDto> oppiaineet,
                                 LokalisoituTekstiDto nimi,
                                 String koodiArvo, String koodiUri,
                                 Optional<LokalisoituTekstiDto> kurssityypinKvaus,

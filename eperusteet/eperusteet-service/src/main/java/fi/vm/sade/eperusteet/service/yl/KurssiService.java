@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.yl.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.LukiokurssiListausDto;
 import fi.vm.sade.eperusteet.dto.yl.LukiokurssiMuokkausDto;
+import fi.vm.sade.eperusteet.dto.yl.LukiokurssiTarkasteleDto;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,11 +38,15 @@ public interface KurssiService {
     List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukiokurssiMuokkausDto getLukiokurssiMuokkausById(long perusteId, long kurssiId) throws NotExistsException;
+    List<LukiokurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     long luoLukiokurssi(long perusteId, LukioKurssiLuontiDto kurssiDto) throws BusinessRuleViolationException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void muokkaaLukiokurssia(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException;
+
 }

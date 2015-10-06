@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.google.common.base.Supplier;
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusListausDto;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
@@ -106,9 +105,9 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/kurssit/{id}", method = GET)
-    public ResponseEntity<LukiokurssiMuokkausDto> getKurssi(@PathVariable("perusteId") final Long perusteId,
+    public ResponseEntity<LukiokurssiTarkasteleDto> getKurssi(@PathVariable("perusteId") final Long perusteId,
                                   @PathVariable("id") Long id) {
-        return handleGet(perusteId, () -> kurssit.getLukiokurssiMuokkausById(perusteId, id));
+        return handleGet(perusteId, () -> kurssit.getLukiokurssiTarkasteleDtoById(perusteId, id));
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = GET)
@@ -116,6 +115,13 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id) {
         return handleGet(perusteId, () -> oppiaineet.getOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS));
+    }
+
+    @RequestMapping(value = "/oppiaineet/{id}/kurssit", method = GET)
+    public ResponseEntity<List<LukiokurssiListausDto>> getOppiaineKurssit(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
+        return handleGet(perusteId, () -> kurssit.findLukiokurssitByOppiaineId(perusteId, id));
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/versiot/{revisio}", method = GET)

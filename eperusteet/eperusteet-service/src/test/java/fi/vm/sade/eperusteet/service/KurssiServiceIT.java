@@ -18,15 +18,13 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
-import fi.vm.sade.eperusteet.dto.yl.JarjestettyOppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.LukioKurssiLuontiDto;
-import fi.vm.sade.eperusteet.dto.yl.LukiokurssiListausDto;
-import fi.vm.sade.eperusteet.dto.yl.LukiokurssiMuokkausDto;
+import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.util.OppiaineUtil.Reference;
 import fi.vm.sade.eperusteet.service.yl.KurssiService;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +58,10 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
     @Autowired
     private OppiaineService oppiaineService;
 
+    @Dto
+    @Autowired
+    private DtoMapper dtoMapper;
+
     private Long perusteId;
     private Reference<Long> suomiRef = new Reference<>();
     private Reference<Long> saameRef = new Reference<>();
@@ -82,28 +84,29 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         long id = kurssiService.luoLukiokurssi(perusteId, LukioKurssiLuontiDto.builder()
                 .tyyppi(LukiokurssiTyyppi.PAKOLLINEN)
                 .oppiaineet(asList(
-                    new JarjestettyOppiaineDto(suomiRef.getId(), 1)
+                    new KurssinOppiaineDto(suomiRef.getId(), 1)
                 ))
                 .nimi(teksti(fi("Äidinkielen perusteet"), sv("Finska ett")))
                 .koodiArvo("AI1")
                 .build());
         
-        LukiokurssiMuokkausDto muokkausDto = kurssiService.getLukiokurssiMuokkausById(perusteId, id);
-        assertNotNull(muokkausDto);
-        assertEquals("AI1", muokkausDto.getKoodiArvo());
-        assertEquals("Äidinkielen perusteet", muokkausDto.getNimi().get(Kieli.FI));
-        assertEquals(1, muokkausDto.getOppiaineet().size());
-        assertEquals(new Integer(1), muokkausDto.getOppiaineet().get(0).getJarjestys());
-        assertEquals(suomiRef.getId(), muokkausDto.getOppiaineet().get(0).getOppiaineId());
-        
-        muokkausDto.getOppiaineet().add(new JarjestettyOppiaineDto(saameRef.getId(), 1));
+        LukiokurssiTarkasteleDto dto = kurssiService.getLukiokurssiTarkasteleDtoById(perusteId, id);
+        assertNotNull(dto);
+        assertEquals("AI1", dto.getKoodiArvo());
+        assertEquals("Äidinkielen perusteet", dto.getNimi().get(Kieli.FI));
+        assertEquals(1, dto.getOppiaineet().size());
+        assertEquals(new Integer(1), dto.getOppiaineet().get(0).getJarjestys());
+        assertEquals(suomiRef.getId(), dto.getOppiaineet().get(0).getOppiaineId());
+
+        LukiokurssiMuokkausDto muokkausDto = dtoMapper.map(dto, new LukiokurssiMuokkausDto());
+        muokkausDto.getOppiaineet().add(new KurssinOppiaineDto(saameRef.getId(), 1));
         kurssiService.muokkaaLukiokurssia(perusteId, muokkausDto);
         List<LukiokurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId);
         assertEquals(1, list.size());
         assertEquals("Äidinkielen perusteet", list.get(0).getNimi().get(Kieli.FI));
         assertEquals("AI1", list.get(0).getKoodiArvo());
         assertEquals(2, list.get(0).getOppiaineet().size());
-        assertTrue(list.get(0).getOppiaineet().stream().map(JarjestettyOppiaineDto::getOppiaineId)
+        assertTrue(list.get(0).getOppiaineet().stream().map(KurssinOppiaineDto::getOppiaineId)
                 .collect(toSet()).containsAll(asList(suomiRef.getId(), saameRef.getId())));
     }
 }

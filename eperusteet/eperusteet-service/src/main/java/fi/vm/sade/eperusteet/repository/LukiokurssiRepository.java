@@ -31,19 +31,28 @@ import java.util.List;
  * Time: 15.11
  */
 public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukiokurssi, Long> {
-
-    @Query(value = "SELECT new fi.vm.sade.eperusteet.dto.yl.LukiokurssiListausDto(" +
+    String KURSSILISTAUS_SELECT = "SELECT new fi.vm.sade.eperusteet.dto.yl.LukiokurssiListausDto(" +
             "   kurssi.id," +
             "   kurssi.koodiArvo," +
             "   nimi.id," +
             "   kuvaus.id, " +
             "   kurssi.muokattu " +
-            ") FROM Lukiokurssi kurssi" +
+            ")";
+
+    @Query(value = KURSSILISTAUS_SELECT + " FROM Lukiokurssi kurssi" +
             "   INNER JOIN kurssi.nimi nimi " +
             "   LEFT JOIN kurssi.kuvaus kuvaus " +
             "   INNER JOIN kurssi.perusteenSisalto sisalto ON sisalto.peruste.id = ?1 " +
             " ORDER BY kurssi.koodiArvo ")
     List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
+
+    @Query(value = KURSSILISTAUS_SELECT + " FROM Lukiokurssi kurssi" +
+            "   INNER JOIN kurssi.nimi nimi " +
+            "   LEFT JOIN kurssi.kuvaus kuvaus " +
+            "   INNER JOIN kurssi.oppiaineet kurssioppiaine ON kurssioppiaine.oppiaine.id = ?2 " +
+            "   INNER JOIN kurssi.perusteenSisalto sisalto ON sisalto.peruste.id = ?1 " +
+            " ORDER BY kurssi.koodiArvo ")
+    List<LukiokurssiListausDto> findLukiokurssitByPerusteAndOppiaineId(long perusteId, long oppiaineId);
 
     @Query(value = "SELECT new fi.vm.sade.eperusteet.dto.yl.OppiaineKurssiHakuDto(" +
             "   aine.id,      " +

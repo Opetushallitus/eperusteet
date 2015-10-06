@@ -16,36 +16,39 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
+import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Stream;
+
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterById;
 
 /**
  * User: tommiratamaa
- * Date: 29.9.15
- * Time: 16.08
+ * Date: 6.10.15
+ * Time: 13.12
  */
 @Getter
 @Setter
-public class LukiokurssiMuokkausDto implements Serializable {
-    @NotNull
-    private Long id;
-    @NotNull
-    private LukiokurssiTyyppi tyyppi;
-    private List<KurssinOppiaineDto> oppiaineet = new ArrayList<>();
-    @NotNull
-    private LokalisoituTekstiDto nimi;
-    private String koodiArvo;
-    private String koodiUri;
-    private Optional<LokalisoituTekstiDto> kurssityypinKvaus;
-    private Optional<LokalisoituTekstiDto> kuvaus;
-    private Optional<LokalisoituTekstiDto> tavoitteet;
-    private Optional<LokalisoituTekstiDto> sisallot;
+public class OppiaineVanhempiDto implements Serializable, Lokalisoitava {
+    private Long oppiaineId;
+    private LokalisoituTekstiDto oppiaineNimi;
+    private OppiaineVanhempiDto vanhempi;
+
+    public OppiaineVanhempiDto() {
+    }
+
+    public OppiaineVanhempiDto(Long oppiaineId, Long oppiaineNimiId, OppiaineVanhempiDto vanhempi) {
+        this.oppiaineId = oppiaineId;
+        this.oppiaineNimi = localizeLaterById(oppiaineNimiId);
+        this.vanhempi = vanhempi;
+    }
+
+    @Override
+    public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {
+        return Lokalisoitava.of(oppiaineNimi).and(vanhempi).lokalisoitavatTekstit();
+    }
 }

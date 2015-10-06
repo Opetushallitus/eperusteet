@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 @Getter
 @Setter
 public class LukiokurssiListausDto implements Serializable, Lokalisoitava {
-    private List<NimettyJarjestettyOppiaineDto> oppiaineet = new ArrayList<>();
+    private List<KurssinOppiaineNimettyDto> oppiaineet = new ArrayList<>();
     private Long id;
     private String koodiArvo;
     private LokalisoituTekstiDto nimi;

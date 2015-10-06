@@ -939,5 +939,8 @@
     "muokkaa-aihekokonaisuus-action": "Tallenna",
     "jnro": "Järjestysnumero",
 
-    "kurssi-title": "Kurssi"
+    "kurssi-title": "Kurssi",
+    "kurssi-koodi": "Koodi",
+    "muokkaa-kurssia": "Muokkaa kurssia",
+    "muokkaa-kurssia-action": "Tallenna muutokset"
 }

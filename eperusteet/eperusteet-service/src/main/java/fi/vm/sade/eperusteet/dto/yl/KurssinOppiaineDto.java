@@ -16,36 +16,28 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Builder;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User: tommiratamaa
  * Date: 29.9.15
- * Time: 16.08
+ * Time: 18.08
  */
 @Getter
 @Setter
-public class LukiokurssiMuokkausDto implements Serializable {
-    @NotNull
-    private Long id;
-    @NotNull
-    private LukiokurssiTyyppi tyyppi;
-    private List<KurssinOppiaineDto> oppiaineet = new ArrayList<>();
-    @NotNull
-    private LokalisoituTekstiDto nimi;
-    private String koodiArvo;
-    private String koodiUri;
-    private Optional<LokalisoituTekstiDto> kurssityypinKvaus;
-    private Optional<LokalisoituTekstiDto> kuvaus;
-    private Optional<LokalisoituTekstiDto> tavoitteet;
-    private Optional<LokalisoituTekstiDto> sisallot;
+public class KurssinOppiaineDto implements Serializable {
+    private Long oppiaineId;
+    private Integer jarjestys;
+
+    public KurssinOppiaineDto() {
+    }
+
+    public KurssinOppiaineDto(Long oppiaineId, Integer jarjestys) {
+        this.oppiaineId = oppiaineId;
+        this.jarjestys = jarjestys;
+    }
 }
