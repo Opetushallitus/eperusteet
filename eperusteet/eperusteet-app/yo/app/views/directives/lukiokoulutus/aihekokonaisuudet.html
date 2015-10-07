@@ -12,7 +12,7 @@
     </div>
     <div ng-if="!editEnabled">
       <h1><span kaanna="otsikko"/>: {{aihekokonaisuudet.otsikko | kaanna}}</h1>
-      <div>{{aihekokonaisuudet.yleiskuvaus | kaanna}}</div>
+      <p ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></p>
     </div>
 
     <div ng-if="editEnabled">
@@ -20,12 +20,12 @@
       <form name="aihekokonaisuudetYleiskuvausForm" role="form">
 
         <label for="otsikko-input" class="header" kaanna="lisaa-aihekokonaisuus-otsikko-header" vaaditaan></label>
-        <input id="otsikko-input" class="form-control" ng-model="aihekokonaisuudet.otsikko" slocalized required />
+        <input id="otsikko-input" class="form-control" ng-model="aihekokonaisuudet.otsikko" slocalized type="text" required="true" data-empty-place-holder-enabled="true" placeholder="{{'otsikko' | kaanna}}"></input>
         <p class="alert alert-error" ng-show="(aihekokonaisuudetYleiskuvausForm.$error.required && aihekokonaisuudetYleiskuvausForm.$error.required[1].$dirty)"
            kaanna>Otsikko on pakollinen tieto</p>
 
         <label for="yleiskuvaus-input" class="header" kaanna="lisaa-aihekokonaisuus-yleiskuvaus-header"></label>
-        <textarea id="yleiskuvaus-input" class="form-control" ng-model="aihekokonaisuudet.yleiskuvaus" slocalized />
+        <div id="yleiskuvaus-input" ckeditor ng-if="editEnabled" slocalized ng-model="aihekokonaisuudet.yleiskuvaus" editor-placeholder="aihekokonaisuudet-yleiskuvaus-placeholder"></div>
 
         <div style="margin-top: 30px;"></div>
         <button class="btn btn-default ng-binding" ng-click="cancel()" kaanna="peruuta"></button>

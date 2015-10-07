@@ -261,6 +261,18 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return handleGet(perusteId, () -> aihekokonaisuudet.getLukioAihekokobaisuusMuokkausById(perusteId, id));
     }
 
+    @RequestMapping(value = "/aihekokonaisuudet/{id}", method = POST)
+    public RedirectView updateAihekokonaisuus(@PathVariable("perusteId") final Long perusteId,
+                                     @PathVariable("id") final Long aihekokonaisuusId,
+                                     @RequestBody LukioAihekokonaisuusMuokkausDto aihekokonaisuus) {
+        if(!aihekokonaisuus.getId().equals(aihekokonaisuusId)) {
+            throw new NotExistsException();
+        }
+        aihekokonaisuudet.muokkaaAihekokonaisuutta(perusteId, aihekokonaisuus);
+        return new RedirectView(""+aihekokonaisuusId,true);
+    }
+
+
     @RequestMapping(value = "/aihekokonaisuudet/aihekokonaisuus", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public RedirectView addAihekokonaisuus(@PathVariable("perusteId") final Long perusteId,

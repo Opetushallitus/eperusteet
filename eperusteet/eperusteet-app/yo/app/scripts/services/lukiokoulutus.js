@@ -105,6 +105,7 @@ angular.module('eperusteApp')
       if (params.osanId === 'uusi') {
         return promisify({});
       }
+
       switch (params.osanTyyppi) {
         case this.OPETUKSEN_YLEISET_TAVOITTEET:
           return getOsaGeneric(LukiokoulutusYleisetTavoitteet, params);
@@ -200,7 +201,7 @@ angular.module('eperusteApp')
   })
 
   .service('LukioKurssiService', function(LukioKurssit, Lukitus, Notifikaatiot, LukiokoulutusService, $translate,
-                                          $q) {
+                                          $q, $log) {
 
     /**
      * Lists kurssit and related oppiaineet with jarjestys for given peruste.
@@ -271,7 +272,7 @@ angular.module('eperusteApp')
   .service('LukioAihekokonaisuudetService',
             function(LukiokoulutusAihekokonaisuudet, Lukitus,
                      Notifikaatiot, LukiokoulutusService, $translate,
-                     $q) {
+                     $q, $log) {
 
     /**
      * Tallentaa yhden aihekokonaisuuden
@@ -316,11 +317,12 @@ angular.module('eperusteApp')
      */
     var updateAihekokonaisuus = function(aihekokonaisuus) {
       var d = $q.defer();
-      Lukitus.lukitse(function () {
-        LukiokoulutusAihekokonaisuudet.updateAihekokonaisuudet({
-          perusteId: LukiokoulutusService.getPerusteId()
+      Lukitus.lukitseLukioAihekokonaisuus( aihekokonaisuus.id, function () {
+        LukiokoulutusAihekokonaisuudet.updateAihekokonaisuus({
+          perusteId: LukiokoulutusService.getPerusteId(),
+          aihekokonaisuusId: aihekokonaisuus.id
         }, aihekokonaisuus, function(aihekokonaisuusTiedot) {
-          Lukitus.vapauta(function() {
+          Lukitus.vapautaLukioAihekokonaisuus(aihekokonaisuusTiedot.id, function() {
             Notifikaatiot.onnistui('tallennus-onnistui');
             d.resolve(aihekokonaisuusTiedot);
           });

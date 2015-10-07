@@ -947,4 +947,12 @@
     "muokkaa-aihekokonaisuus-title": "Muokkaa aihekokonaisuutta",
     "muokkaa-aihekokonaisuus-action": "Tallenna",
     "jnro": "Järjestysnumero"
+    "jnro": "Järjestysnumero",
+    "aihekokonaisuudet-yleiskuvaus-placeholder": "Kirjoita aihekokonaisuuksien yleiskuvaus",
+    "aihekokonaisuus-yleiskuvaus-placeholder": "Kirjoita aihekokonaisuuden yleiskuvaus",
+
+    "kurssi-title": "Kurssi",
+    "kurssi-koodi": "Koodi",
+    "muokkaa-kurssia": "Muokkaa kurssia",
+    "muokkaa-kurssia-action": "Tallenna muutokset"
 }

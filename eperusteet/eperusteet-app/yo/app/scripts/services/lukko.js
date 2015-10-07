@@ -51,8 +51,8 @@ angular.module('eperusteApp')
     });
   })
   .factory('LukkoLukioAihekokonaisuudet', function (SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet/:osanId/lukko', {
-      osanId: '@osanId',
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet/:aihekokonaisuusId/lukko', {
+      aihekokonaisuusId: '@aihekokonaisuusId',
       perusteId: '@perusteId'
     });
   })
@@ -328,6 +328,14 @@ angular.module('eperusteApp')
       vapauta(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(), 10), kurssiId: id}, ch);
     }
 
+    function lukitseLukioAihekokonaisuus(id, ch) {
+      lukitse(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, ch);
+    }
+
+    function vapautaLukioAihekokonaisuus(id, ch) {
+      vapauta(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, ch);
+    }
+
     function lukitseOppiaineenVuosiluokkakokonaisuus(oppiaineId, vuosiluokkaId, cb) {
       lukitse(LukkoOppiaineenVuosiluokkakokonaisuus, {
         perusteId: PerusopetusService.getPerusteId(),
@@ -364,7 +372,8 @@ angular.module('eperusteApp')
       lukitseOppiaineenVuosiluokkakokonaisuus: lukitseOppiaineenVuosiluokkakokonaisuus,
       vapautaOppiaineenVuosiluokkakokonaisuus: vapautaOppiaineenVuosiluokkakokonaisuus,
       lukitsePerusteenosaByTutkinnonOsaViite: lukitsePerusteenosaByTutkinnonOsaViite,
-      vapautaPerusteenosaByTutkinnonOsaViite: vapautaPerusteenosaByTutkinnonOsaViite
-
+      vapautaPerusteenosaByTutkinnonOsaViite: vapautaPerusteenosaByTutkinnonOsaViite,
+      lukitseLukioAihekokonaisuus: lukitseLukioAihekokonaisuus,
+      vapautaLukioAihekokonaisuus: vapautaLukioAihekokonaisuus
     };
   });

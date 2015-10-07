@@ -32,19 +32,19 @@
       <form name="lisaaAihekokonaisuusForm" role="form">
 
         <label for="otsikko-input" class="header" kaanna="lisaa-aihekokonaisuus-otsikko-header" vaaditaan></label>
-        <input id="otsikko-input" class="form-control" ng-model="aihekokonaisuus.otsikko" slocalized required />
+        <input id="otsikko-input" class="form-control" ng-model="aihekokonaisuus.otsikko" slocalized required placeholder="{{'otsikko' | kaanna}}" />
         <p class="alert alert-error" ng-show="(lisaaAihekokonaisuusForm.$error.required && lisaaAihekokonaisuusForm.$error.required[1].$dirty)"
            kaanna>Otsikko on pakollinen tieto</p>
 
         <label for="yleiskuvaus-input" class="header" kaanna="lisaa-aihekokonaisuus-yleiskuvaus-header" vaaditaan></label>
-        <textarea id="yleiskuvaus-input" class="form-control" ng-model="aihekokonaisuus.yleiskuvaus" slocalized required />
+        <div id="yleiskuvaus-input" editor-placeholder="aihekokonaisuus-yleiskuvaus-placeholder" ckeditor ng-if="editEnabled" slocalized ng-model="aihekokonaisuus.yleiskuvaus"></div>
         <p class="alert alert-error" ng-show="(lisaaAihekokonaisuusForm.$error.required && lisaaAihekokonaisuusForm.$error.required[1].$dirty)"
            kaanna>Yleiskuvaus on pakollinen tieto</p>
 
 
         <label for="jnro-input" class="header" kaanna="'jarjestysnumero'"></label>
         <div class="fixed-group">
-        <input class="form-control" type="number" id="jnro-input" ng-model="aihekokonaisuus.jnro" ng-enter="save()">
+          <input class="form-control" type="number" id="jnro-input" ng-model="aihekokonaisuus.jnro" ng-enter="save()">
         </div>
 
         <div style="margin-top: 30px;"></div>
@@ -60,7 +60,7 @@
 
     <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
-    <div class="aihekokonaisuus-kuvaus">{{aihekokonaisuus.yleiskuvaus | kaanna}}</div>
+    <p ng-bind-html="aihekokonaisuus.yleiskuvaus|kaanna|unsafe"></p>
 
   </div>
 

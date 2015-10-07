@@ -175,6 +175,7 @@ angular.module('eperusteApp')
       osanId: '@osanId',
       perusteId: '@perusteId'}, {
       saveAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/aihekokonaisuus'},
+      updateAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/:aihekokonaisuusId'},
       getAihekokonaisuudetYleiskuvaus: {method: 'GET', isArray: false, url: baseUrl + '/yleiskuvaus'},
       saveAihekokonaisuudetYleiskuvaus: {method: 'POST', isArray: false, url: baseUrl + '/yleiskuvaus'}
     });

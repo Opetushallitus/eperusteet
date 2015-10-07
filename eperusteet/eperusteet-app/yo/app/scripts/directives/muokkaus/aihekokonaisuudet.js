@@ -35,23 +35,26 @@ angular.module('eperusteApp')
   })
 
   .controller('LukioAihekokonaisuudetController', function ($scope, LukioAihekokonaisuudetService,
-                                                            PerusteProjektiSivunavi) {
+                                                            PerusteProjektiSivunavi,
+                                                            $rootScope) {
     function init() {
       LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvaus().then(function(aihekokonaisuudet) {
         $scope.aihekokonaisuudet = aihekokonaisuudet;
       });
       $scope.editEnabled = false;
+      $scope.editMode = false;
       PerusteProjektiSivunavi.setVisible(true);
     }
 
     init();
-    $scope.editEnabled = false;
     $scope.edit = function() {
       $scope.editEnabled = true;
+      $scope.editMode = true;
       PerusteProjektiSivunavi.setVisible(false);
     };
 
     $scope.save = function() {
+      $rootScope.$broadcast('notifyCKEditor');
       LukioAihekokonaisuudetService.saveAihekokonaisuudetYleiskuvaus($scope.aihekokonaisuudet).then(function() {
         init();
       });
@@ -89,14 +92,7 @@ angular.module('eperusteApp')
         model: '=',
         versiot: '='
       },
-      controller: 'LukioAihekokonaisuusController',
-      link: function (scope, element) {
-        scope.$watch('editEnabled', function (value) {
-          if (!value) {
-            element.find('.info-placeholder').hide();
-          }
-        });
-      }
+      controller: 'LukioAihekokonaisuusController'
     };
   })
 
@@ -105,7 +101,8 @@ angular.module('eperusteApp')
                                                           $stateParams,
                                                           LukioAihekokonaisuudetService,
                                                           PerusteProjektiSivunavi,
-                                                          LukiokoulutusService) {
+                                                          LukiokoulutusService,
+                                                          $rootScope) {
     function init() {
       LukiokoulutusService.getOsa($stateParams).then(function(aihekokonaisuus) {
         $scope.aihekokonaisuus = aihekokonaisuus;
@@ -141,14 +138,17 @@ angular.module('eperusteApp')
     };
 
     $scope.save = function() {
-      LukioAihekokonaisuudetService.saveAihekokonaisuus($scope.aihekokonaisuus).then(function() {
-        $scope.back();
+      $rootScope.$broadcast('notifyCKEditor');
+      LukioAihekokonaisuudetService.saveAihekokonaisuus($scope.aihekokonaisuus).then(function(aihekokonaisuus) {
+        $scope.aihekokonaisuus = aihekokonaisuus;
+        init();
       });
     };
 
     $scope.update = function() {
+      $rootScope.$broadcast('notifyCKEditor');
       LukioAihekokonaisuudetService.updateAihekokonaisuus($scope.aihekokonaisuus).then(function() {
-        $scope.back();
+        init();
       });
     };
 

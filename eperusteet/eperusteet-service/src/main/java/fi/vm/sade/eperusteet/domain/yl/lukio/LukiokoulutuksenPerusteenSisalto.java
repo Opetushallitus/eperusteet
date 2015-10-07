@@ -69,11 +69,19 @@ public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenS
     @JoinColumn(name="aihekokonaisuudet_id")
     private Aihekokonaisuudet aihekokonaisuudet = new Aihekokonaisuudet();
 
+
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name="opetuksen_yleiset_tavoitteet_id")
+    private OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = new OpetuksenYleisetTavoitteet();
+
     public LukiokoulutuksenPerusteenSisalto kloonaa(Peruste peruste) {
         LukiokoulutuksenPerusteenSisalto kopio = new LukiokoulutuksenPerusteenSisalto();
         kopio.peruste = peruste;
         kopio.sisalto = this.sisalto.kloonaa();
         kopio.aihekokonaisuudet =  this.aihekokonaisuudet.kloonaa();
+        kopio.opetuksenYleisetTavoitteet = this.opetuksenYleisetTavoitteet.kloonaa();
         return kopio;
     }
 }
