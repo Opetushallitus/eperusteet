@@ -47,4 +47,8 @@ public class OppiaineLockContext {
     public static OppiaineLockContext of(OppiaineOpetuksenSisaltoTyyppi tyyppi, Long perusteId, Long oppiaineId, Long kokonaisuusId) {
         return new OppiaineLockContext(tyyppi, perusteId, oppiaineId, kokonaisuusId);
     }
+
+    public void setOsanId(Long id) {
+        oppiaineId = id;
+    }
 }
