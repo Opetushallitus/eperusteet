@@ -247,9 +247,10 @@ angular.module('eperusteApp')
      */
     var update = function(kurssi) {
       var d = $q.defer();
-      Lukitus.lukitse(function () {
+      Lukitus.lukitseLukioKurssi(kurssi.id, function () {
         LukioKurssit.update({
-          perusteId: LukiokoulutusService.getPerusteId()
+          perusteId: LukiokoulutusService.getPerusteId(),
+          osanId: kurssi.id
         }, kurssi, function(kurssinTiedot) {
           Lukitus.vapauta(function() {
             Notifikaatiot.onnistui('tallennus-onnistui');

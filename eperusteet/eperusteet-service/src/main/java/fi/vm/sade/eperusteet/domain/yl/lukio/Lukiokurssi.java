@@ -77,7 +77,7 @@ public class Lukiokurssi extends Kurssi {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "sisallot_id")
-    private TekstiPalanen ssisallot;
+    private TekstiPalanen sisallot;
 
     @Getter
     @OneToMany(mappedBy = "kurssi", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

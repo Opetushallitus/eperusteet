@@ -17,16 +17,25 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .controller('LisaaLukioKurssiController', function($scope,
-                                                     $state,
-                                                     $q,
-                                                     $stateParams,
-                                                     LukiokoulutusService,
-                                                     LukioKurssiService,
-                                                     YleinenData,
-                                                     MuokkausUtils,
-                                                     Koodisto) {
+  .service('LukiokurssiModifyHelpers', function(Koodisto, MuokkausUtils) {
+    var openKoodisto = function(kurssi) {
+      return Koodisto.modaali(function(koodisto) {
+        MuokkausUtils.nestedSet(kurssi, 'koodiUri', ',', koodisto.koodiUri);
+        MuokkausUtils.nestedSet(kurssi, 'koodiArvo', ',', koodisto.koodiArvo);
+      }, {
+        tyyppi: function() { return 'lukionkurssit'; },
+        ylarelaatioTyyppi: function() { return ''; },
+        tarkista: _.constant(true)
+      });
+    };
+    return {
+      openKoodisto: openKoodisto
+    };
+  })
 
+  .controller('LisaaLukioKurssiController', function($scope, $state, $q, $stateParams,
+                                                     LukiokoulutusService, LukioKurssiService,
+                                                     YleinenData, LukiokurssiModifyHelpers) {
     $scope.kurssityypit = [];
     function init() {
       $scope.kurssi = {
@@ -40,15 +49,7 @@ angular.module('eperusteApp')
       });
     }
     init();
-
-    $scope.openKoodisto = Koodisto.modaali(function(koodisto) {
-      MuokkausUtils.nestedSet($scope.kurssi, 'koodiUri', ',', koodisto.koodiUri);
-      MuokkausUtils.nestedSet($scope.kurssi, 'koodiArvo', ',', koodisto.koodiArvo);
-    }, {
-      tyyppi: function() { return 'lukionkurssit'; },
-      ylarelaatioTyyppi: function() { return ''; },
-      tarkista: _.constant(true)
-    });
+    $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
 
     $scope.save = function() {
       LukioKurssiService.save($scope.kurssi).then(function() {
@@ -60,7 +61,6 @@ angular.module('eperusteApp')
       $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.KURSSIT});
     };
   })
-
   .controller('NaytaLukiokurssiController', function($scope, $state, LukioKurssiService, $stateParams) {
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
 
@@ -93,16 +93,10 @@ angular.module('eperusteApp')
   })
 
   .controller('MuokkaaLukiokurssiaController', function($scope, $state, LukioKurssiService, $stateParams,
-              YleinenData) {
+              YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, LukiokoulutusService) {
 
     $scope.kurssityypit = [];
     function init() {
-      $scope.kurssi = {
-        nimi: {fi: ''},
-        tyyppi: 'PAKOLLINEN',
-        koodiUri: null,
-        koodiArvo: null
-      };
       YleinenData.lukioKurssityypit().then(function(tyypit) {
         $scope.kurssityypit = tyypit;
       });
@@ -110,5 +104,14 @@ angular.module('eperusteApp')
     init();
 
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
-
+    $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
+    $scope.save = function () {
+      $rootScope.$broadcast('notifyCKEditor');
+      LukioKurssiService.update($scope.kurssi).then(function() {
+        $scope.back();
+      });
+    };
+    $scope.back = function() {
+      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.KURSSIT});
+    };
   });

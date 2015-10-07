@@ -15,22 +15,31 @@
   ~  European Union Public Licence for more details.
   -->
 
-<label for="tyyppi-input" class="header" kaanna="lisaa-kurssi-tyyppi-header" vaaditaan></label>
+<label for="tyyppi-input" class="header" kaanna="kurssi-tyyppi-header" vaaditaan></label>
 <div class="fixed-group">
   <select id="tyyppi-input" class="form-control" ng-model="kurssi.tyyppi" ng-enter="save()">
     <option ng-repeat="t in kurssityypit" value="{{t.tyyppi}}">{{t.nimi | kaanna}}</option>
   </select>
 </div>
 
-<label for="nimi-input" class="header" kaanna="'lisaa-kurssi-nimi-header'" vaaditaan></label>
+<label for="nimi-input" class="header" kaanna="'kurssi-nimi-header'" vaaditaan></label>
 <input id="nimi-input" class="form-control" ng-model="kurssi.nimi" slocalized required
        ng-enter="save()"/>
 <p class="alert alert-error" ng-show="(lisaaKurssiForm.$error.required && lisaaKurssiForm.$error.required[1].$dirty)"
    kaanna>Nimi on pakollinen tieto</p>
 
-<label for="koodi-input" class="header" kaanna="lisaa-kurssi-koodi-header"></label>
+<label for="koodi-input" class="header" kaanna="kurssi-koodi-header"></label>
 <div class="fixed-group">
   <input id="koodi-input" class="form-control" type="text" ng-model="kurssi.koodiArvo"/>
   <div class="addon"><a role="link" class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></a></div>
 </div>
 
+<label for="tavoitteet" class="header" kaanna="kurssi-tavoitteet-header"></label>
+<div class="fixex-group">
+  <div id="tavoitteet" ckeditor slocalized ng-model="kurssi.tavoitteet"></div>
+</div>
+
+<label for="sisallot" class="header" kaanna="kurssi-sisallot-header"></label>
+<div class="fixex-group">
+  <div id="sisallot" ckeditor slocalized ng-model="kurssi.sisallot"></div>
+</div>

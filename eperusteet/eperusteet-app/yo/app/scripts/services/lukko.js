@@ -45,7 +45,7 @@ angular.module('eperusteApp')
     });
   })
   .factory('LukkoLukiokurssi', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssi/:kurssiId/lukko', {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit/:kurssiId/lukko', {
       kurssiId: '@kurssiId',
       perusteId: '@perusteId'
     });
@@ -85,10 +85,11 @@ angular.module('eperusteApp')
     $scope.peruuta = function() { $modalInstance.dismiss(); };
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
-  .service('Lukitus', function($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout,
-      Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-      LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
-      LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
+  .service('Lukitus', function ($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout,
+                                Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
+                                LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
+                                LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite,
+                                LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, $log) {
 
     var lukitsin = null;
     var etag = null;
@@ -123,15 +124,22 @@ angular.module('eperusteApp')
           default: return null;
         }
       }
+      if ($state.current.name == 'root.perusteprojekti.suoritustapa.muokkaakurssia') {
+        return LukkoLukiokurssi;
+      }
     }
 
     function tilaToLukkoParams() {
       // TODO: Lisää muille tiloille vastaavat
+      $log.info("Nyt ollaan", $state.current.name);
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue' && $stateParams.osanTyyppi && $stateParams.osanId !== 'uusi') {
         return { perusteId: PerusopetusService.getPerusteId(), osanId: $stateParams.osanId };
       }
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.lukioosaalue' && $stateParams.osanTyyppi && $stateParams.osanId !== 'uusi') {
         return { perusteId: PerusopetusService.getPerusteId(), osanId: $stateParams.osanId };
+      }
+      if ($state.current.name == 'root.perusteprojekti.suoritustapa.muokkaakurssia') {
+        return { perusteId: PerusopetusService.getPerusteId(), kurssiId: $stateParams.kurssiId };
       }
     }
 
@@ -310,11 +318,11 @@ angular.module('eperusteApp')
     }
 
     function lukitseLukioKurssi(id, ch) {
-      lukitse(LukkoLukiokurssi, {perusteId: LukiokoulutusService.getPerusteId(), kurssiId: id}, ch);
+      lukitse(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(),10), kurssiId: id}, ch);
     }
 
     function vapautaLukioKurssi(id, ch) {
-      vapauta(LukkoLukiokurssi, {perusteId: LukiokoulutusService.getPerusteId(), kurssiId: id}, ch);
+      vapauta(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(), 10), kurssiId: id}, ch);
     }
 
     function lukitseOppiaineenVuosiluokkakokonaisuus(oppiaineId, vuosiluokkaId, cb) {

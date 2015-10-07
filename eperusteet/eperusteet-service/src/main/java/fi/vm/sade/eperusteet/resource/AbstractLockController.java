@@ -20,9 +20,7 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.LockService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
 import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
@@ -54,7 +52,7 @@ public abstract class AbstractLockController<T> {
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity<LukkoDto> lock(T ctx,
+    public ResponseEntity<LukkoDto> lock(@RequestBody T ctx,
             @RequestHeader(value = "If-Match", required = false) String eTag) {
         handleContext(ctx);
         LukkoDto lock = service().lock(ctx, revisionOf(eTag));

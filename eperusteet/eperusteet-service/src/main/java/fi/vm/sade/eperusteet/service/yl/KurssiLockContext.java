@@ -25,8 +25,11 @@ import lombok.Getter;
  */
 @Getter
 public class KurssiLockContext {
-    private final Long perusteId;
-    private final Long kurssiId;
+    private Long perusteId;
+    private Long kurssiId;
+
+    public KurssiLockContext() {
+    }
 
     public KurssiLockContext(Long perusteId, Long kurssiId) {
         this.perusteId = perusteId;

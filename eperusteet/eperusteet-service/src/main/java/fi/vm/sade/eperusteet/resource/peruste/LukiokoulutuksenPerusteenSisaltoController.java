@@ -28,6 +28,7 @@ import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.yl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -108,6 +109,19 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public ResponseEntity<LukiokurssiTarkasteleDto> getKurssi(@PathVariable("perusteId") final Long perusteId,
                                   @PathVariable("id") Long id) {
         return handleGet(perusteId, () -> kurssit.getLukiokurssiTarkasteleDtoById(perusteId, id));
+    }
+
+    @RequestMapping(value = "/kurssit/{id}", method = POST)
+    public RedirectView updateKurssi(@PathVariable("perusteId") final Long perusteId,
+                                     @PathVariable("id") final Long kurssiId,
+                                  @RequestBody LukiokurssiMuokkausDto kurssi) {
+        if (kurssi.getId() == null) {
+            kurssi.setId(kurssiId);
+        } else if(!kurssi.getId().equals(kurssiId)) {
+            throw new NotExistsException();
+        }
+        kurssit.muokkaaLukiokurssia(perusteId, kurssi);
+        return new RedirectView(""+kurssiId,true);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = GET)
