@@ -60,7 +60,7 @@
         <span ng-bind="kurssityypit[kurssi.tyyppi] | kaanna"></span>
       </td>
     </tr>
-    <tr>
+    <tr ng-if="kurssi.kurssityypinKuvaus | kaanna">
       <th kaanna="'kurssi-tyypin-kuvaus'">
       </th>
       <td>
@@ -70,9 +70,13 @@
     </thead>
   </table>
 
-  <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-tavoitteet-header' | kaanna"></h3>
-  <div ng-bind-html="kurssi.tavoitteet | kaanna"></div>
+  <div ng-if="kurssi.tavoitteet | kaanna">
+    <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-tavoitteet-header' | kaanna"></h3>
+    <div ng-bind-html="kurssi.tavoitteet | kaanna"></div>
+  </div>
 
-  <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-sisallot-header' | kaanna"></h3>
-  <div ng-bind-html="kurssi.sisallot | kaanna"></div>
+  <div ng-if="kurssi.sisallot | kaanna"">
+    <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-sisallot-header' | kaanna"></h3>
+    <div ng-bind-html="kurssi.sisallot | kaanna"></div>
+  </div>
 </div>
