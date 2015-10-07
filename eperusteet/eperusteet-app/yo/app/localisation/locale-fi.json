@@ -925,6 +925,7 @@
     "lisaa-kurssi-title": "Luo lukiokurssi",
     "kurssi-nimi-header": "Nimi",
     "kurssi-tyyppi-header": "Tyyppi",
+    "kurssi-tyyppin-kuvaus-header": "Tyypin kuvaus",
     "kurssi-koodi-header": "Koodi",
     "kurssi-sisallot-header": "Sisällöt",
     "kurssi-tavoitteet-header": "Tavoitteet",
@@ -932,6 +933,12 @@
     "kurssi-peruuta": "Peruuta",
     "lukio-liitamattomat-kurssit": "Liittämät kurssit",
     "lukio-etsi-oppiaineista": "Etsi oppiaineista...",
+    "kurssi-title": "Kurssi",
+    "kurssi-koodi": "Koodi",
+    "muokkaa-kurssia": "Muokkaa kurssia",
+    "muokkaa-kurssia-action": "Tallenna muutokset",
+    "kurssi-tyyppi": "Tyyppi",
+    "kurssi-tyypin-kuvaus": "Tyypin kuvaus",
 
     "lisaa-aihekokonaisuus-title": "Lisää aihekokonaisuus",
     "lisaa-aihekokonaisuus-otsikko-header": "Aihekokonaisuuden otsikko",
@@ -939,10 +946,5 @@
     "lisaa-aihekokonaisuus-action": "Lisää aihekokonaisuus",
     "muokkaa-aihekokonaisuus-title": "Muokkaa aihekokonaisuutta",
     "muokkaa-aihekokonaisuus-action": "Tallenna",
-    "jnro": "Järjestysnumero",
-
-    "kurssi-title": "Kurssi",
-    "kurssi-koodi": "Koodi",
-    "muokkaa-kurssia": "Muokkaa kurssia",
-    "muokkaa-kurssia-action": "Tallenna muutokset"
+    "jnro": "Järjestysnumero"
 }

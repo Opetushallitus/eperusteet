@@ -131,7 +131,6 @@ angular.module('eperusteApp')
 
     function tilaToLukkoParams() {
       // TODO: Lisää muille tiloille vastaavat
-      $log.info("Nyt ollaan", $state.current.name);
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue' && $stateParams.osanTyyppi && $stateParams.osanId !== 'uusi') {
         return { perusteId: PerusopetusService.getPerusteId(), osanId: $stateParams.osanId };
       }

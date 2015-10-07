@@ -22,11 +22,14 @@
   </select>
 </div>
 
+<label for="tyypin-kuvaus" class="header" kaanna="kurssi-tyyppin-kuvaus-header" vaaditaan></label>
+<div class="fixed-group">
+  <div id="tyypin-kuvaus" class="full-width" ckeditor slocalized ng-model="kurssi.kurssityypinKuvaus"></div>
+</div>
+
 <label for="nimi-input" class="header" kaanna="'kurssi-nimi-header'" vaaditaan></label>
 <input id="nimi-input" class="form-control" ng-model="kurssi.nimi" slocalized required
        ng-enter="save()"/>
-<p class="alert alert-error" ng-show="(lisaaKurssiForm.$error.required && lisaaKurssiForm.$error.required[1].$dirty)"
-   kaanna>Nimi on pakollinen tieto</p>
 
 <label for="koodi-input" class="header" kaanna="kurssi-koodi-header"></label>
 <div class="fixed-group">

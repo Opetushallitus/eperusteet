@@ -46,7 +46,7 @@ public class LukiokurssiTarkasteleDto implements Serializable, Lokalisoitava {
     private LokalisoituTekstiDto nimi;
     private String koodiArvo;
     private String koodiUri;
-    private Optional<LokalisoituTekstiDto> kurssityypinKvaus;
+    private Optional<LokalisoituTekstiDto> kurssityypinKuvaus;
     private Optional<LokalisoituTekstiDto> kuvaus;
     private Optional<LokalisoituTekstiDto> tavoitteet;
     private Optional<LokalisoituTekstiDto> sisallot;

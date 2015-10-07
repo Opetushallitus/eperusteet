@@ -36,19 +36,16 @@ angular.module('eperusteApp')
   .controller('LisaaLukioKurssiController', function($scope, $state, $q, $stateParams,
                                                      LukiokoulutusService, LukioKurssiService,
                                                      YleinenData, LukiokurssiModifyHelpers) {
-    $scope.kurssityypit = [];
-    function init() {
-      $scope.kurssi = {
-        nimi: {fi: ''},
-        tyyppi: 'PAKOLLINEN',
-        koodiUri: null,
-        koodiArvo: null
-      };
-      YleinenData.lukioKurssityypit().then(function(tyypit) {
-        $scope.kurssityypit = tyypit;
-      });
-    }
-    init();
+    $scope.kurssityypit = {};
+    $scope.kurssi = {
+      nimi: {fi: ''},
+      tyyppi: 'PAKOLLINEN',
+      koodiUri: null,
+      koodiArvo: null
+    };
+    YleinenData.lukioKurssityypit().then(function(tyypit) {
+      $scope.kurssityypit = tyypit;
+    });
     $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
 
     $scope.save = function() {
@@ -61,8 +58,16 @@ angular.module('eperusteApp')
       $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.KURSSIT});
     };
   })
-  .controller('NaytaLukiokurssiController', function($scope, $state, LukioKurssiService, $stateParams) {
+  .controller('NaytaLukiokurssiController', function($scope, $state, LukioKurssiService,
+                                                     $stateParams, YleinenData, $log) {
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
+    $scope.kurssityypit = [];
+    YleinenData.lukioKurssityypit().then(function(tyypit) {
+      _.each(tyypit, function(t) {
+        $scope.kurssityypit[t.tyyppi] = t.nimi;
+      });
+      $log.info("Tyypit", $scope.kurssityypit);
+    });
 
     $scope.oppiaineMurupolkuItems = function(oppiaine) {
       var ls = [];
@@ -96,12 +101,9 @@ angular.module('eperusteApp')
               YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, LukiokoulutusService) {
 
     $scope.kurssityypit = [];
-    function init() {
-      YleinenData.lukioKurssityypit().then(function(tyypit) {
-        $scope.kurssityypit = tyypit;
-      });
-    }
-    init();
+    YleinenData.lukioKurssityypit().then(function(tyypit) {
+      $scope.kurssityypit = tyypit;
+    });
 
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
     $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
@@ -112,6 +114,8 @@ angular.module('eperusteApp')
       });
     };
     $scope.back = function() {
-      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.KURSSIT});
+      $state.go('root.perusteprojekti.suoritustapa.kurssi', {
+        kurssiId: $stateParams.kurssiId
+      });
     };
   });

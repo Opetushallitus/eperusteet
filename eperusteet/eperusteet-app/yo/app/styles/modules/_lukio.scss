@@ -20,6 +20,13 @@
       tr :first-child {
         padding-right: 20px;
       }
+      tr th, tr td {
+        vertical-align: top;
+        padding-bottom: 15px;
+      }
+      tr td {
+        padding-top: 2px;
+      }
     }
   }
   .action-buttons {
@@ -29,5 +36,10 @@
   }
   .clear {
     clear: right;
+  }
+}
+.kurssi-form {
+  .full-width {
+    width: 100%;
   }
 }

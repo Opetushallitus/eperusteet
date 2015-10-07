@@ -34,7 +34,7 @@
   </div>
 
   <h2>
-    <kaanna kaanna="kurssi-title"></kaanna> <span ng-bind="kurssi.nimi | kaanna"></span>
+    </kaanna> <span ng-bind="kurssi.nimi | kaanna"></span>
   </h2>
   <div class="action-buttons">
     <button class="btn btn-default rivinappi" icon-role="edit" ng-bind="'muokkaa' | kaanna"
@@ -53,8 +53,26 @@
         <span ng-bind="kurssi.koodiArvo || ('ei-asetettu' | kaanna)"></span>
       </td>
     </tr>
+    <tr>
+      <th kaanna="'kurssi-tyyppi'">
+      </th>
+      <td>
+        <span ng-bind="kurssityypit[kurssi.tyyppi] | kaanna"></span>
+      </td>
+    </tr>
+    <tr>
+      <th kaanna="'kurssi-tyypin-kuvaus'">
+      </th>
+      <td>
+        <span ng-bind-html="kurssi.kurssityypinKuvaus | kaanna"></span>
+      </td>
+    </tr>
     </thead>
   </table>
 
+  <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-tavoitteet-header' | kaanna"></h3>
+  <div ng-bind-html="kurssi.tavoitteet | kaanna"></div>
 
+  <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-sisallot-header' | kaanna"></h3>
+  <div ng-bind-html="kurssi.sisallot | kaanna"></div>
 </div>

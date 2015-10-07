@@ -58,7 +58,7 @@ public class Lukiokurssi extends Kurssi {
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ValidHtml(whitelist = WhitelistType.SIMPLIFIED)
+    @ValidHtml(whitelist = WhitelistType.NORMAL)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "kurssityypin_kuvaus_id")
     private TekstiPalanen kurssityypinKuvaus;
