@@ -66,7 +66,6 @@ angular.module('eperusteApp')
       _.each(tyypit, function(t) {
         $scope.kurssityypit[t.tyyppi] = t.nimi;
       });
-      $log.info("Tyypit", $scope.kurssityypit);
     });
 
     $scope.oppiaineMurupolkuItems = function(oppiaine) {
@@ -98,8 +97,7 @@ angular.module('eperusteApp')
   })
 
   .controller('MuokkaaLukiokurssiaController', function($scope, $state, LukioKurssiService, $stateParams,
-              YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, LukiokoulutusService) {
-
+              YleinenData, $log, $rootScope, LukiokurssiModifyHelpers) {
     $scope.kurssityypit = [];
     YleinenData.lukioKurssityypit().then(function(tyypit) {
       $scope.kurssityypit = tyypit;

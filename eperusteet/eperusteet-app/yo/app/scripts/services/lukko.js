@@ -89,7 +89,7 @@ angular.module('eperusteApp')
                                 Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
                                 LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
                                 LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite,
-                                LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, $log) {
+                                LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
 
     var lukitsin = null;
     var etag = null;
@@ -103,16 +103,15 @@ angular.module('eperusteApp')
       Resource.get(obj, cb || angular.noop, errorCb || Notifikaatiot.serverLukitus);
     }
 
-    function tilaToLukkoResource() {
-      // TODO: Lisää muille tiloille vastaavat
-      if ($state.current.name === 'root.perusteprojekti.suoritustapa.lukioosaalue') {
+    var genericResourcesByState = {
+      'root.perusteprojekti.suoritustapa.lukioosaalue': function() {
         switch($stateParams.osanTyyppi) {
           case 'oppiaineet_oppimaarat':return LukkoLukioOppiaine;
           case 'aihekokonaisuudet':return LukkoLukioAihekokonaisuudet;
           default: return null;
         }
-      }
-      if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue') {
+      },
+      'root.perusteprojekti.suoritustapa.osaalue': function() {
         switch($stateParams.osanTyyppi) {
           // case '': return LukkoPerusteenosa;
           // case '': return LukkoRakenne;
@@ -123,9 +122,14 @@ angular.module('eperusteApp')
           case 'osaaminen': return LukkoLaajaalainenOsaaminen;
           default: return null;
         }
-      }
-      if ($state.current.name == 'root.perusteprojekti.suoritustapa.muokkaakurssia') {
-        return LukkoLukiokurssi;
+      },
+      'root.perusteprojekti.suoritustapa.muokkaakurssia': _.constant(LukkoLukiokurssi)
+    };
+
+    function tilaToLukkoResource() {
+      var stateProvider = genericResourcesByState[$state.current.name];
+      if (stateProvider) {
+        return stateProvider();
       }
     }
 
@@ -137,7 +141,7 @@ angular.module('eperusteApp')
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.lukioosaalue' && $stateParams.osanTyyppi && $stateParams.osanId !== 'uusi') {
         return { perusteId: PerusopetusService.getPerusteId(), osanId: $stateParams.osanId };
       }
-      if ($state.current.name == 'root.perusteprojekti.suoritustapa.muokkaakurssia') {
+      if ($state.current.name === 'root.perusteprojekti.suoritustapa.muokkaakurssia') {
         return { perusteId: PerusopetusService.getPerusteId(), kurssiId: $stateParams.kurssiId };
       }
     }
