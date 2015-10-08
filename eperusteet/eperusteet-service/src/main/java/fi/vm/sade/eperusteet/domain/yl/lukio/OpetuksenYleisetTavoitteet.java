@@ -43,7 +43,7 @@ public class OpetuksenYleisetTavoitteet extends AbstractAuditedReferenceableEnti
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "otsikko_id", nullable = false)
+    @JoinColumn(name = "otsikko_id", nullable = true)
     private TekstiPalanen otsikko;
 
     @Getter
@@ -57,7 +57,7 @@ public class OpetuksenYleisetTavoitteet extends AbstractAuditedReferenceableEnti
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "sisalto_id", nullable = false)
+    @JoinColumn(name = "sisalto_id", nullable = true)
     private LukiokoulutuksenPerusteenSisalto sisalto;
 
     public OpetuksenYleisetTavoitteet kloonaa() {
