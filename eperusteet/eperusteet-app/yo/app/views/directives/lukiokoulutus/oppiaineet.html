@@ -18,7 +18,10 @@
   <tab heading="{{'lukiooppiaineet-puu-tab-header' | kaanna}}"
        ng-click="selectTab('puu')" active="activeTab == 'puu'">
     <div class="lukio-oppiaineet-puu lukio-oppiaine-tab">
-      <div style="float: left;width: 60%" class="tree col-lg-6 col-md-8 col-xs-12">
+      <div class="main-column tree">
+        <div class="action-buttons">
+          <button icon-role="add" class="floater btn" ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
+        </div>
         <div class="tree-con">
           <rajaus size="small" classes="puun-rajaus" model="treehelpers.haku"
                   callback="treeHaku()"
@@ -29,7 +32,7 @@
                         ui-sortable-config="kurssiTreeConfig"></generic-tree>
         </div>
       </div>
-      <div style="float:left; width: 25%;margin-left: 5%">
+      <div class="liittamattomat-column">
         <h2 kaanna="lukio-liitamattomat-kurssit"></h2>
 
         <div ui-sortable="liittamattomatKurssitConfig" ng-model="liittamattomatKurssit"

@@ -16,7 +16,16 @@
 $kurssi-border-color: yellowgreen;
 
 .lukio-oppiaineet-puu {
-  margin-top: 20px;
+  .main-column {
+    float: left;
+    width: 60%;
+    position: relative;
+  }
+  .liittamattomat-column {
+    float: left;
+    width: 25%;
+    margin-left: 5%
+  }
 }
 .kurssi-view {
   table.description {
@@ -132,4 +141,12 @@ $kurssi-border-color: yellowgreen;
   padding: 10px;
   margin-bottom: 8px;
   border: 1px solid $kurssi-border-color;
+}
+
+.lukio-oppiaine-tab {
+  padding-top: 20px;
+}
+
+.oppiaine-view.oppiaine-view-edit .action-buttons {
+  margin-top: 0px;
 }

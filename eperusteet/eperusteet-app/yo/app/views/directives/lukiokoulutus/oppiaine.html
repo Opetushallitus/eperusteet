@@ -1,5 +1,5 @@
 <!-- oppiaine.html -->
-<div class="oppiaine-view">
+<div class="oppiaine-view" ng-class="{'oppiaine-view-edit' : editEnabled}">
   <osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
     <div ng-if="editEnabled">
       <div class="oppiaine-header">

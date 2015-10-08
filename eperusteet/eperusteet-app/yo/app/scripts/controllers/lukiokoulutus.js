@@ -16,6 +16,7 @@
 
 'use strict';
 /*global _*/
+/*global jQuery*/
 
 angular.module('eperusteApp')
   .controller('LukiokoulutussisaltoController',
@@ -487,4 +488,11 @@ angular.module('eperusteApp')
       resolve(treeScope);
     });
 
+    $scope.addOppiaine = function() {
+      $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
+        osanId: 'uusi',
+        osanTyyppi: 'oppiaineet_oppimaarat',
+        tabId: 0
+      });
+    };
   });
