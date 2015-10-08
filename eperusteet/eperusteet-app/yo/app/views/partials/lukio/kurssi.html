@@ -37,9 +37,12 @@
     </kaanna> <span ng-bind="kurssi.nimi | kaanna"></span>
   </h2>
   <div class="action-buttons">
-    <button class="btn btn-default rivinappi" icon-role="edit" ng-bind="'muokkaa' | kaanna"
+    <button class="btn floating"
             oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
-            ng-click="gotoMuokkaa()"></button>
+            ng-click="gotoMuokkaa()">
+      <span icon-role="edit" class="ng-scope"></span>
+      <span ng-bind="'muokkaa' | kaanna"></span>
+    </button>
   </div>
   <div class="clear">
     <hr/>

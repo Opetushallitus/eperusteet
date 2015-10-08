@@ -51,7 +51,7 @@ angular.module('eperusteApp')
             }]
         },
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
+          PerusteProjektiSivunavi.setVisible(true);
         }]
       })
       .state('root.perusteprojekti.suoritustapa.lukioosaalue', {

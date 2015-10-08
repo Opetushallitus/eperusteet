@@ -13,7 +13,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  European Union Public Licence for more details.
  */
-
+.lukio-oppiaineet-puu {
+  margin-top: 20px;
+}
 .kurssi-view {
   table.description {
     thead {
@@ -30,7 +32,7 @@
     }
   }
   .action-buttons {
-    margin-top: -30px;
+    margin-top: -40px;
     margin-right: 20px;
     float:right;
   }

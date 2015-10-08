@@ -34,8 +34,7 @@ angular.module('eperusteApp')
     this.LABELS = {
       'opetuksen-yleiset-tavoitteet': this.OPETUKSEN_YLEISET_TAVOITTEET,
       'aihekokonaisuudet': this.AIHEKOKONAISUUDET,
-      'oppiaineet-oppimaarat': this.OPPIAINEET_OPPIMAARAT,
-      'lukiokurssit': this.KURSSIT
+      'oppiaineet-oppimaarat': this.OPPIAINEET_OPPIMAARAT
     };
 
     var tiedot = null;
@@ -66,12 +65,6 @@ angular.module('eperusteApp')
         label: 'oppiaineet-oppimaarat',
         emptyPlaceholder: 'tyhja-placeholder-oppiaineet-oppimaarat',
         addLabel: 'lisaa-oppiaine'
-      },
-      {
-        tyyppi: this.KURSSIT,
-        label: 'lukiokurssit',
-        emptyPlaceholder: 'tyhja-placeholder-kurssit',
-        addLabel: 'lisaa-kurssi'
       }
     ];
 

@@ -307,7 +307,26 @@ angular.module('eperusteApp')
     $scope.kurssiTreeConfig = {
       connectWith: '.recursivetreeLiittamattomat'
     };
+    $scope.activeTab = 'puu';
+    $scope.selectTab = function(tab) {
+      $scope.activeTab = tab;
+    }
+    $scope.oppiaineet = [];
+    $scope.kurssit = [];
     $scope.liittamattomatKurssit = [];
+    $scope.createUrl = function(node) {
+      if (node.dtype === 'kurssi') {
+        return $state.href('root.perusteprojekti.suoritustapa.kurssi', {
+          kurssiId: node.id
+        });
+      } else if(node.dtype === 'oppiaine') {
+        return $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', {
+          osanId: node.id,
+          osanTyyppi: 'oppiaineet_oppimaarat',
+          tabId: 0
+        });
+      }
+    };
 
     $scope.treeOsatProvider = $q(function(resolve) {
       var treeScope = {
@@ -318,7 +337,12 @@ angular.module('eperusteApp')
                 kurssitProvider.then(function (kurssit) {
                   $log.info('Kurssit: ', kurssit);
                   $scope.treeRoot.oppimaarat = oppiaineet;
+                  $scope.oppiaineet = oppiaineet;
                   $scope.treeRoot.kurssit = [];
+                  $scope.kurssit = kurssit;
+                  _.each(oppiaineet, function(oppiaine) {
+                    oppiaine.dtype = 'oppiaine';
+                  });
                   _.each(kurssit, function(kurssi) {
                     kurssi.$$hide = false;
                     kurssi.$$collapsed = $scope.treehelpers.defaultCollapsed;
@@ -385,7 +409,7 @@ angular.module('eperusteApp')
           scope.goto = function(node) {
             $log.info('Goto: ', node);
             if (node.dtype === 'kurssi') {
-              $state.go('root.perusteprojekti.suoritustapa.kurssi', {
+              return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
                 kurssiId: node.id
               });
             } else if(node.dtype === 'oppiaine') {
@@ -401,4 +425,5 @@ angular.module('eperusteApp')
       };
       resolve(treeScope);
     });
+
   });
