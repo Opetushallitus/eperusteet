@@ -50,6 +50,31 @@
 .opetussialtopuu {
   margin-top: 20px;
 
+  .puu-node {
+    padding: 10px;
+    border: 1px solid black;
+
+    &.kurssi-node {
+      border: 1px solid yellowgreen;
+      margin-top: 0px;
+    }
+
+    &.oppiaine-node {
+    }
+
+    a {
+      cursor: pointer;
+    }
+
+    .treehandle {
+      cursor: move;
+      padding-left: 5px;
+      padding-right: 5px;
+      display: inline-block;
+      float:right;
+    }
+  }
+
   .opetussialtopuu-solmu-paataso {
     margin-top: 20px;
   }
@@ -59,7 +84,11 @@
   }
 
   .recursivetree:empty {
-    padding-bottom: 8px;
+    padding-bottom: 10px;
+
+    .kurssi-node {
+      padding-bottom: 0px;
+    }
   }
 
   .opetussialtopuu-otsikko-solmu {
@@ -72,11 +101,6 @@
 
   .opetussialtopuu-solmu {
     padding: 8px 0 5px 7px;
-    border-bottom: 7px;
-  }
-
-  .treehandle {
-    cursor: move;
   }
 
   .placeholder {

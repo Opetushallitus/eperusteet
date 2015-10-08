@@ -24,8 +24,10 @@
                   callback="treeHaku()"
                   placeholder="{{ 'lukio-etsi-oppiaineista' || kaanna }}"></rajaus>
         </div>
-        <generic-tree tree-provider="treeOsatProvider"
-                      ui-sortable-config="kurssiTreeConfig"></generic-tree>
+        <div class="opetussialtopuu">
+          <generic-tree tree-provider="treeOsatProvider"
+                        ui-sortable-config="kurssiTreeConfig"></generic-tree>
+        </div>
       </div>
       <div style="float:left; width: 25%;margin-left: 5%">
         <h2 kaanna="lukio-liitamattomat-kurssit"></h2>

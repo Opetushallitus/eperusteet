@@ -334,7 +334,7 @@ angular.module('eperusteApp')
       }).$promise;
     };
 
-    var deleteAihekokonaisuus = function(aihekokonaisuusId,cb) {
+    var deleteAihekokonaisuus = function(aihekokonaisuusId/*,cb XXX: should this be used?*/) {
       var d = $q.defer();
       Lukitus.lukitseLukioAihekokonaisuus(aihekokonaisuusId, function () {
         LukiokoulutusAihekokonaisuudet.delete({
@@ -348,10 +348,10 @@ angular.module('eperusteApp')
         }, Notifikaatiot.serverCb);
       });
       return d.promise;
-
+      /* XXX:???
       return LukiokoulutusAihekokonaisuudet.delete({
         aihekokonaisuusId: aihekokonaisuusId
-      }, cb).$promise;
+      }, cb).$promise;*/
     };
 
     return {

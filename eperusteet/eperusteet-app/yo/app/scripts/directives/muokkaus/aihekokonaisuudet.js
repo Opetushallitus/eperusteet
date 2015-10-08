@@ -160,6 +160,6 @@ angular.module('eperusteApp')
       LukioAihekokonaisuudetService.deleteAihekokonaisuus($scope.aihekokonaisuus.id).then(function() {
         $scope.back();
       });
-    }
+    };
 
   });

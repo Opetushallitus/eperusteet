@@ -253,7 +253,7 @@ angular.module('eperusteApp')
     }
     function parents(node, fn) {
       node = node.$$nodeParent;
-      while (node !== null) {
+      while (node) {
         fn(node);
         node = node.$$nodeParent;
       }
@@ -263,7 +263,7 @@ angular.module('eperusteApp')
         _.each(node, function(i) {
           traverse(i, ch, fn, parent);
         });
-      } else {
+      } else if (node) {
         fn(node, parent);
         _.each(ch(node), function(c) {
           traverse(c, ch, fn, node);
@@ -290,12 +290,9 @@ angular.module('eperusteApp')
         updateTree(piilotaHaunPerusteella);
       });
     };
-    var templateAround = function(tmpl) {
-      return '<div class="opetussialtopuu-solmu" ng-class="{ \'opetussialtopuu-solmu-paataso\': (node.$$depth === 0) }">'+tmpl+'</div>';
-    };
 
     $scope.liittamattomatKurssitConfig = {
-      connectWith: '.recursivetreeLiittamattomat',
+      connectWith: '.recursivetree',
       handle: '.treehandle',
       cursorAt: { top : 2, left: 2 },
       cursor: 'move',
@@ -303,9 +300,6 @@ angular.module('eperusteApp')
       disabled: false,
       tolerance: 'pointer',
       dtype: 'peruste'
-    };
-    $scope.kurssiTreeConfig = {
-      connectWith: '.recursivetreeLiittamattomat'
     };
     $scope.activeTab = 'puu';
     $scope.selectTab = function(tab) {
@@ -328,7 +322,43 @@ angular.module('eperusteApp')
       }
     };
 
+    var acceptMove = function(node, to) {
+      $log.info('move', node, 'to', to);
+      return (node.dtype === 'oppiaine' && to.root) ||
+          (node.dtype === 'oppiaine' && to.dtype === 'oppiaine') ||
+          (to.dtype === 'oppiaine' && to.$$depth > 0);
+    };
+
+    $scope.kurssiTreeConfig = {
+      placeholder: 'placeholder',
+      cursorAt: { top : 5, right: 5 },
+      update: function(e,ui) {
+        var dropTarget = ui.item.sortable.droptarget;
+        //$log.info('update',ui.item.sortable.model);
+        if (dropTarget) {
+          var listItem = dropTarget.closest('.recursivetree');
+          var parentScope = listItem ? listItem.scope() : null;
+          //$log.info('update ', listItem, parentScope);
+          if (parentScope && parentScope.node) {
+            if (!acceptMove(ui.item.sortable.model, parentScope.node)) {
+              //$log.info('cancel');
+              ui.item.sortable.cancel();
+            }
+          } else {
+            //$log.info('to root');
+            if(!acceptMove(ui.item.sortable.model, $scope.treeRoot)) {
+              //$log.info('cancel');
+              ui.item.sortable.cancel();
+            }
+          }
+        }
+      }
+    };
+
     $scope.treeOsatProvider = $q(function(resolve) {
+      var templateAround = function(tmpl) {
+        return '<div ng-show="!node.$$hide" class="opetussialtopuu-solmu" ng-class="{ \'opetussialtopuu-solmu-paataso\': (node.$$depth === 0) }">'+tmpl+'</div>';
+      };
       var treeScope = {
         root: function() {
           $log.info('Set root.');
@@ -377,24 +407,20 @@ angular.module('eperusteApp')
           );
         },
         hidden: function(node) {
-          return node.$$hide || node.$$nodeParent.$$collapsed;
+          return node.$$hide || (node.$$nodeParent && node.$$nodeParent.$$collapsed);
         },
         template: function(n) {
-          var commonPart = '<span icon-role="drag" class="treehandle"></span>',
-              collabsibleCommon = commonPart + '<span ng-click="toggle(node)" class="colorbox suljettu">' +
+          var handle = '<span icon-role="drag" class="treehandle"></span>',
+              collapse = '<span ng-show="node.lapset.length" ng-click="toggle(node)" class="colorbox suljettu">' +
                 '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
                 '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
                 '</span>';
-          if (n.oppiaineet) {
-            if (n.oppiaineet.length === 0) {
-              return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid yellowgreen;">' +
-                commonPart + ' <a ng-click="goto(node)">{{ node.nimi | kaanna }} {{ node.id }}</a></div>', n);
-            }
-            return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid yellowgreen;">' +
-              commonPart + ' <a ng-click="goto(node)">{{ node.nimi | kaanna }}</a></div>', n);
+          if (n.dtype === 'kurssi') {
+            return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">' +
+              ' <a ng-click="goto(node)">{{ node.nimi | kaanna }}</a>'+handle+'</div>', n);
           } else {
-            return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid black;">' +
-              collabsibleCommon + '<a ng-click="goto(node)">{{ node.nimi | kaanna }}</a></div>', n);
+            return templateAround('<div class="puu-node oppiaine-node">' +
+              collapse + '<a ng-click="goto(node)">{{ node.nimi | kaanna }}</a>'+handle+'</div>', n);
           }
         },
         children: function(node) {
@@ -423,7 +449,7 @@ angular.module('eperusteApp')
             }
           };
         },
-        useUiSortable: _.constant(true)
+        useUiSortable: _.constant(false)
       };
       resolve(treeScope);
     });
