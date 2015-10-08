@@ -59,7 +59,7 @@ angular.module('eperusteApp')
     };
   })
   .controller('NaytaLukiokurssiController', function($scope, $state, LukioKurssiService,
-                                                     $stateParams, YleinenData, $log) {
+                                                     $stateParams, YleinenData) {
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
     $scope.kurssityypit = [];
     YleinenData.lukioKurssityypit().then(function(tyypit) {

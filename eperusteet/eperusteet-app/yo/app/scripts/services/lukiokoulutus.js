@@ -193,8 +193,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .service('LukioKurssiService', function(LukioKurssit, Lukitus, Notifikaatiot, LukiokoulutusService, $translate,
-                                          $q, $log) {
+  .service('LukioKurssiService', function(LukioKurssit, Lukitus, Notifikaatiot, LukiokoulutusService, $translate, $q) {
 
     /**
      * Lists kurssit and related oppiaineet with jarjestys for given peruste.
@@ -264,8 +263,7 @@ angular.module('eperusteApp')
   })
   .service('LukioAihekokonaisuudetService',
             function(LukiokoulutusAihekokonaisuudet, Lukitus,
-                     Notifikaatiot, LukiokoulutusService, $translate,
-                     $q, $log) {
+                     Notifikaatiot, LukiokoulutusService, $translate, $q) {
 
     /**
      * Tallentaa yhden aihekokonaisuuden

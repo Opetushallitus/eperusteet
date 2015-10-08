@@ -291,7 +291,7 @@ angular.module('eperusteApp')
       });
     };
     var templateAround = function(tmpl) {
-      return '<div>'+tmpl+'</div>';
+      return '<div class="opetussialtopuu-solmu" ng-class="{ \'opetussialtopuu-solmu-paataso\': (node.$$depth === 0) }">'+tmpl+'</div>';
     };
 
     $scope.liittamattomatKurssitConfig = {
@@ -310,7 +310,7 @@ angular.module('eperusteApp')
     $scope.activeTab = 'puu';
     $scope.selectTab = function(tab) {
       $scope.activeTab = tab;
-    }
+    };
     $scope.oppiaineet = [];
     $scope.kurssit = [];
     $scope.liittamattomatKurssit = [];
@@ -342,11 +342,13 @@ angular.module('eperusteApp')
                   $scope.kurssit = kurssit;
                   _.each(oppiaineet, function(oppiaine) {
                     oppiaine.dtype = 'oppiaine';
+                    oppiaine.lapset = [];
                   });
                   _.each(kurssit, function(kurssi) {
                     kurssi.$$hide = false;
                     kurssi.$$collapsed = $scope.treehelpers.defaultCollapsed;
                     kurssi.dtype = 'kurssi';
+                    kurssi.lapset = [];
                   });
                   $scope.treeRoot.lapset = _.union($scope.treeRoot.oppimaarat, $scope.treeRoot.kurssit);
                   $scope.liittamattomatKurssit = _.cloneDeep(_.filter(kurssit, function (k) {
@@ -379,10 +381,10 @@ angular.module('eperusteApp')
         },
         template: function(n) {
           var commonPart = '<span icon-role="drag" class="treehandle"></span>',
-            collabsibleCommon = commonPart + '<span ng-click="toggle(node)" class="colorbox suljettu">' +
-              '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
-              '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
-              '</span>';
+              collabsibleCommon = commonPart + '<span ng-click="toggle(node)" class="colorbox suljettu">' +
+                '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+                '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
+                '</span>';
           if (n.oppiaineet) {
             if (n.oppiaineet.length === 0) {
               return templateAround('<div style="margin-left:{{ 20*node.$$depth }}px;padding:10px;margin-bottom:5px;border:1px solid yellowgreen;">' +

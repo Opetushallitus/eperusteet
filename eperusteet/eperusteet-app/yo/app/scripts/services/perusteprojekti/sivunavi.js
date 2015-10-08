@@ -154,11 +154,12 @@ angular.module('eperusteApp')
             label: label,
             link: [STATE_LUKIOOSALISTAUS, {suoritustapa: 'lukiokoulutus', osanTyyppi: key}]
           };
-          if (key == LukiokoulutusService.OPPIAINEET_OPPIMAARAT) {
+          /*if (key === LukiokoulutusService.OPPIAINEET_OPPIMAARAT) {
+            // yritelmää saada tänne ali-itemeitä, ei toimi...
             item.lapset = [{
               label: 'foo'
             }];
-          }
+          }*/
           items.push(item);
           mapYL(tiedot2[key], key);
         });

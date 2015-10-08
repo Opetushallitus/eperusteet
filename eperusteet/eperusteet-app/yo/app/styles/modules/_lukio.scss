@@ -45,3 +45,46 @@
     width: 100%;
   }
 }
+
+
+.opetussialtopuu {
+  margin-top: 20px;
+
+  .opetussialtopuu-solmu-paataso {
+    margin-top: 20px;
+  }
+
+  .recursivetree {
+    margin-left: 30px;
+  }
+
+  .recursivetree:empty {
+    padding-bottom: 8px;
+  }
+
+  .opetussialtopuu-otsikko-solmu {
+    background: #fcfcfc;
+  }
+
+  .opetussialtopuu-chevron {
+    padding: 2px 0 0 2px;
+  }
+
+  .opetussialtopuu-solmu {
+    padding: 8px 0 5px 7px;
+    border-bottom: 7px;
+  }
+
+  .treehandle {
+    cursor: move;
+  }
+
+  .placeholder {
+    height: 28px;
+    padding: 2px;
+    margin: 3px;
+    // margin: 5px 200px 5px 200px;
+    width: 100%;
+    background: #eee;
+  }
+}
