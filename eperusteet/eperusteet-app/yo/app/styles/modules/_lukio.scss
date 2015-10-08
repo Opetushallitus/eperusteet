@@ -13,6 +13,8 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  European Union Public Licence for more details.
  */
+$kurssi-border-color: yellowgreen;
+
 .lukio-oppiaineet-puu {
   margin-top: 20px;
 }
@@ -46,31 +48,42 @@
   }
 }
 
+@mixin lukio-tree-node() {
+  .treehandle {
+    cursor: move;
+    padding-left: 5px;
+    padding-right: 5px;
+    display: inline-block;
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  .collapse-toggle {
+    cursor: pointer;
+    padding: 4px;
+  }
+}
 
 .opetussialtopuu {
   margin-top: 20px;
 
   .puu-node {
+    @include lukio-tree-node();
+
     padding: 10px;
     border: 1px solid black;
 
     &.kurssi-node {
-      border: 1px solid yellowgreen;
+      border: 1px solid $kurssi-border-color;
       margin-top: 0px;
     }
 
     &.oppiaine-node {
     }
 
-    a {
-      cursor: pointer;
-    }
-
     .treehandle {
-      cursor: move;
-      padding-left: 5px;
-      padding-right: 5px;
-      display: inline-block;
       float:right;
     }
   }
@@ -84,11 +97,11 @@
   }
 
   .recursivetree:empty {
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+  }
 
-    .kurssi-node {
-      padding-bottom: 0px;
-    }
+  .kurssi-solmu + .recursivetree:empty {
+    padding-bottom: 0px;
   }
 
   .opetussialtopuu-otsikko-solmu {
@@ -111,4 +124,12 @@
     width: 100%;
     background: #eee;
   }
+}
+
+.liittamaton-kurssi {
+  @include lukio-tree-node();
+
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid $kurssi-border-color;
 }

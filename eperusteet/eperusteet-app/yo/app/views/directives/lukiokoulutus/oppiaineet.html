@@ -34,9 +34,13 @@
 
         <div ui-sortable="liittamattomatKurssitConfig" ng-model="liittamattomatKurssit"
              class="recursivetreeLiittamattomat">
-          <div ng-repeat="kurssi in liittamattomatKurssit">
+          <div ng-repeat="kurssi in liittamattomatKurssit" class="liittamaton-kurssi recursivetree"
+                ng-if="!kurssi.oppiaineet.length">
             <span class="treehandle" icon-role="drag"></span>
-            <span kaanna="kurssi.nimi"></span>
+            <a ng-href="{{createUrl(kurssi)}}">
+              <span class="koodi" ng-bind="kurssi.koodiArvo"></span>
+              <span class="nimi" ng-bind="kurssi.nimi | kaanna"></span>
+            </a>
           </div>
         </div>
       </div>

@@ -291,6 +291,37 @@ angular.module('eperusteApp')
       });
     };
 
+    var handleMove = function(e, ui, cb) {
+      var dropTarget = ui.item.sortable.droptarget;
+      if (dropTarget) {
+        var listItem = dropTarget.closest('.recursivetree');
+        var parentScope = listItem ? listItem.scope() : null;
+        if (parentScope && parentScope.node) {
+          cb(ui.item.sortable.model, parentScope.node);
+        } else {
+          cb(ui.item.sortable.model, $scope.treeRoot);
+        }
+      }
+    };
+    var acceptMove = function(node, to) {
+      $log.info('accept move', node, 'to', to);
+      return (node.dtype === 'oppiaine' && to.root) ||
+        (node.dtype === 'oppiaine' && to.dtype === 'oppiaine') ||
+        (to.dtype === 'oppiaine' && to.$$depth > 0);
+    };
+    var moved = function(node, to) {
+      $log.info('moved', node, 'to', to);
+      if (node.dtype === 'kurssi'  && to.dtype === 'oppiaine') {
+        $log.info('moved kurssi to oppiaine');
+        node.oppiaineet = [];
+        node.oppiaineet.push({
+          oppiaineId: to.id,
+          nimi: to.nimi
+        });
+        to.kurssit.push(node);
+      }
+    };
+
     $scope.liittamattomatKurssitConfig = {
       connectWith: '.recursivetree',
       handle: '.treehandle',
@@ -299,7 +330,16 @@ angular.module('eperusteApp')
       delay: 100,
       disabled: false,
       tolerance: 'pointer',
-      dtype: 'peruste'
+      update: function(e,ui) {
+        handleMove(e,ui, function(from, to) {
+          if (!acceptMove(from, to)) {
+            $log.info('cancel source');
+            ui.item.sortable.cancel();
+          } else {
+            moved(from, to);
+          }
+        });
+      }
     };
     $scope.activeTab = 'puu';
     $scope.selectTab = function(tab) {
@@ -322,42 +362,28 @@ angular.module('eperusteApp')
       }
     };
 
-    var acceptMove = function(node, to) {
-      $log.info('move', node, 'to', to);
-      return (node.dtype === 'oppiaine' && to.root) ||
-          (node.dtype === 'oppiaine' && to.dtype === 'oppiaine') ||
-          (to.dtype === 'oppiaine' && to.$$depth > 0);
-    };
-
     $scope.kurssiTreeConfig = {
       placeholder: 'placeholder',
       cursorAt: { top : 5, right: 5 },
       update: function(e,ui) {
-        var dropTarget = ui.item.sortable.droptarget;
-        //$log.info('update',ui.item.sortable.model);
-        if (dropTarget) {
-          var listItem = dropTarget.closest('.recursivetree');
-          var parentScope = listItem ? listItem.scope() : null;
-          //$log.info('update ', listItem, parentScope);
-          if (parentScope && parentScope.node) {
-            if (!acceptMove(ui.item.sortable.model, parentScope.node)) {
-              //$log.info('cancel');
+        handleMove(e,ui, function(from, to) {
+          if (!acceptMove(from, to)) {
+            $log.info('event', e);
+            if (!jQuery(e.toElement).hasClass('liittamaton-kurssi')) {
+              $log.info('cancel main');
               ui.item.sortable.cancel();
             }
           } else {
-            //$log.info('to root');
-            if(!acceptMove(ui.item.sortable.model, $scope.treeRoot)) {
-              //$log.info('cancel');
-              ui.item.sortable.cancel();
-            }
+            moved(from, to);
           }
-        }
+        });
       }
     };
 
     $scope.treeOsatProvider = $q(function(resolve) {
       var templateAround = function(tmpl) {
-        return '<div ng-show="!node.$$hide" class="opetussialtopuu-solmu" ng-class="{ \'opetussialtopuu-solmu-paataso\': (node.$$depth === 0) }">'+tmpl+'</div>';
+        return '<div ng-show="!node.$$hide" class="opetussialtopuu-solmu {{node.dtype}}-solmu" ' +
+          'ng-class="{ \'opetussialtopuu-solmu-paataso\': (node.$$depth === 0) }">'+tmpl+'</div>';
       };
       var treeScope = {
         root: function() {
@@ -407,23 +433,30 @@ angular.module('eperusteApp')
           );
         },
         hidden: function(node) {
+          if (!node) {
+            return true;
+          }
           return node.$$hide || (node.$$nodeParent && node.$$nodeParent.$$collapsed);
         },
         template: function(n) {
           var handle = '<span icon-role="drag" class="treehandle"></span>',
-              collapse = '<span ng-show="node.lapset.length" ng-click="toggle(node)" class="colorbox suljettu">' +
+              collapse = '<span ng-show="node.lapset.length" ng-click="toggle(node)" class="colorbox collapse-toggle">' +
                 '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
                 '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
                 '</span>';
           if (n.dtype === 'kurssi') {
             return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">' +
-              ' <a ng-click="goto(node)">{{ node.nimi | kaanna }}</a>'+handle+'</div>', n);
+              ' <a ng-click="goto(node)"><span ng-bind="node.koodiArvo"></span> ' +
+              '   <span ng-bind="node.nimi | kaanna"></span></a>'+handle+'</div>', n);
           } else {
             return templateAround('<div class="puu-node oppiaine-node">' +
               collapse + '<a ng-click="goto(node)">{{ node.nimi | kaanna }}</a>'+handle+'</div>', n);
           }
         },
         children: function(node) {
+          if (!node) {
+            return $q.when([]);
+          }
           return $q.when(node.lapset);
         },
         extension: function(node, scope) {
