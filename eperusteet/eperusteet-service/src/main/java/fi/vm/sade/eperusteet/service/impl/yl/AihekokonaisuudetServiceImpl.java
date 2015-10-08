@@ -151,4 +151,11 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
             lukioAihekokonaisuudetRepository.saveAndFlush(aihekokonaisuudet);
         }
     }
+
+    @Override
+    @Transactional
+    public void poistaAihekokonaisuus(long perusteId, long aihekokonaisuusId) throws NotExistsException {
+        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository.findOne(aihekokonaisuusId), Aihekokonaisuus.inPeruste(perusteId));
+        lukioAihekokonaisuusRepository.delete(aihekokonaisuus);
+    }
 }

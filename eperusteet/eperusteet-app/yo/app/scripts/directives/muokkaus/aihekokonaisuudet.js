@@ -155,4 +155,11 @@ angular.module('eperusteApp')
     $scope.back = function() {
       $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET});
     };
+
+    $scope.delete = function() {
+      LukioAihekokonaisuudetService.deleteAihekokonaisuus($scope.aihekokonaisuus.id).then(function() {
+        $scope.back();
+      });
+    }
+
   });

@@ -50,4 +50,8 @@ public interface AihekokonaisuudetService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void tallennaYleiskuvaus(Long perusteId, AihekokonaisuudetYleiskuvausDto aihekokonaisuudetYleiskuvausDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void poistaAihekokonaisuus(long perusteId, long aihekokonaisuusId) throws NotExistsException;
+
 }

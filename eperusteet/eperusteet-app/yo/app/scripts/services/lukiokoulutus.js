@@ -334,11 +334,32 @@ angular.module('eperusteApp')
       }).$promise;
     };
 
+    var deleteAihekokonaisuus = function(aihekokonaisuusId,cb) {
+      var d = $q.defer();
+      Lukitus.lukitseLukioAihekokonaisuus(aihekokonaisuusId, function () {
+        LukiokoulutusAihekokonaisuudet.delete({
+          perusteId: LukiokoulutusService.getPerusteId(),
+          osanId: aihekokonaisuusId
+        }, aihekokonaisuusId, function() {
+          Lukitus.vapautaLukioAihekokonaisuus(aihekokonaisuusId, function() {
+            Notifikaatiot.onnistui('poisto-onnistui');
+            d.resolve(aihekokonaisuusId);
+          });
+        }, Notifikaatiot.serverCb);
+      });
+      return d.promise;
+
+      return LukiokoulutusAihekokonaisuudet.delete({
+        aihekokonaisuusId: aihekokonaisuusId
+      }, cb).$promise;
+    };
+
     return {
       saveAihekokonaisuus: saveAihekokonaisuus,
       saveAihekokonaisuudetYleiskuvaus: saveAihekokonaisuudetYleiskuvaus,
       updateAihekokonaisuus: updateAihekokonaisuus,
       getAihekokonaisuus: getAihekokonaisuus,
-      getAihekokonaisuudetYleiskuvaus: getAihekokonaisuudetYleiskuvaus
+      getAihekokonaisuudetYleiskuvaus: getAihekokonaisuudetYleiskuvaus,
+      deleteAihekokonaisuus: deleteAihekokonaisuus
     };
   });

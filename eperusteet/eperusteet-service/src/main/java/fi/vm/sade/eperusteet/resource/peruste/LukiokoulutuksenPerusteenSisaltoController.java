@@ -272,6 +272,12 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return new RedirectView(""+aihekokonaisuusId,true);
     }
 
+    @RequestMapping(value = "/aihekokonaisuudet/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAihekokonaisuus(@PathVariable("perusteId") final Long perusteId,
+                                              @PathVariable("id") final Long aihekokonaisuusId) {
+        aihekokonaisuudet.poistaAihekokonaisuus(perusteId, aihekokonaisuusId);
+    }
 
     @RequestMapping(value = "/aihekokonaisuudet/aihekokonaisuus", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
