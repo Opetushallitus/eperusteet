@@ -305,16 +305,9 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return handleGet(perusteId, () -> aihekokonaisuudet.getLukioAihekokobaisuusMuokkausById(perusteId, id));
     }
 
-
     @RequestMapping(value = "/yleisettavoitteet", method = GET)
-    public ResponseEntity<YleisetTavoitteetDto> getYleisetTavoitteet(
-            @PathVariable("perusteId") final Long perusteId) {
-        return handleGet(perusteId, new Supplier<YleisetTavoitteetDto>() {
-            @Override
-            public YleisetTavoitteetDto get() {
-                return perusteet.getYleisetTavoitteet(perusteId);
-            }
-        });
+    public ResponseEntity<List<YleisetTavoitteetDto>> getYleisetTavoitteet(@PathVariable("perusteId") final Long perusteId) {
+        return handleGet(perusteId, () -> perusteet.getYleisetTavoitteet(perusteId));
     }
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, Supplier<T> response) {

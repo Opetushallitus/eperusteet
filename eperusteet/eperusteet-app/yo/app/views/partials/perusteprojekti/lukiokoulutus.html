@@ -21,7 +21,7 @@
       </div>
 
       <h2 ng-hide="editing">
-        {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
+        {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length || 0 }})
         <div class="pull-right buttons">
           <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto(projekti, peruste)" ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-import" kaanna="tuo-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
           <button type="button" class="btn btn-default btn-sm" ng-click="addTekstikappale()" icon-role="ep-text-add" kaanna="'lisaa-tutkintokohtainen-osa'"></button>

@@ -182,7 +182,7 @@ angular.module('eperusteApp')
       return ret;
     };
   })
-  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet,
+  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, $log,
       PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisalto, LukiokoulutusService) {
 
     var deferred = $q.defer();
@@ -241,7 +241,7 @@ angular.module('eperusteApp')
       var deferred = $q.defer();
       var ylDefer = $q.defer();
 
-      if (!YleinenData.isPerusopetus(peruste)) {
+      if (!YleinenData.isPerusopetus(peruste) && !YleinenData.isLukiokoulutus(peruste)) {
         SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
           deferred.resolve(vastaus);
           sisalto = vastaus;

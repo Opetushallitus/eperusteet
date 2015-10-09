@@ -98,9 +98,6 @@ angular.module('eperusteApp')
           open = open || lapsi.$opened;
         });
       }
-      Algoritmit.kaikilleLapsisolmuille($scope.datat.sisalto, 'lapset', function(lapsi) {
-        lapsi.$opened = !open;
-      });
       Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
         lapsi.$opened = !open;
       });

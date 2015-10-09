@@ -137,21 +137,21 @@ public interface PerusteService {
     Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'LUKU')")
-    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId);
+    List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
-    public TutkintonimikeKoodiDto addTutkintonimikeKoodi(Long perusteId, TutkintonimikeKoodiDto dto);
+    TutkintonimikeKoodiDto addTutkintonimikeKoodi(Long perusteId, TutkintonimikeKoodiDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
-    public void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
+    void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
 
     @PostAuthorize("returnObject == null or hasPermission(returnObject.id, 'peruste', 'LUKU')")
-    public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
+    PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
 
     @PreAuthorize("permitAll()")
-    public Revision getLastModifiedRevision(final Long id);
+    Revision getLastModifiedRevision(final Long id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    YleisetTavoitteetDto getYleisetTavoitteet(Long perusteId);
+    List<YleisetTavoitteetDto> getYleisetTavoitteet(Long perusteId);
 
 }

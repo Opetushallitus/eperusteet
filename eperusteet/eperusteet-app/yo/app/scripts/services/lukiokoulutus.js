@@ -16,15 +16,17 @@
 
 'use strict';
 /*global _*/
+function mayBeUsed() {}
 
 angular.module('eperusteApp')
   .service('LukiokoulutusService', function (LukionOppiaineet,
-                                             $q, SuoritustapaSisalto,
+                                             $q, SuoritustapaSisalto, $log,
                                              Notifikaatiot,
                                              LukiokoulutuksenSisalto,
                                              LukioKurssit,
                                              LukiokoulutusYleisetTavoitteet,
                                              LukiokoulutusAihekokonaisuudet) {
+    mayBeUsed($log);
 
     this.OPETUKSEN_YLEISET_TAVOITTEET = 'opetuksen_yleiset_tavoitteet';
     this.AIHEKOKONAISUUDET = 'aihekokonaisuudet';

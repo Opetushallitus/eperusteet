@@ -929,11 +929,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public YleisetTavoitteetDto getYleisetTavoitteet(Long perusteId) {
+    @Transactional(readOnly = true)
+    public List<YleisetTavoitteetDto> getYleisetTavoitteet(Long perusteId) {
         //TODO!
-        return null;
+        return new ArrayList<>();
     }
-
 
 
     private static class VisitorImpl implements AbstractRakenneOsaDto.Visitor {

@@ -15,7 +15,8 @@
  */
 'use strict';
 
-angular.module('eperusteet.esitys').controller('epLukiokoulutusController',function ($q, $scope, $timeout, sisalto, PerusteenOsat,
+angular.module('eperusteet.esitys').controller('epLukiokoulutusController',function (
+              $q, $scope, $timeout, sisalto, PerusteenOsat,
               $state, $stateParams, epMenuBuilder, Utils, MurupolkuData,
               LukioOppiaineet, TermistoService, Kieli, $document, $rootScope, epLukiokoulutusStateService,
               epEsitysSettings) {
