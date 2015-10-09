@@ -25,7 +25,7 @@
         <div class="tree-con">
           <rajaus size="small" classes="puun-rajaus" model="treehelpers.haku"
                   callback="treeHaku()"
-                  placeholder="{{ 'lukio-etsi-oppiaineista' || kaanna }}"></rajaus>
+                  placeholder="{{ 'lukio-etsi-oppiaineista-ja-kursseista' || kaanna }}"></rajaus>
         </div>
         <div class="opetussialtopuu">
           <generic-tree tree-provider="treeOsatProvider"
@@ -38,6 +38,11 @@
         </div>
         <h2 kaanna="lukio-liitamattomat-kurssit"></h2>
 
+        <div class="tree-con">
+          <rajaus size="small" classes="puun-rajaus" model="treehelpers.liittamattomienHaku"
+                  callback="treeLiittamattomienHaku()"
+                  placeholder="{{ 'lukio-etsi-kursseista' || kaanna }}"></rajaus>
+        </div>
         <div ui-sortable="liittamattomatKurssitConfig" ng-model="liittamattomatKurssit"
              class="recursivetreeLiittamattomat">
           <div ng-repeat="kurssi in liittamattomatKurssit" class="liittamaton-kurssi recursivetree"

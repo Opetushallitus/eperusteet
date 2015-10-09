@@ -228,6 +228,7 @@ angular.module('eperusteApp')
 
     $scope.treehelpers = {
       haku: '',
+      liittamattomienHaku: '',
       defaultCollapsed: false
     };
     $scope.treeRoot = {
@@ -286,20 +287,27 @@ angular.module('eperusteApp')
         traverse($scope.treeRoot, _.property('lapset'), fn);
       }
     }
-    function piilotaHaunPerusteella(item) {
-      $log.info('Haetaan ', item);
-      item.$$hide = !matchesHaku(item, $scope.treehelpers.haku);
-      if (!item.$$hide) {
-        parents(item, function(i) {
-          i.$$hide = false;
-        });
-      }
+    function piilotaHaunPerusteella(haku) {
+      return function(item) {
+        $log.info('Haetaan ', item);
+        item.$$hide = !matchesHaku(item, haku);
+        if (!item.$$hide) {
+          parents(item, function(i) {
+            i.$$hide = false;
+          });
+        }
+      };
     }
     $scope.treeHaku = function() {
       $timeout(function() {
         $log.info('Haku ', $scope.treehelpers.haku);
-        updateTree(piilotaHaunPerusteella);
-        _.each($scope.liittamattomatKurssit, piilotaHaunPerusteella);
+        updateTree(piilotaHaunPerusteella($scope.treehelpers.haku));
+      });
+    };
+    $scope.treeLiittamattomienHaku = function() {
+      $timeout(function() {
+        $log.info('Liittämättömien haku ', $scope.treehelpers.liittamattomienHaku);
+        _.each($scope.liittamattomatKurssit, piilotaHaunPerusteella($scope.treehelpers.liittamattomienHaku));
       });
     };
 
