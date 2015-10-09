@@ -13,153 +13,121 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 * European Union Public Licence for more details.
 */
-
 'use strict';
-
 angular.module('eperusteApp')
-
-  // ------------------------------------------------------------------------------------------------------------------
-  //    LUKIO Aihekokonaisuudet
-  // ------------------------------------------------------------------------------------------------------------------
-
-  .directive('lukioMuokkausAihekokonaisuudet', function() {
+    .directive('lukioMuokkausAihekokonaisuudet', function () {
     return {
-      templateUrl: 'views/directives/lukiokoulutus/aihekokonaisuudet.html',
-      restrict: 'E',
-      scope: {
-        model: '=',
-        versiot: '='
-      },
-      controller: 'LukioAihekokonaisuudetController'
+        templateUrl: 'views/directives/lukiokoulutus/aihekokonaisuudet.html',
+        restrict: 'E',
+        scope: {
+            model: '=',
+            versiot: '='
+        },
+        controller: 'LukioAihekokonaisuudetController'
     };
-  })
-
-  .controller('LukioAihekokonaisuudetController', function ($scope, LukioAihekokonaisuudetService,
-                                                            PerusteProjektiSivunavi,
-                                                            $rootScope) {
+})
+    .controller('LukioAihekokonaisuudetController', function ($scope, LukioAihekokonaisuudetService, PerusteProjektiSivunavi, $rootScope) {
     function init() {
-      LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvaus().then(function(aihekokonaisuudet) {
-        $scope.aihekokonaisuudet = aihekokonaisuudet;
-      });
-      $scope.editEnabled = false;
-      $scope.editMode = false;
-      PerusteProjektiSivunavi.setVisible(true);
+        LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvaus().then(function (aihekokonaisuudet) {
+            $scope.aihekokonaisuudet = aihekokonaisuudet;
+        });
+        $scope.editEnabled = false;
+        $scope.editMode = false;
+        PerusteProjektiSivunavi.setVisible(true);
     }
-
     init();
-    $scope.edit = function() {
-      $scope.editEnabled = true;
-      $scope.editMode = true;
-      PerusteProjektiSivunavi.setVisible(false);
+    $scope.edit = function () {
+        $scope.editEnabled = true;
+        $scope.editMode = true;
+        PerusteProjektiSivunavi.setVisible(false);
     };
-
-    $scope.save = function() {
-      $rootScope.$broadcast('notifyCKEditor');
-      LukioAihekokonaisuudetService.saveAihekokonaisuudetYleiskuvaus($scope.aihekokonaisuudet).then(function() {
+    $scope.save = function () {
+        $rootScope.$broadcast('notifyCKEditor');
+        LukioAihekokonaisuudetService.saveAihekokonaisuudetYleiskuvaus($scope.aihekokonaisuudet).then(function () {
+            init();
+        });
+    };
+    $scope.cancel = function () {
         init();
-      });
     };
-
-    $scope.cancel = function() {
-      init();
-    };
-
-
-  })
-  .directive('lukioMuokkausTavoitteet', function() {
+})
+    .directive('lukioMuokkausTavoitteet', function () {
     return {
-      templateUrl: 'views/directives/lukiokoulutus/tavoitteet.html',
-      restrict: 'E',
-      scope: {
-        model: '=',
-        versiot: '='
-      },
-      controller: 'LukioTavoitteetController'
+        templateUrl: 'views/directives/lukiokoulutus/tavoitteet.html',
+        restrict: 'E',
+        scope: {
+            model: '=',
+            versiot: '='
+        },
+        controller: 'LukioTavoitteetController'
     };
-  })
-  .controller('LukioTavoitteetController', function ($scope, $log) {
-
+})
+    .controller('LukioTavoitteetController', function ($scope, $log) {
     $log.info('LukioTavoitteetController - kesken');
-
-
-  })
-
-  .directive('lukioMuokkausAihekokonaisuus', function() {
+})
+    .directive('lukioMuokkausAihekokonaisuus', function () {
     return {
-      templateUrl: 'views/directives/lukiokoulutus/aihekokonaisuus.html',
-      restrict: 'E',
-      scope: {
-        model: '=',
-        versiot: '='
-      },
-      controller: 'LukioAihekokonaisuusController'
+        templateUrl: 'views/directives/lukiokoulutus/aihekokonaisuus.html',
+        restrict: 'E',
+        scope: {
+            model: '=',
+            versiot: '='
+        },
+        controller: 'LukioAihekokonaisuusController'
     };
-  })
-
-  .controller('LukioAihekokonaisuusController', function ($scope,
-                                                          $state,
-                                                          $stateParams,
-                                                          LukioAihekokonaisuudetService,
-                                                          PerusteProjektiSivunavi,
-                                                          LukiokoulutusService,
-                                                          $rootScope) {
+})
+    .controller('LukioAihekokonaisuusController', function ($scope, $state, $stateParams, LukioAihekokonaisuudetService, PerusteProjektiSivunavi, LukiokoulutusService, $rootScope) {
     function init() {
-      LukiokoulutusService.getOsa($stateParams).then(function(aihekokonaisuus) {
-        $scope.aihekokonaisuus = aihekokonaisuus;
-      });
-      $scope.editEnabled = false;
-      PerusteProjektiSivunavi.setVisible(true);
+        LukiokoulutusService.getOsa($stateParams).then(function (aihekokonaisuus) {
+            $scope.aihekokonaisuus = aihekokonaisuus;
+        });
+        $scope.editEnabled = false;
+        PerusteProjektiSivunavi.setVisible(true);
     }
-
     $scope.isNew = false;
     $scope.editEnabled = false;
-    $scope.versiot = {latest: true};
+    $scope.versiot = { latest: true };
     $scope.aihekokonaisuus = {};
-
-    if( $stateParams.osanId === 'uusi') {
-      $scope.editEnabled = true;
-      $scope.isNew = true;
-      PerusteProjektiSivunavi.setVisible(false);
-    } else {
-      init();
+    if ($stateParams.osanId === 'uusi') {
+        $scope.editEnabled = true;
+        $scope.isNew = true;
+        PerusteProjektiSivunavi.setVisible(false);
     }
-
-    $scope.edit = function() {
-      $scope.editEnabled = true;
-      PerusteProjektiSivunavi.setVisible(false);
-    };
-
-    $scope.cancel = function() {
-      if( $scope.isNew ) {
-        $scope.back();
-      } else {
+    else {
         init();
-      }
+    }
+    $scope.edit = function () {
+        $scope.editEnabled = true;
+        PerusteProjektiSivunavi.setVisible(false);
     };
-
-    $scope.save = function() {
-      $rootScope.$broadcast('notifyCKEditor');
-      LukioAihekokonaisuudetService.saveAihekokonaisuus($scope.aihekokonaisuus).then(function(aihekokonaisuus) {
-        $scope.aihekokonaisuus = aihekokonaisuus;
-        init();
-      });
+    $scope.cancel = function () {
+        if ($scope.isNew) {
+            $scope.back();
+        }
+        else {
+            init();
+        }
     };
-
-    $scope.update = function() {
-      $rootScope.$broadcast('notifyCKEditor');
-      LukioAihekokonaisuudetService.updateAihekokonaisuus($scope.aihekokonaisuus).then(function() {
-        init();
-      });
+    $scope.save = function () {
+        $rootScope.$broadcast('notifyCKEditor');
+        LukioAihekokonaisuudetService.saveAihekokonaisuus($scope.aihekokonaisuus).then(function (aihekokonaisuus) {
+            $scope.aihekokonaisuus = aihekokonaisuus;
+            init();
+        });
     };
-
-    $scope.back = function() {
-      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET});
+    $scope.update = function () {
+        $rootScope.$broadcast('notifyCKEditor');
+        LukioAihekokonaisuudetService.updateAihekokonaisuus($scope.aihekokonaisuus).then(function () {
+            init();
+        });
     };
-
-    $scope.delete = function() {
-      LukioAihekokonaisuudetService.deleteAihekokonaisuus($scope.aihekokonaisuus.id).then(function() {
-        $scope.back();
-      });
+    $scope.back = function () {
+        $state.go('root.perusteprojekti.suoritustapa.lukioosat', { osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET });
     };
-
-  });
+    $scope.delete = function () {
+        LukioAihekokonaisuudetService.deleteAihekokonaisuus($scope.aihekokonaisuus.id).then(function () {
+            $scope.back();
+        });
+    };
+});
+//# sourceMappingURL=aihekokonaisuudet.js.map
