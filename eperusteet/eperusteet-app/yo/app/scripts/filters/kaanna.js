@@ -56,6 +56,15 @@ angular.module('eperusteApp')
     };
   })
   .directive('kaanna', function(Kaanna, $compile, IconMapping) {
+    function resolvePostfix(attrs) {
+      var postfix = attrs.kaannaPostfix || '';
+      if (postfix) {
+        postfix = ' ' + postfix;
+      }
+      if (!postfix && attrs.vaaditaan) {
+        postfix = ' *';
+      }
+    }
     function getAttr(attr, scope) {
       if (!_.isString(attr) || _.size(attr) === 0) {
         return;
@@ -69,13 +78,7 @@ angular.module('eperusteApp')
           return _.isObject(value) ? Kaanna.kaannaSisalto(value) : Kaanna.kaanna(value);
         }
         var original = getAttr(attrs.kaanna, scope) || el.text();
-        var postfix = attrs.kaannaPostfix;
-        if (postfix) {
-          postfix = ' ' + postfix;
-        }
-        if (!postfix && attrs.vaaditaan !== undefined) {
-          postfix = ' *';
-        }
+        var postfix = resolvePostfix(attrs);
         if (_.isObject(original)) {
           el.text(Kaanna.kaannaSisalto(original)+postfix);
           if (attrs.iconRole) {

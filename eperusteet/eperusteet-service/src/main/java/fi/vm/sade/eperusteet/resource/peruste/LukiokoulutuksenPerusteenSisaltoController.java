@@ -115,13 +115,26 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public RedirectView updateKurssi(@PathVariable("perusteId") final Long perusteId,
                                      @PathVariable("id") final Long kurssiId,
                                   @RequestBody LukiokurssiMuokkausDto kurssi) {
+        assertKurssiId(kurssiId, kurssi);
+        kurssit.muokkaaLukiokurssia(perusteId, kurssi);
+        return new RedirectView(""+kurssiId,true);
+    }
+
+    @RequestMapping(value = "/kurssit/{id}/oppiaineet", method = POST)
+    public RedirectView updateKurssiOppiaineRelations(@PathVariable("perusteId") final Long perusteId,
+                                     @PathVariable("id") final Long kurssiId,
+                                     @RequestBody LukiokurssiOppaineMuokkausDto kurssi) {
+        assertKurssiId(kurssiId, kurssi);
+        kurssit.muokkaaLukiokurssinOppiaineliitoksia(perusteId, kurssi);
+        return new RedirectView("",true);
+    }
+
+    private void assertKurssiId(Long kurssiId, LukiokurssiOppaineMuokkausDto kurssi) {
         if (kurssi.getId() == null) {
             kurssi.setId(kurssiId);
         } else if(!kurssi.getId().equals(kurssiId)) {
             throw new NotExistsException();
         }
-        kurssit.muokkaaLukiokurssia(perusteId, kurssi);
-        return new RedirectView(""+kurssiId,true);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = GET)

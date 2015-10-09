@@ -123,6 +123,7 @@ angular.module('eperusteApp')
           default: return null;
         }
       },
+      'root.perusteprojekti.suoritustapa.lisaaLukioKurssi': _.constant(LukkoLukiokurssi),
       'root.perusteprojekti.suoritustapa.muokkaakurssia': _.constant(LukkoLukiokurssi)
     };
 

@@ -193,7 +193,28 @@ angular.module('eperusteApp')
     };
   })
 
-  .service('LukioKurssiService', function(LukioKurssit, Lukitus, Notifikaatiot, LukiokoulutusService, $translate, $q) {
+  .service('LukioKurssiService', function (LukioKurssit, Lukitus, Notifikaatiot,
+                                           LukiokoulutusService, $translate, $q, $log) {
+    var lukittu = function (kurssi, cb) {
+        var d = $q.defer();
+        Lukitus.lukitseLukioKurssi(kurssi.id, function () {
+          cb(d);
+        });
+        return d.promise;
+      },
+      success = function(d, msg) {
+        return function(tiedot) {
+          Notifikaatiot.onnistui(msg);
+          d.resolve(tiedot);
+        };
+      },
+      vapauta = function (d, msg) {
+        return function (kurssinTiedot) {
+          Lukitus.vapauta(function () {
+            success(d,msg)(kurssinTiedot);
+          });
+        };
+      };
 
     /**
      * Lists kurssit and related oppiaineet with jarjestys for given peruste.
@@ -209,7 +230,7 @@ angular.module('eperusteApp')
 
     /**
      * @param id of kurssi
-     * @return Promise<LukiokurssiMuokkausDto>
+     * @return Promise<LukiokurssiTarkasteleDto>
      */
     var get = function(id) {
       return LukioKurssit.get({osanId: id, perusteId: LukiokoulutusService.getPerusteId()});
@@ -219,16 +240,14 @@ angular.module('eperusteApp')
      * Saves a new Lukiokurssi and related oppiaineet
      *
      * @param kurssi <LukioKurssiLuontiDto>
-     * @return Promise<LukiokurssiMuokkausDto>
+     * @return Promise<LukiokurssiTarkasteleDto>
      */
     var save = function(kurssi) {
       var d = $q.defer();
       LukioKurssit.save({
-        perusteId: LukiokoulutusService.getPerusteId()
-      }, kurssi, function(kurssinTiedot) {
-        Notifikaatiot.onnistui('tallennus-onnistui');
-        d.resolve(kurssinTiedot);
-      }, Notifikaatiot.serverCb);
+          perusteId: LukiokoulutusService.getPerusteId()
+        }, kurssi, success(d, 'tallennus-onnistui'),
+        Notifikaatiot.serverCb);
       return d.promise;
     };
 
@@ -236,29 +255,41 @@ angular.module('eperusteApp')
      * Locks and updates Lukiokurssi and related oppiaineet
      *
      * @param kurssi <LukiokurssiMuokkausDto>
-     * @return Promise<LukiokurssiMuokkausDto>
+     * @return Promise<LukiokurssiTarkasteleDto>
      */
     var update = function(kurssi) {
-      var d = $q.defer();
-      Lukitus.lukitseLukioKurssi(kurssi.id, function () {
+      return lukittu(kurssi, function(d) {
         LukioKurssit.update({
           perusteId: LukiokoulutusService.getPerusteId(),
           osanId: kurssi.id
-        }, kurssi, function(kurssinTiedot) {
-          Lukitus.vapauta(function() {
-            Notifikaatiot.onnistui('tallennus-onnistui');
-            d.resolve(kurssinTiedot);
-          });
-        }, Notifikaatiot.serverCb);
+        }, kurssi, vapauta(d, 'tallennus-onnistui'),
+        Notifikaatiot.serverCb);
       });
-      return d.promise;
+    };
+
+    /**
+     * Locks and updates Lukiokurssi's related oppiaineet
+     *
+     * @param kurssi <LukiokurssiMuokkausDto>
+     * @return Promise<LukiokurssiTarkasteleDto>
+     */
+    var updateOppiaineRelations = function(kurssi) {
+      $log.info('Update relations of', kurssi);
+      return lukittu(kurssi, function(d) {
+        LukioKurssit.updateRelatedOppiainees({
+          perusteId: LukiokoulutusService.getPerusteId(),
+          osanId: kurssi.id
+        }, kurssi, vapauta(d, 'tallennus-onnistui'),
+        Notifikaatiot.serverCb);
+      });
     };
 
     return {
       listByPeruste: listByPeruste,
       get: get,
       save: save,
-      update: update
+      update: update,
+      updateOppiaineRelations: updateOppiaineRelations
     };
   })
   .service('LukioAihekokonaisuudetService',

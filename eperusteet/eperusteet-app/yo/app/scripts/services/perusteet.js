@@ -115,7 +115,9 @@ angular.module('eperusteApp')
   .factory('LukioKurssit', function($resource, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit/:osanId';
     return $resource(baseUrl, {osanId: '@id'}, {
-      update: {method: 'POST'}
+      update: {method: 'POST'},
+      updateRelatedOppiainees: {method: 'POST',
+          url: SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit/:osanId/oppiaineet'}
     });
   })
   .factory('OppiaineenVuosiluokkakokonaisuudet', function($resource, SERVICE_LOC) {

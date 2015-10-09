@@ -33,12 +33,15 @@
         </div>
       </div>
       <div class="liittamattomat-column">
+        <div class="action-buttons">
+          <button icon-role="add" class="floater btn" ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
+        </div>
         <h2 kaanna="lukio-liitamattomat-kurssit"></h2>
 
         <div ui-sortable="liittamattomatKurssitConfig" ng-model="liittamattomatKurssit"
              class="recursivetreeLiittamattomat">
           <div ng-repeat="kurssi in liittamattomatKurssit" class="liittamaton-kurssi recursivetree"
-                ng-if="!kurssi.oppiaineet.length">
+                ng-if="!kurssi.oppiaineet.length && !kurssi.$$hide">
             <span class="treehandle" icon-role="drag"></span>
             <a ng-href="{{createUrl(kurssi)}}">
               <span class="koodi" ng-bind="kurssi.koodiArvo"></span>
@@ -52,6 +55,9 @@
   <tab heading="{{'lukiooppiaineet-oppiaineet-tab-header'| kaanna}}" ng-click="selectTab('oppiaineet')"
        active="activeTab == 'oppiaineet'">
     <div class="lukio-oppiaine-tab">
+      <div class="action-buttons additional">
+        <button icon-role="add" class="floater btn" ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
+      </div>
       <div osalistaus="oppiaineet" search-placeholder="lukio-etsi-oppiaineista"
            empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
            show-laajuus="false" url-generator="createUrl(value)"></div>
@@ -60,6 +66,9 @@
   <tab heading="{{'lukiooppiaineet-kurssit-tab-header'| kaanna}}" ng-click="selectTab('kurssit')"
         active="activeTab == 'kurssit'">
     <div class="lukio-oppiaine-tab">
+      <div class="action-buttons additional">
+        <button icon-role="add" class="floater btn" ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
+      </div>
       <div osalistaus="kurssit" search-placeholder="lukio-etsi-kursseista"
            empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
            show-laajuus="false" url-generator="createUrl(value)"></div>

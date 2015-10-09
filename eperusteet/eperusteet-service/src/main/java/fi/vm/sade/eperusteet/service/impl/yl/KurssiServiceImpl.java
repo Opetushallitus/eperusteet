@@ -155,4 +155,12 @@ public class KurssiServiceImpl implements KurssiService {
         mergeOppiaineet(perusteId, kurssi, muokkausDto.getOppiaineet());
     }
 
+    @Override
+    @Transactional
+    public void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
+            throws NotExistsException {
+        Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(muokkausDto.getId()), inPeruste(perusteId));
+        lukiokurssiRepository.lock(kurssi, false);
+        mergeOppiaineet(perusteId, kurssi, muokkausDto.getOppiaineet());
+    }
 }

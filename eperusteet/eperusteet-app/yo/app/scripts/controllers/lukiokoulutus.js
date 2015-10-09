@@ -137,15 +137,13 @@ angular.module('eperusteApp')
 
   }
 )
-.controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService,
-                                                virheService, LukioKurssiService, $log) {
-    $scope.sisaltoState = _.find(
-      LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
-    if (!$scope.sisaltoState) {
+.controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService) {
+    $scope.sisaltoState = _.find(LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
+    /*if (!$scope.sisaltoState) {
       $log.error('LukioOsalistausController osaTyyppi: '+ $stateParams.osanTyyppi);
       virheService.virhe('virhe-sivua-ei-löytynyt');
       return;
-    }
+    }*/
 
     $scope.kurssit = [];
     $scope.aihekokonaisuudet = [];
@@ -242,15 +240,26 @@ angular.module('eperusteApp')
       lapset: []
     };
 
+    function textMatch(txt, to) {
+      if (!to) {
+        return true;
+      }
+      if (!txt) {
+        return false;
+      }
+      return txt.toLowerCase().indexOf(to.toLowerCase()) !== -1;
+    }
     function matchesHaku(node, haku) {
       if (!haku) {
         return true;
       }
-      var val = node.nimi;
+      var nimi = node.nimi,
+          koodiArvo = node.koodiArvo;
       if (_.isObject(node.nimi)) {
-        val = val[$translate.use().toLowerCase()];
+        nimi = nimi[$translate.use().toLowerCase()];
       }
-      return val.toLowerCase().indexOf(haku.toLowerCase()) !== -1;
+      return textMatch(nimi, haku) ||
+            textMatch(koodiArvo, haku);
     }
     function parents(node, fn) {
       node = node.$$nodeParent;
@@ -289,6 +298,7 @@ angular.module('eperusteApp')
       $timeout(function() {
         $log.info('Haku ', $scope.treehelpers.haku);
         updateTree(piilotaHaunPerusteella);
+        _.each($scope.liittamattomatKurssit, piilotaHaunPerusteella);
       });
     };
 
@@ -310,17 +320,59 @@ angular.module('eperusteApp')
         (node.dtype === 'oppiaine' && to.dtype === 'oppiaine') ||
         (to.dtype === 'oppiaine' && to.$$depth > 0);
     };
-    var moved = function(node, to) {
+    var moved = function(node, to, index, copy) {
       $log.info('moved', node, 'to', to);
       if (node.dtype === 'kurssi'  && to.dtype === 'oppiaine') {
         $log.info('moved kurssi to oppiaine');
-        node.oppiaineet = [];
-        node.oppiaineet.push({
-          oppiaineId: to.id,
-          nimi: to.nimi
-        });
-        to.kurssit.push(node);
+        var modified = function(node, to) {
+          var from = node.$$nodeParent;
+          if (!copy && from) {
+            node.oppiaineet = _.filter(node.oppiaineet, function(oa) {
+              return oa.oppiaineId !== from.id;
+            });
+          }
+          node.oppiaineet.push({
+            oppiaineId: to.id,
+            nimi: to.nimi,
+            jarjestys: index
+          });
+          if (from && copy) {
+            var clone = _.cloneDeep(node);
+            from.kurssit.push(clone);
+            from.lapset.push(clone);
+          } else if (from) {
+            _.remove(from.kurssit, node);
+          }
+          to.kurssit.push(node);
+          return node;
+        };
+        modified(node, to);
+        /*LukioKurssiService.updateOppiaineRelations(
+              modified(_.cloneDeep(node), _.cloneDeep(to)))
+          .then(function() {modified(node, to);});*/
       }
+    };
+    var removeKurssiFromOppiaine = function(node) {
+      $log.info('remove', node);
+      var modified = function(node) {
+        var oppiaine = node.$$nodeParent;
+        node.oppiaineet = _.filter(node.oppiaineet, function(oa) {
+          $log.info('oa', oa.oppiaineId, oppiaine.id);
+          return oa.oppiaineId !== oppiaine.id;
+        });
+        $log.info('new oppiaineet', node.oppiaineet);
+        _.remove(oppiaine.kurssit, node);
+        _.remove(oppiaine.lapset, node);
+        if (_.isEmpty(node.oppiaineet)) {
+          $scope.liittamattomatKurssit.push(node);
+        }
+        return node;
+      };
+      modified(node);
+      /*LukioKurssiService.updateOppiaineRelations(modified(_.cloneDeep(node)))
+        .then(function() {
+          modified(node);
+        });*/
     };
 
     $scope.liittamattomatKurssitConfig = {
@@ -337,7 +389,7 @@ angular.module('eperusteApp')
             $log.info('cancel source');
             ui.item.sortable.cancel();
           } else {
-            moved(from, to);
+            moved(from, to, ui.item.sortable.index);
           }
         });
       }
@@ -375,7 +427,8 @@ angular.module('eperusteApp')
               ui.item.sortable.cancel();
             }
           } else {
-            moved(from, to);
+            //$log.info('move', _.cloneDeep(ui.item.sortable));
+            moved(from, to, ui.item.sortable.index);
           }
         });
       }
@@ -447,8 +500,10 @@ angular.module('eperusteApp')
                 '</span>';
           if (n.dtype === 'kurssi') {
             return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">' +
-              ' <a ng-click="goto(node)"><span ng-bind="node.koodiArvo"></span> ' +
-              '   <span ng-bind="node.nimi | kaanna"></span></a>'+handle+'</div>', n);
+              '   <a ng-click="goto(node)"><span ng-bind="node.koodiArvo"></span> ' +
+              '   <span ng-bind="node.nimi | kaanna"></span></a>' + handle +
+              '   <span class="remove" icon-role="remove" ng-click="removeKurssiFromOppiaine(node)"></span>' +
+              '</div>', n);
           } else {
             return templateAround('<div class="puu-node oppiaine-node">' +
               collapse + '<a ng-click="goto(node)">{{ node.nimi | kaanna }}</a>'+handle+'</div>', n);
@@ -467,6 +522,9 @@ angular.module('eperusteApp')
           scope.toggle = function(node) {
             node.$$collapsed = !node.$$collapsed;
             //$rootScope.$broadcast('genericTree:refresh');
+          };
+          scope.removeKurssiFromOppiaine = function(node) {
+            return removeKurssiFromOppiaine(node);
           };
           scope.goto = function(node) {
             $log.info('Goto: ', node);
@@ -494,5 +552,8 @@ angular.module('eperusteApp')
         osanTyyppi: 'oppiaineet_oppimaarat',
         tabId: 0
       });
+    };
+    $scope.addKurssi = function() {
+      $state.go('root.perusteprojekti.suoritustapa.lisaaLukioKurssi');
     };
   });

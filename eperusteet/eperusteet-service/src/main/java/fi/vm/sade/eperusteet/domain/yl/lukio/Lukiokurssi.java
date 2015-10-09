@@ -80,6 +80,6 @@ public class Lukiokurssi extends Kurssi {
     private TekstiPalanen sisallot;
 
     @Getter
-    @OneToMany(mappedBy = "kurssi", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "kurssi", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     private Set<OppiaineLukiokurssi> oppiaineet = new HashSet<>(0);
 }

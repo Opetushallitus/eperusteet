@@ -17,13 +17,11 @@
 package fi.vm.sade.eperusteet.service.yl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.dto.yl.LukioKurssiLuontiDto;
-import fi.vm.sade.eperusteet.dto.yl.LukiokurssiListausDto;
-import fi.vm.sade.eperusteet.dto.yl.LukiokurssiMuokkausDto;
-import fi.vm.sade.eperusteet.dto.yl.LukiokurssiTarkasteleDto;
+import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,4 +47,7 @@ public interface KurssiService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void muokkaaLukiokurssia(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException;
 
+    @Transactional
+    void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
+            throws NotExistsException;
 }
