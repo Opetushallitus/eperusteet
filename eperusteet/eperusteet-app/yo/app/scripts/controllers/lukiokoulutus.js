@@ -317,9 +317,10 @@ angular.module('eperusteApp')
     };
     var acceptMove = function(node, to) {
       $log.info('accept move', node, 'to', to);
-      return (node.dtype === 'oppiaine' && to.root) ||
-        (node.dtype === 'oppiaine' && to.dtype === 'oppiaine') ||
-        (to.dtype === 'oppiaine' && to.$$depth > 0);
+      return (node.dtype === 'oppiaine' && to.root && !node.koosteinen) ||
+        (node.dtype === 'oppiaine' && to.dtype === 'oppiaine' &&
+              to.koosteinen && !node.koosteinen) ||
+        (node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen);
     };
     var moved = function(node, to, index, copy) {
       $log.info('moved', node, 'to', to);
