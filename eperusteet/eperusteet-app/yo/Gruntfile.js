@@ -19,13 +19,15 @@ var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-connect-proxy');
   grunt.loadNpmTasks('grunt-angular-templates');
+  grunt.loadNpmTasks('grunt-ts');
   require('load-grunt-tasks')(grunt);
 //require('time-grunt')(grunt);
 
   // configurable paths
   var yeomanConfig = {
     app: 'app',
-    dist: 'dist'
+    dist: 'dist',
+    test: 'test'
   };
 
   try {
@@ -36,6 +38,22 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
+    ts: {
+      default: {
+        src: [
+          '<%= yeoman.app %>/*.ts',
+          '<%= yeoman.app %>/scripts/**/*.ts',
+          '<%= yeoman.app %>/ckeditor-plugins/**/*.ts',
+          '<%= yeoman.app %>/eperusteet-esitys/**/*.ts',
+          '<%= yeoman.test %>/**/*.ts'
+        ],
+        options: {
+          module: 'amd',
+          target: 'es5',
+          sourceMap: true,
+        }
+      }
+    },
     focus: {
       dev: {
         exclude: ['test']
@@ -48,18 +66,20 @@ module.exports = function(grunt) {
       },
       test: {
         files: ['<%= yeoman.app %>/**/*.{js,html}', 'test/**/*.js','!<%= yeoman.app %>/bower_components/**'],
-        tasks: ['karma:unit', 'jshint', 'regex-check']
+        tasks: ['ts', 'karma:unit', 'regex-check']
       },
       livereload: {
         options: {
           livereload: LIVERELOAD_PORT,
           open: false
         },
+        tasks: ['ts'],
         files: [
-          '<%= yeoman.app %>/**/*.{html,js}',
+          '<%= yeoman.app %>/**/*.{html,ts}',
           '!<%= yeoman.app %>/bower_components/**',
+          '<%= yeoman.app %>/localisation/*.json',
           '.tmp/styles/**/*.css',
-          '{.tmp,<%= yeoman.app %>}/scripts/**/*.js',
+          '{.tmp,<%= yeoman.app %>}/scripts/**/*.ts',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -145,17 +165,6 @@ module.exports = function(grunt) {
         }]
       },
       server: '.tmp'
-    },
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc'
-      },
-      all: [
-        'Gruntfile.js',
-        '<%= yeoman.app %>/scripts/**/*.js',
-        '<%= yeoman.app %>/eperusteet-esitys/**/*.js',
-        '<%= yeoman.app %>/ckeditor-plugins/**/*.js',
-      ]
     },
     // not used since Uglify task does concat,
     // but still available if needed
@@ -421,6 +430,7 @@ module.exports = function(grunt) {
       }
 
       grunt.task.run([
+        'ts',
         'clean:server',
         'concurrent:server',
         'copy:fonts',
@@ -436,17 +446,18 @@ module.exports = function(grunt) {
   grunt.registerTask('dev', devTask(true));
 
   grunt.registerTask('test', [
+    'ts',
     'clean:server',
     'copy:fonts', // needed if testing while "grunt dev" is running :)
     'concurrent:test',
     'autoprefixer',
 //  'connect:test',
     'regex-check',
-    'jshint',
     'karma'
   ]);
 
   grunt.registerTask('build', [
+    'ts',
     'clean:dist',
     'useminPrepare',
     'concurrent:dist',
@@ -462,6 +473,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('default', [
+    'ts',
     'test',
     'build'
   ]);
