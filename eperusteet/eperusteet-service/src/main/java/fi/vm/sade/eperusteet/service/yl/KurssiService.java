@@ -47,7 +47,10 @@ public interface KurssiService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void muokkaaLukiokurssia(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException;
 
-    @Transactional
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
             throws NotExistsException;
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void poistaLukiokurssi(long perusteId, long kurssiId);
 }

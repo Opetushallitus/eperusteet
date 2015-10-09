@@ -197,9 +197,9 @@ angular.module('eperusteApp')
 
   .service('LukioKurssiService', function (LukioKurssit, Lukitus, Notifikaatiot,
                                            LukiokoulutusService, $translate, $q, $log) {
-    var lukittu = function (kurssi, cb) {
+    var lukittu = function (id, cb) {
         var d = $q.defer();
-        Lukitus.lukitseLukioKurssi(kurssi.id, function () {
+        Lukitus.lukitseLukioKurssi(id, function () {
           cb(d);
         });
         return d.promise;
@@ -260,7 +260,7 @@ angular.module('eperusteApp')
      * @return Promise<LukiokurssiTarkasteleDto>
      */
     var update = function(kurssi) {
-      return lukittu(kurssi, function(d) {
+      return lukittu(kurssi.id, function(d) {
         LukioKurssit.update({
           perusteId: LukiokoulutusService.getPerusteId(),
           osanId: kurssi.id
@@ -277,7 +277,7 @@ angular.module('eperusteApp')
      */
     var updateOppiaineRelations = function(kurssi) {
       $log.info('Update relations of', kurssi);
-      return lukittu(kurssi, function(d) {
+      return lukittu(kurssi.id, function(d) {
         LukioKurssit.updateRelatedOppiainees({
           perusteId: LukiokoulutusService.getPerusteId(),
           osanId: kurssi.id
@@ -286,11 +286,25 @@ angular.module('eperusteApp')
       });
     };
 
+    /**
+     * @param id of kurssi to delete
+     */
+    var deleteKurssi = function(id) {
+      return lukittu(id, function(d) {
+        LukioKurssit.delete({
+            perusteId: LukiokoulutusService.getPerusteId(),
+            osanId: id
+          }, vapauta(d, 'poisto-onnistui'),
+          Notifikaatiot.serverCb);
+      });
+    };
+
     return {
       listByPeruste: listByPeruste,
       get: get,
       save: save,
       update: update,
+      deleteKurssi: deleteKurssi,
       updateOppiaineRelations: updateOppiaineRelations
     };
   })

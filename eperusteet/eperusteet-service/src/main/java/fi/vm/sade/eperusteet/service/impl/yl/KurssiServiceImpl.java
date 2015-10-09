@@ -163,4 +163,11 @@ public class KurssiServiceImpl implements KurssiService {
         lukiokurssiRepository.lock(kurssi, false);
         mergeOppiaineet(perusteId, kurssi, muokkausDto.getOppiaineet());
     }
+
+    @Override
+    @Transactional
+    public void poistaLukiokurssi(long perusteId, long kurssiId) {
+        Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
+        lukiokurssiRepository.delete(kurssi);
+    }
 }

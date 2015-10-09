@@ -111,6 +111,13 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return handleGet(perusteId, () -> kurssit.getLukiokurssiTarkasteleDtoById(perusteId, id));
     }
 
+    @RequestMapping(value = "/kurssit/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteKurssi(@PathVariable("perusteId") final Long perusteId,
+                                                              @PathVariable("id") Long id) {
+        kurssit.poistaLukiokurssi(perusteId, id);
+    }
+
     @RequestMapping(value = "/kurssit/{id}", method = POST)
     public RedirectView updateKurssi(@PathVariable("perusteId") final Long perusteId,
                                      @PathVariable("id") final Long kurssiId,

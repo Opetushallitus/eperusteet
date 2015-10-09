@@ -61,9 +61,10 @@ angular.module('eperusteApp')
       if (postfix) {
         postfix = ' ' + postfix;
       }
-      if (!postfix && attrs.vaaditaan) {
+      if (!postfix && attrs.vaaditaan !== undefined) {
         postfix = ' *';
       }
+      return postfix;
     }
     function getAttr(attr, scope) {
       if (!_.isString(attr) || _.size(attr) === 0) {

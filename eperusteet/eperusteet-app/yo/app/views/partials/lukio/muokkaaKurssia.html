@@ -20,11 +20,16 @@
 
   <div class="non-collapsibles">
     <form name="kurssiForm" role="form">
+      <div class="action-buttons">
+        <button class="btn floating"
+                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                ng-click="deleteKurssi()">
+          <span icon-role="remove" class="ng-scope"></span>
+          <span ng-bind="'poista' | kaanna"></span>
+        </button>
+      </div>
 
       <div ng-include="'views/partials/lukio/include/kurssiLomakeKentat.html'"></div>
-
-      <div style="margin-top: 30px;"></div>
-      <button role="button" ng-click="save()" class="btn btn-primary" kaanna="'muokkaa-kurssia-action'"></button>
     </form>
   </div>
 </div>

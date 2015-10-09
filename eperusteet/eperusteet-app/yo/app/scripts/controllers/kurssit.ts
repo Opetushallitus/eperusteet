@@ -33,33 +33,6 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('LisaaLukioKurssiController', function($scope, $state, $q, $stateParams,
-                                                     LukiokoulutusService, LukioKurssiService,
-                                                     YleinenData, LukiokurssiModifyHelpers) {
-    $scope.kurssityypit = {};
-    $scope.kurssi = {
-      nimi: {fi: ''},
-      tyyppi: 'PAKOLLINEN',
-      koodiUri: null,
-      koodiArvo: null
-    };
-    YleinenData.lukioKurssityypit().then(function(tyypit) {
-      $scope.kurssityypit = tyypit;
-    });
-    $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
-
-    $scope.save = function() {
-      LukioKurssiService.save($scope.kurssi).then(function() {
-        $scope.back();
-      });
-    };
-
-    $scope.back = function() {
-      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {
-        osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT
-      });
-    };
-  })
   .controller('NaytaLukiokurssiController', function($scope, $state, LukioKurssiService,
                                                      $stateParams, YleinenData) {
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
@@ -98,24 +71,96 @@ angular.module('eperusteApp')
     };
   })
 
+  .controller('LisaaLukioKurssiController', function($scope, $state, $q, $stateParams,
+                                                     LukiokoulutusService, LukioKurssiService,
+                                                     YleinenData, LukiokurssiModifyHelpers,
+                                                     Editointikontrollit, $filter, $rootScope) {
+    Editointikontrollit.registerCallback({
+      edit: function() {
+      },
+      save: function() {
+        $rootScope.$broadcast('notifyCKEditor');
+        LukioKurssiService.save($scope.kurssi).then(function() {
+          $scope.back();
+        });
+      },
+      cancel: function() {
+        $scope.back();
+      },
+      validate: function() { return $filter('kaanna')($scope.kurssi.nimi) != ''; },
+      notify: function () {
+      }
+    });
+    Editointikontrollit.startEditing();
+
+    $scope.kurssityypit = {};
+    $scope.kurssi = {
+      nimi: {},
+      tyyppi: 'PAKOLLINEN',
+      koodiUri: null,
+      koodiArvo: null
+    };
+    YleinenData.lukioKurssityypit().then(function(tyypit) {
+      $scope.kurssityypit = tyypit;
+    });
+    $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
+
+    $scope.back = function() {
+      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {
+        osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT
+      });
+    };
+  })
   .controller('MuokkaaLukiokurssiaController', function($scope, $state, LukioKurssiService, $stateParams,
-              YleinenData, $log, $rootScope, LukiokurssiModifyHelpers) {
+              YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, Editointikontrollit,
+              Varmistusdialogi, $filter, Kaanna, LukiokoulutusService) {
+    Editointikontrollit.registerCallback({
+      edit: function() {
+      },
+      save: function() {
+        $rootScope.$broadcast('notifyCKEditor');
+        LukioKurssiService.update($scope.kurssi).then(function() {
+          $scope.back();
+        });
+      },
+      cancel: function() {
+        $scope.back();
+      },
+      validate: function() { return $filter('kaanna')($scope.kurssi.nimi) != ''; },
+      notify: function () {
+      }
+    });
+    Editointikontrollit.startEditing();
+
     $scope.kurssityypit = [];
     YleinenData.lukioKurssityypit().then(function(tyypit) {
       $scope.kurssityypit = tyypit;
     });
 
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
+
     $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
-    $scope.save = function () {
-      $rootScope.$broadcast('notifyCKEditor');
-      LukioKurssiService.update($scope.kurssi).then(function() {
-        $scope.back();
-      });
-    };
+
     $scope.back = function() {
       $state.go('root.perusteprojekti.suoritustapa.kurssi', {
         kurssiId: $stateParams.kurssiId
       });
     };
+
+    $scope.deleteKurssi = function() {
+      Varmistusdialogi.dialogi({
+        otsikko: 'varmista-poisto',
+        teksti: Kaanna.kaanna('poistetaanko-kurssi'),
+        primaryBtn: 'poista',
+        successCb: function() {
+          LukioKurssiService.deleteKurssi($stateParams.kurssiId).then(function() {
+            Editointikontrollit.unregisterCallback();
+            $state.go('root.perusteprojekti.suoritustapa.lukioosat', {
+              osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT
+            });
+          })
+        }
+      })();
+    };
+
   });
