@@ -55,7 +55,9 @@ angular.module('eperusteApp')
     };
 
     $scope.back = function() {
-      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: LukiokoulutusService.KURSSIT});
+      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {
+        osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT
+      });
     };
   })
   .controller('NaytaLukiokurssiController', function($scope, $state, LukioKurssiService,

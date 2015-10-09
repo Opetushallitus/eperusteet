@@ -137,13 +137,14 @@ angular.module('eperusteApp')
 
   }
 )
-.controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService) {
+.controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService,
+          $log, virheService) {
     $scope.sisaltoState = _.find(LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
-    /*if (!$scope.sisaltoState) {
+    if (!$scope.sisaltoState) {
       $log.error('LukioOsalistausController osaTyyppi: '+ $stateParams.osanTyyppi);
       virheService.virhe('virhe-sivua-ei-löytynyt');
       return;
-    }*/
+    }
 
     $scope.kurssit = [];
     $scope.aihekokonaisuudet = [];
