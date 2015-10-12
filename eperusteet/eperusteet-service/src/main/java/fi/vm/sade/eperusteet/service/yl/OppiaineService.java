@@ -16,10 +16,7 @@
 package fi.vm.sade.eperusteet.service.yl;
 
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -73,4 +70,6 @@ public interface OppiaineService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     void deleteKohdealue(@P("perusteId") Long perusteId, Long id, Long kohdealueId);
+
+    void jarjestaLukioOppiaineet(long perusteId, List<OppiaineJarjestysDto> oppiaineet);
 }

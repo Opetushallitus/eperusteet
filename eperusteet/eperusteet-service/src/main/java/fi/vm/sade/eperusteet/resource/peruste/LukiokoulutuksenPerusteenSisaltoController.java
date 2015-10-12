@@ -191,6 +191,13 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         oppiaineet.deleteOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }
 
+    @RequestMapping(value = "/rakenne", method = POST)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateStructure(@PathVariable("perusteId") final Long perusteId,
+                                @RequestBody OppaineKurssiTreeStructureDto structureDto) {
+        kurssit.updateTreeStructure(perusteId, structureDto);
+    }
+
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = GET)
     public Set<OpetuksenKohdealueDto> getKohdealueet(
             @PathVariable("perusteId") final Long perusteId,

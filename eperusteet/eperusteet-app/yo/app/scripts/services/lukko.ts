@@ -51,6 +51,11 @@ angular.module('eperusteApp')
       perusteId: '@perusteId'
     });
   })
+  .factory('LukkoLukioRakenne', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/lukko', {
+      perusteId: '@perusteId'
+    });
+  })
   .factory('LukkoLukioAihekokonaisuudet', function (SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet/:aihekokonaisuusId/lukko', {
       aihekokonaisuusId: '@aihekokonaisuusId',
@@ -86,14 +91,15 @@ angular.module('eperusteApp')
     $scope.peruuta = function() { $modalInstance.dismiss(); };
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
-  .service('Lukitus', function ($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout,
+  .service('Lukitus', function ($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout, $q,
                                 Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
                                 LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
                                 LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite,
-                                LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, $log) {
+                                LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, LukkoLukioRakenne) {
 
     var lukitsin = null;
     var etag = null;
+    var vapautin = null;
 
     $rootScope.$on('$stateChangeSuccess', function() {
       lukitsin = null;
@@ -149,30 +155,36 @@ angular.module('eperusteApp')
     }
 
     function genericVapauta(cb) {
-      cb = cb || angular.noop;
-      var lukkotyyppi = tilaToLukkoResource();
-      if (lukkotyyppi) {
-        vapauta(lukkotyyppi, tilaToLukkoParams(), cb);
+      if (vapautin) {
+        var v = vapautin;
+        vapautin = null;
+        return v(cb);
       }
-      else {
-        console.log('Tilalle "' + $state.current.name + '" ei ole määritetty lukkotyyppiä');
+      if (cb) {
+        cb();
       }
+      var d = $q.defer();
+      d.resolve();
+      return d.promise;
     }
 
     function genericLukitse(cb) {
-      cb = cb || angular.noop;
       var lukkotyyppi = tilaToLukkoResource();
       if (lukkotyyppi) {
         var params = tilaToLukkoParams();
         if (params) {
-          lukitse(lukkotyyppi, params, cb);
+          return lukitse(lukkotyyppi, params, cb);
+        } else { // Lukkoa ei tarvita koska kyseessä uusi
+          var d = $q.defer();
+          d.resolve();
+          if (cb) {
+            cb();
+          }
+          return d.promise;
         }
-        else { // Lukkoa ei tarvita koska kyseessä uusi
-          cb();
-        }
-      }
-      else {
+      } else {
         console.log('Tilalle "' + $state.current.name + '" ei ole määritetty lukkotyyppiä');
+        return $q.defer().promise;
       }
     }
 
@@ -199,69 +211,79 @@ angular.module('eperusteApp')
     }
 
     function lukitse(Resource, obj, cb) {
-      cb = cb || angular.noop;
-
+      var d = $q.defer();
+      vapautin = function(vcb) {
+        return vapauta(Resource, obj, vcb);
+      };
       lukitsin = function() {
         Resource.save(obj, function(res, headers) {
           if (etag && headers().etag !== etag && Editointikontrollit.getEditMode()) {
             $modal.open({
               templateUrl: 'views/modals/sisaltoMuuttunut.html',
               controller: 'LukittuSisaltoMuuttunutModalCtrl'
-            })
-            .result.then(function() {
+            }).result.then(function() {
               etag = headers().etag;
             }, Editointikontrollit.cancelEditing);
-          }
-          else {
+          } else {
             etag = headers().etag;
-            cb(res);
+            d.resolve(res);
+            if (cb) {
+              cb(res, d);
+            }
           }
         }, Notifikaatiot.serverLukitus);
       };
       lukitsin();
+      return d.promise;
     }
 
     function vapauta(Resource, obj, cb) {
-      cb = cb || angular.noop;
-      Resource.remove(obj, cb, Notifikaatiot.serverLukitus);
+      var d = $q.defer();
+      Resource.remove(obj, function(res) {
+        if (cb) {
+          cb(res);
+        }
+        d.resolve(res);
+      }, Notifikaatiot.serverLukitus);
       lukitsin = null;
       etag = null;
+      return d.promise;
     }
 
     function lukitseSisalto(id, suoritustapa, cb) {
-      lukitse(LukkoRakenne, {
+      return lukitse(LukkoRakenne, {
         osanId: id,
         suoritustapa: suoritustapa
       }, cb);
     }
 
     function vapautaSisalto(id, suoritustapa, cb) {
-      vapauta(LukkoRakenne, {
+      return vapauta(LukkoRakenne, {
         osanId: id,
         suoritustapa: suoritustapa
       }, cb);
     }
 
     function lukitsePerusteenosa(id, cb) {
-      lukitse(LukkoPerusteenosa, {
+      return lukitse(LukkoPerusteenosa, {
         osanId: id
       }, cb);
     }
 
     function vapautaPerusteenosa(id, cb) {
-      vapauta(LukkoPerusteenosa, {
+      return vapauta(LukkoPerusteenosa, {
         osanId: id
       }, cb);
     }
 
     function lukitsePerusteenosaByTutkinnonOsaViite(id, cb) {
-      lukitse(LukkoPerusteenosaByTutkinnonOsaViite, {
+      return lukitse(LukkoPerusteenosaByTutkinnonOsaViite, {
         viiteId: id
       }, cb);
     }
 
     function vapautaPerusteenosaByTutkinnonOsaViite(id, cb) {
-      vapauta(LukkoPerusteenosaByTutkinnonOsaViite, {
+      return vapauta(LukkoPerusteenosaByTutkinnonOsaViite, {
         viiteId: id
       }, cb);
     }
@@ -307,39 +329,47 @@ angular.module('eperusteApp')
     }
 
     function lukitseOppiaine(id, cb) {
-      lukitse(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
+      return lukitse(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
     }
 
     function lukitseLukioOppiaine(id, ch) {
-      lukitse(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, ch);
+      return lukitse(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, ch);
     }
 
     function vapautaOppiaine(id, cb) {
-      vapauta(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
+      return vapauta(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
     }
 
     function vapautaLukioOppiaine(id, cb) {
-      vapauta(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, cb);
+      return vapauta(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, cb);
     }
 
-    function lukitseLukioKurssi(id, ch) {
-      lukitse(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(),10), kurssiId: id}, ch);
+    function lukitseLukioKurssi(id, cb) {
+      return lukitse(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(),10), kurssiId: id}, cb);
     }
 
-    function vapautaLukioKurssi(id, ch) {
-      vapauta(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(), 10), kurssiId: id}, ch);
+    function vapautaLukioKurssi(id, cb) {
+      return vapauta(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(), 10), kurssiId: id}, cb);
     }
 
-    function lukitseLukioAihekokonaisuus(id, ch) {
-      lukitse(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, ch);
+    function lukitseLukiorakenne(cb) {
+      return lukitse(LukkoLukioRakenne, {perusteId: parseInt(LukiokoulutusService.getPerusteId(), 10)}, cb);
     }
 
-    function vapautaLukioAihekokonaisuus(id, ch) {
-      vapauta(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, ch);
+    function vapautaLukiorakenne(cb) {
+      return vapauta(LukkoLukioRakenne, {perusteId: parseInt(LukiokoulutusService.getPerusteId(), 10)}, cb);
+    }
+
+    function lukitseLukioAihekokonaisuus(id, cb) {
+      return lukitse(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, cb);
+    }
+
+    function vapautaLukioAihekokonaisuus(id, cb) {
+      return vapauta(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, cb);
     }
 
     function lukitseOppiaineenVuosiluokkakokonaisuus(oppiaineId, vuosiluokkaId, cb) {
-      lukitse(LukkoOppiaineenVuosiluokkakokonaisuus, {
+      return lukitse(LukkoOppiaineenVuosiluokkakokonaisuus, {
         perusteId: PerusopetusService.getPerusteId(),
         oppiaineId: oppiaineId,
         vuosiluokkaId: vuosiluokkaId
@@ -347,7 +377,7 @@ angular.module('eperusteApp')
     }
 
     function vapautaOppiaineenVuosiluokkakokonaisuus(oppiaineId, vuosiluokkaId, cb) {
-      vapauta(LukkoOppiaineenVuosiluokkakokonaisuus, {
+      return vapauta(LukkoOppiaineenVuosiluokkakokonaisuus, {
         perusteId: PerusopetusService.getPerusteId(),
         oppiaineId: oppiaineId,
         vuosiluokkaId: vuosiluokkaId
@@ -370,6 +400,8 @@ angular.module('eperusteApp')
       vapautaOppiaine: vapautaOppiaine,
       lukitseLukioKurssi: lukitseLukioKurssi,
       vapautaLukioKurssi: vapautaLukioKurssi,
+      lukitseLukiorakenne: lukitseLukiorakenne,
+      vapautaLukiorakenne: vapautaLukiorakenne,
       vapautaLukioOppiaine: vapautaLukioOppiaine,
       lukitseOppiaineenVuosiluokkakokonaisuus: lukitseOppiaineenVuosiluokkakokonaisuus,
       vapautaOppiaineenVuosiluokkakokonaisuus: vapautaOppiaineenVuosiluokkakokonaisuus,

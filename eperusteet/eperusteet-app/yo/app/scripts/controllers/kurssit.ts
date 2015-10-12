@@ -116,7 +116,7 @@ angular.module('eperusteApp')
   })
   .controller('MuokkaaLukiokurssiaController', function($scope, $state, LukioKurssiService, $stateParams,
               YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, Editointikontrollit,
-              Varmistusdialogi, $filter, Kaanna, LukiokoulutusService) {
+              Varmistusdialogi, $filter, Kaanna, LukiokoulutusService, Lukitus) {
     Editointikontrollit.registerCallback({
       edit: function() {
         $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
@@ -128,7 +128,7 @@ angular.module('eperusteApp')
         });
       },
       cancel: function() {
-        LukioKurssiService.vapauta().then(function() {
+        Lukitus.vapauta().then(function() {
           $scope.back();
         });
       },

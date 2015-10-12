@@ -18,10 +18,7 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
@@ -34,7 +31,10 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +43,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
+import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 /**
  *
@@ -393,6 +399,26 @@ public class OppiaineServiceImpl implements OppiaineService {
         }
         Oppiaine oppiaine = oppiaineRepository.findOne(id);
         oppiaine.removeKohdealue(kohdealue);
+    }
+
+    @Override
+    @Transactional
+    public void jarjestaLukioOppiaineet(long perusteId, List<OppiaineJarjestysDto> oppiaineet) {
+        Map<Long, OppiaineJarjestysDto> dtosById = oppiaineet.stream().collect(toMap(OppiaineJarjestysDto::getId, o -> o));
+        Set<Long> oppiaineIds = new HashSet<>(dtosById.keySet());
+        oppiaineIds.addAll(oppiaineet.stream().filter(oa -> oa.getOppiaineId() != null)
+                .map(OppiaineJarjestysDto::getOppiaineId).collect(toSet()));
+        Map<Long, Oppiaine> byId = oppiaineRepository.findAll(oppiaineIds).stream().collect(toMap(Oppiaine::getId, o -> o));
+        dtosById.values().forEach(dto -> {
+            Oppiaine oa = found(byId.get(dto.getId()), inLukioPeruste(perusteId));
+            oa.setJnro(dto.getJarjestys());
+            if (!oa.isKoosteinen()) {
+                oa.setOppiaine(found(byId.get(dto.getOppiaineId()),
+                        inLukioPeruste(perusteId).and(Oppiaine::isKoosteinen)));
+            } else {
+                oa.setOppiaine(null);
+            }
+        });
     }
 
     private static final String OPPIAINETTA_EI_OLE = "Pyydettyä oppiainetta ei ole";

@@ -14,28 +14,14 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.yl;
-
-import fi.vm.sade.eperusteet.service.PerusteAware;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.service;
 
 /**
  * User: tommiratamaa
- * Date: 30.9.15
- * Time: 14.37
+ * Date: 12.10.15
+ * Time: 15.50
  */
-@Getter
-@Setter
-public class KurssiLockContext implements PerusteAware {
-    private Long perusteId;
-    private Long kurssiId;
+public interface PerusteAware {
 
-    public KurssiLockContext() {
-    }
-
-    public KurssiLockContext(Long perusteId, Long kurssiId) {
-        this.perusteId = perusteId;
-        this.kurssiId = kurssiId;
-    }
+    Long getPerusteId();
 }

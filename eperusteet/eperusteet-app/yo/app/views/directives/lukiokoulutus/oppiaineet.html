@@ -15,11 +15,16 @@
   -->
 
 <tabset>
+  <div class="action-buttons" ng-show="activeTab == 'puu'">
+    <button icon-role="edit" class="floater btn" ng-show="!treehelpers.editMode"
+            oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+            ng-click="toEditMode()" kaanna="'muokkaa-rakennetta'"></button>
+  </div>
   <tab heading="{{'lukiooppiaineet-puu-tab-header' | kaanna}}"
        ng-click="selectTab('puu')" active="activeTab == 'puu'">
     <div class="lukio-oppiaineet-puu lukio-oppiaine-tab">
       <div class="main-column tree">
-        <div class="action-buttons">
+        <div class="action-buttons" ng-show="!treehelpers.editMode">
           <button icon-role="add" class="floater btn"
                   oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
                   ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
@@ -35,7 +40,7 @@
         </div>
       </div>
       <div class="liittamattomat-column">
-        <div class="action-buttons">
+        <div class="action-buttons" ng-show="!treehelpers.editMode">
           <button icon-role="add" class="floater btn"
                   oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
                   ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
@@ -51,7 +56,7 @@
              class="recursivetreeLiittamattomat">
           <div ng-repeat="kurssi in liittamattomatKurssit" class="liittamaton-kurssi recursivetree"
                 ng-if="!kurssi.oppiaineet.length && !kurssi.$$hide">
-            <span class="treehandle" icon-role="drag"></span>
+            <span class="treehandle" icon-role="drag" ng-show="treehelpers.editMode"></span>
             <a ng-href="{{createUrl(kurssi)}}">
               <span class="koodi" ng-bind="kurssi.koodiArvo"></span>
               <span class="nimi" ng-bind="kurssi.nimi | kaanna"></span>
@@ -65,7 +70,9 @@
        active="activeTab == 'oppiaineet'">
     <div class="lukio-oppiaine-tab">
       <div class="action-buttons additional">
-        <button icon-role="add" class="floater btn" ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
+        <button icon-role="add"
+                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                class="floater btn" ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
       </div>
       <div osalistaus="oppiaineet" search-placeholder="lukio-etsi-oppiaineista"
            empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
@@ -76,7 +83,9 @@
         active="activeTab == 'kurssit'">
     <div class="lukio-oppiaine-tab">
       <div class="action-buttons additional">
-        <button icon-role="add" class="floater btn" ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
+        <button icon-role="add"
+                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                class="floater btn" ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
       </div>
       <div osalistaus="kurssit" search-placeholder="lukio-etsi-kursseista"
            empty-placeholder="{{sisaltoState.emptyPlaceholder}}"

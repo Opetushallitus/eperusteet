@@ -121,6 +121,12 @@ angular.module('eperusteApp')
           url: SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit/:osanId/oppiaineet'}
     });
   })
+  .factory('LukioOppiaineKurssiRakenne', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/rakenne';
+    return $resource(baseUrl, {osanId: '@id'}, {
+      updateStructure: {method: 'POST'}
+    });
+  })
   .factory('OppiaineenVuosiluokkakokonaisuudet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:osanId', {
       osanId: '@id'

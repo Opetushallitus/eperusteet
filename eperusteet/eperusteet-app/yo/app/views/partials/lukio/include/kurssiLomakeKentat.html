@@ -22,7 +22,7 @@
   </select>
 </div>
 
-<label for="tyypin-kuvaus" class="header" kaanna="kurssi-tyyppin-kuvaus-header" vaaditaan></label>
+<label for="tyypin-kuvaus" class="header" kaanna="kurssi-tyyppin-kuvaus-header"></label>
 <div class="fixed-group">
   <div id="tyypin-kuvaus" class="full-width" ckeditor slocalized ng-model="kurssi.kurssityypinKuvaus"></div>
 </div>
@@ -31,6 +31,11 @@
 <input id="nimi-input" class="form-control" ng-model="kurssi.nimi" slocalized required
        ng-enter="save()"/>
 
+<label for="kuvaus" class="header" kaanna="kurssi-kuvaus-header"></label>
+<div>
+  <div id="kuvaus" ckeditor slocalized ng-model="kurssi.kuvaus"></div>
+</div>
+
 <label for="koodi-input" class="header" kaanna="kurssi-koodi-header"></label>
 <div class="fixed-group">
   <input id="koodi-input" class="form-control" type="text" ng-model="kurssi.koodiArvo"/>
@@ -38,11 +43,11 @@
 </div>
 
 <label for="tavoitteet" class="header" kaanna="kurssi-tavoitteet-header"></label>
-<div class="fixex-group">
+<div>
   <div id="tavoitteet" ckeditor slocalized ng-model="kurssi.tavoitteet"></div>
 </div>
 
 <label for="sisallot" class="header" kaanna="kurssi-sisallot-header"></label>
-<div class="fixex-group">
+<div>
   <div id="sisallot" ckeditor slocalized ng-model="kurssi.sisallot"></div>
 </div>

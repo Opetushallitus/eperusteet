@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.yl;
 
+import fi.vm.sade.eperusteet.service.PerusteAware;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +25,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OppiaineLockContext {
+public class OppiaineLockContext implements PerusteAware {
 
     Long perusteId;
     OppiaineOpetuksenSisaltoTyyppi tyyppi;

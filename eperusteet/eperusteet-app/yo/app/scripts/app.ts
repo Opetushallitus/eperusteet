@@ -118,7 +118,7 @@ angular.module('eperusteApp', [
       }]);
   })
   // Lodash mixins and other stuff
-  .run(function() {
+  .run(function($log) {
     _.mixin({arraySwap: function(array, a, b) {
         if (_.isArray(array) && _.size(array) > a && _.size(array) > b) {
           var temp = array[a];
@@ -152,6 +152,33 @@ angular.module('eperusteApp', [
           cb(value);
         };
       }});
+    _.mixin({flattenTree: function (obj, extractChildren) {
+        if (!_.isArray(obj) && obj) {
+          obj = [obj];
+        }
+        if (_.isEmpty(obj)) {
+          return [];
+        }
+        return _.union(obj, _(obj).map(function(o) {
+          return _.flattenTree(extractChildren(o), extractChildren);
+        }).flatten().value());
+      }});
+    _.mixin({reducedIndexOf: function (obj, extractor, combinator) {
+      if (!_.isArray(obj) && obj) {
+        obj = [obj];
+      }
+      var results = {};
+      _.each(obj, function(o) {
+        var index = extractor(o);
+        $log.info('i', index);
+        if (results[index]) {
+          results[index] = combinator(results[index], o);
+        } else {
+          results[index] = o;
+        }
+      });
+      return results;
+    }});
   })
   .run(function($rootScope) {
     var f = _.debounce(function() {

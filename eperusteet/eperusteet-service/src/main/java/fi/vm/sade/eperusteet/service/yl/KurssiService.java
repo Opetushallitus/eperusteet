@@ -53,4 +53,7 @@ public interface KurssiService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void poistaLukiokurssi(long perusteId, long kurssiId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void updateTreeStructure(long perusteId, OppaineKurssiTreeStructureDto structure);
 }

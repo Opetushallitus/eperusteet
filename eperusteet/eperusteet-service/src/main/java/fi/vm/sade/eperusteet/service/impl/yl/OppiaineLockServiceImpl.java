@@ -53,11 +53,7 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
 
     @Override
     protected final Long validateCtx(OppiaineLockContext ctx, boolean readOnly) {
-        if ( readOnly ) {
-            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
-        } else {
-            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);
-        }
+        checkPermissionToPeruste(ctx, readOnly);
 
         //TODO: haun optimointi
         AbstractOppiaineOpetuksenSisalto s = ctx.getTyyppi().getRepository(applicationContext).findByPerusteId(ctx.getPerusteId());

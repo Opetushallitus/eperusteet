@@ -45,9 +45,10 @@ angular.module('eperusteApp')
       tiedot = value;
     };
 
-    this.getPerusteId = function () {
+    var getPerusteId = function () {
       return tiedot.getProjekti()._peruste;
     };
+    this.getPerusteId = getPerusteId;
 
     this.sisallot = [
       {
@@ -191,18 +192,10 @@ angular.module('eperusteApp')
     };
   })
 
-  .service('LukioKurssiService', function (LukioKurssit, Lukitus, Notifikaatiot,
+  .service('LukioKurssiService', function (LukioKurssit, Lukitus, Notifikaatiot, LukioOppiaineKurssiRakenne,
                                            LukiokoulutusService, $translate, $q, $log) {
     var lukittu = function (id, cb) {
-        var d = $q.defer();
-        Lukitus.lukitseLukioKurssi(id, function () {
-          if (cb) {
-            cb(d);
-          } else {
-            d.resolve();
-          }
-        });
-        return d.promise;
+        return Lukitus.lukitseLukioKurssi(id, cb);
       },
       success = function(d, msg) {
         return function(tiedot) {
@@ -285,10 +278,59 @@ angular.module('eperusteApp')
     };
 
     /**
+     * @param tree root node
+     */
+    var updateOppiaineKurssiStructure = function(tree) {
+      var d = $q.defer();
+      var chain = _(tree).flattenTree(function(node) {
+            var kurssiJarjestys = 1,
+                oppiaineJarjestys = 1;
+            return _(node.lapset).map(function(n) {
+              if (n.dtype == 'kurssi') {
+                return {
+                  id: n.id,
+                  oppiaineet: [{
+                    oppiaineId: node.id,
+                    jarjetys: kurssiJarjestys++
+                  }]
+                };
+              } else if(!n.root) {
+                n.oppiaineId = node.root ? null : node.id;
+                n.jarjestys = oppiaineJarjestys++;
+              }
+              return n;
+            }).value();
+          }),
+        update = {
+          oppiaineet: chain.filter(function (n) {
+              return !n.root && n.dtype == 'oppiaine'
+            }).map(function(oa) {
+              return {
+                id: oa.id,
+                oppiaineId: oa.oppiaineId,
+                jarjestys: oa.jarjestys
+              };
+            }).value(),
+          kurssit: chain.filter(function (n) {
+              return n.dtype != 'oppiaine';
+            }).reducedIndexOf(_.property('id'), function (a, b) {
+              var c = _.clone(a);
+              c.oppiaineet = _.union(a.oppiaineet, b.oppiaineet);
+              return c;
+            }).values()
+            .value()
+        };
+      $log.info('Update stucture:', update);
+      LukioOppiaineKurssiRakenne.updateStructure({perusteId: LukiokoulutusService.getPerusteId()},
+        update, vapauta(d, 'tallennus-onnistui'), Notifikaatiot.serverCb);
+      return d.promise;
+    };
+
+    /**
      * @param id of kurssi to delete
      */
     var deleteKurssi = function(id) {
-      return lukittu(id, function() {
+      return lukittu(id, function(res, d) {
         LukioKurssit.delete({
           perusteId: LukiokoulutusService.getPerusteId(),
           osanId: id
@@ -301,22 +343,13 @@ angular.module('eperusteApp')
       get: get,
       save: save,
       lukitse: lukittu,
-      vapauta: function(cb) {
-        var d = $q.defer();
-        Lukitus.vapauta(function() {
-          if (cb) {
-            cb(d);
-          } else {
-            d.resolve();
-          }
-        });
-        return d.promise;
-      },
       update: update,
       deleteKurssi: deleteKurssi,
-      updateOppiaineRelations: updateOppiaineRelations
+      updateOppiaineRelations: updateOppiaineRelations,
+      updateOppiaineKurssiStructure: updateOppiaineKurssiStructure
     };
   })
+
   .service('LukioAihekokonaisuudetService',
             function(LukiokoulutusAihekokonaisuudet, Lukitus,
                      Notifikaatiot, LukiokoulutusService, $translate, $q) {

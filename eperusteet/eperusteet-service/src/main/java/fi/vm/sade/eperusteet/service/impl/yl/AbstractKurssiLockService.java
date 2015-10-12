@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.yl.Kurssi;
 import fi.vm.sade.eperusteet.service.impl.AbstractLockService;
-import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.KurssiLockContext;
 
 /**
@@ -32,19 +31,11 @@ public abstract class AbstractKurssiLockService extends AbstractLockService<Kurs
         return ctx.getKurssiId();
     }
 
-    protected void checkPermissionToPEruste(KurssiLockContext ctx, boolean readOnly) {
-        if ( readOnly ) {
-            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
-        } else {
-            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);
-        }
-    }
-
     protected abstract Kurssi getKurssi(KurssiLockContext ctx);
 
     @Override
     protected Long validateCtx(KurssiLockContext ctx, boolean readOnly) {
-        checkPermissionToPEruste(ctx, readOnly);
+        checkPermissionToPeruste(ctx, readOnly);
         Kurssi kurssi = getKurssi(ctx);
         return kurssi.getId();
     }

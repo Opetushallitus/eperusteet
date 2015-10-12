@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.KurssiService;
+import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +69,9 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Autowired
     private LokalisointiService lokalisointiService;
+
+    @Autowired
+    private OppiaineService oppiaineService;
 
 
     @Override
@@ -169,5 +173,12 @@ public class KurssiServiceImpl implements KurssiService {
     public void poistaLukiokurssi(long perusteId, long kurssiId) {
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
         lukiokurssiRepository.delete(kurssi);
+    }
+
+    @Override
+    @Transactional
+    public void updateTreeStructure(long perusteId, OppaineKurssiTreeStructureDto structure) {
+        oppiaineService.jarjestaLukioOppiaineet(perusteId, structure.getOppiaineet());
+        structure.getKurssit().forEach(kurssi -> muokkaaLukiokurssinOppiaineliitoksia(perusteId, kurssi));
     }
 }

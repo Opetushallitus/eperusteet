@@ -16,13 +16,10 @@
 
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus;
 import fi.vm.sade.eperusteet.repository.LukioAihekokonaisuusRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
-import fi.vm.sade.eperusteet.service.Suoritustavalle;
 import fi.vm.sade.eperusteet.service.impl.AbstractLockService;
-import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuusLockContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,17 +52,8 @@ public class LukioAihekokonaisuusLockService extends AbstractLockService<Aihekok
 
     @Override
     protected Long validateCtx(AihekokonaisuusLockContext ctx, boolean readOnly) {
-        checkPermissionToPEruste(ctx, readOnly);
+        checkPermissionToPeruste(ctx, readOnly);
         Aihekokonaisuus aihekokonaisuus = getAihekokonaisuus(ctx);
         return aihekokonaisuus.getId();
     }
-
-    protected void checkPermissionToPEruste(AihekokonaisuusLockContext ctx, boolean readOnly) {
-        if ( readOnly ) {
-            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
-        } else {
-            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);
-        }
-    }
-
 }

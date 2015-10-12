@@ -43,11 +43,7 @@ public class LaajaalainenOsaaminenLockServiceImpl extends AbstractLockService<La
 
     @Override
     protected final Long validateCtx(LaajaalainenOsaaminenContext ctx, boolean readOnly) {
-        if ( readOnly ) {
-            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
-        } else {
-            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);
-        }
+        checkPermissionToPeruste(ctx, readOnly);
         LaajaalainenOsaaminen osaaminen = osaaminenRepository.findBy(ctx.getPerusteId(), ctx.getOsaaminenId());
         if (osaaminen == null) {
             throw new BusinessRuleViolationException("Virheellinen lukitus");

@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.yl;
 
+import fi.vm.sade.eperusteet.service.PerusteAware;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +25,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AihekokonaisuusLockContext {
+public class AihekokonaisuusLockContext implements PerusteAware {
     private Long perusteId;
     private Long aihekokonaisuusId;
 

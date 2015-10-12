@@ -73,6 +73,11 @@
     </thead>
   </table>
 
+  <div ng-if="kurssi.kuvaus | kaanna">
+    <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-kuvaus-header' | kaanna"></h3>
+    <div ng-bind-html="kurssi.kuvaus | kaanna"></div>
+  </div>
+
   <div ng-if="kurssi.tavoitteet | kaanna">
     <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-tavoitteet-header' | kaanna"></h3>
     <div ng-bind-html="kurssi.tavoitteet | kaanna"></div>

@@ -22,20 +22,11 @@ import lombok.Setter;
 
 /**
  * User: tommiratamaa
- * Date: 30.9.15
- * Time: 14.37
+ * Date: 12.10.15
+ * Time: 15.43
  */
 @Getter
 @Setter
-public class KurssiLockContext implements PerusteAware {
+public class LukioRakenneLockContext implements PerusteAware {
     private Long perusteId;
-    private Long kurssiId;
-
-    public KurssiLockContext() {
-    }
-
-    public KurssiLockContext(Long perusteId, Long kurssiId) {
-        this.perusteId = perusteId;
-        this.kurssiId = kurssiId;
-    }
 }
