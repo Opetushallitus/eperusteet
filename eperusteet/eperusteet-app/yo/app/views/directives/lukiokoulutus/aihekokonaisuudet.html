@@ -12,14 +12,14 @@
     </div>
     <div ng-if="!editEnabled">
       <h1><span kaanna="otsikko"/>: {{aihekokonaisuudet.otsikko | kaanna}}</h1>
-      <p ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></p>
+      <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></div>
 
       <hr />
       <div ng-repeat="v in model | orderBy:nro">
         <h1>{{v.nimi|kaanna}}</h1>
         <button class="btn btn-default" icon-role="edit" ng-click="gotoEditAihekokonaisuus(v.id)" kaanna="muokkaa"
                 oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
-        <p ng-bind-html="v.kuvaus|kaanna|unsafe" />
+        <div ng-bind-html="v.kuvaus|kaanna|unsafe" />
         <div class="muokattu">{{ v.muokattu || 0 | aikaleima }}</div>
       </div>
 

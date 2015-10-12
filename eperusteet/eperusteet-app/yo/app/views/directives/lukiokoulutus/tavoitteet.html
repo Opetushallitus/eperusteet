@@ -11,7 +11,7 @@
     </div>
     <div ng-if="!editEnabled">
       <h1><span kaanna="otsikko"/>: {{yleisetTavoitteet.otsikko | kaanna}}</h1>
-      <p ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe"></p>
+      <div ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe"></div>
     </div>
 
     <div ng-if="editEnabled">
