@@ -10,7 +10,7 @@
               oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
     </div>
     <div ng-if="!editEnabled">
-      <h1><span kaanna="otsikko"/>: {{yleisetTavoitteet.otsikko | kaanna}}</h1>
+      <h1><span kaanna="otsikko"/>: {{yleisetTavoitteet.otsikko|kaanna}}</h1>
       <div ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe"></div>
     </div>
 
