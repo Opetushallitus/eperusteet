@@ -11,12 +11,12 @@
               oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
     </div>
     <div ng-if="!editEnabled">
-      <h1><span kaanna="otsikko"/>: {{aihekokonaisuudet.otsikko|kaanna}}</h1>
+      <h1><span ng-bind="aihekokonaisuudet.otsikko | kaanna"></span></h1>
       <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></div>
 
       <hr />
       <div ng-repeat="v in model | orderBy:nro">
-        <h1>{{v.nimi|kaanna}}</h1>
+        <h1><span ng-bind="v.nimi | kaanna"></span></h1>
         <button class="btn btn-default" icon-role="edit" ng-click="gotoEditAihekokonaisuus(v.id)" kaanna="muokkaa"
                 oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
         <div ng-bind-html="v.kuvaus|kaanna|unsafe" />
