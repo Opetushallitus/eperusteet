@@ -291,7 +291,7 @@ angular.module('eperusteApp')
                   id: n.id,
                   oppiaineet: [{
                     oppiaineId: node.id,
-                    jarjetys: kurssiJarjestys++
+                    jarjestys: kurssiJarjestys++
                   }]
                 };
               } else if(!n.root) {

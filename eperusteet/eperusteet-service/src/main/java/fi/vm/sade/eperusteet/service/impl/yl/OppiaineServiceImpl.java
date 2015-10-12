@@ -412,7 +412,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         dtosById.values().forEach(dto -> {
             Oppiaine oa = found(byId.get(dto.getId()), inLukioPeruste(perusteId));
             oa.setJnro(dto.getJarjestys());
-            if (!oa.isKoosteinen()) {
+            if (!oa.isKoosteinen() && dto.getOppiaineId() != null) {
                 oa.setOppiaine(found(byId.get(dto.getOppiaineId()),
                         inLukioPeruste(perusteId).and(Oppiaine::isKoosteinen)));
             } else {
