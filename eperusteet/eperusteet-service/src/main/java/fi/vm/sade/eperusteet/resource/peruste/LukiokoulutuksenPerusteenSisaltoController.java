@@ -75,12 +75,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @RequestMapping(value = "/oppiaineet", method = GET)
     public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(
             @PathVariable("perusteId") final Long perusteId) {
-        return handleGet(perusteId, new Supplier<List<OppiaineSuppeaDto>>() {
-            @Override
-            public List<OppiaineSuppeaDto> get() {
-                return sisallot.getOppiaineet(perusteId, OppiaineSuppeaDto.class);
-            }
-        });
+        return handleGet(perusteId, () -> sisallot.getOppiaineet(perusteId, OppiaineSuppeaDto.class));
     }
 
     @RequestMapping(value = "/oppiaineet", method = POST)

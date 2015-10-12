@@ -33,6 +33,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+import static java.util.Comparator.nullsLast;
+import static java.util.stream.Collectors.*;
 
 /**
  * User: tommiratamaa
@@ -87,21 +93,10 @@ public abstract class AbstractOppiaineOpetuksenSisaltoService<EntityType extends
     }
 
     protected  <T extends OppiaineBaseDto> List<T> listOppiaineet(AbstractOppiaineOpetuksenSisalto sisalto, Class<T> view) {
-        List<Oppiaine> oppiaineet = new ArrayList<>(sisalto.getOppiaineetCopy());
-        Collections.sort(oppiaineet, new Comparator<Oppiaine>() {
-            @Override
-            public int compare(Oppiaine a, Oppiaine b) {
-                Long ajnro = a.getJnro();
-                Long bjnro = b.getJnro();
-                if (ajnro == null) {
-                    return 1;
-                } else if (bjnro == null) {
-                    return -1;
-                } else {
-                    return Long.compare(ajnro, bjnro);
-                }
-            }
-        });
+        List<Oppiaine> oppiaineet = sisalto.getOppiaineet().stream()
+                .filter(oa -> oa.getOppiaine() == null)
+                .sorted(nullsLast(comparingLong(Oppiaine::getJnro)))
+                .collect(toList());
         return mapper.mapAsList(oppiaineet, view);
     }
 

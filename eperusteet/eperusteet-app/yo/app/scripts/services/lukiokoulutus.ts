@@ -280,7 +280,7 @@ angular.module('eperusteApp')
     /**
      * @param tree root node
      */
-    var updateOppiaineKurssiStructure = function(tree) {
+    var updateOppiaineKurssiStructure = function(tree, liittamattomatKurssit) {
       var d = $q.defer();
       var chain = _(tree).flattenTree(function(node) {
             var kurssiJarjestys = 1,
@@ -311,7 +311,12 @@ angular.module('eperusteApp')
                 jarjestys: oa.jarjestys
               };
             }).value(),
-          kurssit: chain.filter(function (n) {
+          kurssit: chain.union(_.map(liittamattomatKurssit, function(liittamaton) {
+              return {
+                id: liittamaton.id,
+                oppiaineet: []
+              }
+            })).filter(function (n) {
               return n.dtype != 'oppiaine';
             }).reducedIndexOf(_.property('id'), function (a, b) {
               var c = _.clone(a);

@@ -325,52 +325,38 @@ angular.module('eperusteApp')
       return (node.dtype === 'oppiaine' && to.root && !node.koosteinen) ||
         (node.dtype === 'oppiaine' && to.dtype === 'oppiaine' &&
               to.koosteinen && !node.koosteinen) ||
+        (node.dtype === 'oppiaine' && to.root) ||
         (node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen);
     };
     var moved = function(node, to, index) {
       $log.info('moved', node, 'to', to);
       if (node.dtype === 'kurssi'  && to.dtype === 'oppiaine') {
         $log.info('moved kurssi to oppiaine');
-        var modified = function(node, to) {
-          var from = node.$$nodeParent;
-          node.oppiaineet.push({
-            oppiaineId: to.id,
-            nimi: to.nimi,
-            jarjestys: index
-          });
-          if (from) {
-            _.remove(from.kurssit, node);
-          }
-          to.kurssit.push(node);
-          return node;
-        };
-        modified(node, to);
-        /*LukioKurssiService.updateOppiaineRelations(
-              modified(_.cloneDeep(node), _.cloneDeep(to)))
-          .then(function() {modified(node, to);});*/
+        var from = node.$$nodeParent;
+        node.oppiaineet.push({
+          oppiaineId: to.id,
+          nimi: to.nimi,
+          jarjestys: index
+        });
+        if (from) {
+          _.remove(from.kurssit, node);
+        }
+        to.kurssit.push(node);
       }
     };
     var removeKurssiFromOppiaine = function(node) {
       $log.info('remove', node);
-      var modified = function(node) {
-        var oppiaine = node.$$nodeParent;
-        node.oppiaineet = _.filter(node.oppiaineet, function(oa) {
-          $log.info('oa', oa.oppiaineId, oppiaine.id);
-          return oa.oppiaineId !== oppiaine.id;
-        });
-        $log.info('new oppiaineet', node.oppiaineet);
-        _.remove(oppiaine.kurssit, node);
-        _.remove(oppiaine.lapset, node);
-        if (_.isEmpty(node.oppiaineet)) {
-          $scope.liittamattomatKurssit.push(node);
-        }
-        return node;
-      };
-      modified(node);
-      /*LukioKurssiService.updateOppiaineRelations(modified(_.cloneDeep(node)))
-        .then(function() {
-          modified(node);
-        });*/
+      var oppiaine = node.$$nodeParent;
+      node.oppiaineet = _.filter(node.oppiaineet, function(oa) {
+        $log.info('oa', oa.oppiaineId, oppiaine.id);
+        return oa.oppiaineId !== oppiaine.id;
+      });
+      $log.info('new oppiaineet', node.oppiaineet);
+      _.remove(oppiaine.kurssit, node);
+      _.remove(oppiaine.lapset, node);
+      if (_.isEmpty(node.oppiaineet)) {
+        $scope.liittamattomatKurssit.push(node);
+      }
     };
 
     $scope.liittamattomatKurssitConfig = {
@@ -455,16 +441,16 @@ angular.module('eperusteApp')
         node.$$collapsed = $scope.treehelpers.defaultCollapsed;
         node.dtype = !node.oppiaineet ? 'oppiaine' : 'kurssi';
         if (node.dtype === 'oppiaine') {
+          var inParent = function (oa) {
+            return oa.oppiaineId === node.id;
+          };
           node.kurssit =  _(kurssit)
-            .filter(function (kurssi) {
-              return _.any(kurssi.oppiaineet, function (oa) {
-                return oa.oppiaineId === node.id;
-              });
-            })
+            .filter(function (kurssi) {return _.any(kurssi.oppiaineet, inParent);})
             .map(_.cloneDeep)
+            .sortBy(function(kurssi) {return _(kurssi.oppiaineet).filter(inParent).first().jarjestys;})
             .value();
         }
-        node.lapset = _.union(node.oppimaarat || [], node.kurssit || []);
+        node.lapset = _.union(_.sortBy(node.oppimaarat || [], _.property('jnro')), node.kurssit || []);
       });
     };
 
@@ -481,7 +467,8 @@ angular.module('eperusteApp')
         });
       },
       save: function() {
-        LukioKurssiService.updateOppiaineKurssiStructure($scope.treeRoot).then($state.reload);
+        LukioKurssiService.updateOppiaineKurssiStructure($scope.treeRoot,
+          $scope.liittamattomatKurssit).then($state.reload);
       },
       cancel: function() {
         Lukitus.vapauta().then($state.reload);

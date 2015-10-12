@@ -206,6 +206,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         }
     }
 
+    public void setOppiaineForce(Oppiaine oppiaine) {
+        this.oppiaine = oppiaine;
+    }
+
     public Set<OpetuksenKohdealue> getKohdealueet() {
         return new HashSet<>(kohdealueet);
     }
