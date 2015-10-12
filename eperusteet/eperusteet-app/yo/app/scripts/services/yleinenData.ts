@@ -110,7 +110,7 @@ angular.module('eperusteApp')
         nimi: 'lukiokoulutus',
         oletusSuoritustapa: 'lukiokoulutus',
         hasTutkintonimikkeet: false,
-        hakuState: 'root.selaus.lukiokoulutus',
+        hakuState: 'root.selaus.lukiokoulutuslista',
         sisaltoTunniste: 'lukiosisalto',
         hasPdfCreation: false
       },
