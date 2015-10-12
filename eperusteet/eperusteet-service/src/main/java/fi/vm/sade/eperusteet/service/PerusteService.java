@@ -16,7 +16,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -152,6 +152,10 @@ public interface PerusteService {
     Revision getLastModifiedRevision(final Long id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<YleisetTavoitteetDto> getYleisetTavoitteet(Long perusteId);
+    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void tallennaYleisetTavoitteet(Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto);
+
 
 }

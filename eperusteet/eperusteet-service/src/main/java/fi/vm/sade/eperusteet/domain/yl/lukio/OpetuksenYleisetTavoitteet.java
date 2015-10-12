@@ -56,8 +56,8 @@ public class OpetuksenYleisetTavoitteet extends AbstractAuditedReferenceableEnti
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "sisalto_id", nullable = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "sisalto_id", nullable = false)
     private LukiokoulutuksenPerusteenSisalto sisalto;
 
     public OpetuksenYleisetTavoitteet kloonaa() {

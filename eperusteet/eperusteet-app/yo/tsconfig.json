@@ -75,6 +75,7 @@
     "./app/scripts/directives/muokkaus/osaaminen.ts",
     "./app/scripts/directives/muokkaus/revertnote.ts",
     "./app/scripts/directives/muokkaus/aihekokonaisuudet.ts",
+    "./app/scripts/directives/muokkaus/lukiokoulutusyleisettavoitteet.ts",
     "./app/scripts/directives/editinplace.ts",
     "./app/scripts/directives/ohje.ts",
     "./app/scripts/directives/esitysOtsikko.ts",

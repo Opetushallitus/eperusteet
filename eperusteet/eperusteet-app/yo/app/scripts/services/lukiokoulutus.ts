@@ -103,7 +103,7 @@ angular.module('eperusteApp')
 
       switch (params.osanTyyppi) {
         case this.OPETUKSEN_YLEISET_TAVOITTEET:
-          return getOsaGeneric(LukiokoulutusYleisetTavoitteet, params);
+          return promisify({});
         case this.AIHEKOKONAISUUDET:
           return getOsaGeneric(LukiokoulutusAihekokonaisuudet, params);
         case this.OPPIAINEET_OPPIMAARAT:
@@ -179,10 +179,6 @@ angular.module('eperusteApp')
           }).$promise;
         case this.KURSSIT:
           return LukioKurssit.query(commonParams(), function(data) {
-            cached[tyyppi] = data;
-          }).$promise;
-        case this.OPETUKSEN_YLEISET_TAVOITTEET:
-          return LukiokoulutusYleisetTavoitteet.query(commonParams(), function (data) {
             cached[tyyppi] = data;
           }).$promise;
         case this.AIHEKOKONAISUUDET:
@@ -395,10 +391,6 @@ angular.module('eperusteApp')
         }, Notifikaatiot.serverCb);
       });
       return d.promise;
-      /* XXX:???
-      return LukiokoulutusAihekokonaisuudet.delete({
-        aihekokonaisuusId: aihekokonaisuusId
-      }, cb).$promise;*/
     };
 
     return {
@@ -408,5 +400,40 @@ angular.module('eperusteApp')
       getAihekokonaisuus: getAihekokonaisuus,
       getAihekokonaisuudetYleiskuvaus: getAihekokonaisuudetYleiskuvaus,
       deleteAihekokonaisuus: deleteAihekokonaisuus
+    };
+  })
+  .service('LukioYleisetTavoitteetService',
+  function(LukiokoulutusYleisetTavoitteet, Lukitus,
+           Notifikaatiot, LukiokoulutusService, $translate, $q) {
+
+
+    /**
+     * Tallentaa aihekokobaisuudet yleiskuvauksen
+     *
+     * @param yleisetTavoitteet <LukiokoulutuksenYleisetTavoitteetDto>
+     * @return Promise<LukiokoulutuksenYleisetTavoitteetDto>
+     */
+    var updateYleistTavoitteet = function(yleisetTavoitteet) {
+
+      var d = $q.defer();
+      LukiokoulutusYleisetTavoitteet.update({
+        perusteId: LukiokoulutusService.getPerusteId()
+      }, yleisetTavoitteet, function(yleisetTavoitteetTiedot) {
+          Notifikaatiot.onnistui('tallennus-onnistui');
+          d.resolve(yleisetTavoitteetTiedot);
+      }, Notifikaatiot.serverCb);
+
+      return d.promise;
+    };
+
+    var getYleisetTavoitteet = function() {
+      return LukiokoulutusYleisetTavoitteet.get({
+        perusteId: LukiokoulutusService.getPerusteId()
+      }).$promise;
+    };
+
+    return {
+      updateYleistTavoitteet: updateYleistTavoitteet,
+      getYleisetTavoitteet: getYleisetTavoitteet
     };
   });

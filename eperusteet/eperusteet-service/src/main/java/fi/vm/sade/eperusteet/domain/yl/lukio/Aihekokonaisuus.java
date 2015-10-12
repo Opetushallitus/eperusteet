@@ -55,7 +55,7 @@ public class Aihekokonaisuus extends AbstractAuditedReferenceableEntity {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "otsikko_id", nullable = false)
+    @JoinColumn(name = "otsikko_id", nullable = true)
     private TekstiPalanen otsikko;
 
     @Getter

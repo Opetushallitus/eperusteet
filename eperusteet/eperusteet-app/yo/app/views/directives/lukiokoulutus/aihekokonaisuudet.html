@@ -13,6 +13,16 @@
     <div ng-if="!editEnabled">
       <h1><span kaanna="otsikko"/>: {{aihekokonaisuudet.otsikko | kaanna}}</h1>
       <p ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></p>
+
+      <hr />
+      <div ng-repeat="v in model | orderBy:nro">
+        <h1>{{v.nimi|kaanna}}</h1>
+        <button class="btn btn-default" icon-role="edit" ng-click="gotoEditAihekokonaisuus(v.id)" kaanna="muokkaa"
+                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+        <p ng-bind-html="v.kuvaus|kaanna|unsafe" />
+        <div class="muokattu">{{ v.muokattu || 0 | aikaleima }}</div>
+      </div>
+
     </div>
 
     <div ng-if="editEnabled">
@@ -26,10 +36,6 @@
 
         <label for="yleiskuvaus-input" class="header" kaanna="lisaa-aihekokonaisuus-yleiskuvaus-header"></label>
         <div id="yleiskuvaus-input" ckeditor ng-if="editEnabled" slocalized ng-model="aihekokonaisuudet.yleiskuvaus" editor-placeholder="aihekokonaisuudet-yleiskuvaus-placeholder"></div>
-
-        <div style="margin-top: 30px;"></div>
-        <button class="btn btn-default ng-binding" ng-click="cancel()" kaanna="peruuta"></button>
-        <button role="button" ng-click="save()" class="btn btn-primary" kaanna="tallenna"></button>
       </form>
 
     </div>

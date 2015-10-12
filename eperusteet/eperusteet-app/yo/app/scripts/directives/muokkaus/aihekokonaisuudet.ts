@@ -27,16 +27,37 @@ angular.module('eperusteApp')
       templateUrl: 'views/directives/lukiokoulutus/aihekokonaisuudet.html',
       restrict: 'E',
       scope: {
-        model: '=',
-        versiot: '='
+        model: '=aihekokonaisuudet'
       },
       controller: 'LukioAihekokonaisuudetController'
     };
   })
 
   .controller('LukioAihekokonaisuudetController', function ($scope, LukioAihekokonaisuudetService,
+                                                            LukiokoulutusService,
                                                             PerusteProjektiSivunavi,
-                                                            $rootScope) {
+                                                            Editointikontrollit,
+                                                            $rootScope, $state, $filter) {
+
+    Editointikontrollit.registerCallback({
+      edit: function() {
+      },
+      save: function() {
+        $rootScope.$broadcast('notifyCKEditor');
+        LukioAihekokonaisuudetService.saveAihekokonaisuudetYleiskuvaus($scope.aihekokonaisuudet).then(function() {
+          init();
+        });
+      },
+      cancel: function() {
+        $scope.cancel();
+      },
+      validate: function() { return $filter('kaanna')($scope.aihekokonaisuudet.otsikko) != ''; },
+      notify: function () {
+      }
+    });
+
+
+
     function init() {
       LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvaus().then(function(aihekokonaisuudet) {
         $scope.aihekokonaisuudet = aihekokonaisuudet;
@@ -51,14 +72,16 @@ angular.module('eperusteApp')
       $scope.editEnabled = true;
       $scope.editMode = true;
       PerusteProjektiSivunavi.setVisible(false);
+      Editointikontrollit.startEditing();
     };
 
-    $scope.save = function() {
-      $rootScope.$broadcast('notifyCKEditor');
-      LukioAihekokonaisuudetService.saveAihekokonaisuudetYleiskuvaus($scope.aihekokonaisuudet).then(function() {
-        init();
-      });
-    };
+    $scope.gotoEditAihekokonaisuus = function(aihekokonaisuusId) {
+      $state.go('root.perusteprojekti.suoritustapa.lukioosaalue',
+        {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET,
+          osanId: aihekokonaisuusId,
+          tabId: 0,
+          editEnabled: true});
+    }
 
     $scope.cancel = function() {
       init();
@@ -66,24 +89,6 @@ angular.module('eperusteApp')
 
 
   })
-  .directive('lukioMuokkausTavoitteet', function() {
-    return {
-      templateUrl: 'views/directives/lukiokoulutus/tavoitteet.html',
-      restrict: 'E',
-      scope: {
-        model: '=',
-        versiot: '='
-      },
-      controller: 'LukioTavoitteetController'
-    };
-  })
-  .controller('LukioTavoitteetController', function ($scope, $log) {
-
-    $log.info('LukioTavoitteetController - kesken');
-
-
-  })
-
   .directive('lukioMuokkausAihekokonaisuus', function() {
     return {
       templateUrl: 'views/directives/lukiokoulutus/aihekokonaisuus.html',
@@ -102,7 +107,46 @@ angular.module('eperusteApp')
                                                           LukioAihekokonaisuudetService,
                                                           PerusteProjektiSivunavi,
                                                           LukiokoulutusService,
-                                                          $rootScope) {
+                                                          Editointikontrollit,
+                                                          $rootScope, $filter) {
+
+    Editointikontrollit.registerCallback({
+      edit: function() {
+      },
+      save: function() {
+        $rootScope.$broadcast('notifyCKEditor');
+
+        if( $scope.isNew ) {
+          LukioAihekokonaisuudetService.saveAihekokonaisuus($scope.aihekokonaisuus).then(function(aihekokonaisuus) {
+            if($stateParams.editEnabled) {
+              $scope.back();
+            } else {
+              $state.go('root.perusteprojekti.suoritustapa.lukioosaalue',
+                {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET,
+                  osanId: aihekokonaisuus.id,
+                  tabId: 0,
+                  editEnabled: false});
+            }
+          });
+        } else {
+          LukioAihekokonaisuudetService.updateAihekokonaisuus($scope.aihekokonaisuus).then(function() {
+            if($stateParams.editEnabled) {
+              $scope.back();
+            } else {
+              init();
+            }
+          });
+        }
+      },
+      cancel: function() {
+        $scope.cancel();
+      },
+      validate: function() { return $filter('kaanna')($scope.aihekokonaisuus.otsikko) != ''; },
+      notify: function () {
+      }
+    });
+
+
     function init() {
       LukiokoulutusService.getOsa($stateParams).then(function(aihekokonaisuus) {
         $scope.aihekokonaisuus = aihekokonaisuus;
@@ -116,40 +160,36 @@ angular.module('eperusteApp')
     $scope.versiot = {latest: true};
     $scope.aihekokonaisuus = {};
 
+
+
     if( $stateParams.osanId === 'uusi') {
       $scope.editEnabled = true;
       $scope.isNew = true;
       PerusteProjektiSivunavi.setVisible(false);
+      Editointikontrollit.startEditing();
     } else {
       init();
+      if( $stateParams.editEnabled === 'true' ) {
+        $scope.editEnabled = true;
+        PerusteProjektiSivunavi.setVisible(false);
+        Editointikontrollit.startEditing();
+      } else {
+        $scope.editEnabled = false;
+      }
     }
 
     $scope.edit = function() {
       $scope.editEnabled = true;
       PerusteProjektiSivunavi.setVisible(false);
+      Editointikontrollit.startEditing();
     };
 
     $scope.cancel = function() {
-      if( $scope.isNew ) {
+      if( $scope.isNew || $stateParams.editEnabled ) {
         $scope.back();
       } else {
         init();
       }
-    };
-
-    $scope.save = function() {
-      $rootScope.$broadcast('notifyCKEditor');
-      LukioAihekokonaisuudetService.saveAihekokonaisuus($scope.aihekokonaisuus).then(function(aihekokonaisuus) {
-        $scope.aihekokonaisuus = aihekokonaisuus;
-        init();
-      });
-    };
-
-    $scope.update = function() {
-      $rootScope.$broadcast('notifyCKEditor');
-      LukioAihekokonaisuudetService.updateAihekokonaisuus($scope.aihekokonaisuus).then(function() {
-        init();
-      });
     };
 
     $scope.back = function() {

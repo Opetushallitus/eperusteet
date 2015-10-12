@@ -31,7 +31,9 @@ import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine_;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
+import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
@@ -140,6 +142,9 @@ public class DtoMapperConfig {
                 .register();
         factory.classMap(AihekokonaisuudetYleiskuvausDto.class, Aihekokonaisuudet.class)
                 .exclude("aihekokonaisuudet")
+                .byDefault()
+                .register();
+        factory.classMap(LukiokoulutuksenYleisetTavoitteetDto.class, OpetuksenYleisetTavoitteet.class)
                 .byDefault()
                 .register();
 
