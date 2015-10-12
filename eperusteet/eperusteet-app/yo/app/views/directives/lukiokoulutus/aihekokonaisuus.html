@@ -53,7 +53,7 @@
   </div>
 
   <div ng-if="!editEnabled">
-    <h1 class="aihekokonaisuus-otsikko">{{aihekokonaisuus.otsikko | kaanna}}</h1>
+    <h1 class="aihekokonaisuus-otsikko"><span ng-bind="aihekokonaisuus.otsikko | kaanna"></span></h1>
 
     <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
