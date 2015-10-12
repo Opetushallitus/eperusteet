@@ -90,7 +90,7 @@ angular.module('eperusteApp')
                                 Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
                                 LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
                                 LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite,
-                                LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
+                                LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, $log) {
 
     var lukitsin = null;
     var etag = null;

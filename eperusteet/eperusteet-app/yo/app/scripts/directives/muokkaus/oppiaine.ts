@@ -94,7 +94,7 @@ angular.module('eperusteApp')
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna, Notifikaatiot,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
       CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
-      Koodisto, MuokkausUtils, $document) {
+      Koodisto, MuokkausUtils, $document, $log) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];

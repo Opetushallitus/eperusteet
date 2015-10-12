@@ -20,7 +20,9 @@
     <div class="lukio-oppiaineet-puu lukio-oppiaine-tab">
       <div class="main-column tree">
         <div class="action-buttons">
-          <button icon-role="add" class="floater btn" ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
+          <button icon-role="add" class="floater btn"
+                  oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                  ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
         </div>
         <div class="tree-con">
           <rajaus size="small" classes="puun-rajaus" model="treehelpers.haku"
@@ -34,7 +36,9 @@
       </div>
       <div class="liittamattomat-column">
         <div class="action-buttons">
-          <button icon-role="add" class="floater btn" ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
+          <button icon-role="add" class="floater btn"
+                  oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                  ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
         </div>
         <h2 kaanna="lukio-liitamattomat-kurssit"></h2>
 

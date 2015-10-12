@@ -69,6 +69,7 @@ public abstract class AbstractLockController<T> {
     @RequestMapping(method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unlock(T ctx) {
+        handleContext(ctx);
         service().unlock(ctx);
     }
 

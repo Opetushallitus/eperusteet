@@ -27,6 +27,7 @@ angular.module('eperusteApp')
   var STATE_OSALISTAUS = 'root.perusteprojekti.suoritustapa.osalistaus';
   var STATE_LUKIOOSALISTAUS = 'root.perusteprojekti.suoritustapa.lukioosat';
   var STATE_OSAALUE = 'root.perusteprojekti.suoritustapa.osaalue';
+  var STATE_LUKIOOSAALUE = 'root.perusteprojekti.suoritustapa.lukioosaalue';
   var isTutkinnonosatActive = function () {
     return $state.is(STATE_OSAT) || $state.is(STATE_TUTKINNON_OSA);
   };
@@ -119,7 +120,7 @@ angular.module('eperusteApp')
     items.push({
       depth: level,
       label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
-      link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
+      link: [perusteenTyyppi == 'LU' ? STATE_LUKIOOSAALUE : STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
       isActive: isYlRouteActive
     });
     _(osa.oppimaarat).sortBy('jnro').each(function (lapsi) {

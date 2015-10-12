@@ -19,15 +19,15 @@
 
   <div>
     <div ng-if="!kurssi.oppiaineet.length">
-      <a ng-bind="'lukiokurssit' | kaanna" ng-click="gotoKurssit()"></a>
+      <a class="pointer" ng-bind="'lukiokurssit' | kaanna" ng-click="gotoKurssit()"></a>
       / <span ng-bind="kurssi.nimi | kaanna"></span>
     </div>
     <div ng-repeat="oppiaine in kurssi.oppiaineet">
       <span>
-        <a ng-bind="'lukiokurssit' | kaanna" ng-click="gotoKurssit()"></a>
+        <a class="pointer" ng-bind="'lukiokurssit' | kaanna" ng-click="gotoKurssit()"></a>
       </span>
       <span ng-repeat="i in oppiaineMurupolkuItems(oppiaine)">
-         / <a ng-bind="i.oppiaineNimi | kaanna" ng-click="goto(oppiaine)"></a>
+         / <a class="pointer" ng-bind="i.oppiaineNimi | kaanna" ng-click="goto(oppiaine)"></a>
       </span>
       / <span ng-bind="kurssi.nimi | kaanna"></span>
     </div>

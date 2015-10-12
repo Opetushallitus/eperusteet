@@ -200,7 +200,11 @@ angular.module('eperusteApp')
     var lukittu = function (id, cb) {
         var d = $q.defer();
         Lukitus.lukitseLukioKurssi(id, function () {
-          cb(d);
+          if (cb) {
+            cb(d);
+          } else {
+            d.resolve();
+          }
         });
         return d.promise;
       },
@@ -260,13 +264,12 @@ angular.module('eperusteApp')
      * @return Promise<LukiokurssiTarkasteleDto>
      */
     var update = function(kurssi) {
-      return lukittu(kurssi.id, function(d) {
-        LukioKurssit.update({
+      var d = $q.defer();
+      LukioKurssit.update({
           perusteId: LukiokoulutusService.getPerusteId(),
           osanId: kurssi.id
-        }, kurssi, vapauta(d, 'tallennus-onnistui'),
-        Notifikaatiot.serverCb);
-      });
+        }, kurssi, vapauta(d, 'tallennus-onnistui'), Notifikaatiot.serverCb);
+      return d.promise;
     };
 
     /**
@@ -277,25 +280,23 @@ angular.module('eperusteApp')
      */
     var updateOppiaineRelations = function(kurssi) {
       $log.info('Update relations of', kurssi);
-      return lukittu(kurssi.id, function(d) {
-        LukioKurssit.updateRelatedOppiainees({
+      var d = $q.defer();
+      LukioKurssit.updateRelatedOppiainees({
           perusteId: LukiokoulutusService.getPerusteId(),
           osanId: kurssi.id
-        }, kurssi, vapauta(d, 'tallennus-onnistui'),
-        Notifikaatiot.serverCb);
-      });
+        }, kurssi, vapauta(d, 'tallennus-onnistui'), Notifikaatiot.serverCb);
+      return d.promise;
     };
 
     /**
      * @param id of kurssi to delete
      */
     var deleteKurssi = function(id) {
-      return lukittu(id, function(d) {
+      return lukittu(id, function() {
         LukioKurssit.delete({
-            perusteId: LukiokoulutusService.getPerusteId(),
-            osanId: id
-          }, vapauta(d, 'poisto-onnistui'),
-          Notifikaatiot.serverCb);
+          perusteId: LukiokoulutusService.getPerusteId(),
+          osanId: id
+        }, vapauta(d, 'poisto-onnistui'), Notifikaatiot.serverCb);
       });
     };
 
@@ -303,6 +304,18 @@ angular.module('eperusteApp')
       listByPeruste: listByPeruste,
       get: get,
       save: save,
+      lukitse: lukittu,
+      vapauta: function(cb) {
+        var d = $q.defer();
+        Lukitus.vapauta(function() {
+          if (cb) {
+            cb(d);
+          } else {
+            d.resolve();
+          }
+        });
+        return d.promise;
+      },
       update: update,
       deleteKurssi: deleteKurssi,
       updateOppiaineRelations: updateOppiaineRelations

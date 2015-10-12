@@ -204,17 +204,17 @@ angular.module('eperusteApp')
           perusteId: function ($stateParams) {
             return $stateParams.perusteId;
           },
-          peruste: function (perusteId, Perusteet) {
+          peruste: function (perusteId, Perusteet, $log) {
             return Perusteet.get({perusteId: perusteId}).$promise;
           },
-          sisalto: function(peruste, $q, LukioOppiaineet, SuoritustapaSisalto) {
+          sisalto: function(peruste, $q, Oppiaineet, SuoritustapaSisalto, $log) {
             if (_.isArray(peruste.data)) {
               peruste = peruste.data[0];
             }
             var perusteId = peruste.id;
             return $q.all([
               peruste,
-              LukioOppiaineet.query({perusteId: perusteId}).$promise,
+              Oppiaineet.query({perusteId: perusteId}).$promise,
               SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: 'lukiokoulutus'}).$promise,
             ]);
           }
@@ -312,10 +312,10 @@ angular.module('eperusteApp')
     $q.all([
       Perusteet.get({ tyyppi: 'koulutustyyppi_2' }).$promise,
     ]).then(function(res) {
+      $log.info('LISTAUS res:', res);
       if (res.sivuja > 1) {
         console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
       }
-
 
       $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
         .reverse()

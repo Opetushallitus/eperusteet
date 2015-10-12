@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service.yl;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * User: tommiratamaa
@@ -24,6 +25,7 @@ import lombok.Getter;
  * Time: 14.37
  */
 @Getter
+@Setter
 public class KurssiLockContext {
     private Long perusteId;
     private Long kurssiId;

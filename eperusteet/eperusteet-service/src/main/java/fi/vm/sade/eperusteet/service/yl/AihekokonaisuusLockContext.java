@@ -17,11 +17,13 @@
 package fi.vm.sade.eperusteet.service.yl;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * User: jsikio
  */
 @Getter
+@Setter
 public class AihekokonaisuusLockContext {
     private Long perusteId;
     private Long aihekokonaisuusId;

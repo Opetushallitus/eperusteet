@@ -34,7 +34,7 @@ angular.module('eperusteApp')
   })
 
   .controller('NaytaLukiokurssiController', function($scope, $state, LukioKurssiService,
-                                                     $stateParams, YleinenData) {
+                                                     $stateParams, YleinenData, LukiokoulutusService) {
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
     $scope.kurssityypit = [];
     YleinenData.lukioKurssityypit().then(function(tyypit) {
@@ -55,18 +55,21 @@ angular.module('eperusteApp')
     $scope.goto = function(oppiaine) {
       $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
         osanId: oppiaine.oppiaineId,
-        osanTyyppi: 'oppiaineet_oppimaarat',
+        osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT,
         tabId: 0
       });
     };
     $scope.gotoKurssit = function() {
       $state.go('root.perusteprojekti.suoritustapa.lukioosat', {
-        osanTyyppi: 'kurssit'
+        osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT,
+        tabId: 'kurssit'
       });
     };
     $scope.gotoMuokkaa = function() {
-      $state.go('root.perusteprojekti.suoritustapa.muokkaakurssia', {
-        kurssiId: $stateParams.kurssiId
+      LukioKurssiService.lukitse($stateParams.kurssiId).then(function() {
+        $state.go('root.perusteprojekti.suoritustapa.muokkaakurssia', {
+          kurssiId: $stateParams.kurssiId
+        });
       });
     };
   })
@@ -116,6 +119,7 @@ angular.module('eperusteApp')
               Varmistusdialogi, $filter, Kaanna, LukiokoulutusService) {
     Editointikontrollit.registerCallback({
       edit: function() {
+        $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
       },
       save: function() {
         $rootScope.$broadcast('notifyCKEditor');
@@ -124,20 +128,21 @@ angular.module('eperusteApp')
         });
       },
       cancel: function() {
-        $scope.back();
+        LukioKurssiService.vapauta().then(function() {
+          $scope.back();
+        });
       },
       validate: function() { return $filter('kaanna')($scope.kurssi.nimi) != ''; },
       notify: function () {
       }
     });
+    $scope.kurssi = null;
     Editointikontrollit.startEditing();
 
     $scope.kurssityypit = [];
     YleinenData.lukioKurssityypit().then(function(tyypit) {
       $scope.kurssityypit = tyypit;
     });
-
-    $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
 
     $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
 
