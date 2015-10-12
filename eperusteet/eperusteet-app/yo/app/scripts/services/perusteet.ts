@@ -168,8 +168,9 @@ angular.module('eperusteApp')
   })
   .factory('LukiokoulutusYleisetTavoitteet', function($resource, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/yleisettavoitteet';
-    return $resource(baseUrl, {
-      perusteId: '@perusteId'
+
+    return $resource(baseUrl, {perusteIdId: '@perusteId'},{
+        update: {method: 'POST'}
     });
   })
   .factory('LukiokoulutusAihekokonaisuudet', function($resource, $translate, SERVICE_LOC) {

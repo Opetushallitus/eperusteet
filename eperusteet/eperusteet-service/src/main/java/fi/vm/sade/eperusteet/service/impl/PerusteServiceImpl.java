@@ -23,8 +23,9 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -929,12 +930,31 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<YleisetTavoitteetDto> getYleisetTavoitteet(Long perusteId) {
-        //TODO!
-        return new ArrayList<>();
+    @Transactional( readOnly = true)
+    public LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(Long perusteId) {
+        Peruste peruste = perusteet.getOne(perusteId);
+        OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = peruste.getLukiokoulutuksenPerusteenSisalto().getOpetuksenYleisetTavoitteet();
+        if( opetuksenYleisetTavoitteet != null ) {
+            return mapper.map(opetuksenYleisetTavoitteet, LukiokoulutuksenYleisetTavoitteetDto.class);
+        } else {
+            return new LukiokoulutuksenYleisetTavoitteetDto();
+        }
+
     }
 
+    @Override
+    @Transactional
+    public void tallennaYleisetTavoitteet(Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto) {
+        Peruste peruste = perusteet.getOne(perusteId);
+        OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = peruste.getLukiokoulutuksenPerusteenSisalto().getOpetuksenYleisetTavoitteet();
+        if( opetuksenYleisetTavoitteet == null ) {
+            opetuksenYleisetTavoitteet = new OpetuksenYleisetTavoitteet();
+            peruste.getLukiokoulutuksenPerusteenSisalto().setOpetuksenYleisetTavoitteet(opetuksenYleisetTavoitteet);
+            opetuksenYleisetTavoitteet.setSisalto(peruste.getLukiokoulutuksenPerusteenSisalto());
+        }
+
+        mapper.map(lukiokoulutuksenYleisetTavoitteetDto, opetuksenYleisetTavoitteet);
+    }
 
     private static class VisitorImpl implements AbstractRakenneOsaDto.Visitor {
 

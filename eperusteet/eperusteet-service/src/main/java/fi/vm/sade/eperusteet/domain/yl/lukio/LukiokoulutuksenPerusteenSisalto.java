@@ -65,16 +65,15 @@ public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenS
 
     @Getter
     @Setter
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="aihekokonaisuudet_id")
-    private Aihekokonaisuudet aihekokonaisuudet = new Aihekokonaisuudet();
-
+    private Aihekokonaisuudet aihekokonaisuudet;
 
     @Getter
     @Setter
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="opetuksen_yleiset_tavoitteet_id")
-    private OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = new OpetuksenYleisetTavoitteet();
+    private OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet;
 
     public LukiokoulutuksenPerusteenSisalto kloonaa(Peruste peruste) {
         LukiokoulutuksenPerusteenSisalto kopio = new LukiokoulutuksenPerusteenSisalto();

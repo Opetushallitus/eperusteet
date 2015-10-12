@@ -960,5 +960,9 @@
     "kurssi-title": "Kurssi",
     "kurssi-koodi": "Koodi",
     "muokkaa-kurssia": "Muokkaa kurssia",
-    "muokkaa-kurssia-action": "Tallenna muutokset"
+    "muokkaa-kurssia-action": "Tallenna muutokset",
+
+    "lisaa-yleisettavoitteet-otsikko-header": "Opetuksen yleisten tavoitteiden otsikko",
+    "lisaa-yleisettavoitteet-kuvaus-header": "Opetuksen yleisten tavoitteiden kuvaus",
+    "yleisettavoitteet-kuvaus-placeholder": "Kirjoita opetuksen yleisten tavoitteiden kuvaus"
 }

@@ -1,17 +1,19 @@
 <!-- osalistaus.html -->
 <div class="row">
   <div class="col-md-12 ep-sisalto-inner">
-    <div class="action-buttons" ng-show="!isOppiaineet()">
+    <div class="action-buttons" ng-show="!isOppiaineet() && !isOpetuksenTavoitteet()">
       <button icon-role="add" class="floater btn" ng-click="add()" kaanna="sisaltoState.addLabel"></button>
     </div>
 
     <h1 kaanna="sisaltoState.label" ng-if="!isOppiaineet()"></h1>
 
     <div ng-if="isOpetuksenTavoitteet()">
-      <lukio-muokkaus-tavoitteet model="dataObject" versiot="versiot"/>
+      <lukio-muokkaus-tavoitteet />
     </div>
     <div ng-if="isAihekokonaisuus()">
-      <lukio-muokkaus-aihekokonaisuudet model="dataObject" versiot="versiot"/>
+      <div>
+        <lukio-muokkaus-aihekokonaisuudet aihekokonaisuudet="osaAlueet"></lukio-muokkaus-aihekokonaisuudet>
+      </div>
     </div>
 
     <div osalistaus="osaAlueet" search-placeholder="etsi-sisallosta"

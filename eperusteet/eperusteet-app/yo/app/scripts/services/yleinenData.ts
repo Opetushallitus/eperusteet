@@ -112,7 +112,7 @@ angular.module('eperusteApp')
         hasTutkintonimikkeet: false,
         hakuState: 'root.selaus.lukiokoulutuslista',
         sisaltoTunniste: 'lukiosisalto',
-        hasPdfCreation: true
+        hasPdfCreation: false
       },
       'koulutustyyppi_20': {
         nimi: 'varhaiskasvatus',

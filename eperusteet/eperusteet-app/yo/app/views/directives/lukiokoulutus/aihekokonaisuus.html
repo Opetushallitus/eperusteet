@@ -48,9 +48,6 @@
         </div>
 
         <div style="margin-top: 30px;"></div>
-        <button class="btn btn-default ng-binding" ng-click="cancel()" kaanna="peruuta"></button>
-        <button ng-if="isNew" role="button" ng-click="save()" class="btn btn-primary" kaanna="lisaa-aihekokonaisuus-action"></button>
-        <button ng-if="!isNew" role="button" ng-click="update()" class="btn btn-primary" kaanna="muokkaa-aihekokonaisuus-action"></button>
       </form>
     </div>
   </div>
@@ -60,7 +57,7 @@
 
     <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
-    <p ng-bind-html="aihekokonaisuus.yleiskuvaus|kaanna|unsafe"></p>
+    <div ng-bind-html="aihekokonaisuus.yleiskuvaus|kaanna|unsafe"></div>
 
   </div>
 

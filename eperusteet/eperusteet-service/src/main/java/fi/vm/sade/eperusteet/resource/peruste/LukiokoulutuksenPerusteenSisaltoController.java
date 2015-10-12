@@ -19,7 +19,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusListausDto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.YleisetTavoitteetDto;
+import fi.vm.sade.eperusteet.dto.lukiokoulutus.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
@@ -312,9 +312,28 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return handleGet(perusteId, () -> aihekokonaisuudet.getLukioAihekokobaisuusMuokkausById(perusteId, id));
     }
 
+
     @RequestMapping(value = "/yleisettavoitteet", method = GET)
-    public ResponseEntity<List<YleisetTavoitteetDto>> getYleisetTavoitteet(@PathVariable("perusteId") final Long perusteId) {
-        return handleGet(perusteId, () -> perusteet.getYleisetTavoitteet(perusteId));
+    public ResponseEntity<LukiokoulutuksenYleisetTavoitteetDto> getYleisetTavoitteet(
+            @PathVariable("perusteId") final Long perusteId) {
+        return handleGet(perusteId, new Supplier<LukiokoulutuksenYleisetTavoitteetDto>() {
+            @Override
+            public LukiokoulutuksenYleisetTavoitteetDto get() {
+                return perusteet.getYleisetTavoitteet(perusteId);
+            }
+        });
+    }
+
+    @RequestMapping(value = "/yleisettavoitteet", method = POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public RedirectView updateYleisetTavoitteet(
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto) {
+
+
+        perusteet.tallennaYleisetTavoitteet(perusteId, lukiokoulutuksenYleisetTavoitteetDto);
+
+        return new RedirectView("yleisettavoitteet", true);
     }
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, Supplier<T> response) {

@@ -27,10 +27,10 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class YleisetTavoitteetDto implements Serializable {
+public class LukiokoulutuksenYleisetTavoitteetDto implements Serializable {
 
     private Long id;
     private LokalisoituTekstiDto otsikko;
-    private LokalisoituTekstiDto sisalto;
+    private LokalisoituTekstiDto kuvaus;
 
 }
