@@ -95,7 +95,15 @@ public abstract class AbstractOppiaineOpetuksenSisaltoService<EntityType extends
     protected  <T extends OppiaineBaseDto> List<T> listOppiaineet(AbstractOppiaineOpetuksenSisalto sisalto, Class<T> view) {
         List<Oppiaine> oppiaineet = sisalto.getOppiaineet().stream()
                 .filter(oa -> oa.getOppiaine() == null)
-                .sorted(nullsLast(comparingLong(Oppiaine::getJnro)))
+                .sorted(comparing(Oppiaine::getJnro, (a,b) -> {
+                    if (a == null) {
+                        return 1;
+                    }
+                    if (b == null) {
+                        return -1;
+                    }
+                    return a.compareTo(b);
+                }))
                 .collect(toList());
         return mapper.mapAsList(oppiaineet, view);
     }
