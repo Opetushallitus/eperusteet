@@ -31,21 +31,35 @@ angular.module('eperusteApp')
     };
   })
   .controller('LukioTavoitteetController', function ($scope, LukioYleisetTavoitteetService,
+                                                     Lukitus,
                                                      PerusteProjektiSivunavi,
                                                      Editointikontrollit,
                                                      $rootScope, $filter) {
 
 
+    var setEditMode = function() {
+      PerusteProjektiSivunavi.setVisible(false);
+      $scope.editEnabled = true;
+      $scope.editMode = true;
+
+    }
+
     Editointikontrollit.registerCallback({
       edit: function() {
+        Lukitus.lukitseLukioYleisettavoitteet().then(function() {
+          setEditMode();
+        });
+
       },
       save: function() {
         $rootScope.$broadcast('notifyCKEditor');
         LukioYleisetTavoitteetService.updateYleistTavoitteet($scope.yleisetTavoitteet).then(function() {
+          Lukitus.vapauta();
           init();
         });
       },
       cancel: function() {
+        Lukitus.vapauta();
         $scope.cancel();
       },
       validate: function() { return $filter('kaanna')($scope.yleisetTavoitteet.otsikko) != ''; },
@@ -65,13 +79,7 @@ angular.module('eperusteApp')
 
     init();
     $scope.edit = function() {
-      PerusteProjektiSivunavi.setVisible(false);
-      $scope.editEnabled = true;
-      $scope.editMode = true;
       Editointikontrollit.startEditing();
-    };
-
-    $scope.save = function() {
     };
 
     $scope.cancel = function() {

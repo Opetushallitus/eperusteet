@@ -56,9 +56,19 @@ angular.module('eperusteApp')
       perusteId: '@perusteId'
     });
   })
-  .factory('LukkoLukioAihekokonaisuudet', function (SERVICE_LOC, $resource) {
+  .factory('LukkoLukioAihekokonaisuus', function (SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet/:aihekokonaisuusId/lukko', {
       aihekokonaisuusId: '@aihekokonaisuusId',
+      perusteId: '@perusteId'
+    });
+  })
+  .factory('LukkoLukioAihekokonaisuudet', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet/lukko', {
+      perusteId: '@perusteId'
+    });
+  })
+  .factory('LukkoLukioYleisetTavoitteet', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/yleisettavoitteet/lukko', {
       perusteId: '@perusteId'
     });
   })
@@ -95,7 +105,8 @@ angular.module('eperusteApp')
                                 Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
                                 LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
                                 LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite,
-                                LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, LukkoLukioRakenne) {
+                                LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, LukkoLukioRakenne,
+                                LukkoLukioAihekokonaisuus, LukkoLukioYleisetTavoitteet) {
 
     var lukitsin = null;
     var etag = null;
@@ -361,11 +372,27 @@ angular.module('eperusteApp')
     }
 
     function lukitseLukioAihekokonaisuus(id, cb) {
-      return lukitse(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, cb);
+      return lukitse(LukkoLukioAihekokonaisuus, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, cb);
     }
 
     function vapautaLukioAihekokonaisuus(id, cb) {
-      return vapauta(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, cb);
+      return vapauta(LukkoLukioAihekokonaisuus, {perusteId: LukiokoulutusService.getPerusteId(), aihekokonaisuusId: id}, cb);
+    }
+
+    function lukitseLukioAihekokonaisuudet(id, ch) {
+      return lukitse(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId()}, ch);
+    }
+
+    function vapautaLukioAihekokonaisuudet(id, ch) {
+      return vapauta(LukkoLukioAihekokonaisuudet, {perusteId: LukiokoulutusService.getPerusteId()}, ch);
+    }
+
+    function lukitseLukioYleisettavoitteet(id, ch) {
+      return lukitse(LukkoLukioYleisetTavoitteet, {perusteId: LukiokoulutusService.getPerusteId()}, ch);
+    }
+
+    function vapautaLukioYleisettavoitteet(id, ch) {
+      return vapauta(LukkoLukioYleisetTavoitteet, {perusteId: LukiokoulutusService.getPerusteId()}, ch);
     }
 
     function lukitseOppiaineenVuosiluokkakokonaisuus(oppiaineId, vuosiluokkaId, cb) {
@@ -408,6 +435,10 @@ angular.module('eperusteApp')
       lukitsePerusteenosaByTutkinnonOsaViite: lukitsePerusteenosaByTutkinnonOsaViite,
       vapautaPerusteenosaByTutkinnonOsaViite: vapautaPerusteenosaByTutkinnonOsaViite,
       lukitseLukioAihekokonaisuus: lukitseLukioAihekokonaisuus,
-      vapautaLukioAihekokonaisuus: vapautaLukioAihekokonaisuus
+      vapautaLukioAihekokonaisuus: vapautaLukioAihekokonaisuus,
+      lukitseLukioAihekokonaisuudet: lukitseLukioAihekokonaisuudet,
+      vapautaLukioAihekokonaisuudet: vapautaLukioAihekokonaisuudet,
+      lukitseLukioYleisettavoitteet: lukitseLukioYleisettavoitteet,
+      vapautaLukioYleisettavoitteet: vapautaLukioYleisettavoitteet
     };
   });
