@@ -416,11 +416,14 @@ angular.module('eperusteApp')
         });
       }
     };
+    var setCollapseForAll = function(collapse) {
+      updateTree(function(node) {
+        node.$$collapsed = collapse;
+      });
+    };
     $scope.togglaaPolut = function () {
       $scope.treehelpers.defaultCollapsed = !$scope.treehelpers.defaultCollapsed;
-      updateTree(function(node) {
-        node.$$collapsed = $scope.treehelpers.defaultCollapsed;
-      });
+      setCollapseForAll($scope.treehelpers.defaultCollapsed);
     };
 
     $scope.kurssiTreeConfig = {
@@ -486,6 +489,7 @@ angular.module('eperusteApp')
 
     Editointikontrollit.registerCallback({
       edit: function() {
+        setCollapseForAll(false);
         updateEditMode(true);
       },
       save: function() {
