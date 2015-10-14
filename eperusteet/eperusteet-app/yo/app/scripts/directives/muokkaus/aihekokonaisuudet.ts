@@ -79,6 +79,10 @@ angular.module('eperusteApp')
 
     init();
     $scope.edit = function() {
+      if( _.isEmpty($scope.aihekokonaisuudet.otsikko) ) {
+        $scope.aihekokonaisuudet.otsikko = {"fi": "Aihekokonaisuudet"};
+      }
+
       Editointikontrollit.startEditing();
     };
 
