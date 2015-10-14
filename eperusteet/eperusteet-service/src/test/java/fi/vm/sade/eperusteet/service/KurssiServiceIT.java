@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.util.OppiaineUtil.Reference;
+import fi.vm.sade.eperusteet.service.yl.KurssiLockContext;
 import fi.vm.sade.eperusteet.service.yl.KurssiService;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import org.junit.Before;
@@ -57,6 +58,10 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private OppiaineService oppiaineService;
+
+    @Autowired
+    @LockCtx(KurssiLockContext.class)
+    private LockService<KurssiLockContext> lukioKurssiLockService;
 
     @Dto
     @Autowired
@@ -100,6 +105,7 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
 
         LukiokurssiMuokkausDto muokkausDto = dtoMapper.map(dto, new LukiokurssiMuokkausDto());
         muokkausDto.getOppiaineet().add(new KurssinOppiaineDto(saameRef.getId(), 1));
+        lukioKurssiLockService.lock(new KurssiLockContext(perusteId, dto.getId()));
         kurssiService.muokkaaLukiokurssia(perusteId, muokkausDto);
         List<LukiokurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId);
         assertEquals(1, list.size());
