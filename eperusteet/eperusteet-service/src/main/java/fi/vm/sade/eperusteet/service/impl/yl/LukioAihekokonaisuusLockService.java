@@ -20,7 +20,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus;
 import fi.vm.sade.eperusteet.repository.LukioAihekokonaisuusRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.impl.AbstractLockService;
-import fi.vm.sade.eperusteet.service.yl.AihekokonaisuusLockContext;
+import fi.vm.sade.eperusteet.service.yl.LukioAihekokonaisuusLockContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,28 +30,28 @@ import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
  * User: jsikio
  */
 @Service
-@LockCtx(AihekokonaisuusLockContext.class)
-public class LukioAihekokonaisuusLockService extends AbstractLockService<AihekokonaisuusLockContext> {
+@LockCtx(LukioAihekokonaisuusLockContext.class)
+public class LukioAihekokonaisuusLockService extends AbstractLockService<LukioAihekokonaisuusLockContext> {
 
     @Autowired
     private LukioAihekokonaisuusRepository lukioAihekokonaisuusRepository;
 
-    protected Aihekokonaisuus getAihekokonaisuus(AihekokonaisuusLockContext ctx) {
+    protected Aihekokonaisuus getAihekokonaisuus(LukioAihekokonaisuusLockContext ctx) {
         return found(lukioAihekokonaisuusRepository.getOne(ctx.getAihekokonaisuusId()), Aihekokonaisuus.inPeruste(ctx.getPerusteId()));
     }
 
     @Override
-    protected int latestRevision(AihekokonaisuusLockContext ctx) {
+    protected int latestRevision(LukioAihekokonaisuusLockContext ctx) {
         return lukioAihekokonaisuusRepository.getLatestRevisionId(ctx.getAihekokonaisuusId()).getNumero();
     }
 
     @Override
-    protected Long getLockId(AihekokonaisuusLockContext ctx) {
+    protected Long getLockId(LukioAihekokonaisuusLockContext ctx) {
         return ctx.getAihekokonaisuusId();
     }
 
     @Override
-    protected Long validateCtx(AihekokonaisuusLockContext ctx, boolean readOnly) {
+    protected Long validateCtx(LukioAihekokonaisuusLockContext ctx, boolean readOnly) {
         checkPermissionToPeruste(ctx, readOnly);
         Aihekokonaisuus aihekokonaisuus = getAihekokonaisuus(ctx);
         return aihekokonaisuus.getId();

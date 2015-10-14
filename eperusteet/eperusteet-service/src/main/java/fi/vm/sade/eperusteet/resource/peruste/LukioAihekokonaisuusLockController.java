@@ -20,30 +20,29 @@ import fi.vm.sade.eperusteet.resource.AbstractLockController;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
-import fi.vm.sade.eperusteet.service.yl.LukioAihekokonaisuudetLockContext;
+import fi.vm.sade.eperusteet.service.yl.LukioAihekokonaisuusLockContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * User: jsikio
- * Date: 14.10.15
- * Time: 09.38
  */
 @RestController
 @InternalApi
 @RequestMapping(value = {
-        LukioAihekokonaisuudetLockController.BASE + "/lukko",
+        LukioAihekokonaisuusLockController.BASE + "/lukko",
 })
-public class LukioAihekokonaisuudetLockController extends AbstractLockController<LukioAihekokonaisuudetLockContext> {
-    public static final String BASE = "/perusteet/{perusteId}/lukiokoulutus/aihekokonaisuudet";
+public class LukioAihekokonaisuusLockController extends AbstractLockController<LukioAihekokonaisuusLockContext> {
+    public static final String BASE = "/perusteet/{perusteId}/lukiokoulutus/aihekokonaisuudet/{aihekokonaisuusId}";
 
     @Autowired
-    @LockCtx(LukioAihekokonaisuudetLockContext.class)
-    private LockService<LukioAihekokonaisuudetLockContext> service;
+    @LockCtx(LukioAihekokonaisuusLockContext.class)
+    private LockService<LukioAihekokonaisuusLockContext> aihekokonaisuusLockService;
 
     @Override
-    protected LockService<LukioAihekokonaisuudetLockContext> service() {
-        return service;
+    protected LockService<LukioAihekokonaisuusLockContext> service() {
+        return aihekokonaisuusLockService;
     }
+
 }

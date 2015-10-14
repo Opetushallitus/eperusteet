@@ -25,19 +25,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AihekokonaisuusLockContext implements PerusteAware {
+public class LukioYleisetTavoitteetLockContext implements PerusteAware {
     private Long perusteId;
-    private Long aihekokonaisuusId;
-
-    public AihekokonaisuusLockContext() {
-    }
-
-    public AihekokonaisuusLockContext(Long perusteId, Long aihekokonaisuusId) {
-        this.perusteId = perusteId;
-        this.aihekokonaisuusId = aihekokonaisuusId;
-    }
-
-    public static AihekokonaisuusLockContext of(Long perusteId, Long aihekokonaisuusId) {
-        return new AihekokonaisuusLockContext(perusteId, aihekokonaisuusId);
-    }
 }
