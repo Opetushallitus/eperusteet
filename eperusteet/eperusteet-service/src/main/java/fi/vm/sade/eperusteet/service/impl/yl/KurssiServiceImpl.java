@@ -24,12 +24,15 @@ import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
+import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.yl.KurssiLockContext;
 import fi.vm.sade.eperusteet.service.yl.KurssiService;
+import fi.vm.sade.eperusteet.service.yl.LukioRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +48,7 @@ import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * User: tommiratamaa
@@ -72,6 +76,14 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Autowired
     private OppiaineService oppiaineService;
+
+    @Autowired
+    @LockCtx(LukioRakenneLockContext.class)
+    private LukioKurssiLockService lukioKurssiLockService;
+
+    @Autowired
+    @LockCtx(LukioRakenneLockContext.class)
+    private LukioRakenneLockService lukioRakenneLockService;
 
 
     @Override
@@ -154,6 +166,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Transactional
     public void muokkaaLukiokurssia(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException {
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(muokkausDto.getId()), inPeruste(perusteId));
+        lukioKurssiLockService.assertLock(new KurssiLockContext(perusteId, kurssi.getId()));
         lukiokurssiRepository.lock(kurssi, false);
         mapper.map(muokkausDto, kurssi);
         mergeOppiaineet(perusteId, kurssi, muokkausDto.getOppiaineet());
@@ -163,6 +176,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Transactional
     public void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
             throws NotExistsException {
+        lukioRakenneLockService.assertLock(new LukioRakenneLockContext(perusteId));
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(muokkausDto.getId()), inPeruste(perusteId));
         lukiokurssiRepository.lock(kurssi, false);
         mergeOppiaineet(perusteId, kurssi, muokkausDto.getOppiaineet());
@@ -171,14 +185,25 @@ public class KurssiServiceImpl implements KurssiService {
     @Override
     @Transactional
     public void poistaLukiokurssi(long perusteId, long kurssiId) {
+        lukioRakenneLockService.assertLock(new LukioRakenneLockContext(perusteId));
+        lukioKurssiLockService.assertLock(new KurssiLockContext(perusteId, kurssiId));
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
+        lukiokurssiRepository.lock(kurssi, false);
         lukiokurssiRepository.delete(kurssi);
     }
 
     @Override
     @Transactional
     public void updateTreeStructure(long perusteId, OppaineKurssiTreeStructureDto structure) {
+        lukioRakenneLockService.assertLock(new LukioRakenneLockContext(perusteId));
         oppiaineService.jarjestaLukioOppiaineet(perusteId, structure.getOppiaineet());
-        structure.getKurssit().forEach(kurssi -> muokkaaLukiokurssinOppiaineliitoksia(perusteId, kurssi));
+        Map<Long, Lukiokurssi> kurssitById = lukiokurssiRepository.findAll(structure.getKurssit()
+                .stream().map(LukiokurssiOppaineMuokkausDto::getId).collect(toSet()))
+                .stream().collect(toMap(Lukiokurssi::getId, k -> k));
+        structure.getKurssit().forEach(kurssiDto -> {
+            Lukiokurssi kurssi = found(kurssitById.get(kurssiDto.getId()), inPeruste(perusteId));
+            lukiokurssiRepository.lock(kurssi, false);
+            mergeOppiaineet(perusteId, kurssi, kurssiDto.getOppiaineet());
+        });
     }
 }

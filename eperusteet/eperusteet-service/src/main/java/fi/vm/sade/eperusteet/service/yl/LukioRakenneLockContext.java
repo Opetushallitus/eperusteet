@@ -29,4 +29,11 @@ import lombok.Setter;
 @Setter
 public class LukioRakenneLockContext implements PerusteAware {
     private Long perusteId;
+
+    public LukioRakenneLockContext() {
+    }
+
+    public LukioRakenneLockContext(long perusteId) {
+        this.perusteId = perusteId;
+    }
 }

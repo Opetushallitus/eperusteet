@@ -28,6 +28,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.yl.LukioRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
@@ -83,6 +84,10 @@ public class OppiaineServiceImpl implements OppiaineService {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    @LockCtx(LukioRakenneLockContext.class)
+    private LukioRakenneLockService lukioRakenneLockService;
 
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceImpl.class);
 
@@ -404,6 +409,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     @Override
     @Transactional
     public void jarjestaLukioOppiaineet(long perusteId, List<OppiaineJarjestysDto> oppiaineet) {
+        lukioRakenneLockService.assertLock(new LukioRakenneLockContext(perusteId));
         Map<Long, OppiaineJarjestysDto> dtosById = oppiaineet.stream().collect(toMap(OppiaineJarjestysDto::getId, o -> o));
         Set<Long> oppiaineIds = new HashSet<>(dtosById.keySet());
         oppiaineIds.addAll(oppiaineet.stream().filter(oa -> oa.getOppiaineId() != null)
@@ -411,6 +417,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         Map<Long, Oppiaine> byId = oppiaineRepository.findAll(oppiaineIds).stream().collect(toMap(Oppiaine::getId, o -> o));
         dtosById.values().forEach(dto -> {
             Oppiaine oa = found(byId.get(dto.getId()), inLukioPeruste(perusteId));
+            oppiaineRepository.lock(oa);
             oa.setJnro(dto.getJarjestys());
             if (!oa.isKoosteinen() && dto.getOppiaineId() != null) {
                 oa.setOppiaineForce(found(byId.get(dto.getOppiaineId()),
