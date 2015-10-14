@@ -31,6 +31,12 @@ $pakollinen-vari: #64a31d;
     width: 25%;
     margin-left: 5%
   }
+  .left {
+    float: left;
+  }
+  .ylapainikkeet {
+    margin-top: 20px;
+  }
 }
 .kurssi-view {
   table.description {
@@ -125,10 +131,22 @@ $pakollinen-vari: #64a31d;
   }
 }
 
+.action-buttons.left {
+  position: relative;
+  right: auto;
+  margin-left: 15px;
+  float: left;
+}
+
 .opetussialtopuu {
-  margin-top: 20px;
+  clear: both;
+  margin-top: 40px;
 
   @include bubble-fix();
+
+  .tree-yliviiva {
+    min-width: 630px;
+  }
 
   .puu-node {
     @include lukio-tree-node();

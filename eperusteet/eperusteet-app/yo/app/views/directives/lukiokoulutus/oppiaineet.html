@@ -15,26 +15,37 @@
   -->
 
 <tabset>
-  <div class="action-buttons" ng-show="activeTab == 'puu'">
+  <div class="action-buttons" ng-show="activeTab === 'puu'">
     <button icon-role="edit" class="floater btn" ng-show="!treehelpers.editMode"
             oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
             ng-click="toEditMode()" kaanna="'muokkaa-rakennetta'"></button>
   </div>
   <tab heading="{{'lukiooppiaineet-puu-tab-header' | kaanna}}"
-       ng-click="selectTab('puu')" active="activeTab == 'puu'">
+       ng-click="selectTab('puu')" active="isActiveTab('puu')">
     <div class="lukio-oppiaineet-puu lukio-oppiaine-tab">
       <div class="main-column tree">
         <div class="tree-con">
+          <div class="left">
+            <rajaus size="small" classes="puun-rajaus" model="treehelpers.haku"
+                    callback="treeHaku()"
+                    placeholder="{{ 'lukio-etsi-oppiaineista-ja-kursseista' || kaanna }}"></rajaus>
+          </div>
           <div class="action-buttons left" ng-show="!treehelpers.editMode">
             <button icon-role="add" class="floater btn"
                     oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
                     ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
           </div>
-          <rajaus size="small" classes="puun-rajaus" model="treehelpers.haku"
-                  callback="treeHaku()"
-                  placeholder="{{ 'lukio-etsi-oppiaineista-ja-kursseista' || kaanna }}"></rajaus>
         </div>
         <div class="opetussialtopuu tree">
+          <div class="ylapainikkeet">
+            <span class="rakenne-nimi ng-binding"> </span>
+            <div class="pull-right">
+              <a class="group-toggler action-link" ng-click="togglaaPolut()">
+                <span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span>
+              </a>
+            </div>
+          </div>
+          <div class="tree-yliviiva"></div>
           <generic-tree tree-provider="treeOsatProvider"
                         ui-sortable-config="kurssiTreeConfig"></generic-tree>
         </div>
@@ -60,7 +71,7 @@
               <span class="treehandle" icon-role="drag" ng-show="treehelpers.editMode"></span>
               <span class="colorbox kurssi-tyyppi {{kurssi.tyyppi.toLowerCase()}}" ng-bind="'kurssi-tyyppi-lyhenne-'+kurssi.tyyppi.toLowerCase() | kaanna"></span>
               <div class="node-content left">
-                <a ng-href="{{createUrl(kurssi)}}">
+                <a ng-click="gotoNode(kurssi)">
                   <span class="koodi" ng-bind="kurssi.koodiArvo"></span>
                   <span class="nimi" ng-bind="kurssi.nimi | kaanna"></span>
                 </a>
@@ -72,7 +83,7 @@
     </div>
   </tab>
   <tab heading="{{'lukiooppiaineet-oppiaineet-tab-header'| kaanna}}" ng-click="selectTab('oppiaineet')"
-       active="activeTab == 'oppiaineet'">
+       active="isActiveTab('oppiaineet')">
     <div class="lukio-oppiaine-tab">
       <div class="action-buttons additional">
         <button icon-role="add"
@@ -81,11 +92,12 @@
       </div>
       <div osalistaus="oppiaineet" search-placeholder="lukio-etsi-oppiaineista"
            empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
-           show-laajuus="false" url-generator="createUrl(value)"></div>
+           show-laajuus="false" url-generator="createUrl(value)"
+           ng-if="isActiveTab('oppiaineet')"></div>
     </div>
   </tab>
   <tab heading="{{'lukiooppiaineet-kurssit-tab-header'| kaanna}}" ng-click="selectTab('kurssit')"
-        active="activeTab == 'kurssit'">
+        active="isActiveTab('kurssit')">
     <div class="lukio-oppiaine-tab">
       <div class="action-buttons additional">
         <button icon-role="add"
@@ -94,7 +106,8 @@
       </div>
       <div osalistaus="kurssit" search-placeholder="lukio-etsi-kursseista"
            empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
-           show-laajuus="false" url-generator="createUrl(value)"></div>
+           show-laajuus="false" url-generator="createUrl(value)"
+           ng-if="isActiveTab('kurssit')"></div>
     </div>
   </tab>
 </tabset>

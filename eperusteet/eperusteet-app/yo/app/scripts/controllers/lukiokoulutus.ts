@@ -382,21 +382,45 @@ angular.module('eperusteApp')
     $scope.selectTab = function(tab) {
       $scope.activeTab = tab;
     };
+    $scope.isActiveTab = function(tab) {
+      return $scope.activeTab === tab;
+    };
     $scope.oppiaineet = [];
     $scope.kurssit = [];
     $scope.liittamattomatKurssit = [];
-    $scope.createUrl = function(node) {
+    $scope.gotoNode = function(node) {
+      $log.info('Goto: ', node);
       if (node.dtype === 'kurssi') {
-        return $state.href('root.perusteprojekti.suoritustapa.kurssi', {
+        return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
           kurssiId: node.id
         });
       } else if(node.dtype === 'oppiaine') {
+        $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
+          osanId: node.id,
+          osanTyyppi: 'oppiaineet_oppimaarat',
+          tabId: 0
+        });
+      }
+    };
+    $scope.createUrl = function(node) {
+      $log.info('createUrl', node.dtype);
+      if ($scope.isActiveTab('kurssit')) {
+        return $state.href('root.perusteprojekti.suoritustapa.kurssi', {
+          kurssiId: node.id
+        });
+      } else if($scope.isActiveTab('oppiaineet')) {
         return $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', {
           osanId: node.id,
           osanTyyppi: 'oppiaineet_oppimaarat',
           tabId: 0
         });
       }
+    };
+    $scope.togglaaPolut = function () {
+      $scope.treehelpers.defaultCollapsed = !$scope.treehelpers.defaultCollapsed;
+      updateTree(function(node) {
+        node.$$collapsed = $scope.treehelpers.defaultCollapsed;
+      });
     };
 
     $scope.kurssiTreeConfig = {
@@ -548,18 +572,7 @@ angular.module('eperusteApp')
             return removeKurssiFromOppiaine(node);
           };
           scope.goto = function(node) {
-            $log.info('Goto: ', node);
-            if (node.dtype === 'kurssi') {
-              return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
-                kurssiId: node.id
-              });
-            } else if(node.dtype === 'oppiaine') {
-              $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
-                osanId: node.id,
-                osanTyyppi: 'oppiaineet_oppimaarat',
-                tabId: 0
-              });
-            }
+            $scope.gotoNode(node);
           };
         },
         useUiSortable: function() {
