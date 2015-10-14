@@ -488,8 +488,10 @@ angular.module('eperusteApp')
 
     $scope.treeOsatProvider = $q(function(resolve) {
       var templateAround = function(tmpl) {
-        return '<div ng-show="!node.$$hide" class="opetussialtopuu-solmu {{node.dtype}}-solmu" ' +
-          'ng-class="{ \'opetussialtopuu-solmu-paataso\': (node.$$depth === 0) }">'+tmpl+'</div>';
+        return '<div class="tree-list-item" ng-show="!node.$$hide" class="opetussialtopuu-solmu {{node.dtype}}-solmu" ' +
+          'ng-class="{ \'opetussialtopuu-solmu-paataso\': (node.$$depth === 0), \'bubble\': node.dtype != \'kurssi\',' +
+          '           \'bubble-osa\': node.dtype === \'kurssi\',' +
+          '           \'empty-item\': !node.lapset.length }">'+tmpl+'</div>';
       };
       var treeScope = {
         root: function() {
@@ -514,19 +516,22 @@ angular.module('eperusteApp')
         },
         template: function(n) {
           var handle = $scope.treehelpers.editMode ? '<span icon-role="drag" class="treehandle"></span>' : '',
-              collapse = !$scope.treehelpers.editMode ?  '<span ng-show="node.lapset.length" ng-click="toggle(node)" class="colorbox collapse-toggle">' +
+              collapse = !$scope.treehelpers.editMode ?  '<span ng-show="node.lapset.length" ng-click="toggle(node)"' +
+                '           class="colorbox collapse-toggle" ng-class="{\'suljettu\': node.$$collapsed}">' +
                 '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
                 '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
                 '</span>' : '';
           if (n.dtype === 'kurssi') {
             var remove = $scope.treehelpers.editMode ? '   <span class="remove" icon-role="remove" ng-click="removeKurssiFromOppiaine(node)"></span>' : '';
             return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">' + handle +
-              '   <a ng-click="goto(node)"><span ng-bind="node.koodiArvo"></span> ' +
-              '   <span ng-bind="node.nimi | kaanna"></span></a>' + remove +
+              '   <div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }"><a ng-click="goto(node)"><span ng-bind="node.koodiArvo"></span> ' +
+              '     <span ng-bind="node.nimi | kaanna"></span></a>' + remove +
+              '   </div>' +
               '</div>', n);
           } else {
-            return templateAround('<div class="puu-node oppiaine-node">' +
-              handle + collapse + '<a ng-click="goto(node)">{{ node.nimi | kaanna }}</a></div>', n);
+            return templateAround('<div class="puu-node oppiaine-node">'+handle
+                + collapse +'<div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' +
+                '<strong><a ng-click="goto(node)">{{ node.nimi | kaanna }}</a></strong></div></div>', n);
           }
         },
         children: function(node) {

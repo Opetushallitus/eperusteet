@@ -14,6 +14,8 @@
  *  European Union Public Licence for more details.
  */
 $kurssi-border-color: yellowgreen;
+$puuviiva-vari: #ccc;
+
 
 .lukio-oppiaineet-puu {
   .main-column {
@@ -80,7 +82,6 @@ $kurssi-border-color: yellowgreen;
 
   .collapse-toggle {
     cursor: pointer;
-    padding: 4px;
   }
 }
 
@@ -90,15 +91,18 @@ $kurssi-border-color: yellowgreen;
   .puu-node {
     @include lukio-tree-node();
 
-    padding: 10px;
-    border: 1px solid black;
+    //padding: 10px;
+    //border: 1px solid black;
 
     &.kurssi-node {
-      border: 1px solid $kurssi-border-color;
+      //border: 1px solid $kurssi-border-color;
       margin-top: 0px;
     }
 
     &.oppiaine-node {
+      .empty-node {
+        padding-left: 8px;
+      }
     }
   }
 
@@ -108,14 +112,6 @@ $kurssi-border-color: yellowgreen;
 
   .recursivetree {
     margin-left: 30px;
-  }
-
-  .recursivetree:empty {
-    padding-bottom: 15px;
-  }
-
-  .kurssi-solmu + .recursivetree:empty {
-    padding-bottom: 0px;
   }
 
   .opetussialtopuu-otsikko-solmu {
@@ -163,4 +159,68 @@ $kurssi-border-color: yellowgreen;
 
 a.pointer {
   cursor: pointer;
+}
+
+@mixin viiva() {
+  content: '';
+  left: -25px;
+  position: absolute;
+  right: auto;
+}
+
+.tree {
+  generic-tree {
+    min-height: 16px;
+
+    .recursivetree.ui-sortable {
+      >div {
+        position: relative;
+
+        &::before {
+          @include viiva();
+          left: -19px;
+          border-left: 1px solid $puuviiva-vari;
+          height: 100%;
+          width: 1px;
+        }
+
+        >generic-tree-node>.tree-list-item {
+          position: relative;
+
+          &::after {
+            @include viiva();
+            border-top: 1px solid $puuviiva-vari;
+            height: 20px;
+            top: 50%;
+            width: 25px;
+          }
+          &::before {
+            @include viiva();
+            border-left: 1px solid $puuviiva-vari;
+            height: 47px;
+            top: -12px;
+            width: 1px;
+          }
+        }
+      }
+
+      >div:last-child {
+        position: relative;
+
+        &::before {
+          height: 0;
+        }
+
+        >generic-tree-node>.tree-list-item {
+          &::before {
+            height: 27px;
+          }
+        }
+      }
+    }
+
+    .tree-list-item {
+      margin: 10px 5px 0 5px;
+    }
+  }
 }
