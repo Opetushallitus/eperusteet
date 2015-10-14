@@ -24,7 +24,9 @@ import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
+import fi.vm.sade.eperusteet.resource.peruste.LukiokurssiLockController;
 import fi.vm.sade.eperusteet.service.LockCtx;
+import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
@@ -78,13 +80,12 @@ public class KurssiServiceImpl implements KurssiService {
     private OppiaineService oppiaineService;
 
     @Autowired
-    @LockCtx(LukioRakenneLockContext.class)
-    private LukioKurssiLockService lukioKurssiLockService;
+    @LockCtx(KurssiLockContext.class)
+    private LockService<KurssiLockContext> lukioKurssiLockService;
 
     @Autowired
     @LockCtx(LukioRakenneLockContext.class)
-    private LukioRakenneLockService lukioRakenneLockService;
-
+    private LockService<LukioRakenneLockContext> lukioRakenneLockService;
 
     @Override
     @Transactional(readOnly = true)

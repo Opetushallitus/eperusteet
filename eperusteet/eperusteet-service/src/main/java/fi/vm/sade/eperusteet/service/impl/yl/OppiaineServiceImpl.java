@@ -87,7 +87,7 @@ public class OppiaineServiceImpl implements OppiaineService {
 
     @Autowired
     @LockCtx(LukioRakenneLockContext.class)
-    private LukioRakenneLockService lukioRakenneLockService;
+    private LockService<LukioRakenneLockContext> lukioRakenneLockService;
 
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceImpl.class);
 

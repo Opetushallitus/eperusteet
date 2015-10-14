@@ -321,10 +321,12 @@ angular.module('eperusteApp')
       }
     };
     var acceptMove = function(node, to) {
+      if (!node) {
+        return false;
+      }
       $log.info('accept move', node, 'to', to);
       return (node.dtype === 'oppiaine' && to.root && !node.koosteinen) ||
-        (node.dtype === 'oppiaine' && to.dtype === 'oppiaine' &&
-              to.koosteinen && !node.koosteinen) ||
+        (node.dtype === 'oppiaine' && to.dtype === 'oppiaine' && to.koosteinen && !node.koosteinen) ||
         (node.dtype === 'oppiaine' && to.root) ||
         (node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen);
     };
@@ -404,13 +406,13 @@ angular.module('eperusteApp')
       cursorAt: { top : 5, left: 5 },
       update: function(e,ui) {
         handleMove(e,ui, function(from, to) {
-          if (!acceptMove(from, to)) {
-            if (!angular.element(e.toElement).hasClass('liittamaton-kurssi')) {
+          if (acceptMove(from, to)) {
+            moved(from, to, ui.item.sortable.index);
+          } else {
+            if (!angular.element(ui.item.context).hasClass('liittamaton-kurssi')) {
               $log.info('cancel main');
               ui.item.sortable.cancel();
             }
-          } else {
-            moved(from, to, ui.item.sortable.index);
           }
         });
       }
@@ -462,9 +464,7 @@ angular.module('eperusteApp')
 
     Editointikontrollit.registerCallback({
       edit: function() {
-        Lukitus.lukitseLukiorakenne().then(function() {
-          updateEditMode(true);
-        });
+        updateEditMode(true);
       },
       save: function() {
         LukioKurssiService.updateOppiaineKurssiStructure($scope.treeRoot,
@@ -481,7 +481,9 @@ angular.module('eperusteApp')
     });
 
     $scope.toEditMode = function() {
-      Editointikontrollit.startEditing();
+      Lukitus.lukitseLukiorakenne().then(function() {
+        Editointikontrollit.startEditing();
+      });
     };
 
     $scope.treeOsatProvider = $q(function(resolve) {
