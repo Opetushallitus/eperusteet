@@ -170,7 +170,6 @@ angular.module('eperusteApp', [
       var results = {};
       _.each(obj, function(o) {
         var index = extractor(o);
-        $log.info('i', index);
         if (results[index]) {
           results[index] = combinator(results[index], o);
         } else {

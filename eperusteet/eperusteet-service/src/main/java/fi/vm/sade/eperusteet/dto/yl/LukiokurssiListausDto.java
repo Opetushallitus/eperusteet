@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
@@ -38,6 +39,7 @@ public class LukiokurssiListausDto implements Serializable, Lokalisoitava {
     private List<KurssinOppiaineNimettyDto> oppiaineet = new ArrayList<>();
     private Long id;
     private String koodiArvo;
+    private LukiokurssiTyyppi tyyppi;
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto kuvaus;
     private Date muokattu;
@@ -45,8 +47,10 @@ public class LukiokurssiListausDto implements Serializable, Lokalisoitava {
     public LukiokurssiListausDto() {
     }
 
-    public LukiokurssiListausDto(Long id, String koodiArvo, Long nimiId, Long kuvausId, Date muokattu) {
+    public LukiokurssiListausDto(Long id, LukiokurssiTyyppi tyyppi,
+                                 String koodiArvo, Long nimiId, Long kuvausId, Date muokattu) {
         this.id = id;
+        this.tyyppi = tyyppi;
         this.koodiArvo = koodiArvo;
         this.nimi = LokalisoituTekstiDto.localizeLaterById(nimiId);
         this.kuvaus = LokalisoituTekstiDto.localizeLaterById(kuvausId);

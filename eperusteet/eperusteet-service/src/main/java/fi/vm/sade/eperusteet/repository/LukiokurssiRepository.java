@@ -33,6 +33,7 @@ import java.util.List;
 public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukiokurssi, Long> {
     String KURSSILISTAUS_SELECT = "SELECT new fi.vm.sade.eperusteet.dto.yl.LukiokurssiListausDto(" +
             "   kurssi.id," +
+            "   kurssi.tyyppi, " +
             "   kurssi.koodiArvo," +
             "   nimi.id," +
             "   kuvaus.id, " +

@@ -350,10 +350,8 @@ angular.module('eperusteApp')
       $log.info('remove', node);
       var oppiaine = node.$$nodeParent;
       node.oppiaineet = _.filter(node.oppiaineet, function(oa) {
-        $log.info('oa', oa.oppiaineId, oppiaine.id);
         return oa.oppiaineId !== oppiaine.id;
       });
-      $log.info('new oppiaineet', node.oppiaineet);
       _.remove(oppiaine.kurssit, node);
       _.remove(oppiaine.lapset, node);
       if (_.isEmpty(node.oppiaineet)) {
@@ -488,7 +486,7 @@ angular.module('eperusteApp')
 
     $scope.treeOsatProvider = $q(function(resolve) {
       var templateAround = function(tmpl) {
-        return '<div class="tree-list-item" ng-show="!node.$$hide" class="opetussialtopuu-solmu {{node.dtype}}-solmu" ' +
+        return '<div class="tree-list-item" ng-show="!node.$$hide" ' +
           'ng-class="{ \'opetussialtopuu-solmu-paataso\': (node.$$depth === 0), \'bubble\': node.dtype != \'kurssi\',' +
           '           \'bubble-osa\': node.dtype === \'kurssi\',' +
           '           \'empty-item\': !node.lapset.length }">'+tmpl+'</div>';
@@ -520,17 +518,19 @@ angular.module('eperusteApp')
                 '           class="colorbox collapse-toggle" ng-class="{\'suljettu\': node.$$collapsed}">' +
                 '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
                 '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
-                '</span>' : '';
+                '</span>' : '',
+              icon = '';
           if (n.dtype === 'kurssi') {
             var remove = $scope.treehelpers.editMode ? '   <span class="remove" icon-role="remove" ng-click="removeKurssiFromOppiaine(node)"></span>' : '';
-            return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">' + handle +
+            return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">'+
+              handle + '  <span class="colorbox kurssi-tyyppi {{node.tyyppi.toLowerCase()}}" ng-bind="\'kurssi-tyyppi-lyhenne-\'+node.tyyppi.toLowerCase() | kaanna"></span>' +
               '   <div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }"><a ng-click="goto(node)"><span ng-bind="node.koodiArvo"></span> ' +
-              '     <span ng-bind="node.nimi | kaanna"></span></a>' + remove +
-              '   </div>' +
+              '     <span ng-bind="node.nimi | kaanna"></span></a>'+
+              '   </div>' + remove +
               '</div>', n);
           } else {
             return templateAround('<div class="puu-node oppiaine-node">'+handle
-                + collapse +'<div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' +
+                + collapse + icon +'<div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' +
                 '<strong><a ng-click="goto(node)">{{ node.nimi | kaanna }}</a></strong></div></div>', n);
           }
         },

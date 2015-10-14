@@ -15,6 +15,9 @@
  */
 $kurssi-border-color: yellowgreen;
 $puuviiva-vari: #ccc;
+$syventava-vari: #93278F;
+$soveltava-vari: #feba00; // #6d9aa8
+$pakollinen-vari: #64a31d;
 
 
 .lukio-oppiaineet-puu {
@@ -65,6 +68,8 @@ $puuviiva-vari: #ccc;
     padding-left: 5px;
     padding-right: 5px;
     display: inline-block;
+    float: left;
+    padding-top: 7px;
   }
 
   .remove {
@@ -74,6 +79,7 @@ $puuviiva-vari: #ccc;
     margin-right: 10px;
     float: right;
     cursor: pointer;
+    padding-top: 7px;
   }
 
   a {
@@ -83,20 +89,52 @@ $puuviiva-vari: #ccc;
   .collapse-toggle {
     cursor: pointer;
   }
+
+  .colorbox.kurssi-tyyppi {
+    height: 30px;
+    width: 30px;
+    padding: 6px 0;
+    float: left;
+    text-align: center;
+    display: inline-block;
+    background-color: $colorbox-osaamisala-vari;
+    color: white;
+    margin-right: 10px;
+    font-size: 1.0em;
+    font-weight: normal;
+
+    &.pakollinen {
+      background-color: $pakollinen-vari;
+    }
+    &.valtakunnallinen_syventava {
+      background-color: $syventava-vari;
+    }
+    &.valtakunnallinen_soveltava {
+      background-color: $soveltava-vari;
+    }
+  }
+}
+
+@mixin bubble-fix() {
+  .bubble-osa {
+    padding: 0 0 0 0;
+
+    .node-content {
+      padding: 5px 8px;
+    }
+  }
 }
 
 .opetussialtopuu {
   margin-top: 20px;
 
+  @include bubble-fix();
+
   .puu-node {
     @include lukio-tree-node();
 
-    //padding: 10px;
-    //border: 1px solid black;
-
     &.kurssi-node {
-      //border: 1px solid $kurssi-border-color;
-      margin-top: 0px;
+      margin-top: 0;
     }
 
     &.oppiaine-node {
@@ -126,6 +164,14 @@ $puuviiva-vari: #ccc;
     padding: 8px 0 5px 7px;
   }
 
+  .recursivetree:empty {
+    padding-bottom: 15px;
+  }
+
+  .bubble-osa + .recursivetree:empty {
+    padding-bottom: 0;
+  }
+
   .placeholder {
     height: 28px;
     padding: 2px;
@@ -136,12 +182,15 @@ $puuviiva-vari: #ccc;
   }
 }
 
+.recursivetreeLiittamattomat {
+  @include bubble-fix();
+}
+
 .liittamaton-kurssi {
   @include lukio-tree-node();
 
-  padding: 10px;
   margin-bottom: 8px;
-  border: 1px solid $kurssi-border-color;
+  max-width: 350px;
 }
 
 .lukio-oppiaine-tab {
@@ -154,7 +203,7 @@ $puuviiva-vari: #ccc;
 }
 
 .oppiaine-view.oppiaine-view-edit .action-buttons {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 a.pointer {
@@ -171,6 +220,10 @@ a.pointer {
 .tree {
   generic-tree {
     min-height: 16px;
+
+    .node-content {
+      display: inline-block;
+    }
 
     .recursivetree.ui-sortable {
       >div {
