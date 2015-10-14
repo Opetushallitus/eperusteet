@@ -948,6 +948,7 @@
     "lukiooppiaineet-kurssit-tab-header": "Kurssit",
     "poistetaanko-kurssi": "Haluatko varmasti poistaa kurssin?",
 
+    "aihekokonaisuudet-ei-otsikkoa": "Aihekokonaisuuksien yleiskuvausta ei ole vielä määritelty",
     "lisaa-aihekokonaisuus-title": "Lisää aihekokonaisuus",
     "lisaa-aihekokonaisuus-otsikko-header": "Aihekokonaisuuden otsikko",
     "lisaa-aihekokonaisuus-yleiskuvaus-header": "Aihekokonaisuuden kuvaus",
@@ -963,6 +964,7 @@
     "muokkaa-kurssia": "Muokkaa kurssia",
     "muokkaa-kurssia-action": "Tallenna muutokset",
 
+    "yleisettavoitteet-ei-otsikkoa": "Opetuksen yleisiä tavoitteita ei ole vielä määritelty",
     "lisaa-yleisettavoitteet-otsikko-header": "Opetuksen yleisten tavoitteiden otsikko",
     "lisaa-yleisettavoitteet-kuvaus-header": "Opetuksen yleisten tavoitteiden kuvaus",
     "yleisettavoitteet-kuvaus-placeholder": "Kirjoita opetuksen yleisten tavoitteiden kuvaus"

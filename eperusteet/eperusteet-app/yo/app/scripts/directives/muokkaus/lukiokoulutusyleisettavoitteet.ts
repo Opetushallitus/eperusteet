@@ -79,6 +79,9 @@ angular.module('eperusteApp')
 
     init();
     $scope.edit = function() {
+      if( _.isEmpty($scope.yleisetTavoitteet.otsikko) ) {
+        $scope.yleisetTavoitteet.otsikko = {"fi": "Opetuksen yleiset tavoitteet"};
+      }
       Editointikontrollit.startEditing();
     };
 
