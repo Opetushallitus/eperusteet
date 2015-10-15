@@ -13,12 +13,19 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  European Union Public Licence for more details.
  */
+$oppiaine-oppimaara-tausta: #f2f2f2;
 $kurssi-border-color: yellowgreen;
 $puuviiva-vari: #ccc;
-$syventava-vari: #93278F;
-$soveltava-vari: #feba00; // #6d9aa8
-$pakollinen-vari: #64a31d;
+$syventava-vari: #bcda89; // #93278F;
+$soveltava-vari: #fcf281; // #feba00;
+$pakollinen-vari: #88d3e4; // #64a31d;
+$aikaleima-vari: #888;
 
+@mixin rounded-corners($radius) {
+  border-radius: $radius;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+}
 
 .lukio-oppiaineet-puu {
   .main-column {
@@ -26,16 +33,62 @@ $pakollinen-vari: #64a31d;
     width: 60%;
     position: relative;
   }
-  .liittamattomat-column {
-    float: left;
-    width: 25%;
-    margin-left: 5%
-  }
   .left {
     float: left;
   }
   .ylapainikkeet {
     margin-top: 20px;
+  }
+  .search-field-container {
+    padding-top: 2px;
+  }
+  .node-content {
+    position: absolute;
+    display: block;
+    max-height: 32px;
+    max-width: 420px;
+    z-index: 10;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: #fff;
+  }
+  .aikaleima {
+    display: inline-block;
+    position: absolute;
+    right: 4px;
+    color: $aikaleima-vari;
+    font-size: 0.7em;
+    z-index: 0;
+    padding-top: 8px;
+    width: auto;
+    margin-left: auto;
+    overflow: hidden;
+    cursor: help;
+  }
+
+  .legends {
+    position: absolute;
+    top: 10px;
+    right: -140px;
+
+    .legend {
+      margin-left: 40px;
+
+      .colorbox {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        @include rounded-corners(4px);
+      }
+    }
+  }
+}
+
+.recursivetreeLiittamattomat {
+  .node-content {
+    position: relative;
+    max-width: 280px;
   }
 }
 .kurssi-view {
@@ -94,39 +147,63 @@ $pakollinen-vari: #64a31d;
 
   .collapse-toggle {
     cursor: pointer;
+    background-color: transparent;
+    color: $colorbox-vari;
+
+    &.suljettu {
+      //color: white;
+      color: $colorbox-vari;
+      background-color: transparent;
+    }
+  }
+}
+
+.colorbox.kurssi-tyyppi {
+  height: 30px;
+  width: 30px;
+  padding: 5px 0;
+  overflow: hidden;
+  float: left;
+  text-align: center;
+  display: inline-block;
+  background-color: $colorbox-osaamisala-vari;
+  color: black;
+  margin-right: 10px;
+  font-size: 1.0em;
+  font-weight: normal;
+
+  &.lengthy {
+    padding-top: 7px;
+    font-size: 0.8em;
   }
 
-  .colorbox.kurssi-tyyppi {
-    height: 30px;
-    width: 30px;
-    padding: 6px 0;
-    float: left;
-    text-align: center;
-    display: inline-block;
-    background-color: $colorbox-osaamisala-vari;
-    color: white;
-    margin-right: 10px;
-    font-size: 1.0em;
-    font-weight: normal;
-
-    &.pakollinen {
-      background-color: $pakollinen-vari;
-    }
-    &.valtakunnallinen_syventava {
-      background-color: $syventava-vari;
-    }
-    &.valtakunnallinen_soveltava {
-      background-color: $soveltava-vari;
-    }
+  &.pakollinen {
+    background-color: $pakollinen-vari;
+  }
+  &.valtakunnallinen_syventava {
+    background-color: $syventava-vari;
+  }
+  &.valtakunnallinen_soveltava {
+    background-color: $soveltava-vari;
   }
 }
 
 @mixin bubble-fix() {
   .bubble-osa {
     padding: 0 0 0 0;
+    width: 100%;
 
     .node-content {
       padding: 5px 8px;
+    }
+  }
+  .bubble {
+    width: 100%;
+    display: block;
+    background-color: $oppiaine-oppimaara-tausta;
+
+    .node-content {
+      background-color: $oppiaine-oppimaara-tausta;
     }
   }
 }
@@ -146,9 +223,12 @@ $pakollinen-vari: #64a31d;
 
   .tree-yliviiva {
     min-width: 630px;
+    background-color: $puuviiva-vari;
+    height: 2px;
   }
 
   .puu-node {
+    min-width: 450px;
     @include lukio-tree-node();
 
     &.kurssi-node {
@@ -182,14 +262,6 @@ $pakollinen-vari: #64a31d;
     padding: 8px 0 5px 7px;
   }
 
-  .recursivetree:empty {
-    padding-bottom: 15px;
-  }
-
-  .bubble-osa + .recursivetree:empty {
-    padding-bottom: 0;
-  }
-
   .placeholder {
     height: 28px;
     padding: 2px;
@@ -202,13 +274,6 @@ $pakollinen-vari: #64a31d;
 
 .recursivetreeLiittamattomat {
   @include bubble-fix();
-}
-
-.liittamaton-kurssi {
-  @include lukio-tree-node();
-
-  margin-bottom: 8px;
-  max-width: 350px;
 }
 
 .lukio-oppiaine-tab {
@@ -235,63 +300,129 @@ a.pointer {
   right: auto;
 }
 
-.tree {
-  generic-tree {
-    min-height: 16px;
+@mixin generic-tree-viivat($margin-between-nodes, $empty-group-drop-margin) {
+  min-height: 16px;
 
-    .node-content {
-      display: inline-block;
-    }
+  .bubble .left {
+    padding-top: 6px;
+  }
 
-    .recursivetree.ui-sortable {
-      >div {
+  .node-content {
+    display: inline-block;
+  }
+
+  .recursivetree:empty {
+    padding-bottom: $empty-group-drop-margin;
+  }
+
+  .bubble-osa + .recursivetree:empty {
+    padding-bottom: 0;
+  }
+
+  .recursivetree.ui-sortable {
+    >div {
+      position: relative;
+
+      &::before {
+        @include viiva();
+        left: -19px;
+        border-left: 1px solid $puuviiva-vari;
+        height: 100%;
+        width: 1px;
+      }
+
+      >generic-tree-node>.tree-list-item {
         position: relative;
 
+        &::after {
+          @include viiva();
+          border-top: 1px solid $puuviiva-vari;
+          height: 20px;
+          top: 50%;
+          width: 25px;
+        }
         &::before {
           @include viiva();
-          left: -19px;
           border-left: 1px solid $puuviiva-vari;
-          height: 100%;
+          height: 35px + $margin-between-nodes;
+          top: -2px - $margin-between-nodes;
           width: 1px;
         }
+      }
+    }
 
-        >generic-tree-node>.tree-list-item {
-          position: relative;
+    >div:last-child {
+      position: relative;
 
-          &::after {
-            @include viiva();
-            border-top: 1px solid $puuviiva-vari;
-            height: 20px;
-            top: 50%;
-            width: 25px;
-          }
-          &::before {
-            @include viiva();
-            border-left: 1px solid $puuviiva-vari;
-            height: 47px;
-            top: -12px;
-            width: 1px;
-          }
-        }
+      &::before {
+        height: 0;
       }
 
-      >div:last-child {
-        position: relative;
-
+      >generic-tree-node>.tree-list-item {
         &::before {
-          height: 0;
-        }
-
-        >generic-tree-node>.tree-list-item {
-          &::before {
-            height: 27px;
-          }
+          height: 18px + $margin-between-nodes;
         }
       }
     }
+  }
 
-    .tree-list-item {
-      margin: 10px 5px 0 5px;
-    }
+  .tree-list-item {
+    min-width: 450px;
+    margin: $margin-between-nodes 5px 0 5px;
+  }
+}
+
+.liittamattomat-column {
+  margin-top: 85px;
+  border-left: 2px solid $puuviiva-vari;
+  padding-left: 15px;
+  float: left;
+  width: 25%;
+  margin-left: 30px;
+
+  h4 {
+    margin-top: 0px;
+  }
+
+  .search-field-container {
+    margin-right: 10px;
+  }
+
+  .liittamaton-kurssi {
+    @include lukio-tree-node();
+
+    margin-bottom: 4px;
+    width: 360px;
+  }
+}
+
+.tree {
+  generic-tree {
+    @include generic-tree-viivat(4px, 0px);
+  }
+}
+
+.tree-edit-mode.tree {
+  generic-tree {
+    @include generic-tree-viivat(4px, 15px);
+  }
+}
+
+.muokattuViimeksi {
+  display: block;
+  color: $aikaleima-vari;
+  text-align: right;
+  font-size: 0.9em;
+  padding-bottom: 0.2em;
+}
+.part-header-wrapper .muokattuViimeksi {
+  margin-top: -20px;
+}
+.kurssi-view {
+  h2 {
+    max-width: 80%;
+  }
+  .muokattuViimeksi {
+    margin-bottom: -20px;
   }
 }

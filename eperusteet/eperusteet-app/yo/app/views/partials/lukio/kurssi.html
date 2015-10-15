@@ -45,6 +45,9 @@
     </button>
   </div>
   <div class="clear">
+    <span ng-if="kurssi.muokattu" class="muokattuViimeksi">
+      <span kaanna="'muokattu-viimeksi'"></span>: <span ng-bind="kurssi.muokattu || 0 | aikaleima"></span>
+    </span>
     <hr/>
   </div>
   <table class="description">

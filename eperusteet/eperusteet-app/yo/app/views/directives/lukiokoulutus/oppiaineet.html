@@ -25,7 +25,7 @@
     <div class="lukio-oppiaineet-puu lukio-oppiaine-tab">
       <div class="main-column tree">
         <div class="tree-con">
-          <div class="left">
+          <div class="left search-field-container">
             <rajaus size="small" classes="puun-rajaus" model="treehelpers.haku"
                     callback="treeHaku()"
                     placeholder="{{ 'lukio-etsi-oppiaineista-ja-kursseista' || kaanna }}"></rajaus>
@@ -35,8 +35,14 @@
                     oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
                     ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
           </div>
+          <div class="legends">
+            <div class="left legend" ng-repeat="tyyppi in ['pakollinen', 'valtakunnallinen_syventava', 'valtakunnallinen_soveltava']">
+              <span class="colorbox kurssi-tyyppi {{tyyppi}}"></span>
+              <span class="legend-name" ng-bind="'kurssi-tyyppi-selite-'+tyyppi | kaanna"></span>
+            </div>
+          </div>
         </div>
-        <div class="opetussialtopuu tree">
+        <div class="opetussialtopuu tree" ng-class="{'tree-edit-mode': treehelpers.editMode}">
           <div class="ylapainikkeet" ng-show="!treehelpers.editMode">
             <span class="rakenne-nimi ng-binding"> </span>
             <div class="pull-right">
@@ -51,7 +57,7 @@
         </div>
       </div>
       <div class="liittamattomat-column">
-        <h2 kaanna="lukio-liitamattomat-kurssit"></h2>
+        <h4 kaanna="lukio-liitamattomat-kurssit"></h4>
 
         <div class="tree-con">
           <div class="action-buttons" ng-show="!treehelpers.editMode">
@@ -59,9 +65,11 @@
                     oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
                     ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
           </div>
-          <rajaus size="small" classes="puun-rajaus" model="treehelpers.liittamattomienHaku"
-                  callback="treeLiittamattomienHaku()"
-                  placeholder="{{ 'lukio-etsi-kursseista' || kaanna }}"></rajaus>
+          <div class="search-field-container">
+            <rajaus size="small" classes="puun-rajaus" model="treehelpers.liittamattomienHaku"
+                    callback="treeLiittamattomienHaku()"
+                    placeholder="{{ 'lukio-etsi-liittamattomista-kursseista' || kaanna }}"></rajaus>
+          </div>
         </div>
         <div ui-sortable="liittamattomatKurssitConfig" ng-model="liittamattomatKurssit"
              class="recursivetreeLiittamattomat">
@@ -69,11 +77,12 @@
                 ng-if="!kurssi.oppiaineet.length && !kurssi.$$hide">
             <div class="puu-node kurssi-node">
               <span class="treehandle" icon-role="drag" ng-show="treehelpers.editMode"></span>
-              <span class="colorbox kurssi-tyyppi {{kurssi.tyyppi.toLowerCase()}}" ng-bind="'kurssi-tyyppi-lyhenne-'+kurssi.tyyppi.toLowerCase() | kaanna"></span>
+              <span class="colorbox kurssi-tyyppi {{kurssi.tyyppi.toLowerCase()}}"
+                    ng-class="{'lengthy' : kurssi.koodiArvo && kurssi.koodiArvo.length >= 4}" ng-bind="kurssi.koodiArvo"></span>
+              <span ng-if="!treehelpers.editMode" class="aikaleima" ng-bind="kurssi.muokattu || 0 | aikaleima: 'ago'" title="{{'muokattu' | kaanna }} {{kurssi.muokattu || 0 | aikaleima}}"></span>
               <div class="node-content left">
                 <a ng-click="gotoNode(kurssi)">
-                  <span class="koodi" ng-bind="kurssi.koodiArvo"></span>
-                  <span class="nimi" ng-bind="kurssi.nimi | kaanna"></span>
+                  <span class="nimi" ng-bind="kurssi.nimi | kaanna" title="{{kurssi.nimi | kaanna}}"></span>
                 </a>
               </div>
             </div>

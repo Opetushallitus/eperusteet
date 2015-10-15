@@ -403,7 +403,6 @@ angular.module('eperusteApp')
       }
     };
     $scope.createUrl = function(node) {
-      $log.info('createUrl', node.dtype);
       if ($scope.isActiveTab('kurssit')) {
         return $state.href('root.perusteprojekti.suoritustapa.kurssi', {
           kurssiId: node.id
@@ -547,19 +546,21 @@ angular.module('eperusteApp')
                 '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
                 '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
                 '</span>' : '',
+              editTime = !$scope.treehelpers.editMode ? '<span class="aikaleima" ng-bind="node.muokattu || 0 | aikaleima: \'ago\'" title="{{\'muokattu\' | kaanna }} {{node.muokattu || 0 | aikaleima}}"></span>' : '',
               icon = '';
           if (n.dtype === 'kurssi') {
             var remove = $scope.treehelpers.editMode ? '   <span class="remove" icon-role="remove" ng-click="removeKurssiFromOppiaine(node)"></span>' : '';
             return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">'+
-              handle + '  <span class="colorbox kurssi-tyyppi {{node.tyyppi.toLowerCase()}}" ng-bind="\'kurssi-tyyppi-lyhenne-\'+node.tyyppi.toLowerCase() | kaanna"></span>' +
-              '   <div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }"><a ng-click="goto(node)"><span ng-bind="node.koodiArvo"></span> ' +
-              '     <span ng-bind="node.nimi | kaanna"></span></a>'+
+              handle + '  <span class="colorbox kurssi-tyyppi {{node.tyyppi.toLowerCase()}}" ng-class="{\'lengthy\' : node.koodiArvo && node.koodiArvo.length >= 4}"' +
+              '     ng-bind="node.koodiArvo"></span>' +
+              editTime + '   <div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }"><a ng-click="goto(node)">' +
+              '     <span ng-bind="node.nimi | kaanna" title="{{node.nimi | kaanna}}"></span></a>'+
               '   </div>' + remove +
               '</div>', n);
           } else {
             return templateAround('<div class="puu-node oppiaine-node">'+handle
-                + collapse + icon +'<div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' +
-                '<strong><a ng-click="goto(node)">{{ node.nimi | kaanna }}</a></strong></div></div>', n);
+                + collapse + icon + editTime + '<div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' +
+                '<strong><a ng-click="goto(node)" title="{{node.nimi | kaanna}}">{{ node.nimi | kaanna }}</a></strong></div></div>', n);
           }
         },
         children: function(node) {

@@ -26,6 +26,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -44,6 +45,7 @@ public class LukiokurssiTarkasteleDto implements Serializable, Lokalisoitava {
     private List<KurssinOppiaineTarkasteluDto> oppiaineet = new ArrayList<>();
     @NotNull
     private LokalisoituTekstiDto nimi;
+    private Date muokattu;
     private String koodiArvo;
     private String koodiUri;
     private Optional<LokalisoituTekstiDto> kurssityypinKuvaus;
