@@ -278,6 +278,19 @@ angular.module('eperusteApp')
     };
 
     /**
+     * @param kurssit Array
+     * @param oppiaineFilter function(kurssiOppiaine) => boolean
+     * @returns kurssit filtered by oppiaineFilter and ordered by jarjestys in oppiaine matching oppiaineFilter
+     */
+    var filterOrderedKurssisByOppiaine = function(kurssit, oppiaineFilter) {
+      return _(kurssit)
+        .filter(function (kurssi) {return _.any(kurssi.oppiaineet, oppiaineFilter);})
+        .map(_.cloneDeep)
+        .sortBy(function(kurssi) {return _(kurssi.oppiaineet).filter(oppiaineFilter).first().jarjestys;})
+        .value();
+    };
+
+    /**
      * @param tree root node
      */
     var updateOppiaineKurssiStructure = function(tree, liittamattomatKurssit) {
@@ -349,6 +362,7 @@ angular.module('eperusteApp')
       save: save,
       lukitse: lukittu,
       update: update,
+      filterOrderedKurssisByOppiaine: filterOrderedKurssisByOppiaine,
       deleteKurssi: deleteKurssi,
       updateOppiaineRelations: updateOppiaineRelations,
       updateOppiaineKurssiStructure: updateOppiaineKurssiStructure

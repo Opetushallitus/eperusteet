@@ -184,7 +184,8 @@ angular.module('eperusteApp')
     };
   })
   .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, $log,
-      PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisalto, LukiokoulutusService) {
+                    PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisalto,
+                    LukiokoulutusService, LukioKurssiService) {
 
     var deferred = $q.defer();
     var projekti: any = {};
@@ -220,7 +221,7 @@ angular.module('eperusteApp')
       sisalto = {};
     };
 
-    function getYlStructure(labels, osatProvider, sisaltoProvider) {
+    function getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider) {
       // TODO replace with one resource call that fetches the whole structure
       var promises = [];
       _.each(labels, function (key) {
@@ -235,6 +236,13 @@ angular.module('eperusteApp')
         ylTiedot.sisalto = data;
       });
       promises.push(sisaltoPromise);
+      if (kurssitProvider) {
+        var kurssiPromise = kurssitProvider();
+        kurssiPromise.then(function(data) {
+          ylTiedot.kurssit = data;
+        });
+        promises.push(kurssiPromise);
+      }
       return $q.all(promises);
     }
 
@@ -253,7 +261,8 @@ angular.module('eperusteApp')
       } else  {
         var labels,
             osatProvider,
-            sisaltoProvider;
+            sisaltoProvider,
+            kurssitProvider = null;
         if (YleinenData.isLukiokoulutus(peruste)) {
           labels = LukiokoulutusService.LABELS;
           osatProvider = function(key) {
@@ -261,6 +270,9 @@ angular.module('eperusteApp')
           };
           sisaltoProvider = function() {
             return LukiokoulutusService.getSisalto().$promise;
+          };
+          kurssitProvider = function() {
+            return LukioKurssiService.listByPeruste(perusteId);
           };
         } else {
           labels = PerusopetusService.LABELS;
@@ -271,7 +283,7 @@ angular.module('eperusteApp')
             return PerusopetusService.getSisalto(suoritustapa).$promise;
           };
         }
-        getYlStructure(labels, osatProvider, sisaltoProvider).then(function () {
+        getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider).then(function () {
           ylDefer.resolve();
           sisalto = ylTiedot.sisalto;
           deferred.resolve(ylTiedot.sisalto);

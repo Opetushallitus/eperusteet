@@ -470,14 +470,9 @@ angular.module('eperusteApp')
         node.$$collapsed = $scope.treehelpers.defaultCollapsed;
         node.dtype = !node.oppiaineet ? 'oppiaine' : 'kurssi';
         if (node.dtype === 'oppiaine') {
-          var inParent = function (oa) {
+          node.kurssit = LukioKurssiService.filterOrderedKurssisByOppiaine(kurssit, function (oa) {
             return oa.oppiaineId === node.id;
-          };
-          node.kurssit =  _(kurssit)
-            .filter(function (kurssi) {return _.any(kurssi.oppiaineet, inParent);})
-            .map(_.cloneDeep)
-            .sortBy(function(kurssi) {return _(kurssi.oppiaineet).filter(inParent).first().jarjestys;})
-            .value();
+          });
         }
         node.lapset = _.union(_.sortBy(node.oppimaarat || [], _.property('jnro')), node.kurssit || []);
       });

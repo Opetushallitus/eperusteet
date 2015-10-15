@@ -20,14 +20,16 @@
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-        $state, $location, YleinenData, PerusopetusService, LukiokoulutusService, Kaanna, $timeout, Utils, $log) {
+        $state, $location, YleinenData, PerusopetusService, LukiokoulutusService, Kaanna, $timeout, Utils,
+        LukioKurssiService) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
   var STATE_OSALISTAUS = 'root.perusteprojekti.suoritustapa.osalistaus';
   var STATE_LUKIOOSALISTAUS = 'root.perusteprojekti.suoritustapa.lukioosat';
   var STATE_OSAALUE = 'root.perusteprojekti.suoritustapa.osaalue';
-  var STATE_LUKIOOSAALUE = 'root.perusteprojekti.suoritustapa.lukioosaalue';
+  var STATE_LUKIOOSAALUE = 'root.perusteprojekti.suoritustapa.lukioosaalue',
+      STATE_LUKIOKURSSI = 'root.perusteprojekti.suoritustapa.kurssi';
   var isTutkinnonosatActive = function () {
     return $state.is(STATE_OSAT) || $state.is(STATE_TUTKINNON_OSA);
   };
@@ -56,6 +58,7 @@ angular.module('eperusteApp')
     itemsChanged: angular.noop,
     typeChanged: angular.noop
   };
+  var kurssit = null;
 
   function getLink(lapsi): any {
     if (!lapsi.perusteenOsa) {
@@ -122,17 +125,25 @@ angular.module('eperusteApp')
     return normalize($location.url()).indexOf(normalize(tablessUrl)) > -1;
   };
 
-  function ylMapper(osa, key, level) {
+  function ylMapper(osa, key, level, link) {
     level = level || 0;
     items.push({
       depth: level,
       label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
-      link: [perusteenTyyppi == 'LU' ? STATE_LUKIOOSAALUE : STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
+      link: link || [perusteenTyyppi == 'LU' ? STATE_LUKIOOSAALUE : STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
       isActive: isYlRouteActive
     });
     _(osa.oppimaarat).sortBy('jnro').each(function (lapsi) {
       ylMapper(lapsi, key, level + 1);
     }).value();
+    if (kurssit && perusteenTyyppi === 'LU' && key === 'oppiaineet_oppimaarat') {
+      var foundKurssit = LukioKurssiService.filterOrderedKurssisByOppiaine(kurssit, function (oa) {
+        return oa.oppiaineId === osa.id;
+      });
+      _.each(foundKurssit, function(filterdKurssi) {
+        ylMapper(filterdKurssi, key, level + 1, [STATE_LUKIOKURSSI, {kurssiId: filterdKurssi.id}]);
+      });
+    }
   }
 
   function mapYL(osat, key) {
@@ -156,20 +167,15 @@ angular.module('eperusteApp')
         break;
       }
       case 'LU': {
-        var tiedot2 = service.getYlTiedot();
+        var lukioTiedot = service.getYlTiedot();
+        kurssit = lukioTiedot.kurssit;
         _.each(LukiokoulutusService.LABELS, function (key, label) {
           var item = {
             label: label,
             link: [STATE_LUKIOOSALISTAUS, {suoritustapa: 'lukiokoulutus', osanTyyppi: key}]
           };
-          /*if (key === LukiokoulutusService.OPPIAINEET_OPPIMAARAT) {
-            // yritelmää saada tänne ali-itemeitä, ei toimi...
-            item.lapset = [{
-              label: 'foo'
-            }];
-          }*/
           items.push(item);
-          mapYL(tiedot2[key], key);
+          mapYL(lukioTiedot[key], key);
         });
         break;
       }
