@@ -333,14 +333,17 @@ angular.module('eperusteApp')
     var moved = function(node, to, index) {
       $log.info('moved', node, 'to', to);
       if (node.dtype === 'kurssi'  && to.dtype === 'oppiaine') {
-        $log.info('moved kurssi to oppiaine');
         var from = node.$$nodeParent;
+        $log.info('moved kurssi to oppiaine from ', from);
         node.oppiaineet.push({
           oppiaineId: to.id,
           nimi: to.nimi,
           jarjestys: index
         });
         if (from) {
+          _.remove(node.oppiaineet, function(oa) {
+            return oa.oppiaineId === from.id;
+          });
           _.remove(from.kurssit, node);
         }
         to.kurssit.push(node);
