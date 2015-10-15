@@ -392,7 +392,6 @@ angular.module('eperusteApp')
     $scope.kurssit = [];
     $scope.liittamattomatKurssit = [];
     $scope.gotoNode = function(node) {
-      $log.info('Goto: ', node);
       if (node.dtype === 'kurssi') {
         return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
           kurssiId: node.id

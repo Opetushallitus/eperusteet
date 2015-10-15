@@ -92,6 +92,15 @@
             </tr>
           </tbody>
         </table>
+
+        <div class="oppiaineKurssit" ng-show="kurssit.length">
+          <h3 kaanna="'oppiaine-kurssit'"></h3>
+          <ul>
+            <li ng-repeat="kurssi in kurssit">
+              <a kaanna="kurssi.nimi" ng-click="gotoKurssi(kurssi)" class="clickable"></a>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div ng-repeat="osamodel in yleisetosat" muokattava-osio="editableModel" type="tekstikappale" static="true"

@@ -655,7 +655,7 @@ angular.module('eperusteApp')
                                               $stateParams, $q, YleinenData, tabHelper,
                                               CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus,
                                               VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
-                                              Koodisto, MuokkausUtils, $document) {
+                                              Koodisto, MuokkausUtils, $document, LukioKurssiService) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.nameSort = Utils.nameSort;
@@ -665,6 +665,15 @@ angular.module('eperusteApp')
     $scope.oppimaaraRequested = false;
     $scope.oppiaineet = [];
     $scope.$oppiaineenNimi = {};
+    $scope.kurssit = LukioKurssiService.filterOrderedKurssisByOppiaine(
+      PerusteProjektiSivunavi.getKurssit(), function(oa) {
+        return oa.oppiaineId == $stateParams.osanId; //note that osanId is string!
+      });
+    $scope.gotoKurssi = function(kurssi) {
+      return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
+        kurssiId: kurssi.id
+      });
+    };
 
     function clickHandler(event) {
       var ohjeEl = angular.element(event.target).closest('.popover, .popover-element');
@@ -710,11 +719,6 @@ angular.module('eperusteApp')
         osanId: _.isObject(model) ? model.id : model,
         tabId: 0
       }));
-    };
-
-    $scope.lisaaVlkSisalto = function(osio) {
-      $scope.vuosiluokka.$sisalto[osio] = {otsikko: getTitle(osio), teksti: {}};
-      saveVanhaOppiaine();
     };
 
     // TODO: mergeä saveOppiaineen kanssa
