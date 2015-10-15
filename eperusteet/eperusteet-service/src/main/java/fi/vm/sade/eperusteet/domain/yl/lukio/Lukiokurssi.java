@@ -68,6 +68,14 @@ public class Lukiokurssi extends Kurssi {
     @ValidHtml
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "tavoitteet_otsikko_id")
+    private TekstiPalanen tavoitteetOtsikko;
+
+    @Getter
+    @Setter
+    @ValidHtml
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "tavoitteet_id")
     private TekstiPalanen tavoitteet;
 

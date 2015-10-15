@@ -42,7 +42,9 @@
   <div class="addon"><a role="link" class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></a></div>
 </div>
 
-<label for="tavoitteet" class="header" kaanna="kurssi-tavoitteet-header"></label>
+<label for="tavoitteet" class="header">
+  <h3 ckeditor slocalized ng-model="kurssi.tavoitteetOtsikko"></h3>
+</label>
 <div>
   <div id="tavoitteet" ckeditor slocalized ng-model="kurssi.tavoitteet"></div>
 </div>

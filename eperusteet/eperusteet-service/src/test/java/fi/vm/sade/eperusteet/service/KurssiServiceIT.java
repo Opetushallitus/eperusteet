@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.util.OppiaineUtil.Reference;
 import fi.vm.sade.eperusteet.service.yl.KurssiLockContext;
 import fi.vm.sade.eperusteet.service.yl.KurssiService;
+import fi.vm.sade.eperusteet.service.yl.LukioRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +63,10 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
     @Autowired
     @LockCtx(KurssiLockContext.class)
     private LockService<KurssiLockContext> lukioKurssiLockService;
+
+    @Autowired
+    @LockCtx(LukioRakenneLockContext.class)
+    private LockService<LukioRakenneLockContext> lukioRakenneLockService;
 
     @Dto
     @Autowired
@@ -104,13 +109,20 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         assertEquals(suomiRef.getId(), dto.getOppiaineet().get(0).getOppiaineId());
 
         LukiokurssiMuokkausDto muokkausDto = dtoMapper.map(dto, new LukiokurssiMuokkausDto());
-        muokkausDto.getOppiaineet().add(new KurssinOppiaineDto(saameRef.getId(), 1));
+        muokkausDto.setKoodiArvo("ARVO");
         lukioKurssiLockService.lock(new KurssiLockContext(perusteId, dto.getId()));
         kurssiService.muokkaaLukiokurssia(perusteId, muokkausDto);
+
+        LukiokurssiOppaineMuokkausDto liitosDto = new LukiokurssiOppaineMuokkausDto();
+        liitosDto.setId(dto.getId());
+        liitosDto.getOppiaineet().addAll(dto.getOppiaineet());
+        liitosDto.getOppiaineet().add(new KurssinOppiaineDto(saameRef.getId(), 1));
+        lukioRakenneLockService.lock(new LukioRakenneLockContext(perusteId));
+        kurssiService.muokkaaLukiokurssinOppiaineliitoksia(perusteId, liitosDto);
         List<LukiokurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId);
         assertEquals(1, list.size());
         assertEquals("Äidinkielen perusteet", list.get(0).getNimi().get(Kieli.FI));
-        assertEquals("AI1", list.get(0).getKoodiArvo());
+        assertEquals("ARVO", list.get(0).getKoodiArvo());
         assertEquals(2, list.get(0).getOppiaineet().size());
         assertTrue(list.get(0).getOppiaineet().stream().map(KurssinOppiaineDto::getOppiaineId)
                 .collect(toSet()).containsAll(asList(suomiRef.getId(), saameRef.getId())));

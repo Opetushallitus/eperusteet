@@ -227,8 +227,8 @@ angular.module('eperusteApp')
      * @param id of kurssi
      * @return Promise<LukiokurssiTarkasteleDto>
      */
-    var get = function(id) {
-      return LukioKurssit.get({osanId: id, perusteId: LukiokoulutusService.getPerusteId()});
+    var get = function(id, cb) {
+      return LukioKurssit.get({osanId: id, perusteId: LukiokoulutusService.getPerusteId()}, cb);
     };
 
     /**

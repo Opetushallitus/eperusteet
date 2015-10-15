@@ -18,14 +18,13 @@ package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
+import fi.vm.sade.eperusteet.dto.IdHolder;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User: tommiratamaa
@@ -34,7 +33,9 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class LukiokurssiMuokkausDto extends LukiokurssiOppaineMuokkausDto implements Serializable {
+public class LukiokurssiMuokkausDto implements Serializable, IdHolder {
+    @NotNull
+    private Long id;
     @NotNull
     private LukiokurssiTyyppi tyyppi;
     @NotNull
@@ -43,6 +44,7 @@ public class LukiokurssiMuokkausDto extends LukiokurssiOppaineMuokkausDto implem
     private String koodiUri;
     private Optional<LokalisoituTekstiDto> kurssityypinKuvaus;
     private Optional<LokalisoituTekstiDto> kuvaus;
+    private Optional<LokalisoituTekstiDto> tavoitteetOtsikko;
     private Optional<LokalisoituTekstiDto> tavoitteet;
     private Optional<LokalisoituTekstiDto> sisallot;
 }

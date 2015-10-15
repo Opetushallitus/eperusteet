@@ -167,7 +167,6 @@ public class KurssiServiceImpl implements KurssiService {
         lukioKurssiLockService.assertLock(new KurssiLockContext(perusteId, kurssi.getId()));
         lukiokurssiRepository.lock(kurssi, false);
         mapper.map(muokkausDto, kurssi);
-        mergeOppiaineet(perusteId, kurssi, muokkausDto.getOppiaineet());
     }
 
     @Override

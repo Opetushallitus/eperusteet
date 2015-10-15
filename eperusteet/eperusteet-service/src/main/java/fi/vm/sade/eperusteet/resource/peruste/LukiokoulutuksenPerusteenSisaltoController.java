@@ -17,6 +17,8 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.google.common.base.Supplier;
+import fi.vm.sade.eperusteet.dto.IdHolder;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusListausDto;
 import fi.vm.sade.eperusteet.dto.lukiokoulutus.LukiokoulutuksenYleisetTavoitteetDto;
@@ -131,7 +133,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return new RedirectView("",true);
     }
 
-    private void assertKurssiId(Long kurssiId, LukiokurssiOppaineMuokkausDto kurssi) {
+    private void assertKurssiId(Long kurssiId, IdHolder kurssi) {
         if (kurssi.getId() == null) {
             kurssi.setId(kurssiId);
         } else if(!kurssi.getId().equals(kurssiId)) {

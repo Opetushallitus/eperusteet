@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('LukiokurssiModifyHelpers', function(Koodisto, MuokkausUtils) {
+  .service('LukiokurssiModifyHelpers', function(Koodisto, MuokkausUtils, $translate, $filter, YleinenData) {
     var openKoodisto = function(kurssi) {
       return Koodisto.modaali(function(koodisto) {
         MuokkausUtils.nestedSet(kurssi, 'koodiUri', ',', koodisto.koodiUri);
@@ -28,8 +28,14 @@ angular.module('eperusteApp')
         tarkista: _.constant(true)
       });
     };
+    var getDefaultTavoitteet = function() {
+      var oletusTavoiteOtsikko = {};
+      oletusTavoiteOtsikko[$translate.use()] = $filter('kaanna')('kurssi-tavoitteet-header');
+      return oletusTavoiteOtsikko;
+    };
     return {
-      openKoodisto: openKoodisto
+      openKoodisto: openKoodisto,
+      getDefaultTavoitteet: getDefaultTavoitteet
     };
   })
 
@@ -101,11 +107,13 @@ angular.module('eperusteApp')
       nimi: {},
       tyyppi: 'PAKOLLINEN',
       koodiUri: null,
-      koodiArvo: null
+      koodiArvo: null,
+      tavoitteetOtsikko: LukiokurssiModifyHelpers.getDefaultTavoitteet()
     };
     YleinenData.lukioKurssityypit().then(function(tyypit) {
       $scope.kurssityypit = tyypit;
     });
+
     $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
 
     $scope.back = function() {
@@ -119,7 +127,12 @@ angular.module('eperusteApp')
               Varmistusdialogi, $filter, Kaanna, LukiokoulutusService, Lukitus) {
     Editointikontrollit.registerCallback({
       edit: function() {
-        $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
+        $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId, function(kurssi) {
+          $log.info('GOT kurssi', kurssi);
+          if (!kurssi.tavoitteetOtsikko) {
+            kurssi.tavoitteetOtsikko = LukiokurssiModifyHelpers.getDefaultTavoitteet();
+          }
+        });
       },
       save: function() {
         $rootScope.$broadcast('notifyCKEditor');

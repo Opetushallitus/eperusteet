@@ -14,26 +14,15 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
-
-import fi.vm.sade.eperusteet.dto.IdHolder;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+package fi.vm.sade.eperusteet.dto;
 
 /**
  * User: tommiratamaa
- * Date: 9.10.15
- * Time: 10.00
+ * Date: 15.10.15
+ * Time: 17.20
  */
-@Getter
-@Setter
-public class LukiokurssiOppaineMuokkausDto implements Serializable, IdHolder {
-    @NotNull
-    private Long id;
-    private List<KurssinOppiaineDto> oppiaineet = new ArrayList<>();
+public interface IdHolder {
+    Long getId();
+
+    void setId(Long id);
 }
