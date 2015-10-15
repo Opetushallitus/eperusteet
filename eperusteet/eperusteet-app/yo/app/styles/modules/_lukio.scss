@@ -21,12 +21,6 @@ $soveltava-vari: #fcf281; // #feba00;
 $pakollinen-vari: #88d3e4; // #64a31d;
 $aikaleima-vari: #888;
 
-@mixin rounded-corners($radius) {
-  border-radius: $radius;
-  -moz-border-radius: $radius;
-  -webkit-border-radius: $radius;
-}
-
 .lukio-oppiaineet-puu {
   .main-column {
     float: left;
@@ -79,7 +73,7 @@ $aikaleima-vari: #888;
         width: 20px;
         height: 20px;
         margin-right: 10px;
-        @include rounded-corners(4px);
+        @include borderradius(4px);
       }
     }
   }
