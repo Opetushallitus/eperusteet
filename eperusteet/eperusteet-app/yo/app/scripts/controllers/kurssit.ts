@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('LukiokurssiModifyHelpers', function(Koodisto, MuokkausUtils, $translate, $filter, YleinenData) {
+  .service('LukiokurssiModifyHelpers', function(Koodisto, MuokkausUtils, $translate, $filter, Kieli) {
     var openKoodisto = function(kurssi) {
       return Koodisto.modaali(function(koodisto) {
         MuokkausUtils.nestedSet(kurssi, 'koodiUri', ',', koodisto.koodiUri);
@@ -29,8 +29,11 @@ angular.module('eperusteApp')
       });
     };
     var getDefaultTavoitteet = function() {
+      // TODO: ei tosiaan taida olla mitään tapaa saada $translatelta tietyn id:n käännöksiä kaikille kielille?
+      // --> siispä joudutaan tyytymään yhteen. Jos nyt luontivaiheessa tai puuttuvan kohdalla vaihdetaan
+      // localea, niin toimii väärin, mutta minkäs teet :/
       var oletusTavoiteOtsikko = {};
-      oletusTavoiteOtsikko[$translate.use()] = $filter('kaanna')('kurssi-tavoitteet-header');
+      oletusTavoiteOtsikko[Kieli.getSisaltokieli()] = $filter('kaanna')('kurssi-tavoitteet-header');
       return oletusTavoiteOtsikko;
     };
     return {
