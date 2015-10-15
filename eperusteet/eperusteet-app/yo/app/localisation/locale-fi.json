@@ -912,7 +912,7 @@
 
     "opetuksen-yleiset-tavoitteet": "Opetuksen yleiset tavoitteet",
     "aihekokonaisuudet": "Aihekokonaisuudet",
-    "oppiaineet-oppimaarat": "Opetuksen sisältö",
+    "oppiaineet-oppimaarat": "Opetussuunnitelma",
     "tyhja-placeholder-opetuksen-yleiset-tavoitteet": "Opetuksen yleisiä tavoitteita ei ole lisätty.",
     "lisaa-opetuksen-yleinen-tavoite": "Lisää opetuksen yleinen tavoite",
     "tyhja-placeholder-aihekokonaisuudet": "Aihekokonaisuuksia ei ole lisätty.",
@@ -947,7 +947,7 @@
     "muokkaa-kurssia-action": "Tallenna muutokset",
     "kurssi-tyyppi": "Tyyppi",
     "kurssi-tyypin-kuvaus": "Tyypin kuvaus",
-    "lukiooppiaineet-puu-tab-header": "Opetuskokonaisuudet",
+    "lukiooppiaineet-puu-tab-header": "Opetussuunnitelma",
     "lukiooppiaineet-oppiaineet-tab-header": "Oppiaineet",
     "lukiooppiaineet-kurssit-tab-header": "Kurssit",
     "poistetaanko-kurssi": "Haluatko varmasti poistaa kurssin?",

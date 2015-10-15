@@ -448,7 +448,7 @@ angular.module('eperusteApp')
     var initTree = function () {
       var oppiaineet = _.cloneDeep($scope.oppiaineet),
           kurssit = _.cloneDeep($scope.kurssit);
-      $log.info('Kurssit: ', kurssit, "oppiaineet:", oppiaineet);
+      //$log.info('Kurssit: ', kurssit, "oppiaineet:", oppiaineet);
       $scope.treeRoot.kurssit = [];
       $scope.treeRoot.oppimaarat = oppiaineet;
       _.each(oppiaineet, function(oppiaine) {
