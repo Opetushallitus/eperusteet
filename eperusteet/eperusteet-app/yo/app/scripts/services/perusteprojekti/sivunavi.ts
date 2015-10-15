@@ -20,7 +20,7 @@
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-        $state, $location, YleinenData, PerusopetusService, LukiokoulutusService, Kaanna, $timeout, Utils) {
+        $state, $location, YleinenData, PerusopetusService, LukiokoulutusService, Kaanna, $timeout, Utils, $log) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
@@ -108,11 +108,18 @@ angular.module('eperusteApp')
     return $location.url().indexOf(url) > -1;
   };
 
+  var normalize = function(str) {
+    if (!str) {
+      return str;
+    }
+    return str.replace(/\/0\//g, "//");
+  };
+
   var isYlRouteActive = function (item) {
     // ignore tabId
     var tablessUrl = $state.href(item.link[0],
-      _.extend(_.clone(item.link[1]), {tabId: ''})).replace(/#/g, '');
-    return $location.url().indexOf(tablessUrl) > -1;
+    _.extend(_.clone(item.link[1]), {tabId: ''})).replace(/#/g, '');
+    return normalize($location.url()).indexOf(normalize(tablessUrl)) > -1;
   };
 
   function ylMapper(osa, key, level) {

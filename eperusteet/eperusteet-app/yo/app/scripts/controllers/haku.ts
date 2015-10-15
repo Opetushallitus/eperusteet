@@ -49,7 +49,7 @@ angular.module('eperusteApp')
         controller: 'PerusopetusListaController',
       })
       .state('root.selaus.lukiokoulutuslista', {
-        url: '/lukiokoulutus',
+        url: '/lukiokoulutuslistaus',
         templateUrl: 'views/lukiokoulutuslistaus.html',
         controller: 'LukiokoulutusListaController',
       })
