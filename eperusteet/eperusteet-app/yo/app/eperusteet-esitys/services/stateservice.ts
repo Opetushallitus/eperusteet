@@ -157,4 +157,9 @@ angular.module('eperusteet.esitys')
   this.getState = function () {
     return state;
   };
-});
+})
+  .service('epLukiokoulutusStateService', function ($state, $stateParams, epSivunaviUtils, $rootScope,
+                                                    epEsitysSettings, $log) {
+    $log.info('epLukiokoulutusStateService - TODO')
+
+  });

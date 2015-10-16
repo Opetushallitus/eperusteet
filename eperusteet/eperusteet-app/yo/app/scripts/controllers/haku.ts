@@ -207,16 +207,19 @@ angular.module('eperusteApp')
           peruste: function (perusteId, Perusteet) {
             return Perusteet.get({perusteId: perusteId}).$promise;
           },
-          sisalto: function(peruste, $q, LukioOppiaineet, SuoritustapaSisalto) {
+          sisalto: function(peruste, $q, LukionOppiaineet, SuoritustapaSisalto) {
+            //TODO
+            return promisify([]);
+            /*
             if (_.isArray(peruste.data)) {
               peruste = peruste.data[0];
             }
             var perusteId = peruste.id;
             return $q.all([
               peruste,
-              LukioOppiaineet.query({perusteId: perusteId}).$promise,
+              LukionOppiaineet.query({perusteId: perusteId}).$promise,
               SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: 'lukiokoulutus'}).$promise,
-            ]);
+            ]);*/
           }
         }
       })
