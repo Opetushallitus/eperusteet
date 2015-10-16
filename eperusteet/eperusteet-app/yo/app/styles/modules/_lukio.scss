@@ -377,8 +377,6 @@ a.pointer {
 
 .liittamattomat-column {
   margin-top: 85px;
-  border-left: 2px solid $puuviiva-vari;
-  padding-left: 15px;
   float: left;
   width: 25%;
   margin-left: 30px;
@@ -397,7 +395,19 @@ a.pointer {
     margin-bottom: 4px;
     width: 360px;
   }
+
+  .kelluva {
+    padding-left: 15px;
+    border-left: 2px solid $puuviiva-vari;
+  }
+
+  &.tree-edit-mode {
+    .kelluva {
+      position: fixed;
+    }
+  }
 }
+
 
 .tree {
   generic-tree {

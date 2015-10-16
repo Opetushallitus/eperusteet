@@ -546,18 +546,24 @@ angular.module('eperusteApp')
               editTime = !$scope.treehelpers.editMode ? '<span class="aikaleima" ng-bind="node.muokattu || 0 | aikaleima: \'ago\'" title="{{\'muokattu\' | kaanna }} {{node.muokattu || 0 | aikaleima}}"></span>' : '',
               icon = '';
           if (n.dtype === 'kurssi') {
-            var remove = $scope.treehelpers.editMode ? '   <span class="remove" icon-role="remove" ng-click="removeKurssiFromOppiaine(node)"></span>' : '';
+            var remove = $scope.treehelpers.editMode ? '   <span class="remove" icon-role="remove" ng-click="removeKurssiFromOppiaine(node)"></span>' : '',
+                name = '<span ng-bind="node.nimi | kaanna" title="{{node.nimi | kaanna}}"></span>';
+            if (!$scope.treehelpers.editMode) {
+              name = '<a ng-click="goto(node)">'+name+'</a>';
+            }
             return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">'+
               handle + '  <span class="colorbox kurssi-tyyppi {{node.tyyppi.toLowerCase()}}" ng-class="{\'lengthy\' : node.koodiArvo && node.koodiArvo.length >= 4}"' +
-              '     ng-bind="node.koodiArvo"></span>' +
-              editTime + '   <div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }"><a ng-click="goto(node)">' +
-              '     <span ng-bind="node.nimi | kaanna" title="{{node.nimi | kaanna}}"></span></a>'+
-              '   </div>' + remove +
+              '     ng-bind="node.koodiArvo"></span>' + editTime +
+              '   <div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' + name + '   </div>' + remove +
               '</div>', n);
           } else {
+            var name = '{{ node.nimi | kaanna }}';
+            if (!$scope.treehelpers.editMode) {
+              name = '<a ng-click="goto(node)" title="'+name+'">'+name+'</a>';
+            }
             return templateAround('<div class="puu-node oppiaine-node">'+handle
                 + collapse + icon + editTime + '<div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' +
-                '<strong><a ng-click="goto(node)" title="{{node.nimi | kaanna}}">{{ node.nimi | kaanna }}</a></strong></div></div>', n);
+                '<strong>'+name+'</strong></div></div>', n);
           }
         },
         children: function(node) {
