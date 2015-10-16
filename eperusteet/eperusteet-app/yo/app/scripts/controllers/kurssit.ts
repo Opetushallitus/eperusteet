@@ -131,7 +131,6 @@ angular.module('eperusteApp')
     Editointikontrollit.registerCallback({
       edit: function() {
         $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId, function(kurssi) {
-          $log.info('GOT kurssi', kurssi);
           if (!kurssi.tavoitteetOtsikko) {
             kurssi.tavoitteetOtsikko = LukiokurssiModifyHelpers.getDefaultTavoitteet();
           }

@@ -381,13 +381,6 @@ angular.module('eperusteApp')
         });
       }
     };
-    $scope.activeTab = 'puu';
-    $scope.selectTab = function(tab) {
-      $scope.activeTab = tab;
-    };
-    $scope.isActiveTab = function(tab) {
-      return $scope.activeTab === tab;
-    };
     $scope.oppiaineet = [];
     $scope.kurssit = [];
     $scope.liittamattomatKurssit = [];
@@ -398,19 +391,6 @@ angular.module('eperusteApp')
         });
       } else if(node.dtype === 'oppiaine') {
         $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
-          osanId: node.id,
-          osanTyyppi: 'oppiaineet_oppimaarat',
-          tabId: 0
-        });
-      }
-    };
-    $scope.createUrl = function(node) {
-      if ($scope.isActiveTab('kurssit')) {
-        return $state.href('root.perusteprojekti.suoritustapa.kurssi', {
-          kurssiId: node.id
-        });
-      } else if($scope.isActiveTab('oppiaineet')) {
-        return $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', {
           osanId: node.id,
           osanTyyppi: 'oppiaineet_oppimaarat',
           tabId: 0

@@ -233,8 +233,4 @@ angular.module('eperusteApp')
   this.isVisible = function () {
     return _isVisible;
   };
-
-  this.getKurssit = function() {
-    return kurssit;
-  }
 });

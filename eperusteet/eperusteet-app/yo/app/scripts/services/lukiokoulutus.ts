@@ -210,6 +210,7 @@ angular.module('eperusteApp')
           });
         };
       };
+    var kurssitCache = {};
 
     /**
      * Lists kurssit and related oppiaineet with jarjestys for given peruste.
@@ -218,9 +219,16 @@ angular.module('eperusteApp')
      * @return Promise<LukioKurssiListausDto[]>
      */
     var listByPeruste = function(perusteId, cb) {
+      if (kurssitCache[perusteId]) {
+        var d = $q.defer();
+        d.resolve(_.cloneDeep(kurssitCache[perusteId]));
+        return d.promise;
+      }
       return LukioKurssit.query({
           perusteId: perusteId
-      }, cb).$promise;
+      }, cb).$promise.then(function(kurssit) {
+          kurssitCache[perusteId] = kurssit;
+      });
     };
 
     /**
@@ -239,6 +247,7 @@ angular.module('eperusteApp')
      */
     var save = function(kurssi) {
       var d = $q.defer();
+      delete kurssitCache[LukiokoulutusService.getPerusteId()];
       LukioKurssit.save({
           perusteId: LukiokoulutusService.getPerusteId()
         }, kurssi, success(d, 'tallennus-onnistui'),
@@ -254,6 +263,7 @@ angular.module('eperusteApp')
      */
     var update = function(kurssi) {
       var d = $q.defer();
+      delete kurssitCache[LukiokoulutusService.getPerusteId()];
       LukioKurssit.update({
           perusteId: LukiokoulutusService.getPerusteId(),
           osanId: kurssi.id
@@ -270,6 +280,7 @@ angular.module('eperusteApp')
     var updateOppiaineRelations = function(kurssi) {
       $log.info('Update relations of', kurssi);
       var d = $q.defer();
+      delete kurssitCache[LukiokoulutusService.getPerusteId()];
       LukioKurssit.updateRelatedOppiainees({
           perusteId: LukiokoulutusService.getPerusteId(),
           osanId: kurssi.id
@@ -288,6 +299,20 @@ angular.module('eperusteApp')
         .map(_.cloneDeep)
         .sortBy(function(kurssi) {return _(kurssi.oppiaineet).filter(oppiaineFilter).first().jarjestys;})
         .value();
+    };
+
+    /**
+     * @param oppiaineId id of oppiaine
+     * @return ordered kurssit related to the oppiaine in question
+     */
+    var listByOppiaine = function(oppiaineId) {
+      var d = $q.defer();
+      listByPeruste(LukiokoulutusService.getPerusteId()).then(function(kurssit) {
+        d.resolve(filterOrderedKurssisByOppiaine(kurssit, function(oa) {
+          return oa.oppiaineId == oppiaineId;
+        }));
+      });
+      return d.promise;
     };
 
     /**
@@ -339,6 +364,7 @@ angular.module('eperusteApp')
             .value()
         };
       $log.info('Update stucture:', update);
+      delete kurssitCache[LukiokoulutusService.getPerusteId()];
       LukioOppiaineKurssiRakenne.updateStructure({perusteId: LukiokoulutusService.getPerusteId()},
         update, vapauta(d, 'tallennus-onnistui'), Notifikaatiot.serverCb);
       return d.promise;
@@ -349,6 +375,7 @@ angular.module('eperusteApp')
      */
     var deleteKurssi = function(id) {
       return lukittu(id, function(res, d) {
+        delete kurssitCache[LukiokoulutusService.getPerusteId()];
         LukioKurssit.delete({
           perusteId: LukiokoulutusService.getPerusteId(),
           osanId: id
@@ -362,6 +389,7 @@ angular.module('eperusteApp')
       save: save,
       lukitse: lukittu,
       update: update,
+      listByOppiaine: listByOppiaine,
       filterOrderedKurssisByOppiaine: filterOrderedKurssisByOppiaine,
       deleteKurssi: deleteKurssi,
       updateOppiaineRelations: updateOppiaineRelations,

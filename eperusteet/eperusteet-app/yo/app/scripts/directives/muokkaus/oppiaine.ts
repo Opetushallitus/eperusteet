@@ -665,10 +665,10 @@ angular.module('eperusteApp')
     $scope.oppimaaraRequested = false;
     $scope.oppiaineet = [];
     $scope.$oppiaineenNimi = {};
-    $scope.kurssit = LukioKurssiService.filterOrderedKurssisByOppiaine(
-      PerusteProjektiSivunavi.getKurssit(), function(oa) {
-        return oa.oppiaineId == $stateParams.osanId; //note that osanId is string!
-      });
+    $scope.kurssit = [];
+    LukioKurssiService.listByOppiaine($stateParams.osanId).then(function(kurssit) {
+      $scope.kurssit = kurssit;
+    });
     $scope.gotoKurssi = function(kurssi) {
       return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
         kurssiId: kurssi.id
