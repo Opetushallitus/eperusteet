@@ -63,7 +63,7 @@ $aikaleima-vari: #888;
 
   .legends {
     position: absolute;
-    top: 10px;
+    top: 7px;
     right: -140px;
 
     .legend {
@@ -74,6 +74,15 @@ $aikaleima-vari: #888;
         height: 20px;
         margin-right: 10px;
         @include borderradius(4px);
+        display: block;
+        position: absolute;
+      }
+
+      .legend-name {
+        padding-top: 2px;
+        display: block;
+        float: left;
+        margin-left: 30px;
       }
     }
   }
