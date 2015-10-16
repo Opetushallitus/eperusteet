@@ -324,7 +324,7 @@ angular.module('eperusteApp')
       if (!node) {
         return false;
       }
-      $log.info('accept move', node, 'to', to);
+      //$log.info('accept move', node, 'to', to);
       return (node.dtype === 'oppiaine' && to.root && !node.koosteinen) ||
         (node.dtype === 'oppiaine' && to.dtype === 'oppiaine' && to.koosteinen && !node.koosteinen) ||
         (node.dtype === 'oppiaine' && to.root) ||
@@ -362,30 +362,11 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.liittamattomatKurssitConfig = {
-      connectWith: '.recursivetree',
-      handle: '.treehandle',
-      cursorAt: { top : 2, left: 2 },
-      cursor: 'move',
-      delay: 100,
-      disabled: true,
-      tolerance: 'pointer',
-      update: function(e,ui) {
-        handleMove(e,ui, function(from, to) {
-          if (!acceptMove(from, to)) {
-            $log.info('cancel source');
-            ui.item.sortable.cancel();
-          } else {
-            moved(from, to, ui.item.sortable.index);
-          }
-        });
-      }
-    };
     $scope.oppiaineet = [];
     $scope.kurssit = [];
     $scope.liittamattomatKurssit = [];
     $scope.gotoNode = function(node) {
-      if (node.dtype === 'kurssi') {
+      if (node.dtype === 'kurssi' || !node.dtype) {
         return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
           kurssiId: node.id
         });
@@ -421,6 +402,34 @@ angular.module('eperusteApp')
             }
           }
         });
+      },
+      change: function(e,ui) {
+        var dropTarget = e.target,
+            listItem = angular.element(dropTarget).closest('.recursivetree'),
+            parentScope = listItem ? listItem.scope() : null;
+        if (parentScope && parentScope.node) {
+          $log.info('change', ui.item.sortable.model, parentScope.node);
+          if (acceptMove(ui.item.sortable.model, parentScope.node)) {
+            angular.element(dropTarget).addClass('is-draggable-into');
+          } else {
+            angular.element(dropTarget).removeClass('is-draggable-into');
+          }
+        }
+      }
+    };
+
+    $scope.liittamattomatKurssitConfig = {
+      placeholder: 'placeholder',
+      cursorAt: { top : 2, left: 2 },
+      update: function(e,ui) {
+        handleMove(e,ui, function(from, to) {
+          if (!acceptMove(from, to)) {
+            $log.info('cancel source');
+            ui.item.sortable.cancel();
+          } else {
+            moved(from, to, ui.item.sortable.index);
+          }
+        });
       }
     };
 
@@ -441,9 +450,6 @@ angular.module('eperusteApp')
         kurssi.lapset = [];
       });
       $scope.treeRoot.lapset = _.union($scope.treeRoot.oppimaarat, $scope.treeRoot.kurssit);
-      $scope.liittamattomatKurssit = _.cloneDeep(_.filter(kurssit, function (k) {
-        return k.oppiaineet.length === 0;
-      }));
       traverse($scope.treeRoot, _.property('lapset'), function (node) {
         node.$$hide = false;
         node.$$collapsed = $scope.treehelpers.defaultCollapsed;
@@ -459,7 +465,6 @@ angular.module('eperusteApp')
 
     var updateEditMode = function(editMode) {
       $scope.treehelpers.editMode = editMode;
-      $scope.liittamattomatKurssitConfig.disabled = !editMode;
       $rootScope.$broadcast('genericTree:refresh');
     };
 
@@ -488,6 +493,24 @@ angular.module('eperusteApp')
       });
     };
 
+    function treehandleTemplate() {
+      return $scope.treehelpers.editMode ? '<span icon-role="drag" class="treehandle"></span>' : '';
+    }
+    function timestampTemplate() {
+      return !$scope.treehelpers.editMode ? '<span class="aikaleima" ng-bind="node.muokattu || 0 | aikaleima: \'ago\'" title="{{\'muokattu\' | kaanna }} {{node.muokattu || 0 | aikaleima}}"></span>' : '';
+    }
+    function kurssiColorbox() {
+      return '  <span class="colorbox kurssi-tyyppi {{node.tyyppi.toLowerCase()}}" ng-class="{\'lengthy\' : node.koodiArvo && node.koodiArvo.length >= 4}"' +
+        '     ng-bind="node.koodiArvo"></span>';
+    }
+    function kurssiName() {
+      var name = '<span ng-bind="node.nimi | kaanna" title="{{node.nimi | kaanna}}"></span>';
+      if (!$scope.treehelpers.editMode) {
+        name = '<a ng-click="goto(node)">'+name+'</a>';
+      }
+      return name;
+    }
+
     $scope.treeOsatProvider = $q(function(resolve) {
       var templateAround = function(tmpl) {
         return '<div class="tree-list-item" ng-show="!node.$$hide" ' +
@@ -495,7 +518,7 @@ angular.module('eperusteApp')
           '           \'bubble-osa\': node.dtype === \'kurssi\',' +
           '           \'empty-item\': !node.lapset.length }">'+tmpl+'</div>';
       };
-      var treeScope = {
+      resolve({
         root: function() {
           $log.info('Set root.');
           return $q(function (resolveRoot) {
@@ -510,6 +533,12 @@ angular.module('eperusteApp')
             }
           );
         },
+        children: function(node) {
+          if (!node) {
+            return $q.when([]);
+          }
+          return $q.when(node.lapset);
+        },
         hidden: function(node) {
           if (!node) {
             return true;
@@ -517,23 +546,19 @@ angular.module('eperusteApp')
           return node.$$hide || (node.$$nodeParent && node.$$nodeParent.$$collapsed);
         },
         template: function(n) {
-          var handle = $scope.treehelpers.editMode ? '<span icon-role="drag" class="treehandle"></span>' : '',
+          var handle = treehandleTemplate(),
               collapse = !$scope.treehelpers.editMode ?  '<span ng-show="node.lapset.length" ng-click="toggle(node)"' +
                 '           class="colorbox collapse-toggle" ng-class="{\'suljettu\': node.$$collapsed}">' +
                 '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
                 '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
                 '</span>' : '',
-              editTime = !$scope.treehelpers.editMode ? '<span class="aikaleima" ng-bind="node.muokattu || 0 | aikaleima: \'ago\'" title="{{\'muokattu\' | kaanna }} {{node.muokattu || 0 | aikaleima}}"></span>' : '',
+              editTime = timestampTemplate(),
               icon = '';
           if (n.dtype === 'kurssi') {
             var remove = $scope.treehelpers.editMode ? '   <span class="remove" icon-role="remove" ng-click="removeKurssiFromOppiaine(node)"></span>' : '',
-                name = '<span ng-bind="node.nimi | kaanna" title="{{node.nimi | kaanna}}"></span>';
-            if (!$scope.treehelpers.editMode) {
-              name = '<a ng-click="goto(node)">'+name+'</a>';
-            }
+                name = kurssiName();
             return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">'+
-              handle + '  <span class="colorbox kurssi-tyyppi {{node.tyyppi.toLowerCase()}}" ng-class="{\'lengthy\' : node.koodiArvo && node.koodiArvo.length >= 4}"' +
-              '     ng-bind="node.koodiArvo"></span>' + editTime +
+              handle + kurssiColorbox() + editTime +
               '   <div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' + name + '   </div>' + remove +
               '</div>', n);
           } else {
@@ -545,12 +570,6 @@ angular.module('eperusteApp')
                 + collapse + icon + editTime + '<div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' +
                 '<strong>'+name+'</strong></div></div>', n);
           }
-        },
-        children: function(node) {
-          if (!node) {
-            return $q.when([]);
-          }
-          return $q.when(node.lapset);
         },
         extension: function(node, scope) {
           scope.toggle = function(node) {
@@ -566,8 +585,56 @@ angular.module('eperusteApp')
         useUiSortable: function() {
           return !$scope.treehelpers.editMode
         }
+      });
+    });
+
+    $scope.liittamattomatOsatProvider = $q(function(resolve) {
+      var templateAround = function(tmpl) {
+        return '<div class="liittamaton-kurssi recursivetree tree-list-item bubble-osa empty-item" ng-show="!node.$$hide">'+tmpl+'</div>';
       };
-      resolve(treeScope);
+      resolve({
+        root:function() {
+          return $q(function (resolveRoot) {
+            kurssitProvider.then(function (kurssit) {
+              $scope.liittamattomatKurssit = _.cloneDeep(_.filter(kurssit, function (k) {
+                return k.oppiaineet.length === 0;
+              }));
+              _.each($scope.liittamattomatKurssit, function(kurssi) {
+                kurssi.dtype = 'kurssi';
+              });
+              resolveRoot({
+                lapset: $scope.liittamattomatKurssit
+              });
+            });
+          });
+        },
+        children: function(node) {
+          if (!node) {
+            return $q.when([]);
+          }
+          return $q.when(node.lapset || []);
+        },
+        hidden: function(node) {
+          if (!node) {
+            return true;
+          }
+          return node.$$hide
+        },
+        template: function(n) {
+          return templateAround('<div class="puu-node kurssi-node">' + treehandleTemplate() +
+            kurssiColorbox() + timestampTemplate() +
+            '   <div class="node-content left">' + kurssiName() + '</div>' +
+            '</div>');
+        },
+        useUiSortable: function() {
+          return !$scope.treehelpers.editMode
+        },
+        extension: function(node, scope) {
+          scope.goto = function(node) {
+            $scope.gotoNode(node);
+          };
+        }
+      });
     });
 
     $scope.addOppiaine = function() {

@@ -54,7 +54,7 @@
     </div>
   </div>
   <div class="liittamattomat-column" ng-class="{'tree-edit-mode': treehelpers.editMode}">
-    <div class="kelluva">
+    <div class="kelluva" ui-scrollfix="+160">
       <h4 kaanna="lukio-liitamattomat-kurssit"></h4>
 
       <div class="tree-con">
@@ -71,20 +71,8 @@
       </div>
       <div ui-sortable="liittamattomatKurssitConfig" ng-model="liittamattomatKurssit"
            class="recursivetreeLiittamattomat">
-        <div ng-repeat="kurssi in liittamattomatKurssit" class="liittamaton-kurssi recursivetree tree-list-item bubble-osa empty-item"
-              ng-if="!kurssi.oppiaineet.length && !kurssi.$$hide">
-          <div class="puu-node kurssi-node">
-            <span class="treehandle" icon-role="drag" ng-show="treehelpers.editMode"></span>
-            <span class="colorbox kurssi-tyyppi {{kurssi.tyyppi.toLowerCase()}}"
-                  ng-class="{'lengthy' : kurssi.koodiArvo && kurssi.koodiArvo.length >= 4}" ng-bind="kurssi.koodiArvo"></span>
-            <span ng-if="!treehelpers.editMode" class="aikaleima" ng-bind="kurssi.muokattu || 0 | aikaleima: 'ago'" title="{{'muokattu' | kaanna }} {{kurssi.muokattu || 0 | aikaleima}}"></span>
-            <div class="node-content left">
-              <a ng-click="gotoNode(kurssi)">
-                <span class="nimi" ng-bind="kurssi.nimi | kaanna" title="{{kurssi.nimi | kaanna}}"></span>
-              </a>
-            </div>
-          </div>
-        </div>
+        <generic-tree tree-provider="liittamattomatOsatProvider"
+                      ui-sortable-config="liittamattomatKurssitConfig"></generic-tree>
       </div>
     </div>
   </div>

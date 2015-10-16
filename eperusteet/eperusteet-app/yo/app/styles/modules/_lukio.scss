@@ -64,7 +64,7 @@ $aikaleima-vari: #888;
   .legends {
     position: absolute;
     top: 7px;
-    right: -140px;
+    right: -180px;
 
     .legend {
       margin-left: 40px;
@@ -227,7 +227,7 @@ $aikaleima-vari: #888;
   .tree-yliviiva {
     min-width: 630px;
     background-color: $puuviiva-vari;
-    height: 1px;
+    height: 0px;
   }
 
   .puu-node {
@@ -314,9 +314,18 @@ a.pointer {
     display: inline-block;
   }
 
+  //.is-draggable-into
   .recursivetree:empty {
     padding-bottom: $empty-group-drop-margin;
   }
+
+  /*.placeholder {
+    display: none;
+  }
+
+  .is-draggable-into>.placeholder {
+    display: inherit;
+  }*/
 
   .bubble-osa + .recursivetree:empty {
     padding-bottom: 0;
@@ -373,6 +382,16 @@ a.pointer {
     min-width: 450px;
     margin: $margin-between-nodes 5px 0 5px;
   }
+
+  >.recursivetree.ui-sortable>div:first-child{
+    >generic-tree-node>.tree-list-item::before {
+      height: 0;
+    }
+
+    &::before {
+      top: 15px;
+    }
+  }
 }
 
 .liittamattomat-column {
@@ -398,12 +417,15 @@ a.pointer {
 
   .kelluva {
     padding-left: 15px;
-    border-left: 2px solid $puuviiva-vari;
+    //border-left: 2px solid $puuviiva-vari;
   }
 
   &.tree-edit-mode {
-    .kelluva {
+    margin-top: 65px;
+
+    .kelluva.ui-scrollfix {
       position: fixed;
+      top: 20px;
     }
   }
 }
