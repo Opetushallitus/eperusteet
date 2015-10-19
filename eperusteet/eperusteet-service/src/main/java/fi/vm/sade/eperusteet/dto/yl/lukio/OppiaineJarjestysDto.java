@@ -14,23 +14,20 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
-import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuudetYleiskuvausDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
-import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * User: tommiratamaa
- * Date: 21.9.15
- * Time: 15.33
+ * Date: 12.10.15
+ * Time: 18.53
  */
-public interface LukiokoulutuksenPerusteenSisaltoService extends OppiainePerusteenSisaltoService {
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    AihekokonaisuudetYleiskuvausDto getAihekokonaisuudet(Long perusteId);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(Long perusteId);
-
+@Getter
+@Setter
+public class OppiaineJarjestysDto {
+    private Long id;
+    private Long oppiaineId; // parent
+    private Long jarjestys;
 }

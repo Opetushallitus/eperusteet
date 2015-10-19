@@ -16,8 +16,11 @@
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -32,11 +35,11 @@ import java.util.UUID;
 @Entity
 @Audited
 @Table(name = "yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet", schema = "public")
-public class OpetuksenYleisetTavoitteet extends AbstractAuditedReferenceableEntity {
+public class OpetuksenYleisetTavoitteet extends PerusteenOsa {
 
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(name = "tunniste", nullable = false, unique = true, updatable = false)
     @Getter
-    private UUID tunniste = UUID.randomUUID();
+    private UUID uuidTunniste = UUID.randomUUID();
 
     @Getter
     @Setter
@@ -54,6 +57,12 @@ public class OpetuksenYleisetTavoitteet extends AbstractAuditedReferenceableEnti
     @JoinColumn(name = "kuvaus_id")
     private TekstiPalanen kuvaus;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @Getter
+    @Setter
+    @JoinColumn(name="viite_id", nullable = false)
+    private PerusteenOsaViite viite = new PerusteenOsaViite();
+
     @Getter
     @Setter
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -67,4 +76,13 @@ public class OpetuksenYleisetTavoitteet extends AbstractAuditedReferenceableEnti
         return klooni;
     }
 
+    @Override
+    public PerusteenOsa copy() {
+        return kloonaa();
+    }
+
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(getId());
+    }
 }

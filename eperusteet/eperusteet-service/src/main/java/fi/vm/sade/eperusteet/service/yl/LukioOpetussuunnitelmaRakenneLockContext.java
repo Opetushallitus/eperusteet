@@ -14,30 +14,26 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.service.yl;
 
+import fi.vm.sade.eperusteet.service.PerusteAware;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Builder;
-
-import java.io.Serializable;
 
 /**
  * User: tommiratamaa
- * Date: 29.9.15
- * Time: 18.08
+ * Date: 12.10.15
+ * Time: 15.43
  */
 @Getter
 @Setter
-public class KurssinOppiaineDto implements Serializable {
-    private Long oppiaineId;
-    private Integer jarjestys;
+public class LukioOpetussuunnitelmaRakenneLockContext implements PerusteAware {
+    private Long perusteId;
 
-    public KurssinOppiaineDto() {
+    public LukioOpetussuunnitelmaRakenneLockContext() {
     }
 
-    public KurssinOppiaineDto(Long oppiaineId, Integer jarjestys) {
-        this.oppiaineId = oppiaineId;
-        this.jarjestys = jarjestys;
+    public LukioOpetussuunnitelmaRakenneLockContext(long perusteId) {
+        this.perusteId = perusteId;
     }
 }

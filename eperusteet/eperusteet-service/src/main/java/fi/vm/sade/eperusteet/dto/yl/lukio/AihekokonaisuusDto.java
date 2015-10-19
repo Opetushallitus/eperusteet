@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto.lukiokoulutus;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
@@ -27,10 +27,8 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class LukiokoulutuksenYleisetTavoitteetDto implements Serializable {
-
+public class AihekokonaisuusDto implements Serializable {
     private Long id;
     private LokalisoituTekstiDto otsikko;
-    private LokalisoituTekstiDto kuvaus;
-
+    private LokalisoituTekstiDto yleiskuvaus;
 }

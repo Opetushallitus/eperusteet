@@ -16,8 +16,11 @@
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -34,11 +37,11 @@ import java.util.UUID;
 @Entity
 @Audited
 @Table(name = "yl_aihekokonaisuudet", schema = "public")
-public class Aihekokonaisuudet extends AbstractAuditedReferenceableEntity {
+public class Aihekokonaisuudet extends PerusteenOsa {
 
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(name = "tunniste", nullable = false, unique = true, updatable = false)
     @Getter
-    private UUID tunniste = UUID.randomUUID();
+    private UUID uuidTunniste = UUID.randomUUID();
 
     @Getter
     @Setter
@@ -62,13 +65,18 @@ public class Aihekokonaisuudet extends AbstractAuditedReferenceableEntity {
     @JoinColumn(name = "sisalto_id", nullable = false)
     private LukiokoulutuksenPerusteenSisalto sisalto;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @Getter
+    @Setter
+    @JoinColumn(name="viite_id", nullable = false)
+    private PerusteenOsaViite viite = new PerusteenOsaViite();
+
     @Getter
     @OneToMany(mappedBy = "aihekokonaisuudet", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @OrderBy("jnro")
     private Set<Aihekokonaisuus> aihekokonaisuudet = new HashSet<>(0);
 
     public Aihekokonaisuudet kloonaa() {
-
         Aihekokonaisuudet klooni = new Aihekokonaisuudet();
         klooni.setYleiskuvaus(this.getYleiskuvaus());
         klooni.setOtsikko(this.getOtsikko());
@@ -80,4 +88,13 @@ public class Aihekokonaisuudet extends AbstractAuditedReferenceableEntity {
         return klooni;
     }
 
+    @Override
+    public PerusteenOsa copy() {
+        return kloonaa();
+    }
+
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(getId());
+    }
 }

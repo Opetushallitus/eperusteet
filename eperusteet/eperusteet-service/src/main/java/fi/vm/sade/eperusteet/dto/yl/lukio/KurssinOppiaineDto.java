@@ -14,22 +14,30 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Builder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * User: tommiratamaa
- * Date: 12.10.15
- * Time: 18.51
+ * Date: 29.9.15
+ * Time: 18.08
  */
 @Getter
 @Setter
-public class OppaineKurssiTreeStructureDto {
-    private List<LukiokurssiOppaineMuokkausDto> kurssit = new ArrayList<>();
-    private List<OppiaineJarjestysDto> oppiaineet = new ArrayList<>();
+public class KurssinOppiaineDto implements Serializable {
+    private Long oppiaineId;
+    private Integer jarjestys;
+
+    public KurssinOppiaineDto() {
+    }
+
+    public KurssinOppiaineDto(Long oppiaineId, Integer jarjestys) {
+        this.oppiaineId = oppiaineId;
+        this.jarjestys = jarjestys;
+    }
 }

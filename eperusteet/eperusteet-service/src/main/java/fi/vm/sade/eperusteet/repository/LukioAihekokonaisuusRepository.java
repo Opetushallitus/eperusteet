@@ -16,10 +16,8 @@
 
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusListausDto;
-import fi.vm.sade.eperusteet.dto.yl.LukiokurssiListausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -30,7 +28,7 @@ import java.util.List;
  */
 public interface LukioAihekokonaisuusRepository extends JpaWithVersioningRepository<Aihekokonaisuus, Long> {
 
-    @Query(value = "SELECT new fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusListausDto(" +
+    @Query(value = "SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto(" +
             "   aihekokonaisuus.id," +
             "   otsikko.id," +
             "   kuvaus.id, " +

@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.dto.yl.lukio.OppiaineJarjestysDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
@@ -28,7 +29,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import fi.vm.sade.eperusteet.service.yl.LukioRakenneLockContext;
+import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
@@ -47,7 +48,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
@@ -86,8 +86,8 @@ public class OppiaineServiceImpl implements OppiaineService {
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    @LockCtx(LukioRakenneLockContext.class)
-    private LockService<LukioRakenneLockContext> lukioRakenneLockService;
+    @LockCtx(LukioOpetussuunnitelmaRakenneLockContext.class)
+    private LockService<LukioOpetussuunnitelmaRakenneLockContext> lukioRakenneLockService;
 
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceImpl.class);
 
@@ -409,7 +409,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     @Override
     @Transactional
     public void jarjestaLukioOppiaineet(long perusteId, List<OppiaineJarjestysDto> oppiaineet) {
-        lukioRakenneLockService.assertLock(new LukioRakenneLockContext(perusteId));
+        lukioRakenneLockService.assertLock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         Map<Long, OppiaineJarjestysDto> dtosById = oppiaineet.stream().collect(toMap(OppiaineJarjestysDto::getId, o -> o));
         Set<Long> oppiaineIds = new HashSet<>(dtosById.keySet());
         oppiaineIds.addAll(oppiaineet.stream().filter(oa -> oa.getOppiaineId() != null)

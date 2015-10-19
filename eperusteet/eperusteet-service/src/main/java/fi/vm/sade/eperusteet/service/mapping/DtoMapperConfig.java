@@ -15,13 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -31,14 +25,7 @@ import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine_;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
-import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.LukiokoulutuksenYleisetTavoitteetDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -46,15 +33,14 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.yl.LukioKurssiLuontiDto;
-import fi.vm.sade.eperusteet.dto.yl.LukiokurssiMuokkausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
-import ma.glasnost.orika.converter.BidirectionalConverter;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetSuppeaDto;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
-import ma.glasnost.orika.metadata.Type;
 import ma.glasnost.orika.unenhance.HibernateUnenhanceStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -99,6 +85,14 @@ public class DtoMapperConfig {
             .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
             .byDefault()
             .register();
+        factory.classMap(AihekokonaisuudetLaajaDto.class, Aihekokonaisuudet.class)
+            .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(AihekokonaisuudetSuppeaDto.class, Aihekokonaisuudet.class)
+            .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
         factory.classMap(TekstiKappaleDto.class, TekstiKappale.class)
             .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
             .byDefault()
@@ -138,13 +132,6 @@ public class DtoMapperConfig {
                 .register();
         factory.classMap(LukiokurssiMuokkausDto.class, Lukiokurssi.class)
                 .exclude("oppiaineet")
-                .byDefault()
-                .register();
-        factory.classMap(AihekokonaisuudetYleiskuvausDto.class, Aihekokonaisuudet.class)
-                .exclude("aihekokonaisuudet")
-                .byDefault()
-                .register();
-        factory.classMap(LukiokoulutuksenYleisetTavoitteetDto.class, OpetuksenYleisetTavoitteet.class)
                 .byDefault()
                 .register();
 

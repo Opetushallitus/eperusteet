@@ -16,11 +16,10 @@
 
 package fi.vm.sade.eperusteet.service.yl;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusListausDto;
-import fi.vm.sade.eperusteet.dto.yl.LukioAihekokonaisuusLuontiDto;
-import fi.vm.sade.eperusteet.dto.yl.LukioAihekokonaisuusMuokkausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuudetYleiskuvausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioAihekokonaisuusLuontiDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioAihekokonaisuusMuokkausDto;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import org.springframework.security.access.prepost.PreAuthorize;

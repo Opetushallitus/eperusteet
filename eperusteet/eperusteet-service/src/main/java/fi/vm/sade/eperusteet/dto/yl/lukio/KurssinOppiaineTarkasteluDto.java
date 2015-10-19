@@ -14,26 +14,36 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
-import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import java.util.stream.Stream;
 
 /**
- * User: jsikio
+ * User: tommiratamaa
+ * Date: 6.10.15
+ * Time: 13.01
  */
 @Getter
 @Setter
-public class LukioAihekokonaisuusMuokkausDto implements Serializable {
-    @NotNull
-    private Long id;
-    @NotNull
-    private LokalisoituTekstiDto otsikko;
-    private Optional<LokalisoituTekstiDto> yleiskuvaus;
-    private Long jnro;
+public class KurssinOppiaineTarkasteluDto extends KurssinOppiaineNimettyDto {
+    private OppiaineVanhempiDto vanhempi;
+
+    public KurssinOppiaineTarkasteluDto() {
+    }
+
+    public KurssinOppiaineTarkasteluDto(Long oppiaineId, Integer jarjestys, Long oppiaineNimiId,
+                                        OppiaineVanhempiDto vanhempi) {
+        super(oppiaineId, jarjestys, oppiaineNimiId);
+        this.vanhempi = vanhempi;
+    }
+
+    @Override
+    public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {
+        return Lokalisoitava.of(vanhempi).and(super.lokalisoitavatTekstit()).lokalisoitavatTekstit();
+    }
 }

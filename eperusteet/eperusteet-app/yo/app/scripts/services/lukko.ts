@@ -52,7 +52,7 @@ angular.module('eperusteApp')
     });
   })
   .factory('LukkoLukioRakenne', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/lukko', {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/rakenne/lukko', {
       perusteId: '@perusteId'
     });
   })

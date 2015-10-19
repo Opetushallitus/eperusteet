@@ -14,26 +14,19 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.repository;
 
-import lombok.Getter;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
+import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * User: tommiratamaa
- * Date: 29.9.15
- * Time: 15.43
+ * Date: 19.10.15
+ * Time: 10.52
  */
-@Getter
-public class OppiaineKurssiHakuDto {
-    private final Long oppiaineId;
-    private final Long kurssiId;
-    private final Long oppiaineNimiId;
-    private final Integer jarjestys;
-
-    public OppiaineKurssiHakuDto(Long oppiaineId, Long kurssiId, Integer jarjestys, Long oppiaineNimiId) {
-        this.oppiaineId = oppiaineId;
-        this.kurssiId = kurssiId;
-        this.jarjestys = jarjestys;
-        this.oppiaineNimiId = oppiaineNimiId;
-    }
+public interface LukioOpetussuunnitelmaRakenneRepository
+        extends JpaWithVersioningRepository<LukioOpetussuunnitelmaRakenne, Long> {
+    @Query("SELECT r FROM LukioOpetussuunnitelmaRakenne r WHERE r.sisalto.peruste.id = ?1")
+    LukioOpetussuunnitelmaRakenne findByPerusteId(long perusteId);
 }

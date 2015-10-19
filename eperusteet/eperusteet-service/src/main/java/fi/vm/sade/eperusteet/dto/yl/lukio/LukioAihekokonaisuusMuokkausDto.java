@@ -14,13 +14,12 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Builder;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -30,22 +29,11 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-@Builder
-public class LukioAihekokonaisuusLuontiDto implements Serializable {
+public class LukioAihekokonaisuusMuokkausDto implements Serializable {
+    @NotNull
+    private Long id;
     @NotNull
     private LokalisoituTekstiDto otsikko;
     private Optional<LokalisoituTekstiDto> yleiskuvaus;
     private Long jnro;
-
-
-    public LukioAihekokonaisuusLuontiDto() {
-    }
-
-    public LukioAihekokonaisuusLuontiDto(LokalisoituTekstiDto otsikko,
-                                         Optional<LokalisoituTekstiDto> yleiskuvaus,
-                                         Long jnro) {
-        this.otsikko = otsikko;
-        this.yleiskuvaus = yleiskuvaus;
-        this.jnro = jnro;
-    }
 }

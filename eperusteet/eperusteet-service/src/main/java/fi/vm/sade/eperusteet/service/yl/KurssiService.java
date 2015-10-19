@@ -16,12 +16,10 @@
 
 package fi.vm.sade.eperusteet.service.yl;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.dto.yl.lukio.*;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

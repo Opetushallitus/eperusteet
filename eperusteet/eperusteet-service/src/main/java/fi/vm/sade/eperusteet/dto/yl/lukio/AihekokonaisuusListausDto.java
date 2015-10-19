@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.dto.lukiokoulutus;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;

@@ -20,7 +20,7 @@ import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
-import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.dto.yl.lukio.*;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
@@ -33,7 +33,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.KurssiLockContext;
 import fi.vm.sade.eperusteet.service.yl.KurssiService;
-import fi.vm.sade.eperusteet.service.yl.LukioRakenneLockContext;
+import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,8 +81,8 @@ public class KurssiServiceImpl implements KurssiService {
     private LockService<KurssiLockContext> lukioKurssiLockService;
 
     @Autowired
-    @LockCtx(LukioRakenneLockContext.class)
-    private LockService<LukioRakenneLockContext> lukioRakenneLockService;
+    @LockCtx(LukioOpetussuunnitelmaRakenneLockContext.class)
+    private LockService<LukioOpetussuunnitelmaRakenneLockContext> lukioRakenneLockService;
 
     @Override
     @Transactional(readOnly = true)
@@ -136,7 +136,7 @@ public class KurssiServiceImpl implements KurssiService {
         lukioSisaltoRepository.lock(sisalto, false);
 
         Lukiokurssi kurssi = mapper.map(kurssiDto, new Lukiokurssi());
-        kurssi.setPerusteenSisalto(sisalto);
+        kurssi.setOpetussuunnitelma(sisalto.getOpetussuunnitelma());
         lukiokurssiRepository.saveAndFlush(kurssi);
         mergeOppiaineet(perusteId, kurssi, kurssiDto.getOppiaineet());
         return kurssi.getId();
@@ -173,7 +173,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Transactional
     public void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
             throws NotExistsException {
-        lukioRakenneLockService.assertLock(new LukioRakenneLockContext(perusteId));
+        lukioRakenneLockService.assertLock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(muokkausDto.getId()), inPeruste(perusteId));
         lukiokurssiRepository.lock(kurssi, false);
         mergeOppiaineet(perusteId, kurssi, muokkausDto.getOppiaineet());
@@ -182,7 +182,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Override
     @Transactional
     public void poistaLukiokurssi(long perusteId, long kurssiId) {
-        lukioRakenneLockService.assertLock(new LukioRakenneLockContext(perusteId));
+        lukioRakenneLockService.assertLock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         lukioKurssiLockService.assertLock(new KurssiLockContext(perusteId, kurssiId));
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
         lukiokurssiRepository.lock(kurssi, false);
@@ -192,7 +192,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Override
     @Transactional
     public void updateTreeStructure(long perusteId, OppaineKurssiTreeStructureDto structure) {
-        lukioRakenneLockService.assertLock(new LukioRakenneLockContext(perusteId));
+        lukioRakenneLockService.assertLock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         oppiaineService.jarjestaLukioOppiaineet(perusteId, structure.getOppiaineet());
         Map<Long, Lukiokurssi> kurssitById = lukiokurssiRepository.findAll(structure.getKurssit()
                 .stream().map(LukiokurssiOppaineMuokkausDto::getId).collect(toSet()))

@@ -14,37 +14,26 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
-import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.IdHolder;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: tommiratamaa
- * Date: 29.9.15
- * Time: 16.08
+ * Date: 9.10.15
+ * Time: 10.00
  */
 @Getter
 @Setter
-public class LukiokurssiMuokkausDto implements Serializable, IdHolder {
+public class LukiokurssiOppaineMuokkausDto implements Serializable, IdHolder {
     @NotNull
     private Long id;
-    @NotNull
-    private LukiokurssiTyyppi tyyppi;
-    @NotNull
-    private LokalisoituTekstiDto nimi;
-    private String koodiArvo;
-    private String koodiUri;
-    private Optional<LokalisoituTekstiDto> kurssityypinKuvaus;
-    private Optional<LokalisoituTekstiDto> kuvaus;
-    private Optional<LokalisoituTekstiDto> tavoitteetOtsikko;
-    private Optional<LokalisoituTekstiDto> tavoitteet;
-    private Optional<LokalisoituTekstiDto> sisallot;
+    private List<KurssinOppiaineDto> oppiaineet = new ArrayList<>();
 }

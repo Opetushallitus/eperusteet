@@ -16,10 +16,9 @@
 
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
-import fi.vm.sade.eperusteet.dto.yl.LukiokurssiListausDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineKurssiHakuDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiListausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.OppiaineKurssiHakuDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -31,7 +30,7 @@ import java.util.List;
  * Time: 15.11
  */
 public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukiokurssi, Long> {
-    String KURSSILISTAUS_SELECT = "SELECT new fi.vm.sade.eperusteet.dto.yl.LukiokurssiListausDto(" +
+    String KURSSILISTAUS_SELECT = "SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiListausDto(" +
             "   kurssi.id," +
             "   kurssi.tyyppi, " +
             "   kurssi.koodiArvo," +
@@ -43,7 +42,8 @@ public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukio
     @Query(value = KURSSILISTAUS_SELECT + " FROM Lukiokurssi kurssi" +
             "   INNER JOIN kurssi.nimi nimi " +
             "   LEFT JOIN kurssi.kuvaus kuvaus " +
-            "   INNER JOIN kurssi.perusteenSisalto sisalto ON sisalto.peruste.id = ?1 " +
+            "   INNER JOIN kurssi.opetussuunnitelma os " +
+            "   INNER JOIN os.sisalto sisalto ON sisalto.peruste.id = ?1 " +
             " ORDER BY kurssi.koodiArvo ")
     List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
 
@@ -51,18 +51,20 @@ public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukio
             "   INNER JOIN kurssi.nimi nimi " +
             "   LEFT JOIN kurssi.kuvaus kuvaus " +
             "   INNER JOIN kurssi.oppiaineet kurssioppiaine ON kurssioppiaine.oppiaine.id = ?2 " +
-            "   INNER JOIN kurssi.perusteenSisalto sisalto ON sisalto.peruste.id = ?1 " +
+            "   INNER JOIN kurssi.opetussuunnitelma os " +
+            "   INNER JOIN os.sisalto sisalto ON sisalto.peruste.id = ?1 " +
             " ORDER BY kurssi.koodiArvo ")
     List<LukiokurssiListausDto> findLukiokurssitByPerusteAndOppiaineId(long perusteId, long oppiaineId);
 
-    @Query(value = "SELECT new fi.vm.sade.eperusteet.dto.yl.OppiaineKurssiHakuDto(" +
+    @Query(value = "SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.OppiaineKurssiHakuDto(" +
             "   aine.id,      " +
             "   kurssi.id, " +
             "   oalk.jarjestys," +
             "   aine.nimi.id " +
             ") FROM OppiaineLukiokurssi oalk" +
             "       INNER JOIN oalk.kurssi kurssi" +
-            "       INNER JOIN kurssi.perusteenSisalto sisalto " +
+            "       INNER JOIN kurssi.opetussuunnitelma os " +
+            "       INNER JOIN os.sisalto sisalto " +
             "       INNER JOIN sisalto.peruste peruste" +
             "       INNER JOIN oalk.oppiaine aine" +
             " WHERE peruste.id = ?1 ORDER BY aine.jnro, aine.id, oalk.jarjestys, kurssi.id ")

@@ -14,20 +14,21 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet;
 
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * User: tommiratamaa
- * Date: 12.10.15
- * Time: 18.53
+ * Date: 19.10.15
+ * Time: 13.17
  */
 @Getter
 @Setter
-public class OppiaineJarjestysDto {
-    private Long id;
-    private Long oppiaineId; // parent
-    private Long jarjestys;
+public class AihekokonaisuudetLaajaDto extends Laaja {
+    private LokalisoituTekstiDto otsikko;
+    private LokalisoituTekstiDto yleiskuvaus;
 }

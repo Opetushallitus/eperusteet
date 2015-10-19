@@ -25,7 +25,7 @@ import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.LukiokoulutuksenYleisetTavoitteetDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -836,7 +836,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
         } else if (ekoulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS ) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS, LaajuusYksikko.KURSSI);
-            peruste.setLukiokoulutuksenPerusteenSisalto(new LukiokoulutuksenPerusteenSisalto());
+            LukiokoulutuksenPerusteenSisalto sisalto = new LukiokoulutuksenPerusteenSisalto();
+            sisalto.getOpetussuunnitelma().setSisalto(sisalto);
+            peruste.setLukiokoulutuksenPerusteenSisalto(sisalto);
+            sisalto.getOpetussuunnitelma().setNimi(TekstiPalanen.of(Kieli.FI, "Opetussuunnitelma"));
+            sisalto.getOpetussuunnitelma().setTunniste(PerusteenOsaTunniste.RAKENNE);
         }
 
         if (st != null) {
@@ -947,10 +951,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public void tallennaYleisetTavoitteet(Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto) {
         Peruste peruste = perusteet.getOne(perusteId);
         OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = peruste.getLukiokoulutuksenPerusteenSisalto().getOpetuksenYleisetTavoitteet();
-        if( opetuksenYleisetTavoitteet == null ) {
+        if (opetuksenYleisetTavoitteet == null) {
             opetuksenYleisetTavoitteet = new OpetuksenYleisetTavoitteet();
             peruste.getLukiokoulutuksenPerusteenSisalto().setOpetuksenYleisetTavoitteet(opetuksenYleisetTavoitteet);
             opetuksenYleisetTavoitteet.setSisalto(peruste.getLukiokoulutuksenPerusteenSisalto());
+            opetuksenYleisetTavoitteet.setNimi(TekstiPalanen.of(Kieli.FI, "Opetuksen yleiset tavoitteet"));
+            opetuksenYleisetTavoitteet.setTunniste(PerusteenOsaTunniste.NORMAALI);
         }
 
         mapper.map(lukiokoulutuksenYleisetTavoitteetDto, opetuksenYleisetTavoitteet);

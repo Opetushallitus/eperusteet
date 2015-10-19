@@ -20,7 +20,7 @@ import fi.vm.sade.eperusteet.resource.AbstractLockController;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
-import fi.vm.sade.eperusteet.service.yl.LukioRakenneLockContext;
+import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,17 +33,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @InternalApi
 @RequestMapping(value = {
-        LukioRakenneLockController.BASE + "/lukko",
+        LukioOpetussuunnitelmaRakenneLockController.BASE + "/lukko",
 })
-public class LukioRakenneLockController extends AbstractLockController<LukioRakenneLockContext> {
-    public static final String BASE = "/perusteet/{perusteId}/lukiokoulutus";
+public class LukioOpetussuunnitelmaRakenneLockController extends AbstractLockController<LukioOpetussuunnitelmaRakenneLockContext> {
+    public static final String BASE = "/perusteet/{perusteId}/lukiokoulutus/rakenne";
 
     @Autowired
-    @LockCtx(LukioRakenneLockContext.class)
-    private LockService<LukioRakenneLockContext> service;
+    @LockCtx(LukioOpetussuunnitelmaRakenneLockContext.class)
+    private LockService<LukioOpetussuunnitelmaRakenneLockContext> service;
 
     @Override
-    protected LockService<LukioRakenneLockContext> service() {
+    protected LockService<LukioOpetussuunnitelmaRakenneLockContext> service() {
         return service;
     }
 }

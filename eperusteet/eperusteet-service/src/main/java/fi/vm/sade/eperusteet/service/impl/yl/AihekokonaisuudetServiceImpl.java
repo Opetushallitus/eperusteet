@@ -18,14 +18,15 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuudetYleiskuvausDto;
-import fi.vm.sade.eperusteet.dto.lukiokoulutus.AihekokonaisuusListausDto;
-import fi.vm.sade.eperusteet.dto.yl.LukioAihekokonaisuusLuontiDto;
-import fi.vm.sade.eperusteet.dto.yl.LukioAihekokonaisuusMuokkausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuudetYleiskuvausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioAihekokonaisuusLuontiDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioAihekokonaisuusMuokkausDto;
 import fi.vm.sade.eperusteet.repository.LukioAihekokonaisuudetRepository;
 import fi.vm.sade.eperusteet.repository.LukioAihekokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
@@ -115,6 +116,8 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
             hm.put(Kieli.FI, "Aihekokonaisuudet");
             aihekokonaisuudet.setOtsikko(TekstiPalanen.of(hm));
             aihekokonaisuudet.setSisalto(sisalto);
+            aihekokonaisuudet.setNimi(TekstiPalanen.of(Kieli.FI, "Aihekokonaisuudet"));
+            aihekokonaisuudet.setTunniste(PerusteenOsaTunniste.NORMAALI);
             sisalto.setAihekokonaisuudet(aihekokonaisuudet);
             lukioAihekokonaisuudetRepository.saveAndFlush(aihekokonaisuudet);
         }

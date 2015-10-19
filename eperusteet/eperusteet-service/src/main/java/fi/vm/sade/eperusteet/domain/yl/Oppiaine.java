@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import lombok.Getter;
@@ -50,7 +51,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
                 && inLukioPeruste(perusteId).test(oa.getOppiaine()));
     }
     private static Predicate<Oppiaine> inLukioPerusteDirect(long perusteId) {
-        return oa -> oa.getLukioSisallot().stream().anyMatch(s -> s.getPeruste().getId().equals(perusteId));
+        return oa -> oa.getLukioRakenteet().stream().anyMatch(r -> r.getSisalto().getPeruste().getId().equals(perusteId));
     }
 
     @NotNull
@@ -133,10 +134,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "yl_lukiokoulutuksen_perusteen_sisalto_yl_oppiaine",
-            inverseJoinColumns = @JoinColumn(name = "sisalto_id", nullable = false, updatable = false),
+    @JoinTable(name = "yl_lukio_opetussuunnitelma_rakenne_yl_oppiaine",
+            inverseJoinColumns = @JoinColumn(name = "rakenne_id", nullable = false, updatable = false),
             joinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
-    private Set<LukiokoulutuksenPerusteenSisalto> lukioSisallot = new HashSet<>(0);
+    private Set<LukioOpetussuunnitelmaRakenne> lukioRakenteet = new HashSet<>(0);
 
     /**
      * Palauttaa oppimäärät
@@ -297,6 +298,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @Override
     public int hashCode() {
         return System.identityHashCode(this);
+    }
+
+    public Oppiaine kloonaa() {
+        return kloonaa(new HashMap<>(), new HashMap<>());
     }
 
     public Oppiaine kloonaa(

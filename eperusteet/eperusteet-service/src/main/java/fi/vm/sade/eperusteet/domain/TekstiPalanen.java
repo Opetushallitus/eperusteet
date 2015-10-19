@@ -121,5 +121,4 @@ public class TekstiPalanen implements Serializable {
         }
         return tekstit.entrySet().iterator().next().getValue();
     }
-
 }

@@ -14,7 +14,7 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -23,27 +23,28 @@ import lombok.Setter;
 
 import java.util.stream.Stream;
 
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterById;
+
 /**
  * User: tommiratamaa
- * Date: 6.10.15
- * Time: 13.01
+ * Date: 5.10.15
+ * Time: 20.41
  */
 @Getter
 @Setter
-public class KurssinOppiaineTarkasteluDto extends KurssinOppiaineNimettyDto {
-    private OppiaineVanhempiDto vanhempi;
+public class KurssinOppiaineNimettyDto extends KurssinOppiaineDto implements Lokalisoitava {
+    protected LokalisoituTekstiDto oppiaineNimi;
 
-    public KurssinOppiaineTarkasteluDto() {
+    public KurssinOppiaineNimettyDto() {
     }
 
-    public KurssinOppiaineTarkasteluDto(Long oppiaineId, Integer jarjestys, Long oppiaineNimiId,
-                                        OppiaineVanhempiDto vanhempi) {
-        super(oppiaineId, jarjestys, oppiaineNimiId);
-        this.vanhempi = vanhempi;
+    public KurssinOppiaineNimettyDto(Long oppiaineId, Integer jarjestys, Long oppiaineNimiId) {
+        super(oppiaineId, jarjestys);
+        this.oppiaineNimi = localizeLaterById(oppiaineNimiId);
     }
 
     @Override
     public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {
-        return Lokalisoitava.of(vanhempi).and(super.lokalisoitavatTekstit()).lokalisoitavatTekstit();
+        return Stream.of(oppiaineNimi);
     }
 }

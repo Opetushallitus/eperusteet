@@ -14,41 +14,48 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
+import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
-
-import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterById;
 
 /**
  * User: tommiratamaa
  * Date: 6.10.15
- * Time: 13.12
+ * Time: 12.53
  */
 @Getter
 @Setter
-public class OppiaineVanhempiDto implements Serializable, Lokalisoitava {
-    private Long oppiaineId;
-    private LokalisoituTekstiDto oppiaineNimi;
-    private OppiaineVanhempiDto vanhempi;
-
-    public OppiaineVanhempiDto() {
-    }
-
-    public OppiaineVanhempiDto(Long oppiaineId, Long oppiaineNimiId, OppiaineVanhempiDto vanhempi) {
-        this.oppiaineId = oppiaineId;
-        this.oppiaineNimi = localizeLaterById(oppiaineNimiId);
-        this.vanhempi = vanhempi;
-    }
+public class LukiokurssiTarkasteleDto implements Serializable, Lokalisoitava {
+    @NotNull
+    private Long id;
+    @NotNull
+    private LukiokurssiTyyppi tyyppi;
+    private List<KurssinOppiaineTarkasteluDto> oppiaineet = new ArrayList<>();
+    @NotNull
+    private LokalisoituTekstiDto nimi;
+    private Date muokattu;
+    private String koodiArvo;
+    private String koodiUri;
+    private Optional<LokalisoituTekstiDto> kurssityypinKuvaus;
+    private Optional<LokalisoituTekstiDto> kuvaus;
+    private Optional<LokalisoituTekstiDto> tavoitteetOtsikko;
+    private Optional<LokalisoituTekstiDto> tavoitteet;
+    private Optional<LokalisoituTekstiDto> sisallot;
 
     @Override
     public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {
-        return Lokalisoitava.of(oppiaineNimi).and(vanhempi).lokalisoitavatTekstit();
+        return Lokalisoitava.of(oppiaineet).lokalisoitavatTekstit();
     }
 }

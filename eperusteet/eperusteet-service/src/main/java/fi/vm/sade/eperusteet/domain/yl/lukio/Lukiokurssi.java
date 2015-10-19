@@ -40,7 +40,7 @@ import java.util.function.Predicate;
 @Table(name = "yl_lukiokurssi", schema = "public")
 public class Lukiokurssi extends Kurssi {
     public static Predicate<Lukiokurssi> inPeruste(long perusteId) {
-        return kurssi -> kurssi.getPerusteenSisalto().getPeruste().getId().equals(perusteId);
+        return kurssi -> kurssi.getOpetussuunnitelma().getSisalto().getPeruste().getId().equals(perusteId);
     }
 
     @Getter
@@ -51,9 +51,9 @@ public class Lukiokurssi extends Kurssi {
 
     @Getter
     @Setter
-    @JoinColumn(name = "sisalto_id", nullable = false)
+    @JoinColumn(name = "rakenne_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private LukiokoulutuksenPerusteenSisalto perusteenSisalto;
+    private LukioOpetussuunnitelmaRakenne opetussuunnitelma;
 
     @Getter
     @Setter
@@ -90,4 +90,16 @@ public class Lukiokurssi extends Kurssi {
     @Getter
     @OneToMany(mappedBy = "kurssi", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     private Set<OppiaineLukiokurssi> oppiaineet = new HashSet<>(0);
+
+    public Lukiokurssi kloonaa(LukioOpetussuunnitelmaRakenne rakenne) {
+        Lukiokurssi kopio = new Lukiokurssi();
+        kopio.tyyppi = this.tyyppi;
+        kopio.nimi = this.nimi;
+        kopio.kuvaus = this.kuvaus;
+        kopio.kurssityypinKuvaus = this.kurssityypinKuvaus;
+        kopio.sisallot = this.sisallot;
+        kopio.tavoitteetOtsikko = this.tavoitteetOtsikko;
+        kopio.tavoitteet = this.tavoitteet;
+        return kopio;
+    }
 }

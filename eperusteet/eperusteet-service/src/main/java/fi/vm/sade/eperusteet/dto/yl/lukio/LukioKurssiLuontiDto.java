@@ -14,7 +14,7 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;

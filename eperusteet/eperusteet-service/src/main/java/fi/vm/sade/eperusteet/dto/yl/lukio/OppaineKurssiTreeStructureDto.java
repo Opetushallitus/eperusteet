@@ -14,26 +14,22 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio;
 
-import fi.vm.sade.eperusteet.service.PerusteAware;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: tommiratamaa
  * Date: 12.10.15
- * Time: 15.43
+ * Time: 18.51
  */
 @Getter
 @Setter
-public class LukioRakenneLockContext implements PerusteAware {
-    private Long perusteId;
-
-    public LukioRakenneLockContext() {
-    }
-
-    public LukioRakenneLockContext(long perusteId) {
-        this.perusteId = perusteId;
-    }
+public class OppaineKurssiTreeStructureDto {
+    private List<LukiokurssiOppaineMuokkausDto> kurssit = new ArrayList<>();
+    private List<OppiaineJarjestysDto> oppiaineet = new ArrayList<>();
 }

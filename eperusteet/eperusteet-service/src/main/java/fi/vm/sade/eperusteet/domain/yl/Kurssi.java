@@ -50,7 +50,7 @@ public class Kurssi extends AbstractAuditedReferenceableEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "nimi_id", nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen nimi;
+    protected TekstiPalanen nimi;
 
     @Getter
     @Setter
@@ -58,17 +58,17 @@ public class Kurssi extends AbstractAuditedReferenceableEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "kuvaus_id")
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen kuvaus;
+    protected TekstiPalanen kuvaus;
 
     @Getter
     @Setter
     @Column(name = "koodi_uri")
-    private String koodiUri;
+    protected String koodiUri;
 
     @Getter
     @Setter
     @Column(name = "koodi_arvo")
-    private String koodiArvo;
+    protected String koodiArvo;
 
     @Getter
     @Audited
@@ -76,5 +76,5 @@ public class Kurssi extends AbstractAuditedReferenceableEntity {
     @JoinTable(name = "yl_kurssi_toteuttava_oppiaine",
             joinColumns = @JoinColumn(name = "kurssi_id", nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
-    private Set<Oppiaine> toteuttavatOppiaineet = new HashSet<>(0);
+    protected Set<Oppiaine> toteuttavatOppiaineet = new HashSet<>(0);
 }

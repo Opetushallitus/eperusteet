@@ -18,14 +18,14 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
-import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.dto.yl.lukio.*;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.util.OppiaineUtil.Reference;
 import fi.vm.sade.eperusteet.service.yl.KurssiLockContext;
 import fi.vm.sade.eperusteet.service.yl.KurssiService;
-import fi.vm.sade.eperusteet.service.yl.LukioRakenneLockContext;
+import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,8 +65,8 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
     private LockService<KurssiLockContext> lukioKurssiLockService;
 
     @Autowired
-    @LockCtx(LukioRakenneLockContext.class)
-    private LockService<LukioRakenneLockContext> lukioRakenneLockService;
+    @LockCtx(LukioOpetussuunnitelmaRakenneLockContext.class)
+    private LockService<LukioOpetussuunnitelmaRakenneLockContext> lukioRakenneLockService;
 
     @Dto
     @Autowired
@@ -94,7 +94,7 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         long id = kurssiService.luoLukiokurssi(perusteId, LukioKurssiLuontiDto.builder()
                 .tyyppi(LukiokurssiTyyppi.PAKOLLINEN)
                 .oppiaineet(asList(
-                    new KurssinOppiaineDto(suomiRef.getId(), 1)
+                        new KurssinOppiaineDto(suomiRef.getId(), 1)
                 ))
                 .nimi(teksti(fi("Äidinkielen perusteet"), sv("Finska ett")))
                 .koodiArvo("AI1")
@@ -117,7 +117,7 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         liitosDto.setId(dto.getId());
         liitosDto.getOppiaineet().addAll(dto.getOppiaineet());
         liitosDto.getOppiaineet().add(new KurssinOppiaineDto(saameRef.getId(), 1));
-        lukioRakenneLockService.lock(new LukioRakenneLockContext(perusteId));
+        lukioRakenneLockService.lock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         kurssiService.muokkaaLukiokurssinOppiaineliitoksia(perusteId, liitosDto);
         List<LukiokurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId);
         assertEquals(1, list.size());

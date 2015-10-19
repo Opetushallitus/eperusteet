@@ -52,16 +52,9 @@ public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenS
     private PerusteenOsaViite sisalto = new PerusteenOsaViite();
 
     @Getter
-    @Audited
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "yl_lukiokoulutuksen_perusteen_sisalto_yl_oppiaine", joinColumns = @JoinColumn(name = "sisalto_id", nullable = false, updatable = false),
-        inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
-    private Set<Oppiaine> oppiaineet = new HashSet<>(0);
-
-    @Getter
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            mappedBy = "perusteenSisalto")
-    private Set<Lukiokurssi> kurssit = new HashSet<>(0);
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto", cascade = CascadeType.PERSIST)
+    private LukioOpetussuunnitelmaRakenne opetussuunnitelma = new LukioOpetussuunnitelmaRakenne();
 
     @Getter
     @Setter
@@ -79,8 +72,16 @@ public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenS
         LukiokoulutuksenPerusteenSisalto kopio = new LukiokoulutuksenPerusteenSisalto();
         kopio.peruste = peruste;
         kopio.sisalto = this.sisalto.kloonaa();
+        kopio.opetussuunnitelma = this.opetussuunnitelma.kloonaa(kopio);
         kopio.aihekokonaisuudet =  this.aihekokonaisuudet.kloonaa();
+        kopio.aihekokonaisuudet.setSisalto(kopio);
         kopio.opetuksenYleisetTavoitteet = this.opetuksenYleisetTavoitteet.kloonaa();
+        kopio.opetuksenYleisetTavoitteet.setSisalto(kopio);
         return kopio;
+    }
+
+    @Override
+    public Set<Oppiaine> getOppiaineet() {
+        return opetussuunnitelma.getOppiaineet();
     }
 }

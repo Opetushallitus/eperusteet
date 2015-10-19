@@ -14,26 +14,20 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet;
 
-import fi.vm.sade.eperusteet.dto.IdHolder;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * User: tommiratamaa
- * Date: 9.10.15
- * Time: 10.00
+ * Date: 19.10.15
+ * Time: 13.19
  */
 @Getter
 @Setter
-public class LukiokurssiOppaineMuokkausDto implements Serializable, IdHolder {
-    @NotNull
-    private Long id;
-    private List<KurssinOppiaineDto> oppiaineet = new ArrayList<>();
+public class AihekokonaisuudetSuppeaDto extends Suppea {
+    private LokalisoituTekstiDto otsikko;
 }
