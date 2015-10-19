@@ -147,7 +147,7 @@ angular.module('eperusteApp')
   }
 
   function mapYL(osat, key) {
-    _(osat).sortBy(key === 'oppiaineet' ? 'jnro' : Utils.nameSort).each(function (osa) {
+    _(osat).sortBy(key === 'oppiaineet' || key === 'aihekokonaisuudet' ? 'jnro' : Utils.nameSort).each(function (osa) {
       ylMapper(osa, key, 1);
     }).value();
   }
