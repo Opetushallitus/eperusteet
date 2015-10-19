@@ -35,7 +35,9 @@
 
           <div class="panel-body" collapse="v.$isCollapsed">
             <div ng-bind-html="v.kuvaus|kaanna|unsafe" />
-            <div class="muokattu">{{ v.muokattu || 0 | aikaleima }}</div>
+            <div ng-if="v.muokattu" class="muokattuViimeksi">
+              <span kaanna="'muokattu-viimeksi'"></span>: <span ng-bind="v.muokattu || 0 | aikaleima"></span>
+            </div>
           </div>
 
         </div>
