@@ -12,7 +12,11 @@
     <div ng-if="!editEnabled">
       <div ng-if="!yleisetTavoitteet.otsikko" kaanna="yleisettavoitteet-ei-otsikkoa"></div>
       <h1><span ng-bind="yleisetTavoitteet.otsikko | kaanna"></span></h1>
-      <div ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe"></div>
+      <div ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe"></div>      <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></div>
+      <div ng-if="yleisetTavoitteet.muokattu" class="muokattuViimeksi">
+        <span kaanna="'muokattu-viimeksi'"></span>: <span ng-bind="yleisetTavoitteet.muokattu || 0 | aikaleima"></span>
+      </div>
+
     </div>
 
     <div ng-if="editEnabled">

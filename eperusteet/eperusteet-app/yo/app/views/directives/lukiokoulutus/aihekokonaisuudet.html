@@ -16,6 +16,9 @@
       <div ng-if="!aihekokonaisuudet.otsikko" kaanna="aihekokonaisuudet-ei-otsikkoa"></div>
       <h1><span ng-bind="aihekokonaisuudet.otsikko | kaanna"></span></h1>
       <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></div>
+      <div ng-if="aihekokonaisuudet.muokattu" class="muokattuViimeksi">
+        <span kaanna="'muokattu-viimeksi'"></span>: <span ng-bind="aihekokonaisuudet.muokattu || 0 | aikaleima"></span>
+      </div>
 
       <hr />
       <div ng-repeat="v in model | orderBy:nro">
