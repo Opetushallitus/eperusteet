@@ -19,11 +19,26 @@
 
       <hr />
       <div ng-repeat="v in model | orderBy:nro">
-        <h1><span ng-bind="v.nimi | kaanna"></span></h1>
-        <button class="btn btn-default" icon-role="edit" ng-click="gotoEditAihekokonaisuus(v.id)" kaanna="muokkaa"
-                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
-        <div ng-bind-html="v.kuvaus|kaanna|unsafe" />
-        <div class="muokattu">{{ v.muokattu || 0 | aikaleima }}</div>
+        <div>
+          <div class="action-buttons">
+            <button class="btn btn-default" icon-role="edit" ng-click="gotoEditAihekokonaisuus(v.id)"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+            <button class="btn btn-default" icon-role="remove"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]" ng-click="poista(v.id)"></button>
+          </div>
+
+          <h3 class="panel-title osio-otsikko" ng-click="v.$isCollapsed = !v.$isCollapsed">
+          <span class="glyphicon"
+                ng-class="v.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+            <span ng-bind="v.nimi | kaanna" />
+          </h3>
+
+          <div class="panel-body" collapse="v.$isCollapsed">
+            <div ng-bind-html="v.kuvaus|kaanna|unsafe" />
+            <div class="muokattu">{{ v.muokattu || 0 | aikaleima }}</div>
+          </div>
+
+        </div>
       </div>
 
     </div>

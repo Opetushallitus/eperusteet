@@ -37,7 +37,7 @@ angular.module('eperusteApp')
                                                             LukiokoulutusService,
                                                             Lukitus,
                                                             PerusteProjektiSivunavi,
-                                                            Editointikontrollit,
+                                                            Editointikontrollit, Varmistusdialogi,
                                                             $rootScope, $state, $filter) {
 
     var setEditMode = function() {
@@ -92,6 +92,20 @@ angular.module('eperusteApp')
           osanId: aihekokonaisuusId,
           tabId: 0,
           editEnabled: true});
+    }
+
+    $scope.poista = function(aihekokonaisuusId) {
+      Varmistusdialogi.dialogi({
+        otsikko: 'poistetaanko-aihekokonaisuus',
+        successCb: function () {
+          LukioAihekokonaisuudetService.deleteAihekokonaisuus(aihekokonaisuusId).then(function() {
+            $state.go('root.perusteprojekti.suoritustapa.lukioosat',
+              {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET},
+              { reload: true });
+          });
+
+        }
+      })();
     }
 
     $scope.cancel = function() {
