@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.*;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,6 +33,9 @@ public interface KurssiService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<LukiokurssiListausDto> findLukiokurssitByRakenneRevision(long perusteId, long rakenneId, int revision);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<LukiokurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId);

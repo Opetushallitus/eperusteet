@@ -16,11 +16,15 @@
 
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.yl.Kurssi;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
+import fi.vm.sade.eperusteet.repository.LukioOpetussuunnitelmaRakenneRepository;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
@@ -41,12 +45,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.base.Optional.fromNullable;
 import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
 import static fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi.inPeruste;
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
 import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -83,6 +90,9 @@ public class KurssiServiceImpl implements KurssiService {
     @Autowired
     @LockCtx(LukioOpetussuunnitelmaRakenneLockContext.class)
     private LockService<LukioOpetussuunnitelmaRakenneLockContext> lukioRakenneLockService;
+    
+    @Autowired
+    private LukioOpetussuunnitelmaRakenneRepository rakenneRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -100,6 +110,30 @@ public class KurssiServiceImpl implements KurssiService {
                                 oak.getOppiaineNimiId())));
         return kurssit;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LukiokurssiListausDto> findLukiokurssitByRakenneRevision(long perusteId, long rakenneId, int revision) {
+        LukioOpetussuunnitelmaRakenne rakenne = found(rakenneRepository.findRevision(rakenneId, revision),
+                LukioOpetussuunnitelmaRakenne.inPeruste(perusteId));
+        List<LukiokurssiListausDto> kurssit = rakenne.getKurssit().stream()
+                .sorted(comparing(Kurssi::getKoodiArvo))
+                .map(kurssi -> withOppiaineet(kurssi, new LukiokurssiListausDto(kurssi.getId(), kurssi.getTyyppi(),
+                        kurssi.getKoodiArvo(), kurssi.getNimi().getId(),
+                        fromNullable(kurssi.getKuvaus()).transform(TekstiPalanen::getId).orNull(),
+                        kurssi.getMuokattu()))).collect(toList());
+        return lokalisointiService.lokalisoi(kurssit);
+    }
+
+    private LukiokurssiListausDto withOppiaineet(Lukiokurssi kurssi, LukiokurssiListausDto dto) {
+        dto.getOppiaineet().addAll(kurssi.getOppiaineet().stream()
+                .sorted(comparing(OppiaineLukiokurssi::getJarjestys))
+                .map(oa -> new KurssinOppiaineNimettyDto(oa.getOppiaine().getId(), oa.getJarjestys(),
+                        oa.getOppiaine().getNimi().getId()))
+                .collect(toList()));
+        return dto;
+    }
+
 
     @Override
     @Transactional(readOnly = true)

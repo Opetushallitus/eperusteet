@@ -88,6 +88,14 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return oppiaineet.addOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }
 
+    @RequestMapping(value = "/rakenne/{rakenneId}/versiot/{revision}/kurssit", method = GET)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<List<LukiokurssiListausDto>> listKurssitInRakenneVersio(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("rakenneId") final Long rakenneId,
+            @PathVariable("revision") final Integer revision) {
+        return handleGet(perusteId, () -> kurssit.findLukiokurssitByRakenneRevision(perusteId, rakenneId, revision));
+    }
 
     @RequestMapping(value = "/kurssit", method = POST)
     @ResponseStatus(HttpStatus.CREATED)

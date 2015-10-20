@@ -40,7 +40,7 @@ import java.util.function.Predicate;
 @Table(name = "yl_lukiokurssi", schema = "public")
 public class Lukiokurssi extends Kurssi {
     public static Predicate<Lukiokurssi> inPeruste(long perusteId) {
-        return kurssi -> kurssi.getOpetussuunnitelma().getSisalto().getPeruste().getId().equals(perusteId);
+        return kurssi -> LukioOpetussuunnitelmaRakenne.inPeruste(perusteId).test(kurssi.getOpetussuunnitelma());
     }
 
     @Getter

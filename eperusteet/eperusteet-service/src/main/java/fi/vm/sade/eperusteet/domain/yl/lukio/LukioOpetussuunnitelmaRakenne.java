@@ -28,6 +28,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
@@ -40,6 +41,9 @@ import static java.util.stream.Collectors.toList;
 @Audited
 @Table(name = "yl_lukio_opetussuunnitelma_rakenne", schema = "public")
 public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
+    public static Predicate<LukioOpetussuunnitelmaRakenne> inPeruste(long perusteId) {
+        return rakenne -> rakenne.getSisalto().getPeruste().getId().equals(perusteId);
+    }
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @Getter

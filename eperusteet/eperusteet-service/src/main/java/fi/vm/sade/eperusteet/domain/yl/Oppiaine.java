@@ -51,7 +51,8 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
                 && inLukioPeruste(perusteId).test(oa.getOppiaine()));
     }
     private static Predicate<Oppiaine> inLukioPerusteDirect(long perusteId) {
-        return oa -> oa.getLukioRakenteet().stream().anyMatch(r -> r.getSisalto().getPeruste().getId().equals(perusteId));
+        return oa -> oa.getLukioRakenteet().stream().anyMatch(
+                LukioOpetussuunnitelmaRakenne.inPeruste(perusteId));
     }
 
     @NotNull
