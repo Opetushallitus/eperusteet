@@ -45,7 +45,8 @@ BEGIN
   EXECUTE 'INSERT INTO ' || quote_ident(tableName || '_aud')
           || '(' || array_to_string(cnames, ', ')
           || ', rev, revtype) SELECT v.*, $2 as rev, 0 as revtype FROM '
-          || quote_ident(tableName) || ' v WHERE v.id = $1'
+          || quote_ident(tableName) || ' v WHERE v.id = $1 AND NOT EXISTS( select a.rev from '
+          || quote_ident(tableName || '_aud') || ' a where a.id = $1 and a.rev = $2 )'
     USING id, _rev;
   RETURN _rev;
 END $$ LANGUAGE plpgsql;
@@ -78,12 +79,12 @@ BEGIN
   RETURN _id;
 END $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION newOsa(_id bigint, _tunniste text, _nimi bigint, _tila text)
+CREATE OR REPLACE FUNCTION newOsa(_id bigint, _tunniste text, _nimi bigint, _tila text, _rev int)
   RETURNS BIGINT AS $$
 BEGIN
   INSERT INTO perusteenosa(id, luotu, muokattu, nimi_id, luoja, muokkaaja, tila, tunniste)
     VALUES (_id, now(), null, _nimi, null, null, _tila, _tunniste);
-  PERFORM insertAsRevision('perusteenosa', _id);
+  PERFORM insertAsRevision('perusteenosa', _id, _rev);
   RETURN _id;
 END $$ LANGUAGE plpgsql;
 
@@ -98,10 +99,11 @@ BEGIN
   RETURN _id;
 END $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION newOsa(_id bigint, _tunniste text, _nimi bigint, _tila text, viiteId bigint)
+CREATE OR REPLACE FUNCTION newOsa(_id bigint, _tunniste text, _nimi bigint, _tila text, viiteId bigint,
+      _rev int)
   RETURNS BIGINT AS $$
 BEGIN
-  PERFORM newOsa(_id, _tunniste, _nimi, _tila);
+  PERFORM newOsa(_id, _tunniste, _nimi, _tila, _rev);
   UPDATE perusteenosaviite SET perusteenosa_id = _id WHERE id = viiteId;
   RETURN _id;
 END $$ LANGUAGE plpgsql;
@@ -115,7 +117,14 @@ INSERT INTO yl_lukio_opetussuunnitelma_rakenne (id, sisalto_id, viite_id)
     sis.id                   AS sisalto_id,
     newViite(sis.sisalto_id) AS viite_id
   FROM yl_lukiokoulutuksen_perusteen_sisalto sis;
-SELECT insertAsRevision('yl_lukio_opetussuunnitelma_rakenne', id) FROM yl_lukio_opetussuunnitelma_rakenne;
+SELECT
+    newRevision() rev,
+    insertAsRevision('yl_lukio_opetussuunnitelma_rakenne', id, rev),
+
+  FROM yl_lukio_opetussuunnitelma_rakenne;
+
+DELETE FROM yl_lukio_opetussuunnitelma_rakenne_aud;
+
 
 -- migrate kurssit to rakenne:
 ALTER TABLE yl_lukiokurssi ADD COLUMN rakenne_id BIGINT REFERENCES yl_lukio_opetussuunnitelma_rakenne (id);
@@ -165,7 +174,8 @@ ALTER TABLE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet_aud ADD COLUMN viit
 -- create missing osat:
 
 -- opetuussuunnitelma:
-SELECT newOsa(rakenne.id, 'RAKENNE', newTeksti('Opetussuunnitelma'), p.tila, rakenne.viite_id)
+SELECT newOsa(rakenne.id, 'RAKENNE', newTeksti('Opetussuunnitelma'), p.tila, rakenne.viite_id,
+              (select min(a.rev) from yl_lukio_opetussuunnitelma_rakenne_aud a where a.id = rakenne.id))
   FROM yl_lukio_opetussuunnitelma_rakenne rakenne
     INNER JOIN "yl_lukiokoulutuksen_perusteen_sisalto" sisalto ON rakenne.sisalto_id = sisalto.id
     INNER JOIN peruste p ON p.id = sisalto.peruste_id;
@@ -173,18 +183,34 @@ ALTER TABLE yl_lukio_opetussuunnitelma_rakenne ADD FOREIGN KEY (id) REFERENCES p
 
 -- aihekokonaisuudet:
 -- if some references are null
-update yl_aihekokonaisuudet set sisalto_id = (select max(id) from yl_lukiokoulutuksen_perusteen_sisalto ps where ps.id = id) where sisalto_id is null;
+update yl_aihekokonaisuudet
+  set sisalto_id = (select max(id) from yl_lukiokoulutuksen_perusteen_sisalto ps
+      where ps.id = yl_aihekokonaisuudet.id) where sisalto_id is null;
 ALTER TABLE yl_aihekokonaisuudet ALTER COLUMN sisalto_id set NOT NULL;
 
-SELECT newOsa(ak.id, 'NORMAALI', newTeksti('Aihekokonaisuudet'), p.tila, ak.viite_id)
+SELECT newOsa(ak.id, 'NORMAALI', newTeksti('Aihekokonaisuudet'), p.tila, ak.viite_id,
+          (select min(a.rev) from yl_lukiokoulutuksen_perusteen_sisalto_aud a where a.id = ak.id))
   FROM yl_aihekokonaisuudet ak
     INNER JOIN yl_lukiokoulutuksen_perusteen_sisalto sisalto ON ak.sisalto_id = sisalto.id
     INNER JOIN peruste p ON p.id = sisalto.peruste_id;
 ALTER TABLE yl_aihekokonaisuudet ADD FOREIGN KEY (id) REFERENCES perusteenosa(id);
 
 -- yleiset tavoitteet
-SELECT newOsa(yt.id, 'NORMAALI', newTeksti('Opetuksen yleiset tavoitteet'), p.tila, yt.viite_id)
+SELECT newOsa(yt.id, 'NORMAALI', newTeksti('Opetuksen yleiset tavoitteet'), p.tila, yt.viite_id,
+          (select min(a.rev) from yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet_aud a where a.id = yt.id))
 FROM yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet yt
   INNER JOIN yl_lukiokoulutuksen_perusteen_sisalto sisalto ON yt.sisalto_id = sisalto.id
   INNER JOIN peruste p ON p.id = sisalto.peruste_id;
 ALTER TABLE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet ADD FOREIGN KEY (id) REFERENCES perusteenosa(id);
+
+
+-- Local fix:
+-- SELECT insertAsRevision('perusteenosa', r.id, (select min(a.rev) from yl_lukio_opetussuunnitelma_rakenne_aud a WHERE a.id = r.id))
+-- FROM yl_lukio_opetussuunnitelma_rakenne r
+-- UNION (
+--   SELECT insertAsRevision('perusteenosa', ak.id, (select min(a.rev) from yl_aihekokonaisuudet_aud a where a.id = ak.id))
+-- FROM yl_aihekokonaisuudet ak
+-- ) UNION (
+-- SELECT insertAsRevision('perusteenosa', yt.id, (select min(a.rev) from yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet_aud a where a.id = yt.id))
+-- FROM yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet yt
+-- );
