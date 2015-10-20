@@ -117,13 +117,6 @@ INSERT INTO yl_lukio_opetussuunnitelma_rakenne (id, sisalto_id, viite_id)
     sis.id                   AS sisalto_id,
     newViite(sis.sisalto_id) AS viite_id
   FROM yl_lukiokoulutuksen_perusteen_sisalto sis;
-SELECT
-    newRevision() rev,
-    insertAsRevision('yl_lukio_opetussuunnitelma_rakenne', id, rev),
-
-  FROM yl_lukio_opetussuunnitelma_rakenne;
-
-DELETE FROM yl_lukio_opetussuunnitelma_rakenne_aud;
 
 
 -- migrate kurssit to rakenne:
@@ -177,7 +170,7 @@ ALTER TABLE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet_aud ADD COLUMN viit
 SELECT newOsa(rakenne.id, 'RAKENNE', newTeksti('Opetussuunnitelma'), p.tila, rakenne.viite_id,
               (select min(a.rev) from yl_lukio_opetussuunnitelma_rakenne_aud a where a.id = rakenne.id))
   FROM yl_lukio_opetussuunnitelma_rakenne rakenne
-    INNER JOIN "yl_lukiokoulutuksen_perusteen_sisalto" sisalto ON rakenne.sisalto_id = sisalto.id
+    INNER JOIN "yl_lukiokoulutuksen_perusteen_sisalto" sisalto ON rakenDEne.sisalto_id = sisalto.id
     INNER JOIN peruste p ON p.id = sisalto.peruste_id;
 ALTER TABLE yl_lukio_opetussuunnitelma_rakenne ADD FOREIGN KEY (id) REFERENCES perusteenosa(id);
 
