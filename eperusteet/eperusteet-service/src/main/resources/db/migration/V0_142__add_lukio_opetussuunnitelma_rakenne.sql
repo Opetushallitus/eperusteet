@@ -24,6 +24,8 @@ CREATE TABLE yl_lukio_opetussuunnitelma_rakenne_aud (
   FOREIGN KEY (revend) REFERENCES revinfo (rev)
 );
 
+-- perusteenosaviite_aud viite
+ALTER TABLE perusteenosaviite_aud ADD COLUMN lapset_order INTEGER;
 
 -- some helpers
 CREATE OR REPLACE FUNCTION newId()
@@ -160,7 +162,7 @@ ALTER TABLE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet_aud ADD COLUMN viit
 
 
 
--- crate missing osat:
+-- create missing osat:
 
 -- opetuussuunnitelma:
 SELECT newOsa(rakenne.id, 'RAKENNE', newTeksti('Opetussuunnitelma'), p.tila, rakenne.viite_id)
@@ -170,6 +172,10 @@ SELECT newOsa(rakenne.id, 'RAKENNE', newTeksti('Opetussuunnitelma'), p.tila, rak
 ALTER TABLE yl_lukio_opetussuunnitelma_rakenne ADD FOREIGN KEY (id) REFERENCES perusteenosa(id);
 
 -- aihekokonaisuudet:
+-- if some references are null
+update yl_aihekokonaisuudet set sisalto_id = (select max(id) from yl_lukiokoulutuksen_perusteen_sisalto ps where ps.id = id) where sisalto_id is null;
+ALTER TABLE yl_aihekokonaisuudet ALTER COLUMN sisalto_id set NOT NULL;
+
 SELECT newOsa(ak.id, 'NORMAALI', newTeksti('Aihekokonaisuudet'), p.tila, ak.viite_id)
   FROM yl_aihekokonaisuudet ak
     INNER JOIN yl_lukiokoulutuksen_perusteen_sisalto sisalto ON ak.sisalto_id = sisalto.id
