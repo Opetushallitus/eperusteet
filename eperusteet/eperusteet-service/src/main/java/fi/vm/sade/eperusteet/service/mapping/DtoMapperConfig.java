@@ -33,10 +33,10 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetSuppeaDto;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
@@ -130,7 +130,7 @@ public class DtoMapperConfig {
                 .exclude("oppiaineet")
                 .byDefault()
                 .register();
-        factory.classMap(LukioKurssiMuokkausDto.class, Lukiokurssi.class)
+        factory.classMap(LukiokurssiMuokkausDto.class, Lukiokurssi.class)
                 .exclude("oppiaineet")
                 .byDefault()
                 .register();

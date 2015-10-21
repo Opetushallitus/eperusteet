@@ -31,25 +31,25 @@ import java.util.List;
 public interface KurssiService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LukioKurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
+    List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LukioKurssiListausDto> findLukiokurssitByRakenneRevision(long perusteId, long rakenneId, int revision);
+    List<LukiokurssiListausDto> findLukiokurssitByRakenneRevision(long perusteId, long rakenneId, int revision);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LukioKurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId);
+    List<LukiokurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukioKurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException;
+    LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     long luoLukiokurssi(long perusteId, LukioKurssiLuontiDto kurssiDto) throws BusinessRuleViolationException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void muokkaaLukiokurssia(long perusteId, LukioKurssiMuokkausDto muokkausDto) throws NotExistsException;
+    void muokkaaLukiokurssia(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukioKurssiOppaineMuokkausDto muokkausDto)
+    void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
             throws NotExistsException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")

@@ -18,12 +18,11 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.dto.IdHolder;
-import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuudetYleiskuvausDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
@@ -90,7 +89,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/rakenne/{rakenneId}/versiot/{revision}/kurssit", method = GET)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<LukioKurssiListausDto>> listKurssitInRakenneVersio(
+    public ResponseEntity<List<LukiokurssiListausDto>> listKurssitInRakenneVersio(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("rakenneId") final Long rakenneId,
             @PathVariable("revision") final Integer revision) {
@@ -106,12 +105,12 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/kurssit", method = GET)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<LukioKurssiListausDto>> listKurssit(@PathVariable("perusteId") final Long perusteId) {
+    public ResponseEntity<List<LukiokurssiListausDto>> listKurssit(@PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, () -> kurssit.findLukiokurssitByPerusteId(perusteId));
     }
 
     @RequestMapping(value = "/kurssit/{id}", method = GET)
-    public ResponseEntity<LukioKurssiTarkasteleDto> getKurssi(@PathVariable("perusteId") final Long perusteId,
+    public ResponseEntity<LukiokurssiTarkasteleDto> getKurssi(@PathVariable("perusteId") final Long perusteId,
                                   @PathVariable("id") Long id) {
         return handleGet(perusteId, () -> kurssit.getLukiokurssiTarkasteleDtoById(perusteId, id));
     }
@@ -126,7 +125,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @RequestMapping(value = "/kurssit/{id}", method = POST)
     public RedirectView updateKurssi(@PathVariable("perusteId") final Long perusteId,
                                      @PathVariable("id") final Long kurssiId,
-                                  @RequestBody LukioKurssiMuokkausDto kurssi) {
+                                  @RequestBody LukiokurssiMuokkausDto kurssi) {
         assertKurssiId(kurssiId, kurssi);
         kurssit.muokkaaLukiokurssia(perusteId, kurssi);
         return new RedirectView(""+kurssiId,true);
@@ -135,7 +134,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @RequestMapping(value = "/kurssit/{id}/oppiaineet", method = POST)
     public RedirectView updateKurssiOppiaineRelations(@PathVariable("perusteId") final Long perusteId,
                                      @PathVariable("id") final Long kurssiId,
-                                     @RequestBody LukioKurssiOppaineMuokkausDto kurssi) {
+                                     @RequestBody LukiokurssiOppaineMuokkausDto kurssi) {
         assertKurssiId(kurssiId, kurssi);
         kurssit.muokkaaLukiokurssinOppiaineliitoksia(perusteId, kurssi);
         return new RedirectView("",true);
@@ -157,7 +156,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kurssit", method = GET)
-    public ResponseEntity<List<LukioKurssiListausDto>> getOppiaineKurssit(
+    public ResponseEntity<List<LukiokurssiListausDto>> getOppiaineKurssit(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id) {
         return handleGet(perusteId, () -> kurssit.findLukiokurssitByOppiaineId(perusteId, id));

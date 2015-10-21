@@ -94,14 +94,14 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LukioKurssiListausDto> findLukiokurssitByPerusteId(long perusteId) {
-        List<LukioKurssiListausDto> kurssit = lukiokurssiRepository.findLukiokurssitByPerusteId(perusteId);
+    public List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId) {
+        List<LukiokurssiListausDto> kurssit = lukiokurssiRepository.findLukiokurssitByPerusteId(perusteId);
         return lokalisointiService.lokalisoi(kurssitWithOppiaineet(perusteId, kurssit));
     }
 
-    private List<LukioKurssiListausDto> kurssitWithOppiaineet(long perusteId, List<LukioKurssiListausDto> kurssit) {
-        Map<Long,LukioKurssiListausDto> kurssitById = kurssit.stream()
-                .collect(toMap(LukioKurssiListausDto::getId, k -> k));
+    private List<LukiokurssiListausDto> kurssitWithOppiaineet(long perusteId, List<LukiokurssiListausDto> kurssit) {
+        Map<Long,LukiokurssiListausDto> kurssitById = kurssit.stream()
+                .collect(toMap(LukiokurssiListausDto::getId, k -> k));
         lukiokurssiRepository.findKurssiOppaineRelationsByPerusteId(perusteId).stream()
                 .forEachOrdered(oak -> kurssitById.get(oak.getKurssiId()).getOppiaineet().add(
                         new KurssinOppiaineNimettyDto(oak.getOppiaineId(), oak.getJarjestys(),
@@ -111,19 +111,19 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LukioKurssiListausDto> findLukiokurssitByRakenneRevision(long perusteId, long rakenneId, int revision) {
+    public List<LukiokurssiListausDto> findLukiokurssitByRakenneRevision(long perusteId, long rakenneId, int revision) {
         LukioOpetussuunnitelmaRakenne rakenne = found(rakenneRepository.findRevision(rakenneId, revision),
                 LukioOpetussuunnitelmaRakenne.inPeruste(perusteId));
-        List<LukioKurssiListausDto> kurssit = rakenne.getKurssit().stream()
+        List<LukiokurssiListausDto> kurssit = rakenne.getKurssit().stream()
                 .sorted(comparing(Kurssi::getKoodiArvo))
-                .map(kurssi -> withOppiaineet(kurssi, new LukioKurssiListausDto(kurssi.getId(), kurssi.getTyyppi(),
+                .map(kurssi -> withOppiaineet(kurssi, new LukiokurssiListausDto(kurssi.getId(), kurssi.getTyyppi(),
                         kurssi.getKoodiArvo(), kurssi.getNimi().getId(),
                         fromNullable(kurssi.getKuvaus()).transform(TekstiPalanen::getId).orNull(),
                         kurssi.getMuokattu()))).collect(toList());
         return lokalisointiService.lokalisoi(kurssit);
     }
 
-    private LukioKurssiListausDto withOppiaineet(Lukiokurssi kurssi, LukioKurssiListausDto dto) {
+    private LukiokurssiListausDto withOppiaineet(Lukiokurssi kurssi, LukiokurssiListausDto dto) {
         dto.getOppiaineet().addAll(kurssi.getOppiaineet().stream()
                 .sorted(comparing(OppiaineLukiokurssi::getJarjestys))
                 .map(oa -> new KurssinOppiaineNimettyDto(oa.getOppiaine().getId(), oa.getJarjestys(),
@@ -135,16 +135,16 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LukioKurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId) {
-        List<LukioKurssiListausDto> kurssit = lukiokurssiRepository.findLukiokurssitByPerusteAndOppiaineId(perusteId, oppiaineId);
+    public List<LukiokurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId) {
+        List<LukiokurssiListausDto> kurssit = lukiokurssiRepository.findLukiokurssitByPerusteAndOppiaineId(perusteId, oppiaineId);
         return lokalisointiService.lokalisoi(kurssit);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public LukioKurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException {
+    public LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException {
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
-        LukioKurssiTarkasteleDto dto = mapper.map(kurssi, new LukioKurssiTarkasteleDto());
+        LukiokurssiTarkasteleDto dto = mapper.map(kurssi, new LukiokurssiTarkasteleDto());
         dto.setOppiaineet(kurssi.getOppiaineet().stream().map(this::oppaineTarkasteluDto)
                 .sorted(comparing(KurssinOppiaineDto::getOppiaineId)).collect(toList()));
         return lokalisointiService.lokalisoi(dto);
@@ -195,7 +195,7 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Override
     @Transactional
-    public void muokkaaLukiokurssia(long perusteId, LukioKurssiMuokkausDto muokkausDto) throws NotExistsException {
+    public void muokkaaLukiokurssia(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException {
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(muokkausDto.getId()), inPeruste(perusteId));
         lukioKurssiLockService.assertLock(new KurssiLockContext(perusteId, kurssi.getId()));
         lukiokurssiRepository.lock(kurssi, false);
@@ -205,7 +205,7 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Override
     @Transactional
-    public void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukioKurssiOppaineMuokkausDto muokkausDto)
+    public void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
             throws NotExistsException {
         lukioRakenneLockService.assertLock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(muokkausDto.getId()), inPeruste(perusteId));
@@ -229,7 +229,7 @@ public class KurssiServiceImpl implements KurssiService {
         lukioRakenneLockService.assertLock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         oppiaineService.jarjestaLukioOppiaineet(perusteId, structure.getOppiaineet());
         Map<Long, Lukiokurssi> kurssitById = lukiokurssiRepository.findAll(structure.getKurssit()
-                .stream().map(LukioKurssiOppaineMuokkausDto::getId).collect(toSet()))
+                .stream().map(LukiokurssiOppaineMuokkausDto::getId).collect(toSet()))
                 .stream().collect(toMap(Lukiokurssi::getId, k -> k));
         structure.getKurssit().forEach(kurssiDto -> {
             Lukiokurssi kurssi = found(kurssitById.get(kurssiDto.getId()), inPeruste(perusteId));
