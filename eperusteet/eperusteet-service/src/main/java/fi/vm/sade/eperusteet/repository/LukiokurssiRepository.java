@@ -30,7 +30,7 @@ import java.util.List;
  * Time: 15.11
  */
 public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukiokurssi, Long> {
-    String KURSSILISTAUS_SELECT = "SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiListausDto(" +
+    String KURSSILISTAUS_SELECT = "SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiListausDto(" +
             "   kurssi.id," +
             "   kurssi.tyyppi, " +
             "   kurssi.koodiArvo," +
