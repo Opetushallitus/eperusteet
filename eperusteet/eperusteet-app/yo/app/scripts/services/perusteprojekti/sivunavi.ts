@@ -19,7 +19,7 @@
 /// <reference path="../../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
-.service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
+.service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q, $log,
         $state, $location, YleinenData, PerusopetusService, LukiokoulutusService, Kaanna, $timeout, Utils,
         LukioKurssiService) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
@@ -59,6 +59,7 @@ angular.module('eperusteApp')
     typeChanged: angular.noop
   };
   var kurssit = null;
+  var specialPerusteenOsaParts = {};
 
   function getLink(lapsi): any {
     if (!lapsi.perusteenOsa) {
@@ -83,19 +84,36 @@ angular.module('eperusteApp')
     }
   }
 
-  var processNode = function (node, level = 0) {
+  var processNode = function (node, level = 0, parent?) {
     _.each(node.lapset, function (lapsi) {
       var label = lapsi.perusteenOsa ? lapsi.perusteenOsa.nimi : '';
+      var link = null,
+          special = null,
+          isActive = null;
+      if (lapsi.perusteenOsa && lapsi.perusteenOsa.osanTyyppi
+                && specialPerusteenOsaParts[lapsi.perusteenOsa.osanTyyppi]) {
+        special = specialPerusteenOsaParts[lapsi.perusteenOsa.osanTyyppi];
+        link = special.link;
+        isActive = special.isActive;
+      }
       items.push({
         label: label,
         id: lapsi.id,
         depth: level,
-        link: getLink(lapsi),
-        isActive: isRouteActive,
+        link: link || getLink(lapsi),
+        isActive: isActive || isRouteActive,
+        $$parentItem: parent,
         $type: (lapsi.perusteenOsa && lapsi.perusteenOsa.tunniste === 'rakenne') ? 'ep-tree' : 'ep-text'
       });
       nameMap[lapsi.id] = label;
-      processNode(lapsi, level + 1);
+      if (special) {
+        _.each(special.lapset, function(mappedChild) {
+          mappedChild.depth += level;
+          items.push(mappedChild);
+          nameMap[mappedChild.id] = mappedChild.perusteenOsa ? mappedChild.perusteenOsa.nimi : '';
+        });
+      }
+      processNode(lapsi, level + 1, node);
     });
   };
 
@@ -125,31 +143,41 @@ angular.module('eperusteApp')
     return normalize($location.url()).indexOf(normalize(tablessUrl)) > -1;
   };
 
-  function ylMapper(osa, key, level, link?) {
+  function ylMapper(targetItems, osa, key, level, link?, parent?) {
     level = level || 0;
-    items.push({
+    targetItems.push({
       depth: level,
       label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
       link: link || [perusteenTyyppi == 'LU' ? STATE_LUKIOOSAALUE : STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
-      isActive: isYlRouteActive
+      isActive: isYlRouteActive,
+      $$parentItem: parent
     });
     _(osa.oppimaarat).sortBy('jnro').each(function (lapsi) {
-      ylMapper(lapsi, key, level + 1);
+      ylMapper(targetItems, lapsi, key, level + 1, null, osa);
     }).value();
     if (kurssit && perusteenTyyppi === 'LU' && key === 'oppiaineet_oppimaarat') {
       var foundKurssit = LukioKurssiService.filterOrderedKurssisByOppiaine(kurssit, function (oa) {
         return oa.oppiaineId === osa.id;
       });
       _.each(foundKurssit, function(filterdKurssi) {
-        ylMapper(filterdKurssi, key, level + 1, [STATE_LUKIOKURSSI, {kurssiId: filterdKurssi.id}]);
+        ylMapper(targetItems, filterdKurssi, key, level + 1, [STATE_LUKIOKURSSI, {kurssiId: filterdKurssi.id}], osa);
       });
     }
   }
 
-  function mapYL(osat, key) {
+  function mapYL(target, osat, key, parent) {
+    $log.info('ylMapper', osat, key);
     _(osat).sortBy(key === 'oppiaineet' || key === 'aihekokonaisuudet' ? 'jnro' : Utils.nameSort).each(function (osa) {
-      ylMapper(osa, key, 1);
+      ylMapper(target, osa, key, 1, null, parent);
     }).value();
+  }
+  function lukioOsanTyyppi(key) {
+    switch (key) {
+      case LukiokoulutusService.OPPIAINEET_OPPIMAARAT: return 'lukioopetussuunnitelmarakenne';
+      case LukiokoulutusService.AIHEKOKONAISUUDET: return 'aihekokonaisuudet';
+      case LukiokoulutusService.OPETUKSEN_YLEISET_TAVOITTEET: return 'opetuksenyleisettavoitteet';
+      default: return null;
+    }
   }
 
   var buildTree = function () {
@@ -158,24 +186,32 @@ angular.module('eperusteApp')
       case 'YL': {
         var tiedot1 = service.getYlTiedot();
         _.each(PerusopetusService.LABELS, function (key, label) {
-          items.push({
+          var item = {
             label: label,
             link: [STATE_OSALISTAUS, {suoritustapa: 'perusopetus', osanTyyppi: key}]
-          });
-          mapYL(tiedot1[key], key);
+          };
+          items.push(item);
+          mapYL(items, tiedot1[key], key, item);
         });
         break;
       }
       case 'LU': {
         var lukioTiedot = service.getYlTiedot();
         kurssit = lukioTiedot.kurssit;
-        _.each(LukiokoulutusService.LABELS, function (key, label) {
-          var item = {
-            label: label,
-            link: [STATE_LUKIOOSALISTAUS, {suoritustapa: 'lukiokoulutus', osanTyyppi: key}]
-          };
-          items.push(item);
-          mapYL(lukioTiedot[key], key);
+        _.each(LukiokoulutusService.LABELS, function (k) {
+          var itemList = [],
+              key = lukioOsanTyyppi(k),
+              item = {
+                lapset: itemList,
+                link: [STATE_LUKIOOSALISTAUS, {suoritustapa: 'lukiokoulutus', osanTyyppi: k}],
+                isActive: function(node) {
+                  var url = $location.url(),
+                      href = $state.href(node.link[0], node.link[1]).replace('#/', '/');
+                  return url === href;
+                }
+              };
+          specialPerusteenOsaParts[key] = item;
+          mapYL(itemList, lukioTiedot[k], k, item);
         });
         break;
       }

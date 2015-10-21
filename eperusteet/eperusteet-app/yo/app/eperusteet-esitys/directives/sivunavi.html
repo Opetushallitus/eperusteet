@@ -27,7 +27,7 @@
             <div ng-if="section.include" ng-include="section.include"></div>
             <div ng-if="!section.include" class="list-group">
               <a class="list-group-item item" ng-repeat="item in section.items" ng-class="itemClasses(item)" ng-href="{{item.href}}"
-                ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
+                  ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
                 <div class="toggler">
                   <span ng-show="!item.$leaf" ng-click="toggle(section.items, item, $event)" class="glyphicon"
                     ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
