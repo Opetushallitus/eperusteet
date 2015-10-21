@@ -24,7 +24,9 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine_;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
+import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
@@ -37,8 +39,7 @@ import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.unenhance.HibernateUnenhanceStrategy;
@@ -90,6 +91,22 @@ public class DtoMapperConfig {
             .byDefault()
             .register();
         factory.classMap(AihekokonaisuudetSuppeaDto.class, Aihekokonaisuudet.class)
+            .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(OpetuksenYleisetTavoitteetSuppeaDto.class, OpetuksenYleisetTavoitteet.class)
+            .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(OpetuksenYleisetTavoitteetLaajaDto.class, OpetuksenYleisetTavoitteet.class)
+            .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(LukioOpetussuunnitelmaRakenneLaajaDto.class, LukioOpetussuunnitelmaRakenne.class)
+            .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(LukioOpetussuunnitelmaRakenneSuppeaDto.class, LukioOpetussuunnitelmaRakenne.class)
             .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
             .byDefault()
             .register();

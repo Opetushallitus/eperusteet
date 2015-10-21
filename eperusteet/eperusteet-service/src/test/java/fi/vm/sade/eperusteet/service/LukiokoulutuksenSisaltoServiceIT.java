@@ -88,14 +88,14 @@ public class LukiokoulutuksenSisaltoServiceIT extends AbstractIntegrationTest {
         PerusteenOsaViiteDto haettu = lukiokoulutuksenPerusteenSisaltoService.getSisalto(perusteId, osa.getId(), PerusteenOsaViiteDto.class);
         assertNotNull(haettu);
         assertEquals("Osa", haettu.getPerusteenOsa().getNimi().get(FI));
-        assertEquals(1, lukiokoulutuksenPerusteenSisaltoService.getSisalto(perusteId, null, Laaja.class).getLapset().size());
+        assertEquals(4, lukiokoulutuksenPerusteenSisaltoService.getSisalto(perusteId, null, Laaja.class).getLapset().size());
     }
 
     @Test
     public void testRemoveSisalto() {
         Matala osa = lukiokoulutuksenPerusteenSisaltoService.addSisalto(perusteId, paaOsaViiteId, perusteOsa(fi("Osa")));
         lukiokoulutuksenPerusteenSisaltoService.removeSisalto(perusteId, osa.getId());
-        assertEquals(0, lukiokoulutuksenPerusteenSisaltoService.getSisalto(perusteId, null, Laaja.class).getLapset().size());
+        assertEquals(3, lukiokoulutuksenPerusteenSisaltoService.getSisalto(perusteId, null, Laaja.class).getLapset().size());
     }
 
     @Test
