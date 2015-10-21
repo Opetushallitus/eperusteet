@@ -391,6 +391,7 @@ angular.module('eperusteApp')
 
     $scope.kurssiTreeConfig = {
       placeholder: 'placeholder',
+      handle: '.treehandle',
       cursorAt: { top : 5, left: 5 },
       update: function(e,ui) {
         handleMove(e,ui, function(from, to) {
@@ -421,6 +422,7 @@ angular.module('eperusteApp')
 
     $scope.liittamattomatKurssitConfig = {
       placeholder: 'placeholder',
+      handle: '.treehandle',
       cursorAt: { top : 2, left: 2 },
       update: function(e,ui) {
         handleMove(e,ui, function(from, to) {
