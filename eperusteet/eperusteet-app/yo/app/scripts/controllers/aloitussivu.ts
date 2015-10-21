@@ -74,6 +74,5 @@ angular.module('eperusteApp')
       var info = YleinenData.koulutustyyppiInfo[item.koodi] || {};
       item.label = item.label || info.nimi;
       item.url = $state.href(info.hakuState);
-      $log.info('URL: ', info.hakuState, item.url);
     });
   });

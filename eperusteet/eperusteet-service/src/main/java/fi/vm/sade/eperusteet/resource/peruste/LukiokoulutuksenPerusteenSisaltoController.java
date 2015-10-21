@@ -340,10 +340,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public RedirectView updateYleisetTavoitteet(
             @PathVariable("perusteId") final Long perusteId,
             @RequestBody LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto) {
-
-
         perusteet.tallennaYleisetTavoitteet(perusteId, lukiokoulutuksenYleisetTavoitteetDto);
-
         return new RedirectView("yleisettavoitteet", true);
     }
 

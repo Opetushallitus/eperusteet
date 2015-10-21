@@ -166,7 +166,6 @@ angular.module('eperusteApp')
   }
 
   function mapYL(target, osat, key, parent) {
-    $log.info('ylMapper', osat, key);
     _(osat).sortBy(key === 'oppiaineet' || key === 'aihekokonaisuudet' ? 'jnro' : Utils.nameSort).each(function (osa) {
       ylMapper(target, osa, key, 1, null, parent);
     }).value();

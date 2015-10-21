@@ -641,7 +641,8 @@ angular.module('eperusteApp')
       $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
         osanId: 'uusi',
         osanTyyppi: 'oppiaineet_oppimaarat',
-        tabId: 0
+        tabId: 0,
+        editEnabled: true
       });
     };
     $scope.addKurssi = function() {

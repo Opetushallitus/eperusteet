@@ -21,8 +21,6 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by jsikio on 28.9.2015.
@@ -30,7 +28,6 @@ import java.util.UUID;
 @Getter
 @Setter
 public class AihekokonaisuudetYleiskuvausDto implements Serializable {
-    private Long id;
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto yleiskuvaus;
     private Date muokattu;

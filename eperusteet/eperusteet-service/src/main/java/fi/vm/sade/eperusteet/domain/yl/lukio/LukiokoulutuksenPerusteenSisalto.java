@@ -58,13 +58,13 @@ public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenS
 
     @Getter
     @Setter
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="aihekokonaisuudet_id")
     private Aihekokonaisuudet aihekokonaisuudet;
 
     @Getter
     @Setter
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="opetuksen_yleiset_tavoitteet_id")
     private OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet;
 

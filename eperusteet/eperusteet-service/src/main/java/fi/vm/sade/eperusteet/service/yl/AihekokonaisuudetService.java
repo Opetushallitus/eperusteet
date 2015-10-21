@@ -16,6 +16,8 @@
 
 package fi.vm.sade.eperusteet.service.yl;
 
+import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuudetYleiskuvausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioAihekokonaisuusLuontiDto;
@@ -43,6 +45,10 @@ public interface AihekokonaisuudetService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     long luoAihekokonaisuus(long perusteId, LukioAihekokonaisuusLuontiDto aihekokonaisuusLuontiDto) throws BusinessRuleViolationException;
+
+    @SuppressWarnings({"TransactionalAnnotations", "ServiceMethodEntity"})
+    @PreAuthorize("isAuthenticated()")
+    Aihekokonaisuudet initAihekokonaisuudet(LukiokoulutuksenPerusteenSisalto sisalto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void muokkaaAihekokonaisuutta(long perusteId, LukioAihekokonaisuusMuokkausDto lukioAihekokonaisuusMuokkausDto) throws NotExistsException;

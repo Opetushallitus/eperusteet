@@ -163,7 +163,6 @@ angular.module('eperusteApp')
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.muokkaakurssia') {
         return { perusteId: PerusopetusService.getPerusteId(), kurssiId: $stateParams.kurssiId };
       }
-      return {};
     }
 
     function genericVapauta(cb) {

@@ -110,15 +110,7 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
 
         Aihekokonaisuudet aihekokonaisuudet = sisalto.getAihekokonaisuudet();
         if( aihekokonaisuudet == null ) {
-            aihekokonaisuudet = new Aihekokonaisuudet();
-            //Asetetaan oletusotsikko
-            HashMap<Kieli, String> hm = new HashMap<>();
-            hm.put(Kieli.FI, "Aihekokonaisuudet");
-            aihekokonaisuudet.setOtsikko(TekstiPalanen.of(hm));
-            aihekokonaisuudet.setSisalto(sisalto);
-            aihekokonaisuudet.setNimi(TekstiPalanen.of(Kieli.FI, "Aihekokonaisuudet"));
-            aihekokonaisuudet.setTunniste(PerusteenOsaTunniste.NORMAALI);
-            sisalto.setAihekokonaisuudet(aihekokonaisuudet);
+            aihekokonaisuudet = initAihekokonaisuudet(sisalto);
             lukioAihekokonaisuudetRepository.saveAndFlush(aihekokonaisuudet);
         }
 
@@ -129,9 +121,27 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     }
 
     @Override
+    @SuppressWarnings({"TransactionalAnnotations", "ServiceMethodEntity"})
+    public Aihekokonaisuudet initAihekokonaisuudet(LukiokoulutuksenPerusteenSisalto sisalto) {
+        Aihekokonaisuudet aihekokonaisuudet;
+        aihekokonaisuudet = new Aihekokonaisuudet();
+        //Asetetaan oletusotsikko
+        HashMap<Kieli, String> hm = new HashMap<>();
+        hm.put(Kieli.FI, "Aihekokonaisuudet");
+        aihekokonaisuudet.setOtsikko(TekstiPalanen.of(hm));
+        aihekokonaisuudet.setSisalto(sisalto);
+        aihekokonaisuudet.setNimi(TekstiPalanen.of(Kieli.FI, "Aihekokonaisuudet"));
+        aihekokonaisuudet.setTunniste(PerusteenOsaTunniste.NORMAALI);
+        aihekokonaisuudet.getViite().setPerusteenOsa(aihekokonaisuudet);
+        aihekokonaisuudet.getViite().setVanhempi(sisalto.getSisalto());
+        sisalto.getSisalto().getLapset().add(aihekokonaisuudet.getViite());
+        sisalto.setAihekokonaisuudet(aihekokonaisuudet);
+        return aihekokonaisuudet;
+    }
+
+    @Override
     @Transactional
     public void muokkaaAihekokonaisuutta(long perusteId, LukioAihekokonaisuusMuokkausDto lukioAihekokonaisuusMuokkausDto) throws NotExistsException {
-
         Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository.findOne(lukioAihekokonaisuusMuokkausDto.getId()), Aihekokonaisuus.inPeruste(perusteId));
         lukioAihekokonaisuusRepository.lock(aihekokonaisuus, false);
         mapper.map(lukioAihekokonaisuusMuokkausDto, aihekokonaisuus);
@@ -141,14 +151,15 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     @Transactional
     public void tallennaYleiskuvaus(Long perusteId, AihekokonaisuudetYleiskuvausDto aihekokonaisuudetYleiskuvausDto) {
         Peruste peruste = perusteet.getOne(perusteId);
-        Aihekokonaisuudet aihekokonaisuudet = peruste.getLukiokoulutuksenPerusteenSisalto().getAihekokonaisuudet();
-        if( aihekokonaisuudet == null ) {
-            aihekokonaisuudet = new Aihekokonaisuudet();
+        LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();
+        Aihekokonaisuudet aihekokonaisuudet = sisalto.getAihekokonaisuudet();
+        if (aihekokonaisuudet == null) {
+            aihekokonaisuudet = initAihekokonaisuudet(sisalto);
         }
         mapper.map(aihekokonaisuudetYleiskuvausDto, aihekokonaisuudet);
 
         // Uusi, tallennetaan.
-        if( aihekokonaisuudet.getId() == null ) {
+        if (aihekokonaisuudet.getId() == null) {
             aihekokonaisuudet.setSisalto(peruste.getLukiokoulutuksenPerusteenSisalto());
             peruste.getLukiokoulutuksenPerusteenSisalto().setAihekokonaisuudet(aihekokonaisuudet);
             lukioAihekokonaisuudetRepository.saveAndFlush(aihekokonaisuudet);

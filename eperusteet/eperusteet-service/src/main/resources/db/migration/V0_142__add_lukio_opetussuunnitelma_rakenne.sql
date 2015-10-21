@@ -167,7 +167,7 @@ ALTER TABLE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet_aud ADD COLUMN viit
 -- create missing osat:
 
 -- opetuussuunnitelma:
-SELECT newOsa(rakenne.id, 'RAKENNE', newTeksti('Opetussuunnitelma'), p.tila, rakenne.viite_id,
+SELECT newOsa(rakenne.id, 'RAKENNE', newTeksti('Oppiaineet'), p.tila, rakenne.viite_id,
               (select min(a.rev) from yl_lukio_opetussuunnitelma_rakenne_aud a where a.id = rakenne.id))
   FROM yl_lukio_opetussuunnitelma_rakenne rakenne
     INNER JOIN "yl_lukiokoulutuksen_perusteen_sisalto" sisalto ON rakenne.sisalto_id = sisalto.id
@@ -196,14 +196,3 @@ FROM yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet yt
   INNER JOIN peruste p ON p.id = sisalto.peruste_id;
 ALTER TABLE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet ADD FOREIGN KEY (id) REFERENCES perusteenosa(id);
 
-
--- Local fix:
--- SELECT insertAsRevision('perusteenosa', r.id, (select min(a.rev) from yl_lukio_opetussuunnitelma_rakenne_aud a WHERE a.id = r.id))
--- FROM yl_lukio_opetussuunnitelma_rakenne r
--- UNION (
---   SELECT insertAsRevision('perusteenosa', ak.id, (select min(a.rev) from yl_aihekokonaisuudet_aud a where a.id = ak.id))
--- FROM yl_aihekokonaisuudet ak
--- ) UNION (
--- SELECT insertAsRevision('perusteenosa', yt.id, (select min(a.rev) from yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet_aud a where a.id = yt.id))
--- FROM yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet yt
--- );

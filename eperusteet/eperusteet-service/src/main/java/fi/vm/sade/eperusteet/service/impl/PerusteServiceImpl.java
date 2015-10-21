@@ -22,10 +22,10 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -36,6 +36,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -50,7 +51,7 @@ import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
-import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
+import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,7 +152,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private OppiaineRepository oppiaineRepository;
 
     @Autowired
-    private PerusopetuksenPerusteenSisaltoService perusopetuksenSisaltoService;
+    private AihekokonaisuudetService aihekokonaisuudetService;
 
     @Autowired
     private Validator validator;
@@ -837,10 +838,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else if (ekoulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS ) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS, LaajuusYksikko.KURSSI);
             LukiokoulutuksenPerusteenSisalto sisalto = new LukiokoulutuksenPerusteenSisalto();
-            sisalto.getOpetussuunnitelma().setSisalto(sisalto);
-            peruste.setLukiokoulutuksenPerusteenSisalto(sisalto);
-            sisalto.getOpetussuunnitelma().setNimi(TekstiPalanen.of(Kieli.FI, "Opetussuunnitelma"));
-            sisalto.getOpetussuunnitelma().setTunniste(PerusteenOsaTunniste.RAKENNE);
+            initLukioOpetuksenYleisetTavoitteet(sisalto);
+            aihekokonaisuudetService.initAihekokonaisuudet(sisalto);
+            initLukioOpetussuunitelmaRakenne(peruste, sisalto);
         }
 
         if (st != null) {
@@ -851,6 +851,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         perusteet.save(peruste);
         lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
+    }
+
+    private void initLukioOpetussuunitelmaRakenne(Peruste peruste, LukiokoulutuksenPerusteenSisalto sisalto) {
+        sisalto.getOpetussuunnitelma().setSisalto(sisalto);
+        peruste.setLukiokoulutuksenPerusteenSisalto(sisalto);
+        LukioOpetussuunnitelmaRakenne rakenne = sisalto.getOpetussuunnitelma();
+        rakenne.setNimi(TekstiPalanen.of(Kieli.FI, "Oppiaineet"));
+        rakenne.setTunniste(PerusteenOsaTunniste.RAKENNE);
+        rakenne.getViite().setPerusteenOsa(sisalto.getOpetussuunnitelma());
+        rakenne.getViite().setVanhempi(sisalto.getSisalto());
+        sisalto.getSisalto().getLapset().add(rakenne.getViite());
     }
 
     private EsiopetuksenPerusteenSisalto kloonaaEsiopetuksenSisalto(Peruste uusi, EsiopetuksenPerusteenSisalto vanha) {
@@ -938,28 +949,36 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(Long perusteId) {
         Peruste peruste = perusteet.getOne(perusteId);
         OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = peruste.getLukiokoulutuksenPerusteenSisalto().getOpetuksenYleisetTavoitteet();
-        if( opetuksenYleisetTavoitteet != null ) {
+        if (opetuksenYleisetTavoitteet != null) {
             return mapper.map(opetuksenYleisetTavoitteet, LukiokoulutuksenYleisetTavoitteetDto.class);
         } else {
             return new LukiokoulutuksenYleisetTavoitteetDto();
         }
-
     }
 
     @Override
     @Transactional
     public void tallennaYleisetTavoitteet(Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto) {
         Peruste peruste = perusteet.getOne(perusteId);
-        OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = peruste.getLukiokoulutuksenPerusteenSisalto().getOpetuksenYleisetTavoitteet();
+        LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();
+        OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = sisalto.getOpetuksenYleisetTavoitteet();
         if (opetuksenYleisetTavoitteet == null) {
-            opetuksenYleisetTavoitteet = new OpetuksenYleisetTavoitteet();
-            peruste.getLukiokoulutuksenPerusteenSisalto().setOpetuksenYleisetTavoitteet(opetuksenYleisetTavoitteet);
-            opetuksenYleisetTavoitteet.setSisalto(peruste.getLukiokoulutuksenPerusteenSisalto());
-            opetuksenYleisetTavoitteet.setNimi(TekstiPalanen.of(Kieli.FI, "Opetuksen yleiset tavoitteet"));
-            opetuksenYleisetTavoitteet.setTunniste(PerusteenOsaTunniste.NORMAALI);
+            opetuksenYleisetTavoitteet = initLukioOpetuksenYleisetTavoitteet(sisalto);
         }
-
         mapper.map(lukiokoulutuksenYleisetTavoitteetDto, opetuksenYleisetTavoitteet);
+    }
+
+    private OpetuksenYleisetTavoitteet initLukioOpetuksenYleisetTavoitteet(LukiokoulutuksenPerusteenSisalto sisalto) {
+        OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet;
+        opetuksenYleisetTavoitteet = new OpetuksenYleisetTavoitteet();
+        sisalto.setOpetuksenYleisetTavoitteet(opetuksenYleisetTavoitteet);
+        opetuksenYleisetTavoitteet.setSisalto(sisalto);
+        opetuksenYleisetTavoitteet.setNimi(TekstiPalanen.of(Kieli.FI, "Opetuksen yleiset tavoitteet"));
+        opetuksenYleisetTavoitteet.setTunniste(PerusteenOsaTunniste.NORMAALI);
+        opetuksenYleisetTavoitteet.getViite().setPerusteenOsa(opetuksenYleisetTavoitteet);
+        opetuksenYleisetTavoitteet.getViite().setVanhempi(sisalto.getSisalto());
+        sisalto.getSisalto().getLapset().add(opetuksenYleisetTavoitteet.getViite());
+        return opetuksenYleisetTavoitteet;
     }
 
     private static class VisitorImpl implements AbstractRakenneOsaDto.Visitor {
