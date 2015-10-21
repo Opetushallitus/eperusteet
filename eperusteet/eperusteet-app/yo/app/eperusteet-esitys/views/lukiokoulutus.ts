@@ -128,7 +128,7 @@ angular.module('eperusteet.esitys').controller('epLukiokoulutusController',funct
         item.$selected = _.isEmpty(value.osaaminen) || _.contains(value.osaaminen, item.value);
         $scope.filterOsaamiset[item.value] = !item.$selected;
       });
-      paivitaTavoitteet();
+      paivitaTavoitteet(false);
     }
     if (value.vlk) {
       _.each($scope.navi.sections[2].model.sections[0].items, function (vlk) {
@@ -285,7 +285,7 @@ angular.module('eperusteet.esitys').controller('epLukiokoulutusController',funct
 
   $rootScope.$broadcast('navifilters:set', {
     vlk: vlks,
-    sisalto: makeQueryArray($stateParams.sisalto),
+    sisalto: makeQueryArray($stateParams.sisalto, false),
     osaaminen: makeQueryArray($stateParams.osaaminen, true)
   });
 

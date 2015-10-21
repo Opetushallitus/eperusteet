@@ -209,7 +209,7 @@ angular.module('eperusteApp')
           },
           sisalto: function(peruste, $q, LukionOppiaineet, SuoritustapaSisalto) {
             //TODO
-            return promisify([]);
+            return $q.when([]);
             /*
             if (_.isArray(peruste.data)) {
               peruste = peruste.data[0];

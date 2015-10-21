@@ -17,7 +17,7 @@
 
 <label for="tyyppi-input" class="header" kaanna="kurssi-tyyppi-header" vaaditaan></label>
 <div class="fixed-group">
-  <select id="tyyppi-input" class="form-control" ng-model="kurssi.tyyppi" ng-enter="save()">
+  <select id="tyyppi-input" class="form-control" ng-model="kurssi.tyyppi">
     <option ng-repeat="t in kurssityypit" value="{{t.tyyppi}}">{{t.nimi | kaanna}}</option>
   </select>
 </div>
@@ -27,19 +27,18 @@
   <div id="tyypin-kuvaus" class="full-width" ckeditor slocalized ng-model="kurssi.kurssityypinKuvaus"></div>
 </div>
 
+<label for="koodi-input" class="header" kaanna="kurssi-koodi-header"></label>
+<div class="fixed-group">
+  <input id="koodi-input" class="form-control" type="text" ng-model="kurssi.koodiArvo" ng-disabled="true"/>
+  <div class="addon"><button role="link" class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button></div>
+</div>
+
 <label for="nimi-input" class="header" kaanna="'kurssi-nimi-header'" vaaditaan></label>
-<input id="nimi-input" class="form-control" ng-model="kurssi.nimi" slocalized required
-       ng-enter="save()"/>
+<input id="nimi-input" class="form-control" ng-model="kurssi.nimi" slocalized required />
 
 <label for="kuvaus" class="header" kaanna="kurssi-kuvaus-header"></label>
 <div>
   <div id="kuvaus" ckeditor slocalized ng-model="kurssi.kuvaus"></div>
-</div>
-
-<label for="koodi-input" class="header" kaanna="kurssi-koodi-header"></label>
-<div class="fixed-group">
-  <input id="koodi-input" class="form-control" type="text" ng-model="kurssi.koodiArvo"/>
-  <div class="addon"><a role="link" class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></a></div>
 </div>
 
 <label for="tavoitteet" class="header">

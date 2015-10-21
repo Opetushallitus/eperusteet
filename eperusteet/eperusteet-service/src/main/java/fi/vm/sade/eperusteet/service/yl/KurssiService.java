@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.*;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,25 +31,25 @@ import java.util.List;
 public interface KurssiService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
+    List<LukioKurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LukiokurssiListausDto> findLukiokurssitByRakenneRevision(long perusteId, long rakenneId, int revision);
+    List<LukioKurssiListausDto> findLukiokurssitByRakenneRevision(long perusteId, long rakenneId, int revision);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LukiokurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId);
+    List<LukioKurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException;
+    LukioKurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     long luoLukiokurssi(long perusteId, LukioKurssiLuontiDto kurssiDto) throws BusinessRuleViolationException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void muokkaaLukiokurssia(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException;
+    void muokkaaLukiokurssia(long perusteId, LukioKurssiMuokkausDto muokkausDto) throws NotExistsException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
+    void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukioKurssiOppaineMuokkausDto muokkausDto)
             throws NotExistsException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")

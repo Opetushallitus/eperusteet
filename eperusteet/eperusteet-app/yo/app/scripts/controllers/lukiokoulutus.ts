@@ -68,7 +68,8 @@ angular.module('eperusteApp')
     _.each(LukiokoulutusService.sisallot, function (item) {
       var data = {
         nimi: item.label,
-        tyyppi: item.tyyppi
+        tyyppi: item.tyyppi,
+        lapset: []
       };
       LukiokoulutusService.getOsat(item.tyyppi, true).then(function (res) {
         data.lapset = res;
@@ -267,7 +268,7 @@ angular.module('eperusteApp')
         node = node.$$nodeParent;
       }
     }
-    function traverse(node, ch, fn, parent) {
+    function traverse(node, ch, fn, parent?) {
       if (_.isArray(node)) {
         _.each(node, function(i) {
           traverse(i, ch, fn, parent);
@@ -560,7 +561,7 @@ angular.module('eperusteApp')
             return templateAround('<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">'+
               handle + kurssiColorbox() + editTime +
               '   <div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' + name + '   </div>' + remove +
-              '</div>', n);
+              '</div>');
           } else {
             var name = '{{ node.nimi | kaanna }}';
             if (!$scope.treehelpers.editMode) {
@@ -568,7 +569,7 @@ angular.module('eperusteApp')
             }
             return templateAround('<div class="puu-node oppiaine-node">'+handle
                 + collapse + icon + editTime + '<div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' +
-                '<strong>'+name+'</strong></div></div>', n);
+                '<strong>'+name+'</strong></div></div>');
           }
         },
         extension: function(node, scope) {

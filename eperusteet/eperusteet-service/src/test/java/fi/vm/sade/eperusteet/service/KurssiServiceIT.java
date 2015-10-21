@@ -100,7 +100,7 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
                 .koodiArvo("AI1")
                 .build());
         
-        LukiokurssiTarkasteleDto dto = kurssiService.getLukiokurssiTarkasteleDtoById(perusteId, id);
+        LukioKurssiTarkasteleDto dto = kurssiService.getLukiokurssiTarkasteleDtoById(perusteId, id);
         assertNotNull(dto);
         assertEquals("AI1", dto.getKoodiArvo());
         assertEquals("Äidinkielen perusteet", dto.getNimi().get(Kieli.FI));
@@ -108,18 +108,18 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         assertEquals(new Integer(1), dto.getOppiaineet().get(0).getJarjestys());
         assertEquals(suomiRef.getId(), dto.getOppiaineet().get(0).getOppiaineId());
 
-        LukiokurssiMuokkausDto muokkausDto = dtoMapper.map(dto, new LukiokurssiMuokkausDto());
+        LukioKurssiMuokkausDto muokkausDto = dtoMapper.map(dto, new LukioKurssiMuokkausDto());
         muokkausDto.setKoodiArvo("ARVO");
         lukioKurssiLockService.lock(new KurssiLockContext(perusteId, dto.getId()));
         kurssiService.muokkaaLukiokurssia(perusteId, muokkausDto);
 
-        LukiokurssiOppaineMuokkausDto liitosDto = new LukiokurssiOppaineMuokkausDto();
+        LukioKurssiOppaineMuokkausDto liitosDto = new LukioKurssiOppaineMuokkausDto();
         liitosDto.setId(dto.getId());
         liitosDto.getOppiaineet().addAll(dto.getOppiaineet());
         liitosDto.getOppiaineet().add(new KurssinOppiaineDto(saameRef.getId(), 1));
         lukioRakenneLockService.lock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         kurssiService.muokkaaLukiokurssinOppiaineliitoksia(perusteId, liitosDto);
-        List<LukiokurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId);
+        List<LukioKurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId);
         assertEquals(1, list.size());
         assertEquals("Äidinkielen perusteet", list.get(0).getNimi().get(Kieli.FI));
         assertEquals("ARVO", list.get(0).getKoodiArvo());

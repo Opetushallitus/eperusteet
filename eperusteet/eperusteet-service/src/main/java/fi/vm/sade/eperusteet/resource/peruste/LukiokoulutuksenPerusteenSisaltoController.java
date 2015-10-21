@@ -90,7 +90,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/rakenne/{rakenneId}/versiot/{revision}/kurssit", method = GET)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<LukiokurssiListausDto>> listKurssitInRakenneVersio(
+    public ResponseEntity<List<LukioKurssiListausDto>> listKurssitInRakenneVersio(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("rakenneId") final Long rakenneId,
             @PathVariable("revision") final Integer revision) {
@@ -106,12 +106,12 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/kurssit", method = GET)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<LukiokurssiListausDto>> listKurssit(@PathVariable("perusteId") final Long perusteId) {
+    public ResponseEntity<List<LukioKurssiListausDto>> listKurssit(@PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, () -> kurssit.findLukiokurssitByPerusteId(perusteId));
     }
 
     @RequestMapping(value = "/kurssit/{id}", method = GET)
-    public ResponseEntity<LukiokurssiTarkasteleDto> getKurssi(@PathVariable("perusteId") final Long perusteId,
+    public ResponseEntity<LukioKurssiTarkasteleDto> getKurssi(@PathVariable("perusteId") final Long perusteId,
                                   @PathVariable("id") Long id) {
         return handleGet(perusteId, () -> kurssit.getLukiokurssiTarkasteleDtoById(perusteId, id));
     }
@@ -126,7 +126,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @RequestMapping(value = "/kurssit/{id}", method = POST)
     public RedirectView updateKurssi(@PathVariable("perusteId") final Long perusteId,
                                      @PathVariable("id") final Long kurssiId,
-                                  @RequestBody LukiokurssiMuokkausDto kurssi) {
+                                  @RequestBody LukioKurssiMuokkausDto kurssi) {
         assertKurssiId(kurssiId, kurssi);
         kurssit.muokkaaLukiokurssia(perusteId, kurssi);
         return new RedirectView(""+kurssiId,true);
@@ -135,7 +135,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @RequestMapping(value = "/kurssit/{id}/oppiaineet", method = POST)
     public RedirectView updateKurssiOppiaineRelations(@PathVariable("perusteId") final Long perusteId,
                                      @PathVariable("id") final Long kurssiId,
-                                     @RequestBody LukiokurssiOppaineMuokkausDto kurssi) {
+                                     @RequestBody LukioKurssiOppaineMuokkausDto kurssi) {
         assertKurssiId(kurssiId, kurssi);
         kurssit.muokkaaLukiokurssinOppiaineliitoksia(perusteId, kurssi);
         return new RedirectView("",true);
@@ -157,7 +157,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kurssit", method = GET)
-    public ResponseEntity<List<LukiokurssiListausDto>> getOppiaineKurssit(
+    public ResponseEntity<List<LukioKurssiListausDto>> getOppiaineKurssit(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id) {
         return handleGet(perusteId, () -> kurssit.findLukiokurssitByOppiaineId(perusteId, id));

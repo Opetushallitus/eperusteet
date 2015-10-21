@@ -22,6 +22,7 @@ angular.module('eperusteApp')
       return Koodisto.modaali(function(koodisto) {
         MuokkausUtils.nestedSet(kurssi, 'koodiUri', ',', koodisto.koodiUri);
         MuokkausUtils.nestedSet(kurssi, 'koodiArvo', ',', koodisto.koodiArvo);
+        MuokkausUtils.nestedSet(kurssi, 'nimi', ',', koodisto.nimi);
       }, {
         tyyppi: function() { return 'lukionkurssit'; },
         ylarelaatioTyyppi: function() { return ''; },
@@ -90,8 +91,9 @@ angular.module('eperusteApp')
     Editointikontrollit.registerCallback({
       edit: function() {
       },
-      save: function() {
+      save: function(kommentti) {
         $rootScope.$broadcast('notifyCKEditor');
+        $scope.kurssi.kommentti = kommentti;
         LukioKurssiService.save($scope.kurssi).then(function() {
           $scope.back();
         });
@@ -118,7 +120,6 @@ angular.module('eperusteApp')
     });
 
     $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
-
     $scope.back = function() {
       $state.go('root.perusteprojekti.suoritustapa.lukioosat', {
         osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT
@@ -136,8 +137,10 @@ angular.module('eperusteApp')
           }
         });
       },
-      save: function() {
+      save: function(kommentti) {
         $rootScope.$broadcast('notifyCKEditor');
+        $scope.kurssi.kommentti = kommentti;
+        $log.info('kommentti: ', kommentti);
         LukioKurssiService.update($scope.kurssi).then(function() {
           $scope.back();
         });
@@ -160,7 +163,6 @@ angular.module('eperusteApp')
     });
 
     $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
-
     $scope.back = function() {
       $state.go('root.perusteprojekti.suoritustapa.kurssi', {
         kurssiId: $stateParams.kurssiId

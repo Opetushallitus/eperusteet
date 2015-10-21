@@ -16,7 +16,6 @@
 
 'use strict';
 /*global _*/
-function mayBeUsed() {}
 
 angular.module('eperusteApp')
   .service('LukiokoulutusService', function (LukionOppiaineet,
@@ -26,8 +25,6 @@ angular.module('eperusteApp')
                                              LukioKurssit,
                                              LukiokoulutusYleisetTavoitteet,
                                              LukiokoulutusAihekokonaisuudet) {
-    mayBeUsed($log);
-
     this.OPETUKSEN_YLEISET_TAVOITTEET = 'opetuksen_yleiset_tavoitteet';
     this.AIHEKOKONAISUUDET = 'aihekokonaisuudet';
     this.OPPIAINEET_OPPIMAARAT = 'oppiaineet_oppimaarat';
@@ -84,7 +81,7 @@ angular.module('eperusteApp')
       return deferred.promise;
     }
 
-    function commonParams (extra) {
+    function commonParams (extra?) {
       if (!tiedot) { return {}; }
       var obj = { perusteId: tiedot.getProjekti()._peruste };
       if (extra) {
@@ -218,10 +215,14 @@ angular.module('eperusteApp')
      * @param perusteId <number> id of Peruste
      * @return Promise<LukioKurssiListausDto[]>
      */
-    var listByPeruste = function(perusteId, cb) {
+    var listByPeruste = function(perusteId, cb?) {
       if (kurssitCache[perusteId]) {
-        var d = $q.defer();
-        d.resolve(_.cloneDeep(kurssitCache[perusteId]));
+        var d = $q.defer(),
+            toReturn = _.cloneDeep(kurssitCache[perusteId]);
+        d.resolve(toReturn);
+        if (cb) {
+          cb(toReturn);
+        }
         return d.promise;
       }
       return LukioKurssit.query({

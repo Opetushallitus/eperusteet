@@ -125,7 +125,7 @@ angular.module('eperusteApp')
     return normalize($location.url()).indexOf(normalize(tablessUrl)) > -1;
   };
 
-  function ylMapper(osa, key, level, link) {
+  function ylMapper(osa, key, level, link?) {
     level = level || 0;
     items.push({
       depth: level,

@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
-import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiListausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiListausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.OppiaineKurssiHakuDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,7 +30,7 @@ import java.util.List;
  * Time: 15.11
  */
 public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukiokurssi, Long> {
-    String KURSSILISTAUS_SELECT = "SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiListausDto(" +
+    String KURSSILISTAUS_SELECT = "SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiListausDto(" +
             "   kurssi.id," +
             "   kurssi.tyyppi, " +
             "   kurssi.koodiArvo," +
@@ -45,7 +45,7 @@ public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukio
             "   INNER JOIN kurssi.opetussuunnitelma os " +
             "   INNER JOIN os.sisalto sisalto ON sisalto.peruste.id = ?1 " +
             " ORDER BY kurssi.koodiArvo ")
-    List<LukiokurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
+    List<LukioKurssiListausDto> findLukiokurssitByPerusteId(long perusteId);
 
     @Query(value = KURSSILISTAUS_SELECT + " FROM Lukiokurssi kurssi" +
             "   INNER JOIN kurssi.nimi nimi " +
@@ -54,7 +54,7 @@ public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukio
             "   INNER JOIN kurssi.opetussuunnitelma os " +
             "   INNER JOIN os.sisalto sisalto ON sisalto.peruste.id = ?1 " +
             " ORDER BY kurssi.koodiArvo ")
-    List<LukiokurssiListausDto> findLukiokurssitByPerusteAndOppiaineId(long perusteId, long oppiaineId);
+    List<LukioKurssiListausDto> findLukiokurssitByPerusteAndOppiaineId(long perusteId, long oppiaineId);
 
     @Query(value = "SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.OppiaineKurssiHakuDto(" +
             "   aine.id,      " +

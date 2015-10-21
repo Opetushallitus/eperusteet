@@ -39,7 +39,7 @@ angular.module('eperusteApp')
           }
         });
       },
-      vapauta: function (and) {
+      vapauta: function (and?) {
         Lukitus.vapautaOppiaine(oppiaine.id, function () {
           isLocked = false;
           if (and) {
