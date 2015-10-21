@@ -49,6 +49,7 @@ public class LukioKurssiLuontiDto implements Serializable {
     private Optional<LokalisoituTekstiDto> tavoitteetOtsikko;
     private Optional<LokalisoituTekstiDto> tavoitteet;
     private Optional<LokalisoituTekstiDto> sisallot;
+    private String kommentti;
 
     public LukioKurssiLuontiDto() {
     }
@@ -61,7 +62,8 @@ public class LukioKurssiLuontiDto implements Serializable {
                                 Optional<LokalisoituTekstiDto> kuvaus,
                                 Optional<LokalisoituTekstiDto> tavoitteetOtsikko,
                                 Optional<LokalisoituTekstiDto> tavoitteet,
-                                Optional<LokalisoituTekstiDto> sisallot) {
+                                Optional<LokalisoituTekstiDto> sisallot,
+                                String kommentti) {
         this.tyyppi = tyyppi;
         this.oppiaineet = oppiaineet;
         this.nimi = nimi;
@@ -72,5 +74,6 @@ public class LukioKurssiLuontiDto implements Serializable {
         this.tavoitteetOtsikko = tavoitteetOtsikko;
         this.tavoitteet = tavoitteet;
         this.sisallot = sisallot;
+        this.kommentti = kommentti;
     }
 }
