@@ -34,13 +34,14 @@ European Union Public Licence for more details.
         </div>
       </div>
     </div>
+
     <div ng-controller="OmatperusteprojektitCtrl">
-      <div class="panel panel-default">
+      <div class="panel panel-default" ng-if="projektit.length > 0">
         <div class="panel-heading" kaanna="perusteprojektit-otsikko"></div>
         <div class="panel-body">
           <p ng-show="projektit.length === 0" kaanna="ei-projekteja"></p>
           <ul class="list-unstyled projektit">
-            <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:naytto.shown" >
+            <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit | limitTo:naytto.shown" >
               <a ng-show="projekti.diaarinumero" title="{{projekti.nimi}}" href="{{ projekti.url}}">{{ projekti.diaarinumero }}: {{projekti.nimi}}</a>
               <a ng-hide="projekti.diaarinumero" title="{{projekti.nimi}}" href="{{ projekti.url}}"><b>{{ 'perustepohja' | kaanna }}</b>: {{projekti.nimi}}</a>
             </li>
@@ -49,6 +50,7 @@ European Union Public Licence for more details.
         </div>
       </div>
     </div>
+
     <div class="panel panel-default" ng-controller="SivupalkkiTiedotteetController">
       <div class="panel-heading" kaanna="'tiedotteet'"></div>
       <div class="panel-body">

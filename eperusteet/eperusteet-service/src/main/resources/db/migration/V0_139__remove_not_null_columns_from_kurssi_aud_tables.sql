@@ -1,0 +1,5 @@
+ALTER TABLE yl_kurssi_aud ALTER COLUMN luoja DROP NOT NULL;
+ALTER TABLE yl_kurssi_aud ALTER COLUMN luotu DROP NOT NULL;
+ALTER TABLE yl_kurssi_aud ALTER COLUMN nimi_id DROP NOT NULL;
+ALTER TABLE yl_lukiokurssi_aud ALTER COLUMN tyyppi DROP NOT NULL;
+ALTER TABLE yl_lukiokurssi_aud ALTER COLUMN sisalto_id DROP NOT NULL;
