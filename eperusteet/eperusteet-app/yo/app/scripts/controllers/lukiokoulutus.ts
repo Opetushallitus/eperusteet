@@ -501,11 +501,10 @@ angular.module('eperusteApp')
       return !$scope.treehelpers.editMode ? '<span class="aikaleima" ng-bind="node.muokattu || 0 | aikaleima: \'ago\'" title="{{\'muokattu\' | kaanna }} {{node.muokattu || 0 | aikaleima}}"></span>' : '';
     }
     function kurssiColorbox() {
-      return '  <span class="colorbox kurssi-tyyppi {{node.tyyppi.toLowerCase()}}" ng-class="{\'lengthy\' : node.koodiArvo && node.koodiArvo.length >= 4}"' +
-        '     ng-bind="node.koodiArvo"></span>';
+      return '  <span class="colorbox kurssi-tyyppi {{node.tyyppi.toLowerCase()}}"></span>';
     }
     function kurssiName() {
-      var name = '<span ng-bind="node.nimi | kaanna" title="{{node.nimi | kaanna}}"></span>';
+      var name = '<span ng-bind="(node.nimi | kaanna) + (node.koodiArvo ? \' (\'+node.koodiArvo+\')\' : \'\')" title="{{node.nimi | kaanna}} {{node.koodiArvo ? \'(\'+node.koodiArvo+\')\' : \'\'}}"></span>';
       if (!$scope.treehelpers.editMode) {
         name = '<a ng-click="goto(node)">'+name+'</a>';
       }
