@@ -58,7 +58,7 @@ DECLARE
 BEGIN
   SELECT max(rev) INTO _rev FROM revinfo;
   _rev := _rev + 1;
-  INSERT INTO revinfo(rev, revtstmp) VALUES (_rev, extract(epoch from now()) * 1000);
+  INSERT INTO revinfo(rev, revtstmp, kommentti) VALUES (_rev, extract(epoch from now()) * 1000, 'migraatio');
   RETURN _rev;
 END $$ LANGUAGE plpgsql;
 
@@ -167,6 +167,9 @@ ALTER TABLE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet_aud ADD COLUMN viit
 -- create missing osat:
 
 -- opetuussuunnitelma:
+SELECT insertAsRevision('yl_lukio_opetussuunnitelma_rakenne', r.id)
+  FROM yl_lukio_opetussuunnitelma_rakenne r
+  WHERE NOT EXISTS(SELECT a.rev FROM yl_lukio_opetussuunnitelma_rakenne_aud a WHERE a.id = r.id);
 SELECT newOsa(rakenne.id, 'RAKENNE', newTeksti('Oppiaineet'), p.tila, rakenne.viite_id,
               (select min(a.rev) from yl_lukio_opetussuunnitelma_rakenne_aud a where a.id = rakenne.id))
   FROM yl_lukio_opetussuunnitelma_rakenne rakenne
