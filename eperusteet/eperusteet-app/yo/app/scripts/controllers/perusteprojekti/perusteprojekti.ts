@@ -40,7 +40,7 @@ angular.module('eperusteApp')
         abstract: true
       })
       .state('root.perusteprojekti.suoritustapa.lukioosat', {
-        url: '/lukioosat/:osanTyyppi',
+        url: '/lukioosat/:osanTyyppi{versio:(?:/[^/]+)?}',
         templateUrl: 'views/partials/lukio/osat/osalistaus.html',
         controller: 'LukioOsalistausController',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',

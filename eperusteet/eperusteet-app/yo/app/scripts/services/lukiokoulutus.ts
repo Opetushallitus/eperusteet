@@ -520,14 +520,39 @@ angular.module('eperusteApp')
       return d.promise;
     };
 
-    var getYleisetTavoitteet = function() {
-      return LukiokoulutusYleisetTavoitteet.get({
+    var getYleisetTavoitteet = function(versio) {
+
+      if( versio ) {
+        return LukiokoulutusYleisetTavoitteet.getByVersio({
+          perusteId: LukiokoulutusService.getPerusteId(),
+          versioId: versio
+        }).$promise;
+
+      } else {
+        return LukiokoulutusYleisetTavoitteet.get({
+          perusteId: LukiokoulutusService.getPerusteId()
+        }).$promise;
+
+      }
+    };
+
+    var getVersiot = function() {
+      return LukiokoulutusYleisetTavoitteet.versiot({
         perusteId: LukiokoulutusService.getPerusteId()
+      }).$promise;
+    };
+
+    var palauta = function(perusteId, versioId) {
+      return LukiokoulutusYleisetTavoitteet.palauta({
+        perusteId: perusteId,
+        versioId: versioId
       }).$promise;
     };
 
     return {
       updateYleistTavoitteet: updateYleistTavoitteet,
-      getYleisetTavoitteet: getYleisetTavoitteet
+      getYleisetTavoitteet: getYleisetTavoitteet,
+      getVersiot: getVersiot,
+      palauta: palauta
     };
   });

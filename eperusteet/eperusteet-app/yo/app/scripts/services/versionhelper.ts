@@ -19,7 +19,8 @@
 
 angular.module('eperusteApp')
   .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot,
-    RakenneVersio, Notifikaatiot, $state, $location, $stateParams, TutkinnonOsaViitteet) {
+    RakenneVersio, Notifikaatiot, $state, $location, $stateParams, TutkinnonOsaViitteet,
+    LukioYleisetTavoitteetService) {
 
     function rakennaNimi(v) {
         var nimi = (v.kutsumanimi || '') + ' ' + (v.sukunimi || '');
@@ -70,6 +71,13 @@ angular.module('eperusteApp')
           versiotListHandler(data);
           cb();
         });
+      } else if (tyyppi === 'lukioyleisettavoitteet') {
+         LukioYleisetTavoitteetService.getVersiot().then(function(res) {
+           rakennaNimet(res);
+           data.list = res;
+           versiotListHandler(data);
+           cb();
+         });
       }
     }
 
@@ -106,6 +114,10 @@ angular.module('eperusteApp')
           viiteId: tunniste.id,
           versioId: data.chosen.numero
         }, {}, cb, Notifikaatiot.serverCb);
+      } else if (tyyppi === 'lukioyleisettavoitteet') {
+        LukioYleisetTavoitteetService.palauta(tunniste.id, data.chosen.numero).then(function(res) {
+          cb(res);
+        });
       }
 
     }
@@ -178,6 +190,11 @@ angular.module('eperusteApp')
       getVersions(data, tunniste, 'rakenne', force, cb);
     };
 
+    this.getLukioYleisetTavoitteetVersions = function (data, tunniste, force, cb) {
+      getVersions(data, tunniste, 'lukioyleisettavoitteet', force, cb);
+    };
+
+
     this.chooseLatest = function (data) {
       data.chosen = latest(data.list);
     };
@@ -202,6 +219,10 @@ angular.module('eperusteApp')
 
     this.revertRakenne = function (data, tunniste, cb) {
       revert(data, tunniste, 'Rakenne', cb);
+    };
+
+    this.revertLukioYleisetTavoitteet = function (data, tunniste, cb) {
+      revert(data, tunniste, 'lukioyleisettavoitteet', cb);
     };
 
     this.setUrl = function (data) {

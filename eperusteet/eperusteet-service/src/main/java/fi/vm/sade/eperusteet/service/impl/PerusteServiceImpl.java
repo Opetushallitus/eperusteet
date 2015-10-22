@@ -155,6 +155,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private AihekokonaisuudetService aihekokonaisuudetService;
 
     @Autowired
+    private LukioYleisetTavoitteetRepository lukioYleisetTavoitteetRepository;
+
+    @Autowired
+    private LukioAihekokonaisuudetRepository lukioAihekokonaisuudetRepository;
+
+    @Autowired
     private Validator validator;
 
     @Override
@@ -946,9 +952,24 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional( readOnly = true)
-    public LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(Long perusteId) {
+    public LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(long perusteId) {
+        return getYeisettavoitteetLatestOrByVersion(perusteId, null);
+    }
+
+    @Override
+    @Transactional( readOnly = true)
+    public LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteetByVersion(long perusteId, int revision) {
+        return getYeisettavoitteetLatestOrByVersion(perusteId, revision);
+    }
+
+    private LukiokoulutuksenYleisetTavoitteetDto getYeisettavoitteetLatestOrByVersion(long perusteId, Integer revision) {
         Peruste peruste = perusteet.getOne(perusteId);
         OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = peruste.getLukiokoulutuksenPerusteenSisalto().getOpetuksenYleisetTavoitteet();
+
+        if (revision != null) {
+            opetuksenYleisetTavoitteet = lukioYleisetTavoitteetRepository.findRevision(opetuksenYleisetTavoitteet.getId(), revision);
+        }
+
         if (opetuksenYleisetTavoitteet != null) {
             return mapper.map(opetuksenYleisetTavoitteet, LukiokoulutuksenYleisetTavoitteetDto.class);
         } else {
@@ -966,6 +987,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             opetuksenYleisetTavoitteet = initLukioOpetuksenYleisetTavoitteet(sisalto);
         }
         mapper.map(lukiokoulutuksenYleisetTavoitteetDto, opetuksenYleisetTavoitteet);
+        lukioAihekokonaisuudetRepository.setRevisioKommentti(lukiokoulutuksenYleisetTavoitteetDto.getMetadataOrEmpty().getKommentti());
     }
 
     private OpetuksenYleisetTavoitteet initLukioOpetuksenYleisetTavoitteet(LukiokoulutuksenPerusteenSisalto sisalto) {
@@ -979,6 +1001,19 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         opetuksenYleisetTavoitteet.getViite().setVanhempi(sisalto.getSisalto());
         sisalto.getSisalto().getLapset().add(opetuksenYleisetTavoitteet.getViite());
         return opetuksenYleisetTavoitteet;
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public List<Revision> getYleisetTavoitteetVersiot(Long perusteId) {
+        Peruste peruste = perusteet.getOne(perusteId);
+        OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = peruste.getLukiokoulutuksenPerusteenSisalto().getOpetuksenYleisetTavoitteet();
+        if( opetuksenYleisetTavoitteet != null ) {
+            return lukioYleisetTavoitteetRepository.getRevisions(opetuksenYleisetTavoitteet.getId());
+        } else {
+            return new ArrayList<Revision>();
+        }
     }
 
     private static class VisitorImpl implements AbstractRakenneOsaDto.Visitor {
@@ -995,6 +1030,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 throw new BusinessRuleViolationException("Tutkinnon rakennehierarkia ylittää maksimisyvyyden");
             }
         }
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public LukiokoulutuksenYleisetTavoitteetDto palautaYleisetTavoitteet(long perusteId, int revisio) {
+        LukiokoulutuksenYleisetTavoitteetDto yleistTavoitteet = getYleisetTavoitteetByVersion(perusteId, revisio);
+        tallennaYleisetTavoitteet(perusteId, yleistTavoitteet);
+        return yleistTavoitteet;
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);

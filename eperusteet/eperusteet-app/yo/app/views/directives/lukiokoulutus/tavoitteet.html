@@ -5,17 +5,20 @@
 </div>
 <div class="row">
   <div class="col-md-12 ep-sisalto-inner">
-    <div class="action-buttons" ng-if="!editEnabled">
+    <div class="action-buttons" ng-if="!editEnabled && versiot.latest">
       <button class="btn btn-default" icon-role="edit" ng-click="edit()" kaanna="muokkaa"
               oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
     </div>
     <div ng-if="!editEnabled">
+
+      <revert-note object="yleisetTavoitteet" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
       <div ng-if="!yleisetTavoitteet.otsikko" kaanna="yleisettavoitteet-ei-otsikkoa"></div>
       <h1><span ng-bind="yleisetTavoitteet.otsikko | kaanna"></span></h1>
       <div ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe"></div>      <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></div>
       <div ng-if="yleisetTavoitteet.muokattu" class="muokattuViimeksi">
         <span kaanna="'muokattu-viimeksi'"></span>: <span ng-bind="yleisetTavoitteet.muokattu || 0 | aikaleima"></span>
       </div>
+      <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
     </div>
 

@@ -15,7 +15,9 @@
  */
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +30,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class LukiokoulutuksenYleisetTavoitteetDto implements Serializable {
+public class LukiokoulutuksenYleisetTavoitteetDto extends UpdateDto<LukiokoulutuksenYleisetTavoitteetDto> implements Serializable {
 
     private Long id;
     private LokalisoituTekstiDto otsikko;

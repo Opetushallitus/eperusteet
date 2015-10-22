@@ -59,6 +59,13 @@ angular.module('eperusteApp')
                   });
                 };
                 break;
+              case 'root.perusteprojekti.suoritustapa.lukioosat':
+                cb = function () {
+                  Lukitus.lukitseLukioYleisettavoitteet().then( function () {
+                    VersionHelper.revertLukioYleisetTavoitteet($scope.versiot, {id: $scope.$parent.perusteId, suoritustapa: suoritustapa}, revCb);
+                  });
+                };
+                break;
               default :
                 cb = angular.noop;
             }

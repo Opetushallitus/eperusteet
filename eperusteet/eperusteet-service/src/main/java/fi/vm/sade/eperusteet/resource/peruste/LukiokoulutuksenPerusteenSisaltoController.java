@@ -18,15 +18,19 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.dto.IdHolder;
+import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
@@ -37,6 +41,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -72,6 +77,9 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @Autowired
     private AihekokonaisuudetService aihekokonaisuudetService;
+
+    @Autowired
+    private KayttajanTietoService kayttajanTietoService;
 
     @RequestMapping(value = "/oppiaineet", method = GET)
     public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(
@@ -343,6 +351,40 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         perusteet.tallennaYleisetTavoitteet(perusteId, lukiokoulutuksenYleisetTavoitteetDto);
         return new RedirectView("yleisettavoitteet", true);
     }
+
+    @RequestMapping(value = "/yleisettavoitteet/versiot", method = GET)
+    public List<CombinedDto<Revision, HenkiloTietoDto>> getYleisetTavoitteetVersiot(
+            @PathVariable("perusteId") final Long perusteId) {
+
+        List<Revision> revisiot = perusteet.getYleisetTavoitteetVersiot(perusteId);
+        List<CombinedDto<Revision, HenkiloTietoDto>> versiot = new ArrayList<>();
+        for (Revision r : revisiot) {
+            versiot.add(new CombinedDto<>(r, new HenkiloTietoDto(kayttajanTietoService.hae(r.getMuokkaajaOid()))));
+        }
+        return versiot;
+    }
+
+    @RequestMapping(value = "/yleisettavoitteet/versio/{revisio}", method = GET)
+    public ResponseEntity<LukiokoulutuksenYleisetTavoitteetDto> getYleisetTavoitteetByVersio(
+            @PathVariable("perusteId") final long perusteId,
+            @PathVariable("revisio") final int revisio) {
+        return handleGet(perusteId, new Supplier<LukiokoulutuksenYleisetTavoitteetDto>() {
+            @Override
+            public LukiokoulutuksenYleisetTavoitteetDto get() {
+                return perusteet.getYleisetTavoitteetByVersion(perusteId, revisio);
+            }
+        });
+    }
+
+    @RequestMapping(value = "/yleisettavoitteet/palauta/{revisio}", method = POST)
+    public ResponseEntity<LukiokoulutuksenYleisetTavoitteetDto> palautaYleisetTavoitteet(
+            @PathVariable("perusteId") final long perusteId,
+            @PathVariable("revisio") final int revisio) {
+
+        LukiokoulutuksenYleisetTavoitteetDto dto = perusteet.palautaYleisetTavoitteet(perusteId, revisio);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, Supplier<T> response) {
         return CacheableResponse.create(perusteet.getLastModifiedRevision(perusteId), 1, response);
