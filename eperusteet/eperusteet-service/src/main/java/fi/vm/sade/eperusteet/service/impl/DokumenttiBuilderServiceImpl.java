@@ -32,6 +32,9 @@ import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Termi;
 import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohde;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
@@ -90,10 +93,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.ProcessingInstruction;
+import org.w3c.dom.*;
 
 /**
  *
@@ -805,15 +805,85 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     private void addAmmattitaitovaatimukset(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
 
         String ammattitaitovaatimuksetText = getTextString(tutkinnonOsa.getAmmattitaitovaatimukset(), kieli);
-        if (StringUtils.isEmpty(ammattitaitovaatimuksetText)) {
+        List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimukset = tutkinnonOsa.getAmmattitaitovaatimuksetLista();
+
+        if ( StringUtils.isEmpty(ammattitaitovaatimuksetText) && ammattitaitovaatimukset.isEmpty()) {
             return;
         }
 
-        addTekstiSectionGeneric(
-            doc,
-            parent,
-            ammattitaitovaatimuksetText,
-            messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
+        addTekstiSectionGeneric(doc, parent, ammattitaitovaatimuksetText,
+                messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
+
+        Element arviointiSection = doc.createElement("section");
+        parent.appendChild(arviointiSection);
+
+
+        for (AmmattitaitovaatimuksenKohdealue ka : ammattitaitovaatimukset) {
+            if (ka.getVaatimuksenKohteet() == null) {
+                LOG.warn("Arvioinninkohteet was null");
+                continue;
+            }
+            if (ka.getVaatimuksenKohteet().isEmpty()) {
+                LOG.warn("Arvioinninkohteet was empty");
+                continue;
+            }
+
+            Text subHeaderNode = doc.createTextNode(getTextString(ka.getOtsikko(), kieli));
+            Element kaTitlePara = addSubHeader(doc, arviointiSection, subHeaderNode);
+
+
+            // Jokaiselle kohdealueelle oma taulukkonsa, ja annetaan docbookin
+            // yrittää kovasti, että se pysyy kokonaisena.
+            List<AmmattitaitovaatimuksenKohde> vaatimuksenKohteet = ka.getVaatimuksenKohteet();
+            boolean eka=true;
+            for (AmmattitaitovaatimuksenKohde kohde : vaatimuksenKohteet) {
+                String kohdeTeksti = getTextString(kohde.getOtsikko(), kieli);
+
+                Element kaTable = doc.createElement("informaltable");
+                // ruma häkki, koitetaan pakottaa kohdealueen otsikko ja eka
+                // taulu samalle sivulle.
+                if (eka) {
+                    kaTitlePara.appendChild(kaTable);
+                    eka = false;
+                } else {
+                    // pahin ongelma samalle sivulle pakottamisessa on, että
+                    // fop ei kykene katkaisemaan taulukkoa, jos se mitenkään
+                    // mahdu samalle sivulle, vaan taulukko vuotaan sivurajoista
+                    // yli. Hyödyt kuitenkin voittavat haitat, koska taulukossa
+                    // pitää olla todella paljon sisältöä, jotta se vuotaisi
+                    // yli.
+                    addDBFOInstruction(doc, kaTable, KT_ALWAYS);
+                    arviointiSection.appendChild(kaTable);
+                }
+
+                // Kohdealueen otsikkorivi alkaa
+                Element groupElement = doc.createElement("tgroup");
+                groupElement.setAttribute("cols", "1");
+                Element colspecTaso = doc.createElement("colspec");
+                colspecTaso.setAttribute("colname", "taso");
+                colspecTaso.setAttribute("colwidth", "1*");
+                groupElement.appendChild(colspecTaso);
+
+                String kohdeSelite = getTextString(kohde.getSelite(), kieli);
+                Element bodyElement = createTableHeaderElement(doc, kieli, kohdeSelite, kohdeTeksti, groupElement);
+
+                List<String> vaatimusList = new ArrayList<>();
+                for (Ammattitaitovaatimus vaatimus : kohde.getVaatimukset()) {
+                    String ktaso = getTextString( vaatimus.getSelite(), kieli);
+                    if( vaatimus.getAmmattitaitovaatimusKoodi() != null && !vaatimus.getAmmattitaitovaatimusKoodi().isEmpty() ){
+                        ktaso += " (" + vaatimus.getAmmattitaitovaatimusKoodi() + ")";
+                    }
+                    vaatimusList.add(ktaso);
+                }
+
+                Element bodyRowElement = doc.createElement("row");
+                bodyElement.appendChild(bodyRowElement);
+                addTableCell(doc, bodyRowElement, getTextsAsList(doc, vaatimusList));
+
+                groupElement.appendChild(bodyElement);
+                kaTable.appendChild(groupElement);
+            }
+        }
     }
 
     private void addAmmattitaidonOsoittamistavat(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
@@ -879,14 +949,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             String otsikkoTeksti = tyyppi == TutkinnonOsaTyyppi.NORMAALI ? getTextString(ka.getOtsikko(), kieli) : messages
                 .translate("docgen.tutke2.arvioinnin_kohteet.title", kieli);
 
-            // Kukin kohdealue alkaa omalla kappaleellaan
-            Element kaTitlePara = doc.createElement("para");
-            addDBFOInstruction(doc, kaTitlePara, KT_ALWAYS);
-            Element kaTitleEmphasis = doc.createElement("emphasis");
-            kaTitleEmphasis.setAttribute("role", "strong");
-            kaTitleEmphasis.appendChild(doc.createTextNode(otsikkoTeksti.toUpperCase()));
-            kaTitlePara.appendChild(kaTitleEmphasis);
-            arviointiSection.appendChild(kaTitlePara);
+            Element kaTitlePara = addSubHeader(doc, arviointiSection, doc.createTextNode(otsikkoTeksti.toUpperCase()));
+
 
             // Jokaiselle kohdealueelle oma taulukkonsa, ja annetaan docbookin
             // yrittää kovasti, että se pysyy kokonaisena.
@@ -924,32 +988,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 colspecKriteeri.setAttribute("colwidth", "4*");
                 groupElement.appendChild(colspecKriteeri);
 
-                Element headerElement = doc.createElement("thead");
-                Element headerRowElement = doc.createElement("row");
-
-                Element headerEntry = doc.createElement("entry");
-                headerEntry.appendChild(doc.createTextNode(kohdeTeksti));
-                headerEntry.setAttribute("namest", "taso");
-                headerEntry.setAttribute("nameend", "kriteeri");
-                headerEntry.setAttribute("align", "center");
-
-                // Otsikkorivin tausta vähän shadetuksi
-                addDBFOInstruction(doc, headerRowElement, "bgcolor=\"#EEEEEE\"");
-
-                headerRowElement.appendChild(headerEntry);
-                headerElement.appendChild(headerRowElement);
-                groupElement.appendChild(headerElement);
-                // Kohdealueen otsikkorivi loppuu
-
-                Element bodyElement = doc.createElement("tbody");
-
-                // Lisätään otsikon alle selite
-                Element seliteRowElement = doc.createElement("row");
-                Element seliteEntry = doc.createElement("entry");
-                seliteEntry.appendChild(doc.createTextNode(getTextString(kohde.getSelite(), kieli)));
-                seliteEntry.setAttribute("align", "center");
-                seliteRowElement.appendChild(seliteEntry);
-                bodyElement.appendChild(seliteRowElement);
+                String kohdeSelite = getTextString(kohde.getSelite(), kieli);
+                Element bodyElement = createTableHeaderElement(doc, kieli, kohdeSelite, kohdeTeksti, groupElement);
 
                 Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
                 List<OsaamistasonKriteeri> kriteerilista = new ArrayList<>(osaamistasonKriteerit);
@@ -1001,6 +1041,48 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 kaTable.appendChild(groupElement);
             }
         }
+    }
+
+    private Element createTableHeaderElement(Document doc, Kieli kieli, String kohdeSelite, String kohdeTeksti, Element groupElement) {
+        Element headerElement = doc.createElement("thead");
+        Element headerRowElement = doc.createElement("row");
+
+        Element headerEntry = doc.createElement("entry");
+        headerEntry.appendChild(doc.createTextNode(kohdeTeksti));
+        headerEntry.setAttribute("namest", "taso");
+        headerEntry.setAttribute("nameend", "kriteeri");
+        headerEntry.setAttribute("align", "center");
+
+        // Otsikkorivin tausta vähän shadetuksi
+        addDBFOInstruction(doc, headerRowElement, "bgcolor=\"#EEEEEE\"");
+
+        headerRowElement.appendChild(headerEntry);
+        headerElement.appendChild(headerRowElement);
+        groupElement.appendChild(headerElement);
+        // Kohdealueen otsikkorivi loppuu
+
+        Element bodyElement = doc.createElement("tbody");
+
+        // Lisätään otsikon alle selite
+        Element seliteRowElement = doc.createElement("row");
+        Element seliteEntry = doc.createElement("entry");
+        seliteEntry.appendChild(doc.createTextNode(kohdeSelite));
+        seliteEntry.setAttribute("align", "center");
+        seliteRowElement.appendChild(seliteEntry);
+        bodyElement.appendChild(seliteRowElement);
+        return bodyElement;
+    }
+
+    private Element addSubHeader(Document doc, Element section, Text textNode) {
+        // Kukin kohdealue alkaa omalla kappaleellaan
+        Element kaTitlePara = doc.createElement("para");
+        addDBFOInstruction(doc, kaTitlePara, KT_ALWAYS);
+        Element kaTitleEmphasis = doc.createElement("emphasis");
+        kaTitleEmphasis.setAttribute("role", "strong");
+        kaTitleEmphasis.appendChild(textNode);
+        kaTitlePara.appendChild(kaTitleEmphasis);
+        section.appendChild(kaTitlePara);
+        return kaTitlePara;
     }
 
     private Element addTableRow(Document doc, Element table) {
