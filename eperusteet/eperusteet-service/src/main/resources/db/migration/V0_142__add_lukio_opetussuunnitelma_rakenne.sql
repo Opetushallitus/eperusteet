@@ -31,7 +31,7 @@ ALTER TABLE perusteenosaviite_aud ADD COLUMN lapset_order INTEGER;
 CREATE OR REPLACE FUNCTION newId()
   RETURNS BIGINT AS $$
 BEGIN
-  RETURN (SELECT nextval('hibernate_sequence'));
+  RETURN (SELECT nextval('hibernate_sequence'))*10;
 END $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION insertAsRevision(tableName text, id BIGINT, _rev int)
@@ -88,15 +88,24 @@ BEGIN
   RETURN _id;
 END $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION newViite(vanhempiId bigint)
+CREATE OR REPLACE FUNCTION newViite(vanhempiId bigint, perusteenosaId bigint)
   RETURNS BIGINT AS $$
 DECLARE
   _id bigint;
 BEGIN
   SELECT newId() INTO _id;
-  INSERT INTO perusteenosaviite (id, vanhempi_id, lapset_order) VALUES (_id, vanhempiId, 0);
+  INSERT INTO perusteenosaviite (id, vanhempi_id, lapset_order, perusteenosa_id) VALUES (_id, vanhempiId,
+          coalesce((select max(v.lapset_order)+1 from perusteenosaviite v
+                where v.vanhempi_id = vanhempiId), 0),
+          perusteenosaId);
   PERFORM insertAsRevision('perusteenosaviite', _id);
   RETURN _id;
+END $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION newViite(vanhempiId bigint, perusteenosaId bigint)
+  RETURNS BIGINT AS $$
+BEGIN
+  RETURN newViite(vanhempiId, null);
 END $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION newOsa(_id bigint, _tunniste text, _nimi bigint, _tila text, viiteId bigint,
@@ -107,7 +116,6 @@ BEGIN
   UPDATE perusteenosaviite SET perusteenosa_id = _id WHERE id = viiteId;
   RETURN _id;
 END $$ LANGUAGE plpgsql;
-
 
 
 -- create rakenne with viitteet to sisalto
@@ -153,6 +161,13 @@ SET viite_id = newViite((SELECT s.sisalto_id
 ALTER TABLE yl_aihekokonaisuudet ALTER COLUMN viite_id SET NOT NULL;
 ALTER TABLE yl_aihekokonaisuudet_aud ADD COLUMN viite_id BIGINT;
 
+
+SELECT ak.id, v.id, v.perusteenosa_id, vanhempi.id, vanhempi.perusteenosa_id FROM yl_lukio_opetussuunnitelma_rakenne ak
+  INNER JOIN perusteenosaviite v ON ak.viite_id = v.id
+  INNER JOIN perusteenosaviite vanhempi ON v.vanhempi_id = vanhempi.id
+  INNER JOIN perusteenosa p ON p.id = ak.id;
+
+
 -- migrate new viite column to yleiset tavoitteet with parent in sisalto
 ALTER TABLE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet ADD COLUMN viite_id BIGINT REFERENCES perusteenosaviite (id);
 UPDATE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet
@@ -177,6 +192,8 @@ SELECT newOsa(rakenne.id, 'RAKENNE', newTeksti('Oppiaineet'), p.tila, rakenne.vi
     INNER JOIN peruste p ON p.id = sisalto.peruste_id;
 ALTER TABLE yl_lukio_opetussuunnitelma_rakenne ADD FOREIGN KEY (id) REFERENCES perusteenosa(id);
 
+
+
 -- aihekokonaisuudet:
 -- if some references are null
 update yl_aihekokonaisuudet
@@ -200,3 +217,22 @@ FROM yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet yt
   INNER JOIN peruste p ON p.id = sisalto.peruste_id;
 ALTER TABLE yl_lukiokoulutuksen_opetuksen_yleiset_tavoitteet ADD FOREIGN KEY (id) REFERENCES perusteenosa(id);
 
+-- Alun perin lapset_order jäi nollaksi, nyt ei pitäisi mutta tällä voi korjata paikalliseen kantaan:
+-- CREATE OR REPLACE FUNCTION rearrangeViiteLapset(viiteiId bigint)
+--   RETURNS INT AS $$
+-- DECLARE
+--   _maxJarjestys int := 0;
+--   lapsi perusteenosaviite%ROWTYPE;
+-- BEGIN
+--   FOR lapsi IN SELECT v.* FROM perusteenosaviite v WHERE v.vanhempi_id = viiteiId
+--           ORDER BY v.lapset_order, v.id LOOP
+--     IF _maxJarjestys != lapsi.lapset_order THEN
+--       UPDATE perusteenosaviite SET lapset_order = _maxJarjestys
+--         WHERE perusteenosaviite.id = lapsi.id;
+--     END IF;
+--     _maxJarjestys := _maxJarjestys+1;
+--   END LOOP;
+--   RETURN _maxJarjestys;
+-- END $$ LANGUAGE plpgsql;
+--
+-- SELECT rearrangeViiteLapset(v.id) FROM perusteenosaviite v;
