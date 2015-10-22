@@ -184,8 +184,9 @@ update yl_aihekokonaisuudet
       where ps.id = yl_aihekokonaisuudet.id) where sisalto_id is null;
 ALTER TABLE yl_aihekokonaisuudet ALTER COLUMN sisalto_id set NOT NULL;
 
+
 SELECT newOsa(ak.id, 'NORMAALI', newTeksti('Aihekokonaisuudet'), p.tila, ak.viite_id,
-          (select min(a.rev) from yl_lukiokoulutuksen_perusteen_sisalto_aud a where a.id = ak.id))
+          (select min(a.rev) from yl_aihekokonaisuudet_aud a where a.id = ak.id))
   FROM yl_aihekokonaisuudet ak
     INNER JOIN yl_lukiokoulutuksen_perusteen_sisalto sisalto ON ak.sisalto_id = sisalto.id
     INNER JOIN peruste p ON p.id = sisalto.peruste_id;
