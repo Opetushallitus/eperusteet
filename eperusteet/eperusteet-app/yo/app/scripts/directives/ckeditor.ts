@@ -46,7 +46,7 @@ angular.module('eperusteApp')
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi', 'epimage' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi', 'epimage', 'Mathjax' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
   })
@@ -191,7 +191,7 @@ angular.module('eperusteApp')
         editor = CKEDITOR.inline(element[0], {
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
-          extraPlugins: 'divarea,sharedspace,termi,epimage',
+          extraPlugins: 'divarea,sharedspace,termi,epimage,dialogui,dialog,clipboard,lineutils,widget,mathjax',
           extraAllowedContent: 'img[!data-uid,src]; abbr[data-viite]',
           disallowedContent: 'br; tr td{width,height};',
           language: 'fi',
