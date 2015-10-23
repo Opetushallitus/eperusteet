@@ -235,8 +235,10 @@ angular.module('eperusteApp')
       VersionHelper.setUrl($scope.versiot);
     };
 
-    function lukitse(cb) {
-      Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, cb);
+    function lukitse() {
+      return $q((resolve) => {
+        Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, resolve);
+      });
     }
 
     function fetch(cb) {
@@ -346,46 +348,51 @@ angular.module('eperusteApp')
       $scope.editableTekstikappale = angular.copy(kappale);
 
       Editointikontrollit.registerCallback({
-        edit: function () {
-          fetch(function () {
-            refreshPromise();
-          });
-        },
-        asyncValidate: function (cb) {
-          lukitse(function () {
-            cb();
-          });
-        },
-        asyncSave: function (kommentti, cb) {
-          $scope.editableTekstikappale.metadata = {kommentti: kommentti};
-          PerusteenOsat.saveTekstikappale({
-            osanId: $scope.editableTekstikappale.id
-          }, $scope.editableTekstikappale, function(res) {
-            saveCb(res);
-            $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
-            $scope.isNew = false;
-            cb();
-          }, Notifikaatiot.serverCb);
-        },
-        cancel: function () {
-          if (!TekstikappaleOperations.wasDeleted()) {
-            Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
-              if ($scope.isNew) {
-                doDelete(true);
-              }
-              else {
-                fetch(function () {
-                  refreshPromise();
-                });
-              }
-              $scope.isNew = false;
+        edit: () => {
+          return $q((resolve, reject) => {
+            lukitse().then(() => {
+              fetch(function () {
+                refreshPromise();
+                resolve();
+              });
             });
-          }
+          });
         },
-        notify: function (mode) {
+        save: (kommentti) => {
+          return $q((resolve, reject) => {
+            $scope.editableTekstikappale.metadata = {kommentti: kommentti};
+            PerusteenOsat.saveTekstikappale({
+              osanId: $scope.editableTekstikappale.id
+            }, $scope.editableTekstikappale, function(res) {
+              saveCb(res);
+              $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
+              $scope.isNew = false;
+              resolve();
+            }, Notifikaatiot.serverCb);
+          });
+        },
+        cancel: () => {
+          return $q((resolve, reject) => {
+            if (!TekstikappaleOperations.wasDeleted()) {
+              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
+                if ($scope.isNew) {
+                  doDelete(true);
+                }
+                else {
+                  fetch(function () {
+                    refreshPromise();
+                  });
+                }
+                $scope.isNew = false;
+              });
+            }
+            resolve();
+          });
+        },
+        notify: (mode) => {
           $scope.editEnabled = mode;
         },
-        validate: function (mandatoryValidator) {
+        validate: (mandatoryValidator) => {
           return mandatoryValidator($scope.fields, $scope.editableTekstikappale);
         }
       });
@@ -399,10 +406,8 @@ angular.module('eperusteApp')
       TekstikappaleOperations.clone($scope.viitteet[$scope.tekstikappale.id].viite);
     };
 
-    $scope.muokkaa = function () {
-      lukitse(function () {
-        Editointikontrollit.startEditing();
-      });
+    $scope.muokkaa = () => {
+      lukitse().then(Editointikontrollit.startEditing);
     };
 
     $scope.canAddLapsi = function () {

@@ -69,7 +69,7 @@ angular.module('eperusteApp')
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
   .service('Lukitus', function($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout,
-    Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
+    Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna, $q,
     LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
 
     var lukitsin = null;
@@ -194,11 +194,16 @@ angular.module('eperusteApp')
       }, cb);
     }
 
-    function vapautaSisalto(id, suoritustapa, cb) {
+    function vapautaSisalto(id, suoritustapa, cb = _.noop) {
+      var deferred = $q.defer();
       vapauta(LukkoRakenne, {
         osanId: id,
         suoritustapa: suoritustapa
-      }, cb);
+      }, () => {
+        deferred.resolve();
+        cb();
+      });
+      return deferred.promise;
     }
 
     function lukitsePerusteenosa(id, cb) {
