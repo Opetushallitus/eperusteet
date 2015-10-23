@@ -220,7 +220,6 @@ angular.module('eperusteApp')
         path: 'tutkinnonOsa.ammattitaitovaatimuksetLista',
         localeKey: 'tutkinnon-osan-ammattitaitovaatimukset-taulukko',
         type: 'ammattitaito',
-        localized: true,
         collapsible: true
       },{
         path: 'tutkinnonOsa.ammattitaidonOsoittamistavat',

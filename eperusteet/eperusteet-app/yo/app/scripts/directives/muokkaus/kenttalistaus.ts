@@ -269,7 +269,6 @@ angular.module('eperusteApp')
   };
 
   function createAmmattitaito() {
-    console.log("create ammattitaito");
     var TAULUKKO_PATH = 'ammattitaito.ammattitaidonKohdealueet';
     var TEKSTI_PATH = 'ammattitaito.lisatiedot';
     var self: any = {
