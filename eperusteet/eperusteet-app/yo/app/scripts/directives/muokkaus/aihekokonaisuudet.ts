@@ -38,10 +38,13 @@ angular.module('eperusteApp')
                                                             Lukitus,
                                                             PerusteProjektiSivunavi,
                                                             VersionHelper, Notifikaatiot,
+                                                            Kommentit, KommentitBySuoritustapa,
                                                             Editointikontrollit, Varmistusdialogi,
                                                             $rootScope, $state, $filter, $stateParams) {
 
     $scope.versiot = {};
+    $scope.osanTyyppi = $stateParams.osanTyyppi;
+
     var setEditMode = function() {
       $scope.editEnabled = true;
       $scope.editMode = true;
@@ -72,6 +75,9 @@ angular.module('eperusteApp')
     });
 
     function init() {
+
+      Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.osanTyyppi});
+
       var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
       if(versio) {
         VersionHelper.getLukioAihekokonaisuudetVersions($scope.versiot, {}, true, function (versiot) {
