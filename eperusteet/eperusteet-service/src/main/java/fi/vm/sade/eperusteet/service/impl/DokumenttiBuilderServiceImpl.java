@@ -746,7 +746,14 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             TutkinnonOsaTyyppi tyyppi = osa.getTyyppi();
             if (tyyppi == TutkinnonOsaTyyppi.NORMAALI) {
                 addTavoitteet(doc, element, osa, kieli);
-                addAmmattitaitovaatimukset(doc, element, osa, kieli);
+
+                String ammattitaitovaatimuksetText = getTextString(osa.getAmmattitaitovaatimukset(), kieli);
+                if( !StringUtils.isEmpty(ammattitaitovaatimuksetText) || !osa.getAmmattitaitovaatimuksetLista().isEmpty()) {
+                    addTekstiSectionGeneric(doc, element, ammattitaitovaatimuksetText,
+                            messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
+                    addAmmattitaitovaatimukset(doc, element, osa.getAmmattitaitovaatimuksetLista(), kieli);
+                }
+
                 addAmmattitaidonOsoittamistavat(doc, element, osa, kieli);
                 addArviointi(doc, element, osa.getArviointi(), tyyppi, kieli);
             } else if (tyyppi == TutkinnonOsaTyyppi.TUTKE2) {
@@ -802,17 +809,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
     }
 
-    private void addAmmattitaitovaatimukset(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
-
-        String ammattitaitovaatimuksetText = getTextString(tutkinnonOsa.getAmmattitaitovaatimukset(), kieli);
-        List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimukset = tutkinnonOsa.getAmmattitaitovaatimuksetLista();
-
-        if ( StringUtils.isEmpty(ammattitaitovaatimuksetText) && ammattitaitovaatimukset.isEmpty()) {
-            return;
-        }
-
-        addTekstiSectionGeneric(doc, parent, ammattitaitovaatimuksetText,
-                messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
+    private void addAmmattitaitovaatimukset(Document doc, Element parent, List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimukset,
+                                            Kieli kieli) {
 
         Element arviointiSection = doc.createElement("section");
         parent.appendChild(arviointiSection);
@@ -1225,6 +1223,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                             getTextString(tunnustaminen, kieli),
                             messages.translate("docgen.tutke2.tunnustaminen.title", kieli));
                     }
+
+                    List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimukset = tavoite.getAmmattitaitovaatimuksetLista();
+                    if( !ammattitaitovaatimukset.isEmpty() ){
+                        addTekstiSectionGeneric(doc, aliTavoiteSectionElement, "",
+                                messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
+
+//                        addTekstiSectionGeneric(doc, element, "",
+//                                messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
+//                        addAmmattitaitovaatimukset(doc, element, osa.gsdfetAmmattitaitovaatimuksetLista(), kieli);
+                        addAmmattitaitovaatimukset( doc, aliTavoiteSectionElement, ammattitaitovaatimukset, kieli);
+                    }
+
                 }
             }
         }

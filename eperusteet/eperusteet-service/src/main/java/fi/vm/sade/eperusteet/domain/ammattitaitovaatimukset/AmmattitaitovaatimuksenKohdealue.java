@@ -34,12 +34,6 @@ public class AmmattitaitovaatimuksenKohdealue implements Serializable {
     @Setter
     private TekstiPalanen otsikko;
 
-    @ManyToOne
-    @JoinColumn(name = "tutkinnonosa_id")
-    @Getter
-    @Setter
-    private TutkinnonOsa tutkinnonOsa;
-
     @OneToMany(mappedBy = "ammattitaitovaatimuksenkohdealue", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     @Setter
@@ -57,4 +51,12 @@ public class AmmattitaitovaatimuksenKohdealue implements Serializable {
         return true;
     }
 
+    public void connectAmmattitaitovaatimuksetToKohdealue(AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue) {
+        for (AmmattitaitovaatimuksenKohde ammattitaitovaatimuksenKohde : this.getVaatimuksenKohteet()) {
+            ammattitaitovaatimuksenKohde.setAmmattitaitovaatimuksenkohdealue( ammattitaitovaatimuksenKohdealue );
+            for (Ammattitaitovaatimus ammattitaitovaatimus : ammattitaitovaatimuksenKohde.getVaatimukset()) {
+                ammattitaitovaatimus.setAmmattitaitovaatimuksenkohde( ammattitaitovaatimuksenKohde );
+            }
+        }
+    }
 }

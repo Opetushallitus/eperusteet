@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohde;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
@@ -297,6 +298,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
     }
 
+    private List<AmmattitaitovaatimuksenKohdealue> connectAmmattitaitovaatimusListToOsaamistavoite(Osaamistavoite tavoite) {
+        for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : tavoite.getAmmattitaitovaatimuksetLista()) {
+            ammattitaitovaatimuksenKohdealue.connectAmmattitaitovaatimuksetToKohdealue( ammattitaitovaatimuksenKohdealue );
+        }
+        return tavoite.getAmmattitaitovaatimuksetLista();
+    }
+
     @Transactional(readOnly = false)
     private List<Osaamistavoite> tallennaUudetOsaamistavoitteet(List<OsaamistavoiteLaajaDto> osaamistavoitteet) {
         List<Osaamistavoite> uudet = new ArrayList<>();
@@ -311,7 +319,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             if (osaamistavoiteDto.isPakollinen() && (osaamistavoiteDto.getId() == null || osaamistavoiteDto.getId() < 0)) {
                 tempId = osaamistavoiteDto.getId();
                 osaamistavoiteDto.setId(null);
-                tallennettuPakollinenTavoite = osaamistavoiteRepository.save(mapper.map(osaamistavoiteDto, Osaamistavoite.class));
+                tallennettuPakollinenTavoite = mapper.map(osaamistavoiteDto, Osaamistavoite.class);
+                connectAmmattitaitovaatimusListToOsaamistavoite(tallennettuPakollinenTavoite);
+                tallennettuPakollinenTavoite = osaamistavoiteRepository.save( tallennettuPakollinenTavoite );
                 uudet.add(tallennettuPakollinenTavoite);
 
                 // käydään läpi valinnaiset ja asetetaan esitieto id kohdalleen.
@@ -333,7 +343,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             // Jos id >= 0, niin kyseessä oikea tietokanta id. Id:t < 0 ovat generoitu UI päässä.
             if (!osaamistavoiteDto.isPakollinen() && (osaamistavoiteDto.getId() == null || osaamistavoiteDto.getId() < 0)) {
                 osaamistavoiteDto.setId(null);
-                tallennettuPakollinenTavoite = osaamistavoiteRepository.save(mapper.map(osaamistavoiteDto, Osaamistavoite.class));
+
+                tallennettuPakollinenTavoite = mapper.map(osaamistavoiteDto, Osaamistavoite.class);
+                connectAmmattitaitovaatimusListToOsaamistavoite(tallennettuPakollinenTavoite);
+                tallennettuPakollinenTavoite = osaamistavoiteRepository.save( tallennettuPakollinenTavoite );
                 uudet.add(tallennettuPakollinenTavoite);
                 osaamistavoiteDtoItr.remove();
             }

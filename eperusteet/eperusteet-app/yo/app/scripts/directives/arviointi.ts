@@ -29,11 +29,8 @@ angular.module('eperusteApp')
 
     $scope.kohdealue = {
       uusi: function () {
-        if(angular.isUndefined($scope.uudenKohdealueenNimi) ||
-           $scope.uudenKohdealueenNimi === null ||
-           (angular.isString($scope.uudenKohdealueenNimi) && _.isEmpty($scope.uudenKohdealueenNimi))) {
-          return;
-        }
+
+        if (!$scope.uudenKohdealueenNimi) { return; }
 
         if(angular.isUndefined($scope.arviointi) || $scope.arviointi === null) {
           $scope.arviointi = [];

@@ -85,7 +85,9 @@
                 <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" mainLevelEditing="tavoite.$editing" ei-kohdealueita="true"></arviointi>
                 <label class="header" kaanna>tutkinnonosa-tunnustaminen</label>
                 <p ng-bind-html="tavoite.tunnustaminen | kaanna | unsafe"></p>
-            </div>
+                <label class="header" kaanna>ammattitaitovaatimukset</label>
+                <ammattitaito ammattitaito="tavoite.ammattitaitovaatimuksetLista" mainLevelEditing="false" ei-kohdealueita="true"></ammattitaito>
+              </div>
             </div>
 
           </div>
