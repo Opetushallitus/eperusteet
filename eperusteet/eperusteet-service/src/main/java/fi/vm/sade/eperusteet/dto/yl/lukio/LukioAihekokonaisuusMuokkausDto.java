@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +30,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class LukioAihekokonaisuusMuokkausDto implements Serializable {
+public class LukioAihekokonaisuusMuokkausDto extends UpdateDto<LukioAihekokonaisuusMuokkausDto> implements Serializable {
     @NotNull
     private Long id;
     @NotNull

@@ -117,7 +117,7 @@ angular.module('eperusteApp')
       $scope.haeVersiot(true, function () {
         VersionHelper.setUrl($scope.versiot);
       });
-      Notifikaatiot.onnistui('aihekokonaisuudet-palautettu');
+      Notifikaatiot.onnistui('lukiokoulutusyleisettavoitteet-palautettu');
 
     };
 

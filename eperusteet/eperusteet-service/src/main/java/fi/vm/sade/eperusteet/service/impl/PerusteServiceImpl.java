@@ -158,9 +158,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private LukioYleisetTavoitteetRepository lukioYleisetTavoitteetRepository;
 
     @Autowired
-    private LukioAihekokonaisuudetRepository lukioAihekokonaisuudetRepository;
-
-    @Autowired
     private Validator validator;
 
     @Override
@@ -987,7 +984,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             opetuksenYleisetTavoitteet = initLukioOpetuksenYleisetTavoitteet(sisalto);
         }
         mapper.map(lukiokoulutuksenYleisetTavoitteetDto, opetuksenYleisetTavoitteet);
-        lukioAihekokonaisuudetRepository.setRevisioKommentti(lukiokoulutuksenYleisetTavoitteetDto.getMetadataOrEmpty().getKommentti());
+        lukioYleisetTavoitteetRepository.setRevisioKommentti(lukiokoulutuksenYleisetTavoitteetDto.getMetadataOrEmpty().getKommentti());
     }
 
     private OpetuksenYleisetTavoitteet initLukioOpetuksenYleisetTavoitteet(LukiokoulutuksenPerusteenSisalto sisalto) {
