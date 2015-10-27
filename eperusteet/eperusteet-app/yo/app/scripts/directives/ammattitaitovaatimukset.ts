@@ -24,11 +24,8 @@ angular.module('eperusteApp')
 
     $scope.kohdealue = {
       uusi: function () {
-        if(angular.isUndefined($scope.uudenKohdealueenNimi) ||
-           $scope.uudenKohdealueenNimi === null ||
-           (angular.isString($scope.uudenKohdealueenNimi) && _.isEmpty($scope.uudenKohdealueenNimi))) {
-          return;
-        }
+
+        if (!$scope.uudenKohdealueenNimi) { return; }
 
         if(angular.isUndefined($scope.ammattitaito) || $scope.ammattitaito === null) {
           $scope.ammattitaito = [];
@@ -111,17 +108,16 @@ angular.module('eperusteApp')
       poistuMuokkauksesta: function (list, index) {
         $scope.editableKohde.$editointi = false;
 
-        var jarjestys = 0;
-        _.each($scope.editableKohde.vaatimukset, function (vaatimus) {
-          vaatimus.jarjestys = jarjestys;
-          ++jarjestys;
-        });
+        _.reduce($scope.editableKohde.vaatimukset, (acc, vaatimus) => {
+          vaatimus.jarjestys = acc; return acc + 1;
+        }, 0);
 
         _.each($scope.editableKohde.vaatimusRyhmat, function (kriteeri) {
           if (kriteeri.vaatimukset.length === 1 && !Utils.hasLocalizedText(kriteeri.vaatimukset[0])) {
             kriteeri.vaatimukset = [];
           }
         });
+
         list[index] = angular.copy($scope.editableKohde);
         $scope.kohde.peruMuokkaus();
       },

@@ -1,5 +1,5 @@
 <div class="ammattitaito">
-  <div ng-class="{'panel panel-default panel-small ammattitaito-kohdealueet': !eiKohdealueita, 'ammattitaito-ei-kohdealueita': eiKohdealueita}">
+  <div ng-class="{'panel panel-default panel-small arviointi-kohdealueet': !eiKohdealueita, 'arviointi-ei-kohdealueita': eiKohdealueita}">
     <span class="toggler" ng-show="ammattitaito.length && !eiKohdealueita"><a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
     <span class="toggler" ng-show="ammattitaito[0].vaatimuksenKohteet.length && eiKohdealueita"><a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
     <div class="panel-body">
@@ -101,7 +101,7 @@
             <button class="btn btn-primary btn-xs" ng-disabled="!$parent.uudenKohdealueenNimi" ng-click="$parent.kohdealue.uusi()" kaanna>lisaa</button>
           </div>
           <button type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput"
-            ng-click="$parent.showNewKohdealueInput = true" icon-role="add" kaanna="ammattitaito-uusi-kohdealue" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+            ng-click="$parent.showNewKohdealueInput = true" icon-role="add" kaanna="ammattitaito-uusi-kohde" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
         </div>
       </div>
 
