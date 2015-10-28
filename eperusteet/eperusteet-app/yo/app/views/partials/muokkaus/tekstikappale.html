@@ -90,7 +90,7 @@ European Union Public Licence for more details.
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" kaanna="lisaa-tyoryhma"></button>
           </div>
 
-          <div ng-bind-html="valitseKieli(tekstikappale.teksti) | unsafe" termisto-viitteet="tekstikappale.teksti"></div>
+          <div math-display ng-bind-html="valitseKieli(tekstikappale.teksti) | unsafe" termisto-viitteet="tekstikappale.teksti"></div>
         </div>
         <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" model="field.localeKey"
           kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}" muokkauskentta-raamit>
