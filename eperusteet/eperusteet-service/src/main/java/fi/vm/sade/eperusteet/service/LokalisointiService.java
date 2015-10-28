@@ -26,10 +26,13 @@ import java.util.Collection;
  */
 public interface LokalisointiService {
 
+    @PreAuthorize("permitAll()")
     LokalisointiDto get(String key, String locale);
 
+    @PreAuthorize("permitAll()")
     <T extends Lokalisoitava, C extends Collection<T>> C lokalisoi(C list);
 
+    @PreAuthorize("permitAll()")
     <T extends Lokalisoitava> T lokalisoi(T list);
 }
 
