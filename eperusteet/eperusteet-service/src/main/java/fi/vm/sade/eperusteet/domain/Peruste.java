@@ -176,6 +176,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @NotNull
     private PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
 
+    @Getter
+    @Setter
+    @NotNull
+    private boolean esikatseltavissa = false;
+
     @ElementCollection
     @Enumerated(EnumType.STRING)
     @Getter

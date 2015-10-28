@@ -61,6 +61,8 @@ public abstract class PerusteBaseDto implements Serializable {
     private Set<String> korvattavatDiaarinumerot;
     private Set<KoodiDto> osaamisalat;
 
+    private boolean esikatseltavissa;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<TutkintonimikeKoodiDto> tutkintonimikkeet;
 }
