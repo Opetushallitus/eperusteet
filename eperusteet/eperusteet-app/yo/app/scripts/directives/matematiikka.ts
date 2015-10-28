@@ -27,9 +27,7 @@ angular.module('eperusteApp')
         scope.$watch(attr.ngBindHtml, function() {
           var mathSpanElements = element.find('span.math-tex');
           _.map(mathSpanElements, function(msElem) { 
-            msElem.innerHTML = '$' + msElem.innerHTML + '$'; 
-            console.log(msElem.innerHTML);
-            MathJax.Hub.Queue(["Reprocess", MathJax.Hub, msElem]); 
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, msElem]);
           });
         });
       }
