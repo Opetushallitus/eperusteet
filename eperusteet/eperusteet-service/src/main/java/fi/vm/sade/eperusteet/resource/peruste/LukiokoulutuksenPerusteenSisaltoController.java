@@ -96,7 +96,6 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/rakenne/{rakenneId}/versiot/{revision}/kurssit", method = GET)
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<List<LukiokurssiListausDto>> listKurssitInRakenneVersio(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("rakenneId") final Long rakenneId,
@@ -112,7 +111,6 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/kurssit", method = GET)
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<List<LukiokurssiListausDto>> listKurssit(@PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, () -> kurssit.findLukiokurssitByPerusteId(perusteId));
     }
