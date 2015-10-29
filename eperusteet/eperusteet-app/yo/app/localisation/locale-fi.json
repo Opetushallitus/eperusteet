@@ -928,7 +928,6 @@
     "lisaa-kurssi-title": "Lisää lukiokurssi",
     "kurssi-nimi-header": "Nimi",
     "kurssi-tyyppi-header": "Tyyppi",
-    "kurssi-tyyppin-kuvaus-header": "Tyypin kuvaus",
     "kurssi-tyyppi-selite-pakollinen": "Pakollinen",
     "kurssi-tyyppi-selite-valtakunnallinen_soveltava": "Soveltava",
     "kurssi-tyyppi-selite-valtakunnallinen_syventava": "Syventävä",
@@ -982,6 +981,12 @@
     "lukio-peruste-esikatseltavissa": "Lukion peruste esikatseltavissa",
     "kyllä": "Kyllä",
     "ei": "Ei",
-    "salli-lukio-peruste-esikatseltavissa": "salli esikatselu"
+    "salli-lukio-peruste-esikatseltavissa": "salli esikatselu",
 
+    "pakollinen-kurssi-kuvaus-header": "Pakollisten kurssien yleinen kuvaus",
+    "syventava-kurssi-kuvaus-header": "Syventävien kurssien yleinen kuvaus",
+    "soveltava-kurssi-kuvaus-header": "Soveltavien kurssien yleinen kuvaus",
+    "pakollinen-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien pakollisia kursseja",
+    "syventava-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien syventäviä kursseja",
+    "soveltava-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien soveltavia kursseja"
 }

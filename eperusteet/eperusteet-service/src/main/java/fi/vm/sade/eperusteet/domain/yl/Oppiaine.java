@@ -19,7 +19,6 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import lombok.Getter;
 import lombok.Setter;
@@ -84,6 +83,27 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @JoinColumn(name = "arviointi_id", nullable = true)
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa arviointi;
+
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "pakollinen_kurssi_kuvaus", nullable = true)
+    private TekstiPalanen pakollinenKurssiKuvaus;
+
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "syventava_kurssi_kuvaus", nullable = true)
+    private TekstiPalanen syventavaKurssiKuvaus;
+
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "soveltava_kurssi_kuvaus", nullable = true)
+    private TekstiPalanen soveltavaKurssiKuvaus;
 
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @NotNull(groups = Strict.class)

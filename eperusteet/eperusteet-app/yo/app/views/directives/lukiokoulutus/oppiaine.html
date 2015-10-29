@@ -56,7 +56,18 @@
             {{'useita-oppimaaria'|kaanna}}</label>
         </div>
         <label style="margin-top: 10px" ng-show="editableModel.koosteinen === false" class="inputwrapper">
-          <input class="form-control" type="checkbox" ng-model="editableModel.abstrakti">{{'paikallisessa-laadinnassa-maariteltava'|kaanna}}</label>
+          <input class="form-control" type="checkbox" ng-model="editableModel.abstrakti">{{'paikallisessa-laadinnassa-maariteltava'|kaanna}}
+        </label>
+        <div ng-show="editableModel.koosteinen === false">
+          <label for="pakollinen-kurssi-kuvaus" class="header" kaanna="pakollinen-kurssi-kuvaus-header"></label>
+          <div id="pakollinen-kurssi-kuvaus" class="full-width" ckeditor slocalized ng-model="editableModel.pakollinenKurssiKuvaus" editor-placeholder="pakollinen-kurssi-kuvaus-placeholder"></div>
+
+          <label for="syventava-kurssi-kuvaus" class="header" kaanna="syventava-kurssi-kuvaus-header"></label>
+          <div id="syventava-kurssi-kuvaus" class="full-width" ckeditor slocalized ng-model="editableModel.syventavaKurssiKuvaus" editor-placeholder="syventava-kurssi-kuvaus-placeholder"></div>
+
+          <label for="soveltava-kurssi-kuvaus" class="header" kaanna="soveltava-kurssi-kuvaus-header"></label>
+          <div id="soveltava-kurssi-kuvaus" class="full-width" ckeditor slocalized ng-model="editableModel.soveltavaKurssiKuvaus" editor-placeholder="soveltava-kurssi-kuvaus-placeholder"></div>
+        </div>
       </div>
       <h3 kaanna="'osiot'" class="osioheader"></h3>
     </div>
@@ -78,6 +89,18 @@
             <tr>
               <th kaanna="muokkaus-tutkinnon-osan-koodi-header"></th>
               <td>{{editableModel.koodiArvo ? editableModel.koodiArvo : ('ei-asetettu'|kaanna)}}</td>
+            </tr>
+            <tr ng-show="editableModel.pakollinenKurssiKuvaus">
+              <th kaanna="pakollinen-kurssi-kuvaus-header"></th>
+              <td><div ng-bind-html="editableModel.pakollinenKurssiKuvaus|kaanna|unsafe"></div></td>
+            </tr>
+            <tr ng-show="editableModel.syventavaKurssiKuvaus">
+              <th kaanna="syventava-kurssi-kuvaus-header"></th>
+              <td><div ng-bind-html="editableModel.syventavaKurssiKuvaus|kaanna|unsafe"></div></td>
+            </tr>
+            <tr ng-show="editableModel.soveltavaKurssiKuvaus">
+              <th kaanna="soveltava-kurssi-kuvaus-header"></th>
+              <td><div ng-bind-html="editableModel.soveltavaKurssiKuvaus|kaanna|unsafe"></div></td>
             </tr>
             <tr ng-show="editableModel.koosteinen">
               <th kaanna="oppimaarat"></th>

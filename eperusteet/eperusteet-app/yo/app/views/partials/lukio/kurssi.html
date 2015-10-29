@@ -1,5 +1,4 @@
-
-<!--
+<!-- kurssi.html
   ~  Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
   ~
   ~  This program is free software: Licensed under the EUPL, Version 1.1 or - as
@@ -64,13 +63,6 @@
       </th>
       <td>
         <span ng-bind="kurssityypit[kurssi.tyyppi] | kaanna"></span>
-      </td>
-    </tr>
-    <tr ng-if="kurssi.kurssityypinKuvaus | kaanna">
-      <th kaanna="'kurssi-tyypin-kuvaus'">
-      </th>
-      <td>
-        <span ng-bind-html="kurssi.kurssityypinKuvaus | kaanna"></span>
       </td>
     </tr>
     </thead>
