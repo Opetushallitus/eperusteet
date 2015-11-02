@@ -984,9 +984,9 @@
     "salli-lukio-peruste-esikatseltavissa": "salli esikatselu",
 
     "pakollinen-kurssi-kuvaus-header": "Pakollisten kurssien yleinen kuvaus",
-    "syventava-kurssi-kuvaus-header": "Syventävien kurssien yleinen kuvaus",
-    "soveltava-kurssi-kuvaus-header": "Soveltavien kurssien yleinen kuvaus",
+    "syventava-kurssi-kuvaus-header": "Valtakunnallisten syventävien kurssien yleinen kuvaus",
+    "soveltava-kurssi-kuvaus-header": "Valtakunnallisten soveltavien kurssien yleinen kuvaus",
     "pakollinen-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien pakollisia kursseja",
-    "syventava-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien syventäviä kursseja",
-    "soveltava-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien soveltavia kursseja"
+    "syventava-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien valtakunnallisia syventäviä kursseja",
+    "soveltava-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien valtakunnallisia soveltavia kursseja"
 }
