@@ -128,13 +128,33 @@ angular.module('eperusteApp')
   })
   .controller('MuokkaaLukiokurssiaController', function($scope, $state, LukioKurssiService, $stateParams,
               YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, Editointikontrollit,
-              Varmistusdialogi, $filter, Kaanna, LukiokoulutusService, Lukitus) {
+              Varmistusdialogi, $filter, Kaanna, LukiokoulutusService, Lukitus, Kieli) {
+    function getOsa(kurssi, id) {
+      return {
+        id: id,
+        obj: kurssi[id]
+      };
+    }
+    function emptyI18n(defultValue) {
+      var i18n = {};
+      i18n[Kieli.getSisaltokieli()] = defultValue;
+      return i18n;
+    }
+    function emptyOsa(id) {
+      return {
+        otsikko: emptyI18n(Kaanna.kaanna('kurssi-osa-'+id)),
+        teksti: emptyI18n('')
+      };
+    }
+
     Editointikontrollit.registerCallback({
       edit: function() {
         $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId, function(kurssi) {
-          if (!kurssi.tavoitteetOtsikko) {
-            kurssi.tavoitteetOtsikko = LukiokurssiModifyHelpers.getDefaultTavoitteet();
-          }
+          _.each($scope.osat, function(osaId) {
+            var osa = getOsa(kurssi, osaId);
+            $scope.osatById[osaId] = osa;
+            $scope.muokattavatOsat.push(osa);
+          });
         });
       },
       save: function(kommentti) {
@@ -155,6 +175,9 @@ angular.module('eperusteApp')
       }
     });
     $scope.kurssi = null;
+    $scope.osat = ['tavoitteet', 'keskeinenSisalto', 'tavoitteetJaKeskeinenSisalto'];
+    $scope.muokattavatOsat = [];
+    $scope.osatById = {};
     Editointikontrollit.startEditing();
 
     $scope.kurssityypit = [];
@@ -162,11 +185,31 @@ angular.module('eperusteApp')
       $scope.kurssityypit = tyypit;
     });
 
+    $scope.addOsa = function (id) {
+      if (!$scope.kurssi[id]) {
+        $scope.kurssi[id] = emptyOsa(id);
+        $scope.osatById[id].obj = $scope.kurssi[id];
+      }
+    };
+    $scope.removeOsa = function(id) {
+      $scope.kurssi[id] = null;
+      $scope.osatById[id].obj = null;
+    };
+
     $scope.openKoodisto = LukiokurssiModifyHelpers.openKoodisto($scope.kurssi);
     $scope.back = function() {
       $state.go('root.perusteprojekti.suoritustapa.kurssi', {
         kurssiId: $stateParams.kurssiId
       });
+    };
+    $scope.isAddAvailable = function() {
+      var len = 0;
+      _.each($scope.muokattavatOsat, function(osa) {
+        if (!osa.obj) {
+          len++;
+        }
+      });
+      return len > 0;
     };
 
     $scope.deleteKurssi = function() {

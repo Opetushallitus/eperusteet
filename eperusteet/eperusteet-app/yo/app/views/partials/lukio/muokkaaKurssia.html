@@ -21,6 +21,9 @@
   <div class="non-collapsibles">
     <form name="kurssiForm" role="form">
       <div class="action-buttons">
+        <div class="floater" ng-include="'views/partials/lukio/include/kurssiOsavalitsin.html'">
+        </div>
+
         <button class="btn floating"
                 oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
                 ng-click="deleteKurssi()">

@@ -23,6 +23,8 @@ import lombok.Setter;
 
 import java.util.stream.Stream;
 
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterById;
+
 /**
  * User: tommiratamaa
  * Date: 6.10.15
@@ -32,18 +34,21 @@ import java.util.stream.Stream;
 @Setter
 public class KurssinOppiaineTarkasteluDto extends KurssinOppiaineNimettyDto {
     private OppiaineVanhempiDto vanhempi;
+    private LokalisoituTekstiDto kurssiTyyppinKuvaus;
 
     public KurssinOppiaineTarkasteluDto() {
     }
 
     public KurssinOppiaineTarkasteluDto(Long oppiaineId, Integer jarjestys, Long oppiaineNimiId,
-                                        OppiaineVanhempiDto vanhempi) {
+                                        OppiaineVanhempiDto vanhempi, Long kurssiTyypinKuvausId) {
         super(oppiaineId, jarjestys, oppiaineNimiId);
         this.vanhempi = vanhempi;
+        this.kurssiTyyppinKuvaus = localizeLaterById(kurssiTyypinKuvausId);
     }
 
     @Override
     public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {
-        return Lokalisoitava.of(vanhempi).and(super.lokalisoitavatTekstit()).lokalisoitavatTekstit();
+        return Lokalisoitava.of(vanhempi).and(kurssiTyyppinKuvaus)
+                .and(super.lokalisoitavatTekstit()).lokalisoitavatTekstit();
     }
 }

@@ -158,7 +158,22 @@ public class KurssiServiceImpl implements KurssiService {
 
     private KurssinOppiaineTarkasteluDto oppaineTarkasteluDto(OppiaineLukiokurssi oa) {
         return new KurssinOppiaineTarkasteluDto(oa.getOppiaine().getId(), oa.getJarjestys(),
-                oa.getOppiaine().getNimi().getId(), vanhempi(oa.getOppiaine()));
+                oa.getOppiaine().getNimi().getId(), vanhempi(oa.getOppiaine()),
+                kurssiTyypinKuvaus(oa));
+    }
+
+    private Long kurssiTyypinKuvaus(OppiaineLukiokurssi oa) {
+        Oppiaine oppiaine = oa.getOppiaine();
+        switch (oa.getKurssi().getTyyppi()) {
+            case PAKOLLINEN: return id(oppiaine.getPakollinenKurssiKuvaus());
+            case VALTAKUNNALLINEN_SOVELTAVA: return id(oppiaine.getSoveltavaKurssiKuvaus());
+            case VALTAKUNNALLINEN_SYVENTAVA: return id(oppiaine.getSyventavaKurssiKuvaus());
+            default:return null;
+        }
+    }
+
+    private Long id(TekstiPalanen palanen) {
+        return fromNullable(palanen).transform(TekstiPalanen::getId).orNull();
     }
 
     private OppiaineVanhempiDto vanhempi(Oppiaine oppiaine) {

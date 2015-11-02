@@ -35,3 +35,17 @@
 <div>
   <div id="kuvaus" ckeditor slocalized ng-model="kurssi.kuvaus"></div>
 </div>
+
+<div ng-repeat="osa in muokattavatOsat" ng-show="osa.obj">
+  <div class="action-buttons osa-action-buttons">
+    <button class="btn floating" ng-click="removeOsa(osa.id)">
+      <span icon-role="remove" class="ng-scope"></span>
+    </button>
+  </div>
+  <label for="{{osa.id}}" class="header">
+    <h3 ckeditor slocalized ng-model="osa.obj.otsikko"></h3>
+  </label>
+  <div>
+    <div id="{{osa.id}}" ckeditor slocalized ng-model="osa.obj.teksti"></div>
+  </div>
+</div>
