@@ -16,9 +16,11 @@
 
 package fi.vm.sade.eperusteet.repository.custom;
 
+import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiHakuDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepositoryCustom;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.EnumType;
@@ -29,9 +31,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * User: tommiratamaa
@@ -45,24 +47,46 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
 
     @Override
     public List<LokalisoituTekstiHakuDto> findLokalisoitavatTekstit(Set<Long> tekstiPalanenIds) {
+        // Make sure PostgreSQL's max parameter size 34464 won't affect us:
+        return Lists.partition(new ArrayList<Long>(tekstiPalanenIds), 34460).stream()
+                .map(this::getTekstipalaset).flatMap(Collection::stream).collect(toList());
+    }
+
+    private List<LokalisoituTekstiHakuDto> getTekstipalaset(List<Long> tekstiPalanenIds) {
         // In JPA 2.0 we can not select DTOs with native queries and LokalisoituTeksti is not an entity
         // (which can therefore neither be selected with JPA query language) -> doing in Hibernate level API:
         Session session = em.unwrap(Session.class);
-        return list(session.createSQLQuery("SELECT " +
-                    "   t.tekstipalanen_id as id, " +
-                    "   t.kieli as kieli, " +
-                    "   t.teksti as teksti " +
-                    " FROM tekstipalanen_teksti t " +
-                    " WHERE t.tekstipalanen_id IN (:ids) ORDER BY t.tekstipalanen_id, t.kieli")
+        StringBuilder or = new StringBuilder();
+        // Just to make sure that https://hibernate.atlassian.net/browse/HHH-1123 won't affect us:
+        List<List<Long>> idChunks = Lists.partition(tekstiPalanenIds, 1000);
+        int i = 0;
+        Map<String,List<Long>> params = new HashMap<>(idChunks.size());
+        for (List<Long> ids : idChunks) {
+            if (or.length() > 0) {
+                or.append(" OR ");
+            }
+            or.append("t.tekstipalanen_id IN (:ids_").append(i).append(") ");
+            params.put("ids_"+i, ids);
+            ++i;
+        }
+        Query q =session.createSQLQuery("SELECT " +
+                "   t.tekstipalanen_id as id, " +
+                "   t.kieli as kieli, " +
+                "   t.teksti as teksti " +
+                " FROM tekstipalanen_teksti t " +
+                " WHERE (" + or + ") ORDER BY t.tekstipalanen_id, t.kieli")
                 .addScalar("id", LongType.INSTANCE)
                 .addScalar("kieli", enumType(session, Kieli.class))
                 .addScalar("teksti", StringType.INSTANCE)
-                .setResultTransformer(new AliasToBeanResultTransformer(LokalisoituTekstiHakuDto.class))
-                .setParameterList("ids", tekstiPalanenIds));
+                .setResultTransformer(new AliasToBeanResultTransformer(LokalisoituTekstiHakuDto.class));
+        for (Map.Entry<String,List<Long>> p : params.entrySet()) {
+            q.setParameterList(p.getKey(), p.getValue());
+        }
+        return list(q);
     }
 
     @SuppressWarnings("unchecked")
-    protected<T> List<T> list(org.hibernate.Query q) {
+    protected<T> List<T> list(Query q) {
         return q.list();
     }
 
