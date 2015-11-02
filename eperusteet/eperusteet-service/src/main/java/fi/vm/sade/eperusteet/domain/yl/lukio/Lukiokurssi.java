@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.yl.Kurssi;
+import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -57,35 +58,21 @@ public class Lukiokurssi extends Kurssi {
 
     @Getter
     @Setter
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ValidHtml(whitelist = WhitelistType.NORMAL)
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "kurssityypin_kuvaus_id")
-    private TekstiPalanen kurssityypinKuvaus;
+    @JoinColumn(name = "tavoitteet_id", nullable = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private TekstiOsa tavoitteet;
 
     @Getter
     @Setter
-    @ValidHtml
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "tavoitteet_otsikko_id")
-    private TekstiPalanen tavoitteetOtsikko;
+    @JoinColumn(name = "keskeinen_sisalto_id", nullable = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private TekstiOsa keskeinenSisalto;
 
     @Getter
     @Setter
-    @ValidHtml
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "tavoitteet_id")
-    private TekstiPalanen tavoitteet;
-
-    @Getter
-    @Setter
-    @ValidHtml
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "sisallot_id")
-    private TekstiPalanen sisallot;
+    @JoinColumn(name = "tavoitteet_ja_keskeinen_sisalto_id", nullable = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private TekstiOsa tavoitteetJaKeskeinenSisalto;
 
     @Getter
     @OneToMany(mappedBy = "kurssi", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
@@ -96,10 +83,9 @@ public class Lukiokurssi extends Kurssi {
         kopio.tyyppi = this.tyyppi;
         kopio.nimi = this.nimi;
         kopio.kuvaus = this.kuvaus;
-        kopio.kurssityypinKuvaus = this.kurssityypinKuvaus;
-        kopio.sisallot = this.sisallot;
-        kopio.tavoitteetOtsikko = this.tavoitteetOtsikko;
         kopio.tavoitteet = this.tavoitteet;
+        kopio.keskeinenSisalto = this.keskeinenSisalto;
+        kopio.tavoitteetJaKeskeinenSisalto = this.tavoitteetJaKeskeinenSisalto;
         return kopio;
     }
 }

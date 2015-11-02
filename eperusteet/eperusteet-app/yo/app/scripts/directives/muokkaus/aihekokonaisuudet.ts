@@ -210,7 +210,7 @@ angular.module('eperusteApp')
           LukioAihekokonaisuudetService.saveAihekokonaisuus($scope.aihekokonaisuus).then(function(aihekokonaisuus) {
             Lukitus.vapauta();
             if($stateParams.editEnabled) {
-              $scope.ini();
+              init();
             } else {
               $state.go('root.perusteprojekti.suoritustapa.lukioosaalue',
                 {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET,
@@ -255,6 +255,8 @@ angular.module('eperusteApp')
 
     function init() {
       var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
+      console.log('PerusteProjektiSivunavi.refresh()');
+      PerusteProjektiSivunavi.refresh();
 
       if(versio) {
         VersionHelper.getLukioAihekokonaisuusVersions($scope.versiot, {id: $stateParams.osanId}, true, function (versiot) {

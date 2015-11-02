@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Builder;
@@ -45,9 +46,11 @@ public class LukioKurssiLuontiDto implements Serializable {
     private String koodiArvo;
     private String koodiUri;
     private Optional<LokalisoituTekstiDto> kuvaus;
-    private Optional<LokalisoituTekstiDto> tavoitteetOtsikko;
-    private Optional<LokalisoituTekstiDto> tavoitteet;
-    private Optional<LokalisoituTekstiDto> sisallot;
+
+    private Optional<TekstiOsaDto> tavoitteet;
+    private Optional<TekstiOsaDto> keskeinenSisalto;
+    private Optional<TekstiOsaDto> tavoitteetJaKeskeinenSisalto;
+
     private String kommentti;
 
     public LukioKurssiLuontiDto() {
@@ -58,9 +61,9 @@ public class LukioKurssiLuontiDto implements Serializable {
                                 LokalisoituTekstiDto nimi,
                                 String koodiArvo, String koodiUri,
                                 Optional<LokalisoituTekstiDto> kuvaus,
-                                Optional<LokalisoituTekstiDto> tavoitteetOtsikko,
-                                Optional<LokalisoituTekstiDto> tavoitteet,
-                                Optional<LokalisoituTekstiDto> sisallot,
+                                Optional<TekstiOsaDto> tavoitteet,
+                                Optional<TekstiOsaDto> keskeinenSisalto,
+                                Optional<TekstiOsaDto> tavoitteetJaKeskeinenSisalto,
                                 String kommentti) {
         this.tyyppi = tyyppi;
         this.oppiaineet = oppiaineet;
@@ -68,9 +71,9 @@ public class LukioKurssiLuontiDto implements Serializable {
         this.koodiArvo = koodiArvo;
         this.koodiUri = koodiUri;
         this.kuvaus = kuvaus;
-        this.tavoitteetOtsikko = tavoitteetOtsikko;
         this.tavoitteet = tavoitteet;
-        this.sisallot = sisallot;
+        this.keskeinenSisalto = keskeinenSisalto;
+        this.tavoitteetJaKeskeinenSisalto = tavoitteetJaKeskeinenSisalto;
         this.kommentti = kommentti;
     }
 }

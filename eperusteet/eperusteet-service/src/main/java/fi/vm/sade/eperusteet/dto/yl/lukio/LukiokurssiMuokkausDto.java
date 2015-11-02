@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.IdHolder;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,8 +44,8 @@ public class LukiokurssiMuokkausDto implements Serializable, IdHolder {
     private String koodiArvo;
     private String koodiUri;
     private Optional<LokalisoituTekstiDto> kuvaus;
-    private Optional<LokalisoituTekstiDto> tavoitteetOtsikko;
-    private Optional<LokalisoituTekstiDto> tavoitteet;
-    private Optional<LokalisoituTekstiDto> sisallot;
+    private Optional<TekstiOsaDto> tavoitteet;
+    private Optional<TekstiOsaDto> keskeinenSisalto;
+    private Optional<TekstiOsaDto> tavoitteetJaKeskeinenSisalto;
     private String kommentti;
 }
