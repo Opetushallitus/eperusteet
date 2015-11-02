@@ -19,14 +19,13 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
+import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukioOppiainePuuDto;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.util.OppiaineUtil.Reference;
-import fi.vm.sade.eperusteet.service.yl.KurssiLockContext;
-import fi.vm.sade.eperusteet.service.yl.KurssiService;
-import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
-import fi.vm.sade.eperusteet.service.yl.OppiaineService;
+import fi.vm.sade.eperusteet.service.yl.*;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +66,9 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
     @Autowired
     @LockCtx(LukioOpetussuunnitelmaRakenneLockContext.class)
     private LockService<LukioOpetussuunnitelmaRakenneLockContext> lukioRakenneLockService;
+
+    @Autowired
+    private LukiokoulutuksenPerusteenSisaltoService sisaltoService;
 
     @Dto
     @Autowired
@@ -126,5 +128,12 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         assertEquals(2, list.get(0).getOppiaineet().size());
         assertTrue(list.get(0).getOppiaineet().stream().map(KurssinOppiaineDto::getOppiaineId)
                 .collect(toSet()).containsAll(asList(suomiRef.getId(), saameRef.getId())));
+
+        LukioOppiainePuuDto tree = sisaltoService.getOppiaineTreeStructure(perusteId);
+        Assert.assertNotNull(tree);
+        assertEquals(perusteId, tree.getPerusteId());
+        assertEquals(1, tree.getOppiaineet().size());
+        assertEquals(2, tree.getOppiaineet().get(0).getOppimaarat().size());
+        assertEquals(1, tree.getOppiaineet().get(0).getOppimaarat().get(0).getKurssit().size());
     }
 }

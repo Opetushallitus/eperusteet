@@ -16,8 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.yl;
 
-import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuudetYleiskuvausDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukioOppiainePuuDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -26,4 +25,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * Time: 15.33
  */
 public interface LukiokoulutuksenPerusteenSisaltoService extends OppiainePerusteenSisaltoService {
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    LukioOppiainePuuDto getOppiaineTreeStructure(long perusteId);
 }

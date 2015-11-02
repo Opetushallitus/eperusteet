@@ -82,8 +82,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     private KayttajanTietoService kayttajanTietoService;
 
     @RequestMapping(value = "/oppiaineet", method = GET)
-    public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(
-            @PathVariable("perusteId") final Long perusteId) {
+    public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(@PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, () -> sisallot.getOppiaineet(perusteId, OppiaineSuppeaDto.class));
     }
 
