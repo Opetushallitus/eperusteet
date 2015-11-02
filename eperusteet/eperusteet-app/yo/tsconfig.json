@@ -59,6 +59,7 @@
     "./app/scripts/services/kieli.ts",
     "./app/scripts/services/proxyservice.ts",
     "./app/scripts/app.ts",
+    "./app/scripts/directives/generictree.ts",
     "./app/scripts/directives/followscroll.ts",
     "./app/scripts/directives/tree.ts",
     "./app/scripts/directives/readmore.ts",
