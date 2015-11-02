@@ -14,27 +14,14 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl.lukio;
+package fi.vm.sade.eperusteet.repository;
 
-import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
+import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**
  * User: jsikio
  */
-@Getter
-@Setter
-public class LukioAihekokonaisuusMuokkausDto extends UpdateDto<LukioAihekokonaisuusMuokkausDto> implements Serializable {
-    @NotNull
-    private Long id;
-    @NotNull
-    private LokalisoituTekstiDto otsikko;
-    private Optional<LokalisoituTekstiDto> yleiskuvaus;
-    private Long jnro;
+public interface LukioYleisetTavoitteetRepository extends JpaWithVersioningRepository<OpetuksenYleisetTavoitteet, Long> {
+
 }

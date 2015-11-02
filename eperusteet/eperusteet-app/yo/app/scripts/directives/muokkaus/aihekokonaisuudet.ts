@@ -37,8 +37,13 @@ angular.module('eperusteApp')
                                                             LukiokoulutusService,
                                                             Lukitus,
                                                             PerusteProjektiSivunavi,
+                                                            VersionHelper, Notifikaatiot,
+                                                            Kommentit, KommentitBySuoritustapa,
                                                             Editointikontrollit, Varmistusdialogi,
-                                                            $rootScope, $state, $filter) {
+                                                            $rootScope, $state, $filter, $stateParams) {
+
+    $scope.versiot = {};
+    $scope.osanTyyppi = $stateParams.osanTyyppi;
 
     var setEditMode = function() {
       $scope.editEnabled = true;
@@ -52,8 +57,9 @@ angular.module('eperusteApp')
           setEditMode();
         });
       },
-      save: function() {
+      save: function(kommentti) {
         $rootScope.$broadcast('notifyCKEditor');
+        $scope.aihekokonaisuudet.metadata = {kommentti: kommentti};
         LukioAihekokonaisuudetService.saveAihekokonaisuudetYleiskuvaus($scope.aihekokonaisuudet).then(function() {
           Lukitus.vapauta().then(function() {
             init();
@@ -69,13 +75,36 @@ angular.module('eperusteApp')
     });
 
     function init() {
-      LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvaus().then(function(aihekokonaisuudet) {
-        $scope.aihekokonaisuudet = aihekokonaisuudet;
-      });
+
+      Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.osanTyyppi});
+
+      var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
+      if(versio) {
+        VersionHelper.getLukioAihekokonaisuudetVersions($scope.versiot, {}, true, function (versiot) {
+          var revNumber = VersionHelper.select($scope.versiot, versio);
+          LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvaus(revNumber).then(function (aihekokonaisuudet) {
+            $scope.aihekokonaisuudet = aihekokonaisuudet;
+          });
+
+        });
+      } else {
+        $scope.haeVersiot(true);
+        LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvaus().then(function(aihekokonaisuudet) {
+          $scope.aihekokonaisuudet = aihekokonaisuudet;
+          $scope.haeVersiot(true);
+        });
+
+      }
       $scope.editEnabled = false;
       $scope.editMode = false;
       PerusteProjektiSivunavi.setVisible(true);
     }
+
+
+    $scope.haeVersiot = function (force, cb) {
+      VersionHelper.getLukioAihekokonaisuudetVersions($scope.versiot, {},force, cb);
+    };
+
 
     init();
     $scope.edit = function() {
@@ -94,6 +123,14 @@ angular.module('eperusteApp')
           editEnabled: true});
     }
 
+    $scope.gotoViewAihekokonaisuus = function(aihekokonaisuusId) {
+      $state.go('root.perusteprojekti.suoritustapa.lukioosaalue',
+        {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET,
+          osanId: aihekokonaisuusId,
+          tabId: 0,
+          editEnabled: false});
+    }
+
     $scope.poista = function(aihekokonaisuusId) {
       Varmistusdialogi.dialogi({
         otsikko: 'poistetaanko-aihekokonaisuus',
@@ -103,7 +140,6 @@ angular.module('eperusteApp')
               {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET},
               { reload: true });
           });
-
         }
       })();
     }
@@ -115,16 +151,25 @@ angular.module('eperusteApp')
       );
     };
 
+    $scope.vaihdaVersio = function () {
+      $scope.versiot.hasChanged = true;
+      VersionHelper.setUrl($scope.versiot);
+    };
+
+    $scope.revertCb = function (response) {
+      Lukitus.vapauta();
+      $scope.haeVersiot(true, function () {
+        VersionHelper.setUrl($scope.versiot);
+      });
+      Notifikaatiot.onnistui('aihekokonaisuudet-palautettu');
+    };
+
 
   })
   .directive('lukioMuokkausAihekokonaisuus', function() {
     return {
       templateUrl: 'views/directives/lukiokoulutus/aihekokonaisuus.html',
       restrict: 'E',
-      scope: {
-        model: '=',
-        versiot: '='
-      },
       controller: 'LukioAihekokonaisuusController'
     };
   })
@@ -137,7 +182,11 @@ angular.module('eperusteApp')
                                                           PerusteProjektiSivunavi,
                                                           LukiokoulutusService,
                                                           Editointikontrollit,
+                                                          Varmistusdialogi,
+                                                          VersionHelper, Notifikaatiot,
                                                           $rootScope, $filter) {
+
+
 
     var setEditMode = function() {
       $scope.editEnabled = true;
@@ -153,14 +202,15 @@ angular.module('eperusteApp')
         }
 
       },
-      save: function() {
+      save: function(kommentti) {
         $rootScope.$broadcast('notifyCKEditor');
+        $scope.aihekokonaisuus.metadata = {kommentti: kommentti};
 
         if( $scope.isNew ) {
           LukioAihekokonaisuudetService.saveAihekokonaisuus($scope.aihekokonaisuus).then(function(aihekokonaisuus) {
             Lukitus.vapauta();
             if($stateParams.editEnabled) {
-              $scope.back();
+              $scope.ini();
             } else {
               $state.go('root.perusteprojekti.suoritustapa.lukioosaalue',
                 {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET,
@@ -172,11 +222,7 @@ angular.module('eperusteApp')
         } else {
           LukioAihekokonaisuudetService.updateAihekokonaisuus($scope.aihekokonaisuus).then(function() {
             Lukitus.vapauta();
-            if($stateParams.editEnabled) {
-              $scope.back();
-            } else {
-              init();
-            }
+            init();
           });
         }
       },
@@ -189,11 +235,43 @@ angular.module('eperusteApp')
       }
     });
 
+    $scope.haeVersiot = function (force, cb) {
+      VersionHelper.getLukioAihekokonaisuusVersions($scope.versiot, {id: $scope.aihekokonaisuus.id},force, cb);
+    };
+
+    $scope.vaihdaVersio = function () {
+      $scope.versiot.hasChanged = true;
+      VersionHelper.setUrl($scope.versiot);
+    };
+
+    $scope.revertCb = function (response) {
+      Lukitus.vapauta();
+      $scope.haeVersiot(true, function () {
+        VersionHelper.setUrl($scope.versiot);
+      });
+      Notifikaatiot.onnistui('aihekokonaisuus-palautettu');
+    };
+
 
     function init() {
-      LukiokoulutusService.getOsa($stateParams).then(function(aihekokonaisuus) {
-        $scope.aihekokonaisuus = aihekokonaisuus;
-      });
+      var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
+
+      if(versio) {
+        VersionHelper.getLukioAihekokonaisuusVersions($scope.versiot, {id: $stateParams.osanId}, true, function (versiot) {
+          var revNumber = VersionHelper.select($scope.versiot, versio);
+          $stateParams.versioId = revNumber;
+          LukiokoulutusService.getOsa($stateParams).then(function(aihekokonaisuus) {
+            $scope.aihekokonaisuus = aihekokonaisuus;
+          });
+        });
+      } else {
+        LukiokoulutusService.getOsa($stateParams).then(function(aihekokonaisuus) {
+          $scope.aihekokonaisuus = aihekokonaisuus;
+          $scope.haeVersiot(true);
+        });
+
+      }
+
       $scope.editEnabled = false;
       PerusteProjektiSivunavi.setVisible(true);
     }
@@ -236,9 +314,17 @@ angular.module('eperusteApp')
     };
 
     $scope.delete = function() {
-      LukioAihekokonaisuudetService.deleteAihekokonaisuus($scope.aihekokonaisuus.id).then(function() {
-        $scope.back();
-      });
+      Varmistusdialogi.dialogi({
+        otsikko: 'poistetaanko-aihekokonaisuus',
+        successCb: function () {
+          LukioAihekokonaisuudetService.deleteAihekokonaisuus($scope.aihekokonaisuus.id).then(function() {
+            $state.go('root.perusteprojekti.suoritustapa.lukioosat',
+              {osanTyyppi: LukiokoulutusService.AIHEKOKONAISUUDET},
+              { reload: true });
+          });
+
+        }
+      })();
     };
 
   });

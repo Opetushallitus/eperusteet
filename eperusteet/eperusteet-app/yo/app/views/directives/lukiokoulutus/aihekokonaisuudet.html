@@ -7,27 +7,23 @@
   <div class="col-md-12 ep-sisalto-inner">
 
     <div class="action-buttons" ng-if="!editEnabled">
-      <br />
-      <br />
       <button class="btn btn-default" icon-role="edit" ng-click="edit()" kaanna="muokkaa"
               oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
     </div>
     <div ng-if="!editEnabled">
+      <revert-note object="aihekokonaisuudet" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
+
       <div ng-if="!aihekokonaisuudet.otsikko" kaanna="aihekokonaisuudet-ei-otsikkoa"></div>
       <h1><span ng-bind="aihekokonaisuudet.otsikko | kaanna"></span></h1>
       <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></div>
-      <div ng-if="aihekokonaisuudet.muokattu" class="muokattuViimeksi">
-        <span kaanna="'muokattu-viimeksi'"></span>: <span ng-bind="aihekokonaisuudet.muokattu || 0 | aikaleima"></span>
-      </div>
 
-      <hr />
+      <versiotiedot ng-hide="editEnabled"></versiotiedot>
+
       <div ng-repeat="v in model | orderBy:nro">
         <div>
           <div class="action-buttons">
-            <button class="btn btn-default" icon-role="edit" ng-click="gotoEditAihekokonaisuus(v.id)"
+            <button class="btn btn-default" icon-role="edit" ng-click="gotoViewAihekokonaisuus(v.id)"
                     oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
-            <button class="btn btn-default" icon-role="remove"
-                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]" ng-click="poista(v.id)"></button>
           </div>
 
           <h3 class="panel-title osio-otsikko" ng-click="v.$isCollapsed = !v.$isCollapsed">
@@ -45,6 +41,8 @@
 
         </div>
       </div>
+
+      <kommentit></kommentit>
 
     </div>
 

@@ -23,19 +23,22 @@ angular.module('eperusteApp')
     return {
       templateUrl: 'views/directives/lukiokoulutus/tavoitteet.html',
       restrict: 'E',
-      scope: {
-        model: '=',
-        versiot: '='
-      },
       controller: 'LukioTavoitteetController'
     };
   })
   .controller('LukioTavoitteetController', function ($scope, LukioYleisetTavoitteetService,
                                                      Lukitus,
                                                      PerusteProjektiSivunavi,
-                                                     Editointikontrollit,
-                                                     $rootScope, $filter) {
+                                                     LukiokoulutusService,
+                                                     virheService,
+                                                     Notifikaatiot,
+                                                     Editointikontrollit, VersionHelper,
+                                                     Kommentit, KommentitBySuoritustapa,
+                                                     $rootScope, $filter, $stateParams) {
 
+    $scope.versiot = {};
+    $scope.perusteId = LukiokoulutusService.getPerusteId();
+    $scope.osanTyyppi = $stateParams.osanTyyppi;
 
     var setEditMode = function() {
       PerusteProjektiSivunavi.setVisible(false);
@@ -51,8 +54,9 @@ angular.module('eperusteApp')
         });
 
       },
-      save: function() {
+      save: function(kommentti) {
         $rootScope.$broadcast('notifyCKEditor');
+        $scope.yleisetTavoitteet.metadata = {kommentti: kommentti};
         LukioYleisetTavoitteetService.updateYleistTavoitteet($scope.yleisetTavoitteet).then(function() {
           Lukitus.vapauta();
           init();
@@ -67,10 +71,27 @@ angular.module('eperusteApp')
       }
     });
 
+    $scope.haeVersiot = function (force, cb) {
+      VersionHelper.getLukioYleisetTavoitteetVersions($scope.versiot, {id: LukiokoulutusService.getPerusteId()},force, cb);
+    };
+
     function init() {
-      LukioYleisetTavoitteetService.getYleisetTavoitteet().then(function(yleisetTavoitteet) {
-        $scope.yleisetTavoitteet = yleisetTavoitteet;
-      });
+      Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.osanTyyppi});
+      var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
+      if(versio) {
+        VersionHelper.getLukioYleisetTavoitteetVersions($scope.versiot, {id: LukiokoulutusService.getPerusteId()},true, function(versiot) {
+          var revNumber = VersionHelper.select($scope.versiot, versio);
+          LukioYleisetTavoitteetService.getYleisetTavoitteet(revNumber).then(function(yleisetTavoitteet) {
+            $scope.yleisetTavoitteet = yleisetTavoitteet;
+          });
+
+        });
+      } else {
+        $scope.haeVersiot(true);
+        LukioYleisetTavoitteetService.getYleisetTavoitteet().then(function(yleisetTavoitteet) {
+          $scope.yleisetTavoitteet = yleisetTavoitteet;
+        });
+      }
 
       $scope.editEnabled = false;
       $scope.editMode = false;
@@ -87,6 +108,20 @@ angular.module('eperusteApp')
 
     $scope.cancel = function() {
       init();
+    };
+
+    $scope.vaihdaVersio = function () {
+      $scope.versiot.hasChanged = true;
+      VersionHelper.setUrl($scope.versiot);
+    };
+
+    $scope.revertCb = function (response) {
+      Lukitus.vapauta();
+      $scope.haeVersiot(true, function () {
+        VersionHelper.setUrl($scope.versiot);
+      });
+      Notifikaatiot.onnistui('lukiokoulutusyleisettavoitteet-palautettu');
+
     };
 
   });

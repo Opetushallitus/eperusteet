@@ -44,7 +44,6 @@ public class LukioKurssiLuontiDto implements Serializable {
     private LokalisoituTekstiDto nimi;
     private String koodiArvo;
     private String koodiUri;
-    private Optional<LokalisoituTekstiDto> kurssityypinKuvaus;
     private Optional<LokalisoituTekstiDto> kuvaus;
     private Optional<LokalisoituTekstiDto> tavoitteetOtsikko;
     private Optional<LokalisoituTekstiDto> tavoitteet;
@@ -58,7 +57,6 @@ public class LukioKurssiLuontiDto implements Serializable {
                                 List<KurssinOppiaineDto> oppiaineet,
                                 LokalisoituTekstiDto nimi,
                                 String koodiArvo, String koodiUri,
-                                Optional<LokalisoituTekstiDto> kurssityypinKuvaus,
                                 Optional<LokalisoituTekstiDto> kuvaus,
                                 Optional<LokalisoituTekstiDto> tavoitteetOtsikko,
                                 Optional<LokalisoituTekstiDto> tavoitteet,
@@ -69,7 +67,6 @@ public class LukioKurssiLuontiDto implements Serializable {
         this.nimi = nimi;
         this.koodiArvo = koodiArvo;
         this.koodiUri = koodiUri;
-        this.kurssityypinKuvaus = kurssityypinKuvaus;
         this.kuvaus = kuvaus;
         this.tavoitteetOtsikko = tavoitteetOtsikko;
         this.tavoitteet = tavoitteet;

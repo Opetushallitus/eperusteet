@@ -175,19 +175,30 @@ angular.module('eperusteApp')
   .factory('LukiokoulutusYleisetTavoitteet', function($resource, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/yleisettavoitteet';
 
-    return $resource(baseUrl, {perusteIdId: '@perusteId'},{
-        update: {method: 'POST'}
+    return $resource(baseUrl, {perusteId: '@perusteId', versioId: '@versioId'},{
+        update: {method: 'POST'},
+        versiot: {method: 'GET', isArray: true, url: baseUrl + '/versiot'},
+        getByVersio: {method: 'GET', isArray: false, url: baseUrl + '/versio/:versioId'},
+        palauta: {method: 'post', isArray: false, url: baseUrl + '/palauta/:versioId'}
     });
   })
   .factory('LukiokoulutusAihekokonaisuudet', function($resource, $translate, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet/:osanId';
     return $resource(baseUrl, {
       osanId: '@osanId',
-      perusteId: '@perusteId'}, {
+      perusteId: '@perusteId',
+      aihekokonaisuusId: '@aihekokonaisuusId',
+      versioId: '@versioId'}, {
       saveAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/aihekokonaisuus'},
       updateAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/:aihekokonaisuusId'},
       getAihekokonaisuudetYleiskuvaus: {method: 'GET', isArray: false, url: baseUrl + '/yleiskuvaus'},
-      saveAihekokonaisuudetYleiskuvaus: {method: 'POST', isArray: false, url: baseUrl + '/yleiskuvaus'}
+      getAihekokonaisuudetYleiskuvausByVersio: {method: 'GET', isArray: false, url: baseUrl + '/yleiskuvaus/versio/:versioId'},
+      saveAihekokonaisuudetYleiskuvaus: {method: 'POST', isArray: false, url: baseUrl + '/yleiskuvaus'},
+      aihekokonaisuudetYleiskuvausVersiot: {method: 'GET', isArray: true, url: baseUrl + '/yleiskuvaus/versiot'},
+      aihekokonaisuusVersiot: {method: 'GET', isArray: true, url: baseUrl + '/:aihekokonaisuusId/versiot'},
+      getAihekokonaisuusByVersio: {method: 'GET', isArray: false, url: baseUrl + '/:aihekokonaisuusId/versio/:versioId'},
+      palautaAihekokonaisuudetYleiskuvaus: {method: 'POST', isArray: false, url: baseUrl + '/yleiskuvaus/palauta/:versioId'},
+      palautaAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/:aihekokonaisuusId/palauta/:versioId'}
     });
   })
   .service('SuoritustavanSisalto', function($modal, $state, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {

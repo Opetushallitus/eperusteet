@@ -152,10 +152,17 @@ public interface PerusteService {
     Revision getLastModifiedRevision(final Long id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(Long perusteId);
+    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteetByVersion(long perusteId, int revision);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void tallennaYleisetTavoitteet(Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto);
 
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<Revision> getYleisetTavoitteetVersiot(Long perusteId);
 
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    LukiokoulutuksenYleisetTavoitteetDto palautaYleisetTavoitteet(long perusteId, int revisio);
 }

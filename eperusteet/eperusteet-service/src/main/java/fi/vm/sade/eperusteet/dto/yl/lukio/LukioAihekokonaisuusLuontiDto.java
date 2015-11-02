@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Builder;
@@ -31,7 +32,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Builder
-public class LukioAihekokonaisuusLuontiDto implements Serializable {
+public class LukioAihekokonaisuusLuontiDto extends UpdateDto<LukioAihekokonaisuusLuontiDto> implements Serializable {
     @NotNull
     private LokalisoituTekstiDto otsikko;
     private Optional<LokalisoituTekstiDto> yleiskuvaus;

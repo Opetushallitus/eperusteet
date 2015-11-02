@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
@@ -80,6 +81,9 @@ public class PermissionManager {
 
     @Autowired
     PerusteenOsaViiteRepository perusteenOsaViiteRepository;
+
+    @Autowired
+    private PerusteRepository perusteet;
 
     private static final Logger LOG = LoggerFactory.getLogger(PermissionManager.class);
 
@@ -332,6 +336,12 @@ public class PermissionManager {
             //tarkistetaan onko lukuoikeus suoraan julkaistu -statuksen perusteella
             if (PerusteTila.VALMIS == helper.findPerusteTilaFor(targetType, targetId)) {
                 return true;
+            } else if( Target.PERUSTE == targetType ) {
+                // Jos peruste on esikatseltavissa, niin tällöin sallitaan hakeminen
+                Peruste p = perusteet.findOne((Long)targetId);
+                if( p.isEsikatseltavissa() ) {
+                    return true;
+                }
             }
         }
 

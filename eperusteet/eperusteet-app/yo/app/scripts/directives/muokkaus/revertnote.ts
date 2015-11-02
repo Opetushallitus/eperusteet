@@ -28,7 +28,7 @@ angular.module('eperusteApp')
         'revertCb': '&',
         'changeVersion': '&'
       },
-      controller: function ($scope, $state, Varmistusdialogi, Lukitus, VersionHelper, $translate) {
+      controller: function ($scope, $state, $stateParams, Varmistusdialogi, Lukitus, VersionHelper, $translate) {
         $scope.version = {
           revert: function () {
             var suoritustapa = $scope.$parent.suoritustapa;
@@ -59,6 +59,31 @@ angular.module('eperusteApp')
                   });
                 };
                 break;
+              case 'root.perusteprojekti.suoritustapa.lukioosat':
+
+                if( $stateParams.osanTyyppi === 'aihekokonaisuudet' ) {
+                  cb = function () {
+                    Lukitus.lukitseLukioAihekokonaisuudet().then( function () {
+                      VersionHelper.revertLukioAihekokonaisuudetYleiskuvaus($scope.versiot, {id: $scope.$parent.perusteId, suoritustapa: suoritustapa}, revCb);
+                    });
+                  };
+                } else if($stateParams.osanTyyppi === 'opetuksen_yleiset_tavoitteet') {
+                  cb = function () {
+                    Lukitus.lukitseLukioYleisettavoitteet().then( function () {
+                      VersionHelper.revertLukioYleisetTavoitteet($scope.versiot, {id: $scope.$parent.perusteId, suoritustapa: suoritustapa}, revCb);
+                    });
+                  };
+                }
+
+                break;
+              case 'root.perusteprojekti.suoritustapa.lukioosaalue':
+                cb = function () {
+                  Lukitus.lukitseLukioAihekokonaisuus($scope.object.id).then( function () {
+                    VersionHelper.revertLukioAihekokonaisuus($scope.versiot, {id: $scope.object.id, suoritustapa: suoritustapa}, revCb);
+                  });
+                };
+
+                break;
               default :
                 cb = angular.noop;
             }
@@ -68,7 +93,7 @@ angular.module('eperusteApp')
               teksti: $translate('vahvista-version-palauttaminen-teksti', {versio: $scope.versiot.chosen.index}), // FIXME
               primaryBtn: 'vahvista',
               comment: {
-                enabled: true,
+                enabled: false,
                 placeholder: 'kommentoi-muutosta'
               }
             })();

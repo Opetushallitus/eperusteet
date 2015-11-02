@@ -91,7 +91,16 @@ angular.module('eperusteApp')
     }
 
     function getOsaGeneric(resource, params) {
-      return resource.get(commonParams({osanId: params.osanId})).$promise;
+      return resource.get(commonParams({osanId: params.osanId, versioId: params.revNumber})).$promise;
+    }
+
+    function getAihekokonasuusOsa(params) {
+
+      if( params.versioId ) {
+        return LukiokoulutusAihekokonaisuudet.getAihekokonaisuusByVersio(commonParams({aihekokonaisuusId: params.osanId, versioId: params.versioId})).$promise;
+      } else {
+        return getOsaGeneric(LukiokoulutusAihekokonaisuudet, params)
+      }
     }
 
     this.getOsa = function (params) {
@@ -103,7 +112,7 @@ angular.module('eperusteApp')
         case this.OPETUKSEN_YLEISET_TAVOITTEET:
           return promisify({});
         case this.AIHEKOKONAISUUDET:
-          return getOsaGeneric(LukiokoulutusAihekokonaisuudet, params);
+          return getAihekokonasuusOsa(params);
         case this.OPPIAINEET_OPPIMAARAT:
           return getOsaGeneric(LukionOppiaineet, params);
         case this.KURSSIT:
@@ -459,19 +468,28 @@ angular.module('eperusteApp')
       return d.promise;
     };
 
-    var getAihekokonaisuus = function(aihekokonaisuusId,cb) {
+    var getAihekokonaisuus = function(aihekokonaisuusId, cb) {
       return LukiokoulutusAihekokonaisuudet.query({
         aihekokonaisuusId: aihekokonaisuusId
       }, cb).$promise;
     };
 
-    var getAihekokonaisuudetYleiskuvaus = function() {
-      return LukiokoulutusAihekokonaisuudet.getAihekokonaisuudetYleiskuvaus({
-        perusteId: LukiokoulutusService.getPerusteId()
-      }).$promise;
+    var getAihekokonaisuudetYleiskuvaus = function(versio) {
+
+      if(versio) {
+        return LukiokoulutusAihekokonaisuudet.getAihekokonaisuudetYleiskuvausByVersio({
+          perusteId: LukiokoulutusService.getPerusteId(),
+          versioId: versio
+        }).$promise;
+
+      } else {
+        return LukiokoulutusAihekokonaisuudet.getAihekokonaisuudetYleiskuvaus({
+          perusteId: LukiokoulutusService.getPerusteId()
+        }).$promise;
+      }
     };
 
-    var deleteAihekokonaisuus = function(aihekokonaisuusId/*,cb XXX: should this be used?*/) {
+    var deleteAihekokonaisuus = function(aihekokonaisuusId) {
       var d = $q.defer();
       Lukitus.lukitseLukioAihekokonaisuus(aihekokonaisuusId, function () {
         LukiokoulutusAihekokonaisuudet.delete({
@@ -487,13 +505,45 @@ angular.module('eperusteApp')
       return d.promise;
     };
 
+    var getAihekokonaisuudetYleiskuvausVersiot = function() {
+      return LukiokoulutusAihekokonaisuudet.aihekokonaisuudetYleiskuvausVersiot({
+        perusteId: LukiokoulutusService.getPerusteId()
+      }).$promise;
+    };
+
+    var palautaAihekokonaisuudetYleiskuvaus = function(versioId) {
+      return LukiokoulutusAihekokonaisuudet.palautaAihekokonaisuudetYleiskuvaus({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        versioId: versioId
+      }).$promise;
+    };
+
+    var getAihekokonaisuusVersiot = function(aihekokonaisuusId) {
+      return LukiokoulutusAihekokonaisuudet.aihekokonaisuusVersiot({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        aihekokonaisuusId: aihekokonaisuusId
+      }).$promise;
+    };
+
+    var palautaAihekokonaisuus = function(aihekokonaisuusId, versioId) {
+      return LukiokoulutusAihekokonaisuudet.palautaAihekokonaisuus({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        aihekokonaisuusId: aihekokonaisuusId,
+        versioId: versioId
+      }).$promise;
+    };
+
     return {
       saveAihekokonaisuus: saveAihekokonaisuus,
       saveAihekokonaisuudetYleiskuvaus: saveAihekokonaisuudetYleiskuvaus,
       updateAihekokonaisuus: updateAihekokonaisuus,
       getAihekokonaisuus: getAihekokonaisuus,
       getAihekokonaisuudetYleiskuvaus: getAihekokonaisuudetYleiskuvaus,
-      deleteAihekokonaisuus: deleteAihekokonaisuus
+      deleteAihekokonaisuus: deleteAihekokonaisuus,
+      getAihekokonaisuudetYleiskuvausVersiot: getAihekokonaisuudetYleiskuvausVersiot,
+      palautaAihekokonaisuudetYleiskuvaus: palautaAihekokonaisuudetYleiskuvaus,
+      getAihekokonaisuusVersiot: getAihekokonaisuusVersiot,
+      palautaAihekokonaisuus: palautaAihekokonaisuus
     };
   })
   .service('LukioYleisetTavoitteetService',
@@ -520,14 +570,38 @@ angular.module('eperusteApp')
       return d.promise;
     };
 
-    var getYleisetTavoitteet = function() {
-      return LukiokoulutusYleisetTavoitteet.get({
+    var getYleisetTavoitteet = function(versio) {
+
+      if( versio ) {
+        return LukiokoulutusYleisetTavoitteet.getByVersio({
+          perusteId: LukiokoulutusService.getPerusteId(),
+          versioId: versio
+        }).$promise;
+      } else {
+        return LukiokoulutusYleisetTavoitteet.get({
+          perusteId: LukiokoulutusService.getPerusteId()
+        }).$promise;
+
+      }
+    };
+
+    var getVersiot = function() {
+      return LukiokoulutusYleisetTavoitteet.versiot({
         perusteId: LukiokoulutusService.getPerusteId()
+      }).$promise;
+    };
+
+    var palauta = function(perusteId, versioId) {
+      return LukiokoulutusYleisetTavoitteet.palauta({
+        perusteId: perusteId,
+        versioId: versioId
       }).$promise;
     };
 
     return {
       updateYleistTavoitteet: updateYleistTavoitteet,
-      getYleisetTavoitteet: getYleisetTavoitteet
+      getYleisetTavoitteet: getYleisetTavoitteet,
+      getVersiot: getVersiot,
+      palauta: palauta
     };
   });

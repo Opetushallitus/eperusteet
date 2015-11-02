@@ -221,8 +221,12 @@ angular.module('eperusteApp')
   .controller('LukioOppiaineKurssiPuuController', function($scope, $stateParams, $q, $translate,
                                                            $rootScope, $timeout, $log, Lukitus,
                                                            LukioKurssiService, LukiokoulutusService,
-                                                           $state, Editointikontrollit) {
+                                                           $state, Editointikontrollit, Kommentit, KommentitBySuoritustapa) {
+
     var kurssitProvider = LukioKurssiService.listByPeruste(LukiokoulutusService.getPerusteId());
+
+    $scope.osanTyyppi = $stateParams.osanTyyppi;
+    Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.osanTyyppi});
     $scope.treehelpers = {
       haku: '',
       liittamattomienHaku: '',

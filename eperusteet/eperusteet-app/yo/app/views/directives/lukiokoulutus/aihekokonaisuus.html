@@ -53,6 +53,9 @@
   </div>
 
   <div ng-if="!editEnabled">
+    <projektin-murupolku></projektin-murupolku>
+    <revert-note object="aihekokonaisuus" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
+
     <h1 class="aihekokonaisuus-otsikko"><span ng-bind="aihekokonaisuus.otsikko | kaanna"></span></h1>
 
     <versiotiedot ng-hide="editEnabled"></versiotiedot>

@@ -20,6 +20,8 @@ import com.google.common.base.Optional;
 
 import java.util.Date;
 import java.util.Set;
+
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +35,10 @@ public class OppiaineDto extends OppiaineBaseDto {
     private Optional<TekstiOsaDto> tehtava;
     private Optional<TekstiOsaDto> tavoitteet;
     private Optional<TekstiOsaDto> arviointi;
+
+    private Optional<LokalisoituTekstiDto> pakollinenKurssiKuvaus;
+    private Optional<LokalisoituTekstiDto> syventavaKurssiKuvaus;
+    private Optional<LokalisoituTekstiDto> soveltavaKurssiKuvaus;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<OppiaineSuppeaDto> oppimaarat;

@@ -40,7 +40,7 @@ angular.module('eperusteApp')
         abstract: true
       })
       .state('root.perusteprojekti.suoritustapa.lukioosat', {
-        url: '/lukioosat/:osanTyyppi',
+        url: '/lukioosat/:osanTyyppi{versio:(?:/[^/]+)?}',
         templateUrl: 'views/partials/lukio/osat/osalistaus.html',
         controller: 'LukioOsalistausController',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
@@ -57,7 +57,7 @@ angular.module('eperusteApp')
         }]
       })
       .state('root.perusteprojekti.suoritustapa.lukioosaalue', {
-        url: '/lukioosat/:osanTyyppi/:osanId/:tabId/:editEnabled',
+        url: '/lukioosat/:osanTyyppi/:osanId/:tabId/:editEnabled{versio:(?:/[^/]+)?}',
         templateUrl: 'views/partials/lukio/osat/osaalue.html',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
