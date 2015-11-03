@@ -107,7 +107,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     private Oppiaine saveOppiaine(OppiaineDto dto) {
-        Oppiaine oppiaine = mapper.map(dto, Oppiaine.class);
+        Oppiaine oppiaine = mapper.map(dto, new Oppiaine());
         oppiaine = oppiaineRepository.save(oppiaine);
         final Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet = dto.getVuosiluokkakokonaisuudet();
         if (vuosiluokkakokonaisuudet != null) {
@@ -260,7 +260,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (sisalto != null && sisalto.containsOppiaine(original)) {
             // we don't want to update oppimaarat (structure related), vuosiluokkakokonaisuudet etc. here
             Class<? extends OppiaineBaseUpdateDto> dtoClz
-                    = tyyppi == LUKIOKOULUTUS ? OppiaineBaseUpdateDto.class : OppiaineDto.class;
+                    = tyyppi == LUKIOKOULUTUS ? LukioOppiaineUpdateDto.class : OppiaineDto.class;
             OppiaineBaseUpdateDto dto = mapper.map(aine, dtoClz);
             setOriginalReferences(original, dto);
             return updateOppiaine(perusteId, new UpdateDto<>(dto), tyyppi);

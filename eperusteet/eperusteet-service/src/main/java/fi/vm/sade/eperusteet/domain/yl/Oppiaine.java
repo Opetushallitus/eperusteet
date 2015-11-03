@@ -273,7 +273,11 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     //ilman equals-metodia objectX.equals(proxy-objectX) on aina false
     @Override
     public boolean equals(Object other) {
-        return this == other;
+        return this == other || (
+                other instanceof Oppiaine
+                && this.tunniste != null
+                && this.tunniste.equals(((Oppiaine) other).tunniste)
+        );
     }
 
     public boolean structureEquals(Oppiaine other) {

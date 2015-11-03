@@ -35,7 +35,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseUpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.LukioOppiaineUpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
@@ -159,7 +159,7 @@ public class DtoMapperConfig {
                 .fieldBToA(Oppiaine_.vuosiluokkakokonaisuudet.getName(), Oppiaine_.vuosiluokkakokonaisuudet.getName())
             .byDefault()
             .register();
-        factory.classMap(OppiaineBaseUpdateDto.class, Oppiaine.class)
+        factory.classMap(LukioOppiaineUpdateDto.class, Oppiaine.class)
             .mapNulls(true)
             .byDefault()
             .register();

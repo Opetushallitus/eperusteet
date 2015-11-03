@@ -16,26 +16,15 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * User: tommiratamaa
  * Date: 3.11.2015
- * Time: 18.43
+ * Time: 19.27
  */
 @Getter
 @Setter
-public abstract class OppiaineBaseUpdateDto extends OppiaineBaseDto {
-    private String koodiUri;
-    private String koodiArvo;
-
-    private TekstiOsaDto tehtava;
-    private TekstiOsaDto tavoitteet;
-    private TekstiOsaDto arviointi;
-
-    private LokalisoituTekstiDto pakollinenKurssiKuvaus;
-    private LokalisoituTekstiDto syventavaKurssiKuvaus;
-    private LokalisoituTekstiDto soveltavaKurssiKuvaus;
+public class LukioOppiaineUpdateDto extends OppiaineBaseUpdateDto {
 }
