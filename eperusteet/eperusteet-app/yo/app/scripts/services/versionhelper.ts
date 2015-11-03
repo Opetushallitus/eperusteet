@@ -18,9 +18,9 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot,
-    RakenneVersio, Notifikaatiot, $state, $location, $stateParams, TutkinnonOsaViitteet,
-    LukioYleisetTavoitteetService, LukioAihekokonaisuudetService) {
+  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, $log,
+        RakenneVersio, Notifikaatiot, $state, $location, $stateParams, TutkinnonOsaViitteet,
+        LukioYleisetTavoitteetService, LukioAihekokonaisuudetService, LukioKurssiService) {
 
     function rakennaNimi(v) {
         var nimi = (v.kutsumanimi || '') + ' ' + (v.sukunimi || '');
@@ -39,61 +39,22 @@ angular.module('eperusteApp')
       if (!force && data.list) {
         return;
       }
-
-      if (tyyppi === 'perusteenosa') {
-        PerusteenOsat.versiot({osanId: tunniste.id}, function (res) {
-          rakennaNimet(res);
-          data.list = res;
-          versiotListHandler(data);
-          cb();
-        });
+      var handle = function (res) {
+        rakennaNimet(res);
+        data.list = res;
+        versiotListHandler(data);
+        cb();
+      };
+      switch (tyyppi) {
+        case 'perusteenosa':        PerusteenOsat.versiot({osanId: tunniste.id}, handle);           break;
+        case 'tutkinnonOsaViite':   TutkinnonOsaViitteet.versiot({viiteId: tunniste.id}, handle);   break;
+        case 'perusteenOsaViite':   PerusteenOsat.versiotByViite({viiteId: tunniste.id}, handle);   break;
+        case 'rakenne':             RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, handle); break;
+        case 'lukioyleisettavoitteet': LukioYleisetTavoitteetService.getVersiot().then(handle);     break;
+        case 'lukioaihekokonaisuudet': LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvausVersiot().then(handle); break;
+        case 'lukiokurssi':          LukioKurssiService.listVersions(tunniste.id).then(handle); break;
+        default: $log.error('Unknwon versio tyyppi: ', tyyppi);
       }
-      else if (tyyppi === 'tutkinnonOsaViite') {
-        TutkinnonOsaViitteet.versiot({viiteId: tunniste.id}, function (res) {
-          rakennaNimet(res);
-          data.list = res;
-          versiotListHandler(data);
-          cb();
-        });
-      }
-      else if (tyyppi === 'perusteenOsaViite') {
-        PerusteenOsat.versiotByViite({viiteId: tunniste.id}, function (res) {
-          rakennaNimet(res);
-          data.list = res;
-          versiotListHandler(data);
-          cb();
-        });
-      }
-      else if (tyyppi === 'rakenne') {
-        RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function (res) {
-          rakennaNimet(res);
-          data.list = res;
-          versiotListHandler(data);
-          cb();
-        });
-      } else if (tyyppi === 'lukioyleisettavoitteet') {
-         LukioYleisetTavoitteetService.getVersiot().then(function(res) {
-           rakennaNimet(res);
-           data.list = res;
-           versiotListHandler(data);
-           cb();
-         });
-      } else if (tyyppi === 'lukioaihekokonaisuudet') {
-        LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvausVersiot().then(function(res) {
-          rakennaNimet(res);
-          data.list = res;
-          versiotListHandler(data);
-          cb();
-        });
-      } else if (tyyppi === 'lukioaihekokonaisuus') {
-        LukioAihekokonaisuudetService.getAihekokonaisuusVersiot(tunniste.id) .then(function(res) {
-          rakennaNimet(res);
-          data.list = res;
-          versiotListHandler(data);
-          cb();
-        });
-      }
-
     }
 
     function versiotListHandler(data) {
@@ -140,6 +101,10 @@ angular.module('eperusteApp')
         });
       }  else if (tyyppi === 'lukioaihekokonaisuus') {
         LukioAihekokonaisuudetService.palautaAihekokonaisuus(tunniste.id, data.chosen.numero).then(function(res) {
+          cb(res);
+        });
+      } else if (tyyppi === 'lukiokurssi') {
+        LukioKurssiService.palautaLukiokurssi(tunniste, data.chosen.numero).then(function(res) {
           cb(res);
         });
       }
@@ -225,6 +190,10 @@ angular.module('eperusteApp')
       getVersions(data, tunniste, 'lukioaihekokonaisuus', force, cb);
     };
 
+    this.getLukiokurssiVersions = function (data, tunniste, force, cb) {
+      getVersions(data, tunniste, 'lukiokurssi', force, cb);
+    };
+
     this.chooseLatest = function (data) {
       data.chosen = latest(data.list);
     };
@@ -261,6 +230,10 @@ angular.module('eperusteApp')
 
     this.revertLukioAihekokonaisuus = function (data, tunniste, cb) {
       revert(data, tunniste, 'lukioaihekokonaisuus', cb);
+    };
+
+    this.revertLukiokurssi = function (data, tunniste, cb) {
+      revert(data, tunniste, 'lukiokurssi', cb);
     };
 
     this.setUrl = function (data) {

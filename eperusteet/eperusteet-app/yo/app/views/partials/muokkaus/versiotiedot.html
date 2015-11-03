@@ -16,7 +16,7 @@
     <div class="muokkaaja">
       <span ng-show="versiot.chosen.index > 1" kaanna>muokkaaja</span><span ng-show="versiot.chosen.index === 1" kaanna>luoja</span>: {{ versiot.chosen.$nimi }}
     </div>
-    <div class="clearfix"></div>
+    <div class="clearfix" ng-if="!dontFixVersiot"></div>
   </div>
   <hr class="versioraja">
 </div>

@@ -74,7 +74,6 @@ angular.module('eperusteApp')
                     });
                   };
                 }
-
                 break;
               case 'root.perusteprojekti.suoritustapa.lukioosaalue':
                 cb = function () {
@@ -82,7 +81,13 @@ angular.module('eperusteApp')
                     VersionHelper.revertLukioAihekokonaisuus($scope.versiot, {id: $scope.object.id, suoritustapa: suoritustapa}, revCb);
                   });
                 };
-
+                break;
+              case 'root.perusteprojekti.suoritustapa.kurssi':
+                cb = function() {
+                  Lukitus.lukitseLukioKurssi($scope.object.id).then(function() {
+                    VersionHelper.revertLukiokurssi($scope.versiot, $scope.object.id, revCb);
+                  });
+                };
                 break;
               default :
                 cb = angular.noop;

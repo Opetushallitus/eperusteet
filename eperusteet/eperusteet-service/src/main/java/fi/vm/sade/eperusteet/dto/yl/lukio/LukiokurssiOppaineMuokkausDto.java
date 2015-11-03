@@ -36,4 +36,11 @@ public class LukiokurssiOppaineMuokkausDto implements Serializable, IdHolder {
     @NotNull
     private Long id;
     private List<KurssinOppiaineDto> oppiaineet = new ArrayList<>();
+
+    public LukiokurssiOppaineMuokkausDto() {
+    }
+
+    public LukiokurssiOppaineMuokkausDto(Long id) {
+        this.id = id;
+    }
 }

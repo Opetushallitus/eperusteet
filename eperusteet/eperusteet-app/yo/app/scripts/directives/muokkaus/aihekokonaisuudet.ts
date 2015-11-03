@@ -41,7 +41,6 @@ angular.module('eperusteApp')
                                                             Kommentit, KommentitBySuoritustapa,
                                                             Editointikontrollit, Varmistusdialogi,
                                                             $rootScope, $state, $filter, $stateParams) {
-
     $scope.versiot = {};
     $scope.osanTyyppi = $stateParams.osanTyyppi;
 
@@ -185,8 +184,6 @@ angular.module('eperusteApp')
                                                           Varmistusdialogi,
                                                           VersionHelper, Notifikaatiot,
                                                           $rootScope, $filter) {
-
-
 
     var setEditMode = function() {
       $scope.editEnabled = true;

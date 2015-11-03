@@ -93,7 +93,7 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testLukiokurssi() {
-        long id = kurssiService.luoLukiokurssi(perusteId, LukioKurssiLuontiDto.builder()
+        long id = kurssiService.createLukiokurssi(perusteId, LukioKurssiLuontiDto.builder()
                 .tyyppi(LukiokurssiTyyppi.PAKOLLINEN)
                 .oppiaineet(asList(
                         new KurssinOppiaineDto(suomiRef.getId(), 1)
@@ -113,14 +113,14 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         LukiokurssiMuokkausDto muokkausDto = dtoMapper.map(dto, new LukiokurssiMuokkausDto());
         muokkausDto.setKoodiArvo("ARVO");
         lukioKurssiLockService.lock(new KurssiLockContext(perusteId, dto.getId()));
-        kurssiService.muokkaaLukiokurssia(perusteId, muokkausDto);
+        kurssiService.updateLukiokurssi(perusteId, muokkausDto);
 
         LukiokurssiOppaineMuokkausDto liitosDto = new LukiokurssiOppaineMuokkausDto();
         liitosDto.setId(dto.getId());
         liitosDto.getOppiaineet().addAll(dto.getOppiaineet());
         liitosDto.getOppiaineet().add(new KurssinOppiaineDto(saameRef.getId(), 1));
         lukioRakenneLockService.lock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
-        kurssiService.muokkaaLukiokurssinOppiaineliitoksia(perusteId, liitosDto);
+        kurssiService.updateLukiokurssiOppiaineRelations(perusteId, liitosDto);
         List<LukiokurssiListausDto> list = kurssiService.findLukiokurssitByPerusteId(perusteId);
         assertEquals(1, list.size());
         assertEquals("Äidinkielen perusteet", list.get(0).getNimi().get(Kieli.FI));

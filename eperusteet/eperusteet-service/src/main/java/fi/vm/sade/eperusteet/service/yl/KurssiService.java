@@ -16,7 +16,10 @@
 
 package fi.vm.sade.eperusteet.service.yl;
 
+import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,18 +46,29 @@ public interface KurssiService {
     LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    long luoLukiokurssi(long perusteId, LukioKurssiLuontiDto kurssiDto) throws BusinessRuleViolationException;
+    LukiokurssiTarkasteleDto revertLukiokurssiTarkasteleDtoByIdAndVersion(long perusteId, long kurssiId, int version);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void muokkaaLukiokurssia(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException;
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoByIdAndVersion(long perusteId, long id, int version)
             throws NotExistsException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void poistaLukiokurssi(long perusteId, long kurssiId);
+    long createLukiokurssi(long perusteId, LukioKurssiLuontiDto kurssiDto) throws BusinessRuleViolationException;
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void updateLukiokurssi(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException;
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void updateLukiokurssiOppiaineRelations(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
+            throws NotExistsException;
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void deleteLukiokurssi(long perusteId, long kurssiId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void updateTreeStructure(long perusteId, OppaineKurssiTreeStructureDto structure);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<Revision> listKurssiVersions(long perusteId, long kurssiId);
+
 }

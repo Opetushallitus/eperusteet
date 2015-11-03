@@ -16,7 +16,10 @@
 
 <div class="kurssi-view">
 
-  <div>
+  <div style="position: relative">
+    <revert-note object="kurssi" revert-cb="revertCb(response)"
+                 versions="versiot" change-version="vaihdaVersio()"></revert-note>
+
     <div ng-if="!kurssi.oppiaineet.length">
       <a class="pointer" ng-bind="'lukiokurssit' | kaanna" ng-click="gotoKurssit()"></a>
       / <span ng-bind="kurssi.nimi | kaanna"></span>
@@ -44,10 +47,7 @@
     </button>
   </div>
   <div class="clear">
-    <span ng-if="kurssi.muokattu" class="muokattuViimeksi">
-      <span kaanna="'muokattu-viimeksi'"></span>: <span ng-bind="kurssi.muokattu || 0 | aikaleima"></span>
-    </span>
-    <hr/>
+    <versiotiedot></versiotiedot>
   </div>
   <table class="description">
     <thead>

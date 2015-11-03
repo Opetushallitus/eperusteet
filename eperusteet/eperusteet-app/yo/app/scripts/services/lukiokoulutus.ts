@@ -197,8 +197,7 @@ angular.module('eperusteApp')
       }
     };
   })
-
-  .service('LukioKurssiService', function (LukioKurssit, Lukitus, Notifikaatiot, LukioOppiaineKurssiRakenne,
+.service('LukioKurssiService', function (LukioKurssit, Lukitus, Notifikaatiot, LukioOppiaineKurssiRakenne,
                                            LukiokoulutusService, $translate, $q, $log) {
     var lukittu = function (id, cb) {
         return Lukitus.lukitseLukioKurssi(id, cb);
@@ -243,10 +242,23 @@ angular.module('eperusteApp')
 
     /**
      * @param id of kurssi
-     * @return Promise<LukiokurssiTarkasteleDto>
+     * @return LukiokurssiTarkasteleDto
      */
     var get = function(id, cb) {
       return LukioKurssit.get({osanId: id, perusteId: LukiokoulutusService.getPerusteId()}, cb);
+    };
+
+    /**
+     * @param id of kurssi
+     * @param version of kurssi
+     * @returns LukiokurssiTarkasteleDto
+     */
+    var getVersion = function (id, version, cb) {
+      return LukioKurssit.getVersion({
+            perusteId: LukiokoulutusService.getPerusteId(),
+            osanId: id,
+            version: version
+      }, cb);
     };
 
     /**
@@ -381,6 +393,45 @@ angular.module('eperusteApp')
     };
 
     /**
+     * Lists versions for given Lukiokurssi
+     *
+     * @param id of kurssi
+     */
+    var listVersions = function(id, cb) {
+      var d = $q.defer();
+      LukioKurssit.versions({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        osanId: id
+      }, null, function(results) {
+        d.resolve(results);
+        if (cb) {
+          cb(results);
+        }
+      }, Notifikaatiot.serverCb);
+      return d.promise;
+    };
+
+    /**
+     * @param id of kurssi
+     * @param version to revert to
+     * @param cb
+     */
+    var palautaLukiokurssi = function(id, version, cb) {
+      var d = $q.defer();
+      LukioKurssit.revert({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        osanId: id,
+        version: version
+      }, null, function(results) {
+        d.resolve(results);
+        if (cb) {
+          cb(results);
+        }
+      }, Notifikaatiot.serverCb);
+      return d.promise;
+    };
+
+    /**
      * @param id of kurssi to delete
      */
     var deleteKurssi = function(id) {
@@ -403,7 +454,10 @@ angular.module('eperusteApp')
       filterOrderedKurssisByOppiaine: filterOrderedKurssisByOppiaine,
       deleteKurssi: deleteKurssi,
       updateOppiaineRelations: updateOppiaineRelations,
-      updateOppiaineKurssiStructure: updateOppiaineKurssiStructure
+      updateOppiaineKurssiStructure: updateOppiaineKurssiStructure,
+      listVersions: listVersions,
+      getVersion: getVersion,
+      palautaLukiokurssi: palautaLukiokurssi
     };
   })
 

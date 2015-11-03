@@ -16,8 +16,6 @@
 
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.Kurssi;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
@@ -26,13 +24,11 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
-import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukioOppiaineOppimaaraNodeDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukioOppiainePuuDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokurssiJulkisetTiedotDto;
 import fi.vm.sade.eperusteet.repository.LukioOpetussuunnitelmaRakenneRepository;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
@@ -51,7 +47,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
 import static fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi.inPeruste;
@@ -138,7 +136,6 @@ public class KurssiServiceImpl implements KurssiService {
         return dto;
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public List<LukiokurssiListausDto> findLukiokurssitByOppiaineId(long perusteId, long oppiaineId) {
@@ -149,16 +146,49 @@ public class KurssiServiceImpl implements KurssiService {
     @Override
     @Transactional(readOnly = true)
     public LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoById(long perusteId, long kurssiId) throws NotExistsException {
-        Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
+        return toTarkasteluDto(found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId)));
+    }
+
+    private LukiokurssiTarkasteleDto toTarkasteluDto(Lukiokurssi kurssi) {
+        return toTarkasteluDto(kurssi, kurssi);
+    }
+    private LukiokurssiTarkasteleDto toTarkasteluDto(Lukiokurssi kurssi, Lukiokurssi relationsKurssi) {
         LukiokurssiTarkasteleDto dto = mapper.map(kurssi, new LukiokurssiTarkasteleDto());
-        dto.setOppiaineet(kurssi.getOppiaineet().stream().map(this::oppaineTarkasteluDto)
+        dto.setOppiaineet(relationsKurssi.getOppiaineet().stream().map(this::oppaineTarkasteluDto)
                 .sorted(comparing(KurssinOppiaineDto::getOppiaineId)).collect(toList()));
         return lokalisointiService.lokalisoi(dto);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoByIdAndVersion(long perusteId,
+                                                  long kurssiId, int version) throws NotExistsException {
+        Lukiokurssi currentKurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
+        return toTarkasteluDto(found(lukiokurssiRepository.findRevision(kurssiId, version)),
+                currentKurssi // TODO:revisions from current still?
+        );
+    }
+
+    @Override
+    @Transactional
+    public LukiokurssiTarkasteleDto revertLukiokurssiTarkasteleDtoByIdAndVersion(long perusteId,
+                                                                 long kurssiId, int version) {
+        found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
+        Lukiokurssi kurssi = lukiokurssiRepository.findRevision(kurssiId, version);
+        LukiokurssiMuokkausDto dto = mapper.map(kurssi, new LukiokurssiMuokkausDto());
+        updateLukiokurssi(perusteId, dto);
+        // TODO:revert relations also?
+//        LukiokurssiOppaineMuokkausDto relationsDto = new LukiokurssiOppaineMuokkausDto(kurssiId);
+//        relationsDto.setOppiaineet(kurssi.getOppiaineet().stream().map(kurssiOppiaine ->
+//                new KurssinOppiaineDto(kurssiOppiaine.getOppiaine().getId(), kurssiOppiaine.getJarjestys()))
+//                .collect(toList()));
+//        updateLukiokurssiOppiaineRelations(perusteId, relationsDto);
+        return getLukiokurssiTarkasteleDtoById(perusteId, kurssiId);
+    }
+
     private KurssinOppiaineTarkasteluDto oppaineTarkasteluDto(OppiaineLukiokurssi oa) {
         return new KurssinOppiaineTarkasteluDto(oa.getOppiaine().getId(), oa.getJarjestys(),
-                oa.getOppiaine().getNimi().getId(), vanhempi(oa.getOppiaine()),
+                oa.getOppiaine().getNimi().getId(), parent(oa.getOppiaine()),
                 kurssiTyypinKuvaus(oa));
     }
 
@@ -176,14 +206,14 @@ public class KurssiServiceImpl implements KurssiService {
         return fromNullable(palanen).transform(TekstiPalanen::getId).orNull();
     }
 
-    private OppiaineVanhempiDto vanhempi(Oppiaine oppiaine) {
+    private OppiaineVanhempiDto parent(Oppiaine oppiaine) {
         return oppiaine != null ? new OppiaineVanhempiDto(oppiaine.getId(), oppiaine.getNimi().getId(),
-                vanhempi(oppiaine.getOppiaine())) : null;
+                parent(oppiaine.getOppiaine())) : null;
     }
 
     @Override
     @Transactional
-    public long luoLukiokurssi(long perusteId, LukioKurssiLuontiDto kurssiDto) throws BusinessRuleViolationException {
+    public long createLukiokurssi(long perusteId, LukioKurssiLuontiDto kurssiDto) throws BusinessRuleViolationException {
         LukiokoulutuksenPerusteenSisalto sisalto = found(lukioSisaltoRepository.findByPerusteId(perusteId),
                 () -> new BusinessRuleViolationException("Perustetta ei ole."));
         lukioSisaltoRepository.lock(sisalto, false);
@@ -216,7 +246,7 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Override
     @Transactional
-    public void muokkaaLukiokurssia(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException {
+    public void updateLukiokurssi(long perusteId, LukiokurssiMuokkausDto muokkausDto) throws NotExistsException {
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(muokkausDto.getId()), inPeruste(perusteId));
         lukioKurssiLockService.assertLock(new KurssiLockContext(perusteId, kurssi.getId()));
         lukiokurssiRepository.lock(kurssi, false);
@@ -226,7 +256,7 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Override
     @Transactional
-    public void muokkaaLukiokurssinOppiaineliitoksia(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
+    public void updateLukiokurssiOppiaineRelations(long perusteId, LukiokurssiOppaineMuokkausDto muokkausDto)
             throws NotExistsException {
         lukioRakenneLockService.assertLock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(muokkausDto.getId()), inPeruste(perusteId));
@@ -236,7 +266,7 @@ public class KurssiServiceImpl implements KurssiService {
 
     @Override
     @Transactional
-    public void poistaLukiokurssi(long perusteId, long kurssiId) {
+    public void deleteLukiokurssi(long perusteId, long kurssiId) {
         lukioRakenneLockService.assertLock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         lukioKurssiLockService.assertLock(new KurssiLockContext(perusteId, kurssiId));
         Lukiokurssi kurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
@@ -257,5 +287,12 @@ public class KurssiServiceImpl implements KurssiService {
             lukiokurssiRepository.lock(kurssi, false);
             mergeOppiaineet(perusteId, kurssi, kurssiDto.getOppiaineet());
         });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Revision> listKurssiVersions(long perusteId, long kurssiId) {
+        found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
+        return lukiokurssiRepository.getRevisions(kurssiId);
     }
 }
