@@ -43,6 +43,7 @@ public class LukioOppiaineOppimaaraNodeDto implements Serializable, Lokalisoitav
     private final String koodiArvo;
     private final String koodiUri;
     private final LokalisoituTekstiDto nimi;
+    private final boolean koosteinen;
 
     private final LokalisoituTekstiDto pakollinenKurssiKuvaus;
     private final LokalisoituTekstiDto syventavaKurssiKuvaus;
@@ -53,7 +54,7 @@ public class LukioOppiaineOppimaaraNodeDto implements Serializable, Lokalisoitav
     private final List<LukiokurssiJulkisetTiedotDto> kurssit = new ArrayList<>();
 
     public LukioOppiaineOppimaaraNodeDto(Long id, Long parentId,
-                     UUID tunniste, Long nimiId, Long jarjestys,
+                     UUID tunniste, Long nimiId, boolean koosteinen, Long jarjestys,
                      String koodiArvo, String koodiUri,
                      Long pakollinenKurssiKuvausId, Long syventavaKurssiKuvausId, Long soveltavaKurssiKuvausId,
                      Long tavoitteetOtsikkoId, Long tavoitteetTekstiId,
@@ -65,6 +66,7 @@ public class LukioOppiaineOppimaaraNodeDto implements Serializable, Lokalisoitav
         this.koodiArvo = koodiArvo;
         this.koodiUri = koodiUri;
         this.nimi = localizeLaterById(nimiId);
+        this.koosteinen = koosteinen;
         this.pakollinenKurssiKuvaus = localizeLaterById(pakollinenKurssiKuvausId);
         this.syventavaKurssiKuvaus = localizeLaterById(syventavaKurssiKuvausId);
         this.soveltavaKurssiKuvaus = localizeLaterById(soveltavaKurssiKuvausId);

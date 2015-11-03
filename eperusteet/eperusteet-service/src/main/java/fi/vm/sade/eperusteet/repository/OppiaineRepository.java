@@ -37,7 +37,7 @@ public interface OppiaineRepository extends JpaWithVersioningRepository<Oppiaine
     // Can only select Dtos/entities with JPA query and would require PostgreSQL query for recursive union.
     @Query("SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukioOppiaineOppimaaraNodeDto(\n" +
             "    oa.id, parent.id,\n" +
-            "    oa.tunniste, oa.nimi.id, oa.jnro,\n" +
+            "    oa.tunniste, oa.nimi.id, oa.koosteinen, oa.jnro,\n" +
             "    oa.koodiArvo, oa.koodiUri,\n" +
             "    pakollinenKuvaus.id, syventavaKuvaus.id, soveltavaKuvaus.id,\n" +
             "    tavoitteet.otsikko.id, tavoitteet.teksti.id,\n" +
