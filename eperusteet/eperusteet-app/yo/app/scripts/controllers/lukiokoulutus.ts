@@ -197,8 +197,9 @@ angular.module('eperusteApp')
 
   })
   .controller('LukioOsaAlueController', function ($scope, $q, $stateParams, LukiokoulutusService,
-                                                  ProjektinMurupolkuService) {
+                                                  ProjektinMurupolkuService, Kommentit, KommentitByPerusteenOsa) {
     $scope.isOppiaine = $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
+    Kommentit.haeKommentit(KommentitByPerusteenOsa, {id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.osanId});
     $scope.isAihekokonaisuus = $stateParams.osanTyyppi === LukiokoulutusService.AIHEKOKONAISUUDET;
     $scope.versiot = {latest: true};
     $scope.dataObject = LukiokoulutusService.getOsa($stateParams);

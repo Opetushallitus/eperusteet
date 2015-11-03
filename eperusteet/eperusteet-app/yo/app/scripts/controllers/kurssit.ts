@@ -44,7 +44,10 @@ angular.module('eperusteApp')
   })
 
   .controller('NaytaLukiokurssiController', function($scope, $state, LukioKurssiService,
-                                                     $stateParams, YleinenData, LukiokoulutusService) {
+                                                     $stateParams, YleinenData, LukiokoulutusService,
+                                                     Kommentit, KommentitByPerusteenOsa) {
+    Kommentit.haeKommentit(KommentitByPerusteenOsa,
+      {id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.kurssiId});
     $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId);
     $scope.kurssityypit = [];
     YleinenData.lukioKurssityypit().then(function(tyypit) {
