@@ -188,13 +188,30 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return handleGet(perusteId, () -> kurssit.findLukiokurssitByOppiaineId(perusteId, id));
     }
 
-    @RequestMapping(value = "/oppiaineet/{id}/versiot/{revisio}", method = GET)
+    @RequestMapping(value = "/oppiaineet/{id}/versiot", method = GET)
     @CacheControl(age = CacheControl.ONE_YEAR)
-    public OppiaineDto getOppiaine(
+    public List<CombinedDto<Revision, HenkiloTietoDto>> getOpppiaineVersions(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
+        return withHenkilos(oppiaineet.getOppiaineRevisions(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS));
+    }
+
+    @RequestMapping(value = "/oppiaineet/{id}/versiot/{revision}", method = GET)
+    @CacheControl(age = CacheControl.ONE_YEAR)
+    public OppiaineDto getOppiaineByRevision(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @PathVariable("revision") final Integer revision) {
+        return oppiaineet.getOppiaine(perusteId, id, revision, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
+    }
+
+    @RequestMapping(value = "/oppiaineet/{id}/versiot/{revisio}/palauta", method = POST)
+    @CacheControl(age = CacheControl.ONE_YEAR)
+    public OppiaineDto revertOppiaine(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id,
             @PathVariable("revisio") final Integer revisio) {
-        return oppiaineet.getOppiaine(perusteId, id, revisio, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
+        return oppiaineet.revertOppiaine(perusteId, id, revisio, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/oppimaarat", method = GET)

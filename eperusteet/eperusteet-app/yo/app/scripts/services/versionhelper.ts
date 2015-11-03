@@ -20,7 +20,8 @@
 angular.module('eperusteApp')
   .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, $log,
         RakenneVersio, Notifikaatiot, $state, $location, $stateParams, TutkinnonOsaViitteet,
-        LukioYleisetTavoitteetService, LukioAihekokonaisuudetService, LukioKurssiService) {
+        LukioYleisetTavoitteetService, LukioAihekokonaisuudetService, LukioKurssiService,
+        LukioOppiaineService) {
 
     function rakennaNimi(v) {
         var nimi = (v.kutsumanimi || '') + ' ' + (v.sukunimi || '');
@@ -53,6 +54,7 @@ angular.module('eperusteApp')
         case 'lukioyleisettavoitteet': LukioYleisetTavoitteetService.getVersiot().then(handle);     break;
         case 'lukioaihekokonaisuudet': LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvausVersiot().then(handle); break;
         case 'lukiokurssi':          LukioKurssiService.listVersions(tunniste.id).then(handle); break;
+        case 'lukiooppiaine':        LukioOppiaineService.listVersions(tunniste.id).then(handle);break;
         default: $log.error('Unknwon versio tyyppi: ', tyyppi);
       }
     }
@@ -72,7 +74,9 @@ angular.module('eperusteApp')
     }
 
     function revert(data, tunniste, tyyppi, cb) {
-
+      var genericHandler = function(res) {
+        cb(res);
+      };
       // revert = get old (currently chosen) data, save as new version
       if (tyyppi === 'Perusteenosa' || tyyppi === 'Tutkinnonosa') {
         PerusteenOsat.palauta({
@@ -92,21 +96,15 @@ angular.module('eperusteApp')
           versioId: data.chosen.numero
         }, {}, cb, Notifikaatiot.serverCb);
       } else if (tyyppi === 'lukioyleisettavoitteet') {
-        LukioYleisetTavoitteetService.palauta(tunniste.id, data.chosen.numero).then(function(res) {
-          cb(res);
-        });
+        LukioYleisetTavoitteetService.palauta(tunniste.id, data.chosen.numero).then(genericHandler);
       } else if (tyyppi === 'lukioaihekokonaosuudetyleiskuvaus') {
-        LukioAihekokonaisuudetService.palautaAihekokonaisuudetYleiskuvaus(data.chosen.numero).then(function(res) {
-          cb(res);
-        });
+        LukioAihekokonaisuudetService.palautaAihekokonaisuudetYleiskuvaus(data.chosen.numero).then(genericHandler);
       }  else if (tyyppi === 'lukioaihekokonaisuus') {
-        LukioAihekokonaisuudetService.palautaAihekokonaisuus(tunniste.id, data.chosen.numero).then(function(res) {
-          cb(res);
-        });
+        LukioAihekokonaisuudetService.palautaAihekokonaisuus(tunniste.id, data.chosen.numero).then(genericHandler);
       } else if (tyyppi === 'lukiokurssi') {
-        LukioKurssiService.palautaLukiokurssi(tunniste, data.chosen.numero).then(function(res) {
-          cb(res);
-        });
+        LukioKurssiService.palautaLukiokurssi(tunniste, data.chosen.numero).then(genericHandler);
+      } else if(tyyppi === 'lukiooppiaine') {
+        LukioOppiaineService.palautaLukioOppiaine(tunniste, data.chosen.numero).then(genericHandler);
       }
     }
 
@@ -194,6 +192,10 @@ angular.module('eperusteApp')
       getVersions(data, tunniste, 'lukiokurssi', force, cb);
     };
 
+    this.getLukioOppiaineVersions = function(data, tunniste, force, cb) {
+      getVersions(data, tunniste, 'lukiooppiaine', force, cb);
+    };
+
     this.chooseLatest = function (data) {
       data.chosen = latest(data.list);
     };
@@ -234,6 +236,10 @@ angular.module('eperusteApp')
 
     this.revertLukiokurssi = function (data, tunniste, cb) {
       revert(data, tunniste, 'lukiokurssi', cb);
+    };
+
+    this.revertLukioOppiaine = function (data, tunniste, cb) {
+      revert(data, tunniste, 'lukiooppiaine', cb);
     };
 
     this.setUrl = function (data) {

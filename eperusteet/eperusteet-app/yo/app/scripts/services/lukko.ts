@@ -106,7 +106,7 @@ angular.module('eperusteApp')
                                 LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
                                 LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite,
                                 LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, LukkoLukioRakenne,
-                                LukkoLukioAihekokonaisuus, LukkoLukioYleisetTavoitteet) {
+                                LukkoLukioAihekokonaisuus, LukkoLukioYleisetTavoitteet, $log) {
 
     var lukitsin = null;
     var etag = null;

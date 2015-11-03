@@ -652,10 +652,11 @@ angular.module('eperusteApp')
 
   .controller('LukioOppiaineController', function ($scope, LukiokoulutusService, Kaanna, Notifikaatiot,
                                               PerusteProjektiSivunavi, LukionOppiaineet, $timeout, $state,
-                                              $stateParams, $q, YleinenData, tabHelper,
+                                              $stateParams, $q, YleinenData, tabHelper, $log,
                                               CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus,
                                               VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
-                                              Koodisto, MuokkausUtils, $document, LukioKurssiService) {
+                                              Koodisto, MuokkausUtils, $document, LukioKurssiService,
+                                              LukioOppiaineService, VersionHelper) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.nameSort = Utils.nameSort;
@@ -839,8 +840,6 @@ angular.module('eperusteApp')
       ProjektinMurupolkuService.setCustom(oppiaineLink);
     }
 
-
-
     $scope.data = {
       options: {
         title: function () { return $scope.editableModel.nimi; },
@@ -957,6 +956,30 @@ angular.module('eperusteApp')
       return obj;
     }
     $scope.getTitle = getTitle;
+
+
+    $scope.dontFixVersiot = true;
+    $scope.versiot = {latest: true};
+
+    $scope.haeVersiot = function (force, cb) {
+      VersionHelper.getLukioOppiaineVersions($scope.versiot, {id: $stateParams.osanId}, force, cb);
+    };
+    $scope.haeVersiot(true);
+
+    $scope.vaihdaVersio = function (v) {
+      $scope.versiot.hasChanged = true;
+      if ($scope.versiot.chosen) {
+        $scope.versiot.latest = _.isEmpty($scope.versiot.list)
+            || $scope.versiot.list[$scope.versiot.list.length-1].numero == $scope.versiot.chosen.numero;
+        $scope.editableModel = LukioOppiaineService.getVersion($stateParams.osanId, $scope.versiot.chosen.numero);
+      }
+    };
+
+    $scope.oppiaineRevertCb = function (response) {
+      Lukitus.vapauta();
+      $scope.haeVersiot(true, function () {});
+      Notifikaatiot.onnistui('lukiooppiaine-palautettu');
+    };
 
     $q.all([modelPromise]);
   })

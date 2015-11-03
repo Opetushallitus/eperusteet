@@ -94,7 +94,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         OppiaineDto oppiaineDto = new OppiaineDto();
         oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
-        oppiaineDto.setTehtava(Optional.of(to("TehtävänOtsikko", "Tehtava")));
+        oppiaineDto.setTehtava(to("TehtävänOtsikko", "Tehtava"));
         oppiaineDto.setKoosteinen(Optional.of(false));
 
         OpetuksenKohdealueDto kohdealueDto = new OpetuksenKohdealueDto();
@@ -120,16 +120,16 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().get(Kieli.FI));
         ks.setNimi(olt("Nimi2"));
-        oa.getTehtava().get().setOtsikko(Optional.of(new LokalisoituTekstiDto(null)));
-        oa.getTehtava().get().setTeksti(Optional.<LokalisoituTekstiDto>absent());
+        oa.getTehtava().setOtsikko(Optional.of(new LokalisoituTekstiDto(null)));
+        oa.getTehtava().setTeksti(Optional.<LokalisoituTekstiDto>absent());
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().add(0, ks);
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).setNimi(null);
         oa = service.updateOppiaine(perusteId, new UpdateDto<>(oa), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
 
         lockService.unlock(lc);
 
-        assertNull(oa.getTehtava().get().getOtsikko());
-        assertNull(oa.getTehtava().get().getTeksti());
+        assertNull(oa.getTehtava().getOtsikko());
+        assertNull(oa.getTehtava().getTeksti());
         assertEquals("Nimi2", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().get(Kieli.FI));
         assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).getNimi().get().get(Kieli.FI));
 
@@ -171,7 +171,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         OppiaineDto oppiaineDto = new OppiaineDto();
         oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
-        oppiaineDto.setTehtava(Optional.of(to("TehtävänOtsikko", "Tehtava")));
+        oppiaineDto.setTehtava(to("TehtävänOtsikko", "Tehtava"));
         oppiaineDto.setKoosteinen(Optional.of(true));
 
         OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
@@ -198,10 +198,10 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         OppiaineLockContext lc = OppiaineLockContext.of(OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS, perusteId, oppimaara.getId(), null);
         lockService.lock(lc);
-        oppimaara.setTehtava(Optional.of(to("Tehtävä", "Tehtävä")));
+        oppimaara.setTehtava(to("Tehtävä", "Tehtävä"));
         oppimaara = service.updateOppiaine(perusteId, new UpdateDto<>(oppimaara), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
         lockService.unlock(lc);
-        assertEquals("Tehtävä", oppimaara.getTehtava().get().getTeksti().get().get(Kieli.FI));
+        assertEquals("Tehtävä", oppimaara.getTehtava().getTeksti().get().get(Kieli.FI));
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceIT.class);

@@ -115,7 +115,7 @@ angular.module('eperusteApp')
       $scope.haeVersiot(true, function () {
         VersionHelper.setUrl($scope.versiot);
       });
-      Notifikaatiot.onnistui('aihekokonaisuus-palautettu');
+      Notifikaatiot.onnistui('lukiokurssi-palautettu');
     };
 
     $scope.oppiaineMurupolkuItems = function (oppiaine) {

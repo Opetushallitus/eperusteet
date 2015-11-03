@@ -31,19 +31,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OppiaineDto extends OppiaineBaseDto {
-    private Optional<TekstiOsaDto> tehtava;
-    private Optional<TekstiOsaDto> tavoitteet;
-    private Optional<TekstiOsaDto> arviointi;
-
-    private Optional<LokalisoituTekstiDto> pakollinenKurssiKuvaus;
-    private Optional<LokalisoituTekstiDto> syventavaKurssiKuvaus;
-    private Optional<LokalisoituTekstiDto> soveltavaKurssiKuvaus;
-
+public class OppiaineDto extends OppiaineBaseUpdateDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<OppiaineSuppeaDto> oppimaarat;
     private Set<OpetuksenKohdealueDto> kohdealueet;
     private Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
-    private String koodiUri;
-    private String koodiArvo;
 }

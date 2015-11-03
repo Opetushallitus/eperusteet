@@ -27,6 +27,8 @@ angular.module('eperusteApp')
         model: '=',
         config: '=',
         versiot: '=',
+        overwrittenVaihdaVersio: '=',
+        overwrittenRevertCb: '=',
         editableModel: '='
       },
       controller: 'OsallinenOsaController',
@@ -81,15 +83,23 @@ angular.module('eperusteApp')
     };
 
     $scope.vaihdaVersio = function () {
-      $scope.versiot.hasChanged = true;
-      VersionHelper.setUrl($scope.versiot);
-      //VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, responseFn);
+      if ($scope.overwrittenVaihdaVersio) {
+        $scope.overwrittenVaihdaVersio();
+      } else {
+        $scope.versiot.hasChanged = true;
+        VersionHelper.setUrl($scope.versiot);
+        //VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, responseFn);
+      }
     };
 
-    $scope.revertCb = function (/*response*/) {
-      // TODO
-      //responseFn(response);
-      //saveCb(response);
+    $scope.revertCb = function (response) {
+      if ($scope.overwrittenRevertCb) {
+        $scope.overwrittenRevertCb(response);
+      } else {
+        // TODO
+        //responseFn(response);
+        //saveCb(response);
+      }
     };
 
     if ($scope.config.editingCallbacks) {

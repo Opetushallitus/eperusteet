@@ -460,7 +460,65 @@ angular.module('eperusteApp')
       palautaLukiokurssi: palautaLukiokurssi
     };
   })
+  .service('LukioOppiaineService', function(LukiokoulutusService, LukionOppiaineet, Lukitus, Notifikaatiot, $q) {
+    /**
+     * @param id of kurssi
+     * @param version of kurssi
+     * @returns LukiokurssiTarkasteleDto
+     */
+    var getVersion = function (id, version, cb) {
+      return LukionOppiaineet.getVersion({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        osanId: id,
+        version: version
+      }, cb);
+    };
 
+    /**
+     * Lists versions for given Lukiooppiaine
+     *
+     * @param id of oppiaine
+     */
+    var listVersions = function(id, cb) {
+      var d = $q.defer();
+      LukionOppiaineet.versions({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        osanId: id
+      }, null, function(results) {
+        d.resolve(results);
+        if (cb) {
+          cb(results);
+        }
+      }, Notifikaatiot.serverCb);
+      return d.promise;
+    };
+
+    /**
+     * @param id of oppiaine
+     * @param version to revert to
+     * @param cb
+     */
+    var palautaLukioOppiaine = function(id, version, cb) {
+      var d = $q.defer();
+      LukionOppiaineet.revert({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        osanId: id,
+        version: version
+      }, null, function(results) {
+        d.resolve(results);
+        if (cb) {
+          cb(results);
+        }
+      }, Notifikaatiot.serverCb);
+      return d.promise;
+    };
+
+    return {
+      listVersions: listVersions,
+      getVersion: getVersion,
+      palautaLukioOppiaine: palautaLukioOppiaine
+    };
+  })
   .service('LukioAihekokonaisuudetService',
             function(LukiokoulutusAihekokonaisuudet, Lukitus,
                      Notifikaatiot, LukiokoulutusService, $translate, $q) {
@@ -600,62 +658,60 @@ angular.module('eperusteApp')
       palautaAihekokonaisuus: palautaAihekokonaisuus
     };
   })
-  .service('LukioYleisetTavoitteetService',
-  function(LukiokoulutusYleisetTavoitteet, Lukitus,
-           Notifikaatiot, LukiokoulutusService, $translate, $q) {
+  .service('LukioYleisetTavoitteetService', function (LukiokoulutusYleisetTavoitteet, Lukitus,
+              Notifikaatiot, LukiokoulutusService, $translate, $q) {
 
+      /**
+       * Tallentaa aihekokobaisuudet yleiskuvauksen
+       *
+       * @param yleisetTavoitteet <LukiokoulutuksenYleisetTavoitteetDto>
+       * @return Promise<LukiokoulutuksenYleisetTavoitteetDto>
+       */
+      var updateYleistTavoitteet = function (yleisetTavoitteet) {
 
-    /**
-     * Tallentaa aihekokobaisuudet yleiskuvauksen
-     *
-     * @param yleisetTavoitteet <LukiokoulutuksenYleisetTavoitteetDto>
-     * @return Promise<LukiokoulutuksenYleisetTavoitteetDto>
-     */
-    var updateYleistTavoitteet = function(yleisetTavoitteet) {
-
-      var d = $q.defer();
-      LukiokoulutusYleisetTavoitteet.update({
-        perusteId: LukiokoulutusService.getPerusteId()
-      }, yleisetTavoitteet, function(yleisetTavoitteetTiedot) {
+        var d = $q.defer();
+        LukiokoulutusYleisetTavoitteet.update({
+          perusteId: LukiokoulutusService.getPerusteId()
+        }, yleisetTavoitteet, function (yleisetTavoitteetTiedot) {
           Notifikaatiot.onnistui('tallennus-onnistui');
           d.resolve(yleisetTavoitteetTiedot);
-      }, Notifikaatiot.serverCb);
+        }, Notifikaatiot.serverCb);
 
-      return d.promise;
-    };
+        return d.promise;
+      };
 
-    var getYleisetTavoitteet = function(versio) {
+      var getYleisetTavoitteet = function (versio) {
 
-      if( versio ) {
-        return LukiokoulutusYleisetTavoitteet.getByVersio({
-          perusteId: LukiokoulutusService.getPerusteId(),
-          versioId: versio
-        }).$promise;
-      } else {
-        return LukiokoulutusYleisetTavoitteet.get({
+        if (versio) {
+          return LukiokoulutusYleisetTavoitteet.getByVersio({
+            perusteId: LukiokoulutusService.getPerusteId(),
+            versioId: versio
+          }).$promise;
+        } else {
+          return LukiokoulutusYleisetTavoitteet.get({
+            perusteId: LukiokoulutusService.getPerusteId()
+          }).$promise;
+
+        }
+      };
+
+      var getVersiot = function () {
+        return LukiokoulutusYleisetTavoitteet.versiot({
           perusteId: LukiokoulutusService.getPerusteId()
         }).$promise;
+      };
 
-      }
-    };
+      var palauta = function (perusteId, versioId) {
+        return LukiokoulutusYleisetTavoitteet.palauta({
+          perusteId: perusteId,
+          versioId: versioId
+        }).$promise;
+      };
 
-    var getVersiot = function() {
-      return LukiokoulutusYleisetTavoitteet.versiot({
-        perusteId: LukiokoulutusService.getPerusteId()
-      }).$promise;
-    };
-
-    var palauta = function(perusteId, versioId) {
-      return LukiokoulutusYleisetTavoitteet.palauta({
-        perusteId: perusteId,
-        versioId: versioId
-      }).$promise;
-    };
-
-    return {
-      updateYleistTavoitteet: updateYleistTavoitteet,
-      getYleisetTavoitteet: getYleisetTavoitteet,
-      getVersiot: getVersiot,
-      palauta: palauta
-    };
-  });
+      return {
+        updateYleistTavoitteet: updateYleistTavoitteet,
+        getYleisetTavoitteet: getYleisetTavoitteet,
+        getVersiot: getVersiot,
+        palauta: palauta
+      };
+    });

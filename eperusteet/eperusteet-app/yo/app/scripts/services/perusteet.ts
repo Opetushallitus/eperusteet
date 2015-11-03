@@ -110,7 +110,10 @@ angular.module('eperusteApp')
   .factory('LukionOppiaineet', function($resource, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/oppiaineet/:osanId';
     return $resource(baseUrl, {osanId: '@id'}, {
-      oppimaarat: {method: 'GET', isArray: true, url: baseUrl + '/oppimaarat'}
+      oppimaarat: {method: 'GET', isArray: true, url: baseUrl + '/oppimaarat'},
+      getVersion: {method: 'GET', isArray: false, url: baseUrl + '/versiot/:version'},
+      versions: {method: 'GET', isArray: true, url: baseUrl + '/versiot/:version'},
+      revert: {method: 'POST', isArray: false, url: baseUrl + '/versiot/:version/palauta'},
     });
   })
   .factory('LukioKurssit', function($resource, SERVICE_LOC) {

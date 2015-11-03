@@ -60,7 +60,6 @@ angular.module('eperusteApp')
                 };
                 break;
               case 'root.perusteprojekti.suoritustapa.lukioosat':
-
                 if( $stateParams.osanTyyppi === 'aihekokonaisuudet' ) {
                   cb = function () {
                     Lukitus.lukitseLukioAihekokonaisuudet().then( function () {
@@ -73,14 +72,28 @@ angular.module('eperusteApp')
                       VersionHelper.revertLukioYleisetTavoitteet($scope.versiot, {id: $scope.$parent.perusteId, suoritustapa: suoritustapa}, revCb);
                     });
                   };
+                } else if($stateParams.osanTyyppi === 'oppiaineet_oppimaarat') {
+                  cb = function () {
+                    Lukitus.lukitseLukioOppiaine($stateParams.osanId).then(function() {
+                      VersionHelper.revertLukioOppiaine($scope.versiot, $stateParams.osanId, revCb);
+                    });
+                  };
                 }
                 break;
               case 'root.perusteprojekti.suoritustapa.lukioosaalue':
-                cb = function () {
-                  Lukitus.lukitseLukioAihekokonaisuus($scope.object.id).then( function () {
-                    VersionHelper.revertLukioAihekokonaisuus($scope.versiot, {id: $scope.object.id, suoritustapa: suoritustapa}, revCb);
-                  });
-                };
+                if($stateParams.osanTyyppi === 'oppiaineet_oppimaarat') {
+                  cb = function () {
+                    Lukitus.lukitseLukioOppiaine($stateParams.osanId).then(function() {
+                      VersionHelper.revertLukioOppiaine($scope.versiot, $stateParams.osanId, revCb);
+                    });
+                  };
+                } else {
+                  cb = function () {
+                    Lukitus.lukitseLukioAihekokonaisuus($scope.object.id).then( function () {
+                      VersionHelper.revertLukioAihekokonaisuus($scope.versiot, {id: $scope.object.id, suoritustapa: suoritustapa}, revCb);
+                    });
+                  };
+                }
                 break;
               case 'root.perusteprojekti.suoritustapa.kurssi':
                 cb = function() {

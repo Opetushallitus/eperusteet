@@ -45,9 +45,6 @@
     <h1 ng-show="editEnabled">
       <span>{{ isNew ? config.newTitle : config.editTitle | kaanna}}</span>
     </h1>
-    <span ng-if="!editEnabled && editableModel.muokattu" class="muokattuViimeksi">
-      <span kaanna="'muokattu-viimeksi'"></span>: <span ng-bind="editableModel.muokattu || 0 | aikaleima"></span>
-    </span>
 
     <!-- TODO: pikamenu -->
   </div>
