@@ -197,10 +197,10 @@ angular.module('eperusteApp')
       }
     };
   })
-.service('LukioKurssiService', function (LukioKurssit, Lukitus, Notifikaatiot, LukioOppiaineKurssiRakenne,
-                                           LukiokoulutusService, $translate, $q, $log) {
-    var lukittu = function (id, cb) {
-        return Lukitus.lukitseLukioKurssi(id, cb);
+  .service('LukioKurssiService', function (LukioKurssit, Lukitus, Notifikaatiot, LukioOppiaineKurssiRakenne,
+                                           LukiokoulutusService, $translate, $q, $log, LukioRakenne) {
+    var lukittu = function (id, cb, editointiCheck) {
+        return Lukitus.lukitseLukioKurssi(id, cb, editointiCheck);
       },
       success = function(d, msg) {
         return function(tiedot) {
@@ -435,13 +435,67 @@ angular.module('eperusteApp')
      * @param id of kurssi to delete
      */
     var deleteKurssi = function(id) {
-      return lukittu(id, function(res, d) {
-        delete kurssitCache[LukiokoulutusService.getPerusteId()];
-        LukioKurssit.delete({
-          perusteId: LukiokoulutusService.getPerusteId(),
-          osanId: id
-        }, vapauta(d, 'poisto-onnistui'), Notifikaatiot.serverCb);
+      var d = $q.defer();
+      Lukitus.lukitseLukiorakenne(null, false).then(function() {
+        lukittu(id, null, false).then(function(res, dl) {
+          delete kurssitCache[LukiokoulutusService.getPerusteId()];
+          LukioKurssit.delete({
+            perusteId: LukiokoulutusService.getPerusteId(),
+            osanId: id
+          }, function (tiedot) {
+            Lukitus.vapauta(function() {
+              Lukitus.vapautaLukiorakenne(function () {
+                success(d, 'poisto-onnistui')(tiedot);
+              });
+            });
+          }, Notifikaatiot.serverCb);
+        });
       });
+      return d.promise;
+    };
+
+    /**
+     * Lists versions for oppiaine/kurssi-rakenne of current peruste
+     */
+    var listRakenneVersions = function (cb) {
+      var d = $q.defer();
+      LukioRakenne.versions({
+        perusteId: LukiokoulutusService.getPerusteId()
+      }, null, function (results) {
+        d.resolve(results);
+        if (cb) {
+          cb(results);
+        }
+      }, Notifikaatiot.serverCb);
+      return d.promise;
+    };
+
+    /**
+     * @param version of rakenne
+     */
+    var getRakenneVersion = function (version, cb) {
+      return LukioRakenne.getVersion({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        version: version
+      }, cb);
+    };
+
+    /**
+     * @param version to revert to
+     * @param cb
+     */
+    var palautaRakenne = function(version, cb) {
+      var d = $q.defer();
+      LukioRakenne.revert({
+        perusteId: LukiokoulutusService.getPerusteId(),
+        version: version
+      }, null, function(results) {
+        d.resolve(results);
+        if (cb) {
+          cb(results);
+        }
+      }, Notifikaatiot.serverCb);
+      return d.promise;
     };
 
     return {
@@ -457,7 +511,10 @@ angular.module('eperusteApp')
       updateOppiaineKurssiStructure: updateOppiaineKurssiStructure,
       listVersions: listVersions,
       getVersion: getVersion,
-      palautaLukiokurssi: palautaLukiokurssi
+      palautaLukiokurssi: palautaLukiokurssi,
+      listRakenneVersions: listRakenneVersions,
+      getRakenneVersion: getRakenneVersion,
+      palautaRakenne: palautaRakenne
     };
   })
   .service('LukioOppiaineService', function(LukiokoulutusService, LukionOppiaineet, Lukitus, Notifikaatiot, $q) {

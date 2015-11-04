@@ -220,12 +220,9 @@ angular.module('eperusteApp')
     };
   })
   .controller('LukioOppiaineKurssiPuuController', function($scope, $stateParams, $q, $translate,
-                                                           $rootScope, $timeout, $log, Lukitus,
-                                                           LukioKurssiService, LukiokoulutusService,
+                                                           $rootScope, $timeout, $log, Lukitus, Notifikaatiot,
+                                                           LukioKurssiService, LukiokoulutusService, VersionHelper,
                                                            $state, Editointikontrollit, Kommentit, KommentitBySuoritustapa) {
-
-    var kurssitProvider = LukioKurssiService.listByPeruste(LukiokoulutusService.getPerusteId());
-
     $scope.osanTyyppi = $stateParams.osanTyyppi;
     Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.osanTyyppi});
     $scope.treehelpers = {
@@ -244,6 +241,54 @@ angular.module('eperusteApp')
       kurssit: [],
       lapset: []
     };
+
+    $scope.dontFixVersiot = true;
+    $scope.versiot = {latest: true};
+
+    $scope.haeVersiot = function (force, cb) {
+      VersionHelper.getLukioRakenneVersions($scope.versiot, null, force, cb);
+    };
+
+    $scope.vaihdaVersio = function (v) {
+      $scope.versiot.hasChanged = true;
+      if ($scope.versiot.chosen) {
+        VersionHelper.setUrl($scope.versiot);
+      }
+    };
+
+    $scope.revertCb = function (response) {
+      Lukitus.vapauta();
+      $scope.haeVersiot(true, function (versiot) {
+        $scope.versiot.chosen = versiot[0];
+        $scope.versiot.latest = true;
+      });
+      Notifikaatiot.onnistui('lukiorakenne-palautettu');
+    };
+
+    $scope.rakenne = null;
+    $scope.versio = $stateParams.versio ? $stateParams.versio.replace('/', '') : null;
+    var versioCallback = null,
+      rakenneDefer = null,
+      rakenneProvider = null,
+      kurssitProvider  = null;
+    if ($scope.versio) {
+      rakenneDefer = $q.defer();
+      var kurssiDefer = $q.defer();
+      rakenneProvider = rakenneDefer.promise;
+      kurssitProvider = kurssiDefer.promise;
+      versioCallback = function(versiot) {
+        var versionInt = parseInt($scope.versio, 10);
+        $scope.versiot.chosen = versiot[versiot.length-versionInt];
+        $scope.versiot.latest = versionInt == versiot.length;
+        LukioKurssiService.getRakenneVersion($scope.versiot.chosen.numero, function(rakenne) {
+          rakenneDefer.resolve(rakenne);
+          kurssiDefer.resolve(rakenne.kurssit);
+        });
+      };
+    } else {
+      kurssitProvider = LukioKurssiService.listByPeruste(LukiokoulutusService.getPerusteId());
+    }
+    $scope.haeVersiot(true, versioCallback);
 
     function textMatch(txt, to) {
       if (!to) {
@@ -443,7 +488,7 @@ angular.module('eperusteApp')
 
     var initTree = function () {
       var oppiaineet = _.cloneDeep($scope.oppiaineet),
-          kurssit = _.cloneDeep($scope.kurssit);
+        kurssit = _.cloneDeep($scope.kurssit);
       //$log.info('Kurssit: ', kurssit, "oppiaineet:", oppiaineet);
       $scope.treeRoot.kurssit = [];
       $scope.treeRoot.oppimaarat = oppiaineet;
@@ -529,7 +574,16 @@ angular.module('eperusteApp')
         root: function() {
           $log.info('Set root.');
           return $q(function (resolveRoot) {
-              LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function (oppiaineet) {
+            if (rakenneProvider) {
+              $log.info('VERSIO', $scope.versio);
+              rakenneProvider.then(function(rakenne) {
+                $scope.kurssit = rakenne.kurssit;
+                $scope.oppiaineet = rakenne.oppiaineet;
+                initTree();
+                resolveRoot($scope.treeRoot);
+              });
+            } else {
+              LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function(oppiaineet) {
                 kurssitProvider.then(function (kurssit) {
                   $scope.kurssit = kurssit;
                   $scope.oppiaineet = oppiaineet;
@@ -538,7 +592,7 @@ angular.module('eperusteApp')
                 });
               });
             }
-          );
+          });
         },
         children: function(node) {
           if (!node) {
@@ -602,6 +656,7 @@ angular.module('eperusteApp')
       resolve({
         root:function() {
           return $q(function (resolveRoot) {
+            $log.info('setRoot kurssit');
             kurssitProvider.then(function (kurssit) {
               $scope.liittamattomatKurssit = _.cloneDeep(_.filter(kurssit, function (k) {
                 return k.oppiaineet.length === 0;

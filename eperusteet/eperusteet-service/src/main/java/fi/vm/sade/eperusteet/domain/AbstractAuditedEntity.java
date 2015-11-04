@@ -16,18 +16,15 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
-import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Kantaluokka entiteeteille joista ylläpidetään luotu/muokattu -tietoja.
@@ -49,6 +46,7 @@ public abstract class AbstractAuditedEntity implements Serializable {
 
     @Audited
     @Column
+    @Setter
     @Temporal(TemporalType.TIMESTAMP)
     private Date muokattu;
 

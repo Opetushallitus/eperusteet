@@ -81,6 +81,7 @@ public class Lukiokurssi extends Kurssi {
     private TekstiOsa tavoitteetJaKeskeinenSisalto;
 
     @Getter
+    @Audited
     @OneToMany(mappedBy = "kurssi", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     private Set<OppiaineLukiokurssi> oppiaineet = new HashSet<>(0);
 

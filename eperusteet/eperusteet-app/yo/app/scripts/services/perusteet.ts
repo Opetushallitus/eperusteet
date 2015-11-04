@@ -116,6 +116,14 @@ angular.module('eperusteApp')
       revert: {method: 'POST', isArray: false, url: baseUrl + '/versiot/:version/palauta'},
     });
   })
+  .factory('LukioRakenne', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/rakenne';
+    return $resource(baseUrl, {osanId: '@id'}, {
+      versions: {method: 'GET', url: baseUrl + '/versiot', isArray: true},
+      getVersion: {method: 'GET', isArray: false, url: baseUrl + '/versiot/:version'},
+      revert: {method: 'POST', url: baseUrl + '/versiot/:version/palauta', isArray:false}
+    });
+  })
   .factory('LukioKurssit', function($resource, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit/:osanId';
     return $resource(baseUrl, {osanId: '@id'}, {

@@ -16,9 +16,9 @@
 $oppiaine-oppimaara-tausta: #f2f2f2;
 $kurssi-border-color: yellowgreen;
 $puuviiva-vari: #ccc;
-$syventava-vari: #b29cca; // #bcda89;
-$soveltava-vari: #f6f284; // #fcf281;
-$pakollinen-vari: #bcdb8a; // #88d3e4;
+$syventava-vari: #997bb6; // #bcda89;
+$soveltava-vari: #f8a35e; // #fcf281;
+$pakollinen-vari: #bddb8a; // #88d3e4;
 $aikaleima-vari: #888;
 
 .lukio-oppiaineet-puu {
@@ -474,4 +474,11 @@ a.pointer {
 
 a.clickable {
   cursor: pointer;
+}
+
+.puu-top {
+  clear: both;
+  .action-buttons {
+    top: -20px;
+  }
 }

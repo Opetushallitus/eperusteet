@@ -91,12 +91,21 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return oppiaineet.addOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }
 
-    @RequestMapping(value = "/rakenne/{rakenneId}/versiot/{revision}/kurssit", method = GET)
-    public ResponseEntity<List<LukiokurssiListausDto>> listKurssitInRakenneVersio(
-            @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("rakenneId") final Long rakenneId,
-            @PathVariable("revision") final Integer revision) {
-        return handleGet(perusteId, () -> kurssit.findLukiokurssitByRakenneRevision(perusteId, rakenneId, revision));
+    @RequestMapping(value = "/rakenne/versiot", method = GET)
+    public List<CombinedDto<Revision, HenkiloTietoDto>> listRakenneRevisions(@PathVariable("perusteId") final Long perusteId) {
+        return withHenkilos(sisallot.listRakenneRevisions(perusteId));
+    }
+
+    @RequestMapping(value = "/rakenne/versiot/{revision}", method = GET)
+    public LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineSuppeaDto> getLukioRakenneByRevision(
+            @PathVariable("perusteId") final Long perusteId, @PathVariable("revision") final Integer revision) {
+        return sisallot.getLukioRakenneByRevision(perusteId, revision, OppiaineSuppeaDto.class);
+    }
+
+    @RequestMapping(value = "/rakenne/versiot/{revision}/palauta", method = POST)
+    public LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineSuppeaDto> restorRakenneRevision(
+            @PathVariable("perusteId") final Long perusteId, @PathVariable("revision") final Integer revision) {
+        return sisallot.revertukioRakenneByRevision(perusteId, revision);
     }
 
     @RequestMapping(value = "/kurssit", method = POST)
@@ -238,7 +247,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateStructure(@PathVariable("perusteId") final Long perusteId,
                                 @RequestBody OppaineKurssiTreeStructureDto structureDto) {
-        kurssit.updateTreeStructure(perusteId, structureDto);
+        kurssit.updateTreeStructure(perusteId, structureDto, null);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = GET)

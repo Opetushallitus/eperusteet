@@ -971,6 +971,8 @@
     "aihekokonaisuus-palautettu": "Valittu versio palautettu onnistuneesti",
     "lukiooppiaine-palautettu": "Valittu versio palautettu onnistuneesti",
     "lukiokurssi-palautettu": "Valittu versio palautettu onnistuneesti",
+    "lukiorakenne-palautettu": "Valittu versio palautettu onnistuneesti",
+    "lukiooppiaine-poistettu": "Oppiaine poistettu onnistuneesti",
 
     "kurssi-title": "Kurssi",
     "kurssi-koodi": "Koodi",

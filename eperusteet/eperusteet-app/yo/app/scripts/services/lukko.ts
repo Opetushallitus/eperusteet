@@ -221,14 +221,17 @@ angular.module('eperusteApp')
       }
     }
 
-    function lukitse(Resource, obj, cb) {
+    function lukitse(Resource, obj, cb, editointiCheck) {
+      if (editointiCheck === undefined) {
+        editointiCheck = true;
+      }
       var d = $q.defer();
       vapautin = function(vcb) {
         return vapauta(Resource, obj, vcb);
       };
       lukitsin = function() {
         Resource.save(obj, function(res, headers) {
-          if (etag && headers().etag !== etag && Editointikontrollit.getEditMode()) {
+          if (editointiCheck && etag && headers().etag !== etag && Editointikontrollit.getEditMode()) {
             $modal.open({
               templateUrl: 'views/modals/sisaltoMuuttunut.html',
               controller: 'LukittuSisaltoMuuttunutModalCtrl'
@@ -355,16 +358,16 @@ angular.module('eperusteApp')
       return vapauta(LukkoLukioOppiaine, {perusteId: LukiokoulutusService.getPerusteId(), osanId: id}, cb);
     }
 
-    function lukitseLukioKurssi(id, cb) {
-      return lukitse(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(),10), kurssiId: id}, cb);
+    function lukitseLukioKurssi(id, cb, editointiCheck) {
+      return lukitse(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(),10), kurssiId: id}, cb, editointiCheck);
     }
 
     function vapautaLukioKurssi(id, cb) {
       return vapauta(LukkoLukiokurssi, {perusteId: parseInt(LukiokoulutusService.getPerusteId(), 10), kurssiId: id}, cb);
     }
 
-    function lukitseLukiorakenne(cb) {
-      return lukitse(LukkoLukioRakenne, {perusteId: parseInt(LukiokoulutusService.getPerusteId(), 10)}, cb);
+    function lukitseLukiorakenne(cb, editointiCheck) {
+      return lukitse(LukkoLukioRakenne, {perusteId: parseInt(LukiokoulutusService.getPerusteId(), 10)}, cb, editointiCheck);
     }
 
     function vapautaLukiorakenne(cb) {

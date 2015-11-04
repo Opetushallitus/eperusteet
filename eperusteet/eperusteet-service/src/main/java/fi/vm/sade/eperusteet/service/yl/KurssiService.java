@@ -16,8 +16,6 @@
 
 package fi.vm.sade.eperusteet.service.yl;
 
-import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
-import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -66,7 +64,7 @@ public interface KurssiService {
     void deleteLukiokurssi(long perusteId, long kurssiId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void updateTreeStructure(long perusteId, OppaineKurssiTreeStructureDto structure);
+    void updateTreeStructure(long perusteId, OppaineKurssiTreeStructureDto structure, Integer tryRestoreFromRevision);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<Revision> listKurssiVersions(long perusteId, long kurssiId);

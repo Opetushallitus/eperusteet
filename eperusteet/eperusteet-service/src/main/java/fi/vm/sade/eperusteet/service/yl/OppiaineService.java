@@ -73,5 +73,5 @@ public interface OppiaineService {
     void deleteKohdealue(@P("perusteId") Long perusteId, Long id, Long kohdealueId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void jarjestaLukioOppiaineet(long perusteId, List<OppiaineJarjestysDto> oppiaineet);
+    void reArrangeLukioOppiaineet(long perusteId, List<OppiaineJarjestysDto> oppiaineet, Integer tryRestoreFromRevision);
 }

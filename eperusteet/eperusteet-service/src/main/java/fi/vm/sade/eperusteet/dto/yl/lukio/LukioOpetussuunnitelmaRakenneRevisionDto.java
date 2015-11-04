@@ -16,27 +16,26 @@
 
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
+import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
 import lombok.Getter;
-import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: tommiratamaa
- * Date: 12.10.15
- * Time: 18.53
+ * Date: 4.11.2015
+ * Time: 11.32
  */
 @Getter
-@Setter
-public class OppiaineJarjestysDto {
-    private Long id;
-    private Long oppiaineId; // parent
-    private Long jarjestys;
+public class LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineType extends OppiaineBaseDto> {
+    private final Long perusteId;
+    private final Integer rakenneRevision;
+    private final List<LukiokurssiListausDto> kurssit = new ArrayList<>();
+    private final List<OppiaineType> oppiaineet = new ArrayList<>();
 
-    public OppiaineJarjestysDto() {
-    }
-
-    public OppiaineJarjestysDto(Long id, Long oppiaineId, Long jarjestys) {
-        this.id = id;
-        this.oppiaineId = oppiaineId;
-        this.jarjestys = jarjestys;
+    public LukioOpetussuunnitelmaRakenneRevisionDto(Long perusteId, Integer rakenneRevision) {
+        this.perusteId = perusteId;
+        this.rakenneRevision = rakenneRevision;
     }
 }

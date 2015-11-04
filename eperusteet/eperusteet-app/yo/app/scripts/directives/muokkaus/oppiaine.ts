@@ -981,6 +981,14 @@ angular.module('eperusteApp')
       Notifikaatiot.onnistui('lukiooppiaine-palautettu');
     };
 
+    $scope.goBackFromDelete = function() {
+      LukiokoulutusService.clearCache();
+      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {
+        osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT
+      });
+      Notifikaatiot.onnistui('lukiooppiaine-poistettu');
+    };
+
     $q.all([modelPromise]);
   })
 

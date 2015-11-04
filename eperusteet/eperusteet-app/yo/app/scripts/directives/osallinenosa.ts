@@ -29,6 +29,7 @@ angular.module('eperusteApp')
         versiot: '=',
         overwrittenVaihdaVersio: '=',
         overwrittenRevertCb: '=',
+        overwrittenDeleteRedirectCb: '=',
         editableModel: '='
       },
       controller: 'OsallinenOsaController',
@@ -139,7 +140,11 @@ angular.module('eperusteApp')
         successCb: function() {
           $scope.config.removeWholeFn(function() {
             Editointikontrollit.unregisterCallback();
-            $state.go($scope.config.backState[0], $scope.config.backState[1], { reload: true });
+            if ($scope.overwrittenDeleteRedirectCb) {
+              $scope.overwrittenDeleteRedirectCb();
+            } else {
+              $state.go($scope.config.backState[0], $scope.config.backState[1], { reload: true });
+            }
           });
         }
       })();

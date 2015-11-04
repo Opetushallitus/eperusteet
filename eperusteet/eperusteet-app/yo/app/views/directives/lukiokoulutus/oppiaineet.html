@@ -14,12 +14,19 @@
   ~  European Union Public Licence for more details.
   -->
 
-<div class="action-buttons">
-  <button icon-role="edit" class="floater btn" ng-show="!treehelpers.editMode"
-          oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
-          ng-click="toEditMode()" kaanna="'muokkaa-rakennetta'"></button>
-</div>
 <div class="lukio-oppiaineet-puu lukio-oppiaine-tab">
+  <div class="puu-top" ng-if="!treehelpers.editMode">
+    <div class="action-buttons" ng-show="versiot.latest">
+      <button icon-role="edit" class="floater btn"
+              oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+              ng-click="toEditMode()" kaanna="'muokkaa-rakennetta'"></button>
+    </div>
+    <div style="clear: both">
+      <revert-note object="rakenne" revert-cb="revertCb(response)"
+                   versions="versiot" change-version="vaihdaVersio()"></revert-note>
+      <versiotiedot></versiotiedot>
+    </div>
+  </div>
   <div class="main-column tree">
     <div class="tree-con">
       <div class="left search-field-container">

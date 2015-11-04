@@ -29,11 +29,9 @@ import fi.vm.sade.eperusteet.service.yl.OppiainePerusteenSisaltoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
@@ -89,12 +87,11 @@ public abstract class AbstractOppiaineOpetuksenSisaltoService<EntityType extends
     @Override
     @Transactional(readOnly = true)
     public <T extends OppiaineBaseDto> List<T> getOppiaineet(Long perusteId, Class<T> view) {
-        return listOppiaineet(getByPerusteId(perusteId), view);
+        return listOppiaineet(getByPerusteId(perusteId).getOppiaineet().stream(), view);
     }
 
-    protected  <T extends OppiaineBaseDto> List<T> listOppiaineet(AbstractOppiaineOpetuksenSisalto sisalto, Class<T> view) {
-        List<Oppiaine> oppiaineet = sisalto.getOppiaineet().stream()
-                .filter(oa -> oa.getOppiaine() == null)
+    protected  <T extends OppiaineBaseDto> List<T> listOppiaineet(Stream<Oppiaine> oppiaineetStream, Class<T> view) {
+        List<Oppiaine> oppiaineet = oppiaineetStream.filter(oa -> oa.getOppiaine() == null)
                 .sorted(comparing(Oppiaine::getJnro, (a,b) -> {
                     if (a == null) {
                         return 1;

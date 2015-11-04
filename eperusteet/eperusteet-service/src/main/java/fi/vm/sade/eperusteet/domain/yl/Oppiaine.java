@@ -156,10 +156,12 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
 
     @Getter
-    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited
+    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private Set<OppiaineLukiokurssi> lukiokurssit = new HashSet<>(0);
 
     @Getter
+    @Audited
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_lukio_opetussuunnitelma_rakenne_yl_oppiaine",
             inverseJoinColumns = @JoinColumn(name = "rakenne_id", nullable = false, updatable = false),
@@ -191,7 +193,6 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         if (vuosiluokkakokonaisuudet.add(ovk)) {
             this.muokattu();
         }
-
     }
 
     public void removeVuosiluokkaKokonaisuus(OppiaineenVuosiluokkaKokonaisuus ovk) {

@@ -73,20 +73,36 @@ angular.module('eperusteApp')
                     });
                   };
                 } else if($stateParams.osanTyyppi === 'oppiaineet_oppimaarat') {
-                  cb = function () {
-                    Lukitus.lukitseLukioOppiaine($stateParams.osanId).then(function() {
-                      VersionHelper.revertLukioOppiaine($scope.versiot, $stateParams.osanId, revCb);
-                    });
-                  };
+                  if ($stateParams.osanId) {
+                    cb = function () {
+                      Lukitus.lukitseLukioOppiaine($stateParams.osanId).then(function() {
+                        VersionHelper.revertLukioOppiaine($scope.versiot, $stateParams.osanId, revCb);
+                      });
+                    };
+                  } else {
+                    cb = function () {
+                      Lukitus.lukitseLukiorakenne().then(function() {
+                        VersionHelper.revertLukioRakenne($scope.versiot, null, revCb);
+                      });
+                    };
+                  }
                 }
                 break;
               case 'root.perusteprojekti.suoritustapa.lukioosaalue':
                 if($stateParams.osanTyyppi === 'oppiaineet_oppimaarat') {
-                  cb = function () {
-                    Lukitus.lukitseLukioOppiaine($stateParams.osanId).then(function() {
-                      VersionHelper.revertLukioOppiaine($scope.versiot, $stateParams.osanId, revCb);
-                    });
-                  };
+                  if ($stateParams.osanId) {
+                    cb = function () {
+                      Lukitus.lukitseLukioOppiaine($stateParams.osanId).then(function() {
+                        VersionHelper.revertLukioOppiaine($scope.versiot, $stateParams.osanId, revCb);
+                      });
+                    };
+                  } else {
+                    cb = function () {
+                      Lukitus.lukitseLukiorakenne().then(function() {
+                        VersionHelper.revertLukioRakenne($scope.versiot, null, revCb);
+                      });
+                    };
+                  }
                 } else {
                   cb = function () {
                     Lukitus.lukitseLukioAihekokonaisuus($scope.object.id).then( function () {

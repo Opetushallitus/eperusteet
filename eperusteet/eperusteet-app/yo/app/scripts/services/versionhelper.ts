@@ -44,7 +44,7 @@ angular.module('eperusteApp')
         rakennaNimet(res);
         data.list = res;
         versiotListHandler(data);
-        cb();
+        cb(res);
       };
       switch (tyyppi) {
         case 'perusteenosa':        PerusteenOsat.versiot({osanId: tunniste.id}, handle);           break;
@@ -53,8 +53,9 @@ angular.module('eperusteApp')
         case 'rakenne':             RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, handle); break;
         case 'lukioyleisettavoitteet': LukioYleisetTavoitteetService.getVersiot().then(handle);     break;
         case 'lukioaihekokonaisuudet': LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvausVersiot().then(handle); break;
-        case 'lukiokurssi':          LukioKurssiService.listVersions(tunniste.id).then(handle); break;
-        case 'lukiooppiaine':        LukioOppiaineService.listVersions(tunniste.id).then(handle);break;
+        case 'lukiokurssi':          LukioKurssiService.listVersions(tunniste.id, cb).then(handle); break;
+        case 'lukiooppiaine':        LukioOppiaineService.listVersions(tunniste.id, cb).then(handle);break;
+        case 'lukiorakenne':         LukioKurssiService.listRakenneVersions(cb).then(handle); break;
         default: $log.error('Unknwon versio tyyppi: ', tyyppi);
       }
     }
@@ -105,6 +106,8 @@ angular.module('eperusteApp')
         LukioKurssiService.palautaLukiokurssi(tunniste, data.chosen.numero).then(genericHandler);
       } else if(tyyppi === 'lukiooppiaine') {
         LukioOppiaineService.palautaLukioOppiaine(tunniste, data.chosen.numero).then(genericHandler);
+      } else if(tyyppi === 'lukiorakenne') {
+        LukioKurssiService.palautaRakenne(data.chosen.numero).then(genericHandler);
       }
     }
 
@@ -196,6 +199,10 @@ angular.module('eperusteApp')
       getVersions(data, tunniste, 'lukiooppiaine', force, cb);
     };
 
+    this.getLukioRakenneVersions = function(data, tunniste, force, cb) {
+      getVersions(data, tunniste, 'lukiorakenne', force, cb);
+    };
+
     this.chooseLatest = function (data) {
       data.chosen = latest(data.list);
     };
@@ -240,6 +247,10 @@ angular.module('eperusteApp')
 
     this.revertLukioOppiaine = function (data, tunniste, cb) {
       revert(data, tunniste, 'lukiooppiaine', cb);
+    };
+
+    this.revertLukioRakenne = function(data, tunniste, force, cb) {
+      revert(data, tunniste, 'lukiorakenne', force, cb);
     };
 
     this.setUrl = function (data) {

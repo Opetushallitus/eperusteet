@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
@@ -36,10 +37,8 @@ import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +47,14 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
 import static fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.naturalOrder;
+import static java.util.Comparator.nullsFirst;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
@@ -106,13 +110,16 @@ public class OppiaineServiceImpl implements OppiaineService {
         throw new BusinessRuleViolationException("Perustetta ei ole");
     }
 
-    private Oppiaine saveOppiaine(OppiaineDto dto) {
+    private Oppiaine saveOppiaine(OppiaineBaseUpdateDto dto) {
         Oppiaine oppiaine = mapper.map(dto, new Oppiaine());
         oppiaine = oppiaineRepository.save(oppiaine);
-        final Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet = dto.getVuosiluokkakokonaisuudet();
-        if (vuosiluokkakokonaisuudet != null) {
-            for (OppiaineenVuosiluokkaKokonaisuusDto v : vuosiluokkakokonaisuudet) {
-                addOppiaineenVuosiluokkaKokonaisuus(oppiaine, v);
+        if (dto instanceof OppiaineDto) {
+            final Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet
+                    = ((OppiaineDto) dto).getVuosiluokkakokonaisuudet();
+            if (vuosiluokkakokonaisuudet != null) {
+                for (OppiaineenVuosiluokkaKokonaisuusDto v : vuosiluokkakokonaisuudet) {
+                    addOppiaineenVuosiluokkaKokonaisuus(oppiaine, v);
+                }
             }
         }
         return oppiaine;
@@ -169,6 +176,10 @@ public class OppiaineServiceImpl implements OppiaineService {
             aine.getOppiaine().removeOppimaara(aine);
         } else {
             sisalto.removeOppiaine(aine);
+        }
+        if (sisalto instanceof LukiokoulutuksenPerusteenSisalto) {
+            // Rakenteelle palautuspiste
+            ((LukiokoulutuksenPerusteenSisalto) sisalto).getOpetussuunnitelma().setMuokattu(new Date());
         }
         oppiaineRepository.delete(aine);
     }
@@ -235,7 +246,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     private void setOriginalReferences(Oppiaine original, OppiaineBaseUpdateDto dto) {
         // keep the parent reference the same (could not haven been modified in perusopetus but could be
         // modified in lukiokoulutus through structure)
-        dto.setOppiaine(original.getOppiaine() != null ? Optional.of(new EntityReference(original.getOppiaine().getId()))
+        dto.setOppiaine(original.getOppiaine() != null ? of(new EntityReference(original.getOppiaine().getId()))
                 : Optional.absent());
     }
 
@@ -425,24 +436,60 @@ public class OppiaineServiceImpl implements OppiaineService {
 
     @Override
     @Transactional
-    public void jarjestaLukioOppiaineet(long perusteId, List<OppiaineJarjestysDto> oppiaineet) {
+    public void reArrangeLukioOppiaineet(long perusteId, List<OppiaineJarjestysDto> oppiaineet, Integer tryRestoreFromRevision) {
         lukioRakenneLockService.assertLock(new LukioOpetussuunnitelmaRakenneLockContext(perusteId));
         Map<Long, OppiaineJarjestysDto> dtosById = oppiaineet.stream().collect(toMap(OppiaineJarjestysDto::getId, o -> o));
         Set<Long> oppiaineIds = new HashSet<>(dtosById.keySet());
+        LukiokoulutuksenPerusteenSisalto sisalto = (LukiokoulutuksenPerusteenSisalto)
+                LUKIOKOULUTUS.getRepository(applicationContext).findByPerusteId(perusteId);
         oppiaineIds.addAll(oppiaineet.stream().filter(oa -> oa.getOppiaineId() != null)
                 .map(OppiaineJarjestysDto::getOppiaineId).collect(toSet()));
         Map<Long, Oppiaine> byId = oppiaineRepository.findAll(oppiaineIds).stream().collect(toMap(Oppiaine::getId, o -> o));
-        dtosById.values().forEach(dto -> {
-            Oppiaine oa = found(byId.get(dto.getId()), inLukioPeruste(perusteId));
+        dtosById.values().stream().sorted(comparing(OppiaineJarjestysDto::getOppiaineId, nullsFirst(naturalOrder()))).forEach(dto -> {
+            Oppiaine oa = found(lookupOrRestoreOppiaine(perusteId, dto.getId(), tryRestoreFromRevision, byId, sisalto),
+                    inLukioPeruste(perusteId),
+                    () -> new NotExistsException("No Oppiaine found in lukioperuste by id="+dto.getId()));
             oppiaineRepository.lock(oa);
             oa.setJnro(dto.getJarjestys());
             if (!oa.isKoosteinen() && dto.getOppiaineId() != null) {
-                oa.setOppiaineForce(found(byId.get(dto.getOppiaineId()),
-                        inLukioPeruste(perusteId).and(Oppiaine::isKoosteinen)));
+                oa.setOppiaineForce(found(lookupOrRestoreOppiaine(perusteId, dto.getOppiaineId(),
+                                tryRestoreFromRevision, byId, sisalto),
+                        inLukioPeruste(perusteId).and(Oppiaine::isKoosteinen),
+                        () -> new NotExistsException("No koosteinen Oppiaine found as parent in peruste "
+                                + " by id="+dto.getOppiaineId())));
             } else {
                 oa.setOppiaine(null);
             }
         });
+    }
+
+    private Optional<Oppiaine> lookupOrRestoreOppiaine(long perusteId, Long id, Integer tryRestoreFromRevision,
+                                   Map<Long, Oppiaine> byId,
+                                   LukiokoulutuksenPerusteenSisalto sisalto) {
+        if (tryRestoreFromRevision != null && byId.get(id) == null) {
+            Oppiaine oldOppiaine = found(oppiaineRepository.findRevision(id,
+                    tryRestoreFromRevision), inLukioPeruste(perusteId),
+                    () -> new NotExistsException("No Oppiaine for id "+id
+                            +" to restore from Lukioperuste at revision="+tryRestoreFromRevision));
+            LukioOppiaineUpdateDto lukioOppiaine = mapper.map(oldOppiaine, new LukioOppiaineUpdateDto());
+            if (oldOppiaine.getOppiaine() != null) {
+                lukioOppiaine.setOppiaine(lookupOrRestoreOppiaine(perusteId, oldOppiaine.getOppiaine().getId(),
+                        tryRestoreFromRevision,
+                        byId, sisalto).transform(oa -> new EntityReference(oa.getId())));
+            }
+            Oppiaine newOppiaine = saveOppiaine(lukioOppiaine);
+            if (newOppiaine.getOppiaine() == null) {
+                sisalto.addOppiaine(newOppiaine);
+                newOppiaine.getLukioRakenteet().add(sisalto.getOpetussuunnitelma());
+            }
+            oppiaineRepository.flush();
+            Long newId = newOppiaine.getId();
+            Oppiaine newOppinaine = found(oppiaineRepository.findOne(newId));
+            byId.put(id, newOppinaine);
+            byId.put(newId, newOppinaine); // new id differs
+            return of(newOppinaine);
+        }
+        return fromNullable(byId.get(id));
     }
 
     private static final String OPPIAINETTA_EI_OLE = "Pyydettyä oppiainetta ei ole";

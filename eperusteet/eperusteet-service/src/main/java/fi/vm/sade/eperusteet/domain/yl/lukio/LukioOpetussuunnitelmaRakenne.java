@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
@@ -65,6 +64,7 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     private Set<Oppiaine> oppiaineet = new HashSet<>(0);
 
     @Getter
+    @Audited
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "opetussuunnitelma")
     private Set<Lukiokurssi> kurssit = new HashSet<>(0);

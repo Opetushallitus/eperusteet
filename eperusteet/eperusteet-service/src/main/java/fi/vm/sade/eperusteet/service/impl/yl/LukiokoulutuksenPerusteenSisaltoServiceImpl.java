@@ -17,14 +17,21 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.*;
 import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukioOppiaineOppimaaraNodeDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukioOppiainePuuDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokurssiJulkisetTiedotDto;
-import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
-import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
-import fi.vm.sade.eperusteet.repository.OppiaineRepository;
+import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
+import fi.vm.sade.eperusteet.service.yl.KurssiService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +39,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -57,11 +67,95 @@ public class LukiokoulutuksenPerusteenSisaltoServiceImpl
     @Autowired
     private LukiokoulutuksenPerusteenSisaltoRepository sisaltoRepository;
 
+    @Autowired
+    private LukioOpetussuunnitelmaRakenneRepository lukioOpetussuunnitelmaRakenneRepository;
+
+    @Autowired
+    private PerusteRepository perusteRepository;
+
+    @Autowired
+    private KurssiService kurssiService;
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public <T extends OppiaineBaseDto> List<T> getOppiaineetByRakenneRevision(long perusteId, int revision, Class<T> view) {
+        return listOppiaineet(rakenneRevisionOppiaineet(
+                getRakenneByPerusteIdAndRakenneRevision(perusteId, revision), revision), view);
+    }
+
+    @Override
+    @Transactional
+    public LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineSuppeaDto> revertukioRakenneByRevision(long perusteId, int revision) {
+        LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineSuppeaDto> oldRakenne
+                = getLukioRakenneByRevision(perusteId, revision, OppiaineSuppeaDto.class);
+        OppaineKurssiTreeStructureDto structure = new OppaineKurssiTreeStructureDto();
+        structure.getKurssit().addAll(oldRakenne.getKurssit().stream().map(this::kurssiToStructure).collect(toList()));
+        structure.getOppiaineet().addAll(oldRakenne.getOppiaineet().stream().map(oa ->
+            new OppiaineJarjestysDto(oa.getId(),
+                    // On muuten pirun käteviä ja hyödyllisiä nämä Orikalta nulleina ulos tulevat Optionalit:
+                    oa.getOppiaine() == null ? null : oa.getOppiaine().transform(EntityReference::getIdLong).orNull(),
+                    oa.getJnro() == null ? null : oa.getJnro().orNull())).collect(toList()));
+        kurssiService.updateTreeStructure(perusteId, structure, revision);
+        return oldRakenne;
+    }
+
+    private LukiokurssiOppaineMuokkausDto kurssiToStructure(LukiokurssiListausDto kurssi) {
+        LukiokurssiOppaineMuokkausDto dto = new LukiokurssiOppaineMuokkausDto();
+        dto.setId(kurssi.getId());
+        dto.getOppiaineet().addAll(kurssi.getOppiaineet().stream().map(oa
+                -> new KurssinOppiaineDto(oa.getOppiaineId(), oa.getJarjestys())).collect(toList()));
+        return dto;
+    }
+
+    protected LukioOpetussuunnitelmaRakenne getRakenneByPerusteIdAndRakenneRevision(long perusteId, int revision) {
+        LukiokoulutuksenPerusteenSisalto sisalto = getByPerusteId(perusteId);
+        return found(lukioOpetussuunnitelmaRakenneRepository.findRevision(
+                    found(sisalto.getOpetussuunnitelma()).getId(), revision),
+                () -> new NotExistsException("Lukiokoulutuksen rakennetta ei löydy revisiolla " + revision));
+    }
+
     @Override
     protected LukiokoulutuksenPerusteenSisalto getByPerusteId(Long perusteId) {
         LukiokoulutuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Sisaltoä annetulle perusteelle ei ole olemassa");
         return sisalto;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Revision> listRakenneRevisions(long perusteId) {
+        return lukioOpetussuunnitelmaRakenneRepository.getRevisions(
+                found(getByPerusteId(perusteId).getOpetussuunnitelma()).getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public <OppiaineType extends OppiaineBaseDto> LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineType>
+                getLukioRakenneByRevision(long perusteId, int revision, Class<OppiaineType> oppiaineClz) {
+        LukioOpetussuunnitelmaRakenne rakenne = getRakenneByPerusteIdAndRakenneRevision(perusteId, revision);
+        LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineType> dto = new LukioOpetussuunnitelmaRakenneRevisionDto<>(perusteId, revision);
+        dto.getOppiaineet().addAll(listOppiaineet(rakenneRevisionOppiaineet(rakenne, revision), oppiaineClz));
+        dto.getKurssit().addAll(kurssiService.findLukiokurssitByRakenneRevision(perusteId, rakenne.getId(), revision));
+        return dto;
+    }
+
+    private Stream<Oppiaine> rakenneRevisionOppiaineet(LukioOpetussuunnitelmaRakenne rakenne, int revision) {
+        return rakenne.getOppiaineet().stream().map(
+            oa -> oppiaineRepository.findRevision(oa.getId(), revision)
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public <OppiaineType extends OppiaineBaseDto> LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineType>
+                    getLukioRakenne(long perusteId, Class<OppiaineType> oppiaineClz) {
+        LukioOpetussuunnitelmaRakenne rakenne = getByPerusteId(perusteId).getOpetussuunnitelma();
+        LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineType> dto = new LukioOpetussuunnitelmaRakenneRevisionDto<>(perusteId,
+                    lukioOpetussuunnitelmaRakenneRepository.getLatestRevisionId());
+        dto.getOppiaineet().addAll(listOppiaineet(rakenne.getOppiaineet().stream(), oppiaineClz));
+        dto.getKurssit().addAll(kurssiService.findLukiokurssitByPerusteId(perusteId));
+        return dto;
     }
 
     @Override
