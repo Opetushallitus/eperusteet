@@ -47,7 +47,7 @@ public interface KommenttiService {
     @PreAuthorize("isAuthenticated()")
     public KommenttiDto get(Long kommenttiId);
 
-    @PreAuthorize("hasPermission(#k.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
+    @PreAuthorize("hasPermission(#k.perusteprojektiId, 'perusteProjekti', 'LUKU')")
     public KommenttiDto add(@P("k") final KommenttiDto kommenttidto);
 
     @PreAuthorize("isAuthenticated()")

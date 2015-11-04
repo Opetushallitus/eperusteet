@@ -27,9 +27,6 @@ import fi.vm.sade.eperusteet.service.security.PermissionChecker;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
@@ -127,7 +124,6 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Override
     @Transactional
     public KommenttiDto add(final KommenttiDto kommenttidto) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Kommentti kommentti = new Kommentti();
         kommentti.setSisalto(clip(kommenttidto.getSisalto()));
         kommentti.setPerusteprojektiId(kommenttidto.getPerusteprojektiId());
@@ -149,7 +145,7 @@ public class KommenttiServiceImpl implements KommenttiService {
     public KommenttiDto update(Long kommenttiId, @P("kommenttidto") final KommenttiDto kommenttidto) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
-        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(), PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.KOMMENTOINTI);
+        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(), PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.LUKU);
         kommentti.setSisalto(clip(kommenttidto.getSisalto()));
         return mapper.map(kommentit.save(kommentti), KommenttiDto.class);
     }
@@ -159,7 +155,7 @@ public class KommenttiServiceImpl implements KommenttiService {
     public void delete(Long kommenttiId) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
-        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(),PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.KOMMENTOINTI);
+        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(),PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.LUKU);
         kommentti.setSisalto(null);
         kommentti.setPoistettu(true);
     }
