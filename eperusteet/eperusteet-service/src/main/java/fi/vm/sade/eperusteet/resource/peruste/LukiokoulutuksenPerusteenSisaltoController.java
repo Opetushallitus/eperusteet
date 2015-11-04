@@ -41,7 +41,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -75,9 +74,6 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @Autowired
     private PerusteService perusteet;
-
-    @Autowired
-    private AihekokonaisuudetService aihekokonaisuudetService;
 
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
@@ -277,8 +273,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id,
             @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
-        PerusteenOsaViiteDto.Matala uusiSisalto = sisallot.addSisalto(perusteId, id, dto);
-        return uusiSisalto;
+        return sisallot.addSisalto(perusteId, id, dto);
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = POST)
@@ -296,7 +291,6 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("id") final Long id) {
         return viittet.kloonaaTekstiKappale(perusteId, id);
     }
-
 
     @RequestMapping(value = "/aihekokonaisuudet", method = GET)
     public ResponseEntity<List<AihekokonaisuusListausDto>> getAihekokonaisuudet(
@@ -436,9 +430,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-
     private <T> ResponseEntity<T> handleGet(Long perusteId, Supplier<T> response) {
         return CacheableResponse.create(perusteet.getLastModifiedRevision(perusteId), 1, response);
     }
-
 }

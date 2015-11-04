@@ -67,7 +67,6 @@ public class LukiokoulutuksenPerusteenSisaltoServiceImpl
     @Override
     @Transactional(readOnly = true)
     public LukioOppiainePuuDto getOppiaineTreeStructure(long perusteId) {
-        // Asserts that this is a lukioperuste and not POISTETTU.
         found(sisaltoRepository.findLukioperusteenTilaByPerusteId(perusteId),
                 t -> t != PerusteTila.POISTETTU);
         LukioOppiainePuuDto tree = new LukioOppiainePuuDto(perusteId);

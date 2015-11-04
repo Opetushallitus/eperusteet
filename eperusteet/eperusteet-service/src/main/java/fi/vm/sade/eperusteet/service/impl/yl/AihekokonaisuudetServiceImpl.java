@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus.inPeruste;
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
 
 /**
@@ -74,9 +75,8 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     @Autowired
     private LokalisointiService lokalisointiService;
 
-
     @Override
-    @Transactional( readOnly = true)
+    @Transactional(readOnly = true)
     public List<AihekokonaisuusListausDto> getAihekokonaisuudet(Long perusteId) {
         return lokalisointiService.lokalisoi(
                 lukioAihekokonaisuusRepository.findAihekokonaisuudetByPerusteId(perusteId));
@@ -84,11 +84,11 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
 
 
     @Override
-    @Transactional( readOnly = true )
+    @Transactional(readOnly = true)
     public AihekokonaisuudetYleiskuvausDto getAihekokonaisuudetYleiskuvaus(Long perusteId) {
         Peruste peruste = perusteet.getOne(perusteId);
         Aihekokonaisuudet aihekokonaisuudet = peruste.getLukiokoulutuksenPerusteenSisalto().getAihekokonaisuudet();
-        if( aihekokonaisuudet != null ) {
+        if (aihekokonaisuudet != null) {
             return mapper.map(aihekokonaisuudet, AihekokonaisuudetYleiskuvausDto.class);
         } else {
             return new AihekokonaisuudetYleiskuvausDto();
@@ -96,23 +96,24 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     }
 
     @Override
-    @Transactional( readOnly = true )
-    public LukioAihekokonaisuusMuokkausDto getLukioAihekokobaisuusMuokkausById(long perusteId, long aihekokonaisuusId) throws NotExistsException {
-        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository.findOne(aihekokonaisuusId), Aihekokonaisuus.inPeruste(perusteId));
-        LukioAihekokonaisuusMuokkausDto dto = mapper.map(aihekokonaisuus, new LukioAihekokonaisuusMuokkausDto());
-        return dto;
+    @Transactional(readOnly = true)
+    public LukioAihekokonaisuusMuokkausDto getLukioAihekokobaisuusMuokkausById(long perusteId, long aihekokonaisuusId)
+            throws NotExistsException {
+        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository
+                .findOne(aihekokonaisuusId), inPeruste(perusteId));
+        return mapper.map(aihekokonaisuus, new LukioAihekokonaisuusMuokkausDto());
     }
 
     @Override
     @Transactional
-    public long luoAihekokonaisuus(long perusteId, LukioAihekokonaisuusLuontiDto aihekokonaisuusLuontiDto) throws BusinessRuleViolationException {
-
+    public long luoAihekokonaisuus(long perusteId, LukioAihekokonaisuusLuontiDto aihekokonaisuusLuontiDto)
+            throws BusinessRuleViolationException {
         LukiokoulutuksenPerusteenSisalto sisalto = found(lukioSisaltoRepository.findByPerusteId(perusteId),
                 () -> new BusinessRuleViolationException("Perustetta ei ole."));
         lukioSisaltoRepository.lock(sisalto, false);
 
         Aihekokonaisuudet aihekokonaisuudet = sisalto.getAihekokonaisuudet();
-        if( aihekokonaisuudet == null ) {
+        if (aihekokonaisuudet == null) {
             aihekokonaisuudet = initAihekokonaisuudet(sisalto);
             lukioAihekokonaisuudetRepository.saveAndFlush(aihekokonaisuudet);
         }
@@ -145,8 +146,10 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
 
     @Override
     @Transactional
-    public void muokkaaAihekokonaisuutta(long perusteId, LukioAihekokonaisuusMuokkausDto lukioAihekokonaisuusMuokkausDto) throws NotExistsException {
-        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository.findOne(lukioAihekokonaisuusMuokkausDto.getId()), Aihekokonaisuus.inPeruste(perusteId));
+    public void muokkaaAihekokonaisuutta(long perusteId, LukioAihekokonaisuusMuokkausDto lukioAihekokonaisuusMuokkausDto)
+                    throws NotExistsException {
+        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository
+                .findOne(lukioAihekokonaisuusMuokkausDto.getId()), inPeruste(perusteId));
         lukioAihekokonaisuusRepository.lock(aihekokonaisuus, false);
         mapper.map(lukioAihekokonaisuusMuokkausDto, aihekokonaisuus);
         lukioAihekokonaisuusRepository.setRevisioKommentti(lukioAihekokonaisuusMuokkausDto.getMetadataOrEmpty().getKommentti());
@@ -176,12 +179,13 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     @Override
     @Transactional
     public void poistaAihekokonaisuus(long perusteId, long aihekokonaisuusId) throws NotExistsException {
-        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository.findOne(aihekokonaisuusId), Aihekokonaisuus.inPeruste(perusteId));
+        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository
+                .findOne(aihekokonaisuusId), inPeruste(perusteId));
         lukioAihekokonaisuusRepository.delete(aihekokonaisuus);
     }
 
     @Override
-    @Transactional( readOnly = true )
+    @Transactional(readOnly = true)
     public List<Revision> getAihekokonaisuudetYleiskuvausVersiot(long perusteId) {
         Peruste peruste = perusteet.getOne(perusteId);
         LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();
@@ -194,12 +198,11 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     }
 
     @Override
-    @Transactional( readOnly = true )
+    @Transactional(readOnly = true)
     public AihekokonaisuudetYleiskuvausDto getAihekokonaisuudetYleiskuvausByVersion(long perusteId, int revisio) {
-
         Peruste peruste = perusteet.getOne(perusteId);
         Aihekokonaisuudet aihekokonaisuudet = peruste.getLukiokoulutuksenPerusteenSisalto().getAihekokonaisuudet();
-        if( aihekokonaisuudet != null ) {
+        if (aihekokonaisuudet != null) {
             Aihekokonaisuudet rev = lukioAihekokonaisuudetRepository.findRevision(aihekokonaisuudet.getId(), revisio);
             return mapper.map(rev, AihekokonaisuudetYleiskuvausDto.class);
         } else {
@@ -216,16 +219,18 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     }
 
     @Override
-    @Transactional( readOnly = true )
+    @Transactional(readOnly = true)
     public List<Revision> getAihekokonaisuusVersiot(long perusteId, long aihekokonaisuusId) {
-        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository.findOne(aihekokonaisuusId), Aihekokonaisuus.inPeruste(perusteId));
+        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository
+                .findOne(aihekokonaisuusId), inPeruste(perusteId));
         return lukioAihekokonaisuusRepository.getRevisions(aihekokonaisuus.getId());
     }
 
     @Override
-    @Transactional( readOnly = true )
+    @Transactional(readOnly = true)
     public LukioAihekokonaisuusMuokkausDto getAihekokonaisuusByVersion(long perusteId, long aihekokonaisuusId, int revisio) {
-        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository.findOne(aihekokonaisuusId), Aihekokonaisuus.inPeruste(perusteId));
+        Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository
+                .findOne(aihekokonaisuusId), inPeruste(perusteId));
         Aihekokonaisuus rev = lukioAihekokonaisuusRepository.findRevision(aihekokonaisuus.getId(), revisio);
         LukioAihekokonaisuusMuokkausDto dto = mapper.map(rev, new LukioAihekokonaisuusMuokkausDto());
         return dto;
