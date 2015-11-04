@@ -301,23 +301,13 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @RequestMapping(value = "/aihekokonaisuudet", method = GET)
     public ResponseEntity<List<AihekokonaisuusListausDto>> getAihekokonaisuudet(
             @PathVariable("perusteId") final Long perusteId) {
-        return handleGet(perusteId, new Supplier<List<AihekokonaisuusListausDto>>() {
-            @Override
-            public List<AihekokonaisuusListausDto> get() {
-                return aihekokonaisuudet.getAihekokonaisuudet(perusteId);
-            }
-        });
+        return handleGet(perusteId, () -> aihekokonaisuudet.getAihekokonaisuudet(perusteId));
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/yleiskuvaus", method = GET)
     public ResponseEntity<AihekokonaisuudetYleiskuvausDto> getAihekokonaisuudetYleiskuvaus(
             @PathVariable("perusteId") final Long perusteId) {
-        return handleGet(perusteId, new Supplier<AihekokonaisuudetYleiskuvausDto>() {
-            @Override
-            public AihekokonaisuudetYleiskuvausDto get() {
-                return aihekokonaisuudet.getAihekokonaisuudetYleiskuvaus(perusteId);
-            }
-        });
+        return handleGet(perusteId, () -> aihekokonaisuudet.getAihekokonaisuudetYleiskuvaus(perusteId));
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/yleiskuvaus", method = POST)
@@ -345,12 +335,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public ResponseEntity<AihekokonaisuudetYleiskuvausDto> getAihekokonaisuudetYleiskuvausByVersio(
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("revisio") final int revisio) {
-        return handleGet(perusteId, new Supplier<AihekokonaisuudetYleiskuvausDto>() {
-            @Override
-            public AihekokonaisuudetYleiskuvausDto get() {
-                return aihekokonaisuudet.getAihekokonaisuudetYleiskuvausByVersion(perusteId, revisio);
-            }
-        });
+        return handleGet(perusteId, () -> aihekokonaisuudet.getAihekokonaisuudetYleiskuvausByVersion(perusteId, revisio));
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/yleiskuvaus/palauta/{revisio}", method = POST)
@@ -396,12 +381,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public List<CombinedDto<Revision, HenkiloTietoDto>> getAihekokonaisuusVersiot(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long aihekokonaisuusId) {
-        List<Revision> revisiot = aihekokonaisuudet.getAihekokonaisuusVersiot(perusteId, aihekokonaisuusId);
-        List<CombinedDto<Revision, HenkiloTietoDto>> versiot = new ArrayList<>();
-        for (Revision r : revisiot) {
-            versiot.add(new CombinedDto<>(r, new HenkiloTietoDto(kayttajanTietoService.hae(r.getMuokkaajaOid()))));
-        }
-        return versiot;
+        return withHenkilos(aihekokonaisuudet.getAihekokonaisuusVersiot(perusteId, aihekokonaisuusId));
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/{id}/versio/{revisio}", method = GET)
@@ -416,7 +396,6 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("id") final Long id,
             @PathVariable("revisio") final int revisio) {
-
         LukioAihekokonaisuusMuokkausDto dto = aihekokonaisuudet.palautaAihekokonaisuus (perusteId, id, revisio);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -424,12 +403,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @RequestMapping(value = "/yleisettavoitteet", method = GET)
     public ResponseEntity<LukiokoulutuksenYleisetTavoitteetDto> getYleisetTavoitteet(
             @PathVariable("perusteId") final Long perusteId) {
-        return handleGet(perusteId, new Supplier<LukiokoulutuksenYleisetTavoitteetDto>() {
-            @Override
-            public LukiokoulutuksenYleisetTavoitteetDto get() {
-                return perusteet.getYleisetTavoitteet(perusteId);
-            }
-        });
+        return handleGet(perusteId, () -> perusteet.getYleisetTavoitteet(perusteId));
     }
 
     @RequestMapping(value = "/yleisettavoitteet", method = POST)
@@ -444,32 +418,20 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @RequestMapping(value = "/yleisettavoitteet/versiot", method = GET)
     public List<CombinedDto<Revision, HenkiloTietoDto>> getYleisetTavoitteetVersiot(
             @PathVariable("perusteId") final Long perusteId) {
-
-        List<Revision> revisiot = perusteet.getYleisetTavoitteetVersiot(perusteId);
-        List<CombinedDto<Revision, HenkiloTietoDto>> versiot = new ArrayList<>();
-        for (Revision r : revisiot) {
-            versiot.add(new CombinedDto<>(r, new HenkiloTietoDto(kayttajanTietoService.hae(r.getMuokkaajaOid()))));
-        }
-        return versiot;
+        return withHenkilos(perusteet.getYleisetTavoitteetVersiot(perusteId));
     }
 
     @RequestMapping(value = "/yleisettavoitteet/versio/{revisio}", method = GET)
     public ResponseEntity<LukiokoulutuksenYleisetTavoitteetDto> getYleisetTavoitteetByVersio(
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("revisio") final int revisio) {
-        return handleGet(perusteId, new Supplier<LukiokoulutuksenYleisetTavoitteetDto>() {
-            @Override
-            public LukiokoulutuksenYleisetTavoitteetDto get() {
-                return perusteet.getYleisetTavoitteetByVersion(perusteId, revisio);
-            }
-        });
+        return handleGet(perusteId, () -> perusteet.getYleisetTavoitteetByVersion(perusteId, revisio));
     }
 
     @RequestMapping(value = "/yleisettavoitteet/palauta/{revisio}", method = POST)
     public ResponseEntity<LukiokoulutuksenYleisetTavoitteetDto> palautaYleisetTavoitteet(
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("revisio") final int revisio) {
-
         LukiokoulutuksenYleisetTavoitteetDto dto = perusteet.palautaYleisetTavoitteet(perusteId, revisio);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
