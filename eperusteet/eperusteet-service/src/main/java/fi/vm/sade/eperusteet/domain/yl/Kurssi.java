@@ -25,6 +25,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -46,6 +47,7 @@ public class Kurssi extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
+    @NotNull
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "nimi_id", nullable = false)

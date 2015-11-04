@@ -26,6 +26,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -46,6 +48,7 @@ public class Lukiokurssi extends Kurssi {
 
     @Getter
     @Setter
+    @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private LukiokurssiTyyppi tyyppi;
@@ -58,18 +61,21 @@ public class Lukiokurssi extends Kurssi {
 
     @Getter
     @Setter
+    @Valid
     @JoinColumn(name = "tavoitteet_id", nullable = true)
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tavoitteet;
 
     @Getter
     @Setter
+    @Valid
     @JoinColumn(name = "keskeinen_sisalto_id", nullable = true)
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa keskeinenSisalto;
 
     @Getter
     @Setter
+    @Valid
     @JoinColumn(name = "tavoitteet_ja_keskeinen_sisalto_id", nullable = true)
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tavoitteetJaKeskeinenSisalto;

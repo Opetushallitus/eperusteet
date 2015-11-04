@@ -69,23 +69,27 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
+    @Valid
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tehtava;
 
     @Getter
     @Setter
+    @Valid
     @JoinColumn(name = "tavoitteet_id", nullable = true)
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tavoitteet;
 
     @Getter
     @Setter
+    @Valid
     @JoinColumn(name = "arviointi_id", nullable = true)
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa arviointi;
 
     @Getter
     @Setter
+    @ValidHtml
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "pakollinen_kurssi_kuvaus", nullable = true)
@@ -93,6 +97,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
+    @ValidHtml
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "syventava_kurssi_kuvaus", nullable = true)
@@ -100,6 +105,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
+    @ValidHtml
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "soveltava_kurssi_kuvaus", nullable = true)
