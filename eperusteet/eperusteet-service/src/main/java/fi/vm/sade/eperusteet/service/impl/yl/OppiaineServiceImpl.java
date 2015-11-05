@@ -446,15 +446,12 @@ public class OppiaineServiceImpl implements OppiaineService {
                 .map(OppiaineJarjestysDto::getOppiaineId).collect(toSet()));
         Map<Long, Oppiaine> byId = oppiaineRepository.findAll(oppiaineIds).stream().collect(toMap(Oppiaine::getId, o -> o));
         dtosById.values().stream().sorted(comparing(OppiaineJarjestysDto::getOppiaineId, nullsFirst(naturalOrder()))).forEach(dto -> {
-            Oppiaine oa = found(lookupOrRestoreOppiaine(perusteId, dto.getId(), tryRestoreFromRevision, byId, sisalto),
-                    inLukioPeruste(perusteId),
-                    () -> new NotExistsException("No Oppiaine found in lukioperuste by id="+dto.getId()));
+            Oppiaine oa = lookupOrRestoreOppiaine(perusteId, dto.getId(), tryRestoreFromRevision, byId, sisalto);
             oppiaineRepository.lock(oa);
             oa.setJnro(dto.getJarjestys());
             if (!oa.isKoosteinen() && dto.getOppiaineId() != null) {
                 oa.setOppiaineForce(found(lookupOrRestoreOppiaine(perusteId, dto.getOppiaineId(),
-                                tryRestoreFromRevision, byId, sisalto),
-                        inLukioPeruste(perusteId).and(Oppiaine::isKoosteinen),
+                                tryRestoreFromRevision, byId, sisalto), Oppiaine::isKoosteinen,
                         () -> new NotExistsException("No koosteinen Oppiaine found as parent in peruste "
                                 + " by id="+dto.getOppiaineId())));
             } else {
@@ -463,7 +460,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         });
     }
 
-    private Optional<Oppiaine> lookupOrRestoreOppiaine(long perusteId, Long id, Integer tryRestoreFromRevision,
+    private Oppiaine lookupOrRestoreOppiaine(long perusteId, Long id, Integer tryRestoreFromRevision,
                                    Map<Long, Oppiaine> byId,
                                    LukiokoulutuksenPerusteenSisalto sisalto) {
         if (tryRestoreFromRevision != null && byId.get(id) == null) {
@@ -473,23 +470,25 @@ public class OppiaineServiceImpl implements OppiaineService {
                             +" to restore from Lukioperuste at revision="+tryRestoreFromRevision));
             LukioOppiaineUpdateDto lukioOppiaine = mapper.map(oldOppiaine, new LukioOppiaineUpdateDto());
             if (oldOppiaine.getOppiaine() != null) {
-                lukioOppiaine.setOppiaine(lookupOrRestoreOppiaine(perusteId, oldOppiaine.getOppiaine().getId(),
-                        tryRestoreFromRevision,
-                        byId, sisalto).transform(oa -> new EntityReference(oa.getId())));
+                lukioOppiaine.setOppiaine(of(new EntityReference(
+                        lookupOrRestoreOppiaine(perusteId, oldOppiaine.getOppiaine().getId(),
+                                tryRestoreFromRevision, byId, sisalto).getId())));
             }
             Oppiaine newOppiaine = saveOppiaine(lukioOppiaine);
             if (newOppiaine.getOppiaine() == null) {
                 sisalto.addOppiaine(newOppiaine);
-                newOppiaine.getLukioRakenteet().add(sisalto.getOpetussuunnitelma());
+                // NOTE: would cause duplicates here but this reference is not visible (don't check it)
+                //newOppiaine.getLukioRakenteet().add(sisalto.getOpetussuunnitelma());
             }
             oppiaineRepository.flush();
             Long newId = newOppiaine.getId();
             Oppiaine newOppinaine = found(oppiaineRepository.findOne(newId));
             byId.put(id, newOppinaine);
             byId.put(newId, newOppinaine); // new id differs
-            return of(newOppinaine);
+            return newOppinaine;
         }
-        return fromNullable(byId.get(id));
+        return found(byId.get(id), inLukioPeruste(perusteId),
+                () -> new NotExistsException("No Oppiaine found in lukioperuste by id="+id));
     }
 
     private static final String OPPIAINETTA_EI_OLE = "Pyydettyä oppiainetta ei ole";
