@@ -30,6 +30,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OppaineKurssiTreeStructureDto {
+    private String kommentti;
     private List<LukiokurssiOppaineMuokkausDto> kurssit = new ArrayList<>();
     private List<OppiaineJarjestysDto> oppiaineet = new ArrayList<>();
 }

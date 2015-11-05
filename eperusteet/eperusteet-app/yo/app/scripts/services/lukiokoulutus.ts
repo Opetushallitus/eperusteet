@@ -340,7 +340,7 @@ angular.module('eperusteApp')
     /**
      * @param tree root node
      */
-    var updateOppiaineKurssiStructure = function(tree, liittamattomatKurssit) {
+    var updateOppiaineKurssiStructure = function(tree, liittamattomatKurssit, kommentti) {
       var d = $q.defer();
       var chain = _(tree).flattenTree(function(node) {
             var kurssiJarjestys = 1,
@@ -385,6 +385,7 @@ angular.module('eperusteApp')
             }).values()
             .value()
         };
+      update.kommentti = kommentti;
       $log.info('Update stucture:', update);
       delete kurssitCache[LukiokoulutusService.getPerusteId()];
       LukioOppiaineKurssiRakenne.updateStructure({perusteId: LukiokoulutusService.getPerusteId()},

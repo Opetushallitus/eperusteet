@@ -526,9 +526,9 @@ angular.module('eperusteApp')
         setCollapseForAll(false);
         updateEditMode(true);
       },
-      save: function() {
+      save: function(kommentti) {
         LukioKurssiService.updateOppiaineKurssiStructure($scope.treeRoot,
-          $scope.liittamattomatKurssit).then($state.reload);
+          $scope.liittamattomatKurssit, kommentti).then($state.reload);
       },
       cancel: function() {
         Lukitus.vapauta().then($state.reload);

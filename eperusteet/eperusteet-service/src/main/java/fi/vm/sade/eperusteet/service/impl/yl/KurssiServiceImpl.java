@@ -295,6 +295,7 @@ public class KurssiServiceImpl implements KurssiService {
             lukiokurssiRepository.lock(kurssi, false);
             mergeOppiaineet(perusteId, kurssi, kurssiDto.getOppiaineet());
         });
+        rakenneRepository.setRevisioKommentti(structure.getKommentti());
         rakenne.setMuokattu(new Date());
         rakenneRepository.flush();
     }
