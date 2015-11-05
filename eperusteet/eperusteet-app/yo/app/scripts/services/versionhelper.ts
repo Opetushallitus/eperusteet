@@ -53,6 +53,7 @@ angular.module('eperusteApp')
         case 'rakenne':             RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, handle); break;
         case 'lukioyleisettavoitteet': LukioYleisetTavoitteetService.getVersiot().then(handle);     break;
         case 'lukioaihekokonaisuudet': LukioAihekokonaisuudetService.getAihekokonaisuudetYleiskuvausVersiot().then(handle); break;
+        case 'lukioaihekokonaisuus': LukioAihekokonaisuudetService.getAihekokonaisuusVersiot(tunniste.id) .then(handle); break;
         case 'lukiokurssi':          LukioKurssiService.listVersions(tunniste.id, cb).then(handle); break;
         case 'lukiooppiaine':        LukioOppiaineService.listVersions(tunniste.id, cb).then(handle);break;
         case 'lukiorakenne':         LukioKurssiService.listRakenneVersions(cb).then(handle); break;
