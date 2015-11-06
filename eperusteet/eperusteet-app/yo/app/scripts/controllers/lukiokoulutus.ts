@@ -64,6 +64,29 @@ angular.module('eperusteApp')
       });
     }, true);
 
+    $scope.$watch('peruste.sisalto', function () {
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
+        switch (lapsi.perusteenOsa.osanTyyppi) {
+          case 'tekstikappale':
+            lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
+                                      suoritustapa: 'lukiokoulutus',
+                                      perusteenOsaViiteId: lapsi.id,
+                                      versio: ''
+                                      });
+            break;
+          case 'opetuksenyleisettavoitteet':
+            lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: 'opetuksen_yleiset_tavoitteet'});
+                break;
+          case 'aihekokonaisuudet':
+            lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: 'aihekokonaisuudet'});
+            break;
+          case 'lukioopetussuunnitelmarakenne':
+            lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: 'oppiaineet_oppimaarat'});
+            break;
+        }
+      });
+    }, true);
+
     // TODO käytä samaa APIa kuin sivunavissa, koko sisältöpuu kerralla
     _.each(LukiokoulutusService.sisallot, function (item) {
       var data = {
