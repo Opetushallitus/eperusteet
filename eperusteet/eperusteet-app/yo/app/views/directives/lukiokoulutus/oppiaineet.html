@@ -81,6 +81,24 @@
         <generic-tree tree-provider="liittamattomatOsatProvider"
                       ui-sortable-config="liittamattomatKurssitConfig"></generic-tree>
       </div>
+      <div ng-show="!treehelpers.editMode" kaanna="lukio-liitetyt-kurssit-ohje" />
+      <div ng-if="treehelpers.editMode">
+
+        <h4 kaanna="lukio-liitetyt-kurssit"></h4>
+
+        <div class="tree-con">
+          <div class="search-field-container">
+            <rajaus size="small" classes="puun-rajaus" model="treehelpers.liitettyjenHaku"
+                    callback="treeLiitettyjenHaku()"
+                    placeholder="{{ 'lukio-etsi-liitetyista-kursseista' || kaanna }}"></rajaus>
+          </div>
+        </div>
+        <div ui-sortable="liitetytKurssitConfig" ng-model="liitetytKurssit"
+             class="recursivetreeLiittamattomat">
+          <generic-tree tree-provider="liitetytOsatProvider"
+                        ui-sortable-config="liitetytKurssitConfig"></generic-tree>
+        </div>
+      </div>
     </div>
   </div>
   <div style="clear: both;">

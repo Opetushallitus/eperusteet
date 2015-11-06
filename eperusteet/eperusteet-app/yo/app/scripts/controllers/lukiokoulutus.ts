@@ -251,6 +251,7 @@ angular.module('eperusteApp')
     $scope.treehelpers = {
       haku: '',
       liittamattomienHaku: '',
+      liitettyjenHaku: '',
       defaultCollapsed: false,
       editMode: false
     };
@@ -360,7 +361,6 @@ angular.module('eperusteApp')
     }
     function piilotaHaunPerusteella(haku) {
       return function(item) {
-        $log.info('Haetaan ', item);
         item.$$hide = !matchesHaku(item, haku);
         if (!item.$$hide) {
           parents(item, function(i) {
@@ -371,14 +371,18 @@ angular.module('eperusteApp')
     }
     $scope.treeHaku = function() {
       $timeout(function() {
-        $log.info('Haku ', $scope.treehelpers.haku);
         updateTree(piilotaHaunPerusteella($scope.treehelpers.haku));
       });
     };
     $scope.treeLiittamattomienHaku = function() {
       $timeout(function() {
-        $log.info('Liittämättömien haku ', $scope.treehelpers.liittamattomienHaku);
         _.each($scope.liittamattomatKurssit, piilotaHaunPerusteella($scope.treehelpers.liittamattomienHaku));
+      });
+    };
+
+    $scope.treeLiitettyjenHaku = function() {
+      $timeout(function() {
+        _.each($scope.liitetytKurssit, piilotaHaunPerusteella($scope.treehelpers.liitettyjenHaku));
       });
     };
 
@@ -398,17 +402,24 @@ angular.module('eperusteApp')
       if (!node) {
         return false;
       }
-      //$log.info('accept move', node, 'to', to);
-      return (node.dtype === 'oppiaine' && to.root && !node.koosteinen) ||
+      //Tarkistetaan, että onko kurssi jo kyseisen oppiaineen/oppimäärän kurssi. Jos on, ei sallita
+      if( node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen ) {
+        var exists = false;
+        _.each(to.kurssit, function(kurssi) {
+          if( kurssi.id === node.id ) {
+            exists = true;
+          }
+        });
+      }
+
+      return ((node.dtype === 'oppiaine' && to.root && !node.koosteinen) ||
         (node.dtype === 'oppiaine' && to.dtype === 'oppiaine' && to.koosteinen && !node.koosteinen) ||
         (node.dtype === 'oppiaine' && to.root) ||
-        (node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen);
+        (node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen)) && !exists;
     };
     var moved = function(node, to, index) {
-      $log.info('moved', node, 'to', to);
       if (node.dtype === 'kurssi'  && to.dtype === 'oppiaine') {
         var from = node.$$nodeParent;
-        $log.info('moved kurssi to oppiaine from ', from);
         node.oppiaineet.push({
           oppiaineId: to.id,
           nimi: to.nimi,
@@ -420,11 +431,11 @@ angular.module('eperusteApp')
           });
           _.remove(from.kurssit, node);
         }
+
         to.kurssit.push(node);
       }
     };
     var removeKurssiFromOppiaine = function(node) {
-      $log.info('remove', node);
       var oppiaine = node.$$nodeParent;
       node.oppiaineet = _.filter(node.oppiaineet, function(oa) {
         return oa.oppiaineId !== oppiaine.id;
@@ -439,6 +450,7 @@ angular.module('eperusteApp')
     $scope.oppiaineet = [];
     $scope.kurssit = [];
     $scope.liittamattomatKurssit = [];
+    $scope.liitetytKurssit = [];
     $scope.gotoNode = function(node) {
       if (node.dtype === 'kurssi' || !node.dtype) {
         return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
@@ -472,7 +484,6 @@ angular.module('eperusteApp')
             moved(from, to, ui.item.sortable.index);
           } else {
             if (!angular.element(ui.item.context).hasClass('liittamaton-kurssi')) {
-              $log.info('cancel main');
               ui.item.sortable.cancel();
             }
           }
@@ -483,7 +494,6 @@ angular.module('eperusteApp')
             listItem = angular.element(dropTarget).closest('.recursivetree'),
             parentScope = listItem ? listItem.scope() : null;
         if (parentScope && parentScope.node) {
-          $log.info('change', ui.item.sortable.model, parentScope.node);
           if (acceptMove(ui.item.sortable.model, parentScope.node)) {
             angular.element(dropTarget).addClass('is-draggable-into');
           } else {
@@ -500,7 +510,6 @@ angular.module('eperusteApp')
       update: function(e,ui) {
         handleMove(e,ui, function(from, to) {
           if (!acceptMove(from, to)) {
-            $log.info('cancel source');
             ui.item.sortable.cancel();
           } else {
             moved(from, to, ui.item.sortable.index);
@@ -509,10 +518,26 @@ angular.module('eperusteApp')
       }
     };
 
+    $scope.liitetytKurssitConfig = {
+      placeholder: 'placeholder',
+      handle: '.treehandle',
+      cursorAt: { top : 2, left: 2 },
+      update: function(e,ui) {
+        handleMove(e,ui, function(from, to) {
+          if (!acceptMove(from, to)) {
+            ui.item.sortable.cancel();
+          } else {
+            moved(from, to, ui.item.sortable.index);
+            //Takaisin listaan, josta siirrettiin
+            $scope.liitetytKurssit.push(from);
+          }
+        });
+      }
+    };
+
     var initTree = function () {
       var oppiaineet = _.cloneDeep($scope.oppiaineet),
         kurssit = _.cloneDeep($scope.kurssit);
-      //$log.info('Kurssit: ', kurssit, "oppiaineet:", oppiaineet);
       $scope.treeRoot.kurssit = [];
       $scope.treeRoot.oppimaarat = oppiaineet;
       _.each(oppiaineet, function(oppiaine) {
@@ -595,10 +620,8 @@ angular.module('eperusteApp')
       };
       resolve({
         root: function() {
-          $log.info('Set root.');
           return $q(function (resolveRoot) {
             if (rakenneProvider) {
-              $log.info('VERSIO', $scope.versio);
               rakenneProvider.then(function(rakenne) {
                 $scope.kurssit = rakenne.kurssit;
                 $scope.oppiaineet = rakenne.oppiaineet;
@@ -609,6 +632,7 @@ angular.module('eperusteApp')
               LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function(oppiaineet) {
                 kurssitProvider.then(function (kurssit) {
                   $scope.kurssit = kurssit;
+                  $scope.liitetytKurssit = kurssit;
                   $scope.oppiaineet = oppiaineet;
                   initTree();
                   resolveRoot($scope.treeRoot);
@@ -679,7 +703,6 @@ angular.module('eperusteApp')
       resolve({
         root:function() {
           return $q(function (resolveRoot) {
-            $log.info('setRoot kurssit');
             kurssitProvider.then(function (kurssit) {
               $scope.liittamattomatKurssit = _.cloneDeep(_.filter(kurssit, function (k) {
                 return k.oppiaineet.length === 0;
@@ -689,6 +712,55 @@ angular.module('eperusteApp')
               });
               resolveRoot({
                 lapset: $scope.liittamattomatKurssit
+              });
+            });
+          });
+        },
+        children: function(node) {
+          if (!node) {
+            return $q.when([]);
+          }
+          return $q.when(node.lapset || []);
+        },
+        hidden: function(node) {
+          if (!node) {
+            return true;
+          }
+          return node.$$hide
+        },
+        template: function(n) {
+          return templateAround('<div class="puu-node kurssi-node">' + treehandleTemplate() +
+            kurssiColorbox() + timestampTemplate() +
+            '   <div class="node-content left">' + kurssiName() + '</div>' +
+            '</div>');
+        },
+        useUiSortable: function() {
+          return !$scope.treehelpers.editMode
+        },
+        extension: function(node, scope) {
+          scope.goto = function(node) {
+            $scope.gotoNode(node);
+          };
+        }
+      });
+    });
+
+    $scope.liitetytOsatProvider = $q(function(resolve) {
+      var templateAround = function(tmpl) {
+        return '<div class="liittamaton-kurssi recursivetree tree-list-item bubble-osa empty-item" ng-show="!node.$$hide">'+tmpl+'</div>';
+      };
+      resolve({
+        root:function() {
+          return $q(function (resolveRoot) {
+            kurssitProvider.then(function (kurssit) {
+              $scope.liitetytKurssit = _.cloneDeep(_.filter(kurssit, function (k) {
+                return k.oppiaineet.length != 0;
+              }));
+              _.each($scope.liitetytKurssit, function(kurssi) {
+                kurssi.dtype = 'kurssi';
+              });
+              resolveRoot({
+                lapset: $scope.liitetytKurssit
               });
             });
           });
