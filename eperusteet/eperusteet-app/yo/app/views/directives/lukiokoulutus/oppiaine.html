@@ -45,11 +45,6 @@
           <div class="addon"><button class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button></div>
         </div>
 
-        <label for="jnro-input" class="header" kaanna="'jarjestysnumero'"></label>
-        <div class="fixed-group">
-          <input class="form-control" type="number" id="jnro-input" ng-model="editableModel.jnro">
-        </div>
-
         <div ng-show="!editableModel._oppiaine">
           <label class="header" kaanna="'oppimaarat'"></label>
           <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="false">
