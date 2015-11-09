@@ -17,12 +17,16 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('LukiokurssiModifyHelpers', function (Koodisto, MuokkausUtils, $translate, $filter, Kieli, Kaanna) {
+  .service('LukiokurssiModifyHelpers', function (Koodisto, MuokkausUtils, $translate, $filter,
+                                                 Kieli, Kaanna, $log, $rootScope) {
     var openKoodisto = function (kurssi) {
       return Koodisto.modaali(function (koodisto) {
         MuokkausUtils.nestedSet(kurssi, 'koodiUri', ',', koodisto.koodiUri);
         MuokkausUtils.nestedSet(kurssi, 'koodiArvo', ',', koodisto.koodiArvo);
         MuokkausUtils.nestedSet(kurssi, 'nimi', ',', koodisto.nimi);
+        kurssi.lokalisoituKoodi = {};
+        kurssi.lokalisoituKoodi[Kieli.getSisaltokieli()] = koodisto.koodiArvo;
+        $rootScope.$broadcast('notifyCKEditor');
       }, {
         tyyppi: function () {
           return 'lukionkurssit';

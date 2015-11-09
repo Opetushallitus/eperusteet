@@ -22,7 +22,9 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
+import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LokalisoitavaOsaDto;
 import fi.vm.sade.eperusteet.repository.LukioOpetussuunnitelmaRakenneRepository;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
@@ -122,7 +124,7 @@ public class KurssiServiceImpl implements KurssiService {
         List<LukiokurssiListausDto> kurssit = rakenne.getKurssit().stream()
                 .sorted(comparing(k -> fromNullable(k.getKoodiArvo()).or("")))
                 .map(kurssi -> withOppiaineet(kurssi, new LukiokurssiListausDto(kurssi.getId(), kurssi.getTyyppi(),
-                        kurssi.getKoodiArvo(), kurssi.getNimi().getId(),
+                        kurssi.getKoodiArvo(), fromNullable(kurssi.getLokalisoituKoodi()).transform(TekstiPalanen::getId).orNull(), kurssi.getNimi().getId(),
                         fromNullable(kurssi.getKuvaus()).transform(TekstiPalanen::getId).orNull(),
                         kurssi.getMuokattu()))).collect(toList());
         return lokalisointiService.lokalisoi(kurssit);

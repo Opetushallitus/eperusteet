@@ -242,7 +242,7 @@ angular.module('eperusteApp')
       controller: 'LukioOppiaineKurssiPuuController'
     };
   })
-  .controller('LukioOppiaineKurssiPuuController', function($scope, $stateParams, $q, $translate,
+  .controller('LukioOppiaineKurssiPuuController', function($scope, $stateParams, $q, $translate, Kaanna, Kieli,
                                                            $rootScope, $timeout, $log, Lukitus, Notifikaatiot,
                                                            LukioKurssiService, LukiokoulutusService, VersionHelper,
                                                            $state, Editointikontrollit, Kommentit, KommentitBySuoritustapa) {
@@ -318,22 +318,40 @@ angular.module('eperusteApp')
       if (!to) {
         return true;
       }
-      if (!txt) {
+      if (!txt.length) {
         return false;
       }
-      return txt.toLowerCase().indexOf(to.toLowerCase()) !== -1;
+      var words = to.toLowerCase().split(/ /);
+      var found = {};
+      for (var part in txt) {
+        if (!txt[part]) {
+          continue;
+        }
+        var lower = txt[part].toLowerCase();
+        for (var i in words) {
+          if (words[i] && lower.indexOf(words[i]) !== -1) {
+            found[i] = true;
+          }
+        }
+      }
+      for (var i = 0; i < words.length; ++i) {
+        if (!found[i]) {
+          return false;
+        }
+      }
+      return true;
     }
     function matchesHaku(node, haku) {
       if (!haku) {
         return true;
       }
       var nimi = node.nimi,
-          koodiArvo = node.koodiArvo;
+          koodiArvo = node.koodiArvo,
+          lokalisoituKoodi = Kaanna.kaanna(node.lokalisoituKoodi);
       if (_.isObject(node.nimi)) {
-        nimi = nimi[$translate.use().toLowerCase()];
+        nimi = nimi[Kieli.getSisaltokieli().toLowerCase()];
       }
-      return textMatch(nimi, haku) ||
-            textMatch(koodiArvo, haku);
+      return textMatch([nimi, koodiArvo, lokalisoituKoodi], haku);
     }
     function parents(node, fn) {
       node = node.$$nodeParent;
@@ -604,7 +622,7 @@ angular.module('eperusteApp')
       return '  <span class="colorbox kurssi-tyyppi {{node.tyyppi.toLowerCase()}}"></span>';
     }
     function kurssiName() {
-      var name = '<span ng-bind="(node.nimi | kaanna) + (node.koodiArvo ? \' (\'+node.koodiArvo+\')\' : \'\')" title="{{node.nimi | kaanna}} {{node.koodiArvo ? \'(\'+node.koodiArvo+\')\' : \'\'}}"></span>';
+      var name = '<span ng-bind="(node.nimi | kaanna) + ((node.lokalisoituKoodi | kaanna) ? \' (\'+(node.lokalisoituKoodi | kaanna)+\')\' : \'\')" title="{{node.nimi | kaanna}} {{(node.lokalisoituKoodi | kaanna) ? \'(\'+(node.lokalisoituKoodi | kaanna)+\')\' : \'\'}}"></span>';
       if (!$scope.treehelpers.editMode) {
         name = '<a ng-click="goto(node)">'+name+'</a>';
       }
@@ -632,7 +650,6 @@ angular.module('eperusteApp')
               LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function(oppiaineet) {
                 kurssitProvider.then(function (kurssit) {
                   $scope.kurssit = kurssit;
-                  $scope.liitetytKurssit = kurssit;
                   $scope.oppiaineet = oppiaineet;
                   initTree();
                   resolveRoot($scope.treeRoot);

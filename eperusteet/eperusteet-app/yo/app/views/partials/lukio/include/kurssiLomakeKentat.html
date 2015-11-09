@@ -22,10 +22,15 @@
   </select>
 </div>
 
-<label for="koodi-input" class="header" kaanna="kurssi-koodi-header"></label>
+<label for="koodi-input" class="header" kaanna="kurssi-koodi-header" vaaditaan></label>
 <div class="fixed-group">
   <input id="koodi-input" class="form-control" type="text" ng-model="kurssi.koodiArvo" ng-disabled="true"/>
   <div class="addon"><button role="link" class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button></div>
+</div>
+
+<label for="lokalisoitu-koodi-input" class="header" kaanna="'kurssi-lokalisoitu-koodi-header'" vaaditaan></label>
+<div class="fixed-group">
+  <input id="lokalisoitu-koodi-input" class="form-control" ng-model="kurssi.lokalisoituKoodi" slocalized required />
 </div>
 
 <label for="nimi-input" class="header" kaanna="'kurssi-nimi-header'" vaaditaan></label>

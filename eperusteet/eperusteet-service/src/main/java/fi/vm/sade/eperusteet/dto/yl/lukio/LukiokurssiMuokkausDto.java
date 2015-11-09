@@ -43,6 +43,7 @@ public class LukiokurssiMuokkausDto implements Serializable, IdHolder {
     private LokalisoituTekstiDto nimi;
     private String koodiArvo;
     private String koodiUri;
+    private LokalisoituTekstiDto lokalisoituKoodi;
     private LokalisoituTekstiDto kuvaus;
     private TekstiOsaDto tavoitteet;
     private TekstiOsaDto keskeinenSisalto;

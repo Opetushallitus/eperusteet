@@ -55,6 +55,14 @@ public class Lukiokurssi extends Kurssi {
 
     @Getter
     @Setter
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
+    @JoinColumn(name = "lokalisoitava_koodi_id", nullable = true)
+    @OneToOne(cascade = CascadeType.ALL)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen lokalisoituKoodi;
+
+    @Getter
+    @Setter
     @JoinColumn(name = "rakenne_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private LukioOpetussuunnitelmaRakenne opetussuunnitelma;
@@ -89,6 +97,9 @@ public class Lukiokurssi extends Kurssi {
         Lukiokurssi kopio = new Lukiokurssi();
         kopio.tyyppi = this.tyyppi;
         kopio.nimi = this.nimi;
+        kopio.koodiArvo = this.koodiArvo;
+        kopio.koodiUri = this.koodiUri;
+        kopio.lokalisoituKoodi = this.lokalisoituKoodi;
         kopio.kuvaus = this.kuvaus;
         kopio.tavoitteet = this.tavoitteet;
         kopio.keskeinenSisalto = this.keskeinenSisalto;

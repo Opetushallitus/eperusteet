@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterById;
+
 /**
  * User: tommiratamaa
  * Date: 29.9.15
@@ -39,6 +41,7 @@ public class LukiokurssiListausDto implements Serializable, Lokalisoitava {
     private List<KurssinOppiaineNimettyDto> oppiaineet = new ArrayList<>();
     private Long id;
     private String koodiArvo;
+    private LokalisoituTekstiDto lokalisoituKoodi;
     private LukiokurssiTyyppi tyyppi;
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto kuvaus;
@@ -48,17 +51,19 @@ public class LukiokurssiListausDto implements Serializable, Lokalisoitava {
     }
 
     public LukiokurssiListausDto(Long id, LukiokurssiTyyppi tyyppi,
-                                 String koodiArvo, Long nimiId, Long kuvausId, Date muokattu) {
+                                 String koodiArvo, Long lokalisoituKoodiId,
+                                 Long nimiId, Long kuvausId, Date muokattu) {
         this.id = id;
         this.tyyppi = tyyppi;
         this.koodiArvo = koodiArvo;
-        this.nimi = LokalisoituTekstiDto.localizeLaterById(nimiId);
-        this.kuvaus = LokalisoituTekstiDto.localizeLaterById(kuvausId);
+        this.lokalisoituKoodi = localizeLaterById(lokalisoituKoodiId);
+        this.nimi = localizeLaterById(nimiId);
+        this.kuvaus = localizeLaterById(kuvausId);
         this.muokattu = muokattu;
     }
 
     @Override
     public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {
-        return Lokalisoitava.of(nimi, kuvaus).and(oppiaineet).lokalisoitavatTekstit();
+        return Lokalisoitava.of(nimi, lokalisoituKoodi, kuvaus).and(oppiaineet).lokalisoitavatTekstit();
     }
 }

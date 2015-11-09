@@ -41,6 +41,7 @@ public class LukiokurssiJulkisetTiedotDto implements Serializable, Lokalisoitava
     private final UUID tunniste;
     private final String koodiUri;
     private final String koodiArvo;
+    private final LokalisoituTekstiDto lokalisoituKoodi;
     private final LukiokurssiTyyppi tyyppi;
     private final LokalisoituTekstiDto nimi;
     private final LokalisoituTekstiDto kuvaus;
@@ -49,7 +50,8 @@ public class LukiokurssiJulkisetTiedotDto implements Serializable, Lokalisoitava
     private final LokalisoitavaOsaDto tavoitteetJaKeskeisetSisallot;
 
     public LukiokurssiJulkisetTiedotDto(Long id, Long oppiaineId, Integer jarjestys,
-                                        UUID tunniste, String koodiUri, String koodiArvo, LukiokurssiTyyppi tyyppi,
+                                        UUID tunniste, String koodiUri, String koodiArvo,
+                                        Long lokalisoituKoodiId, LukiokurssiTyyppi tyyppi,
                                         Long nimiId, Long kuvausId,
                                         Long tavoitteetOtsikkoId, Long tavoitteetTekstiId,
                                         Long sisallotOtsikkoId, Long sisallotTekstiId,
@@ -60,6 +62,7 @@ public class LukiokurssiJulkisetTiedotDto implements Serializable, Lokalisoitava
         this.tunniste = tunniste;
         this.koodiUri = koodiUri;
         this.koodiArvo = koodiArvo;
+        this.lokalisoituKoodi = localizeLaterById(lokalisoituKoodiId);
         this.tyyppi = tyyppi;
         this.nimi = localizeLaterById(nimiId);
         this.kuvaus = localizeLaterById(kuvausId);
@@ -70,7 +73,8 @@ public class LukiokurssiJulkisetTiedotDto implements Serializable, Lokalisoitava
 
     @Override
     public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {
-        return Lokalisoitava.of(nimi, kuvaus).and(tavoitteet, keskeisetSisallot, tavoitteetJaKeskeisetSisallot)
+        return Lokalisoitava.of(nimi, kuvaus, lokalisoituKoodi)
+                .and(tavoitteet, keskeisetSisallot, tavoitteetJaKeskeisetSisallot)
                 .lokalisoitavatTekstit();
     }
 }

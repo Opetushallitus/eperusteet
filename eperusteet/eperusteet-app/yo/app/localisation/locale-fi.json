@@ -931,7 +931,7 @@
     "kurssi-tyyppi-selite-pakollinen": "Pakollinen",
     "kurssi-tyyppi-selite-valtakunnallinen_soveltava": "Soveltava",
     "kurssi-tyyppi-selite-valtakunnallinen_syventava": "Syventävä",
-    "kurssi-koodi-header": "Koodi",
+    "kurssi-koodi-header": "Koodistokoodi",
     "kurssi-sisallot-header": "Sisällöt",
     "kurssi-tavoitteet-header": "Tavoitteet",
     "kurssi-kuvaus-header": "Kuvaus",
@@ -946,7 +946,8 @@
     "lukio-etsi-liitetyista-kursseista": "Etsi liitetyistä kursseista...",
     "lukio-etsi-oppiaineista-ja-kursseista": "Etsi...",
     "kurssi-title": "Kurssi",
-    "kurssi-koodi": "Koodi",
+    "kurssi-koodi": "Koodistokoodi",
+    "kurssi-lokalisoitu-koodi": "Koodi",
     "kurssi-osa-tavoitteet": "Tavoitteet",
     "kurssi-osa-keskeinenSisalto": "Keskeiset sisällöt",
     "kurssi-osa-tavoitteetJaKeskeinenSisalto": "Tavoitteet ja keskeiset sisällöt",
@@ -978,7 +979,8 @@
     "lukiooppiaine-poistettu": "Oppiaine poistettu onnistuneesti",
 
     "kurssi-title": "Kurssi",
-    "kurssi-koodi": "Koodi",
+    "kurssi-koodi": "Koodistokoodi",
+    "kurssi-lokalisoitu-koodi-header": "Koodi",
     "muokkaa-kurssia": "Muokkaa kurssia",
     "muokkaa-kurssia-action": "Tallenna muutokset",
 
