@@ -427,7 +427,8 @@
     "muokkaus-tutkinnon-osan-koodi-header": "Koodi",
     "muokkaus-tutkinnon-osan-tavoitteet-header": "Tavoitteet",
     "muokkaus-tutkinnon-osan-tavoitteet-placeholder": "Kirjoita tähän tutkinnon osan tavoitteet",
-    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-header": "Ammattitaitovaatimukset",
+    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-teksti-header": "Ammattitaitovaatimukset tekstinä",
+    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-taulukko-header": "Ammattitaitovaatimukset taulukkona",
     "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-placeholder": "Listaa tähän tutkinnon osan ammattitaitovaatimukset",
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-header": "Ammattitaidon osoittamistavat",
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-placeholder": "Listaa tähän ammattitaidon osoittamistavat",
@@ -500,6 +501,11 @@
     "opintoluokitus": "Opintoluokitus",
     "tavoitteet": "Tavoitteet",
     "ammattitaitovaatimukset": "Ammattitaitovaatimukset",
+    "ammattitaito-uusi-kohde": "Lisää kohdealue",
+    "ammattitaito-uusi-kohdealue-placeholder": "Kohdealueen nimi",
+    "ammattitaito-uusi-kohde-placeholder": "Kohteen nimi (ei pakollinen)",
+    "ammattitaito-uusi-vaatimus-placeholder": "Ammattitaitovaatimuksen teksti",
+    "ammattitaito-ammattitaitovaatimuskoodi-placeholder": "Ammattitaitovaatimuskoodi",
 
     "lisaa-kommentti": "Lisää kommentti",
 
@@ -542,6 +548,7 @@
     "siirtymaAlkaa": "Siirtymäaika alkaa",
     "ei-päättymis-päivämäärää": "Ei määritetty",
     "ei-asetettu": "Ei asetettu",
+    "siirtyman-paattyminen": "Siirtymäajan päättymisaika",
 
     "tekstisisällön-tuonti": "Tekstisisällön tuonti",
 

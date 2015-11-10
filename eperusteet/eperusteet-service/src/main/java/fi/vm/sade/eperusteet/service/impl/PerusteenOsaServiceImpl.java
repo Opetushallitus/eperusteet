@@ -18,6 +18,9 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohde;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
@@ -31,14 +34,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
-import fi.vm.sade.eperusteet.repository.OsaamistavoiteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
-import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
-import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
-import fi.vm.sade.eperusteet.repository.ValmaTelmaSisaltoRepository;
+import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
@@ -89,13 +85,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
 
     @Autowired
-    private ValmaTelmaSisaltoRepository valmaTelmaSisaltoRepository;
-
-    @Autowired
     private PerusteRepository perusteet;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private AmmattitaidonvaatimusRepository ammattitaidonvaatimusRepository;
 
     @Autowired
     @Dto
@@ -157,16 +153,33 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
-            ((TutkinnonOsa) updated).setOsaAlueet(createOsaAlueIfNotExist(((TutkinnonOsa) updated).getOsaAlueet()));
+            TutkinnonOsa tutkinnonOsa = (TutkinnonOsa) updated;
+            tutkinnonOsa.setOsaAlueet(createOsaAlueIfNotExist(tutkinnonOsa.getOsaAlueet()));
         }
         if ( current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
             throw new BusinessRuleViolationException("Vain korjaukset sallittu");
         }
+        if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
+            removeMissingFromCurrent(perusteenOsaRepo.findOne(perusteenOsaDto.getId()), updated);
+        }
+
         current.mergeState(updated);
         current = perusteenOsaRepo.save(current);
         notifyUpdate(current);
         mapper.map(current, perusteenOsaDto);
         return perusteenOsaDto;
+    }
+
+    private void removeMissingFromCurrent(PerusteenOsa current, PerusteenOsa updated) {
+
+        TutkinnonOsa tutkinnonOsa = (TutkinnonOsa) current;
+        TutkinnonOsa updatedTutkinnonOsa = (TutkinnonOsa) updated;
+
+        tutkinnonOsa.getAmmattitaitovaatimuksetLista().removeAll(updatedTutkinnonOsa.getAmmattitaitovaatimuksetLista());
+        for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : tutkinnonOsa.getAmmattitaitovaatimuksetLista()) {
+            ammattitaidonvaatimusRepository.delete( ammattitaitovaatimuksenKohdealue.getId() );
+        }
+
     }
 
     @Override
@@ -259,7 +272,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         List<Osaamistavoite> uudetTavoitteet = tallennaUudetOsaamistavoitteet(osaAlue.getOsaamistavoitteet());
 
         OsaAlue osaAlueTmp = mapper.map(osaAlue, OsaAlue.class);
-        osaAlueTmp.setValmaTelmaSisalto(valmaTelmaSisaltoRepository.save(osaAlueTmp.getValmaTelmaSisalto()));
         //osaAlueTmp.setOsaamistavoitteet(createOsaamistavoiteIfNotExist(osaAlueTmp.getOsaamistavoitteet()));
         osaAlueEntity.mergeState(osaAlueTmp);
         osaAlueEntity.getOsaamistavoitteet().addAll(uudetTavoitteet);
@@ -286,6 +298,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
     }
 
+    private List<AmmattitaitovaatimuksenKohdealue> connectAmmattitaitovaatimusListToOsaamistavoite(Osaamistavoite tavoite) {
+        for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : tavoite.getAmmattitaitovaatimuksetLista()) {
+            ammattitaitovaatimuksenKohdealue.connectAmmattitaitovaatimuksetToKohdealue( ammattitaitovaatimuksenKohdealue );
+        }
+        return tavoite.getAmmattitaitovaatimuksetLista();
+    }
+
     @Transactional(readOnly = false)
     private List<Osaamistavoite> tallennaUudetOsaamistavoitteet(List<OsaamistavoiteLaajaDto> osaamistavoitteet) {
         List<Osaamistavoite> uudet = new ArrayList<>();
@@ -300,7 +319,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             if (osaamistavoiteDto.isPakollinen() && (osaamistavoiteDto.getId() == null || osaamistavoiteDto.getId() < 0)) {
                 tempId = osaamistavoiteDto.getId();
                 osaamistavoiteDto.setId(null);
-                tallennettuPakollinenTavoite = osaamistavoiteRepository.save(mapper.map(osaamistavoiteDto, Osaamistavoite.class));
+                tallennettuPakollinenTavoite = mapper.map(osaamistavoiteDto, Osaamistavoite.class);
+                connectAmmattitaitovaatimusListToOsaamistavoite(tallennettuPakollinenTavoite);
+                tallennettuPakollinenTavoite = osaamistavoiteRepository.save( tallennettuPakollinenTavoite );
                 uudet.add(tallennettuPakollinenTavoite);
 
                 // käydään läpi valinnaiset ja asetetaan esitieto id kohdalleen.
@@ -322,7 +343,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             // Jos id >= 0, niin kyseessä oikea tietokanta id. Id:t < 0 ovat generoitu UI päässä.
             if (!osaamistavoiteDto.isPakollinen() && (osaamistavoiteDto.getId() == null || osaamistavoiteDto.getId() < 0)) {
                 osaamistavoiteDto.setId(null);
-                tallennettuPakollinenTavoite = osaamistavoiteRepository.save(mapper.map(osaamistavoiteDto, Osaamistavoite.class));
+
+                tallennettuPakollinenTavoite = mapper.map(osaamistavoiteDto, Osaamistavoite.class);
+                connectAmmattitaitovaatimusListToOsaamistavoite(tallennettuPakollinenTavoite);
+                tallennettuPakollinenTavoite = osaamistavoiteRepository.save( tallennettuPakollinenTavoite );
                 uudet.add(tallennettuPakollinenTavoite);
                 osaamistavoiteDtoItr.remove();
             }
@@ -331,20 +355,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         return uudet;
     }
 
-//    private List<Osaamistavoite> createOsaamistavoiteIfNotExist(List<Osaamistavoite> osaamistavoitteet) {
-//
-//        List<Osaamistavoite> osaamistavoiteTemp = new ArrayList<>();
-//        if (osaamistavoitteet != null) {
-//            for (Osaamistavoite osaamistavoite : osaamistavoitteet) {
-//                if (osaamistavoite.getId() == null) {
-//                    osaamistavoiteTemp.add(osaamistavoiteRepository.save(osaamistavoite));
-//                } else {
-//                    osaamistavoiteTemp.add(osaamistavoite);
-//                }
-//            }
-//        }
-//        return osaamistavoiteTemp;
-//    }
     @Override
     @Transactional(readOnly = true)
     public List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueet(Long id) {

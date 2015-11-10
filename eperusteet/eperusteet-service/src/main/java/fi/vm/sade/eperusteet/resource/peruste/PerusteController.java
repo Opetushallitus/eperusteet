@@ -23,6 +23,7 @@ import com.wordnik.swagger.annotations.ApiImplicitParams;
 import com.wordnik.swagger.annotations.ApiOperation;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -32,15 +33,19 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.util.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -103,7 +108,7 @@ public class PerusteController {
         @ApiImplicitParam(name = "siirtyma", dataType = "boolean", paramType = "query", defaultValue = "false", value = "hae myös siirtymäajalla olevat perusteet"),
         @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
         @ApiImplicitParam(name = "koulutusala", dataType = "string", paramType = "query", allowMultiple = true),
-        @ApiImplicitParam(name = "koulutustyyppi", dataType = "string", paramType = "query", allowMultiple = true, value="koulutustyyppi (koodistokoodi)"),
+        @ApiImplicitParam(name = "koulutustyyppi", dataType = "string", paramType = "query", allowMultiple = true, value = "koulutustyyppi (koodistokoodi)"),
         @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", defaultValue = "fi", value = "perusteen nimen kieli"),
         @ApiImplicitParam(name = "opintoala", dataType = "string", paramType = "query", allowMultiple = true, value = "opintoalakoodi"),
         @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
@@ -115,7 +120,7 @@ public class PerusteController {
         // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
         pquery.setTila(PerusteTila.VALMIS.toString());
         // Oletuksena älä palauta pohjia
-        if ( pquery.getPerusteTyyppi() == null ) {
+        if (pquery.getPerusteTyyppi() == null) {
             pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());
         }
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
@@ -134,8 +139,8 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
-        @PathVariable("perusteId") final long id,
-        @PathVariable("tutkintonimikeKoodiId") final Long tnkId) {
+            @PathVariable("perusteId") final long id,
+            @PathVariable("tutkintonimikeKoodiId") final Long tnkId) {
         service.removeTutkintonimikeKoodi(id, tnkId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -144,8 +149,8 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
-        @PathVariable("perusteId") final long id,
-        @RequestBody final TutkintonimikeKoodiDto tnk) {
+            @PathVariable("perusteId") final long id,
+            @RequestBody final TutkintonimikeKoodiDto tnk) {
         TutkintonimikeKoodiDto tutkintonimikeKoodi = service.addTutkintonimikeKoodi(id, tnk);
         return new ResponseEntity<>(tutkintonimikeKoodi, HttpStatus.OK);
     }
@@ -184,11 +189,17 @@ public class PerusteController {
         });
     }
 
+    @RequestMapping(value = "/{perusteId}/osaamisalakuvaukset", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "perusteen osaamisalojen kuvaukset koulutustarjontaa varten")
+    public ResponseEntity<Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>>> getOsaamisalat(@PathVariable("perusteId") final long id) {
+        return new ResponseEntity<>(service.getOsaamisalaKuvaukset(id), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/diaari", method = GET)
     @ResponseBody
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
-    })
+        @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),})
     @ApiOperation(value = "perusteen yksilöintietojen haku diaarinumerolla")
     public ResponseEntity<PerusteInfoDto> getByDiaari(@ApiIgnore final Diaarinumero diaarinumero) {
         PerusteInfoDto t = service.getByDiaari(diaarinumero);
@@ -202,7 +213,7 @@ public class PerusteController {
     @ResponseBody
     @ApiOperation(value = "perusteen kaikkien tietojen haku")
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
-        @PathVariable("perusteId") final long id) {
+            @PathVariable("perusteId") final long id) {
 
         return handleGet(id, 3600, new Supplier<PerusteKaikkiDto>() {
             @Override
@@ -216,8 +227,8 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public ResponseEntity<SuoritustapaDto> getSuoritustapa(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
 
         return handleGet(perusteId, 1, new Supplier<SuoritustapaDto>() {
             @Override

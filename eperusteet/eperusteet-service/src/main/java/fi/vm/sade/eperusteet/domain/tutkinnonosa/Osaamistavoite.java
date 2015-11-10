@@ -20,25 +20,21 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohde;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -96,6 +92,16 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Arviointi arviointi;
 
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "ammattitaitovaatimuksenkohdealue_osaamistavoite",
+            joinColumns = @JoinColumn(name = "osaamistavoite_id"),
+            inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimuksenkohdealue_id"))
+    @Getter
+    @Setter
+    @OrderColumn(name = "jarjestys")
+    private List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
     private Osaamistavoite esitieto;
@@ -147,8 +153,17 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
             this.setTavoitteet(updated.getTavoitteet());
             this.setTunnustaminen(updated.getTunnustaminen());
             this.setArviointi(updated.getArviointi());
+            connectAmmattitaitovaatimusListToTutkinnonOsa(updated);
+            this.setAmmattitaitovaatimuksetLista(updated.getAmmattitaitovaatimuksetLista());
             this.setEsitieto(updated.getEsitieto());
         }
+    }
+
+    private List<AmmattitaitovaatimuksenKohdealue> connectAmmattitaitovaatimusListToTutkinnonOsa(Osaamistavoite other) {
+        for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : other.getAmmattitaitovaatimuksetLista()) {
+            ammattitaitovaatimuksenKohdealue.connectAmmattitaitovaatimuksetToKohdealue(ammattitaitovaatimuksenKohdealue );
+        }
+        return other.getAmmattitaitovaatimuksetLista();
     }
 
     @Override

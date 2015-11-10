@@ -135,13 +135,13 @@
           <div ng-hide="editEnabled">
             <div ng-repeat="vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit">
               <h3>
-                <a href="" ng-click="vt.$$open = !vt.$$open">
-                  <span ng-hide="vt.$$open" icon-role="chevron-right"></span>
-                  <span ng-show="vt.$$open" icon-role="chevron-down"></span>
+                <a href="" ng-click="vt.$$closed = !vt.$$closed">
+                  <span ng-show="vt.$$closed" icon-role="chevron-right"></span>
+                  <span ng-hide="vt.$$closed" icon-role="chevron-down"></span>
                   <span ng-bind-html="vt.nimi | kaanna"></span>
                 </a>
               </h3>
-              <div collapse="!vt.$$open" ng-bind-html="vt.teksti | kaanna"></div>
+              <div collapse="vt.$$closed" ng-bind-html="vt.teksti | kaanna"></div>
             </div>
           </div>
 

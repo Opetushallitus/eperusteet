@@ -28,7 +28,8 @@
     "angular-elastic": "~2.3.3",
     "angular-ui-tree": "~2.1.5",
     "angular-cache": "~3.2.2",
-    "angular-ui-select": "~0.9.6"
+    "angular-ui-select": "~0.9.6",
+    "eperusteet-frontend-utils": "Opetushallitus/eperusteet-frontend-utils#master"
   },
   "devDependencies": {
     "angular-mocks": "1.3.15",
