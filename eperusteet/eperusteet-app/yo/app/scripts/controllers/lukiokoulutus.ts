@@ -18,6 +18,14 @@
 /*global _*/
 /*global jQuery*/
 
+interface paginationObject {
+  currentPage:number,
+  showPerPage:number,
+  total?:number,
+  multiPage?:boolean,
+  changePage:(to:number) => void
+}
+
 angular.module('eperusteApp')
   .controller('LukiokoulutussisaltoController',
   function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto, LukioKurssiService,
@@ -334,8 +342,8 @@ angular.module('eperusteApp')
           }
         }
       }
-      for (var i = 0; i < words.length; ++i) {
-        if (!found[i]) {
+      for (var j = 0; j < words.length; ++j) {
+        if (!found[j]) {
           return false;
         }
       }
@@ -435,6 +443,56 @@ angular.module('eperusteApp')
         (node.dtype === 'oppiaine' && to.root) ||
         (node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen)) && !exists;
     };
+
+    var initIndexes = function() {
+      updateIndexs($scope.liittamattomatKurssit, $scope.liittamattomatKurssitPagination);
+      updateIndexs($scope.liitetytKurssit, $scope.liitetytKurssitPagination);
+    };
+    var updateIndexs = function (arr, pagination:paginationObject) {
+      var i = 0, startIndex,
+          endIndex;
+      if (pagination) {
+        startIndex = (pagination.currentPage-1) * pagination.showPerPage;
+        endIndex = startIndex + pagination.showPerPage-1;
+      }
+      _.each(arr, function(item) {
+        item.$$index = i;
+        item.$$pagingShow = true;
+        if (pagination) {
+          item.$$pagingShow = item.$$index >= startIndex && item.$$index <= endIndex;
+        }
+        if (!item.$$hide) {
+          i++;
+        }
+      });
+      initPages(arr, pagination);
+    };
+    var changePage = function(arr, pagination:paginationObject, to:number):void {
+      pagination.currentPage = to;
+      updateIndexs(arr, pagination);
+    };
+    var countNotHidden = function(arr):number {
+      var count:number = 0;
+      for (var item in arr) {
+        if (!item.$$hide) {
+          count++;
+        }
+      }
+      return count;
+    };
+    var initPages = function(arr, pagination:paginationObject):void {
+      if (!pagination.currentPage) {
+        pagination.currentPage = 1;
+      }
+      if (!pagination.showPerPage || pagination.showPerPage < 0) {
+        pagination.showPerPage = 10;
+      }
+      if (!pagination.changePage) {
+        pagination.changePage = function(pageNum:number) { changePage(arr, pagination, pageNum);};
+      }
+      pagination.total = countNotHidden(arr);
+      pagination.multiPage = pagination.total  > pagination.showPerPage;
+    };
     var moved = function(node, to, index) {
       if (node.dtype === 'kurssi'  && to.dtype === 'oppiaine') {
         var from = node.$$nodeParent;
@@ -449,9 +507,9 @@ angular.module('eperusteApp')
           });
           _.remove(from.kurssit, node);
         }
-
         to.kurssit.push(node);
       }
+      initIndexes();
     };
     var removeKurssiFromOppiaine = function(node) {
       var oppiaine = node.$$nodeParent;
@@ -461,14 +519,27 @@ angular.module('eperusteApp')
       _.remove(oppiaine.kurssit, node);
       _.remove(oppiaine.lapset, node);
       if (_.isEmpty(node.oppiaineet)) {
-        $scope.liittamattomatKurssit.push(node);
+        var found = false;
+        for (var liittamaton in $scope.liittamattomatKurssit) {
+          if (liittamaton.id === node.id) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          $scope.liittamattomatKurssit.push(node);
+        }
       }
+      initIndexes();
     };
 
     $scope.oppiaineet = [];
     $scope.kurssit = [];
     $scope.liittamattomatKurssit = [];
+    $scope.liittamattomatKurssitPagination = <paginationObject>{showPerPage: 5, currentPage: 1};
     $scope.liitetytKurssit = [];
+    $scope.liitetytKurssitPagination = <paginationObject>{showPerPage: 5, currentPage: 1};
+
     $scope.gotoNode = function(node) {
       if (node.dtype === 'kurssi' || !node.dtype) {
         return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
@@ -481,6 +552,20 @@ angular.module('eperusteApp')
           tabId: 0
         });
       }
+    };
+    $scope.nodeHref = function(node) {
+      if (node.dtype === 'kurssi' || !node.dtype) {
+        return $state.href('root.perusteprojekti.suoritustapa.kurssi', {
+          kurssiId: node.id
+        });
+      } else if(node.dtype === 'oppiaine') {
+        return $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', {
+          osanId: node.id,
+          osanTyyppi: 'oppiaineet_oppimaarat',
+          tabId: 0
+        });
+      }
+      return null;
     };
     var setCollapseForAll = function(collapse) {
       updateTree(function(node) {
@@ -624,7 +709,7 @@ angular.module('eperusteApp')
     function kurssiName() {
       var name = '<span ng-bind="(node.nimi | kaanna) + ((node.lokalisoituKoodi | kaanna) ? \' (\'+(node.lokalisoituKoodi | kaanna)+\')\' : \'\')" title="{{node.nimi | kaanna}} {{(node.lokalisoituKoodi | kaanna) ? \'(\'+(node.lokalisoituKoodi | kaanna)+\')\' : \'\'}}"></span>';
       if (!$scope.treehelpers.editMode) {
-        name = '<a ng-click="goto(node)">'+name+'</a>';
+        name = '<a ng-href="{{createHref(node)}}">'+name+'</a>';
       }
       return name;
     }
@@ -689,7 +774,7 @@ angular.module('eperusteApp')
           } else {
             var name = '{{ node.nimi | kaanna }}';
             if (!$scope.treehelpers.editMode) {
-              name = '<a ng-click="goto(node)" title="'+name+'">'+name+'</a>';
+              name = '<a ng-href="{{createHref(node)}}" title="'+name+'">'+name+'</a>';
             }
             return templateAround('<div class="puu-node oppiaine-node">'+handle
                 + collapse + icon + editTime + '<div class="node-content left" ng-class="{ \'empty-node\': !node.lapset.length }">' +
@@ -703,6 +788,9 @@ angular.module('eperusteApp')
           scope.removeKurssiFromOppiaine = function(node) {
             return removeKurssiFromOppiaine(node);
           };
+          scope.createHref = function(node) {
+            return $scope.nodeHref(node);
+          };
           scope.goto = function(node) {
             $scope.gotoNode(node);
           };
@@ -715,7 +803,8 @@ angular.module('eperusteApp')
 
     $scope.liittamattomatOsatProvider = $q(function(resolve) {
       var templateAround = function(tmpl) {
-        return '<div class="liittamaton-kurssi recursivetree tree-list-item bubble-osa empty-item" ng-show="!node.$$hide">'+tmpl+'</div>';
+        return '<div class="liittamaton-kurssi recursivetree tree-list-item bubble-osa empty-item"' +
+          '          ng-show="!node.$$hide && node.$$pagingShow">'+tmpl+'</div>';
       };
       resolve({
         root:function() {
@@ -730,6 +819,7 @@ angular.module('eperusteApp')
               resolveRoot({
                 lapset: $scope.liittamattomatKurssit
               });
+              updateIndexs($scope.liittamattomatKurssit, $scope.liittamattomatKurssitPagination);
             });
           });
         },
@@ -743,7 +833,7 @@ angular.module('eperusteApp')
           if (!node) {
             return true;
           }
-          return node.$$hide
+          return node.$$hide  || !node.$$pagingShow;
         },
         template: function(n) {
           return templateAround('<div class="puu-node kurssi-node">' + treehandleTemplate() +
@@ -755,6 +845,9 @@ angular.module('eperusteApp')
           return !$scope.treehelpers.editMode
         },
         extension: function(node, scope) {
+          scope.createHref = function(node) {
+            return $scope.nodeHref(node);
+          };
           scope.goto = function(node) {
             $scope.gotoNode(node);
           };
@@ -764,7 +857,8 @@ angular.module('eperusteApp')
 
     $scope.liitetytOsatProvider = $q(function(resolve) {
       var templateAround = function(tmpl) {
-        return '<div class="liittamaton-kurssi recursivetree tree-list-item bubble-osa empty-item" ng-show="!node.$$hide">'+tmpl+'</div>';
+        return '<div class="liittamaton-kurssi recursivetree tree-list-item bubble-osa empty-item"' +
+          '          ng-show="!node.$$hide && node.$$pagingShow">'+tmpl+'</div>';
       };
       resolve({
         root:function() {
@@ -779,6 +873,7 @@ angular.module('eperusteApp')
               resolveRoot({
                 lapset: $scope.liitetytKurssit
               });
+              updateIndexs($scope.liitetytKurssit, $scope.liitetytKurssitPagination);
             });
           });
         },
@@ -792,7 +887,7 @@ angular.module('eperusteApp')
           if (!node) {
             return true;
           }
-          return node.$$hide
+          return node.$$hide || !node.$$pagingShow;
         },
         template: function(n) {
           return templateAround('<div class="puu-node kurssi-node">' + treehandleTemplate() +
@@ -806,6 +901,9 @@ angular.module('eperusteApp')
         extension: function(node, scope) {
           scope.goto = function(node) {
             $scope.gotoNode(node);
+          };
+          scope.createHref = function(node) {
+            return $scope.nodeHref(node);
           };
         }
       });

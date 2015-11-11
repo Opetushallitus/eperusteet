@@ -35,12 +35,15 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.yl.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.net.SocketException;
 import java.util.List;
 import java.util.Set;
 
@@ -56,6 +59,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping("/perusteet/{perusteId}/lukiokoulutus")
 @InternalApi
 public class LukiokoulutuksenPerusteenSisaltoController {
+    private static final Logger logger = LoggerFactory.getLogger(LukiokoulutuksenPerusteenSisaltoController.class);
+
 
     @Autowired
     private LukiokoulutuksenPerusteenSisaltoService sisallot;
@@ -330,8 +335,22 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     protected List<CombinedDto<Revision, HenkiloTietoDto>> withHenkilos(List<Revision> revisions) {
         return revisions.stream().map(r
-                    -> new CombinedDto<>(r, new HenkiloTietoDto(kayttajanTietoService.hae(r.getMuokkaajaOid()))))
+                    -> new CombinedDto<>(r, kayttajanTiedot(r.getMuokkaajaOid())))
                 .collect(toList());
+    }
+
+    private HenkiloTietoDto kayttajanTiedot(String muokkaajaOid) {
+        try {
+            return new HenkiloTietoDto(kayttajanTietoService.hae(muokkaajaOid));
+        } catch(Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("Host is down")) {
+                // Fail silently.
+                logger.warn("Käyttäjätietojen haku versiotietoihin käyttäjälle {} epäonnistui. " +
+                        "Palvelu alhaalla. Virhe: {}", muokkaajaOid, e.getMessage());
+                return null;
+            }
+            throw e;
+        }
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/yleiskuvaus/versio/{revisio}", method = GET)

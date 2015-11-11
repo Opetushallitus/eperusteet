@@ -160,7 +160,7 @@ angular.module('eGenericTree', [])
         }
 
         scope.$on('genericTree:refresh', function() {
-          refresh(scope.children, scope.children);
+          refresh(scope.children);
         });
         scope.$watch('children', refresh, true);
       }

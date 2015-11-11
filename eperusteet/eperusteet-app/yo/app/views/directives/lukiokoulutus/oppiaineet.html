@@ -81,6 +81,12 @@
         <generic-tree tree-provider="liittamattomatOsatProvider"
                       ui-sortable-config="liittamattomatKurssitConfig"></generic-tree>
       </div>
+      <pagination ng-show="liittamattomatKurssitPagination.multiPage"
+                  ng-model="liittamattomatKurssitPagination.currentPage"
+                  ng-change="liittamattomatKurssitPagination.changePage(liittamattomatKurssitPagination.currentPage)"
+                  total-items="liittamattomatKurssitPagination.total"
+                  items-per-page="liittamattomatKurssitPagination.showPerPage"></pagination>
+
       <div ng-show="!treehelpers.editMode" kaanna="lukio-liitetyt-kurssit-ohje"></div>
       <div ng-show="treehelpers.editMode">
 
@@ -98,6 +104,11 @@
           <generic-tree tree-provider="liitetytOsatProvider"
                         ui-sortable-config="liitetytKurssitConfig"></generic-tree>
         </div>
+        <pagination ng-show="liitetytKurssitPagination.multiPage"
+                    ng-model="liitetytKurssitPagination.currentPage"
+                    ng-change="liitetytKurssitPagination.changePage(liitetytKurssitPagination.currentPage)"
+                    total-items="liitetytKurssitPagination.total"
+                    items-per-page="liitetytKurssitPagination.showPerPage"></pagination>
       </div>
     </div>
   </div>

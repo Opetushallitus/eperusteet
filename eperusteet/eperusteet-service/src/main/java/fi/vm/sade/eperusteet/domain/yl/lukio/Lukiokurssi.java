@@ -57,7 +57,7 @@ public class Lukiokurssi extends Kurssi {
     @Setter
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @JoinColumn(name = "lokalisoitava_koodi_id", nullable = true)
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen lokalisoituKoodi;
 
@@ -90,7 +90,7 @@ public class Lukiokurssi extends Kurssi {
 
     @Getter
     @Audited
-    @OneToMany(mappedBy = "kurssi", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "kurssi", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OppiaineLukiokurssi> oppiaineet = new HashSet<>(0);
 
     public Lukiokurssi kloonaa(LukioOpetussuunnitelmaRakenne rakenne) {

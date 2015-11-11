@@ -383,9 +383,9 @@ angular.module('eperusteApp')
               c.oppiaineet = _.union(a.oppiaineet, b.oppiaineet);
               return c;
             }).values()
-            .value()
+            .value(),
+          kommentti: kommentti
         };
-      update.kommentti = kommentti;
       $log.info('Update stucture:', update);
       delete kurssitCache[LukiokoulutusService.getPerusteId()];
       LukioOppiaineKurssiRakenne.updateStructure({perusteId: LukiokoulutusService.getPerusteId()},

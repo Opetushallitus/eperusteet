@@ -250,8 +250,8 @@ angular.module('eperusteApp')
       revert(data, tunniste, 'lukiooppiaine', cb);
     };
 
-    this.revertLukioRakenne = function(data, tunniste, force, cb) {
-      revert(data, tunniste, 'lukiorakenne', force, cb);
+    this.revertLukioRakenne = function(data, tunniste, cb) {
+      revert(data, tunniste, 'lukiorakenne', cb);
     };
 
     this.setUrl = function (data) {

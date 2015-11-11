@@ -18,9 +18,10 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import java.util.List;
 import java.util.concurrent.Future;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *

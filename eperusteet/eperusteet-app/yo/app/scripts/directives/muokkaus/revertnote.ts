@@ -82,7 +82,7 @@ angular.module('eperusteApp')
                   } else {
                     cb = function () {
                       Lukitus.lukitseLukiorakenne().then(function() {
-                        VersionHelper.revertLukioRakenne($scope.versiot, null, revCb);
+                        VersionHelper.revertLukioRakenne($scope.versiot, revCb);
                       });
                     };
                   }
@@ -99,7 +99,7 @@ angular.module('eperusteApp')
                   } else {
                     cb = function () {
                       Lukitus.lukitseLukiorakenne().then(function() {
-                        VersionHelper.revertLukioRakenne($scope.versiot, null, revCb);
+                        VersionHelper.revertLukioRakenne($scope.versiot, revCb);
                       });
                     };
                   }

@@ -57,11 +57,7 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.DiaarinumeroHakuDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -152,8 +148,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PerusteprojektiInfoDto> getOmatProjektit() {
-        return mapper.mapAsList(repository.findAllKeskeneraiset(), PerusteprojektiInfoDto.class);
+    public List<PerusteprojektiListausDto> getOmatProjektit() {
+        return mapper.mapAsList(repository.findAllKeskeneraiset(), PerusteprojektiListausDto.class);
     }
 
     @Override

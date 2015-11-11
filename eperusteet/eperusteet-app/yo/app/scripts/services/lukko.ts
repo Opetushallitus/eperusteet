@@ -152,7 +152,7 @@ angular.module('eperusteApp')
       }
     }
 
-    function tilaToLukkoParams() {
+    function tilaToLukkoParams():any {
       // TODO: Lisää muille tiloille vastaavat
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue' && $stateParams.osanTyyppi && $stateParams.osanId !== 'uusi') {
         return { perusteId: PerusopetusService.getPerusteId(), osanId: $stateParams.osanId };
@@ -163,6 +163,7 @@ angular.module('eperusteApp')
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.muokkaakurssia') {
         return { perusteId: PerusopetusService.getPerusteId(), kurssiId: $stateParams.kurssiId };
       }
+      return null;
     }
 
     function genericVapauta(cb) {
@@ -221,7 +222,7 @@ angular.module('eperusteApp')
       }
     }
 
-    function lukitse(Resource, obj, cb, editointiCheck) {
+    function lukitse(Resource, obj, cb, editointiCheck?) {
       if (editointiCheck === undefined) {
         editointiCheck = true;
       }

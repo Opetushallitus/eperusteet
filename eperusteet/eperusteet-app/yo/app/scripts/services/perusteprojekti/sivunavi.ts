@@ -159,14 +159,16 @@ angular.module('eperusteApp')
       var foundKurssit = LukioKurssiService.filterOrderedKurssisByOppiaine(kurssit, function (oa) {
         return oa.oppiaineId === osa.id;
       });
-      _.each(foundKurssit, function(filterdKurssi) {
-        ylMapper(targetItems, filterdKurssi, key, level + 1, [STATE_LUKIOKURSSI, {kurssiId: filterdKurssi.id}], osa);
+      _.each(foundKurssit, function(filteredKurssi) {
+        ylMapper(targetItems, filteredKurssi, key, level + 1, [STATE_LUKIOKURSSI, {kurssiId: filteredKurssi.id}], osa);
       });
     }
   }
 
   function mapYL(target, osat, key, parent) {
-    _(osat).sortBy(key === 'oppiaineet' || key === 'aihekokonaisuudet' ? 'jnro' : Utils.nameSort).each(function (osa) {
+    _(osat).sortBy((key === 'oppiaineet' || key === 'oppiaineet-oppimaarat'
+        || key === 'oppiaineet_oppimaarat'
+        || key === 'aihekokonaisuudet') ? 'jnro' : Utils.nameSort).each(function (osa) {
       ylMapper(target, osa, key, 1, null, parent);
     }).value();
   }
