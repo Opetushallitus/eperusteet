@@ -962,7 +962,9 @@ angular.module('eperusteApp')
     $scope.versiot = {latest: true};
 
     $scope.haeVersiot = function (force, cb) {
-      VersionHelper.getLukioOppiaineVersions($scope.versiot, {id: $stateParams.osanId}, force, cb);
+      if ($stateParams.osanId != 'uusi') {
+        VersionHelper.getLukioOppiaineVersions($scope.versiot, {id: $stateParams.osanId}, force, cb);
+      }
     };
     $scope.haeVersiot(true);
 
