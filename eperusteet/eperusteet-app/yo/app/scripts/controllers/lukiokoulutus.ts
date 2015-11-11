@@ -18,7 +18,7 @@
 /*global _*/
 /*global jQuery*/
 
-interface paginationObject {
+interface PaginationDetails {
   currentPage:number,
   showPerPage:number,
   total?:number,
@@ -368,19 +368,19 @@ angular.module('eperusteApp')
         node = node.$$nodeParent;
       }
     }
-    function traverse(node, ch, fn, parent?) {
+    function traverse(node, extractor, fn, parent?) {
       if (_.isArray(node)) {
         _.each(node, function(i) {
-          traverse(i, ch, fn, parent);
+          traverse(i, extractor, fn, parent);
         });
       } else if (node) {
         fn(node, parent);
-        _.each(ch(node), function(c) {
-          traverse(c, ch, fn, node);
+        _.each(extractor(node), function(c) {
+          traverse(c, extractor, fn, node);
         });
       }
     }
-    function updateTree(fn) {
+    function traverseTree(fn) {
       if (fn) {
         traverse($scope.treeRoot, _.property('lapset'), fn);
       }
@@ -397,7 +397,7 @@ angular.module('eperusteApp')
     }
     $scope.treeHaku = function() {
       $timeout(function() {
-        updateTree(piilotaHaunPerusteella($scope.treehelpers.haku));
+        traverseTree(piilotaHaunPerusteella($scope.treehelpers.haku));
       });
     };
     $scope.treeLiittamattomienHaku = function() {
@@ -448,7 +448,7 @@ angular.module('eperusteApp')
       updateIndexs($scope.liittamattomatKurssit, $scope.liittamattomatKurssitPagination);
       updateIndexs($scope.liitetytKurssit, $scope.liitetytKurssitPagination);
     };
-    var updateIndexs = function (arr, pagination:paginationObject) {
+    var updateIndexs = function (arr, pagination:PaginationDetails) {
       var i = 0, startIndex,
           endIndex;
       if (pagination) {
@@ -467,7 +467,7 @@ angular.module('eperusteApp')
       });
       initPages(arr, pagination);
     };
-    var changePage = function(arr, pagination:paginationObject, to:number):void {
+    var changePage = function(arr, pagination:PaginationDetails, to:number):void {
       pagination.currentPage = to;
       updateIndexs(arr, pagination);
     };
@@ -480,8 +480,8 @@ angular.module('eperusteApp')
       }
       return count;
     };
-    var initPages = function(arr, pagination:paginationObject):void {
-      if (!pagination.currentPage) {
+    var initPages = function(arr, pagination:PaginationDetails):void {
+      if (!pagination.currentPage || pagination.currentPage < 0) {
         pagination.currentPage = 1;
       }
       if (!pagination.showPerPage || pagination.showPerPage < 0) {
@@ -492,6 +492,9 @@ angular.module('eperusteApp')
       }
       pagination.total = countNotHidden(arr);
       pagination.multiPage = pagination.total  > pagination.showPerPage;
+      if (pagination.total <= (pagination.currentPage-1)*pagination.showPerPage) {
+        changePage(arr, pagination, pagination.currentPage-1);
+      }
     };
     var moved = function(node, to, index) {
       if (node.dtype === 'kurssi'  && to.dtype === 'oppiaine') {
@@ -506,6 +509,8 @@ angular.module('eperusteApp')
             return oa.oppiaineId === from.id;
           });
           _.remove(from.kurssit, node);
+        } else {
+          $scope.liitetytKurssit.push(node);
         }
         to.kurssit.push(node);
       }
@@ -518,17 +523,19 @@ angular.module('eperusteApp')
       });
       _.remove(oppiaine.kurssit, node);
       _.remove(oppiaine.lapset, node);
-      if (_.isEmpty(node.oppiaineet)) {
-        var found = false;
-        for (var liittamaton in $scope.liittamattomatKurssit) {
-          if (liittamaton.id === node.id) {
-            found = true;
-            break;
-          }
+      var foundInTree = false,
+        inLiittamattomat = _.filter($scope.liittamattomatKurssit,
+          function(liittamaton) {return liittamaton.id == node.id;});
+      traverseTree(function(c) {
+        if (c.dtype == 'kurssi' && c.id == node.id) {
+          foundInTree = true;
         }
-        if (!found) {
-          $scope.liittamattomatKurssit.push(node);
-        }
+      });
+      if (!foundInTree && _.isEmpty(inLiittamattomat)) {
+        $scope.liittamattomatKurssit.push(node);
+        _.remove($scope.liitetytKurssit, function(liitetty) {
+          return liitetty.id == node.id;
+        });
       }
       initIndexes();
     };
@@ -536,9 +543,9 @@ angular.module('eperusteApp')
     $scope.oppiaineet = [];
     $scope.kurssit = [];
     $scope.liittamattomatKurssit = [];
-    $scope.liittamattomatKurssitPagination = <paginationObject>{showPerPage: 5, currentPage: 1};
+    $scope.liittamattomatKurssitPagination = <PaginationDetails>{showPerPage: 5, currentPage: 1};
     $scope.liitetytKurssit = [];
-    $scope.liitetytKurssitPagination = <paginationObject>{showPerPage: 5, currentPage: 1};
+    $scope.liitetytKurssitPagination = <PaginationDetails>{showPerPage: 5, currentPage: 1};
 
     $scope.gotoNode = function(node) {
       if (node.dtype === 'kurssi' || !node.dtype) {
@@ -568,7 +575,7 @@ angular.module('eperusteApp')
       return null;
     };
     var setCollapseForAll = function(collapse) {
-      updateTree(function(node) {
+      traverseTree(function(node) {
         node.$$collapsed = collapse;
       });
     };
@@ -633,6 +640,7 @@ angular.module('eperusteApp')
             moved(from, to, ui.item.sortable.index);
             //Takaisin listaan, josta siirrettiin
             $scope.liitetytKurssit.push(from);
+            initIndexes();
           }
         });
       }
