@@ -37,6 +37,7 @@ import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokoulutuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -282,14 +283,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         PerusteKaikkiDto perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
-        if (perusteDto.getLukiokoulutuksenPerusteenSisalto() != null
-                && peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
-            perusteDto.getLukiokoulutuksenPerusteenSisalto().setRakenne(
-                    lukiokoulutuksenPerusteenSisaltoService.getOppiaineTreeStructure(id));
+        if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
+            updateLukioKaikkiRakenne(perusteDto, peruste);
         }
         perusteDto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
 
-        if (!perusteDto.getSuoritustavat().isEmpty()) {
+        if (!perusteDto.getSuoritustavat().isEmpty()
+                && perusteDto.getLukiokoulutuksenPerusteenSisalto() == null) {
             perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
 
             Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
@@ -302,6 +302,21 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         return perusteDto;
+    }
+
+    private void updateLukioKaikkiRakenne(PerusteKaikkiDto perusteDto, Peruste peruste) {
+        if (perusteDto.getLukiokoulutuksenPerusteenSisalto() != null) {
+            perusteDto.getLukiokoulutuksenPerusteenSisalto().setRakenne(
+                    lukiokoulutuksenPerusteenSisaltoService.getOppiaineTreeStructure(peruste.getId()));
+        }
+        if (perusteDto.getSuoritustavat() != null) {
+            // turhia pois:
+            perusteDto.getSuoritustavat().forEach(st -> {
+                st.setRakenne(null);
+                st.setSisalto(null);
+                st.setTutkinnonOsat(null);
+            });
+        }
     }
 
     @Override

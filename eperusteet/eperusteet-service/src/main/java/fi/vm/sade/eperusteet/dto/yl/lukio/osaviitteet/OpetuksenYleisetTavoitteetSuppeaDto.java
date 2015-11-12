@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
@@ -28,6 +29,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonTypeName("opetuksenyleisettavoitteet")
 public class OpetuksenYleisetTavoitteetSuppeaDto extends PerusteenOsaDto.Suppea {
     private LokalisoituTekstiDto otsikko;
 }

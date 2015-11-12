@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,5 +28,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonTypeName("rakenne")
 public class LukioOpetussuunnitelmaRakenneSuppeaDto extends PerusteenOsaDto.Suppea {
 }
