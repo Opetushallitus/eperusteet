@@ -25,6 +25,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -38,6 +40,7 @@ import org.hibernate.envers.Audited;
 @Table(name = "esiop_perusteen_sisalto")
 public class EsiopetuksenPerusteenSisalto extends AbstractAuditedReferenceableEntity {
 
+    @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
     @Setter
@@ -49,7 +52,7 @@ public class EsiopetuksenPerusteenSisalto extends AbstractAuditedReferenceableEn
     @Getter
     @Setter
     @JoinColumn
-    private PerusteenOsaViite sisalto = new PerusteenOsaViite();
+    private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
     public EsiopetuksenPerusteenSisalto kloonaa(Peruste peruste) {
         EsiopetuksenPerusteenSisalto eps = new EsiopetuksenPerusteenSisalto();

@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +46,7 @@ public class OppiaineLukiokurssi extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
+    @RelatesToPeruste
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "oppiaine_id", nullable = false)
     private Oppiaine oppiaine;

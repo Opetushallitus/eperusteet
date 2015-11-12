@@ -70,6 +70,12 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     private Long id;
 
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "peruste")
+    private PerusteVersion globalVersion = new PerusteVersion(this);
+
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter

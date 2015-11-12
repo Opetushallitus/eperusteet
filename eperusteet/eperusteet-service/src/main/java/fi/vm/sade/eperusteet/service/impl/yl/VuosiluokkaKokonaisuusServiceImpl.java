@@ -70,8 +70,8 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         //TODO -- salli siirtymän "kytkeminen" toisesta jo tallennetusta vuosiluokkakokonaisuudesta
         VuosiluokkaKokonaisuus vk = mapper.map(dto, VuosiluokkaKokonaisuus.class);
         sisaltoRepository.lock(sisalto);
-        vk = kokonaisuusRepository.save(vk);
         sisalto.addVuosiluokkakokonaisuus(vk);
+        vk = kokonaisuusRepository.save(vk);
         return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
     }
 
@@ -91,6 +91,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
     }
 
     @Override
+    @Transactional(readOnly = true)
     public VuosiluokkaKokonaisuusDto getVuosiluokkaKokonaisuus(Long perusteId, Long kokonaisuusId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
@@ -101,6 +102,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
     }
 
     @Override
+    @Transactional(readOnly = true)
     public VuosiluokkaKokonaisuusDto getVuosiluokkaKokonaisuus(Long perusteId, Long kokonaisuusId, int revisio) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
@@ -112,6 +114,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Revision> getVuosiluokkaKokonaisuusRevisions(long perusteId, long kokonaisuusId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
@@ -122,6 +125,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OppiaineSuppeaDto> getOppiaineet(Long perusteId, Long kokonaisuusId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);

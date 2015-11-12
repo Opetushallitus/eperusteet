@@ -59,7 +59,6 @@ public class VuosiluokkakokonaisuusLockServiceImpl extends AbstractLockService<V
             throw new BusinessRuleViolationException("Virheellinen lukitus");
         }
         return kokonaisuus.getId();
-
     }
 
     @Override

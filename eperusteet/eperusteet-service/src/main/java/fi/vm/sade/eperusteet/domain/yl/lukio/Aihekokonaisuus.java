@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.yl.lukio;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
@@ -70,6 +71,7 @@ public class Aihekokonaisuus extends AbstractAuditedReferenceableEntity {
     @Setter
     private Long jnro;
 
+    @RelatesToPeruste
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})

@@ -16,28 +16,21 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import java.util.*;
+
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Kuvaa oppimäärän yhteen vuosiluokkakokonaisuuteen osalta.
@@ -55,6 +48,7 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     @NotNull
     private Oppiaine oppiaine;
 
+    @RelatesToPeruste
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

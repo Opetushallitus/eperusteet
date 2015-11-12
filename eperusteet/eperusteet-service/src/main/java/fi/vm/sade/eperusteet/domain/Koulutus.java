@@ -15,19 +15,15 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import java.io.Serializable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.NotAudited;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Set;
 
 /**
  *
@@ -47,6 +43,16 @@ public class Koulutus implements Serializable, Mergeable<Koulutus>{
         this.koulutusalakoodi = koulutusalakoodi;
         this.opintoalakoodi = opintoalakoodi;
     }
+
+    @RelatesToPeruste
+    @NotAudited
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "peruste_koulutus",
+            inverseJoinColumns = @JoinColumn(name = "peruste_id"),
+            joinColumns = @JoinColumn(name = "koulutus_id"))
+    @Getter
+    @Setter
+    private Set<Peruste> perusteet;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

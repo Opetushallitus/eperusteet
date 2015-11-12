@@ -49,6 +49,10 @@ public class OppiaineLockContext implements PerusteAware {
         return new OppiaineLockContext(tyyppi, perusteId, oppiaineId, kokonaisuusId);
     }
 
+    public void setVuosiluokkaId(Long id) {
+        this.kokonaisuusId = id;
+    }
+
     public void setOsanId(Long id) {
         oppiaineId = id;
     }

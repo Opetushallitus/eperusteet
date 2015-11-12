@@ -17,21 +17,16 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -42,6 +37,7 @@ import org.hibernate.envers.Audited;
 @Table(name = "yl_perusop_perusteen_sisalto")
 public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto {
 
+    @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
     @Setter
@@ -53,7 +49,7 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     @Getter
     @Setter
     @JoinColumn
-    private PerusteenOsaViite sisalto = new PerusteenOsaViite();
+    private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinTable
@@ -62,7 +58,9 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     @Getter
     @OneToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 25)
-    @JoinTable
+    @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_oppiaine",
+            inverseJoinColumns = @JoinColumn(name = "oppiaineet_id", nullable = false, updatable = false),
+            joinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false, updatable = false))
     private Set<Oppiaine> oppiaineet = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY)

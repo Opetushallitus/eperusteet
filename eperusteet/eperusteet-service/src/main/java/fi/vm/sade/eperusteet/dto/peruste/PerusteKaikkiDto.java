@@ -35,6 +35,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PerusteKaikkiDto extends PerusteBaseDto {
+    private PerusteVersionDto globalVersion;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     Set<SuoritustapaLaajaDto> suoritustavat;
 

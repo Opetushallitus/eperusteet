@@ -348,10 +348,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS')")
     public void onApplicationEvent(@P("event") PerusteUpdatedEvent event) {
         Peruste peruste = perusteet.findOne(event.getPerusteId());
+        Date muokattu = new Date();
         if (peruste.getTila() == PerusteTila.VALMIS) {
             perusteet.setRevisioKommentti("Perusteen sisältöä korjattu");
             peruste.muokattu();
+            muokattu = peruste.getMuokattu();
         }
+        if (peruste.getGlobalVersion() == null) {
+            peruste.setGlobalVersion(new PerusteVersion(peruste));
+        }
+        peruste.getGlobalVersion().setAikaleima(muokattu);
     }
 
     @Override

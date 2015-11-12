@@ -38,6 +38,10 @@ public class LaajaalainenOsaaminenContext implements PerusteAware {
         this.osaaminenId = osaaminenId;
     }
 
+    public void setOsanId(Long id) {
+        this.osaaminenId = id;
+    }
+
     public static LaajaalainenOsaaminenContext of(Long perusteId, Long osaaminenId) {
         return new LaajaalainenOsaaminenContext(perusteId, osaaminenId);
     }
