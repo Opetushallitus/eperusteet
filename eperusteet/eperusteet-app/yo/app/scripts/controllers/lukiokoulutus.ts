@@ -400,17 +400,20 @@ angular.module('eperusteApp')
     $scope.treeHaku = function() {
       $timeout(function() {
         traverseTree(piilotaHaunPerusteella($scope.treehelpers.haku));
+        initIndexes();
       });
     };
     $scope.treeLiittamattomienHaku = function() {
       $timeout(function() {
         _.each($scope.liittamattomatKurssit, piilotaHaunPerusteella($scope.treehelpers.liittamattomienHaku));
+        initIndexes();
       });
     };
 
     $scope.treeLiitettyjenHaku = function() {
       $timeout(function() {
         _.each($scope.liitetytKurssit, piilotaHaunPerusteella($scope.treehelpers.liitettyjenHaku));
+        initIndexes();
       });
     };
 
@@ -475,11 +478,11 @@ angular.module('eperusteApp')
     };
     var countNotHidden = function(arr):number {
       var count:number = 0;
-      for (var item in arr) {
+      _.each(arr, function(item) {
         if (!item.$$hide) {
           count++;
         }
-      }
+      });
       return count;
     };
     var initPages = function(arr, pagination:PaginationDetails):void {
