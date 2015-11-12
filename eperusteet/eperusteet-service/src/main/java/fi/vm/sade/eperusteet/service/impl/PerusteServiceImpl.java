@@ -52,6 +52,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
+import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,6 +157,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private LukioYleisetTavoitteetRepository lukioYleisetTavoitteetRepository;
+
+    @Autowired
+    private LukiokoulutuksenPerusteenSisaltoService lukiokoulutuksenPerusteenSisaltoService;
 
     @Autowired
     private Validator validator;
@@ -278,6 +282,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         PerusteKaikkiDto perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
+        if (perusteDto.getLukiokoulutuksenPerusteenSisalto() != null
+                && peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
+            perusteDto.getLukiokoulutuksenPerusteenSisalto().setRakenne(
+                    lukiokoulutuksenPerusteenSisaltoService.getOppiaineTreeStructure(id));
+        }
         perusteDto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
 
         if (!perusteDto.getSuoritustavat().isEmpty()) {
@@ -899,6 +908,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    @SuppressWarnings("ServiceMethodEntity")
     public Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi) {
         Peruste vanha = perusteet.getOne(luontiDto.getPerusteId());
         Peruste peruste = new Peruste();
@@ -1003,7 +1013,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     @Override
     public List<Revision> getYleisetTavoitteetVersiot(Long perusteId) {
         Peruste peruste = perusteet.getOne(perusteId);

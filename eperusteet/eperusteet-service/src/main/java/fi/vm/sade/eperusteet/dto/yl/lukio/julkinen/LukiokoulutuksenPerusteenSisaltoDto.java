@@ -14,25 +14,26 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet;
+package fi.vm.sade.eperusteet.dto.yl.lukio.julkinen;
 
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * User: tommiratamaa
- * Date: 19.10.15
- * Time: 13.17
+ * Date: 12.11.2015
+ * Time: 12.21
  */
 @Getter
 @Setter
-public class AihekokonaisuudetLaajaDto extends Laaja {
-    private LokalisoituTekstiDto otsikko;
-    private LokalisoituTekstiDto yleiskuvaus;
-    private List<AihekokonaisuusDto> aihekokonaisuudet;
+public class LukiokoulutuksenPerusteenSisaltoDto implements Serializable {
+    private PerusteenOsaViiteDto.Laaja sisalto;
+    private AihekokonaisuudetLaajaDto aihekokonaisuudet;
+    private OpetuksenYleisetTavoitteetLaajaDto opetuksenYleisetTavoitteet;
+    private LukioOppiainePuuDto rakenne;
 }
