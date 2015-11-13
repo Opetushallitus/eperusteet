@@ -16,12 +16,13 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.security.access.method.P;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
@@ -30,18 +31,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface LiiteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
-    public UUID add(@P("perusteId") final Long opsId, String tyyppi, String nimi, long length, InputStream is);
+    UUID add(@P("perusteId") final Long opsId, String tyyppi, String nimi, long length, InputStream is);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    public LiiteDto get(Long perusteId, UUID id);
+    LiiteDto get(Long perusteId, UUID id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    public List<LiiteDto> getAll(Long perusteId);
+    List<LiiteDto> getAll(Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    public void delete(Long perusteId, UUID id);
+    void delete(Long perusteId, UUID id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    public void export(@P("perusteId") final Long perusteId, UUID id, OutputStream os);
+    void export(@P("perusteId") final Long perusteId, UUID id, OutputStream os);
 
 }

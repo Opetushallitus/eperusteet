@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,7 @@ public class AmmattitaitovaatimuksenKohde implements Serializable{
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen selite;
 
+    @RelatesToPeruste
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Getter
     @Setter

@@ -18,12 +18,8 @@ package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
  * @author nkala
  */
 public class PerusteenRakenne {
@@ -72,7 +67,7 @@ public class PerusteenRakenne {
 
         for (AbstractRakenneOsa x : osat) {
             if (x instanceof RakenneOsa) {
-                RakenneOsa ro = (RakenneOsa)x;
+                RakenneOsa ro = (RakenneOsa) x;
                 if (ro.getTutkinnonOsaViite() != null) {
                     BigDecimal laajuus = ro.getTutkinnonOsaViite().getLaajuus();
                     laajuus = laajuus == null ? new BigDecimal(0) : laajuus;
@@ -80,9 +75,8 @@ public class PerusteenRakenne {
                     laajuusSummaMax = laajuusSummaMax.add(laajuus);
                     uniikit.add(ro.getTutkinnonOsaViite().getTutkinnonOsa().getId());
                 }
-            }
-            else if (x instanceof RakenneModuuli) {
-                RakenneModuuli rm = (RakenneModuuli)x;
+            } else if (x instanceof RakenneModuuli) {
+                RakenneModuuli rm = (RakenneModuuli) x;
                 ++ryhmienMäärä;
                 Validointi validoitu = validoiRyhma(osaamisalat, rm, syvyys + 1);
                 validointi.ongelmat.addAll(validoitu.ongelmat);
@@ -129,20 +123,17 @@ public class PerusteenRakenne {
             if (rooli == RakenneModuuliRooli.NORMAALI) {
                 if (laajuusSummaMin.compareTo(laajuusMin) == -1) {
                     validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (" + laajuusSummaMin + " < " + laajuusMin + ").", nimi, syvyys));
-                }
-                else if (laajuusSummaMax.compareTo(laajuusMax) == -1) {
+                } else if (laajuusSummaMax.compareTo(laajuusMax) == -1) {
                     validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan maksimi on pienempi kuin ryhmän vaadittu maksimi (" + laajuusSummaMax + " > " + laajuusMax + ").", nimi, syvyys));
                 }
 
                 if (osat.size() < kokoMin) {
                     validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin vaadittu minimi (" + osat.size() + " < " + kokoMin + ").", nimi, syvyys));
-                }
-                else if (osat.size() < kokoMax) {
+                } else if (osat.size() < kokoMax) {
                     validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin ryhmän vaadittu maksimi (" + osat.size() + " < " + kokoMax + ").", nimi, syvyys));
                 }
                 validointi.laskettuLaajuus = ms.laajuusMaksimi() != null && ms.laajuusMaksimi() > 0 ? laajuusMax : laajuusSummaMax;
-            }
-            else {
+            } else {
                 validointi.laskettuLaajuus = laajuusMax;
             }
         }

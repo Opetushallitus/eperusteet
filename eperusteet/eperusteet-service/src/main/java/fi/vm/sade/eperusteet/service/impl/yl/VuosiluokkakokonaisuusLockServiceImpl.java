@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author jhyoty
  */
 @Service
@@ -48,7 +47,7 @@ public class VuosiluokkakokonaisuusLockServiceImpl extends AbstractLockService<V
 
     @Override
     protected final Long validateCtx(VuosiluokkaKokonaisuusContext ctx, boolean readOnly) {
-        if ( readOnly ) {
+        if (readOnly) {
             permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
         } else {
             permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);

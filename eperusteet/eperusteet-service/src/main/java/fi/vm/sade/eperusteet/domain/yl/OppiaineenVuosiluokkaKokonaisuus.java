@@ -20,13 +20,9 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
@@ -131,18 +127,18 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         result &= this.getSisaltoalueet().size() == other.getSisaltoalueet().size();
         result &= this.getTavoitteet().size() == other.getTavoitteet().size();
 
-        if ( result ) {
+        if (result) {
             Iterator<KeskeinenSisaltoalue> i = this.getSisaltoalueet().iterator();
             Iterator<KeskeinenSisaltoalue> j = other.getSisaltoalueet().iterator();
-            while ( result && i.hasNext() && j.hasNext() ) {
+            while (result && i.hasNext() && j.hasNext()) {
                 result &= identityEquals(i.next(), j.next());
             }
         }
 
-        if ( result ) {
+        if (result) {
             Iterator<OpetuksenTavoite> i = this.getTavoitteet().iterator();
             Iterator<OpetuksenTavoite> j = other.getTavoitteet().iterator();
-            while ( result && i.hasNext() && j.hasNext() ) {
+            while (result && i.hasNext() && j.hasNext()) {
                 result &= identityEquals(i.next(), j.next());
             }
         }
