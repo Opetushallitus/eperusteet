@@ -39,7 +39,7 @@ import java.util.UUID;
 @Table(name = "yl_kurssi", schema = "public")
 @Audited
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Kurssi extends AbstractAuditedReferenceableEntity {
+public class Kurssi extends AbstractAuditedReferenceableEntity implements NimettyKoodillinen {
 
     @Getter
     @Column(nullable = false, unique = true, updatable = false)

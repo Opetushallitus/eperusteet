@@ -34,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -45,7 +46,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Entity
 @Audited
 @Table(name = "yl_oppiaine")
-public class Oppiaine extends AbstractAuditedReferenceableEntity {
+public class Oppiaine extends AbstractAuditedReferenceableEntity implements NimettyKoodillinen {
 
     public static Predicate<Oppiaine> inLukioPeruste(long perusteId) {
         return inLukioPerusteDirect(perusteId).or(oa -> oa.getOppiaine() != null
@@ -376,6 +377,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             oa.addOppimaara(om.kloonaa(laajainenOsaaminenMapper, vuosiluokkaKokonaisuusMapper));
         }
         return oa;
+    }
+
+    public Stream<Oppiaine> maarineen() {
+        return Stream.concat(Stream.of(this), oppimaarat.stream());
     }
 
     public interface Strict {

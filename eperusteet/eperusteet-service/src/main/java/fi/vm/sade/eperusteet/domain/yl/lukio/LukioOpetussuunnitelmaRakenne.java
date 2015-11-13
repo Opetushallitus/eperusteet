@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.domain.yl.lukio;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.yl.NimettyKoodillinen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
@@ -29,8 +30,10 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.concat;
 
 /**
  * User: tommiratamaa
@@ -87,5 +90,18 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     @Override
     public EntityReference getReference() {
         return new EntityReference(getId());
+    }
+
+    public Stream<Lukiokurssi> kurssit() {
+        return getKurssit().stream();
+    }
+    public Stream<Oppiaine> oppiaineet() {
+        return getOppiaineet().stream();
+    }
+    public Stream<Oppiaine> oppiaineetMaarineen() {
+        return oppiaineet().flatMap(Oppiaine::maarineen);
+    }
+    public Stream<NimettyKoodillinen> koodilliset() {
+        return concat(oppiaineetMaarineen(), kurssit());
     }
 }

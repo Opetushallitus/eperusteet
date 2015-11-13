@@ -1006,5 +1006,15 @@
     "soveltava-kurssi-kuvaus-header": "Valtakunnallisten soveltavien kurssien yleinen kuvaus",
     "pakollinen-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien pakollisia kursseja",
     "syventava-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien valtakunnallisia syventäviä kursseja",
-    "soveltava-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien valtakunnallisia soveltavia kursseja"
+    "soveltava-kurssi-kuvaus-placeholder": "Kirjoita vapaahetoinen kuvaus koskien valtakunnallisia soveltavia kursseja",
+
+    "perusteen-nimea-ei-ole-kaikilla-kielilla": "Perusteelle ei ole määritelty nimeä kaikilla kielillä.",
+    "peruste-lukio-ei-oppiaineita": "Perusteessa ei ole yhtään oppiainetta",
+    "peruste-lukio-ei-aihekokonaisuuksia": "Perusteessa ei ole aihekokonaisuuksia",
+    "peruste-lukio-ei-opetuksen-yleisia-tavoitteita": "Perusteessa ei ole opetuksen yleisiä tavoitteita.",
+    "peruste-lukio-liittamaton-kurssi": "Peruste sisältää liittämättömän kurssin",
+    "peruste-lukio-oppiaineessa-ei-oppimaaria": "Oppiaineessa ei yhtään oppimäärää",
+    "peruste-lukio-oppiaineessa-ei-kursseja": "Peruste sisältää oppiaineen/määrän, jolla ei ole kursseja",
+    "peruste-lukio-kooodi-puuttuu": "Koodi puuttuu",
+    "peruste-lukio-sama-koodi": "Samaa koodia on käytetty useamman kerran"
 }
