@@ -30,7 +30,8 @@ angular.module('eperusteApp', [
   'ui.select',
   'eperusteet.esitys',
   'ngFileUpload',
-  'eGenericTree'
+  'eGenericTree',
+  'eMathDisplay'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')

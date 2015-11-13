@@ -97,7 +97,7 @@
         </property>
         <property name="mappingResources">
             <list>
-                <value>/hibernate-typedefs.hbm.xml</value>
+                <value>hibernate-typedefs.hbm.xml</value>
             </list>
         </property>
     </bean>

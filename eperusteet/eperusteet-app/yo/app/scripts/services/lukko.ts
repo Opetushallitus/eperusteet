@@ -272,7 +272,7 @@ angular.module('eperusteApp')
       }, cb);
     }
 
-    function vapautaSisalto(id, suoritustapa, cb) {
+    function vapautaSisalto(id, suoritustapa, cb = _.noop) {
       return vapauta(LukkoRakenne, {
         osanId: id,
         suoritustapa: suoritustapa

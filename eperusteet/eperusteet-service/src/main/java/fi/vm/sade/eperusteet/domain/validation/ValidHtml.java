@@ -45,13 +45,14 @@ public @interface ValidHtml {
     	MINIMAL(Whitelist.none()),
     	SIMPLIFIED(Whitelist.none().addTags("p","strong","em","s","ol","li","ul")),
     	NORMAL(Whitelist.none()
-    			.addTags("p","strong","em","s","ol","li","ul","blockquote","table","caption","tbody","tr","td","hr","pre", "th", "thead", "a", "abbr")
+    			.addTags("p","span","strong","em","s","ol","li","ul","blockquote","table","caption","tbody","tr","td","hr","pre", "th", "thead", "a", "abbr")
     			.addAttributes("table", "align","border","cellpadding","cellspacing","style","summary")
                         .addAttributes("th", "scope", "colspan", "rowspan")
                         .addAttributes("td", "colspan", "rowspan")
                         .addAttributes("a", "href", "target")
                         .addAttributes("img", "data-uid", "src")
-                        .addAttributes("abbr", "data-viite"));
+                        .addAttributes("abbr", "data-viite")
+                        .addAttributes("span", "class"));
 
     	private Whitelist whitelist;
 

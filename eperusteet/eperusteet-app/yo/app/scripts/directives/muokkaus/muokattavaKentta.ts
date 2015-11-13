@@ -163,6 +163,11 @@ angular.module('eperusteApp')
             'arviointi': 'object.' + scope.field.path,
             'edit-enabled': 'editEnabled'
           }],
+          'ammattitaito': ['', '<ammattitaito>', {
+            'editointi-sallittu': 'true',
+            'ammattitaito': 'object.' + scope.field.path,
+            'edit-enabled': 'editEnabled'
+          }],
           'vuosiluokkakokonaisuuden-osaaminen': ['', '<div>', {
             'editointi-sallittu': 'true',
             'vuosiluokkakokonaisuuden-osaaminen': 'object.' + scope.field.path,

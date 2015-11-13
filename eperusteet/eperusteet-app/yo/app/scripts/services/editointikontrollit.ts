@@ -47,16 +47,32 @@ angular.module('eperusteApp')
       }
     }
 
+    function handleBadCode(maybe, resolve = _.noop, reject = _.noop) {
+      if (!scope.editingCallback) {
+        // TODO: Valita
+        return;
+      }
+
+      if (!_.isObject(maybe)) {
+        resolve();
+      }
+      else {
+        maybe.then(resolve).catch(reject);
+      }
+    }
+
     return {
       startEditing: function() {
-        if (scope.editingCallback) {
-          scope.editingCallback.edit();
+        var deferred = $q.defer();
+        handleBadCode(scope.editingCallback.edit(), function() {
           setEditMode(true);
-        }
-        $rootScope.$broadcast('enableEditing');
+          $rootScope.$broadcast('enableEditing');
+        });
+        return deferred.promise;
       },
       saveEditing: function(kommentti) {
         $rootScope.$broadcast('editointikontrollit:preSave');
+        $rootScope.$broadcast('notifyCKEditor');
         var err;
 
         function mandatoryFieldValidator(fields, target) {
@@ -81,13 +97,12 @@ angular.module('eperusteApp')
         }
 
         function after() {
-          if (!scope.editingCallback.validate || scope.editingCallback.validate(mandatoryFieldValidator)) {
+          if (scope.editingCallback.validate(mandatoryFieldValidator)) {
             if (scope.editingCallback.asyncSave) {
               scope.editingCallback.asyncSave(kommentti, afterSave);
             }
             else {
-              scope.editingCallback.save(kommentti);
-              afterSave();
+              handleBadCode(scope.editingCallback.save(kommentti), afterSave);
             }
           }
           else {
@@ -103,25 +118,13 @@ angular.module('eperusteApp')
             after();
           }
         }
-
-        $rootScope.$broadcast('notifyCKEditor');
       },
       cancelEditing: function(tilanvaihto) {
-        function doCancel() {
+        handleBadCode(scope.editingCallback.cancel(), () => {
           setEditMode(false);
-          if (scope.editingCallback) {
-            scope.editingCallback.cancel();
-          }
           $rootScope.$broadcast('disableEditing');
           $rootScope.$broadcast('notifyCKEditor');
-        }
-        if (scope.editingCallback) {
-          if (_.isFunction(scope.editingCallback.canCancel) && !tilanvaihto) {
-            scope.editingCallback.canCancel().then(doCancel);
-          } else {
-            doCancel();
-          }
-        }
+        });
       },
       registerCallback: function(callback) {
         if (!callback ||
@@ -131,6 +134,8 @@ angular.module('eperusteApp')
           console.error('callback-function invalid');
           throw 'editCallback-function invalid';
         }
+
+        callback.validate = callback.validate || _.constant(true);
 
         if (callback.asyncSave) {
           callback.save = _.noop;

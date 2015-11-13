@@ -26,6 +26,7 @@ angular.module('eperusteApp')
     var FIELD_ORDER = {
       tavoitteet: 3,
       ammattitaitovaatimukset: 4,
+      ammattitaitovaatimuksetLista: 4,
       ammattitaidonOsoittamistavat: 7,
       arviointi: 5,
       lisatiedot: 5,
@@ -90,7 +91,7 @@ angular.module('eperusteApp')
   .controller('muokkausTutkinnonosaCtrl', function($scope, $state, $stateParams, $rootScope,
     $q, Editointikontrollit, PerusteenOsat, PerusteenRakenne, PerusteTutkinnonosa,
     TutkinnonOsaEditMode, $timeout, Varmistusdialogi, VersionHelper, Lukitus,
-    MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, PerusteProjektiSivunavi,
+    MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, AmmattitaitoHelper, PerusteProjektiSivunavi,
     Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
     Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService,
     ProjektinMurupolkuService) {
@@ -209,11 +210,16 @@ angular.module('eperusteApp')
         type: 'editor-area',
         localized: true,
         collapsible: true
-      },{
+      }, {
         path: 'tutkinnonOsa.ammattitaitovaatimukset',
-        localeKey: 'tutkinnon-osan-ammattitaitovaatimukset',
+        localeKey: 'tutkinnon-osan-ammattitaitovaatimukset-teksti',
         type: 'editor-area',
         localized: true,
+        collapsible: true
+      }, {
+        path: 'tutkinnonOsa.ammattitaitovaatimuksetLista',
+        localeKey: 'tutkinnon-osan-ammattitaitovaatimukset-taulukko',
+        type: 'ammattitaito',
         collapsible: true
       },{
         path: 'tutkinnonOsa.ammattitaidonOsoittamistavat',
@@ -468,7 +474,13 @@ angular.module('eperusteApp')
       if (!$scope.arviointiHelper) {
         $scope.arviointiHelper = ArviointiHelper.create();
       }
+      if (!$scope.ammattitaitoHelper) {
+        $scope.ammattitaitoHelper = AmmattitaitoHelper.create();
+      }
+
       $scope.arviointiFields = $scope.arviointiHelper.initFromFields($scope.fields);
+      $scope.ammattitaitoHelper.initFromFields($scope.fields);
+
       $scope.menuItems = _.reject($scope.fields, 'mandatory');
       if ($scope.arviointiHelper) {
         $scope.arviointiHelper.setMenu($scope.menuItems);

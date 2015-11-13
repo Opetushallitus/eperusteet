@@ -19,6 +19,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohde;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -72,6 +76,15 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @Column(name = "koodi_arvo")
     private String koodiArvo;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "ammattitaitovaatimuksenkohdealue_tutkinnonosa",
+            joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
+            inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimuksenkohdealue_id"))
+    @Getter
+    @Setter
+    @OrderColumn(name = "jarjestys")
+    private List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Arviointi arviointi;
@@ -220,6 +233,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             TutkinnonOsa other = (TutkinnonOsa) perusteenOsa;
             this.setArviointi(other.getArviointi());
             this.setAmmattitaitovaatimukset(other.getAmmattitaitovaatimukset());
+            this.setAmmattitaitovaatimuksetLista( connectAmmattitaitovaatimusListToTutkinnonOsa(other) ) ;
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
             this.setTavoitteet(other.getTavoitteet());
             this.setKoodiUri(other.getKoodiUri());
@@ -233,9 +247,22 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         }
     }
 
+    private List<AmmattitaitovaatimuksenKohdealue> connectAmmattitaitovaatimusListToTutkinnonOsa(TutkinnonOsa other) {
+        for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : other.getAmmattitaitovaatimuksetLista()) {
+            for (AmmattitaitovaatimuksenKohde ammattitaitovaatimuksenKohde : ammattitaitovaatimuksenKohdealue.getVaatimuksenKohteet()) {
+                ammattitaitovaatimuksenKohde.setAmmattitaitovaatimuksenkohdealue( ammattitaitovaatimuksenKohdealue );
+                for (Ammattitaitovaatimus ammattitaitovaatimus : ammattitaitovaatimuksenKohde.getVaatimukset()) {
+                    ammattitaitovaatimus.setAmmattitaitovaatimuksenkohde( ammattitaitovaatimuksenKohde );
+                }
+            }
+        }
+        return other.getAmmattitaitovaatimuksetLista();
+    }
+
     private void copyState(TutkinnonOsa other) {
         this.arviointi = other.getArviointi() == null ? null : new Arviointi(other.getArviointi());
         this.ammattitaitovaatimukset = other.getAmmattitaitovaatimukset();
+        this.ammattitaitovaatimuksetLista = other.getAmmattitaitovaatimuksetLista();
         this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
         this.tavoitteet = other.getTavoitteet();
         this.koodiUri = other.getKoodiUri();

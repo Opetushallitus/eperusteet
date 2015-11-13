@@ -21,12 +21,15 @@ import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.*;
@@ -89,6 +92,16 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Arviointi arviointi;
 
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "ammattitaitovaatimuksenkohdealue_osaamistavoite",
+            joinColumns = @JoinColumn(name = "osaamistavoite_id"),
+            inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimuksenkohdealue_id"))
+    @Getter
+    @Setter
+    @OrderColumn(name = "jarjestys")
+    private List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista = new ArrayList<>();
+
     @RelatesToPeruste
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
@@ -141,7 +154,6 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
 
     @Override
     public void mergeState(Osaamistavoite updated) {
-
         if (updated != null) {
             this.setNimi(updated.getNimi());
             this.setPakollinen(updated.isPakollinen());
@@ -150,8 +162,17 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
             this.setTavoitteet(updated.getTavoitteet());
             this.setTunnustaminen(updated.getTunnustaminen());
             this.setArviointi(updated.getArviointi());
+            connectAmmattitaitovaatimusListToTutkinnonOsa(updated);
+            this.setAmmattitaitovaatimuksetLista(updated.getAmmattitaitovaatimuksetLista());
             this.setEsitieto(updated.getEsitieto());
         }
+    }
+
+    private List<AmmattitaitovaatimuksenKohdealue> connectAmmattitaitovaatimusListToTutkinnonOsa(Osaamistavoite other) {
+        for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : other.getAmmattitaitovaatimuksetLista()) {
+            ammattitaitovaatimuksenKohdealue.connectAmmattitaitovaatimuksetToKohdealue(ammattitaitovaatimuksenKohdealue );
+        }
+        return other.getAmmattitaitovaatimuksetLista();
     }
 
     @Override
