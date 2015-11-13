@@ -154,7 +154,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @BatchSize(size = 10)
     private Set<Oppiaine> oppimaarat;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable
     private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
 

@@ -29,9 +29,11 @@ import org.hibernate.type.Type;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Optional.fromNullable;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * User: tommiratamaa
@@ -123,7 +125,8 @@ public class HibernateInterceptor extends EmptyInterceptor {
         if (relation == null) {
             return Property.findForAnnotation(entityClz, RelatesToPeruste.class);
         }
-        return singletonList(Property.getForPath(entityClz, relation.value().split("\\.")));
+        return Stream.of(relation.value()).map(path -> Property.getForPath(entityClz, path.split("\\.")))
+                .collect(toList());
     }
 
     private Class<?> resolveRealEntityClass(Object entity) {

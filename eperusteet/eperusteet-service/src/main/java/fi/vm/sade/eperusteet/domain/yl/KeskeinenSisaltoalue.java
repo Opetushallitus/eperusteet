@@ -63,15 +63,6 @@ public class KeskeinenSisaltoalue extends AbstractReferenceableEntity {
     @RelatesToPeruste
     @NotAudited
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "yl_oppiaineen_vlkok_yl_keskeinen_sisaltoalue",
-            joinColumns = @JoinColumn(name = "sisaltoalueet_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "yl_oppiaineen_vlkok_id", nullable = false, updatable = false))
-    private Set<OppiaineenVuosiluokkaKokonaisuus> oppiaineenVuosiluokkaKokonaisuudet = new HashSet<>();
-
-    @Getter
-    @RelatesToPeruste
-    @NotAudited
-    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_opetuksen_tavoite_yl_keskeinen_sisaltoalue",
             joinColumns = @JoinColumn(name = "sisaltoalueet_id", nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id", nullable = false, updatable = false))
