@@ -29,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -147,6 +148,9 @@ public interface PerusteService {
 
     @PostAuthorize("returnObject == null or hasPermission(returnObject.id, 'peruste', 'LUKU')")
     PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
+
+    @PreAuthorize("permitAll()")
+    PerusteVersionDto getPerusteVersion(long id);
 
     @PreAuthorize("permitAll()")
     Revision getLastModifiedRevision(final Long id);

@@ -30,4 +30,11 @@ import java.util.Date;
 @Setter
 public class PerusteVersionDto {
     private Date aikaleima;
+
+    public PerusteVersionDto() {
+    }
+
+    public PerusteVersionDto(Date aikaleima) {
+        this.aikaleima = aikaleima;
+    }
 }

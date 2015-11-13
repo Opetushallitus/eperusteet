@@ -262,6 +262,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    public PerusteVersionDto getPerusteVersion(final long id) {
+        return perusteet.getGlobalPerusteVersion(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Revision getLastModifiedRevision(final Long id) {
         PerusteTila tila = perusteet.getTila(id);
         if (tila == null) {

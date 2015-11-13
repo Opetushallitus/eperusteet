@@ -411,7 +411,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     }
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, Supplier<T> response) {
-        return CacheableResponse.create(perusteet.getLastModifiedRevision(perusteId), 1, response);
+        return CacheableResponse.create(perusteet.getPerusteVersion(perusteId), 1, response);
     }
 
 }

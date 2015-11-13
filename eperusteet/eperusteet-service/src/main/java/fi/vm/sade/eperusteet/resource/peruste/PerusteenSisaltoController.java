@@ -107,7 +107,7 @@ public class PerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi) {
 
-        return CacheableResponse.create(service.getLastModifiedRevision(perusteId), 1, new Supplier<PerusteenOsaViiteDto<?>>() {
+        return CacheableResponse.create(service.getPerusteVersion(perusteId), 1, new Supplier<PerusteenOsaViiteDto<?>>() {
             @Override
             public PerusteenOsaViiteDto<?> get() {
                 Class<? extends Puu> puuClz = "suppea".equals(view) ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class;

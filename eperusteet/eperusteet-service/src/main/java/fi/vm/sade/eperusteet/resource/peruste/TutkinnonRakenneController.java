@@ -138,12 +138,11 @@ public class TutkinnonRakenneController {
     @ResponseBody
     public ResponseEntity<List<TutkinnonOsaViiteDto>> getTutkinnonOsat(
         @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi) {
-        return CacheableResponse.create(perusteService.getLastModifiedRevision(id), 1, new Supplier<List<TutkinnonOsaViiteDto>>() {
+        return CacheableResponse.create(perusteService.getPerusteVersion(id), 1, new Supplier<List<TutkinnonOsaViiteDto>>() {
             @Override
             public List<TutkinnonOsaViiteDto> get() {
                 return perusteService.getTutkinnonOsat(id, suoritustapakoodi);
             }
-
         });
     }
 

@@ -43,15 +43,15 @@ public final class Etags {
         return null;
     }
 
-    public static String eTagOf(Integer rev) {
+    public static String eTagOf(Number rev) {
         return wrap(String.valueOf(rev));
     }
 
-    public static HttpHeaders eTagHeader(Integer revision) {
+    public static HttpHeaders eTagHeader(Number revision) {
         return addETag(new HttpHeaders(), revision);
     }
 
-    public static HttpHeaders addETag(HttpHeaders headers, Integer revision) {
+    public static HttpHeaders addETag(HttpHeaders headers, Number revision) {
         if (revision != null) {
             headers.set("ETag", wrap(String.valueOf(revision)));
         }

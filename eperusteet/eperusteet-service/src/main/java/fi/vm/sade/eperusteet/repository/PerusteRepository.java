@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import java.util.List;
 import java.util.Set;
@@ -48,4 +49,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT p.tila from Peruste p WHERE p.id = ?1")
     PerusteTila getTila(Long id);
 
+    @Query("select new fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto(v.aikaleima) from PerusteVersion v " +
+            "   where v.peruste.id = ?1")
+    PerusteVersionDto getGlobalPerusteVersion(long perusteId);
 }
