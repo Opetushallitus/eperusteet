@@ -41,6 +41,7 @@ public abstract class PerusteBaseDto implements Serializable {
     private Long id;
     @JsonIgnore
     private Integer revision;
+    private PerusteVersionDto globalVersion;
 
     private LokalisoituTekstiDto nimi;
     private String koulutustyyppi;
