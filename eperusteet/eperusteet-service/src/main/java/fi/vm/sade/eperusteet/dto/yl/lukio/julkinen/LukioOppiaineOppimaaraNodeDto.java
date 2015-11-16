@@ -44,20 +44,24 @@ public class LukioOppiaineOppimaaraNodeDto implements Serializable, Lokalisoitav
     private final String koodiUri;
     private final LokalisoituTekstiDto nimi;
     private final boolean koosteinen;
+    private final Boolean abstrakti;
 
     private final LokalisoituTekstiDto pakollinenKurssiKuvaus;
     private final LokalisoituTekstiDto syventavaKurssiKuvaus;
     private final LokalisoituTekstiDto soveltavaKurssiKuvaus;
     private final LokalisoitavaOsaDto tavoitteet;
     private final LokalisoitavaOsaDto arviointi;
+    private final LokalisoitavaOsaDto tehtava;
+
     private final List<LukioOppiaineOppimaaraNodeDto> oppimaarat = new ArrayList<>();
     private final List<LukiokurssiJulkisetTiedotDto> kurssit = new ArrayList<>();
 
     public LukioOppiaineOppimaaraNodeDto(Long id, Long parentId,
                      UUID tunniste, Long nimiId, boolean koosteinen, Long jarjestys,
-                     String koodiArvo, String koodiUri,
+                     String koodiArvo, String koodiUri, Boolean abstrakti,
                      Long pakollinenKurssiKuvausId, Long syventavaKurssiKuvausId, Long soveltavaKurssiKuvausId,
                      Long tavoitteetOtsikkoId, Long tavoitteetTekstiId,
+                     Long tehtavaOtsikkoId, Long tehtavaTekstiId,
                      Long arviointiOtsikkoId, Long arviointiTekstiId) {
         this.id = id;
         this.parentId = parentId;
@@ -67,11 +71,13 @@ public class LukioOppiaineOppimaaraNodeDto implements Serializable, Lokalisoitav
         this.koodiUri = koodiUri;
         this.nimi = localizeLaterById(nimiId);
         this.koosteinen = koosteinen;
+        this.abstrakti = abstrakti;
         this.pakollinenKurssiKuvaus = localizeLaterById(pakollinenKurssiKuvausId);
         this.syventavaKurssiKuvaus = localizeLaterById(syventavaKurssiKuvausId);
         this.soveltavaKurssiKuvaus = localizeLaterById(soveltavaKurssiKuvausId);
         this.tavoitteet = localizedLaterByIds(tavoitteetOtsikkoId, tavoitteetTekstiId);
         this.arviointi = localizedLaterByIds(arviointiOtsikkoId, arviointiTekstiId);
+        this.tehtava = localizedLaterByIds(tehtavaOtsikkoId, tehtavaTekstiId);
     }
 
     @Override
