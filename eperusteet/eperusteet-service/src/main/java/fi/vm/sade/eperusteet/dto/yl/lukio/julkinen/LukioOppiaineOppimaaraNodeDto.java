@@ -44,7 +44,7 @@ public class LukioOppiaineOppimaaraNodeDto implements Serializable, Lokalisoitav
     private final String koodiUri;
     private final LokalisoituTekstiDto nimi;
     private final boolean koosteinen;
-    private final boolean abstrakti;
+    private final Boolean abstrakti;
 
     private final LokalisoituTekstiDto pakollinenKurssiKuvaus;
     private final LokalisoituTekstiDto syventavaKurssiKuvaus;
@@ -58,7 +58,7 @@ public class LukioOppiaineOppimaaraNodeDto implements Serializable, Lokalisoitav
 
     public LukioOppiaineOppimaaraNodeDto(Long id, Long parentId,
                      UUID tunniste, Long nimiId, boolean koosteinen, Long jarjestys,
-                     String koodiArvo, String koodiUri, boolean abstrakti,
+                     String koodiArvo, String koodiUri, Boolean abstrakti,
                      Long pakollinenKurssiKuvausId, Long syventavaKurssiKuvausId, Long soveltavaKurssiKuvausId,
                      Long tavoitteetOtsikkoId, Long tavoitteetTekstiId,
                      Long tehtavaOtsikkoId, Long tehtavaTekstiId,
