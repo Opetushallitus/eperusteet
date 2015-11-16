@@ -312,23 +312,21 @@ angular.module('eperusteApp')
   })
   .controller('LukiokoulutusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot) {
     $scope.lista = [];
-    $q.all([
-      Perusteet.get({ tyyppi: 'koulutustyyppi_2' }).$promise,
-    ]).then(function(res) {
+    Perusteet.get({
+      tyyppi: 'koulutustyyppi_2'
+    }, function(res) {
       if (res.sivuja > 1) {
         console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
       }
-
-
       $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
         .reverse()
-        .each(function(peruste) {
-          peruste.$url = $state.href('root.selaus.lukiokoulutus', {
-            perusteId: peruste.id
-          });
+        .each(function(eo) {
+          //TODO: Pitää korjata linkki julkiseen paikkaan
+          eo.$url = $state.href('root.selaus.lukiokoulutus', {perusteId: eo.id});
         })
         .value();
     }, Notifikaatiot.serverCb);
+
   })
   .controller('HakuCtrl', function($scope, $rootScope, $state, Perusteet, Haku, $stateParams,
     YleinenData, koulutusalaService, Kieli, Profiili, Notifikaatiot) {
