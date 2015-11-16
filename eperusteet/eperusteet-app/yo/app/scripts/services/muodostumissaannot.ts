@@ -209,7 +209,7 @@ angular.module('eperusteApp')
       ryhmaModaali: ryhmaModaali,
       rakenneosaModaali: rakenneosaModaali,
       kaannaSaanto: kaannaSaanto,
-      skratchpadNotEmpty: (value) => {
+      skratchpadNotEmpty: function(value) {
         if (arguments.length > 0) {
           skratchpadHasContent = value;
         }

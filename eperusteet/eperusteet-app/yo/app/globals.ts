@@ -8,3 +8,4 @@ declare var global: any;
 declare var moment: any;
 declare var $: any;
 declare var window: Window;
+declare var Promise: any;

@@ -1,12 +1,10 @@
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 interface EditointiKontrollitCallbacks {
   edit: any;
   save: any;
   cancel: any;
   notify: any;
   // validate: (validator: any) => boolean;
-  validate: (validator: any) => Promise<boolean>;
+  // validate: (validator: any) => Promise<boolean>;
 }
 
 /**
