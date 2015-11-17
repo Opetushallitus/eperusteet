@@ -102,7 +102,7 @@ BEGIN
   RETURN _id;
 END $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION newViite(vanhempiId bigint, perusteenosaId bigint)
+CREATE OR REPLACE FUNCTION newViite(vanhempiId bigint)
   RETURNS BIGINT AS $$
 BEGIN
   RETURN newViite(vanhempiId, null);
