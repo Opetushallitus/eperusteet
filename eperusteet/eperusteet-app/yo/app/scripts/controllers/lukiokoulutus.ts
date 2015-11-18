@@ -501,8 +501,8 @@ angular.module('eperusteApp')
       }
       pagination.total = countNotHidden(arr);
       pagination.multiPage = pagination.total  > pagination.showPerPage;
-      if ( pagination.total > 0 && pagination.total <= (pagination.currentPage-1)*pagination.showPerPage) {
-        changePage(arr, pagination, pagination.currentPage-1);
+      if (pagination.total > 0 && pagination.total <= (pagination.currentPage - 1) * pagination.showPerPage) {
+        changePage(arr, pagination, pagination.currentPage - 1);
       }
     };
     var moved = function(node, to, index) {
@@ -519,7 +519,7 @@ angular.module('eperusteApp')
           });
           _.remove(from.kurssit, node);
         } else {
-          $scope.liitetytKurssit.push(node);
+          $scope.liitetytKurssit.push(_.cloneDeep(node));
         }
         to.kurssit.push(node);
       }
