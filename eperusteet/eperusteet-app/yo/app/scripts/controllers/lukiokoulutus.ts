@@ -501,7 +501,7 @@ angular.module('eperusteApp')
       }
       pagination.total = countNotHidden(arr);
       pagination.multiPage = pagination.total  > pagination.showPerPage;
-      if (pagination.total <= (pagination.currentPage-1)*pagination.showPerPage) {
+      if ( pagination.total > 0 && pagination.total <= (pagination.currentPage-1)*pagination.showPerPage) {
         changePage(arr, pagination, pagination.currentPage-1);
       }
     };
