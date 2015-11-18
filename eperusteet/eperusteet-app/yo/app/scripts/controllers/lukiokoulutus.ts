@@ -647,8 +647,6 @@ angular.module('eperusteApp')
             ui.item.sortable.cancel();
           } else {
             moved(from, to, ui.item.sortable.index);
-            //Takaisin listaan, josta siirrettiin
-            $scope.liitetytKurssit.push(from);
             initIndexes();
           }
         });
