@@ -24,6 +24,8 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 /**
  * User: tommiratamaa
  * Date: 21.10.15
@@ -33,6 +35,7 @@ import lombok.Setter;
 @Setter
 @JsonTypeName("opetuksenyleisettavoitteet")
 public class OpetuksenYleisetTavoitteetLaajaDto extends PerusteenOsaDto.Laaja {
+    private UUID uuidTunniste;
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto kuvaus;
 

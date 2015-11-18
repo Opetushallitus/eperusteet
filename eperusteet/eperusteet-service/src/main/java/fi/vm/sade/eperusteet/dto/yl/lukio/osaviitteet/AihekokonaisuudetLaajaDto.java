@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * User: tommiratamaa
@@ -36,6 +37,7 @@ import java.util.List;
 @Setter
 @JsonTypeName("aihekokonaisuudet")
 public class AihekokonaisuudetLaajaDto extends Laaja {
+    private UUID uuidTunniste;
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto yleiskuvaus;
     private List<AihekokonaisuusDto> aihekokonaisuudet;
