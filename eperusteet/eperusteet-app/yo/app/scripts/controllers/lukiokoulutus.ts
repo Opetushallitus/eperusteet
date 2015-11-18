@@ -647,7 +647,6 @@ angular.module('eperusteApp')
             ui.item.sortable.cancel();
           } else {
             moved(from, to, ui.item.sortable.index);
-            initIndexes();
           }
         });
       }
