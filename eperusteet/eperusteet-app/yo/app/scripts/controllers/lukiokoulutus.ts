@@ -433,9 +433,13 @@ angular.module('eperusteApp')
       if (!node) {
         return false;
       }
-      //Tarkistetaan, että onko kurssi jo kyseisen oppiaineen/oppimäärän kurssi. Jos on, ei sallita
-      if( node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen ) {
-        var exists = false;
+
+      var exists = false;
+
+      //Tarkistetaan, että onko kurssi jo kyseisen oppiaineen/oppimäärän kurssi, mikäli ei siirretä oppiaineen/oppimäärän sisällä.
+      // Jos on jo, siirtoa ei sallita.
+      if( node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen &&
+        (_.isUndefined(node.$$nodeParent) || node.$$nodeParent.id !== to.id)) {
         _.each(to.kurssit, function(kurssi) {
           if( kurssi.id === node.id ) {
             exists = true;
