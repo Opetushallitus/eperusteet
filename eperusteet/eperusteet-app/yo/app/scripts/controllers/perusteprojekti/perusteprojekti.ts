@@ -166,7 +166,7 @@ angular.module('eperusteApp')
       .state('root.perusteprojekti.suoritustapa.koulutuksenosa.osaalue', {
         url: '/osaalue/{osaAlueId}',
         templateUrl: 'views/partials/muokkaus/koulutuksenOsaOsaAlue.html',
-        controller: 'TutkinnonOsaOsaAlueCtrl',
+        controller: 'KoulutuksenOsaOsaAlueCtrl',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible(false);
         }]

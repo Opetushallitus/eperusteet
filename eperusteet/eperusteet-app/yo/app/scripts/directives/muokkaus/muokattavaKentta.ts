@@ -59,13 +59,14 @@ angular.module('eperusteApp')
       },
       controller: function ($scope, YleinenData, MuokkausUtils, Varmistusdialogi, Utils) {
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
-        console.log($scope);
 
-        $scope.$watch('objectReady', function(newObjectReadyPromise) {
-          newObjectReadyPromise.then(function(newObject) {
-            $scope.object = newObject;
+        if( $scope.objectReady ){
+          $scope.$watch('objectReady', function(newObjectReadyPromise) {
+            newObjectReadyPromise.then(function(newObject) {
+              $scope.object = newObject;
+            });
           });
-        });
+        }
 
         function poistaOsio(value) {
           if(angular.isString(value)) {
@@ -166,6 +167,11 @@ angular.module('eperusteApp')
           'ammattitaito': ['', '<ammattitaito>', {
             'editointi-sallittu': 'true',
             'ammattitaito': 'object.' + scope.field.path,
+            'edit-enabled': 'editEnabled'
+          }],
+          'valmaarviointi': ['', '<valmaarviointi>', {
+            'editointi-sallittu': 'true',
+            'valmaarviointi': 'object.' + scope.field.path,
             'edit-enabled': 'editEnabled'
           }],
           'vuosiluokkakokonaisuuden-osaaminen': ['', '<div>', {

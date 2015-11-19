@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
@@ -47,4 +48,6 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private List<OsaAlueDto> osaAlueet;
     private List<KevytTekstiKappaleDto> vapaatTekstit;
     private TutkinnonOsaTyyppi tyyppi;
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private ValmaTelmaSisaltoDto valmaTelmaSisalto;
 }

@@ -7,8 +7,8 @@
 
 <div class="row">
   <div class="col-md-12 ep-sisalto-inner">
-    <div ng-show="osaAlueAlitila" ui-view></div>
-    <div ng-show="!osaAlueAlitila">
+    <div ng-if="osaAlueAlitila" ui-view></div>
+    <div ng-if="!osaAlueAlitila">
       <revert-note object="tutkinnonOsaViite" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
 
       <div class="part-header-wrapper">
@@ -27,6 +27,19 @@
           <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
           <div ng-if="editEnabled && tutkinnonOsaViite.tutkinnonOsa.tila !== 'valmis'">
             <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].id)" kaanna="vateConverter('poista-tutkinnonosa')"></button>
+
+            <div class="floater" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi !== 'tutke2'">
+              <div class="dropdown">
+                <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="'muokkaus-lisaa-sisalto'"></button>
+                <ul class="pull-right dropdown-menu">
+                  <li ng-repeat="field in fields | orderBy:'order'">
+                    <a ng-show="hideFieldInMenu(field)" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
+                    <a class="action-link" ng-show="!hideFieldInMenu(field)" ng-click="addFieldToVisible(field)">{{ vateConverter('muokkaus-' + field.localeKey + '-header') | kaanna}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -125,6 +138,8 @@
         <tutke2kentat edit-enabled="editEnabled" tutkinnonosa-viite="tutkinnonOsaPromise" kontrollit="editointikontrollit"
                       yksikko="yksikko" is-koulutuksen-osa="true"></tutke2kentat>
       </div>
+
+      <kenttalistaus ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi !== 'tutke2'" edit-enabled="editEnabled" fields="fields" object-promise="tutkinnonOsaPromise"></kenttalistaus>
 
       <kommentit></kommentit>
     </div>

@@ -74,8 +74,15 @@
         </div>
 
         <!-- osaamistavoitteet -->
-        <p class="info-placeholder" ng-show="!alue.$editing && (!alue.osaamistavoitteet || alue.osaamistavoitteet.length === 0)"
-           kaanna>Ei osaamistavoitteita.</p>
+        <p class="info-placeholder" ng-show="!alue.$editing && (!alue.osaamistavoitteet || alue.osaamistavoitteet.length === 0)
+        && (!alue.valmaTelmaSisalto || alue.valmaTelmaSisalto.length === 0)" kaanna>
+          Ei osaamistavoitteita.
+        </p>
+        <div ng-if="alue.valmaTelmaSisalto && alue.valmaTelmaSisalto.length !== 0">
+          <valmaarviointi valmaarviointi="alue.valmaTelmaSisalto.osaamistavoite" mainLevelEditing="false" ei-kohdealueita="true"></valmaarviointi>
+          <valmaarviointi valmaarviointi="alue.valmaTelmaSisalto.osaamisenarviointi" type="arviointi" mainLevelEditing="false" ei-kohdealueita="true"></valmaarviointi>
+        </div>
+
         <div ng-if="!alue.$editing" ng-repeat="pakollisuus in [true, false]">
           <div class="panel panel-default panel-clean" ng-repeat="tavoite in getTavoitteet(alue, pakollisuus)" ng-class="{'kohde-edit': tavoite.$editing}">
 

@@ -418,6 +418,14 @@
 
     "lajittelu-jarjestysnumero": "No.",
 
+    "muokkaus-koulutuksen-osan-osaamisentavoitteet-header": "Osaamisentavoitteet",
+    "muokkaus-koulutuksen-osan-osaamisen-arviointi-header": "Osaamisen arviointi",
+    "muokkaus-koulutuksen-osan-osaamisen-arviointi-tekstina-header": "Osaamisen arviointi tekstinä",
+    "valmaarviointi-uusi-kohde": "Kohde",
+    "valmaarviointi-uusi-tavoite-placeholder": "Tavoite",
+    "valmaarviointi-uusi-arviointi-placeholder": "Kriteeri",
+
+
     "tarkastele-esitysta": "Tarkastele esitystilassa",
     "poista-kohdealue": "Poista",
     "lisaa-tavoitealue": "Lisää tavoitealue",
@@ -453,6 +461,12 @@
     "kohde": "Kohde",
     "osaamisen-arviointi-tekstina": "Osaamisen arviointi tekstinä",
     "koulutuksenosa": "Koulutuksenosa",
+    "lisaa-koulutuksenosa": "Lisää koulutuksenosa",
+    "osaamistavoitteet-selite": "Osaamistavoite",
+    "valmaarviointi-uusi-kriteeri": "Uusi kriteeri",
+    "uusi-tavoite-joukko": "Lisää osaamistavoite",
+    "valmaarviointi-kuvaus-placeholder": "Osaamistavoite",
+    "valmaarviointi-arviointi-kuvaus": "Kuvaus",
 
     "ota-versio-kayttoon": "Ota tämä versio käyttöön",
     "katso-uusin-versio": "Katso uusin versio",

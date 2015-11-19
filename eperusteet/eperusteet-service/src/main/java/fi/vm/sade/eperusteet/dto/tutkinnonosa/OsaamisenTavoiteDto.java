@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +28,8 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class OsaamisenArviointiDto {
+@JsonTypeName("osaamistavoite")
+public class OsaamisenTavoiteDto {
     private Long id;
     private LokalisoituTekstiDto kohde;
     private LokalisoituTekstiDto selite;

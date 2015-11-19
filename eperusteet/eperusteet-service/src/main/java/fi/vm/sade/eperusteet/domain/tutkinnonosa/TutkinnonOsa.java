@@ -109,6 +109,11 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     private List<OsaAlue> osaAlueet;
 
     @Getter
+    @Setter
+    @OneToOne(cascade = {CascadeType.ALL})
+    private ValmaTelmaSisalto valmaTelmaSisalto;
+
+    @Getter
     @Enumerated(EnumType.STRING)
     @NotNull
     private TutkinnonOsaTyyppi tyyppi = TutkinnonOsaTyyppi.NORMAALI;
@@ -240,6 +245,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setKoodiArvo(other.getKoodiArvo());
             this.setTyyppi(other.getTyyppi());
             this.setKuvaus(other.getKuvaus());
+            this.setValmaTelmaSisalto(other.getValmaTelmaSisalto());
             this.setVapaatTekstit(other.getVapaatTekstit());
             if (other.getOsaAlueet() != null) {
                 this.setOsaAlueet(mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet()));
@@ -249,12 +255,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     private List<AmmattitaitovaatimuksenKohdealue> connectAmmattitaitovaatimusListToTutkinnonOsa(TutkinnonOsa other) {
         for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : other.getAmmattitaitovaatimuksetLista()) {
-            for (AmmattitaitovaatimuksenKohde ammattitaitovaatimuksenKohde : ammattitaitovaatimuksenKohdealue.getVaatimuksenKohteet()) {
-                ammattitaitovaatimuksenKohde.setAmmattitaitovaatimuksenkohdealue( ammattitaitovaatimuksenKohdealue );
-                for (Ammattitaitovaatimus ammattitaitovaatimus : ammattitaitovaatimuksenKohde.getVaatimukset()) {
-                    ammattitaitovaatimus.setAmmattitaitovaatimuksenkohde( ammattitaitovaatimuksenKohde );
-                }
-            }
+            ammattitaitovaatimuksenKohdealue.connectAmmattitaitovaatimuksetToKohdealue( ammattitaitovaatimuksenKohdealue );
         }
         return other.getAmmattitaitovaatimuksetLista();
     }

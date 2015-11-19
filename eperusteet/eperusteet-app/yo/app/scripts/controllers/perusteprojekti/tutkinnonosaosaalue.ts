@@ -133,14 +133,12 @@ angular.module('eperusteApp')
         goBack();
       },
       save: function () {
-        console.log($scope.osaAlue);
         $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
 
         TutkinnonOsanOsaAlue.save({
           viiteId: $stateParams.tutkinnonOsaViiteId,
           osaalueenId: $stateParams.osaAlueId
         }, $scope.osaAlue, function(res) {
-          console.log(res);
           Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
           goBack();
         }, function(virhe) {

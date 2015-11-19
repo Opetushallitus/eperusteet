@@ -26,7 +26,11 @@ angular.module('eperusteApp')
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.tutkinnonOsat = [];
     $scope.editoi = false;
-    $scope.naytaToisestaSuoritustavastaTuonti = perusteprojektiTiedot.getPeruste().suoritustavat.length > 1;
+
+    if( perusteprojektiTiedot.getPeruste().suoritustavat ){
+      $scope.naytaToisestaSuoritustavastaTuonti = (perusteprojektiTiedot.getPeruste().suoritustavat) ? (perusteprojektiTiedot.getPeruste().suoritustavat.length > 1) : false;
+    }
+
     $scope.yksikko = _.zipObject(_.map($scope.peruste.suoritustavat, 'suoritustapakoodi'),
                                   _.map($scope.peruste.suoritustavat, 'laajuusYksikko'));
 

@@ -102,9 +102,10 @@ angular.module('eperusteApp')
       },
       edit: function (alue, $event) {
         stopEvent($event);
+        //FIXME remove reload
         $state.go('root.perusteprojekti.suoritustapa.' +
             ($scope.isKoulutuksenOsa ? 'koulutuksenosa' : 'tutkinnonosa') + '.osaalue',
-            { osaAlueId: alue.id });
+            { osaAlueId: alue.id }, {reload: $scope.isKoulutuksenOsa});
       },
       remove: function (alue) {
         if (alue.id) {

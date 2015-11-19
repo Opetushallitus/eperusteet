@@ -15,52 +15,57 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.*;
-
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author nkala
  */
 @Entity
-@Table(name = "osaalue_valmatelma")
+@Table(name = "valmatelma_osaamisentavoite")
 @Audited
-public class ValmaTelmaSisalto implements Serializable {
+public class OsaamisenTavoite implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Getter
-    @Setter
-    @JoinColumn(name = "osaamisenarviointi_id")
-    private OsaamisenArviointi osaamisenarviointi;
-
-    @Getter
-    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen osaamisenarviointiTekstina;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "valmatelma_osaamisentavoite_osaalue_valmatelma",
-            joinColumns = @JoinColumn(name = "valmatelmasisalto_id"),
-            inverseJoinColumns = @JoinColumn(name = "osaamisentavoite_id"))
     @Getter
     @Setter
-    @OrderColumn(name = "jarjestys")
-    private List<OsaamisenTavoite> osaamistavoite = new ArrayList<>();
+    private TekstiPalanen kohde;
+
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Getter
+    @Setter
+    private TekstiPalanen selite;
+
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OrderColumn
+    @JoinTable(name = "valmatelmatavoite_tekstipalanen",
+               joinColumns = @JoinColumn(name = "valmatelma_osaamisentavoite_id"),
+               inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @BatchSize(size = 25)
+    @Getter
+    @Setter
+    private List<TekstiPalanen> tavoitteet = new ArrayList<>();
 
 }
