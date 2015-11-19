@@ -16,12 +16,10 @@
 
 'use strict';
 
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 /* Sets sivunavi items active based on current state */
 angular.module('eperusteet.esitys')
 .service('epPerusopetusStateService', function ($state, $stateParams, epSivunaviUtils, $rootScope,
-  epEsitysSettings) {
+      epEsitysSettings) {
   var state: any = {};
   var section = null;
 
@@ -159,4 +157,9 @@ angular.module('eperusteet.esitys')
   this.getState = function () {
     return state;
   };
-});
+})
+  .service('epLukiokoulutusStateService', function ($state, $stateParams, epSivunaviUtils, $rootScope,
+                                                    epEsitysSettings, $log) {
+    $log.info('epLukiokoulutusStateService - TODO')
+
+  });

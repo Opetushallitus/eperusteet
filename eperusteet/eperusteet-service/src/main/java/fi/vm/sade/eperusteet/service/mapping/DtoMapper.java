@@ -42,7 +42,7 @@ public interface DtoMapper {
      * @param sourceObject lähdeobjecti
      * @param destinationObject kohdeobjekti
      */
-    <S, D> void map(S sourceObject, D destinationObject);
+    <S, D> D map(S sourceObject, D destinationObject);
 
     /**
      * muuntaa Iterablen listaksi jonka elementin tyyppi on D

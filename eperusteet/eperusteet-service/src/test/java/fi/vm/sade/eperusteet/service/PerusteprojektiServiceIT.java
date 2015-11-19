@@ -30,11 +30,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.DiaarinumeroHakuDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -327,8 +323,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         List<PerusteprojektiInfoDto> info = service.getBasicInfo();
         Assert.assertEquals(3, info.size());
 
-        info = service.getOmatProjektit();
-        Assert.assertEquals(3, info.size());
+        List<PerusteprojektiListausDto> infoOmat = service.getOmatProjektit();
+        Assert.assertEquals(3, infoOmat.size());
 
         PerusteprojektiDto ppdto = service.get(tpp.getId());
         Assert.assertNotNull(ppdto);

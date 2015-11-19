@@ -27,25 +27,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
  *
  * @author jhyoty
  */
-public interface PerusopetuksenPerusteenSisaltoService {
+public interface PerusopetuksenPerusteenSisaltoService extends OppiainePerusteenSisaltoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<LaajaalainenOsaaminenDto> getLaajaalaisetOsaamiset(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    <T extends OppiaineBaseDto> List<T> getOppiaineet(Long perusteId, Class<T> view);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuudet(@P("perusteId") Long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    <T extends PerusteenOsaViiteDto<?>> T getSisalto(@P("perusteId") Long perusteId, Long sisaltoId, Class<T> view);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    PerusteenOsaViiteDto.Matala addSisalto(@P("perusteId") Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala dto);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void removeSisalto(@P("perusteId") Long perusteId, Long viiteId);
     //TBD: lukitus
 
 }

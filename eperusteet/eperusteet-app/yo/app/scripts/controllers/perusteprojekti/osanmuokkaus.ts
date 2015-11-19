@@ -18,7 +18,9 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('OsanMuokkausHelper', function ($q, $stateParams, PerusopetusService, $state, Lukitus) {
+  .service('OsanMuokkausHelper', function ($q, $stateParams, PerusopetusService,
+                                           LukiokoulutusService,
+                                           $state, Lukitus) {
     var vuosiluokat = [];
     var model = null;
     var isLocked = false;
@@ -27,6 +29,25 @@ angular.module('eperusteApp')
     var path = null;
     var oppiaine = null;
     var osaamiset = null;
+    var service = PerusopetusService;
+    var oppiaineLukitus = {
+      lukitse: function (and) {
+        Lukitus.lukitseOppiaine(oppiaine.id, function() {
+          isLocked = true;
+          if (and) {
+            and();
+          }
+        });
+      },
+      vapauta: function (and?) {
+        Lukitus.vapautaOppiaine(oppiaine.id, function () {
+          isLocked = false;
+          if (and) {
+            and();
+          }
+        });
+      }
+    };
 
     function reset() {
       backState = null;
@@ -42,7 +63,8 @@ angular.module('eperusteApp')
 
     function setup(uusiModel, uusiPath, uusiOppiaine, cb) {
       cb = cb || angular.noop;
-      oppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ? uusiModel : null;
+      oppiaine = ($stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ||
+                $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT) ? uusiModel : null;
       if (uusiOppiaine) {
         oppiaine = uusiOppiaine;
       }
@@ -51,25 +73,57 @@ angular.module('eperusteApp')
       isLocked = false;
       backState = [$state.current.name, _.clone($stateParams)];
 
-      $q.all([
-        PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true),
-        PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true)
-      ]).then(function(res) {
-        vuosiluokat = res[0];
-        osaamiset = res[1];
-        vuosiluokka = uusiModel._vuosiluokkaKokonaisuus ? _.find(vuosiluokat, function(vl) {
-          return vl.id === parseInt(model._vuosiluokkaKokonaisuus, 10);
-        }) : null;
+      var promises = [];
+      var usesVuosiluokkas = false,
+          usesOsaamiset = false;
+      if ($stateParams.suoritustapa === 'lukiokoulutus') {
+        oppiaineLukitus = {
+          lukitse: function (and) {
+            Lukitus.lukitseLukioOppiaine(oppiaine.id, function() {
+              isLocked = true;
+              if (and) {
+                and();
+              }
+            });
+          },
+          vapauta: function (and) {
+            Lukitus.vapautaLukioOppiaine(oppiaine.id, function () {
+              isLocked = false;
+              if (and) {
+                and();
+              }
+            });
+          }
+        };
+        service = LukiokoulutusService;
+      } else {
+        usesVuosiluokkas = true;
+        usesOsaamiset = true;
+        promises = [
+          PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true),
+          PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true)
+        ];
+      }
+
+      $q.all(promises).then(function(res) {
+        if (usesVuosiluokkas) {
+          vuosiluokat = res[0];
+        }
+        if (usesOsaamiset) {
+          osaamiset = res[1];
+        }
+        if (usesVuosiluokkas) {
+          vuosiluokka = uusiModel._vuosiluokkaKokonaisuus ? _.find(vuosiluokat, function(vl) {
+            return vl.id === parseInt(model._vuosiluokkaKokonaisuus, 10);
+          }) : null;
+        }
         if (isVuosiluokkakokonaisuudenOsa()) {
           Lukitus.lukitseOppiaineenVuosiluokkakokonaisuus(oppiaine.id, model.id, function () {
             isLocked = true;
             cb();
           });
         } else if (oppiaine) {
-          Lukitus.lukitseOppiaine(oppiaine.id, function() {
-            isLocked = true;
-            cb();
-          });
+          oppiaineLukitus.lukitse(cb);
         }
       });
     }
@@ -84,12 +138,9 @@ angular.module('eperusteApp')
         });
       } else if (path) {
         var payload = _.pick(model, ['id', path]);
-        PerusopetusService.saveOsa(payload, backState[1], function () {
+        service.saveOsa(payload, backState[1], function () {
           if (isLocked && oppiaine) {
-            Lukitus.vapautaOppiaine(oppiaine.id, function () {
-              isLocked = false;
-              goBack();
-            });
+            oppiaineLukitus.vapauta(goBack);
           }
         });
       }
@@ -106,9 +157,7 @@ angular.module('eperusteApp')
             isLocked = false;
           });
         } else if (oppiaine) {
-          Lukitus.vapautaOppiaine(oppiaine.id, function () {
-            isLocked = false;
-          });
+          oppiaineLukitus.vapauta();
         }
       }
       var params = _.clone(backState);
@@ -166,7 +215,7 @@ angular.module('eperusteApp')
       tekstikappale: {
         directive: 'osanmuokkaus-tekstikappale',
         attrs: {
-          model: 'objekti',
+          model: 'objekti'
         },
         callbacks: {
           save: function () {
@@ -176,7 +225,7 @@ angular.module('eperusteApp')
           edit: function () {},
           cancel: function () {
             OsanMuokkausHelper.goBack();
-          },
+          }
         }
       },
       sisaltoalueet: {
@@ -192,13 +241,13 @@ angular.module('eperusteApp')
           edit: function () {},
           cancel: function () {
             OsanMuokkausHelper.goBack();
-          },
+          }
         }
       },
       kohdealueet: {
         directive: 'osanmuokkaus-kohdealueet',
         attrs: {
-          model: 'objekti',
+          model: 'objekti'
         },
         callbacks: {
           save: function () {
@@ -207,13 +256,13 @@ angular.module('eperusteApp')
           edit: function () {},
           cancel: function () {
             OsanMuokkausHelper.goBack();
-          },
+          }
         }
       },
       tavoitteet: {
         directive: 'osanmuokkaus-tavoitteet',
         attrs: {
-          model: 'objekti',
+          model: 'objekti'
         },
         callbacks: {
           save: function () {
@@ -222,7 +271,7 @@ angular.module('eperusteApp')
           edit: function () {},
           cancel: function () {
             OsanMuokkausHelper.goBack();
-          },
+          }
         }
       }
     };

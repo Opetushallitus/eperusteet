@@ -28,11 +28,12 @@ public enum Suoritustapakoodi {
     PERUSOPETUS("perusopetus"),
     LISAOPETUS("lisaopetus"),
     VARHAISKASVATUS("varhaiskasvatus"),
-    ESIOPETUS("esiopetus");
+    ESIOPETUS("esiopetus"),
+    LUKIOKOULUTUS("lukiokoulutus");
 
     private final String koodi;
 
-    private Suoritustapakoodi(String koodi) {
+    Suoritustapakoodi(String koodi) {
         this.koodi = koodi;
     }
 

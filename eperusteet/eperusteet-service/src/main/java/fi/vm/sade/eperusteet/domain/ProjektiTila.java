@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  *
@@ -65,6 +66,9 @@ public enum ProjektiTila {
     },
     JULKAISTU("julkaistu");
 
+    public static ProjektiTila[] jalkeen(ProjektiTila tila) {
+        return Stream.of(ProjektiTila.values()).filter(t -> t.ordinal() > tila.ordinal()).toArray(ProjektiTila[]::new);
+    }
 
     private final String tila;
 

@@ -15,36 +15,23 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
+import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.service.util.Pair;
-import java.util.List;
-import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -150,17 +137,35 @@ public interface PerusteService {
     Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'LUKU')")
-    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId);
+    List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
-    public TutkintonimikeKoodiDto addTutkintonimikeKoodi(Long perusteId, TutkintonimikeKoodiDto dto);
+    TutkintonimikeKoodiDto addTutkintonimikeKoodi(Long perusteId, TutkintonimikeKoodiDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
-    public void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
+    void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
 
     @PostAuthorize("returnObject == null or hasPermission(returnObject.id, 'peruste', 'LUKU')")
-    public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
+    PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
 
     @PreAuthorize("permitAll()")
-    public Revision getLastModifiedRevision(final Long id);
+    PerusteVersionDto getPerusteVersion(long id);
+
+    @PreAuthorize("permitAll()")
+    Revision getLastModifiedRevision(final Long id);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteetByVersion(long perusteId, int revision);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void tallennaYleisetTavoitteet(Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<Revision> getYleisetTavoitteetVersiot(Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    LukiokoulutuksenYleisetTavoitteetDto palautaYleisetTavoitteet(long perusteId, int revisio);
 }

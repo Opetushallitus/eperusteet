@@ -38,6 +38,13 @@ public class TutkinnonRakenneLockContext {
         this.koodi = koodi;
     }
 
+    public void setOsanId(Long perusteId) {
+        this.perusteId = perusteId;
+    }
+
+    public void setSuoritustapa(Suoritustapakoodi koodi) {
+        this.koodi = koodi;
+    }
 
     public static TutkinnonRakenneLockContext of(Long perusteId, Suoritustapakoodi koodi) {
         return new TutkinnonRakenneLockContext(perusteId, koodi);

@@ -23,7 +23,8 @@ angular.module('eperusteApp')
     var namecache = {};
     var URLS = {
       tutkinnonosat: ['suoritustapa.tutkinnonosat'],
-      osalistaus: ['suoritustapa.osalistaus']
+      osalistaus: ['suoritustapa.osalistaus'],
+      lukioosat: ['suoritustapa.lukioosat']
     };
     var custom = [];
 
@@ -44,6 +45,9 @@ angular.module('eperusteApp')
       },
       'suoritustapa.osaalue': {
         items: [{url: 'osalistaus', label: {getName: 'osanTyyppi'}}, 'custom', {getName: 'osanId'}]
+      },
+      'suoritustapa.lukioosaalue': {
+        items: [{url: 'lukioosat', label: {getName: 'osanTyyppi'}}, 'custom', {getName: 'osanId'}]
       }
     };
 

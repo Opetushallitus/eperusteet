@@ -48,6 +48,11 @@ angular.module('eperusteApp')
         templateUrl: 'views/perusopetuslistaus.html',
         controller: 'PerusopetusListaController',
       })
+      .state('root.selaus.lukiokoulutuslista', {
+        url: '/lukiokoulutuslistaus',
+        templateUrl: 'views/lukiokoulutuslistaus.html',
+        controller: 'LukiokoulutusListaController',
+      })
       .state('root.selaus.lisaopetus', {
         url: '/lisaopetus/:perusteId',
         templateUrl: 'eperusteet-esitys/views/yksinkertainen.html',
@@ -122,110 +127,150 @@ angular.module('eperusteApp')
         templateUrl: 'eperusteet-esitys/views/tiedot.html',
         controller: 'epEsitysTiedotController'
       })
-      /*.state('root.selaus.perusopetus', {
+      .state('root.selaus.perusopetus', {
         url: '/perusopetus/:perusteId',
-        templateUrl: 'views/perusopetus.html',
-        controller: 'PerusopetusController',
+        templateUrl: 'eperusteet-esitys/views/perusopetus.html',
+        controller: 'epPerusopetusController',
         resolve: {
-          sisalto: function($stateParams, $q, Perusteet, LaajaalaisetOsaamiset, Oppiaineet, Vuosiluokkakokonaisuudet, SuoritustapaSisalto) {
-            // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
+          perusteId: function ($stateParams) {
+            return $stateParams.perusteId;
+          },
+          peruste: function (perusteId, Perusteet) {
+            return Perusteet.get({perusteId: perusteId}).$promise;
+          },
+          sisalto: function(peruste, $q, LaajaalaisetOsaamiset,
+              Oppiaineet, Vuosiluokkakokonaisuudet, SuoritustapaSisalto) {
+            if (_.isArray(peruste.data)) {
+              peruste = peruste.data[0];
+            }
+            var perusteId = peruste.id;
             return $q.all([
-              Perusteet.get({perusteId: $stateParams.perusteId}).$promise,
-              LaajaalaisetOsaamiset.query({perusteId: $stateParams.perusteId}).$promise,
-              Oppiaineet.query({perusteId: $stateParams.perusteId}).$promise,
-              Vuosiluokkakokonaisuudet.query({perusteId: $stateParams.perusteId}).$promise,
-              SuoritustapaSisalto.get({perusteId: $stateParams.perusteId, suoritustapa: 'perusopetus'}).$promise,
+              peruste,
+              LaajaalaisetOsaamiset.query({perusteId: perusteId}).$promise,
+              Oppiaineet.query({perusteId: perusteId}).$promise,
+              Vuosiluokkakokonaisuudet.query({perusteId: perusteId}).$promise,
+              SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: 'perusopetus'}).$promise,
             ]);
           }
         }
-      })*/
+      })
 
-    .state('root.selaus.perusopetus', {
-    url: '/perusopetus/:perusteId',
-    templateUrl: 'eperusteet-esitys/views/perusopetus.html',
-    controller: 'epPerusopetusController',
-    resolve: {
-      perusteId: function ($stateParams) {
-        return $stateParams.perusteId;
-      },
-      peruste: function (perusteId, Perusteet) {
-        return Perusteet.get({perusteId: perusteId}).$promise;
-      },
-      sisalto: function(peruste, $q, LaajaalaisetOsaamiset,
-          Oppiaineet, Vuosiluokkakokonaisuudet, SuoritustapaSisalto) {
-        if (_.isArray(peruste.data)) {
-          peruste = peruste.data[0];
+      .state('root.selaus.perusopetus.vuosiluokkakokonaisuus', {
+        url: '/vuosiluokkakokonaisuus/:vlkId',
+        templateUrl: 'eperusteet-esitys/views/vuosiluokkakokonaisuus.html',
+        controller: 'epPerusopetusVlkController'
+      })
+
+      .state('root.selaus.perusopetus.laajaalaiset', {
+        url: '/laajaalaisetosaamiset',
+        templateUrl: 'eperusteet-esitys/views/laajaalaiset.html',
+        controller: 'epLaajaalaisetOsaamisetController'
+      })
+
+      .state('root.selaus.perusopetus.vlkoppiaine', {
+        url: '/vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId',
+        templateUrl: 'eperusteet-esitys/views/vlkoppiaine.html',
+        controller: 'epPerusopetusVlkOppiaineController',
+        resolve: {
+          oppiaineId: function ($stateParams) {
+            return $stateParams.oppiaineId;
+          },
+          oppiaine: function (perusteId, Oppiaineet, oppiaineId) {
+            return Oppiaineet.get({ perusteId: perusteId, osanId: oppiaineId }).$promise;
+          }
         }
-        var perusteId = peruste.id;
-        return $q.all([
-          peruste,
-          LaajaalaisetOsaamiset.query({perusteId: perusteId}).$promise,
-          Oppiaineet.query({perusteId: perusteId}).$promise,
-          Vuosiluokkakokonaisuudet.query({perusteId: perusteId}).$promise,
-          SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: 'perusopetus'}).$promise,
-        ]);
-      }
-    }
-  })
+      })
 
-  .state('root.selaus.perusopetus.tekstikappale', {
-    url: '/tekstikappale/:tekstikappaleId',
-    templateUrl: 'eperusteet-esitys/views/tekstikappale.html',
-    controller: 'epPerusopetusTekstikappaleController',
-    resolve: {
-      tekstikappaleId: function ($stateParams) {
-        return $stateParams.tekstikappaleId;
-      },
-      tekstikappale: function (tekstikappaleId, PerusteenOsat) {
-        return PerusteenOsat.getByViite({viiteId: tekstikappaleId}).$promise;
-      },
-      lapset: function (sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
-        return epTekstikappaleChildResolver.get(sisalto[4], tekstikappaleId);
-      }
-    }
-  })
+      .state('root.selaus.perusopetus.sisallot', {
+        url: '/sisallot/:oppiaineId?vlk&sisalto&osaaminen&valittu',
+        templateUrl: 'eperusteet-esitys/views/vlkoppiaine.html',
+        controller: 'epPerusopetusSisallotController',
+        resolve: {
+          oppiaineId: function ($stateParams) {
+            return $stateParams.oppiaineId;
+          },
+          oppiaine: function (perusteId, Oppiaineet, oppiaineId) {
+            return oppiaineId ? Oppiaineet.get({ perusteId: perusteId, osanId: oppiaineId }).$promise : null;
+          }
+        }
+      })
 
-  .state('root.selaus.perusopetus.vuosiluokkakokonaisuus', {
-    url: '/vuosiluokkakokonaisuus/:vlkId',
-    templateUrl: 'eperusteet-esitys/views/vuosiluokkakokonaisuus.html',
-    controller: 'epPerusopetusVlkController'
-  })
 
-  .state('root.selaus.perusopetus.laajaalaiset', {
-    url: '/laajaalaisetosaamiset',
-    templateUrl: 'eperusteet-esitys/views/laajaalaiset.html',
-    controller: 'epLaajaalaisetOsaamisetController'
-  })
+      .state('root.selaus.lukiokoulutus', {
+        url: '/lukiokoulutus/:perusteId',
+        templateUrl: 'eperusteet-esitys/views/lukiokoulutus.html',
+        controller: 'epLukiokoulutusController',
+        resolve: {
+          perusteId: function ($stateParams) {
+            return $stateParams.perusteId;
+          },
+          peruste: function (perusteId, Perusteet) {
+            return Perusteet.get({perusteId: perusteId}).$promise;
+          },
+          sisalto: function(peruste, $q, LukionOppiaineet, SuoritustapaSisalto) {
+            //TODO
+            return $q.when([]);
+            /*
+            if (_.isArray(peruste.data)) {
+              peruste = peruste.data[0];
+            }
+            var perusteId = peruste.id;
+            return $q.all([
+              peruste,
+              LukionOppiaineet.query({perusteId: perusteId}).$promise,
+              SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: 'lukiokoulutus'}).$promise,
+            ]);*/
+          }
+        }
+      })
 
-  .state('root.selaus.perusopetus.vlkoppiaine', {
-    url: '/vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId',
-    templateUrl: 'eperusteet-esitys/views/vlkoppiaine.html',
-    controller: 'epPerusopetusVlkOppiaineController',
-    resolve: {
-      oppiaineId: function ($stateParams) {
-        return $stateParams.oppiaineId;
-      },
-      oppiaine: function (perusteId, Oppiaineet, oppiaineId) {
-        return Oppiaineet.get({ perusteId: perusteId, osanId: oppiaineId }).$promise;
-      }
-    }
-  })
+      .state('root.selaus.lukiokoulutus.sisallot', {
+        url: '/sisallot/:oppiaineId?vlk&sisalto&osaaminen&valittu',
+        templateUrl: 'eperusteet-esitys/views/vlkoppiaine.html',
+        controller: 'epLukiokoulutusSisallotController',
+        resolve: {
+          oppiaineId: function ($stateParams) {
+            return $stateParams.oppiaineId;
+          },
+          oppiaine: function (perusteId, Oppiaineet, oppiaineId) {
+            return oppiaineId ? Oppiaineet.get({ perusteId: perusteId, osanId: oppiaineId }).$promise : null;
+          }
+        }
+      })
+      .state('root.selaus.perusopetus.tekstikappale', {
+        url: '/tekstikappale/:tekstikappaleId',
+        templateUrl: 'eperusteet-esitys/views/tekstikappale.html',
+        controller: 'epPerusopetusTekstikappaleController',
+        resolve: {
+          tekstikappaleId: function ($stateParams) {
+            return $stateParams.tekstikappaleId;
+          },
+          tekstikappale: function (tekstikappaleId, PerusteenOsat) {
+            return PerusteenOsat.getByViite({viiteId: tekstikappaleId}).$promise;
+          },
+          lapset: function (sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
+            return epTekstikappaleChildResolver.get(sisalto[4], tekstikappaleId);
+          }
+        }
+      })
+      .state('root.selaus.lukiokoulutus.tekstikappale', {
+        url: '/tekstikappale/:tekstikappaleId',
+        templateUrl: 'eperusteet-esitys/views/tekstikappale.html',
+        controller: 'epLukiokoulutusTekstikappaleController',
+        resolve: {
+          tekstikappaleId: function ($stateParams) {
+            return $stateParams.tekstikappaleId;
+          },
+          tekstikappale: function (tekstikappaleId, PerusteenOsat) {
+            return PerusteenOsat.getByViite({viiteId: tekstikappaleId}).$promise;
+          },
+          lapset: function (sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
+            return epTekstikappaleChildResolver.get(sisalto[4], tekstikappaleId);
+          }
+        }
+      })
 
-  .state('root.selaus.perusopetus.sisallot', {
-    url: '/sisallot/:oppiaineId?vlk&sisalto&osaaminen&valittu',
-    templateUrl: 'eperusteet-esitys/views/vlkoppiaine.html',
-    controller: 'epPerusopetusSisallotController',
-    resolve: {
-      oppiaineId: function ($stateParams) {
-        return $stateParams.oppiaineId;
-      },
-      oppiaine: function (perusteId, Oppiaineet, oppiaineId) {
-        return oppiaineId ? Oppiaineet.get({ perusteId: perusteId, osanId: oppiaineId }).$promise : null;
-      }
-    }
-  })
-
-      ;
+    ;
   })
   .controller('EsiopetusListaController', function($scope, $state, Perusteet, Notifikaatiot) {
     $scope.lista = [];
@@ -264,6 +309,24 @@ angular.module('eperusteApp')
         })
         .value();
     }, Notifikaatiot.serverCb);
+  })
+  .controller('LukiokoulutusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot) {
+    $scope.lista = [];
+    Perusteet.get({
+      tyyppi: 'koulutustyyppi_2'
+    }, function(res) {
+      if (res.sivuja > 1) {
+        console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
+      }
+      $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
+        .reverse()
+        .each(function(eo) {
+          //TODO: Pitää korjata linkki julkiseen paikkaan
+          eo.$url = $state.href('root.selaus.lukiokoulutus', {perusteId: eo.id});
+        })
+        .value();
+    }, Notifikaatiot.serverCb);
+
   })
   .controller('HakuCtrl', function($scope, $rootScope, $state, Perusteet, Haku, $stateParams,
     YleinenData, koulutusalaService, Kieli, Profiili, Notifikaatiot) {

@@ -19,7 +19,7 @@
 /// <reference path="../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
-  .service('Muodostumissaannot', function($modal) {
+  .service('Muodostumissaannot', function($modal, $q) {
     var skratchpadHasContent = false;
     function osienLaajuudenSumma(rakenneOsat) {
       return _(rakenneOsat || [])
@@ -209,12 +209,11 @@ angular.module('eperusteApp')
       ryhmaModaali: ryhmaModaali,
       rakenneosaModaali: rakenneosaModaali,
       kaannaSaanto: kaannaSaanto,
-      skratchpadNotEmpty: function (value) {
+      skratchpadNotEmpty: function(value) {
         if (arguments.length > 0) {
           skratchpadHasContent = value;
-        } else {
-          return skratchpadHasContent;
         }
+        return $q.when(skratchpadHasContent);
       }
     };
   });

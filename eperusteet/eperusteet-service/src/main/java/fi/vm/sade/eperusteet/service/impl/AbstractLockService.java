@@ -18,8 +18,10 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Lukko;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.LockService;
+import fi.vm.sade.eperusteet.service.PerusteAware;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.security.PermissionChecker;
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,6 +70,15 @@ public abstract class AbstractLockService<T> implements LockService<T> {
             manager.unlock(lockId);
         }
     }
+
+    protected void checkPermissionToPeruste(PerusteAware ctx, boolean readOnly) {
+        if ( readOnly ) {
+            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
+        } else {
+            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);
+        }
+    }
+
 
     @Override
     @Transactional(readOnly = true)

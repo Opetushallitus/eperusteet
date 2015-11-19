@@ -15,26 +15,14 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import java.io.Serializable;
-import java.text.Normalizer;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import javax.persistence.Cacheable;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.text.Normalizer;
+import java.util.*;
 
 /**
  *
@@ -133,5 +121,4 @@ public class TekstiPalanen implements Serializable {
         }
         return tekstit.entrySet().iterator().next().getValue();
     }
-
 }

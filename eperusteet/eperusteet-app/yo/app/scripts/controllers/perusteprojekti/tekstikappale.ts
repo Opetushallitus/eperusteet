@@ -21,8 +21,8 @@
 
 angular.module('eperusteApp')
   .service('TekstikappaleOperations', function (YleinenData, PerusteenOsaViitteet,
-    Editointikontrollit, Notifikaatiot, $state, SuoritustapaSisalto, TutkinnonOsaEditMode,
-    PerusopetusService, $stateParams) {
+      Editointikontrollit, Notifikaatiot, $state, SuoritustapaSisalto, TutkinnonOsaEditMode,
+      PerusopetusService, $stateParams, LukiokoulutusService) {
     var peruste = null;
     var deleteDone = false;
 
@@ -41,6 +41,11 @@ angular.module('eperusteApp')
     this.add = function () {
       if (YleinenData.isPerusopetus(peruste)) {
         PerusopetusService.saveOsa({}, {osanTyyppi: 'tekstikappale'}, function (response) {
+          TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
+          goToView(response);
+        });
+      } else if(YleinenData.isLukiokoulutus(peruste)) {
+        LukiokoulutusService.saveOsa({}, {osanTyyppi: 'tekstikappale'}, function (response) {
           TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
           goToView(response);
         });
@@ -66,6 +71,8 @@ angular.module('eperusteApp')
       var successCb = _.partial(commonCb, YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].sisaltoTunniste);
       if (YleinenData.isPerusopetus(peruste)) {
         PerusopetusService.deleteOsa({$url: 'dummy', id: viiteId}, successCb, Notifikaatiot.serverCb);
+      } else if (YleinenData.isLukiokoulutus(peruste)) {
+        LukiokoulutusService.deleteOsa({$url: 'dummy', id: viiteId}, successCb, Notifikaatiot.serverCb);
       } else {
         PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, successCb, Notifikaatiot.serverCb);
       }
@@ -83,8 +90,7 @@ angular.module('eperusteApp')
     };
 
     this.clone = function (viiteId) {
-      if (YleinenData.isPerusopetus(peruste)) {
-
+      if (YleinenData.isPerusopetus(peruste) || YleinenData.isLukiokoulutus(peruste)) {
       } else {
         PerusteenOsaViitteet.kloonaaTekstikappale({
           perusteId: peruste.id,
@@ -112,6 +118,8 @@ angular.module('eperusteApp')
 
       if (YleinenData.isPerusopetus(peruste)) {
         PerusopetusService.updateSisaltoViitteet(sisalto, mapped, successCb);
+      } else if (YleinenData.isLukiokoulutus(peruste)) {
+        LukiokoulutusService.updateSisaltoViitteet(sisalto, mapped, successCb);
       } else {
         PerusteenOsaViitteet.update({
           viiteId: sisalto.id
@@ -169,8 +177,6 @@ angular.module('eperusteApp')
       PerusteenOsat.getByViite({viiteId: $stateParams.perusteenOsaViiteId}, successCb, errorCb);
     }
 
-
-
     TekstikappaleOperations.setPeruste($scope.$parent.peruste);
     $scope.kaikkiTyoryhmat = [];
 
@@ -222,7 +228,8 @@ angular.module('eperusteApp')
       }
     }
 
-    if ($stateParams.suoritustapa || YleinenData.isPerusopetus($scope.$parent.peruste)) {
+    if ($stateParams.suoritustapa || YleinenData.isPerusopetus($scope.$parent.peruste) ||
+          YleinenData.isLukiokoulutus($scope.$parent.peruste)) {
       PerusteprojektiTiedotService.then(function (instance) {
         $scope.tiedotService = instance;
         haeSisalto();
@@ -235,8 +242,10 @@ angular.module('eperusteApp')
       VersionHelper.setUrl($scope.versiot);
     };
 
-    function lukitse(cb) {
-      Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, cb);
+    function lukitse() {
+      return $q((resolve) => {
+        Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, resolve);
+      });
     }
 
     function fetch(cb) {
@@ -346,46 +355,51 @@ angular.module('eperusteApp')
       $scope.editableTekstikappale = angular.copy(kappale);
 
       Editointikontrollit.registerCallback({
-        edit: function () {
-          fetch(function () {
-            refreshPromise();
-          });
-        },
-        asyncValidate: function (cb) {
-          lukitse(function () {
-            cb();
-          });
-        },
-        asyncSave: function (kommentti, cb) {
-          $scope.editableTekstikappale.metadata = {kommentti: kommentti};
-          PerusteenOsat.saveTekstikappale({
-            osanId: $scope.editableTekstikappale.id
-          }, $scope.editableTekstikappale, function(res) {
-            saveCb(res);
-            $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
-            $scope.isNew = false;
-            cb();
-          }, Notifikaatiot.serverCb);
-        },
-        cancel: function () {
-          if (!TekstikappaleOperations.wasDeleted()) {
-            Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
-              if ($scope.isNew) {
-                doDelete(true);
-              }
-              else {
-                fetch(function () {
-                  refreshPromise();
-                });
-              }
-              $scope.isNew = false;
+        edit: () => {
+          return $q((resolve, reject) => {
+            lukitse().then(() => {
+              fetch(function () {
+                refreshPromise();
+                resolve();
+              });
             });
-          }
+          });
         },
-        notify: function (mode) {
+        save: (kommentti) => {
+          return $q((resolve, reject) => {
+            $scope.editableTekstikappale.metadata = {kommentti: kommentti};
+            PerusteenOsat.saveTekstikappale({
+              osanId: $scope.editableTekstikappale.id
+            }, $scope.editableTekstikappale, function(res) {
+              saveCb(res);
+              $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
+              $scope.isNew = false;
+              resolve();
+            }, Notifikaatiot.serverCb);
+          });
+        },
+        cancel: () => {
+          return $q((resolve, reject) => {
+            if (!TekstikappaleOperations.wasDeleted()) {
+              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
+                if ($scope.isNew) {
+                  doDelete(true);
+                }
+                else {
+                  fetch(function () {
+                    refreshPromise();
+                  });
+                }
+                $scope.isNew = false;
+              });
+            }
+            resolve();
+          });
+        },
+        notify: (mode) => {
           $scope.editEnabled = mode;
         },
-        validate: function (mandatoryValidator) {
+        validate: (mandatoryValidator) => {
           return mandatoryValidator($scope.fields, $scope.editableTekstikappale);
         }
       });
@@ -399,10 +413,8 @@ angular.module('eperusteApp')
       TekstikappaleOperations.clone($scope.viitteet[$scope.tekstikappale.id].viite);
     };
 
-    $scope.muokkaa = function () {
-      lukitse(function () {
-        Editointikontrollit.startEditing();
-      });
+    $scope.muokkaa = () => {
+      lukitse().then(Editointikontrollit.startEditing);
     };
 
     $scope.canAddLapsi = function () {
@@ -412,7 +424,6 @@ angular.module('eperusteApp')
     };
 
     $scope.addLapsi = function () {
-      console.log('moro');
       TekstikappaleOperations.addChild($scope.viiteId(), $stateParams.suoritustapa);
     };
 

@@ -37,6 +37,9 @@ public class VuosiluokkaKokonaisuusContext {
         this.kokonaisuusId = kokonaisuusId;
     }
 
+    public void setOsanId(Long id) {
+        this.kokonaisuusId = id;
+    }
 
     public static VuosiluokkaKokonaisuusContext of(Long perusteId, Long kokonaisuusId) {
         return new VuosiluokkaKokonaisuusContext(perusteId, kokonaisuusId);

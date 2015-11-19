@@ -28,11 +28,12 @@ public enum KoulutusTyyppi {
     LISAOPETUS("koulutustyyppi_6"),
     ESIOPETUS("koulutustyyppi_15"),
     VARHAISKASVATUS("koulutustyyppi_20"),
-    PERUSOPETUS("koulutustyyppi_16");
+    PERUSOPETUS("koulutustyyppi_16"),
+    LUKIOKOULUTUS("koulutustyyppi_2");
 
     private final String tyyppi;
 
-    private KoulutusTyyppi(String tyyppi) {
+    KoulutusTyyppi(String tyyppi) {
         this.tyyppi = tyyppi;
     }
 

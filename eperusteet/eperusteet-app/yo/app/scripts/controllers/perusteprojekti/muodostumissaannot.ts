@@ -20,10 +20,10 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams, $timeout,
-    PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
-    Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
-    virheService, PerusteProjektiSivunavi, perusteprojektiTiedot, $q, Varmistusdialogi, Algoritmit,
-    PerusteenOsat) {
+        PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
+        Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
+        virheService, PerusteProjektiSivunavi, perusteprojektiTiedot, $q, Varmistusdialogi, Algoritmit,
+        PerusteenOsat) {
     $scope.editoi = false;
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {
@@ -104,45 +104,32 @@ angular.module('eperusteApp')
     $scope.haeRakenne = haeRakenne;
     var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
 
-    haeRakenne(versio).then(function() {
+    haeRakenne(versio).then(() => {
       Editointikontrollit.registerCallback({
-        edit: function() {
+        edit: () => {
           $scope.editoi = true;
         },
-        asyncValidate: function(cb) {
-          lukitse(function() {
-            if (Muodostumissaannot.skratchpadNotEmpty()) {
-              leikelautaDialogi(cb);
-            } else {
-              cb();
-            }
+        asyncValidate: (cb) => {
+          lukitse(() => {
+            Muodostumissaannot.skratchpadNotEmpty()
+              .then((isEmpty) => { return isEmpty ? leikelautaDialogi() : $q.when(); })
+              .then(cb);
           });
         },
-        asyncSave: function(kommentti, cb) {
+        asyncSave: (kommentti, cb) => {
           $scope.rakenne.rakenne.metadata = { kommentti: kommentti };
           cb();
-          tallennaRakenne($scope.rakenne, function() {
-            $scope.editoi = false;
-          });
+          tallennaRakenne($scope.rakenne, () => { $scope.editoi = false; });
         },
-        cancel: function() {
-          Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-          haeRakenne().then(function() {
-            $scope.editoi = false;
+        cancel: () => {
+          return $q((resolve, reject) => {
+            Muodostumissaannot.skratchpadNotEmpty()
+              .then((isEmpty) => { return isEmpty ? leikelautaDialogi() : $q.when(); })
+              .then(Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa))
+              .then(haeRakenne)
+              .then(() => { $scope.editoi = false; })
+              .then(resolve);
           });
-        },
-        canCancel: function () {
-          var deferred = $q.defer();
-          if (Muodostumissaannot.skratchpadNotEmpty()) {
-            leikelautaDialogi(function () {
-              deferred.resolve();
-            }, function () {
-              deferred.reject();
-            });
-          } else {
-            deferred.resolve();
-          }
-          return deferred.promise;
         }
       });
     });
@@ -222,15 +209,17 @@ angular.module('eperusteApp')
       });
     };
 
-    function leikelautaDialogi(successCb, failureCb = _.noop) {
-      Varmistusdialogi.dialogi({
-        otsikko: 'vahvista-liikkuminen',
-        teksti: 'leikelauta-varoitus',
-        lisaTeksti: 'haluatko-jatkaa',
-        successCb: successCb,
-        failureCb: failureCb || angular.noop,
-        primaryBtn: 'poistu-sivulta'
-      })();
+    function leikelautaDialogi() {
+      return $q((resolve, reject) => {
+        Varmistusdialogi.dialogi({
+          otsikko: 'vahvista-liikkuminen',
+          teksti: 'leikelauta-varoitus',
+          lisaTeksti: 'haluatko-jatkaa',
+          successCb: resolve,
+          failureCb: reject,
+          primaryBtn: 'poistu-sivulta'
+        })();
+      });
     };
 
     $scope.$watch('rakenne.rakenne', function(uusirakenne) {

@@ -1,0 +1,19 @@
+<!-- osaaalue.html -->
+<div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
+    <div id="ck-toolbar-top"></div>
+    <div id="ck-toolbar-bottom"></div>
+</div>
+<div class="row">
+    <div class="col-md-12 ep-sisalto-inner">
+        <div ng-if="isOppiaine">
+            <lukio-muokkaus-oppiaine model="dataObject" versiot="versiot"></lukio-muokkaus-oppiaine>
+        </div>
+        <div ng-if="isAihekokonaisuus">
+          <lukio-muokkaus-aihekokonaisuus model="dataObject" versiot="versiot"></lukio-muokkaus-aihekokonaisuus>
+        </div>
+        <div style="clear: both;">
+          <br />
+          <kommentit></kommentit>
+        </div>
+    </div>
+</div>

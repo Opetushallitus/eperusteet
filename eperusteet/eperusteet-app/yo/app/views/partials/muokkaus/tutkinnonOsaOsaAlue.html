@@ -49,6 +49,11 @@
                  edit-enabled="true" editointi-sallittu="true"></arviointi>
       <label kaanna>tutkinnonosa-tunnustaminen</label>
       <div ng-model="tavoite.tunnustaminen" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
+
+      <h4 kaanna>ammattitaitovaatimukset</h4>
+      <ammattitaito ammattitaito="tavoite.ammattitaitovaatimuksetLista" edit-enabled="true" editointi-sallittu="true" ei-kohdealueita="true">
+      </ammattitaito>
+
     </div>
 
     <div ng-show="tavoite.lapsi && tavoite.lapsi.$poistettu === false">
@@ -67,6 +72,11 @@
                  edit-enabled="true" editointi-sallittu="true"></arviointi>
       <label kaanna>tutkinnonosa-tunnustaminen</label>
       <div ng-model="tavoite.lapsi.tunnustaminen" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
+
+      <h4 kaanna>ammattitaitovaatimukset</h4>
+      <ammattitaito ammattitaito="tavoite.lapsi.ammattitaitovaatimuksetLista" edit-enabled="true" editointi-sallittu="true" ei-kohdealueita="true">
+      </ammattitaito>
+
     </div>
       </div>
 

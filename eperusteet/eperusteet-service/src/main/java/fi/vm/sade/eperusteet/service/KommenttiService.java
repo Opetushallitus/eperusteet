@@ -16,9 +16,10 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
-import java.util.List;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  *
@@ -27,35 +28,35 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface KommenttiService {
 
     @PreAuthorize("isAuthenticated()")
-    public List<KommenttiDto> getAllByPerusteenOsa(Long id, Long perusteeonOsaId);
+    List<KommenttiDto> getAllByPerusteenOsa(Long id, Long perusteeonOsaId);
 
     @PreAuthorize("isAuthenticated()")
-    public List<KommenttiDto> getAllByPerusteenOsa(Long perusteenOsaId);
+    List<KommenttiDto> getAllByPerusteenOsa(Long perusteenOsaId);
 
     @PreAuthorize("isAuthenticated()")
-    public List<KommenttiDto> getAllBySuoritustapa(Long id, String suoritustapa);
+    List<KommenttiDto> getAllBySuoritustapa(Long id, String suoritustapa);
 
     @PreAuthorize("isAuthenticated()")
-    public List<KommenttiDto> getAllByPerusteprojekti(Long id);
+    List<KommenttiDto> getAllByPerusteprojekti(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    public List<KommenttiDto> getAllByParent(Long id);
+    List<KommenttiDto> getAllByParent(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    public List<KommenttiDto> getAllByYlin(Long id);
+    List<KommenttiDto> getAllByYlin(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    public KommenttiDto get(Long kommenttiId);
+    KommenttiDto get(Long kommenttiId);
 
-    @PreAuthorize("hasPermission(#k.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
-    public KommenttiDto add(@P("k") final KommenttiDto kommenttidto);
-
-    @PreAuthorize("isAuthenticated()")
-    public KommenttiDto update(Long kommenttiId, final KommenttiDto kommenttidto);
+    @PreAuthorize("hasPermission(#k.perusteprojektiId, 'perusteProjekti', 'LUKU')")
+    KommenttiDto add(@P("k") final KommenttiDto kommenttidto);
 
     @PreAuthorize("isAuthenticated()")
-    public void delete(Long kommenttiId);
+    KommenttiDto update(Long kommenttiId, final KommenttiDto kommenttidto);
 
     @PreAuthorize("isAuthenticated()")
-    public void deleteReally(Long kommenttiId);
+    void delete(Long kommenttiId);
+
+    @PreAuthorize("isAuthenticated()")
+    void deleteReally(Long kommenttiId);
 }

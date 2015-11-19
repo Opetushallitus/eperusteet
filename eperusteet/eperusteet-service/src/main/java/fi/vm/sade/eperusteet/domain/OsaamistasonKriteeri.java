@@ -16,7 +16,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,14 +31,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
-import java.util.ArrayList;
-import java.util.Objects;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
@@ -71,6 +73,15 @@ public class OsaamistasonKriteeri implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @BatchSize(size = 25)
     private List<TekstiPalanen> kriteerit = new ArrayList<>();
+
+    @Getter
+    @NotAudited
+    @RelatesToPeruste
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "arvioinninkohde_osaamistasonkriteeri",
+        joinColumns = @JoinColumn(name = "osaamistasonkriteerit_id", updatable = false, nullable = false),
+        inverseJoinColumns = @JoinColumn(name = "arvioinninkohde_id", nullable = false, updatable = false))
+    private Set<ArvioinninKohde> arvioinninKohteet = new HashSet<>();
 
     public OsaamistasonKriteeri() {
     }

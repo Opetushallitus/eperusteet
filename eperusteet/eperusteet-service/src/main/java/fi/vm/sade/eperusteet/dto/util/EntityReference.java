@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Objects;
 
@@ -37,6 +38,11 @@ public class EntityReference {
     @JsonValue
     public String getId() {
         return id;
+    }
+
+    @JsonIgnore
+    public Long getIdLong() {
+        return id == null ? null : Long.valueOf(id);
     }
 
     @Override

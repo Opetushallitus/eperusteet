@@ -69,7 +69,7 @@ angular.module('eperusteApp')
     };
 
     $scope.tuoOsaamistavoite = function () {
-      console.log('Toteuta osaamistavoitteen tuonti!');
+      //TODO
     };
 
     $scope.poistaTavoite = function(tavoite) {

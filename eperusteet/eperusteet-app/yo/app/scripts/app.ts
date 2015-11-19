@@ -29,7 +29,9 @@ angular.module('eperusteApp', [
   'angular-data.DSCacheFactory',
   'ui.select',
   'eperusteet.esitys',
-  'ngFileUpload'
+  'ngFileUpload',
+  'eGenericTree',
+  'eMathDisplay'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
@@ -117,7 +119,7 @@ angular.module('eperusteApp', [
       }]);
   })
   // Lodash mixins and other stuff
-  .run(function() {
+  .run(function($log) {
     _.mixin({arraySwap: function(array, a, b) {
         if (_.isArray(array) && _.size(array) > a && _.size(array) > b) {
           var temp = array[a];
@@ -151,6 +153,32 @@ angular.module('eperusteApp', [
           cb(value);
         };
       }});
+    _.mixin({flattenTree: function (obj, extractChildren) {
+        if (!_.isArray(obj) && obj) {
+          obj = [obj];
+        }
+        if (_.isEmpty(obj)) {
+          return [];
+        }
+        return _.union(obj, _(obj).map(function(o) {
+          return _.flattenTree(extractChildren(o), extractChildren);
+        }).flatten().value());
+      }});
+    _.mixin({reducedIndexOf: function (obj, extractor, combinator) {
+      if (!_.isArray(obj) && obj) {
+        obj = [obj];
+      }
+      var results = {};
+      _.each(obj, function(o) {
+        var index = extractor(o);
+        if (results[index]) {
+          results[index] = combinator(results[index], o);
+        } else {
+          results[index] = o;
+        }
+      });
+      return results;
+    }});
   })
   .run(function($rootScope) {
     var f = _.debounce(function() {
@@ -162,7 +190,7 @@ angular.module('eperusteApp', [
     angular.element(window).on('mousemove', f);
   })
   .run(function($rootScope, $modal, $location, $window, $state, $http, paginationConfig, Editointikontrollit,
-    Varmistusdialogi, Kaanna, virheService) {
+    Varmistusdialogi, Kaanna, virheService, $log) {
     paginationConfig.firstText = '';
     paginationConfig.previousText = '';
     paginationConfig.nextText = '';
@@ -248,7 +276,8 @@ angular.module('eperusteApp', [
       }
     });
 
-    $rootScope.$on('$stateChangeError', function(event, toState) {
+    $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+      $log.error(error);
       virheService.virhe({state: toState.name});
     });
 

@@ -22,6 +22,11 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.dto.LokalisointiDto;
 import lombok.Getter;
 
 /**
@@ -29,6 +34,7 @@ import lombok.Getter;
  * @author jhyoty
  */
 public class LokalisoituTekstiDto {
+    private static final Map<Kieli,String> emptyMap = new EnumMap<>(Kieli.class);
 
     @Getter
     private final Long id;
@@ -72,9 +78,45 @@ public class LokalisoituTekstiDto {
         return map;
     }
 
+    public LokalisoituTekstiDto concat(Function<Kieli,String> str) {
+        Map<Kieli,String> transformed = new HashMap<>();
+        for (Map.Entry<Kieli,String> kv : tekstit.entrySet()) {
+            transformed.put(kv.getKey(), kv.getValue() + str.apply(kv.getKey()));
+        }
+        return new LokalisoituTekstiDto(id, transformed);
+    }
+    public LokalisoituTekstiDto concat(String str) {
+        return concat(anyKieli -> str);
+    }
+    public LokalisoituTekstiDto concat(LokalisoituTekstiDto dto) {
+        return concat(dto::get);
+    }
+
     @JsonIgnore
     public String get(Kieli kieli) {
         return tekstit.get(kieli);
     }
 
+    public static LokalisoituTekstiDto localizeLaterById(Long id) {
+        return id == null ? null : new LokalisoituTekstiDto(id, emptyMap);
+    }
+
+    @SuppressWarnings("DtoClassesNotContainEntities")
+    public static LokalisoituTekstiDto localized(TekstiPalanen palanen) {
+        return palanen == null ? null : new LokalisoituTekstiDto(palanen.getId(), palanen.getTeksti());
+    }
+
+    public interface LocalizedFunction<F> extends Function<F,LokalisoituTekstiDto> {
+        default LocalizedFunction<F> concat(String constant) {
+            return from -> this.apply(from).concat(anyKieli -> constant);
+        }
+        default LocalizedFunction<F> concat(LokalisoituTekstiDto dto) {
+            return from -> this.apply(from).concat(dto::get);
+        }
+    }
+
+    @SuppressWarnings("DtoClassesNotContainEntities")
+    public static<T> LocalizedFunction<T> localized(Function<T,TekstiPalanen> s) {
+        return from -> localized(s.apply(from));
+    }
 }

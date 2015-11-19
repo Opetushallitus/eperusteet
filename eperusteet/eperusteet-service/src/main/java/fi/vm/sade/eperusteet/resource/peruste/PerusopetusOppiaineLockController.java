@@ -20,11 +20,10 @@ import fi.vm.sade.eperusteet.resource.AbstractLockController;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
+import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static fi.vm.sade.eperusteet.resource.peruste.OppiaineLockController.BASE;
 
 /**
  *
@@ -33,14 +32,19 @@ import static fi.vm.sade.eperusteet.resource.peruste.OppiaineLockController.BASE
 @RestController
 @InternalApi
 @RequestMapping(value = {
-    BASE + "/lukko",
-    BASE + "/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko"
+        PerusopetusOppiaineLockController.BASE + "/lukko",
+        PerusopetusOppiaineLockController.BASE + "/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko"
 })
-public class OppiaineLockController extends AbstractLockController<OppiaineLockContext>{
+public class PerusopetusOppiaineLockController extends AbstractLockController<OppiaineLockContext>{
     static final String BASE = "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}";
     @Autowired
     @LockCtx(OppiaineLockContext.class)
     private LockService<OppiaineLockContext> service;
+
+    @Override
+    protected void handleContext(OppiaineLockContext ctx) {
+        ctx.setTyyppi(OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+    }
 
     @Override
     protected LockService<OppiaineLockContext> service() {

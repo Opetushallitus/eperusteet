@@ -17,27 +17,19 @@ package fi.vm.sade.eperusteet.domain.arviointi;
 
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import java.util.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -83,6 +75,15 @@ public class ArvioinninKohde implements Serializable {
     @Getter
     @BatchSize(size = 10)
     private Set<OsaamistasonKriteeri> osaamistasonKriteerit = new HashSet<>();
+
+    @Getter
+    @NotAudited
+    @RelatesToPeruste
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "arvioinninkohdealue_arvioinninkohde",
+            inverseJoinColumns = @JoinColumn(name = "arvioinninkohdealue_id"),
+            joinColumns = @JoinColumn(name = "arvioinninkohde_id"))
+    private Set<ArvioinninKohdealue> arvioinninKohdealueet = new HashSet<>();
 
     public ArvioinninKohde() {
     }

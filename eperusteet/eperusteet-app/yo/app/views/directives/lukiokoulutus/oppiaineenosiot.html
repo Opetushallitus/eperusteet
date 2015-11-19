@@ -1,0 +1,35 @@
+<!-- oppiaineenosiot.html
+  ~  Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+  ~
+  ~  This program is free software: Licensed under the EUPL, Version 1.1 or - as
+  ~  soon as they will be approved by the European Commission - subsequent versions
+  ~  of the EUPL (the "Licence");
+  ~
+  ~  You may not use this work except in compliance with the Licence.
+  ~  You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+  ~
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~  European Union Public Licence for more details.
+  -->
+
+<div>
+  <!-- oppiaineenosiot.html -->
+  <div ui-tree data-empty-place-holder-enabled="false" data-drag-enabled="false">
+    <ul class="list-group muokkaus" ui-tree-nodes ng-model="activeOsiot">
+      <li class="sortable-box" ui-tree-node ng-repeat="osio in activeOsiot">
+        <div class="closer">
+          <a class="action-link" icon-role="remove" ng-click="removeOsio(osio)"></a>
+        </div>
+        <div class="pull-left draghandle" ui-tree-handle ><!-- icon-role="drag" --></div>
+        <div class="content">
+          <div ng-if="hasEditableTitle(osio)" class="input-wrapper">
+            <input class="form-control" ng-model="osio.model.otsikko" slocalized placeholder="{{'muokkaus-teksikappaleen-nimi-placeholder'|kaanna}}">
+          </div>
+          <span ng-if="!hasEditableTitle(osio)">{{osio.model.otsikko | kaanna}}</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -63,7 +63,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams) {
+  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams, $log) {
     $scope.menuCollapsed = true;
     $scope.onSectionChange = _.isFunction($scope.onSectionChange) ? $scope.onSectionChange : angular.noop;
 
@@ -183,6 +183,7 @@ angular.module('eperusteApp')
       }
       var item = items[index];
       var children = getChildren(items, index);
+      //$log.info('children for', index, item, 'are', children);
       var hidden = [];
       for (var i = 0; i < children.length; ++i) {
         traverse(items, children[i]);

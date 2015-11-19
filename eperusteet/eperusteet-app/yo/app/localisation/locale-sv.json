@@ -52,9 +52,13 @@
     "tutkinnonosa-osaamisala": "[Osaamisala]",
 
     "koulutustyyppi_1": "[perustutkinto]",
+    "koulutustyyppi_2": "[lukiokoulutus]",
     "koulutustyyppi_11": "[ammattitutkinto]",
     "koulutustyyppi_12": "[erikoisammattitutkinto]",
+    "koulutustyyppi_15": "[esiopetus]",
     "koulutustyyppi_16": "[perusopetus]",
+    "koulutustyyppi_6": "[lisäopetus]",
+    "koulutustyyppi_20": "[varhaiskasvatus]",
 
     "kielen-vaihto": "[Vaihda kieli]",
     "suomi": "Suomi",
@@ -76,7 +80,8 @@
     "muokkaus-tutkinnon-osan-koodi-placeholder": "[Tutkinnon osan koodi]",
     "muokkaus-tutkinnon-osan-tavoitteet-header": "[Tavoitteet]",
     "muokkaus-tutkinnon-osan-tavoitteet-placeholder": "[Kirjoita tähän tutkinnon osan tavoitteet]",
-    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-header": "[Ammattitaitovaatimukset]",
+    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-teksti-header": "[Ammattitaitovaatimukset tekstinä]",
+    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-taulukko-header": "[Ammattitaitovaatimukset taulukkona]",
     "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-placeholder": "[Listaa tähän tutkinnon osan ammattitaitovaatimukset]",
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-header": "[Ammattitaidon osoittamistavat]",
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-placeholder": "[Listaa tähän ammattitaidon osoittamistavat]",

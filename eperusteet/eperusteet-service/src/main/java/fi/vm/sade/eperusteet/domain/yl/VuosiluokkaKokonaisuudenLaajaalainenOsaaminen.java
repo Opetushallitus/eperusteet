@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -44,6 +45,8 @@ public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminen extends AbstractRefer
     @NotNull
     @JoinColumn(nullable = false)
     private LaajaalainenOsaaminen laajaalainenOsaaminen;
+
+    @RelatesToPeruste
     @ManyToOne
     @Getter
     @NotNull

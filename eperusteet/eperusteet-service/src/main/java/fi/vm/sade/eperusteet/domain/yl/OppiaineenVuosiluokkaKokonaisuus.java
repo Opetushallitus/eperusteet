@@ -16,27 +16,17 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.*;
+
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Kuvaa oppimäärän yhteen vuosiluokkakokonaisuuteen osalta.
@@ -54,9 +44,10 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     @NotNull
     private Oppiaine oppiaine;
 
+    @RelatesToPeruste
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private VuosiluokkaKokonaisuus vuosiluokkaKokonaisuus;
 
@@ -136,18 +127,18 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         result &= this.getSisaltoalueet().size() == other.getSisaltoalueet().size();
         result &= this.getTavoitteet().size() == other.getTavoitteet().size();
 
-        if ( result ) {
+        if (result) {
             Iterator<KeskeinenSisaltoalue> i = this.getSisaltoalueet().iterator();
             Iterator<KeskeinenSisaltoalue> j = other.getSisaltoalueet().iterator();
-            while ( result && i.hasNext() && j.hasNext() ) {
+            while (result && i.hasNext() && j.hasNext()) {
                 result &= identityEquals(i.next(), j.next());
             }
         }
 
-        if ( result ) {
+        if (result) {
             Iterator<OpetuksenTavoite> i = this.getTavoitteet().iterator();
             Iterator<OpetuksenTavoite> j = other.getTavoitteet().iterator();
-            while ( result && i.hasNext() && j.hasNext() ) {
+            while (result && i.hasNext() && j.hasNext()) {
                 result &= identityEquals(i.next(), j.next());
             }
         }

@@ -17,7 +17,11 @@ package fi.vm.sade.eperusteet.dto.yl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Optional;
+
+import java.util.Date;
 import java.util.Set;
+
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,12 +31,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OppiaineDto extends OppiaineBaseDto {
-    private Optional<TekstiOsaDto> tehtava;
+public class OppiaineDto extends OppiaineBaseUpdateDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<OppiaineSuppeaDto> oppimaarat;
     private Set<OpetuksenKohdealueDto> kohdealueet;
     private Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
-    private String koodiUri;
-    private String koodiArvo;
 }

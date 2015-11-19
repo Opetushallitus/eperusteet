@@ -22,6 +22,6 @@ import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
  *
  * @author jhyoty
  */
-public interface PerusopetuksenPerusteenSisaltoRepository extends JpaWithVersioningRepository<PerusopetuksenPerusteenSisalto, Long> {
-    PerusopetuksenPerusteenSisalto findByPerusteId(Long perusteId);
+public interface PerusopetuksenPerusteenSisaltoRepository extends JpaWithVersioningRepository<PerusopetuksenPerusteenSisalto,Long>,
+        OppiaineSisaltoRepository<PerusopetuksenPerusteenSisalto> {
 }

@@ -236,7 +236,4 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         return repository.save(pov);
     }
 
-
-
-
 }

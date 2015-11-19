@@ -31,7 +31,8 @@
             <ul class="pull-right dropdown-menu">
               <li ng-repeat="field in config.fields | orderBy:'order'" ng-class="{divider: field.divider}">
                 <a class="action-link" ng-if="!field.divider" ng-class="{'disabled-link': field.visible}"
-                   ng-click="field.visible ? void(0) : addField(field)">{{field.menuLabel || field.localeKey | kaanna}}</a>
+                   ng-click="field.visible ? void(0) : addField(field)" kaanna="field.menuLabel || field.localeKey">
+                </a>
               </li>
             </ul>
           </div>
@@ -49,6 +50,7 @@
   </div>
 
   <versiotiedot ng-hide="editEnabled"></versiotiedot>
+
   <hr ng-show="editEnabled">
   <form name="tutkinnonOsaHeaderForm" role="form">
     <div ng-transclude></div>

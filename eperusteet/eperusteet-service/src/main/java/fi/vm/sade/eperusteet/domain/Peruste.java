@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.Date;
@@ -68,6 +69,12 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     private Long id;
+
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "peruste")
+    private PerusteVersion globalVersion = new PerusteVersion(this);
 
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -161,6 +168,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto;
 
     @Getter
+    @OneToOne(mappedBy = "peruste", optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto;
+
+    @Getter
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
@@ -170,6 +181,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
+
+    @Getter
+    @Setter
+    @NotNull
+    private boolean esikatseltavissa = false;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
@@ -232,6 +248,8 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             viite = this.getEsiopetuksenPerusteenSisalto().getSisalto();
         } else if (suoritustapakoodi.equals(Suoritustapakoodi.PERUSOPETUS)) {
             viite = this.getPerusopetuksenPerusteenSisalto().getSisalto();
+        } else if(suoritustapakoodi.equals(Suoritustapakoodi.LUKIOKOULUTUS)) {
+            viite = this.getLukiokoulutuksenPerusteenSisalto().getSisalto();
         }
         return viite;
     }
@@ -244,6 +262,13 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     public void setEsiopetuksenPerusteenSisalto(EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto) {
         this.esiopetuksenPerusteenSisalto = esiopetuksenPerusteenSisalto;
         this.esiopetuksenPerusteenSisalto.setPeruste(this);
+    }
+
+    public void setLukiokoulutuksenPerusteenSisalto(LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto) {
+        this.lukiokoulutuksenPerusteenSisalto = lukiokoulutuksenPerusteenSisalto;
+        if (lukiokoulutuksenPerusteenSisalto != null) {
+            lukiokoulutuksenPerusteenSisalto.setPeruste(this);
+        }
     }
 
     public boolean containsViite(PerusteenOsaViite viite) {
@@ -263,7 +288,9 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             return esiopetuksenPerusteenSisalto.containsViite(viite);
         }
 
-        return false;
+        return lukiokoulutuksenPerusteenSisalto != null
+                && lukiokoulutuksenPerusteenSisalto.containsViite(viite);
+
     }
 
     public interface Valmis {};
