@@ -133,6 +133,8 @@ angular.module('eperusteApp')
     $scope.korvattavaDiaariNimiMap = {};
     $scope.hakemassa = false;
     $scope.peruste = perusteprojektiTiedot.getPeruste();
+    $scope.isLukikoulutus = $scope.peruste.koulutustyyppi === 'koulutustyyppi_2';
+
     noudaKorvattavienDiaarienNimet($scope.peruste.korvattavatDiaarinumerot);
     $scope.editablePeruste = $scope.peruste;
     $scope.peruste.nimi = $scope.peruste.nimi || {};

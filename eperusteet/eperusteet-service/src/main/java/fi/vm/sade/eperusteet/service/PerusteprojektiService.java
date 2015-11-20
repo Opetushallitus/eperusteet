@@ -22,11 +22,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.DiaarinumeroHakuDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import java.util.Date;
 import java.util.List;
@@ -71,7 +67,7 @@ public interface PerusteprojektiService {
 
     @PreAuthorize("isAuthenticated()")
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
-    List<PerusteprojektiInfoDto> getOmatProjektit();
+    List<PerusteprojektiListausDto> getOmatProjektit();
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(@P("id") Long perusteProjektiId);

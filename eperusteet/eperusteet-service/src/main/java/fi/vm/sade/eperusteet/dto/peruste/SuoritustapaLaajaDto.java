@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -26,13 +27,15 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
+
 /**
  *
  * @author jhyoty
  */
 @Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(NON_NULL)
 public class SuoritustapaLaajaDto {
     private Suoritustapakoodi suoritustapakoodi;
     private LaajuusYksikko laajuusYksikko;

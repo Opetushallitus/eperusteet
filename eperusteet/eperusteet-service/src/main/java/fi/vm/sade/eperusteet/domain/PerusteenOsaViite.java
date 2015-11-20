@@ -15,28 +15,21 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.ColumnResult;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.SqlResultSetMapping;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 /**
  *
@@ -69,10 +62,39 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @Setter
     private Long id;
 
+    @RelatesToPeruste
     @ManyToOne
     @Getter
     @Setter
     private PerusteenOsaViite vanhempi;
+
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private Suoritustapa suoritustapa;
+
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto;
+
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto;
+
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto;
 
     @ManyToOne
     @Getter
@@ -86,6 +108,25 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @BatchSize(size = 100)
     @ElementCollection
     private List<PerusteenOsaViite> lapset = new ArrayList<>();
+
+    public PerusteenOsaViite() {
+    }
+
+    public PerusteenOsaViite(Suoritustapa suoritustapa) {
+        this.suoritustapa= suoritustapa;
+    }
+
+    public PerusteenOsaViite(PerusopetuksenPerusteenSisalto sisalto) {
+        this.perusopetuksenPerusteenSisalto = sisalto;
+    }
+
+    public PerusteenOsaViite(LukiokoulutuksenPerusteenSisalto sisalto) {
+        this.lukiokoulutuksenPerusteenSisalto = sisalto;
+    }
+
+    public PerusteenOsaViite(EsiopetuksenPerusteenSisalto sisalto) {
+        this.esiopetuksenPerusteenSisalto = sisalto;
+    }
 
     @Override
     public EntityReference getReference() {

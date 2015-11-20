@@ -41,6 +41,7 @@ public abstract class PerusteBaseDto implements Serializable {
     private Long id;
     @JsonIgnore
     private Integer revision;
+    private PerusteVersionDto globalVersion;
 
     private LokalisoituTekstiDto nimi;
     private String koulutustyyppi;
@@ -60,6 +61,8 @@ public abstract class PerusteBaseDto implements Serializable {
 
     private Set<String> korvattavatDiaarinumerot;
     private Set<KoodiDto> osaamisalat;
+
+    private boolean esikatseltavissa;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<TutkintonimikeKoodiDto> tutkintonimikkeet;

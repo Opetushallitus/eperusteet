@@ -36,7 +36,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('MuokattavaOsioController', function($scope, YleinenData, Utils, $state, OsanMuokkausHelper, $stateParams) {
+  .controller('MuokattavaOsioController', function($scope, YleinenData, Utils, $state, OsanMuokkausHelper, $stateParams, $log) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.hasContent = false;
     $scope.poistoCb = $scope.poistoCb || angular.noop;
@@ -53,6 +53,8 @@ angular.module('eperusteApp')
     $scope.$watch('model', update, true);
 
     $scope.edit = function() {
+      $log.info('Go root.perusteprojekti.suoritustapa.muokkaus from '+$scope.path+' with suoritustapa=' +
+        $stateParams.suoritustapa +', tyyppi=' + $scope.type + ', id='+$scope.realModel.id);
       OsanMuokkausHelper.setup($scope.model, $scope.path, $scope.oppiaine, function() {
         $state.go('root.perusteprojekti.suoritustapa.muokkaus', {
           suoritustapa: $stateParams.suoritustapa,

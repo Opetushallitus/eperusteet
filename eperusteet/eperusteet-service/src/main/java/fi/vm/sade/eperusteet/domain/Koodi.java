@@ -16,19 +16,14 @@
 
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import java.io.Serializable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  *
@@ -59,4 +54,13 @@ public class Koodi implements Serializable {
     @Getter
     @Setter
     private String uri;
+
+    @RelatesToPeruste
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(name = "peruste_osaamisala",
+            inverseJoinColumns = @JoinColumn(name = "peruste_id"),
+            joinColumns = @JoinColumn(name = "osaamisala_id"))
+    @Getter
+    @Setter
+    private Peruste peruste;
 }

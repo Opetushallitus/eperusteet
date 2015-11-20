@@ -15,13 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -29,11 +23,12 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine_;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
+import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
+import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -41,9 +36,16 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.yl.LukioOppiaineUpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import ma.glasnost.orika.unenhance.HibernateUnenhanceStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -62,10 +64,12 @@ public class DtoMapperConfig {
         KoodistokoodiConverter koodistokoodiConverter) {
         DefaultMapperFactory factory
             = new DefaultMapperFactory.Builder()
+                .unenhanceStrategy(new HibernateUnenhanceStrategy())
             .build();
 
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
         factory.getConverterFactory().registerConverter(cachedEntityConverter);
+        factory.getConverterFactory().registerConverter(new LokalisoituTekstiDtoCopyConverter());
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
         factory.getConverterFactory().registerConverter(new TypeNameConverter());
@@ -83,6 +87,34 @@ public class DtoMapperConfig {
             .register();
         factory.classMap(TutkinnonOsaDto.class, TutkinnonOsa.class)
             .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(PerusopetuksenPerusteenSisalto.class, PerusopetuksenPerusteenSisaltoDto.class)
+                .fieldAToB("oppiaineetCopy", "oppiaineet")
+            .byDefault()
+            .register();
+        factory.classMap(AihekokonaisuudetLaajaDto.class, Aihekokonaisuudet.class)
+            .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(AihekokonaisuudetSuppeaDto.class, Aihekokonaisuudet.class)
+            .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(OpetuksenYleisetTavoitteetSuppeaDto.class, OpetuksenYleisetTavoitteet.class)
+            .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(OpetuksenYleisetTavoitteetLaajaDto.class, OpetuksenYleisetTavoitteet.class)
+            .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(LukioOpetussuunnitelmaRakenneLaajaDto.class, LukioOpetussuunnitelmaRakenne.class)
+            .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(LukioOpetussuunnitelmaRakenneSuppeaDto.class, LukioOpetussuunnitelmaRakenne.class)
+            .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
             .byDefault()
             .register();
         factory.classMap(TekstiKappaleDto.class, TekstiKappale.class)
@@ -118,11 +150,27 @@ public class DtoMapperConfig {
         factory.classMap(SuoritustapaDto.class, Suoritustapa.class)
             .byDefault()
             .register();
+        factory.classMap(LukioKurssiLuontiDto.class, Lukiokurssi.class)
+                .exclude("oppiaineet")
+                .byDefault()
+                .register();
+        factory.classMap(LukiokurssiMuokkausDto.class, Lukiokurssi.class)
+                .exclude("oppiaineet")
+                .byDefault()
+                .register();
 
         //YL
         factory.classMap(OppiaineDto.class, Oppiaine.class)
             .mapNulls(false)
-            .fieldBToA(Oppiaine_.vuosiluokkakokonaisuudet.getName(), Oppiaine_.vuosiluokkakokonaisuudet.getName())
+                .fieldBToA(Oppiaine_.vuosiluokkakokonaisuudet.getName(), Oppiaine_.vuosiluokkakokonaisuudet.getName())
+            .byDefault()
+            .register();
+        factory.classMap(LukioOppiaineUpdateDto.class, Oppiaine.class)
+            .mapNulls(true)
+            .byDefault()
+            .register();
+        factory.classMap(OppiaineSuppeaDto.class, Oppiaine.class)
+                .fieldBToA(Oppiaine_.muokattu.getName(), Oppiaine_.muokattu.getName())
             .byDefault()
             .register();
 

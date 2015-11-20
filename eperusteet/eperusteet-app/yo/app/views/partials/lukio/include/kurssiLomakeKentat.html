@@ -1,0 +1,56 @@
+
+<!--
+  ~  Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+  ~
+  ~  This program is free software: Licensed under the EUPL, Version 1.1 or - as
+  ~  soon as they will be approved by the European Commission - subsequent versions
+  ~  of the EUPL (the "Licence");
+  ~
+  ~  You may not use this work except in compliance with the Licence.
+  ~  You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+  ~
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~  European Union Public Licence for more details.
+  -->
+
+<label for="tyyppi-input" class="header" kaanna="kurssi-tyyppi-header" vaaditaan></label>
+<div class="fixed-group">
+  <select id="tyyppi-input" class="form-control" ng-model="kurssi.tyyppi">
+    <option ng-repeat="t in kurssityypit" value="{{t.tyyppi}}">{{t.nimi | kaanna}}</option>
+  </select>
+</div>
+
+<label for="koodi-input" class="header" kaanna="kurssi-koodi-header" vaaditaan></label>
+<div class="fixed-group">
+  <input id="koodi-input" class="form-control" type="text" ng-model="kurssi.koodiArvo" ng-disabled="true"/>
+  <div class="addon"><button role="link" class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button></div>
+</div>
+
+<label for="lokalisoitu-koodi-input" class="header" kaanna="'kurssi-lokalisoitu-koodi-header'" vaaditaan></label>
+<div class="fixed-group">
+  <input id="lokalisoitu-koodi-input" class="form-control" ng-model="kurssi.lokalisoituKoodi" slocalized required />
+</div>
+
+<label for="nimi-input" class="header" kaanna="'kurssi-nimi-header'" vaaditaan></label>
+<input id="nimi-input" class="form-control" ng-model="kurssi.nimi" slocalized required />
+
+<label for="kuvaus" class="header" kaanna="kurssi-kuvaus-header"></label>
+<div>
+  <div id="kuvaus" ckeditor slocalized ng-model="kurssi.kuvaus"></div>
+</div>
+
+<div ng-repeat="osa in muokattavatOsat" ng-show="osa.obj">
+  <div class="action-buttons osa-action-buttons">
+    <button class="btn floating" ng-click="removeOsa(osa.id)">
+      <span icon-role="remove" class="ng-scope"></span>
+    </button>
+  </div>
+  <label for="{{osa.id}}" class="header">
+    <h3 ckeditor slocalized ng-model="osa.obj.otsikko"></h3>
+  </label>
+  <div>
+    <div id="{{osa.id}}" ckeditor slocalized ng-model="osa.obj.teksti"></div>
+  </div>
+</div>

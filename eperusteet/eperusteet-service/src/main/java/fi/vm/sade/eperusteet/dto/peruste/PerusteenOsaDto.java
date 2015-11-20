@@ -18,13 +18,19 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.Date;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 /**
  *
@@ -53,10 +59,14 @@ public abstract class PerusteenOsaDto {
         this.tunniste = tunniste;
     }
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "osanTyyppi")
+    @JsonTypeInfo(use = Id.NAME, include = As.EXISTING_PROPERTY, property = "osanTyyppi")
     @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = TekstiKappaleDto.class),
-        @JsonSubTypes.Type(value = TutkinnonOsaDto.class)})
+        @JsonSubTypes.Type(value = TutkinnonOsaDto.class),
+        @JsonSubTypes.Type(value = AihekokonaisuudetLaajaDto.class),
+        @JsonSubTypes.Type(value = OpetuksenYleisetTavoitteetLaajaDto.class),
+        @JsonSubTypes.Type(value = LukioOpetussuunnitelmaRakenneLaajaDto.class)
+    })
     public static abstract class Laaja extends PerusteenOsaDto {
 
         public Laaja() {

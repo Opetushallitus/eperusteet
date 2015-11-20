@@ -28,8 +28,7 @@ angular.module('eperusteApp')
   })
 
   .controller('NaviCtrl', function($scope, Navigaatiopolku, Kaanna, $state, PerusteProjektiService,
-    $location, $stateParams, KeyboardListener) {
-    KeyboardListener.init();
+              $location, $stateParams) {
     var PREFIX = 'root.perusteprojekti.';
     var SUBSTATES = {
       'termisto': 'perusteen-termisto',

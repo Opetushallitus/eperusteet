@@ -20,9 +20,7 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.LockService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
 import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
@@ -47,26 +45,31 @@ public abstract class AbstractLockController<T> {
 
     @RequestMapping(method = GET)
     public ResponseEntity<LukkoDto> checkLock(T ctx) {
+        handleContext(ctx);
         LukkoDto lock = service().getLock(ctx);
         lukkomanageri.lisaaNimiLukkoon(lock);
         return lock == null ? new ResponseEntity<LukkoDto>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.OK);
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity<LukkoDto> lock(T ctx,
-        @RequestHeader(value = "If-Match", required = false) String eTag) {
+    public ResponseEntity<LukkoDto> lock(@RequestBody T ctx,
+            @RequestHeader(value = "If-Match", required = false) String eTag) {
+        handleContext(ctx);
         LukkoDto lock = service().lock(ctx, revisionOf(eTag));
         if (lock == null) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } else {
             return new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.CREATED);
         }
+    }
 
+    protected void handleContext(T ctx) {
     }
 
     @RequestMapping(method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unlock(T ctx) {
+        handleContext(ctx);
         service().unlock(ctx);
     }
 

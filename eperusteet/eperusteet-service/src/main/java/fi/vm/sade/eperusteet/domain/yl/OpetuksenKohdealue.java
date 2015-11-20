@@ -17,16 +17,17 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 /**
  *
@@ -51,6 +52,24 @@ public class OpetuksenKohdealue extends AbstractReferenceableEntity {
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen kuvaus;
+
+    @Getter
+    @RelatesToPeruste
+    @NotAudited
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "yl_oppiaine_yl_kohdealue",
+            joinColumns = @JoinColumn(name = "kohdealueet_id", nullable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "yl_oppiaine_id", nullable = false, updatable = false))
+    private Set<Oppiaine> oppiaineet;
+
+    @Getter
+    @RelatesToPeruste
+    @NotAudited
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "yl_opetuksen_tavoite_yl_kohdealue",
+            joinColumns = @JoinColumn(name = "kohdealueet_id", updatable = false, nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id", updatable = false, nullable = false))
+    private Set<OpetuksenTavoite> opetuksenTavoitteet;
 
     public OpetuksenKohdealue kloonaa() {
         OpetuksenKohdealue klooni = new OpetuksenKohdealue();

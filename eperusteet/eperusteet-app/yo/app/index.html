@@ -60,6 +60,10 @@
 
     <!-- build:js scripts/components.js -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/core.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/widget.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/mouse.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/sortable.min.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
@@ -68,15 +72,11 @@
     <script src="bower_components/angular-translate/angular-translate.min.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
-    <script src="bower_components/jquery-ui/ui/minified/core.min.js"></script>
-    <script src="bower_components/jquery-ui/ui/minified/widget.min.js"></script>
-    <script src="bower_components/jquery-ui/ui/minified/mouse.min.js"></script>
-    <script src="bower_components/jquery-ui/ui/minified/sortable.min.js"></script>
     <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
     <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
     <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-ui-utils/ui-utils.min.js"></script>
-    <script src="bower_components/angular-ui-sortable/sortable.min.js"></script>
+    <script src="bower_components/angular-ui-sortable/src/sortable.js"></script>
     <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
     <script src="bower_components/angular-elastic/elastic.js"></script>
     <script src="bower_components/lodash/lodash.min.js"></script>
@@ -90,6 +90,7 @@
     <script src="bower_components/angular-ui-select/dist/select.min.js"></script>
     <script src="bower_components/ng-file-upload/ng-file-upload.min.js"></script>
     <script src="bower_components/ng-file-upload/ng-file-upload-shim.min.js"></script>
+    <!--<script src="bower_components/eperusteet-frontend-utils/generictree.js"></script>-->
     <script src="bower_components/eperusteet-frontend-utils/mathdisplay.js"></script>
     <script src="bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <!-- endbuild -->
@@ -98,6 +99,7 @@
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
+    <script src="scripts/directives/generictree.js"></script><!-- TDOO: remove me -->
     <script src="scripts/directives/epfooter.js"></script>
     <script src="scripts/controllers/virhe.js"></script>
     <script src="scripts/controllers/tuotekstikappale.js"></script>
@@ -190,6 +192,10 @@
     <script src="scripts/directives/vtosaalue.js"></script>
     <script src="scripts/directives/editinplace.js"></script>
     <script src="scripts/directives/termistoviitteet.js"></script>
+
+
+
+    <script src="scripts/services/lukiokoulutus.js"></script>
     <script src="scripts/services/perusteprojekti.js"></script>
     <script src="scripts/controllers/perusteprojekti/projektinTiedot.js"></script>
     <script src="scripts/controllers/perusteprojekti/muodostumissaannot.js"></script>
@@ -201,6 +207,8 @@
     <script src="scripts/services/perusopetus.js"></script>
     <script src="scripts/controllers/perusopetus.js"></script>
     <script src="scripts/controllers/esiopetus.js"></script>
+    <script src="scripts/controllers/lukiokoulutus.js"></script>
+    <script src="scripts/controllers/kurssit.js"></script>
     <script src="scripts/directives/datecomparisonvalidator.js"></script>
     <script src="scripts/directives/muokkaus/muokattavaKentta.js"></script>
     <script src="scripts/directives/arviointi.js"></script>
@@ -230,7 +238,9 @@
     <script src="scripts/controllers/perusteprojekti/tutkinnonosaosaalue.js"></script>
     <script src="scripts/controllers/perusteprojekti/esiopetus.js"></script>
     <script src="scripts/directives/hallintalinkki.js"></script>
-    <script src="scripts/services/keyboard.js"></script>
+    <script src="scripts/directives/muokkaus/aihekokonaisuudet.js"></script>
+    <script src="scripts/directives/muokkaus/lukiokoulutusyleisettavoitteet.js"></script>
+
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/esitys.js -->
@@ -238,6 +248,7 @@
     <script src="eperusteet-esitys/views/sisallot.js"></script>
     <script src="eperusteet-esitys/views/yksinkertainen.js"></script>
     <script src="eperusteet-esitys/views/perusopetus.js"></script>
+    <script src="eperusteet-esitys/views/lukiokoulutus.js"></script>
     <script src="eperusteet-esitys/services/menubuilder.js"></script>
     <script src="eperusteet-esitys/services/tekstikappaleutils.js"></script>
     <script src="eperusteet-esitys/services/sivunavigaatio.js"></script>

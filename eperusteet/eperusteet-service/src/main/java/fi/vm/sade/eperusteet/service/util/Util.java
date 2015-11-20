@@ -17,6 +17,12 @@ package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import static com.google.common.base.Optional.fromNullable;
+
 /**
  *
  * @author jhyoty
@@ -38,4 +44,29 @@ public final class Util {
         return ( l != null && r != null && l.getId() != null && l.getId().equals(r.getId()));
     }
 
+    /**
+     * Utility for boolean method references
+     * @param p
+     * @param <T>
+     * @return
+     */
+    public static<T> Predicate<T> not(Predicate<T> p) {
+        return p.negate();
+    }
+
+    public static<F,E,T extends Collection<E>> Predicate<F> empty(Function<F,T> src) {
+        return from -> fromNullable(src.apply(from)).transform(Collection::isEmpty).or(true);
+    }
+
+    public static<F> Predicate<F> emptyString(Function<F,String> src) {
+        return from -> fromNullable(src.apply(from)).transform(str -> str.trim().isEmpty()).or(true);
+    }
+
+    public static<T> Predicate<T> and(Predicate<T> a, Predicate<? super T> b) {
+        return a.and(b);
+    }
+
+    public static<T> Predicate<T> or(Predicate<T> a, Predicate<? super T> b) {
+        return a.or(b);
+    }
 }

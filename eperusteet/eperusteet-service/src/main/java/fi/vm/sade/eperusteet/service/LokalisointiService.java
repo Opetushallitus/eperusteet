@@ -15,7 +15,10 @@
  */
 package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.dto.LokalisointiDto;
+import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 /**
  *
@@ -23,8 +26,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface LokalisointiService {
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("permitAll()")
     LokalisointiDto get(String key, String locale);
+
+    @PreAuthorize("permitAll()")
+    <T extends Lokalisoitava, C extends Collection<T>> C lokalisoi(C list);
+
+    @PreAuthorize("permitAll()")
+    <T extends Lokalisoitava> T lokalisoi(T list);
 }
 
 

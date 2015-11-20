@@ -23,6 +23,8 @@ import fi.vm.sade.eperusteet.dto.yl.EsiopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import java.util.List;
 import java.util.Set;
+
+import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokoulutuksenPerusteenSisaltoDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,6 +44,10 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("perusopetus")
     private PerusopetuksenPerusteenSisaltoDto perusopetuksenPerusteenSisalto;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("lukiokoulutus")
+    private LukiokoulutuksenPerusteenSisaltoDto lukiokoulutuksenPerusteenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("esiopetus")

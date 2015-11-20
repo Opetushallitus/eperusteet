@@ -30,6 +30,7 @@ import lombok.Setter;
 @Setter
 public class PerusteInfoDto {
     private Long id;
+    private PerusteVersionDto globalVersion;
     private LokalisoituTekstiDto nimi;
     private String diaarinumero;
     private Date voimassaoloLoppuu;

@@ -1,0 +1,113 @@
+<!-- kurssi.html
+  ~  Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+  ~
+  ~  This program is free software: Licensed under the EUPL, Version 1.1 or - as
+  ~  soon as they will be approved by the European Commission - subsequent versions
+  ~  of the EUPL (the "Licence");
+  ~
+  ~  You may not use this work except in compliance with the Licence.
+  ~  You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+  ~
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~  European Union Public Licence for more details.
+  -->
+
+<div class="kurssi-view">
+
+  <div style="position: relative">
+    <revert-note object="kurssi" revert-cb="revertCb(response)"
+                 versions="versiot" change-version="vaihdaVersio()"></revert-note>
+
+    <div ng-if="!kurssi.oppiaineet.length">
+      <a class="pointer" ng-bind="'lukiokurssit' | kaanna" ng-click="gotoKurssit()"></a>
+      / <span ng-bind="kurssi.nimi | kaanna"></span>
+    </div>
+    <div ng-repeat="oppiaine in kurssi.oppiaineet">
+      <span>
+        <a class="pointer" ng-bind="'lukiokurssit' | kaanna" ng-click="gotoKurssit()"></a>
+      </span>
+      <span ng-repeat="i in oppiaineMurupolkuItems(oppiaine)">
+         / <a class="pointer" ng-bind="i.oppiaineNimi | kaanna" ng-click="goto(oppiaine)"></a>
+      </span>
+      / <span ng-bind="kurssi.nimi | kaanna"></span>
+    </div>
+  </div>
+
+  <h2>
+    </kaanna> <span ng-bind="kurssi.nimi | kaanna"></span>
+  </h2>
+  <div class="action-buttons">
+    <button class="btn floating"
+            oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+            ng-click="gotoMuokkaa()">
+      <span icon-role="edit" class="ng-scope"></span>
+      <span ng-bind="'muokkaa' | kaanna"></span>
+    </button>
+  </div>
+  <div class="clear">
+    <versiotiedot></versiotiedot>
+  </div>
+  <table class="description">
+    <thead>
+    <tr>
+      <th kaanna="'kurssi-koodi'">
+      </th>
+      <td>
+        <span ng-bind="kurssi.koodiArvo || ('ei-asetettu' | kaanna)"></span>
+      </td>
+    </tr>
+    <tr>
+      <th kaanna="'kurssi-lokalisoitu-koodi'">
+      </th>
+      <td>
+        <span ng-bind="(kurssi.lokalisoituKoodi | kaanna) || ('ei-asetettu' | kaanna)"></span>
+      </td>
+    </tr>
+    <tr>
+      <th kaanna="'kurssi-tyyppi'">
+      </th>
+      <td>
+        <span ng-bind="kurssityypit[kurssi.tyyppi] | kaanna"></span>
+
+        <div ng-repeat="oppiaine in kurssi.oppiaineet">
+          <div ng-if="oppiaine.kurssiTyyppinKuvaus | kaanna">
+            <h5>
+              <span kaanna="kurssi-tyypin-kuvaus"></span>
+              <span ng-if="kurssi.oppiaineet.length > 1"> - </span>
+              <span ng-if="kurssi.oppiaineet.length > 1" ng-bind="oppiaine.nimi | kaanna"></span>
+            </h5>
+            <div ng-bind-html="oppiaine.kurssiTyyppinKuvaus | kaanna"></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </thead>
+  </table>
+
+  <div ng-if="kurssi.kuvaus | kaanna">
+    <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-kuvaus-header' | kaanna"></h3>
+    <div ng-bind-html="kurssi.kuvaus | kaanna"></div>
+  </div>
+
+  <div ng-if="kurssi.tavoitteet.teksti | kaanna">
+    <h3 class="panel-title osio-otsikko" ng-bind="kurssi.tavoitteet.otsikko | kaanna"></h3>
+    <div ng-bind-html="kurssi.tavoitteet.teksti | kaanna"></div>
+  </div>
+
+  <div ng-if="kurssi.keskeinenSisalto.teksti | kaanna">
+    <h3 class="panel-title osio-otsikko" ng-bind="kurssi.keskeinenSisalto.otsikko | kaanna"></h3>
+    <div ng-bind-html="kurssi.keskeinenSisalto.teksti | kaanna"></div>
+  </div>
+
+  <div ng-if="kurssi.tavoitteetJaKeskeinenSisalto.teksti | kaanna">
+    <h3 class="panel-title osio-otsikko" ng-bind="kurssi.tavoitteetJaKeskeinenSisalto.otsikko | kaanna"></h3>
+    <div ng-bind-html="kurssi.tavoitteetJaKeskeinenSisalto.teksti | kaanna"></div>
+  </div>
+
+  <div style="clear: both;">
+    <br />
+    <kommentit></kommentit>
+  </div>
+</div>

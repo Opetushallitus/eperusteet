@@ -107,6 +107,40 @@ angular.module('eperusteApp')
       kohdealueet: {method: 'GET', isArray: true, url: baseUrl + '/kohdealueet'}
     });
   })
+  .factory('LukionOppiaineet', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/oppiaineet/:osanId';
+    return $resource(baseUrl, {osanId: '@id'}, {
+      oppimaarat: {method: 'GET', isArray: true, url: baseUrl + '/oppimaarat'},
+      getVersion: {method: 'GET', isArray: false, url: baseUrl + '/versiot/:version'},
+      versions: {method: 'GET', isArray: true, url: baseUrl + '/versiot/:version'},
+      revert: {method: 'POST', isArray: false, url: baseUrl + '/versiot/:version/palauta'},
+    });
+  })
+  .factory('LukioRakenne', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/rakenne';
+    return $resource(baseUrl, {osanId: '@id'}, {
+      versions: {method: 'GET', url: baseUrl + '/versiot', isArray: true},
+      getVersion: {method: 'GET', isArray: false, url: baseUrl + '/versiot/:version'},
+      revert: {method: 'POST', url: baseUrl + '/versiot/:version/palauta', isArray:false}
+    });
+  })
+  .factory('LukioKurssit', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit/:osanId';
+    return $resource(baseUrl, {osanId: '@id'}, {
+      update: {method: 'POST'},
+      getVersion: {method: 'GET', isArray: false, url: baseUrl + '/versiot/:version'},
+      updateRelatedOppiainees: {method: 'POST',
+          url: SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/kurssit/:osanId/oppiaineet'},
+      versions: {method: 'GET', url: baseUrl + '/versiot', isArray: true},
+      revert: {method: 'POST', url: baseUrl + '/versiot/:version/palauta', isArray:false}
+    });
+  })
+  .factory('LukioOppiaineKurssiRakenne', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/rakenne';
+    return $resource(baseUrl, {osanId: '@id'}, {
+      updateStructure: {method: 'POST'}
+    });
+  })
   .factory('OppiaineenVuosiluokkakokonaisuudet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:osanId', {
       osanId: '@id'
@@ -136,6 +170,49 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/kuvat/:id', {
       perusteId: '@perusteId',
       id: '@id'
+    });
+  })
+  .factory('LukiokoulutuksenSisalto', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/sisalto';
+    return $resource(baseUrl + '/:osanId', {
+      osanId: '@id',
+      perusteId: '@perusteId'
+    }, {
+      root: {method: 'GET', isArray: false, url: baseUrl},
+      addChild: {
+        method: 'POST',
+        url: baseUrl + '/:osanId/lapset'
+      },
+      updateViitteet: {method: 'POST', url: baseUrl + '/:osanId'}
+    });
+  })
+  .factory('LukiokoulutusYleisetTavoitteet', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/yleisettavoitteet';
+
+    return $resource(baseUrl, {perusteId: '@perusteId', versioId: '@versioId'},{
+        update: {method: 'POST'},
+        versiot: {method: 'GET', isArray: true, url: baseUrl + '/versiot'},
+        getByVersio: {method: 'GET', isArray: false, url: baseUrl + '/versio/:versioId'},
+        palauta: {method: 'post', isArray: false, url: baseUrl + '/palauta/:versioId'}
+    });
+  })
+  .factory('LukiokoulutusAihekokonaisuudet', function($resource, $translate, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/aihekokonaisuudet/:osanId';
+    return $resource(baseUrl, {
+      osanId: '@osanId',
+      perusteId: '@perusteId',
+      aihekokonaisuusId: '@aihekokonaisuusId',
+      versioId: '@versioId'}, {
+      saveAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/aihekokonaisuus'},
+      updateAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/:aihekokonaisuusId'},
+      getAihekokonaisuudetYleiskuvaus: {method: 'GET', isArray: false, url: baseUrl + '/yleiskuvaus'},
+      getAihekokonaisuudetYleiskuvausByVersio: {method: 'GET', isArray: false, url: baseUrl + '/yleiskuvaus/versio/:versioId'},
+      saveAihekokonaisuudetYleiskuvaus: {method: 'POST', isArray: false, url: baseUrl + '/yleiskuvaus'},
+      aihekokonaisuudetYleiskuvausVersiot: {method: 'GET', isArray: true, url: baseUrl + '/yleiskuvaus/versiot'},
+      aihekokonaisuusVersiot: {method: 'GET', isArray: true, url: baseUrl + '/:aihekokonaisuusId/versiot'},
+      getAihekokonaisuusByVersio: {method: 'GET', isArray: false, url: baseUrl + '/:aihekokonaisuusId/versio/:versioId'},
+      palautaAihekokonaisuudetYleiskuvaus: {method: 'POST', isArray: false, url: baseUrl + '/yleiskuvaus/palauta/:versioId'},
+      palautaAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/:aihekokonaisuusId/palauta/:versioId'}
     });
   })
   .service('SuoritustavanSisalto', function($modal, $state, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {

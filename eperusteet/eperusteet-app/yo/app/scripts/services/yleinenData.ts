@@ -18,7 +18,7 @@
 /*global _, moment*/
 
 angular.module('eperusteApp')
-  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna) {
+  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna, $q) {
     this.dateOptions = {
       'year-format': 'yy',
       //'month-format': 'M',
@@ -43,16 +43,18 @@ angular.module('eperusteApp')
 
     this.yksikot = [
       'OSAAMISPISTE',
-      'OPINTOVIIKKO',
+      'OPINTOVIIKKO'
     ];
     this.yksikotMap = {
       osp: 'OSAAMISPISTE',
       ov: 'OPINTOVIIKKO',
+      kurssi: 'KURSSI'
     };
 
     this.suoritustavat = [
       'ops',
-      'naytto'
+      'naytto',
+      'lukiokoulutus'
     ];
 
     this.koulutustyyppiInfo = {
@@ -123,6 +125,14 @@ angular.module('eperusteApp')
         sisaltoTunniste: 'losisalto',
         hasPdfCreation: true
       },
+      'koulutustyyppi_2': {
+        nimi: 'lukiokoulutus',
+        oletusSuoritustapa: 'lukiokoulutus',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.lukiokoulutuslista',
+        sisaltoTunniste: 'lukiosisalto',
+        hasPdfCreation: false
+      },
       'koulutustyyppi_20': {
         nimi: 'varhaiskasvatus',
         oletusSuoritustapa: 'varhaiskasvatus',
@@ -173,6 +183,10 @@ angular.module('eperusteApp')
 
     this.isEsiopetus = function (peruste) {
       return peruste.koulutustyyppi === 'koulutustyyppi_15';
+    };
+
+    this.isLukiokoulutus = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_2';
     };
 
     this.isSimple = function (peruste) {
@@ -234,5 +248,36 @@ angular.module('eperusteApp')
     this.valitseKieli = function(teksti) {
       return Kaanna.kaannaSisalto(teksti);
     };
+
+    var kurssityypitDefer = $q.defer();
+    /**
+     * @returns Promise<LukiokurssityyppiSelectOption>
+     */
+    this.lukioKurssityypit = _.constant(kurssityypitDefer.promise);
+    // TODO: get form backend/koodisto?
+    kurssityypitDefer.resolve([
+      {
+        nimi: {
+          fi: 'Pakollinen'
+        },
+        koodi: 'kurssityyppi_FOO',
+        tyyppi: 'PAKOLLINEN'
+      },
+      {
+        nimi: {
+          fi: 'Valtakunnallinen syventävä'
+        },
+        koodi: 'kurssityyppi_BAR',
+        tyyppi: 'VALTAKUNNALLINEN_SYVENTAVA'
+      },
+      {
+        nimi: {
+          fi: 'Valtakunnallinen soveltava'
+        },
+        koodi: 'kurssityyppi_BAZ',
+        tyyppi: 'VALTAKUNNALLINEN_SOVELTAVA'
+      }
+    ]);
+
 
   });

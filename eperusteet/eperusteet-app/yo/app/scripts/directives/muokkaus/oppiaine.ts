@@ -29,9 +29,11 @@ angular.module('eperusteApp')
     };
   })
 
-  .service('OppimaaraHelper', function (PerusopetusService) {
+  .service('OppimaaraHelper', function (PerusopetusService, LukiokoulutusService) {
     var instance = null;
     var params = {};
+    var suoritustapa;
+
     function OppimaaraHelperImpl(oppiaine) {
       this.oppiaine = oppiaine;
     }
@@ -39,6 +41,7 @@ angular.module('eperusteApp')
     this.init = function (oppiaine, stateParams) {
       instance = new OppimaaraHelperImpl(oppiaine);
       params = _.clone(stateParams);
+      suoritustapa = stateParams.suoritustapa;
       return instance;
     };
 
@@ -52,8 +55,11 @@ angular.module('eperusteApp')
     };
 
     this.getBackState = function () {
-      return instance ? ['root.perusteprojekti.suoritustapa.osaalue', params] :
-      ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: 'perusopetus', osanTyyppi: PerusopetusService.OPPIAINEET}];
+      var isLukio = suoritustapa === 'lukiokoulutus';
+      return instance ? ['root.perusteprojekti.suoritustapa.' + (isLukio ? 'lukio' : '') + 'osaalue', params] :
+      ['root.perusteprojekti.suoritustapa.' + (isLukio ? 'lukioosat': 'osalistaus'),
+          {suoritustapa: suoritustapa,
+            osanTyyppi: isLukio ? LukiokoulutusService.OPPIAINEET_OPPIMAARAT : PerusopetusService.OPPIAINEET}];
     };
 
     this.presave = function (model) {
@@ -88,7 +94,7 @@ angular.module('eperusteApp')
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna, Notifikaatiot,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
       CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
-      Koodisto, MuokkausUtils, $document) {
+      Koodisto, MuokkausUtils, $document, $log) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -519,6 +525,19 @@ angular.module('eperusteApp')
     };
   })
 
+  .directive('lukioOppiaineenOsiot', function () {
+    return {
+      restrict: 'AE',
+      scope: {
+        model: '=lukioOppiaineenOsiot',
+        fields: '=',
+        vuosiluokkakokonaisuudet: '='
+      },
+      controller: 'LukioOppiaineenOsiotController',
+      templateUrl: 'views/directives/lukiokoulutus/oppiaineenosiot.html'
+    };
+  })
+
   .controller('OppiaineenOsiotController', function ($scope, MuokkausUtils, Varmistusdialogi, VlkUtils) {
     $scope.activeVuosiluokat = [];
     $scope.activeOsiot = [];
@@ -596,6 +615,431 @@ angular.module('eperusteApp')
       mapModel();
     }, true);
     $scope.$watch('vuosiluokkakokonaisuudet', function () {
+      mapModel();
+    }, true);
+  })
+
+
+
+
+
+
+
+
+  // ------------------------------------------------------------------------------------------------------------------
+  //    LUKIO
+  // ------------------------------------------------------------------------------------------------------------------
+
+
+  .directive('lukioMuokkausOppiaine', function() {
+    return {
+      templateUrl: 'views/directives/lukiokoulutus/oppiaine.html',
+      restrict: 'E',
+      scope: {
+        model: '=',
+        versiot: '='
+      },
+      controller: 'LukioOppiaineController',
+      link: function (scope, element) {
+        scope.$watch('editEnabled', function (value) {
+          if (!value) {
+            element.find('.info-placeholder').hide();
+          }
+        });
+      }
+    };
+  })
+
+  .controller('LukioOppiaineController', function ($scope, LukiokoulutusService, Kaanna, Notifikaatiot,
+                                              PerusteProjektiSivunavi, LukionOppiaineet, $timeout, $state,
+                                              $stateParams, $q, YleinenData, tabHelper, $log,
+                                              CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus,
+                                              VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
+                                              Koodisto, MuokkausUtils, $document, LukioKurssiService,
+                                              LukioOppiaineService, VersionHelper) {
+    $scope.editableModel = {};
+    $scope.editEnabled = false;
+    $scope.nameSort = Utils.nameSort;
+    $scope.yleisetosat = ['tehtava', 'tavoitteet', 'arviointi'];
+    $scope.activeTab = parseInt($stateParams.tabId, 10);
+    var creatingNewOppimaara = !!OppimaaraHelper.instance();
+    $scope.oppimaaraRequested = false;
+    $scope.oppiaineet = [];
+    $scope.$oppiaineenNimi = {};
+    $scope.kurssit = [];
+    LukioKurssiService.listByOppiaine($stateParams.osanId).then(function(kurssit) {
+      $scope.kurssit = kurssit;
+    });
+    $scope.gotoKurssi = function(kurssi) {
+      return $state.go('root.perusteprojekti.suoritustapa.kurssi', {
+        kurssiId: kurssi.id
+      });
+    };
+
+    function clickHandler(event) {
+      var ohjeEl = angular.element(event.target).closest('.popover, .popover-element');
+      if (ohjeEl.length === 0) {
+        $rootScope.$broadcast('ohje:closeAll');
+      }
+    }
+    $document.on('click', clickHandler);
+    $scope.$on('$destroy', function () {
+      $document.off('click', clickHandler);
+    });
+
+    LukiokoulutusService.getOsat(LukiokoulutusService.OPPIAINEET_OPPIMAARAT, true).then(function (data) {
+      $scope.oppiaineet = data;
+      $scope.oppiaineMap = _.zipObject(_.map(data, function(oppiaine) {
+        oppiaine.$url = $scope.generateLink(oppiaine);
+        return [''+oppiaine.id, oppiaine];
+      }));
+    });
+
+    if (creatingNewOppimaara) {
+      $scope.$oppiaineenNimi = OppimaaraHelper.instance().oppiaine.nimi;
+    }
+
+    if (_.isNumber(tabHelper.changeInited)) {
+      $scope.activeTab = tabHelper.changeInited;
+      tabHelper.changeInited = false;
+    }
+
+    var cloner = CloneHelper.init(['koosteinen', 'nimi', 'tehtava', 'tavoitteet', 'arviointi']);
+
+    $scope.openKoodisto = Koodisto.modaali(function(koodisto) {
+      MuokkausUtils.nestedSet($scope.editableModel, 'koodiUri', ',', koodisto.koodiUri);
+      MuokkausUtils.nestedSet($scope.editableModel, 'koodiArvo', ',', koodisto.koodiArvo);
+    }, {
+      tyyppi: function() { return 'oppiaineetyleissivistava2'; },
+      ylarelaatioTyyppi: function() { return ''; },
+      tarkista: _.constant(true)
+    });
+
+    $scope.generateLink = function(model) {
+      return $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', _.extend(_.clone($stateParams), {
+        osanId: _.isObject(model) ? model.id : model,
+        tabId: 0
+      }));
+    };
+
+    // TODO: mergeä saveOppiaineen kanssa
+    function saveVanhaOppiaine() {
+      Lukitus.lukitse(function() {
+        LukionOppiaineet.save({
+          perusteId: LukiokoulutusService.getPerusteId()
+        }, $scope.editableModel, function() {
+          Lukitus.vapauta();
+          Notifikaatiot.onnistui('tallennus-onnistui');
+        }, Notifikaatiot.serverCb);
+      });
+    }
+
+    $scope.vklOsaPoisto = function(path) {
+      Varmistusdialogi.dialogi({
+        otsikko: 'haluatko-varmasti-poistaa-osion'
+      })(function() {
+        $scope.vuosiluokka.$sisalto[path] = null;
+        saveVanhaOppiaine();
+      });
+    };
+
+    function saveOppiaine() {
+      $scope.editableModel.$save({
+        perusteId: LukiokoulutusService.getPerusteId()
+      }, function(res) {
+        $scope.editableModel = res;
+        Lukitus.vapauta();
+        Notifikaatiot.onnistui('tallennus-onnistui');
+        LukiokoulutusService.clearCache();
+        $state.go($state.current, _.extend(_.clone($stateParams), {tabId: 0}), {reload: true});
+      });
+    }
+
+    var callbacks = {
+      edit: function() {
+        if ($scope.editableModel.id) {
+          Lukitus.lukitse(function() {
+            cloner.clone($scope.editableModel);
+          });
+        } else {
+          if (!$scope.editableModel.koosteinen) {
+            $scope.editableModel.koosteinen = false;
+          }
+          cloner.clone($scope.editableModel);
+        }
+      },
+      save: function() {
+        var oppimaara = OppimaaraHelper.presave($scope.editableModel);
+        if (oppimaara) {
+          $scope.editableModel = oppimaara;
+        }
+        if ($scope.editableModel.id) {
+          saveOppiaine();
+        } else {
+          LukionOppiaineet.save({
+            perusteId: LukiokoulutusService.getPerusteId()
+          }, $scope.editableModel, function(res) {
+            $scope.editableModel = res;
+            LukiokoulutusService.clearCache();
+            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
+          });
+        }
+      },
+      cancel: function () {
+        function cancelActions() {
+          cloner.restore($scope.editableModel);
+          if ($scope.editableModel.$isNew) {
+            $scope.editableModel.$isNew = false;
+            $timeout(function () {
+              $state.go.apply($state, $scope.data.options.backState);
+            });
+          }
+        }
+
+        if ($scope.editableModel.$isNew) {
+          cancelActions();
+        } else {
+          Lukitus.vapauta(cancelActions);
+        }
+      },
+      notify: function (value) {
+        $scope.editEnabled = value;
+        PerusteProjektiSivunavi.setVisible(!value);
+      },
+      validate: function () { return true; }
+    };
+
+    $scope.$on('$destroy', function () {
+      if (!$scope.oppimaaraRequested) {
+        OppimaaraHelper.reset();
+      }
+    });
+
+    function updateTypeInfo () {
+      var isOppimaara = (creatingNewOppimaara || $scope.editableModel._oppiaine);
+      _.extend($scope.data.options, {
+        editTitle: isOppimaara ? 'muokkaa-oppimaaraa' : 'muokkaa-oppiainetta',
+        newTitle: isOppimaara ? 'uusi-oppimaara' : 'uusi-oppiaine',
+        removeWholeLabel: isOppimaara ? 'poista-oppimaara' : 'poista-oppiaine',
+        removeWholeConfirmationText: isOppimaara ? 'poistetaanko-oppimaara' : 'poistetaanko-oppiaine',
+      });
+      var oppiaineLink = [];
+      if ($scope.editableModel._oppiaine && $scope.oppiaineMap) {
+        var oppiaine = $scope.oppiaineMap[$scope.editableModel._oppiaine];
+        if (oppiaine) {
+          oppiaineLink =  [{
+            url: $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', {
+              osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT,
+              osanId: oppiaine.id,
+              tabId: 0
+            }),
+            label: oppiaine.nimi
+          }];
+        }
+      }
+      ProjektinMurupolkuService.setCustom(oppiaineLink);
+    }
+
+    $scope.data = {
+      options: {
+        title: function () { return $scope.editableModel.nimi; },
+        backLabel: 'oppiaineet',
+        backState: OppimaaraHelper.getBackState(),
+        removeWholeFn: function(then) {
+          LukiokoulutusService.deleteOsa($scope.editableModel, function() {
+            LukiokoulutusService.clearCache();
+            then();
+          });
+        },
+        actionButtons: [
+          {
+            label: 'lisaa-oppimaara',
+            role: 'add',
+            callback: function () {
+              OppimaaraHelper.init($scope.editableModel, $stateParams);
+              $scope.oppimaaraRequested = true;
+              $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
+                osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT,
+                osanId: 'uusi',
+                tabId: 0
+              });
+            },
+            hide: '!editableModel.koosteinen'
+          }
+        ],
+        addFieldCb: function (field) {
+          $scope.editableModel[field.path] = {
+            otsikko: {fi: Kaanna.kaanna(field.localeKey)},
+            teksti: {fi: ''}
+          };
+        },
+        fieldRenderer: '<div ng-show="editEnabled" lukio-oppiaineen-osiot="editableModel" fields="config.fields"></div>',
+        fields: [
+          {
+            path: 'tehtava',
+            localeKey: 'oppiaine-osio-tehtava',
+            type: 'editor-area',
+            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
+            localized: true,
+            collapsible: true,
+            isolateEdit: true,
+            order: 100
+          },
+          {
+            path: 'tavoitteet',
+            localeKey: 'oppiaine-osio-tavoitteet',
+            type: 'editor-area',
+            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
+            localized: true,
+            collapsible: true,
+            isolateEdit: true,
+            order: 200
+          },
+          {
+            path: 'arviointi',
+            localeKey: 'oppiaine-osio-lukio-arviointi',
+            type: 'editor-area',
+            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
+            localized: true,
+            collapsible: true,
+            isolateEdit: true,
+            order: 300
+          }
+        ],
+        editingCallbacks: callbacks
+      }
+    };
+    updateTypeInfo();
+
+    $scope.chooseTab = function (chosenIndex, noStateChange) {
+      if (!noStateChange) {
+        tabHelper.changeInited = chosenIndex;
+        var params = _.extend(_.clone($stateParams), {tabId: chosenIndex});
+        $state.transitionTo($state.$current.name, params, {
+          location: true,
+          reload: false,
+          notify: false
+        });
+        $timeout(function () {
+          $rootScope.$broadcast('oppiaine:tabChanged');
+        });
+      }
+    };
+
+    $scope.$watch('editableModel.oppimaarat', function () {
+      LukiokoulutusService.getOppimaarat($scope.editableModel).then(function (data) {
+        $scope.editableModel.$oppimaarat = data;
+        _.each($scope.editableModel.$oppimaarat, function (oppimaara) {
+          oppimaara.$url = $scope.generateLink(oppimaara);
+        });
+      });
+    });
+
+    var modelPromise = $scope.model.then(function (data) {
+      $scope.editableModel = angular.copy(data);
+      if (!_.isObject($scope.editableModel._oppiaine) && $scope.oppiaineMap &&
+            $scope.oppiaineMap[$scope.editableModel._oppiaine]) {
+        $scope.$oppiaineenNimi = $scope.oppiaineMap[$scope.editableModel._oppiaine].nimi;
+      }
+      else if (creatingNewOppimaara && !$scope.editableModel._oppiaine) {
+        $scope.editableModel._oppiaine = 'placeholder';
+        // TODO: redirect
+      }
+      updateTypeInfo();
+    });
+
+    function getTitle(key) {
+      var obj = {};
+      _.each(YleinenData.kielet, function (kieli) {
+        obj[kieli] = Kaanna.kaanna('oppiaine-osio-' + key);
+      });
+      return obj;
+    }
+    $scope.getTitle = getTitle;
+
+
+    $scope.dontFixVersiot = true;
+    $scope.versiot = {latest: true};
+
+    $scope.haeVersiot = function (force, cb) {
+      if ($stateParams.osanId != 'uusi') {
+        VersionHelper.getLukioOppiaineVersions($scope.versiot, {id: $stateParams.osanId}, force, cb);
+      }
+    };
+    $scope.haeVersiot(true);
+
+    $scope.vaihdaVersio = function (v) {
+      $scope.versiot.hasChanged = true;
+      if ($scope.versiot.chosen) {
+        $scope.versiot.latest = _.isEmpty($scope.versiot.list)
+            || $scope.versiot.list[$scope.versiot.list.length-1].numero == $scope.versiot.chosen.numero;
+        $scope.editableModel = LukioOppiaineService.getVersion($stateParams.osanId, $scope.versiot.chosen.numero);
+      }
+    };
+
+    $scope.oppiaineRevertCb = function (response) {
+      Lukitus.vapauta();
+      $scope.haeVersiot(true, function () {});
+      Notifikaatiot.onnistui('lukiooppiaine-palautettu');
+    };
+
+    $scope.goBackFromDelete = function() {
+      LukiokoulutusService.clearCache();
+      $state.go('root.perusteprojekti.suoritustapa.lukioosat', {
+        osanTyyppi: LukiokoulutusService.OPPIAINEET_OPPIMAARAT
+      });
+      Notifikaatiot.onnistui('lukiooppiaine-poistettu');
+    };
+
+    $q.all([modelPromise]);
+  })
+
+  .controller('LukioOppiaineenOsiotController', function ($scope, MuokkausUtils, Varmistusdialogi, VlkUtils) {
+    $scope.activeOsiot = [];
+
+    function verifyRemove(cb) {
+      Varmistusdialogi.dialogi({
+        otsikko: 'vahvista-poisto',
+        teksti: 'poistetaanko-oppiaineen-osio',
+        primaryBtn: 'poista',
+        successCb: cb
+      })();
+    }
+
+    $scope.removeOsio = function (osio) {
+      verifyRemove(function () {
+        osio.field.visible = false;
+        osio.field.$added = false;
+        MuokkausUtils.nestedSet($scope.model, osio.field.path, '.', null);
+      });
+    };
+
+    $scope.vlkOrderFn = VlkUtils.orderFn;
+
+    function getField(value) {
+      return _.find($scope.fields, function (field) {
+        return field.path === value;
+      });
+    }
+
+    function setOsio(key) {
+      if (MuokkausUtils.hasValue($scope.model, key)) {
+        var field = getField(key);
+        if (field) {
+          $scope.activeOsiot.push({model: $scope.model[key], field: field});
+          field.visible = true;
+        }
+      }
+    }
+
+    function mapModel() {
+      $scope.activeOsiot = [];
+      setOsio('tehtava');
+      setOsio('tavoitteet');
+      setOsio('arviointi');
+    }
+
+    $scope.$watch('model', function () {
       mapModel();
     }, true);
   });

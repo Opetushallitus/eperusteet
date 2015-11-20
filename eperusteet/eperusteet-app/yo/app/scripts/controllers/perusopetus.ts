@@ -137,11 +137,11 @@ angular.module('eperusteApp')
     });
 
   })
-
   .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService,
-      virheService) {
+      virheService, $log) {
     $scope.sisaltoState = _.find(PerusopetusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
+      $log.error('Tyyppi: '+ $stateParams.osanTyyppi);
       virheService.virhe('virhe-sivua-ei-löytynyt');
       return;
     }

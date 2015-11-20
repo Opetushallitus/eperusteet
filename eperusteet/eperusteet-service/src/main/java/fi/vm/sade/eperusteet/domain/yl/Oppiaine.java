@@ -17,31 +17,24 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
+import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -53,7 +46,16 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Entity
 @Audited
 @Table(name = "yl_oppiaine")
-public class Oppiaine extends AbstractAuditedReferenceableEntity {
+public class Oppiaine extends AbstractAuditedReferenceableEntity implements NimettyKoodillinen {
+
+    public static Predicate<Oppiaine> inLukioPeruste(long perusteId) {
+        return inLukioPerusteDirect(perusteId).or(oa -> oa.getOppiaine() != null
+                && inLukioPeruste(perusteId).test(oa.getOppiaine()));
+    }
+    private static Predicate<Oppiaine> inLukioPerusteDirect(long perusteId) {
+        return oa -> oa.getLukioRakenteet().stream().anyMatch(
+                LukioOpetussuunnitelmaRakenne.inPeruste(perusteId));
+    }
 
     @NotNull
     @Column(updatable = false)
@@ -70,8 +72,47 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
+    @Valid
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tehtava;
+
+    @Getter
+    @Setter
+    @Valid
+    @JoinColumn(name = "tavoitteet_id", nullable = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private TekstiOsa tavoitteet;
+
+    @Getter
+    @Setter
+    @Valid
+    @JoinColumn(name = "arviointi_id", nullable = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private TekstiOsa arviointi;
+
+    @Getter
+    @Setter
+    @ValidHtml
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "pakollinen_kurssi_kuvaus", nullable = true)
+    private TekstiPalanen pakollinenKurssiKuvaus;
+
+    @Getter
+    @Setter
+    @ValidHtml
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "syventava_kurssi_kuvaus", nullable = true)
+    private TekstiPalanen syventavaKurssiKuvaus;
+
+    @Getter
+    @Setter
+    @ValidHtml
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "soveltava_kurssi_kuvaus", nullable = true)
+    private TekstiPalanen soveltavaKurssiKuvaus;
 
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @NotNull(groups = Strict.class)
@@ -80,6 +121,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @BatchSize(size = 3)
     private Set<OppiaineenVuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet;
 
+    @RelatesToPeruste
     @Getter
     @ManyToOne(optional = true)
     private Oppiaine oppiaine;
@@ -109,13 +151,36 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @Setter
     private Boolean abstrakti;
 
-    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @BatchSize(size = 10)
     private Set<Oppiaine> oppimaarat;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable
     private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
+
+    @Getter
+    @Audited
+    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private Set<OppiaineLukiokurssi> lukiokurssit = new HashSet<>(0);
+
+    @RelatesToPeruste
+    @Getter
+    @Audited
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "yl_lukio_opetussuunnitelma_rakenne_yl_oppiaine",
+            inverseJoinColumns = @JoinColumn(name = "rakenne_id", nullable = false, updatable = false),
+            joinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
+    private Set<LukioOpetussuunnitelmaRakenne> lukioRakenteet = new HashSet<>(0);
+
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_oppiaine",
+            joinColumns = @JoinColumn(name = "oppiaineet_id", nullable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false, updatable = false))
+    private Set<PerusopetuksenPerusteenSisalto> perusopetuksenPerusteenSisaltos;
 
     /**
      * Palauttaa oppimäärät
@@ -142,7 +207,6 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         if (vuosiluokkakokonaisuudet.add(ovk)) {
             this.muokattu();
         }
-
     }
 
     public void removeVuosiluokkaKokonaisuus(OppiaineenVuosiluokkaKokonaisuus ovk) {
@@ -154,7 +218,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     }
 
     public void addOppimaara(Oppiaine oppimaara) {
-        if (koosteinen == false) {
+        if (!koosteinen) {
             throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
         }
         if (oppimaarat == null) {
@@ -167,7 +231,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     }
 
     public void removeOppimaara(Oppiaine aine) {
-        if (koosteinen == false) {
+        if (!koosteinen) {
             throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
         }
         if (aine.getOppiaine().equals(this) && oppimaarat.remove(aine)) {
@@ -183,6 +247,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         } else {
             throw new IllegalStateException("Oppiaineviittausta ei voi muuttaa");
         }
+    }
+
+    public void setOppiaineForce(Oppiaine oppiaine) {
+        this.oppiaine = oppiaine;
     }
 
     public Set<OpetuksenKohdealue> getKohdealueet() {
@@ -226,7 +294,11 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     //ilman equals-metodia objectX.equals(proxy-objectX) on aina false
     @Override
     public boolean equals(Object other) {
-        return this == other;
+        return this == other || (
+                other instanceof Oppiaine
+                && this.tunniste != null
+                && this.tunniste.equals(((Oppiaine) other).tunniste)
+        );
     }
 
     public boolean structureEquals(Oppiaine other) {
@@ -274,6 +346,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         return System.identityHashCode(this);
     }
 
+    public Oppiaine kloonaa() {
+        return kloonaa(new HashMap<>(), new HashMap<>());
+    }
+
     public Oppiaine kloonaa(
             Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper,
             Map<VuosiluokkaKokonaisuus, VuosiluokkaKokonaisuus> vuosiluokkaKokonaisuusMapper) {
@@ -301,6 +377,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             oa.addOppimaara(om.kloonaa(laajainenOsaaminenMapper, vuosiluokkaKokonaisuusMapper));
         }
         return oa;
+    }
+
+    public Stream<Oppiaine> maarineen() {
+        return Stream.concat(Stream.of(this), oppimaarat.stream());
     }
 
     public interface Strict {

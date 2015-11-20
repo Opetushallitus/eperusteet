@@ -52,9 +52,13 @@
     "tutkinnonosa-osaamisala": "[Osaamisala]",
 
     "koulutustyyppi_1": "[perustutkinto]",
+    "koulutustyyppi_2": "[lukiokoulutus]",
     "koulutustyyppi_11": "[ammattitutkinto]",
     "koulutustyyppi_12": "[erikoisammattitutkinto]",
+    "koulutustyyppi_15": "[esiopetus]",
     "koulutustyyppi_16": "[perusopetus]",
+    "koulutustyyppi_6": "[lisäopetus]",
+    "koulutustyyppi_20": "[varhaiskasvatus]",
 
     "kielen-vaihto": "[Vaihda kieli]",
     "suomi": "Suomi",

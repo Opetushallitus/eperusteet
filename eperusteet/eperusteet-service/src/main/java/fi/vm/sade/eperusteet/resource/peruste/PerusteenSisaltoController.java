@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Puu;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
@@ -106,14 +107,15 @@ public class PerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi) {
 
-        return CacheableResponse.create(service.getLastModifiedRevision(perusteId), 1, new Supplier<PerusteenOsaViiteDto<?>>() {
+        return CacheableResponse.create(service.getPerusteVersion(perusteId), 1, new Supplier<PerusteenOsaViiteDto<?>>() {
             @Override
             public PerusteenOsaViiteDto<?> get() {
+                Class<? extends Puu> puuClz = "suppea".equals(view) ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class;
                 return service
                     .getSuoritustapaSisalto(
-                        perusteId,
-                        suoritustapakoodi,
-                        "suppea".equals(view) ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class);
+                            perusteId,
+                            suoritustapakoodi,
+                            puuClz);
             }
         });
     }

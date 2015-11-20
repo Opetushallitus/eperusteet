@@ -267,6 +267,22 @@ European Union Public Licence for more details.
           </div>
         </div>
 
+        <div oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'muokkaus' }" class="panel panel-default panel-clean" ng-show="isLukikoulutus">
+          <div class="panel-heading">
+            <h3 class="panel-title" kaanna>lukio-peruste-esikatseltavissa</h3>
+          </div>
+          <div class="panel-body">
+            <div ng-if="editEnabled">
+              <input id="esikatseltavissa" type="checkbox" ng-model="editablePeruste.esikatseltavissa"></input>
+              <label for="esikatseltavissa" kaanna>salli-lukio-peruste-esikatseltavissa</label>
+            </div>
+            <div class="aligned" ng-show="!editEnabled">
+              <span ng-show="peruste.esikatseltavissa" kaanna>kyllä</span>
+              <span ng-show="!peruste.esikatseltavissa" kaanna>ei</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </form>
   </div>

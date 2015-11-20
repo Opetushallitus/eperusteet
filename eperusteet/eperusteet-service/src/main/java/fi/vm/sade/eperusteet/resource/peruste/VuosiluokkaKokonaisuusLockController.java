@@ -41,5 +41,4 @@ public class VuosiluokkaKokonaisuusLockController extends AbstractLockController
     protected LockService<VuosiluokkaKokonaisuusContext> service() {
         return service;
     }
-
 }

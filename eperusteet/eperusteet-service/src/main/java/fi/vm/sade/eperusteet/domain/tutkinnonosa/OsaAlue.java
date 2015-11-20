@@ -19,12 +19,10 @@ package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -42,6 +40,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -86,6 +85,16 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
                inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
     @OrderColumn
     private List<Osaamistavoite> osaamistavoitteet;
+
+    @Getter
+    @Setter
+    @RelatesToPeruste
+    @NotAudited
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tutkinnonosa_tutkinnonosa_osaalue",
+            inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_id"),
+            joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
+    private Set<TutkinnonOsa> tutkinnonOsat;
 
     @Getter
     @Setter

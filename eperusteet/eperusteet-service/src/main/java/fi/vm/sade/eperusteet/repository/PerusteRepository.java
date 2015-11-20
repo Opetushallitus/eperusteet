@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +38,9 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT DISTINCT p.id FROM Peruste p " +
         "LEFT JOIN p.suoritustavat s " +
         "LEFT JOIN p.perusopetuksenPerusteenSisalto ps " +
+        "LEFT JOIN p.lukiokoulutuksenPerusteenSisalto ls " +
         "LEFT JOIN p.esiopetuksenPerusteenSisalto eps " +
-        "WHERE p.tila = ?2 AND (s.sisalto.id IN ?1 OR ps.sisalto.id IN ?1 OR eps.sisalto.id IN ?1)")
+        "WHERE p.tila = ?2 AND (s.sisalto.id IN ?1 OR ps.sisalto.id IN ?1 OR eps.sisalto.id IN ?1 OR ls.id IN ?1)")
     Set<Long> findBySisaltoRoots(Iterable<? extends Number> rootIds, PerusteTila tila);
 
     @Query("SELECT DISTINCT p.id FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat to WHERE p.tila = ?2 AND to.tutkinnonOsa.id = ?1")
@@ -47,4 +49,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT p.tila from Peruste p WHERE p.id = ?1")
     PerusteTila getTila(Long id);
 
+    @Query("select new fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto(v.aikaleima) from PerusteVersion v " +
+            "   where v.peruste.id = ?1")
+    PerusteVersionDto getGlobalPerusteVersion(long perusteId);
 }

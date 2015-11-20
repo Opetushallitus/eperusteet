@@ -29,7 +29,7 @@ angular.module('eperusteApp')
           'koulutusalaService': 'Koulutusalat',
           'opintoalaService': 'Opintoalat',
           'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', function(perusteprojektiTiedot, $stateParams) {
+          'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', '$log', function(perusteprojektiTiedot, $stateParams) {
               return perusteprojektiTiedot.alustaProjektinTiedot($stateParams);
             }],
           'perusteprojektiOikeudet': 'PerusteprojektiOikeudetService',
@@ -38,6 +38,40 @@ angular.module('eperusteApp')
           }]
         },
         abstract: true
+      })
+      .state('root.perusteprojekti.suoritustapa.lukioosat', {
+        url: '/lukioosat/:osanTyyppi{versio:(?:/[^/]+)?}',
+        templateUrl: 'views/partials/lukio/osat/osalistaus.html',
+        controller: 'LukioOsalistausController',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
+            return perusteprojektiTiedot.projektinTiedotAlustettu();
+          }],
+          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
+            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
+            }]
+        },
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(true);
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.lukioosaalue', {
+        url: '/lukioosat/:osanTyyppi/:osanId/:tabId/:editEnabled{versio:(?:/[^/]+)?}',
+        templateUrl: 'views/partials/lukio/osat/osaalue.html',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
+            return perusteprojektiTiedot.projektinTiedotAlustettu();
+          }],
+          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
+            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
+            }]
+        },
+        controller: 'LukioOsaAlueController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
       })
       .state('root.perusteprojekti.suoritustapa.osalistaus', {
         url: '/osat/:osanTyyppi',
@@ -187,6 +221,14 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible(false);
         }]
       })
+      .state('root.perusteprojekti.suoritustapa.lukiosisalto', {
+        url: '/lukiosisalto',
+        templateUrl: 'views/partials/perusteprojekti/lukiokoulutus.html',
+        controller: 'LukiokoulutussisaltoController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
+      })
       .state('root.perusteprojekti.suoritustapa.losisalto', {
         url: '/losisalto',
         templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
@@ -264,12 +306,36 @@ angular.module('eperusteApp')
         templateUrl: 'views/partials/perusteprojekti/tiedot.html',
         controller: 'ProjektinTiedotCtrl',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService'}
+      })
+      .state('root.perusteprojekti.suoritustapa.lisaaLukioKurssi', {
+        url: '/lukiokurssi/luo',
+        templateUrl: 'views/partials/lukio/lisaaKurssi.html',
+        controller: 'LisaaLukioKurssiController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(true);
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.kurssi', {
+        url: '/lukiokurssi/:kurssiId',
+        templateUrl: 'views/partials/lukio/kurssi.html',
+        controller: 'NaytaLukiokurssiController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(true);
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.muokkaakurssia', {
+        url: '/lukiokurssi/:kurssiId/muokkaa',
+        templateUrl: 'views/partials/lukio/muokkaaKurssia.html',
+        controller: 'MuokkaaLukiokurssiaController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(true);
+        }]
       });
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
-    koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService, TiedoteService,
-    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
-    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService, Kieli) {
+      koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService, TiedoteService,
+      PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
+      SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService, Kieli) {
     $scope.muokkausEnabled = false;
     $scope.pdfEnabled = false;
 
@@ -355,7 +421,8 @@ angular.module('eperusteApp')
       return !($state.is('root.perusteprojekti.suoritustapa.sisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.vksisalto') ||
-               $state.is('root.perusteprojekti.suoritustapa.eosisalto'));
+               $state.is('root.perusteprojekti.suoritustapa.eosisalto') ||
+               $state.is('root.perusteprojekti.suoritustapa.lukiosisalto'));
     };
 
     $scope.isNaviVisible = function () {

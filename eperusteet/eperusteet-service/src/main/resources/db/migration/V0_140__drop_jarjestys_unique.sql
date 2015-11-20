@@ -1,0 +1,1 @@
+DROP INDEX yl_oppaine_yl_lukiokurssi_jarjestys;

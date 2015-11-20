@@ -239,6 +239,6 @@ public class PerusteController {
     }
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, int age, Supplier<T> response) {
-        return CacheableResponse.create(service.getLastModifiedRevision(perusteId), age, response);
+        return CacheableResponse.create(service.getPerusteVersion(perusteId), age, response);
     }
 }

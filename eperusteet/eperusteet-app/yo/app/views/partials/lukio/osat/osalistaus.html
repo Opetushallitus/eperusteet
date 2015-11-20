@@ -1,0 +1,30 @@
+<!-- osalistaus.html -->
+<div class="row">
+  <div class="col-md-12 ep-sisalto-inner">
+    <div style="float: right" ng-show="!isOppiaineet() && !isOpetuksenTavoitteet()">
+      <button icon-role="add" class="btn btn-default" ng-click="add()" kaanna="sisaltoState.addLabel"></button>
+    </div>
+
+    <!--
+    <h1 kaanna="sisaltoState.label" ng-if="!isOppiaineet()"></h1>
+    -->
+
+    <div ng-if="isOpetuksenTavoitteet()">
+      <lukio-muokkaus-tavoitteet />
+    </div>
+    <div ng-if="isAihekokonaisuus()">
+      <div>
+        <lukio-muokkaus-aihekokonaisuudet aihekokonaisuudet="osaAlueet"></lukio-muokkaus-aihekokonaisuudet>
+      </div>
+    </div>
+
+    <div osalistaus="osaAlueet" search-placeholder="etsi-sisallosta"
+         empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
+         show-laajuus="false" url-generator="createUrl(value)" options="options"
+         ng-if="isPerusOsalistaus()"></div>
+
+    <div ng-if="isOppiaineet()">
+      <lukio-oppiaineet/>
+    </div>
+  </div>
+</div>

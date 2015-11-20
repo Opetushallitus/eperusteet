@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import com.google.common.base.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.Getter;

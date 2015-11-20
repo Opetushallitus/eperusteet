@@ -36,10 +36,13 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     private KoodiDto osaamisala;
 
     public TekstiKappaleDto() {
-
     }
 
     public TekstiKappaleDto (LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
+    }
+
+    public String getOsanTyyppi() {
+        return "tekstikappale";
     }
 }

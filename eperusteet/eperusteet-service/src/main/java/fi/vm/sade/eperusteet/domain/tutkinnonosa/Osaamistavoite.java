@@ -20,10 +20,8 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohde;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
-import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus;
-import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
@@ -33,11 +31,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -102,9 +102,19 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @OrderColumn(name = "jarjestys")
     private List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista = new ArrayList<>();
 
+    @RelatesToPeruste
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
     private Osaamistavoite esitieto;
+
+    @Getter
+    @RelatesToPeruste
+    @NotAudited
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tutkinnonosa_osaalue_osaamistavoite",
+            inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"),
+            joinColumns = @JoinColumn(name = "osaamistavoite_id"))
+    private Set<OsaAlue> osaAlueet;
 
     @Getter
     @Setter
@@ -144,7 +154,6 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
 
     @Override
     public void mergeState(Osaamistavoite updated) {
-
         if (updated != null) {
             this.setNimi(updated.getNimi());
             this.setPakollinen(updated.isPakollinen());

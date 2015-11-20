@@ -37,8 +37,9 @@ public class DtoMapperImpl implements DtoMapper {
     }
 
     @Override
-    public <S, D> void map(S sourceObject, D destinationObject) {
+    public <S, D> D map(S sourceObject, D destinationObject) {
         mapper.map(sourceObject, destinationObject);
+        return destinationObject;
     }
 
     @Override

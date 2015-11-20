@@ -26,6 +26,8 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
+import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -74,7 +76,7 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/omat", method = GET)
     @ResponseBody
-    public ResponseEntity<List<PerusteprojektiInfoDto>> getOmat() {
+    public ResponseEntity<List<PerusteprojektiListausDto>> getOmat() {
         return new ResponseEntity<>(service.getOmatProjektit(), HttpStatus.OK);
     }
 

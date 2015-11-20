@@ -20,10 +20,10 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams, $timeout,
-    PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
-    Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
-    virheService, PerusteProjektiSivunavi, perusteprojektiTiedot, $q, Varmistusdialogi, Algoritmit,
-    PerusteenOsat) {
+        PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
+        Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
+        virheService, PerusteProjektiSivunavi, perusteprojektiTiedot, $q, Varmistusdialogi, Algoritmit,
+        PerusteenOsat) {
     $scope.editoi = false;
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {

@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
@@ -48,6 +50,16 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private List<OsaAlueDto> osaAlueet;
     private List<KevytTekstiKappaleDto> vapaatTekstit;
     private TutkinnonOsaTyyppi tyyppi;
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
+
+    public TutkinnonOsaDto() {
+    }
+    public TutkinnonOsaDto (LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
+        super(nimi, tila, tunniste);
+    }
+
+    public String getOsanTyyppi() {
+        return "tutkinnonosa";
+    }
+
 }
