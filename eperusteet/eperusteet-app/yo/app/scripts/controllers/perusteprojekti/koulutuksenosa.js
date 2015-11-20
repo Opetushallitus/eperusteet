@@ -91,8 +91,6 @@ angular.module('eperusteApp')
     }
     Editointikontrollit.registerCallback(osaAlueCallbacks);
     lukitse(function () {
-        Editointikontrollit.unregisterCallback();
-        Editointikontrollit.registerCallback(osaAlueCallbacks);
         Editointikontrollit.startEditing();
     });
 });

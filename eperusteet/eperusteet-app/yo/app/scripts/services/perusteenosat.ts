@@ -104,7 +104,7 @@ angular.module('eperusteApp')
       mergeOsaAlueet: function(tutkinnonOsa) {
         if (tutkinnonOsa.tyyppi === 'tutke2') {
           tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function (osaAlue) {
-            var item = {nimi: osaAlue.nimi};
+            var item = {nimi: osaAlue.nimi, id: null};
             if (osaAlue.id) {
               item.id = osaAlue.id;
             }

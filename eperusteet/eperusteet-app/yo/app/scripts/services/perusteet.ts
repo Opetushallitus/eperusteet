@@ -339,7 +339,7 @@ angular.module('eperusteApp')
     function haeByPerusteprojektiP(id, suoritustapa) {
       var deferred = $q.defer();
       PerusteprojektiResource.get({id: id}, function(vastaus) {
-        hae(vastaus._peruste, suoritustapa, deferred.resolve, deferred.reject);
+        hae(vastaus._peruste, suoritustapa, deferred.resolve);
       });
       return deferred.promise;
     }

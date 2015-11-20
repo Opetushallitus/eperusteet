@@ -98,15 +98,12 @@ angular.module('eperusteApp')
       }
     };
 
-
     function lukitse(cb) {
       Lukitus.lukitsePerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId, cb);
     }
 
     Editointikontrollit.registerCallback(osaAlueCallbacks);
     lukitse(function () {
-      Editointikontrollit.unregisterCallback();
-      Editointikontrollit.registerCallback(osaAlueCallbacks);
       Editointikontrollit.startEditing();
     });
 

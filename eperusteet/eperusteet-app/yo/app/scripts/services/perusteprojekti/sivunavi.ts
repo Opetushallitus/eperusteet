@@ -19,9 +19,9 @@
 /// <reference path="../../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
-.service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q, $log,
-        $state, $location, YleinenData, PerusopetusService, LukiokoulutusService, Kaanna, $timeout, Utils,
-        LukioKurssiService) {
+.service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q, LukiokoulutusService,
+    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils, Kielimapper, LukioKurssiService) {
+  var STATE_OSAT_ALKU = 'root.perusteprojekti.suoritustapa.';
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
@@ -43,6 +43,16 @@ angular.module('eperusteApp')
         $type: 'ep-parts'
     }];
   }
+
+  var AM_ITEMS = [
+    {
+      label: 'tutkinnonosat',
+      link: [STATE_OSAT, {}],
+      isActive: isTutkinnonosatActive,
+      $type: 'ep-parts'
+    }
+  ];
+
 
   var service = null;
   var _isVisible = false;
@@ -238,10 +248,15 @@ angular.module('eperusteApp')
             : YleinenData.isLukiokoulutus(data.projekti.peruste) ? 'LU'
             : YleinenData.isSimple(data.projekti.peruste) ? 'ESI'
             : 'AM';
+    var constIsVaTe = false;
+    try {
+      constIsVaTe = YleinenData.isValmaTelma(data.projekti.peruste);
+    } catch (e) {}
+
     callbacks.typeChanged(perusteenTyyppi);
-    var constIsVaTe = YleinenData.isValmaTelma(data.projekti.peruste);
     buildTree(constIsVaTe, Kielimapper.mapTutkinnonosatKoulutuksenosat(constIsVaTe));
   };
+
 
   this.register = function (key, cb) {
     callbacks[key] = cb;

@@ -18,13 +18,14 @@
 /*global _, moment*/
 
 angular.module('eperusteApp')
-  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna, $q) {
+  .service('YleinenData', function($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna, $q) {
     this.dateOptions = {
       'year-format': 'yy',
       //'month-format': 'M',
       //'day-format': 'd',
       'starting-day': 1
     };
+
 
     this.naviOmit = ['root', 'editoi', 'suoritustapa', 'sisalto', 'aloitussivu', 'selaus', 'esitys'];
 
@@ -145,9 +146,12 @@ angular.module('eperusteApp')
 
     this.koulutustyypit = _.keys(this.koulutustyyppiInfo);
     this.ammatillisetkoulutustyypit = ['koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12'];
+    var me = this;
     this.laajuudellisetKoulutustyypit = _(this.koulutustyyppiInfo)
         .keys()
-        .filter(function(key) { return this.koulutustyyppiInfo[key].hasLaajuus; }.bind(this))
+        .filter(function(key) { return !me.koulutustyyppiInfo
+                  || !me.koulutustyyppiInfo[key] ? false
+                  : me.koulutustyyppiInfo[key].hasLaajuus; })
         .value();
 
     this.kielet = {
@@ -169,8 +173,8 @@ angular.module('eperusteApp')
     };
 
     this.isValmaTelma = function(koulutustyyppiTaiPeruste) {
-      koulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste) ? koulutustyyppiTaiPeruste : koulutustyyppiTaiPeruste.koulutustyyppi;
-      return koulutustyyppiTaiPeruste === 'koulutustyyppi_18' || koulutustyyppiTaiPeruste === 'koulutustyyppi_5';
+      var ortherKoulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste) ? koulutustyyppiTaiPeruste : koulutustyyppiTaiPeruste.koulutustyyppi;
+      return ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_18' || ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_5';
     };
 
     this.isLisaopetus = function (peruste) {

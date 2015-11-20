@@ -261,7 +261,8 @@ angular.module('eperusteApp', [
         params: _.clone(fromParams)
       };
 
-      if (Editointikontrollit.getEditMode() && fromState.name !== 'root.perusteprojekti.suoritustapa.tutkinnonosat') {
+      if (Editointikontrollit.getEditMode() && fromState.name !== 'root.perusteprojekti.suoritustapa.tutkinnonosat' &&
+        fromState.name !== 'root.perusteprojekti.suoritustapa.koulutuksenosa') {
         event.preventDefault();
 
         var data = {toState: toState, toParams: toParams};
