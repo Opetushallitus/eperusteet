@@ -54,6 +54,13 @@ public class OsaamisenTavoite implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
     @Setter
+    private TekstiPalanen nimi;
+
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Getter
+    @Setter
     private TekstiPalanen selite;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)

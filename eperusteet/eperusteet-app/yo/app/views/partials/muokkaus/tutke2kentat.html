@@ -66,7 +66,7 @@
           </div>
         </accordion-heading>
 
-        <label class="header" kaanna="'kuvaus'"></label>
+        <label class="header" kaanna="'kuvaus'" ng-if="alue.kuvaus"></label>
         <div editMode="false" type="text" ng-bind-html="alue.kuvaus | kaanna | unsafe"></div>
 
         <div ng-if="alue.koodiArvo">

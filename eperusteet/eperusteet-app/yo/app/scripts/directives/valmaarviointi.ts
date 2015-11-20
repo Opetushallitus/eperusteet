@@ -30,12 +30,15 @@ angular.module('eperusteApp')
       $scope.valmaarviointi.push({});
     };
 
+    $scope.removeItem = function(valmaitem){
+      _.remove($scope.valmaarviointi, valmaitem);
+    };
+
     $scope.rivi = {
       poista: function (list, index) {
         list.splice(index, 1);
       },
       uusi: function (kriteeri, event) {
-        console.log( kriteeri, event );
         if(_.isEmpty(kriteeri.tavoitteet)) {
           kriteeri.tavoitteet = [];
         }
@@ -116,7 +119,6 @@ angular.module('eperusteApp')
         });
 
         scope.isElementDragged = function() {
-          console.log("dragged", scope.elementDragged);
           if (scope.elementDragged) {
             scope.elementDragged = false;
             return true;

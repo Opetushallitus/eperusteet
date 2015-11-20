@@ -116,6 +116,8 @@ create table valmatelma_osaamisentavoite_osaalue_valmatelma_aud (
 );
 
 
+alter table valmatelma_osaamisentavoite add COLUMN nimi_id bigint references tekstipalanen(id);
+alter table valmatelma_osaamisentavoite_aud add COLUMN nimi_id bigint;
 
 
 

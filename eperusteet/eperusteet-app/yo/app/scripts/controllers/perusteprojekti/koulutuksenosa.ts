@@ -117,7 +117,7 @@ angular.module('eperusteApp')
   .controller('muokkausKoulutuksenosaCtrl', function($scope, Utils, Kommentit, $stateParams, KommentitByPerusteenOsa, $state,
         Editointikontrollit, VersionHelper, virheService, TutkinnonOsaViitteet, Algoritmit, rakenne,
         Lukitus, PerusteenOsaViite, $q, Tutke2Service, Notifikaatiot, PerusteenRakenne, TutkinnonOsaEditMode, PerusteTutkinnonosa,
-        PerusteenOsat, ProjektinMurupolkuService, Tutke2OsaData, $timeout, FieldSplitter) {
+        PerusteenOsat, ProjektinMurupolkuService, Tutke2OsaData, $timeout, FieldSplitter, Varmistusdialogi) {
     Utils.scrollTo('#ylasivuankkuri');
 
     $scope.tutke2osa = [];
@@ -195,6 +195,27 @@ angular.module('eperusteApp')
         $state.go('root.perusteprojekti.suoritustapa.koulutuksenosat');
       });
     }
+
+    $scope.poistaTutkinnonOsa = function(osaId) {
+
+      var onRakenteessa = PerusteenRakenne.validoiRakennetta($scope.rakenne.rakenne, function(osa) {
+        return osa._tutkinnonOsaViite && $scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].id === osaId;
+      });
+      if (onRakenteessa) {
+        Notifikaatiot.varoitus('koulutuksen-osa-rakenteessa-ei-voi-poistaa');
+      }
+      else {
+        Varmistusdialogi.dialogi({
+          otsikko: 'poistetaanko-koulutuksenosa',
+          primaryBtn: 'poista',
+          successCb: function () {
+            $scope.isNew = false;
+            Editointikontrollit.cancelEditing();
+            doDelete(osaId);
+          }
+        })();
+      }
+    };
 
     function saveCb(res) {
       Lukitus.vapautaPerusteenosa(res.id);
@@ -301,10 +322,11 @@ angular.module('eperusteApp')
         return {
           tavoitteet: _.map(item.tavoitteet, function(tavoite){ return _.omit(tavoite, 'jarjestys')}),
           kohde: item.kohde,
-          selite: item.selite
+          selite: item.selite,
+          nimi: item.nimi
         }
       }
-      return {};
+      return null;
     }
 
     var editointikontrollit = {
@@ -312,6 +334,11 @@ angular.module('eperusteApp')
         Tutke2Service.fetch($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi);
       },
       asyncValidate: function(done) {
+         if (!Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi)) {
+           $scope.nimiValidationError = true;
+           return false;
+         }
+
         if ($scope.$laajuusRangena &&
             $scope.editableTutkinnonOsaViite.laajuusMaksimi &&
             $scope.editableTutkinnonOsaViite.laajuus >= $scope.editableTutkinnonOsaViite.laajuusMaksimi) {
@@ -322,7 +349,6 @@ angular.module('eperusteApp')
         }
       },
       save: function(kommentti) {
-
         if( $scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto ){
           $scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto = {
             osaamistavoite: _.map($scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto.osaamistavoite, getSisalto),

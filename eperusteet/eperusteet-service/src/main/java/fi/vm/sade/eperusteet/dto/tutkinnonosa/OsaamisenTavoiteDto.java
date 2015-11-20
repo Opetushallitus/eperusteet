@@ -32,6 +32,7 @@ import java.util.List;
 public class OsaamisenTavoiteDto {
     private Long id;
     private LokalisoituTekstiDto kohde;
+    private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto selite;
     private List<LokalisoituTekstiDto> tavoitteet;
 }
