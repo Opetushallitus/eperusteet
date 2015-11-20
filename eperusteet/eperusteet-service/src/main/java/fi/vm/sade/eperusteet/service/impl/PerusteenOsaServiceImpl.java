@@ -19,6 +19,8 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
@@ -94,6 +96,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Autowired
     private LockManager lockManager;
 
+    @Autowired
+    private ValmaTelmaSisaltoRepository valmaTelmaSisaltoRepository;
+
+
     @Override
     @Transactional(readOnly = true)
     public List<PerusteenOsaDto.Suppea> getAll() {
@@ -149,6 +155,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             TutkinnonOsa tutkinnonOsa = (TutkinnonOsa) updated;
             tutkinnonOsa.setOsaAlueet(createOsaAlueIfNotExist(tutkinnonOsa.getOsaAlueet()));
+            tutkinnonOsa.setValmaTelmaSisalto( createValmatelmaIfNotExist( tutkinnonOsa.getValmaTelmaSisalto() ) );
         }
         if ( current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
             throw new BusinessRuleViolationException("Vain korjaukset sallittu");
@@ -162,6 +169,20 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         notifyUpdate(current);
         mapper.map(current, perusteenOsaDto);
         return perusteenOsaDto;
+    }
+
+    private ValmaTelmaSisalto createValmatelmaIfNotExist(ValmaTelmaSisalto valmaTelmaSisalto) {
+        ValmaTelmaSisalto tmp = null;
+
+        if (valmaTelmaSisalto != null) {
+
+            if (valmaTelmaSisalto.getId() == null) {
+                tmp = valmaTelmaSisaltoRepository.save(valmaTelmaSisalto);
+            }else{
+                tmp = valmaTelmaSisalto;
+            }
+        }
+        return tmp;
     }
 
     private void removeMissingFromCurrent(PerusteenOsa current, PerusteenOsa updated) {
@@ -266,9 +287,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         List<Osaamistavoite> uudetTavoitteet = tallennaUudetOsaamistavoitteet(osaAlue.getOsaamistavoitteet());
 
         OsaAlue osaAlueTmp = mapper.map(osaAlue, OsaAlue.class);
-        //osaAlueTmp.setOsaamistavoitteet(createOsaamistavoiteIfNotExist(osaAlueTmp.getOsaamistavoitteet()));
         osaAlueEntity.mergeState(osaAlueTmp);
         osaAlueEntity.getOsaamistavoitteet().addAll(uudetTavoitteet);
+        osaAlueEntity.setValmaTelmaSisalto( createValmatelmaIfNotExist( osaAlueTmp.getValmaTelmaSisalto() ));
         osaAlueRepository.save(osaAlueEntity);
 
         aiheutaUusiTutkinnonOsaViiteRevisio(viiteId);

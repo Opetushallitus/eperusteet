@@ -83,7 +83,8 @@
               </label>
               <div class="muokkaus-napit">
                 <button class="btn btn-default btn-xs" ng-click="kohde.cancel(kohdealue)" kaanna>peru</button>
-                <button class="btn btn-primary btn-xs" ng-disabled="!kohdealue.$newkohde.arviointiasteikko" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" ng-click="kohde.uusi(kohdealue)" kaanna>lisaa</button>
+                <button class="btn btn-primary btn-xs" ng-disabled="!kohdealue.$newkohde.arviointiasteikko"
+                        oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" ng-click="kohde.uusi(kohdealue)" kaanna>lisaa</button>
               </div>
             </div>
             <button type="button" class="btn btn-default btn-xs" ng-show="!kohde.isAdding(kohdealue)"

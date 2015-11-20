@@ -26,5 +26,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OsaAlueKokonaanDto extends OsaAlueDto {
-   private List<OsaamistavoiteLaajaDto> osaamistavoitteet;
+    private List<OsaamistavoiteLaajaDto> osaamistavoitteet;
 }

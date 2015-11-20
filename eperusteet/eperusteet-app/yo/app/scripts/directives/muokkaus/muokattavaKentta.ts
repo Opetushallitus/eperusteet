@@ -47,8 +47,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('muokattavaKentta', function($compile, $rootScope,
-    Editointikontrollit, $q, $timeout) {
+  .directive('muokattavaKentta', function($compile, $rootScope, Editointikontrollit, $q, $timeout) {
     return {
       restrict: 'E',
       replace: true,
@@ -61,11 +60,13 @@ angular.module('eperusteApp')
       controller: function ($scope, YleinenData, MuokkausUtils, Varmistusdialogi, Utils) {
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
-        $scope.$watch('objectReady', function(newObjectReadyPromise) {
-          newObjectReadyPromise.then(function(newObject) {
-            $scope.object = newObject;
+        if( $scope.objectReady ){
+          $scope.$watch('objectReady', function(newObjectReadyPromise) {
+            newObjectReadyPromise.then(function(newObject) {
+              $scope.object = newObject;
+            });
           });
-        });
+        }
 
         function poistaOsio(value) {
           if(angular.isString(value)) {
@@ -168,12 +169,20 @@ angular.module('eperusteApp')
             'ammattitaito': 'object.' + scope.field.path,
             'edit-enabled': 'editEnabled'
           }],
+          'valmaarviointi': ['', '<valmaarviointi>', {
+            'editointi-sallittu': 'true',
+            'valmaarviointi': 'object.' + scope.field.path,
+            'edit-enabled': 'editEnabled'
+          }],
           'vuosiluokkakokonaisuuden-osaaminen': ['', '<div>', {
             'editointi-sallittu': 'true',
             'vuosiluokkakokonaisuuden-osaaminen': 'object.' + scope.field.path,
             'edit-enabled': 'editEnabled'
           }]
         };
+        ELEMENT_MAP.osaamistavoitteet = _.merge(_.clone(ELEMENT_MAP.arviointi), { tyyppi: 'osaamistavoitteet' });
+        ELEMENT_MAP.osaamistavoitteet = _.merge(_.clone(ELEMENT_MAP.arviointi), { tyyppi: 'osaamisen-arviointi' });
+
 
         var mapperFns = {
           addEditorAttributesFor: function (element) {

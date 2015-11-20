@@ -71,7 +71,7 @@ public class Suoritustapa implements Serializable, ReferenceableEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "suoritustapa")
     @Getter
-    @OrderBy("jarjestys,id")
+    @OrderBy("jarjestys, id")
     @BatchSize(size = 10)
     private Set<TutkinnonOsaViite> tutkinnonOsat = new HashSet<>();
 

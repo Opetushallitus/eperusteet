@@ -92,6 +92,38 @@ angular.module('eperusteApp')
       list: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId/osaamistavoitteet'}
     });
   })
+  .service('Tutke2Service', function(Tutke2OsaData, Utils) {
+    return {
+      fetch: function(tyyppi) {
+        if (tyyppi === 'tutke2') {
+          if (Tutke2OsaData.get()) {
+            Tutke2OsaData.get().fetch();
+          }
+        }
+      },
+      mergeOsaAlueet: function(tutkinnonOsa) {
+        if (tutkinnonOsa.tyyppi === 'tutke2') {
+          tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function (osaAlue) {
+            var item = {nimi: osaAlue.nimi, id: null};
+            if (osaAlue.id) {
+              item.id = osaAlue.id;
+            }
+            return item;
+          });
+        }
+      },
+      validate: function(tyyppi) {
+        if (tyyppi === 'tutke2') {
+          return _.all(_.map(Tutke2OsaData.get().$editing, function (item) {
+            return Utils.hasLocalizedText(item.nimi);
+          }));
+        } else {
+          return true;
+        }
+      }
+    };
+
+  })
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {
     function validoi(tutkinnonOsa) {
       var virheet = [];

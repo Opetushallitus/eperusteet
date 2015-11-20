@@ -3,15 +3,15 @@
     <div class="col-md-12 ep-sisalto-inner">
         <div class="part-header-wrapper">
           <div class="action-buttons">
-              <button class="floater btn" icon-role="ep-part-import" ng-click="tuoTutkinnonosa()" kaanna="tuo-tutkinnonosa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+              <button class="floater btn" icon-role="ep-part-import" ng-click="tuoTutkinnonosa()" kaanna="{{ vateConverter('tuo-tutkinnonosa') }}" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
               <button ng-show="naytaToisestaSuoritustavastaTuonti" class="floater btn" icon-role="ep-part-import"
-                      ng-click="tuoSuoritustavasta()" kaanna="tuo-toisesta-suoritustavasta" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-              <button icon-role="add" class="floater btn" ng-click="lisaaTutkinnonOsa()" kaanna="'lisaa-tutkinnonosa'" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-          </div>
-          <h1>{{'tutkinnonosat'| kaanna}} ({{ tutkinnonOsat.length}} {{ 'kpl' | kaanna }})</h1>
+                      ng-click="tuoSuoritustavasta()" kaanna="{{ vateConverter('tuo-toisesta-suoritustavasta') }}" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+              <button icon-role="add" class="floater btn" ng-click="lisaaTutkinnonOsa()" kaanna="{{ vateConverter('lisaa-tutkinnonosa') }}" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
         </div>
-        <div osalistaus="tutkinnonOsat" search-placeholder="tutkinnon-osa-haku-placeholder"
-             empty-placeholder="perusteella-ei-viela-tutkinnonosia" koulutustyyppi="peruste.koulutustyyppi"
+        <h1>{{ vateConverter('tutkinnonosat') | kaanna }} ({{ tutkinnonOsat.length }} {{ 'kpl' | kaanna }})</h1>
+    </div>
+        <div osalistaus="tutkinnonOsat" search-placeholder="{{ vateConverter('tutkinnon-osa-haku-placeholder') }}"
+             empty-placeholder="{{ vateConverter('perusteella-ei-viela-tutkinnonosia') }}" koulutustyyppi="peruste.koulutustyyppi"
              show-laajuus="{{suoritustapa !== 'naytto'}}" url-generator="getHref(value)" yksikko="{{yksikko[suoritustapa]}}">
         </div>
     </div>

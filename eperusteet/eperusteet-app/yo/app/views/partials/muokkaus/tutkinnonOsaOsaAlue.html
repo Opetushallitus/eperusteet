@@ -3,8 +3,8 @@
 <p kaanna="tahdella-pakolliset"></p>
 <hr class="versioraja">
 <div class="non-collapsibles">
-  <label class="header" kaanna="tutkinnonosa"></label>
-  <p>{{tutkinnonOsa.nimi| kaanna}}</p>
+  <label class="header" kaanna="'tutkinnonosa'"></label>
+  <p kaanna="tutkinnonOsa.nimi"></p>
   <label class="header">{{'nimi'| kaanna}}*</label>
   <input class="form-control" slocalized ng-model="osaAlue.nimi" type="text"></input>
 
@@ -40,7 +40,7 @@
 
     <div class="non-collapsibles">
       <label kaanna>laajuus</label>
-      <numberinput model="tavoite.laajuus" type="float" step="0.5"></numberinput>
+      <numberinput style="margin-bottom: 3px" luokka="form-control" model="tavoite.laajuus" type="float" step="0.5" luokka="form-control"></numberinput>
       <label kaanna>tavoitteet</label>
       <div ng-model="tavoite.tavoitteet" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
 
@@ -63,7 +63,7 @@
     </h3>
     <div class="non-collapsibles">
       <label kaanna>laajuus</label>
-      <numberinput model="tavoite.lapsi.laajuus" type="float" step="0.5"></numberinput>
+      <numberinput style="margin-bottom: 3px" luokka="form-control" model="tavoite.lapsi.laajuus" type="float" step="0.5"></numberinput>
       <label kaanna>tavoitteet</label>
       <div ng-model="tavoite.lapsi.tavoitteet" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
 

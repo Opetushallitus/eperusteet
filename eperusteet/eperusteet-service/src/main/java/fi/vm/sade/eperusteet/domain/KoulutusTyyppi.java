@@ -27,6 +27,8 @@ public enum KoulutusTyyppi {
     ERIKOISAMMATTITUTKINTO("koulutustyyppi_12"),
     LISAOPETUS("koulutustyyppi_6"),
     ESIOPETUS("koulutustyyppi_15"),
+    TELMA("koulutustyyppi_5"),
+    VALMA("koulutustyyppi_18"),
     VARHAISKASVATUS("koulutustyyppi_20"),
     PERUSOPETUS("koulutustyyppi_16"),
     LUKIOKOULUTUS("koulutustyyppi_2");
@@ -52,7 +54,7 @@ public enum KoulutusTyyppi {
         throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
     }
 
-    public boolean isOneOf(KoulutusTyyppi[] tyypit) {
+    public boolean isOneOf(KoulutusTyyppi... tyypit) {
         for (KoulutusTyyppi toinen : tyypit) {
             if (toinen.toString().equals(this.tyyppi)) {
                 return true;
@@ -61,8 +63,11 @@ public enum KoulutusTyyppi {
         return false;
     }
 
+    public boolean isValmaTelma() {
+        return isOneOf(VALMA, TELMA);
+    }
 
     public boolean isAmmatillinen() {
-        return tyyppi != null && tyyppi.equals(AMMATTITUTKINTO.toString()) || tyyppi.equals(ERIKOISAMMATTITUTKINTO.toString()) || tyyppi.equals(PERUSTUTKINTO.toString());
+        return isOneOf(AMMATTITUTKINTO, ERIKOISAMMATTITUTKINTO, PERUSTUTKINTO);
     }
 }

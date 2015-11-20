@@ -1,8 +1,8 @@
 <div>
   <!-- tree.html -->
   <div id="osaamisala-varoitus" tooltip="{{'osaamisalaryhma-varoitus' | kaanna}}" tooltip-trigger="show"></div>
-  <div id="vierastutkinto-varoitus" tooltip="{{'vierastutkinto-pitaa-olla-vierastutkintoryhmassa' | kaanna}}" tooltip-trigger="show"></div>
-  <div id="vierastutkinto-varoitus2" tooltip="{{'vierastutkinto-ei-muita-ryhmia' | kaanna}}" tooltip-trigger="show"></div>
+  <div id="vierastutkinto-varoitus" tooltip="{{ vateConverter('vierastutkinto-pitaa-olla-vierastutkintoryhmassa') | kaanna }}" tooltip-trigger="show"></div>
+  <div id="vierastutkinto-varoitus2" tooltip="{{ vateConverter('vierastutkinto-ei-muita-ryhmia') | kaanna }}" tooltip-trigger="show"></div>
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <div ng-show="!muokkaus && !vanhempi && naytaKuvaus()">
       <div ng-bind-html="rakenne.rakenne.kuvaus | kaanna | unsafe"></div>
@@ -10,12 +10,12 @@
     <div ng-show="muokkaus && !vanhempi">
       <h2 kaanna="nimi"></h2>
       <input class="form-control" ng-model="rakenne.muodostumisOtsikko.nimi" slocalized>
-      <h2 kaanna="tutkinnon-rakenteen-kuvaus"></h2>
+      <h2 kaanna="vateConverter('tutkinnon-rakenteen-kuvaus')"></h2>
       <div ckeditor editing-enabled="true" ng-model="rakenne.rakenne.kuvaus"
            editor-placeholder="kuvaus" slocalized></div>
     </div>
     <div class="tree-con" ng-show="muokkaus || rakenne.rakenne.osat.length > 0">
-      <h2 ng-if="muokkaus" kaanna="tutkinnon-rakenne"></h2>
+      <h2 ng-if="muokkaus" kaanna="vateConverter('tutkinnon-rakenne')"></h2>
       <rajaus size="small" classes="puun-rajaus" model="apumuuttujat.haku" placeholder="{{ 'etsi-rakenteesta' || kaanna }}"></rajaus>
       <div ng-show="rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
         <span ng-if="!esitys">
@@ -71,7 +71,7 @@
       </div>
     </div>
     <div class="skratchpad-list">
-      <div class="skratchpad-list-header"><span kaanna="'tutkinnonosat'"></span><ohje teksti="ohje-muodostuminen-tutkinnonosat" suunta="left"></ohje></div>
+      <div class="skratchpad-list-header"><span kaanna="vateConverter('tutkinnonosat')"></span><ohje teksti="ohje-muodostuminen-tutkinnonosat" suunta="left"></ohje></div>
       <div class="skratchpad-list-body">
         <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
           <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="{{ 'rajaa-tutkinnonosia' | kaanna }}">
@@ -87,7 +87,7 @@
                   <span icon-role="plus"></span>
                 </div>
                 <div class="sp-name">
-                  <span kaanna="'vierastutkinnonosa'"></span>
+                  <span kaanna="vateConverter('vierastutkinnonosa')"></span>
                 </div>
               </div>
               <div ng-if="!osa.erikoisuus">
@@ -101,7 +101,14 @@
                   <span class="skratchpad-badge" ng-class="{'ei-kaytetty': !kaytetytUniikit[osa._tutkinnonOsaViite], 'kaytetty': kaytetytUniikit[osa._tutkinnonOsaViite]}"></span>
                 </div>
                 <div class="sp-name ellipsis-no-wrap" title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true}}">
-                  {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">, {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}{{ apumuuttujat.laajuusYksikko | kaanna }}</span>
+                  {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}
+                  <span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">
+                    , {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}
+                    <span ng-if="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuusMaksimi">
+                      - {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuusMaksimi }}
+                    </span>
+                    {{ apumuuttujat.laajuusYksikko | kaanna }}
+                  </span>
                 </div>
               </div>
             </li>

@@ -261,7 +261,8 @@ angular.module('eperusteApp', [
         params: _.clone(fromParams)
       };
 
-      if (Editointikontrollit.getEditMode() && fromState.name !== 'root.perusteprojekti.suoritustapa.tutkinnonosat') {
+      if (Editointikontrollit.getEditMode() && fromState.name !== 'root.perusteprojekti.suoritustapa.tutkinnonosat' &&
+        fromState.name !== 'root.perusteprojekti.suoritustapa.koulutuksenosa') {
         event.preventDefault();
 
         var data = {toState: toState, toParams: toParams};
@@ -305,4 +306,16 @@ angular.module('eperusteApp', [
     } else {
       console.warn('angular-ui-select korjaus (IE9), bootstrap/choices.tpl.html on muuttunut');
     }
+  })
+  .run(function($rootScope) {
+    $rootScope.$$isEmpty = _.isEmpty;
   });
+  // For debugging
+  // .run(function($rootScope) {
+  //   $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams, error) {
+  //     console.log('Success', event, toState, error);
+  //   });
+  //   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+  //     console.log('Failure', event, error);
+  //   });
+  // });
