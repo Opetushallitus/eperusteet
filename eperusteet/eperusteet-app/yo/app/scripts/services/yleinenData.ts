@@ -173,8 +173,11 @@ angular.module('eperusteApp')
     };
 
     this.isValmaTelma = function(koulutustyyppiTaiPeruste) {
-      var ortherKoulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste) ? koulutustyyppiTaiPeruste : koulutustyyppiTaiPeruste.koulutustyyppi;
-      return ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_18' || ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_5';
+      if(koulutustyyppiTaiPeruste){
+        var ortherKoulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste) ? koulutustyyppiTaiPeruste : koulutustyyppiTaiPeruste.koulutustyyppi;
+        return ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_18' || ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_5';
+      }
+      return false;
     };
 
     this.isLisaopetus = function (peruste) {
