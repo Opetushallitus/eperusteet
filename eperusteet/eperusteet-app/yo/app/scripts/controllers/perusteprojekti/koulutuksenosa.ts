@@ -548,7 +548,6 @@ angular.module('eperusteApp')
       ProjektinMurupolkuService.set('tutkinnonOsaViiteId', $scope.tutkinnonOsaViite.id, $scope.tutkinnonOsaViite.tutkinnonOsa.nimi);
       $scope.editableTutkinnonOsaViite = angular.copy(viite);
       $scope.isNew = !$scope.editableTutkinnonOsaViite.tutkinnonOsa.id;
-      Editointikontrollit.registerCallback(normalCallbacks);
 
       if($scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto){
         $scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointi =
