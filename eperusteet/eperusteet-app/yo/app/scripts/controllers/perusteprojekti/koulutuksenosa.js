@@ -95,7 +95,7 @@ angular.module('eperusteApp')
     });
 });
 angular.module('eperusteApp')
-    .controller('muokkausKoulutuksenosaCtrl', function ($scope, Utils, Kommentit, $stateParams, KommentitByPerusteenOsa, $state, Editointikontrollit, VersionHelper, virheService, TutkinnonOsaViitteet, Algoritmit, rakenne, Lukitus, PerusteenOsaViite, $q, Tutke2Service, Notifikaatiot, PerusteenRakenne, TutkinnonOsaEditMode, PerusteTutkinnonosa, PerusteenOsat, ProjektinMurupolkuService, Tutke2OsaData, $timeout, FieldSplitter, Varmistusdialogi) {
+    .controller('muokkausKoulutuksenosaCtrl', function ($scope, Utils, Kommentit, $stateParams, KommentitByPerusteenOsa, $state, Editointikontrollit, VersionHelper, virheService, TutkinnonOsaViitteet, Algoritmit, rakenne, Lukitus, PerusteenOsaViite, $q, Tutke2Service, Notifikaatiot, PerusteenRakenne, TutkinnonOsaEditMode, PerusteTutkinnonosa, PerusteenOsat, ProjektinMurupolkuService, Tutke2OsaData, $timeout, FieldSplitter, Varmistusdialogi, Koodisto, MuokkausUtils) {
     Utils.scrollTo('#ylasivuankkuri');
     $scope.tutke2osa = [];
     $scope.tutkinnonOsa = {};
@@ -122,6 +122,14 @@ angular.module('eperusteApp')
             collapsible: true,
             visible: false
         }];
+    $scope.koodistoClick = Koodisto.modaali(function (koodisto) {
+        MuokkausUtils.nestedSet($scope.editableTutkinnonOsaViite.tutkinnonOsa, 'koodiUri', ',', koodisto.koodiUri);
+        MuokkausUtils.nestedSet($scope.editableTutkinnonOsaViite.tutkinnonOsa, 'koodiArvo', ',', koodisto.koodiArvo);
+    }, {
+        tyyppi: function () { return 'tutkinnonosat'; },
+        ylarelaatioTyyppi: function () { return ''; },
+        tarkista: _.constant(true)
+    });
     $scope.hideFieldInMenu = function (field) {
         var hide = field.visible;
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto && field.path.includes('osaamisenarviointi')) {
@@ -461,7 +469,6 @@ angular.module('eperusteApp')
         ProjektinMurupolkuService.set('tutkinnonOsaViiteId', $scope.tutkinnonOsaViite.id, $scope.tutkinnonOsaViite.tutkinnonOsa.nimi);
         $scope.editableTutkinnonOsaViite = angular.copy(viite);
         $scope.isNew = !$scope.editableTutkinnonOsaViite.tutkinnonOsa.id;
-        Editointikontrollit.registerCallback(normalCallbacks);
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto) {
             $scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointi =
                 isEmptyValmaList($scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointi) ? null :
