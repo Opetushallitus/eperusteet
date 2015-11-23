@@ -18,7 +18,7 @@
 /*global _, moment*/
 
 angular.module('eperusteApp')
-  .service('YleinenData', function($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna, $q) {
+  .service('YleinenData', function($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna, $q, $location, Kieli) {
     this.dateOptions = {
       'year-format': 'yy',
       //'month-format': 'M',
@@ -26,6 +26,21 @@ angular.module('eperusteApp')
       'starting-day': 1
     };
 
+    this.getPerusteEsikatseluHost = function () {
+      var host = $location.host();
+      var kieli = Kieli.getSisaltokieli();
+      if( host.indexOf('localhost') > -1 ) {
+        //localhost - dev
+        return 'http://localhost:9020/#' + kieli;
+      } else if( host.indexOf('testi.virkailija.opintopolku.fi') > -1  ) {
+        // QA
+        return 'https://testi-eperusteet.opintopolku.fi/#' + kieli;
+      } else {
+        // Tuotanto
+        return 'https://eperusteet.opintopolku.fi/#' + kieli;
+      }
+
+    };
 
     this.naviOmit = ['root', 'editoi', 'suoritustapa', 'sisalto', 'aloitussivu', 'selaus', 'esitys'];
 
