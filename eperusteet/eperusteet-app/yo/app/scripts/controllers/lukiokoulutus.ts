@@ -29,7 +29,7 @@ interface PaginationDetails {
 angular.module('eperusteApp')
   .controller('LukiokoulutussisaltoController',
   function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto, LukioKurssiService,
-      LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils) {
+      LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, YleinenData) {
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -37,9 +37,7 @@ angular.module('eperusteApp')
     $scope.rajaus = '';
 
     $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
-    $scope.$esitysurl = $state.href('root.selaus.lukiokoulutus', {
-      perusteId: $scope.peruste.id
-    });
+    $scope.$esitysurl = YleinenData.getPerusteEsikatseluHost() + '/lukio/' + $scope.peruste.id;
 
     $scope.$watch('peruste.sisalto', function () {
       if( !_.isEmpty($scope.peruste.sisalto) ) {
