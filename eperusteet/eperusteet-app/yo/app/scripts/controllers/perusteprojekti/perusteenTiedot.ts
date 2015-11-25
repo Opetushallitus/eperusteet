@@ -60,6 +60,7 @@ angular.module('eperusteApp')
     var editingCallbacks = {
       edit: function () {
         fixTimefield('siirtymaPaattyy');
+        fixTimefield('paatospvm');
         fixTimefield('voimassaoloAlkaa');
         fixTimefield('voimassaoloLoppuu');
         $scope.editablePeruste = angular.copy($scope.peruste);
