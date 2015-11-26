@@ -16,15 +16,11 @@
 package fi.vm.sade.eperusteet.domain.arviointi;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
@@ -64,20 +60,6 @@ public class Arviointi implements Serializable {
     @OrderColumn
     @Getter
     private List<ArvioinninKohdealue> arvioinninKohdealueet = new ArrayList<>();
-
-    @Getter
-    @Setter
-    @NotAudited
-    @RelatesToPeruste
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "arviointi")
-    private Osaamistavoite osaamistavoite;
-
-    @Getter
-    @Setter
-    @NotAudited
-    @RelatesToPeruste
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "arviointi")
-    private TutkinnonOsa tutkinnonOsa;
 
     public Arviointi() {
     }

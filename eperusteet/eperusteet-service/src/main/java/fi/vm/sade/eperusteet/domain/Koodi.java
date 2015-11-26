@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -54,13 +53,4 @@ public class Koodi implements Serializable {
     @Getter
     @Setter
     private String uri;
-
-    @RelatesToPeruste
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "peruste_osaamisala",
-            inverseJoinColumns = @JoinColumn(name = "peruste_id"),
-            joinColumns = @JoinColumn(name = "osaamisala_id"))
-    @Getter
-    @Setter
-    private Peruste peruste;
 }

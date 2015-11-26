@@ -15,15 +15,12 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  *
@@ -43,16 +40,6 @@ public class Koulutus implements Serializable, Mergeable<Koulutus>{
         this.koulutusalakoodi = koulutusalakoodi;
         this.opintoalakoodi = opintoalakoodi;
     }
-
-    @RelatesToPeruste
-    @NotAudited
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "peruste_koulutus",
-            inverseJoinColumns = @JoinColumn(name = "peruste_id"),
-            joinColumns = @JoinColumn(name = "koulutus_id"))
-    @Getter
-    @Setter
-    private Set<Peruste> perusteet;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

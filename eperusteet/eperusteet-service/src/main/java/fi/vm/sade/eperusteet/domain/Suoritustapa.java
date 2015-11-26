@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -23,7 +22,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -74,16 +72,6 @@ public class Suoritustapa implements Serializable, ReferenceableEntity {
     @OrderBy("jarjestys, id")
     @BatchSize(size = 10)
     private Set<TutkinnonOsaViite> tutkinnonOsat = new HashSet<>();
-
-    @RelatesToPeruste
-    @NotAudited
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "peruste_suoritustapa",
-            inverseJoinColumns = @JoinColumn(name = "peruste_id"),
-            joinColumns = @JoinColumn(name = "suoritustapa_id"))
-    @Getter
-    @Setter
-    private Set<Peruste> perusteet;
 
     @Override
     public EntityReference getReference() {

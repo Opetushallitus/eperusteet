@@ -75,7 +75,6 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         RakenneModuuli rakenne = rakenneRepository.save(new RakenneModuuli());
 
         suoritustapa.setSisalto(perusteenOsaViite);
-        perusteenOsaViite.setSuoritustapa(suoritustapa);
         suoritustapa.setRakenne(rakenne);
 
         return suoritustapaRepository.save(suoritustapa);

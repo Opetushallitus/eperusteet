@@ -17,19 +17,15 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  *
@@ -58,24 +54,6 @@ public class LaajaalainenOsaaminen extends AbstractReferenceableEntity {
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen kuvaus;
-
-    @Getter
-    @NotAudited
-    @RelatesToPeruste
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_laajaalainen_osaaminen",
-            joinColumns = @JoinColumn(name = "laajaalaisetosaamiset_id", updatable = false, nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false, updatable = false))
-    private Set<PerusopetuksenPerusteenSisalto> perusopetuksenPerusteenSisallot = new HashSet<>();
-
-    @Getter
-    @NotAudited
-    @RelatesToPeruste
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "yl_opetuksen_tavoite_yl_laajaalainen_osaaminen",
-            joinColumns = @JoinColumn(name = "laajattavoitteet_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id", nullable = false, updatable = false))
-    private Set<OpetuksenTavoite> opetuksenTavoitteet = new HashSet<>();
 
     public LaajaalainenOsaaminen kloonaa() {
         LaajaalainenOsaaminen uusiLaaja = new LaajaalainenOsaaminen();

@@ -17,7 +17,6 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -37,7 +36,6 @@ import java.util.Set;
 @Table(name = "yl_perusop_perusteen_sisalto")
 public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto {
 
-    @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
     @Setter
@@ -49,7 +47,7 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     @Getter
     @Setter
     @JoinColumn
-    private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
+    private PerusteenOsaViite sisalto = new PerusteenOsaViite();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinTable

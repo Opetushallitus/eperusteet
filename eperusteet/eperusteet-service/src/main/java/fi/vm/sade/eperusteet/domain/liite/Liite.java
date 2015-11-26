@@ -15,10 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain.liite;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -26,7 +23,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -59,15 +55,6 @@ public class Liite implements Serializable {
     @Lob
     @NotNull
     private Blob data;
-
-    @RelatesToPeruste
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "peruste_liite",
-            joinColumns = @JoinColumn(name="liite_id"),
-            inverseJoinColumns = @JoinColumn(name="peruste_id"))
-    @Getter
-    @Setter
-    private Set<Peruste> perusteet;
 
     protected Liite() {
         //JPA

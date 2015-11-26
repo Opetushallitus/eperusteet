@@ -86,7 +86,6 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
         juuri = repo.save(juuri);
         juuriId = juuri.getId();
         suoritustapa.setSisalto(juuri);
-        juuri.setSuoritustapa(suoritustapa);
 
         PerusteenOsaViite lapsi = new PerusteenOsaViite();
         TekstiKappale tekstikappale = new TekstiKappale();

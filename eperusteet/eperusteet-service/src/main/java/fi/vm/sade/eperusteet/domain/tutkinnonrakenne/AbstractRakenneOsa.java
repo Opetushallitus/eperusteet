@@ -18,18 +18,15 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.io.Serializable;
-import java.util.*;
-import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Objects;
 
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 

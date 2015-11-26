@@ -17,7 +17,6 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
@@ -25,7 +24,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
@@ -121,7 +119,6 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @BatchSize(size = 3)
     private Set<OppiaineenVuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet;
 
-    @RelatesToPeruste
     @Getter
     @ManyToOne(optional = true)
     private Oppiaine oppiaine;
@@ -164,7 +161,6 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private Set<OppiaineLukiokurssi> lukiokurssit = new HashSet<>(0);
 
-    @RelatesToPeruste
     @Getter
     @Audited
     @ManyToMany(fetch = FetchType.LAZY)
@@ -172,15 +168,6 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
             inverseJoinColumns = @JoinColumn(name = "rakenne_id", nullable = false, updatable = false),
             joinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
     private Set<LukioOpetussuunnitelmaRakenne> lukioRakenteet = new HashSet<>(0);
-
-    @RelatesToPeruste
-    @NotAudited
-    @Getter
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_oppiaine",
-            joinColumns = @JoinColumn(name = "oppiaineet_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false, updatable = false))
-    private Set<PerusopetuksenPerusteenSisalto> perusopetuksenPerusteenSisaltos;
 
     /**
      * Palauttaa oppimäärät
