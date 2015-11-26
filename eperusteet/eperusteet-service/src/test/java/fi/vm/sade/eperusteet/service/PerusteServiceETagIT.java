@@ -67,6 +67,7 @@ public class PerusteServiceETagIT extends AbstractIntegrationTest {
         Suoritustapa s = new Suoritustapa();
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
+        s.getPerusteet().add(p);
         RakenneModuuli rakenne = new RakenneModuuli();
         s.setRakenne(rakenne);
         peruste = repo.save(p);

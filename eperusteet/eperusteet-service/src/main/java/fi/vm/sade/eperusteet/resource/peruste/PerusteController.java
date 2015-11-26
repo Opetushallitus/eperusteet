@@ -28,13 +28,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
@@ -187,6 +181,13 @@ public class PerusteController {
                 return service.get(id);
             }
         });
+    }
+
+    @RequestMapping(value = "/{perusteId}/version", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "perusteen uusin versio")
+    public PerusteVersionDto getVersion(@PathVariable("perusteId") final long id) {
+        return service.getPerusteVersion(id);
     }
 
     @RequestMapping(value = "/{perusteId}/osaamisalakuvaukset", method = GET)

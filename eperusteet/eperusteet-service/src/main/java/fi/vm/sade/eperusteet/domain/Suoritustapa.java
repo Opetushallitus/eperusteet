@@ -77,13 +77,9 @@ public class Suoritustapa implements Serializable, ReferenceableEntity {
 
     @RelatesToPeruste
     @NotAudited
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "peruste_suoritustapa",
-            inverseJoinColumns = @JoinColumn(name = "peruste_id"),
-            joinColumns = @JoinColumn(name = "suoritustapa_id"))
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "suoritustavat")
     @Getter
-    @Setter
-    private Set<Peruste> perusteet;
+    private Set<Peruste> perusteet = new HashSet<>();
 
     @Override
     public EntityReference getReference() {
