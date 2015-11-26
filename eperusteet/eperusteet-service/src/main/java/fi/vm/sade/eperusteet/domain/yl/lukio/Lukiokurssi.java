@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.yl.Kurssi;
@@ -63,6 +64,7 @@ public class Lukiokurssi extends Kurssi {
 
     @Getter
     @Setter
+    @RelatesToPeruste
     @JoinColumn(name = "rakenne_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private LukioOpetussuunnitelmaRakenne opetussuunnitelma;

@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,6 +44,7 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     @NotNull
     private Oppiaine oppiaine;
 
+    @RelatesToPeruste
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

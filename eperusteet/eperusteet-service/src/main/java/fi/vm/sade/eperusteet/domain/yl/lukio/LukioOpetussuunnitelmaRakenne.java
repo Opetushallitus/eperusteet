@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.NimettyKoodillinen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -53,6 +54,7 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     @JoinColumn(name="viite_id", nullable = false)
     private PerusteenOsaViite viite = new PerusteenOsaViite();
 
+    @RelatesToPeruste
     @Getter
     @Setter
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})

@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import lombok.Getter;
@@ -25,6 +26,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -37,6 +39,7 @@ import java.util.Set;
 @Table(name = "yl_lukiokoulutuksen_perusteen_sisalto", schema = "public")
 public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto {
 
+    @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
     @Setter
@@ -48,7 +51,7 @@ public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenS
     @Getter
     @Setter
     @JoinColumn(name="sisalto_id")
-    private PerusteenOsaViite sisalto = new PerusteenOsaViite();
+    private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
     @Getter
     @Setter

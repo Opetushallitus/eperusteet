@@ -16,15 +16,20 @@
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -66,6 +71,7 @@ public class Aihekokonaisuus extends AbstractAuditedReferenceableEntity {
     @Setter
     private Long jnro;
 
+    @RelatesToPeruste
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
