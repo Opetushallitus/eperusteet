@@ -36,6 +36,26 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 /**
+ * Interceptor to update PerusteVersion timestamp automatically when any
+ * Peruste related entity changes.
+ *
+ * @see RelatesToPeruste to mark the relation in entity classes.
+ *
+ * Breaks the general rule of Hibernate Intercetpr not to reference Session or
+ * lazy collections within * interceptor methods. However, works in this case.
+ * No load interceptor is implemented (thus only changes are noted by
+ * the implementation). Only makes changes to PerusteVersion
+ * not for that) and thus won't cause any infinite interceptor callbacks.
+ * The interceptor will not change the state of entity being modified, only
+ * that of PerusteVersion (which it will not handle).
+ *
+ * Will possibly cause additional extra lazy queries when saving or updating
+ * a Peruste related entity. However, this is a tradeoff to circumvent the
+ * need to remember to implement this in every change causing service method and
+ * to deep copy the entity under possible change operation with all of its
+ * related entities (and thereby cause lazy queries) and check (and impl the check)
+ * if anything changed within.
+ *
  * User: tommiratamaa
  * Date: 12.11.2015
  * Time: 14.57

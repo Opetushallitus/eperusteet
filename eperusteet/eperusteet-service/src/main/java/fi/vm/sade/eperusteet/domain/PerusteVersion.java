@@ -43,6 +43,7 @@ public class PerusteVersion {
     @SequenceGenerator(name = "peruste_version_id_seq", sequenceName = "peruste_version_id_seq")
     private Long id;
 
+    // NOTE: do not annotate this as @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "peruste_id", nullable = false)
     private Peruste peruste;
