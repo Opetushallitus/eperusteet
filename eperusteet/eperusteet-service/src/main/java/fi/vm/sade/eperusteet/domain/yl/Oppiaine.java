@@ -73,21 +73,21 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @Getter
     @Setter
     @Valid
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa tehtava;
 
     @Getter
     @Setter
     @Valid
     @JoinColumn(name = "tavoitteet_id", nullable = true)
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa tavoitteet;
 
     @Getter
     @Setter
     @Valid
     @JoinColumn(name = "arviointi_id", nullable = true)
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa arviointi;
 
     @Getter

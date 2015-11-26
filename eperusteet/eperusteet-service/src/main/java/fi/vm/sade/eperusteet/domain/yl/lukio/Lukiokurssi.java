@@ -73,21 +73,21 @@ public class Lukiokurssi extends Kurssi {
     @Setter
     @Valid
     @JoinColumn(name = "tavoitteet_id", nullable = true)
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa tavoitteet;
 
     @Getter
     @Setter
     @Valid
     @JoinColumn(name = "keskeinen_sisalto_id", nullable = true)
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa keskeinenSisalto;
 
     @Getter
     @Setter
     @Valid
     @JoinColumn(name = "tavoitteet_ja_keskeinen_sisalto_id", nullable = true)
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa tavoitteetJaKeskeinenSisalto;
 
     @Getter
