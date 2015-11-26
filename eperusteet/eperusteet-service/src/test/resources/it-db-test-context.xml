@@ -40,7 +40,6 @@
     <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
     <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>
     <tx:annotation-driven/>
-    <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
@@ -68,7 +67,6 @@
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator" />
-                <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor" />
             </map>
         </property>
         <property name="mappingResources">

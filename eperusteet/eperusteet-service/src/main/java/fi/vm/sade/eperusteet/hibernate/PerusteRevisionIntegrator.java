@@ -21,13 +21,17 @@ import fi.ratamaa.dtoconverter.reflection.Property;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteVersion;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
-import org.hibernate.CallbackException;
-import org.hibernate.EmptyInterceptor;
+import org.hibernate.HibernateException;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.collection.spi.PersistentCollection;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.*;
+import org.hibernate.integrator.spi.Integrator;
+import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.type.Type;
+import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -41,14 +45,6 @@ import static java.util.stream.Collectors.toList;
  *
  * @see RelatesToPeruste to mark the relation in entity classes.
  *
- * Breaks the general rule of Hibernate Intercetpr not to reference Session or
- * lazy collections within * interceptor methods. However, works in this case.
- * No load interceptor is implemented (thus only changes are noted by
- * the implementation). Only makes changes to PerusteVersion
- * not for that) and thus won't cause any infinite interceptor callbacks.
- * The interceptor will not change the state of entity being modified, only
- * that of PerusteVersion (which it will not handle).
- *
  * Will possibly cause additional extra lazy queries when saving or updating
  * a Peruste related entity. However, this is a tradeoff to circumvent the
  * need to remember to implement this in every change causing service method and
@@ -56,47 +52,26 @@ import static java.util.stream.Collectors.toList;
  * related entities (and thereby cause lazy queries) and check (and impl the check)
  * if anything changed within.
  *
+ * As an Hibernate Interceptor would break the general rule of not accessing Session or lazy
+ * objects (although would work in this case). Thus implemented as an Integrator:
+ * See https://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch07.html#integrators
+ *
  * User: tommiratamaa
  * Date: 12.11.2015
  * Time: 14.57
  */
-public class HibernateInterceptor extends EmptyInterceptor {
+public class PerusteRevisionIntegrator implements Integrator {
     private static final Map<Class<?>, List<Property>> routesToPeruste = new HashMap<>();
 
-    @Override
-    public boolean onFlushDirty(Object entity, Serializable id,
-                                Object[] currentState, Object[] previousState,
-                                String[] propertyNames, Type[] types) {
+    protected void onCollectionUpdate(PersistentCollection collection) {
+        updatePerusteRelatedTimestamps(collection.getOwner());
+    }
+
+    protected void onSaveOrUpdateEntity(Object entity) {
         updatePerusteRelatedTimestamps(entity);
-        return false;
     }
 
-    @Override
-    public boolean onSave(Object entity, Serializable id,
-                          Object[] state, String[] propertyNames, Type[] types) {
-        updatePerusteRelatedTimestamps(entity);
-        return false;
-    }
-
-    @Override
-    public void onCollectionUpdate(Object collection, Serializable key) throws CallbackException {
-        if (collection instanceof PersistentCollection) {
-            updatePerusteRelatedTimestamps(((PersistentCollection) collection).getOwner());
-        }
-    }
-
-    @Override
-    public void onCollectionRemove(Object collection, Serializable key) throws CallbackException {
-        onCollectionUpdate(collection, key);
-    }
-
-    @Override
-    public void onCollectionRecreate(Object collection, Serializable key) throws CallbackException {
-        onCollectionUpdate(collection, key);
-    }
-
-    @Override
-    public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
+    protected void onDeleteEntity(Object entity) {
         updatePerusteRelatedTimestamps(entity);
     }
 
@@ -154,5 +129,73 @@ public class HibernateInterceptor extends EmptyInterceptor {
             return ((HibernateProxy) entity).getHibernateLazyInitializer().getPersistentClass();
         }
         return entity.getClass();
+    }
+
+    @Override
+    public void integrate(Configuration configuration,
+                          SessionFactoryImplementor sessionFactory,
+                          SessionFactoryServiceRegistry serviceRegistry) {
+        final EventListenerRegistry eventListenerRegistry = serviceRegistry.getService( EventListenerRegistry.class );
+        eventListenerRegistry.appendListeners(EventType.FLUSH_ENTITY,
+                new FlushEntityEventListener() {
+                    @Override
+                    public void onFlushEntity(FlushEntityEvent event) throws HibernateException {
+                        if (event.isDirtyCheckHandledByInterceptor()
+                                && event.getDirtyProperties().length > 0) {
+                            // harmi vain, että tänne ei tulla
+                            onSaveOrUpdateEntity(event.getEntity());
+                        }
+                    }
+                });
+        eventListenerRegistry.prependListeners(EventType.SAVE_UPDATE,
+                new SaveOrUpdateEventListener() {
+                    @Override
+                    public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
+                        onSaveOrUpdateEntity(event.getObject());
+                    }
+                });
+        eventListenerRegistry.prependListeners(EventType.DELETE,
+                new DeleteEventListener() {
+                    @Override
+                    public void onDelete(DeleteEvent event) throws HibernateException {
+                        onDeleteEntity(event.getObject());
+                    }
+
+                    @Override
+                    public void onDelete(DeleteEvent event, Set transientEntities) throws HibernateException {
+                    }
+                });
+        eventListenerRegistry.prependListeners(EventType.POST_COLLECTION_UPDATE,
+                new PostCollectionUpdateEventListener() {
+                    @Override
+                    public void onPostUpdateCollection(PostCollectionUpdateEvent event) {
+                        onCollectionUpdate(event.getCollection());
+                    }
+                });
+        eventListenerRegistry.prependListeners(EventType.POST_COLLECTION_REMOVE,
+                new PostCollectionRemoveEventListener() {
+                    @Override
+                    public void onPostRemoveCollection(PostCollectionRemoveEvent event) {
+                        onCollectionUpdate(event.getCollection());
+                    }
+                });
+        eventListenerRegistry.prependListeners(EventType.POST_COLLECTION_RECREATE,
+                new PostCollectionRecreateEventListener() {
+                    @Override
+                    public void onPostRecreateCollection(PostCollectionRecreateEvent event) {
+                        onCollectionUpdate(event.getCollection());
+                    }
+                });
+    }
+
+    @Override
+    public void integrate(MetadataImplementor metadata,
+                          SessionFactoryImplementor sessionFactory,
+                          SessionFactoryServiceRegistry serviceRegistry) {
+    }
+
+    @Override
+    public void disintegrate(SessionFactoryImplementor sessionFactory,
+                             SessionFactoryServiceRegistry serviceRegistry) {
     }
 }
