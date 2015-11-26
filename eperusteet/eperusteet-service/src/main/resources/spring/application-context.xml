@@ -68,6 +68,7 @@
     <tx:annotation-driven/>
     <cache:annotation-driven />
     <aop:aspectj-autoproxy  />
+    <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
 
     <jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>
 
@@ -91,6 +92,7 @@
                 <entry key="org.hibernate.envers.revision_listener" value="fi.vm.sade.eperusteet.service.impl.AuditRevisionListener"/>
                 <entry key="hibernate.jdbc.batch_size" value="20"/>
                 <entry key="hibernate.jdbc.fetch_size" value="20"/>
+                <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor" />
             </map>
         </property>
         <property name="mappingResources">
