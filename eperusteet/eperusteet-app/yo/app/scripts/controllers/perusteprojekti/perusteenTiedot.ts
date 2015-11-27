@@ -139,6 +139,7 @@ angular.module('eperusteApp')
     noudaKorvattavienDiaarienNimet($scope.peruste.korvattavatDiaarinumerot);
     $scope.editablePeruste = $scope.peruste;
     $scope.peruste.nimi = $scope.peruste.nimi || {};
+    $scope.peruste.maarayskirje = $scope.peruste.maarayskirje || {};
     $scope.peruste.kuvaus = $scope.peruste.kuvaus || {};
     $scope.projektiId = $stateParams.perusteProjektiId;
     //$scope.open = {};

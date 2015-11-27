@@ -233,18 +233,34 @@ European Union Public Licence for more details.
           </div>
         </div>
 
-
         <div class="panel panel-default panel-clean">
           <div class="panel-heading">
             <h3 class="panel-title" kaanna>maarayksen-paatospaivamaara</h3>
           </div>
           <div class="panel-body">
             <div ng-if="editEnabled">
-              <formfield model="editablePeruste" model-var="paatospvm" label="paatos-pvm" type="date"
+              <formfield model="editablePeruste" model-var="paatospvm" label="päätöspvm-label" type="date"
                          placeholder="anna-paatos-pvm"></formfield>
             </div>
             <table class="aligned" ng-show="!editEnabled">
-              <tr><th kaanna>paatos-pvm</th><td pvm="peruste.paatospvm"></td></tr>
+              <tr><th kaanna>päätöspvm-label</th><td pvm="peruste.paatospvm"></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default panel-clean">
+          <div class="panel-heading">
+            <h3 class="panel-title" kaanna>maarayskirje</h3>
+          </div>
+          <div class="panel-body">
+            <div ng-show="editEnabled" class="form-group">
+              <label class="col-sm-3 control-label" kaanna="sijainti"></label>
+              <div class="col-sm-9">
+                <input ng-model="editablePeruste.maarayskirje.url" class="col-sm-12 form-control" slocalized placeholder="https://"></input>
+              </div>
+            </div>
+            <table class="aligned" ng-show="!editEnabled">
+              <tr><th kaanna="sijainti"></th><td><a ng-href="{{ peruste.maarayskirje.url | kaanna }}">{{ peruste.maarayskirje.url | kaanna }}</a></td></tr>
             </table>
           </div>
         </div>
