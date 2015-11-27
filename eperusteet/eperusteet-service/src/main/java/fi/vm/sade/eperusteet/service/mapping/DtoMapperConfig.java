@@ -43,9 +43,18 @@ import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
+import ma.glasnost.orika.Mapper;
+import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory.Builder;
+import ma.glasnost.orika.metadata.MapperKey;
+import ma.glasnost.orika.metadata.Type;
+import ma.glasnost.orika.metadata.TypeFactory;
 import ma.glasnost.orika.unenhance.HibernateUnenhanceStrategy;
+import org.hibernate.proxy.HibernateProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -55,16 +64,57 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class DtoMapperConfig {
+    private static final Logger logger = LoggerFactory.getLogger(DtoMapperConfig.class);
 
     @Bean
     @Dto
     public DtoMapper dtoMapper(
-        TekstiPalanenConverter tekstiPalanenConverter,
-        ReferenceableEntityConverter cachedEntityConverter,
-        KoodistokoodiConverter koodistokoodiConverter) {
-        DefaultMapperFactory factory
-            = new DefaultMapperFactory.Builder()
-                .unenhanceStrategy(new HibernateUnenhanceStrategy())
+            TekstiPalanenConverter tekstiPalanenConverter,
+            ReferenceableEntityConverter cachedEntityConverter,
+            KoodistokoodiConverter koodistokoodiConverter) {
+        DefaultMapperFactory factory = new Builder() {
+            @Override
+            public DefaultMapperFactory build() {
+                return new DefaultMapperFactory(this) {
+                    @Override
+                    public <A, B> Mapper<A, B> lookupMapper(MapperKey mapperKey) {
+                        return super.lookupMapper(fixKey(mapperKey));
+                    }
+
+                    @Override
+                    public Mapper<Object, Object> lookupMapper(MapperKey mapperKey, MappingContext context) {
+                        return super.lookupMapper(fixKey(mapperKey), context);
+                    }
+
+                    private MapperKey fixKey(MapperKey mapperKey) {
+                        if (mapperKey.getAType().getSimpleName().contains("$$")) {
+                            return fixKey(new MapperKey(
+                                    mapperKey.getAType().getSuperType(),
+                                    mapperKey.getBType()
+                            ));
+                        }
+                        if (mapperKey.getBType().getSimpleName().contains("$$")) {
+                            return fixKey(new MapperKey(
+                                    mapperKey.getAType(),
+                                    mapperKey.getBType().getSuperType())
+                            );
+                        }
+                        return mapperKey;
+                    }
+                };
+            }
+        }.unenhanceStrategy(new HibernateUnenhanceStrategy() {
+                    @Override
+                    public <T> Type<T> unenhanceType(T object, Type<T> type) {
+                        if (object instanceof HibernateProxy) {
+                            //noinspection unchecked
+                            return TypeFactory.resolveValueOf((Class<T>)
+                                    ((HibernateProxy) object).getHibernateLazyInitializer().getPersistentClass(),
+                                    type);
+                        }
+                        return super.unenhanceType(object, type);
+                    }
+                })
             .build();
 
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);

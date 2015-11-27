@@ -310,7 +310,7 @@ angular.module('eperusteApp')
         .value();
     }, Notifikaatiot.serverCb);
   })
-  .controller('LukiokoulutusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot) {
+  .controller('LukiokoulutusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot, YleinenData) {
     $scope.lista = [];
     Perusteet.get({
       tyyppi: 'koulutustyyppi_2'
@@ -321,8 +321,8 @@ angular.module('eperusteApp')
       $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
         .reverse()
         .each(function(eo) {
-          //TODO: Pitää korjata linkki julkiseen paikkaan
-          eo.$url = $state.href('root.selaus.lukiokoulutus', {perusteId: eo.id});
+          // "Kovakoodatut" Hostit haetaan yleiselta datalta
+          eo.$url = YleinenData.getPerusteEsikatseluHost() + '/lukio/'+eo.id;
         })
         .value();
     }, Notifikaatiot.serverCb);

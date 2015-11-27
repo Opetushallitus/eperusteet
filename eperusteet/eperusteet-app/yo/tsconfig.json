@@ -39,6 +39,7 @@
     "./app/scripts/services/notifikaatiot.ts",
     "./app/scripts/services/editointikontrollit.ts",
     "./app/scripts/services/kommentit.ts",
+    "./app/scripts/services/koulutuksenosamap.ts",
     "./app/scripts/services/varmistusdialogi.ts",
     "./app/scripts/services/kuvat.ts",
     "./app/scripts/services/admin.ts",

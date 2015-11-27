@@ -20,6 +20,13 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -49,10 +56,14 @@ public class PerusteenRakenne {
     }
 
     static public Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne) {
-        return validoiRyhma(osaamisalat, rakenne, 0);
+        return validoiRyhma(osaamisalat, rakenne, 0, false);
     }
 
-    static private Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, final Integer syvyys) {
+    static public Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, boolean useMax) {
+        return validoiRyhma(osaamisalat, rakenne, 0, useMax);
+    }
+
+    static private Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, final Integer syvyys, boolean useMax) {
         final TekstiPalanen nimi = rakenne.getNimi();
         final RakenneModuuliRooli rooli = rakenne.getRooli();
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
@@ -69,16 +80,22 @@ public class PerusteenRakenne {
             if (x instanceof RakenneOsa) {
                 RakenneOsa ro = (RakenneOsa) x;
                 if (ro.getTutkinnonOsaViite() != null) {
+                    TutkinnonOsaViite tov = ro.getTutkinnonOsaViite();
                     BigDecimal laajuus = ro.getTutkinnonOsaViite().getLaajuus();
                     laajuus = laajuus == null ? new BigDecimal(0) : laajuus;
+                    if (useMax
+                            && tov.getLaajuusMaksimi() != null
+                            && tov.getLaajuusMaksimi().compareTo(laajuus) == 1) {
+                        laajuus = tov.getLaajuusMaksimi();
+                    }
                     laajuusSummaMin = laajuusSummaMin.add(laajuus);
                     laajuusSummaMax = laajuusSummaMax.add(laajuus);
-                    uniikit.add(ro.getTutkinnonOsaViite().getTutkinnonOsa().getId());
+                    uniikit.add(tov.getTutkinnonOsa().getId());
                 }
             } else if (x instanceof RakenneModuuli) {
                 RakenneModuuli rm = (RakenneModuuli) x;
                 ++ryhmienMäärä;
-                Validointi validoitu = validoiRyhma(osaamisalat, rm, syvyys + 1);
+                Validointi validoitu = validoiRyhma(osaamisalat, rm, syvyys + 1, useMax);
                 validointi.ongelmat.addAll(validoitu.ongelmat);
                 validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
                 validointi.sisakkaisiaOsaamisalaryhmia = validoitu.sisakkaisiaOsaamisalaryhmia;

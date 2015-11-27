@@ -111,6 +111,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         s.setRakenne(new RakenneModuuli());
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
+        s.getPerusteet().add(p);
         p.setKoulutukset(Sets.newHashSet(koulutus));
 
         peruste = repo.save(p);

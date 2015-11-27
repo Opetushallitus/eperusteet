@@ -2,7 +2,11 @@
   <!-- tutke2kentat.html -->
 
   <div class="osa-alue-navi" ng-show="!mainLevelEditing && tutke2osa.osaAlueet.length > 1"><span kaanna>osa-alueet</span>
-    <ul><li ng-repeat="alue in tutke2osa.osaAlueet"><a class="action-link" ng-click="osaAlue.jumpTo(alue)">{{alue.nimi | kaanna}}</a></li></ul>
+    <ul>
+      <li ng-repeat="alue in tutke2osa.osaAlueet">
+        <a class="action-link" ng-click="osaAlue.jumpTo(alue)" kaanna="alue.nimi"></a>
+      </li>
+    </ul>
   </div>
   <p class="info-placeholder" ng-show="!tutke2osa.$fetching && (!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0) && !mainLevelEditing" kaanna>ei-osa-alueita</p>
   <div class="non-collapsibles" ng-if="mainLevelEditing">
@@ -62,13 +66,23 @@
           </div>
         </accordion-heading>
 
+        <label class="header" kaanna="'kuvaus'" ng-if="alue.kuvaus"></label>
+        <div editMode="false" type="text" ng-bind-html="alue.kuvaus | kaanna | unsafe"></div>
+
         <div ng-if="alue.koodiArvo">
           <label class="header" kaanna="'koodi'"></label>:<span> {{ alue.koodiArvo || '-' }}</span>
         </div>
 
         <!-- osaamistavoitteet -->
-        <p class="info-placeholder" ng-show="!alue.$editing && (!alue.osaamistavoitteet || alue.osaamistavoitteet.length === 0)"
-           kaanna>Ei osaamistavoitteita.</p>
+        <p class="info-placeholder" ng-show="!alue.$editing && (!alue.osaamistavoitteet || alue.osaamistavoitteet.length === 0)
+        && (!alue.valmaTelmaSisalto || alue.valmaTelmaSisalto.length === 0)" kaanna>
+          Ei osaamistavoitteita.
+        </p>
+        <div ng-if="alue.valmaTelmaSisalto && alue.valmaTelmaSisalto.length !== 0">
+          <valmaarviointi valmaarviointi="alue.valmaTelmaSisalto.osaamistavoite" mainLevelEditing="false" ei-kohdealueita="true"></valmaarviointi>
+          <valmaarviointi valmaarviointi="alue.valmaTelmaSisalto.osaamisenarviointi" type="arviointi" mainLevelEditing="false" ei-kohdealueita="true"></valmaarviointi>
+        </div>
+
         <div ng-if="!alue.$editing" ng-repeat="pakollisuus in [true, false]">
           <div class="panel panel-default panel-clean" ng-repeat="tavoite in getTavoitteet(alue, pakollisuus)" ng-class="{'kohde-edit': tavoite.$editing}">
 

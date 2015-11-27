@@ -53,27 +53,27 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa tehtava;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa tyotavat;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa ohjaus;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa arviointi;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa sisaltoalueinfo;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

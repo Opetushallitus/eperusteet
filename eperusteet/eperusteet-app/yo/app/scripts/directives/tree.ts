@@ -33,7 +33,11 @@ angular.module('eperusteApp')
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaSolmunNimi(rakenne) | kaanna }}' +
       '<span ng-if="!rakenne.erikoisuus && apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">,' +
-      ' <strong>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</strong> {{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
+      '  <strong>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}' +
+      '    <span ng-if="tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi"> - {{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi }}</span>' +
+      '  </strong>' +
+      '{{ apumuuttujat.laajuusYksikko | kaanna }}' +
+      '</span>';
       var editointiIkoni =
       '<div ng-click="togglaaPakollisuus(rakenne)" class="osa-ikoni">' +
         '  <span ng-if="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
@@ -406,7 +410,7 @@ angular.module('eperusteApp')
   })
 
   .controller('TreeWrapperController', function ($scope, Kaanna, PerusteenRakenne, Muodostumissaannot,
-      Algoritmit, TreeDragAndDrop, $filter, RyhmaCloner) {
+      Algoritmit, TreeDragAndDrop, $filter, RyhmaCloner, Kielimapper, YleinenData) {
     $scope.suljettuViimeksi = true;
     $scope.lisataanUuttaOsaa = false;
     $scope.uusiOsa = null;
@@ -419,6 +423,9 @@ angular.module('eperusteApp')
     $scope.naytaKuvaus = function () {
       return !!Kaanna.kaanna($scope.rakenne.rakenne.kuvaus);
     };
+    $scope.isVaTe = YleinenData.isValmaTelma($scope.rakenne.$peruste);
+    $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
+
 
     $scope.tutkinnonOsat = {
       perSivu: 8,

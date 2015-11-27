@@ -26,7 +26,11 @@ angular.module('eperusteApp')
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.tutkinnonOsat = [];
     $scope.editoi = false;
-    $scope.naytaToisestaSuoritustavastaTuonti = perusteprojektiTiedot.getPeruste().suoritustavat.length > 1;
+
+    if( perusteprojektiTiedot.getPeruste().suoritustavat ){
+      $scope.naytaToisestaSuoritustavastaTuonti = (perusteprojektiTiedot.getPeruste().suoritustavat) ? (perusteprojektiTiedot.getPeruste().suoritustavat.length > 1) : false;
+    }
+
     $scope.yksikko = _.zipObject(_.map($scope.peruste.suoritustavat, 'suoritustapakoodi'),
                                   _.map($scope.peruste.suoritustavat, 'laajuusYksikko'));
 
@@ -68,7 +72,8 @@ angular.module('eperusteApp')
       function(res) {
         $scope.tutkinnonOsat.unshift(res);
         TutkinnonOsaEditMode.setMode(true);
-        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {
+
+        $state.go('root.perusteprojekti.suoritustapa.' + ($scope.isVaTe ? 'koulutuksenosa' : 'tutkinnonosa'), {
           tutkinnonOsaViiteId: res.id,
           versio: ''
         });
@@ -79,6 +84,6 @@ angular.module('eperusteApp')
     };
 
     $scope.getHref = function(valittu) {
-      return $state.href('root.perusteprojekti.suoritustapa.tutkinnonosa', { tutkinnonOsaViiteId: valittu.id, versio: '' });
+      return $state.href('root.perusteprojekti.suoritustapa.' + ($scope.isVaTe ? 'koulutuksenosa' : 'tutkinnonosa'), { tutkinnonOsaViiteId: valittu.id, versio: '' });
     };
   });

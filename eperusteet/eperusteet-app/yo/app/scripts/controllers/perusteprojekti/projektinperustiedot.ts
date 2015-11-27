@@ -35,5 +35,8 @@ angular.module('eperusteApp')
 
     $scope.koulutustyypit = YleinenData.koulutustyypit;
 
+    $scope.tarvitseeLaajuuden = function(input) {
+      return input && _.indexOf(YleinenData.laajuudellisetKoulutustyypit, input) !== -1;
+    };
   });
 

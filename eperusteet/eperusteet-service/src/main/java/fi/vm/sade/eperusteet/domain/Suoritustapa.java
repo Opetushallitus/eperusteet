@@ -71,19 +71,15 @@ public class Suoritustapa implements Serializable, ReferenceableEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "suoritustapa")
     @Getter
-    @OrderBy("jarjestys,id")
+    @OrderBy("jarjestys, id")
     @BatchSize(size = 10)
     private Set<TutkinnonOsaViite> tutkinnonOsat = new HashSet<>();
 
     @RelatesToPeruste
     @NotAudited
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "peruste_suoritustapa",
-            inverseJoinColumns = @JoinColumn(name = "peruste_id"),
-            joinColumns = @JoinColumn(name = "suoritustapa_id"))
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "suoritustavat")
     @Getter
-    @Setter
-    private Set<Peruste> perusteet;
+    private Set<Peruste> perusteet = new HashSet<>();
 
     @Override
     public EntityReference getReference() {

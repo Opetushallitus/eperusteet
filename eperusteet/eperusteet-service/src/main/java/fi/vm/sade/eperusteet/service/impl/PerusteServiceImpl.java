@@ -862,7 +862,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         Suoritustapa st = null;
-        if (ekoulutustyyppi == KoulutusTyyppi.PERUSTUTKINTO) {
+        if (koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko
                     : LaajuusYksikko.OSAAMISPISTE);
         } else if (ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
@@ -884,6 +884,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         peruste.setSuoritustavat(suoritustavat);
+        for (Suoritustapa suoritustapa : suoritustavat) {
+            suoritustapa.getPerusteet().add(peruste);
+        }
         perusteet.save(peruste);
         lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
@@ -969,6 +972,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
 
             peruste.setSuoritustavat(uudetSuoritustavat);
+            for (Suoritustapa uusi : uudetSuoritustavat) {
+                uusi.getPerusteet().add(peruste);
+            }
             peruste = perusteet.save(peruste);
 
             if (KoulutusTyyppi.PERUSOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {

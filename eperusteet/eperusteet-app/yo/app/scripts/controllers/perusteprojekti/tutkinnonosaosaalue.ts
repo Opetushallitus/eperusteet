@@ -5,13 +5,17 @@
 
 angular.module('eperusteApp')
   .controller('TutkinnonOsaOsaAlueCtrl', function ($scope, $state, $stateParams, Editointikontrollit,
-    TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils, Koodisto) {
+    TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils, Koodisto, Kielimapper, YleinenData) {
     $scope.osaamistavoitepuu = [];
     var tempId = 0;
 
+    $scope.isVaTe = YleinenData.isValmaTelma($scope.peruste);
+    $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
+
     $scope.tutkinnonOsa = $scope.$parent.tutkinnonOsaViite.tutkinnonOsa;
     $scope.osaAlue = {
-      nimi:{}
+      nimi:{},
+      kuvaus:{},
     };
 
     if ($scope.tutkinnonOsa) {
@@ -21,6 +25,23 @@ angular.module('eperusteApp')
       });
     }
 
+    if ($scope.isVaTe) {
+      $scope.$$osaamistavoiteOpen = true;
+      $scope.$$osaamisenArviointiOpen = true;
+      $scope.osaAlue.valmaTelmaSisalto = {
+        osaamistavoitteet: {
+          kohde: {},
+          kriteerit: [],
+          tekstina: {}
+        },
+        osaamisenArviointi: {
+          kuvaus: {},
+          kriteerit: [],
+          tekstina: {}
+        },
+      };
+    }
+
     $scope.valitseAlarelaatio = function(ar) {
       $scope.osaAlue.koodiUri = ar ? ar.koodiUri : undefined;
       $scope.osaAlue.koodiArvo = ar ? ar.koodiArvo : undefined;
@@ -28,11 +49,15 @@ angular.module('eperusteApp')
 
     function luoOsaamistavoitepuu() {
       if ($scope.osaAlue && $scope.osaAlue.osaamistavoitteet) {
-        $scope.osaamistavoitepuu = _($scope.osaAlue.osaamistavoitteet).filter('pakollinen')
+        $scope.osaamistavoitepuu = _($scope.osaAlue.osaamistavoitteet)
+          .filter('pakollinen')
           .each(function(o){
             o.$poistettu = false;
-        }).value();
-        _($scope.osaAlue.osaamistavoitteet).filter({pakollinen: false})
+          })
+          .value();
+
+        _($scope.osaAlue.osaamistavoitteet)
+          .filter({pakollinen: false})
           .each(function (r) {
             r.$poistettu = false;
             if (r._esitieto) {
@@ -86,47 +111,50 @@ angular.module('eperusteApp')
       }
     };
 
+    function goBack() {
+      $state.go('^', {}, {reload: true});
+    }
 
     var osaAlueCallbacks = {
       edit: function () {
-        TutkinnonOsanOsaAlue.get({viiteId: $stateParams.tutkinnonOsaViiteId, osaalueenId: $stateParams.osaAlueId}, function(vastaus) {
+        TutkinnonOsanOsaAlue.get({
+          viiteId: $stateParams.tutkinnonOsaViiteId,
+          osaalueenId: $stateParams.osaAlueId
+        }, function(vastaus) {
           $scope.osaAlue = vastaus;
           luoOsaamistavoitepuu();
         }, function (virhe){
           Notifikaatiot.serverCb(virhe);
-          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
+          goBack();
         });
       },
       cancel: function () {
         Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
-        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
+        goBack();
       },
       save: function () {
         $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
+
         TutkinnonOsanOsaAlue.save({
           viiteId: $stateParams.tutkinnonOsaViiteId,
           osaalueenId: $stateParams.osaAlueId
-        }, $scope.osaAlue, function () {
+        }, $scope.osaAlue, function(res) {
           Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
-          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
+          goBack();
         }, function(virhe) {
           Notifikaatiot.serverCb(virhe);
-          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
+          goBack();
         });
       },
       validate: function () {
-        var valid = true;
-        if (Utils.hasLocalizedText($scope.osaAlue.nimi)) {
-          valid = true;
-        } else {
+        if (!Utils.hasLocalizedText($scope.osaAlue.nimi)) {
           return false;
         }
-        _.each($scope.osaamistavoitepuu, function(osaamistavoite) {
-          if (!Utils.hasLocalizedText(osaamistavoite.nimi)) {
-            valid = false;
-          }
-        });
-        return valid;
+        else {
+          return $scope.isVaTe || _.all($scope.osaamistavoitepuu, function(osaamistavoite) {
+            return Utils.hasLocalizedText(osaamistavoite.nimi);
+          });
+        }
       }
     };
 

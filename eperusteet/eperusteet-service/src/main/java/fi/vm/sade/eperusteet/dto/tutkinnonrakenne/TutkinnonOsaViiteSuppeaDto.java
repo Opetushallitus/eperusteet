@@ -28,6 +28,7 @@ import lombok.Setter;
 public class TutkinnonOsaViiteSuppeaDto {
     private Long id;
     private BigDecimal laajuus;
+    private BigDecimal laajuusMaksimi; // TODO: Ainoastaan valmatelmalla
     private Integer jarjestys;
     private EntityReference tutkinnonOsa;
 }

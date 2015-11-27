@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
@@ -40,6 +41,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.oto;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  *
@@ -86,7 +88,10 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         vlo.setKuvaus(olt("KUVAAUS"));
         vlo.setLaajaalainenOsaaminen(Optional.of(osaaminen));
         dto.setLaajaalaisetOsaamiset(Collections.singleton(vlo));
+
+        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         dto = service.addVuosiluokkaKokonaisuus(perusteId, dto);
+        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
 
         assertEquals(1, dto.getLaajaalaisetOsaamiset().size());
         assertEquals(osaaminen, dto.getLaajaalaisetOsaamiset().iterator().next().getLaajaalainenOsaaminen().get());
@@ -95,11 +100,15 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         final VuosiluokkaKokonaisuusContext ctx = VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId());
 
         lockService.lock(ctx);
+        versionDto = perusteService.getPerusteVersion(perusteId);
         service.updateVuosiluokkaKokonaisuus(perusteId, new UpdateDto<>(dto));
+        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         lockService.unlock(ctx);
-        assertEquals(2, dto.getLaajaalaisetOsaamiset().size());
-        service.deleteVuosiluokkaKokonaisuus(ctx.getPerusteId(), ctx.getKokonaisuusId());
 
+        assertEquals(2, dto.getLaajaalaisetOsaamiset().size());
+        versionDto = perusteService.getPerusteVersion(perusteId);
+        service.deleteVuosiluokkaKokonaisuus(ctx.getPerusteId(), ctx.getKokonaisuusId());
+        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
     }
 
 }

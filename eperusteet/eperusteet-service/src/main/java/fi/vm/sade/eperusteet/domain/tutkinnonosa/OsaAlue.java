@@ -45,6 +45,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import javax.persistence.Column;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -69,6 +70,14 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     private TekstiPalanen nimi;
 
     @Getter
+    @Setter
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen kuvaus;
+
+    // Ei käytössä Valma/Telma perusteissa
+    @Getter
     //@Setter
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_osaalue_osaamistavoite",
@@ -86,6 +95,11 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
             inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_id"),
             joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
     private Set<TutkinnonOsa> tutkinnonOsat;
+
+    @Getter
+    @Setter
+    @OneToOne(cascade = {CascadeType.ALL})
+    private ValmaTelmaSisalto valmaTelmaSisalto;
 
     @Getter
     @Setter
@@ -110,7 +124,9 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
 
     public OsaAlue(OsaAlue o) {
         this.nimi = o.nimi;
+        this.kuvaus = o.kuvaus;
         this.osaamistavoitteet = new ArrayList<>();
+        this.valmaTelmaSisalto = null;
         IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
         for ( Osaamistavoite ot : o.getOsaamistavoitteet() ) {
             if ( identityMap.containsKey(ot) ) {
@@ -137,6 +153,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     public void mergeState(OsaAlue updated) {
         if (updated != null) {
             this.setNimi(updated.getNimi());
+            this.setKuvaus(updated.getKuvaus());
             this.setKoodiArvo(updated.getKoodiArvo());
             this.setKoodiUri(updated.getKoodiUri());
 
@@ -150,11 +167,13 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     public void partialMergeState(OsaAlue updated) {
         if (updated != null) {
             this.setNimi(updated.getNimi());
+            this.setKuvaus(updated.getKuvaus());
         }
     }
 
     public boolean structureEquals(OsaAlue other) {
         boolean result = refXnor(getNimi(), other.getNimi());
+        result &= refXnor(getKuvaus(), other.getKuvaus());
         if ( result && getOsaamistavoitteet() != null && other.getOsaamistavoitteet() != null ) {
             Iterator<Osaamistavoite> i = getOsaamistavoitteet().iterator();
             Iterator<Osaamistavoite> j = other.getOsaamistavoitteet().iterator();

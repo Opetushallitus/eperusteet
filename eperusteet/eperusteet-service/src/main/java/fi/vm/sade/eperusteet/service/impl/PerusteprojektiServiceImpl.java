@@ -29,8 +29,6 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus.TilaUpdateStatusBuilderForSuoritustapa;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus.TilallinenTilaUpdateStatusBuilderForSuoritustapa;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
@@ -51,7 +49,6 @@ import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import fi.vm.sade.eperusteet.service.util.Util;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,11 +58,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Stream;
 
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.KOMMENTOINTI;
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.jalkeen;
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
 import static fi.vm.sade.eperusteet.service.util.Util.*;
 import static java.util.stream.Collectors.toMap;
@@ -199,7 +193,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
-            if (koulutustyyppi != null && koulutustyyppi == KoulutusTyyppi.PERUSTUTKINTO && yksikko == null) {
+            if (yksikko == null
+                    && koulutustyyppi != null
+                    && koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
 
@@ -209,7 +205,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
             DiaarinumeroHakuDto diaariHaku = onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
             Boolean loytyi = diaariHaku.getLoytyi();
-            Boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU && diaariHaku.getDiaarinumero().equals(perusteprojekti.getDiaarinumero().getDiaarinumero());
+            Boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU &&
+                    diaariHaku.getDiaarinumero().equals(perusteprojekti.getDiaarinumero().getDiaarinumero());
 
             if (loytyi && !korvaava) {
                 throw new BusinessRuleViolationException("Perusteprojekti kyseisellä diaarinumerolla on jo olemassa");
@@ -628,14 +625,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
 
+                // Rakenteiden validointi
                 for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
                     // Rakenteiden validointi
                     if (suoritustapa.getRakenne() != null) {
                         validointi = PerusteenRakenne.validoiRyhma(peruste.getOsaamisalat(),
-                                suoritustapa.getRakenne());
+                                suoritustapa.getRakenne(),
+                                KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                         if (!validointi.ongelmat.isEmpty()) {
-                            updateStatus.addStatus("rakenteen-validointi-virhe",
-                                    suoritustapa.getSuoritustapakoodi(), validointi);
+                            updateStatus.addStatus("rakenteen-validointi-virhe", suoritustapa.getSuoritustapakoodi(), validointi);
                             updateStatus.setVaihtoOk(false);
                         }
                     }

@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -51,6 +52,8 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
     @Autowired
     private PerusteenOsaViiteService service;
     @Autowired
+    private PerusteService perusteService;
+    @Autowired
     private PerusteenOsaViiteRepository repo;
     @PersistenceContext
     private EntityManager em;
@@ -77,7 +80,8 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
         Suoritustapa suoritustapa = new Suoritustapa();
         suoritustapa.setSuoritustapakoodi(Suoritustapakoodi.NAYTTO);
         em.persist(suoritustapa);
-        peruste.setSuoritustavat(Collections.singleton(suoritustapa));
+        peruste.getSuoritustavat().add(suoritustapa);
+        suoritustapa.getPerusteet().add(peruste);
 
         PerusteenOsaViite juuri = new PerusteenOsaViite();
         juuri.setLapset(new ArrayList<PerusteenOsaViite>());
@@ -119,7 +123,10 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testRemoveSisaltoOK() {
+        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         service.removeSisalto(perusteId, lapsenlapsiId);
+        em.flush();
+        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         assertNotEquals(null, repo.findOne(juuriId));
         assertNotEquals(null, repo.findOne(lapsiId));
         assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleId));

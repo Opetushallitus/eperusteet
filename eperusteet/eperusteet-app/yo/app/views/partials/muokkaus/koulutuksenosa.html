@@ -1,0 +1,147 @@
+<!-- koulutuksenosa.html -->
+
+<div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
+  <div id="ck-toolbar-top"></div>
+  <div id="ck-toolbar-bottom"></div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 ep-sisalto-inner">
+    <div ng-if="osaAlueAlitila" ui-view></div>
+    <div ng-if="!osaAlueAlitila">
+      <revert-note object="tutkinnonOsaViite" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
+
+      <div class="part-header-wrapper">
+        <div class="action-buttons">
+          <div class="floater" ng-attr-title="{{lockNotification}}">
+            <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"
+                    ng-hide="tutkinnonOsaViite.tutkinnonOsa.tila !== 'valmis' || editEnabled || !versiot.latest"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'korjaus' }]"></button>
+            <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"
+                    ng-hide="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' || editEnabled || !versiot.latest"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
+          </div>
+          <button ng-show="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' && !editEnabled" ng-click="kopioiMuokattavaksi()"
+                  class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
+                  oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+          <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
+          <div ng-if="editEnabled && tutkinnonOsaViite.tutkinnonOsa.tila !== 'valmis'">
+            <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].id)" kaanna="vateConverter('poista-tutkinnonosa')"></button>
+
+            <div class="floater" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi !== 'tutke2'">
+              <div class="dropdown">
+                <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="'muokkaus-lisaa-sisalto'"></button>
+                <ul class="pull-right dropdown-menu">
+                  <li ng-repeat="field in fields | orderBy:'order'">
+                    <a ng-show="hideFieldInMenu(field)" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
+                    <a class="action-link" ng-show="!hideFieldInMenu(field)" ng-click="addFieldToVisible(field)">{{ vateConverter('muokkaus-' + field.localeKey + '-header') | kaanna}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <projektin-murupolku></projektin-murupolku>
+
+        <h1 ng-show="editEnabled">
+          <span ng-show="!isNew" kaanna="vateConverter('muokkaus-tutkinnon-osa')"></span>
+          <span ng-show="isNew" kaanna="vateConverter('luonti-tutkinnon-osa')"></span>
+        </h1>
+        <pikamenu ng-if="tutkinnonOsaViite.$resolved">
+          <!-- <span ng-if="editEnabled" edit-in-place="editableTutkinnonOsa.nimi"></span> -->
+          <span ng-if="!editEnabled">
+            {{ tutkinnonOsaViite.tutkinnonOsa.nimi | kaanna:true }}
+            <span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && getTosa() && getTosa().laajuus">
+              <span ng-bind="getTosa().laajuus"></span>
+              <span ng-show="isVaTe && getTosa().laajuusMaksimi"> - {{ getTosa().laajuusMaksimi }}</span>
+              <span kaanna="yksikko"></span>
+            </span>
+          </span>
+        </pikamenu>
+      </div>
+
+      <versiotiedot ng-hide="editEnabled"></versiotiedot>
+
+      <hr ng-show="editEnabled">
+
+      <form name="tutkinnonOsaHeaderForm" role="form">
+        <div class="non-collapsibles" ng-if="editEnabled">
+          <div ng-show="isNew">
+            <label class="header">{{'tyyppi'|kaanna}} <ohje teksti="vateConverter('ohje-tutkinnonosa-tyyppi')"></ohje></label>
+            <div class="btn-group">
+              <label class="btn btn-default" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi" btn-radio="'normaali'">{{'tyyppi-tutkintokohtainen'|kaanna}}</label>
+              <label class="btn btn-default" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi" btn-radio="'tutke2'">{{'tyyppi-yhteinen'|kaanna}}</label>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <label for="nimi-input" class="header">{{vateConverter('muokkaus-tutkinnon-osan-nimi-header')|kaanna}}*</label>
+          <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.nimi" slocalized required>
+          <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
+             kaanna>Nimi on pakollinen tieto</p>
+          <div ng-if="suoritustapa !== 'naytto'">
+            <div>
+              <label for="laajuus-input" class="header" kaanna="vateConverter('tutkinnonosa-laajuus')"></label>
+            </div>
+
+            <div ng-show="isVaTe" ng-click="toggleLaajuusRange()" class="laajuus-tyyppi-valitsin">
+              <input ng-model="$laajuusRangena" type="checkbox">
+              <span kaanna="'laajuus-maarita-alueella'"></span>
+            </div>
+
+            <div class="fixed-group">
+              <div class="pull-left">
+                <numberinput label-id="laajuus-input" luokka="form-control" model="editableTutkinnonOsaViite.laajuus" min="0" max="999"
+                            type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
+              </div>
+              <div ng-show="isVaTe && $laajuusRangena">
+                <div class="laajuuserotin"></div>
+                <div class="pull-left">
+                  <numberinput label-id="laajuus-input" luokka="form-control" model="editableTutkinnonOsaViite.laajuusMaksimi" min="0" max="999"
+                              type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
+                </div>
+              </div>
+              <div class="pull-left addon"><p>{{ yksikko | kaanna }}</p></div>
+            </div>
+          </div>
+          <label for="jarjestys-input" class="header" kaanna="vateConverter('tutkinnonosa-jarjestysnumero')"></label>
+          <div class="fixed-group">
+            <numberinput label-id="jarjestys-input" luokka="form-control" model="editableTutkinnonOsaViite.jarjestys" min="0" max="9999"
+                         type="integer" form="tutkinnonOsaHeaderForm"></numberinput>
+          </div>
+          <label for="koodi-input" class="header" kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')"></label>
+          <div class="fixed-group">
+            <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo" editointi-kontrolli disabled="disabled">
+            <div class="addon"><button class="btn btn-default" ng-click="koodistoClick()" kaanna>hae-koodistosta</button></div>
+          </div>
+        </div>
+      </form>
+
+      <div class="non-collapsibles" ng-if="!editEnabled">
+        <div>
+          <label class="header" kaanna="vateConverter('muokkaus-tutkinnon-jarjestysnumero')"></label>:<span> {{ tutkinnonOsaViite.jarjestys || '-' }}</span>
+        </div>
+        <div>
+          <label class="header" kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')"></label>:<span> {{ tutkinnonOsaViite.tutkinnonOsa.koodiArvo || '-' }}</span>
+        </div>
+      </div>
+
+      <div class="non-collapsibles" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
+        <label class="header" for="tutke2-kuvaus" kaanna>kuvaus</label>
+        <textarea id="tutke2-kuvaus" class="form-control msd-elastic" ng-show="editEnabled" slocalized
+          ng-model="editableTutkinnonOsaViite.tutkinnonOsa.kuvaus"></textarea>
+        <p ng-show="!editEnabled">{{tutkinnonOsaViite.tutkinnonOsa.kuvaus| kaanna}}</p>
+      </div>
+
+      <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
+        <tutke2kentat edit-enabled="editEnabled" tutkinnonosa-viite="tutkinnonOsaPromise" kontrollit="editointikontrollit"
+                      yksikko="yksikko" is-koulutuksen-osa="true"></tutke2kentat>
+      </div>
+
+      <kenttalistaus ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi !== 'tutke2'" edit-enabled="editEnabled" fields="fields" object-promise="tutkinnonOsaPromise"></kenttalistaus>
+
+      <kommentit></kommentit>
+    </div>
+  </div>
+</div>

@@ -38,10 +38,7 @@ import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -754,6 +751,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     addAmmattitaitovaatimukset(doc, element, osa.getAmmattitaitovaatimuksetLista(), kieli);
                 }
 
+                addValmatelmaSisalto(doc, element, osa.getValmaTelmaSisalto(), kieli);
                 addAmmattitaidonOsoittamistavat(doc, element, osa, kieli);
                 addArviointi(doc, element, osa.getArviointi(), tyyppi, kieli);
             } else if (tyyppi == TutkinnonOsaTyyppi.TUTKE2) {
@@ -771,6 +769,70 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
         doc.getDocumentElement().appendChild(tosat);
     }
+
+    private void addValmatelmaSisalto(Document doc, Element element, ValmaTelmaSisalto valmaTelmaSisalto, Kieli kieli) {
+
+        if(valmaTelmaSisalto == null){
+            return;
+        }
+
+        addValmaOsaamistavoitteet(doc, element, valmaTelmaSisalto, kieli);
+        addValmaArviointi(doc, element, valmaTelmaSisalto, kieli);
+    }
+
+    private void addValmaArviointi(Document doc, Element element, ValmaTelmaSisalto valmaTelmaSisalto, Kieli kieli) {
+        if( valmaTelmaSisalto.getOsaamisenarviointi() != null || valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null) {
+            addTekstiSectionGeneric(doc, element, "", messages.translate("docgen.valma.osaamisenarviointi.title", kieli));
+
+            if(valmaTelmaSisalto.getOsaamisenarviointi() != null){
+                if (valmaTelmaSisalto.getOsaamisenarviointi().getKohde() != null) {
+                    addMarkupToElement(doc, element, valmaTelmaSisalto.getOsaamisenarviointi().getKohde().getTeksti().get(kieli));
+                }
+                addValmaTavoiteList(doc, element, kieli, valmaTelmaSisalto.getOsaamisenarviointi().getTavoitteet());
+            }
+
+            if(valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null){
+                addMarkupToElement(doc, element, valmaTelmaSisalto.getOsaamisenarviointiTekstina().getTeksti().get(kieli));
+            }
+        }
+    }
+
+    private void addValmaOsaamistavoitteet(Document doc, Element element, ValmaTelmaSisalto valmaTelmaSisalto, Kieli kieli) {
+        if( valmaTelmaSisalto.getOsaamistavoite().size() > 0 ){
+            addTekstiSectionGeneric(doc, element, "", messages.translate("docgen.valma.osaamistavoitteet.title", kieli));
+        }
+
+        for (OsaamisenTavoite osaamisenTavoite : valmaTelmaSisalto.getOsaamistavoite()) {
+            if( osaamisenTavoite.getNimi() != null){
+                addTekstiSectionGeneric(doc, element, "", osaamisenTavoite.getNimi().getTeksti().get(kieli));
+            }
+
+            if( osaamisenTavoite.getKohde() != null){
+                addMarkupToElement(doc, element, osaamisenTavoite.getKohde().getTeksti().get(kieli));
+            }
+
+            addValmaTavoiteList(doc, element, kieli, osaamisenTavoite.getTavoitteet());
+
+            if( osaamisenTavoite.getSelite() != null){
+                addMarkupToElement(doc, element, osaamisenTavoite.getSelite().getTeksti().get(kieli));
+            }
+        }
+    }
+
+    private void addValmaTavoiteList(Document doc, Element element, Kieli kieli, List<TekstiPalanen> tavoitteet) {
+        if( tavoitteet != null & tavoitteet.size() > 0 ){
+            Element list = doc.createElement("itemizedlist");
+            list.setAttribute("spacing", "compact");
+
+            for (TekstiPalanen tavoite : tavoitteet) {
+                Element item = doc.createElement("listitem");
+                item.appendChild( doc.createTextNode( tavoite.getTeksti().get(kieli) ) );
+                list.appendChild(item);
+            }
+            element.appendChild( list );
+        }
+    }
+
 
     private void addTavoitteet(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
 
@@ -1156,6 +1218,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             element.appendChild(sectionElement);
 
             List<Osaamistavoite> osaamistavoitteet = osaAlue.getOsaamistavoitteet();
+            ValmaTelmaSisalto valmatelma = osaAlue.getValmaTelmaSisalto();
+
+            addValmatelmaSisalto( doc, element, valmatelma, kieli );
 
             // Parita pakollinen ja valinnainen osaamistavoite
             Map<Long, Pair<Osaamistavoite, Osaamistavoite>> tavoiteParit = new LinkedHashMap<>();

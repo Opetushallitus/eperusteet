@@ -86,10 +86,11 @@ European Union Public Licence for more details.
 
             <div ng-hide="muokkausTutkintokohtaisetOsat">
                 <div ng-show="naytaTutkinnonOsat" class="contenttree-list-element">
-                  <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
-                    <div class="chevron" icon-role="ep-parts"></div>
-                    <h3 kaanna>tutkinnonosat</h3>
-                  </a>
+                    <a class="otsikko"
+                       ui-sref="{{ 'root.perusteprojekti.suoritustapa.' + (isVaTe ? 'koulutuksenosat' : 'tutkinnonosat') }}">
+                        <div class="chevron" icon-role="ep-parts"></div>
+                        <h3 kaanna="{{ vateConverter('tutkinnonosat') }}"></h3>
+                    </a>
                 </div>
             </div>
 

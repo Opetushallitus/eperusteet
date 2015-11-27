@@ -142,7 +142,8 @@ angular.module('eperusteApp')
       PerusteenOsaViite.get({perusteId: $scope.peruste.id, suoritustapa: $stateParams.suoritustapa, viiteId: $stateParams.tutkinnonOsaViiteId}, successCb, errorCb);
     }
 
-    $scope.osaAlueAlitila = $state.current.name === 'root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue' ? true : false;
+    $scope.osaAlueAlitila = $state.includes('**.tutkinnonosa.osaalue');
+
     $rootScope.$on('$stateChangeStart', function(event, toState){
       if (toState.name === 'root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue') {
         $scope.osaAlueAlitila = true;

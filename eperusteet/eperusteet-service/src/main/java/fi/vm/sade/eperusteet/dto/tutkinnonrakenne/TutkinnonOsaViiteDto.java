@@ -34,6 +34,7 @@ public class TutkinnonOsaViiteDto {
 
     private Long id;
     private BigDecimal laajuus;
+    private BigDecimal laajuusMaksimi; // TODO: Ainoastaan valmatelmalla
     private Integer jarjestys;
     @JsonProperty("_tutkinnonOsa")
     private EntityReference tutkinnonOsa;

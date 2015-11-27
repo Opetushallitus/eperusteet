@@ -83,13 +83,14 @@ angular.module('eperusteApp')
     function isValid(value) {
       return !value || FLOAT_PATTERN.test(value);
     }
-    function validateMinMax(value, attrs, ctrl) {
+
+    function validateMinMax(scope, value, attrs, ctrl) {
       if (typeof value === 'number') {
         if (attrs.min) {
-          ctrl.$setValidity('min', value >= parseFloat(attrs.min));
+          ctrl.$setValidity('min', value >= parseFloat(scope.min));
         }
         if (attrs.max) {
-          ctrl.$setValidity('max', value <= parseFloat(attrs.max));
+          ctrl.$setValidity('max', value <= parseFloat(scope.max));
         }
       }
       if (value === undefined || value === '') {
@@ -111,7 +112,7 @@ angular.module('eperusteApp')
           if (valid) {
             value = viewValue === '' ? viewValue : parseFloat(viewValue.replace(',', '.'));
           }
-          validateMinMax(value, attrs, ctrl);
+          validateMinMax(scope, value, attrs, ctrl);
           return value;
         });
 

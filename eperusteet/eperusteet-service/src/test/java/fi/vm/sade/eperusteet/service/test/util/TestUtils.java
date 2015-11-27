@@ -97,6 +97,13 @@ public abstract class TestUtils {
         return ro;
     }
 
+    static public RakenneOsa teeRakenneOsa(long id, Integer laajuus, Integer laajuusMax) {
+        assert(laajuus < laajuusMax);
+        RakenneOsa to = teeRakenneOsa(id, laajuus);
+        to.getTutkinnonOsaViite().setLaajuusMaksimi(new BigDecimal(laajuusMax));
+        return to;
+    }
+
     static public RakenneModuuli teeRyhma(Integer laajuusMinimi, Integer laajuusMaksimi, Integer kokoMinimi, Integer kokoMaksimi, AbstractRakenneOsa... osat) {
         RakenneModuuli rakenne = new RakenneModuuli();
 

@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Matala;
@@ -40,6 +41,7 @@ import static fi.vm.sade.eperusteet.service.util.OppiaineUtil.oppiaine;
 import static fi.vm.sade.eperusteet.service.util.PerusteTekstiUtil.*;
 import static fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -72,7 +74,9 @@ public class LukiokoulutuksenSisaltoServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testAddSisalto() {
+        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         Matala osa = lukiokoulutuksenPerusteenSisaltoService.addSisalto(perusteId, paaOsaViiteId, perusteOsa(fi("Osa")));
+        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         assertEquals(0, osa.getLapset().size());
         assertEquals("Osa", osa.getPerusteenOsa().getNimi().get(FI));
     }
@@ -94,18 +98,22 @@ public class LukiokoulutuksenSisaltoServiceIT extends AbstractIntegrationTest {
     @Test
     public void testRemoveSisalto() {
         Matala osa = lukiokoulutuksenPerusteenSisaltoService.addSisalto(perusteId, paaOsaViiteId, perusteOsa(fi("Osa")));
+        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         lukiokoulutuksenPerusteenSisaltoService.removeSisalto(perusteId, osa.getId());
+        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         assertEquals(3, lukiokoulutuksenPerusteenSisaltoService.getSisalto(perusteId, null, Laaja.class).getLapset().size());
     }
 
     @Test
     public void testAddAndListOppiaineet() {
+        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         oppiaine(teksti(
                 fi("Äidinkieli ja kirjallisuus"),
                 sv("Finska")
         )).maara(oppiaine(teksti(fi("Suomi"))))
             .maara(oppiaine(teksti(fi("Saame"))))
             .luo(oppiaineService, perusteId, LUKIOKOULUTUS);
+        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
 
         List<OppiaineDto> aineet = lukiokoulutuksenPerusteenSisaltoService.getOppiaineet(perusteId, OppiaineDto.class);
         assertEquals(1, aineet.size());

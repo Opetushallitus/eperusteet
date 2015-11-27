@@ -76,19 +76,23 @@ angular.module('eperusteApp')
         };
 
         function setInnerObjectPromise() {
-          $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
-            splitFields(object);
-            model = object;
-            return object;
-          });
+          if ($scope.objectPromise) {
+            $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
+              splitFields(object);
+              model = object;
+              return object;
+            });
+          }
         }
 
         $scope.$watch('objectPromise', setInnerObjectPromise);
         $scope.$on('osafield:update', setInnerObjectPromise);
 
-        $scope.innerObjectPromise = $scope.objectPromise.then(function() {
-          setInnerObjectPromise();
-        });
+        if ($scope.objectPromise) {
+          $scope.innerObjectPromise = $scope.objectPromise.then(function() {
+            setInnerObjectPromise();
+          });
+        }
 
         function splitFields(object) {
           $scope.expandedFields = [];
@@ -315,5 +319,64 @@ angular.module('eperusteApp')
 
   return {
     create: createAmmattitaito
+  };
+})
+
+
+.factory('ValmaarviointiHelper', function () {
+  var remove = function (arr, str) {
+    var index = _.findIndex(arr, {path: str});
+    if (index >= 0) {
+      arr.splice(index, 1);
+    }
+  };
+
+  function createValmaarviointi() {
+    var TAULUKKO_PATH = 'valmaarviointi.ammattitaidonKohdealueet';
+    var TEKSTI_PATH = 'valmaarviointi.lisatiedot';
+    var self: any = {
+    };
+    self.obj = {};
+
+    self.hasTeksti = function () {
+      return self.obj.teksti && self.obj.teksti.visible;
+    };
+
+    self.hasTaulukko = function () {
+      return self.obj.taulukko && self.obj.taulukko.visible;
+    };
+
+    self.initFromFields = function (fields) {
+      var obj = {teksti: null, taulukko: null};
+      _.each(fields, function (field) {
+        if (field.path === TAULUKKO_PATH) {
+          obj.taulukko = field;
+        } else if (field.path === TEKSTI_PATH) {
+          obj.teksti = field;
+        }
+      });
+      if (self.hasTeksti()) {
+        obj.taulukko.visible = false;
+      }
+      self.obj = obj;
+      return self.obj;
+    };
+
+    self.setMenu = function (menu) {
+      if (self.exists()) {
+        remove(menu, TAULUKKO_PATH);
+        remove(menu, TEKSTI_PATH);
+      }
+    };
+
+    self.exists = function () {
+      return self.hasTeksti() || self.hasTaulukko();
+    };
+
+    return self;
+  }
+
+  return {
+    create: createValmaarviointi
   };
 });

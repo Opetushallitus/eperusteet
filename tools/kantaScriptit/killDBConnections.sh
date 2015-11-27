@@ -7,7 +7,7 @@ else
   echo "killing all connections to database"
 fi
 
-cat <<-EOF | psql -U test -d postgres
+sudo cat <<-EOF | psql -U test -d test
 SELECT pg_terminate_backend(pg_stat_activity.pid)
 FROM pg_stat_activity
 ${where}

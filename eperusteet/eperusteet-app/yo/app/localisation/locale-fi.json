@@ -354,6 +354,8 @@
     "kommentti": "Kommentti",
 
     "koulutustyyppi_1": "Ammatillinen perustutkinto",
+    "koulutustyyppi_5": "TELMA",
+    "koulutustyyppi_18": "VALMA",
     "koulutustyyppi_2": "Lukiokoulutus",
     "koulutustyyppi_11": "Ammattitutkinto",
     "koulutustyyppi_12": "Erikoisammattitutkinto",
@@ -417,6 +419,21 @@
 
     "lajittelu-jarjestysnumero": "No.",
 
+    "muokkaus-koulutuksen-osa-tallennettu": "Koulutuksen osa tallennettu onnistuneesti.",
+    "muokkaus-koulutuksen-osan-osaamisentavoitteet-header": "Osaamisentavoitteet",
+    "muokkaus-koulutuksen-osan-osaamisen-arviointi-header": "Osaamisen arviointi",
+    "muokkaus-koulutuksen-osan-osaamisen-arviointi-tekstina-header": "Osaamisen arviointi tekstinä",
+    "valmaarviointi-uusi-kohde": "Kohde",
+    "valmaarviointi-uusi-tavoite-placeholder": "Tavoite",
+    "valmaarviointi-uusi-arviointi-placeholder": "Kriteeri",
+    "muokkaus-koulutuksen-osa": "Koulutuksen osan muokkaus",
+    "poista-koulutuksenosa": "Poista koulutuksen osa",
+    "laajuus-maarita-alueella": "Määritä koulutuksen laajuus",
+    "koulutuksenosa-laajuus": "Koulutuksen osan laajuus",
+    "koulutuksen-osa-rakenteessa-ei-voi-poistaa": "Koulutuksen osaa ei voi poistaa, koska se on käytössä tutkinnon rakenteessa. Poista viite puusta ensin.",
+    "poistetaanko-koulutuksenosa": "Poistetaanko koulutuksen osa?",
+    "osaamistavoitteet-nimi": "Osaamistavoite",
+
     "tarkastele-esitysta": "Tarkastele esitystilassa",
     "poista-kohdealue": "Poista",
     "lisaa-tavoitealue": "Lisää tavoitealue",
@@ -443,6 +460,22 @@
     "pakolliset-osaamistavoitteet": "Pakolliset osaamistavoitteet",
     "valinnaiset-osaamistavoitteet": "Valinnaiset osaamistavoitteet",
     "muokkaa-osa-aluetta": "Muokkaa osa-aluetta",
+    "muokkaus-koulutuksen-osan-tavoitteet-header": "Tavoitteet",
+    "muokkaus-koulutuksen-osan-arviointi-teksti-header": "Osaamisen arviointi tekstinä",
+    "koulutuksen-osan-arviointi-teksti": "Osaamisen arviointi tekstinä",
+    "muokkaus-koulutuksen-osan-arviointi-taulukko-header": "Osaamisen arviointi taulukkona",
+    "muokkaus-koulutuksen-osan-ammattitaidon-osoittamistavat-header": "Osaamisen arviointi tekstinä",
+    "osaamistavoitteet": "Osaamistavoitteet",
+    "kohde": "Kohde",
+    "osaamisen-arviointi-tekstina": "Osaamisen arviointi tekstinä",
+    "koulutuksenosa": "Koulutuksen osa",
+    "koulutuksenosat": "Koulutuksen osat",
+    "lisaa-koulutuksenosa": "Lisää koulutuksen osa",
+    "osaamistavoitteet-selite": "Kuvaus",
+    "valmaarviointi-uusi-kriteeri": "Uusi kriteeri",
+    "uusi-tavoite-joukko": "Lisää osaamistavoite",
+    "valmaarviointi-kuvaus-placeholder": "Osaamistavoite",
+    "valmaarviointi-arviointi-kuvaus": "Kuvaus",
 
     "ota-versio-kayttoon": "Ota tämä versio käyttöön",
     "katso-uusin-versio": "Katso uusin versio",
@@ -468,6 +501,8 @@
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",
     "arviointi-poista-kriteeri": "Poista rivi",
     "arviointi-asteikon-valinta": "Valitse arviointiasteikko",
+    "kriteerit": "Kriteerit",
+    "lisaa-kriteeri": "Lisää kriteeri",
 
     "tutke2-osalta-puuttuu-osa-alue-koodi": "Tutkinnon osien osa-alueilta puuttuu koodi",
 
@@ -913,6 +948,7 @@
 
     "vapaa-tekstisisalto": "Vapaa tekstisisältö",
     "lisaa-vapaa-teksti": "Lisää tekstikappale",
+    "muokkaa-lisaa-vapaa-teksti": "Lisää tekstikappale",
 
     "peruste-ei-diaarinumeroa": "Perusteelta puuttuu määräyksen diaarinumero",
 
