@@ -21,18 +21,8 @@ import java.util.Set;
 /**
  * User: tommiratamaa
  * Date: 27.11.2015
- * Time: 13.43
+ * Time: 16.03
  */
-public interface PerusteUpdateStore {
-    void perusteUpdated(long perusteId);
-
-    void resolveRelationLater(Class<?> clz, long id);
-
-    void enter();
-
-    int leave();
-
-    Set<Long> getAndClearUpdatedPerusteIds();
-
-    Set<ResolvableReferenced> getAndClearReferenced();
+public interface ResolverUtil {
+    Set<Long> findPerusteIdsByFirstResolvable(ResolvableReferenced resolvable);
 }

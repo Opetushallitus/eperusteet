@@ -16,9 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.event.aop;
 
-import fi.vm.sade.eperusteet.service.event.FlushUtil;
-import fi.vm.sade.eperusteet.service.event.PerusteUpdateStore;
-import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
+import fi.vm.sade.eperusteet.service.event.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 /**
  * User: tommiratamaa
@@ -41,6 +41,9 @@ public class MarkPerusteUpdatedAspect {
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
+
+    @Autowired
+    private ResolverUtil resolverUtil;
 
     @Autowired
     private FlushUtil flushUtil;
@@ -69,10 +72,35 @@ public class MarkPerusteUpdatedAspect {
             // Leaving the outermost transactional service method, doing flush so that all changes
             // are marked (and possibly newly added Perustees are persisted etc.) and only once:
             flushUtil.flush();
-            for (Long id : perusteUpdateStore.getAndClearUpdatedPerusteIds()) {
-                applicationEventPublisher.publishEvent(new PerusteUpdatedEvent(this, id));
-            }
+            publishPerusteEvents();
         }
         return ret;
+    }
+
+    private void publishPerusteEvents() {
+        Set<Long> perusteIds = perusteUpdateStore.getAndClearUpdatedPerusteIds();
+        publishPerusteChanges(perusteIds);
+        if (perusteIds.isEmpty()) {
+            // no direct relation to peruste found
+            publishPerusteUpdatedByResolvableReferences(perusteIds);
+        }
+    }
+
+    private void publishPerusteUpdatedByResolvableReferences(Set<Long> perusteIds) {
+        for (ResolvableReferenced resolvable : perusteUpdateStore.getAndClearReferenced()) {
+            // but there was an edited entity where references can be made from multiple places
+            Set<Long> ids = resolverUtil.findPerusteIdsByFirstResolvable(resolvable);
+            if (!ids.isEmpty()) {
+                publishPerusteChanges(ids);
+                // continuing with others:
+                return;
+            }
+        }
+    }
+
+    private void publishPerusteChanges(Set<Long> perusteIds) {
+        for (Long id : perusteIds) {
+            applicationEventPublisher.publishEvent(new PerusteUpdatedEvent(this, id));
+        }
     }
 }

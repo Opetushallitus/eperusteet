@@ -19,8 +19,10 @@ package fi.vm.sade.eperusteet.hibernate;
 import com.google.common.base.Optional;
 import fi.ratamaa.dtoconverter.reflection.Property;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdateStore;
+import lombok.Getter;
 import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.collection.spi.PersistentCollection;
@@ -33,6 +35,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Optional.fromNullable;
@@ -103,28 +106,63 @@ public class HibernateInterceptor extends EmptyInterceptor {
     }
 
     private void updatePerusteRelatedTimestamps(Object entity) {
+        Callback callback = new Callback(id -> perusteUpdateStore.perusteUpdated(id));
+        findRelatedPeruste(entity, callback);
+        if (!callback.isFound() && entity instanceof Identifiable) {
+            Class<?> entityClz = resolveRealEntityClass(entity);
+            if (entityClz.isAnnotationPresent(RelatesToPeruste.FromAnywhereReferenced.class)) {
+                Long id = ((Identifiable) entity).getId();
+                if (id != null) {
+                    perusteUpdateStore.resolveRelationLater(entityClz, id);
+                }
+            }
+        }
+    }
+
+    @Getter
+    private static class Callback {
+        private final Consumer<Long> perusteIdConsumer;
+        private boolean found = false;
+
+        private Callback(Consumer<Long> perusteIdConsumer) {
+            this.perusteIdConsumer = perusteIdConsumer;
+        }
+
+        public void found(Long perusteId) {
+            this.found = true;
+            perusteIdConsumer.accept(perusteId);
+        }
+    }
+
+    public static void findRelatedPeruste(Object entity, Consumer<Long> consumer) {
+        findRelatedPeruste(entity, new Callback(consumer));
+    }
+
+    private static void findRelatedPeruste(Object entity, Callback callback) {
         resolveRouteToPeruste(entity).stream()
                 .map(route -> fromNullable(route.get(entity))).filter(Optional::isPresent)
                 .map(Optional::get).forEach(target -> {
             if (target instanceof Collection) {
                 Collection<?> collection = (Collection<?>) target;
-                collection.stream().forEach(this::updateTimestamp);
+                collection.stream().forEach(o -> proceed(o, callback));
             } else {
-                this.updateTimestamp(target);
+                proceed(target, callback);
             }
         });
     }
 
-    private void updateTimestamp(Object target) {
+    private static void proceed(Object target, Callback callback) {
         if (Peruste.class.isAssignableFrom(resolveRealEntityClass(target))) {
             Peruste peruste = (Peruste) target;
-            perusteUpdateStore.perusteUpdated(peruste.getId());
+            if (peruste.getId() != null) {
+                callback.found(peruste.getId());
+            }
         } else {
-            updatePerusteRelatedTimestamps(target);
+            findRelatedPeruste(target, callback);
         }
     }
 
-    private List<Property> resolveRouteToPeruste(Object entity) {
+    private static List<Property> resolveRouteToPeruste(Object entity) {
         Class<?> entityClz = resolveRealEntityClass(entity);
         List<Property> paths = routesToPeruste.get(entityClz);
         if (paths == null) {
@@ -134,7 +172,7 @@ public class HibernateInterceptor extends EmptyInterceptor {
         return paths;
     }
 
-    private List<Property> resolveRoutes(Class<?> entityClz) {
+    private static List<Property> resolveRoutes(Class<?> entityClz) {
         if (Peruste.class.isAssignableFrom(entityClz)) {
             return singletonList(Property.getVirtualThisPropertyForClass(entityClz));
         }
@@ -146,10 +184,11 @@ public class HibernateInterceptor extends EmptyInterceptor {
                 .collect(toList());
     }
 
-    private Class<?> resolveRealEntityClass(Object entity) {
+    private static Class<?> resolveRealEntityClass(Object entity) {
         if (entity instanceof HibernateProxy) {
             return ((HibernateProxy) entity).getHibernateLazyInitializer().getPersistentClass();
         }
         return entity.getClass();
     }
+
 }

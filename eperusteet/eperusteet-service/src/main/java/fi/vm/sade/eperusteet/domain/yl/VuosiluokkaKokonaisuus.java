@@ -63,27 +63,27 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
-    @ManyToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, optional = true)
     private TekstiOsa siirtymaEdellisesta;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
     private TekstiOsa tehtava;
 
     @Getter
     @Setter
-    @ManyToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, optional = true)
     private TekstiOsa siirtymaSeuraavaan;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
     private TekstiOsa paikallisestiPaatettavatAsiat;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
     private TekstiOsa laajaalainenOsaaminen;
 
     @OneToMany(mappedBy = "vuosiluokkaKokonaisuus")

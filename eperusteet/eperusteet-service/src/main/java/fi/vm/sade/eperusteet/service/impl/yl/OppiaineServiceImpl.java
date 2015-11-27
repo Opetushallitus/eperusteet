@@ -360,7 +360,6 @@ public class OppiaineServiceImpl implements OppiaineService {
         oppiaineRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         aine = oppiaineRepository.save(aine);
         oppiaineRepository.setRevisioKommentti("Muokattu oppiainetta " + aine.getNimi().toString());
-        eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
         return mapper.map(aine, OppiaineDto.class);
     }
 

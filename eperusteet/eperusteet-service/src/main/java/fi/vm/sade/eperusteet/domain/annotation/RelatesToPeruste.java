@@ -50,4 +50,15 @@ public @interface RelatesToPeruste {
          */
         String[] value();
     }
+
+    /**
+     * Marker annotation for entity class that is Identifiable and is related to many locations.
+     * @see Identifiable
+     *
+     * Will be looked up if no relation to Peruste is found by other means.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE})
+    @interface FromAnywhereReferenced {
+    }
 }

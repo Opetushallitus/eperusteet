@@ -14,25 +14,13 @@
  *  European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.event;
-
-import java.util.Set;
+package fi.vm.sade.eperusteet.domain.annotation;
 
 /**
  * User: tommiratamaa
  * Date: 27.11.2015
- * Time: 13.43
+ * Time: 15.52
  */
-public interface PerusteUpdateStore {
-    void perusteUpdated(long perusteId);
-
-    void resolveRelationLater(Class<?> clz, long id);
-
-    void enter();
-
-    int leave();
-
-    Set<Long> getAndClearUpdatedPerusteIds();
-
-    Set<ResolvableReferenced> getAndClearReferenced();
+public interface Identifiable {
+    Long getId();
 }

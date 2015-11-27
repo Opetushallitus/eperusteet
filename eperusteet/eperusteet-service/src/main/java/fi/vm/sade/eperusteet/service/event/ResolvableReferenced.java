@@ -16,23 +16,22 @@
 
 package fi.vm.sade.eperusteet.service.event;
 
-import java.util.Set;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
  * User: tommiratamaa
  * Date: 27.11.2015
- * Time: 13.43
+ * Time: 15.56
  */
-public interface PerusteUpdateStore {
-    void perusteUpdated(long perusteId);
+@Getter
+@EqualsAndHashCode
+public class ResolvableReferenced {
+    private final Class<?> entityClass;
+    private final long id;
 
-    void resolveRelationLater(Class<?> clz, long id);
-
-    void enter();
-
-    int leave();
-
-    Set<Long> getAndClearUpdatedPerusteIds();
-
-    Set<ResolvableReferenced> getAndClearReferenced();
+    public ResolvableReferenced(Class<?> clz, long id) {
+        this.entityClass = clz;
+        this.id = id;
+    }
 }
