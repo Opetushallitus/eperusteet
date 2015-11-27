@@ -19,16 +19,20 @@ package fi.vm.sade.eperusteet.hibernate;
 import com.google.common.base.Optional;
 import fi.ratamaa.dtoconverter.reflection.Property;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteVersion;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.service.event.PerusteUpdateStore;
 import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.Type;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Optional.fromNullable;
@@ -43,11 +47,6 @@ import static java.util.stream.Collectors.toList;
  *
  * Breaks the general rule of Hibernate Intercetpr not to reference Session or
  * lazy collections within * interceptor methods. However, works in this case.
- * No load interceptor is implemented (thus only changes are noted by
- * the implementation). Only makes changes to PerusteVersion
- * not for that) and thus won't cause any infinite interceptor callbacks.
- * The interceptor will not change the state of entity being modified, only
- * that of PerusteVersion (which it will not handle).
  *
  * Will possibly cause additional extra lazy queries when saving or updating
  * a Peruste related entity. However, this is a tradeoff to circumvent the
@@ -62,6 +61,9 @@ import static java.util.stream.Collectors.toList;
  */
 public class HibernateInterceptor extends EmptyInterceptor {
     private static final Map<Class<?>, List<Property>> routesToPeruste = new HashMap<>();
+
+    @Autowired
+    private PerusteUpdateStore perusteUpdateStore;
 
     @Override
     public boolean onFlushDirty(Object entity, Serializable id,
@@ -116,12 +118,7 @@ public class HibernateInterceptor extends EmptyInterceptor {
     private void updateTimestamp(Object target) {
         if (Peruste.class.isAssignableFrom(resolveRealEntityClass(target))) {
             Peruste peruste = (Peruste) target;
-            PerusteVersion version = peruste.getGlobalVersion();
-            if (version == null) {
-                version = new PerusteVersion(peruste);
-                peruste.setGlobalVersion(version);
-            }
-            version.setAikaleima(new Date());
+            perusteUpdateStore.perusteUpdated(peruste.getId());
         } else {
             updatePerusteRelatedTimestamps(target);
         }
