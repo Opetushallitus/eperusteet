@@ -72,6 +72,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    private Maarayskirje maarayskirje;
+
     @Getter
     @Setter
     @NotNull(groups = Valmis.class)
