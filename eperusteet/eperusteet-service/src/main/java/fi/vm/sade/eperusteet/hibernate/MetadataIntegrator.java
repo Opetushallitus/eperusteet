@@ -24,6 +24,7 @@ import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,8 @@ public class MetadataIntegrator implements Integrator {
         configuration.getClassMappings().forEachRemaining(
                 mapping -> Property.mapForClass(mapping.getMappedClass())
                         .values().stream().filter(p -> p.getContainedTypeOrType()
-                                .isAnnotationPresent(RelatesToPeruste.FromAnywhereReferenced.class))
+                                .isAnnotationPresent(RelatesToPeruste.FromAnywhereReferenced.class)
+                            && !p.isAnnotationPresent(Transient.class))
                         .forEach(p -> classPropertyList(p.getContainedTypeOrType()).add(p)));
     }
 

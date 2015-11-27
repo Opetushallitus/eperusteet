@@ -45,11 +45,11 @@ public class ResolverUtilImpl implements ResolverUtil {
     public Set<Long> findPerusteIdsByFirstResolvable(ResolvableReferenced resolvable) {
         Set<Long> ids = new HashSet<>();
         for (Property referencingProperty : MetadataIntegrator.findPropertiesReferencingTo(resolvable.getEntityClass())) {
-            List owneres = em.createQuery("select t from "
+            List owners = em.createQuery("select t from "
                     + referencingProperty.getDirectDeclaringClass().getSimpleName()
                     + " t where t." + referencingProperty.getName() + ".id = :id")
                 .setParameter("id", resolvable.getId()).getResultList();
-            for (Object entity : owneres) {
+            for (Object entity : owners) {
                 // most likely none
                 HibernateInterceptor.findRelatedPeruste(entity, ids::add);
                 if (!ids.isEmpty()) {
