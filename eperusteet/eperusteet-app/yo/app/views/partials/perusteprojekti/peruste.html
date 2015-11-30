@@ -228,7 +228,8 @@ European Union Public Licence for more details.
           <div class="panel-body">
             <!-- <textarea ng&#45;if="editEnabled" class="form&#45;control msd&#45;elastic" ng&#45;model="editablePeruste.kuvaus" slocalized></textarea> -->
             <div ckeditor ng-if="editEnabled" slocalized ng-model="editablePeruste.kuvaus"></div>
-            <p ng-show="hasContent(peruste.kuvaus) && !editEnabled" kaanna="peruste.kuvaus"></p>
+            <!-- CKeditorilta tulee ulos html:ää. -->
+            <span ng-show="hasContent(peruste.kuvaus) && !editEnabled" ng-bind-html="peruste.kuvaus | kaanna | unsafe"></span>
             <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled" kaanna="ei-tiivistelmaa"></p>
           </div>
         </div>
@@ -260,7 +261,10 @@ European Union Public Licence for more details.
               </div>
             </div>
             <table class="aligned" ng-show="!editEnabled">
-              <tr><th kaanna="sijainti"></th><td><a ng-href="{{ peruste.maarayskirje.url | kaanna }}">{{ peruste.maarayskirje.url | kaanna }}</a></td></tr>
+              <tr><th kaanna="sijainti"></th><td>
+                <a ng-show="hasContent(peruste.maarayskirje.url)" ng-href="{{ peruste.maarayskirje.url | kaanna }}">{{ peruste.maarayskirje.url | kaanna }}</a>
+                <p ng-show="!hasContent(peruste.maarayskirje.url)" kaanna="ei-asetettu"</p>
+              </td></tr>
             </table>
           </div>
         </div>
