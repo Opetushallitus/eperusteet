@@ -93,6 +93,10 @@
                 </h3>
               </div>
               <div class="panel-body non-collapsibles">
+                <div ng-if="tavoite.koodiArvo">
+                  <label class="header" kaanna="'koodi'"></label>:<span> {{ tavoite.koodiArvo || '-' }}</span>
+                </div>
+
                 <label class="header" kaanna>tavoitteet</label>
                 <p ng-bind-html="tavoite.tavoitteet | kaanna | unsafe"></p>
                 <label class="header" kaanna>arviointi</label>

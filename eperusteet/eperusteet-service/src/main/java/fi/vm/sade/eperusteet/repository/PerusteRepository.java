@@ -48,4 +48,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("select new fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto(v.aikaleima) from PerusteVersion v " +
             "   where v.peruste.id = ?1")
     PerusteVersionDto getGlobalPerusteVersion(long perusteId);
+
+    @Query("select v from PerusteVersion v where v.peruste.id = ?1")
+    PerusteVersion getPerusteVersionEntityByPeruste(long perusteId);
 }

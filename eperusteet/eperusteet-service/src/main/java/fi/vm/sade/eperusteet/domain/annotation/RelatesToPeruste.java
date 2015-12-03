@@ -40,7 +40,7 @@ public @interface RelatesToPeruste {
      * owning related Peruste
      */
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE})
+    @Target(ElementType.TYPE)
     @interface Through {
         /**
          * @return dot chained property paths (or properties leading another entity that RelatesToPeruste)
@@ -49,5 +49,16 @@ public @interface RelatesToPeruste {
          * E.g. "peruste" or {"liittyva.peruste", "toisenKautta.liittyva.peruste"}
          */
         String[] value();
+    }
+
+    /**
+     * Marker annotation for entity class that is Identifiable and is related to many locations
+     * @see Identifiable
+     *
+     * Will be looked up if no relation to Peruste is found by other means.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @interface FromAnywhereReferenced {
     }
 }

@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.LukioOppiaineUpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
@@ -235,7 +236,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public OppiaineDto updateOppiaine(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id,
-            @RequestBody UpdateDto<OppiaineDto> dto) {
+            @RequestBody UpdateDto<LukioOppiaineUpdateDto> dto) {
         dto.getDto().setId(id);
         return oppiaineet.updateOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }

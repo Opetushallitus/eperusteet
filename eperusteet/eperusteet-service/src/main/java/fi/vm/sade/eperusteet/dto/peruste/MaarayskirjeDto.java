@@ -13,30 +13,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.dto.peruste;
 
-package fi.vm.sade.eperusteet.dto.tutkinnonosa;
-
-import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
-import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 /**
  *
- * @author harrik
+ * @author ohel
  */
 @Getter
 @Setter
-public class OsaamistavoiteLaajaDto extends OsaamistavoiteDto {
-    private LokalisoituTekstiDto tavoitteet;
-    private LokalisoituTekstiDto tunnustaminen;
-    private ArviointiDto arviointi;
-    private List<AmmattitaitovaatimusKohdealueetDto> ammattitaitovaatimuksetLista;
-    private String koodiUri;
-    private String koodiArvo;
-    private EntityReference esitieto;
+public class MaarayskirjeDto {
+    private Long id;
+    private Map<Kieli, String> url;
 }
