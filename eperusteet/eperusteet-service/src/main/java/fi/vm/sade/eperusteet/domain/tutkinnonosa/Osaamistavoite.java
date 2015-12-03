@@ -124,6 +124,17 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
      */
     private Kieli kieli;
 
+    @Column(name = "koodi_uri")
+    @Getter
+    @Setter
+    private String koodiUri;
+
+    @Column(name = "koodi_arvo")
+    @Getter
+    @Setter
+    private String koodiArvo;
+
+
     public Osaamistavoite() {
     }
 
