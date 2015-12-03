@@ -150,6 +150,9 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         clearChildren(viite, refs);
         PerusteenOsaViite parent = viite.getVanhempi();
         updateTraverse(parent, uusi, refs);
+        if (viite.getPerusteenOsa() != null) {
+            viite.getPerusteenOsa().muokattu();
+        }
     }
 
     @Override
