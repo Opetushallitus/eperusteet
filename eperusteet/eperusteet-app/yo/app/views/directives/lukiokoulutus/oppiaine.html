@@ -115,12 +115,15 @@
 
         <div class="oppiaineKurssit" ng-show="kurssit.length">
           <h3 kaanna="'oppiaine-kurssit'"></h3>
-          <ul>
-            <li ng-repeat="kurssi in kurssit">
-              <a kaanna="(kurssi.nimi | kaanna) + ((kurssi.lokalisoituKoodi | kaanna) ? ' ('+(kurssi.lokalisoituKoodi | kaanna)+')' : '')"
-                 ng-click="gotoKurssi(kurssi)" class="clickable"></a>
-            </li>
-          </ul>
+          <div ng-repeat="(kurssiTyyppi, ks) in kurssitByTyyppi" ng-show="ks.length">
+            <h4 ng-bind="('kurssi-tyyppi-selite-'+kurssiTyyppi) | kaanna"></h4>
+            <ul>
+              <li ng-repeat="kurssi in ks">
+                <a kaanna="(kurssi.nimi | kaanna) + ((kurssi.lokalisoituKoodi | kaanna) ? ' ('+(kurssi.lokalisoituKoodi | kaanna)+')' : '')"
+                   ng-click="gotoKurssi(kurssi)" class="clickable"></a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 

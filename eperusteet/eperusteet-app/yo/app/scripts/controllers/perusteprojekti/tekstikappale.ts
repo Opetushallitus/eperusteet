@@ -57,8 +57,11 @@ angular.module('eperusteApp')
       deleteDone = false;
       return ret;
     };
+    this.noDeleteWasDoneYet = function() {
+      deleteDone = false;
+    };
 
-    this.delete = function (viiteId, isNew) {
+    this.delete = function (viiteId, isNew, then?) {
       function commonCb(tyyppi) {
         deleteDone = true;
         if (isNew !== true) {
@@ -357,6 +360,7 @@ angular.module('eperusteApp')
       Editointikontrollit.registerCallback({
         edit: () => {
           return $q((resolve, reject) => {
+            TekstikappaleOperations.noDeleteWasDoneYet();
             lukitse().then(() => {
               fetch(function () {
                 refreshPromise();

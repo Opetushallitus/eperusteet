@@ -14,13 +14,14 @@
  * European Union Public Licence for more details.
  */
 
+import Lokalisoitu = Lokalisointi.Lokalisoitu;
 'use strict';
 
 /// <reference path="../../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q, LukiokoulutusService,
-    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils, Kielimapper, LukioKurssiService) {
+    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils, Kielimapper, LukioKurssiService, $log) {
   var STATE_OSAT_ALKU = 'root.perusteprojekti.suoritustapa.';
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
@@ -158,9 +159,17 @@ angular.module('eperusteApp')
 
   function ylMapper(targetItems, osa, key, level, link?, parent?) {
     level = level || 0;
+    var nimi:Lokalisoitu = _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi;
+    if (perusteenTyyppi === 'LU' && key === 'oppiaineet_oppimaarat'
+        && (osa.lokalisoitukoodi || osa.koodiArvo)) {
+      // Oppiaineelle ei varmaan tunnusta haluttu?
+      if (link && link[0] == STATE_LUKIOKURSSI) {
+        nimi = Lokalisointi.concat(nimi, ' (', (osa.lokalisoitukoodi || osa.koodiArvo), ')');
+      }
+    }
     targetItems.push({
       depth: level,
-      label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
+      label: nimi,
       link: link || [perusteenTyyppi == 'LU' ? STATE_LUKIOOSAALUE : STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
       isActive: isYlRouteActive,
       $$parentItem: parent

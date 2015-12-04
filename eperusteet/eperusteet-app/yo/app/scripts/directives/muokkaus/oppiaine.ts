@@ -667,8 +667,14 @@ angular.module('eperusteApp')
     $scope.oppiaineet = [];
     $scope.$oppiaineenNimi = {};
     $scope.kurssit = [];
+    $scope.kurssitByTyyppi = {};
     LukioKurssiService.listByOppiaine($stateParams.osanId).then(function(kurssit) {
       $scope.kurssit = kurssit;
+      $scope.kurssitByTyyppi = _.merge({ // to always get types in this order
+        'pakollinen': [],
+        'valtakunnallinen_syvantava': [],
+        'valtakunnallinen_sovaltava': []
+      }, _(kurssit).groupBy(k => k.tyyppi ? k.tyyppi.toLowerCase() : '').value());
     });
     $scope.gotoKurssi = function(kurssi) {
       return $state.go('root.perusteprojekti.suoritustapa.kurssi', {

@@ -178,7 +178,8 @@ angular.module('eperusteApp')
             'editointi-sallittu': 'true',
             'vuosiluokkakokonaisuuden-osaaminen': 'object.' + scope.field.path,
             'edit-enabled': 'editEnabled'
-          }]
+          }],
+          osaamistavoitteet: []
         };
         ELEMENT_MAP.osaamistavoitteet = _.merge(_.clone(ELEMENT_MAP.arviointi), { tyyppi: 'osaamistavoitteet' });
         ELEMENT_MAP.osaamistavoitteet = _.merge(_.clone(ELEMENT_MAP.arviointi), { tyyppi: 'osaamisen-arviointi' });
