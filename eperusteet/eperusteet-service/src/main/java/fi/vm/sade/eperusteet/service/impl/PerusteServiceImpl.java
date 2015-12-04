@@ -406,11 +406,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private Peruste updateValmisPeruste(Peruste current, Peruste updated) {
-
-        if (!current.getDiaarinumero().equals(updated.getDiaarinumero())) {
-            throw new BusinessRuleViolationException("Valmiin perusteen diaarinumeroa ei voi vaihtaa");
-        }
-
         current.setKielet(updated.getKielet());
         current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
         current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
