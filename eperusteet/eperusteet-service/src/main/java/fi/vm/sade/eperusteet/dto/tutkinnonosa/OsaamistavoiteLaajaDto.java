@@ -36,5 +36,7 @@ public class OsaamistavoiteLaajaDto extends OsaamistavoiteDto {
     private LokalisoituTekstiDto tunnustaminen;
     private ArviointiDto arviointi;
     private List<AmmattitaitovaatimusKohdealueetDto> ammattitaitovaatimuksetLista;
+    private String koodiUri;
+    private String koodiArvo;
     private EntityReference esitieto;
 }
