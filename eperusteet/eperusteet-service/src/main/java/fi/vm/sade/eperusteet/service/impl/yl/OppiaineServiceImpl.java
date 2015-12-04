@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine.OsaTyyppi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
@@ -320,7 +321,18 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
             rev = oppiaineRepository.getLatestRevisionId();
         }
-        mapper.map(dto, aine);
+
+        if (tyyppi == LUKIOKOULUTUS && dto.getPartial() != null && dto.getPartial()) {
+            for (OsaTyyppi osaTyyppi : Oppiaine.OsaTyyppi.values()) {
+                TekstiOsa osa = osaTyyppi.getter().apply(aine);
+                TekstiOsaDto dtoOsa = dto.getOsa(osaTyyppi);
+                if (osa != null && dtoOsa != null) {
+                    mapper.map(dtoOsa, osa);
+                }
+            }
+        } else {
+            mapper.map(dto, aine);
+        }
 
         if (dto instanceof OppiaineDto) {
             OppiaineDto oppiaineDto = (OppiaineDto) dto;

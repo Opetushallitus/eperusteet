@@ -36,6 +36,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -50,6 +51,21 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Audited
 @Table(name = "yl_oppiaine")
 public class Oppiaine extends AbstractAuditedReferenceableEntity implements NimettyKoodillinen {
+
+    public enum OsaTyyppi {
+        tehtava(Oppiaine::getTehtava),
+        tavoitteet(Oppiaine::getTavoitteet),
+        arviointi(Oppiaine::getArviointi);
+
+        private Function<Oppiaine, TekstiOsa> getter;
+        private OsaTyyppi(Function<Oppiaine, TekstiOsa> getter) {
+            this.getter = getter;
+        }
+
+        public Function<Oppiaine, TekstiOsa> getter() {
+            return getter;
+        }
+    }
 
     public static Predicate<Oppiaine> inLukioPeruste(long perusteId) {
         return inLukioPerusteDirect(perusteId).or(oa -> oa.getOppiaine() != null

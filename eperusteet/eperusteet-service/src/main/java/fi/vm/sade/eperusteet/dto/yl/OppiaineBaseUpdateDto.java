@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,4 +39,15 @@ public abstract class OppiaineBaseUpdateDto extends OppiaineBaseDto {
     private LokalisoituTekstiDto pakollinenKurssiKuvaus;
     private LokalisoituTekstiDto syventavaKurssiKuvaus;
     private LokalisoituTekstiDto soveltavaKurssiKuvaus;
+
+    private Boolean partial;
+
+    public TekstiOsaDto getOsa(Oppiaine.OsaTyyppi tyyppi) {
+        switch (tyyppi) {
+            case arviointi: return arviointi;
+            case tavoitteet: return tavoitteet;
+            case tehtava: return tehtava;
+            default: return null;
+        }
+    }
 }

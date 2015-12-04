@@ -138,6 +138,9 @@ angular.module('eperusteApp')
         });
       } else if (path) {
         var payload = _.pick(model, ['id', path]);
+        if ($stateParams.suoritustapa === 'lukiokoulutus') {
+          payload.partial = true;
+        }
         service.saveOsa(payload, backState[1], function () {
           if (isLocked && oppiaine) {
             oppiaineLukitus.vapauta(goBack);
