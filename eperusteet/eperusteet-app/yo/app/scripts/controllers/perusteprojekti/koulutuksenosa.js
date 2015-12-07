@@ -130,15 +130,6 @@ angular.module('eperusteApp')
         ylarelaatioTyyppi: function () { return ''; },
         tarkista: _.constant(true)
     });
-    $scope.hideFieldInMenu = function (field) {
-        var hide = field.visible;
-        if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto && field.path.includes('osaamisenarviointi')) {
-            var tmp = $scope.editableTutkinnonOsaViite.tutkinnonOsa.valmaTelmaSisalto;
-            hide = (field.path.includes('osaamisenarviointiTekstina') && (tmp.osaamisenarviointi && tmp.osaamisenarviointi !== null)) ? true : hide;
-            hide = (field.path === 'tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointi' && isVisible('tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointiTekstina')) ? true : hide;
-        }
-        return hide;
-    };
     function isVisible(fieldPath) {
         return _.find($scope.fields, { 'path': fieldPath }).visible;
     }

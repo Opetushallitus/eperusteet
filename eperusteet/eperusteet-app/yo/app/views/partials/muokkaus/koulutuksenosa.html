@@ -33,8 +33,8 @@
                 <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="'muokkaus-lisaa-sisalto'"></button>
                 <ul class="pull-right dropdown-menu">
                   <li ng-repeat="field in fields | orderBy:'order'">
-                    <a ng-show="hideFieldInMenu(field)" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
-                    <a class="action-link" ng-show="!hideFieldInMenu(field)" ng-click="addFieldToVisible(field)">{{ vateConverter('muokkaus-' + field.localeKey + '-header') | kaanna}}</a>
+                    <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
+                    <a class="action-link" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{ vateConverter('muokkaus-' + field.localeKey + '-header') | kaanna}}</a>
                   </li>
                 </ul>
               </div>
@@ -127,7 +127,7 @@
         </div>
       </div>
 
-      <div class="non-collapsibles" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
+      <div class="non-collapsibles" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2' || isVaTe">
         <label class="header" for="tutke2-kuvaus" kaanna>kuvaus</label>
         <textarea id="tutke2-kuvaus" class="form-control msd-elastic" ng-show="editEnabled" slocalized
           ng-model="editableTutkinnonOsaViite.tutkinnonOsa.kuvaus"></textarea>
