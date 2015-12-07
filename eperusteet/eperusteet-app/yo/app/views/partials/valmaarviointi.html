@@ -32,6 +32,7 @@
                 </td>
               </tr>
               <tr class="row-adder">
+                <td></td><td></td>
                 <td class="toiminnot">
                   <a ng-if="valmaitem.tavoitteet && valmaitem.tavoitteet.length !== 0" class="action-link" ng-click="rivi.uusi(valmaitem, $event)" icon-role="add" title="{{'valmaarviointi-uusi-kriteeri' | kaanna}}"></a>
                   <button ng-if="!valmaitem.tavoitteet || valmaitem.tavoitteet.length === 0" ng-click="rivi.uusi(valmaitem, $event)"

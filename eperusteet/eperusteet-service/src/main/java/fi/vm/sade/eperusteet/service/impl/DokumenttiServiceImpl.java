@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -100,6 +101,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
+    @IgnorePerusteUpdateCheck
     public DokumenttiDto createDtoFor(long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
 
         String name = SecurityUtil.getAuthenticatedPrincipal().getName();
@@ -125,6 +127,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
         List<Dokumentti> documents = dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort);
@@ -141,6 +144,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional
+    @IgnorePerusteUpdateCheck
     public void generateWithDto(DokumenttiDto dto) {
         LOG.debug("generate with dto {}", dto);
 
@@ -172,6 +176,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public byte[] get(Long id) {
         Dokumentti dokumentti = dokumenttiRepository.findById(id);
         if (dokumentti != null) {
@@ -183,6 +188,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional
+    @IgnorePerusteUpdateCheck
     public void setStarted(DokumenttiDto dto) {
         Dokumentti doc = dokumenttiRepository.findById(dto.getId());
         doc.setTila(DokumenttiTila.LUODAAN);
@@ -191,6 +197,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public DokumenttiDto query(Long id) {
         Dokumentti findById = dokumenttiRepository.findById(id);
         return mapper.map(findById, DokumenttiDto.class);
