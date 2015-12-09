@@ -433,6 +433,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
         current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
         current.setKuvaus(updated.getKuvaus());
+        current.setMaarayskirje(updated.getMaarayskirje());
         current.setNimi(updated.getNimi());
         current.setEsikatseltavissa(updated.isEsikatseltavissa());
 
@@ -443,6 +444,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
         current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
         current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
+        current.setPaatospvm(updated.getPaatospvm());
 
         Set<ConstraintViolation<Peruste>> violations = validator.validate(current, Peruste.Valmis.class);
         if (!violations.isEmpty()) {
