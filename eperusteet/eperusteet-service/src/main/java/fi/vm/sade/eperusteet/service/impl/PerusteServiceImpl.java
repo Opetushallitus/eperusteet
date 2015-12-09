@@ -222,8 +222,26 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
-        Peruste p = perusteet.findOneByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
-        return p == null ? null : mapper.map(p, PerusteInfoDto.class);
+        List<Peruste> loydetyt = perusteet.findOneByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
+
+        Peruste peruste = null;
+
+        if (loydetyt.size() == 1) {
+            peruste = loydetyt.iterator().next();
+        }
+        else {
+            Optional<Peruste> op = loydetyt.stream()
+                    .filter((p) -> p.getVoimassaoloAlkaa() != null)
+                    .filter((p) -> p.getVoimassaoloAlkaa().after(new Date()))
+                    .sorted((p1, p2) -> p1.getVoimassaoloAlkaa().compareTo(p2.getVoimassaoloAlkaa()))
+                    .findFirst();
+
+            if (op.isPresent()) {
+                peruste = op.get();
+            }
+        }
+
+        return peruste != null ? mapper.map(peruste, PerusteInfoDto.class) : null;
     }
 
     private void gatherOsaamisalaKuvaukset(PerusteenOsaViite pov, Map<String, List<TekstiKappaleDto>> stosaamisalat) {
