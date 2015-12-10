@@ -204,13 +204,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
 
             DiaarinumeroHakuDto diaariHaku = onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
-            Boolean loytyi = diaariHaku.getLoytyi();
-            Boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU &&
-                    diaariHaku.getDiaarinumero().equals(perusteprojekti.getDiaarinumero().getDiaarinumero());
-
-            if (loytyi && !korvaava) {
-                throw new BusinessRuleViolationException("Perusteprojekti kyseisellä diaarinumerolla on jo olemassa");
-            }
+            Boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU && diaariHaku.getLoytyi();
 
             if (korvaava) {
                 Perusteprojekti jyrattava = repository.findOne(diaariHaku.getId());

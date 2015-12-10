@@ -2,7 +2,7 @@
   <!-- kielenvaihto.html -->
 
   <div ng-if="isModal">
-    {{'sisallon-kieli'|kaanna}}:
+    <span kaanna="'sisallon-kieli'"></span>:
     <span dropdown class="kieli-dropdown">
       <button class="btn btn-default dropdown-toggle">{{sisaltokieli|kaanna}} <span class="caret"></span></button>
       <ul class="dropdown-menu dropdown-menu-right" role="menu">
@@ -14,9 +14,8 @@
   </div>
 
   <span ng-if="!isModal">
-
     <span ng-if="uiLangChangeAllowed">
-      {{'ui-kieli'|kaanna}}:
+      <span kaanna="'ui-kieli'"></span>:
       <span dropdown class="kieli-dropdown">
         <a class="action-link dropdown-toggle">{{kieli|kaanna}} <span class="caret"></span></a>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
@@ -27,7 +26,7 @@
       </span>
     </span>
 
-    {{'sisallon-kieli'|kaanna}}:
+    <span kaanna="'sisallon-kieli'"></span>:
     <span dropdown class="kieli-dropdown">
       <a class="action-link dropdown-toggle">{{sisaltokieli|kaanna}} <span class="caret"></span></a>
       <ul class="dropdown-menu dropdown-menu-right" role="menu">
