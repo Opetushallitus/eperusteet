@@ -427,8 +427,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setKielet(updated.getKielet());
         current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
         current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
+        current.setMaarayskirje(updated.getMaarayskirje());
         current.setKuvaus(updated.getKuvaus());
         current.setNimi(updated.getNimi());
+        current.setPaatospvm(updated.getPaatospvm());
         current.setEsikatseltavissa(updated.isEsikatseltavissa());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
