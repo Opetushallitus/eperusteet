@@ -109,9 +109,10 @@
         <div class="form-group">
           <label class="col-sm-3">{{ 'diaarinumero-label' | kaanna }}<span>*</span></label>
           <div class="col-sm-9">
-            <input name="diaarinumero" type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero'| kaanna}}"></input>
+            <input name="diaarinumero" type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero'| kaanna}}" diaarinumerouniikki></input>
           </div>
         </div>
+        <p class="alert alert-error" ng-show="perusteprojektiForm.diaarinumero.$error.diaarinumerouniikki" kaanna>diaarinumero-kaytossa</p>
 
         <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
           <label for="koulutustyyppi" class="col-sm-3">{{ 'laajuuden-yksikkö' | kaanna }}<span>*</span></label>
