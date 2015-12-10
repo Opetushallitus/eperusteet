@@ -70,11 +70,6 @@ public class AmmattitaitovaatimuksenKohdealue implements Serializable {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
     public void connectAmmattitaitovaatimuksetToKohdealue(AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue) {
         for (AmmattitaitovaatimuksenKohde ammattitaitovaatimuksenKohde : this.getVaatimuksenKohteet()) {
             ammattitaitovaatimuksenKohde.setAmmattitaitovaatimuksenkohdealue(ammattitaitovaatimuksenKohdealue);
