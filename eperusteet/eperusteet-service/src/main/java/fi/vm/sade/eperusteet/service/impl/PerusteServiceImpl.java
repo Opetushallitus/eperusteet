@@ -222,7 +222,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
-        List<Peruste> loydetyt = perusteet.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
+        List<Peruste> loydetyt = perusteet.findOneByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
 
         Peruste peruste = null;
 
