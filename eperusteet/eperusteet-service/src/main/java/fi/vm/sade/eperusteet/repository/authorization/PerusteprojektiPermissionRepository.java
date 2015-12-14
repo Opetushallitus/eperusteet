@@ -46,4 +46,12 @@ public interface PerusteprojektiPermissionRepository extends JpaRepository<Perus
     @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.tila) FROM PerusteenosanProjekti pp WHERE pp.id = ?1")
     List<Pair<String,ProjektiTila>> findTilaByPerusteenOsaId(Long perusteenOsaId);
 
+    @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.esikatseltavissa) FROM Perusteprojekti pp WHERE pp.peruste.id = ?1")
+    List<Pair<String, Boolean>> findEsikatseltavissaByPeruste(Long perusteId);
+
+    @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.esikatseltavissa) FROM Perusteprojekti pp WHERE pp.id = ?1")
+    List<Pair<String, Boolean>> findEsikatseltavissaById(Long perusteProjektiId);
+
+    @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.esikatseltavissa) FROM PerusteenosanProjekti pp WHERE pp.id = ?1")
+    List<Pair<String, Boolean>> findEsikatseltavissaByPerusteenOsaId(Long perusteenOsaId);
 }

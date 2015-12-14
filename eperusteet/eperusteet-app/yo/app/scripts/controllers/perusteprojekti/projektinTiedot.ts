@@ -106,6 +106,7 @@ angular.module('eperusteApp')
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
+    $scope.isLukikoulutus = $scope.peruste.koulutustyyppi === 'koulutustyyppi_2';
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'}];
     if (!$scope.pohja()) {
