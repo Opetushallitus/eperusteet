@@ -134,7 +134,6 @@ angular.module('eperusteApp')
     $scope.korvattavaDiaariNimiMap = {};
     $scope.hakemassa = false;
     $scope.peruste = perusteprojektiTiedot.getPeruste();
-    $scope.isLukikoulutus = $scope.peruste.koulutustyyppi === 'koulutustyyppi_2';
 
     noudaKorvattavienDiaarienNimet($scope.peruste.korvattavatDiaarinumerot);
     $scope.editablePeruste = $scope.peruste;
@@ -348,7 +347,6 @@ angular.module('eperusteApp')
     $scope.$on('event:spinner_off', function() {
       $scope.hakemassa = false;
     });
-
   })
 
   .directive('datepickerPopup', ['datepickerPopupConfig', 'dateParser', 'dateFilter', function (datepickerPopupConfig, dateParser, dateFilter) {

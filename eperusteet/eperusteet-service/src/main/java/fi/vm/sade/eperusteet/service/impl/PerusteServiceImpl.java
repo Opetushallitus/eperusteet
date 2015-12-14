@@ -222,7 +222,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
-        List<Peruste> loydetyt = perusteet.findOneByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
+        List<Peruste> loydetyt = perusteet.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
 
         Peruste peruste = null;
 
@@ -417,7 +417,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
             current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
             current.setPaatospvm(perusteDto.getPaatospvm());
-            current.setEsikatseltavissa(perusteDto.isEsikatseltavissa());
         }
         perusteet.save(current);
         return mapper.map(current, PerusteDto.class);
@@ -432,7 +431,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setMaarayskirje(updated.getMaarayskirje());
         current.setNimi(updated.getNimi());
         current.setPaatospvm(updated.getPaatospvm());
-        current.setEsikatseltavissa(updated.isEsikatseltavissa());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
             throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");

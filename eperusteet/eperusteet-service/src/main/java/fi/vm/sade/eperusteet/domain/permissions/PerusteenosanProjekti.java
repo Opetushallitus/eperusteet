@@ -42,12 +42,16 @@ public class PerusteenosanProjekti {
 
     @Id
     private Long id;
+
     @Id
     @Column(name = "perusteprojekti_id")
     private Long perusteProjektiId;
 
+    private boolean esikatseltavissa = false;
+
     @Column(name = "ryhmaoid")
     private String ryhmaOid;
+
     @Enumerated(EnumType.STRING)
     private ProjektiTila tila;
 

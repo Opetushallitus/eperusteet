@@ -92,6 +92,11 @@ public class Perusteprojekti extends AbstractAuditedEntity {
 
     @Getter
     @Setter
+    @NotNull
+    private boolean esikatseltavissa = false;
+
+    @Getter
+    @Setter
     private String tehtava;
 
     @Getter

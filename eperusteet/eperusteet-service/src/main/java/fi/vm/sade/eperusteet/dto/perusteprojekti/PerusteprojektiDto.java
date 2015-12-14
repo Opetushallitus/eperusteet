@@ -44,6 +44,7 @@ public class PerusteprojektiDto implements Serializable {
     private String yhteistyotaho;
     private ProjektiTila tila;
     private String ryhmaOid;
+    private boolean esikatseltavissa = false;
 
     public PerusteprojektiDto(String nimi, EntityReference peruste, String diaarinumero, Date paatosPvm, Date toimikausiAlku, Date toimikausiLoppu, String tehtavaluokka, String tehtava, String yhteistyotaho, ProjektiTila tila, String ryhmaOid) {
         this.nimi = nimi;

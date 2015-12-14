@@ -37,7 +37,7 @@ angular.module('eperusteApp')
     $scope.rajaus = '';
 
     $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
-    $scope.$esitysurl = YleinenData.getPerusteEsikatseluHost() + '/lukio/' + $scope.peruste.id;
+    $scope.$esitysurl = YleinenData.getPerusteEsikatseluHost() + '/lukio/' + $scope.peruste.id + '/tiedot';
 
     $scope.$watch('peruste.sisalto', function () {
       if( !_.isEmpty($scope.peruste.sisalto) ) {

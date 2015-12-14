@@ -16,51 +16,67 @@ European Union Public Licence for more details.
 -->
 
 <div class="row">
-<div class="col-md-12">
-<div ng-if="wizardissa()" class="project-header uusi-projekti-header">
-  <h1 ng-if="pohja()" kaanna>uusi-perustepohja</h1>
-  <h1 ng-if="!pohja()" kaanna>uusi-projekti-otsikko</h1>
-</div>
+  <div class="col-md-12">
+    <div ng-if="wizardissa()" class="project-header uusi-projekti-header">
+      <h1 ng-if="pohja()" kaanna>uusi-perustepohja</h1>
+      <h1 ng-if="!pohja()" kaanna>uusi-projekti-otsikko</h1>
+    </div>
 
-<div class="uusi-projekti-content">
-  <div ng-if="wizardissa() && !peruste" class="pull-right">
-    <button ng-click="mergeProjekti(true)" class="btn" kaanna>tuo-perustepohja</button>
-    <button ng-if="!pohja()" ng-click="mergeProjekti(false)" class="btn" kaanna>tuo-peruste</button>
-  </div>
-  <div ng-if="wizardissa() && peruste">
-    <div class="alert alert-info">
-      {{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}: <b>{{ peruste.nimi | kaanna }}</b>
-      <div ng-show="peruste.tutkintokoodi">{{ 'tutkintokoodi' | kaanna }}: <b>{{ peruste.tutkintokoodi | kaanna }}</b></div>
-      <div ng-show="peruste.voimassaoloAlkaa">{{ 'voimassaoloAlkaa' | kaanna }}: <b>{{ peruste.voimassaoloAlkaa | aikaleima }}</b></div>
-      <div ng-show="peruste.voimassaoloLoppuu">{{ 'voimassaoloLoppuu' | kaanna }}: <b>{{ peruste.voimassaoloLoppuu | aikaleima }}</b></div>
-      <div ng-show="peruste.siirtymaAlkaa">{{ 'siirtymaAlkaa' | kaanna }}: <b>{{ peruste.siirtymaAlkaa | aikaleima }}</b></div>
-      <div style="margin-top: 10px">
-        <button class="btn btn-danger" ng-click="puhdistaValinta()" kaanna>peruuta</button>
+    <div class="uusi-projekti-content">
+      <div ng-if="wizardissa() && !peruste" class="pull-right">
+        <button ng-click="mergeProjekti(true)" class="btn" kaanna>tuo-perustepohja</button>
+        <button ng-if="!pohja()" ng-click="mergeProjekti(false)" class="btn" kaanna>tuo-peruste</button>
       </div>
-    </div>
-  </div>
-
-  <div class="action-buttons">
-    <button ng-if="!wizardissa() && voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()"
-            class="floater btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-            oikeustarkastelu="{ target: 'perusteprojekti', permission: 'muokkaus' }"></button>
-  </div>
-
-  <h1 kaanna>projektin-tiedot</h1>
-  <p ng-if="wizardissa() || editEnabled" kaanna>tahdella-pakolliset</p>
-  <ng-form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form">
-    <div ng-repeat="tab in tabs">
-      <h3>{{tab.otsikko | kaanna}}</h3>
-      <div class="form-area" ng-class="{viewmode: !wizardissa() && !editEnabled}">
-        <ng-include src="tab.url"></ng-include>
+      <div ng-if="wizardissa() && peruste">
+        <div class="alert alert-info">
+          {{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}: <b>{{ peruste.nimi | kaanna }}</b>
+          <div ng-show="peruste.tutkintokoodi">{{ 'tutkintokoodi' | kaanna }}: <b>{{ peruste.tutkintokoodi | kaanna }}</b></div>
+          <div ng-show="peruste.voimassaoloAlkaa">{{ 'voimassaoloAlkaa' | kaanna }}: <b>{{ peruste.voimassaoloAlkaa | aikaleima }}</b></div>
+          <div ng-show="peruste.voimassaoloLoppuu">{{ 'voimassaoloLoppuu' | kaanna }}: <b>{{ peruste.voimassaoloLoppuu | aikaleima }}</b></div>
+          <div ng-show="peruste.siirtymaAlkaa">{{ 'siirtymaAlkaa' | kaanna }}: <b>{{ peruste.siirtymaAlkaa | aikaleima }}</b></div>
+          <div style="margin-top: 10px">
+            <button class="btn btn-danger" ng-click="puhdistaValinta()" kaanna>peruuta</button>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="projekti-form-buttons" ng-show="wizardissa()">
-      <button ui-sref="root.aloitussivu" id="cancel" class="btn" kaanna>peruuta</button>
-      <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid">{{ pohja() ? 'luo-perustepohja-nappi' : 'luo-perusteprojekti-nappi' | kaanna }}</button>
+      <div class="action-buttons">
+        <button ng-if="!wizardissa() && voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()"
+                                                                            class="floater btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+                                                                                                                             oikeustarkastelu="{ target: 'perusteprojekti', permission: 'muokkaus' }"></button>
+      </div>
+
+      <h1 kaanna>projektin-tiedot</h1>
+      <p ng-if="wizardissa() || editEnabled" kaanna>tahdella-pakolliset</p>
+      <ng-form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form">
+      <div ng-repeat="tab in tabs">
+        <h3>{{tab.otsikko | kaanna}}</h3>
+        <div class="form-area" ng-class="{viewmode: !wizardissa() && !editEnabled}">
+          <ng-include src="tab.url"></ng-include>
+        </div>
+      </div>
+
+      <div class="projekti-form-buttons" ng-show="wizardissa()">
+        <button ui-sref="root.aloitussivu" id="cancel" class="btn" kaanna>peruuta</button>
+        <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid">{{ pohja() ? 'luo-perustepohja-nappi' : 'luo-perusteprojekti-nappi' | kaanna }}</button>
+      </div>
+      </ng-form>
+      <div class="panel panel-default panel-clean" ng-show="isLukiokoulutus">
+        <div class="panel-heading">
+          <h3 class="panel-title" kaanna>lukio-peruste-esikatseltavissa</h3>
+        </div>
+        <div class="panel-body">
+          <div ng-if="editEnabled">
+            <input id="esikatseltavissa" type="checkbox" ng-model="projekti.esikatseltavissa"></input>
+            <label for="esikatseltavissa" kaanna>salli-lukio-peruste-esikatseltavissa</label>
+          </div>
+          <div class="aligned" ng-show="!editEnabled">
+            <span ng-show="projekti.esikatseltavissa" kaanna>kyllä</span>
+            <span ng-show="!projekti.esikatseltavissa" kaanna>ei</span>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </ng-form>
-</div>
-</div>
+  </div>
 </div>
