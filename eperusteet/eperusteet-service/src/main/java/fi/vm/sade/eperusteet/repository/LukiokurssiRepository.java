@@ -74,7 +74,7 @@ public interface LukiokurssiRepository extends JpaWithVersioningRepository<Lukio
 
     @Query(value = "SELECT new fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokurssiJulkisetTiedotDto(\n" +
             "    kurssi.id, oa.id, koa.jarjestys,\n" +
-            "    kurssi.tunniste, kurssi.koodiArvo, kurssi.koodiUri, kurssi.lokalisoituKoodi.id, kurssi.tyyppi,\n" +
+            "    kurssi.tunniste, kurssi.koodiUri, kurssi.koodiArvo, kurssi.lokalisoituKoodi.id, kurssi.tyyppi,\n" +
             "    nimi.id, kuvaus.id,\n" +
             "    tavoitteet.otsikko.id, tavoitteet.teksti.id,\n" +
             "    sisallot.otsikko.id, sisallot.teksti.id,\n" +
