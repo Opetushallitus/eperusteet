@@ -824,7 +824,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 .addErrorStatusForAll("peruste-lukio-liittamaton-kurssi", () ->
                     rakenne.kurssit().filter(empty(Lukiokurssi::getOppiaineet)).map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () ->
-                    rakenne.oppiaineetMaarineen().filter(not(Oppiaine::isKoosteinen).and(empty(Oppiaine::getLukiokurssit)))
+                    rakenne.oppiaineetMaarineen().filter(not(Oppiaine::isKoosteinen)
+                            .and(not(Oppiaine::isAbstraktiBool)).and(empty(Oppiaine::getLukiokurssit)))
                         .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
                     rakenne.oppiaineet().filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))
