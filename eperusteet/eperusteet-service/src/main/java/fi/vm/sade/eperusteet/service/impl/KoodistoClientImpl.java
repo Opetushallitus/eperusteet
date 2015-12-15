@@ -50,7 +50,6 @@ public class KoodistoClientImpl implements KoodistoClient {
     private DtoMapper mapper;
 
     @Override
-    @Cacheable("koodistot")
     public List<KoodistoKoodiDto> getAll(String koodisto) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi/";
@@ -69,7 +68,6 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
-    @Cacheable("koodistot")
     public List<KoodistoKoodiDto> filterBy(String koodisto, String koodi) {
         List<KoodistoKoodiDto> filter = getAll(koodisto);
         List<KoodistoKoodiDto> tulos = new ArrayList<>();
