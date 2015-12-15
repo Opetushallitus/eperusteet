@@ -401,54 +401,35 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new BusinessRuleViolationException("Koulutustyyppiä ei voi vaihtaa");
         }
 
-        if (current.getTila() == PerusteTila.VALMIS) {
-            current = updateValmisPeruste(current, updated);
-        } else {
-            // FIXME: refactor
-            current.setDiaarinumero(updated.getDiaarinumero());
-            current.setKielet(updated.getKielet());
-            current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
-            current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
-            current.setKuvaus(updated.getKuvaus());
-            current.setMaarayskirje(updated.getMaarayskirje());
-            current.setNimi(updated.getNimi());
-            current.setOsaamisalat(updated.getOsaamisalat());
-            current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
-            current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
-            current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
-            current.setPaatospvm(perusteDto.getPaatospvm());
-        }
-        perusteet.save(current);
-        return mapper.map(current, PerusteDto.class);
-    }
-
-    private Peruste updateValmisPeruste(Peruste current, Peruste updated) {
-
-        if (!current.getDiaarinumero().equals(updated.getDiaarinumero())) {
-            throw new BusinessRuleViolationException("Valmiin perusteen diaarinumeroa ei voi vaihtaa");
-        }
-
         current.setKielet(updated.getKielet());
         current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
         current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
         current.setKuvaus(updated.getKuvaus());
         current.setMaarayskirje(updated.getMaarayskirje());
         current.setNimi(updated.getNimi());
-
-        if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
-            throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");
-        }
-
         current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
         current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
         current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
         current.setPaatospvm(updated.getPaatospvm());
 
-        Set<ConstraintViolation<Peruste>> violations = validator.validate(current, Peruste.Valmis.class);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
+        if (current.getTila() == PerusteTila.VALMIS) {
+            if (!current.getDiaarinumero().equals(updated.getDiaarinumero())) {
+                throw new BusinessRuleViolationException("Valmiin perusteen diaarinumeroa ei voi vaihtaa");
+            }
+            if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
+                throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");
+            }
+            Set<ConstraintViolation<Peruste>> violations = validator.validate(current, Peruste.Valmis.class);
+            if (!violations.isEmpty()) {
+                throw new ConstraintViolationException(violations);
+            }
+        } else {
+            current.setDiaarinumero(updated.getDiaarinumero());
+            current.setOsaamisalat(updated.getOsaamisalat());
         }
-        return current;
+
+        perusteet.save(current);
+        return mapper.map(current, PerusteDto.class);
     }
 
     private Set<Koulutus> checkIfKoulutuksetAlreadyExists(Set<Koulutus> koulutukset) {
