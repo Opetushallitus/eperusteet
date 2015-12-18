@@ -89,15 +89,15 @@
             </tr>
             <tr ng-show="editableModel.pakollinenKurssiKuvaus">
               <th kaanna="pakollinen-kurssi-kuvaus-header"></th>
-              <td><div ng-bind-html="editableModel.pakollinenKurssiKuvaus|kaanna|unsafe"></div></td>
+              <td><div ng-bind-html="editableModel.pakollinenKurssiKuvaus|kaanna|unsafe" termisto-viitteet="editableModel.pakollinenKurssiKuvaus"></div></td>
             </tr>
             <tr ng-show="editableModel.syventavaKurssiKuvaus">
               <th kaanna="syventava-kurssi-kuvaus-header"></th>
-              <td><div ng-bind-html="editableModel.syventavaKurssiKuvaus|kaanna|unsafe"></div></td>
+              <td><div ng-bind-html="editableModel.syventavaKurssiKuvaus|kaanna|unsafe" termisto-viitteet="editableModel.syventavaKurssiKuvaus"></div></td>
             </tr>
             <tr ng-show="editableModel.soveltavaKurssiKuvaus">
               <th kaanna="soveltava-kurssi-kuvaus-header"></th>
-              <td><div ng-bind-html="editableModel.soveltavaKurssiKuvaus|kaanna|unsafe"></div></td>
+              <td><div ng-bind-html="editableModel.soveltavaKurssiKuvaus|kaanna|unsafe" termisto-viitteet="editableModel.soveltavaKurssiKuvaus"></div></td>
             </tr>
             <tr ng-show="editableModel.koosteinen">
               <th kaanna="oppimaarat"></th>
