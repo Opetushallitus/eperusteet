@@ -114,6 +114,31 @@ angular.module('eGenericTree', [])
           });
       },
       link: function(scope, element) {
+        var setupMinHeightBycontainer = function(el) {
+          var $parent = $(el).parent(),
+              height = $parent.outerHeight();
+          $parent.prop('original-min-height', $parent.css('minHeight'));
+          //console.log('setting min height:', height, 'for tree container', $parent);
+          $parent.css('minHeight', height);
+        };
+        var setupMinHeightForAllGenericTrees = function() {
+          // (including all connected as well cause may be dragged from tree to another)
+          $("generic-tree").each(function() {
+            setupMinHeightBycontainer($(this).parent());
+          });
+        };
+        var restoreParentHeight = function(el) {
+          var $parent = $(el).parent(),
+              height = $parent.prop('original-min-height') || 'inherit';
+          //console.log('restoring min height:', height, 'for tree container', $parent);
+          $parent.css('minHeight', height);
+        };
+        var restoreParentHeightForAllGenericTrees = function() {
+          $("generic-tree").each(function() {
+            restoreParentHeight($(this).parent());
+          });
+        };
+
         function refresh(tree) {
           if (tree) {
             _.each(scope.children, function(child) {
@@ -131,6 +156,12 @@ angular.module('eGenericTree', [])
               delay: 100,
               disabled: scope.tprovider.useUiSortable(),
               tolerance: 'pointer',
+              start: function() {
+                setupMinHeightForAllGenericTrees();
+              },
+              stop: function() {
+                restoreParentHeightForAllGenericTrees();
+              },
               update: function(e, ui) {
                 if (scope.tprovider.acceptDrop) {
                   var dropTarget = ui.item.sortable.droptarget;
@@ -143,22 +174,33 @@ angular.module('eGenericTree', [])
                     }
                   }
                 }
-              },
+              }
               // cancel: '.ui-state-disabled'
             }, scope.uiSortableConfig || {});
 
-            element.html('' +
-              '<div ui-sortable="sortableConfig" class="' + scope.tprovider.sortableClass(scope.root) + ' recursivetree" ng-model="children">' +
-              '    <div ng-repeat="node in children">' +
-              '       <generic-tree-node node="node" ui-sortable-config="sortableConfig" tree-provider="tprovider"></generic-tree-node>' +
-              '    </div>' +
-              '</div>');
-            $compile(element.contents())(scope);
+            var templateEl = angular.element('' +
+                '<div ui-sortable="sortableConfig" class="' + scope.tprovider.sortableClass(scope.root) + ' recursivetree" ng-model="children">' +
+                '    <div ng-repeat="node in children">' +
+                '       <generic-tree-node node="node" ui-sortable-config="sortableConfig" tree-provider="tprovider"></generic-tree-node>' +
+                '    </div>' +
+                '</div>');
+            $compile(templateEl)(scope);
+            if (element.children().length) {
+              angular.element(element.children()[0]).replaceWith(templateEl);
+            } else {
+              element.append(templateEl);
+            }
           }
         }
 
         scope.$on('genericTree:refresh', function() {
           refresh(scope.children);
+        });
+        scope.$on('genericTree:beforeChange', function() {
+          setupMinHeightForAllGenericTrees();
+        });
+        scope.$on('genericTree:afterChange', function() {
+          restoreParentHeightForAllGenericTrees();
         });
         scope.$watch('children', refresh, true);
       }
