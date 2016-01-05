@@ -217,12 +217,12 @@ angular.module('eperusteApp')
       });
     };
   })
-  .controller('MuokkaaLukiokurssiaController', function ($scope, $state, LukioKurssiService, $stateParams,
-                                                         YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, Editointikontrollit,
-                                                         Varmistusdialogi, $filter, Kaanna, LukiokoulutusService, Lukitus, Kieli) {
-
+  .controller('MuokkaaLukiokurssiaController', function ($scope, $state, LukioKurssiService, $stateParams, $timeout, $q,
+                                       YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, Editointikontrollit,
+                                       Varmistusdialogi, $filter, Kaanna, LukiokoulutusService, Lukitus, Kieli) {
     Editointikontrollit.registerCallback({
       edit: function () {
+        $log.info('edit called');
         $scope.kurssi = LukioKurssiService.get($stateParams.kurssiId, function (kurssi) {
           _.each($scope.osat, function (osaId) {
             var osa = LukiokurssiModifyHelpers.getOsa(kurssi, osaId);
@@ -232,10 +232,9 @@ angular.module('eperusteApp')
         });
       },
       save: function (kommentti) {
-        $rootScope.$broadcast('notifyCKEditor');
+        $rootScope.$broadcast('notifyCKEditor', true);
         $scope.kurssi.kommentti = kommentti;
-        $log.info('kommentti: ', kommentti);
-        LukioKurssiService.update($scope.kurssi).then(function () {
+        LukioKurssiService.update(_.cloneDeep($scope.kurssi)).then(function () {
           $scope.back();
         });
       },
@@ -250,7 +249,7 @@ angular.module('eperusteApp')
       notify: function () {
       }
     });
-    $scope.kurssi = null;
+    $scope.kurssi = {kuvaus: {}};
     $scope.osat = ['tavoitteet', 'keskeinenSisalto', 'tavoitteetJaKeskeinenSisalto'];
     $scope.muokattavatOsat = [];
     $scope.osatById = {};
@@ -266,6 +265,7 @@ angular.module('eperusteApp')
         $scope.kurssi[id] = LukiokurssiModifyHelpers.emptyOsa(id);
         $scope.osatById[id].obj = $scope.kurssi[id];
       }
+      $rootScope.$broadcast('enableEditing');
     };
     $scope.removeOsa = function (id) {
       $scope.kurssi[id] = null;
@@ -297,5 +297,4 @@ angular.module('eperusteApp')
         }
       })();
     };
-
   });
