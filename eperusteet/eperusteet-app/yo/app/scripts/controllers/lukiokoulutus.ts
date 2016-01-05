@@ -263,6 +263,13 @@ angular.module('eperusteApp')
       defaultCollapsed: false,
       editMode: false
     };
+    var collapseFun = (defaultCollapse) => (n) => {
+      if ($scope.treehelpers.editMode) {
+        return defaultCollapse ? !(n.dtype == 'oppiaine' && n.koosteinen) : false;
+      } else {
+        return defaultCollapse;
+      }
+    };
     $scope.treeRoot = {
       id: -1,
       jnro: 1,
@@ -445,9 +452,8 @@ angular.module('eperusteApp')
         });
       }
 
-      return ((node.dtype === 'oppiaine' && to.root && !node.koosteinen) ||
+      return ((node.dtype === 'oppiaine' && to.root && node.koosteinen) ||
         (node.dtype === 'oppiaine' && to.dtype === 'oppiaine' && to.koosteinen && !node.koosteinen) ||
-        (node.dtype === 'oppiaine' && to.root) ||
         (node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen)) && !exists;
     };
 
@@ -587,12 +593,16 @@ angular.module('eperusteApp')
     };
     var setCollapseForAll = function(collapse) {
       traverseTree(function(node) {
-        node.$$collapsed = collapse;
+        if (collapse instanceof Function) {
+          node.$$collapsed = collapse(node);
+        } else {
+          node.$$collapsed = collapse;
+        }
       });
     };
     $scope.togglaaPolut = function () {
       $scope.treehelpers.defaultCollapsed = !$scope.treehelpers.defaultCollapsed;
-      setCollapseForAll($scope.treehelpers.defaultCollapsed);
+      setCollapseForAll(collapseFun($scope.treehelpers.defaultCollapsed));
     };
 
     $scope.kurssiTreeConfig = {
@@ -690,8 +700,9 @@ angular.module('eperusteApp')
 
     Editointikontrollit.registerCallback({
       edit: function() {
-        setCollapseForAll(false);
+        $scope.treehelpers.defaultCollapsed = true;
         updateEditMode(true);
+        setCollapseForAll(collapseFun($scope.treehelpers.defaultCollapsed));
       },
       save: function(kommentti) {
         LukioKurssiService.updateOppiaineKurssiStructure($scope.treeRoot,
@@ -773,7 +784,8 @@ angular.module('eperusteApp')
         },
         template: function(n) {
           var handle = treehandleTemplate(),
-              collapse = !$scope.treehelpers.editMode ?  '<span ng-show="node.lapset.length" ng-click="toggle(node)"' +
+              collapse = (!$scope.treehelpers.editMode || n.dtype === 'oppiaine')
+                ?  '<span ng-show="node.lapset.length" ng-click="toggle(node)"' +
                 '           class="colorbox collapse-toggle" ng-class="{\'suljettu\': node.$$collapsed}">' +
                 '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
                 '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
