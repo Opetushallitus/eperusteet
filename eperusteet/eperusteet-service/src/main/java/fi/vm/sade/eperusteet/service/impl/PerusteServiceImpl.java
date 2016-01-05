@@ -432,9 +432,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setKielet(updated.getKielet());
         current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
         current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
+        current.setMaarayskirje(updated.getMaarayskirje());
         current.setKuvaus(updated.getKuvaus());
         current.setNimi(updated.getNimi());
         current.setEsikatseltavissa(updated.isEsikatseltavissa());
+        current.setPaatospvm(updated.getPaatospvm());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
             throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");
