@@ -147,9 +147,7 @@ angular.module('eGenericTree', [])
               // cancel: '.ui-state-disabled'
             }, scope.uiSortableConfig || {});
 
-
-            element.empty();
-            element.append('' +
+            element.html('' +
               '<div ui-sortable="sortableConfig" class="' + scope.tprovider.sortableClass(scope.root) + ' recursivetree" ng-model="children">' +
               '    <div ng-repeat="node in children">' +
               '       <generic-tree-node node="node" ui-sortable-config="sortableConfig" tree-provider="tprovider"></generic-tree-node>' +
