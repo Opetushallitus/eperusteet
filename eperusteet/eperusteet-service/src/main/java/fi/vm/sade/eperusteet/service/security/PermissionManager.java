@@ -336,10 +336,11 @@ public class PermissionManager {
             //tarkistetaan onko lukuoikeus suoraan julkaistu -statuksen perusteella
             if (PerusteTila.VALMIS == helper.findPerusteTilaFor(targetType, targetId)) {
                 return true;
-            } else if( Target.PERUSTE == targetType ) {
-                // Jos peruste on esikatseltavissa, niin tällöin sallitaan hakeminen
-                Peruste p = perusteet.findOne((Long)targetId);
-                if( p.isEsikatseltavissa() ) {
+            } else {
+                boolean ekProjekti = Target.PERUSTEPROJEKTI == targetType && perusteProjektit.findEsikatseltavissaById((Long)targetId).get(0).getSecond();
+                boolean ekPeruste = Target.PERUSTE == targetType && perusteProjektit.findEsikatseltavissaByPeruste((Long)targetId).get(0).getSecond();
+                boolean ekPerusteenosa = Target.PERUSTEENOSA == targetType && perusteProjektit.findEsikatseltavissaByPerusteenOsaId((Long)targetId).get(0).getSecond();
+                if (ekProjekti | ekPeruste | ekPerusteenosa) {
                     return true;
                 }
             }

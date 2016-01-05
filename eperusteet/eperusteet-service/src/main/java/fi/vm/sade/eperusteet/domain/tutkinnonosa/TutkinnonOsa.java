@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -237,7 +238,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             TutkinnonOsa other = (TutkinnonOsa) perusteenOsa;
             this.setArviointi(other.getArviointi());
             this.setAmmattitaitovaatimukset(other.getAmmattitaitovaatimukset());
-            this.setAmmattitaitovaatimuksetLista( connectAmmattitaitovaatimusListToTutkinnonOsa(other) ) ;
+            this.setAmmattitaitovaatimuksetLista(connectAmmattitaitovaatimusListToTutkinnonOsa(other));
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
             this.setTavoitteet(other.getTavoitteet());
             this.setKoodiUri(other.getKoodiUri());
@@ -262,7 +263,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     private void copyState(TutkinnonOsa other) {
         this.arviointi = other.getArviointi() == null ? null : new Arviointi(other.getArviointi());
         this.ammattitaitovaatimukset = other.getAmmattitaitovaatimukset();
-        this.ammattitaitovaatimuksetLista = other.getAmmattitaitovaatimuksetLista();
+        this.ammattitaitovaatimuksetLista = other.getAmmattitaitovaatimuksetLista().stream().collect(Collectors.toList());
         this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
         this.tavoitteet = other.getTavoitteet();
         this.koodiUri = other.getKoodiUri();

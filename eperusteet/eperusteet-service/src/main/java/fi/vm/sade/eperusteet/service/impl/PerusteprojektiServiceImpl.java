@@ -204,13 +204,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
 
             DiaarinumeroHakuDto diaariHaku = onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
-            Boolean loytyi = diaariHaku.getLoytyi();
-            Boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU &&
-                    diaariHaku.getDiaarinumero().equals(perusteprojekti.getDiaarinumero().getDiaarinumero());
-
-            if (loytyi && !korvaava) {
-                throw new BusinessRuleViolationException("Perusteprojekti kyseisellä diaarinumerolla on jo olemassa");
-            }
+            Boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU && diaariHaku.getLoytyi();
 
             if (korvaava) {
                 Perusteprojekti jyrattava = repository.findOne(diaariHaku.getId());
@@ -830,7 +824,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 .addErrorStatusForAll("peruste-lukio-liittamaton-kurssi", () ->
                     rakenne.kurssit().filter(empty(Lukiokurssi::getOppiaineet)).map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () ->
-                    rakenne.oppiaineetMaarineen().filter(not(Oppiaine::isKoosteinen).and(empty(Oppiaine::getLukiokurssit)))
+                    rakenne.oppiaineetMaarineen().filter(not(Oppiaine::isKoosteinen)
+                            .and(not(Oppiaine::isAbstraktiBool)).and(empty(Oppiaine::getLukiokurssit)))
                         .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
                     rakenne.oppiaineet().filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))

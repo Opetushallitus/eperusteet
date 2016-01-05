@@ -78,7 +78,7 @@
               <span ng-if="kurssi.oppiaineet.length > 1"> - </span>
               <span ng-if="kurssi.oppiaineet.length > 1" ng-bind="oppiaine.nimi | kaanna"></span>
             </h5>
-            <div ng-bind-html="oppiaine.kurssiTyyppinKuvaus | kaanna"></div>
+            <div ng-bind-html="oppiaine.kurssiTyyppinKuvaus | kaanna | unsafe" termisto-viitteet="oppiaine.kurssiTyyppinKuvaus"></div>
           </div>
         </div>
       </td>
@@ -88,22 +88,22 @@
 
   <div ng-if="kurssi.kuvaus | kaanna">
     <h3 class="panel-title osio-otsikko" ng-bind="'kurssi-kuvaus-header' | kaanna"></h3>
-    <div ng-bind-html="kurssi.kuvaus | kaanna"></div>
+    <div ng-bind-html="kurssi.kuvaus | kaanna | unsafe" termisto-viitteet="kurssi.kuvaus"></div>
   </div>
 
   <div ng-if="kurssi.tavoitteet.teksti | kaanna">
     <h3 class="panel-title osio-otsikko" ng-bind="kurssi.tavoitteet.otsikko | kaanna"></h3>
-    <div ng-bind-html="kurssi.tavoitteet.teksti | kaanna"></div>
+    <div ng-bind-html="kurssi.tavoitteet.teksti | kaanna | unsafe" termisto-viitteet="kurssi.tavoitteet.teksti"></div>
   </div>
 
   <div ng-if="kurssi.keskeinenSisalto.teksti | kaanna">
     <h3 class="panel-title osio-otsikko" ng-bind="kurssi.keskeinenSisalto.otsikko | kaanna"></h3>
-    <div ng-bind-html="kurssi.keskeinenSisalto.teksti | kaanna"></div>
+    <div ng-bind-html="kurssi.keskeinenSisalto.teksti | kaanna | unsafe" termisto-viitteet="kurssi.keskeinenSisalto.teksti"></div>
   </div>
 
   <div ng-if="kurssi.tavoitteetJaKeskeinenSisalto.teksti | kaanna">
     <h3 class="panel-title osio-otsikko" ng-bind="kurssi.tavoitteetJaKeskeinenSisalto.otsikko | kaanna"></h3>
-    <div ng-bind-html="kurssi.tavoitteetJaKeskeinenSisalto.teksti | kaanna"></div>
+    <div ng-bind-html="kurssi.tavoitteetJaKeskeinenSisalto.teksti | kaanna | unsafe" termisto-viitteet="kurssi.tavoitteetJaKeskeinenSisalto.teksti"></div>
   </div>
 
   <div style="clear: both;">

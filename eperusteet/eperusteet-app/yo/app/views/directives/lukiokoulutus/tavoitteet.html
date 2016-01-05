@@ -14,8 +14,8 @@
       <revert-note object="yleisetTavoitteet" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
       <div ng-if="!yleisetTavoitteet.otsikko" kaanna="yleisettavoitteet-ei-otsikkoa"></div>
       <h1><span ng-bind="yleisetTavoitteet.otsikko | kaanna"></span></h1>
-      <div ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe"></div>
-      <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"></div>
+      <div ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe" termisto-viitteet="yleisetTavoitteet.kuvaus"></div>
+      <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe" termisto-viitteet="aihekokonaisuudet.yleiskuvaus"></div>
       <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
       <kommentit></kommentit>

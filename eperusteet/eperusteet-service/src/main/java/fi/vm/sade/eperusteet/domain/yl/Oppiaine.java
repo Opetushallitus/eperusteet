@@ -403,5 +403,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     }
 
     public interface Strict {
-    };
+    }
+
+    @Transient
+    public boolean isAbstraktiBool() {
+        return abstrakti != null && abstrakti;
+    }
 }

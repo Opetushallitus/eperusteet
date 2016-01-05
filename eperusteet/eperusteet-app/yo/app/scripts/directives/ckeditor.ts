@@ -144,7 +144,8 @@ angular.module('eperusteApp')
     };
   })
 
-  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna, EpImageService) {
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout,
+                                  Kaanna, EpImageService, $log) {
     return {
       priority: 10,
       restrict: 'A',
@@ -269,8 +270,8 @@ angular.module('eperusteApp')
         }
 
         var dataSavedOnNotification = false;
-        scope.$on('notifyCKEditor', function() {
-          if(editor.checkDirty()) {
+        scope.$on('notifyCKEditor', function(force) {
+          if(editor.checkDirty() || force) {
             dataSavedOnNotification = true;
             editor.getSelection().unlock();
             var data = element.hasClass('has-placeholder') ? '' : editor.getData();

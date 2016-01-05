@@ -222,7 +222,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
-        List<Peruste> loydetyt = perusteet.findOneByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
+        List<Peruste> loydetyt = perusteet.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
 
         Peruste peruste = null;
 
@@ -424,6 +424,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private Peruste updateValmisPeruste(Peruste current, Peruste updated) {
+
+        if (!current.getDiaarinumero().equals(updated.getDiaarinumero())) {
+            throw new BusinessRuleViolationException("Valmiin perusteen diaarinumeroa ei voi vaihtaa");
+        }
+
         current.setKielet(updated.getKielet());
         current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
         current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
