@@ -443,7 +443,7 @@ angular.module('eperusteApp')
 
       //Tarkistetaan, että onko kurssi jo kyseisen oppiaineen/oppimäärän kurssi, mikäli ei siirretä oppiaineen/oppimäärän sisällä.
       // Jos on jo, siirtoa ei sallita.
-      if( node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen &&
+      if (node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen &&
         (_.isUndefined(node.$$nodeParent) || node.$$nodeParent.id !== to.id)) {
         _.each(to.kurssit, function(kurssi) {
           if( kurssi.id === node.id ) {
@@ -452,8 +452,8 @@ angular.module('eperusteApp')
         });
       }
 
-      return ((node.dtype === 'oppiaine' && to.root && node.koosteinen) ||
-        (node.dtype === 'oppiaine' && to.dtype === 'oppiaine' && to.koosteinen && !node.koosteinen) ||
+      return ((node.dtype === 'oppiaine' && to.root && !node.$$nodeParent) ||
+        (node.dtype === 'oppiaine' && to.dtype === 'oppiaine' && to.koosteinen && !node.koosteinen && node.$$nodeParent) ||
         (node.dtype === 'kurssi' && to.dtype === 'oppiaine' && !to.root && !to.koosteinen)) && !exists;
     };
 
