@@ -107,7 +107,7 @@ angular.module('eperusteApp')
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
     $scope.peruste = perusteprojektiTiedot.getPeruste();
-    $scope.isLukiokoulutus = $scope.peruste.koulutustyyppi === 'koulutustyyppi_3';
+    $scope.isLukiokoulutus = () => $scope.peruste && $scope.peruste.koulutustyyppi === 'koulutustyyppi_2';
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'}];
     if (!$scope.pohja()) {
@@ -135,7 +135,6 @@ angular.module('eperusteApp')
       PerusteProjektiService.mergeProjekti($scope.projekti, tuoPohja).then(function(peruste, projekti) {
         _.merge($scope.projekti, projekti);
         $scope.peruste = peruste;
-        $scope.isLukiokoulutus = $scope.peruste.koulutustyyppi === 'koulutustyyppi_3';
       });
     };
 
