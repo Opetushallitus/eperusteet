@@ -24,7 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class AbstractRakenneOsaDto {
-
+    private Long id;
     private LokalisoituTekstiDto kuvaus;
     private KoodiDto vieras;
 
