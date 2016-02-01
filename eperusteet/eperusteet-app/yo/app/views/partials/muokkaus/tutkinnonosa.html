@@ -4,6 +4,9 @@
   <div id="ck-toolbar-top"></div>
   <div id="ck-toolbar-bottom"></div>
 </div>
+
+<pre>{{ tutkinnonOsaViite || json }}</pre>
+
 <div class="row">
   <div class="col-md-12 ep-sisalto-inner">
     <div ng-show="osaAlueAlitila" ui-view></div>
@@ -125,6 +128,10 @@
         </div>
         <div>
           <label class="header" kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')"></label>:<span> {{ tutkinnonOsaViite.tutkinnonOsa.koodiArvo || '-' }}</span>
+        </div>
+        <div>
+          <label class="header" kaanna="'tutkinnonosa-laajuus'"></label>:<span> {{ tutkinnonOsaViite.laajuus || '-' }} </span>
+          <span ng-if="tutkinnonOsaViite.laajuus" kaanna="projekti.laajuusYksikko || 'OSAAMISPISTE'"></span>
         </div>
       </div>
 
