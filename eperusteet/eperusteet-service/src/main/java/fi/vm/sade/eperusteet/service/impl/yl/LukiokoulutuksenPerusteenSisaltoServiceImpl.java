@@ -166,6 +166,9 @@ public class LukiokoulutuksenPerusteenSisaltoServiceImpl
         LukioOppiainePuuDto tree = new LukioOppiainePuuDto(perusteId);
         List<LukiokurssiJulkisetTiedotDto> kurssit = lukiokurssiRepository.findLukiokurssiJulkinenDtosByPerusteId(perusteId);
         List<LukioOppiaineOppimaaraNodeDto> oppiaineet = oppiaineRepository.findLukioOppiaineetJulkinenDtosByPerusteId(perusteId);
+        oppiaineet.forEach(lukioOppiaineOppimaaraNodeDto -> lokalisointiService.lokalisoi(lukioOppiaineOppimaaraNodeDto.getTehtava()));
+        kurssit.forEach(lukiokurssiJulkisetTiedotDto -> lokalisointiService.lokalisoi(lukiokurssiJulkisetTiedotDto.getTavoitteet()) );
+
         Map<Long, LukioOppiaineOppimaaraNodeDto> oppiaineById = oppiaineet.stream()
                 .collect(toMap(LukioOppiaineOppimaaraNodeDto::getId, n -> n));
         oppiaineet.stream().filter(oa -> oa.getParentId() != null)
