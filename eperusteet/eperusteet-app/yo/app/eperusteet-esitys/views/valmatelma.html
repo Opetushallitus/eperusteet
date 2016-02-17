@@ -1,0 +1,37 @@
+<div class="arviointi-otsikko">
+  <h4>{{ sisalto.osaamisenarviointi.kohde | kaanna }}</h4>
+</div>
+<div class="arviointi-sisalto">
+  <div ng-repeat="tavoite in sisalto.osaamistavoite">
+    <h4>{{ tavoite.nimi | kaanna }}</h4>
+    <h5>{{ tavoite.kohde || '' | kaanna }}</h5>
+    <table class="table table-striped" ng-if="tavoite.tavoitteet.length > 0">
+      <tr>
+        <td>
+          <ul>
+            <li ng-repeat="kriteeri in tavoite.tavoitteet">{{ kriteeri | kaanna }}</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+    <p>{{ tavoite.selite || '' | kaanna }}</p>
+  </div>
+</div>
+
+
+<div ng-if="sisalto.osaamisenarviointi">
+  <div class="arviointi-otsikko">
+    <h4>{{ sisalto.osaamisenarviointi.kohde | kaanna }}</h4>
+  </div>
+  <table class="table table-striped" ng-if="sisalto.osaamisenarviointi.tavoitteet.length > 0">
+    <tr>
+      <td>
+        <ul>
+          <li ng-repeat="tavoite in sisalto.osaamisenarviointi.tavoitteet">{{ tavoite | kaanna }}</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<termisto-tekstikentta tekstikentta="sisalto.osaamisenarviointiTekstina"></termisto-tekstikentta>

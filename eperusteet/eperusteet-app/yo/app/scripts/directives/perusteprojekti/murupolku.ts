@@ -24,7 +24,8 @@ angular.module('eperusteApp')
     var URLS = {
       tutkinnonosat: ['suoritustapa.tutkinnonosat'],
       osalistaus: ['suoritustapa.osalistaus'],
-      lukioosat: ['suoritustapa.lukioosat']
+      lukioosat: ['suoritustapa.lukioosat'],
+      koulutuksenosa: ['suoritustapa.koulutuksenosat']
     };
     var custom = [];
 

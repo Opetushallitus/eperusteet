@@ -12,43 +12,7 @@
   </div>
 
   <div ng-if="tutkinnonOsa.valmaTelmaSisalto">
-    <div class="arviointi-otsikko">
-      <h4>{{ tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointi.kohde | kaanna }}</h4>
-    </div>
-    <div class="arviointi-sisalto">
-      <div ng-repeat="tavoite in tutkinnonOsa.valmaTelmaSisalto.osaamistavoite">
-        <h4>{{ tavoite.nimi | kaanna }}</h4>
-        <h5>{{ tavoite.kohde || '' | kaanna }}</h5>
-        <table class="table table-striped">
-          <tr>
-            <td>
-              <ul>
-                <li ng-repeat="kriteeri in tavoite.tavoitteet">{{ kriteeri | kaanna }}</li>
-              </ul>
-            </td>
-          </tr>
-        </table>
-        <p>{{ tavoite.selite || '' | kaanna }}</p>
-      </div>
-    </div>
-
-
-    <div ng-if="tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointi">
-      <div class="arviointi-otsikko">
-        <h4>{{ tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointi.kohde | kaanna }}</h4>
-      </div>
-      <table class="table table-striped">
-        <tr>
-          <td>
-            <ul>
-              <li ng-repeat="tavoite in tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointi.tavoitteet">{{ tavoite | kaanna }}</li>
-            </ul>
-          </td>
-        </tr>
-      </table>
-    </div>
-
-    <termisto-tekstikentta tekstikentta="tutkinnonOsa.valmaTelmaSisalto.osaamisenarviointiTekstina"></termisto-tekstikentta>
+    <div ng-repeat="sisalto in [tutkinnonOsa.valmaTelmaSisalto]" ng-include="'eperusteet-esitys/views/valmatelma.html'"></div>
   </div>
 
 
@@ -109,6 +73,9 @@
         <div ng-repeat="tavoite in osaamistavoitteet | filter:osaAlueFilter" ng-include="'eperusteet-esitys/views/osaamistavoite.html'"></div>
       </div>
       <div ng-repeat="tavoite in osaalue.$groups.ungrouped" ng-include="'eperusteet-esitys/views/osaamistavoite.html'"></div>
+      <div ng-repeat="osaalue in tutkinnonOsa.osaAlueet">
+        <div ng-repeat="sisalto in [osaalue.valmaTelmaSisalto]" ng-include="'eperusteet-esitys/views/valmatelma.html'"></div>
+      </div>
     </div>
   </div>
 
