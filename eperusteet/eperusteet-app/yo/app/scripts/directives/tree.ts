@@ -48,9 +48,8 @@ angular.module('eperusteApp')
            editointiIkoni +
         '  <a class="osa-nimi" ng-if="esitystilassa" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
         '  <span class="osa-nimi" ng-if="!muokkaus && !esitystilassa">' +
-        '    <a ng-if="rakenne._tutkinnonOsaViite" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa })">' +
-               tosa +
-        '    </a>' +
+        '    <a ng-if="rakenne._tutkinnonOsaViite && !isVaTe" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
+        '    <a ng-if="rakenne._tutkinnonOsaViite && isVaTe" ui-sref="root.perusteprojekti.suoritustapa.koulutuksenosa({ tutkinnonOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
         '    <span ng-if="!rakenne._tutkinnonOsaViite">' + tosa + '</span>' +
         '  </span>' +
         '  <span class="solmu-osa-muokkaus osa-nimi" ng-if="muokkaus">' +
@@ -232,7 +231,7 @@ angular.module('eperusteApp')
   })
 
   .controller('treeController', function ($scope, $translate, $state, Muodostumissaannot, Algoritmit,
-      Kaanna, TreeDragAndDrop, Utils, Varmistusdialogi) {
+      Kaanna, TreeDragAndDrop, Utils, Varmistusdialogi, YleinenData) {
     $scope.kuvauksetOpen = false;
     $scope.esitystilassa = $state.includes('**.esitys.**');
     $scope.lang = $translate.use() || $translate.preferredLanguage();
@@ -241,6 +240,8 @@ angular.module('eperusteApp')
     $scope.trackingFunction = function (osa, index) {
       return osa.nimi && osa.nimi._id ? osa.nimi._id : index;
     };
+
+    $scope.isVaTe = YleinenData.isValmaTelma($scope.apumuuttujat.peruste);
 
     $scope.$watch('rakenne.$virhe', function () {
       if ($scope.rakenne.$virhe && $scope.rakenne.$virhe.selite && $scope.rakenne.$virhe.selite.muuttujat) {
