@@ -107,7 +107,8 @@ angular.module('eperusteApp')
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
     $scope.peruste = perusteprojektiTiedot.getPeruste();
-    $scope.isLukiokoulutus = () => $scope.peruste && _.any(["koulutustyyppi_2", "koulutustyyppi_23"], $scope.peruste.koulutustyyppi);
+    const tyyppiIsLukio = (tyyppi) => _.any(["koulutustyyppi_2", "koulutustyyppi_23"], (i) => i === tyyppi);
+    $scope.isLukiokoulutus = () => $scope.peruste && tyyppiIsLukio($scope.peruste.koulutustyyppi);
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'}];
     if (!$scope.pohja()) {
@@ -140,8 +141,7 @@ angular.module('eperusteApp')
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
-
-      if(_.any(["koulutustyyppi_2", "koulutustyyppi_23"], projekti.koulutustyyppi)) {
+      if($scope.isLukiokoulutus()) {
         //Lukiokoulutus
         projekti.laajuusYksikko = 'KURSSI';
       }

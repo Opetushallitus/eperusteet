@@ -216,7 +216,7 @@ angular.module('eperusteApp')
     };
 
     this.isLukiokoulutus = function (peruste) {
-      return _.any(["koulutustyyppi_2", "koulutustyyppi_23"], peruste.koulutustyyppi);
+      return _.any(["koulutustyyppi_2", "koulutustyyppi_23"], (tyyppi) => tyyppi === peruste.koulutustyyppi);
     };
 
     this.isSimple = function (peruste) {
