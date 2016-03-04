@@ -13,7 +13,7 @@
         <label for="admin-tilarajaus" kaanna="rajaa-tila"></label>
       </div>
       <div class="tilarajaus-item">
-        <select ng-model="tilaRajain" ng-change="rajaaTilat(tilaRajain)" class="form-control" id="admin-tilarajaus"
+        <select ng-model="tilaRajain" class="form-control" id="admin-tilarajaus"
                 ng-options="tila as ('tila-'+tila)|kaanna for tila in tilat">
             <option value="">{{'kaikki'|kaanna}}</option>
         </select>

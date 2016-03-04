@@ -132,11 +132,11 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.rajaaSisaltoa = function(pp) {
+    $scope.rajaaSisaltoa = (pp) => {
       return (!$scope.tilaRajain || $scope.tilaRajain === pp.tila) && (_.isEmpty($scope.rajaus) ||
               Algoritmit.match($scope.rajaus, pp.nimi) ||
               Algoritmit.match($scope.rajaus, 'tila-' + pp.tila) ||
-              Algoritmit.match($scope.rajaus, pp.peruste.diaarinumero) ||
+              (_.isEmpty(pp.peruste) ? false : Algoritmit.match($scope.rajaus, pp.peruste.diaarinumero)) ||
               Algoritmit.match($scope.rajaus, pp.diaarinumero));
     };
   });

@@ -149,6 +149,14 @@ angular.module('eperusteApp')
         sisaltoTunniste: 'lukiosisalto',
         hasPdfCreation: false
       },
+      'koulutustyyppi_23': {
+        nimi: 'lukiokoulutus',
+        oletusSuoritustapa: 'lukiokoulutus',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.lukiokoulutuslista',
+        sisaltoTunniste: 'lukiosisalto',
+        hasPdfCreation: false
+      },
       'koulutustyyppi_20': {
         nimi: 'varhaiskasvatus',
         oletusSuoritustapa: 'varhaiskasvatus',
@@ -208,7 +216,7 @@ angular.module('eperusteApp')
     };
 
     this.isLukiokoulutus = function (peruste) {
-      return peruste.koulutustyyppi === 'koulutustyyppi_2';
+      return _.any(["koulutustyyppi_2", "koulutustyyppi_23"], (tyyppi) => tyyppi === peruste.koulutustyyppi);
     };
 
     this.isSimple = function (peruste) {
