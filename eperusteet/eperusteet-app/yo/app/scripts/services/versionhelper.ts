@@ -21,16 +21,20 @@ angular.module('eperusteApp')
   .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, $log,
         RakenneVersio, Notifikaatiot, $state, $location, $stateParams, TutkinnonOsaViitteet,
         LukioYleisetTavoitteetService, LukioAihekokonaisuudetService, LukioKurssiService,
-        LukioOppiaineService) {
+        LukioOppiaineService, Kayttajatiedot, $q) {
 
-    function rakennaNimi(v) {
-        var nimi = (v.kutsumanimi || '') + ' ' + (v.sukunimi || '');
-        v.$nimi = nimi === ' ' ? v.muokkaajaOid : nimi;
-    }
+    const rakennaNimet = (list) => {
+      let reqs = [];
+      _.forEach(_.uniq(list, 'muokkaajaOid'), (i) => reqs.push(Kayttajatiedot.get({oid: i.muokkaajaOid}).$promise));
 
-    function rakennaNimet(list) {
-      _.forEach(list, rakennaNimi);
-    }
+      $q.all(reqs).then(function(values) {
+        _.forEach(list, (name) => {
+          const henkilo = _.find(values, (i) => i.oidHenkilo === name.muokkaajaOid);
+          const nimi = _.isEmpty(henkilo) ? ' ': (henkilo.kutsumanimi || '') + ' ' + (henkilo.sukunimi || '');
+          name.$nimi = nimi === ' ' ? name.muokkaajaOid : nimi;
+        });
+      });
+    };
 
     function getVersions(data, tunniste, tyyppi, force, cb) {
       cb = cb || angular.noop;

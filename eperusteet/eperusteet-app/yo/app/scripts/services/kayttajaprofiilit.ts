@@ -20,7 +20,7 @@
 
 angular.module('eperusteApp')
   .factory('Kayttajatiedot', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/kayttajatiedot/:oid', {
+    return $resource(SERVICE_LOC + '/kayttajatieto/:oid', {
       oid: '@oid'
     });
   })
