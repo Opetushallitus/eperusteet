@@ -64,7 +64,12 @@ public enum ProjektiTila {
             }
         }
     },
-    JULKAISTU("julkaistu");
+    JULKAISTU("julkaistu"){
+        @Override
+        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+            return EnumSet.of(LAADINTA);
+        }
+    };
 
     public static ProjektiTila[] jalkeen(ProjektiTila tila) {
         return Stream.of(ProjektiTila.values()).filter(t -> t.ordinal() > tila.ordinal()).toArray(ProjektiTila[]::new);
