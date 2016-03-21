@@ -180,6 +180,7 @@ public class PermissionManager {
 
             perm = Maps.newHashMap();
             perm.put(LUKU, r5);
+            perm.put(TILANVAIHTO, r1);
             tmp.put(ProjektiTila.POISTETTU, perm);
 
             allowedRolesTmp.put(Target.PERUSTE, tmp);
