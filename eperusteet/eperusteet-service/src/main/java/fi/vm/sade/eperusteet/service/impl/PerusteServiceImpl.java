@@ -370,7 +370,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS') " +
+            "or hasPermission(#event.perusteId, 'peruste', 'TILANVAIHTO')")
     public void onApplicationEvent(@P("event") PerusteUpdatedEvent event) {
         Peruste peruste = perusteet.findOne(event.getPerusteId());
         if (peruste == null) {
@@ -896,6 +897,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else if (ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
             peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
         } else if (ekoulutustyyppi == KoulutusTyyppi.ESIOPETUS
+                || ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUSVALMISTAVA
                 || ekoulutustyyppi == KoulutusTyyppi.LISAOPETUS
                 || ekoulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
             peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
@@ -983,6 +985,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         if (KoulutusTyyppi.ESIOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
                 || KoulutusTyyppi.LISAOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
+                || KoulutusTyyppi.PERUSOPETUSVALMISTAVA.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
                 || KoulutusTyyppi.VARHAISKASVATUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
             EsiopetuksenPerusteenSisalto uusiSisalto = kloonaaEsiopetuksenSisalto(peruste, vanha.getEsiopetuksenPerusteenSisalto());
             uusiSisalto.setPeruste(peruste);
