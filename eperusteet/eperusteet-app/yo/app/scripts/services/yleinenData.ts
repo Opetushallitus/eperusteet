@@ -164,6 +164,14 @@ angular.module('eperusteApp')
         hakuState: 'root.selaus.varhaisopetuslista',
         sisaltoTunniste: 'vksisalto',
         hasPdfCreation: false
+      },
+      'koulutustyyppi_22': {
+        nimi: 'esiopetus',
+        oletusSuoritustapa: 'esiopetus',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.esiopetuslista',
+        sisaltoTunniste: 'eosisalto',
+        hasPdfCreation: false
       }
     };
 
@@ -212,7 +220,7 @@ angular.module('eperusteApp')
     };
 
     this.isEsiopetus = function (peruste) {
-      return peruste.koulutustyyppi === 'koulutustyyppi_15';
+      return _.any(["koulutustyyppi_15", "koulutustyyppi_22"], (tyyppi) => tyyppi === peruste.koulutustyyppi);
     };
 
     this.isLukiokoulutus = function (peruste) {
