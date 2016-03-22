@@ -75,7 +75,7 @@ angular.module('eperusteApp')
     $scope.alaraja = 0;
     $scope.ylaraja = $scope.alaraja + $scope.itemsPerPage;
 
-    $scope.asetaJarjestys = function(tyyppi, suunta) {
+    $scope.asetaJarjestys = (tyyppi, suunta) => {
       if ($scope.jarjestysTapa === tyyppi) {
         $scope.jarjestysOrder = !$scope.jarjestysOrder;
         suunta = $scope.jarjestysOrder;
@@ -86,7 +86,7 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.jarjestys = function(data) {
+    $scope.jarjestys = (data) =>{
       switch($scope.jarjestysTapa) {
         case 'nimi': return Utils.nameSort(data);
         case 'haltija': return data.haltija;
@@ -97,7 +97,7 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.valitseSivu = function(sivu) {
+    $scope.valitseSivu = (sivu) => {
       if (sivu > 0 && sivu <= Math.ceil(_.size($scope.filteredPp) / $scope.itemsPerPage)) {
         $scope.nykyinen = sivu;
         $scope.alaraja = $scope.itemsPerPage * (sivu - 1);
@@ -105,9 +105,9 @@ angular.module('eperusteApp')
       }
     };
 
-    PerusteProjektit.hae({}, function(res) {
-      var mahdollisetTilat = {};
-      angular.forEach(res, function(projekti) {
+    PerusteProjektit.perusteHaku({}, (res) => {
+      let mahdollisetTilat = {};
+      angular.forEach(res, (projekti) => {
         projekti.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
         projekti.$url = PerusteProjektiService.getUrl(projekti);
         mahdollisetTilat[projekti.tila] = true;
@@ -116,16 +116,16 @@ angular.module('eperusteApp')
       $scope.perusteprojektit = res;
     });
 
-    $scope.palauta = function(pp) {
-      var uusiTila = 'laadinta';
+    $scope.palauta = (pp) => {
+      const uusiTila = 'laadinta';
       Varmistusdialogi.dialogi({
         otsikko: Kaanna.kaanna('vahvista-palautus'),
         teksti: Kaanna.kaanna('vahvista-palautus-sisältö', {
           nimi: pp.nimi,
           tila: Kaanna.kaanna('tila-' + uusiTila)
         })
-      })(function() {
-        PerusteprojektiTila.save({ id: pp.id, tila: uusiTila }, {}, function(vastaus) {
+      })(() => {
+        PerusteprojektiTila.save({ id: pp.id, tila: uusiTila }, {}, (vastaus) => {
           if (vastaus.vaihtoOk) { pp.tila = uusiTila; }
           else { Notifikaatiot.varoitus('tilan-vaihto-epaonnistui'); }
         }, Notifikaatiot.serverCb);
@@ -136,7 +136,7 @@ angular.module('eperusteApp')
       return (!$scope.tilaRajain || $scope.tilaRajain === pp.tila) && (_.isEmpty($scope.rajaus) ||
               Algoritmit.match($scope.rajaus, pp.nimi) ||
               Algoritmit.match($scope.rajaus, 'tila-' + pp.tila) ||
-              (_.isEmpty(pp.peruste) ? false : Algoritmit.match($scope.rajaus, pp.peruste.diaarinumero)) ||
+              (_.isEmpty(pp.perusteendiaarinumero) ? false : Algoritmit.match($scope.rajaus, pp.perusteendiaarinumero)) ||
               Algoritmit.match($scope.rajaus, pp.diaarinumero));
     };
   });

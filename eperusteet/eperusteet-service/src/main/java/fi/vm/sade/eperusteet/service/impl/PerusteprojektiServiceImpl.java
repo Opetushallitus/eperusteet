@@ -32,6 +32,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
@@ -102,9 +103,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private PerusteenOsaTyoryhmaRepository perusteenOsaTyoryhmaRepository;
 
     @Autowired
-    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
-
-    @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
 
     @Autowired
@@ -114,6 +112,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     public List<PerusteprojektiInfoDto> getBasicInfo() {
         return mapper.mapAsList(repository.findAll(), PerusteprojektiInfoDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PerusteprojektiKevytDto> getKevytBasicInfo() {
+        return repository.findAllKevyt();
     }
 
     @Override

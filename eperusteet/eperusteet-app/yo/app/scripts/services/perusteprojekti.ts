@@ -37,16 +37,20 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteprojektit/diaarinumero/uniikki/:diaarinumero');
   })
   .service('PerusteProjektit', function($http, SERVICE_LOC, Notifikaatiot) {
-    function hae(query, success, failure) {
+    const haku = (query, success, failure, urlPostfix) => {
       success = success || angular.noop;
       failure = failure || Notifikaatiot.serverCb;
-      $http.get(SERVICE_LOC + '/perusteprojektit/info', query)
+      $http.get(SERVICE_LOC + urlPostfix, query)
         .success(success)
         .error(failure);
-    }
+    };
+
+    const hae = (query, success, failure) => haku(query, success, failure, '/perusteprojektit/info');
+    const perusteHaku = (query, success, failure) => haku(query, success, failure, '/perusteprojektit/perusteHaku');
 
     return {
-      hae: hae
+      hae: hae,
+      perusteHaku: perusteHaku
     };
   })
   .service('PerusteProjektiService', function($rootScope, $state, $q, $modal, YleinenData) {

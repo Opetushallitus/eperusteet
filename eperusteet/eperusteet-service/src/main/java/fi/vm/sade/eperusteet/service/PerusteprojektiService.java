@@ -50,6 +50,10 @@ public interface PerusteprojektiService {
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
     List<PerusteprojektiInfoDto> getBasicInfo();
 
+    @PreAuthorize("isAuthenticated()")
+    @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
+    List<PerusteprojektiKevytDto> getKevytBasicInfo();
+
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto);
 

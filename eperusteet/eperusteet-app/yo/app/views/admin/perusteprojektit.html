@@ -63,9 +63,9 @@
         <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in filteredPp = (perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa)">
             <td>
                 <a ng-href="{{pp.$url}}">{{ pp.nimi | kaanna }}</a>
-                <span class="badge" ng-if="pp.peruste.tyyppi === 'pohja'" kaanna="'pohja'"></span>
+                <span class="badge" ng-if="pp.tyyppi === 'pohja'" kaanna="'pohja'"></span>
             </td>
-            <td>{{ pp.peruste.diaarinumero || '-' }}</td>
+            <td>{{ pp.perusteendiaarinumero || '-' }}</td>
             <td>{{ pp.diaarinumero || '-' }}</td>
             <td>
                 {{ 'tila-' + pp.tila | kaanna }}

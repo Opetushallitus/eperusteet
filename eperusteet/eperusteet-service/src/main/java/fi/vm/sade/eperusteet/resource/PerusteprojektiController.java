@@ -74,6 +74,12 @@ public class PerusteprojektiController {
         return new ResponseEntity<>(service.getBasicInfo(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/perusteHaku", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteprojektiKevytDto>> getAllKevyt() {
+        return new ResponseEntity<>(service.getKevytBasicInfo(), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/omat", method = GET)
     @ResponseBody
     public ResponseEntity<List<PerusteprojektiListausDto>> getOmat() {
