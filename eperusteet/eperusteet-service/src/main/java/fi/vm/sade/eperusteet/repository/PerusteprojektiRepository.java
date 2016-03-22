@@ -19,6 +19,9 @@ import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import java.util.List;
+
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -37,5 +40,16 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
 
     @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' ")
     List<Perusteprojekti> findAllKeskeneraiset();
+
+    @Query("SELECT new fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto(" +
+            " p.id, " +
+            " p.nimi, " +
+            " p.peruste.diaarinumero, " +
+            " p.diaarinumero, " +
+            " p.peruste.koulutustyyppi, " +
+            " p.peruste.tyyppi, " +
+            " p.tila" +
+            ") FROM Perusteprojekti p")
+    List<PerusteprojektiKevytDto> findAllKevyt();
 
 }
