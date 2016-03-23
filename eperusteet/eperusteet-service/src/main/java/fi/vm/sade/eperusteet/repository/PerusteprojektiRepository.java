@@ -18,13 +18,12 @@ package fi.vm.sade.eperusteet.repository;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import java.util.List;
-
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  *

@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import lombok.Getter;
 import lombok.Setter;
 
