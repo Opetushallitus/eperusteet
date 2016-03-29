@@ -46,7 +46,7 @@ angular.module('eperusteApp')
     $scope.tyyppi = 'kaikki';
     $scope.tyoryhmaMap = {};
     $scope.tiivistelma = $scope.peruste.kuvaus;
-    const isEsiopetus = _.any(["koulutustyyppi_15", "koulutustyyppi_22"], (tyyppi) => tyyppi === peruste.koulutustyyppi);
+    const isEsiopetus = _.any(["koulutustyyppi_15", "koulutustyyppi_22"], (tyyppi) => tyyppi === $scope.peruste.koulutustyyppi);
     $scope.muodostumisKompensaattori = isEsiopetus ? 1 : 0;
 
     $scope.$esitysurl = $state.href('root.esitys.peruste', {
