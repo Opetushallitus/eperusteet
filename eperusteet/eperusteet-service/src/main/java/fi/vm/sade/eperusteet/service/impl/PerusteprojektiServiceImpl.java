@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -32,12 +33,12 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -50,20 +51,16 @@ import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
+import static fi.vm.sade.eperusteet.service.util.Util.*;
 import fi.vm.sade.generic.rest.CachingRestClient;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import static java.util.stream.Collectors.toMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
-import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
-import static fi.vm.sade.eperusteet.service.util.Util.*;
-import static java.util.stream.Collectors.toMap;
 
 /**
  *
@@ -770,8 +767,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
                     updateStatus.setVaihtoOk(false);
                 } else {
-                    Perusteprojekti jyrattava = repository.findOneByDiaarinumeroAndTila(
-                            projekti.getDiaarinumero(), ProjektiTila.JULKAISTU);
+                    Perusteprojekti jyrattava = repository.findOneByPerusteDiaarinumeroAndTila(
+                            projekti.getPeruste().getDiaarinumero(), ProjektiTila.JULKAISTU);
                     if (jyrattava != null) {
                         jyrattava.setTila(ProjektiTila.POISTETTU);
                         jyrattava.getPeruste().asetaTila(PerusteTila.POISTETTU);

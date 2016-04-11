@@ -19,11 +19,10 @@ import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  *
@@ -34,6 +33,8 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
 
     List<Perusteprojekti> findByDiaarinumero(Diaarinumero diaarinumero);
     Perusteprojekti findOneByDiaarinumeroAndTila(Diaarinumero diaarinumero, ProjektiTila tila);
+    
+    Perusteprojekti findOneByPerusteDiaarinumeroAndTila(Diaarinumero diaarinumero, ProjektiTila tila);
 
     Perusteprojekti findOneByRyhmaOid(String ryhmaOid);
 
