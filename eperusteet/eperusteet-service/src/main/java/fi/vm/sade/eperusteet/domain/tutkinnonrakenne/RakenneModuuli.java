@@ -16,28 +16,24 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.Mergeable;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
-
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @DiscriminatorValue("RM")
 @Audited
 public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli> {
+    
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter

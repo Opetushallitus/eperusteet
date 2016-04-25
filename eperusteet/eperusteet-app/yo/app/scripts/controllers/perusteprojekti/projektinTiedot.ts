@@ -106,7 +106,6 @@ angular.module('eperusteApp')
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
-    $scope.peruste = perusteprojektiTiedot.getPeruste();
     const tyyppiIsLukio = (tyyppi) => _.any(["koulutustyyppi_2", "koulutustyyppi_23", "koulutustyyppi_14"], (i) => i === tyyppi);
     $scope.isLukiokoulutus = () => $scope.peruste && tyyppiIsLukio($scope.peruste.koulutustyyppi);
 

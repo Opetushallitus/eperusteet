@@ -42,24 +42,24 @@ European Union Public Licence for more details.
 
       <div class="action-buttons">
         <button ng-if="!wizardissa() && voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()"
-                                                                            class="floater btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-                                                                                                                             oikeustarkastelu="{ target: 'perusteprojekti', permission: 'muokkaus' }"></button>
+          class="floater btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+          oikeustarkastelu="{ target: 'perusteprojekti', permission: 'muokkaus' }"></button>
       </div>
 
       <h1 kaanna>projektin-tiedot</h1>
       <p ng-if="wizardissa() || editEnabled" kaanna>tahdella-pakolliset</p>
       <ng-form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form">
-      <div ng-repeat="tab in tabs">
-        <h3>{{tab.otsikko | kaanna}}</h3>
-        <div class="form-area" ng-class="{viewmode: !wizardissa() && !editEnabled}">
-          <ng-include src="tab.url"></ng-include>
+        <div ng-repeat="tab in tabs">
+          <h3>{{tab.otsikko | kaanna}}</h3>
+          <div class="form-area" ng-class="{viewmode: !wizardissa() && !editEnabled}">
+            <ng-include src="tab.url"></ng-include>
+          </div>
         </div>
-      </div>
 
-      <div class="projekti-form-buttons" ng-show="wizardissa()">
-        <button ui-sref="root.aloitussivu" id="cancel" class="btn" kaanna>peruuta</button>
-        <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid">{{ pohja() ? 'luo-perustepohja-nappi' : 'luo-perusteprojekti-nappi' | kaanna }}</button>
-      </div>
+        <div class="projekti-form-buttons" ng-show="wizardissa()">
+          <button ui-sref="root.aloitussivu" id="cancel" class="btn" kaanna>peruuta</button>
+          <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid">{{ pohja() ? 'luo-perustepohja-nappi' : 'luo-perusteprojekti-nappi' | kaanna }}</button>
+        </div>
       </ng-form>
       <div class="panel panel-default panel-clean" ng-show="isLukiokoulutus()">
         <div class="panel-heading">

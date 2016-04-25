@@ -18,19 +18,15 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
-
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
@@ -39,6 +35,11 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @DiscriminatorColumn(name = "tyyppi")
 @Audited
 public abstract class AbstractRakenneOsa implements Serializable, ReferenceableEntity {
+
+    @Getter
+    @NotNull
+    @Column(updatable = false)
+    private UUID tunniste;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -57,6 +58,10 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
     @Setter
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
+    public AbstractRakenneOsa() {
+        this.tunniste = UUID.randomUUID();
+    }
 
     @Override
     public EntityReference getReference() {

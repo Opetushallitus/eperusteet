@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.VersionedDto;
 import java.util.List;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +33,7 @@ public class RakenneModuuliDto extends AbstractRakenneOsaDto implements Versione
     private OsaamisalaDto osaamisala;
     private List<AbstractRakenneOsaDto> osat;
     private Integer versioId;
+    private UUID tunniste;
 
     @Override
     public Integer getVersioId() {
