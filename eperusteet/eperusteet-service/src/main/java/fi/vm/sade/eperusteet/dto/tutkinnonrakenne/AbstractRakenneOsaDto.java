@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +27,7 @@ import lombok.Setter;
 public abstract class AbstractRakenneOsaDto {
     private LokalisoituTekstiDto kuvaus;
     private KoodiDto vieras;
+    private UUID tunniste;
 
     public final void foreach(final Visitor visitor) {
         foreach(visitor, 0);
