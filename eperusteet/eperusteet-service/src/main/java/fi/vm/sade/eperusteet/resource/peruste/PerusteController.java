@@ -88,6 +88,12 @@ public class PerusteController {
         return new ResponseEntity<>(service.getKooste(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/uusimmat", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteDto>> getUusimmat() {
+        return new ResponseEntity<>(service.getUusimmat(), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/perusopetus", method = GET)
     @ResponseBody
     @ApiIgnore

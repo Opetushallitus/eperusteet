@@ -167,6 +167,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private Validator validator;
 
     @Override
+    public List<PerusteDto> getUusimmat() {
+        return mapper.mapAsList(perusteet.findFirst10ByTilaOrderByPaatospvmDesc(PerusteTila.VALMIS), PerusteDto.class);
+    }
+
+    @Override
     public List<PerusteExcelDto> getKooste() {
         return perusteet.findAll().stream()
                 .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)

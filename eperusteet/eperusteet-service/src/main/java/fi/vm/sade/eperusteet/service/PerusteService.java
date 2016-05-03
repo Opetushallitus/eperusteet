@@ -76,6 +76,9 @@ public interface PerusteService {
     List<PerusteExcelDto> getKooste();
 
     @PreAuthorize("permitAll()")
+    List<PerusteDto> getUusimmat();
+
+    @PreAuthorize("permitAll()")
     List<PerusteInfoDto> getAllInfo();
 
     @PreAuthorize("permitAll()")

@@ -3,11 +3,10 @@ package fi.vm.sade.eperusteet.repository;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Set;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 /**
  *
@@ -26,6 +25,8 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     Peruste findPerusteByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);
 
     List<Peruste> findAllByKoulutustyyppi(String koulutustyyppi);
+
+    List<Peruste> findFirst10ByTilaOrderByPaatospvmDesc(PerusteTila tila);
 
     Peruste findByDiaarinumero(Diaarinumero diaarinumero);
 
