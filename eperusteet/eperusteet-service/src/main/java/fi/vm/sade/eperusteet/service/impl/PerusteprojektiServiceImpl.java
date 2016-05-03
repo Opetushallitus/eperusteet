@@ -61,6 +61,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
+import static java.util.stream.Collectors.toMap;
 
 /**
  *

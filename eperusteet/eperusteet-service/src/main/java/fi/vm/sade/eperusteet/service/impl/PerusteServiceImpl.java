@@ -168,7 +168,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public List<PerusteDto> getUusimmat() {
-        return mapper.mapAsList(perusteet.findFirst10ByTilaOrderByPaatospvmDesc(PerusteTila.VALMIS), PerusteDto.class);
+        return mapper.mapAsList(perusteet.findAllUusimmat(new PageRequest(0, 10)), PerusteDto.class);
     }
 
     @Override

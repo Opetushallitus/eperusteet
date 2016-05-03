@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import java.util.List;
 import java.util.Set;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +27,8 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
 
     List<Peruste> findAllByKoulutustyyppi(String koulutustyyppi);
 
-    List<Peruste> findFirst10ByTilaOrderByPaatospvmDesc(PerusteTila tila);
+    @Query("SELECT p from Peruste p WHERE p.paatospvm IS NOT NULL and p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' ORDER BY p.paatospvm DESC")
+    List<Peruste> findAllUusimmat(Pageable pageable);
 
     Peruste findByDiaarinumero(Diaarinumero diaarinumero);
 
