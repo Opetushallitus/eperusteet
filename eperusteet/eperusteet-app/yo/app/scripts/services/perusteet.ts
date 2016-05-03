@@ -74,6 +74,7 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteet/:perusteId', {
       perusteId: '@id'
     }, {
+      kooste: {method: 'GET', url: SERVICE_LOC + '/perusteet/kooste', isArray: true},
       info: {method: 'GET', url: SERVICE_LOC + '/perusteet/info'},
       valittavatKielet: {method: 'GET', url: SERVICE_LOC + '/perusteet/valittavatkielet', isArray: true},
       diaari: {method: 'GET', url: SERVICE_LOC + '/perusteet/diaari'}

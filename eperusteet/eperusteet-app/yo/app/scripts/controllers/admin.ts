@@ -64,7 +64,7 @@ angular.module('eperusteApp')
 
   .controller('AdminPerusteprojektitController', function($rootScope, $scope, PerusteProjektit,
       Algoritmit, PerusteprojektiTila, Notifikaatiot, Kaanna, YleinenData, Varmistusdialogi,
-      PerusteProjektiService, Utils) {
+      PerusteProjektiService, Utils, Perusteet) {
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
     $scope.tilaRajain = null;

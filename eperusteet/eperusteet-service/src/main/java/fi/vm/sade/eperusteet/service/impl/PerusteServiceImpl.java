@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaExcelDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -54,6 +55,12 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,12 +72,6 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import java.util.*;
 
 /**
  *
@@ -164,6 +165,25 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private Validator validator;
+
+    @Override
+    public List<PerusteExcelDto> getKooste() {
+        return perusteet.findAll().stream()
+                .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
+                .filter(peruste -> KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen())
+                .map(peruste -> {
+                    PerusteExcelDto result = mapper.map(peruste, PerusteExcelDto.class);
+                    Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
+                    for (Suoritustapa st : peruste.getSuoritustavat()) {
+                        for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
+                            tutkinnonOsat.add(t.getTutkinnonOsa());
+                        }
+                    }
+                    result.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaExcelDto.class));
+                    return result;
+                })
+                .collect(Collectors.toList());
+    }
 
     @Override
     @Transactional(readOnly = true)

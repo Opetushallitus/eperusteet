@@ -292,6 +292,7 @@
     "rakenne-validointi-maara": "Osien määrä on pienempi kuin ryhmän maksimi",
     "rakenne-validointi-uniikit": "Ryhmässä on samoja tutkinnon osia",
     "luo-uusi-ryhma": "Luo uusi ryhmä",
+    "luo-kooste": "Luo kooste excel",
     "muokkaa-ryhmaa": "Muokkaa ryhmää",
     "muokkaa-tutkinnon-osaa": "Muokkaa tutkinnon osaa",
     "perustiedot": "Perustiedot",
