@@ -121,7 +121,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
     private Predicate buildPredicate(
         Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pq) {
-
         final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
         final Kieli kieli = Kieli.of(pq.getKieli());
@@ -164,7 +163,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
 
         if (pq.isSiirtyma()) {
-            pred = cb.and(pred, cb.or(cb.isNull(siirtymaPaattyy), cb.greaterThan(siirtymaPaattyy, cb.currentDate())));
+            pred = cb.and(pred, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(siirtymaPaattyy, cb.currentDate())));
         } else {
             pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
         }
