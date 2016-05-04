@@ -43,12 +43,15 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -61,10 +64,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -152,7 +151,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
         Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
-        assertEquals(3, perusteet.getTotalElements());
+        assertEquals(2, perusteet.getTotalElements());
     }
 
     @Test
