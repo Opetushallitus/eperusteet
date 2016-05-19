@@ -154,6 +154,9 @@ public interface PerusteService {
     PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
 
     @PreAuthorize("permitAll()")
+    PerusteKaikkiDto getAmosaaYhteinenPohja();
+
+    @PreAuthorize("permitAll()")
     PerusteVersionDto getPerusteVersion(long id);
 
     @PreAuthorize("permitAll()")

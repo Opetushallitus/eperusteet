@@ -246,6 +246,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    public PerusteKaikkiDto getAmosaaYhteinenPohja() {
+        Peruste peruste = perusteet.findByDiaarinumero(new Diaarinumero("amosaa/yhteiset"));
+        return getKokoSisalto(peruste.getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
         List<Peruste> loydetyt = perusteet.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
 
@@ -276,7 +283,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             Koodi osaamisala = tk.getOsaamisala();
             if (osaamisala != null) {
                 if (!stosaamisalat.containsKey(osaamisala.getUri())) {
-                    stosaamisalat.put(osaamisala.getUri(), new ArrayList<TekstiKappaleDto>());
+                    stosaamisalat.put(osaamisala.getUri(), new ArrayList<>());
                 }
                 stosaamisalat.get(osaamisala.getUri()).add(mapper.map(tk, TekstiKappaleDto.class));
             }

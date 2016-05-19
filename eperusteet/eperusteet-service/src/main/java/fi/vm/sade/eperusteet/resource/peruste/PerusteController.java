@@ -206,6 +206,17 @@ public class PerusteController {
         return new ResponseEntity<>(service.getOsaamisalaKuvaukset(id), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/amosaapohja", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Amosaa jaetun tutkinnon pohja")
+    public ResponseEntity<PerusteKaikkiDto> getAmosaaPohja() {
+        PerusteKaikkiDto t = service.getAmosaaYhteinenPohja();
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/diaari", method = GET)
     @ResponseBody
     @ApiImplicitParams({
