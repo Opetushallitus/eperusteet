@@ -36,4 +36,6 @@ public class OsaamistavoiteDto {
     private BigDecimal laajuus;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Kieli kieli;
+    private String koodiUri;
+    private String koodiArvo;
 }
