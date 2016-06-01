@@ -29,6 +29,13 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.KOMMENTOINTI;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.KORJAUS;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.LUKU;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.LUONTI;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.MUOKKAUS;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.POISTO;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.TILANVAIHTO;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -39,6 +46,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -51,14 +59,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.KOMMENTOINTI;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.KORJAUS;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.LUKU;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.LUONTI;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.POISTO;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.TILANVAIHTO;
 
 /**
  *
@@ -338,11 +338,23 @@ public class PermissionManager {
             if (PerusteTila.VALMIS == helper.findPerusteTilaFor(targetType, targetId)) {
                 return true;
             } else {
-                boolean ekProjekti = Target.PERUSTEPROJEKTI == targetType && perusteProjektit.findEsikatseltavissaById((Long)targetId).get(0).getSecond();
-                boolean ekPeruste = Target.PERUSTE == targetType && perusteProjektit.findEsikatseltavissaByPeruste((Long)targetId).get(0).getSecond();
-                boolean ekPerusteenosa = Target.PERUSTEENOSA == targetType && perusteProjektit.findEsikatseltavissaByPerusteenOsaId((Long)targetId).get(0).getSecond();
-                if (ekProjekti | ekPeruste | ekPerusteenosa) {
-                    return true;
+                if (Target.PERUSTEPROJEKTI.equals(targetType)) {
+                    List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaById((Long)targetId);
+                    if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond() == true) {
+                        return true;
+                    }
+                }
+                if (Target.PERUSTE.equals(targetType)) {
+                    List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaByPeruste((Long)targetId);
+                    if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond() == true) {
+                        return true;
+                    }
+                }
+                if (Target.PERUSTEENOSA.equals(targetType)) {
+                    List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaByPerusteenOsaId((Long)targetId);
+                    if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond() == true) {
+                        return true;
+                    }
                 }
             }
         }
