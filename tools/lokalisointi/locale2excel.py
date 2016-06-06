@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 
-# Nouda käännökset Opintopolun Käytönhallinnan Käännösten ylläpidosta Lataa (Save Link As...) -linkistä ja tallenna .jsoniksi. Anna tämä json ensimmäisenä parametrina.
+# Nouda käännökset Opintopolun Käytönhallinnan Käännösten ylläpidosta Lataa (Save Link As...) -linkistä ja tallenna .jsoniksi.
+# Anna tämä json ensimmäisenä parametrina.
 # Anna muina parametreina lokalisointi-hakemistoja projekteista.
-# Skripti parsii kaikki avaimet kaikista lokalisointilähteistä ja etsii niille suomen-, ruotsin- ja englanninkieliset käännökset priorisoiden ensimmäisenä annetusta lokalisointilähdeparametrista löytynyttä käännöstä.
+# Skripti parsii kaikki avaimet kaikista lokalisointilähteistä ja etsii niille suomen-, ruotsin-
+# ja englanninkieliset käännökset priorisoiden ensimmäisenä annetusta lokalisointilähdeparametrista löytynyttä käännöstä.
 
 import glob
 import json
@@ -44,12 +46,12 @@ worksheet.cell('D1').value = 'Englanti'
 filtered = list(filter(lambda l: 'eperusteet' in l['category'], data_json))
 keys_from_service = set(map(lambda m: m['key'], filtered))
 keys_from_loc_files = set()
+
 for locale in locales:
     keys_from_loc_files = keys_from_loc_files.union(set(locale.keys()))
 keys = keys_from_service.union(keys_from_loc_files)
 
 def localize(lang, key):
-
     values_from_service = list(filter(lambda l: l['key'] == key, filtered))
     translation_from_service = (next(filter(lambda l: l['locale'] == lang, values), {'value':''}))['value']
     if translation_from_service: return translation_from_service
