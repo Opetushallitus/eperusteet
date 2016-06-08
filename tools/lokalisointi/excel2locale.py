@@ -88,9 +88,17 @@ for row in worksheet.rows[1:]:
     if not row[0].value:
         break
     else:
+        ck_split = row[0].value.split(":")
+        category = "eperusteet"
+        key = ck_split[0]
+
+        if len(ck_split) > 1:
+            category = ck_split[0]
+            key = ck_split[1]
+
         send_to_localization_service({
-            'category': row[0].value.split(":")[0],
-            'key': row[0].value.split(":")[1],
+            'category': category,
+            'key': key,
             'langs': {
                 'fi': row[1].value, 
                 'sv': row[2].value

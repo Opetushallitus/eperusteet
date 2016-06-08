@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -38,11 +37,24 @@ import lombok.Setter;
 @Setter
 @Table(name = "perusteen_tutkintonimikkeet")
 public class TutkintonimikeKoodi implements Serializable {
+
+    public TutkintonimikeKoodi() {
+    }
+
+    public TutkintonimikeKoodi(TutkintonimikeKoodi other) {
+        this.tutkinnonOsaUri = other.tutkinnonOsaUri;
+        this.tutkinnonOsaArvo = other.tutkinnonOsaArvo;
+        this.osaamisalaUri = other.osaamisalaUri;
+        this.osaamisalaArvo = other.osaamisalaArvo;
+        this.tutkintonimikeUri = other.tutkintonimikeUri;
+        this.tutkintonimikeArvo = other.tutkintonimikeArvo;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade={CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToOne(fetch = FetchType.LAZY)
     private Peruste peruste;
 
     @Column(name = "tutkinnon_osa_koodi_uri")

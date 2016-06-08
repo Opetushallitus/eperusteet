@@ -32,6 +32,8 @@ import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +65,10 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
 
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
+
     @Transactional
     private Suoritustapa createCommon(Suoritustapakoodi suoritustapakoodi, LaajuusYksikko yksikko) {
         Suoritustapa suoritustapa = new Suoritustapa();
@@ -88,7 +94,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
             for (PerusteenOsaViite vanhaPov : vanhaLapset) {
                 if (vanhaPov.getPerusteenOsa() != null && vanhaPov.getPerusteenOsa().getTunniste() != PerusteenOsaTunniste.RAKENNE) {
                     PerusteenOsaViite pov = perusteenOsaViiteRepository.save(new PerusteenOsaViite());
-                    pov.setLapset(new ArrayList<PerusteenOsaViite>());
+                    pov.setLapset(new ArrayList());
                     pov.setVanhempi(parent);
                     pov.setPerusteenOsa(vanhaPov.getPerusteenOsa());
                     parent.getLapset().add(pov);
@@ -116,6 +122,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         rm.setKuvaus(vanha.getKuvaus());
         rm.setNimi(vanha.getNimi());
         rm.setRooli(vanha.getRooli());
+        rm.setOsaamisala(vanha.getOsaamisala());
         rakenneRepository.save(rm);
 
         MuodostumisSaanto vanhaMs = vanha.getMuodostumisSaanto();

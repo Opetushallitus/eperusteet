@@ -1006,6 +1006,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         peruste.setNimi(vanha.getNimi());
         peruste.setKoulutustyyppi(vanha.getKoulutustyyppi());
 
+        // Osaamisalat
+        if (vanha.getOsaamisalat() != null) {
+            peruste.setOsaamisalat(new HashSet());
+            peruste.getOsaamisalat().addAll(vanha.getOsaamisalat());
+        }
+
+        // Koulutukset
         Set<Koulutus> vanhatKoulutukset = vanha.getKoulutukset();
         Set<Koulutus> koulutukset = new HashSet<>();
 
@@ -1042,11 +1049,19 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
             peruste = perusteet.save(peruste);
 
+            peruste = perusteet.save(peruste);
             if (KoulutusTyyppi.PERUSOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
                 peruste.setPerusopetuksenPerusteenSisalto(kloonaaPerusopetuksenSisalto(peruste, vanha.getPerusopetuksenPerusteenSisalto()));
             } else {
                 lisaaTutkinnonMuodostuminen(peruste);
             }
+        }
+
+        // Tutkintonimikkeet
+        for (TutkintonimikeKoodi nimike : tutkintonimikeKoodiRepository.findByPerusteId(vanha.getId())) {
+            TutkintonimikeKoodi uusi = new TutkintonimikeKoodi(nimike);
+            uusi.setPeruste(peruste);
+            tutkintonimikeKoodiRepository.save(uusi);
         }
 
         return peruste;

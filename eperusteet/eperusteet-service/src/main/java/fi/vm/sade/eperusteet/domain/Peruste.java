@@ -22,19 +22,18 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -105,7 +104,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(name = "peruste_osaamisala",
                joinColumns = @JoinColumn(name = "peruste_id"),
                inverseJoinColumns = @JoinColumn(name = "osaamisala_id"))
