@@ -21,9 +21,11 @@ import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,6 +37,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -42,10 +45,6 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
-import javax.persistence.Column;
-import javax.persistence.OneToOne;
 
 /**
  *
@@ -127,6 +126,10 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         this.kuvaus = o.kuvaus;
         this.osaamistavoitteet = new ArrayList<>();
         this.valmaTelmaSisalto = null;
+        this.koodiArvo = o.koodiArvo;
+        this.koodiUri = o.koodiUri;
+        this.kieli = o.kieli;
+
         IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
         for ( Osaamistavoite ot : o.getOsaamistavoitteet() ) {
             if ( identityMap.containsKey(ot) ) {

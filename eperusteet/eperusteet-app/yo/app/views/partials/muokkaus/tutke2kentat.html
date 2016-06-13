@@ -32,7 +32,6 @@
   </div>
 
   <div ng-if="!mainLevelEditing">
-
     <accordion close-others="viewOptions.oneAtATime">
       <!-- osa-alueet -->
       <accordion-group ng-show="!tutke2osa.$fetching" ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open"

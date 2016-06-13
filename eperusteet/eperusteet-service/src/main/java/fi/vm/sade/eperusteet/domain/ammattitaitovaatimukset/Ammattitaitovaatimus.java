@@ -3,13 +3,12 @@ package fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import java.io.Serializable;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created by autio on 20.10.2015.
@@ -47,4 +46,14 @@ public class Ammattitaitovaatimus implements Serializable{
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private AmmattitaitovaatimuksenKohde ammattitaitovaatimuksenkohde;
+
+    public Ammattitaitovaatimus() {
+    }
+
+    Ammattitaitovaatimus(AmmattitaitovaatimuksenKohde owner, Ammattitaitovaatimus other) {
+        this.selite = other.selite;
+        this.ammattitaitovaatimusKoodi = other.ammattitaitovaatimusKoodi;
+        this.jarjestys = other.jarjestys;
+        this.ammattitaitovaatimuksenkohde = owner;
+    }
 }

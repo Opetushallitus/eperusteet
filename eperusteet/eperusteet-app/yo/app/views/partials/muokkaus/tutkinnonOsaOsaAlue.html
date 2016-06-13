@@ -4,7 +4,7 @@
 <hr class="versioraja">
 <div class="non-collapsibles">
   <label class="header" kaanna="'tutkinnonosa'"></label>
-  <p kaanna="tutkinnonOsa.nimi"></p>
+  <p ng-bind="tutkinnonOsaViite.tutkinnonOsa.nimi | kaanna"></p>
   <label class="header">{{'nimi'| kaanna}}*</label>
   <input class="form-control" slocalized ng-model="osaAlue.nimi" type="text"></input>
 
@@ -19,7 +19,7 @@
 
   <hr class="mujuviiva">
 
-<accordion close-others="true">
+<accordion close-others="false">
   <accordion-group ng-repeat="tavoite in osaamistavoitepuu | filter:{$poistettu: false}" class="panel-clean osa-alue" is-open="tavoite.$open">
     <accordion-heading >
       <span class="glyphicon" ng-class="tavoite.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>

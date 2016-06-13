@@ -12,14 +12,13 @@ angular.module('eperusteApp')
     $scope.isVaTe = YleinenData.isValmaTelma($scope.peruste);
     $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
 
-    $scope.tutkinnonOsa = $scope.$parent.tutkinnonOsaViite.tutkinnonOsa;
     $scope.osaAlue = {
       nimi:{},
       kuvaus:{},
     };
 
-    if ($scope.tutkinnonOsa) {
-      Koodisto.haeAlarelaatiot($scope.tutkinnonOsa.koodiUri, function(alarelaatiot) {
+    if ($scope.tutkinnonOsaViite.tutkinnonOsa) {
+      Koodisto.haeAlarelaatiot($scope.tutkinnonOsaViite.tutkinnonOsa.koodiUri, function(alarelaatiot) {
         alarelaatiot.unshift({});
         $scope.$alarelaatiot = alarelaatiot;
       });

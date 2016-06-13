@@ -20,12 +20,13 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,14 +34,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -144,7 +142,14 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         this.laajuus = ot.getLaajuus();
         this.tunnustaminen = ot.getTunnustaminen();
         this.kieli = ot.kieli;
+        this.koodiArvo = ot.koodiArvo;
+        this.koodiUri = ot.koodiUri;
         this.arviointi = ot.getArviointi() == null ? null : new Arviointi(ot.getArviointi());
+        this.tavoitteet = ot.tavoitteet;
+
+        for (AmmattitaitovaatimuksenKohdealue avKohdealue : ot.ammattitaitovaatimuksetLista) {
+            this.ammattitaitovaatimuksetLista.add(new AmmattitaitovaatimuksenKohdealue(avKohdealue));
+        }
 
         if (ot.getEsitieto() != null) {
             this.esitieto = esitiedot.get(ot.getEsitieto());

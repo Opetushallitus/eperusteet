@@ -4,18 +4,17 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  * Created by autio on 20.10.2015.
@@ -51,6 +50,16 @@ public class AmmattitaitovaatimuksenKohdealue implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_id"),
             joinColumns = @JoinColumn(name = "ammattitaitovaatimuksenkohdealue_id"))
     private Set<TutkinnonOsa> tutkinnonOsat = new HashSet<>();
+
+    public AmmattitaitovaatimuksenKohdealue() {
+    }
+
+    public AmmattitaitovaatimuksenKohdealue(AmmattitaitovaatimuksenKohdealue other) {
+        this.otsikko = other.getOtsikko();
+        for (AmmattitaitovaatimuksenKohde kohde : other.getVaatimuksenKohteet()) {
+            this.vaatimuksenKohteet.add(new AmmattitaitovaatimuksenKohde(this, kohde));
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
