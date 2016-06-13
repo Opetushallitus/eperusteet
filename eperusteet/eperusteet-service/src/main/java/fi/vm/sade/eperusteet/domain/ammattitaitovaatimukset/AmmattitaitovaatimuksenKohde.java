@@ -52,10 +52,10 @@ public class AmmattitaitovaatimuksenKohde implements Serializable{
     @OrderColumn (name="jarjestys")
     private List<Ammattitaitovaatimus> vaatimukset = new ArrayList<>();
 
-    AmmattitaitovaatimuksenKohde() {
+    public AmmattitaitovaatimuksenKohde() {
     }
 
-    AmmattitaitovaatimuksenKohde(AmmattitaitovaatimuksenKohdealue parent, AmmattitaitovaatimuksenKohde other) {
+    public AmmattitaitovaatimuksenKohde(AmmattitaitovaatimuksenKohdealue parent, AmmattitaitovaatimuksenKohde other) {
         this.otsikko = other.otsikko;
         this.selite = other.selite;
         this.ammattitaitovaatimuksenkohdealue = parent;
@@ -64,6 +64,4 @@ public class AmmattitaitovaatimuksenKohde implements Serializable{
             this.vaatimukset.add(new Ammattitaitovaatimus(this, vaatimus));
         }
     }
-
-
 }

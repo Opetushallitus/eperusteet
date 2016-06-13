@@ -50,7 +50,7 @@ public class Ammattitaitovaatimus implements Serializable{
     public Ammattitaitovaatimus() {
     }
 
-    Ammattitaitovaatimus(AmmattitaitovaatimuksenKohde owner, Ammattitaitovaatimus other) {
+    public Ammattitaitovaatimus(AmmattitaitovaatimuksenKohde owner, Ammattitaitovaatimus other) {
         this.selite = other.selite;
         this.ammattitaitovaatimusKoodi = other.ammattitaitovaatimusKoodi;
         this.jarjestys = other.jarjestys;

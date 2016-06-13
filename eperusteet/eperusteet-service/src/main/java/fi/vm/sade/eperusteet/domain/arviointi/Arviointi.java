@@ -21,20 +21,18 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *

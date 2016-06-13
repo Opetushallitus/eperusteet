@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
@@ -31,8 +32,6 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -90,6 +89,7 @@ public class ArvioinninKohde implements Serializable {
 
     public ArvioinninKohde(ArvioinninKohde other) {
         this.otsikko = other.getOtsikko();
+        this.selite = other.getSelite();
         this.arviointiAsteikko = other.getArviointiAsteikko();
         for (OsaamistasonKriteeri k : other.getOsaamistasonKriteerit()) {
             this.osaamistasonKriteerit.add(new OsaamistasonKriteeri(k));

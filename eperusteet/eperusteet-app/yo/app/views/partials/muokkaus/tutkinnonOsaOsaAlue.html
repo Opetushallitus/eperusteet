@@ -19,88 +19,88 @@
 
   <hr class="mujuviiva">
 
-<accordion close-others="false">
-  <accordion-group ng-repeat="tavoite in osaamistavoitepuu | filter:{$poistettu: false}" class="panel-clean osa-alue" is-open="tavoite.$open">
-    <accordion-heading >
-      <span class="glyphicon" ng-class="tavoite.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
-      {{ tavoite.nimi | kaanna }}
-    </accordion-heading>
+  <div ng-repeat="tavoite in osaamistavoitepuu | filter:{$poistettu: false}" class="panel-clean osa-alue">
+    <div style="cursor: pointer">
+      <h2 ng-click="tavoite.$open = !tavoite.$open">
+        <span class="glyphicon" ng-class="tavoite.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+        {{ tavoite.nimi | kaanna }}
+      </h2>
+    </div>
 
-    <label>{{'nimi'| kaanna}}*</label>
+    <div ng-if="tavoite.$open" class="osa-alue-sisalto">
+      <label>{{'nimi'| kaanna}}*</label>
       <input class="form-control" slocalized ng-model="tavoite.nimi" type="text"></input>
 
-    <h3 ng-show="tavoite.pakollinen === true">
-      {{('pakolliset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
-      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
-    </h3>
-    <h3 ng-show="tavoite.pakollinen === false">
-      {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
-      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
-    </h3>
+      <h3 ng-show="tavoite.pakollinen === true">
+        {{('pakolliset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
+        <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
+      </h3>
+      <h3 ng-show="tavoite.pakollinen === false">
+        {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
+        <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
+      </h3>
 
-    <div class="non-collapsibles">
-      <label kaanna>laajuus</label>
-      <numberinput style="margin-bottom: 3px" luokka="form-control" model="tavoite.laajuus" type="float" step="0.5" luokka="form-control"></numberinput>
+      <div class="non-collapsibles">
+        <label kaanna>laajuus</label>
+        <numberinput style="margin-bottom: 3px" luokka="form-control" model="tavoite.laajuus" type="float" step="0.5" luokka="form-control"></numberinput>
 
-      <div ng-if="isKoodiVisible">
-        <label>{{'koodi' | kaanna}}</label>
-        <div class="fixed-group">
-          <input id="koodi-input" class="form-control" type="text" ng-model="tavoite.koodi.koodiArvo" editointi-kontrolli disabled="disabled">
-          <div class="addon"><button class="btn btn-default" ng-click="openKoodisto( tavoite )" kaanna="hae-koodistosta"></button></div>
+        <div ng-if="isKoodiVisible">
+          <label>{{'koodi' | kaanna}}</label>
+          <div class="fixed-group">
+            <input id="koodi-input" class="form-control" type="text" ng-model="tavoite.koodi.koodiArvo" editointi-kontrolli disabled="disabled">
+            <div class="addon"><button class="btn btn-default" ng-click="openKoodisto( tavoite )" kaanna="hae-koodistosta"></button></div>
+          </div>
+        </div>
+
+        <label kaanna>tavoitteet</label>
+        <div ng-model="tavoite.tavoitteet" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
+
+        <h4 kaanna>arviointi</h4>
+        <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
+        edit-enabled="true" editointi-sallittu="true"></arviointi>
+        <label kaanna>tutkinnonosa-tunnustaminen</label>
+        <div ng-model="tavoite.tunnustaminen" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
+
+        <h4 kaanna>ammattitaitovaatimukset</h4>
+        <ammattitaito ammattitaito="tavoite.ammattitaitovaatimuksetLista" edit-enabled="true" editointi-sallittu="true" ei-kohdealueita="true"></ammattitaito>
+      </div>
+
+      <div ng-show="tavoite.lapsi && tavoite.lapsi.$poistettu === false">
+        <h3>
+          {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.lapsi.laajuus}} {{'osp'| kaanna}}
+          <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite.lapsi)" kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
+        </h3>
+        <div class="non-collapsibles">
+          <label kaanna>laajuus</label>
+          <numberinput style="margin-bottom: 3px" luokka="form-control" model="tavoite.lapsi.laajuus" type="float" step="0.5"></numberinput>
+
+          <div ng-if="isKoodiVisible">
+            <label>{{'koodi' | kaanna}}</label>
+            <div class="fixed-group">
+              <input id="koodi-input" class="form-control" type="text" ng-model="tavoite.lapsi.koodi.koodiArvo" editointi-kontrolli disabled="disabled">
+              <div class="addon"><button class="btn btn-default" ng-click="openKoodisto( tavoite.lapsi )" kaanna="hae-koodistosta"></button></div>
+            </div>
+          </div>
+
+          <label kaanna>tavoitteet</label>
+          <div ng-model="tavoite.lapsi.tavoitteet" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
+
+          <h4 kaanna>arviointi</h4>
+          <arviointi arviointi="tavoite.lapsi.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
+          edit-enabled="true" editointi-sallittu="true"></arviointi>
+          <label kaanna>tutkinnonosa-tunnustaminen</label>
+          <div ng-model="tavoite.lapsi.tunnustaminen" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
+
+          <h4 kaanna>ammattitaitovaatimukset</h4>
+          <ammattitaito ammattitaito="tavoite.lapsi.ammattitaitovaatimuksetLista" edit-enabled="true" editointi-sallittu="true" ei-kohdealueita="true">
+          </ammattitaito>
+
         </div>
       </div>
-
-      <label kaanna>tavoitteet</label>
-      <div ng-model="tavoite.tavoitteet" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
-
-      <h4 kaanna>arviointi</h4>
-      <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
-                 edit-enabled="true" editointi-sallittu="true"></arviointi>
-      <label kaanna>tutkinnonosa-tunnustaminen</label>
-      <div ng-model="tavoite.tunnustaminen" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
-
-      <h4 kaanna>ammattitaitovaatimukset</h4>
-      <ammattitaito ammattitaito="tavoite.ammattitaitovaatimuksetLista" edit-enabled="true" editointi-sallittu="true" ei-kohdealueita="true">
-      </ammattitaito>
-
     </div>
 
-    <div ng-show="tavoite.lapsi && tavoite.lapsi.$poistettu === false">
-    <h3>
-      {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.lapsi.laajuus}} {{'osp'| kaanna}}
-      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite.lapsi)" kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
-    </h3>
-    <div class="non-collapsibles">
-      <label kaanna>laajuus</label>
-      <numberinput style="margin-bottom: 3px" luokka="form-control" model="tavoite.lapsi.laajuus" type="float" step="0.5"></numberinput>
+  </div>
 
-      <div ng-if="isKoodiVisible">
-        <label>{{'koodi' | kaanna}}</label>
-        <div class="fixed-group">
-          <input id="koodi-input" class="form-control" type="text" ng-model="tavoite.lapsi.koodi.koodiArvo" editointi-kontrolli disabled="disabled">
-          <div class="addon"><button class="btn btn-default" ng-click="openKoodisto( tavoite.lapsi )" kaanna="hae-koodistosta"></button></div>
-        </div>
-      </div>
-
-      <label kaanna>tavoitteet</label>
-      <div ng-model="tavoite.lapsi.tavoitteet" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
-
-      <h4 kaanna>arviointi</h4>
-      <arviointi arviointi="tavoite.lapsi.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
-                 edit-enabled="true" editointi-sallittu="true"></arviointi>
-      <label kaanna>tutkinnonosa-tunnustaminen</label>
-      <div ng-model="tavoite.lapsi.tunnustaminen" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
-
-      <h4 kaanna>ammattitaitovaatimukset</h4>
-      <ammattitaito ammattitaito="tavoite.lapsi.ammattitaitovaatimuksetLista" edit-enabled="true" editointi-sallittu="true" ei-kohdealueita="true">
-      </ammattitaito>
-
-    </div>
-      </div>
-
-  </accordion-group>
-</accordion>
-
-<button class="btn btn-default" icon-role="add" ng-click="lisaaOsaamistavoite()" kaanna="lisaa-osaamistavoite" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-<button class="btn btn-default" icon-role="add" ng-click="tuoOsaamistavoite()" kaanna="tuo-osaamistavoite" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+  <button class="btn btn-default" icon-role="add" ng-click="lisaaOsaamistavoite()" kaanna="lisaa-osaamistavoite" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+  <button class="btn btn-default" icon-role="add" ng-click="tuoOsaamistavoite()" kaanna="tuo-osaamistavoite" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 </div>
