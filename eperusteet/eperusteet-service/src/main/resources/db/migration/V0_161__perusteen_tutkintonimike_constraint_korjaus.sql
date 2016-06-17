@@ -1,0 +1,3 @@
+ALTER TABLE perusteen_tutkintonimikkeet DROP CONSTRAINT u_perusteen_tutkintonimikkeet;
+
+ALTER TABLE perusteen_tutkintonimikkeet ADD CONSTRAINT u_perusteen_tutkintonimikkeet UNIQUE (peruste_id, tutkinnon_osa_koodi_uri, osaamisala_koodi_uri, tutkintonimike_koodi_uri);
