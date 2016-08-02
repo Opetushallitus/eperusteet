@@ -306,18 +306,11 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.avaaKoodistoModaali = function() {
-      Koodisto.modaali(function(koodi) {
-        $scope.koodistoHaku(koodi);
-      }, {
-        tyyppi: function() {
-          return 'koulutus';
-        },
-        ylarelaatioTyyppi: function() {
-          return $scope.editablePeruste.koulutustyyppi;
-        }
-      }, angular.noop, null)();
-    };
+    $scope.avaaKoodistoModaali = Koodisto.modaali($scope.koodistoHaku, {
+        tyyppi: _.constant('koulutus'),
+        // ylarelaatioTyyppi: () => $scope.editablePeruste.koulutustyyppi
+        ylarelaatioTyyppi: () => '' // Koodistohaun ehto on outo
+      }, _.noop, null);
 
     $scope.poistaKoulutus = function (koulutuskoodiArvo) {
       Varmistusdialogi.dialogi({
