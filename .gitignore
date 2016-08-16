@@ -17,8 +17,8 @@ nbproject/
 
 npm-debug.log
 
-*.iml
-.idea/
+**/*.iml
+**/.idea/
 *.js
 *.js.map
 

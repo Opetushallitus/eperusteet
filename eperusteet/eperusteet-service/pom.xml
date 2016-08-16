@@ -29,14 +29,6 @@
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <hibernate.export.type>CREATE</hibernate.export.type>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>googlecode</id>
-            <url>http://docbook4j.googlecode.com/svn/m2-repo/releases/</url>
-        </repository>
-    </repositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -468,21 +460,22 @@
                         <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
-              </plugin>
-              <plugin>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
                 <configuration>
-                  <quiet>true</quiet>
-                  <additionalparam>-Xdoclint:none</additionalparam>
-                  <sourcepath>${project.basedir}/src/main/java;${project.basedir}/target/generated-sources/annotations</sourcepath>
-                  <sourceFileExcludes>
-                    <exclude>db/migration/**</exclude>
-                    <exclude>fi/vm/sade/eperusteet/domain/**/*_.java</exclude>
-                    <exclude>com/google/code/**</exclude>
-                  </sourceFileExcludes>
+                    <quiet>true</quiet>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                    <sourcepath>${project.basedir}/src/main/java;${project.basedir}/target/generated-sources/annotations</sourcepath>
+                    <sourceFileExcludes>
+                        <exclude>db/migration/**</exclude>
+                        <exclude>fi/vm/sade/eperusteet/domain/**/*_.java</exclude>
+                        <exclude>com/google/code/**</exclude>
+                    </sourceFileExcludes>
                 </configuration>
-              </plugin>
+            </plugin>
             </plugins>
         <pluginManagement>
             <plugins>

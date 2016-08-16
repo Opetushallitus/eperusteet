@@ -18,12 +18,10 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>0.0.28</version>
-
+                <version>1.0</version>
                 <configuration>
                     <workingDirectory>yo</workingDirectory>
                 </configuration>
-
                 <executions>
                     <execution>
                         <id>install node and npm</id>
@@ -31,8 +29,8 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v5.6.0</nodeVersion>
-                            <npmVersion>3.7.2</npmVersion>
+                            <nodeVersion>v6.3.1</nodeVersion>
+                            <npmVersion>3.10.3</npmVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -59,14 +57,14 @@
                             <goal>grunt</goal>
                         </goals>
                         <configuration>
-                            <arguments>build</arguments>
+                            <arguments>build --no-color</arguments>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.3</version>
+                <version>2.6</version>
                 <configuration>
                     <webResources>
                         <resource>
@@ -77,7 +75,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>2.5</version>
+                <version>3.0.0</version>
                 <configuration>
                     <filesets>
                         <fileset>
@@ -98,37 +96,4 @@
         </plugins>
         <finalName>eperusteet-app</finalName>
     </build>
-    <profiles>
-        <profile>
-            <!--
-            Älä tyhjennä node_modules ja bower_componets -hakemistoja cleanin yhteydessä jos
-            tämä profiili on käytössä (tyhjentäminen hidastaa käännöstä mutta tyhjententämättä jättäminen voi
-            joskus aiheuttaa ongelmia)
-            -->
-            <id>app-dev</id>
-            <activation>
-                <property>
-                    <name>eperusteet.dev</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-clean-plugin</artifactId>
-                        <version>2.5</version>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>yo/dist</directory>
-                                </fileset>
-                                <fileset>
-                                    <directory>yo/.tmp</directory>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

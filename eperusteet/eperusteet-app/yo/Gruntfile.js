@@ -50,7 +50,7 @@ module.exports = function(grunt) {
         options: {
           module: 'amd',
           target: 'es5',
-          sourceMap: true,
+          sourceMap: true
         }
       }
     },
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
     watch: {
       css: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.scss', '<%= yeoman.app %>/eperusteet-esitys/styles/{,*/}*.scss'],
-        tasks: ['sass', 'copy:fonts', 'autoprefixer'],
+        tasks: ['sass', 'copy:fonts', 'autoprefixer']
       },
       test: {
         files: ['<%= yeoman.app %>/**/*.{js,html}', 'test/**/*.js','!<%= yeoman.app %>/bower_components/**'],
@@ -289,14 +289,14 @@ module.exports = function(grunt) {
           dest: '<%= yeoman.dist %>/bower_components/ckeditor',
           src: [
             '**',
-            '!samples/**',
+            '!samples/**'
           ]
         }, {
           expand: true,
           cwd: '<%= yeoman.app %>/ckeditor-plugins',
           dest: '<%= yeoman.dist %>/ckeditor-plugins',
           src: [
-            '**',
+            '**'
           ]
         }, {
           expand: true,
@@ -316,7 +316,7 @@ module.exports = function(grunt) {
           expand: true,
           cwd: '<%= yeoman.app %>/bower_components/bootstrap-sass-official/assets/fonts/bootstrap',
           dest: '<%= yeoman.dist %>/styles/fonts',
-          src: '*.{eot,svg,ttf,woff}'
+          src: '*.{eot,svg,ttf,woff,woff2}'
         }, {
           src: '<%= yeoman.app %>/bower_components/angular-ui-select/dist/select.min.css',
           dest: '<%= yeoman.dist %>/styles/select.min.css'
@@ -326,7 +326,7 @@ module.exports = function(grunt) {
         expand: true,
         cwd: '<%= yeoman.app %>/bower_components/bootstrap-sass-official/assets/fonts/bootstrap',
         dest: '.tmp/styles/fonts/',
-        src: '*.{eot,svg,ttf,woff}'
+        src: '*.{eot,svg,ttf,woff,woff2}'
       }
     },
     concurrent: {
@@ -365,7 +365,7 @@ module.exports = function(grunt) {
       }
     },
     uglify: {
-      options: { mangle: false },
+      options: { mangle: false }
 //      dist: {
 //        files: {
 //          '.tmp/concat/scripts/scripts.js': [
@@ -411,14 +411,14 @@ module.exports = function(grunt) {
         options: {
           /* Check that templateUrls don't start with slash */
           pattern : /templateUrl:\s*['"]\//m
-        },
+        }
       },
       showhide: {
         files: [{src: ['<%= yeoman.app %>/{scripts,views}/**/*.{js,html}']}],
         options: {
           /* Check that ng-show/ng-hide are not used in same element */
           pattern : /(ng-show=|ng-hide=)[^>]+(ng-hide=|ng-show=)/m
-        },
+        }
       }
     }
   });
