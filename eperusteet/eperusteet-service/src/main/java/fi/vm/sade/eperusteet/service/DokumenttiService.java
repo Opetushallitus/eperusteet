@@ -29,21 +29,21 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface DokumenttiService {
 
     @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
-    public void setStarted(@P("dto") DokumenttiDto dto);
+    void setStarted(@P("dto") DokumenttiDto dto);
 
     @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
     @Async(value = "docTaskExecutor")
-    public void generateWithDto(@P("dto") DokumenttiDto dto);
+    void generateWithDto(@P("dto") DokumenttiDto dto);
 
     @PreAuthorize("hasPermission(#id, 'peruste', 'LUKU')")
-    public DokumenttiDto createDtoFor(@P("id") final long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
+    DokumenttiDto createDtoFor(@P("id") final long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
+
+    @PreAuthorize("permitAll()")
+    byte[] get(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    public byte[] get(Long id);
+    DokumenttiDto query(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    public DokumenttiDto query(Long id);
-
-    @PreAuthorize("isAuthenticated()")
-    public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
+    DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
 }

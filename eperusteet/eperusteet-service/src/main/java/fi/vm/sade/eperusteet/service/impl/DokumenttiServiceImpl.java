@@ -16,44 +16,17 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.google.code.docbook4j.Docbook4JException;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.service.DokumenttiService;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
-import fi.vm.sade.eperusteet.domain.Dokumentti;
-import fi.vm.sade.eperusteet.domain.DokumenttiTila;
-import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.DokumenttiService;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-import javax.servlet.ServletContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -71,6 +44,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.servlet.ServletContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+import java.util.Date;
+import java.util.List;
+
 /**
  *
  * @author jussini
@@ -86,9 +74,10 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Autowired
     private DokumenttiRepository dokumenttiRepository;
 
-    @Autowired
     @Dto
+    @Autowired
     private DtoMapper mapper;
+
     @Autowired
     private PerusteRepository perusteRepository;
 
@@ -179,7 +168,16 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @IgnorePerusteUpdateCheck
     public byte[] get(Long id) {
         Dokumentti dokumentti = dokumenttiRepository.findById(id);
+
         if (dokumentti != null) {
+            Peruste peruste = perusteRepository.findOne(dokumentti.getPerusteId());
+
+            String name = SecurityUtil.getAuthenticatedPrincipal().getName();
+
+            if (name.equals("anonymousUser") && !peruste.getTila().equals(PerusteTila.VALMIS)) {
+                return null;
+            }
+
             return dokumentti.getData();
         } else {
             return null;

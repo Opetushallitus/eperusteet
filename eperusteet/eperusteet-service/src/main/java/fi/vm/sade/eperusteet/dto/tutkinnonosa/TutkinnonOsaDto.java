@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
