@@ -33,7 +33,6 @@ import java.util.List;
 @Repository
 public interface DokumenttiRepository extends JpaRepository<Dokumentti, Long> {
     Dokumentti findById(Long id);
-    Dokumentti findByPerusteIdAndKieliAndTilaOrderByValmistumisaikaDesc(Long perusteId, Kieli kieli, DokumenttiTila tila);
     List<Dokumentti> findByPerusteIdAndKieliAndTila(Long perusteId, Kieli kieli, DokumenttiTila tila, Sort sort);
     List<Dokumentti> findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(Long perusteId, Kieli kieli, DokumenttiTila tila, Suoritustapakoodi suoritustapakoodi, Sort sort);
 }

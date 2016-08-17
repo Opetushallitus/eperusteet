@@ -186,9 +186,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     public Long getDokumenttiId(Long perusteId, Kieli kieli) {
-        Dokumentti dokumentti = dokumenttiRepository.findByPerusteIdAndKieliAndTilaOrderByValmistumisaikaDesc(perusteId, kieli, DokumenttiTila.VALMIS);
-        if (dokumentti != null) {
-            return dokumentti.getId();
+
+        Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
+        List<Dokumentti> dokumentit = dokumenttiRepository
+                .findByPerusteIdAndKieliAndTila(perusteId, kieli, DokumenttiTila.VALMIS, sort);
+        if (!dokumentit.isEmpty()) {
+            return dokumentit.get(0).getId();
         } else {
             return null;
         }
