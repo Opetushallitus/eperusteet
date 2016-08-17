@@ -185,8 +185,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     @Override
+    @Transactional
+    @IgnorePerusteUpdateCheck
     public Long getDokumenttiId(Long perusteId, Kieli kieli) {
-
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
         List<Dokumentti> dokumentit = dokumenttiRepository
                 .findByPerusteIdAndKieliAndTila(perusteId, kieli, DokumenttiTila.VALMIS, sort);
