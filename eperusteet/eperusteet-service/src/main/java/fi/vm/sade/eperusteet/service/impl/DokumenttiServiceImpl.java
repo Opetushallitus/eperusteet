@@ -189,10 +189,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @IgnorePerusteUpdateCheck
     public Long getDokumenttiId(Long perusteId, Kieli kieli) {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
-        List<Dokumentti> dokumentit = dokumenttiRepository
-                .findByPerusteIdAndKieliAndTila(perusteId, kieli, DokumenttiTila.VALMIS, sort);
-        if (!dokumentit.isEmpty()) {
-            return dokumentit.get(0).getId();
+        /*List<Dokumentti> dokumentit = dokumenttiRepository
+                .findByPerusteIdAndKieliAndTila(perusteId, kieli, DokumenttiTila.VALMIS, sort);*/
+        List<Long> dokumenttiIds = dokumenttiRepository
+                .findLatest(perusteId, kieli, DokumenttiTila.VALMIS);
+        if (!dokumenttiIds.isEmpty()) {
+            return dokumenttiIds.get(0);
         } else {
             return null;
         }
