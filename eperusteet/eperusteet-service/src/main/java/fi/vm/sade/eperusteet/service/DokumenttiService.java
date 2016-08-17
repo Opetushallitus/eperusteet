@@ -41,6 +41,9 @@ public interface DokumenttiService {
     @PreAuthorize("permitAll()")
     byte[] get(Long id);
 
+    @PreAuthorize("permitAll()")
+    Long getDokumenttiId(Long perusteId, Kieli kieli);
+
     @PreAuthorize("isAuthenticated()")
     DokumenttiDto query(Long id);
 

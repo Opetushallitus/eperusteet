@@ -185,6 +185,16 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     @Override
+    public Long getDokumenttiId(Long perusteId, Kieli kieli) {
+        Dokumentti dokumentti = dokumenttiRepository.findByPerusteIdAndKieliAndTilaOrderByValmistumisaikaDesc(perusteId, kieli, DokumenttiTila.VALMIS);
+        if (dokumentti != null) {
+            return dokumentti.getId();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     @Transactional
     @IgnorePerusteUpdateCheck
     public void setStarted(DokumenttiDto dto) {

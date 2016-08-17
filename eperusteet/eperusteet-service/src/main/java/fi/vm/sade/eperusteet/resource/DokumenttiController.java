@@ -91,6 +91,14 @@ public class DokumenttiController {
         return new ResponseEntity<Object>(pdfdata, headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/peruste", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Long> getDokumenttiId(@RequestParam final Long perusteId,
+                                                @RequestParam(defaultValue = "fi") final String kieli) {
+        Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli));
+        return ResponseEntity.ok(dokumenttiId);
+    }
+
     @RequestMapping(method = RequestMethod.GET, params = "perusteId")
     @ResponseBody
     public ResponseEntity<DokumenttiDto> getLatest(
