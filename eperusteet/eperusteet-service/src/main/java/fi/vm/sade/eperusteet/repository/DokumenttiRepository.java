@@ -35,7 +35,7 @@ import java.util.List;
 public interface DokumenttiRepository extends JpaRepository<Dokumentti, Long> {
     Dokumentti findById(Long id);
 
-    @Query("SELECT d.id FROM Dokumentti d where d.perusteId = ?1 AND d.kieli = ?2 AND d.tila = ?3 AND d.valmistumisaika IS NOT NULL ORDER BY d.valmistumisaika")
+    @Query("SELECT d.id FROM Dokumentti d where d.perusteId = ?1 AND d.kieli = ?2 AND d.tila = ?3 AND d.valmistumisaika IS NOT NULL ORDER BY d.valmistumisaika DESC")
     List<Long> findLatest(Long perusteId, Kieli kieli, DokumenttiTila tila);
 
     List<Dokumentti> findByPerusteIdAndKieliAndTila(Long perusteId, Kieli kieli, DokumenttiTila tila, Sort sort);
