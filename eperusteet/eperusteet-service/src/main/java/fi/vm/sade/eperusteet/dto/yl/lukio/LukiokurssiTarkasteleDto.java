@@ -54,6 +54,7 @@ public class LukiokurssiTarkasteleDto implements Serializable, Lokalisoitava {
     private Optional<TekstiOsaDto> tavoitteet;
     private Optional<TekstiOsaDto> keskeinenSisalto;
     private Optional<TekstiOsaDto> tavoitteetJaKeskeinenSisalto;
+    private Optional<TekstiOsaDto> arviointi;
 
     @Override
     public Stream<LokalisoituTekstiDto> lokalisoitavatTekstit() {

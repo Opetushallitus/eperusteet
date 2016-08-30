@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
-import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.IdHolder;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -48,5 +47,6 @@ public class LukiokurssiMuokkausDto implements Serializable, IdHolder {
     private TekstiOsaDto tavoitteet;
     private TekstiOsaDto keskeinenSisalto;
     private TekstiOsaDto tavoitteetJaKeskeinenSisalto;
+    private TekstiOsaDto arviointi;
     private String kommentti;
 }

@@ -16,6 +16,18 @@
 
 'use strict';
 
+namespace LukioHelper {
+  export const kurssinOsat = (koulutustyyppi) => {
+    const osat = ['tavoitteet', 'keskeinenSisalto', 'tavoitteetJaKeskeinenSisalto'];
+
+    if (koulutustyyppi === 'koulutustyyppi_23') {
+      osat.push('arviointi');
+    }
+
+    return osat;
+  }
+}
+
 angular.module('eperusteApp')
   .service('LukiokurssiModifyHelpers', function (Koodisto, MuokkausUtils, $translate, $filter,
                                                  Kieli, Kaanna, $log, $rootScope) {
@@ -186,7 +198,10 @@ angular.module('eperusteApp')
     YleinenData.lukioKurssityypit().then(function (tyypit) {
       $scope.kurssityypit = tyypit;
     });
-    $scope.osat = ['tavoitteet', 'keskeinenSisalto', 'tavoitteetJaKeskeinenSisalto'];
+
+
+    $scope.osat = LukioHelper.kurssinOsat($scope.peruste.koulutustyyppi);
+
     $scope.muokattavatOsat = [];
     $scope.osatById = {};
     _.each($scope.osat, function (osaId) {
@@ -218,8 +233,8 @@ angular.module('eperusteApp')
     };
   })
   .controller('MuokkaaLukiokurssiaController', function ($scope, $state, LukioKurssiService, $stateParams, $timeout, $q,
-                                       YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, Editointikontrollit,
-                                       Varmistusdialogi, $filter, Kaanna, LukiokoulutusService, Lukitus, Kieli) {
+                                                         YleinenData, $log, $rootScope, LukiokurssiModifyHelpers, Editointikontrollit,
+                                                         Varmistusdialogi, $filter, Kaanna, LukiokoulutusService, Lukitus, Kieli) {
     Editointikontrollit.registerCallback({
       edit: function () {
         $log.info('edit called');
@@ -250,7 +265,7 @@ angular.module('eperusteApp')
       }
     });
     $scope.kurssi = {kuvaus: {}};
-    $scope.osat = ['tavoitteet', 'keskeinenSisalto', 'tavoitteetJaKeskeinenSisalto'];
+    $scope.osat = LukioHelper.kurssinOsat($scope.peruste.koulutustyyppi);
     $scope.muokattavatOsat = [];
     $scope.osatById = {};
     Editointikontrollit.startEditing();

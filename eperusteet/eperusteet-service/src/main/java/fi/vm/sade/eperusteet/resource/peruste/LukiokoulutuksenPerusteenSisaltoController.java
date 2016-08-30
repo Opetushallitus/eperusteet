@@ -44,7 +44,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.net.SocketException;
 import java.util.List;
 import java.util.Set;
 
@@ -85,26 +84,28 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     private KayttajanTietoService kayttajanTietoService;
 
     @RequestMapping(value = "/oppiaineet", method = GET)
-    public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(@PathVariable("perusteId") final Long perusteId) {
+    public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(
+            @PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, () -> sisallot.getOppiaineet(perusteId, OppiaineSuppeaDto.class));
     }
 
     @RequestMapping(value = "/oppiaineet", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public OppiaineDto addOppiaine(
-            @PathVariable("perusteId") final Long perusteId,
-            @RequestBody OppiaineDto dto) {
+    public OppiaineDto addOppiaine(@PathVariable("perusteId") final Long perusteId,
+                                   @RequestBody OppiaineDto dto) {
         return oppiaineet.addOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }
 
     @RequestMapping(value = "/rakenne/versiot", method = GET)
-    public List<CombinedDto<Revision, HenkiloTietoDto>> listRakenneRevisions(@PathVariable("perusteId") final Long perusteId) {
+    public List<CombinedDto<Revision, HenkiloTietoDto>> listRakenneRevisions(
+            @PathVariable("perusteId") final Long perusteId) {
         return withHenkilos(sisallot.listRakenneRevisions(perusteId));
     }
 
     @RequestMapping(value = "/rakenne/versiot/{revision}", method = GET)
     public LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineSuppeaDto> getLukioRakenneByRevision(
-            @PathVariable("perusteId") final Long perusteId, @PathVariable("revision") final Integer revision) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("revision") final Integer revision) {
         return sisallot.getLukioRakenneByRevision(perusteId, revision, OppiaineSuppeaDto.class);
     }
 
@@ -116,71 +117,80 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/kurssit", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public RedirectView addKurssi(@PathVariable("perusteId") final Long perusteId,
+    public RedirectView addKurssi(
+            @PathVariable("perusteId") final Long perusteId,
             @RequestBody LukioKurssiLuontiDto kurssi) {
-        return new RedirectView("kurssit/"+kurssit.createLukiokurssi(perusteId, kurssi), true);
+        return new RedirectView("kurssit/" + kurssit.createLukiokurssi(perusteId, kurssi), true);
     }
 
     @RequestMapping(value = "/kurssit", method = GET)
-    public ResponseEntity<List<LukiokurssiListausDto>> listKurssit(@PathVariable("perusteId") final Long perusteId) {
+    public ResponseEntity<List<LukiokurssiListausDto>> listKurssit(
+            @PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, () -> kurssit.findLukiokurssitByPerusteId(perusteId));
     }
 
     @RequestMapping(value = "/kurssit/{kurssiId}/versiot", method = GET)
-    public ResponseEntity<List<CombinedDto<Revision, HenkiloTietoDto>>> listKurssiVersiot(@PathVariable("perusteId") final Long perusteId,
+    public ResponseEntity<List<CombinedDto<Revision, HenkiloTietoDto>>> listKurssiVersiot(
+            @PathVariable("perusteId") final Long perusteId,
             @PathVariable("kurssiId") final Long kurssiId) {
         return handleGet(perusteId, () -> withHenkilos(kurssit.listKurssiVersions(perusteId, kurssiId)));
     }
 
     @RequestMapping(value = "/kurssit/{id}", method = GET)
-    public ResponseEntity<LukiokurssiTarkasteleDto> getKurssi(@PathVariable("perusteId") final Long perusteId,
-                                  @PathVariable("id") Long id) {
+    public ResponseEntity<LukiokurssiTarkasteleDto> getKurssi(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") Long id) {
         return handleGet(perusteId, () -> kurssit.getLukiokurssiTarkasteleDtoById(perusteId, id));
     }
 
     @RequestMapping(value = "/kurssit/{id}/versiot/{version}", method = GET)
-    public ResponseEntity<LukiokurssiTarkasteleDto> getKurssiByRevision(@PathVariable("perusteId") final Long perusteId,
-                                                              @PathVariable("id") Long id,
-                                                              @PathVariable("version") Integer version) {
+    public ResponseEntity<LukiokurssiTarkasteleDto> getKurssiByRevision(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") Long id,
+            @PathVariable("version") Integer version) {
         return handleGet(perusteId, () -> kurssit.getLukiokurssiTarkasteleDtoByIdAndVersion(perusteId, id, version));
     }
 
     @RequestMapping(value = "/kurssit/{id}/versiot/{version}/palauta", method = POST)
-    public LukiokurssiTarkasteleDto revertKurssi(@PathVariable("perusteId") final Long perusteId,
-                                                              @PathVariable("id") Long id,
-                                                              @PathVariable("version") Integer version) {
+    public LukiokurssiTarkasteleDto revertKurssi(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") Long id,
+            @PathVariable("version") Integer version) {
         return kurssit.revertLukiokurssiTarkasteleDtoByIdAndVersion(perusteId, id, version);
     }
 
     @RequestMapping(value = "/kurssit/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteKurssi(@PathVariable("perusteId") final Long perusteId,
-                                                              @PathVariable("id") Long id) {
+    public void deleteKurssi(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") Long id) {
         kurssit.deleteLukiokurssi(perusteId, id);
     }
 
     @RequestMapping(value = "/kurssit/{id}", method = POST)
-    public RedirectView updateKurssi(@PathVariable("perusteId") final Long perusteId,
-                                     @PathVariable("id") final Long kurssiId,
-                                  @RequestBody LukiokurssiMuokkausDto kurssi) {
+    public RedirectView updateKurssi(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long kurssiId,
+            @RequestBody LukiokurssiMuokkausDto kurssi) {
         assertKurssiId(kurssiId, kurssi);
         kurssit.updateLukiokurssi(perusteId, kurssi);
-        return new RedirectView(""+kurssiId,true);
+        return new RedirectView("" + kurssiId, true);
     }
 
     @RequestMapping(value = "/kurssit/{id}/oppiaineet", method = POST)
-    public RedirectView updateKurssiOppiaineRelations(@PathVariable("perusteId") final Long perusteId,
-                                     @PathVariable("id") final Long kurssiId,
-                                     @RequestBody LukiokurssiOppaineMuokkausDto kurssi) {
+    public RedirectView updateKurssiOppiaineRelations(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long kurssiId,
+            @RequestBody LukiokurssiOppaineMuokkausDto kurssi) {
         assertKurssiId(kurssiId, kurssi);
         kurssit.updateLukiokurssiOppiaineRelations(perusteId, kurssi);
-        return new RedirectView("",true);
+        return new RedirectView("", true);
     }
 
     private void assertKurssiId(Long kurssiId, IdHolder kurssi) {
         if (kurssi.getId() == null) {
             kurssi.setId(kurssiId);
-        } else if(!kurssi.getId().equals(kurssiId)) {
+        } else if (!kurssi.getId().equals(kurssiId)) {
             throw new NotExistsException();
         }
     }
@@ -251,8 +261,9 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/rakenne", method = POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateStructure(@PathVariable("perusteId") final Long perusteId,
-                                @RequestBody OppaineKurssiTreeStructureDto structureDto) {
+    public void updateStructure(
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody OppaineKurssiTreeStructureDto structureDto) {
         kurssit.updateTreeStructure(perusteId, structureDto, null);
     }
 
@@ -336,14 +347,14 @@ public class LukiokoulutuksenPerusteenSisaltoController {
 
     protected List<CombinedDto<Revision, HenkiloTietoDto>> withHenkilos(List<Revision> revisions) {
         return revisions.stream().map(r
-                    -> new CombinedDto<>(r, kayttajanTiedot(r.getMuokkaajaOid())))
+                -> new CombinedDto<>(r, kayttajanTiedot(r.getMuokkaajaOid())))
                 .collect(toList());
     }
 
     private HenkiloTietoDto kayttajanTiedot(String muokkaajaOid) {
         try {
             return new HenkiloTietoDto(kayttajanTietoService.hae(muokkaajaOid));
-        } catch(Exception e) {
+        } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("Host is down")) {
                 // Fail silently.
                 logger.warn("Käyttäjätietojen haku versiotietoihin käyttäjälle {} epäonnistui. " +
@@ -370,34 +381,38 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/{id}", method = GET)
-    public ResponseEntity<LukioAihekokonaisuusMuokkausDto> getAihekokonaisuus(@PathVariable("perusteId") final Long perusteId,
-                                                                              @PathVariable("id") final Long id) {
+    public ResponseEntity<LukioAihekokonaisuusMuokkausDto> getAihekokonaisuus(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         return handleGet(perusteId, () -> aihekokonaisuudet.getLukioAihekokobaisuusMuokkausById(perusteId, id));
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/{id}", method = POST)
-    public RedirectView updateAihekokonaisuus(@PathVariable("perusteId") final Long perusteId,
-                                     @PathVariable("id") final Long aihekokonaisuusId,
-                                     @RequestBody LukioAihekokonaisuusMuokkausDto aihekokonaisuus) {
-        if(!aihekokonaisuus.getId().equals(aihekokonaisuusId)) {
+    public RedirectView updateAihekokonaisuus(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long aihekokonaisuusId,
+            @RequestBody LukioAihekokonaisuusMuokkausDto aihekokonaisuus) {
+        if (!aihekokonaisuus.getId().equals(aihekokonaisuusId)) {
             throw new NotExistsException();
         }
         aihekokonaisuudet.muokkaaAihekokonaisuutta(perusteId, aihekokonaisuus);
-        return new RedirectView(""+aihekokonaisuusId,true);
+        return new RedirectView("" + aihekokonaisuusId, true);
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAihekokonaisuus(@PathVariable("perusteId") final Long perusteId,
-                                      @PathVariable("id") final Long aihekokonaisuusId) {
+    public void deleteAihekokonaisuus(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long aihekokonaisuusId) {
         aihekokonaisuudet.poistaAihekokonaisuus(perusteId, aihekokonaisuusId);
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/aihekokonaisuus", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public RedirectView addAihekokonaisuus(@PathVariable("perusteId") final Long perusteId,
-                                  @RequestBody LukioAihekokonaisuusLuontiDto aihekokonaisuusLuontiDto) {
-        return new RedirectView(""+aihekokonaisuudet.luoAihekokonaisuus(perusteId, aihekokonaisuusLuontiDto), true);
+    public RedirectView addAihekokonaisuus(
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody LukioAihekokonaisuusLuontiDto aihekokonaisuusLuontiDto) {
+        return new RedirectView("" + aihekokonaisuudet.luoAihekokonaisuus(perusteId, aihekokonaisuusLuontiDto), true);
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/{id}/versiot", method = GET)
@@ -408,9 +423,10 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/{id}/versio/{revisio}", method = GET)
-    public ResponseEntity<LukioAihekokonaisuusMuokkausDto> getAihekokonaisuusByVersion(@PathVariable("perusteId") final Long perusteId,
-                                                                                       @PathVariable("id") final Long id,
-                                                                                       @PathVariable("revisio") final int revisio) {
+    public ResponseEntity<LukioAihekokonaisuusMuokkausDto> getAihekokonaisuusByVersion(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @PathVariable("revisio") final int revisio) {
         return handleGet(perusteId, () -> aihekokonaisuudet.getAihekokonaisuusByVersion(perusteId, id, revisio));
     }
 
@@ -419,7 +435,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("id") final Long id,
             @PathVariable("revisio") final int revisio) {
-        LukioAihekokonaisuusMuokkausDto dto = aihekokonaisuudet.palautaAihekokonaisuus (perusteId, id, revisio);
+        LukioAihekokonaisuusMuokkausDto dto = aihekokonaisuudet.palautaAihekokonaisuus(perusteId, id, revisio);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 

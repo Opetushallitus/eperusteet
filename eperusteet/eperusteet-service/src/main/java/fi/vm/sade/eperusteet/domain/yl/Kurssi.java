@@ -43,7 +43,7 @@ public class Kurssi extends AbstractAuditedReferenceableEntity implements Nimett
 
     @Getter
     @Column(nullable = false, unique = true, updatable = false)
-    private UUID tunniste =UUID.randomUUID();
+    private UUID tunniste = UUID.randomUUID();
 
     @Getter
     @Setter

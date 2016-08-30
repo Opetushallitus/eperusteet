@@ -91,6 +91,13 @@ public class Lukiokurssi extends Kurssi {
     private TekstiOsa tavoitteetJaKeskeinenSisalto;
 
     @Getter
+    @Setter
+    @Valid
+    @JoinColumn(name = "arviointi_id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private TekstiOsa arviointi;
+
+    @Getter
     @Audited
     @OneToMany(mappedBy = "kurssi", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OppiaineLukiokurssi> oppiaineet = new HashSet<>(0);

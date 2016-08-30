@@ -22,9 +22,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
-import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LokalisoitavaOsaDto;
 import fi.vm.sade.eperusteet.repository.LukioOpetussuunnitelmaRakenneRepository;
 import fi.vm.sade.eperusteet.repository.LukiokoulutuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.LukiokurssiRepository;
@@ -58,7 +56,6 @@ import static fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi.inPeruste;
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * User: tommiratamaa
@@ -95,7 +92,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Autowired
     @LockCtx(LukioOpetussuunnitelmaRakenneLockContext.class)
     private LockService<LukioOpetussuunnitelmaRakenneLockContext> lukioRakenneLockService;
-    
+
     @Autowired
     private LukioOpetussuunnitelmaRakenneRepository rakenneRepository;
 
@@ -107,7 +104,7 @@ public class KurssiServiceImpl implements KurssiService {
     }
 
     private List<LukiokurssiListausDto> kurssitWithOppiaineet(long perusteId, List<LukiokurssiListausDto> kurssit) {
-        Map<Long,LukiokurssiListausDto> kurssitById = kurssit.stream()
+        Map<Long, LukiokurssiListausDto> kurssitById = kurssit.stream()
                 .collect(toMap(LukiokurssiListausDto::getId, k -> k));
         lukiokurssiRepository.findKurssiOppaineRelationsByPerusteId(perusteId).stream()
                 .forEachOrdered(oak -> kurssitById.get(oak.getKurssiId()).getOppiaineet().add(
@@ -155,6 +152,7 @@ public class KurssiServiceImpl implements KurssiService {
     private LukiokurssiTarkasteleDto toTarkasteluDto(Lukiokurssi kurssi) {
         return toTarkasteluDto(kurssi, kurssi);
     }
+
     private LukiokurssiTarkasteleDto toTarkasteluDto(Lukiokurssi kurssi, Lukiokurssi relationsKurssi) {
         LukiokurssiTarkasteleDto dto = mapper.map(kurssi, new LukiokurssiTarkasteleDto());
         dto.setOppiaineet(relationsKurssi.getOppiaineet().stream().map(this::oppaineTarkasteluDto)
@@ -165,7 +163,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Override
     @Transactional(readOnly = true)
     public LukiokurssiTarkasteleDto getLukiokurssiTarkasteleDtoByIdAndVersion(long perusteId,
-                                                  long kurssiId, int version) throws NotExistsException {
+                                                                              long kurssiId, int version) throws NotExistsException {
         Lukiokurssi currentKurssi = found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
         return toTarkasteluDto(found(lukiokurssiRepository.findRevision(kurssiId, version)), currentKurssi);
     }
@@ -173,7 +171,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Override
     @Transactional
     public LukiokurssiTarkasteleDto revertLukiokurssiTarkasteleDtoByIdAndVersion(long perusteId,
-                                                                 long kurssiId, int version) {
+                                                                                 long kurssiId, int version) {
         found(lukiokurssiRepository.findOne(kurssiId), inPeruste(perusteId));
         Lukiokurssi kurssi = lukiokurssiRepository.findRevision(kurssiId, version);
         LukiokurssiMuokkausDto dto = mapper.map(kurssi, new LukiokurssiMuokkausDto());
@@ -190,10 +188,14 @@ public class KurssiServiceImpl implements KurssiService {
     private Long kurssiTyypinKuvaus(OppiaineLukiokurssi oa) {
         Oppiaine oppiaine = oa.getOppiaine();
         switch (oa.getKurssi().getTyyppi()) {
-            case PAKOLLINEN: return id(oppiaine.getPakollinenKurssiKuvaus());
-            case VALTAKUNNALLINEN_SOVELTAVA: return id(oppiaine.getSoveltavaKurssiKuvaus());
-            case VALTAKUNNALLINEN_SYVENTAVA: return id(oppiaine.getSyventavaKurssiKuvaus());
-            default:return null;
+            case PAKOLLINEN:
+                return id(oppiaine.getPakollinenKurssiKuvaus());
+            case VALTAKUNNALLINEN_SOVELTAVA:
+                return id(oppiaine.getSoveltavaKurssiKuvaus());
+            case VALTAKUNNALLINEN_SYVENTAVA:
+                return id(oppiaine.getSyventavaKurssiKuvaus());
+            default:
+                return null;
         }
     }
 
@@ -221,7 +223,7 @@ public class KurssiServiceImpl implements KurssiService {
         return kurssi.getId();
     }
 
-    private<T extends KurssinOppiaineDto> void mergeOppiaineet(long perusteId, Lukiokurssi kurssi, List<T> from) {
+    private <T extends KurssinOppiaineDto> void mergeOppiaineet(long perusteId, Lukiokurssi kurssi, List<T> from) {
         Set<OppiaineLukiokurssi> to = kurssi.getOppiaineet();
         Map<Long, T> newByOppiaine = from.stream().collect(toMap(KurssinOppiaineDto::getOppiaineId, olk -> olk));
         to.removeIf(olk -> !newByOppiaine.containsKey(olk.getOppiaine().getId()));
@@ -283,9 +285,9 @@ public class KurssiServiceImpl implements KurssiService {
         structure.getKurssit().forEach(kurssiDto -> {
             if (tryRestoreFromRevision != null && kurssitById.get(kurssiDto.getId()) == null) {
                 Lukiokurssi oldKurssi = found(lukiokurssiRepository.findRevision(kurssiDto.getId(),
-                            tryRestoreFromRevision), inPeruste(perusteId),
-                            () -> new NotExistsException("No Lukiokurssi "+kurssiDto.getId()
-                                    +" in lukioperuste at revision "+tryRestoreFromRevision));
+                        tryRestoreFromRevision), inPeruste(perusteId),
+                        () -> new NotExistsException("No Lukiokurssi " + kurssiDto.getId()
+                                + " in lukioperuste at revision " + tryRestoreFromRevision));
                 long id = createLukiokurssi(perusteId, mapper.map(oldKurssi, new LukioKurssiLuontiDto()));
                 logger.info("Restored Lukiokurssi {} to id={}", oldKurssi.getId(), id);
                 Lukiokurssi newKurssi = lukiokurssiRepository.findOne(id);

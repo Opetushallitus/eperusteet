@@ -20,7 +20,9 @@ import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Builder;
 
@@ -37,6 +39,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LukioKurssiLuontiDto implements Serializable {
     @NotNull
     private LukiokurssiTyyppi tyyppi;
@@ -50,32 +54,6 @@ public class LukioKurssiLuontiDto implements Serializable {
     private Optional<TekstiOsaDto> tavoitteet;
     private Optional<TekstiOsaDto> keskeinenSisalto;
     private Optional<TekstiOsaDto> tavoitteetJaKeskeinenSisalto;
-
+    private Optional<TekstiOsaDto> arviointi;
     private String kommentti;
-
-    public LukioKurssiLuontiDto() {
-    }
-
-    public LukioKurssiLuontiDto(LukiokurssiTyyppi tyyppi,
-                                List<KurssinOppiaineDto> oppiaineet,
-                                LokalisoituTekstiDto nimi,
-                                String koodiArvo, String koodiUri,
-                                LokalisoituTekstiDto lokalisoituKoodi,
-                                Optional<LokalisoituTekstiDto> kuvaus,
-                                Optional<TekstiOsaDto> tavoitteet,
-                                Optional<TekstiOsaDto> keskeinenSisalto,
-                                Optional<TekstiOsaDto> tavoitteetJaKeskeinenSisalto,
-                                String kommentti) {
-        this.tyyppi = tyyppi;
-        this.oppiaineet = oppiaineet;
-        this.nimi = nimi;
-        this.koodiArvo = koodiArvo;
-        this.koodiUri = koodiUri;
-        this.lokalisoituKoodi = lokalisoituKoodi;
-        this.kuvaus = kuvaus;
-        this.tavoitteet = tavoitteet;
-        this.keskeinenSisalto = keskeinenSisalto;
-        this.tavoitteetJaKeskeinenSisalto = tavoitteetJaKeskeinenSisalto;
-        this.kommentti = kommentti;
-    }
 }

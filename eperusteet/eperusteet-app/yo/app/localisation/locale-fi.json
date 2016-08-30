@@ -1058,5 +1058,6 @@
     "peruste-lukio-oppiaineessa-ei-oppimaaria": "Oppiaineessa ei yhtään oppimäärää",
     "peruste-lukio-oppiaineessa-ei-kursseja": "Peruste sisältää oppiaineen/määrän, jolla ei ole kursseja",
     "peruste-lukio-kooodi-puuttuu": "Koodi puuttuu",
-    "peruste-lukio-sama-koodi": "Samaa koodia on käytetty useamman kerran"
+    "peruste-lukio-sama-koodi": "Samaa koodia on käytetty useamman kerran",
+    "kurssi-osa-arviointi": "Arviointi"
 }
