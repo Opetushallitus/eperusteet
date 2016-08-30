@@ -1,0 +1,4 @@
+ALTER TABLE koulutus DROP CONSTRAINT koulutus_koulutus_koodi_key;
+ALTER TABLE koulutus DROP CONSTRAINT koulutuskoodi_arvo_unique;
+ALTER TABLE osaamisala DROP CONSTRAINT osaamisala_osaamisalakoodi_arvo_key;
+ALTER TABLE osaamisala DROP CONSTRAINT osaamisala_osaamisalakoodi_uri_key;

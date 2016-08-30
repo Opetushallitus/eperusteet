@@ -208,6 +208,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/amosaapohja", method = GET)
     @ResponseBody
+    @InternalApi
     @ApiOperation(value = "Amosaa jaetun tutkinnon pohja")
     public ResponseEntity<PerusteKaikkiDto> getAmosaaPohja() {
         PerusteKaikkiDto t = service.getAmosaaYhteinenPohja();

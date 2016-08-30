@@ -441,7 +441,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setDiaarinumero(updated.getDiaarinumero());
             current.setKielet(updated.getKielet());
             current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
-            current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
+            current.setKoulutukset(updated.getKoulutukset());
             current.setKuvaus(updated.getKuvaus());
             current.setMaarayskirje(updated.getMaarayskirje());
             current.setNimi(updated.getNimi());
@@ -463,7 +463,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         current.setKielet(updated.getKielet());
         current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
-        current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
+        current.setKoulutukset(updated.getKoulutukset());
         current.setMaarayskirje(updated.getMaarayskirje());
         current.setKuvaus(updated.getKuvaus());
         current.setNimi(updated.getNimi());
@@ -484,6 +484,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return current;
     }
 
+    @Deprecated
     private Set<Koulutus> checkIfKoulutuksetAlreadyExists(Set<Koulutus> koulutukset) {
         Set<Koulutus> tmp = new HashSet<>();
         if (koulutukset != null) {
