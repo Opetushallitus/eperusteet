@@ -15,23 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.Koulutus;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.Termi;
-import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohde;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus;
@@ -39,11 +23,7 @@ import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
@@ -52,37 +32,6 @@ import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -91,6 +40,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  *
@@ -138,13 +102,13 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         // infosivu
         addInfoPage(doc, peruste, kieli);
 
-        // pudotellaan tutkinnonosat paikalleen
-        addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
-
         // sisältöelementit (proosa)
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         PerusteenOsaViite sisalto = suoritustapa.getSisalto();
         addSisaltoElement(doc, peruste, rootElement, sisalto, 0, suoritustapa, kieli);
+
+        // pudotellaan tutkinnonosat paikalleen
+        addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
 
         // sanity check, ei feilata dokkariluontia, vaikka syntynyt dokkari
         // olisikin vähän pöljä
@@ -186,7 +150,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
      */
     private void jsoupIntoDOMNode(Document rootDoc, Node parentNode, org.jsoup.nodes.Node jsoupNode) {
         for (org.jsoup.nodes.Node child : jsoupNode.childNodes()) {
-            createDOM(child, parentNode, rootDoc, new HashMap<String, String>());
+            createDOM(child, parentNode, rootDoc, new HashMap<>());
         }
     }
 
@@ -324,21 +288,22 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             returnElement.appendChild(para);
         }
 
-        addRakenneOsaRec(returnElement, rakenne, doc, kieli, 0);
+        addRakenneOsaRec(returnElement, rakenne, suoritustapa, doc, kieli, 0);
 
         return returnElement;
     }
 
     private void addRakenneOsaRec(Element parent,
-        AbstractRakenneOsa osa, Document doc, Kieli kieli, int depth) {
+        AbstractRakenneOsa osa, Suoritustapa suoritustapa, Document doc, Kieli kieli, int depth) {
 
         if (osa instanceof RakenneModuuli) {
             RakenneModuuli rakenneModuuli = (RakenneModuuli) osa;
 
             String nimi = getTextString(rakenneModuuli.getNimi(), kieli);
             MuodostumisSaanto muodostumisSaanto = rakenneModuuli.getMuodostumisSaanto();
+
             String kokoTeksti = getKokoTeksti(muodostumisSaanto, kieli);
-            String laajuusTeksti = getLaajuusTeksti(muodostumisSaanto, kieli);
+            String laajuusTeksti = getLaajuusTeksti(muodostumisSaanto, suoritustapa.getLaajuusYksikko(), kieli);
 
             String kuvaus = getTextString(rakenneModuuli.getKuvaus(), kieli);
 
@@ -475,7 +440,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             }
 
             for (AbstractRakenneOsa lapsi : rakenneModuuli.getOsat()) {
-                addRakenneOsaRec(element, lapsi, doc, kieli, depth + 1);
+                addRakenneOsaRec(element, lapsi, suoritustapa, doc, kieli, depth + 1);
             }
 
         } else if (osa instanceof RakenneOsa) {
@@ -820,7 +785,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     private void addValmaTavoiteList(Document doc, Element element, Kieli kieli, List<TekstiPalanen> tavoitteet) {
-        if( tavoitteet != null & tavoitteet.size() > 0 ){
+        if(tavoitteet != null && tavoitteet.size() > 0) {
             Element list = doc.createElement("itemizedlist");
             list.setAttribute("spacing", "compact");
 
@@ -1365,7 +1330,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         return kokoBuilder.toString();
     }
 
-    private String getLaajuusTeksti(MuodostumisSaanto saanto, Kieli kieli) {
+    private String getLaajuusTeksti(MuodostumisSaanto saanto, LaajuusYksikko yksikko, Kieli kieli) {
         if (saanto == null || saanto.getLaajuus() == null) {
             return null;
         }
@@ -1385,7 +1350,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
         String yks = messages.translate("docgen.laajuus.ov", kieli);
-        if (laajuus.getYksikko() == LaajuusYksikko.OSAAMISPISTE) {
+        if (yksikko == LaajuusYksikko.OSAAMISPISTE) {
             yks = messages.translate("docgen.laajuus.osp", kieli);
         }
 

@@ -188,9 +188,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional
     @IgnorePerusteUpdateCheck
     public Long getDokumenttiId(Long perusteId, Kieli kieli) {
-        Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
-        /*List<Dokumentti> dokumentit = dokumenttiRepository
-                .findByPerusteIdAndKieliAndTila(perusteId, kieli, DokumenttiTila.VALMIS, sort);*/
         List<Long> dokumenttiIds = dokumenttiRepository
                 .findLatest(perusteId, kieli, DokumenttiTila.VALMIS);
         if (!dokumenttiIds.isEmpty()) {
@@ -240,7 +237,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         // koitetaan puljata date-kenttä kuntoon fopin jäljiltä, mutta jos se
         // mistään syystä heittää poikkeuksen, palautetaan alkuperäinen data
-        byte [] toReturn;
+        byte[] toReturn;
        try {
             byte[] fixedba;
             try (InputStream fixed = fixMetadata(new ByteArrayInputStream(copy))) {
