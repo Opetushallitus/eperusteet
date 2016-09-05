@@ -19,24 +19,24 @@
 /// <reference path="../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
-  .factory('PerusteprojektiTila', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id/tila/:tila', { id: '@id' });
+  .factory('PerusteprojektiTila', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/tila/:tila', {id: '@id'});
   })
-  .factory('OmatPerusteprojektit', function($resource, SERVICE_LOC) {
+  .factory('OmatPerusteprojektit', function ($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/omat');
   })
-  .factory('PerusteprojektiResource', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id', { id: '@id' }, {
+  .factory('PerusteprojektiResource', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id', {id: '@id'}, {
       update: {method: 'POST', isArray: false}
     });
   })
-  .factory('PerusteprojektiOikeudet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id/oikeudet', { id: '@id' });
+  .factory('PerusteprojektiOikeudet', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/oikeudet', {id: '@id'});
   })
-  .factory('DiaarinumeroUniqueResource', function($resource, SERVICE_LOC) {
+  .factory('DiaarinumeroUniqueResource', function ($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/diaarinumero/uniikki/:diaarinumero');
   })
-  .service('PerusteProjektit', function($http, SERVICE_LOC, Notifikaatiot) {
+  .service('PerusteProjektit', function ($http, SERVICE_LOC, Notifikaatiot) {
     const haku = (query, success, failure, urlPostfix) => {
       success = success || angular.noop;
       failure = failure || Notifikaatiot.serverCb;
@@ -53,7 +53,7 @@ angular.module('eperusteApp')
       perusteHaku: perusteHaku
     };
   })
-  .service('PerusteProjektiService', function($rootScope, $state, $q, $modal, YleinenData) {
+  .service('PerusteProjektiService', function ($rootScope, $state, $q, $modal, YleinenData) {
     var pp = {};
     var suoritustapa = '';
 
@@ -71,7 +71,7 @@ angular.module('eperusteApp')
     }
 
     function watcher(scope, kentta) {
-      scope.$watch(kentta, function(temp) {
+      scope.$watch(kentta, function (temp) {
         save(temp);
       }, true);
     }
@@ -93,9 +93,9 @@ angular.module('eperusteApp')
     }
 
     function hasSuoritustapa(peruste, suoritustapakoodi) {
-      return peruste && _.find(peruste.suoritustavat, function(st) {
-        return st.suoritustapakoodi === suoritustapakoodi;
-      });
+      return peruste && _.find(peruste.suoritustavat, function (st) {
+          return st.suoritustapakoodi === suoritustapakoodi;
+        });
     }
 
     function getRightSuoritustapa(peruste, projekti) {
@@ -138,16 +138,18 @@ angular.module('eperusteApp')
         templateUrl: 'views/modals/projektiSisaltoTuonti.html',
         controller: 'ProjektiTiedotSisaltoModalCtrl',
         resolve: {
-          pohja: function() { return !!tuoPohja; },
+          pohja: function () {
+            return !!tuoPohja;
+          },
         }
       })
-      .result.then(function(peruste) {
+        .result.then(function (peruste) {
         peruste.tila = 'laadinta';
         peruste.tyyppi = 'normaali';
         var onOps = false;
         projekti.perusteId = peruste.id;
         projekti.koulutustyyppi = peruste.koulutustyyppi;
-        _.forEach(peruste.suoritustavat, function(st) {
+        _.forEach(peruste.suoritustavat, function (st) {
           if (st.suoritustapakoodi === 'ops') {
             onOps = true;
             projekti.laajuusYksikko = st.laajuusYksikko;
@@ -188,8 +190,8 @@ angular.module('eperusteApp')
     };
   })
   .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, $log,
-                    PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisalto,
-                    LukiokoulutusService, LukioKurssiService) {
+                                                     PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisalto,
+                                                     LukiokoulutusService, LukioKurssiService) {
 
     var deferred = $q.defer();
     var projekti: any = {};
@@ -242,7 +244,7 @@ angular.module('eperusteApp')
       promises.push(sisaltoPromise);
       if (kurssitProvider) {
         var kurssiPromise = kurssitProvider();
-        kurssiPromise.then(function(data) {
+        kurssiPromise.then(function (data) {
           ylTiedot.kurssit = data;
         });
         promises.push(kurssiPromise);
@@ -250,40 +252,40 @@ angular.module('eperusteApp')
       return $q.all(promises);
     }
 
-    this.haeSisalto = function(perusteId, suoritustapa) {
+    this.haeSisalto = function (perusteId, suoritustapa) {
       var deferred = $q.defer();
       var ylDefer = $q.defer();
 
       if (!YleinenData.isPerusopetus(peruste) && !YleinenData.isLukiokoulutus(peruste)) {
-        SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
+        SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function (vastaus) {
           deferred.resolve(vastaus);
           sisalto = vastaus;
-        }, function(virhe) {
+        }, function (virhe) {
           deferred.reject(virhe);
         });
         ylDefer.resolve();
-      } else  {
+      } else {
         var labels,
-            osatProvider,
-            sisaltoProvider,
-            kurssitProvider = null;
+          osatProvider,
+          sisaltoProvider,
+          kurssitProvider = null;
         if (YleinenData.isLukiokoulutus(peruste)) {
           labels = LukiokoulutusService.LABELS;
-          osatProvider = function(key) {
+          osatProvider = function (key) {
             return LukiokoulutusService.getOsat(key, true);
           };
-          sisaltoProvider = function() {
+          sisaltoProvider = function () {
             return LukiokoulutusService.getSisalto().$promise;
           };
-          kurssitProvider = function() {
+          kurssitProvider = function () {
             return LukioKurssiService.listByPeruste(perusteId);
           };
         } else {
           labels = PerusopetusService.LABELS;
-          osatProvider = function(key) {
+          osatProvider = function (key) {
             return PerusopetusService.getOsat(key, true);
           };
-          sisaltoProvider = function() {
+          sisaltoProvider = function () {
             return PerusopetusService.getSisalto(suoritustapa).$promise;
           };
         }
@@ -306,7 +308,7 @@ angular.module('eperusteApp')
       PerusopetusService.setTiedot(this);
       projektinTiedotDeferred = $q.defer();
 
-      PerusteprojektiResource.get({id: stateParams.perusteProjektiId}, function(projektiVastaus) {
+      PerusteprojektiResource.get({id: stateParams.perusteProjektiId}, function (projektiVastaus) {
         projekti = projektiVastaus;
         Perusteet.get({perusteId: projekti._peruste}, function (perusteVastaus) {
           peruste = perusteVastaus;
@@ -314,11 +316,11 @@ angular.module('eperusteApp')
             peruste.suoritustavat = _.sortBy(peruste.suoritustavat, 'suoritustapakoodi');
           }
           projektinTiedotDeferred.resolve();
-        }, function(virhe) {
+        }, function (virhe) {
           projektinTiedotDeferred.reject();
           Notifikaatiot.serverCb(virhe);
         });
-      }, function(virhe) {
+      }, function (virhe) {
         projektinTiedotDeferred.reject();
         Notifikaatiot.serverCb(virhe);
       });
@@ -326,10 +328,10 @@ angular.module('eperusteApp')
       return projektinTiedotDeferred.promise;
     };
 
-    var asetaSuoritustapa = function(stateParams) {
+    var asetaSuoritustapa = function (stateParams) {
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
         stateParams.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi);
-          $state.reload();
+        $state.reload();
       }
     };
 
@@ -339,10 +341,10 @@ angular.module('eperusteApp')
       var perusteenSisaltoDeferred = $q.defer();
 
       if (forced || YleinenData.isPerusopetus(peruste) || YleinenData.isSimple(peruste) ||
-          (!_.isEmpty(peruste.suoritustavat))) {
-          self.haeSisalto(peruste.id, stateParams.suoritustapa).then(function() {
+        (!_.isEmpty(peruste.suoritustavat))) {
+        self.haeSisalto(peruste.id, stateParams.suoritustapa).then(function () {
           perusteenSisaltoDeferred.resolve();
-        }, function(virhe) {
+        }, function (virhe) {
           perusteenSisaltoDeferred.reject();
           Notifikaatiot.serverCb(virhe);
         });
@@ -356,14 +358,14 @@ angular.module('eperusteApp')
     deferred.resolve(this);
     return deferred.promise;
   })
-  .service('PerusteprojektiOikeudetService', function($rootScope, $stateParams,
-    PerusteprojektiOikeudet, PerusteprojektiTiedotService) {
+  .service('PerusteprojektiOikeudetService', function ($rootScope, $stateParams,
+                                                       PerusteprojektiOikeudet, PerusteprojektiTiedotService) {
     var oikeudet;
     var projektiId = null;
     var projektiTila = null;
 
     function noudaOikeudet(stateParams) {
-      var vastaus = PerusteprojektiOikeudet.get({id: stateParams.perusteProjektiId}, function(vastaus) {
+      var vastaus = PerusteprojektiOikeudet.get({id: stateParams.perusteProjektiId}, function (vastaus) {
         oikeudet = vastaus;
       });
 
@@ -383,8 +385,8 @@ angular.module('eperusteApp')
       return false;
     }
 
-    $rootScope.$on('$stateChangeSuccess', function() {
-      PerusteprojektiTiedotService.then(function(res) {
+    $rootScope.$on('$stateChangeSuccess', function () {
+      PerusteprojektiTiedotService.then(function (res) {
         var projekti = res.getProjekti();
         if (projektiId && projektiId === projekti.id && projektiTila !== projekti.tila) {
           noudaOikeudet($stateParams);

@@ -476,7 +476,7 @@
                     </sourceFileExcludes>
                 </configuration>
             </plugin>
-            </plugins>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -517,15 +517,15 @@
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>2.6</version>
                     <executions>
-                      <execution>
-                        <id>default-resources</id>
-                        <configuration>
-                          <nonFilteredFileExtensions>
-                            <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
-                          </nonFilteredFileExtensions>
-                        </configuration>
-                      </execution>
-                  </executions>
+                        <execution>
+                            <id>default-resources</id>
+                            <configuration>
+                                <nonFilteredFileExtensions>
+                                    <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                                </nonFilteredFileExtensions>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -547,9 +547,9 @@
                                 <phase>process-classes</phase>
                             </execution>
                         </executions>
-			<configuration>
-         			<hibernateMapping>${project.basedir}/src/test/config/hibernate-typedefs.xml</hibernateMapping>
-			</configuration>
+                        <configuration>
+                            <hibernateMapping>${project.basedir}/src/test/config/hibernate-typedefs.xml</hibernateMapping>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

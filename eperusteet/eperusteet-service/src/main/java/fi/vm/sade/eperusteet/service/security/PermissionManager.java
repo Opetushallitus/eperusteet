@@ -17,11 +17,7 @@ package fi.vm.sade.eperusteet.service.security;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -29,26 +25,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.KOMMENTOINTI;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.KORJAUS;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.LUKU;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.LUONTI;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.POISTO;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.TILANVAIHTO;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +37,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
+import java.util.*;
+
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.*;
+
 /**
- *
  * @author harrik
  */
 @Service
@@ -99,7 +80,7 @@ public class PermissionManager {
 
         private final String permission;
 
-        private Permission(String permission) {
+        Permission(String permission) {
             this.permission = permission;
         }
 
@@ -121,7 +102,7 @@ public class PermissionManager {
 
         private final String target;
 
-        private Target(String target) {
+        Target(String target) {
             this.target = target;
         }
 
@@ -131,22 +112,24 @@ public class PermissionManager {
         }
     }
 
-    //TODO: oikeidet kovakodattua, oikeuksien tarkastaus.
+    //TODO: oikeudet kovakoodattua, oikeuksien tarkastaus.
     private static final Map<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> allowedRoles;
 
     static {
         Map<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> allowedRolesTmp = new EnumMap<>(Target.class);
 
         Set<String> r0 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001");
-        Set<String> r1 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>");
-        Set<String> r2 = Sets
-            .newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
-        Set<String> r3 = Sets
-            .newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>", "ROLE_APP_EPERUSTEET_READ_<oid>");
+        Set<String> r1 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001",
+                "ROLE_APP_EPERUSTEET_CRUD_<oid>");
+        Set<String> r2 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001",
+                "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
+        Set<String> r3 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001",
+                "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>",
+                "ROLE_APP_EPERUSTEET_READ_<oid>");
         Set<String> r4 = Sets.newHashSet("ROLE_VIRKAILIJA", "ROLE_APP_EPERUSTEET");
         Set<String> r5 = Sets.newHashSet("ROLE_VIRKAILIJA", "ROLE_APP_EPERUSTEET", "ROLE_ANONYMOUS");
 
-        //perusteenosa, peruste (näiden osalta oletetaan että peruste tai sen osa on tilassa LUONNOS
+        // Perusteenosa, peruste (näiden osalta oletetaan että peruste tai sen osa on tilassa LUONNOS
         {
             EnumMap<ProjektiTila, Map<Permission, Set<String>>> tmp = new EnumMap<>(ProjektiTila.class);
             Map<Permission, Set<String>> perm;
@@ -224,6 +207,7 @@ public class PermissionManager {
 
             perm = Maps.newHashMap();
             perm.put(LUKU, r0);
+            perm.put(TILANVAIHTO, r1);
             tmp.put(ProjektiTila.JULKAISTU, perm);
 
             perm = Maps.newHashMap();
@@ -285,6 +269,7 @@ public class PermissionManager {
                 }
             }
         }
+
         allowedRoles = Collections.unmodifiableMap(allowedRolesTmp);
     }
 
@@ -340,20 +325,20 @@ public class PermissionManager {
                 return true;
             } else {
                 if (Target.PERUSTEPROJEKTI.equals(targetType)) {
-                    List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaById((Long)targetId);
-                    if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond() == true) {
+                    List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaById((Long) targetId);
+                    if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond()) {
                         return true;
                     }
                 }
                 if (Target.PERUSTE.equals(targetType)) {
-                    List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaByPeruste((Long)targetId);
-                    if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond() == true) {
+                    List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaByPeruste((Long) targetId);
+                    if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond()) {
                         return true;
                     }
                 }
                 if (Target.PERUSTEENOSA.equals(targetType)) {
-                    List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaByPerusteenOsaId((Long)targetId);
-                    if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond() == true) {
+                    List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaByPerusteenOsaId((Long) targetId);
+                    if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond()) {
                         return true;
                     }
                 }
@@ -412,7 +397,6 @@ public class PermissionManager {
     }
 
     /**
-     *
      * @param authentication
      * @param targetId
      * @param targetType
@@ -426,7 +410,6 @@ public class PermissionManager {
         Map<ProjektiTila, Map<Permission, Set<String>>> tempTargetKohtaiset = allowedRoles.get(targetType);
         Map<Permission, Set<String>> tempProjektitilaKohtaiset = tempTargetKohtaiset.get(tila);
         final Set<Pair<String, ProjektiTila>> projektitila = findPerusteProjektiTila(targetType, targetId);
-
         for (Map.Entry<Permission, Set<String>> per : tempProjektitilaKohtaiset.entrySet()) {
             boolean hasRole = false;
             for (Pair<String, ProjektiTila> ppt : projektitila) {
@@ -447,9 +430,7 @@ public class PermissionManager {
         }
         final Long id = (Long) targetId;
 
-        final Set<Pair<String, ProjektiTila>> empty = Collections.emptySet();
         switch (targetType) {
-
             case PERUSTEENMETATIEDOT:
             case PERUSTE: {
                 return setOf(perusteProjektit.findByPeruste(id));

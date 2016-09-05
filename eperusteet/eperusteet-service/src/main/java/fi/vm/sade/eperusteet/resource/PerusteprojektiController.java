@@ -21,40 +21,25 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.DiaarinumeroHakuDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
-import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
- *
  * @author harrik
  */
 @Controller
@@ -171,10 +156,9 @@ public class PerusteprojektiController {
     public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilot(
             @PathVariable("id") final Long id,
             @RequestBody List<TyoryhmaHenkiloDto> tyoryhma) {
-        List<TyoryhmaHenkiloDto> res = new ArrayList<>();
-        for (TyoryhmaHenkiloDto thd : tyoryhma) {
-            res.add(service.saveTyoryhma(id, thd));
-        }
+        List<TyoryhmaHenkiloDto> res = tyoryhma.stream()
+                .map(thd -> service.saveTyoryhma(id, thd))
+                .collect(Collectors.toList());
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -220,7 +204,7 @@ public class PerusteprojektiController {
     }
 
     @RequestMapping(value = "/{id}/oikeudet", method = GET)
-    public ResponseEntity<Map<PermissionManager.Target,Set<PermissionManager.Permission>>> getOikeudet(
+    public ResponseEntity<Map<PermissionManager.Target, Set<PermissionManager.Permission>>> getOikeudet(
             @PathVariable("id") final Long id) {
         return new ResponseEntity<>(permission.getProjectPermissions(id), HttpStatus.OK);
     }

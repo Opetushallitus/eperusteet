@@ -17,12 +17,12 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- *
  * @author harrik
  */
 public enum ProjektiTila {
@@ -42,19 +42,19 @@ public enum ProjektiTila {
             }
         }
     },
-    KOMMENTOINTI("kommentointi"){
+    KOMMENTOINTI("kommentointi") {
         @Override
         public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             return EnumSet.of(LAADINTA, POISTETTU);
         }
     },
-    VIIMEISTELY("viimeistely"){
+    VIIMEISTELY("viimeistely") {
         @Override
         public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             return EnumSet.of(LAADINTA, VALMIS, POISTETTU);
         }
     },
-    VALMIS("valmis"){
+    VALMIS("valmis") {
         @Override
         public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             if (tyyppi.equals(PerusteTyyppi.POHJA)) {
@@ -64,7 +64,12 @@ public enum ProjektiTila {
             }
         }
     },
-    JULKAISTU("julkaistu");
+    JULKAISTU("julkaistu") {
+        @Override
+        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+            return EnumSet.of(LAADINTA);
+        }
+    };
 
     public static ProjektiTila[] jalkeen(ProjektiTila tila) {
         return Stream.of(ProjektiTila.values()).filter(t -> t.ordinal() > tila.ordinal()).toArray(ProjektiTila[]::new);
@@ -72,7 +77,7 @@ public enum ProjektiTila {
 
     private final String tila;
 
-    private ProjektiTila(String tila) {
+    ProjektiTila(String tila) {
         this.tila = tila;
     }
 
