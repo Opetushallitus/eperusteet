@@ -15,9 +15,10 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  *
@@ -30,6 +31,7 @@ public class PerusteQuery {
     private int sivu = 0;
     private int sivukoko = 25;
     private boolean siirtyma = false;
+    private boolean voimassaolo = true;
     private String nimi;
     private List<String> koulutusala;
     private List<String> koulutustyyppi;

@@ -18,44 +18,24 @@ package fi.vm.sade.eperusteet.repository.custom;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koulutus;
-import fi.vm.sade.eperusteet.domain.Koulutus_;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti_;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.Peruste_;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapa_;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.SetJoin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -164,8 +144,10 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         if (pq.isSiirtyma()) {
             pred = cb.and(pred, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(siirtymaPaattyy, cb.currentDate())));
-        } else {
-            pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
+        }
+
+        if (pq.isVoimassaolo()) {
+            pred = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
         }
 
         if (!Strings.isNullOrEmpty(pq.getTila())) {
