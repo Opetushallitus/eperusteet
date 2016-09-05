@@ -144,10 +144,12 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         if (pq.isSiirtyma()) {
             pred = cb.and(pred, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(siirtymaPaattyy, cb.currentDate())));
+        } else {
+            pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
         }
 
-        if (pq.isVoimassaolo()) {
-            pred = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
+        if (!pq.isVoimassaolo()) {
+            pred = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThan(voimassaoloLoppuu, cb.currentDate())));
         }
 
         if (!Strings.isNullOrEmpty(pq.getTila())) {
