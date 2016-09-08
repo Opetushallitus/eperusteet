@@ -110,6 +110,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         // pudotellaan tutkinnonosat paikalleen
         addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
 
+        // lisätään tekstikappaleet
+        addTekstikappaleet(doc, peruste, rootElement, sisalto, 0, suoritustapa, kieli);
+
         // sanity check, ei feilata dokkariluontia, vaikka syntynyt dokkari
         // olisikin vähän pöljä
         if (rootElement.getChildNodes().getLength() <= 1) {
@@ -553,11 +556,26 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     private void addSisaltoElement(Document doc, Peruste peruste, Element parentElement, PerusteenOsaViite sisalto, int depth, Suoritustapa tapa, Kieli kieli) {
 
         for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
-            if (lapsi.getPerusteenOsa() == null) {
+            PerusteenOsa po = lapsi.getPerusteenOsa();
+            if (po == null) {
                 continue;
             }
 
+            if (po.getTunniste() == PerusteenOsaTunniste.RAKENNE) {
+                // poikkeustapauksena perusteen rakennepuun rendaus
+                addTutkinnonMuodostuminen(doc, parentElement, peruste, depth, tapa, kieli);
+            }
+        }
+    }
+
+    private void addTekstikappaleet(Document doc, Peruste peruste, Element parentElement, PerusteenOsaViite sisalto,
+                                    int depth, Suoritustapa tapa, Kieli kieli) {
+        for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
             PerusteenOsa po = lapsi.getPerusteenOsa();
+            if (po == null) {
+                continue;
+            }
+
             TekstiKappale tk = null;
             if (po instanceof TekstiKappale) {
                 tk = (TekstiKappale) po;
@@ -575,13 +593,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 element = doc.createElement("section");
             }
 
-            if (po.getTunniste() == PerusteenOsaTunniste.RAKENNE) {
-                // poikkeustapauksena perusteen rakennepuun rendaus
-                addTutkinnonMuodostuminen(doc, parentElement, peruste, depth, tapa, kieli);
-            } else if (po.getTunniste() == PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN) {
-                // TODO FIXME
-            } else {
-                // normikeississä sukelletaan syvemmälle puuhun
+            if (po.getTunniste() != PerusteenOsaTunniste.RAKENNE
+                    && po.getTunniste() != PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN) {
                 String nimi = getTextString(tk.getNimi(), kieli);
                 Element titleElement = doc.createElement("title");
                 titleElement.appendChild(doc.createTextNode(nimi));
@@ -591,11 +604,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 element.appendChild(titleElement);
 
-                addSisaltoElement(doc, peruste, element, lapsi, depth + 1, tapa, kieli); // keep it rollin
+                addTekstikappaleet(doc, peruste, element, lapsi, depth + 1, tapa, kieli); // keep it rollin
 
                 parentElement.appendChild(element);
             }
-
         }
     }
 
@@ -1562,24 +1574,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         Element titleElement = doc.createElement("title");
         titleElement.appendChild(doc.createTextNode(nimi));
         info.appendChild(titleElement);
-
-        String subtitleText;
-        switch(suoritustapakoodi) {
-            case OPS:
-                subtitleText = messages.translate("docgen.subtitle.ops", kieli);
-                break;
-            case NAYTTO:
-                subtitleText = messages.translate("docgen.subtitle.naytto", kieli);
-                break;
-            default:
-                subtitleText = "";
-
-        }
-
-        Element subtitle = doc.createElement("subtitle");
-        subtitle.appendChild(doc.createTextNode(subtitleText));
-        info.appendChild(subtitle);
-
     }
 
 }
