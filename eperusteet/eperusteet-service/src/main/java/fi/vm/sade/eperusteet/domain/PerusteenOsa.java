@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +29,6 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -99,6 +98,12 @@ public abstract class PerusteenOsa
         if (this.tila == PerusteTila.LUONNOS) {
             this.tila = tila;
         }
+    }
+
+    /// HUOM! Tämä on vaarallinen rajapinta. On tilanvaihdon tehtävä pitää
+    /// huolta että tämä on ok.
+    public void palautaLuonnokseksi() {
+        this.tila = PerusteTila.LUONNOS;
     }
 
     public boolean structureEquals(PerusteenOsa other) {
