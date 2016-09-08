@@ -56,9 +56,13 @@ import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -122,8 +126,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("isAuthenticated()")
     public List<PerusteprojektiListausDto> getOmatProjektit() {
-        return mapper.mapAsList(repository.findAllKeskeneraiset(), PerusteprojektiListausDto.class);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Set<String> orgs = authentication.getAuthorities().stream()
+                .filter(Objects::nonNull)
+                .map(x -> x.getAuthority())
+                .filter(Objects::nonNull)
+                .map(x -> x.split("_"))
+                .filter(x -> x.length > 0)
+                .map(x -> x[x.length - 1])
+                .collect(Collectors.toSet());
+
+        return mapper.mapAsList(repository.findOmatPerusteprojektit(orgs), PerusteprojektiListausDto.class);
     }
 
     @Override

@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import java.util.List;
+import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -33,13 +34,16 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
 
     List<Perusteprojekti> findByDiaarinumero(Diaarinumero diaarinumero);
     Perusteprojekti findOneByDiaarinumeroAndTila(Diaarinumero diaarinumero, ProjektiTila tila);
-    
+
     Perusteprojekti findOneByPerusteDiaarinumeroAndTila(Diaarinumero diaarinumero, ProjektiTila tila);
 
     Perusteprojekti findOneByRyhmaOid(String ryhmaOid);
 
     @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' ")
     List<Perusteprojekti> findAllKeskeneraiset();
+
+    @Query("SELECT p from Perusteprojekti p WHERE p.ryhmaOid IN (?1)")
+    List<Perusteprojekti> findOmatPerusteprojektit(Set<String> orgs);
 
     @Query("SELECT new fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto(" +
             " p.id, " +
