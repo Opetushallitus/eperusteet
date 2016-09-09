@@ -42,7 +42,7 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
     @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' ")
     List<Perusteprojekti> findAllKeskeneraiset();
 
-    @Query("SELECT p from Perusteprojekti p WHERE p.luoja = ?1 OR p.ryhmaOid IN (?2)")
+    @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' AND (p.luoja = ?1 OR p.ryhmaOid IN (?2))")
     List<Perusteprojekti> findOmatPerusteprojektit(String userOid, Set<String> orgs);
 
     @Query("SELECT new fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto(" +
