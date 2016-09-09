@@ -138,8 +138,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 .filter(x -> x.length > 0)
                 .map(x -> x[x.length - 1])
                 .collect(Collectors.toSet());
-
-        return mapper.mapAsList(repository.findOmatPerusteprojektit(orgs), PerusteprojektiListausDto.class);
+        String user = authentication.getName();
+        return mapper.mapAsList(repository.findOmatPerusteprojektit(user, orgs), PerusteprojektiListausDto.class);
     }
 
     @Override
