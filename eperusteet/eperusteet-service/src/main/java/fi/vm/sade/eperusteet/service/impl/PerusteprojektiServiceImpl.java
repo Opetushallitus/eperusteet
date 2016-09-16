@@ -818,19 +818,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (tila == LAADINTA) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
-
-            // Asetetaan kaikki tutkinnon osat laadintaan mitkä eivät ole muualla käytössä
-            projekti.getPeruste().getSuoritustavat().stream()
-                .forEach(st -> {
-                    st.getTutkinnonOsat().stream()
-                        .forEach(tov -> {
-                            long perusteet = tutkinnonOsaViiteRepository.perusteUsageAmount(tov.getTutkinnonOsa());
-                            if (perusteet < 2) {
-                                PerusteenOsa posa = (PerusteenOsa)tov.getTutkinnonOsa();
-                                posa.palautaLuonnokseksi();
-                            }
-                        });
-                });
         }
 
         if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.POHJA

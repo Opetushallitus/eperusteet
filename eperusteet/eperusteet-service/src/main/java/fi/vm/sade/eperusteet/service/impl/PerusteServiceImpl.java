@@ -232,6 +232,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    public PerusteInfoDto getMeta(final Long id) {
+        Peruste p = perusteet.findOne(id);
+        if (p.getTila() != PerusteTila.VALMIS) {
+            throw new BusinessRuleViolationException("vain-julkaistuille-perusteille");
+        }
+        return mapper.map(p, PerusteInfoDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PerusteDto get(final Long id) {
         Peruste p = perusteet.findOne(id);
         PerusteDto dto = mapper.map(p, PerusteDto.class);

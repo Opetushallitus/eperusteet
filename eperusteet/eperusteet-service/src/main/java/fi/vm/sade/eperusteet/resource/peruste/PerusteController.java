@@ -179,6 +179,13 @@ public class PerusteController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{perusteId}/meta", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "perusteen tietojen haku")
+    public ResponseEntity<PerusteInfoDto> getMeta(@PathVariable("perusteId") final long id) {
+        return ResponseEntity.ok(service.getMeta(id));
+    }
+
     @RequestMapping(value = "/{perusteId}", method = GET)
     @ResponseBody
     @ApiOperation(value = "perusteen tietojen haku")

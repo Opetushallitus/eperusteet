@@ -87,6 +87,8 @@ public interface PerusteService {
     @PreAuthorize("permitAll()")
     List<PerusteInfoDto> getAllPerusopetusInfo();
 
+    PerusteInfoDto getMeta(final Long id);
+
     @PreAuthorize("permitAll()")
     Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(final Long id);
 
