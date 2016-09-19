@@ -164,8 +164,6 @@
     "tilakuvaus-poistettu": "Kuvaus tilalle arkistoitu.",
     "tilakuvaus-laadinta": "Kuvaus tilalle laadinta.",
     "tilakuvaus-kaannos": "Kuvaus tilalle käännös.",
-    "tila-valmis": "Kuvaus tilalle valmis.",
-    "tila-julkaistu": "Kuvaus tilalle julkaistu.",
     "tilanvaihdos-laadinta-kommentointi": "Kuvaus tilasiirtymälle laadinta-kommentointi.",
     "tilanvaihdos-laadinta-viimeistely": "Kuvaus tilasiirtymälle laadinta-viimeistely.",
     "tilanvaihdos-laadinta-poistettu": "Kuvaus tilasiirtymälle laadinta-arkistointi.",
@@ -192,7 +190,6 @@
 
     "tavoitteiden-osaamiset": "Tavoitteiden osaamiset",
     "oppiaineen-sisallot": "Oppiaineen sisällöt",
-    "opetuksen-sisallot": "Opetuksen sisällöt",
     "tutkinnon-osien-koodit-kaytossa-muissa-tutkinnon-osissa": "Tutkinnon osan koodit jo käytössä perusteen muissa osissa",
 
     "osia-valittava-vahintaan": "Valittava vähintään",
@@ -550,7 +547,6 @@
 
     "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Koodistosta ei löytynyt tutkinnon osalle määritettyä koodia",
     "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnonosakoodia ei löytynyt tutkinnon osilta",
-    "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Tutkinnon osalle asetettua koodia ei löytynyt koodistosta",
 
     "et-ole-vielä-tallentanut-tutkinnonosia": "Et ole vielä liittänyt kaikkia tutkinnon osia perusteeseen",
     "et-ole-vielä-tallentanut-tekstikappaleita": "Et ole vielä liittänyt kaikkia tekstikappaleita perusteeseen",
@@ -917,10 +913,6 @@
 
 
     "rakenteen-validointi-virhe": "Rakenteessa validointivirhe",
-    "liittamattomia-tutkinnon-osia": "Liittämättömiä tutkinnon osia",
-    "koodittomia-tutkinnon-osia": "Kaikilla tutkinnon osilla ei koodia",
-    "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Tutkinnon osan koodia ei koodistossa",
-    "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnon osan koodia ei löytynyt miltään tutkinnon osalta",
 
     "korvattavaa-ei-loydy-jarjestelmasta": "Korvattavaa perustetta ei löydy järjestelmästä.",
     "ei-korvattavia-perusteita": "Yhtään korvattavaa perustetta ei ole valittu",
@@ -952,6 +944,10 @@
     "epimage-plugin-lisaa-uusi": "Lataa uusi kuva",
     "epimage-plugin-valitse": "Valitse tiedosto...",
     "epimage-plugin-tallennettu": "Kuva tallennettu.",
+
+    "muutosmaaraykset": "Muutosmääräykset",
+    "lisaa-muutosmaarays": "Lisää muutosmääräys",
+    "toiminnot": "Toiminnot",
 
     "vapaa-tekstisisalto": "Vapaa tekstisisältö",
     "lisaa-vapaa-teksti": "Lisää tekstikappale",
@@ -994,14 +990,10 @@
     "lukio-etsi-liittamattomista-kursseista": "Etsi liittämättömistä kursseista...",
     "lukio-etsi-liitetyista-kursseista": "Etsi liitetyistä kursseista...",
     "lukio-etsi-oppiaineista-ja-kursseista": "Etsi...",
-    "kurssi-title": "Kurssi",
-    "kurssi-koodi": "Koodistokoodi",
     "kurssi-lokalisoitu-koodi": "Koodi",
     "kurssi-osa-tavoitteet": "Tavoitteet",
     "kurssi-osa-keskeinenSisalto": "Keskeiset sisällöt",
     "kurssi-osa-tavoitteetJaKeskeinenSisalto": "Tavoitteet ja keskeiset sisällöt",
-    "muokkaa-kurssia": "Muokkaa kurssia",
-    "muokkaa-kurssia-action": "Tallenna muutokset",
     "kurssi-tyyppi": "Tyyppi",
     "kurssi-tyypin-kuvaus": "Kuvaus",
     "lukiooppiaineet-puu-tab-header": "Opetussuunnitelma",

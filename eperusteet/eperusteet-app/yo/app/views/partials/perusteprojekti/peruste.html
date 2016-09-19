@@ -31,7 +31,7 @@ European Union Public Licence for more details.
             <h3 class="panel-title" kaanna>nimi</h3>
           </div>
           <div class="panel-body">
-            <input ng-show="editEnabled" ng-model="editablePeruste.nimi" class="form-control" slocalized></input>
+            <input ng-show="editEnabled" ng-model="editablePeruste.nimi" class="form-control" slocalized>
             <p ng-hide="editEnabled">{{ peruste.nimi | kaanna }}</p>
           </div>
         </div>
@@ -257,15 +257,71 @@ European Union Public Licence for more details.
             <div ng-show="editEnabled" class="form-group">
               <label class="col-sm-3 control-label" kaanna="sijainti"></label>
               <div class="col-sm-9">
-                <input ng-model="editablePeruste.maarayskirje.url" class="col-sm-12 form-control" slocalized placeholder="https://"></input>
+                <input ng-model="editablePeruste.maarayskirje.url" class="col-sm-12 form-control" slocalized placeholder="https://">
               </div>
             </div>
             <table class="aligned" ng-show="!editEnabled">
               <tr><th kaanna="sijainti"></th><td>
                 <a ng-show="hasContent(peruste.maarayskirje.url)" ng-href="{{ peruste.maarayskirje.url | kaanna }}">{{ peruste.maarayskirje.url | kaanna }}</a>
-                <p ng-show="!hasContent(peruste.maarayskirje.url)" kaanna="ei-asetettu"</p>
+                <p ng-show="!hasContent(peruste.maarayskirje.url)" kaanna="ei-asetettu"></p>
               </td></tr>
             </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default panel-clean">
+          <div class="panel-heading">
+            <h3 class="panel-title" kaanna>muutosmaaraykset</h3>
+          </div>
+          <div class="panel-body">
+            <!--<pre>{{editablePeruste | json}}</pre>-->
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th kaanna="nimi" class="col-sm-4"></th>
+                  <th class="col-sm-6">
+                    {{'sijainti' | kaanna}}*
+                  </th>
+                  <th kaanna="toiminnot" ng-show="editEnabled"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="muutosmaarays in editablePeruste.muutosmaaraykset" ng-show="editEnabled">
+                  <td>
+                    <input ng-model="muutosmaarays.nimi" class="form-control col-sm-12" slocalized>
+                  </td>
+                  <td>
+                    <input ng-model="muutosmaarays.url" class="form-control col-sm-12" slocalized required placeholder="https://">
+                  </td>
+                  <td ng-show="editEnabled">
+                    <button type="button" class="btn btn-warning"
+                            ng-click="poistaMuutosmaarays(muutosmaarays)" kaanna="poista"></button>
+                  </td>
+                </tr>
+
+                <tr ng-repeat="muutosmaarays in peruste.muutosmaaraykset" ng-show="!editEnabled">
+                  <td>
+                    <p ng-show="hasContent(muutosmaarays.nimi)">{{ muutosmaarays.nimi | kaanna }}</p>
+                    <p ng-show="!hasContent(muutosmaarays.nimi)" kaanna="ei-asetettu"></p>
+                  </td>
+                  <td>
+                    <a ng-show="hasContent(muutosmaarays.url)" ng-href="{{ muutosmaarays.url | kaanna }}">{{ muutosmaarays.url | kaanna }}</a>
+                    <p ng-show="!hasContent(muutosmaarays.url)" kaanna="ei-asetettu"></p>
+                  </td>
+                </tr>
+              <tr ng-show="peruste.muutosmaaraykset.length === 0 && !editEnabled">
+                <td>
+                  <p kaanna="ei-asetettu"></p>
+                </td>
+                <td>
+                  <p kaanna="ei-asetettu"></p>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+            <button type="button"class="btn btn-default" ng-click="lisaaMuutosmaarays()"
+                    icon-role="add" kaanna="lisaa-muutosmaarays" ng-show="editEnabled"></button>
           </div>
         </div>
 

@@ -17,8 +17,6 @@
 'use strict';
 /* global _ */
 
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .service('PerusteenTutkintonimikkeet', function(PerusteTutkintonimikekoodit, YleinenData) {
     this.perusteellaTutkintonimikkeet = function(peruste) {
@@ -234,6 +232,11 @@ angular.module('eperusteApp')
         });
       });
     };
+
+    $scope.lisaaMuutosmaarays = () => $scope.editablePeruste.muutosmaaraykset.push({
+      url: {}
+    });
+    $scope.poistaMuutosmaarays = (muutosmaarays) => _.remove($scope.editablePeruste.muutosmaaraykset, muutosmaarays);
 
     PerusteenTutkintonimikkeet.get($scope.peruste.id, $scope);
 

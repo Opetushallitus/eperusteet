@@ -78,6 +78,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @Getter
     @Setter
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "peruste", cascade = CascadeType.ALL)
+    private Set<Muutosmaarays> muutosmaaraykset;
+
+    @Getter
+    @Setter
     @NotNull(groups = Valmis.class)
     private Diaarinumero diaarinumero;
 
