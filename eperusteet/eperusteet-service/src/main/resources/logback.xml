@@ -5,12 +5,17 @@
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
     </encoder>
   </appender>
+  <logger name="org.apache.fop" level="off"/>
   <logger name="org.hibernate" level="error"/>
   <logger name="org.hibernate.tool.hbm2ddl" level="off"/>
   <logger name="org.springframework" level="warn"/>
   <logger name="fi.vm.sade" level="info"/>
   <logger name="fi.vm.sade.eperusteet" level="debug"/>
   <logger name="fi.vm.sade.eperusteet.PROFILING" level="trace"/>
+  <logger name="fi.vm.sade.eperusteet.service.impl.DokumenttiServiceImpl" level="info"/>
+  <logger name="fi.vm.sade.eperusteet.service.impl.DokumenttiEventListener" level="info"/>
+  <logger name="fi.vm.sade.eperusteet.service.impl.DokumenttiBuilderServiceImpl" level="info"/>
+  <logger name="com.mangofactory.swagger" level="WARN"/>
   <root level="info">
     <appender-ref ref="console"/>
   </root>

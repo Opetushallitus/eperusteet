@@ -19,10 +19,10 @@ package fi.vm.sade.eperusteet.service.internal;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import java.io.IOException;
+
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.IOException;
 
 /**
  *
@@ -30,8 +30,7 @@ import javax.xml.transform.TransformerException;
  */
 public interface DokumenttiBuilderService {
 
-    public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws
-            TransformerConfigurationException,
+    String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws
             IOException,
             TransformerException,
             ParserConfigurationException;

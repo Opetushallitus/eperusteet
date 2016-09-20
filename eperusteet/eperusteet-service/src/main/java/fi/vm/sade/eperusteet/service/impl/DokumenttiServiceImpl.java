@@ -37,25 +37,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -67,9 +72,6 @@ import java.util.List;
 public class DokumenttiServiceImpl implements DokumenttiService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiServiceImpl.class);
-
-    @Autowired
-    private ServletContext servletContext;
 
     @Autowired
     private DokumenttiRepository dokumenttiRepository;
@@ -84,12 +86,11 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Autowired
     DokumenttiBuilderService builder;
 
-    @Value("/docgen/fop.xconf")
-    private String fopConfig;
+    @Value("classpath:docgen/fop.xconf")
+    private Resource fopConfig;
 
     @Override
     @Transactional
-    @PreAuthorize("isAuthenticated()")
     @IgnorePerusteUpdateCheck
     public DokumenttiDto createDtoFor(long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
 
@@ -221,13 +222,11 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         Suoritustapakoodi suoritustapakoodi = dto.getSuoritustapakoodi();
 
         String xmlpath = builder.generateXML(peruste, kieli, suoritustapakoodi);
-        LOG.debug("Temporary xml file: \n{}", xmlpath);
+        LOG.debug("Temporary xml file: {}", xmlpath);
         String style = "res:docgen/docbookstyle.xsl";
 
         PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
-        String fontDir = servletContext.getRealPath("WEB-INF/classes/docgen/fonts");
-        r.setBaseFontDirectory(fontDir);
-        r.setFopConfig(fopConfig);
+        r.setFopConfig(fopConfig.getFile());
         r.parameter("l10n.gentext.language", kieli.toString());
 
         // rendataan data ja otetaan kopio datasta.
@@ -238,7 +237,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         // koitetaan puljata date-kenttä kuntoon fopin jäljiltä, mutta jos se
         // mistään syystä heittää poikkeuksen, palautetaan alkuperäinen data
         byte[] toReturn;
-       try {
+        try {
             byte[] fixedba;
             try (InputStream fixed = fixMetadata(new ByteArrayInputStream(copy))) {
                 fixedba = IOUtils.toByteArray(fixed);
@@ -259,10 +258,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
       fixMetadata korjaa tämän syötteenä saadusta pdf-dokumentista.
     */
-    private InputStream fixMetadata(InputStream pdf) throws FileNotFoundException,
-            IOException, ParserConfigurationException, SAXException,
-            TransformerConfigurationException, TransformerException,
-            COSVisitorException
+    private InputStream fixMetadata(InputStream pdf) throws IOException, ParserConfigurationException,
+            SAXException, TransformerException, COSVisitorException
     {
         try (InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/fopdate.xsl")) {
 

@@ -11,8 +11,8 @@
     <packaging>war</packaging>
     <name>eperusteet-service</name>
     <properties>
-        <hibernate.version>4.3.9.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hibernate.version>4.3.9.Final</hibernate.version>
         <spring.version>4.1.6.RELEASE</spring.version>
         <spring.security.version>3.2.7.RELEASE</spring.security.version>
         <spring.data.jpa.version>1.7.2.RELEASE</spring.data.jpa.version>
@@ -51,6 +51,11 @@
             <groupId>com.googlecode.flyway</groupId>
             <artifactId>flyway-core</artifactId>
             <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>fop</artifactId>
+            <version>2.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -512,7 +517,7 @@
                         </dependency>
                     </dependencies>
                 </plugin>
-                <!-- pls don't fuxor our fonts, maven -->
+                <!-- Maven rikkoo muuten ttf fontit -->
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>2.6</version>

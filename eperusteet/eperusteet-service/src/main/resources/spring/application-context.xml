@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -58,7 +57,6 @@
 
     <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" >
         <security:expression-handler ref="expressionHandler"/>
-        <!--protect-pointcut expression="execution(* fi.vm.sade.eperusteet.service.*.*(..))" access="ROLE_DENY_ALL"/-->
     </security:global-method-security>
 
     <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>
@@ -66,8 +64,9 @@
     <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
     <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>
     <tx:annotation-driven order="100"/>
-    <cache:annotation-driven />
-    <aop:aspectj-autoproxy  />
+    <cache:annotation-driven/>
+    <aop:aspectj-autoproxy/>
+
     <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
 
     <jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>
@@ -77,7 +76,6 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
         <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
-
         <property name="jpaPropertyMap">
             <map>
                 <entry key="hibernate.hbm2ddl.auto" value="validate"/>
@@ -92,7 +90,7 @@
                 <entry key="org.hibernate.envers.revision_listener" value="fi.vm.sade.eperusteet.service.impl.AuditRevisionListener"/>
                 <entry key="hibernate.jdbc.batch_size" value="20"/>
                 <entry key="hibernate.jdbc.fetch_size" value="20"/>
-                <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor" />
+                <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor"/>
             </map>
         </property>
         <property name="mappingResources">

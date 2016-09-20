@@ -14,7 +14,7 @@
     <!-- ...and because there is no hr equivalent in docbook, let's
     convert that from epdoc ns -->
     <xsl:template match="epdoc:hr">
-        <fo:block border-top-style="solid" text-align="center"></fo:block>
+        <fo:block border-top-style="solid" text-align="center"/>
     </xsl:template>
 
     <!-- enable hard page brakes via processing instruction  -->
@@ -36,13 +36,13 @@
     <xsl:param name="local.l10n.xml" select="document('')"/>
 
     <!-- Section numbering to use arabic numbers -->
-    <xsl:param name="section.autolabel" select="1"></xsl:param>
+    <xsl:param name="section.autolabel" select="1"/>
 
     <!-- Section numbers to include chapter number -->
-    <xsl:param name="section.label.includes.component.label" select="1"></xsl:param>
+    <xsl:param name="section.label.includes.component.label" select="1"/>
 
     <!-- Only include two levels below chapter table of contents -->
-    <xsl:param name="toc.section.depth" select="1"></xsl:param>
+    <xsl:param name="toc.section.depth" select="1"/>
 
     <!-- Only include the main toc (no list of figures, tables etc -->
     <xsl:param name="generate.toc">
@@ -50,10 +50,10 @@
     </xsl:param>
 
     <!-- body font size in pt -->
-    <xsl:param name="body.font.master" select="11"></xsl:param>
+    <xsl:param name="body.font.master" select="11"/>
 
     <!-- only numbrer header titles up to level 2 (eg. 1.2.3.) -->
-    <xsl:param name="section.autolabel.max.depth" select="1"></xsl:param>
+    <xsl:param name="section.autolabel.max.depth" select="1"/>
 
     <!-- Header center position gets all the width it possibly can get -->
     <xsl:param name="header.column.widths">0 1 0</xsl:param>
@@ -62,7 +62,7 @@
     <xsl:attribute-set name="component.title.properties">
         <xsl:attribute name="font-size">
             <!--<xsl:value-of select="$body.font.master * 2.0736"></xsl:value-of>-->
-            <xsl:value-of select="18"></xsl:value-of>
+            <xsl:value-of select="18"/>
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
     </xsl:attribute-set>
@@ -70,14 +70,14 @@
     <xsl:attribute-set name="section.title.level1.properties">
         <xsl:attribute name="font-size">
             <!--<xsl:value-of select="$body.font.master * 2.0736"></xsl:value-of>-->
-            <xsl:value-of select="15"></xsl:value-of>
+            <xsl:value-of select="15"/>
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
     </xsl:attribute-set>
 
     <xsl:attribute-set name="section.title.level2.properties">
         <xsl:attribute name="font-size">
-            <xsl:value-of select="12"></xsl:value-of>
+            <xsl:value-of select="12"/>
             <!--<xsl:value-of select="$body.font.master * 1.728"></xsl:value-of>-->
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
@@ -87,29 +87,28 @@
     <xsl:attribute-set name="section.title.level3.properties">
         <xsl:attribute name="font-size">
             <!--<xsl:value-of select="$body.font.master * 1.44"></xsl:value-of>-->
-            <xsl:value-of select="12"></xsl:value-of>
+            <xsl:value-of select="12"/>
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
     </xsl:attribute-set>
 
     <xsl:attribute-set name="section.title.level4.properties">
         <xsl:attribute name="font-size">
-            <xsl:value-of select="$body.font.master"></xsl:value-of>
-            <!--<xsl:value-of select="$body.font.master * 1.2"></xsl:value-of>-->
+            <xsl:value-of select="$body.font.master"/>
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
     </xsl:attribute-set>
 
     <xsl:attribute-set name="section.title.level5.properties">
         <xsl:attribute name="font-size">
-            <xsl:value-of select="$body.font.master"></xsl:value-of>
+            <xsl:value-of select="$body.font.master"/>
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
     </xsl:attribute-set>
 
     <xsl:attribute-set name="section.title.level6.properties">
         <xsl:attribute name="font-size">
-            <xsl:value-of select="$body.font.master"></xsl:value-of>
+            <xsl:value-of select="$body.font.master"/>
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
     </xsl:attribute-set>

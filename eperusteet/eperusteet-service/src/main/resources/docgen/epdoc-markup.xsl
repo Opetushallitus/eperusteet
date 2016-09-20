@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
-		xmlns:h="http://www.w3.org/1999/xhtml"
-		xmlns:doc="http://docbook.org/ns/docbook"
-		xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                xmlns:h="http://www.w3.org/1999/xhtml"
+                xmlns:doc="http://docbook.org/ns/docbook"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:epdoc="urn:fi.vm.sade.eperusteet.docgen">
 
   <xsl:output method="xml"
@@ -48,7 +48,7 @@
 
   <!-- ewwwww...  -->
   <xsl:template match="h:hr">
-    <epdoc:hr></epdoc:hr>
+    <epdoc:hr/>
   </xsl:template>
 
   <xsl:template match="h:ul">

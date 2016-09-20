@@ -17,34 +17,20 @@ package com.google.code.docbook4j.renderer;
 
 import com.google.code.docbook4j.Docbook4JException;
 import com.google.code.docbook4j.FileObjectUtils;
-import com.google.code.docbook4j.VfsURIResolver;
+import fi.vm.sade.eperusteet.service.impl.DokumenttiEventListener;
 import fi.vm.sade.eperusteet.service.util.PerusteXslURIResolver;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.Map;
-import java.util.UUID;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
-import org.apache.fop.apps.FOPException;
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
-import org.slf4j.LoggerFactory;
+import org.apache.fop.apps.*;
 import org.xml.sax.SAXException;
+
+import javax.xml.transform.*;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -52,10 +38,7 @@ import org.xml.sax.SAXException;
  */
 public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer> {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(PerustePDFRenderer.class);
-
-    private String fopConfig = "";
-    private String baseFontDirectory = "";
+    private File fopConfig;
 
     @Override
     protected String getMimeType() {
@@ -63,28 +46,22 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer> {
     }
 
     @Override
-    protected Transformer createTransformer(FileObject xmlSource,
-        FileObject xslStylesheet) throws TransformerConfigurationException,
-        IOException {
+    protected Transformer createTransformer(FileObject xmlSource, FileObject xslStylesheet)
+            throws TransformerConfigurationException, IOException {
 
         TransformerFactory transformerFactory = createTransformerFactory();
         if (xslStylesheet != null) {
             transformerFactory.setURIResolver(new PerusteXslURIResolver());
         }
-        FileObject xsl = xslStylesheet != null ? xslStylesheet
-            : getDefaultXslStylesheet();
+        FileObject xsl = xslStylesheet != null ? xslStylesheet : getDefaultXslStylesheet();
 
-        Source source = new StreamSource(xsl.getContent().getInputStream(), xsl
-                                         .getURL().toExternalForm());
+        Source source = new StreamSource(xsl.getContent().getInputStream(), xsl.getURL().toExternalForm());
         Transformer transformer = transformerFactory.newTransformer(source);
-
         transformer.setParameter("use.extensions", "1");
         transformer.setParameter("callout.graphics", "0");
         transformer.setParameter("callout.unicode", "1");
         transformer.setParameter("callouts.extension", "1");
-        transformer.setParameter("base.dir", xmlSource.getParent().getURL()
-                                 .toExternalForm());
-
+        transformer.setParameter("base.dir", xmlSource.getParent().getURL().toExternalForm());
         for (Map.Entry<String, String> entry : this.params.entrySet()) {
             transformer.setParameter(entry.getKey(), entry.getValue());
         }
@@ -93,109 +70,50 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer> {
     }
 
     @Override
-    protected FileObject postProcess(final FileObject xmlSource,
-        final FileObject xslSource, final FileObject xsltResult)
-        throws Docbook4JException {
-
+    @SuppressWarnings("unchecked")
+    protected FileObject postProcess(final FileObject xmlSource, final FileObject xslSource,
+                                     final FileObject xsltResult) throws Docbook4JException {
         FileObject target = null;
+
         try {
+            FopFactory fopFactory = FopFactory.newInstance(fopConfig);
 
-            final FopFactory fopFactory = FopFactory.newInstance();
-            // bleh, had to duplicate the full postProcess function just to add
-            // this line :(
-            enhanceFopFactory(fopFactory);
-
-            final FOUserAgent userAgent = fopFactory.newFOUserAgent();
-            userAgent.setBaseURL(xmlSource.getParent().getURL()
-                .toExternalForm());
-            userAgent.setURIResolver(new VfsURIResolver());
-
-            enhanceFOUserAgent(userAgent);
+            FOUserAgent userAgent = fopFactory.newFOUserAgent();
+            userAgent.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");
+            userAgent.getEventBroadcaster().addEventListener(new DokumenttiEventListener());
 
             String tmpPdf = "tmp://" + UUID.randomUUID().toString();
             target = FileObjectUtils.resolveFile(tmpPdf);
             target.createFile();
 
-            Configuration configuration = createFOPConfig();
-            if (configuration != null) {
-                fopFactory.setUserConfig(configuration);
-            }
+            Fop fop = fopFactory.newFop(getMimeType(), userAgent, target.getContent().getOutputStream());
 
-            Fop fop = fopFactory.newFop(getMimeType(), userAgent, target
-                                        .getContent().getOutputStream());
+
+            Source src = new StreamSource(xsltResult.getContent().getInputStream());
+            Result res = new SAXResult(fop.getDefaultHandler());
 
             TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(); // identity
-            // transformer
+            Transformer transformer = factory.newTransformer();
             transformer.setParameter("use.extensions", "1");
             transformer.setParameter("fop.extensions", "0");
             transformer.setParameter("fop1.extensions", "1");
 
-            Source src = new StreamSource(xsltResult.getContent()
-                .getInputStream());
-            Result res = new SAXResult(fop.getDefaultHandler());
             transformer.transform(src, res);
-            return target;
 
         } catch (FileSystemException e) {
             throw new Docbook4JException("Error create filesystem manager!", e);
-        } catch (TransformerException e) {
+        } catch (TransformerException | FOPException e) {
             throw new Docbook4JException("Error transforming fo to pdf!", e);
-        } catch (FOPException e) {
-            throw new Docbook4JException("Error transforming fo to pdf!", e);
+        } catch (SAXException | IOException e) {
+            e.printStackTrace();
         } finally {
-
             FileObjectUtils.closeFileObjectQuietly(target);
         }
 
+        return target;
     }
 
-    @Override
-    protected Configuration createFOPConfig() {
-
-        DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
-        try {
-            if (!this.fopConfig.isEmpty()) {
-                InputStream ras = this.getClass().getResourceAsStream(this.fopConfig);
-                Configuration conf = builder.build(ras);
-                return conf;
-            }
-        } catch (SAXException | IOException | ConfigurationException ex) {
-            LOG.error("", ex);
-        }
-        return null;
-    }
-
-    @Override
-    protected void enhanceFOUserAgent(FOUserAgent agent) {
-        agent.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");
-    }
-
-    protected void enhanceFopFactory(FopFactory factory) {
-        try {
-            if (StringUtils.isNotEmpty(this.baseFontDirectory)) {
-                factory.getFontManager().setFontBaseURL(this.baseFontDirectory);
-            } else {
-                LOG.warn("Fop directory not set, won't set font base url");
-            }
-        } catch (MalformedURLException ex) {
-            LOG.error("", ex);
-        }
-    }
-
-    public void setFopConfig(String fopConfig) {
+    public void setFopConfig(File fopConfig) {
         this.fopConfig = fopConfig;
-    }
-
-    public String getFopConfig() {
-        return this.fopConfig;
-    }
-
-    public void setBaseFontDirectory(String fontDirectory) {
-        this.baseFontDirectory = fontDirectory;
-    }
-
-    public String getBaseFontDirectory() {
-        return this.baseFontDirectory;
     }
 }
