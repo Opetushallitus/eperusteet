@@ -441,8 +441,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         perusteet.lock(current);
         Peruste updated = mapper.map(perusteDto, Peruste.class);
 
-        for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
-            muutosmaarays.setPeruste(current);
+        if (updated.getMuutosmaaraykset() != null) {
+            for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
+                muutosmaarays.setPeruste(current);
+            }
         }
 
         if (!current.getKoulutustyyppi().equals(updated.getKoulutustyyppi())) {
