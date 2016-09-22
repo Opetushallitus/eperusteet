@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
+import fi.vm.sade.eperusteet.service.internal.PdfService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
@@ -37,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -87,6 +87,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Autowired
     DokumenttiBuilderService builder;
 
+    @Autowired
+    PdfService pdfService;
+
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
 
@@ -103,6 +106,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         dokumentti.setLuoja(name);
         dokumentti.setPerusteId(id);
         dokumentti.setSuoritustapakoodi(suoritustapakoodi);
+        // Todo: käyttäjän valittavissa
+        dokumentti.setGeneratorVersion(GeneratorVersion.UUSI);
 
         Peruste peruste = perusteRepository.findOne(id);
         if (peruste != null) {
@@ -110,7 +115,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             return mapper.map(saved, DokumenttiDto.class);
         } else {
             dokumentti.setTila(DokumenttiTila.EPAONNISTUI);
-            // TODO: localize
             dokumentti.setVirhekoodi(DokumenttiVirhe.PERUSTETTA_EI_LOYTYNYT);
             return mapper.map(dokumentti, DokumenttiDto.class);
         }
@@ -121,7 +125,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @IgnorePerusteUpdateCheck
     public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
-        List<Dokumentti> documents = dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort);
+        List<Dokumentti> documents = dokumenttiRepository
+                .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(
+                        id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort);
         if (documents.size() > 0) {
             return mapper.map(documents.get(0), DokumenttiDto.class);
         } else {
@@ -139,28 +145,21 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
         LOG.debug("generate with dto {}", dto);
 
-        Dokumentti doc = dokumenttiRepository.findById(dto.getId());
+        Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
 
         try {
             byte[] data = generateFor(dto);
 
-            doc.setData(data);
-            doc.setTila(DokumenttiTila.VALMIS);
-            doc.setValmistumisaika(new Date());
-            dokumenttiRepository.save(doc);
+            dokumentti.setData(data);
+            dokumentti.setTila(DokumenttiTila.VALMIS);
+            dokumentti.setValmistumisaika(new Date());
+            dokumenttiRepository.save(dokumentti);
+        } catch (Exception ex) {
+            dokumentti.setTila(DokumenttiTila.EPAONNISTUI);
+            dokumentti.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
+            dokumenttiRepository.save(dokumentti);
 
-        }
-        catch (NoSuchMessageException ex) {
-           LOG.error("Exception during document generation:", ex);
-           doc.setTila(DokumenttiTila.EPAONNISTUI);
-           doc.setVirhekoodi(DokumenttiVirhe.TUNTEMATON_LOKALISOINTI);
-           dokumenttiRepository.save(doc);
-        }
-        catch (TransformerException | ParserConfigurationException | Docbook4JException | IOException | RuntimeException ex) {
-            LOG.error("Exception during document generation:", ex);
-            doc.setTila(DokumenttiTila.EPAONNISTUI);
-            doc.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
-            dokumenttiRepository.save(doc);
+            throw new DokumenttiException(ex.getMessage(), ex);
         }
     }
 
@@ -215,37 +214,51 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         return mapper.map(findById, DokumenttiDto.class);
     }
 
-    private byte[] generateFor(DokumenttiDto dto) throws IOException, TransformerException, ParserConfigurationException, Docbook4JException {
+    private byte[] generateFor(DokumenttiDto dto)
+            throws IOException, TransformerException, ParserConfigurationException, Docbook4JException, SAXException {
 
         Peruste peruste = perusteRepository.findOne(dto.getPerusteId());
         Kieli kieli = dto.getKieli();
         Suoritustapakoodi suoritustapakoodi = dto.getSuoritustapakoodi();
 
-        String xmlpath = builder.generateXML(peruste, kieli, suoritustapakoodi);
-        LOG.debug("Temporary xml file: {}", xmlpath);
-        String style = "res:docgen/docbookstyle.xsl";
+        byte[] toReturn = null;
 
-        PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
-        r.setFopConfig(fopConfig.getFile());
-        r.parameter("l10n.gentext.language", kieli.toString());
+        switch (dto.getGeneratorVersion()) {
+            case VANHA:
+                String xmlpath = builder.generateXML(peruste, kieli, suoritustapakoodi);
+                LOG.debug("Temporary xml file: {}", xmlpath);
+                String style = "res:docgen/docbookstyle.xsl";
 
-        // rendataan data ja otetaan kopio datasta.
-        InputStream is = r.render();
-        byte[] copy = IOUtils.toByteArray(is);
-        is.close();
+                PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
+                r.setFopConfig(fopConfig.getFile());
+                r.parameter("l10n.gentext.language", kieli.toString());
 
-        // koitetaan puljata date-kenttä kuntoon fopin jäljiltä, mutta jos se
-        // mistään syystä heittää poikkeuksen, palautetaan alkuperäinen data
-        byte[] toReturn;
-        try {
-            byte[] fixedba;
-            try (InputStream fixed = fixMetadata(new ByteArrayInputStream(copy))) {
-                fixedba = IOUtils.toByteArray(fixed);
-            }
-            toReturn = fixedba;
-        } catch (Exception ex) {
-            LOG.warn("Fixing the xmp date field failed, returning nonfixed. Error was: ", ex);
-            toReturn = copy;
+                // rendataan data ja otetaan kopio datasta.
+                InputStream is = r.render();
+                byte[] copy = IOUtils.toByteArray(is);
+                is.close();
+
+                // koitetaan puljata date-kenttä kuntoon fopin jäljiltä, mutta jos se
+                // mistään syystä heittää poikkeuksen, palautetaan alkuperäinen data
+                try {
+                    byte[] fixedba;
+                    try (InputStream fixed = fixMetadata(new ByteArrayInputStream(copy))) {
+                        fixedba = IOUtils.toByteArray(fixed);
+                    }
+                    toReturn = fixedba;
+                } catch (Exception ex) {
+                    LOG.warn("Fixing the xmp date field failed, returning nonfixed. Error was: ", ex);
+                    toReturn = copy;
+                }
+
+                break;
+            case UUSI:
+                Dokumentti dokumentti = mapper.map(dto, Dokumentti.class);
+                Document doc = builder.generateXHTML(peruste, dokumentti, kieli, suoritustapakoodi);
+                toReturn = pdfService.xhtml2pdf(doc);
+                break;
+            default:
+                break;
         }
 
        return toReturn;

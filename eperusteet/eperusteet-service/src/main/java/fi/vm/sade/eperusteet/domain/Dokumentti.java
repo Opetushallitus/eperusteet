@@ -85,4 +85,8 @@ public class Dokumentti implements Serializable {
     @NotNull
     private Suoritustapakoodi suoritustapakoodi;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "generator_version")
+    private GeneratorVersion generatorVersion = GeneratorVersion.UUSI;
 }

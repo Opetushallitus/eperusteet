@@ -22,7 +22,7 @@
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
-        <jsoup.version>1.8.1</jsoup.version>
+        <jsoup.version>1.9.2</jsoup.version>
         <ehcache.version>2.5.1</ehcache.version>
         <slf4j.version>1.7.7</slf4j.version>
         <swagger.version>1.0.2</swagger.version>

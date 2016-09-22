@@ -13,32 +13,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.service.dokumentti.impl.util;
 
-package fi.vm.sade.eperusteet.dto;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Dokumentti;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
- *
- * @author jussi
+ * @author isaul
  */
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class DokumenttiDto {
-    private Long id;
-    private Long perusteId;
-    private String luoja;
-    private Kieli kieli;
-    private Date aloitusaika;
-    private Date valmistumisaika;
-    private DokumenttiTila tila = DokumenttiTila.EI_OLE;
-    private DokumenttiVirhe virhekoodi = DokumenttiVirhe.EI_VIRHETTA;
-    private Suoritustapakoodi suoritustapakoodi;
-    private GeneratorVersion generatorVersion;
+public class DokumenttiBase {
+    Document document;
+    Element headElement;
+    Element bodyElement;
+    Peruste peruste;
+    CharapterNumberGenerator generator;
+    Kieli kieli;
+    Dokumentti dokumentti;
+    DtoMapper mapper;
 }

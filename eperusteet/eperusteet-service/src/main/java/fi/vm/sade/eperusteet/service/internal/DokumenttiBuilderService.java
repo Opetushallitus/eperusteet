@@ -16,9 +16,11 @@
 
 package fi.vm.sade.eperusteet.service.internal;
 
+import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import org.w3c.dom.Document;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -30,9 +32,9 @@ import java.io.IOException;
  */
 public interface DokumenttiBuilderService {
 
-    String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws
-            IOException,
-            TransformerException,
-            ParserConfigurationException;
+    String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi)
+            throws IOException, TransformerException, ParserConfigurationException;
 
+    Document generateXHTML(Peruste peruste, Dokumentti dto, Kieli kieli, Suoritustapakoodi suoritustapakoodi)
+            throws ParserConfigurationException, IOException, TransformerException;
 }
