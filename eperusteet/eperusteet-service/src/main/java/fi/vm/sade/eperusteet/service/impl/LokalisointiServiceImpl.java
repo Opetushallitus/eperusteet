@@ -63,10 +63,6 @@ public class LokalisointiServiceImpl implements LokalisointiService {
         LOG.debug("get lokalisointi url: {}", url);
         LokalisointiDto[] re = restTemplate.getForObject(url, LokalisointiDto[].class);
 
-        // mitäs tehdään jos tulee useampi kuin yksi käännös?
-        // palautetaan oletuksena ensimmäinen. Palvelusta saadaan tarvittaessa
-        // myös tieto, koska lokalisointi on luotu/muokattu, joten tätä voisi
-        // käyttää myös.
         if (re.length > 1) {
             LOG.warn("Got more than one object: {} from {}", re, url);
         }
@@ -88,8 +84,8 @@ public class LokalisointiServiceImpl implements LokalisointiService {
                 .filter(v -> v != null && v.getId() != null).collect(groupingBy(LokalisoituTekstiDto::getId));
         if (!byId.isEmpty()) {
             tekstiPalanenRepository.findLokalisoitavatTekstit(byId.keySet())
-                .stream().forEach(haettu -> byId.get(haettu.getId())
-                    .stream().forEach(palanen -> palanen.getTekstit().put(haettu.getKieli(), haettu.getTeksti())));
+                    .forEach(haettu -> byId.get(haettu.getId())
+                            .forEach(palanen -> palanen.getTekstit().put(haettu.getKieli(), haettu.getTeksti())));
         }
     }
 

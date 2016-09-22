@@ -22,8 +22,9 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
-import fi.vm.sade.eperusteet.service.DokumenttiService;
+import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,8 @@ public class DokumenttiController {
     public ResponseEntity<DokumenttiDto> create(
         @RequestParam("perusteId") final long perusteId,
         @RequestParam(value = "kieli", defaultValue = "fi") final String kieli,
-        @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi) {
+        @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi
+    ) throws DokumenttiException {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         final DokumenttiDto createDtoFor = service.createDtoFor(

@@ -10,6 +10,7 @@
     <context:annotation-config/>
     <context:component-scan base-package="fi.vm.sade.eperusteet.resource"/>
     <aop:aspectj-autoproxy/>
+
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
     </bean>

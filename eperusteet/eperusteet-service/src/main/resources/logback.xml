@@ -12,9 +12,9 @@
   <logger name="fi.vm.sade" level="info"/>
   <logger name="fi.vm.sade.eperusteet" level="debug"/>
   <logger name="fi.vm.sade.eperusteet.PROFILING" level="trace"/>
-  <logger name="fi.vm.sade.eperusteet.service.impl.DokumenttiServiceImpl" level="info"/>
-  <logger name="fi.vm.sade.eperusteet.service.impl.DokumenttiEventListener" level="info"/>
-  <logger name="fi.vm.sade.eperusteet.service.impl.DokumenttiBuilderServiceImpl" level="info"/>
+  <logger name="fi.vm.sade.eperusteet.service.dokumentti.impl.DokumenttiServiceImpl" level="info"/>
+  <logger name="fi.vm.sade.eperusteet.service.dokumentti.impl.DokumenttiEventListener" level="info"/>
+  <logger name="fi.vm.sade.eperusteet.service.dokumentti.impl.DokumenttiBuilderServiceImpl" level="info"/>
   <logger name="com.mangofactory.swagger" level="WARN"/>
   <root level="info">
     <appender-ref ref="console"/>

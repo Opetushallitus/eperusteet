@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
 import org.apache.fop.events.Event;
 import org.apache.fop.events.EventFormatter;

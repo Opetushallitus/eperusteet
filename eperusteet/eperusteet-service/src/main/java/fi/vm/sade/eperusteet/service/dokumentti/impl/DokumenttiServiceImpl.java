@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
 import com.google.code.docbook4j.Docbook4JException;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
@@ -21,8 +21,9 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.DokumenttiService;
+import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -135,12 +136,11 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional
     @IgnorePerusteUpdateCheck
-    public void generateWithDto(DokumenttiDto dto) {
+    public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
         LOG.debug("generate with dto {}", dto);
 
         Dokumentti doc = dokumenttiRepository.findById(dto.getId());
 
-        //TODO pitäisi tarkistaa että luonti ei ole jo käynnissä
         try {
             byte[] data = generateFor(dto);
 

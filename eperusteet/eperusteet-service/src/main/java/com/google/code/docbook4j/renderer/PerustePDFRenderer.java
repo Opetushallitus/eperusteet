@@ -17,7 +17,7 @@ package com.google.code.docbook4j.renderer;
 
 import com.google.code.docbook4j.Docbook4JException;
 import com.google.code.docbook4j.FileObjectUtils;
-import fi.vm.sade.eperusteet.service.impl.DokumenttiEventListener;
+import fi.vm.sade.eperusteet.service.dokumentti.impl.DokumenttiEventListener;
 import fi.vm.sade.eperusteet.service.util.PerusteXslURIResolver;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;

@@ -35,7 +35,7 @@
         <property name="cacheManager" ref="eperusteetEhCache"/>
     </bean>
 
-    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
@@ -86,7 +86,7 @@
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
                 <entry key="net.sf.ehcache.configurationResourceName" value="/eperusteet-hibernate-ehcache.xml"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
-                <entry key="javax.persistence.validation.factory" value-ref="validator" />
+                <entry key="javax.persistence.validation.factory" value-ref="validator"/>
                 <entry key="org.hibernate.envers.revision_listener" value="fi.vm.sade.eperusteet.service.impl.AuditRevisionListener"/>
                 <entry key="hibernate.jdbc.batch_size" value="20"/>
                 <entry key="hibernate.jdbc.fetch_size" value="20"/>
@@ -108,7 +108,7 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean" />
+    <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean"/>
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename">
@@ -117,17 +117,11 @@
     </bean>
 
     <task:annotation-driven executor="defaultExecutor"/>
-    <bean id="defaultThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"/>
+    <bean id="defaultThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="2"/>
+        <property name="maxPoolSize" value="10"/>
+    </bean>
     <bean id="defaultExecutor" class="org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor">
         <constructor-arg ref="defaultThreadPool"/>
     </bean>
-    <bean id="docThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-        <property name="corePoolSize" value="2"/>
-        <property name="maxPoolSize"  value="4"/>
-        <property name="queueCapacity" value="100"/>
-    </bean>
-    <bean id="docTaskExecutor" class="org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor">
-        <constructor-arg ref="docThreadPool"/>
-    </bean>
-
 </beans>

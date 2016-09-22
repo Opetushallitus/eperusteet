@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hibernate.version>4.3.9.Final</hibernate.version>
-        <spring.version>4.1.6.RELEASE</spring.version>
+        <spring.version>4.2.5.RELEASE</spring.version>
         <spring.security.version>3.2.7.RELEASE</spring.security.version>
         <spring.data.jpa.version>1.7.2.RELEASE</spring.data.jpa.version>
         <logback.version>1.1.2</logback.version>
@@ -315,7 +315,7 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
-            <version>1.8.0</version>
+            <version>1.8.9</version>
         </dependency>
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
