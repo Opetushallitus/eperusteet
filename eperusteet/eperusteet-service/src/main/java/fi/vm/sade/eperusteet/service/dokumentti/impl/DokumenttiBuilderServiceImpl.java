@@ -30,11 +30,7 @@ import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
-import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
-import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiBase;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
@@ -83,69 +79,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     @Autowired
     private KoodistoClient koodistoService;
-
-    @Dto
-    @Autowired
-    private DtoMapper mapper;
-
-    @Override
-    public Document generateXHTML(Peruste peruste, Dokumentti dokumentti, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws ParserConfigurationException, IOException, TransformerException {
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document doc = docBuilder.newDocument();
-
-        // Luodaan XHTML pohja
-        Element rootElement = doc.createElement("html");
-        rootElement.setAttribute("lang", kieli.toString());
-        doc.appendChild(rootElement);
-
-        Element headElement = doc.createElement("head");
-
-        // Poistetaan HEAD:in <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        if (headElement.hasChildNodes()) {
-            headElement.removeChild(headElement.getFirstChild());
-        }
-
-        Element bodyElement = doc.createElement("body");
-
-        rootElement.appendChild(headElement);
-        rootElement.appendChild(bodyElement);
-
-        DokumenttiBase docBase = new DokumenttiBase();
-        docBase.setDocument(doc);
-        docBase.setHeadElement(headElement);
-        docBase.setBodyElement(bodyElement);
-        docBase.setGenerator(new CharapterNumberGenerator());
-        docBase.setKieli(kieli);
-        docBase.setPeruste(peruste);
-        docBase.setDokumentti(dokumentti);
-        docBase.setMapper(mapper);
-
-        // kansilehti
-        /*addCoverPage(doc, rootElement, peruste, kieli, suoritustapakoodi);
-
-        // infosivu
-        addInfoPage(doc, peruste, kieli);
-
-        // sisältöelementit (proosa)
-        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
-        PerusteenOsaViite sisalto = suoritustapa.getSisalto();
-        addSisaltoElement(doc, peruste, rootElement, sisalto, 0, suoritustapa, kieli);
-
-        // pudotellaan tutkinnonosat paikalleen
-        addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
-
-        // lisätään tekstikappaleet
-        addTekstikappaleet(doc, peruste, rootElement, sisalto, 0, suoritustapa, kieli);
-
-        // käsitteet
-        addGlossary(doc, peruste, kieli);
-
-        // helpottaa devaus-debugausta, voi olla vähän turha tuotannossa
-        printDocument(doc);*/
-
-        return doc;
-    }
 
     @Override
     public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi)

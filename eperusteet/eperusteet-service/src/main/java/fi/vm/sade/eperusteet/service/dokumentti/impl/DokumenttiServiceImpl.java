@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
+import fi.vm.sade.eperusteet.service.internal.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.internal.PdfService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -85,10 +86,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     private PerusteRepository perusteRepository;
 
     @Autowired
-    DokumenttiBuilderService builder;
+    private DokumenttiBuilderService builder;
 
     @Autowired
-    PdfService pdfService;
+    private DokumenttiNewBuilderService newBuilder;
+
+    @Autowired
+    private PdfService pdfService;
 
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
@@ -254,8 +258,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 break;
             case UUSI:
                 Dokumentti dokumentti = mapper.map(dto, Dokumentti.class);
-                Document doc = builder.generateXHTML(peruste, dokumentti, kieli, suoritustapakoodi);
+                Document doc = newBuilder.generateXML(peruste, dokumentti, kieli, suoritustapakoodi);
                 toReturn = pdfService.xhtml2pdf(doc);
+
                 break;
             default:
                 break;

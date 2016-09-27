@@ -13,23 +13,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.internal;
 
+import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import org.w3c.dom.Document;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 
 /**
- *
- * @author jussi
+ * @author isaul
  */
-public interface DokumenttiBuilderService {
-
-    String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi)
-            throws IOException, TransformerException, ParserConfigurationException;
+public interface DokumenttiNewBuilderService {
+    Document generateXML(Peruste peruste, Dokumentti dto, Kieli kieli, Suoritustapakoodi suoritustapakoodi)
+            throws ParserConfigurationException, IOException, TransformerException;
 }

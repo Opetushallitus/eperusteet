@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service.dokumentti.impl.util;
 
 import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -55,6 +56,17 @@ public class DokumenttiUtils {
             header.setAttribute("number", docBase.getGenerator().generateNumber());
             header.appendChild(docBase.getDocument().createTextNode(unescapeHtml5(text)));
             docBase.getBodyElement().appendChild(header);
+        }
+    }
+
+    public static String getTextString(DokumenttiBase docBase, TekstiPalanen tekstiPalanen) {
+        if (tekstiPalanen != null
+                && tekstiPalanen.getTeksti() != null
+                && tekstiPalanen.getTeksti().containsKey(docBase.getKieli())
+                && tekstiPalanen.getTeksti().get(docBase.getKieli()) != null) {
+            return unescapeHtml5(tekstiPalanen.getTeksti().get(docBase.getKieli()));
+        } else {
+            return "";
         }
     }
 

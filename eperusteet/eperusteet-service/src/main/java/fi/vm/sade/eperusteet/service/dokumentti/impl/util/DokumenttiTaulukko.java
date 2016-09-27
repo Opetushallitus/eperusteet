@@ -68,21 +68,19 @@ public class DokumenttiTaulukko {
             // Otsikko rivi
             if (otsikkoSarakkeet.size() > 0) {
                 builder.append("<tr bgcolor=\"#d4e3f4\">");
-                otsikkoSarakkeet.stream()
-                        .forEach((sarake) -> {
-                            builder.append("<th>");
-                            builder.append(sarake);
-                            builder.append("</th>");
-                        });
+                otsikkoSarakkeet.forEach((sarake) -> {
+                    builder.append("<th>");
+                    builder.append(sarake);
+                    builder.append("</th>");
+                });
                 builder.append("</tr>");
             }
 
-        rivit.stream()
-                .forEach((rivi) -> {
-                    builder.append("<tr>");
-                    builder.append(rivi.toString());
-                    builder.append("</tr>");
-                });
+        rivit.forEach((rivi) -> {
+            builder.append("<tr>");
+            builder.append(rivi.toString());
+            builder.append("</tr>");
+        });
 
         builder.append("</table>");
 
