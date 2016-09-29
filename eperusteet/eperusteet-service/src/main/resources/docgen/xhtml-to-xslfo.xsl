@@ -16,14 +16,13 @@
                         <fo:simple-page-master master-name="cover"
                                                page-width="210mm" page-height="297mm">
                             <fo:region-body margin="30mm" margin-top="80mm"/>
-                            <!--<fo:region-body background-image="cover.svg"/>-->
                         </fo:simple-page-master>
 
                         <!-- Just a blank A4 -->
                         <fo:simple-page-master master-name="blank"
                                                page-width="210mm" page-height="297mm"
                                                margin="30mm">
-                            <fo:region-body />
+                            <fo:region-body/>
                         </fo:simple-page-master>
 
                         <!-- Left side page -->
@@ -104,23 +103,20 @@
 
             <!-- Document content pages -->
             <fo:page-sequence master-reference="standard" initial-page-number="1">
-
                 <fo:static-content flow-name="rb-right">
-                    <fo:block font-size="10pt" text-align="start">
-                    </fo:block>
+                    <fo:block font-size="10pt" text-align="start"/>
                 </fo:static-content>
                 <fo:static-content flow-name="ra-right">
                     <fo:block text-align="end" font-size="10pt" color="#6C6D70">
-                        <fo:page-number />
+                        <fo:page-number/>
                     </fo:block>
                 </fo:static-content>
                 <fo:static-content flow-name="rb-left">
-                    <fo:block font-size="10pt" text-align="end">
-                    </fo:block>
+                    <fo:block font-size="10pt" text-align="end"/>
                 </fo:static-content>
                 <fo:static-content flow-name="ra-left">
                     <fo:block font-size="10pt" color="#6C6D70">
-                        <fo:page-number />
+                        <fo:page-number/>
                     </fo:block>
                 </fo:static-content>
                 <fo:static-content flow-name="rs-left">
@@ -141,20 +137,24 @@
                                    rule-thickness="1pt" color="#6E6C6C"/>
                     </fo:block>
                 </fo:static-content>
-
                 <xsl:apply-templates select="body"/>
-
             </fo:page-sequence>
         </fo:root>
     </xsl:template>
 
     <xsl:template match="head">
 
-        <!--<fo:block break-before='page' font-size="18pt" font-weight="bold" padding-bottom="12pt">
+        <!-- nimi -->
+        <fo:block font-size="18pt" font-weight="bold" padding-bottom="12pt">
             <xsl:value-of select="title"/>
-        </fo:block>-->
+        </fo:block>
 
-        <fo:table table-layout="fixed" width="100%"
+        <!-- Tiivistelmä -->
+        <fo:block>
+            <xsl:apply-templates select="description"/>
+        </fo:block>
+
+        <fo:table table-layout="fixed" width="100%" font-size="10pt"
                   border-collapse="separate" border-separation="4pt">
             <fo:table-column column-width="proportional-column-width(1)"/>
             <fo:table-column column-width="proportional-column-width(2)"/>
@@ -179,29 +179,8 @@
                     </fo:table-cell>
                 </fo:table-row>
 
-                <!-- Tiivistelmä -->
-                <xsl:if test="boolean(/html/head/meta[@name='description'])">
-                    <fo:table-row>
-                        <fo:table-cell>
-                            <fo:block font-weight="bold">
-                                <xsl:if test="//html/@lang = 'fi'">
-                                    <xsl:text>Tiivistelmä</xsl:text>
-                                </xsl:if>
-                                <xsl:if test="//html/@lang = 'sv'">
-                                    <xsl:text>Sammandrag</xsl:text>
-                                </xsl:if>
-                            </fo:block>
-                        </fo:table-cell>
-                        <fo:table-cell>
-                            <fo:block>
-                                <xsl:apply-templates select="/html/head/meta[@name='description']/@content"/>
-                            </fo:block>
-                        </fo:table-cell>
-                    </fo:table-row>
-                </xsl:if>
-
                 <!-- Diaarinumero -->
-                <xsl:if test="boolean(/html/head/meta[@name='description'])">
+                <xsl:if test="boolean(/html/head/meta[@name='diary'])">
                     <fo:table-row>
                         <fo:table-cell>
                             <fo:block font-weight="bold">
@@ -215,11 +194,13 @@
                         </fo:table-cell>
                         <fo:table-cell>
                             <fo:block>
-                                <xsl:apply-templates select="/html/head/meta[@name='description']/@content"/>
+                                <xsl:apply-templates select="/html/head/meta[@name='diary']/@content"/>
                             </fo:block>
                         </fo:table-cell>
                     </fo:table-row>
                 </xsl:if>
+
+                <xsl:apply-templates select="muutosmaaraykset"/>
 
                 <xsl:apply-templates select="korvaavat"/>
 
@@ -517,7 +498,7 @@
     </xsl:template>
 
     <xsl:template match="em">
-        <fo:inline font-style="italic">
+        <fo:inline font-style="italic" >
             <xsl:apply-templates select="*|text()"/>
         </fo:inline>
     </xsl:template>
@@ -697,28 +678,26 @@
     </xsl:template>
 
     <xsl:template match="table">
-        <xsl:if test="thead/tr/th|thead/tr/td|tbody/tr/th|tbody/tr/td">
-            <fo:table table-layout="fixed" inline-progression-dimension="100%"
-                      space-after="12pt" font-size="10pt" page-break-inside="avoid">
-                <xsl:if test="caption">
-                    <fo:table-header>
-                        <fo:table-cell>
-                            <fo:block font-weight="bold" font-size="12pt">
-                                <xsl:value-of select="caption"/>
-                            </fo:block>
-                        </fo:table-cell>
-                    </fo:table-header>
-                </xsl:if>
-                <fo:table-body>
-                    <fo:table-row>
-                        <fo:table-cell>
-                            <fo:block/>
-                        </fo:table-cell>
-                    </fo:table-row>
-                    <xsl:apply-templates select="thead|tbody"/>
-                </fo:table-body>
-            </fo:table>
-        </xsl:if>
+        <fo:table table-layout="fixed" inline-progression-dimension="100%"
+                  space-after="12pt" font-size="10pt" page-break-inside="avoid">
+            <xsl:if test="caption">
+                <fo:table-header>
+                    <fo:table-cell>
+                        <fo:block font-weight="bold" font-size="12pt">
+                            <xsl:value-of select="caption"/>
+                        </fo:block>
+                    </fo:table-cell>
+                </fo:table-header>
+            </xsl:if>
+            <fo:table-body>
+                <fo:table-row>
+                    <fo:table-cell>
+                        <fo:block/>
+                    </fo:table-cell>
+                </fo:table-row>
+                <xsl:apply-templates select="thead|tbody|tr"/>
+            </fo:table-body>
+        </fo:table>
     </xsl:template>
 
     <xsl:template match="td">
@@ -814,9 +793,18 @@
     </xsl:template>
 
     <xsl:template match="th">
-        <fo:table-cell
-                padding-start="3pt" padding-end="3pt"
-                padding-before="3pt" padding-after="3pt">
+        <fo:table-cell padding-start="3pt" padding-end="3pt"
+                       padding-before="3pt" padding-after="3pt">
+            <xsl:if test="@colspan">
+                <xsl:attribute name="number-columns-spanned">
+                    <xsl:value-of select="@colspan"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@rowspan">
+                <xsl:attribute name="number-rows-spanned">
+                    <xsl:value-of select="@rowspan"/>
+                </xsl:attribute>
+            </xsl:if>
             <xsl:if test="@border='1' or
                     ancestor::tr[@border='1'] or
                     ancestor::table[@border='1']">
@@ -830,7 +818,7 @@
                     <xsl:text>1pt</xsl:text>
                 </xsl:attribute>
             </xsl:if>
-            <fo:block font-weight="bold" text-align="center">
+            <fo:block text-align="center">
                 <xsl:apply-templates select="*|text()"/>
             </fo:block>
         </fo:table-cell>
@@ -845,18 +833,36 @@
     </xsl:template>
 
     <xsl:template match="tr">
-        <fo:table-row>
-            <xsl:choose>
-                <xsl:when test="th|td">
-                    <xsl:apply-templates select="th|td"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <fo:table-cell>
-                        <fo:block/>
-                    </fo:table-cell>
-                </xsl:otherwise>
-            </xsl:choose>
-        </fo:table-row>
+        <xsl:choose>
+            <xsl:when test="@bgcolor">
+                <fo:table-row background-color="{@bgcolor}">
+                    <xsl:choose>
+                        <xsl:when test="th|td">
+                            <xsl:apply-templates select="th|td"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <fo:table-cell>
+                                <fo:block/>
+                            </fo:table-cell>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </fo:table-row>
+            </xsl:when>
+            <xsl:otherwise>
+                <fo:table-row>
+                    <xsl:choose>
+                        <xsl:when test="th|td">
+                            <xsl:apply-templates select="th|td"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <fo:table-cell>
+                                <fo:block/>
+                            </fo:table-cell>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </fo:table-row>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="ul">
@@ -919,6 +925,30 @@
                             </xsl:if>
                             <xsl:if test="//html/@lang = 'sv'">
                                 <xsl:text>Korvattavat määräykset</xsl:text>
+                            </xsl:if>
+                        </xsl:if>
+                    </fo:block>
+                </fo:table-cell>
+                <fo:table-cell>
+                    <fo:block>
+                        <xsl:apply-templates select="."/>
+                    </fo:block>
+                </fo:table-cell>
+            </fo:table-row>
+        </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template match="muutosmaaraykset">
+        <xsl:for-each select="muutosmaarays">
+            <fo:table-row>
+                <fo:table-cell>
+                    <fo:block font-weight="bold">
+                        <xsl:if test="position()=1">
+                            <xsl:if test="//html/@lang = 'fi'">
+                                <xsl:text>Muutosmääräykset</xsl:text>
+                            </xsl:if>
+                            <xsl:if test="//html/@lang = 'sv'">
+                                <xsl:text>Muutosmääräykset</xsl:text>
                             </xsl:if>
                         </xsl:if>
                     </fo:block>

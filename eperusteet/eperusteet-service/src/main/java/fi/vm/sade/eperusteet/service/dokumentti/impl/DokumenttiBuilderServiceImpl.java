@@ -122,7 +122,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         addGlossary(doc, peruste, kieli);
 
         // helpottaa devaus-debugausta, voi olla vähän turha tuotannossa
-        printDocument(doc);
+        //printDocument(doc);
 
         // rusikoidaan dokkarissa sekaisin olevat docbook- ja xhtml-osat
         // xsl-muunnoksena docbook-formaattiin

@@ -40,13 +40,19 @@ public class DokumenttiUtils {
     }
 
     public static void addTeksti(DokumenttiBase docBase, String teksti, String tagi) {
+        addTeksti(docBase, teksti, tagi, docBase.getBodyElement());
+    }
+
+    public static void addTeksti(DokumenttiBase docBase, String teksti, String tagi, Element element) {
         if (teksti != null) {
-            teksti = "<" + tagi + ">" + unescapeHtml5(teksti) + "</" + tagi + ">";
+
+            teksti = unescapeHtml5(teksti);
+            teksti = "<" + tagi + ">" + teksti + "</" + tagi + ">";
 
             Document tempDoc = new W3CDom().fromJsoup(Jsoup.parseBodyFragment(teksti));
             Node node = tempDoc.getDocumentElement().getChildNodes().item(1).getFirstChild();
 
-            docBase.getBodyElement().appendChild(docBase.getDocument().importNode(node, true));
+            element.appendChild(docBase.getDocument().importNode(node, true));
         }
     }
 
