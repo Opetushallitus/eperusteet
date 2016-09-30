@@ -837,29 +837,36 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         updateStatus.forSuoritustapa(Suoritustapakoodi.LUKIOKOULUTUS).toTila(tila)
             .forTilat(jalkeen(LAADINTA))
                 .addErrorGiven("peruste-lukio-ei-oppiaineita", rakenne.getOppiaineet().isEmpty())
-                .addErrorGiven("peruste-lukio-ei-aihekokonaisuuksia", sisalto.getAihekokonaisuudet() == null
-                        || sisalto.getAihekokonaisuudet().getAihekokonaisuudet().isEmpty())
+                .addErrorGiven("peruste-lukio-ei-aihekokonaisuuksia", KoulutusTyyppi.of(peruste.getKoulutustyyppi()) != KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS
+                        && (sisalto.getAihekokonaisuudet() == null || sisalto.getAihekokonaisuudet().getAihekokonaisuudet().isEmpty()))
                 .addErrorGiven("peruste-lukio-ei-opetuksen-yleisia-tavoitteita",
                         sisalto.getOpetuksenYleisetTavoitteet() == null)
             .forTilat(jalkeen(KOMMENTOINTI))
                 .addErrorStatusForAll("peruste-lukio-liittamaton-kurssi", () ->
-                    rakenne.kurssit().filter(empty(Lukiokurssi::getOppiaineet)).map(localized(Nimetty::getNimi)))
+                    rakenne.kurssit()
+                        .filter(empty(Lukiokurssi::getOppiaineet))
+                        .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () ->
-                    rakenne.oppiaineetMaarineen().filter(not(Oppiaine::isKoosteinen)
-                            .and(not(Oppiaine::isAbstraktiBool)).and(empty(Oppiaine::getLukiokurssit)))
+                    rakenne.oppiaineetMaarineen()
+                        .filter(not(Oppiaine::isKoosteinen)
+                        .and(not(Oppiaine::isAbstraktiBool))
+                        .and(empty(Oppiaine::getLukiokurssit)))
                         .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
-                    rakenne.oppiaineet().filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))
+                    rakenne.oppiaineet()
+                        .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))
                         .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-kooodi-puuttuu", () ->
-                    rakenne.koodilliset().filter(emptyString(Koodillinen::getKoodiArvo).or(emptyString(Koodillinen::getKoodiUri)))
-                            .map(localized(Nimetty::getNimi)))
+                    rakenne.koodilliset()
+                        .filter(emptyString(Koodillinen::getKoodiArvo).or(emptyString(Koodillinen::getKoodiUri)))
+                        .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-sama-koodi", () -> {
                     List<LokalisoituTekstiDto> duplikaatit = new ArrayList<>();
-                    rakenne.koodilliset().filter(emptyString(Koodillinen::getKoodiArvo).negate())
-                            .collect(toMap(Koodillinen::getKoodiArvo, k->k, (a,b) -> {
-                        duplikaatit.add(localized(a.getNimi()).concat(" - ").concat(localized(b.getNimi()))
-                            .concat(" ("+a.getKoodiArvo()+")"));
+                    rakenne.koodilliset()
+                        .filter(emptyString(Koodillinen::getKoodiArvo).negate())
+                        .collect(toMap(Koodillinen::getKoodiArvo, k->k, (a,b) -> {
+                            duplikaatit.add(localized(a.getNimi()).concat(" - ").concat(localized(b.getNimi()))
+                        .concat(" ("+a.getKoodiArvo()+")"));
                         return a;
                     }));
                     return duplikaatit.stream();
