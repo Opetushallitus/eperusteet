@@ -864,11 +864,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     List<LokalisoituTekstiDto> duplikaatit = new ArrayList<>();
                     rakenne.koodilliset()
                         .filter(emptyString(Koodillinen::getKoodiArvo).negate())
-                        .collect(toMap(Koodillinen::getKoodiArvo, k->k, (a,b) -> {
-                            duplikaatit.add(localized(a.getNimi()).concat(" - ").concat(localized(b.getNimi()))
-                        .concat(" ("+a.getKoodiArvo()+")"));
-                        return a;
-                    }));
+                        .collect(toMap(Koodillinen::getKoodiArvo, k -> k, (a, b) -> {
+                            duplikaatit.add(localized(a.getNimi())
+                                .concat(" - ")
+                                .concat(localized(b.getNimi()))
+                                .concat(" ("+a.getKoodiArvo()+")"));
+                            return a;
+                        }));
                     return duplikaatit.stream();
                 });
     }
