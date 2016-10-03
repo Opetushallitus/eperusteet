@@ -40,14 +40,15 @@ angular.module('eperusteApp')
   })
   .service('Pdf', function(Dokumentti, SERVICE_LOC) {
 
-    function generoiPdf(perusteId, kieli, suoritustapa, success, failure) {
+    function generoiPdf(perusteId, kieli, suoritustapa, version, success, failure) {
       success = success || angular.noop;
       failure = failure || angular.noop;
 
       Dokumentti.save({
         'perusteId': perusteId,
         'kieli': kieli,
-        'suoritustapakoodi': suoritustapa
+        'suoritustapakoodi': suoritustapa,
+        'version': version
       }, null, success, failure);
     }
 
@@ -126,6 +127,14 @@ angular.module('eperusteApp')
     $timeout, Notifikaatiot, Kaanna, PerusteProjektiService, $stateParams) {
     $scope.kielet = kielet;
     $scope.docs = {};
+    $scope.versiot = {
+      lista: [
+        'uusi',
+        'vanha'
+      ],
+      valittu: 'uusi'
+    };
+
     var pdfToken = null;
     var suoritustapa = $stateParams.suoritustapa || PerusteProjektiService.getSuoritustapa();
 
@@ -194,7 +203,7 @@ angular.module('eperusteApp')
       enableActions(false);
       $scope.docs[$scope.kielet.valittu] = null;
       $scope.tila = 'luodaan';
-      Pdf.generoiPdf(perusteId, $scope.kielet.valittu, suoritustapa,
+      Pdf.generoiPdf(perusteId, $scope.kielet.valittu, suoritustapa, $scope.versiot.valittu,
       function(res) {
         if (res.id !== null) {
           pdfToken = res.id;

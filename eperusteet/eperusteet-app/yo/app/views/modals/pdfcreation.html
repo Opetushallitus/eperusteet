@@ -7,10 +7,23 @@
 <div class="modal-body">
   <h4 kaanna>luo-pdf-dokumentti-perusteesta</h4>
   <div class="modal-data">
+    <p>{{'valitse-dokumenttin-versio' | kaanna}}:</p>
+    <div ng-repeat="versio in versiot.lista">
+      <label>
+        <input type="radio" ng-model="versiot.valittu" ng-value="versio"
+               name="versionvalinta" ng-disabled="generateInProgress">
+        {{versio | kaanna}}
+      </label>
+    </div>
+  </div>
+  <div class="modal-data">
     <p>{{'valitse-kieli' | kaanna}}:</p>
     <div ng-repeat="kieli in kielet.lista">
-      <label><input type="radio" ng-model="kielet.valittu" name="kielivalinta"
-              ng-value="kieli" ng-disabled="generateInProgress">{{kieli | kaanna}}</label>
+      <label>
+        <input type="radio" ng-model="kielet.valittu" name="kielivalinta"
+               ng-value="kieli" ng-disabled="generateInProgress">
+        {{kieli | kaanna}}
+      </label>
     </div>
   </div>
   <div class="pdf-lataus">

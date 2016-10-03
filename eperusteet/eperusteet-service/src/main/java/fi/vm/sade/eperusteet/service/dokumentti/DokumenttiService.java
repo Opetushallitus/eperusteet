@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.dokumentti;
 
+import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
@@ -37,7 +38,12 @@ public interface DokumenttiService {
     void generateWithDto(@P("dto") DokumenttiDto dto) throws DokumenttiException;
 
     @PreAuthorize("hasPermission(#id, 'peruste', 'LUKU')")
-    DokumenttiDto createDtoFor(@P("id") final long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
+    DokumenttiDto createDtoFor(
+            @P("id") final long id,
+            Kieli kieli,
+            Suoritustapakoodi suoritustapakoodi,
+            GeneratorVersion version
+    );
 
     @PreAuthorize("permitAll()")
     byte[] get(Long id);

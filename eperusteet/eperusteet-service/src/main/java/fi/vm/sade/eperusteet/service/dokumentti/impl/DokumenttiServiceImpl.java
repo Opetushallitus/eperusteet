@@ -100,8 +100,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional
     @IgnorePerusteUpdateCheck
-    public DokumenttiDto createDtoFor(long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
-
+    public DokumenttiDto createDtoFor(
+            long id,
+            Kieli kieli,
+            Suoritustapakoodi suoritustapakoodi,
+            GeneratorVersion version
+    ) {
         String name = SecurityUtil.getAuthenticatedPrincipal().getName();
         Dokumentti dokumentti = new Dokumentti();
         dokumentti.setTila(DokumenttiTila.EI_OLE);
@@ -110,8 +114,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         dokumentti.setLuoja(name);
         dokumentti.setPerusteId(id);
         dokumentti.setSuoritustapakoodi(suoritustapakoodi);
-        // Todo: käyttäjän valittavissa
-        dokumentti.setGeneratorVersion(GeneratorVersion.UUSI);
+        dokumentti.setGeneratorVersion(version);
 
         Peruste peruste = perusteRepository.findOne(id);
         if (peruste != null) {

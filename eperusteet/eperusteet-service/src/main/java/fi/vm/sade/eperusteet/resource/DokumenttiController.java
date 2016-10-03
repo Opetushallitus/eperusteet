@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import com.wordnik.swagger.annotations.ApiOperation;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
@@ -60,14 +61,16 @@ public class DokumenttiController {
     public ResponseEntity<DokumenttiDto> create(
         @RequestParam("perusteId") final long perusteId,
         @RequestParam(value = "kieli", defaultValue = "fi") final String kieli,
-        @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi
+        @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi,
+        @RequestParam(value = "version", defaultValue = "uusi") final String version
     ) throws DokumenttiException {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         final DokumenttiDto createDtoFor = service.createDtoFor(
                 perusteId,
                 Kieli.of(kieli),
-                Suoritustapakoodi.of(suoritustapakoodi));
+                Suoritustapakoodi.of(suoritustapakoodi),
+                GeneratorVersion.of(version));
         if (createDtoFor.getTila() != DokumenttiTila.EPAONNISTUI) {
             service.setStarted(createDtoFor);
             service.generateWithDto(createDtoFor);
