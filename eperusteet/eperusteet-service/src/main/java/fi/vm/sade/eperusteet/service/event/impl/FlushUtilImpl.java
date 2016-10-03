@@ -36,6 +36,6 @@ public class FlushUtilImpl implements FlushUtil {
     @Override
     @Transactional
     public void flush() {
-        em.flush();;
+        em.flush();
     }
 }

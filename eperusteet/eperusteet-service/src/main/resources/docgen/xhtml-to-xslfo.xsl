@@ -716,6 +716,7 @@
             </xsl:if>
             <xsl:if test="@border='1' or
                     ancestor::tr[@border='1'] or
+                    ancestor::tbody[@border='1'] or
                     ancestor::thead[@border='1'] or
                     ancestor::table[@border='1']">
                 <xsl:attribute name="border-style">
@@ -807,6 +808,8 @@
             </xsl:if>
             <xsl:if test="@border='1' or
                     ancestor::tr[@border='1'] or
+                    ancestor::tbody[@border='1'] or
+                    ancestor::thead[@border='1'] or
                     ancestor::table[@border='1']">
                 <xsl:attribute name="border-style">
                     <xsl:text>solid</xsl:text>
