@@ -1,12 +1,18 @@
 package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
+import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaamisenTavoite;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.ValmaTelmaSisalto;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
+import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
@@ -15,6 +21,7 @@ import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiBase;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +44,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 
@@ -61,6 +71,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     @Autowired
     private LocalizedMessagesService messages;
+
+    @Autowired
+    private TermistoRepository termistoRepository;
 
     @Override
     public Document generateXML(Peruste peruste, Dokumentti dokumentti, Kieli kieli,
@@ -105,14 +118,17 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Kansilehti & Infosivu
         addMetaPages(docBase);
 
-        // sisältöelementit (proosa)
+        // Tutkinnon muodostuminen
         addSisaltoelementit(docBase);
 
-        // pudotellaan tutkinnonosat paikalleen
+        // Tutkinnonosat
         addTutkinnonosat(docBase);
 
-        // lisätään tekstikappaleet
+        // Tekstikappaleet
         addTekstikappaleet(docBase, docBase.getSisalto());
+
+        // Käsitteet
+        addKasitteet(docBase);
 
         // Tulostetaan dokumentti
         printDocument(docBase.getDocument());
@@ -374,10 +390,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         switch (depth) {
             case 0:
-
                 break;
             case 1:
-
                 tr.setAttribute("bgcolor", "#AAAAAA");
 
                 tbody.appendChild(tr);
@@ -391,6 +405,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 break;
             case 2:
                 tr.setAttribute("bgcolor", "#EEEEEE");
+
                 tbody.appendChild(tr);
                 tr.appendChild(td);
                 td.appendChild(p);
@@ -411,14 +426,81 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                 break;
             default:
-
                 break;
         }
     }
 
 
     private void addTutkinnonosat(DokumenttiBase docBase) {
+        Set<Suoritustapa> suoritustavat = docBase.getPeruste().getSuoritustavat();
+        Set<TutkinnonOsaViite> osat = new TreeSet<>((o1, o2) -> {
+            String nimi1 = getTextString(docBase, o1.getTutkinnonOsa().getNimi());
+            String nimi2 = getTextString(docBase, o2.getTutkinnonOsa().getNimi());
 
+            // Ensisijaisesti järjestysnumeron mukaan
+            int o1i = o1.getJarjestys() != null ? o1.getJarjestys() : Integer.MAX_VALUE;
+            int o2i = o2.getJarjestys() != null ? o2.getJarjestys() : Integer.MAX_VALUE;
+            if (o1i < o2i) {
+                return -1;
+            } else if (o1i > o2i) {
+                return 1;
+            }
+
+            // Toissijaisesti aakkosjärjestyksessä
+            if (!nimi1.equals(nimi2)) {
+                return nimi1.compareTo(nimi2);
+            }
+
+            // Viimeisenä kanta-avaimen mukaan
+            Long id1 = o1.getTutkinnonOsa().getId();
+            Long id2 = o2.getTutkinnonOsa().getId();
+            if (id1 < id2) {
+                return -1;
+            } else if (id1 > id2) {
+                return 1;
+            }
+
+            // Ovat samat
+            return 0;
+        });
+
+        suoritustavat.stream()
+                .filter(suoritustapa -> suoritustapa.getSuoritustapakoodi()
+                        .equals(docBase.getSisalto().getSuoritustapa().getSuoritustapakoodi()))
+                .forEach(suoritustapa -> osat.addAll(suoritustapa.getTutkinnonOsat()));
+
+        addHeader(docBase, messages.translate("docgen.tutkinnon_osat.title", docBase.getKieli()));
+
+        docBase.getGenerator().increaseDepth();
+
+        osat.forEach(viite -> {
+            TutkinnonOsa osa = viite.getTutkinnonOsa();
+
+            String otsikko = getOtsikko(docBase, viite);
+            addHeader(docBase, otsikko);
+
+            String kuvaus = getTextString(docBase, osa.getKuvaus());
+            if (StringUtils.isNotEmpty(kuvaus)) {
+                addTeksti(docBase, kuvaus, "div");
+            }
+
+            TutkinnonOsaTyyppi tyyppi = osa.getTyyppi();
+            if (tyyppi == TutkinnonOsaTyyppi.NORMAALI) {
+                addTavoitteet(docBase, osa);
+                addAmmattitaitovaatimukset(docBase, osa.getAmmattitaitovaatimuksetLista(), osa.getAmmattitaitovaatimukset());
+                addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());
+                addAmmattitaidonOsoittamistavat(docBase, osa);
+                addArviointi(docBase, osa.getArviointi(), tyyppi);
+
+            } else if (tyyppi == TutkinnonOsaTyyppi.TUTKE2) {
+                addTutke2Osat(docBase, osa);
+            }
+
+            docBase.getGenerator().increaseNumber();
+        });
+
+        docBase.getGenerator().decreaseDepth();
+        docBase.getGenerator().increaseNumber();
     }
 
     private void addTekstikappaleet(DokumenttiBase docBase, PerusteenOsaViite parent) {
@@ -446,6 +528,201 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 docBase.getGenerator().increaseNumber();
             }
         }
+    }
+
+    private void addAmmattitaitovaatimukset(DokumenttiBase docBase,
+                                            List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista,
+                                            TekstiPalanen ammattitaitovaatimukset) {
+        String ammattitaitovaatimuksetText = getTextString(docBase, ammattitaitovaatimukset);
+        if(StringUtils.isEmpty(ammattitaitovaatimuksetText) && ammattitaitovaatimuksetLista.isEmpty()) {
+            return;
+        }
+
+        addTeksti(docBase, messages.translate("docgen.ammattitaitovaatimukset.title", docBase.getKieli()), "h5");
+        if(StringUtils.isNotEmpty(ammattitaitovaatimuksetText)) {
+            addTeksti(docBase, ammattitaitovaatimuksetText, "div");
+        }
+
+        for (AmmattitaitovaatimuksenKohdealue ka : ammattitaitovaatimuksetLista) {
+            if (ka.getVaatimuksenKohteet() == null) {
+                continue;
+            }
+            if (ka.getVaatimuksenKohteet().isEmpty()) {
+                continue;
+            }
+
+            // Taulukko
+            addTeksti(docBase, getTextString(docBase, ka.getOtsikko()), "h6");
+
+        }
+    }
+
+    private void addValmatelmaSisalto(DokumenttiBase docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
+        if(valmaTelmaSisalto == null){
+            return;
+        }
+
+        addValmaOsaamistavoitteet(docBase, valmaTelmaSisalto);
+        addValmaArviointi(docBase, valmaTelmaSisalto);
+    }
+
+    private void addValmaOsaamistavoitteet(DokumenttiBase docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
+        if(valmaTelmaSisalto.getOsaamistavoite().size() > 0) {
+            addTeksti(docBase, messages.translate("docgen.valma.osaamistavoitteet.title", docBase.getKieli()), "h5");
+        }
+
+        for (OsaamisenTavoite osaamisenTavoite : valmaTelmaSisalto.getOsaamistavoite()) {
+            if(osaamisenTavoite.getNimi() != null) {
+                addTeksti(docBase, getTextString(docBase, osaamisenTavoite.getNimi()), "h6");
+            }
+
+            if(osaamisenTavoite.getKohde() != null) {
+                addTeksti(docBase, getTextString(docBase, osaamisenTavoite.getKohde()), "div");
+            }
+
+            //addValmaTavoiteList(docBase, osaamisenTavoite.getTavoitteet());
+
+            if(osaamisenTavoite.getSelite() != null) {
+                addTeksti(docBase, getTextString(docBase, osaamisenTavoite.getSelite()), "div");
+            }
+        }
+    }
+
+    private void addValmaArviointi(DokumenttiBase docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
+        if(valmaTelmaSisalto.getOsaamisenarviointi() != null || valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null) {
+            addTeksti(docBase, messages.translate("docgen.valma.osaamisenarviointi.title", docBase.getKieli()), "h5");
+
+            if(valmaTelmaSisalto.getOsaamisenarviointi() != null) {
+                if (valmaTelmaSisalto.getOsaamisenarviointi().getKohde() != null) {
+                    addTeksti(docBase,
+                            getTextString(docBase, valmaTelmaSisalto.getOsaamisenarviointi().getKohde()),
+                            "div");
+                }
+
+                //addValmaTavoiteList(doc, element, kieli, valmaTelmaSisalto.getOsaamisenarviointi().getTavoitteet());
+            }
+
+            if(valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null){
+                addTeksti(docBase,
+                        valmaTelmaSisalto.getOsaamisenarviointiTekstina().getTeksti().get(docBase.getKieli()),
+                        "div");
+            }
+        }
+    }
+
+    private void addAmmattitaidonOsoittamistavat(DokumenttiBase docBase, TutkinnonOsa osa) {
+        String ammattitaidonOsoittamistavatText = getTextString(docBase, osa.getAmmattitaidonOsoittamistavat());
+        if (StringUtils.isEmpty(ammattitaidonOsoittamistavatText)) {
+            return;
+        }
+
+        addTeksti(docBase, messages.translate("docgen.ammattitaidon_osoittamistavat.title", docBase.getKieli()), "h5");
+        addTeksti(docBase, ammattitaidonOsoittamistavatText, "div");
+    }
+
+    private void addArviointi(DokumenttiBase docBase, Arviointi arviointi, TutkinnonOsaTyyppi tyyppi) {
+        if (arviointi == null) {
+            return;
+        }
+
+        addTeksti(docBase, messages.translate("docgen.arviointi.title", docBase.getKieli()), "h5");
+
+        String lisatietoteksti = getTextString(docBase, arviointi.getLisatiedot());
+        if (StringUtils.isNotEmpty(lisatietoteksti)) {
+            addTeksti(docBase, lisatietoteksti, "div");
+        }
+
+        List<ArvioinninKohdealue> arvioinninKohdealueet = sanitizeList(arviointi.getArvioinninKohdealueet());
+        for (ArvioinninKohdealue ka : arvioinninKohdealueet) {
+            if (ka.getArvioinninKohteet() == null) {
+                continue;
+            } else if (ka.getArvioinninKohteet().isEmpty()) {
+                continue;
+            }
+
+            String otsikkoTeksti = tyyppi == TutkinnonOsaTyyppi.NORMAALI
+                    ? getTextString(docBase, ka.getOtsikko())
+                    : messages.translate("docgen.tutke2.arvioinnin_kohteet.title", docBase.getKieli());
+
+            addTeksti(docBase, otsikkoTeksti, "h6");
+
+            List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
+
+            for (ArvioinninKohde kohde : arvioinninKohteet) {
+                String kohdeTeksti = getTextString(docBase, kohde.getOtsikko());
+                // Arviointi table tähän
+
+                addTeksti(docBase, kohdeTeksti, "div");
+            }
+        }
+    }
+
+    private void addTavoitteet(DokumenttiBase docBase, TutkinnonOsa osa) {
+        String TavoitteetText = getTextString(docBase, osa.getTavoitteet());
+        if (StringUtils.isEmpty(TavoitteetText)) {
+            return;
+        }
+
+        addTeksti(docBase, messages.translate("docgen.tavoitteet.title", docBase.getKieli()), "h5");
+        addTeksti(docBase, TavoitteetText, "div");
+    }
+
+    private void addTutke2Osat(DokumenttiBase docBase, TutkinnonOsa osa) {
+
+    }
+
+    private void addKasitteet(DokumenttiBase docBase) {
+        List<Termi> termit = termistoRepository.findByPerusteId(docBase.getPeruste().getId());
+        if (termit.size() == 0) {
+            return;
+        }
+
+        addHeader(docBase, messages.translate("docgen.termit.kasitteet-otsikko", docBase.getKieli()));
+
+        termit.forEach(termi -> {
+            String termiTermi = getTextString(docBase, termi.getTermi());
+            String termiSelitys = getTextString(docBase, termi.getSelitys());
+
+            addTeksti(docBase, "<strong>" + termiTermi + "</strong>", "p");
+            addTeksti(docBase, termiSelitys, "div");
+        });
+
+        docBase.getGenerator().increaseNumber();
+    }
+
+    private <T> List<T> sanitizeList(List<T> list) {
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
+    private String getLaajuusSuffiksi(final BigDecimal laajuus, final LaajuusYksikko yksikko, final Kieli kieli) {
+        StringBuilder laajuusBuilder = new StringBuilder("");
+        if (laajuus != null) {
+            laajuusBuilder.append(", ");
+            laajuusBuilder.append(laajuus.stripTrailingZeros().toPlainString());
+            laajuusBuilder.append(" ");
+            String yksikkoAvain;
+            switch (yksikko) {
+                case OPINTOVIIKKO:
+                    yksikkoAvain = "docgen.laajuus.ov";
+                    break;
+                case OSAAMISPISTE:
+                    yksikkoAvain = "docgen.laajuus.osp";
+                    break;
+                default:
+                    throw new NotImplementedException("Tuntematon laajuusyksikko: " + yksikko);
+            }
+            laajuusBuilder.append(messages.translate(yksikkoAvain, kieli));
+        }
+        return laajuusBuilder.toString();
+    }
+
+    private String getOtsikko(DokumenttiBase docBase, TutkinnonOsaViite viite) {
+        TutkinnonOsa osa = viite.getTutkinnonOsa();
+        return getTextString(docBase, osa.getNimi()) +
+                getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli());
     }
 
     private Element newBoldElement(Document doc, String teksti) {
