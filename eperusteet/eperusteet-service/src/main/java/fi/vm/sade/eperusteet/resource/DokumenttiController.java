@@ -98,9 +98,12 @@ public class DokumenttiController {
 
     @RequestMapping(value = "/peruste", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Long> getDokumenttiId(@RequestParam final Long perusteId,
-                                                @RequestParam(defaultValue = "fi") final String kieli) {
-        Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli));
+    public ResponseEntity<Long> getDokumenttiId(
+            @RequestParam final Long perusteId,
+            @RequestParam(defaultValue = "fi") final String kieli,
+            @RequestParam("suoritustapa") final String suoritustapa) {
+        Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
+        Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli), s);
         return ResponseEntity.ok(dokumenttiId);
     }
 
@@ -108,7 +111,7 @@ public class DokumenttiController {
     @ResponseBody
     public ResponseEntity<DokumenttiDto> getLatest(
         @RequestParam("perusteId") final Long perusteId,
-        @RequestParam(value = "kieli", defaultValue = "fi") final String kieli,
+        @RequestParam(defaultValue = "fi") final String kieli,
         @RequestParam("suoritustapa") final String suoritustapa)
     {
         try {

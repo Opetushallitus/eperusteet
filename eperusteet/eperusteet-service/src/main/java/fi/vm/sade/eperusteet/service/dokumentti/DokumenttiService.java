@@ -49,7 +49,7 @@ public interface DokumenttiService {
     byte[] get(Long id);
 
     @PreAuthorize("permitAll()")
-    Long getDokumenttiId(Long perusteId, Kieli kieli);
+    Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("isAuthenticated()")
     DokumenttiDto query(Long id);

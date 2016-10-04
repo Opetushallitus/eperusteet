@@ -194,11 +194,14 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional
     @IgnorePerusteUpdateCheck
-    public Long getDokumenttiId(Long perusteId, Kieli kieli) {
-        List<Long> dokumenttiIds = dokumenttiRepository
-                .findLatest(perusteId, kieli, DokumenttiTila.VALMIS);
-        if (!dokumenttiIds.isEmpty()) {
-            return dokumenttiIds.get(0);
+    public Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
+        Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
+        List<Dokumentti> documents = dokumenttiRepository
+                .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(
+                        perusteId, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort);
+
+        if (!documents.isEmpty()) {
+            return documents.get(0).getId();
         } else {
             return null;
         }
