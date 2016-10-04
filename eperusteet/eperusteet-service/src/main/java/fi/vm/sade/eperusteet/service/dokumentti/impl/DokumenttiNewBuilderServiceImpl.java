@@ -306,7 +306,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         if (osa instanceof RakenneModuuli) {
             // Ryhmä
             RakenneModuuli rakenneModuuli = (RakenneModuuli) osa;
-
             addRakenneModuuli(docBase, rakenneModuuli, tbody, depth);
 
             // Rekursiivisesti koko puu
@@ -341,6 +340,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
             Element tr = docBase.getDocument().createElement("tr");
             Element td = docBase.getDocument().createElement("td");
+            td.setAttribute("class", "td" + String.valueOf(depth));
             Element p = docBase.getDocument().createElement("p");
 
             tbody.appendChild(tr);
@@ -380,7 +380,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         Element tr = docBase.getDocument().createElement("tr");
         Element th = docBase.getDocument().createElement("th");
+        th.setAttribute("class", "th" + String.valueOf(depth));
         Element td = docBase.getDocument().createElement("td");
+        td.setAttribute("class", "td" + String.valueOf(depth));
         Element p = docBase.getDocument().createElement("p");
 
         switch (depth) {
@@ -798,7 +800,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 }
 
                 String tavoitteenNimi = getTextString(docBase, otsikkoTavoite.getNimi());
-                addTeksti(docBase, tavoitteenNimi, "h5");
+                addTeksti(docBase, tavoitteenNimi, "h6");
 
                 Osaamistavoite[] tavoiteLista = new Osaamistavoite[]{pakollinen, valinnainen};
                 for (Osaamistavoite tavoite : tavoiteLista) {
@@ -812,7 +814,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                             getLaajuusSuffiksi(tavoite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli());
                     addTeksti(docBase, otsikko, "h6");
 
-                    addTeksti(docBase, messages.translate("docgen.tavoitteet.title", docBase.getKieli()), "h5");
                     String tavoitteet = getTextString(docBase, tavoite.getTavoitteet());
                     if (StringUtils.isNotEmpty(tavoitteet)) {
                         addTeksti(docBase, tavoitteet, "div");

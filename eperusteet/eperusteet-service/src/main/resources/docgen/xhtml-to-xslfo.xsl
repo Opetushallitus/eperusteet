@@ -164,10 +164,10 @@
                 <fo:table-row>
                     <fo:table-cell>
                         <fo:block font-weight="bold">
-                            <xsl:if test="//html/@lang = 'fi'">
+                            <xsl:if test="//html/@lang='fi'">
                                 <xsl:text>Perusteen nimi</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang = 'sv'">
+                            <xsl:if test="//html/@lang='sv'">
                                 <xsl:text>Perusteen nimi</xsl:text>
                             </xsl:if>
                         </fo:block>
@@ -184,10 +184,10 @@
                     <fo:table-row>
                         <fo:table-cell>
                             <fo:block font-weight="bold">
-                                <xsl:if test="//html/@lang = 'fi'">
+                                <xsl:if test="//html/@lang='fi'">
                                     <xsl:text>Määräyksen diaarinumero</xsl:text>
                                 </xsl:if>
-                                <xsl:if test="//html/@lang = 'sv'">
+                                <xsl:if test="//html/@lang='sv'">
                                     <xsl:text>Föreskriftens diarienummer</xsl:text>
                                 </xsl:if>
                             </fo:block>
@@ -215,10 +215,10 @@
                     <fo:table-row>
                         <fo:table-cell>
                             <fo:block font-weight="bold">
-                                <xsl:if test="//html/@lang = 'fi'">
+                                <xsl:if test="//html/@lang='fi'">
                                     <xsl:text>Voimaantulo</xsl:text>
                                 </xsl:if>
-                                <xsl:if test="//html/@lang = 'sv'">
+                                <xsl:if test="//html/@lang='sv'">
                                     <xsl:text>Voimaantulo</xsl:text>
                                 </xsl:if>
                             </fo:block>
@@ -236,10 +236,10 @@
                     <fo:table-row>
                         <fo:table-cell>
                             <fo:block font-weight="bold">
-                                <xsl:if test="//html/@lang = 'fi'">
+                                <xsl:if test="//html/@lang='fi'">
                                     <xsl:text>Voimassaolon päättyminen</xsl:text>
                                 </xsl:if>
-                                <xsl:if test="//html/@lang = 'sv'">
+                                <xsl:if test="//html/@lang='sv'">
                                     <xsl:text>Voimassaolon päättyminen</xsl:text>
                                 </xsl:if>
                             </fo:block>
@@ -280,7 +280,7 @@
                     <xsl:when test="@id">
                         <xsl:value-of select="@id"/>
                     </xsl:when>
-                    <xsl:when test="name(preceding-sibling::*[1]) = 'a' and
+                    <xsl:when test="name(preceding-sibling::*[1])='a' and
                           preceding-sibling::*[1][@name]">
                         <xsl:value-of select="preceding-sibling::*[1]/@name"/>
                     </xsl:when>
@@ -470,7 +470,7 @@
     <xsl:template match="a">
         <xsl:choose>
             <xsl:when test="@name">
-                <xsl:if test="not(name(following-sibling::*[1]) = 'h1')">
+                <xsl:if test="not(name(following-sibling::*[1])='h1')">
                     <fo:block line-height="0pt" space-after="0pt"
                               font-size="0pt" id="{@name}"/>
                 </xsl:if>
@@ -679,7 +679,8 @@
 
     <xsl:template match="table">
         <fo:table table-layout="fixed" inline-progression-dimension="100%"
-                  space-after="12pt" font-size="10pt" page-break-inside="avoid">
+                  space-after="12pt" font-size="10pt"
+                  page-break-inside="avoid" keep-together.within-column="1">
             <xsl:if test="caption">
                 <fo:table-header>
                     <fo:table-cell>
@@ -727,6 +728,24 @@
                 </xsl:attribute>
                 <xsl:attribute name="border-width">
                     <xsl:text>1pt</xsl:text>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@class">
+                <xsl:attribute name="padding-start">
+                    <xsl:choose>
+                        <xsl:when test="@class='td1'">
+                            <xsl:text>3pt</xsl:text>
+                        </xsl:when>
+                        <xsl:when test="@class='td2'">
+                            <xsl:text>13pt</xsl:text>
+                        </xsl:when>
+                        <xsl:when test="@class='td3'">
+                            <xsl:text>23pt</xsl:text>
+                        </xsl:when>
+                        <xsl:when test="@class='td4'">
+                            <xsl:text>33pt</xsl:text>
+                        </xsl:when>
+                    </xsl:choose>
                 </xsl:attribute>
             </xsl:if>
             <xsl:variable name="align">
@@ -819,6 +838,24 @@
                 </xsl:attribute>
                 <xsl:attribute name="border-width">
                     <xsl:text>1pt</xsl:text>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@class">
+                <xsl:attribute name="padding-start">
+                    <xsl:choose>
+                        <xsl:when test="@class='th1'">
+                            <xsl:text>3pt</xsl:text>
+                        </xsl:when>
+                        <xsl:when test="@class='th2'">
+                            <xsl:text>13pt</xsl:text>
+                        </xsl:when>
+                        <xsl:when test="@class='th3'">
+                            <xsl:text>23pt</xsl:text>
+                        </xsl:when>
+                        <xsl:when test="@class='th4'">
+                            <xsl:text>33pt</xsl:text>
+                        </xsl:when>
+                    </xsl:choose>
                 </xsl:attribute>
             </xsl:if>
             <fo:block text-align="center">
@@ -923,10 +960,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang = 'fi'">
+                            <xsl:if test="//html/@lang='fi'">
                                 <xsl:text>Korvattavat määräykset</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang = 'sv'">
+                            <xsl:if test="//html/@lang='sv'">
                                 <xsl:text>Korvattavat määräykset</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -947,10 +984,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang = 'fi'">
+                            <xsl:if test="//html/@lang='fi'">
                                 <xsl:text>Muutosmääräykset</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang = 'sv'">
+                            <xsl:if test="//html/@lang='sv'">
                                 <xsl:text>Muutosmääräykset</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -971,10 +1008,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang = 'fi'">
+                            <xsl:if test="//html/@lang='fi'">
                                 <xsl:text>Koulutuskoodit</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang = 'sv'">
+                            <xsl:if test="//html/@lang='sv'">
                                 <xsl:text>Koulutuskoodit</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -995,10 +1032,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang = 'fi'">
+                            <xsl:if test="//html/@lang='fi'">
                                 <xsl:text>Osaamisalat</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang = 'sv'">
+                            <xsl:if test="//html/@lang='sv'">
                                 <xsl:text>Osaamisalat</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -1019,10 +1056,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang = 'fi'">
+                            <xsl:if test="//html/@lang='fi'">
                                 <xsl:text>Tutkintonimikkeet</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang = 'sv'">
+                            <xsl:if test="//html/@lang='sv'">
                                 <xsl:text>Tutkintonimikkeet</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -1056,10 +1093,10 @@
     <xsl:template name="toc">
         <fo:block break-before="page" space-after="20pt" id="TableOfContents" color="#007EC5" font-weight="bold"
                   line-height="20pt" font-size="18pt" text-align="start">
-            <xsl:if test="//html/@lang = 'fi'">
+            <xsl:if test="//html/@lang='fi'">
                 <xsl:text>SISÄLTÖ</xsl:text>
             </xsl:if>
-            <xsl:if test="//html/@lang = 'sv'">
+            <xsl:if test="//html/@lang='sv'">
                 <xsl:text>Innehållsförteckning</xsl:text>
             </xsl:if>
         </fo:block>
@@ -1074,23 +1111,23 @@
 
                 <xsl:attribute name="start-indent">
                     <xsl:choose>
-                        <xsl:when test="name() = 'h1'">
+                        <xsl:when test="name()='h1'">
                             <xsl:text>1cm</xsl:text>
                         </xsl:when>
-                        <xsl:when test="name() = 'h2'">
+                        <xsl:when test="name()='h2'">
                             <xsl:text>1.5cm</xsl:text>
                         </xsl:when>
-                        <xsl:when test="name() = 'h3'">
+                        <xsl:when test="name()='h3'">
                             <xsl:text>2cm</xsl:text>
                         </xsl:when>
-                        <xsl:when test="name() = 'h4'">
+                        <xsl:when test="name()='h4'">
                             <!-- No number -->
                             <xsl:text>3cm</xsl:text>
                         </xsl:when>
                     </xsl:choose>
                 </xsl:attribute>
 
-                <xsl:if test="name() = 'h1'">
+                <xsl:if test="name()='h1'">
                     <xsl:attribute name="color">
                         <xsl:text>#007EC5</xsl:text>
                     </xsl:attribute>
@@ -1105,7 +1142,7 @@
                             <xsl:when test="@id">
                                 <xsl:value-of select="@id"/>
                             </xsl:when>
-                            <xsl:when test="name(preceding-sibling::*[1]) = 'a' and
+                            <xsl:when test="name(preceding-sibling::*[1])='a' and
                               preceding-sibling::*[1][@name]">
                                 <xsl:value-of select="preceding-sibling::*[1]/@name"/>
                             </xsl:when>
@@ -1132,7 +1169,7 @@
                             <xsl:when test="@id">
                                 <xsl:value-of select="@id"/>
                             </xsl:when>
-                            <xsl:when test="name(preceding-sibling::*[1]) = 'a' and
+                            <xsl:when test="name(preceding-sibling::*[1])='a' and
                               preceding-sibling::*[1][@name]">
                                 <xsl:value-of select="preceding-sibling::*[1]/@name"/>
                             </xsl:when>
@@ -1160,7 +1197,7 @@
                             <xsl:when test="@id">
                                 <xsl:value-of select="@id"/>
                             </xsl:when>
-                            <xsl:when test="name(preceding-sibling::*[1]) = 'a' and
+                            <xsl:when test="name(preceding-sibling::*[1])='a' and
                               preceding-sibling::*[1][@name]">
                                 <xsl:value-of select="preceding-sibling::*[1]/@name"/>
                             </xsl:when>
@@ -1175,7 +1212,7 @@
                     <xsl:for-each select="following-sibling::h2">
                         <xsl:variable name="current-h2" select="generate-id()"/>
                         <xsl:if
-                                test="generate-id(preceding-sibling::h1[1]) = $current-h1">
+                                test="generate-id(preceding-sibling::h1[1])=$current-h1">
                             <fo:bookmark starting-state="hide">
                                 <xsl:attribute name="internal-destination">
                                     <xsl:choose>
@@ -1193,7 +1230,7 @@
                                 <xsl:for-each select="following-sibling::h3">
                                     <xsl:variable name="current-h3" select="generate-id()"/>
                                     <xsl:if
-                                            test="generate-id(preceding-sibling::h2[1]) = $current-h2">
+                                            test="generate-id(preceding-sibling::h2[1])=$current-h2">
                                         <fo:bookmark starting-state="hide">
                                             <xsl:attribute name="internal-destination">
                                                 <xsl:choose>
@@ -1210,7 +1247,7 @@
                                             </fo:bookmark-title>
                                             <xsl:for-each select="following-sibling::h4">
                                                 <xsl:if
-                                                        test="generate-id(preceding-sibling::h3[1]) = $current-h3">
+                                                        test="generate-id(preceding-sibling::h3[1])=$current-h3">
                                                     <fo:bookmark starting-state="hide">
                                                         <xsl:attribute name="internal-destination">
                                                             <xsl:choose>
