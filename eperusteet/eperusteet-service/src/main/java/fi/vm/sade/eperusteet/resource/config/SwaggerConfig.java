@@ -18,24 +18,30 @@ package fi.vm.sade.eperusteet.resource.config;
 import com.fasterxml.classmate.GenericType;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Optional;
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
-import com.mangofactory.swagger.models.alternates.Alternates;
-import com.mangofactory.swagger.models.dto.ApiInfo;
-import com.mangofactory.swagger.paths.RelativeSwaggerPathProvider;
-import com.mangofactory.swagger.plugin.EnableSwagger;
-import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
-import com.wordnik.swagger.annotations.ApiModelProperty;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.util.concurrent.Callable;
-import javax.servlet.ServletContext;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.AlternateTypeRules;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger1.annotations.EnableSwagger;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import javax.servlet.ServletContext;
+import java.util.concurrent.Callable;
+
+import static com.google.common.base.Predicates.not;
 
 /**
  *
@@ -43,91 +49,77 @@ import org.springframework.http.ResponseEntity;
  */
 @Configuration
 @EnableSwagger
+@EnableSwagger2
 @Profile("default")
 public class SwaggerConfig {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SwaggerConfig.class);
+
     @Autowired
-    private SpringSwaggerConfig springSwaggerConfig;
+    private TypeResolver typeResolver;
 
     @Bean
-    public SwaggerSpringMvcPlugin swaggerPlugin(ServletContext ctx) {
+    public Docket swaggerApi(ServletContext ctx) {
+        LOG.debug("Starting Swagger API");
 
-        RelativeSwaggerPathProvider relativeSwaggerPathProvider = new RelativeSwaggerPathProvider(ctx);
-        relativeSwaggerPathProvider.setApiResourcePrefix("api");
-        final TypeResolver typeResolver = new TypeResolver();
 
-        @SuppressWarnings("unchecked")
-        SwaggerSpringMvcPlugin plugin = new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-            .apiInfo(apiInfo())
-            .excludeAnnotations(InternalApi.class)
-            .pathProvider(relativeSwaggerPathProvider)
-            .directModelSubstitute(fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.class, LokalisoituTekstiDto.class)
-            .directModelSubstitute(EntityReference.class, Long.class)
-            .directModelSubstitute(JsonNode.class, Object.class)
-            .genericModelSubstitutes(ResponseEntity.class, Optional.class)
-            .alternateTypeRules(
-                Alternates.newRule(typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {
-                }), typeResolver.resolve(Object.class))
-            )
-            .swaggerGroup("public");
-        return plugin;
-
+        return new Docket(DocumentationType.SWAGGER_12)
+                .apiInfo(apiInfo())
+                .select()
+                .apis(not(RequestHandlerSelectors.withClassAnnotation(InternalApi.class)))
+                .build()
+                .directModelSubstitute(fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.class,
+                        LokalisoituTekstiDto.class)
+                .directModelSubstitute(EntityReference.class, Long.class)
+                .directModelSubstitute(JsonNode.class, Object.class)
+                .alternateTypeRules(
+                        AlternateTypeRules.newRule(
+                                typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {}),
+                                typeResolver.resolve(Object.class)
+                        )
+                );
     }
 
     @Bean
-    public SwaggerSpringMvcPlugin swaggerPluginInternal(ServletContext ctx) {
+    public Docket swaggerInternalApi(ServletContext ctx) {
+        LOG.debug("Starting Swagger internal API");
 
-        RelativeSwaggerPathProvider relativeSwaggerPathProvider = new RelativeSwaggerPathProvider(ctx);
-        relativeSwaggerPathProvider.setApiResourcePrefix("api");
-        final TypeResolver typeResolver = new TypeResolver();
-        SwaggerSpringMvcPlugin plugin = new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-            .apiInfo(apiInfoInternal())
-            .pathProvider(relativeSwaggerPathProvider)
-            .directModelSubstitute(fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.class, LokalisoituTekstiDto.class)
-            .directModelSubstitute(EntityReference.class, Long.class)
-            .directModelSubstitute(JsonNode.class, Object.class)
-            .genericModelSubstitutes(ResponseEntity.class, Optional.class)
-            .alternateTypeRules(
-                Alternates.newRule(typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {
-                }), typeResolver.resolve(Object.class))
-            )
-            .swaggerGroup("internal");
-
-        return plugin;
+        return new Docket(DocumentationType.SWAGGER_12)
+                .apiInfo(apiInfo())
+                .directModelSubstitute(fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.class,
+                        LokalisoituTekstiDto.class)
+                .directModelSubstitute(EntityReference.class, Long.class)
+                .directModelSubstitute(JsonNode.class, Object.class)
+                .alternateTypeRules(
+                        AlternateTypeRules.newRule(
+                                typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {}),
+                                typeResolver.resolve(Object.class)
+                        )
+                )
+                .groupName("internal");
     }
+
 
     /**
      * API Info as it appears on the swagger-ui page
      */
     private ApiInfo apiInfo() {
-        ApiInfo apiInfo = new ApiInfo(
+        Contact contact = null;
+        return new ApiInfo(
             "Oppijan verkkopalvelukokonaisuus / ePerusteet julkinen rajapinta",
+            "",
             "Spring MVC API based on the swagger 1.2 spec",
             "https://confluence.csc.fi/display/oppija/Rajapinnat+toisen+asteen+ja+perusasteen+toimijoille",
-            null,
+            contact,
             "EUPL 1.1",
             "http://ec.europa.eu/idabc/eupl"
         );
-        return apiInfo;
     }
 
-    private ApiInfo apiInfoInternal() {
-        ApiInfo apiInfo = new ApiInfo(
-            "Oppijan verkkopalvelukokonaisuus / ePerusteet sisäinen rajapinta",
-            "Spring MVC API based on the swagger 1.2 spec",
-            "https://confluence.csc.fi/display/oppija/Rajapinnat+toisen+asteen+ja+perusasteen+toimijoille",
-            null,
-            "EUPL 1.1",
-            "http://ec.europa.eu/idabc/eupl"
-        );
-        return apiInfo;
-    }
-
-    //swagger ei osaa esittää tätä järkevästi.
+    // Parsitaan lokalisoitu teksti manuaalisesti
     @Getter
     @Setter
     public static class LokalisoituTekstiDto {
-
         @ApiModelProperty(required = false)
         private Long _id;
         @ApiModelProperty(required = true)

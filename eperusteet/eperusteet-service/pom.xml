@@ -25,7 +25,7 @@
         <jsoup.version>1.9.2</jsoup.version>
         <ehcache.version>2.6.11</ehcache.version>
         <slf4j.version>1.7.21</slf4j.version>
-        <swagger.version>1.0.2</swagger.version>
+        <springfox.version>2.6.0</springfox.version>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <hibernate.export.type>CREATE</hibernate.export.type>
     </properties>
@@ -303,9 +303,14 @@
             <version>${jsoup.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.mangofactory</groupId>
-            <artifactId>swagger-springmvc</artifactId>
-            <version>${swagger.version}</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger1</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -387,6 +392,7 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <debug>true</debug>
                 </configuration>
             </plugin>
             <plugin>
