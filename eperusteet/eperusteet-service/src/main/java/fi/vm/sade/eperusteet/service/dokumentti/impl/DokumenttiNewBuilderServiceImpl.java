@@ -126,7 +126,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         addKasitteet(docBase);
 
         // Tulostetaan dokumentti
-        printDocument(docBase.getDocument());
+        //printDocument(docBase.getDocument());
 
         return doc;
     }
