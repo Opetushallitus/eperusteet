@@ -15,13 +15,14 @@
  */
 package fi.vm.sade.eperusteet.repository.version;
 
-import java.io.Serializable;
-import java.util.List;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.Serializable;
+import java.util.List;
 
 @NoRepositoryBean
 public interface JpaWithVersioningRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
@@ -32,7 +33,7 @@ public interface JpaWithVersioningRepository<T, ID extends Serializable> extends
 
     Revision getLatestRevisionId(final ID id);
 
-    public class DomainClassNotAuditedException extends BeanCreationException {
+    class DomainClassNotAuditedException extends BeanCreationException {
 
         public DomainClassNotAuditedException(Class<?> clazz) {
             super("Defined domain class '" + clazz.getSimpleName() + "' does not contain @audited-annotation");

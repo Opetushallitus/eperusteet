@@ -29,11 +29,11 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface TutkinnonOsaViiteRepository extends JpaWithVersioningRepository<TutkinnonOsaViite, Long> {
     @Query("SELECT COUNT(tov) FROM TutkinnonOsaViite tov WHERE tov.tutkinnonOsa = ?1")
-    public long perusteUsageAmount(TutkinnonOsa tosa);
+    long perusteUsageAmount(TutkinnonOsa tosa);
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN false ELSE true END FROM RakenneOsa r WHERE r.tutkinnonOsaViite = ?1")
-    public boolean isInUse(TutkinnonOsaViite viite);
+    boolean isInUse(TutkinnonOsaViite viite);
 
     @Query("SELECT v FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat v JOIN FETCH v.tutkinnonOsa WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
-    public List<TutkinnonOsaViite> findByPeruste(Long perusteId, Suoritustapakoodi st);
+    List<TutkinnonOsaViite> findByPeruste(Long perusteId, Suoritustapakoodi st);
 }

@@ -19,9 +19,10 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.service.security.PermissionManager.Permission;
 import fi.vm.sade.eperusteet.service.security.PermissionManager.Target;
-import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+
+import java.io.Serializable;
 
 /**
  * Oikeuksien tarkistelu.
@@ -57,7 +58,7 @@ public class PermissionEvaluator implements org.springframework.security.access.
                         authentication,
                         targetId,
                         Target.valueOf(targetType.toUpperCase()), Permission.valueOf(p.toString().toUpperCase()));
-                if (result == true) {
+                if (result) {
                     return true;
                 }
             }
