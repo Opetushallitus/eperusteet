@@ -423,6 +423,14 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                 break;
             default:
+                tbody.appendChild(tr);
+                tr.appendChild(td);
+                td.appendChild(p);
+                p.appendChild(newBoldElement(docBase.getDocument(), nimi));
+                if (StringUtils.isNotEmpty(kuvaus)) {
+                    td.appendChild(newItalicElement(docBase.getDocument(), kuvaus));
+                }
+
                 break;
         }
     }
