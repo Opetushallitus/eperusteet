@@ -100,11 +100,7 @@
         </property>
     </bean>
 
-    <bean id="flywayRepair" class="org.flywaydb.core.Flyway" init-method="repair">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-
-    <bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate" depends-on="flywayRepair">
+    <bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
