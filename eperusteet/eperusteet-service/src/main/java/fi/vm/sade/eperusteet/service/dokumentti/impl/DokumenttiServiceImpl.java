@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
+import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
@@ -31,10 +32,10 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import org.apache.commons.io.IOUtils;
-import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.pdfbox.preflight.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -267,6 +268,18 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 Document doc = newBuilder.generateXML(peruste, dokumentti, kieli, suoritustapakoodi);
                 toReturn = pdfService.xhtml2pdf(doc);
 
+                // Validointi
+                ValidationResult result = DokumenttiUtils.validatePdf(toReturn);
+                if (result.isValid()) {
+                    LOG.info("PDF (peruste " + dto.getId() + ") is a valid PDF/A-1b file");
+                }
+                else {
+                    LOG.warn("PDF (peruste " + dto.getId() + ") is not valid, error(s) :");
+                    for (ValidationResult.ValidationError error : result.getErrorsList()) {
+                        LOG.warn(error.getErrorCode() + " : " + error.getDetails());
+                    }
+                }
+
                 break;
             default:
                 break;
@@ -283,7 +296,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
       fixMetadata korjaa tämän syötteenä saadusta pdf-dokumentista.
     */
     private InputStream fixMetadata(InputStream pdf) throws IOException, ParserConfigurationException,
-            SAXException, TransformerException, COSVisitorException
+            SAXException, TransformerException
     {
         try (InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/fopdate.xsl")) {
 
@@ -310,7 +323,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
                 // lopuks pistetään muokattu metadata takaisin pdf:ään
                 InputStream newXMPData = new ByteArrayInputStream(transformOut.toByteArray());
-                PDMetadata newMetadata = new PDMetadata(document, newXMPData, false);
+                PDMetadata newMetadata = new PDMetadata(document, newXMPData);
                 catalog.setMetadata(newMetadata);
 
                 // tallennetaan modattu pdf-dokumentti

@@ -25,6 +25,7 @@
         <jsoup.version>1.9.2</jsoup.version>
         <ehcache.version>2.6.11</ehcache.version>
         <slf4j.version>1.7.21</slf4j.version>
+        <pdfbox.version>2.0.3</pdfbox.version>
         <springfox.version>2.6.0</springfox.version>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <hibernate.export.type>CREATE</hibernate.export.type>
@@ -352,12 +353,12 @@
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
-            <version>1.8.9</version>
+            <version>${pdfbox.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>preflight</artifactId>
-            <version>1.8.9</version>
+            <version>${pdfbox.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
@@ -386,6 +387,16 @@
     </dependencies>
     <build>
         <plugins>
+            <!-- Maven rikkoo muuten ttf fontit -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -519,21 +530,6 @@
                             <version>${postgresql.version}</version>
                         </dependency>
                     </dependencies>
-                </plugin>
-                <!-- Maven rikkoo muuten ttf fontit -->
-                <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>default-resources</id>
-                            <configuration>
-                                <nonFilteredFileExtensions>
-                                    <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
-                                </nonFilteredFileExtensions>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

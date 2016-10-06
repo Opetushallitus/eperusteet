@@ -87,8 +87,8 @@ public class DokumenttiController {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-disposition", "attachment; filename=\"" + dokumenttiId + ".pdf\"");
-        return new ResponseEntity<Object>(pdfdata, headers, HttpStatus.OK);
+        headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + ".pdf\"");
+        return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/peruste", method = RequestMethod.GET)

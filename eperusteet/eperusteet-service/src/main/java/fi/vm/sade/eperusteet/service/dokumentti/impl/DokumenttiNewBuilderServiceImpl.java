@@ -12,6 +12,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.LiiteService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiBase;
@@ -27,7 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,12 +44,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import javax.xml.xpath.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 
@@ -53,9 +62,13 @@ import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils
 public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiNewBuilderServiceImpl.class);
+    private static final float COMPRESSION_LEVEL = 0.9f;
 
     @Autowired
     private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
+
+    @Autowired
+    private LiiteService liiteService;
 
     @Dto
     @Autowired
@@ -124,6 +137,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         // Käsitteet
         addKasitteet(docBase);
+
+        // Kuvat
+        buildImages(docBase);
 
         // Tulostetaan dokumentti
         //printDocument(docBase.getDocument());
@@ -980,5 +996,63 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         transformer.transform(new DOMSource(doc), new StreamResult(new OutputStreamWriter(out, "UTF-8")));
         LOG.debug(out.toString());
+    }
+
+    private void buildImages(DokumenttiBase docBase) {
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        try {
+            XPathExpression expression = xpath.compile("//img");
+            NodeList list = (NodeList) expression.evaluate(docBase.getDocument(), XPathConstants.NODESET);
+
+            for (int i = 0; i < list.getLength(); i++) {
+                Element element = (Element) list.item(i);
+                String id = element.getAttribute("data-uid");
+
+                UUID uuid = UUID.fromString(id);
+
+                // Ladataan kuvan data muistiin
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                liiteService.export(docBase.getPeruste().getId(), uuid, byteArrayOutputStream);
+
+                // Tehdään muistissa olevasta datasta kuva
+                InputStream in = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                BufferedImage bufferedImage = ImageIO.read(in);
+
+                int width = bufferedImage.getWidth();
+                int height = bufferedImage.getHeight();
+
+                // Muutetaan kaikkien kuvien väriavaruus RGB:ksi jotta PDF/A validointi menee läpi
+                // Asetetaan lisäksi läpinäkyvien kuvien taustaksi valkoinen väri
+                BufferedImage tempImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(),
+                        BufferedImage.TYPE_3BYTE_BGR);
+                tempImage.getGraphics().setColor(new Color(255, 255, 255, 0));
+                tempImage.getGraphics().fillRect (0, 0, width, height);
+                tempImage.getGraphics().drawImage(bufferedImage, 0, 0, null);
+                bufferedImage = tempImage;
+
+                ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName("jpg").next();
+                ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
+                jpgWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                jpgWriteParam.setCompressionQuality(COMPRESSION_LEVEL);
+
+                // Muunnetaan kuva base64 enkoodatuksi
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                MemoryCacheImageOutputStream imageStream = new MemoryCacheImageOutputStream(out);
+                jpgWriter.setOutput(imageStream);
+                IIOImage outputImage = new IIOImage(bufferedImage, null, null);
+                jpgWriter.write(null, outputImage, jpgWriteParam);
+                jpgWriter.dispose();
+                String base64 = org.apache.xml.security.utils.Base64.encode(out.toByteArray());
+
+                // Lisätään bas64 kuva img elementtiin
+                element.setAttribute("width", String.valueOf(width));
+                element.setAttribute("height", String.valueOf(height));
+                element.setAttribute("src", "data:image/jpg;base64," + base64);
+            }
+
+        } catch (XPathExpressionException | IOException | NullPointerException e) {
+            LOG.error(e.getLocalizedMessage());
+        }
     }
 }

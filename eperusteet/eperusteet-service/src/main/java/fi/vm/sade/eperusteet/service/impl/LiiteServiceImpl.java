@@ -15,25 +15,27 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
-import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.exception.NotExistsException;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.LiiteService;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -54,6 +56,7 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public void export(Long perusteId, UUID id, OutputStream os) {
         Liite liite = liitteet.findOne(id);
         if ( liite == null ) {
@@ -69,6 +72,7 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public LiiteDto get(Long perusteId, UUID id) {
         Liite liite = liitteet.findOne(id);
         //TODO. tarkasta että liite liittyy pyydettyyn suunnitelmaan tai johonkin sen esivanhempaan

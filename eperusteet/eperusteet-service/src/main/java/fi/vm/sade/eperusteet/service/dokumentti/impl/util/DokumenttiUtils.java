@@ -7,12 +7,20 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.pdfbox.preflight.PreflightDocument;
+import org.apache.pdfbox.preflight.ValidationResult;
+import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
+import org.apache.pdfbox.preflight.parser.PreflightParser;
+import org.apache.pdfbox.preflight.utils.ByteArrayDataSource;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -128,5 +136,27 @@ public class DokumenttiUtils {
 
         Date newDate = DateUtils.addMinutes(date, MAX_TIME_IN_MINUTES);
         return newDate.before(new Date());
+    }
+
+    public static ValidationResult validatePdf(byte[] pdf) throws IOException {
+        ValidationResult result;
+        InputStream is = new ByteArrayInputStream(pdf);
+        PreflightParser parser = new PreflightParser(new ByteArrayDataSource(is));
+
+        try {
+            parser.parse();
+
+            PreflightDocument document = parser.getPreflightDocument();
+            document.validate();
+
+            // Get validation result
+            result = document.getResult();
+            document.close();
+
+        } catch (SyntaxValidationException e) {
+            result = e.getResult();
+        }
+
+        return result;
     }
 }
