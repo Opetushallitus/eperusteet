@@ -745,6 +745,9 @@
                         <xsl:when test="@class='td4'">
                             <xsl:text>33pt</xsl:text>
                         </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:text>3pt</xsl:text>
+                        </xsl:otherwise>
                     </xsl:choose>
                 </xsl:attribute>
             </xsl:if>
@@ -855,6 +858,9 @@
                         <xsl:when test="@class='th4'">
                             <xsl:text>33pt</xsl:text>
                         </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:text>3pt</xsl:text>
+                        </xsl:otherwise>
                     </xsl:choose>
                 </xsl:attribute>
             </xsl:if>
