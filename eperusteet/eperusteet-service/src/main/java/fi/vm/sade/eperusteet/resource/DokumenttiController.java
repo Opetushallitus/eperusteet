@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -47,6 +48,7 @@ public class DokumenttiController {
 
     @Autowired
     PerusteService perusteService;
+
     @Autowired
     DokumenttiService service;
 
@@ -87,7 +89,14 @@ public class DokumenttiController {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + ".pdf\"");
+        DokumenttiDto dokumenttiDto = service.query(dokumenttiId);
+        LokalisoituTekstiDto nimiDto = perusteService.get(dokumenttiDto.getPerusteId()).getNimi();
+        String nimi = nimiDto.get(dokumenttiDto.getKieli());
+        if (nimi != null) {
+            headers.set("Content-disposition", "inline; filename=\"" + nimi + ".pdf\"");
+        } else {
+            headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + ".pdf\"");
+        }
         return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
     }
 
