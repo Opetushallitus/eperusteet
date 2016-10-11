@@ -221,8 +221,15 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public DokumenttiDto query(Long id) {
-        Dokumentti findById = dokumenttiRepository.findById(id);
-        return mapper.map(findById, DokumenttiDto.class);
+        Dokumentti dokumentti = dokumenttiRepository.findById(id);
+        if (dokumentti != null) {
+            Peruste peruste = perusteRepository.findOne(dokumentti.getPerusteId());
+            String name = SecurityUtil.getAuthenticatedPrincipal().getName();
+            if (name.equals("anonymousUser") && !peruste.getTila().equals(PerusteTila.VALMIS)) {
+                return null;
+            }
+        }
+        return mapper.map(dokumentti, DokumenttiDto.class);
     }
 
     private byte[] generateFor(DokumenttiDto dto)

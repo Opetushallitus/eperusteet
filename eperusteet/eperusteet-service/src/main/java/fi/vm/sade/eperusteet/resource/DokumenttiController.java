@@ -15,15 +15,11 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.domain.DokumenttiTila;
-import fi.vm.sade.eperusteet.domain.GeneratorVersion;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
-import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import io.swagger.annotations.ApiOperation;
@@ -47,7 +43,8 @@ public class DokumenttiController {
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiController.class);
 
     @Autowired
-    PerusteService perusteService;
+    PerusteRepository perusteRepository;
+
 
     @Autowired
     DokumenttiService service;
@@ -90,12 +87,14 @@ public class DokumenttiController {
 
         HttpHeaders headers = new HttpHeaders();
         DokumenttiDto dokumenttiDto = service.query(dokumenttiId);
-        LokalisoituTekstiDto nimiDto = perusteService.get(dokumenttiDto.getPerusteId()).getNimi();
-        String nimi = nimiDto.get(dokumenttiDto.getKieli());
-        if (nimi != null) {
-            headers.set("Content-disposition", "inline; filename=\"" + nimi + ".pdf\"");
-        } else {
-            headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + ".pdf\"");
+        Peruste peruste = perusteRepository.findOne(dokumenttiDto.getPerusteId());
+        if (peruste != null) {
+            TekstiPalanen nimi = peruste.getNimi();
+            if (nimi != null) {
+                headers.set("Content-disposition", "inline; filename=\"" + nimi + ".pdf\"");
+            } else {
+                headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + ".pdf\"");
+            }
         }
         return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
     }
