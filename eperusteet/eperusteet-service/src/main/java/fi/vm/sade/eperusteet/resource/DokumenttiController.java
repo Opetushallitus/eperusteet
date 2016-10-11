@@ -105,7 +105,7 @@ public class DokumenttiController {
     public ResponseEntity<Long> getDokumenttiId(
             @RequestParam final Long perusteId,
             @RequestParam(defaultValue = "fi") final String kieli,
-            @RequestParam("suoritustapa") final String suoritustapa) {
+            @RequestParam(value = "suoritustapa", defaultValue = "naytto") final String suoritustapa) {
         Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
         Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli), s);
         return ResponseEntity.ok(dokumenttiId);

@@ -684,7 +684,7 @@
             <xsl:if test="caption">
                 <fo:table-header>
                     <fo:table-cell>
-                        <fo:block font-weight="bold" font-size="12pt">
+                        <fo:block font-weight="bold" font-size="12pt" text-align="center">
                             <xsl:value-of select="caption"/>
                         </fo:block>
                     </fo:table-cell>
@@ -891,36 +891,23 @@
     </xsl:template>
 
     <xsl:template match="tr">
-        <xsl:choose>
-            <xsl:when test="@bgcolor">
-                <fo:table-row background-color="{@bgcolor}">
-                    <xsl:choose>
-                        <xsl:when test="th|td">
-                            <xsl:apply-templates select="th|td"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <fo:table-cell>
-                                <fo:block/>
-                            </fo:table-cell>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </fo:table-row>
-            </xsl:when>
-            <xsl:otherwise>
-                <fo:table-row>
-                    <xsl:choose>
-                        <xsl:when test="th|td">
-                            <xsl:apply-templates select="th|td"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <fo:table-cell>
-                                <fo:block/>
-                            </fo:table-cell>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </fo:table-row>
-            </xsl:otherwise>
-        </xsl:choose>
+        <fo:table-row>
+            <xsl:if test="@bgcolor">
+                <xsl:attribute name="background-color">
+                    <xsl:value-of select="@bgcolor"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:choose>
+                <xsl:when test="th|td">
+                    <xsl:apply-templates select="th|td"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <fo:table-cell>
+                        <fo:block/>
+                    </fo:table-cell>
+                </xsl:otherwise>
+            </xsl:choose>
+        </fo:table-row>
     </xsl:template>
 
     <xsl:template match="ul">
