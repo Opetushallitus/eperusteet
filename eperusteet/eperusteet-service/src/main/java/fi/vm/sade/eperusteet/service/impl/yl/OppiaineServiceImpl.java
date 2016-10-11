@@ -16,9 +16,11 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import com.google.common.base.Optional;
+import static com.google.common.base.Optional.of;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine.OsaTyyppi;
+import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
@@ -33,10 +35,16 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
 import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
+import static fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
+import java.util.*;
+import static java.util.Comparator.*;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,16 +52,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-
-import static com.google.common.base.Optional.of;
-import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
-import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
-import static fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS;
-import static java.util.Comparator.*;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 
 /**
  *
@@ -153,6 +151,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (sisalto == null || !sisalto.containsOppiaine(aine)) {
             throw new BusinessRuleViolationException("Oppiainetta ei ole tai se ei kuulu tähän perusteeseen");
         }
+
         final OppiaineLockContext ctx = OppiaineLockContext.of(tyyppi, perusteId, oppiaineId, null);
         oppiaineRepository.lock(aine);
         lockService.lock(ctx);

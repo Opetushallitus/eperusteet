@@ -36,8 +36,9 @@ public enum OppiaineOpetuksenSisaltoTyyppi {
     private final Class<? extends AbstractOppiaineOpetuksenSisalto> entityType;
     private final Class<? extends OppiaineSisaltoRepository<? extends AbstractOppiaineOpetuksenSisalto>> repositoryClz;
 
-    <EType extends AbstractOppiaineOpetuksenSisalto> OppiaineOpetuksenSisaltoTyyppi(Class<EType> entityType,
-                   Class<? extends OppiaineSisaltoRepository<EType>> repositoryClz) {
+    <EType extends AbstractOppiaineOpetuksenSisalto> OppiaineOpetuksenSisaltoTyyppi(
+            Class<EType> entityType,
+            Class<? extends OppiaineSisaltoRepository<EType>> repositoryClz) {
         this.entityType = entityType;
         this.repositoryClz = repositoryClz;
     }

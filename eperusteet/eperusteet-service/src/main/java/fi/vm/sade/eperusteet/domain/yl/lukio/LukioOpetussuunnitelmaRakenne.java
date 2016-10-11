@@ -22,18 +22,16 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.NimettyKoodillinen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.toList;
+import java.util.stream.Stream;
 import static java.util.stream.Stream.concat;
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 /**
  * User: tommiratamaa
@@ -64,7 +62,8 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     @Getter
     @Audited
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "yl_lukio_opetussuunnitelma_rakenne_yl_oppiaine", joinColumns = @JoinColumn(name = "rakenne_id", nullable = false, updatable = false),
+    @JoinTable(name = "yl_lukio_opetussuunnitelma_rakenne_yl_oppiaine",
+            joinColumns = @JoinColumn(name = "rakenne_id", nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
     private Set<Oppiaine> oppiaineet = new HashSet<>(0);
 
