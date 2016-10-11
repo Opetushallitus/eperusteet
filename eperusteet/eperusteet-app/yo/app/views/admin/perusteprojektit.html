@@ -34,22 +34,6 @@
                 </span>
               </a>
             </th>
-            <th width="10%">
-              <a class="action-link" ng-click="asetaJarjestys('perusteendiaarinumero')">
-                <span kaanna="'maarayksen-diaarinumero'"></span>
-                <span ng-show="jarjestysTapa === 'perusteendiaarinumero'">
-                  <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-order-alt' : 'glyphicon-sort-by-order'"></span>
-                </span>
-              </a>
-            </th>
-            <th>
-              <a class="action-link" ng-click="asetaJarjestys('diaarinumero')">
-                <span kaanna="'diaarinumero-label'"></span>
-                <span ng-show="jarjestysTapa === 'diaarinumero'">
-                  <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-order-alt' : 'glyphicon-sort-by-order'"></span>
-                </span>
-              </a>
-            </th>
             <th>
               <a class="action-link" ng-click="asetaJarjestys('tila')">
                 <span kaanna="'tila'"></span>
@@ -65,8 +49,6 @@
                 <a ng-href="{{pp.$url}}">{{ pp.nimi | kaanna }}</a>
                 <span class="badge" ng-if="pp.tyyppi === 'pohja'" kaanna="'pohja'"></span>
             </td>
-            <td>{{ pp.perusteendiaarinumero || '-' }}</td>
-            <td>{{ pp.diaarinumero || '-' }}</td>
             <td>
                 {{ 'tila-' + pp.tila | kaanna }}
             </td>
