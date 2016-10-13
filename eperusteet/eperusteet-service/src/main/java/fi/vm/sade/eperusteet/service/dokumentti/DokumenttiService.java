@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -34,7 +33,6 @@ public interface DokumenttiService {
     void setStarted(@P("dto") DokumenttiDto dto);
 
     @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
-    @Async(value = "docTaskExecutor")
     void generateWithDto(@P("dto") DokumenttiDto dto) throws DokumenttiException;
 
     @PreAuthorize("hasPermission(#id, 'peruste', 'LUKU')")

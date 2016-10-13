@@ -42,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -150,12 +151,17 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional
     @IgnorePerusteUpdateCheck
+    @Async(value = "docTaskExecutor")
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
         LOG.debug("generate with dto {}", dto);
 
         Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
+        if (dokumentti == null) {
+            dokumentti = mapper.map(dto, Dokumentti.class);
+        }
 
         try {
+
             byte[] data = generateFor(dto);
 
             dokumentti.setData(data);

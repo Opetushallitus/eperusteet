@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -29,6 +28,7 @@ import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
+import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -38,26 +38,23 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import static fi.vm.sade.eperusteet.service.util.Util.*;
 import fi.vm.sade.generic.rest.CachingRestClient;
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import static java.util.stream.Collectors.toMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,12 +63,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
+import static fi.vm.sade.eperusteet.service.util.Util.*;
+import static java.util.stream.Collectors.toMap;
+
 /**
  *
  * @author harrik
  */
 @Service
 public class PerusteprojektiServiceImpl implements PerusteprojektiService {
+    private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiServiceImpl.class);
 
     private final String authQueryPath = "/resources/henkilo?count=9999&index=0&org=";
 
@@ -111,6 +119,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private KoodistoClient koodistoService;
+
+    @Autowired
+    private DokumenttiService dokumenttiService;
 
     @Override
     @Transactional(readOnly = true)
@@ -810,6 +821,23 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (tila == ProjektiTila.JULKAISTU && projekti.getTila() == ProjektiTila.VALMIS) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
+            Optional.ofNullable(peruste)
+                    .ifPresent(p -> p.getSuoritustavat()
+                    .forEach(suoritustapa -> p.getKielet()
+                            .forEach(kieli -> {
+                                try {
+                                    DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
+                                            p.getId(),
+                                            kieli,
+                                            suoritustapa.getSuoritustapakoodi(),
+                                            GeneratorVersion.UUSI
+                                    );
+                                    dokumenttiService.setStarted(createDtoFor);
+                                    dokumenttiService.generateWithDto(createDtoFor);
+                                } catch (DokumenttiException e) {
+                                    LOG.error(e.getLocalizedMessage(), e.getCause());
+                                }
+            })));
         }
 
         if (tila == ProjektiTila.POISTETTU) {
