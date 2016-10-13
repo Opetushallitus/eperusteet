@@ -762,9 +762,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                             kriteeri.getKriteerit().forEach(kriteeriKriteeri -> {
                                 String kriteeriKriteeriText = getTextString(docBase, kriteeriKriteeri);
                                 if (StringUtils.isNotEmpty(kriteeriKriteeriText)) {
-                                    Element kriteeriListanAlkio = docBase.getDocument().createElement("li");
-                                    kriteeriListanAlkio.setTextContent(kriteeriKriteeriText);
-                                    kriteeriLista.appendChild(kriteeriListanAlkio);
+                                    addTeksti(docBase, kriteeriKriteeriText, "li", kriteeriLista);
                                 }
                             });
                         });
