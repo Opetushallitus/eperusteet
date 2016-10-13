@@ -51,30 +51,28 @@ angular.module('eGenericTree', [])
         }
 
         var node = scope.node;
-        scope.treeProvider.children(node)
-          .then(function(children) {
-            element.empty();
-            setContext(node, children);
-            var template = '';
-            template += getTemplate(node);
-            if (children) {
-              template += '<div ui-sortable="uiSortableConfig" class="' +
-                scope.treeProvider.sortableClass(node) +
-                ' recursivetree" ng-model="children">';
-              scope.children = children;
-              scope.parentNode = node;
-              if (!_.isEmpty(children)) {
-                template += '' +
-                  '<div ng-repeat="node in children">' +
-                  '    <generic-tree-node node="node" ng-show="!isHidden(node)" ui-sortable-config="uiSortableConfig"' +
-                  '                       tree-provider="treeProvider"></generic-tree-node>' +
-                  '</div>';
-              }
-              template += '</div>';
-            }
-            element.append(template);
-            $compile(element.contents())(scope);
-          });
+        const children = scope.treeProvider.children(node);
+
+        setContext(node, children);
+        var template = '';
+        template += getTemplate(node);
+        if (children) {
+          template += '<div ui-sortable="uiSortableConfig" class="' +
+            scope.treeProvider.sortableClass(node) +
+            ' recursivetree" ng-model="children">';
+          scope.children = children;
+          scope.parentNode = node;
+          if (!_.isEmpty(children)) {
+            template += '' +
+              '<div ng-repeat="node in children">' +
+              '    <generic-tree-node node="node" ng-show="!isHidden(node)" ui-sortable-config="uiSortableConfig"' +
+              '                       tree-provider="treeProvider"></generic-tree-node>' +
+              '</div>';
+          }
+          template += '</div>';
+        }
+        const renderer = () => element.replaceWith($compile(template)(scope));
+        renderer();
       }
     };
   })
@@ -114,19 +112,6 @@ angular.module('eGenericTree', [])
           });
       },
       link: function(scope, element) {
-        var setupMinHeightBycontainer = function(el) {
-          var $parent = $(el).parent(),
-              height = $parent.outerHeight();
-          $parent.prop('original-min-height', $parent.css('minHeight'));
-          //console.log('setting min height:', height, 'for tree container', $parent);
-          $parent.css('minHeight', height);
-        };
-        var setupMinHeightForAllGenericTrees = function() {
-          // (including all connected as well cause may be dragged from tree to another)
-          $("generic-tree").each(function() {
-            setupMinHeightBycontainer($(this).parent());
-          });
-        };
         var restoreParentHeight = function(el) {
           var $parent = $(el).parent(),
               height = $parent.prop('original-min-height') || 'inherit';
@@ -156,12 +141,6 @@ angular.module('eGenericTree', [])
               delay: 100,
               disabled: scope.tprovider.useUiSortable(),
               tolerance: 'pointer',
-              start: function() {
-                setupMinHeightForAllGenericTrees();
-              },
-              stop: function() {
-                restoreParentHeightForAllGenericTrees();
-              },
               update: function(e, ui) {
                 if (scope.tprovider.acceptDrop) {
                   var dropTarget = ui.item.sortable.droptarget;
@@ -185,6 +164,7 @@ angular.module('eGenericTree', [])
                 '    </div>' +
                 '</div>');
             $compile(templateEl)(scope);
+
             if (element.children().length) {
               angular.element(element.children()[0]).replaceWith(templateEl);
             } else {
@@ -196,13 +176,13 @@ angular.module('eGenericTree', [])
         scope.$on('genericTree:refresh', function() {
           refresh(scope.children);
         });
-        scope.$on('genericTree:beforeChange', function() {
+        /*scope.$on('genericTree:beforeChange', function() {
           setupMinHeightForAllGenericTrees();
-        });
+        });*/
         scope.$on('genericTree:afterChange', function() {
           restoreParentHeightForAllGenericTrees();
         });
-        scope.$watch('children', refresh, true);
+        scope.$watch('children', refresh);
       }
     };
   });
