@@ -530,7 +530,6 @@ angular.module('eperusteApp')
       initIndexes();
     };
     var removeKurssiFromOppiaine = function(node) {
-      $rootScope.$broadcast('genericTree:beforeChange');
       var oppiaine = node.$$nodeParent;
       node.oppiaineet = _.filter(node.oppiaineet, function(oa) {
         return oa.oppiaineId !== oppiaine.id;
@@ -552,9 +551,6 @@ angular.module('eperusteApp')
         });
       }
       initIndexes();
-      $timeout(() => {
-        $rootScope.$broadcast('genericTree:afterChange');
-      });
     };
 
     $scope.oppiaineet = [];
