@@ -57,6 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -113,6 +114,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
+
+    @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
 
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
@@ -606,6 +610,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return virheellisetKielet;
     }
 
+    @PreAuthorize("hasPermission(#id, 'korjaus', 'KORJAUS')")
+    public void julkaistuToLuonnos(@P("id") Long id) {
+    }
+
     @Override
     @Transactional(readOnly = false)
     public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, Date siirtymaPaattyy) {
@@ -706,6 +714,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                             }
                         }
                     }
+
+                    // Tarkistetaan osa-alueiden kooditukset
                     if (!koodittomatOsaalueet.isEmpty()) {
                         updateStatus.addStatus("tutke2-osalta-puuttuu-osa-alue-koodi",
                                 suoritustapa.getSuoritustapakoodi(), koodittomatOsaalueet);
@@ -905,39 +915,102 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private void setPerusteTila(Peruste peruste, PerusteTila tila) {
 
+        // Asetetaan perusteen osien tilat
         for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
-            setSisaltoTila(suoritustapa.getSisalto(), tila);
+            setSisaltoTila(peruste, suoritustapa.getSisalto(), tila);
             for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
-                setOsatTila(tutkinnonosaViite, tila);
+                setOsatTila(peruste, tutkinnonosaViite, tila);
             }
         }
 
         if (peruste.getPerusopetuksenPerusteenSisalto() != null) {
-            setSisaltoTila(peruste.getPerusopetuksenPerusteenSisalto().getSisalto(), tila);
+            setSisaltoTila(peruste, peruste.getPerusopetuksenPerusteenSisalto().getSisalto(), tila);
         }
 
         if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
-            setSisaltoTila(peruste.getEsiopetuksenPerusteenSisalto().getSisalto(), tila);
+            setSisaltoTila(peruste, peruste.getEsiopetuksenPerusteenSisalto().getSisalto(), tila);
         }
 
         peruste.asetaTila(tila);
     }
 
-    private PerusteenOsaViite setSisaltoTila(PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
+    @Transactional(readOnly = false)
+    private void palautaJulkaistuImpl(Peruste peruste, PerusteenOsa po, Long povId) {
+        // Tarkistetaan omistaako palautettava peruste, jos on palautetaan se luonnokseksi
+        peruste.getSuoritustavat().stream()
+            .forEach(st -> {
+                st.getTutkinnonOsat().stream()
+                    .map(tov -> tov.getId())
+                    .filter(id -> id.equals(povId))
+                    .findFirst()
+                    .ifPresent(x -> {
+                        po.palautaLuonnokseksi();
+                    });
+            });
+    }
+
+    @Transactional(readOnly = false)
+    private void palautaJulkaistu(Peruste peruste, PerusteenOsa po) {
+        // FIXME: Selvitä onko tämä tarkkaan haluttu toimintatapa
+        // Jos tutkinnonosaviitteitä tai perusteenosaviitteitä on yhteensä enemmän
+        // yksi pitää palauttaminen estää
+//        boolean onKaytossa = perusteenOsaViiteRepository.countByPerusteenOsaId(po.getId()) + tutkinnonOsaViiteRepository.countByTutkinnonOsaId(po.getId()) < 2;
+//        Long vanhinPoViite = perusteenOsaViiteRepository.findAllByPerusteenOsa(po).stream()
+//                .map(pov -> pov.getId())
+//                .sorted()
+//                .findFirst()
+//                .get();
+
+        // Etsitään vanhimman tutkintoviitteen id (vanhin tässä tapauksessa pienimmän id:n omaava)
+
+        // FIXME: Refactor
+        if (po instanceof TutkinnonOsa) {
+            tutkinnonOsaViiteRepository.findAllByTutkinnonOsa((TutkinnonOsa)po).stream()
+                    .map(pov -> pov.getId())
+                    .sorted()
+                    .findFirst()
+                    .ifPresent(id -> palautaJulkaistuImpl(peruste, po, id));
+        }
+        else {
+            perusteenOsaViiteRepository.findAllByPerusteenOsa(po).stream()
+                    .map(pov -> pov.getId())
+                    .sorted()
+                    .findFirst()
+                    .ifPresent(id -> palautaJulkaistuImpl(peruste, po, id));
+        }
+    }
+
+    // FIXME: Miksi nämä iteroidaan kahteen kertaan?
+    private PerusteenOsaViite setSisaltoTila(Peruste peruste, PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
         if (sisaltoRoot.getPerusteenOsa() != null) {
-            sisaltoRoot.getPerusteenOsa().asetaTila(tila);
+//            sisaltoRoot.getPerusteenOsa().asetaTila(tila);
+            if (tila == PerusteTila.LUONNOS) {
+                // TODO: Tarkista onko muita käyttäjiä
+                sisaltoRoot.getPerusteenOsa().palautaLuonnokseksi();
+                palautaJulkaistu(peruste, sisaltoRoot.getPerusteenOsa());
+            }
+            else {
+                sisaltoRoot.getPerusteenOsa().asetaTila(tila);
+            }
         }
         if (sisaltoRoot.getLapset() != null) {
             for (PerusteenOsaViite lapsi : sisaltoRoot.getLapset()) {
-                setSisaltoTila(lapsi, tila);
+                setSisaltoTila(peruste, lapsi, tila);
             }
         }
         return sisaltoRoot;
     }
 
-    private TutkinnonOsaViite setOsatTila(TutkinnonOsaViite osa, PerusteTila tila) {
+    // FIXME: Miksi nämä iteroidaan kahteen kertaan?
+    private TutkinnonOsaViite setOsatTila(Peruste peruste, TutkinnonOsaViite osa, PerusteTila tila) {
         if (osa.getTutkinnonOsa() != null) {
-            osa.getTutkinnonOsa().asetaTila(tila);
+            if (tila == PerusteTila.LUONNOS) {
+                // TODO: Tarkista onko muita käyttäjiä
+                palautaJulkaistu(peruste, osa.getTutkinnonOsa());
+            }
+            else {
+                osa.getTutkinnonOsa().asetaTila(tila);
+            }
         }
         return osa;
     }

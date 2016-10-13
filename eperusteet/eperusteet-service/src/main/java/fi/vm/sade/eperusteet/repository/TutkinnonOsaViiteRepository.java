@@ -36,4 +36,9 @@ public interface TutkinnonOsaViiteRepository extends JpaWithVersioningRepository
 
     @Query("SELECT v FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat v JOIN FETCH v.tutkinnonOsa WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
     List<TutkinnonOsaViite> findByPeruste(Long perusteId, Suoritustapakoodi st);
+
+    Long countByTutkinnonOsaId(Long perusteenOsaId);
+
+
+    List<TutkinnonOsaViite> findAllByTutkinnonOsa(TutkinnonOsa perusteenOsa);
 }

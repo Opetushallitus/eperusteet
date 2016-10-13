@@ -34,4 +34,5 @@ public interface PerusteenOsaViiteRepository extends JpaWithVersioningRepository
     @Query(name = "PerusteenOsaViite.findRootsByPerusteenOsaId")
     List<Long> findRootsByPerusteenOsaId(Long perusteenOsaId);
 
+    Long countByPerusteenOsaId(Long perusteenOsaId);
 }
