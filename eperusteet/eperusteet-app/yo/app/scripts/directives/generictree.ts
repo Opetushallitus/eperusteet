@@ -14,9 +14,13 @@
  * European Union Public Licence for more details.
  */
 
+// TODO: removeme, working local "fork" of the generictree to avoid height: 900px container div
+
+'use strict';
+/* global _, angular */
+
 angular.module('eGenericTree', [])
-  .directive('genericTreeNode', function($compile, $templateCache, $timeout) {
-    let renderAmount = 0;
+  .directive('genericTreeNode', function($compile, $templateCache) {
     return {
       restrict: 'E',
       replace: true,
@@ -33,7 +37,6 @@ angular.module('eGenericTree', [])
         };
       },
       link: function(scope, element) {
-
         function setContext(node, children) {
           node.$$hasChildren = !_.isEmpty(children);
           _.each(children, function(cnode) {
@@ -67,15 +70,9 @@ angular.module('eGenericTree', [])
               '</div>';
           }
           template += '</div>';
-
-          const renderer = () => element.replaceWith($compile(template)(scope));
-          if (++renderAmount % 40 === 0) {
-            $timeout(renderer);
-          }
-          else {
-            renderer();
-          }
         }
+        const renderer = () => element.replaceWith($compile(template)(scope));
+        renderer();
       }
     };
   })
@@ -102,6 +99,9 @@ angular.module('eGenericTree', [])
             })
             .then(function(children) {
               $scope.children = children;
+            })
+            .catch(function(err) {
+              $log.error(err);
             });
         }
 
@@ -112,6 +112,18 @@ angular.module('eGenericTree', [])
           });
       },
       link: function(scope, element) {
+        var restoreParentHeight = function(el) {
+          var $parent = $(el).parent(),
+              height = $parent.prop('original-min-height') || 'inherit';
+          //console.log('restoring min height:', height, 'for tree container', $parent);
+          $parent.css('minHeight', height);
+        };
+        var restoreParentHeightForAllGenericTrees = function() {
+          $("generic-tree").each(function() {
+            restoreParentHeight($(this).parent());
+          });
+        };
+
         function refresh(tree) {
           if (tree) {
             _.each(scope.children, function(child) {
@@ -163,6 +175,12 @@ angular.module('eGenericTree', [])
 
         scope.$on('genericTree:refresh', function() {
           refresh(scope.children);
+        });
+        /*scope.$on('genericTree:beforeChange', function() {
+          setupMinHeightForAllGenericTrees();
+        });*/
+        scope.$on('genericTree:afterChange', function() {
+          restoreParentHeightForAllGenericTrees();
         });
         scope.$watch('children', refresh);
       }
