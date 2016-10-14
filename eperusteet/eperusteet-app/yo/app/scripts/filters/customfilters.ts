@@ -56,7 +56,7 @@ angular.module('eperusteApp')
       return cache.put(key, value);
     };
     $rootScope.$on('changed:uikieli', function () {
-      cache.removeAll();
+       cache && cache.removeAll();
     });
   })
 
