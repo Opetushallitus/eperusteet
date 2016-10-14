@@ -21,6 +21,19 @@
 
 angular.module('eGenericTree', [])
 .directive('genericTreeNode', function($compile, $templateCache) {
+    function setContext(node, children) {
+        node.$$hasChildren = !_.isEmpty(children);
+        _.each(children, function(cnode) {
+            cnode.$$depth = node.$$depth + 1;
+            cnode.$$nodeParent = node;
+        });
+    }
+
+    function getTemplate(tp, node) {
+        var template = tp.template ? tp.template(node) : undefined;
+        return $templateCache.get(template) || template || '<pre>{{ node | json }}</pre>';
+    }
+
     return {
         restrict: 'E',
         replace: true,
@@ -37,43 +50,28 @@ angular.module('eGenericTree', [])
             };
         },
         link: function(scope, element) {
-            function setContext(node, children) {
-                node.$$hasChildren = !_.isEmpty(children);
-                _.each(children, function(cnode) {
-                    cnode.$$depth = node.$$depth + 1;
-                    cnode.$$nodeParent = node;
-                });
-            }
-
-            function getTemplate(node) {
-                var template = scope.treeProvider.template ? scope.treeProvider.template(node) : undefined;
-                return $templateCache.get(template) || template || '<pre>{{ node | json }}</pre>';
-            }
-
             var node = scope.node;
-            scope.treeProvider.children(node)
-            .then(function(children) {
-                element.empty();
-                setContext(node, children);
-                var template = getTemplate(node);
-                if (children) {
-                    template += '<div ui-sortable="uiSortableConfig" class="' +
-                        scope.treeProvider.sortableClass(node) +
-                        ' recursivetree" ng-model="children">';
-                    scope.children = children;
-                    scope.parentNode = node;
-                    if (!_.isEmpty(children)) {
-                        template += '' +
-                            '<div ng-repeat="node in children">' +
-                            '    <generic-tree-node node="node" ng-show="!isHidden(node)" ui-sortable-config="uiSortableConfig"' +
-                            '                       tree-provider="treeProvider"></generic-tree-node>' +
-                            '</div>';
-                    }
-                    template += '</div>';
+            const children = scope.treeProvider.children(node)
+            element.empty();
+            setContext(node, children);
+            var template = getTemplate(scope.treeProvider, node);
+            if (children) {
+                template += '<div ui-sortable="uiSortableConfig" class="' +
+                    scope.treeProvider.sortableClass(node) +
+                    ' recursivetree" ng-model="children">';
+                scope.children = children;
+                scope.parentNode = node;
+                if (!_.isEmpty(children)) {
+                    template += '' +
+                        '<div ng-repeat="node in children">' +
+                        '    <generic-tree-node node="node" ng-show="!isHidden(node)" ui-sortable-config="uiSortableConfig"' +
+                        '                       tree-provider="treeProvider"></generic-tree-node>' +
+                        '</div>';
                 }
-                element.append(template);
-                $compile(element.contents())(scope);
-            });
+                template += '</div>';
+            }
+            element.append(template);
+            $compile(element.contents())(scope);
         }
     };
 })
