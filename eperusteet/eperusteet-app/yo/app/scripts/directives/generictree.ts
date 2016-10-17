@@ -20,7 +20,7 @@
 /* global _, angular */
 
 angular.module('eGenericTree', [])
-.directive('genericTreeNode', function($compile, $templateCache) {
+.directive('genericTreeNode', function($compile, $templateCache, $timeout) {
     function setContext(node, children) {
         node.$$hasChildren = !_.isEmpty(children);
         _.each(children, function(cnode) {
@@ -70,8 +70,12 @@ angular.module('eGenericTree', [])
                 }
                 template += '</div>';
             }
-            element.append(template);
-            $compile(element.contents())(scope);
+
+            // FIXME: More dirty hacks
+            $timeout(() => {
+                element.append(template);
+                $compile(element.contents())(scope);
+            });
         }
     };
 })
@@ -128,10 +132,10 @@ angular.module('eGenericTree', [])
             }
 
             $scope.treeProvider
-            .then(run)
-            .catch(function(err) {
-                $log.error(err);
-            });
+                .then(run)
+                .catch(function(err) {
+                    $log.error(err);
+                });
         },
         link: function(scope, element) {
             let isRefreshing = false;
@@ -164,17 +168,17 @@ angular.module('eGenericTree', [])
                     //     restoreParentHeightForAllGenericTrees();
                     // },
                     update: function(e, ui) {
-                        if (scope.tprovider.acceptDrop) {
-                            const dropTarget = ui.item.sortable.droptarget;
-                            if (dropTarget) {
-                                const listItem = dropTarget.closest('.recursivetree');
-                                const parentScope = listItem ? listItem.scope() : null;
-                                const parentNode = parentScope && parentScope.node ? parentScope.node : scope.treeRoot;
-                                if (!parentNode || !scope.tprovider.acceptDrop(ui.item.sortable.model, parentNode, e, ui)) {
-                                    ui.item.sortable.cancel();
-                                }
-                            }
-                        }
+                        // if (scope.tprovider.acceptDrop) {
+                        //     const dropTarget = ui.item.sortable.droptarget;
+                        //     if (dropTarget) {
+                        //         const listItem = dropTarget.closest('.recursivetree');
+                        //         const parentScope = listItem ? listItem.scope() : null;
+                        //         const parentNode = parentScope && parentScope.node ? parentScope.node : scope.treeRoot;
+                        //         if (!parentNode || !scope.tprovider.acceptDrop(ui.item.sortable.model, parentNode, e, ui)) {
+                        //             ui.item.sortable.cancel();
+                        //         }
+                        //     }
+                        // }
                     }
                     // cancel: '.ui-state-disabled'
                 }, scope.uiSortableConfig || {});
@@ -191,13 +195,14 @@ angular.module('eGenericTree', [])
                 } else {
                     element.append(templateEl);
                 }
+                // FIXME: Dirty hack
                 $timeout(() => isRefreshing = false);
             }
 
             scope.$on('genericTree:refresh', function() {
                 refresh(scope.children);
             });
-            scope.$watch('children', refresh, true);
+            scope.$watch('children', refresh);
         }
     };
 });

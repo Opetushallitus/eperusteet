@@ -766,25 +766,27 @@ angular.module('eperusteApp')
           '           \'bubble-osa\': node.dtype === \'kurssi\',' +
           '           \'empty-item\': !node.lapset.length }">'+tmpl+'</div>';
       };
+
       resolve({
         root: function() {
           return $q(function (resolveRoot) {
             if (rakenneProvider) {
-              rakenneProvider.then(function(rakenne) {
-                $scope.kurssit = rakenne.kurssit;
-                $scope.oppiaineet = rakenne.oppiaineet;
-                initTree();
-                resolveRoot($scope.treeRoot);
-              });
-            } else {
-              LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function(oppiaineet) {
-                kurssitProvider.then(function (kurssit) {
-                  $scope.kurssit = kurssit;
-                  $scope.oppiaineet = oppiaineet;
-                  initTree();
-                  resolveRoot($scope.treeRoot);
+              rakenneProvider
+                .then(function(rakenne) {
+                    $scope.kurssit = rakenne.kurssit;
+                    $scope.oppiaineet = rakenne.oppiaineet;
+                    initTree();
                 });
-              });
+            } else {
+              LukiokoulutusService.getOsat($stateParams.osanTyyppi)
+                .then(function(oppiaineet) {
+                    kurssitProvider.then(function (kurssit) {
+                        $scope.kurssit = kurssit;
+                        $scope.oppiaineet = oppiaineet;
+                        initTree();
+                        resolveRoot($scope.treeRoot);
+                    });
+                });
             }
           });
         },
@@ -793,7 +795,7 @@ angular.module('eperusteApp')
         template: (n) => {
           var handle = treehandleTemplate(),
               collapse = (!$scope.treehelpers.editMode || n.dtype === 'oppiaine')
-                ?  '<span ng-show="node.lapset.length" ng-click="toggle(node)"' +
+                ?  '<span ng-show="node.lapset.length" ng-click="node.$$collapsed = !node.$$collapsed"' +
                 '           class="colorbox collapse-toggle" ng-class="{\'suljettu\': node.$$collapsed}">' +
                 '    <span ng-hide="node.$$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
                 '    <span ng-show="node.$$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
