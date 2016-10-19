@@ -264,7 +264,7 @@ angular.module('eperusteApp')
         $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {
           perusteenOsaViiteId: tk.id,
           versio: ''
-        },{reload: true});
+        }, { reload: true });
       });
     };
 

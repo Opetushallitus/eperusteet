@@ -35,7 +35,7 @@ angular.module('eperusteApp')
         perusteenOsaViiteId: id,
         versio: ''
       };
-      $state.go('root.perusteprojekti.suoritustapa.tekstikappale', params);
+      $state.go('root.perusteprojekti.suoritustapa.tekstikappale', params, { reload: true });
     }
 
     this.add = function () {

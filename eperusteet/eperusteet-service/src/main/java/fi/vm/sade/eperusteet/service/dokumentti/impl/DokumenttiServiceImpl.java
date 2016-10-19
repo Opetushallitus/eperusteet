@@ -149,7 +149,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = DokumenttiException.class)
     @IgnorePerusteUpdateCheck
     @Async(value = "docTaskExecutor")
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {

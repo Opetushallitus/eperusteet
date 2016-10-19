@@ -12,7 +12,9 @@
     <button ng-show="isPublished() && !editEnabled" ng-click="kopioiMuokattavaksi()"
             class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="'kopioi-muokattavaksi'"
             oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-    <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
+    <div class="floater" ng-if="!editEnabled && isLocked">
+      <lukko tip="lockNotification"></lukko>
+    </div>
 
     <div ng-if="editEnabled">
       <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="config.removeWholeFn()">{{config.removeWholeLabel || 'poista' | kaanna}}</button>
