@@ -7,7 +7,15 @@
 <div class="modal-body">
   <div ng-show="!valittuPeruste">
     <div class="tuo-nykyisesta-perusteesta">
-      <a class="action-link" icon-role="add" ng-click="valitse(nykyinenPeruste)" kaanna="'tuo-nykyisesta-perusteesta'"></a>
+      <a class="action-link pull-left" icon-role="add" ng-click="valitse(nykyinenPeruste)"
+         kaanna="'tuo-nykyisesta-perusteesta'" style="margin-top: 10px;"></a>
+      <div class="checkbox pull-right">
+        <label>
+          <input type="checkbox" ng-model="luonnokset" ng-change="fetchOmat()")>
+          {{'myos-luonnokset' | kaanna}}
+        </label>
+      </div>
+      <div class="clearfix"></div>
     </div>
     <rajaus ng-if="!lataa" model="syote" placeholder="hae-perusteita" callback="haku(value)"></rajaus>
     <div style="margin-top: 8px" class="results">

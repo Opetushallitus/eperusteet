@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +34,7 @@ import java.util.Set;
 @Setter
 public class PerusteKevytDto {
     private Long id;
+    private LokalisoituTekstiDto nimi;
     private PerusteTila tila;
     private PerusteTyyppi tyyppi;
     private String koulutustyyppi;

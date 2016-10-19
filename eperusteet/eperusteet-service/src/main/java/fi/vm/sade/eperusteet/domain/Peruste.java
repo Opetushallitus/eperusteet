@@ -278,6 +278,6 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     }
 
-    public interface Valmis {};
+    public interface Valmis {}
 
 }

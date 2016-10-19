@@ -20,10 +20,11 @@
 angular.module('eperusteApp')
   .controller('TuoTekstikappale', function($q, $scope, $modalInstance, Notifikaatiot, peruste,
       suoritustapa, PerusteenRakenne, SuoritustapaSisalto, YleinenData, Perusteet, Algoritmit,
-      Kaanna) {
+      Kaanna, OmatPerusteprojektit, Kieli) {
     var sisallot = {};
     $scope.nykyinenPeruste = peruste;
     $scope.perusteet = [];
+    $scope.luonnosPerusteet = [];
     $scope.sivuja = 0;
     $scope.sivu = 0;
     $scope.valittuPeruste = null;
@@ -42,6 +43,24 @@ angular.module('eperusteApp')
     $scope.paginate = {
       perPage: 10,
       current: 1,
+    };
+
+    $scope.fetchOmat = () => {
+      if ($scope.luonnokset) {
+        OmatPerusteprojektit.query({}, vastaus => {
+          $scope.luonnosPerusteet = _(vastaus)
+            .filter(pp => pp.diaarinumero)
+            .map('peruste')
+            .filter(p => p.nimi)
+            .filter(p => p.id !== $scope.nykyinenPeruste.id)
+            .value();
+
+          $scope.haku('');
+        });
+      } else {
+        $scope.luonnosPerusteet = [];
+        $scope.haku('');
+      }
     };
 
     $scope.orderFn = function(item) {
@@ -68,7 +87,13 @@ angular.module('eperusteApp')
 
     $scope.haku = function(haku) {
       PerusteenRakenne.haePerusteita(haku, function(res) {
-        $scope.perusteet = res.data;
+        $scope.perusteet = _($scope.luonnosPerusteet)
+          .filter(p => {
+            return p.nimi[Kieli.getSisaltokieli()].indexOf(haku) !== -1;
+          })
+          .concat(res.data)
+          .uniq(p => p.id)
+          .value();
         $scope.sivuja = res.sivuja;
         $scope.sivu = res.sivu;
       });
