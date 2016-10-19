@@ -1,0 +1,20 @@
+<span>
+    <span style="color: #008000;" ng-if="!isEditing">
+        <span ng-show="ngModel.kaannettava" data-toggle="tooltip" title="{{ 'kaannettava-ohje' | kaanna }}" class="glyphicon glyphicon-globe"></span>
+        <span ng-show="ngModel.valmis" data-toggle="tooltip" title="{{ 'valmis-ohje' | kaanna }}" class="glyphicon glyphicon-ok"></span>
+    </span>
+    <div ng-if="isEditing">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="ngModel.kaannettava">
+                <span ng-bind="'sisalto-kaannettavaksi' | kaanna"></span>
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="ngModel.valmis">
+                <span ng-bind="'toteutus-valmis' | kaanna"></span>
+            </label>
+        </div>
+    </div>
+</span>

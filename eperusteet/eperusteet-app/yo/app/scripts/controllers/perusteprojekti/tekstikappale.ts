@@ -137,7 +137,6 @@ angular.module('eperusteApp')
     KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat,
     TEXT_HIERARCHY_MAX_DEPTH, TekstikappaleOperations, virheService, ProjektinMurupolkuService,
     $state) {
-
     $scope.tekstikappale = {};
     $scope.versiot = {};
     PerusteprojektiTiedotService.then(function(pts) { $scope.peruste = pts.getPeruste(); });

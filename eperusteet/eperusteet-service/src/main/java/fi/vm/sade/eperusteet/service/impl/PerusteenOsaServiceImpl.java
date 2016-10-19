@@ -19,11 +19,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
-import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
@@ -44,13 +40,12 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import java.util.*;
+import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import java.util.*;
 
 /**
  *
@@ -152,14 +147,17 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
+        
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             TutkinnonOsa tutkinnonOsa = (TutkinnonOsa) updated;
             tutkinnonOsa.setOsaAlueet(createOsaAlueIfNotExist(tutkinnonOsa.getOsaAlueet()));
             tutkinnonOsa.setValmaTelmaSisalto( createValmatelmaIfNotExist( tutkinnonOsa.getValmaTelmaSisalto() ) );
         }
+
         if ( current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
             throw new BusinessRuleViolationException("Vain korjaukset sallittu");
         }
+
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             removeMissingFromCurrent(perusteenOsaRepo.findOne(perusteenOsaDto.getId()), updated);
         }

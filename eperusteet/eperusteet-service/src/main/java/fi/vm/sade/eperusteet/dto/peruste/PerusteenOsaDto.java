@@ -27,10 +27,9 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 /**
  *
@@ -49,6 +48,8 @@ public abstract class PerusteenOsaDto {
     private PerusteTila tila;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private PerusteenOsaTunniste tunniste;
+    private Boolean valmis;
+    private Boolean kaannettava;
 
     public PerusteenOsaDto() {
     }

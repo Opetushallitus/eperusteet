@@ -110,12 +110,15 @@ angular.module('eperusteApp')
         link = special.link;
         isActive = special.isActive;
       }
+
       items.push({
         label: label,
         id: lapsi.id,
         depth: level,
         link: link || getLink(lapsi),
         isActive: isActive || isRouteActive,
+        valmis: lapsi && lapsi.perusteenOsa && lapsi.perusteenOsa.valmis,
+        kaannettava: lapsi && lapsi.perusteenOsa && lapsi.perusteenOsa.kaannettava,
         $$parentItem: parent,
         $type: (lapsi.perusteenOsa && lapsi.perusteenOsa.tunniste === 'rakenne') ? 'ep-tree' : 'ep-text'
       });

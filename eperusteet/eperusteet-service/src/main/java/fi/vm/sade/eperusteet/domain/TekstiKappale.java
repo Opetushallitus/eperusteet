@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -28,8 +29,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *

@@ -58,6 +58,16 @@ public abstract class PerusteenOsa
 
     @Getter
     @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Boolean valmis;
+
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Boolean kaannettava;
+
+    @Getter
+    @Setter
     @Enumerated(value = EnumType.STRING)
     private PerusteenOsaTunniste tunniste;
 
@@ -129,6 +139,8 @@ public abstract class PerusteenOsa
 
     private void copyState(PerusteenOsa other) {
         this.nimi = other.getNimi();
+        this.valmis = other.getValmis();
+        this.kaannettava = other.getKaannettava();
     }
 
 }
