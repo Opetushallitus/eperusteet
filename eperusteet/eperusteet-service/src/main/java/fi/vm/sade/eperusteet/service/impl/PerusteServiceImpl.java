@@ -55,6 +55,12 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +72,6 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -474,11 +473,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private Peruste updateValmisPeruste(Peruste current, Peruste updated) {
-
-        if (!current.getDiaarinumero().equals(updated.getDiaarinumero())) {
-            throw new BusinessRuleViolationException("Valmiin perusteen diaarinumeroa ei voi vaihtaa");
-        }
-
         current.setKielet(updated.getKielet());
         current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
         current.setKoulutukset(updated.getKoulutukset());
