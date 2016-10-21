@@ -50,6 +50,7 @@ angular.module('eGenericTree', [])
             };
         },
         link: function(scope, element) {
+            $animate.enabled(false, element);
             var node = scope.node;
             const children = scope.treeProvider.children(node)
             element.empty();
@@ -79,7 +80,7 @@ angular.module('eGenericTree', [])
         }
     };
 })
-.directive('genericTree', function($compile, $log, $timeout) {
+.directive('genericTree', function($compile, $log, $timeout, $animate) {
     // const setupMinHeightBycontainer = function(el) {
     //     const $parent = $(el).parent(),
     //         height = $parent.outerHeight();
@@ -138,6 +139,7 @@ angular.module('eGenericTree', [])
                 });
         },
         link: function(scope, element) {
+            $animate.enabled(false, element);
             let isRefreshing = false;
             function refresh(tree) {
                 if (!tree || isRefreshing) {
