@@ -20,7 +20,7 @@
 /* global _, angular */
 
 angular.module('eGenericTree', [])
-.directive('genericTreeNode', function($compile, $templateCache, $timeout) {
+.directive('genericTreeNode', function($compile, $templateCache, $timeout, $animate) {
     function setContext(node, children) {
         node.$$hasChildren = !_.isEmpty(children);
         _.each(children, function(cnode) {
@@ -81,29 +81,6 @@ angular.module('eGenericTree', [])
     };
 })
 .directive('genericTree', function($compile, $log, $timeout, $animate) {
-    // const setupMinHeightBycontainer = function(el) {
-    //     const $parent = $(el).parent(),
-    //         height = $parent.outerHeight();
-    //     $parent.prop('original-min-height', $parent.css('minHeight'));
-    //     $parent.css('minHeight', height);
-    // };
-    // const setupMinHeightForAllGenericTrees = function() {
-    //     $("generic-tree").each(function() {
-    //         setupMinHeightBycontainer($(this).parent());
-    //     });
-    // };
-    // const restoreParentHeight = function(el) {
-    //     const $parent = $(el).parent(),
-    //         height = $parent.prop('original-min-height') || 'inherit';
-    //     //console.log('restoring min height:', height, 'for tree container', $parent);
-    //     $parent.css('minHeight', height);
-    // };
-    // const restoreParentHeightForAllGenericTrees = function() {
-    //     $("generic-tree").each(function() {
-    //         restoreParentHeight($(this).parent());
-    //     });
-    // };
-
     return {
         restrict: 'E',
         replace: true,
