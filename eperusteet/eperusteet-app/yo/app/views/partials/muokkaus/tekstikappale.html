@@ -71,7 +71,7 @@ European Union Public Licence for more details.
         </h1>
         <h1 ng-if="!editEnabled">
             <span style="margin-right: 4px" ng-bind-html="tekstikappale.nimi | kaanna"></span>
-            <valmiskaannos style="font-size: 20px" is-editing="false" ng-model="editableTekstikappale"></valmiskaannos>
+            <valmiskaannos style="font-size: 20px" is-editing="editEnabled" ng-model="editableTekstikappale"></valmiskaannos>
         </h1>
         <h5 ng-if="!editEnabled && tekstikappale.osaamisala">
           <b>{{ 'osaamisalan-kuvaus' | kaanna }}</b>:
@@ -99,7 +99,7 @@ European Union Public Licence for more details.
           kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}" muokkauskentta-raamit>
           <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
         </div>
-        <valmiskaannos ng-if="editEnabled" is-editing="true" ng-model="editableTekstikappale"></valmiskaannos>
+        <valmiskaannos ng-if="editEnabled" is-editing="editEnabled" ng-model="editableTekstikappale"></valmiskaannos>
       </div>
       <kommentit></kommentit>
     </div>

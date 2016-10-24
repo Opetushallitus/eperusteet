@@ -24,13 +24,14 @@ angular.module('eperusteApp')
 .directive('valmiskaannos', ($timeout, $compile, $document) => {
     return {
         templateUrl: 'views/partials/valmiskaannos.html',
-        restrict: 'EA',
+        restrict: 'E',
         require: 'ngModel',
         scope: {
-            isEditing: '=',
+            isEditing: '=?',
             ngModel: '='
         },
-        link: (scope, element, attrs) => {
+        controller: ($scope) => {
+            $scope.editing = _.isUndefined($scope.isEditing) ? false : $scope.isEditing;
         }
     };
 });

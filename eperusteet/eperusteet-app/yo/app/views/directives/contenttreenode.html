@@ -11,7 +11,8 @@
                 <h3>
                     <span ep-highlight="rajaus" ng-bind="sisalto.perusteenOsa.nimi || sisalto.nimi | kaanna"></span>
                     <span style="margin: 0 0 0 6px">
-                        <valmiskaannos is-editing="false" ng-model="sisalto.perusteenOsa || sisalto"></valmiskaannos>
+                        <valmiskaannos ng-if="sisalto && sisalto.perusteenOsa" ng-model="sisalto.perusteenOsa"></valmiskaannos>
+                        <valmiskaannos ng-if="sisalto && !sisalto.perusteenOsa" ng-model="sisalto"></valmiskaannos>
                     </span>
                 </h3>
                 <div class="ryhma-info">
