@@ -60,6 +60,7 @@
               <span ng-show="isVaTe && getTosa().laajuusMaksimi"> - {{ getTosa().laajuusMaksimi }}</span>
               <span kaanna="yksikko"></span>
             </span>
+            <valmiskaannos ng-model="tutkinnonOsaViite.tutkinnonOsa"></valmiskaannos>
           </span>
         </pikamenu>
       </div>
@@ -67,6 +68,7 @@
       <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
       <hr ng-show="editEnabled">
+      <valmiskaannos ng-if="editEnabled" is-editing="editEnabled" ng-model="editableTutkinnonOsaViite.tutkinnonOsa"></valmiskaannos>
 
       <form name="tutkinnonOsaHeaderForm" role="form">
         <div class="non-collapsibles" ng-if="editEnabled">
