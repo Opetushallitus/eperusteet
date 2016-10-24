@@ -9,7 +9,7 @@
   </div>
 
   <div>
-    <table class="table table-striped" style="margin-top: 0px">
+    <table class="table table-striped" style="margin-top: 0">
       <tr>
         <th ng-if="kaytaJarjestysnumeroa" width="6%">
           <a class="action-link" ng-click="asetaJarjestys('jarjestys')">{{ 'lajittelu-jarjestysnumero' | kaanna }}
@@ -41,7 +41,9 @@
         </th>
       </tr>
       <tr ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
-        <td ng-if="kaytaJarjestysnumeroa">{{ v.jarjestys || '-' }}</td>
+        <td ng-if="kaytaJarjestysnumeroa">
+          {{ v.jarjestys || '-' }}
+        </td>
         <td>
           <a ng-href="{{urlGenerator({value: v})}}">{{ v.nimi || vateConverter('uusi-tutkinnonosa') | kaanna }}</a>
         </td>
@@ -50,7 +52,7 @@
             {{ v.laajuus }}
             <span ng-show="v.laajuusMaksimi && v.laajuus < v.laajuusMaksimi"> - {{ v.laajuusMaksimi }}</span>
             {{ unit || '' | kaanna }}
-          </div>
+          </span>
         </td>
         <td>
           {{ v.muokattu || 0 | aikaleima }}
