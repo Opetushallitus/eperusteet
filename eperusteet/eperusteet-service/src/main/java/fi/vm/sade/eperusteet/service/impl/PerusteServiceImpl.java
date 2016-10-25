@@ -55,12 +55,6 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +66,13 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -749,7 +750,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
-        //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
+        final Peruste peruste = perusteet.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
+        //if (peruste.getKoulutustyyppi().equals(KoulutusTyyppi.VALMA))
+        // Workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa
         suoritustapaRepository.lock(suoritustapa, false);
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
         viite.setSuoritustapa(suoritustapa);
@@ -813,8 +816,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
         Suoritustapa suoritustapa = suoritustapaRepository.findByPerusteAndKoodi(perusteid, suoritustapakoodi);
         if (suoritustapa == null) {
-            throw new BusinessRuleViolationException("Perusteella " + perusteid + " + ei ole suoritustapaa "
-                    + suoritustapa);
+            throw new BusinessRuleViolationException(
+                    "Perusteella " + perusteid + " + ei ole suoritustapaa " + suoritustapakoodi
+            );
         }
         return suoritustapa;
     }

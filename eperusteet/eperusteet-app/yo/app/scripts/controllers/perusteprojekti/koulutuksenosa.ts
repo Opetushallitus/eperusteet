@@ -115,7 +115,7 @@ angular.module('eperusteApp')
         Editointikontrollit, VersionHelper, virheService, TutkinnonOsaViitteet, Algoritmit, rakenne,
         Lukitus, PerusteenOsaViite, $q, Tutke2Service, Notifikaatiot, PerusteenRakenne, TutkinnonOsaEditMode, PerusteTutkinnonosa,
         PerusteenOsat, ProjektinMurupolkuService, Tutke2OsaData, $timeout, FieldSplitter, Varmistusdialogi,
-        Koodisto, MuokkausUtils) {
+        Koodisto, MuokkausUtils, PerusteenOsaViitteet) {
 
     Utils.scrollTo('#ylasivuankkuri');
 
@@ -213,6 +213,19 @@ angular.module('eperusteApp')
           }
         })();
       }
+    };
+
+    $scope.kopioiMuokattavaksi = function () {
+      PerusteenOsaViitteet.kloonaaTutkinnonOsa({
+        viiteId: $scope.tutkinnonOsaViite.id
+      }, function(tk) {
+        TutkinnonOsaEditMode.setMode(true);
+        Notifikaatiot.onnistui('tutkinnonosa-kopioitu-onnistuneesti');
+        $state.go('root.perusteprojekti.suoritustapa.koulutuksenosa', {
+          perusteenOsaViiteId: tk.id,
+          versio: ''
+        }, { reload: true });
+      });
     };
 
     function saveCb(res) {

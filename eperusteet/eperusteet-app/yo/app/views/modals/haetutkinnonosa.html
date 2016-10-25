@@ -2,14 +2,20 @@
 
 <div modal="modalVisible" close="close()" options="{windowClass:'modal-to-haku'}">
   <div class="modal-header">
-    <h1>Hae tutkinnon osia</h1>
+    <h1>{{'hae-tutkinnon-osia' | kaanna}}</h1>
     <h3 ng-if="!haku">{{ valittu.nimi | kaanna }}</h3>
   </div>
 
   <div class="modal-body">
     <div ng-show="haku">
-      <label>Tutkinnon nimellä</label>
-      <input ng-change="hakuMuuttui()" ng-model="data.hakustr" class="form-control" type="text" placeholder="Hae tutkintoja..."></input>
+      <label>{{'tutkinnon-nimella' | kaanna}}</label>
+      <div class="checkbox pull-right">
+        <label>
+          <input type="checkbox" ng-model="luonnokset" ng-change="fetchOmat()">
+          {{'myos-luonnokset' | kaanna}}
+        </label>
+      </div>
+      <input ng-change="hakuMuuttui()" ng-model="data.hakustr" class="form-control" type="text" placeholder="Hae tutkintoja...">
       <p class="results-amount">{{perusteet['kokonaismäärä']}} {{'hakutulosta' | kaanna}}</p>
       <div class="results">
         <table class="table table-striped">
@@ -17,7 +23,7 @@
             <th kaanna>haku-nimi</th>
             <th kaanna>haku-voimaantulopvm</th>
           </tr>
-          <tr ng-repeat="peruste in perusteet.data">
+          <tr ng-repeat="peruste in perusteet">
             <td><a class="action-link" ng-click="jatka(peruste)">{{ peruste.nimi | kaanna }}</a></td>
             <td>{{peruste.voimassaoloAlkaa|date:'dd.MM.yyyy'}}</td>
           </tr>
@@ -35,7 +41,7 @@
           <th>Laajuus</th>
         </tr>
         <tr ng-repeat="osa in perusteenosat">
-          <td class="has-checkbox"><input ng-model="osa.$valitse" type="checkbox" class="form-control"></td>
+          <td class="has-checkbox"><input ng-model="osa.$$valitse" type="checkbox" class="form-control"></td>
           <td>{{ osa.nimi | kaanna }}</td>
           <td>{{ osa.laajuus}}</td>
         </tr>

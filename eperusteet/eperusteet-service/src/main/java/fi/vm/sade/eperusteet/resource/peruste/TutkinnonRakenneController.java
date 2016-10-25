@@ -30,25 +30,17 @@ import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
 import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
  *
@@ -69,7 +61,7 @@ public class TutkinnonRakenneController {
     /**
      * Luo ja liittää uuden tutkinnon osa perusteeseen.
      *
-     * @param id
+     * @param perusteId
      * @param suoritustapakoodi
      * @param osa viitteen tiedot
      * @return Viite uuten tutkinnon osaan
@@ -77,11 +69,15 @@ public class TutkinnonRakenneController {
     @RequestMapping(value = "/tutkinnonosat", method = POST)
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public TutkinnonOsaViiteDto addTutkinnonOsa(@PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @RequestBody TutkinnonOsaViiteDto osa) {
+    public TutkinnonOsaViiteDto addTutkinnonOsa(
+            @PathVariable final Long perusteId,
+            @PathVariable final Suoritustapakoodi suoritustapakoodi,
+            @RequestBody TutkinnonOsaViiteDto osa
+    ) {
         if (osa.getTutkinnonOsa() != null) {
-            return perusteService.attachTutkinnonOsa(id, suoritustapakoodi, osa);
+            return perusteService.attachTutkinnonOsa(perusteId, suoritustapakoodi, osa);
         }
-        return perusteService.addTutkinnonOsa(id, suoritustapakoodi, osa);
+        return perusteService.addTutkinnonOsa(perusteId, suoritustapakoodi, osa);
     }
 
     /**

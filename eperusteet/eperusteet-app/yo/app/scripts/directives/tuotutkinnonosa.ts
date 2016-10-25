@@ -83,25 +83,25 @@ angular.module('eperusteApp')
     };
 
     $scope.updateTotal = function () {
-      $scope.valitut = _.size(_.filter($scope.tulokset, '$valitse'));
+      $scope.valitut = _.size(_.filter($scope.tulokset, '$$valitse'));
     };
 
     $scope.valitseKaikki = function(valinta) {
       _.each($scope.tulokset, function(tulos) {
-        tulos.$valitse = false;
+        tulos.$$valitse = false;
         if ($scope.search.term) {
           if ($scope.search.filterFn(tulos)) {
-            tulos.$valitse = valinta;
+            tulos.$$valitse = valinta;
           }
         } else {
-          tulos.$valitse = valinta;
+          tulos.$$valitse = valinta;
         }
       });
       $scope.updateTotal();
     };
 
     $scope.vaihdaValinta = function(tulos) {
-      tulos.$valitse = !tulos.$valitse;
+      tulos.$$valitse = !tulos.$$valitse;
       $scope.updateTotal();
     };
 
@@ -131,17 +131,18 @@ angular.module('eperusteApp')
 
     $scope.ok = function() {
       $modalInstance.close(_.filter($scope.tulokset, function(tulos) {
-        return tulos.$valitse;
+        return tulos.$$valitse;
       }));
     };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
   .controller('TuoTutkinnonOsaCtrl', function(PerusteenOsat, $scope, $modalInstance,
-    Perusteet, PerusteRakenteet, PerusteTutkinnonosat, tyyppi) {
+    Perusteet, PerusteRakenteet, PerusteTutkinnonosat, tyyppi, OmatPerusteprojektit, Kieli) {
 
     $scope.haku = true;
     $scope.perusteet = [];
     $scope.perusteenosat = [];
+    $scope.luonnosPerusteet = [];
     $scope.valittu = {};
     $scope.sivukoko = 10;
     $scope.data = {
@@ -149,11 +150,28 @@ angular.module('eperusteApp')
       hakustr: ''
     };
 
+    $scope.fetchOmat = () => {
+      if ($scope.luonnokset) {
+        OmatPerusteprojektit.query({}, vastaus => {
+          $scope.luonnosPerusteet = _(vastaus)
+            .filter(pp => pp.diaarinumero)
+            .map('peruste')
+            .filter(p => p.nimi)
+            .value();
+
+          $scope.paivitaHaku();
+        });
+      } else {
+        $scope.luonnosPerusteet = [];
+        $scope.paivitaHaku();
+      }
+    };
+
     $scope.takaisin = function() {
       $scope.haku = true;
     };
     $scope.valitse = function() {
-      $modalInstance.close(_.filter($scope.perusteenosat, function(osa) { return osa.$valitse; }));
+      $modalInstance.close(_.filter($scope.perusteenosat, function(osa) { return osa.$$valitse; }));
     };
 
     $scope.paivitaHaku = function() {
@@ -162,7 +180,13 @@ angular.module('eperusteApp')
           sivukoko: $scope.sivukoko,
           sivu: $scope.data.nykyinensivu - 1
       }, function(perusteet) {
-        $scope.perusteet = perusteet;
+        $scope.perusteet = _($scope.luonnosPerusteet)
+          .filter(p => {
+            return p.nimi[Kieli.getSisaltokieli()].indexOf($scope.data.hakustr) !== -1;
+          })
+          .concat(perusteet.data)
+          .uniq(p => p.id)
+          .value();
       });
     };
 

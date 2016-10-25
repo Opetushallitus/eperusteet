@@ -95,7 +95,7 @@ angular.module('eperusteApp')
     });
 });
 angular.module('eperusteApp')
-    .controller('muokkausKoulutuksenosaCtrl', function ($scope, Utils, Kommentit, $stateParams, KommentitByPerusteenOsa, $state, Editointikontrollit, VersionHelper, virheService, TutkinnonOsaViitteet, Algoritmit, rakenne, Lukitus, PerusteenOsaViite, $q, Tutke2Service, Notifikaatiot, PerusteenRakenne, TutkinnonOsaEditMode, PerusteTutkinnonosa, PerusteenOsat, ProjektinMurupolkuService, Tutke2OsaData, $timeout, FieldSplitter, Varmistusdialogi, Koodisto, MuokkausUtils) {
+    .controller('muokkausKoulutuksenosaCtrl', function ($scope, Utils, Kommentit, $stateParams, KommentitByPerusteenOsa, $state, Editointikontrollit, VersionHelper, virheService, TutkinnonOsaViitteet, Algoritmit, rakenne, Lukitus, PerusteenOsaViite, $q, Tutke2Service, Notifikaatiot, PerusteenRakenne, TutkinnonOsaEditMode, PerusteTutkinnonosa, PerusteenOsat, ProjektinMurupolkuService, Tutke2OsaData, $timeout, FieldSplitter, Varmistusdialogi, Koodisto, MuokkausUtils, PerusteenOsaViitteet) {
     Utils.scrollTo('#ylasivuankkuri');
     $scope.tutke2osa = [];
     $scope.tutkinnonOsa = {};
@@ -176,6 +176,18 @@ angular.module('eperusteApp')
                 }
             })();
         }
+    };
+    $scope.kopioiMuokattavaksi = function () {
+        PerusteenOsaViitteet.kloonaaTutkinnonOsa({
+            viiteId: $scope.tutkinnonOsaViite.id
+        }, function (tk) {
+            TutkinnonOsaEditMode.setMode(true);
+            Notifikaatiot.onnistui('tutkinnonosa-kopioitu-onnistuneesti');
+            $state.go('root.perusteprojekti.suoritustapa.koulutuksenosa', {
+                perusteenOsaViiteId: tk.id,
+                versio: ''
+            }, { reload: true });
+        });
     };
     function saveCb(res) {
         Lukitus.vapautaPerusteenosa(res.id);

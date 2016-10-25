@@ -253,6 +253,7 @@
     "ohje-perusteprojekti": "Tämän näkymän kautta voi hallinnoida perusteprojekteja ja pohjia.",
     "ohje-muodostuminen-ryhma": "Luo ryhmä ja vie haluttuun kohtaan rakenteessa.",
     "ohje-muodostuminen-tutkinnonosat": "Valitse tutkinnon osa ja vie haluttuun kohtaan rakenteessa.",
+    "tuo-koulutuksenosa": "Tuo koulutuksenosa",
 
     "otsikko": "Otsikko",
     "kopioi-muokattavaksi": "Kopioi muokattavaksi",
@@ -273,6 +274,8 @@
 
     "muokkaa-rakennetta": "Muokkaa rakennetta",
     "muokkaa-tekstikappaleiden-rakennetta": "Muokkaa tekstikappaleiden rakennetta",
+    "hae-tutkinnon-osia": "Hae tutkinnon osia",
+    "tutkinnon-nimella": "Tutkinnon nimellä",
 
     "haku-koulutusala": "Koulutusala",
     "haku-voimaantulopvm" : "Voimaantulopvm.",

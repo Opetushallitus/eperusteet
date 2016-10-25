@@ -20,10 +20,10 @@
             <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"
                     ng-hide="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' || editEnabled || !versiot.latest"
                     oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
+            <button ng-show="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' && !editEnabled" ng-click="kopioiMuokattavaksi()"
+                    class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
+                    oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
           </div>
-          <button ng-show="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' && !editEnabled" ng-click="kopioiMuokattavaksi()"
-                  class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
-                  oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
           <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
           <div ng-if="editEnabled && tutkinnonOsaViite.tutkinnonOsa.tila !== 'valmis'">
             <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].id)" kaanna="vateConverter('poista-tutkinnonosa')"></button>
