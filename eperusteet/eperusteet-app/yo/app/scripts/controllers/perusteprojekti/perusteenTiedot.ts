@@ -255,6 +255,14 @@ angular.module('eperusteApp')
         $scope.peruste[field] = new Date($scope.peruste[field]);
       }
     }
+
+    let currentTime = new Date().getTime();
+
+    $scope.voimassaOleva = !!(!$scope.peruste.voimassaoloLoppuu
+    || $scope.peruste.voimassaoloAlkaa
+    && currentTime > $scope.peruste.voimassaoloAlkaa
+    && currentTime < $scope.peruste.voimassaoloLoppuu);
+
     fixTimefield('siirtymaPaattyy');
     fixTimefield('voimassaoloAlkaa');
     fixTimefield('voimassaoloLoppuu');

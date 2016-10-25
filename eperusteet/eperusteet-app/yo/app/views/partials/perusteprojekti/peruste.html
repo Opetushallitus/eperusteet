@@ -93,7 +93,7 @@ European Union Public Licence for more details.
           </div>
         </div>
 
-        <div class="panel panel-default panel-clean" ng-hide="ladataanKorvattavia || editablePeruste.korvattavatDiaarinumerot.length === 0">
+        <div class="panel panel-default panel-clean" ng-hide="ladataanKorvattavia || editablePeruste.korvattavatDiaarinumerot.length === 0 || !voimassaOleva && !editEnabled">
           <div class="panel-heading">
             <h3 class="panel-title" kaanna="'siirtyman-paattyminen'"></h3>
           </div>
@@ -102,6 +102,9 @@ European Union Public Licence for more details.
               <formfield model="editablePeruste" model-var="siirtymaPaattyy" type="date" placeholder="anna-siirtyman-paattymis-pvm"></formfield>
             </div>
             <div class="aligned" ng-show="!editEnabled" pvm="peruste.siirtymaPaattyy"></div>
+            <p>
+              ({{'siirtyman-kuvaus' | kaanna}})
+            </p>
           </div>
         </div>
 
@@ -223,6 +226,24 @@ European Union Public Licence for more details.
 
         <div class="panel panel-default panel-clean">
           <div class="panel-heading">
+            <h3 class="panel-title" kaanna>voimassaolo</h3>
+          </div>
+          <div class="panel-body">
+            <div ng-if="editEnabled">
+              <formfield model="editablePeruste" model-var="voimassaoloAlkaa" label="voimaantulo-pvm" type="date"
+                         placeholder="anna-voimaantulo-pvm"></formfield>
+              <formfield model="editablePeruste" model-var="voimassaoloLoppuu" label="voimassaolo-paattymispvm" type="date"
+                         placeholder="anna-voimaantulo-loppu-pvm"></formfield>
+            </div>
+            <table class="aligned" ng-show="!editEnabled">
+              <tr><th kaanna>voimaantulo-pvm</th><td pvm="peruste.voimassaoloAlkaa"></td></tr>
+              <tr><th kaanna>voimassaolo-paattymispvm</th><td pvm="peruste.voimassaoloLoppuu"></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default panel-clean">
+          <div class="panel-heading">
             <h3 class="panel-title" kaanna>tiivistelma</h3>
           </div>
           <div class="panel-body">
@@ -322,24 +343,6 @@ European Union Public Licence for more details.
 
             <button type="button"class="btn btn-default" ng-click="lisaaMuutosmaarays()"
                     icon-role="add" kaanna="lisaa-muutosmaarays" ng-show="editEnabled"></button>
-          </div>
-        </div>
-
-        <div class="panel panel-default panel-clean">
-          <div class="panel-heading">
-            <h3 class="panel-title" kaanna>voimassaolo</h3>
-          </div>
-          <div class="panel-body">
-            <div ng-if="editEnabled">
-              <formfield model="editablePeruste" model-var="voimassaoloAlkaa" label="voimaantulo-pvm" type="date"
-                         placeholder="anna-voimaantulo-pvm"></formfield>
-              <formfield model="editablePeruste" model-var="voimassaoloLoppuu" label="voimassaolo-paattymispvm" type="date"
-                         placeholder="anna-voimaantulo-loppu-pvm"></formfield>
-            </div>
-            <table class="aligned" ng-show="!editEnabled">
-              <tr><th kaanna>voimaantulo-pvm</th><td pvm="peruste.voimassaoloAlkaa"></td></tr>
-              <tr><th kaanna>voimassaolo-paattymispvm</th><td pvm="peruste.voimassaoloLoppuu"></td></tr>
-            </table>
           </div>
         </div>
 
