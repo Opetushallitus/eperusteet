@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
   .factory('Kayttajatiedot', function($resource, SERVICE_LOC) {

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "restangular": "^1.5.2",
     "xlsx": "~0.5.0"
   },
   "devDependencies": {

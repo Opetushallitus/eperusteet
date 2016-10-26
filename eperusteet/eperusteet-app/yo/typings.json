@@ -1,0 +1,8 @@
+{
+  "name": "yo",
+  "dependencies": {},
+  "globalDependencies": {
+    "angular": "registry:dt/angular#1.5.0+20161016133926",
+    "restangular": "registry:dt/restangular#1.5.0+20160921174330"
+  }
+}

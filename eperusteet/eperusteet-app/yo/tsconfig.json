@@ -5,6 +5,7 @@
     "sourceMap": true
   },
   "files": [
+    "./typings/index.d.ts",
     "./app/globals.ts",
     "./app/eperusteet-esitys/services/tekstikappaleutils.ts",
     "./app/eperusteet-esitys/services/sivunavigaatio.ts",
@@ -15,6 +16,8 @@
     "./app/eperusteet-esitys/views/yksinkertainen.ts",
     "./app/eperusteet-esitys/views/perusopetus.ts",
     "./app/eperusteet-esitys/views/lukiokoulutus.ts",
+    "./app/scripts/services/api.ts",
+    "./app/scripts/misc.ts",
     "./app/scripts/services/pdf.ts",
     "./app/scripts/services/projektiryhma.ts",
     "./app/scripts/services/excel.ts",
@@ -131,6 +134,7 @@
     "./app/scripts/controllers/perusteprojekti/muodostumissaannot.ts",
     "./app/scripts/controllers/perusteprojekti/termisto.ts",
     "./app/scripts/controllers/perusteprojekti/sisalto.ts",
+    "./app/scripts/controllers/perusteprojekti/kommentit.ts",
     "./app/scripts/controllers/tiedotteet.ts",
     "./app/scripts/controllers/esiopetus.ts",
     "./app/scripts/controllers/esitys.ts",

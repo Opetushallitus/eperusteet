@@ -16,9 +16,14 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kommentti;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.repository.KommenttiRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -29,8 +34,6 @@ import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +56,15 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Autowired
     private KayttajanTietoService kayttajat;
+
+    @Autowired
+    private PerusteprojektiRepository perusteprojektiRepository;
+
+    @Autowired
+    private PerusteenOsaViiteRepository povRepository;
+
+    @Autowired
+    private TutkinnonOsaViiteRepository tovRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -129,6 +141,19 @@ public class KommenttiServiceImpl implements KommenttiService {
         kommentti.setPerusteprojektiId(kommenttidto.getPerusteprojektiId());
         kommentti.setSuoritustapa(kommenttidto.getSuoritustapa());
         kommentti.setPerusteenOsaId(kommenttidto.getPerusteenOsaId());
+
+        if (kommentti.getSuoritustapa() == null && kommentti.getPerusteenOsaId() != null) {
+            PerusteenOsaViite pov = povRepository.findOne(kommentti.getPerusteenOsaId());
+            if (pov != null) {
+//                kommentti.setSuoritustapa(pov.getSuoritustapa().getSuoritustapakoodi().name());
+            }
+            else {
+                TutkinnonOsaViite tov = tovRepository.findOne(kommentti.getPerusteenOsaId());
+                if (tov != null) {
+                    kommentti.setSuoritustapa(tov.getSuoritustapa().getSuoritustapakoodi().name());
+                }
+            }
+        }
 
         if (kommenttidto.getParentId() != null) {
             Kommentti parent = kommentit.findOne(kommenttidto.getParentId());

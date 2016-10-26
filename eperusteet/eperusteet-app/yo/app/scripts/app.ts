@@ -19,6 +19,7 @@ angular.module('eperusteApp', [
   'ngSanitize',
   'ui.router',
   'ngResource',
+  'restangular',
   'ngAnimate',
   'pascalprecht.translate',
   'ui.bootstrap',

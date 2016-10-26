@@ -111,12 +111,13 @@ angular.module('eperusteApp')
 
     function lisaaKommentti(parent, viesti, success) {
       success = success || angular.noop;
-      var payload = _.merge(_.clone(nykyinenParams), {
+      const payload = _.merge(_.clone(nykyinenParams), {
         parentId: parent && parent.id ? parent.id : null,
         sisalto: viesti,
         perusteprojektiId: $stateParams.perusteProjektiId ? $stateParams.perusteProjektiId : null
       });
       delete payload.id;
+      payload.suoritustapa = payload.suoritustapa || $stateParams.suoritustapa;
 
       KommentitCRUD.save(payload, function(res) {
         res.muokattu = null;

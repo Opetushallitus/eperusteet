@@ -28,7 +28,7 @@ angular.module('eperusteApp')
         depth: '=',
         parent: '='
       },
-      link: function (scope, element) {
+      link: function (scope: any, element) {
         scope.$watch('sisalto.$resolved', function () {
           scope.processMessages();
           $timeout(function () {

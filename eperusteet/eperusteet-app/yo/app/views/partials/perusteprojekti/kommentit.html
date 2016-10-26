@@ -1,0 +1,18 @@
+<div>
+    <table class="table">
+        <tr>
+            <th width="10%" ng-bind="'kayttaja' | kaanna"></th>
+            <th ng-bind="'sisalto' | kaanna"></th>
+            <th width="15%" ng-bind="'muokattu' | kaanna"></th>
+            <th width="5%"></th>
+        </tr>
+        <tr ng-repeat="kommentti in kommentit">
+            <td ng-bind="kayttajat[kommentti.muokkaaja].$$esitysnimi"></td>
+            <td ng-bind="kommentti.sisalto"></td>
+            <td ng-bind="kommentti.muokattu | aikaleima"></td>
+            <td>
+                <button class="btn btn-default" ng-click="goToKommenttiLocation(kommentti)" ng-bind="'siirry' | kaanna"></button>
+            </td>
+        </tr>
+    </table>
+</div>
