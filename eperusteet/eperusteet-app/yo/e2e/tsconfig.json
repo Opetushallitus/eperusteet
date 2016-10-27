@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "sourceMap": false
+  },
+  "files": [
+    "typings/tsd.d.ts",
+    "helpers.ts",
+    "conf.ts",
+    "e2e/julkiset-nakymat.ts"
+  ]
+}
