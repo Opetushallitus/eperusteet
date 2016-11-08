@@ -55,6 +55,12 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +72,6 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -275,7 +274,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         else {
             Optional<Peruste> op = loydetyt.stream()
                     .filter((p) -> p.getVoimassaoloAlkaa() != null)
-                    .filter((p) -> p.getVoimassaoloAlkaa().after(new Date()))
+                    .filter((p) -> p.getVoimassaoloAlkaa().before(new Date()))
                     .sorted((p1, p2) -> p1.getVoimassaoloAlkaa().compareTo(p2.getVoimassaoloAlkaa()))
                     .findFirst();
 
