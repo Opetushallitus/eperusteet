@@ -510,9 +510,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 addTavoitteet(docBase, osa);
                 addAmmattitaitovaatimukset(docBase, osa.getAmmattitaitovaatimuksetLista(), osa.getAmmattitaitovaatimukset());
                 addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());
-                addAmmattitaidonOsoittamistavat(docBase, osa);
                 addArviointi(docBase, osa.getArviointi(), tyyppi);
-
+                addAmmattitaidonOsoittamistavat(docBase, osa);
             } else if (tyyppi == TutkinnonOsaTyyppi.TUTKE2) {
                 addTutke2Osat(docBase, osa);
             }
@@ -735,12 +734,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                 Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
                 List<OsaamistasonKriteeri> kriteerilista = new ArrayList<>(osaamistasonKriteerit);
-                java.util.Collections.sort(kriteerilista,
-                        (o1, o2) -> (int) (o1.getOsaamistaso().getId() - o2.getOsaamistaso().getId()));
 
                 kriteerilista.stream()
-                        .sorted((k1, k2) -> k2.getOsaamistaso().getId().compareTo(
-                                k1.getOsaamistaso().getId()))
+                        .sorted((k1, k2) -> k1.getOsaamistaso().getId().compareTo(
+                                k2.getOsaamistaso().getId()))
                         .forEach(kriteeri -> {
                             String ktaso = getTextString(docBase, kriteeri.getOsaamistaso().getOtsikko());
 
