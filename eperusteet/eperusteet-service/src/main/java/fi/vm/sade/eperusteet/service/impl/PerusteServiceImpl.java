@@ -55,12 +55,6 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +66,13 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -257,8 +258,23 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getAmosaaYhteinenPohja() {
-        Peruste peruste = perusteet.findByDiaarinumero(new Diaarinumero("amosaa/yhteiset"));
-        return getKokoSisalto(peruste.getId());
+        List<Peruste> loydetyt = perusteet.findByDiaarinumero(new Diaarinumero("amosaa/yhteiset"));
+
+        if (loydetyt.size() == 1) {
+            return getKokoSisalto(loydetyt.get(0).getId());
+        } else {
+            Optional<Peruste> op = loydetyt.stream()
+                    .filter((p) -> p.getVoimassaoloAlkaa() != null)
+                    .filter((p) -> p.getVoimassaoloAlkaa().before(new Date()))
+                    .sorted((p1, p2) -> p1.getVoimassaoloAlkaa().compareTo(p2.getVoimassaoloAlkaa()))
+                    .findFirst();
+
+            if (op.isPresent()) {
+                return getKokoSisalto(op.get().getId());
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -269,9 +285,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste peruste = null;
 
         if (loydetyt.size() == 1) {
-            peruste = loydetyt.iterator().next();
-        }
-        else {
+            peruste = loydetyt.get(0);
+        } else {
             Optional<Peruste> op = loydetyt.stream()
                     .filter((p) -> p.getVoimassaoloAlkaa() != null)
                     .filter((p) -> p.getVoimassaoloAlkaa().before(new Date()))
@@ -481,6 +496,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setKuvaus(updated.getKuvaus());
         current.setNimi(updated.getNimi());
         current.setPaatospvm(updated.getPaatospvm());
+        current.setDiaarinumero(updated.getDiaarinumero());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
             throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");

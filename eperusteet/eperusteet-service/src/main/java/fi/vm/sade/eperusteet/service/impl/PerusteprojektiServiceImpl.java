@@ -806,16 +806,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
                     updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
                     updateStatus.setVaihtoOk(false);
-                } else {
-                    Perusteprojekti jyrattava = repository.findOneByPerusteDiaarinumeroAndTila(
-                            projekti.getPeruste().getDiaarinumero(), ProjektiTila.JULKAISTU);
-                    if (jyrattava != null) {
-                        jyrattava.setTila(ProjektiTila.POISTETTU);
-                        jyrattava.getPeruste().asetaTila(PerusteTila.POISTETTU);
-                    }
-                    else {
-                        updateStatus = korvaaPerusteet(projekti.getPeruste(), siirtymaPaattyy, updateStatus);
-                    }
                 }
             }
 
@@ -1134,48 +1124,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
         List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByPerusteprojekti(pp);
         return mapper.mapAsList(tyoryhmat, PerusteenOsaTyoryhmaDto.class);
-    }
-
-    private TilaUpdateStatus korvaaPerusteet(Peruste peruste, Date siirtymaPaattyy, TilaUpdateStatus updateStatus) {
-
-        if (peruste != null && peruste.getKorvattavatDiaarinumerot() != null) {
-
-            // tarkastetaan ettei oma diaari ole korvattavien listalla
-            if (peruste.getKorvattavatDiaarinumerot().contains(peruste.getDiaarinumero())) {
-                updateStatus.addStatus("korvattava-diaari-on-oma-diaari");
-                updateStatus.setVaihtoOk(false);
-            }
-
-            Peruste korvattavaPeruste;
-            for (Diaarinumero diaari : peruste.getKorvattavatDiaarinumerot()) {
-                korvattavaPeruste = perusteRepository.findByDiaarinumero(diaari);
-                if (korvattavaPeruste != null) {
-                    if (!peruste.getKoulutustyyppi().equals(korvattavaPeruste.getKoulutustyyppi())) {
-                        Arrays.asList(mapper.map(korvattavaPeruste.getNimi(), LokalisoituTekstiDto.class));
-                        updateStatus.addStatus("korvattava-peruste-on-eri-koulutustyyppia", null, Arrays.asList(mapper
-                                               .map(korvattavaPeruste.getNimi(), LokalisoituTekstiDto.class)));
-                        updateStatus.setVaihtoOk(false);
-                    }
-                }
-            }
-
-            if (updateStatus.isVaihtoOk()) {
-                for (Diaarinumero diaari : peruste.getKorvattavatDiaarinumerot()) {
-                    korvattavaPeruste = perusteRepository.findByDiaarinumero(diaari);
-                    if (korvattavaPeruste != null) {
-                        if (siirtymaPaattyy != null) {
-                            korvattavaPeruste.setSiirtymaPaattyy(siirtymaPaattyy);
-                        } else {
-                            korvattavaPeruste.setSiirtymaPaattyy(peruste.getVoimassaoloAlkaa());
-                        }
-                        korvattavaPeruste.setVoimassaoloLoppuu(peruste.getVoimassaoloAlkaa());
-                    }
-                }
-            }
-
-        }
-
-        return updateStatus;
     }
 
 }

@@ -21,8 +21,6 @@ import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -45,8 +43,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
-
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteRepositoryImpl.class);
 
     /**
      * Etsi Peruste määritellyillä hakuehdoilla (sivutettu kysely)
@@ -79,7 +75,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         final Expression<String> n = cb.lower(teksti.get(LokalisoituTeksti_.teksti));
 
         final List<Order> order = new ArrayList<>();
-        if ( "muokattu".equals(pquery.getJarjestys()) ) {
+        if ("muokattu".equals(pquery.getJarjestys())) {
             order.add(cb.desc(root.get(Peruste_.muokattu)));
         }
         order.add(cb.asc(n));
@@ -144,8 +140,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         if (pq.isSiirtyma()) {
             pred = cb.and(pred, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(siirtymaPaattyy, cb.currentDate())));
-        } else {
-            pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
         }
 
         if (!pq.isVoimassaolo()) {

@@ -93,13 +93,13 @@ European Union Public Licence for more details.
           </div>
         </div>
 
-        <div class="panel panel-default panel-clean" ng-hide="ladataanKorvattavia || editablePeruste.korvattavatDiaarinumerot.length === 0 || !voimassaOleva && !editEnabled">
+        <div class="panel panel-default panel-clean" ng-hide="ladataanKorvattavia || editablePeruste.korvattavatDiaarinumerot.length === 0">
           <div class="panel-heading">
             <h3 class="panel-title" kaanna="'siirtyman-paattyminen'"></h3>
           </div>
           <div class="panel-body">
             <div ng-if="editEnabled">
-              <formfield model="editablePeruste" model-var="siirtymaPaattyy" type="date" placeholder="anna-siirtyman-paattymis-pvm"></formfield>
+              <formfield model="editablePeruste" model-var="siirtymaPaattyy" type="date" placeholder="{{'anna-siirtyman-paattymis-pvm' | kaanna}}"></formfield>
             </div>
             <div class="aligned" ng-show="!editEnabled" pvm="peruste.siirtymaPaattyy"></div>
             <p>
