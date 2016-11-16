@@ -17,7 +17,7 @@
       </tr>
 
       <tr ng-repeat="tulos in filtered = (tulokset | filter:search.filterFn) | orderBy:orderFn | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage">
-        <td class="has-checkbox"><input ng-change="updateTotal()" ng-model="tulos.$valitse" type="checkbox" class="form-control"></td>
+        <td class="has-checkbox"><input ng-change="updateTotal()" ng-model="tulos.$$valitse" type="checkbox" class="form-control"></td>
         <td class="pointer" ng-click="vaihdaValinta(tulos)">{{ tulos.nimi | kaanna }}</td>
       </tr>
     </table>
