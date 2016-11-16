@@ -414,55 +414,6 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testUpdateTilaValmisToJulkaistuKorvaaPerusteita() {
-
-        // luodaan korvattava peruste ---------------------------------
-        final PerusteprojektiDto korvattavaProjektiDto = teePerusteprojekti(ProjektiTila.JULKAISTU, null, PerusteTila.VALMIS);
-        final PerusteDto korvattavaPerusteDto = perusteService.get(new Long(korvattavaProjektiDto.getPeruste().getId()));
-        //-------------------------------------------------------------
-
-        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VALMIS, null, PerusteTila.LUONNOS);
-        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        PerusteDto perusteDto = perusteService.get(new Long(projektiDto.getPeruste().getId()));
-        Set<String> korvattavatDiaarit = new HashSet<>();
-        korvattavatDiaarit.add(korvattavaPerusteDto.getDiaarinumero());
-        perusteDto.setKorvattavatDiaarinumerot(korvattavatDiaarit);
-        perusteService.update(perusteDto.getId(), perusteDto);
-        final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
-        lockService.lock(ctx);
-        perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
-
-        long perusteId = projektiDto.getPeruste().getIdLong();
-        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
-        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 1, Calendar.MARCH, 12).getTime());
-        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
-
-        tulostaInfo(status);
-        transactionTemplate = new TransactionTemplate(transactionManager);
-        Object object = transactionTemplate.execute(new TransactionCallback() {
-            // the code in this method executes in a transactional context
-            @Override
-            public Object doInTransaction(TransactionStatus transactionStatus) {
-                Perusteprojekti pp = repo.findOne(projektiDto.getId());
-                assertTrue(status.isVaihtoOk());
-                assertNull(status.getInfot());
-                assertTrue(pp.getTila().equals(ProjektiTila.JULKAISTU));
-                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.VALMIS));
-                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
-                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.VALMIS);
-                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.VALMIS);
-                }
-                Peruste korvattavaPeruste = perusteRepo.findOne(korvattavaPerusteDto.getId());
-                assertNotNull(korvattavaPeruste.getSiirtymaPaattyy());
-                assertNotNull(korvattavaPeruste.getVoimassaoloLoppuu());
-                return null;
-            }
-        });
-        lockService.unlock(ctx);
-
-    }
-
-    @Test
     public void testUpdateTilaValmisToJulkaistuEiVoimassaolonAlkamisaikaa() {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VALMIS, null, PerusteTila.LUONNOS);
