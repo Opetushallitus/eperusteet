@@ -203,7 +203,7 @@ European Union Public Licence for more details.
                   <th kaanna="osaamisala"></th>
                   <th kaanna="tutkintonimike"></th>
                   <th kaanna="tutkinnonosa"></th>
-                  <th></th>
+                  <th ng-show="editEnabled"></th>
                 </tr>
               </thead>
               <tbody>
@@ -211,7 +211,7 @@ European Union Public Licence for more details.
                   <td><span ng-show="koodi.osaamisalaArvo">{{ koodi.$osaamisalaNimi | kaanna }} ({{ koodi.osaamisalaArvo}})</span></td>
                   <td>{{ koodi.$tutkintonimikeNimi | kaanna }} ({{ koodi.tutkintonimikeArvo}})</td>
                   <td><span ng-show="koodi.tutkinnonOsaArvo">{{ koodi.$tutkinnonOsaNimi | kaanna }} ({{ koodi.tutkinnonOsaArvo}})</span></td>
-                  <td><button type="button" class="btn btn-xs btn-default" ng-click="poistaTutkintonimike(koodi)" kaanna="poista"></button></td>
+                  <td ng-show="editEnabled"><button type="button" class="btn btn-xs btn-default" ng-click="poistaTutkintonimike(koodi)" kaanna="poista"></button></td>
                 </tr>
               </tbody>
             </table>
