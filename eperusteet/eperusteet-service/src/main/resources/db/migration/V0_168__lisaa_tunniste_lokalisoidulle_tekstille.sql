@@ -1,0 +1,1 @@
+ALTER TABLE tekstipalanen ADD COLUMN tunniste UUID;

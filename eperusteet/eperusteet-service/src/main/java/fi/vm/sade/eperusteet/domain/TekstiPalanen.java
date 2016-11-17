@@ -15,14 +15,14 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Immutable;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.text.Normalizer;
 import java.util.*;
+import javax.persistence.*;
+import lombok.Getter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Immutable;
 
 /**
  *
@@ -45,11 +45,16 @@ public class TekstiPalanen implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<LokalisoituTeksti> teksti;
 
+    @Getter
+    @Column(updatable = false)
+    private UUID tunniste;
+
     protected TekstiPalanen() {
     }
 
-    private TekstiPalanen(Set<LokalisoituTeksti> tekstit) {
+    private TekstiPalanen(Set<LokalisoituTeksti> tekstit, UUID tunniste) {
         this.teksti = tekstit;
+        this.tunniste = tunniste != null ? tunniste : UUID.randomUUID();
     }
 
     public Long getId() {
@@ -86,7 +91,7 @@ public class TekstiPalanen implements Serializable {
         return false;
     }
 
-    public static TekstiPalanen of(Map<Kieli, String> tekstit) {
+    public static TekstiPalanen of(Map<Kieli, String> tekstit, UUID tunniste) {
         if (tekstit == null) {
             return null;
         }
@@ -102,7 +107,11 @@ public class TekstiPalanen implements Serializable {
         if (tmp.isEmpty()) {
             return null;
         }
-        return new TekstiPalanen(tmp);
+        return new TekstiPalanen(tmp, tunniste);
+    }
+
+    public static TekstiPalanen of(Map<Kieli, String> tekstit) {
+        return of(tekstit, null);
     }
 
     public static TekstiPalanen of(Kieli kieli, String teksti) {

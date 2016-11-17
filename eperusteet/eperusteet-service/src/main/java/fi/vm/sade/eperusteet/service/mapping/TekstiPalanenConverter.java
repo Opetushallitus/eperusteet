@@ -16,9 +16,9 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import ma.glasnost.orika.converter.BidirectionalConverter;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
+import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen
 
     @Override
     public LokalisoituTekstiDto convertTo(TekstiPalanen tekstiPalanen, Type<LokalisoituTekstiDto> type) {
-        return new LokalisoituTekstiDto(tekstiPalanen.getId(), tekstiPalanen.getTeksti());
+        return new LokalisoituTekstiDto(tekstiPalanen.getId(), tekstiPalanen.getTunniste(), tekstiPalanen.getTeksti());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen
             */
             TekstiPalanen current = repository.findOne(dto.getId());
             if (current != null) {
-                TekstiPalanen tekstiPalanen = TekstiPalanen.of(dto.getTekstit());
+                TekstiPalanen tekstiPalanen = TekstiPalanen.of(dto.getTekstit(), current.getTunniste());
                 if ( current.equals(tekstiPalanen) ) {
                     return current;
                 }
