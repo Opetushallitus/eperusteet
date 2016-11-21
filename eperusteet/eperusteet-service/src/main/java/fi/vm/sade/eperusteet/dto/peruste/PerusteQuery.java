@@ -30,10 +30,8 @@ public class PerusteQuery {
 
     private int sivu = 0;
     private int sivukoko = 25;
-    private boolean tuleva = true;
-    private boolean siirtyma = true;
+    private boolean siirtyma = false;
     private boolean voimassaolo = true;
-    private boolean poistunut = false;
     private String nimi;
     private List<String> koulutusala;
     private List<String> koulutustyyppi;

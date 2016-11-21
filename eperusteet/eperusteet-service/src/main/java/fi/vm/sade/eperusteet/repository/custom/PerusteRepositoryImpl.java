@@ -54,19 +54,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
      */
     @Override
     public Page<Peruste> findBy(PageRequest page, PerusteQuery pquery) {
-        List<Tuple> result = new ArrayList<>();
-        Long amount = 0L;
-        if (pquery.isTuleva() || pquery.isVoimassaolo() || pquery.isSiirtyma() || pquery.isPoistunut()) {
-            TypedQuery<Long> countQuery = getCountQuery(pquery);
-            TypedQuery<Tuple> query = getQuery(pquery);
-            if (page != null) {
-                query.setFirstResult(page.getOffset());
-                query.setMaxResults(page.getPageSize());
-            }
-            result = query.getResultList();
-            amount = countQuery.getSingleResult();
+
+        TypedQuery<Long> countQuery = getCountQuery(pquery);
+        TypedQuery<Tuple> query = getQuery(pquery);
+        if (page != null) {
+            query.setFirstResult(page.getOffset());
+            query.setMaxResults(page.getPageSize());
         }
-        return new PageImpl<>(Lists.transform(result, EXTRACT_PERUSTE), page, amount);
+        return new PageImpl<>(Lists.transform(query.getResultList(), EXTRACT_PERUSTE), page, countQuery.getSingleResult());
     }
 
     private TypedQuery<Tuple> getQuery(PerusteQuery pquery) {
@@ -103,7 +98,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     private Predicate buildPredicate(
         Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pq) {
         final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
-        final Expression<Date> voimassaoloAlkaa = root.get(Peruste_.voimassaoloAlkaa);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
         final Kieli kieli = Kieli.of(pq.getKieli());
 
@@ -144,33 +138,13 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
                                       .get(Koulutus_.koulutuskoodiArvo), pq.getKoulutuskoodi())));
         }
 
-        Predicate tilat = cb.disjunction();
-
-        if (pq.isTuleva()) {
-            tilat = cb.or(tilat, cb.and(cb.isNotNull(voimassaoloAlkaa), cb.lessThan(cb.currentDate(), voimassaoloAlkaa)));
-        }
-
-        if (pq.isVoimassaolo()) {
-            Predicate alku = cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThan(cb.currentDate(), voimassaoloAlkaa));
-            Predicate loppu = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThan(cb.currentDate(), voimassaoloLoppuu));
-            tilat = cb.or(tilat, cb.and(alku, loppu));
-        }
-
         if (pq.isSiirtyma()) {
-            Predicate alku = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(cb.currentDate(), voimassaoloLoppuu));
-            Predicate loppu = cb.and(cb.isNotNull(siirtymaPaattyy), cb.lessThan(cb.currentDate(), siirtymaPaattyy));
-            tilat = cb.or(tilat, cb.and(alku, loppu));
+            pred = cb.and(pred, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(siirtymaPaattyy, cb.currentDate())));
         }
 
-        if (pq.isPoistunut()) {
-            if (Peruste_.siirtymaPaattyy != null) {
-                tilat = cb.or(tilat, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(cb.currentDate(), siirtymaPaattyy)));
-            } else {
-                tilat = cb.or(tilat, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(cb.currentDate(), voimassaoloLoppuu)));
-            }
+        if (!pq.isVoimassaolo()) {
+            pred = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThan(voimassaoloLoppuu, cb.currentDate())));
         }
-
-        pred = cb.and(pred, tilat);
 
         if (!Strings.isNullOrEmpty(pq.getTila())) {
             pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), PerusteTila.of(pq.getTila())));
