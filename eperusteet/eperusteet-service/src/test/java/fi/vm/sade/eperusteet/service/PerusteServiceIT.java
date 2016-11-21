@@ -143,7 +143,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Test
     public void testGetAll() {
         Page<PerusteDto> perusteet = perusteService.getAll(new PageRequest(0, 10), Kieli.FI.toString());
-        assertEquals(1, perusteet.getTotalElements());
+        assertEquals(4, perusteet.getTotalElements());
     }
 
     @Test
@@ -151,7 +151,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
         Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
-        assertEquals(1, perusteet.getTotalElements());
+        assertEquals(2, perusteet.getTotalElements());
     }
 
     @Test
