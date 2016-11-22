@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Builder;
 
 import java.io.Serializable;
 

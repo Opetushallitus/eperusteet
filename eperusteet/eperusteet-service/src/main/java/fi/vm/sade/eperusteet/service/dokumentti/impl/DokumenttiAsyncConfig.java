@@ -16,8 +16,6 @@
 
 package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,12 +32,10 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 public class DokumenttiAsyncConfig implements AsyncConfigurer {
-    private final Logger LOG = LoggerFactory.getLogger(DokumenttiAsyncConfig.class);
 
     @Override
     @Bean(name = "docTaskExecutor")
     public Executor getAsyncExecutor() {
-        LOG.debug("Creating async document task executor");
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);

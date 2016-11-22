@@ -149,9 +149,9 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Test
     public void testFindBy() {
         PerusteQuery pquery = new PerusteQuery();
-        pquery.setSiirtyma(true);
+        pquery.setPoistunut(false);
         Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
-        assertEquals(2, perusteet.getTotalElements());
+        assertEquals(3, perusteet.getTotalElements());
     }
 
     @Test

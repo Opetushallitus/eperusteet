@@ -33,7 +33,7 @@ public class PerusteQuery {
     private boolean tuleva = true;
     private boolean siirtyma = true;
     private boolean voimassaolo = true;
-    private boolean poistunut = false;
+    private boolean poistunut = true;
     private String nimi;
     private List<String> koulutusala;
     private List<String> koulutustyyppi;

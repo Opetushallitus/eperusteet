@@ -447,7 +447,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public PerusteDto update(long id, PerusteDto perusteDto) {
+    public PerusteDto update(Long id, PerusteDto perusteDto) {
         Peruste current = perusteet.findOne(id);
         if (current == null || current.getTila() == PerusteTila.POISTETTU) {
             throw new NotExistsException("Päivitettävää perustetta ei ole olemassa tai se on poistettu");
