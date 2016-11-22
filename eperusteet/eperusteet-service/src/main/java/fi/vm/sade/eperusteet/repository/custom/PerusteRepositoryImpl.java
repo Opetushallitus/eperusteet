@@ -97,8 +97,9 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
     private Predicate buildPredicate(
         Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pq) {
-        final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
+        final Expression<Date> voimassaoloAlkaa = root.get(Peruste_.voimassaoloAlkaa);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
+        final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
         final Kieli kieli = Kieli.of(pq.getKieli());
 
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
@@ -138,13 +139,36 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
                                       .get(Koulutus_.koulutuskoodiArvo), pq.getKoulutuskoodi())));
         }
 
-        if (pq.isSiirtyma()) {
-            pred = cb.and(pred, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(siirtymaPaattyy, cb.currentDate())));
+        Predicate tilat = cb.disjunction();
+
+        if (pq.isTuleva()) {
+            tilat = cb.or(tilat, cb.and(cb.isNotNull(voimassaoloAlkaa), cb.lessThan(cb.currentDate(), voimassaoloAlkaa)));
         }
 
-        if (!pq.isVoimassaolo()) {
-            pred = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThan(voimassaoloLoppuu, cb.currentDate())));
+        if (pq.isVoimassaolo()) {
+            Predicate alkaa = cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThan(cb.currentDate(), voimassaoloAlkaa));
+            Predicate loppuu = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThan(cb.currentDate(), voimassaoloLoppuu));
+            tilat = cb.or(tilat, cb.and(alkaa, loppuu));
+
+            // Voimassaolon loppumista ei ole määritelty
+            tilat = cb.or(tilat, cb.and(cb.isNull(voimassaoloLoppuu), cb.greaterThan(cb.currentDate(), voimassaoloAlkaa)));
         }
+
+        if (pq.isSiirtyma()) {
+            Predicate alku = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(cb.currentDate(), voimassaoloLoppuu));
+            Predicate loppu = cb.and(cb.isNotNull(siirtymaPaattyy), cb.lessThan(cb.currentDate(), siirtymaPaattyy));
+            tilat = cb.or(tilat, cb.and(alku, loppu));
+        }
+
+        if (pq.isPoistunut()) {
+            tilat = cb.or(tilat, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(cb.currentDate(), siirtymaPaattyy)));
+
+            // Siirtymän loppumista ei ole määritelty
+            tilat = cb.or(tilat, cb.and(cb.isNull(siirtymaPaattyy),
+                    cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(cb.currentDate(), voimassaoloLoppuu))));
+        }
+
+        pred = cb.and(pred, tilat);
 
         if (!Strings.isNullOrEmpty(pq.getTila())) {
             pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), PerusteTila.of(pq.getTila())));
