@@ -20,7 +20,10 @@
   
   <!-- Default page-height and page-width, in case value is specified as auto -->
   <default-page-settings height="297mm" width="210mm"/>
-  
+
+  <!-- Cause memory leaks (FOP-2525) -->
+  <complex-scripts disabled="true"/>
+
   <!-- Information for specific renderers -->
   <!-- Uses renderer mime type for renderers -->
   <renderers>
