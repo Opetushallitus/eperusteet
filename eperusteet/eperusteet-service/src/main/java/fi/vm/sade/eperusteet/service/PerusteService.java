@@ -71,7 +71,7 @@ public interface PerusteService {
     PerusteDto getByIdAndSuoritustapa(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("permitAll()")
-    Page<PerusteDto> getAll(PageRequest page, String kieli);
+    Page<PerusteHakuDto> getAll(PageRequest page, String kieli);
 
     @PreAuthorize("permitAll()")
     List<PerusteExcelDto> getKooste();

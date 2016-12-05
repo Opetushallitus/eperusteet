@@ -195,7 +195,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PerusteDto> getAll(PageRequest page, String kieli) {
+    public Page<PerusteHakuDto> getAll(PageRequest page, String kieli) {
         return findBy(page, new PerusteQuery());
     }
 
