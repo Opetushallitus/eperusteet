@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -34,16 +35,14 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.PerusteenOsaService;
-import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
+import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -167,6 +166,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private Validator validator;
 
+    @Autowired
+    private KoodistoClient koodistoService;
+
     @Override
     public List<PerusteDto> getUusimmat() {
         return mapper.mapAsList(perusteet.findAllUusimmat(new PageRequest(0, 10)), PerusteDto.class);
@@ -219,9 +221,34 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery) {
+    public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
         Page<Peruste> result = perusteet.findBy(page, pquery);
-        return new PageDto<>(result, PerusteDto.class, page, mapper);
+        PageDto<Peruste, PerusteHakuDto> resultDto = new PageDto<>(result, PerusteHakuDto.class, page, mapper);
+
+        if (pquery.isTutkintonimikkeet()) {
+            resultDto.forEach(dto -> {
+                List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = getTutkintonimikeKoodit(dto.getId());
+                dto.setTutkintonimikkeet(mapper.mapAsList(tutkintonimikeKoodit, TutkintonimikeKoodiDto.class));
+
+                List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>> tutkintonimikkeetKoodisto = new ArrayList<>();
+
+                for (TutkintonimikeKoodiDto tkd : tutkintonimikeKoodit) {
+                    HashMap<String, KoodistoKoodiDto> nimet = new HashMap<>();
+                    if (tkd.getOsaamisalaUri() != null) {
+                        nimet.put(tkd.getOsaamisalaArvo(), koodistoService.get("osaamisala", tkd.getOsaamisalaUri()));
+                    }
+                    nimet.put(tkd.getTutkintonimikeArvo(), koodistoService.get("tutkintonimikkeet", tkd.getTutkintonimikeUri()));
+                    if (tkd.getTutkinnonOsaUri() != null) {
+                        nimet.put(tkd.getTutkinnonOsaArvo(), koodistoService.get("tutkinnonosat", tkd.getTutkinnonOsaUri()));
+                    }
+                    tutkintonimikkeetKoodisto.add(new CombinedDto<>(tkd, nimet));
+                }
+
+                dto.setTutkintonimikkeetKoodisto(tutkintonimikkeetKoodisto);
+            });
+        }
+
+        return resultDto;
     }
 
     @Override
@@ -266,7 +293,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             Optional<Peruste> op = loydetyt.stream()
                     .filter((p) -> p.getVoimassaoloAlkaa() != null)
                     .filter((p) -> p.getVoimassaoloAlkaa().before(new Date()))
-                    .sorted((p1, p2) -> p1.getVoimassaoloAlkaa().compareTo(p2.getVoimassaoloAlkaa()))
+                    .sorted(Comparator.comparing(Peruste::getVoimassaoloAlkaa))
                     .findFirst();
 
             if (op.isPresent()) {
@@ -290,7 +317,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             Optional<Peruste> op = loydetyt.stream()
                     .filter((p) -> p.getVoimassaoloAlkaa() != null)
                     .filter((p) -> p.getVoimassaoloAlkaa().before(new Date()))
-                    .sorted((p1, p2) -> p1.getVoimassaoloAlkaa().compareTo(p2.getVoimassaoloAlkaa()))
+                    .sorted(Comparator.comparing(Peruste::getVoimassaoloAlkaa))
                     .findFirst();
 
             if (op.isPresent()) {

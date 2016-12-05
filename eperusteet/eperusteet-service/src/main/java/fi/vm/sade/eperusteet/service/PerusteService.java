@@ -24,13 +24,14 @@ import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import java.util.List;
-import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -82,7 +83,7 @@ public interface PerusteService {
     List<PerusteInfoDto> getAllInfo();
 
     @PreAuthorize("permitAll()")
-    Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
+    Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery);
 
     @PreAuthorize("permitAll()")
     List<PerusteInfoDto> getAllPerusopetusInfo();
@@ -134,10 +135,10 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi, Integer revisio);
 
-    @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
+    @PreAuthorize("isAuthenticated()")
     Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi);
 
-    @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
+    @PreAuthorize("isAuthenticated()")
     Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi);
 
     @PreAuthorize("permitAll()")
