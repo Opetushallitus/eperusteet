@@ -23,23 +23,21 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Future;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-
-import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
-
-import java.util.concurrent.Future;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Service;
 
 /**
  *
@@ -104,7 +102,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             }
             return kpp;
         } catch (IOException ex) {
-            throw new BusinessRuleViolationException("Käyttäjän perusteprojektitietojen hakeminen epäonnistui");
+            return new ArrayList<>();
         }
     }
 
@@ -129,7 +127,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             ppt.setPerusteprojekti(pp.getId());
             return ppt;
         } catch (IOException ex) {
-            throw new BusinessRuleViolationException("Käyttäjän perusteprojektitietojen hakeminen epäonnistui");
+            return null;
         }
     }
 }

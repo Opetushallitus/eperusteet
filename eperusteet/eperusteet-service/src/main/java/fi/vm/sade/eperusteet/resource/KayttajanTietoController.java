@@ -16,9 +16,9 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -67,7 +65,11 @@ public class KayttajanTietoController {
             @PathVariable("oid") final String oid,
             @PathVariable("projektiId") final Long projektiId
     ) {
-        return new ResponseEntity<>(service.haePerusteprojekti(oid, projektiId), HttpStatus.OK);
+        KayttajanProjektitiedotDto kayttajanProjektitiedot = service.haePerusteprojekti(oid, projektiId);
+        if (kayttajanProjektitiedot == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(kayttajanProjektitiedot, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{oid:.+}/kaikki", method = GET)
