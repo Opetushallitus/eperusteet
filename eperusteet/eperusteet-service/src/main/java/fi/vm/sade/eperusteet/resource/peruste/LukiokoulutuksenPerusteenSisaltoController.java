@@ -36,19 +36,17 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.yl.*;
+import java.util.List;
+import java.util.Set;
+import static java.util.stream.Collectors.toList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
-
-import java.util.List;
-import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * User: tommiratamaa
@@ -191,7 +189,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         if (kurssi.getId() == null) {
             kurssi.setId(kurssiId);
         } else if (!kurssi.getId().equals(kurssiId)) {
-            throw new NotExistsException();
+            throw new NotExistsException("Kurssia ei löytynyt");
         }
     }
 
@@ -393,7 +391,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("id") final Long aihekokonaisuusId,
             @RequestBody LukioAihekokonaisuusMuokkausDto aihekokonaisuus) {
         if (!aihekokonaisuus.getId().equals(aihekokonaisuusId)) {
-            throw new NotExistsException();
+            throw new NotExistsException("Aihekokonaisuutta ei löytynyt");
         }
         aihekokonaisuudet.muokkaaAihekokonaisuutta(perusteId, aihekokonaisuus);
         return new RedirectView("" + aihekokonaisuusId, true);

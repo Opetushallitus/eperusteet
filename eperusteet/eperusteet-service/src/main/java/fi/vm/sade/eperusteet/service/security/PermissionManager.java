@@ -301,7 +301,7 @@ public class PermissionManager {
             // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
             TutkinnonOsaViite t = viiteRepository.findOne((Long) targetId);
             if (t == null || t.getTutkinnonOsa() == null) {
-                throw new NotExistsException();
+                throw new NotExistsException("Tutkinnon osan viitettä ei löytynyt");
             }
             targetId = t.getTutkinnonOsa().getId();
             targetType = Target.PERUSTEENOSA;
@@ -311,7 +311,7 @@ public class PermissionManager {
             // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
             PerusteenOsaViite p = perusteenOsaViiteRepository.findOne((Long) targetId);
             if (p == null || p.getPerusteenOsa() == null) {
-                throw new NotExistsException();
+                throw new NotExistsException("Perusteen osan viitettä ei löytynyt");
             }
             targetId = p.getPerusteenOsa().getId();
             targetType = Target.PERUSTEENOSA;

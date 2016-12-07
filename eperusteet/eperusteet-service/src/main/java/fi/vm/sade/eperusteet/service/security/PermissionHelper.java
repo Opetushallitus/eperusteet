@@ -53,8 +53,8 @@ public class PermissionHelper {
             default:
                 return null;
         }
-        if ( tila == null ) {
-            throw new NotExistsException();
+        if (tila == null) {
+            throw new NotExistsException("Tilaa ei asetettu");
         }
         return tila;
     }
