@@ -46,6 +46,7 @@ import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -618,6 +619,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     @Transactional(readOnly = false)
     public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, Date siirtymaPaattyy) {
 

@@ -431,7 +431,6 @@ public class PermissionManager {
         switch (targetType) {
             case PERUSTEENMETATIEDOT:
             case PERUSTE: {
-                LOG.debug("Yritetään hakea peruste: " + id.toString());
                 return setOf(perusteProjektit.findByPeruste(id));
             }
             case PERUSTEPROJEKTI: {
@@ -446,7 +445,7 @@ public class PermissionManager {
     }
 
     private static <T> Set<T> setOf(Collection<T> c) {
-        if (c == null || c.isEmpty()) {
+        if (c == null) {
             throw new NotExistsException();
         }
         if (c.size() == 1) {

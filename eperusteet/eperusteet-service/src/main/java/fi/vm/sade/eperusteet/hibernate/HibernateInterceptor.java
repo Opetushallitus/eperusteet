@@ -17,11 +17,21 @@
 package fi.vm.sade.eperusteet.hibernate;
 
 import com.google.common.base.Optional;
+import static com.google.common.base.Optional.fromNullable;
 import fi.ratamaa.dtoconverter.reflection.Property;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdateStore;
+import java.io.Serializable;
+import java.util.Collection;
+import static java.util.Collections.singletonList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import static java.util.stream.Collectors.toList;
+import java.util.stream.Stream;
 import lombok.Getter;
 import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
@@ -29,18 +39,6 @@ import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-
-import static com.google.common.base.Optional.fromNullable;
-import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Interceptor to update PerusteVersion timestamp automatically when any
@@ -140,8 +138,10 @@ public class HibernateInterceptor extends EmptyInterceptor {
 
     private static void findRelatedPeruste(Object entity, Callback callback) {
         resolveRouteToPeruste(entity).stream()
-                .map(route -> fromNullable(route.get(entity))).filter(Optional::isPresent)
-                .map(Optional::get).forEach(target -> {
+                .map(route -> fromNullable(route.get(entity)))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(target -> {
             if (target instanceof Collection) {
                 Collection<?> collection = (Collection<?>) target;
                 collection.stream().forEach(o -> proceed(o, callback));
