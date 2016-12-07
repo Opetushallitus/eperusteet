@@ -431,7 +431,7 @@ public class PermissionManager {
         switch (targetType) {
             case PERUSTEENMETATIEDOT:
             case PERUSTE: {
-                LOG.debug("Yritetään hakea peruste", id);
+                LOG.debug("Yritetään hakea peruste: " + id.toString());
                 return setOf(perusteProjektit.findByPeruste(id));
             }
             case PERUSTEPROJEKTI: {

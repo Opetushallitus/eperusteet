@@ -613,7 +613,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return virheellisetKielet;
     }
 
-    @PreAuthorize("hasPermission(#id, 'korjaus', 'KORJAUS')")
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'KORJAUS')")
     public void julkaistuToLuonnos(@P("id") Long id) {
     }
 
