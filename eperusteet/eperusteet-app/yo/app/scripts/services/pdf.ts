@@ -170,6 +170,7 @@ angular.module('eperusteApp')
       Pdf.haeTila(id, function(res) {
         $scope.tila = res.tila;
         switch (res.tila) {
+          case 'jonossa':
           case 'luodaan':
           case 'ei_ole':
             startPolling(res.id);
@@ -202,7 +203,7 @@ angular.module('eperusteApp')
     $scope.generate = function() {
       enableActions(false);
       $scope.docs[$scope.kielet.valittu] = null;
-      $scope.tila = 'luodaan';
+      $scope.tila = 'jonossa';
       Pdf.generoiPdf(perusteId, $scope.kielet.valittu, suoritustapa, $scope.versiot.valittu,
       function(res) {
         if (res.id !== null) {

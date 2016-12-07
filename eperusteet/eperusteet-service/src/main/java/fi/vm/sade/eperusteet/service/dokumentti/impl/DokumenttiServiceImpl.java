@@ -21,12 +21,13 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
+import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
-import fi.vm.sade.eperusteet.service.internal.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.internal.PdfService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -96,6 +97,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Autowired
     private PdfService pdfService;
 
+    @Autowired
+    private DokumenttiStateService dokumenttiStateService;
+
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
 
@@ -153,7 +157,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @IgnorePerusteUpdateCheck
     @Async(value = "docTaskExecutor")
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
-        LOG.debug("generate with dto {}", dto);
+        dto.setTila(DokumenttiTila.LUODAAN);
+        dokumenttiStateService.save(dto);
 
         Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
         if (dokumentti == null) {
@@ -161,17 +166,15 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         }
 
         try {
-
-            byte[] data = generateFor(dto);
-
-            dokumentti.setData(data);
+            dokumentti.setData(generateFor(dto));
             dokumentti.setTila(DokumenttiTila.VALMIS);
             dokumentti.setValmistumisaika(new Date());
             dokumenttiRepository.save(dokumentti);
         } catch (Exception ex) {
-            dokumentti.setTila(DokumenttiTila.EPAONNISTUI);
-            dokumentti.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
-            dokumenttiRepository.save(dokumentti);
+            dto.setTila(DokumenttiTila.EPAONNISTUI);
+            dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
+            dto.setValmistumisaika(new Date());
+            dokumenttiStateService.save(dto);
 
             throw new DokumenttiException(ex.getMessage(), ex);
         }
@@ -218,9 +221,10 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional
     @IgnorePerusteUpdateCheck
     public void setStarted(DokumenttiDto dto) {
-        Dokumentti doc = dokumenttiRepository.findById(dto.getId());
-        doc.setTila(DokumenttiTila.LUODAAN);
-        dokumenttiRepository.save(doc);
+        dto.setAloitusaika(new Date());
+        dto.setLuoja(SecurityUtil.getAuthenticatedPrincipal().getName());
+        dto.setTila(DokumenttiTila.JONOSSA);
+        dokumenttiStateService.save(dto);
     }
 
     @Override

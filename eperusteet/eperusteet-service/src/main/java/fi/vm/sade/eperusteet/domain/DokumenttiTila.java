@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum DokumenttiTila {
 
     EI_OLE("ei_ole"),
+    JONOSSA("jonossa"),
     LUODAAN("luodaan"),
     EPAONNISTUI("epaonnistui"),
     VALMIS("valmis");
