@@ -175,7 +175,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
                 map.put("lukko", lukko);
             }
         } else if (ex instanceof NotExistsException) {
-            suppresstrace = true;
+//            suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
         } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
