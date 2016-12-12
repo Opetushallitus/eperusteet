@@ -251,6 +251,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         byte[] toReturn = null;
 
+        LOG.info("Generate PDF (perusteId=" + dto.getPerusteId() + ")");
+
         switch (dto.getGeneratorVersion()) {
             case VANHA:
                 String xmlpath = builder.generateXML(peruste, kieli, suoritustapakoodi);
