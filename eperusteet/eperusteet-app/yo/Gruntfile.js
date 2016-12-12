@@ -106,7 +106,7 @@ module.exports = function(grunt) {
         https: false,
         changeOrigin: false,
         xforward: false
-      },{
+      }, {
         context: '/virkailija-raamit',
         host: 'localhost',
         port: 8080,

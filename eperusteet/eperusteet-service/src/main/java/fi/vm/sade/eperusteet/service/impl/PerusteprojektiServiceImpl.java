@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -39,7 +39,6 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -55,23 +54,27 @@ import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import static fi.vm.sade.eperusteet.service.util.Util.*;
 import fi.vm.sade.generic.rest.CachingRestClient;
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import static java.util.stream.Collectors.toMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
+import static fi.vm.sade.eperusteet.service.util.Util.*;
+import static java.util.stream.Collectors.toMap;
 
 /**
  *
@@ -146,7 +149,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Set<String> orgs = authentication.getAuthorities().stream()
                 .filter(Objects::nonNull)
-                .map(x -> x.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .filter(Objects::nonNull)
                 .map(x -> x.split("_"))
                 .filter(x -> x.length > 0)
@@ -168,7 +171,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public List<KayttajanTietoDto> getJasenet(Long id) {
         CachingRestClient crc = restClientFactory.get(authServiceUrl);
         Perusteprojekti p = repository.findOne(id);
-        List<KayttajanTietoDto> kayttajat = null;
+        List<KayttajanTietoDto> kayttajat;
         ObjectMapper omapper = new ObjectMapper();
 
         if (p == null || p.getRyhmaOid() == null | p.getRyhmaOid().isEmpty()) {
@@ -221,7 +224,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
 
@@ -308,7 +311,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public PerusteprojektiDto update(Long id, PerusteprojektiDto perusteprojektiDto) {
         Perusteprojekti vanhaProjekti = repository.findOne(id);
         if (vanhaProjekti == null) {
@@ -614,13 +617,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return virheellisetKielet;
     }
 
-    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'KORJAUS')")
-    public void julkaistuToLuonnos(@P("id") Long id) {
-    }
-
     @Override
     @IgnorePerusteUpdateCheck
-    @Transactional(readOnly = false)
+    @Transactional
     public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, Date siirtymaPaattyy) {
 
         TilaUpdateStatus updateStatus = new TilaUpdateStatus();
@@ -642,7 +641,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
-        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA) {
+        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA && tila != KOMMENTOINTI) {
             TekstiPalanen nimi = projekti.getPeruste().getNimi();
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
@@ -659,7 +658,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         // Perusteen validointi
         if (peruste != null && peruste.getSuoritustavat() != null
-                && tila != LAADINTA) {
+                && tila != LAADINTA && tila != KOMMENTOINTI) {
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
 
@@ -754,6 +753,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                             try {
                                 koodi = koodistoService.get("tutkinnonosat", uri);
                             } catch (Exception e) {
+                                LOG.error(e.getMessage(), e);
                             }
                             if (koodi != null && koodi.getKoodiUri().equals(uri)) {
                                 tutkinnonOsienKoodit.add(tov.getTutkinnonOsa().getKoodiArvo());
@@ -929,22 +929,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         peruste.asetaTila(tila);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     private void palautaJulkaistuImpl(Peruste peruste, PerusteenOsa po, Long povId) {
         // Tarkistetaan omistaako palautettava peruste, jos on palautetaan se luonnokseksi
-        peruste.getSuoritustavat().stream()
-            .forEach(st -> {
-                st.getTutkinnonOsat().stream()
-                    .map(tov -> tov.getId())
-                    .filter(id -> id.equals(povId))
-                    .findFirst()
-                    .ifPresent(x -> {
-                        po.palautaLuonnokseksi();
-                    });
-            });
+        peruste.getSuoritustavat()
+            .forEach(st -> st.getTutkinnonOsat().stream()
+                .map(TutkinnonOsaViite::getId)
+                .filter(id -> id.equals(povId))
+                .findFirst()
+                .ifPresent(x -> {
+                    po.palautaLuonnokseksi();
+                }));
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     private void palautaJulkaistu(Peruste peruste, PerusteenOsa po) {
         // FIXME: Selvitä onko tämä tarkkaan haluttu toimintatapa
         // Jos tutkinnonosaviitteitä tai perusteenosaviitteitä on yhteensä enemmän
@@ -961,14 +959,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         // FIXME: Refactor
         if (po instanceof TutkinnonOsa) {
             tutkinnonOsaViiteRepository.findAllByTutkinnonOsa((TutkinnonOsa)po).stream()
-                    .map(pov -> pov.getId())
+                    .map(TutkinnonOsaViite::getId)
                     .sorted()
                     .findFirst()
                     .ifPresent(id -> palautaJulkaistuImpl(peruste, po, id));
         }
         else {
             perusteenOsaViiteRepository.findAllByPerusteenOsa(po).stream()
-                    .map(pov -> pov.getId())
+                    .map(PerusteenOsaViite::getId)
                     .sorted()
                     .findFirst()
                     .ifPresent(id -> palautaJulkaistuImpl(peruste, po, id));
