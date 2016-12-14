@@ -71,6 +71,10 @@ angular.module('eperusteApp', [
     $rootScopeProvider.digestTtl(20);
   })
   .config(function($httpProvider) {
+    $httpProvider.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+    $httpProvider.defaults.xsrfHeaderName = "CSRF";
+    $httpProvider.defaults.xsrfCookieName = "CSRF";
+
     $httpProvider.interceptors.push(['UiKieli', function(kieli) {
       return {
         request: function(config) {

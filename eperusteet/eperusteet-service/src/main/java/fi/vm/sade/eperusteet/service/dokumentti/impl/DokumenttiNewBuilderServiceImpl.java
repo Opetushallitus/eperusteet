@@ -14,22 +14,19 @@ import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LiiteService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
+import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiBase;
-import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
+import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -45,15 +42,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
-
-import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * @author isaul
@@ -1038,7 +1035,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 IIOImage outputImage = new IIOImage(bufferedImage, null, null);
                 jpgWriter.write(null, outputImage, jpgWriteParam);
                 jpgWriter.dispose();
-                String base64 = org.apache.xml.security.utils.Base64.encode(out.toByteArray());
+                String base64 = Base64.getEncoder().encodeToString(out.toByteArray());
 
                 // Lisätään bas64 kuva img elementtiin
                 element.setAttribute("width", String.valueOf(width));

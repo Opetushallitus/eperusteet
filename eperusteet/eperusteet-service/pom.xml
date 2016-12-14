@@ -13,8 +13,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hibernate.version>4.3.9.Final</hibernate.version>
-        <spring.version>4.2.5.RELEASE</spring.version>
-        <spring.security.version>3.2.7.RELEASE</spring.security.version>
+        <spring.version>4.3.4.RELEASE</spring.version>
+        <spring.security.version>4.2.0.RELEASE</spring.security.version>
         <spring.data.jpa.version>1.7.2.RELEASE</spring.data.jpa.version>
         <logback.version>1.1.7</logback.version>
         <postgresql.version>9.4.1211</postgresql.version>
@@ -67,11 +67,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
