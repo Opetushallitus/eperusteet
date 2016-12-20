@@ -641,7 +641,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
-        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA && tila != KOMMENTOINTI) {
+        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
             TekstiPalanen nimi = projekti.getPeruste().getNimi();
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
@@ -658,7 +658,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         // Perusteen validointi
         if (peruste != null && peruste.getSuoritustavat() != null
-                && tila != LAADINTA && tila != KOMMENTOINTI) {
+                && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
 
