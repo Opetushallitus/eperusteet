@@ -17,16 +17,19 @@ import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiBase;
-import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -42,15 +45,16 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
+
+import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
+import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.getTextString;
 
 /**
  * @author isaul
@@ -712,7 +716,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
 
             for (ArvioinninKohde kohde : arvioinninKohteet) {
-                String kohdeTeksti = getTextString(docBase, kohde.getOtsikko());
+                TekstiPalanen otsikko = kohde.getOtsikko();
+                TekstiPalanen selite = kohde.getSelite();
+
+                addTeksti(docBase, getTextString(docBase, otsikko), "p");
 
                 Element taulukko = docBase.getDocument().createElement("table");
                 taulukko.setAttribute("border", "1");
@@ -726,15 +733,14 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                 Element th = docBase.getDocument().createElement("th");
                 th.setAttribute("colspan", "4");
-                th.appendChild(newBoldElement(docBase.getDocument(), kohdeTeksti));
+                th.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, selite)));
                 tr.appendChild(th);
 
                 Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
                 List<OsaamistasonKriteeri> kriteerilista = new ArrayList<>(osaamistasonKriteerit);
 
                 kriteerilista.stream()
-                        .sorted((k1, k2) -> k1.getOsaamistaso().getId().compareTo(
-                                k2.getOsaamistaso().getId()))
+                        .sorted(Comparator.comparing(k -> k.getOsaamistaso().getId()))
                         .forEach(kriteeri -> {
                             String ktaso = getTextString(docBase, kriteeri.getOsaamistaso().getOtsikko());
 

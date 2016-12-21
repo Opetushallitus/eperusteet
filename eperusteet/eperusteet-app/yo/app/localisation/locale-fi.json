@@ -514,6 +514,7 @@
     "arviointi-uusi-kohde": "Lisää arvioinnin kohde",
     "arvioinnin-otsikko": "Arvioinnin otsikko",
     "arviointi-uusi-kohde-placeholder": "Kohteen nimi (ei pakollinen)",
+    "arviointi-uusi-kohde-selite-placeholder": "Kohteen selite",
     "arviointi-uusi-kriteeri": "Lisää rivi",
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",
     "arviointi-poista-kriteeri": "Poista rivi",
