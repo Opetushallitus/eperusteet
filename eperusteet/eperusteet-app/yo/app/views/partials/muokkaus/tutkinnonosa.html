@@ -84,7 +84,7 @@
           <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.nimi" slocalized required>
           <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
              kaanna>Nimi on pakollinen tieto</p>
-          <div ng-if="suoritustapa !== 'naytto'">
+          <div>
             <div>
               <label for="laajuus-input" class="header" kaanna="vateConverter('tutkinnonosa-laajuus')"></label>
             </div>
