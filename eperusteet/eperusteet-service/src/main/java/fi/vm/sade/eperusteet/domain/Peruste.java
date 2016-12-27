@@ -227,20 +227,25 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     */
     public PerusteenOsaViite getSisalto(Suoritustapakoodi suoritustapakoodi) {
         PerusteenOsaViite viite = null;
-        if (suoritustapakoodi.equals(Suoritustapakoodi.OPS) || suoritustapakoodi.equals(Suoritustapakoodi.NAYTTO)) {
-            for(Suoritustapa suoritustapa : this.getSuoritustavat()) {
-                if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
-                    viite = suoritustapa.getSisalto();
-                }
-            }
-        } else if (suoritustapakoodi.equals(Suoritustapakoodi.ESIOPETUS)
-                || suoritustapakoodi.equals(Suoritustapakoodi.LISAOPETUS)
-                || suoritustapakoodi.equals(Suoritustapakoodi.VARHAISKASVATUS)) {
-            viite = this.getEsiopetuksenPerusteenSisalto().getSisalto();
-        } else if (suoritustapakoodi.equals(Suoritustapakoodi.PERUSOPETUS)) {
-            viite = this.getPerusopetuksenPerusteenSisalto().getSisalto();
-        } else if(suoritustapakoodi.equals(Suoritustapakoodi.LUKIOKOULUTUS)) {
-            viite = this.getLukiokoulutuksenPerusteenSisalto().getSisalto();
+        switch (suoritustapakoodi) {
+            case ESIOPETUS:
+            case LISAOPETUS:
+            case VARHAISKASVATUS:
+                viite = this.getEsiopetuksenPerusteenSisalto().getSisalto();
+                break;
+            case PERUSOPETUS:
+                viite = this.getPerusopetuksenPerusteenSisalto().getSisalto();
+                break;
+            case LUKIOKOULUTUS:
+                viite = this.getLukiokoulutuksenPerusteenSisalto().getSisalto();
+                break;
+            default:
+                // Ammatilliset
+                for(Suoritustapa suoritustapa : this.getSuoritustavat()) {
+                    if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
+                        viite = suoritustapa.getSisalto();
+                    }
+                }   break;
         }
         return viite;
     }

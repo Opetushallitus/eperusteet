@@ -39,8 +39,10 @@ European Union Public Licence for more details.
     </formfield>
     <formfield ng-if="$parent.wizardissa()" label="koulutustyyppi-label" ng-hide="projekti.perusteId"
                model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit" placeholder="valitse-koulutustyyppi"></formfield>
+    <formfield ng-model="projekti.reforminMukainen" label="reformin-mukainen" ng-if="reforminMukainen(projekti.koulutustyyppi)"
+               model="projekti" model-var="reforminMukainen" type="checkbox"></formfield>
     <span ng-if="!$parent.pohja()">
-      <formfield ng-model="projekti.koulutustyyppi" label="laajuuden-yksikkö" ng-if="tarvitseeLaajuuden(projekti.koulutustyyppi)"
+      <formfield ng-model="projekti.koulutustyyppi" label="laajuuden-yksikkö" ng-if="tarvitseeLaajuuden(projekti.koulutustyyppi) && !projekti.reforminMukainen"
                  model="projekti" model-var="laajuusYksikko" options="yksikot"></formfield>
       <formfield label="päätöspvm-label" model="projekti" model-var="paatosPvm" placeholder="anna-päätöspäivämäärä" type="date">
         <ohje teksti="luonti-paatospaivamaara-ohje"></ohje>

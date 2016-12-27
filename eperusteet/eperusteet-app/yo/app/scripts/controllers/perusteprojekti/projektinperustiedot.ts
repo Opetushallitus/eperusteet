@@ -17,26 +17,27 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService, YleinenData) {
+.controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService, YleinenData) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     if (typeof $scope.projekti.paatosPvm === 'number') {
-       $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
+        $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
     }
 
     $scope.yksikot = YleinenData.yksikot;
 
     $scope.tehtavaluokat = [
-      'Tehtäväluokka-1',
-      'Tehtäväluokka-2',
-      'Tehtäväluokka-3',
-      'Tehtäväluokka-4'
+        'Tehtäväluokka-1',
+        'Tehtäväluokka-2',
+        'Tehtäväluokka-3',
+        'Tehtäväluokka-4'
     ];
 
     $scope.koulutustyypit = YleinenData.koulutustyypit;
 
-    $scope.tarvitseeLaajuuden = function(input) {
-      return input && _.indexOf(YleinenData.laajuudellisetKoulutustyypit, input) !== -1;
-    };
-  });
+    $scope.reforminMukainen = YleinenData.isReformoitava;
+
+    $scope.tarvitseeLaajuuden = (koulutustyyppi) => koulutustyyppi
+        && _.indexOf(YleinenData.laajuudellisetKoulutustyypit, koulutustyyppi) !== -1;
+});
 

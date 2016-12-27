@@ -73,7 +73,7 @@ European Union Public Licence for more details.
 <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible(), 'show-back': showBackLink()}">
   <div class="sivunavi-navigaatio">
     <div class="sivunavi-takaisin" ng-if="showBackLink()">
-      <a ng-href="{{backLink}}" icon-role="back" kaanna="takaisin-paanakymaan"></a>
+      <a ui-sref="root.perusteprojekti.suoritustapa.sisalto" icon-role="back" kaanna="takaisin-paanakymaan"></a>
     </div>
     <sivunavigaatio items="sivunavi.items" header="sivunavi.suoritustapa" footer="sivunavi.footer">
     </sivunavigaatio>

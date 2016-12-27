@@ -48,8 +48,8 @@ module.exports = function(grunt) {
           '<%= yeoman.test %>/**/*.ts'
         ],
         options: {
-          module: 'amd',
-          target: 'es5'
+          module: 'commonjs',
+          target: 'es3'
         }
       }
     },

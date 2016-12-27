@@ -959,13 +959,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     /**
      * Luo uuden perusteen perusrakenteella.
      *
+     * @param perusteprojektiDto
      * @param koulutustyyppi
      * @param yksikko
      * @param tyyppi
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
-    public Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
+    public Peruste luoPerusteRunko(PerusteprojektiLuontiDto perusteprojektiDto, KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
         if (koulutustyyppi == null) {
             throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
         }
@@ -977,13 +978,19 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
 
-        if (ekoulutustyyppi.isAmmatillinen()) {
+        if (!perusteprojektiDto.isReforminMukainen()&& ekoulutustyyppi.isAmmatillinen()) {
             suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
         }
 
         Suoritustapa st = null;
-        if (koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
-            st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko
+        
+        // ~2018 eteenpäin koulutustyypit 1, 11 ja 12
+        if (perusteprojektiDto.isReforminMukainen()) {
+            st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.REFORMI, LaajuusYksikko.OSAAMISPISTE);
+        }
+        else if (koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
+            st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null
+                    ? yksikko
                     : LaajuusYksikko.OSAAMISPISTE);
         } else if (ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
             peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());

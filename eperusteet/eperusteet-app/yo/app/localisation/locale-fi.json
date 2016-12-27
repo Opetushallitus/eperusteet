@@ -207,6 +207,7 @@
     "piilota-virheet": "Piilota virheet",
 
     "laajuuden-yksikkö": "Laajuuden yksikkö",
+    "reformin-mukainen": "Reformin mukainen",
 
     "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
@@ -682,6 +683,7 @@
 
     "ops": "Peruskoulutus",
     "naytto": "Näyttötutkinto",
+    "reformi": "Näyttötutkinto",
 
     "vahvista-palautus": "Vahvista palautus",
     "vahvista-palautus-sisältö": "Haluatko palauttaa perusteprojektin {{ nimi }}? Perusteprojektin sisältö palautetaan ja se asetetaan tilaan: {{ tila }}",

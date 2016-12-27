@@ -24,14 +24,13 @@ import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import java.util.List;
+import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -136,7 +135,7 @@ public interface PerusteService {
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi, Integer revisio);
 
     @PreAuthorize("isAuthenticated()")
-    Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi);
+    Peruste luoPerusteRunko(PerusteprojektiLuontiDto perusteprojektiDto, KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi);
 
     @PreAuthorize("isAuthenticated()")
     Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi);

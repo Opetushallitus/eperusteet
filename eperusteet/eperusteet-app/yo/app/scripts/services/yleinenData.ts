@@ -208,6 +208,12 @@ angular.module('eperusteApp')
     this.dateFormatDatepicker = 'd.M.yyyy';
     this.dateFormatMomentJS = 'D.M.YYYY';
 
+    this.isReformoitava = (koulutustyyppi) => _.includes([
+        "koulutustyyppi_1",
+        "koulutustyyppi_11",
+        "koulutustyyppi_12",
+    ], koulutustyyppi);
+
     this.isPerusopetus = function (peruste) {
       return peruste.koulutustyyppi === 'koulutustyyppi_16';
     };

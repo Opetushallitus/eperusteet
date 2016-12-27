@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -39,6 +39,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -54,7 +55,13 @@ import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
+import static fi.vm.sade.eperusteet.service.util.Util.*;
 import fi.vm.sade.generic.rest.CachingRestClient;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,16 +72,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
-import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
-import static fi.vm.sade.eperusteet.service.util.Util.*;
-import static java.util.stream.Collectors.toMap;
 
 /**
  *
@@ -236,6 +233,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (tyyppi != PerusteTyyppi.POHJA) {
             if (yksikko == null
+                    && perusteprojektiDto.isReforminMukainen()
                     && koulutustyyppi != null
                     && koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
@@ -262,7 +260,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
-            peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, tyyppi);
+            peruste = perusteService.luoPerusteRunko(perusteprojektiDto, koulutustyyppi, yksikko, tyyppi);
         } else {
             Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
             perusteprojektiDto.setKoulutustyyppi(pohjaPeruste.getKoulutustyyppi());

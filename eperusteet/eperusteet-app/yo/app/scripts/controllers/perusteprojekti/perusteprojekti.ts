@@ -129,10 +129,16 @@ angular.module('eperusteApp')
               return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
             }]
         },
-        controller: function($scope, YleinenData, Kielimapper, perusteprojektiTiedot) {
+        controller: function($timeout, $scope, $state, $stateParams, YleinenData, Kielimapper, perusteprojektiTiedot) {
           // !!! Alustetaan kaikkia alitiloja varten !!!!
           $scope.isVaTe = YleinenData.isValmaTelma(perusteprojektiTiedot.getPeruste());
           $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
+          const hasCurrentSuoritustapa = _.any($scope.peruste.suoritustavat, st => st.suoritustapakoodi === $stateParams.suoritustapa);
+          if (!hasCurrentSuoritustapa && !_.isEmpty($scope.peruste.suoritustavat)) {
+            $state.go($state.current.name, _.merge({
+              suoritustapa: $scope.peruste.suoritustavat[0].suoritustapakoodi
+            }));
+          }
         },
         abstract: true
       })
@@ -352,7 +358,6 @@ angular.module('eperusteApp')
       $scope.projekti = perusteprojektiTiedot.getProjekti();
       $scope.peruste = perusteprojektiTiedot.getPeruste();
       Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
-      $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
       $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
       TermistoService.setPeruste($scope.peruste);
       ProxyService.set('perusteId', $scope.peruste.id);
@@ -361,13 +366,6 @@ angular.module('eperusteApp')
 
     $scope.$on('update:perusteprojekti', function () {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
-    });
-
-    // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
-    $scope.$watch(function () {
-      return PerusteProjektiService.getSuoritustapa();
-    }, function () {
-      $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
     });
 
     var amFooter = '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="ep-text-add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
