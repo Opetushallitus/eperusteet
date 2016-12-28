@@ -51,7 +51,7 @@ public abstract class PerusteBaseDto implements Serializable {
     private Set<Kieli> kielet;
     private LokalisoituTekstiDto kuvaus;
     private MaarayskirjeDto maarayskirje;
-    private Set<MuutosmaaraysDto> muutosmaaraykset;
+    private List<MuutosmaaraysDto> muutosmaaraykset;
 
     private String diaarinumero;
     private Date voimassaoloAlkaa;

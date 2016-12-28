@@ -22,18 +22,16 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  *
@@ -78,8 +76,9 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @Getter
     @Setter
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "peruste", cascade = CascadeType.ALL)
-    private Set<Muutosmaarays> muutosmaaraykset;
+    @OrderColumn
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Muutosmaarays> muutosmaaraykset = new ArrayList<>();
 
     @Getter
     @Setter
@@ -158,7 +157,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto;
 
     @Getter
-    @OneToOne(mappedBy = "peruste", optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto;
 
     @Getter
@@ -172,15 +171,15 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @NotNull
     private PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
 
+    /**
+     * Kielet jolla peruste tarjotaan. Oletuksena suomi ja ruotsi.
+     */
     @ElementCollection
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
     @CollectionTable(name = "peruste_kieli")
     @Column(name = "kieli")
-    /**
-     * Kielet jolla peruste tarjotaan. Oletuksena suomi ja ruotsi.
-     */
     @Size(min = 1, groups = Valmis.class)
     private Set<Kieli> kielet = EnumSet.of(Kieli.FI, Kieli.SV);
 
@@ -214,6 +213,13 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Override
     public EntityReference getReference() {
         return new EntityReference(id);
+    }
+
+    public void setMuutosmaaraykset(List<Muutosmaarays> muutosmaaraykset) {
+        this.muutosmaaraykset.clear();
+        if (muutosmaaraykset != null) {
+            this.muutosmaaraykset.addAll(muutosmaaraykset);
+        }
     }
 
     /*
@@ -279,5 +285,4 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     }
 
     public interface Valmis {}
-
 }
