@@ -62,7 +62,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket swaggerApi(ServletContext ctx) {
-        LOG.debug("Starting Swagger API");
+        LOG.info("Starting Swagger API");
 
         return new Docket(DocumentationType.SWAGGER_12)
                 .apiInfo(apiInfo())
@@ -84,7 +84,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket swaggerInternalApi(ServletContext ctx) {
-        LOG.debug("Starting Swagger internal API");
+        LOG.info("Starting Swagger internal API");
 
         return new Docket(DocumentationType.SWAGGER_12)
                 .apiInfo(apiInfo())
