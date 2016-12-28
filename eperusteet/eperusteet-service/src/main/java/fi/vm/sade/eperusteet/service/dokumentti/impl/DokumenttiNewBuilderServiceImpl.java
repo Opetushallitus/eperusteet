@@ -719,22 +719,32 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 TekstiPalanen otsikko = kohde.getOtsikko();
                 TekstiPalanen selite = kohde.getSelite();
 
-                addTeksti(docBase, getTextString(docBase, otsikko), "p");
-
                 Element taulukko = docBase.getDocument().createElement("table");
                 taulukko.setAttribute("border", "1");
                 docBase.getBodyElement().appendChild(taulukko);
                 Element tbody = docBase.getDocument().createElement("tbody");
                 taulukko.appendChild(tbody);
 
-                Element tr = docBase.getDocument().createElement("tr");
-                tr.setAttribute("bgcolor", "#EEEEEE");
-                tbody.appendChild(tr);
+                if (otsikko != null) {
+                    Element tr = docBase.getDocument().createElement("tr");
+                    tr.setAttribute("bgcolor", "#EEEEEE");
+                    tbody.appendChild(tr);
 
-                Element th = docBase.getDocument().createElement("th");
-                th.setAttribute("colspan", "4");
-                th.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, selite)));
-                tr.appendChild(th);
+                    Element th = docBase.getDocument().createElement("td");
+                    th.setAttribute("colspan", "4");
+                    th.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, otsikko)));
+                    tr.appendChild(th);
+                }
+
+                if (selite != null) {
+                    Element tr2 = docBase.getDocument().createElement("tr");
+                    tbody.appendChild(tr2);
+
+                    Element td = docBase.getDocument().createElement("td");
+                    td.setAttribute("colspan", "4");
+                    td.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, selite)));
+                    tr2.appendChild(td);
+                }
 
                 Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
                 List<OsaamistasonKriteeri> kriteerilista = new ArrayList<>(osaamistasonKriteerit);

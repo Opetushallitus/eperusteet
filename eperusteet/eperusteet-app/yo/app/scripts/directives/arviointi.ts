@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout,
-    Utils, ArviointiPreferences) {
+    Utils, ArviointiPreferences, Kaanna) {
 
     $scope.showNewKohdealueInput = false;
 
@@ -103,12 +103,14 @@ angular.module('eperusteApp')
         }
 
         var kohde = {
-            otsikko: {},
-            _arviointiAsteikko: kohdealue.$newkohde.arviointiasteikko.id,
-            osaamistasonKriteerit: [],
-            $accordionOpen: true
+          otsikko: {},
+          selite: {},
+          _arviointiAsteikko: kohdealue.$newkohde.arviointiasteikko.id,
+          osaamistasonKriteerit: [],
+          $accordionOpen: true
         };
         kohde.otsikko[YleinenData.kieli] = kohdealue.$newkohde.nimi;
+        kohde.selite[YleinenData.kieli] = Kaanna.kaanna('tutkinnon-suorittaja');
 
         valmisteleKriteerit(kohde.osaamistasonKriteerit, kohdealue.$newkohde.arviointiasteikko.osaamistasot);
 
