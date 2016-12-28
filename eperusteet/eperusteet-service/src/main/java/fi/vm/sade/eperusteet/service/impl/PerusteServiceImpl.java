@@ -54,6 +54,12 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,13 +71,6 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -956,17 +955,22 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
+    public Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
+        return luoPerusteRunko(koulutustyyppi, yksikko, tyyppi, false);
+    }
+
     /**
      * Luo uuden perusteen perusrakenteella.
      *
      * @param perusteprojektiDto
      * @param koulutustyyppi
      * @param yksikko
+     * @param isReforminMukainen
      * @param tyyppi
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
-    public Peruste luoPerusteRunko(PerusteprojektiLuontiDto perusteprojektiDto, KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
+    public Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi, boolean isReforminMukainen) {
         if (koulutustyyppi == null) {
             throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
         }
@@ -978,14 +982,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
 
-        if (!perusteprojektiDto.isReforminMukainen()&& ekoulutustyyppi.isAmmatillinen()) {
+        if (!isReforminMukainen && ekoulutustyyppi.isAmmatillinen()) {
             suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
         }
 
         Suoritustapa st = null;
-        
+
         // ~2018 eteenpäin koulutustyypit 1, 11 ja 12
-        if (perusteprojektiDto.isReforminMukainen()) {
+        if (isReforminMukainen) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.REFORMI, LaajuusYksikko.OSAAMISPISTE);
         }
         else if (koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
