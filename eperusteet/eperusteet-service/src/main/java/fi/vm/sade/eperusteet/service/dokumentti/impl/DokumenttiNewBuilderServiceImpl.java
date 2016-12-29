@@ -725,7 +725,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 Element tbody = docBase.getDocument().createElement("tbody");
                 taulukko.appendChild(tbody);
 
-                if (otsikko != null) {
+                if (otsikko != null && otsikko.getTeksti().containsKey(docBase.getKieli())) {
                     Element tr = docBase.getDocument().createElement("tr");
                     tr.setAttribute("bgcolor", "#EEEEEE");
                     tbody.appendChild(tr);
@@ -736,7 +736,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     tr.appendChild(th);
                 }
 
-                if (selite != null) {
+                if (selite != null && selite.getTeksti().containsKey(docBase.getKieli())) {
                     Element tr2 = docBase.getDocument().createElement("tr");
                     tbody.appendChild(tr2);
 

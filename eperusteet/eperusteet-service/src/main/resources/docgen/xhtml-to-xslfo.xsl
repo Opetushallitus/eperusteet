@@ -995,7 +995,7 @@
                                 <xsl:text>Muutosmääräykset</xsl:text>
                             </xsl:if>
                             <xsl:if test="//html/@lang='sv'">
-                                <xsl:text>Muutosmääräykset</xsl:text>
+                                <xsl:text>[sv Muutosmääräykset]</xsl:text>
                             </xsl:if>
                         </xsl:if>
                     </fo:block>
