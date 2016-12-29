@@ -34,7 +34,7 @@
     <div class="modal-data">
       <div ng-if="hasPdf()">
         {{'luotu' | kaanna}} {{docs[kielet.valittu].valmistumisaika | aikaleima}}
-        <a class="latauslinkki" ng-href="{{docs[kielet.valittu].url}}">
+        <a class="latauslinkki" ng-href="{{docs[kielet.valittu].url}}" target="_blank">
           <button class="btn btn-default btn-large">{{'lataa' | kaanna}}</button>
         </a>
       </div>

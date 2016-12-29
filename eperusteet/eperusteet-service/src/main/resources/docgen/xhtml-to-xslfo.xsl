@@ -168,7 +168,7 @@
                                 <xsl:text>Perusteen nimi</xsl:text>
                             </xsl:if>
                             <xsl:if test="//html/@lang='sv'">
-                                <xsl:text>Perusteen nimi</xsl:text>
+                                <xsl:text>Namn på grunderna</xsl:text>
                             </xsl:if>
                         </fo:block>
                     </fo:table-cell>
@@ -219,7 +219,7 @@
                                     <xsl:text>Voimaantulo</xsl:text>
                                 </xsl:if>
                                 <xsl:if test="//html/@lang='sv'">
-                                    <xsl:text>Voimaantulo</xsl:text>
+                                    <xsl:text>Träder i kraft</xsl:text>
                                 </xsl:if>
                             </fo:block>
                         </fo:table-cell>
@@ -240,7 +240,7 @@
                                     <xsl:text>Voimassaolon päättyminen</xsl:text>
                                 </xsl:if>
                                 <xsl:if test="//html/@lang='sv'">
-                                    <xsl:text>Voimassaolon päättyminen</xsl:text>
+                                    <xsl:text>Giltigheten upphör</xsl:text>
                                 </xsl:if>
                             </fo:block>
                         </fo:table-cell>
@@ -475,7 +475,7 @@
                               font-size="0pt" id="{@name}"/>
                 </xsl:if>
             </xsl:when>
-            <xsl:when test="@href">
+            <xsl:when test="@href and @href != ''">
                 <fo:basic-link color="blue">
                     <xsl:attribute name="external-destination">
                         <xsl:value-of select="@href"/>
@@ -705,6 +705,7 @@
         <fo:table-cell
                 padding-start="3pt" padding-end="3pt"
                 padding-before="3pt" padding-after="3pt">
+            <!-- FOP-2434 -->
             <xsl:if test="@colspan">
                 <xsl:attribute name="number-columns-spanned">
                     <xsl:value-of select="@colspan"/>
@@ -824,6 +825,7 @@
     <xsl:template match="th">
         <fo:table-cell padding-start="3pt" padding-end="3pt"
                        padding-before="3pt" padding-after="3pt">
+            <!-- FOP-2434 -->
             <xsl:if test="@colspan">
                 <xsl:attribute name="number-columns-spanned">
                     <xsl:value-of select="@colspan"/>

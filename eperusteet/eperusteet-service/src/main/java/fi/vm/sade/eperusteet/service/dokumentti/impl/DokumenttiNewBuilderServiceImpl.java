@@ -730,7 +730,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     tr.setAttribute("bgcolor", "#EEEEEE");
                     tbody.appendChild(tr);
 
-                    Element th = docBase.getDocument().createElement("td");
+                    Element th = docBase.getDocument().createElement("th");
                     th.setAttribute("colspan", "4");
                     th.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, otsikko)));
                     tr.appendChild(th);
@@ -740,9 +740,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     Element tr2 = docBase.getDocument().createElement("tr");
                     tbody.appendChild(tr2);
 
+                    Element p = docBase.getDocument().createElement("p");
+                    p.appendChild(docBase.getDocument().createTextNode(getTextString(docBase, selite)));
+
                     Element td = docBase.getDocument().createElement("td");
                     td.setAttribute("colspan", "4");
-                    td.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, selite)));
+                    td.appendChild(p);
                     tr2.appendChild(td);
                 }
 
