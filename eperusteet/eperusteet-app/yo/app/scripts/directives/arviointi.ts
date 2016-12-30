@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout,
+  .controller('arviointiCtrl', function ($scope, $translate, YleinenData, Varmistusdialogi, $timeout,
     Utils, ArviointiPreferences, Kaanna) {
 
     $scope.showNewKohdealueInput = false;
@@ -104,13 +104,16 @@ angular.module('eperusteApp')
 
         var kohde = {
           otsikko: {},
-          selite: {},
+          selite: {
+            fi: "Opiskelija tai tutkinnon suorittaja",
+            sv: "Den studerande eller examinanden"
+          },
           _arviointiAsteikko: kohdealue.$newkohde.arviointiasteikko.id,
           osaamistasonKriteerit: [],
           $accordionOpen: true
         };
+
         kohde.otsikko[YleinenData.kieli] = kohdealue.$newkohde.nimi;
-        kohde.selite[YleinenData.kieli] = Kaanna.kaanna('tutkinnon-suorittaja');
 
         valmisteleKriteerit(kohde.osaamistasonKriteerit, kohdealue.$newkohde.arviointiasteikko.osaamistasot);
 
