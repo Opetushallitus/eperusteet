@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams, $rootScope,
     perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
-    PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
+    PerusteTutkinnonosat, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
@@ -35,8 +35,22 @@ angular.module('eperusteApp')
                                   _.map($scope.peruste.suoritustavat, 'laajuusYksikko'));
 
     function haeTutkinnonosat() {
-      PerusteenRakenne.haeTutkinnonosat($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
-        $scope.tutkinnonOsat = res;
+      PerusteTutkinnonosat.tilat({
+        perusteId: $scope.peruste.id,
+        suoritustapa: $scope.suoritustapa
+      }).$promise.then(tilat => {
+        const tilatMapped = _(tilat)
+          .indexBy("id")
+          .value();
+
+        PerusteenRakenne.haeTutkinnonosat($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
+          $scope.tutkinnonOsat = _(res)
+            .map(tosa => {
+              tosa.$$tila = tilatMapped[tosa._tutkinnonOsa];
+              return tosa;
+            })
+            .value();
+        });
       });
     }
     haeTutkinnonosat();

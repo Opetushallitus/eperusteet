@@ -49,7 +49,8 @@ module.exports = function(grunt) {
         ],
         options: {
           module: 'commonjs',
-          target: 'es3'
+          target: 'es3',
+          lib: ["DOM", "ES2015", "ES5"], // FIXME: Ei toimi
         }
       }
     },

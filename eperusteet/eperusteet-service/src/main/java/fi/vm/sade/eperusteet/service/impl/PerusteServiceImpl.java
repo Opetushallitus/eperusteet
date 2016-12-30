@@ -32,6 +32,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaExcelDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -656,6 +657,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste peruste = perusteet.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TutkinnonOsaTilaDto> getTutkinnonOsienTilat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
+        Peruste peruste = perusteet.findOne(perusteid);
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        return mapper.mapAsList(suoritustapa.getTutkinnonOsat().stream()
+                .map(tov -> tov.getTutkinnonOsa())
+                .collect(Collectors.toList()), TutkinnonOsaTilaDto.class);
     }
 
     @Override

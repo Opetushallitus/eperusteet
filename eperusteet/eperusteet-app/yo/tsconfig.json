@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "module": "amd",
-    "target": "es5",
-    "sourceMap": true
+    "target": "es3",
+    "module": "commonjs",
+    "sourceMap": true,
+    "lib": ["DOM", "ES2015", "ES5"]
   },
   "files": [
     "./typings/index.d.ts",

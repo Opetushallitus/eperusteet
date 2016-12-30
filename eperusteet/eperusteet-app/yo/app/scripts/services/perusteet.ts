@@ -30,12 +30,14 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:viiteId');
   })
   .factory('PerusteTutkinnonosat', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat', {
+    const baseUrl = SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat';
+    return $resource(baseUrl, {
       perusteId: '@id',
       suoritustapa: '@suoritustapa'
     }, {
       get: {method: 'GET', isArray: true},
-      update: {method: 'PUT'}
+      update: {method: 'PUT'},
+      tilat: { method: 'GET', isArray: true, url: baseUrl + "/tilat" }
     });
   })
   .factory('PerusteTutkinnonosatVersio', function($resource, SERVICE_LOC) {

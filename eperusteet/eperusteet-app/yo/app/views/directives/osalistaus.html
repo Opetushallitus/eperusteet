@@ -32,13 +32,14 @@
             </span>
           </a>
         </th>
-        <th width="30%">
+        <th width="25%">
           <a class="action-link" ng-click="asetaJarjestys('muokattu')">{{'muokattu-viimeksi' | kaanna}}
             <span ng-show="jarjestysTapa === 'muokattu'">
               <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
             </span>
           </a>
         </th>
+        <th width="5%" ng-bind="'tila' | kaanna"></th>
       </tr>
       <tr ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
         <td ng-if="kaytaJarjestysnumeroa">
@@ -56,6 +57,12 @@
         </td>
         <td>
           {{ v.muokattu || 0 | aikaleima }}
+        </td>
+        <td>
+          <span ng-if="v.$$tila">
+            <span ng-show="v.$$tila.kaannettava" data-toggle="tooltip" title="{{ 'kaannettava-ohje' | kaanna }}" class="glyphicon glyphicon-globe"></span>
+            <span ng-show="v.$$tila.valmis" data-toggle="tooltip" title="{{ 'valmis-ohje' | kaanna }}" class="glyphicon glyphicon-ok"></span>
+          </span>
         </td>
       </tr>
     </table>

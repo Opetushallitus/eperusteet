@@ -15,9 +15,9 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
@@ -27,19 +27,17 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
+import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
+import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
-import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -86,6 +84,7 @@ public class TutkinnonRakenneController {
      * @param id tutkinnon id
      * @param suoritustapakoodi suoritustapa (naytto,ops)
      * @param osa liitettävä tutkinnon osa
+     * @return
      */
     @RequestMapping(value = "/tutkinnonosat", method = PUT)
     @ResponseBody
@@ -134,12 +133,22 @@ public class TutkinnonRakenneController {
     @ResponseBody
     public ResponseEntity<List<TutkinnonOsaViiteDto>> getTutkinnonOsat(
         @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi) {
-        return CacheableResponse.create(perusteService.getPerusteVersion(id), 1, new Supplier<List<TutkinnonOsaViiteDto>>() {
-            @Override
-            public List<TutkinnonOsaViiteDto> get() {
-                return perusteService.getTutkinnonOsat(id, suoritustapakoodi);
-            }
-        });
+        return CacheableResponse.create(perusteService.getPerusteVersion(id), 1, () -> perusteService.getTutkinnonOsat(id, suoritustapakoodi));
+    }
+
+    /**
+     * Käytetään laadinnassa tutkinnon osien listauksen yhteydessä
+     *
+     * @param id
+     * @param suoritustapakoodi
+     * @return
+     */
+    @RequestMapping(value = "/tutkinnonosat/tilat", method = GET)
+    @ResponseBody
+    @InternalApi
+    public ResponseEntity<List<TutkinnonOsaTilaDto>> getTutkinnonOsienTilat(
+        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi) {
+        return ResponseEntity.ok(perusteService.getTutkinnonOsienTilat(id, suoritustapakoodi));
     }
 
     @RequestMapping(value = "/tutkinnonosat/versiot/{versio}", method = GET)
