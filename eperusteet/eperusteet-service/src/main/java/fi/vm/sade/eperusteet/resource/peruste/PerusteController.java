@@ -218,6 +218,15 @@ public class PerusteController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/amosaaops", method = GET)
+    @ResponseBody
+    @InternalApi
+    @ApiOperation(value = "Paikallisen puolen ammatillista laadintaa tukevat perusteet")
+    public ResponseEntity<List<PerusteHakuDto>> getAmosaaOpsit() {
+        List<PerusteHakuDto> perusteet = service.getAmosaaOpsit();
+        return new ResponseEntity<>(perusteet, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/diaari", method = GET)
     @ResponseBody
     @ApiImplicitParams({

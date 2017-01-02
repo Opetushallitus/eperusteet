@@ -306,6 +306,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    public List<PerusteHakuDto> getAmosaaOpsit() {
+        List<Peruste> amosaaPerusteet = perusteet.findAllAmosaa();
+        return mapper.mapAsList(amosaaPerusteet, PerusteHakuDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
         List<Peruste> loydetyt = perusteet.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
 

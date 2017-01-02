@@ -166,6 +166,9 @@ public interface PerusteService {
     PerusteKaikkiDto getAmosaaYhteinenPohja();
 
     @PreAuthorize("permitAll()")
+    List<PerusteHakuDto> getAmosaaOpsit();
+
+    @PreAuthorize("permitAll()")
     PerusteVersionDto getPerusteVersion(long id);
 
     @PreAuthorize("permitAll()")

@@ -56,4 +56,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
 
     @Query("select v from PerusteVersion v where v.peruste.id = ?1")
     PerusteVersion getPerusteVersionEntityByPeruste(long perusteId);
+
+    @Query("select p from Peruste p where p.tila = 'VALMIS' AND p.tyyppi = 'NORMAALI' AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12')")
+    List<Peruste> findAllAmosaa();
 }
