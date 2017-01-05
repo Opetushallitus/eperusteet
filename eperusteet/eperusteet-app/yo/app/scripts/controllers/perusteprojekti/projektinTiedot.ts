@@ -152,7 +152,7 @@ angular.module('eperusteApp')
       else { projekti.id = null; }
 
       if ($scope.pohja()) {
-        projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi', 'ryhmaOid', 'perusteId'), {
+        projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi', 'ryhmaOid', 'perusteId', 'reforminMukainen'), {
           tyyppi: 'pohja'
         });
       }
