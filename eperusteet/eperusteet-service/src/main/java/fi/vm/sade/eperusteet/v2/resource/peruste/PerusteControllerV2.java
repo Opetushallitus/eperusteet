@@ -41,6 +41,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @Controller
 @RequestMapping(value = "/v2/perusteet", produces = "application/json;charset=UTF-8")
 @Api(value = "Perusteet", description = "Perusteiden hallintaan liittyvät operaatiot")
+@InternalApi
 public class PerusteControllerV2 {
 
     @Autowired
@@ -51,7 +52,6 @@ public class PerusteControllerV2 {
 
     @RequestMapping(value = "/amosaapohja", method = GET)
     @ResponseBody
-    @InternalApi
     @ApiOperation(value = "Amosaa jaetun tutkinnon pohja")
     public ResponseEntity<PerusteKaikkiDto> getAmosaaPohja() {
         PerusteKaikkiDto t = service.getAmosaaYhteinenPohja();
