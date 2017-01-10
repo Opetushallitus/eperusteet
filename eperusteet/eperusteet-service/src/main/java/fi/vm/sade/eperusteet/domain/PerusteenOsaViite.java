@@ -18,13 +18,13 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.aipe.AIPESisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -96,6 +96,13 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto;
 
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private AIPESisalto aipeSisalto;
+
     @ManyToOne
     @Getter
     @Setter
@@ -126,6 +133,10 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
 
     public PerusteenOsaViite(EsiopetuksenPerusteenSisalto sisalto) {
         this.esiopetuksenPerusteenSisalto = sisalto;
+    }
+
+    public PerusteenOsaViite(AIPESisalto sisalto) {
+        this.aipeSisalto = sisalto;
     }
 
     @Override
