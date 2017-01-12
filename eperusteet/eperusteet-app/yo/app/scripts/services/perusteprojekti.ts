@@ -118,17 +118,16 @@ angular.module('eperusteApp')
         projekti.koulutustyyppi = peruste.koulutustyyppi;
       }
       var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-      var suoritustapa = getRightSuoritustapa(peruste, projekti);
-      var suoritustavaton = (oletus !== 'ops' && oletus !== 'naytto') || !suoritustapa;
-      var eiValidiSuoritustapa = (oletus === 'ops' || oletus === 'naytto') && suoritustapa !== 'ops' && suoritustapa !== 'naytto';
-      if (suoritustavaton || eiValidiSuoritustapa) {
+      var suoritustapa = getSuoritustapa() || getRightSuoritustapa(peruste, projekti);
+
+      if (!_.includes(YleinenData.suoritustavat, suoritustapa)) {
         suoritustapa = oletus;
       }
 
-      var sisaltoTunniste = getSisaltoTunniste(projekti);
+      const sisaltoTunniste = getSisaltoTunniste(projekti);
       return $state[method]('root.perusteprojekti.suoritustapa.' + sisaltoTunniste, {
         perusteProjektiId: projekti.id,
-        suoritustapa: suoritustapa
+        suoritustapa
       });
     }
 

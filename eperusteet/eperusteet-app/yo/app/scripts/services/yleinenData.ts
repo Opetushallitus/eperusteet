@@ -67,9 +67,16 @@ angular.module('eperusteApp')
       kurssi: 'KURSSI'
     };
 
+    this.ammatillisetSuoritustavat = [
+      'ops',
+      'naytto',
+      'reformi',
+    ];
+
     this.suoritustavat = [
       'ops',
       'naytto',
+      'reformi',
       'lukiokoulutus'
     ];
 

@@ -358,6 +358,7 @@ angular.module('eperusteApp')
       $scope.projekti = perusteprojektiTiedot.getProjekti();
       $scope.peruste = perusteprojektiTiedot.getPeruste();
       Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
+      $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
       $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
       TermistoService.setPeruste($scope.peruste);
       ProxyService.set('perusteId', $scope.peruste.id);
@@ -366,6 +367,13 @@ angular.module('eperusteApp')
 
     $scope.$on('update:perusteprojekti', function () {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
+    });
+
+    // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
+    $scope.$watch(function () {
+      return PerusteProjektiService.getSuoritustapa();
+    }, function () {
+      $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
     });
 
     var amFooter = '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="ep-text-add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
