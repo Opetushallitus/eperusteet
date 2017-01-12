@@ -147,14 +147,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
-        
+
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             TutkinnonOsa tutkinnonOsa = (TutkinnonOsa) updated;
             tutkinnonOsa.setOsaAlueet(createOsaAlueIfNotExist(tutkinnonOsa.getOsaAlueet()));
             tutkinnonOsa.setValmaTelmaSisalto( createValmatelmaIfNotExist( tutkinnonOsa.getValmaTelmaSisalto() ) );
         }
 
-        if ( current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
+        if (current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
             throw new BusinessRuleViolationException("Vain korjaukset sallittu");
         }
 
@@ -297,17 +297,17 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     private void notifyUpdate(PerusteenOsa osa) {
          // Varmistetaan että tutkinnon osan muokkaus muuttaa valmiiden perusteiden viimeksi muokattu -päivämäärää (ja aiheuttaa uuden version).
-        if (osa.getTila() == PerusteTila.VALMIS) {
-            Set<Long> perusteIds;
-            if ( osa instanceof TutkinnonOsa ) {
-                perusteIds = perusteet.findByTutkinnonosaId(osa.getId(), PerusteTila.VALMIS);
-            } else {
-                final List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
-                perusteIds = roots.isEmpty() ? Collections.<Long>emptySet() : perusteet.findBySisaltoRoots(roots, PerusteTila.VALMIS);
-            }
-            for (Long perusteId : perusteIds) {
-                eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
-            }
+        Set<Long> perusteIds;
+        if (osa instanceof TutkinnonOsa) {
+            perusteIds = perusteet.findByTutkinnonosaId(osa.getId());
+        } else {
+            final List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
+            perusteIds = roots.isEmpty()
+                    ? Collections.<Long>emptySet()
+                    : perusteet.findBySisaltoRoots(roots);
+        }
+        for (Long perusteId : perusteIds) {
+            eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
         }
     }
 

@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service.event.aop;
 
 import fi.vm.sade.eperusteet.service.event.*;
+import java.util.Set;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,8 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 /**
  * User: tommiratamaa
@@ -48,7 +47,7 @@ public class MarkPerusteUpdatedAspect {
     @Autowired
     private FlushUtil flushUtil;
 
-    @Pointcut("execution(* fi.vm.sade.eperusteet.service..*ServiceImpl.*(..)) " +
+    @Pointcut("execution(* fi.vm.sade.eperusteet.service.impl.yl.*ServiceImpl.*(..)) " +
             " && ( within(@org.springframework.transaction.annotation.Transactional *) " +
             "       || @annotation(org.springframework.transaction.annotation.Transactional) )" +
             " && !@annotation(fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck)")
