@@ -69,7 +69,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -461,8 +460,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS') " +
-            "or hasPermission(#event.perusteId, 'peruste', 'TILANVAIHTO')")
+//    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS') " +
+//            "or hasPermission(#event.perusteId, 'peruste', 'TILANVAIHTO')")
     public void onApplicationEvent(@P("event") PerusteUpdatedEvent event) {
         Peruste peruste = perusteet.findOne(event.getPerusteId());
         if (peruste == null) {
