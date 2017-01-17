@@ -32,6 +32,7 @@ public enum KoulutusTyyppi {
     VARHAISKASVATUS("koulutustyyppi_20"),
     PERUSOPETUS("koulutustyyppi_16"),
     LUKIOKOULUTUS("koulutustyyppi_2"),
+    AIKUISTENPERUSOPETUS("koulutustyyppi_17"),
     LUKIOVALMISTAVAKOULUTUS("koulutustyyppi_23"),
     AIKUISTENLUKIOKOULUTUS("koulutustyyppi_14"),
     PERUSOPETUSVALMISTAVA("koulutustyyppi_22");

@@ -993,14 +993,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
         }
 
-        KoulutusTyyppi ekoulutustyyppi = koulutustyyppi;
-
         Peruste peruste = new Peruste();
         peruste.setKoulutustyyppi(koulutustyyppi.toString());
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
 
-        if (!isReforminMukainen && ekoulutustyyppi.isAmmatillinen()) {
+        if (!isReforminMukainen && koulutustyyppi.isAmmatillinen()) {
             suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
         }
 
@@ -1014,21 +1012,28 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null
                     ? yksikko
                     : LaajuusYksikko.OSAAMISPISTE);
-        } else if (ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
+        }
+        else if (koulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
             peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
-        } else if (ekoulutustyyppi == KoulutusTyyppi.ESIOPETUS
-                || ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUSVALMISTAVA
-                || ekoulutustyyppi == KoulutusTyyppi.LISAOPETUS
-                || ekoulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
+        }
+        else if (koulutustyyppi == KoulutusTyyppi.ESIOPETUS
+                || koulutustyyppi == KoulutusTyyppi.PERUSOPETUSVALMISTAVA
+                || koulutustyyppi == KoulutusTyyppi.LISAOPETUS
+                || koulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
             peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
-        } else if (ekoulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS ||
-                    ekoulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS ||
-                    ekoulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS ) {
+        }
+        else if (koulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS ||
+                    koulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS ||
+                    koulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS, LaajuusYksikko.KURSSI);
             LukiokoulutuksenPerusteenSisalto sisalto = new LukiokoulutuksenPerusteenSisalto();
             initLukioOpetuksenYleisetTavoitteet(sisalto);
             aihekokonaisuudetService.initAihekokonaisuudet(sisalto);
             initLukioOpetussuunitelmaRakenne(peruste, sisalto);
+        }
+        else if (koulutustyyppi == KoulutusTyyppi.AIKUISTENPERUSOPETUS) {
+            AIPEOpetuksenSisalto sisalto = new AIPEOpetuksenSisalto();
+            peruste.setSisalto(sisalto);
         }
 
         if (st != null) {

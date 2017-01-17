@@ -14,16 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain.yl.aipe;
+package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -37,8 +40,9 @@ import org.hibernate.envers.Audited;
  */
 @Entity
 @Audited
-@Table(name = "yl_aipe_sisalto", schema = "public")
-public class AIPESisalto extends AbstractAuditedReferenceableEntity {
+@Table(name = "yl_aipe_opetuksensisalto")
+public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto {
+
 
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -51,19 +55,23 @@ public class AIPESisalto extends AbstractAuditedReferenceableEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @Getter
     @Setter
-    @JoinColumn(name="sisalto_id")
+    @JoinColumn(name = "sisalto_id")
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
-//    @Getter
-//    @Setter
-//    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    @JoinColumn(name="opetuksen_yleiset_tavoitteet_id")
-//    private OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable
+    private Set<AIPEVaihe> vaiheet = new HashSet<>();
 
-    public AIPESisalto kloonaa(Peruste peruste) {
-        AIPESisalto kopio = new AIPESisalto();
+    public AIPEOpetuksenSisalto kloonaa(Peruste peruste) {
+        AIPEOpetuksenSisalto kopio = new AIPEOpetuksenSisalto();
         kopio.peruste = peruste;
         kopio.sisalto = this.sisalto.kloonaa();
         return kopio;
     }
+
+    @Override
+    public Set<Oppiaine> getOppiaineet() {
+        return new HashSet<>();
+    }
 }
+

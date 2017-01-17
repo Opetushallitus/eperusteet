@@ -26,17 +26,12 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.OppiainePerusteenSisaltoService;
+import java.util.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.*;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
-import static java.util.Comparator.nullsLast;
-import static java.util.stream.Collectors.*;
 
 /**
  * User: tommiratamaa

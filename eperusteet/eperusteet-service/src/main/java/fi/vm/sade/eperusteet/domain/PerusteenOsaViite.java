@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.domain.yl.aipe.AIPESisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
@@ -101,7 +100,7 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @Getter
     @Setter
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
-    private AIPESisalto aipeSisalto;
+    private AIPEOpetuksenSisalto aipeSisalto;
 
     @ManyToOne
     @Getter
@@ -135,7 +134,7 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
         this.esiopetuksenPerusteenSisalto = sisalto;
     }
 
-    public PerusteenOsaViite(AIPESisalto sisalto) {
+    PerusteenOsaViite(AIPEOpetuksenSisalto sisalto) {
         this.aipeSisalto = sisalto;
     }
 

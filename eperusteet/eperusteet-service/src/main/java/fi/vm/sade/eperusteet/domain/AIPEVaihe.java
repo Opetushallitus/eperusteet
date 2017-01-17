@@ -14,15 +14,10 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain.yl.aipe;
+package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import java.util.UUID;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import lombok.Getter;
 import org.hibernate.envers.Audited;
 
 /**
@@ -31,12 +26,7 @@ import org.hibernate.envers.Audited;
  */
 @Entity
 @Audited
-@Table(name = "yl_aipe_oppiaine", schema = "public")
-public class AIPEOppiaine extends AbstractAuditedReferenceableEntity {
-
-    @NotNull
-    @Column(updatable = false)
-    @Getter
-    private UUID tunniste = UUID.randomUUID();
+@Table(name = "yl_aipe_vaihe")
+public class AIPEVaihe extends AbstractAuditedReferenceableEntity {
 
 }
