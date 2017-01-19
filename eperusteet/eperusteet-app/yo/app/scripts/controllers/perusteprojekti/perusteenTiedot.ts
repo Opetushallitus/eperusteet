@@ -308,6 +308,9 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaPeruste = function() {
+      if (!$scope.editablePeruste.voimassaoloLoppuu) {
+        delete $scope.editablePeruste.siirtymaPaattyy;
+      }
       Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, function(vastaus) {
         $scope.peruste = vastaus;
         PerusteProjektiService.update();
