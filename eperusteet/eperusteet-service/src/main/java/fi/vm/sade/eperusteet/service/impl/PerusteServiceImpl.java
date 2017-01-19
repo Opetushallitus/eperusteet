@@ -671,7 +671,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste peruste = perusteet.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat().stream()
-                .map(tov -> tov.getTutkinnonOsa())
+                .map(TutkinnonOsaViite::getTutkinnonOsa)
                 .collect(Collectors.toList()), TutkinnonOsaTilaDto.class);
     }
 

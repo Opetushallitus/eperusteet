@@ -193,7 +193,7 @@ angular.module('eperusteApp')
       '</div>';
     return {
       restrict: 'A',
-      link: function (scope, element) {
+      link: function (scope, element: any) {
         var compiled = $compile(TEMPLATE)(scope);
         element.append(compiled);
       },

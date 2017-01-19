@@ -195,11 +195,12 @@ angular.module('eperusteApp')
     $scope.jatka = function(par) {
       $scope.haku = false;
       $scope.valittu = par;
+
       PerusteTutkinnonosat.query({
         perusteId: par.id,
         suoritustapa: tyyppi
-      }, function(re) {
-        $scope.perusteenosat = re;
+      }, perusteenosat => {
+        $scope.perusteenosat = perusteenosat;
       });
     };
 

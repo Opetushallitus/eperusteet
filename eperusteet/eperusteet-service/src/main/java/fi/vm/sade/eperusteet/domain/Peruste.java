@@ -202,6 +202,16 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
                 return s;
             }
         }
+
+        if (koodi.equals(Suoritustapakoodi.REFORMI)) {
+            Optional<Suoritustapa> naytto = suoritustavat.stream()
+                    .filter(suoritustapa -> suoritustapa.getSuoritustapakoodi().equals(Suoritustapakoodi.NAYTTO))
+                    .findFirst();
+            if (naytto.isPresent()) {
+                return naytto.get();
+            }
+        }
+
         throw new IllegalArgumentException("Perusteella ei ole pyydettyä suoritustapaa");
     }
 
