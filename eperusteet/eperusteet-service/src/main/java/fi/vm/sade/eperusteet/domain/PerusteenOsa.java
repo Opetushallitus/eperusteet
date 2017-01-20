@@ -18,17 +18,19 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -105,13 +107,9 @@ public abstract class PerusteenOsa
 
     @Override
     public void asetaTila(PerusteTila tila) {
-        if (this.tila == PerusteTila.LUONNOS) {
-            this.tila = tila;
-        }
+        this.tila = tila;
     }
 
-    /// HUOM! Tämä on vaarallinen rajapinta. On tilanvaihdon tehtävä pitää
-    /// huolta että tämä on ok.
     public void palautaLuonnokseksi() {
         this.tila = PerusteTila.LUONNOS;
     }
