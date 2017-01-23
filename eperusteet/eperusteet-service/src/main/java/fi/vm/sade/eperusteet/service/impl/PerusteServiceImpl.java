@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.*;
@@ -113,7 +112,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private PerusteenOsaViiteRepository perusteenOsaViiteRepo;
 
     @Autowired
-    private OsaamisalaRepository osaamisalaRepo;
+    private KoodiRepository koodiRepository;
 
     @Autowired
     @Dto
@@ -728,14 +727,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private RakenneModuuli checkIfOsaamisalatAlreadyExists(RakenneModuuli rakenneModuuli) {
-        Osaamisala osaamisalaTemp;
+        Koodi osaamisalaTemp;
         if (rakenneModuuli != null) {
-            if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo() != null) {
-                osaamisalaTemp = osaamisalaRepo.findOneByOsaamisalakoodiArvo(rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo());
+            if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getUri() != null) {
+                osaamisalaTemp = koodiRepository.findOneByUriAndVersio(rakenneModuuli.getOsaamisala().getUri(), rakenneModuuli.getOsaamisala().getVersio());
                 if (osaamisalaTemp != null) {
                     rakenneModuuli.setOsaamisala(osaamisalaTemp);
                 } else {
-                    rakenneModuuli.setOsaamisala(osaamisalaRepo.save(rakenneModuuli.getOsaamisala()));
+                    rakenneModuuli.setOsaamisala(koodiRepository.save(rakenneModuuli.getOsaamisala()));
                 }
             } else {
                 rakenneModuuli.setOsaamisala(null);

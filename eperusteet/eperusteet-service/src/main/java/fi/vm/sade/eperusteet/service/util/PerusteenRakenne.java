@@ -18,11 +18,8 @@ package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
-
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
@@ -107,11 +104,11 @@ public class PerusteenRakenne {
         if (rooli != null && rooli.equals(RakenneModuuliRooli.OSAAMISALA)) {
             validointi.sisakkaisiaOsaamisalaryhmia = validointi.sisakkaisiaOsaamisalaryhmia + 1;
             // Tarkista löytyykö perusteesta valittua osaamisalaa
-            Osaamisala roa = rakenne.getOsaamisala();
+            Koodi roa = rakenne.getOsaamisala();
             if (roa != null) {
                 boolean osaamisalaaEiPerusteella = true;
                 for (Koodi oa : osaamisalat) {
-                    if (roa.getOsaamisalakoodiArvo().equals(oa.getArvo()) && roa.getOsaamisalakoodiUri().equals(oa.getUri())) {
+                    if (roa.equals(oa)) {
                         osaamisalaaEiPerusteella = false;
                         break;
                     }

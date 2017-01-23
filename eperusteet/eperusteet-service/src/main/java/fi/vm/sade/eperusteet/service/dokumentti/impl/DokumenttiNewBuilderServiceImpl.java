@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -17,19 +18,16 @@ import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiBase;
+import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -45,16 +43,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
-
-import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
-import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.getTextString;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * @author isaul
@@ -86,7 +83,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     @Override
     public Document generateXML(Peruste peruste, Dokumentti dokumentti, Kieli kieli,
-                                Suoritustapakoodi suoritustapakoodi)
+            Suoritustapakoodi suoritustapakoodi)
             throws ParserConfigurationException, IOException, TransformerException {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -144,7 +141,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         // Tulostetaan dokumentti
         //printDocument(docBase.getDocument());
-
         return doc;
     }
 
@@ -230,15 +226,17 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Osaamisalat
         if (docBase.getPeruste().getOsaamisalat() != null && docBase.getPeruste().getOsaamisalat().size() != 0) {
             Element osaamisalat = docBase.getDocument().createElement("osaamisalat");
-            docBase.getPeruste().getOsaamisalat().forEach(osaamisala -> {
-                String osaamisalaNimi = getTextString(docBase, osaamisala.getNimi());
-                if (StringUtils.isNotEmpty(osaamisala.getArvo())) {
-                    osaamisalaNimi += " (" + osaamisala.getArvo() + ")";
-                }
-                Element osaamisalaEl = docBase.getDocument().createElement("osaamisala");
-                osaamisalaEl.setTextContent(osaamisalaNimi);
-                osaamisalat.appendChild(osaamisalaEl);
-            });
+            docBase.getPeruste().getOsaamisalat().stream()
+                    .map(oa -> mapper.map(oa, KoodiDto.class))
+                    .forEach(osaamisala -> {
+                        String osaamisalaNimi = getTextString(docBase, osaamisala.getNimi());
+                        if (StringUtils.isNotEmpty(osaamisala.getArvo())) {
+                            osaamisalaNimi += " (" + osaamisala.getArvo() + ")";
+                        }
+                        Element osaamisalaEl = docBase.getDocument().createElement("osaamisala");
+                        osaamisalaEl.setTextContent(osaamisalaNimi);
+                        osaamisalat.appendChild(osaamisalaEl);
+                    });
             docBase.getHeadElement().appendChild(osaamisalat);
         }
 
@@ -452,7 +450,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-
     private void addTutkinnonosat(DokumenttiBase docBase) {
         Set<Suoritustapa> suoritustavat = docBase.getPeruste().getSuoritustavat();
         Set<TutkinnonOsaViite> osat = new TreeSet<>((o1, o2) -> {
@@ -488,7 +485,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         suoritustavat.stream()
                 .filter(suoritustapa -> suoritustapa.getSuoritustapakoodi()
-                        .equals(docBase.getSisalto().getSuoritustapa().getSuoritustapakoodi()))
+                .equals(docBase.getSisalto().getSuoritustapa().getSuoritustapakoodi()))
                 .forEach(suoritustapa -> osat.addAll(suoritustapa.getTutkinnonOsat()));
 
         addHeader(docBase, messages.translate("docgen.tutkinnon_osat.title", docBase.getKieli()));
@@ -552,15 +549,15 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addAmmattitaitovaatimukset(DokumenttiBase docBase,
-                                            List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista,
-                                            TekstiPalanen ammattitaitovaatimukset) {
+            List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista,
+            TekstiPalanen ammattitaitovaatimukset) {
         String ammattitaitovaatimuksetText = getTextString(docBase, ammattitaitovaatimukset);
-        if(StringUtils.isEmpty(ammattitaitovaatimuksetText) && ammattitaitovaatimuksetLista.isEmpty()) {
+        if (StringUtils.isEmpty(ammattitaitovaatimuksetText) && ammattitaitovaatimuksetLista.isEmpty()) {
             return;
         }
 
         addTeksti(docBase, messages.translate("docgen.ammattitaitovaatimukset.title", docBase.getKieli()), "h5");
-        if(StringUtils.isNotEmpty(ammattitaitovaatimuksetText)) {
+        if (StringUtils.isNotEmpty(ammattitaitovaatimuksetText)) {
             addTeksti(docBase, ammattitaitovaatimuksetText, "div");
         }
 
@@ -599,8 +596,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         kohdeSolu.appendChild(vaatimusLista);
                         kohde.getVaatimukset().forEach(vaatimus -> {
                             String ktaso = getTextString(docBase, vaatimus.getSelite());
-                            if(vaatimus.getAmmattitaitovaatimusKoodi() != null
-                                    && !vaatimus.getAmmattitaitovaatimusKoodi().isEmpty()){
+                            if (vaatimus.getAmmattitaitovaatimusKoodi() != null
+                                    && !vaatimus.getAmmattitaitovaatimusKoodi().isEmpty()) {
                                 ktaso += " (" + vaatimus.getAmmattitaitovaatimusKoodi() + ")";
                             }
                             Element vaatimusAlkio = docBase.getDocument().createElement("li");
@@ -612,7 +609,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addValmatelmaSisalto(DokumenttiBase docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
-        if(valmaTelmaSisalto == null) {
+        if (valmaTelmaSisalto == null) {
             return;
         }
 
@@ -621,16 +618,16 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addValmaOsaamistavoitteet(DokumenttiBase docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
-        if(valmaTelmaSisalto.getOsaamistavoite().size() > 0) {
+        if (valmaTelmaSisalto.getOsaamistavoite().size() > 0) {
             addTeksti(docBase, messages.translate("docgen.valma.osaamistavoitteet.title", docBase.getKieli()), "h5");
         }
 
         for (OsaamisenTavoite osaamisenTavoite : valmaTelmaSisalto.getOsaamistavoite()) {
-            if(osaamisenTavoite.getNimi() != null) {
+            if (osaamisenTavoite.getNimi() != null) {
                 addTeksti(docBase, getTextString(docBase, osaamisenTavoite.getNimi()), "h6");
             }
 
-            if(osaamisenTavoite.getKohde() != null) {
+            if (osaamisenTavoite.getKohde() != null) {
                 addTeksti(docBase, getTextString(docBase, osaamisenTavoite.getKohde()), "div");
             }
 
@@ -642,17 +639,17 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 lista.appendChild(alkio);
             });
 
-            if(osaamisenTavoite.getSelite() != null) {
+            if (osaamisenTavoite.getSelite() != null) {
                 addTeksti(docBase, getTextString(docBase, osaamisenTavoite.getSelite()), "div");
             }
         }
     }
 
     private void addValmaArviointi(DokumenttiBase docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
-        if(valmaTelmaSisalto.getOsaamisenarviointi() != null || valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null) {
+        if (valmaTelmaSisalto.getOsaamisenarviointi() != null || valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null) {
             addTeksti(docBase, messages.translate("docgen.valma.osaamisenarviointi.title", docBase.getKieli()), "h5");
 
-            if(valmaTelmaSisalto.getOsaamisenarviointi() != null) {
+            if (valmaTelmaSisalto.getOsaamisenarviointi() != null) {
                 if (valmaTelmaSisalto.getOsaamisenarviointi().getKohde() != null) {
                     addTeksti(docBase,
                             getTextString(docBase, valmaTelmaSisalto.getOsaamisenarviointi().getKohde()),
@@ -668,7 +665,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 });
             }
 
-            if(valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null){
+            if (valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null) {
                 addTeksti(docBase,
                         valmaTelmaSisalto.getOsaamisenarviointiTekstina().getTeksti().get(docBase.getKieli()),
                         "div");
@@ -697,7 +694,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addTeksti(docBase, lisatietoteksti, "div");
         }
 
-
         List<ArvioinninKohdealue> arvioinninKohdealueet = sanitizeList(arviointi.getArvioinninKohdealueet());
         for (ArvioinninKohdealue ka : arvioinninKohdealueet) {
             if (ka.getArvioinninKohteet() == null) {
@@ -711,7 +707,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     : messages.translate("docgen.tutke2.arvioinnin_kohteet.title", docBase.getKieli());
 
             addTeksti(docBase, otsikkoTeksti.toUpperCase(), "h6");
-
 
             List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
 
@@ -845,8 +840,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                     String otsikkoAvain = tavoite.isPakollinen() ? "docgen.tutke2.pakolliset_osaamistavoitteet.title"
                             : "docgen.tutke2.valinnaiset_osaamistavoitteet.title";
-                    String otsikko = messages.translate(otsikkoAvain, docBase.getKieli()) +
-                            getLaajuusSuffiksi(tavoite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli());
+                    String otsikko = messages.translate(otsikkoAvain, docBase.getKieli())
+                            + getLaajuusSuffiksi(tavoite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli());
                     addTeksti(docBase, otsikko, "h6");
 
                     String tavoitteet = getTextString(docBase, tavoite.getTavoitteet());
@@ -925,8 +920,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     private String getOtsikko(DokumenttiBase docBase, TutkinnonOsaViite viite) {
         TutkinnonOsa osa = viite.getTutkinnonOsa();
-        return getTextString(docBase, osa.getNimi()) +
-                getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli());
+        return getTextString(docBase, osa.getNimi())
+                + getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli());
     }
 
     private Element newBoldElement(Document doc, String teksti) {
@@ -1038,7 +1033,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 BufferedImage tempImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(),
                         BufferedImage.TYPE_3BYTE_BGR);
                 tempImage.getGraphics().setColor(new Color(255, 255, 255, 0));
-                tempImage.getGraphics().fillRect (0, 0, width, height);
+                tempImage.getGraphics().fillRect(0, 0, width, height);
                 tempImage.getGraphics().drawImage(bufferedImage, 0, 0, null);
                 bufferedImage = tempImage;
 

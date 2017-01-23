@@ -17,12 +17,15 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -59,10 +62,15 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
+    public KoodistoKoodiDto get(String koodistoUri, String koodiUri) {
+        return get(koodistoUri, koodiUri, null);
+    }
+
+    @Override
     @Cacheable("koodistokoodit")
-    public KoodistoKoodiDto get(String koodisto, String koodi) {
+    public KoodistoKoodiDto get(String koodistoUri, String koodiUri, Long versio) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi/" + koodi;
+        String url = koodistoServiceUrl + KOODISTO_API + koodistoUri + "/koodi/" + koodiUri + (versio != null ? "/" + versio.toString() : "");
         KoodistoKoodiDto re = restTemplate.getForObject(url, KoodistoKoodiDto.class);
         return re;
     }
@@ -89,6 +97,11 @@ public class KoodistoClientImpl implements KoodistoClient {
         return tulos;
     }
 
+    private Map<String, String> metadataToLocalized(KoodistoKoodiDto koodistoKoodi) {
+        return Arrays.asList(koodistoKoodi.getMetadata()).stream()
+                .collect(Collectors.toMap(k -> k.getKieli().toLowerCase(), k -> k.getNimi()));
+    }
+
     @Override
     @Cacheable(value = "koodistot", key="'alarelaatio:'+#p0")
     public List<KoodistoKoodiDto> getAlarelaatio(String koodi) {
@@ -108,4 +121,27 @@ public class KoodistoClientImpl implements KoodistoClient {
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
         return koodistoDtot;
     }
+
+    @Override
+    public void addNimiAndUri(KoodiDto koodi) {
+        KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri(), koodi.getVersio());
+        koodi.setArvo(koodistoKoodi.getKoodiArvo());
+        koodi.setNimi(metadataToLocalized(koodistoKoodi));
+    }
+
+    @Override
+    public KoodiDto getKoodi(String koodisto, String koodiUri) {
+        return getKoodi(koodisto, koodiUri, null);
+    }
+
+    @Override
+    public KoodiDto getKoodi(String koodisto, String koodiUri, Long versio) {
+        KoodiDto koodi = new KoodiDto();
+        koodi.setUri(koodiUri);
+        koodi.setKoodisto(koodisto);
+        koodi.setVersio(versio);
+        addNimiAndUri(koodi);
+        return koodi;
+    }
+
 }

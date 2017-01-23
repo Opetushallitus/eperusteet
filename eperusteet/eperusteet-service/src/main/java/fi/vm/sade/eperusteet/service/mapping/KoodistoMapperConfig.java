@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -18,10 +18,12 @@ package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import fi.vm.sade.eperusteet.dto.OpintoalaDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,7 +33,10 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class KoodistoMapperConfig {
-    
+
+    @Autowired
+    private KoodistoClient koodistoClient;
+
     @Bean
     @Koodisto
     public DtoMapper koodistoMapper() {
@@ -46,27 +51,28 @@ public class KoodistoMapperConfig {
                 .fieldMap("metadata", "nimi").converter("metadataConverter").add()
                 .byDefault()
                 .register();
-        
+
         factory.classMap(KoodistoKoodiDto.class, Peruste.class)
                 //.fieldMap("voimassaAlkuPvm", "paivays").converter("koodistoPaivaysConverter").add()
                 .fieldMap("metadata", "nimi").converter("metadataToTekstipalanenConverter").add()
                 .byDefault()
                 .register();
-        
+
         factory.classMap(KoodistoKoodiDto.class, Koulutus.class)
                 //.fieldMap("voimassaAlkuPvm", "paivays").converter("koodistoPaivaysConverter").add()
                 .fieldMap("metadata", "nimi").converter("metadataToTekstipalanenConverter").add()
                 .byDefault()
                 .register();
-        
+
         factory.classMap(KoodistoKoodiDto.class, OpintoalaDto.class)
                 .field("koodiUri", "koodi")
                 .fieldMap("metadata", "nimi").converter("metadataConverter").add()
                 .byDefault()
                 .register();
-        
+
+
         return new DtoMapperImpl(factory.getMapperFacade());
     }
-    
-    
+
+
 }

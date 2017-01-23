@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import java.util.List;
 
 /**
@@ -26,11 +27,19 @@ public interface KoodistoClient {
 
     List<KoodistoKoodiDto> getAll(String koodisto);
 
-    KoodistoKoodiDto get(String koodisto, String koodi);
+    KoodistoKoodiDto get(String koodistoUri, String koodiUri);
+
+    KoodistoKoodiDto get(String koodistoUri, String koodiUri, Long versio);
 
     List<KoodistoKoodiDto> filterBy(String koodisto, String haku);
 
     List<KoodistoKoodiDto> getAlarelaatio(String koodi);
 
     List<KoodistoKoodiDto> getYlarelaatio(String koodi);
+
+    KoodiDto getKoodi(String koodisto, String koodiUri);
+
+    KoodiDto getKoodi(String koodisto, String koodiUri, Long versio);
+
+    void addNimiAndUri(KoodiDto koodi);
 }

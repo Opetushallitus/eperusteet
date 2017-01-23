@@ -33,6 +33,8 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.OsaamisalaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -43,6 +45,8 @@ import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
+import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.Mapper;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
@@ -55,6 +59,7 @@ import ma.glasnost.orika.unenhance.HibernateUnenhanceStrategy;
 import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -65,6 +70,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DtoMapperConfig {
     private static final Logger logger = LoggerFactory.getLogger(DtoMapperConfig.class);
+
+    @Autowired
+    private KoodistoClient koodistoClient;
 
     @Bean
     @Dto
@@ -208,6 +216,29 @@ public class DtoMapperConfig {
                 .exclude("oppiaineet")
                 .byDefault()
                 .register();
+
+        factory.classMap(Koodi.class, KoodiDto.class)
+                .byDefault()
+                .customize(new CustomMapper<Koodi, KoodiDto>() {
+                    @Override
+                    public void mapAtoB(Koodi a, KoodiDto b, MappingContext context) {
+                        koodistoClient.addNimiAndUri(b);
+                    }
+                })
+                .register();
+
+        factory.classMap(Koodi.class, OsaamisalaDto.class)
+            .field("uri", "osaamisalakoodiUri")
+            .byDefault()
+            .customize(new CustomMapper<Koodi, OsaamisalaDto>() {
+                @Override
+                public void mapAtoB(Koodi a, OsaamisalaDto b, MappingContext context) {
+                    KoodiDto koodi = koodistoClient.getKoodi(a.getKoodisto(), a.getUri(), a.getVersio());
+                    b.setNimi(koodi.getNimi());
+                    b.setOsaamisalakoodiArvo(koodi.getArvo());
+                }
+            })
+            .register();
 
         //YL
         factory.classMap(OppiaineDto.class, Oppiaine.class)

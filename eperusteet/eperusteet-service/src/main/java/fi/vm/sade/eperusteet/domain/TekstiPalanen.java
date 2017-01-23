@@ -63,8 +63,10 @@ public class TekstiPalanen implements Serializable {
 
     public Map<Kieli, String> getTeksti() {
         EnumMap<Kieli, String> map = new EnumMap<>(Kieli.class);
-        for (LokalisoituTeksti t : teksti) {
-            map.put(t.getKieli(), t.getTeksti());
+        if (teksti != null) {
+            for (LokalisoituTeksti t : teksti) {
+                map.put(t.getKieli(), t.getTeksti());
+            }
         }
         return map;
     }

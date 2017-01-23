@@ -1,11 +1,17 @@
 package fi.vm.sade.eperusteet.service.dokumentti.impl.util;
 
 import fi.vm.sade.eperusteet.domain.Dokumentti;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.Map;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.pdfbox.preflight.PreflightDocument;
 import org.apache.pdfbox.preflight.ValidationResult;
@@ -17,11 +23,6 @@ import org.jsoup.helper.W3CDom;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 
 /**
  * @author isaul
@@ -71,6 +72,15 @@ public class DokumenttiUtils {
             header.appendChild(docBase.getDocument().createTextNode(unescapeHtml5(text)));
             docBase.getBodyElement().appendChild(header);
         }
+    }
+
+    public static String getTextString(DokumenttiBase docBase, Map<String, String> teksti) {
+        Kieli kieli = docBase.getKieli();
+        String result = null;
+        if (teksti != null) {
+            result = teksti.get(kieli.toString());
+        }
+        return result != null ? result : "";
     }
 
     public static String getTextString(DokumenttiBase docBase, TekstiPalanen tekstiPalanen) {

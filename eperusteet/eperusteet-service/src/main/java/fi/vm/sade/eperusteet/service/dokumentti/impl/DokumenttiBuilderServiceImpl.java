@@ -26,21 +26,19 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.*;
-
+import java.io.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -51,10 +49,14 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.*;
 
 /**
  *
@@ -79,6 +81,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     @Autowired
     private KoodistoClient koodistoService;
+
+    @Dto
+    @Autowired
+    private DtoMapper mapper;
 
     @Override
     public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi)
@@ -1165,6 +1171,14 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         return list;
     }
 
+    private String getTextString(Map<String, String> teksti, Kieli kieli) {
+        String result = null;
+        if (teksti != null) {
+            result = teksti.get(kieli.toString());
+        }
+        return result != null ? result : "";
+    }
+
     private String getTextString(TekstiPalanen teksti, Kieli kieli) {
         if (teksti == null ||
             teksti.getTeksti() == null ||
@@ -1483,9 +1497,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             addTableCell(doc, itrow3, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
-        Set<Koodi> osaamisalat = peruste.getOsaamisalat();
+        List<KoodiDto> osaamisalat = mapper.mapAsList(peruste.getOsaamisalat(), KoodiDto.class);
         Element osaamisalalist = doc.createElement("simplelist");
-        for (Koodi osaamisala : osaamisalat) {
+        for (KoodiDto osaamisala : osaamisalat) {
             String osaamisalaNimi = getTextString(osaamisala.getNimi(), kieli);
             if (StringUtils.isNotEmpty(osaamisala.getArvo())) {
                 osaamisalaNimi += " (" + osaamisala.getArvo() + ")";

@@ -157,7 +157,8 @@ angular.module('eperusteApp')
           $scope.editablePeruste.osaamisalat.push({
             nimi: koodi.nimi,
             arvo: koodi.koodiArvo,
-            uri: koodi.koodiUri
+            uri: koodi.koodiUri,
+            koodisto: koodi.koodisto.koodistoUri
           });
         }, {
           tyyppi: function() { return 'osaamisala'; },
