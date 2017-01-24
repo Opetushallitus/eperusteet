@@ -16,16 +16,15 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -53,6 +52,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     private DtoMapper mapper;
 
     @Override
+    @Cacheable("koodistot")
     public List<KoodistoKoodiDto> getAll(String koodisto) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi/";
@@ -70,31 +70,16 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Cacheable("koodistokoodit")
     public KoodistoKoodiDto get(String koodistoUri, String koodiUri, Long versio) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceUrl + KOODISTO_API + koodistoUri + "/koodi/" + koodiUri + (versio != null ? "/" + versio.toString() : "");
+        String url = koodistoServiceUrl + KOODISTO_API + koodistoUri + "/koodi/" + koodiUri + (versio != null ? "?koodistoVersio=" + versio.toString() : "");
         KoodistoKoodiDto re = restTemplate.getForObject(url, KoodistoKoodiDto.class);
         return re;
     }
 
     @Override
-    public List<KoodistoKoodiDto> filterBy(String koodisto, String koodi) {
-        List<KoodistoKoodiDto> filter = getAll(koodisto);
-        List<KoodistoKoodiDto> tulos = new ArrayList<>();
-
-        for (KoodistoKoodiDto x : filter) {
-            Boolean nimessa = false;
-
-            for (KoodistoMetadataDto y : x.getMetadata()) {
-                if (y.getNimi().toLowerCase().contains(koodi.toLowerCase())) {
-                    nimessa = true;
-                    break;
-                }
-            }
-
-            if (x.getKoodiUri().contains(koodi) || nimessa) {
-                tulos.add(x);
-            }
-        }
-        return tulos;
+    public Stream<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
+        return getAll(koodisto).stream()
+                .filter(koodi -> koodi.getKoodiArvo().contains(haku) || Arrays.stream(koodi.getMetadata())
+                            .anyMatch(meta -> meta.getNimi().toLowerCase().contains(haku.toLowerCase())));
     }
 
     private Map<String, String> metadataToLocalized(KoodistoKoodiDto koodistoKoodi) {

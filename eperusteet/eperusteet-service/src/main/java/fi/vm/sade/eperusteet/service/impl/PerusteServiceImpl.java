@@ -55,7 +55,9 @@ import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -217,10 +219,27 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return mapper.mapAsList(res, PerusteInfoDto.class);
     }
 
+    private Stream<Peruste> getPerusteetByUris(Stream<String> urit, Function<String, Stream<Peruste>> perusteByUriFinder) {
+        return urit.map(uri -> perusteByUriFinder.apply(uri)).flatMap(Function.identity());
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
-        Page<Peruste> result = perusteet.findBy(page, pquery);
+        Stream<Peruste> koodistostaHaetut = Stream.empty();
+
+        // Ladataan koodistosta osaamisala ja tutkintonimikehakua vastaavat koodit
+        if (pquery.getNimi() != null && pquery.isOsaamisalat()) {
+            koodistostaHaetut = Stream.concat(koodistostaHaetut, getPerusteetByUris(koodistoService.filterBy("osaamisala", pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri), perusteet::findAllByOsaamisala));
+        }
+
+        // Haetaan perusteiden id:t mihin on liitetty osaamisalat tai tutkintonimikkeet
+        if (pquery.getNimi()!= null && pquery.isTutkintonimikkeet()) {
+            koodistostaHaetut = Stream.concat(koodistostaHaetut, getPerusteetByUris(koodistoService.filterBy("tutkintonimikkeet", pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri), tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
+        }
+
+        // Lisätään mahdolliset perusteet hakujoukkoon
+        Page<Peruste> result = perusteet.findBy(page, pquery, koodistostaHaetut.map(Peruste::getId).collect(Collectors.toSet()));
         PageDto<Peruste, PerusteHakuDto> resultDto = new PageDto<>(result, PerusteHakuDto.class, page, mapper);
 
         if (pquery.isTutkintonimikkeet()) {
@@ -230,6 +249,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
                 List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>> tutkintonimikkeetKoodisto = new ArrayList<>();
 
+                // FIXME
                 for (TutkintonimikeKoodiDto tkd : tutkintonimikeKoodit) {
                     HashMap<String, KoodistoKoodiDto> nimet = new HashMap<>();
                     if (tkd.getOsaamisalaUri() != null) {

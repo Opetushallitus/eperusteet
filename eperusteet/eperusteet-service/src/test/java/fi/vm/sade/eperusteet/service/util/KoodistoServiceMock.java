@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -62,8 +63,8 @@ public class KoodistoServiceMock implements KoodistoClient {
     }
 
     @Override
-    public List<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
-        return Collections.emptyList();
+    public Stream<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
+        return Stream.empty();
     }
 
     @Override

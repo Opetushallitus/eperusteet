@@ -15,7 +15,7 @@
         <hibernate.version>4.3.9.Final</hibernate.version>
         <spring.version>4.3.4.RELEASE</spring.version>
         <spring.security.version>4.2.0.RELEASE</spring.security.version>
-        <spring.data.jpa.version>1.7.2.RELEASE</spring.data.jpa.version>
+        <spring.data.jpa.version>1.10.6.RELEASE</spring.data.jpa.version>
         <logback.version>1.1.7</logback.version>
         <postgresql.version>9.4.1211</postgresql.version>
         <jackson.version>2.5.2</jackson.version>

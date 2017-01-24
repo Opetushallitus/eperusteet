@@ -28,6 +28,3 @@ ALTER TABLE tutkinnon_rakenne_aud DROP COLUMN osaamisala_id;
 
 ALTER TABLE tutkinnon_rakenne RENAME koodi_temp_id TO osaamisala_id;
 ALTER TABLE tutkinnon_rakenne_aud RENAME koodi_temp_id TO osaamisala_id;
-
--- Asetetaan koodiston arvo urin perusteella
--- UPDATE

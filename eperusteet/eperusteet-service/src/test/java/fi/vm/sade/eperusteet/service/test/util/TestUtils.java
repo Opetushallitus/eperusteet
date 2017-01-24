@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.test.util;
 
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
@@ -53,6 +54,11 @@ public abstract class TestUtils {
         Peruste p = new Peruste();
         p.setNimi(tekstiPalanenOf(Kieli.FI, "Nimi"));
         return p;
+    }
+
+    public static Koodi teeKoodi() {
+        Koodi koodi = new Koodi();
+        return koodi;
     }
 
     public static Arviointi teeArviointi(ArviointiAsteikko arviointiasteikko) {

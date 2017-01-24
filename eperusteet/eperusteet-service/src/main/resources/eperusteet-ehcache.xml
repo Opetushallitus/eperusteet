@@ -300,9 +300,9 @@
          timeToLiveSeconds="600"
          overflowToDisk="false" />
     <cache name="koodistot"
-         maxElementsInMemory="100"
+         maxElementsInMemory="20"
          eternal="false"
-         timeToLiveSeconds="600"
+         timeToLiveSeconds="6000"
          overflowToDisk="false" />
     <cache name="opintoalat"
          maxElementsInMemory="10"

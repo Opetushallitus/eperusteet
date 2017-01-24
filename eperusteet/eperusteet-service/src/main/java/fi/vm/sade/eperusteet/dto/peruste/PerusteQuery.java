@@ -15,10 +15,9 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 /**
  *
@@ -47,6 +46,7 @@ public class PerusteQuery {
     private Long muokattu;
     private String jarjestys;
     private boolean tutkintonimikkeet = false;
+    private boolean osaamisalat = false;
 
     public void setTyyppi(List<String> tyyppi) {
         this.koulutustyyppi = tyyppi;
