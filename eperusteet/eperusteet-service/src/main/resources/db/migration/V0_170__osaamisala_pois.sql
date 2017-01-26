@@ -1,6 +1,6 @@
 -- Koodiston koodeille versio (käytetään vain jos halutaan ylikirjoittaa tarkkaan versioon)
 ALTER TABLE koodi ADD COLUMN versio BIGINT;
-ALTER TABLE koodi ADD COLUMN koodisto VARCHAR(255) NOT NULL;
+ALTER TABLE koodi ADD COLUMN koodisto VARCHAR(255) NOT NULL DEFAULT 'osaamisala';
 ALTER TABLE koodi DROP COLUMN arvo;
 ALTER TABLE koodi DROP COLUMN nimi_id;
 
