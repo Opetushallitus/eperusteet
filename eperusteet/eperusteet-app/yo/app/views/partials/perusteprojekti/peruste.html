@@ -93,21 +93,6 @@ European Union Public Licence for more details.
           </div>
         </div>
 
-        <div class="panel panel-default panel-clean" ng-hide="ladataanKorvattavia || editablePeruste.korvattavatDiaarinumerot.length === 0">
-          <div class="panel-heading">
-            <h3 class="panel-title" kaanna="'siirtyman-paattyminen'"></h3>
-          </div>
-          <div class="panel-body">
-            <div ng-if="editEnabled">
-              <formfield model="editablePeruste" model-var="siirtymaPaattyy" type="date" placeholder="{{'anna-siirtyman-paattymis-pvm' | kaanna}}"></formfield>
-            </div>
-            <div class="aligned" ng-show="!editEnabled" pvm="peruste.siirtymaPaattyy"></div>
-            <p>
-              ({{'siirtyman-kuvaus' | kaanna}})
-            </p>
-          </div>
-        </div>
-
         <div class="panel panel-default panel-clean">
           <div class="panel-heading">
             <h3 class="panel-title" kaanna="'perusteen-kielet'"></h3>
@@ -236,9 +221,24 @@ European Union Public Licence for more details.
                          placeholder="anna-voimaantulo-loppu-pvm"></formfield>
             </div>
             <table class="aligned" ng-show="!editEnabled">
-              <tr><th kaanna>voimaantulo-pvm</th><td pvm="peruste.voimassaoloAlkaa"></td></tr>
+              <tr><th kaanna>voimaantulo-pvm</th><td model pvm="peruste.voimassaoloAlkaa"></td></tr>
               <tr><th kaanna>voimassaolo-paattymispvm</th><td pvm="peruste.voimassaoloLoppuu"></td></tr>
             </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default panel-clean" ng-show="editablePeruste.voimassaoloLoppuu">
+          <div class="panel-heading">
+            <h3 class="panel-title" kaanna="'siirtyman-paattyminen'"></h3>
+          </div>
+          <div class="panel-body">
+            <div ng-if="editEnabled">
+              <formfield model="editablePeruste" model-var="siirtymaPaattyy" type="date" placeholder="{{'anna-siirtyman-paattymis-pvm' | kaanna}}"></formfield>
+            </div>
+            <div class="aligned" ng-show="!editEnabled" pvm="peruste.siirtymaPaattyy"></div>
+            <p>
+              ({{'siirtyman-kuvaus' | kaanna}})
+            </p>
           </div>
         </div>
 

@@ -16,9 +16,11 @@
 package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,26 @@ import org.springframework.stereotype.Service;
 public class KoodistoServiceMock implements KoodistoClient {
 
     @Override
+    public KoodistoKoodiDto get(String koodistoUri, String koodiUri, Long versio) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public KoodiDto getKoodi(String koodisto, String koodiUri) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public KoodiDto getKoodi(String koodisto, String koodiUri, Long versio) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addNimiAndUri(KoodiDto koodi) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public List<KoodistoKoodiDto> getAll(String koodisto) {
         return Collections.emptyList();
     }
@@ -41,8 +63,8 @@ public class KoodistoServiceMock implements KoodistoClient {
     }
 
     @Override
-    public List<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
-        return Collections.emptyList();
+    public Stream<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
+        return Stream.empty();
     }
 
     @Override

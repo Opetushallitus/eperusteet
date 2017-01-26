@@ -19,7 +19,7 @@
 
 package fi.vm.sade.eperusteet.v2.dto.arviointi;
 
-import fi.vm.sade.eperusteet.dto.OsaamistasonKriteeriDto;
+import fi.vm.sade.eperusteet.v2.dto.OsaamistasonKriteeriDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;

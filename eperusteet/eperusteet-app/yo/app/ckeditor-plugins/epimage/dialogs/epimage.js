@@ -84,7 +84,7 @@ CKEDITOR.dialog.add('epimageDialog', function( editor ) {
             }
           }
         ]
-      },
+      }
     ],
     onShow: function () {
       var selection = editor.getSelection();

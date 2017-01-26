@@ -21,19 +21,20 @@ import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 /**
  *
@@ -44,19 +45,24 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     @PersistenceContext
     private EntityManager em;
 
+    @Override
+    public Page<Peruste> findBy(PageRequest page, PerusteQuery pquery) {
+        return findBy(page, pquery, new HashSet<>());
+    }
+
     /**
      * Etsi Peruste määritellyillä hakuehdoilla (sivutettu kysely)
      *
      * @param page sivumääritys
      * @param pquery hakuparametrit
+     * @param koodistostaHaetut
      *
      * @return Yhden hakusivun verran vastauksia
      */
     @Override
-    public Page<Peruste> findBy(PageRequest page, PerusteQuery pquery) {
-
-        TypedQuery<Long> countQuery = getCountQuery(pquery);
-        TypedQuery<Tuple> query = getQuery(pquery);
+    public Page<Peruste> findBy(PageRequest page, PerusteQuery pquery, Set<Long> koodistostaHaetut) {
+        TypedQuery<Long> countQuery = getCountQuery(pquery, koodistostaHaetut);
+        TypedQuery<Tuple> query = getQuery(pquery, koodistostaHaetut);
         if (page != null) {
             query.setFirstResult(page.getOffset());
             query.setMaxResults(page.getPageSize());
@@ -64,13 +70,13 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         return new PageImpl<>(Lists.transform(query.getResultList(), EXTRACT_PERUSTE), page, countQuery.getSingleResult());
     }
 
-    private TypedQuery<Tuple> getQuery(PerusteQuery pquery) {
+    private TypedQuery<Tuple> getQuery(PerusteQuery pquery, Set<Long> koodistostaHaetut) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = cb.createTupleQuery();
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
-        Predicate pred = buildPredicate(root, teksti, cb, pquery);
+        Predicate pred = buildPredicate(root, teksti, cb, pquery, koodistostaHaetut);
         query.distinct(true);
         final Expression<String> n = cb.lower(teksti.get(LokalisoituTeksti_.teksti));
 
@@ -85,19 +91,19 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         return em.createQuery(query);
     }
 
-    private TypedQuery<Long> getCountQuery(PerusteQuery pquery) {
+    private TypedQuery<Long> getCountQuery(PerusteQuery pquery, Set<Long> koodistostaHaetut) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
-        Predicate pred = buildPredicate(root, teksti, cb, pquery);
+        Predicate pred = buildPredicate(root, teksti, cb, pquery, koodistostaHaetut);
         query.select(cb.countDistinct(root)).where(pred);
         return em.createQuery(query);
     }
 
     private Predicate buildPredicate(
-        Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pq) {
+        Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pq, Set<Long> koodistostaHaetut) {
         final Expression<Date> voimassaoloAlkaa = root.get(Peruste_.voimassaoloAlkaa);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
         final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
@@ -106,7 +112,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
 
         if (pq.getNimi() != null) {
-            pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pq.getNimi()))));
+            Predicate nimessa = cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pq.getNimi())));
+            if (koodistostaHaetut.size() > 0) {
+                Predicate haettuKoodistosta = root.get(Peruste_.id).in(koodistostaHaetut);
+                pred = cb.and(pred, cb.or(nimessa, haettuKoodistosta));
+            }
+            else {
+                pred = cb.and(pred, nimessa);
+            }
         }
 
         if (pq.getDiaarinumero() != null) {

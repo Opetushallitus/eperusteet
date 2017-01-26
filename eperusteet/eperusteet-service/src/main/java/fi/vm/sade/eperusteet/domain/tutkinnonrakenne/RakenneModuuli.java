@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @DiscriminatorValue("RM")
 @Audited
 public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli> {
-    
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
@@ -58,7 +59,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private Osaamisala osaamisala;
+    private Koodi osaamisala;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinTable(name = "rakennemoduuli_rakenneosa",

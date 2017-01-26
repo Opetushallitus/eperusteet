@@ -154,7 +154,7 @@ angular.module('eperusteApp')
         editorPlaceholder: '@?',
         editMode: '@?editingEnabled'
       },
-      link: function(scope, element, attrs, ctrl) {
+      link: function(scope: any, element, attrs, ctrl) {
         var placeholderText = null;
         var editingEnabled = (scope.editMode || 'true') === 'true';
 

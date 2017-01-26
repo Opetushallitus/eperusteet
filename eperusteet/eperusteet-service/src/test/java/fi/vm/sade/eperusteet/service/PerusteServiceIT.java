@@ -31,8 +31,15 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -45,15 +52,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -151,6 +149,15 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         pquery.setKoulutuskoodi("koulutuskoodiArvo");
         Page<PerusteHakuDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
+    }
+
+    @Test
+    public void testFindByOsaamisala() {
+//        PerusteQuery pquery = new PerusteQuery();
+//        pquery.setSiirtyma(true);
+//        pquery.setKoulutuskoodi("koulutuskoodiArvo");
+//        Page<PerusteHakuDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
+//        assertEquals(1, perusteet.getTotalElements());
     }
 
     @Test

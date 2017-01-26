@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -35,6 +36,9 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     Peruste findOneByDiaarinumeroAndTila(Diaarinumero diaarinumero, PerusteTila tila);
 
     List<Peruste> findByDiaarinumeroAndTila(Diaarinumero diaarinumero, PerusteTila tila);
+
+    @Query("SELECT DISTINCT p from Peruste p LEFT JOIN p.osaamisalat o WHERE ?1 = o.uri")
+    Stream<Peruste> findAllByOsaamisala(String osaamisalaUri);
 
     @Query("SELECT DISTINCT p.id FROM Peruste p " +
         "LEFT JOIN p.suoritustavat s " +

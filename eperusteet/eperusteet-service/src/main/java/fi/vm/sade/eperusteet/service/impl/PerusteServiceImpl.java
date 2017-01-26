@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.*;
@@ -56,7 +55,9 @@ import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -69,7 +70,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,7 +114,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private PerusteenOsaViiteRepository perusteenOsaViiteRepo;
 
     @Autowired
-    private OsaamisalaRepository osaamisalaRepo;
+    private KoodiRepository koodiRepository;
 
     @Autowired
     @Dto
@@ -219,10 +219,27 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return mapper.mapAsList(res, PerusteInfoDto.class);
     }
 
+    private Stream<Peruste> getPerusteetByUris(Stream<String> urit, Function<String, Stream<Peruste>> perusteByUriFinder) {
+        return urit.map(uri -> perusteByUriFinder.apply(uri)).flatMap(Function.identity());
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
-        Page<Peruste> result = perusteet.findBy(page, pquery);
+        Stream<Peruste> koodistostaHaetut = Stream.empty();
+
+        // Ladataan koodistosta osaamisala ja tutkintonimikehakua vastaavat koodit
+        if (pquery.getNimi() != null && pquery.isOsaamisalat()) {
+            koodistostaHaetut = Stream.concat(koodistostaHaetut, getPerusteetByUris(koodistoService.filterBy("osaamisala", pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri), perusteet::findAllByOsaamisala));
+        }
+
+        // Haetaan perusteiden id:t mihin on liitetty osaamisalat tai tutkintonimikkeet
+        if (pquery.getNimi()!= null && pquery.isTutkintonimikkeet()) {
+            koodistostaHaetut = Stream.concat(koodistostaHaetut, getPerusteetByUris(koodistoService.filterBy("tutkintonimikkeet", pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri), tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
+        }
+
+        // Lisätään mahdolliset perusteet hakujoukkoon
+        Page<Peruste> result = perusteet.findBy(page, pquery, koodistostaHaetut.map(Peruste::getId).collect(Collectors.toSet()));
         PageDto<Peruste, PerusteHakuDto> resultDto = new PageDto<>(result, PerusteHakuDto.class, page, mapper);
 
         if (pquery.isTutkintonimikkeet()) {
@@ -232,6 +249,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
                 List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>> tutkintonimikkeetKoodisto = new ArrayList<>();
 
+                // FIXME
                 for (TutkintonimikeKoodiDto tkd : tutkintonimikeKoodit) {
                     HashMap<String, KoodistoKoodiDto> nimet = new HashMap<>();
                     if (tkd.getOsaamisalaUri() != null) {
@@ -461,8 +479,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS') " +
-            "or hasPermission(#event.perusteId, 'peruste', 'TILANVAIHTO')")
+//    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS') " +
+//            "or hasPermission(#event.perusteId, 'peruste', 'TILANVAIHTO')")
     public void onApplicationEvent(@P("event") PerusteUpdatedEvent event) {
         Peruste peruste = perusteet.findOne(event.getPerusteId());
         if (peruste == null) {
@@ -672,7 +690,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste peruste = perusteet.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat().stream()
-                .map(tov -> tov.getTutkinnonOsa())
+                .map(TutkinnonOsaViite::getTutkinnonOsa)
                 .collect(Collectors.toList()), TutkinnonOsaTilaDto.class);
     }
 
@@ -729,14 +747,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private RakenneModuuli checkIfOsaamisalatAlreadyExists(RakenneModuuli rakenneModuuli) {
-        Osaamisala osaamisalaTemp;
+        Koodi osaamisalaTemp;
         if (rakenneModuuli != null) {
-            if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo() != null) {
-                osaamisalaTemp = osaamisalaRepo.findOneByOsaamisalakoodiArvo(rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo());
+            if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getUri() != null) {
+                osaamisalaTemp = koodiRepository.findOneByUriAndVersio(rakenneModuuli.getOsaamisala().getUri(), rakenneModuuli.getOsaamisala().getVersio());
                 if (osaamisalaTemp != null) {
                     rakenneModuuli.setOsaamisala(osaamisalaTemp);
                 } else {
-                    rakenneModuuli.setOsaamisala(osaamisalaRepo.save(rakenneModuuli.getOsaamisala()));
+                    rakenneModuuli.setOsaamisala(koodiRepository.save(rakenneModuuli.getOsaamisala()));
                 }
             } else {
                 rakenneModuuli.setOsaamisala(null);

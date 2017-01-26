@@ -110,7 +110,8 @@ public class PerusteController {
             @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)"),
-            @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeet")
+            @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
+            @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista")
     })
     public Page<PerusteHakuDto> getAll(@ApiIgnore PerusteQuery pquery) {
         // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
@@ -119,7 +120,7 @@ public class PerusteController {
         if (pquery.getPerusteTyyppi() == null) {
             pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());
         }
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findBy(p, pquery);
     }
 

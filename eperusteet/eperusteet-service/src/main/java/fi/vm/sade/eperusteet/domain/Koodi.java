@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
 import javax.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -29,7 +28,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "koodi")
-@EqualsAndHashCode(of = {"uri","arvo"})
+@EqualsAndHashCode(of = {"uri", "versio"})
 public class Koodi implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -37,28 +36,15 @@ public class Koodi implements Serializable {
     @Setter
     private Long id;
 
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
-    private TekstiPalanen nimi;
+    private String uri; // Uniikki koodistosta minkä sisällöstä ei voi päätellä mitään
 
-    @Column(name = "arvo")
     @Getter
     @Setter
-    private String arvo;
+    private String koodisto;
 
-    @Column(name = "uri")
     @Getter
     @Setter
-    private String uri;
-//
-//    @RelatesToPeruste
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinTable(name = "peruste_osaamisala",
-//            inverseJoinColumns = @JoinColumn(name = "peruste_id"),
-//            joinColumns = @JoinColumn(name = "osaamisala_id"))
-//    @Getter
-//    @Setter
-//    private Peruste peruste;
+    private Long versio; // Oletuksena null milloin käytetään uusinta koodiston versiota
 }

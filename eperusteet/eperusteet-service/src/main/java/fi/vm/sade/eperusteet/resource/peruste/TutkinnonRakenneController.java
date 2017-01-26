@@ -27,17 +27,19 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
-import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
-import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
+import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -51,16 +53,18 @@ public class TutkinnonRakenneController {
 
     @Autowired
     private PerusteenOsaViiteService perusteenOsaViiteService;
+
     @Autowired
     private PerusteService perusteService;
+
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
 
     /**
      * Luo ja liittää uuden tutkinnon osa perusteeseen.
      *
-     * @param perusteId
-     * @param suoritustapakoodi
+     * @param perusteId tutkinnon id
+     * @param suoritustapakoodi suoritustapa
      * @param osa viitteen tiedot
      * @return Viite uuten tutkinnon osaan
      */
@@ -84,7 +88,7 @@ public class TutkinnonRakenneController {
      * @param id tutkinnon id
      * @param suoritustapakoodi suoritustapa (naytto,ops)
      * @param osa liitettävä tutkinnon osa
-     * @return
+     * @return tutkinnonosat
      */
     @RequestMapping(value = "/tutkinnonosat", method = PUT)
     @ResponseBody
@@ -132,16 +136,18 @@ public class TutkinnonRakenneController {
     @RequestMapping(value = "/tutkinnonosat", method = GET)
     @ResponseBody
     public ResponseEntity<List<TutkinnonOsaViiteDto>> getTutkinnonOsat(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi) {
+        @PathVariable("perusteId") final Long id,
+        @PathVariable final Suoritustapakoodi suoritustapakoodi
+    ) {
         return CacheableResponse.create(perusteService.getPerusteVersion(id), 1, () -> perusteService.getTutkinnonOsat(id, suoritustapakoodi));
     }
 
     /**
      * Käytetään laadinnassa tutkinnon osien listauksen yhteydessä
      *
-     * @param id
-     * @param suoritustapakoodi
-     * @return
+     * @param id perusteen id
+     * @param suoritustapakoodi suoritustapa
+     * @return Tutkinnon osa lista
      */
     @RequestMapping(value = "/tutkinnonosat/tilat", method = GET)
     @ResponseBody

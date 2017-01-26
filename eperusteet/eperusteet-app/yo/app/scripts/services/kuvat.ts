@@ -131,7 +131,6 @@ angular.module('eperusteApp')
     $scope.saveNew = function () {
       var image = $scope.model.files[0];
       $scope.service.save(image).then(function (res) {
-        console.log(res);
         $scope.message = 'epimage-plugin-tallennettu';
         $scope.model.files = [];
         $timeout(function () {
@@ -140,7 +139,6 @@ angular.module('eperusteApp')
         setDeferred = _.clone(res);
         $scope.init();
       }, function (res) {
-        console.log(res);
         $scope.message = res.syy || 'epimage-plugin-tallennusvirhe';
         $scope.model.files = [];
         $timeout(function () {
@@ -166,5 +164,20 @@ angular.module('eperusteApp')
         return tmp.html();
       }
       return text;
+    };
+  })
+  .filter("kuvalinkit", () => {
+    return (text) => {
+      let tmp = angular.element("<div>" + text + "</div>");
+      tmp.find("img").each(function () {
+        let el = angular.element(this);
+        el.wrap("<figure></figure>");
+        if(el.attr("alt")) {
+          el.parent().append("<figcaption>" + el.attr("alt") + "</figcaption>");
+          el.parent().wrap("<div style=\"text-align: center;\"></div>");
+        }
+      });
+
+      return tmp.html();
     };
   });

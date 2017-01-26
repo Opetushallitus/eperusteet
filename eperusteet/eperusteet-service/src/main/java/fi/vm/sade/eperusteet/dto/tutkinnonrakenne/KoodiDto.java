@@ -15,7 +15,8 @@
  */
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,9 +27,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"uri","arvo"})
+@EqualsAndHashCode(of = {"uri", "versio"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KoodiDto {
-    private LokalisoituTekstiDto nimi;
+    Map<String, String> nimi;
     private String arvo;
     private String uri;
+    private String koodisto;
+    private Long versio;
 }
