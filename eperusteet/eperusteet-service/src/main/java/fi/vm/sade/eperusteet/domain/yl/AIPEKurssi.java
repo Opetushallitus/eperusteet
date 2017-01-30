@@ -13,32 +13,35 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- * User: tommiratamaa
- * Date: 9.9.15
- * Time: 10.22
+ *
+ * @author nkala
  */
 @Entity
-@Table(name = "yl_kurssi", schema = "public")
+@Table(name = "yl_aipe_kurssi", schema = "public")
 @Audited
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Kurssi extends AbstractAuditedReferenceableEntity implements NimettyKoodillinen {
+public class AIPEKurssi extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Column(nullable = false, unique = true, updatable = false)
@@ -46,12 +49,10 @@ public class Kurssi extends AbstractAuditedReferenceableEntity implements Nimett
 
     @Getter
     @Setter
-    @NotNull
-    @ValidHtml(whitelist = WhitelistType.MINIMAL)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "nimi_id", nullable = false)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    protected TekstiPalanen nimi;
+    private TekstiPalanen nimi;
 
     @Getter
     @Setter
@@ -59,23 +60,11 @@ public class Kurssi extends AbstractAuditedReferenceableEntity implements Nimett
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "kuvaus_id")
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    protected TekstiPalanen kuvaus;
+    private TekstiPalanen kuvaus;
 
     @Getter
     @Setter
-    @Column(name = "koodi_uri")
-    protected String koodiUri;
-
-    @Getter
-    @Setter
-    @Column(name = "koodi_arvo")
-    protected String koodiArvo;
-
-    @Getter
-    @Audited
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinTable(name = "yl_kurssi_toteuttava_oppiaine",
-            joinColumns = @JoinColumn(name = "kurssi_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
-    protected Set<Oppiaine> toteuttavatOppiaineet = new HashSet<>(0);
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Koodi koodi;
 }

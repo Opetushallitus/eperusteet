@@ -1,0 +1,60 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
+
+package fi.vm.sade.eperusteet.service.yl;
+
+import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import java.util.List;
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+/**
+ *
+ * @author nkala
+ */
+public interface AIPEOpetuksenPerusteenSisaltoService {
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    AIPEKurssiDto getKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<AIPEKurssiSuppeaDto> getKurssit(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    AIPEOppiaineDto getOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<AIPEOppiaineSuppeaDto> getOppiaineet(@P("perusteId") Long perusteId, Long vaiheId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    AIPEVaiheDto getVaihe(@P("perusteId") Long perusteId, Long vaiheId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<AIPEVaiheSuppeaDto> getVaiheet(@P("perusteId") Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    LaajaalainenOsaaminenDto getLaajalainen(@P("perusteId") Long perusteId, Long laajalainenId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<LaajaalainenOsaaminenDto> getLaajaalaiset(@P("perusteId") Long perusteId);
+
+}

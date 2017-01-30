@@ -30,14 +30,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
@@ -101,7 +100,7 @@ public class PerusteenSisaltoController {
         return service.addSisaltoLapsi(perusteId, parentId, viite);
     }
 
-    @RequestMapping(value = "/sisalto", method = GET)
+        @RequestMapping(value = "/sisalto", method = GET)
     public ResponseEntity<PerusteenOsaViiteDto<?>> getSuoritustapaSisaltoUUSI(
         @RequestParam(value = "muoto", required = false, defaultValue = "suppea") final String view,
         @PathVariable("perusteId") final Long perusteId,

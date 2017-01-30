@@ -153,6 +153,8 @@
     "./app/scripts/controllers/modals/uudelleenohjaus.ts",
     "./app/scripts/controllers/modals/rakenneosamodal.ts",
     "./app/scripts/controllers/modals/aikakatko.ts",
-    "./app/scripts/controllers/modals/tilanvaihtovirhe.ts"
+    "./app/scripts/controllers/modals/tilanvaihtovirhe.ts",
+    "./app/scripts/aipe/api.ts",
+    "./app/scripts/aipe/state.ts"
   ]
 }

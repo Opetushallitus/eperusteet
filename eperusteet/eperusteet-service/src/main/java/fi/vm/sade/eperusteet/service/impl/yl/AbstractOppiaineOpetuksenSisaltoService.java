@@ -20,7 +20,7 @@ import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
-import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -42,10 +42,10 @@ public abstract class AbstractOppiaineOpetuksenSisaltoService<EntityType extends
             implements OppiainePerusteenSisaltoService {
 
     @Autowired
-    protected PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
+    protected PerusteenOsaViiteService viiteService;
 
     @Autowired
-    protected PerusteenOsaViiteService viiteService;
+    protected PerusteRepository perusteet;
 
     @Autowired
     @Dto

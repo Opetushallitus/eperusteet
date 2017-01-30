@@ -18,16 +18,20 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class PerusopetuksenPerusteenSisaltoServiceImpl
         extends AbstractOppiaineOpetuksenSisaltoService<PerusopetuksenPerusteenSisalto>
         implements PerusopetuksenPerusteenSisaltoService {
+
+    @Autowired
+    protected PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -45,7 +49,6 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl
     @Transactional(readOnly = true)
     protected PerusopetuksenPerusteenSisalto getByPerusteId(Long perusteId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Perustetta ei ole olemassa");
         return sisalto;
     }
 }

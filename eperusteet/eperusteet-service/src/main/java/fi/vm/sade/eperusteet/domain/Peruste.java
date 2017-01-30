@@ -249,6 +249,9 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             case PERUSOPETUS:
                 viite = this.getPerusopetuksenPerusteenSisalto().getSisalto();
                 break;
+            case AIPE:
+                viite = this.getAipeOpetuksenPerusteenSisalto().getSisalto();
+                break;
             case LUKIOKOULUTUS:
                 viite = this.getLukiokoulutuksenPerusteenSisalto().getSisalto();
                 break;

@@ -25,8 +25,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -57,10 +55,6 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto {
     @Setter
     @JoinColumn(name = "sisalto_id")
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
-
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable
-    private Set<AIPEVaihe> vaiheet = new HashSet<>();
 
     public AIPEOpetuksenSisalto kloonaa(Peruste peruste) {
         AIPEOpetuksenSisalto kopio = new AIPEOpetuksenSisalto();

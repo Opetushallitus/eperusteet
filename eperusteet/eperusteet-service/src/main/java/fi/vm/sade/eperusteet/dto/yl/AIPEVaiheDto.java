@@ -14,19 +14,17 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.dto.yl;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import org.hibernate.envers.Audited;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-@Entity
-@Audited
-@Table(name = "yl_aipe_vaihe")
-public class AIPEVaihe extends AbstractAuditedReferenceableEntity {
+@Getter
+@Setter
+public class AIPEVaiheDto extends AIPEVaiheSuppeaDto {
 
 }
