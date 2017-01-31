@@ -34,25 +34,64 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface AIPEOpetuksenPerusteenSisaltoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    AIPEKurssiDto getKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<AIPEKurssiSuppeaDto> getKurssit(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    AIPEOppiaineDto getOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
+    AIPEKurssiDto getKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    AIPEKurssiDto addKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, AIPEKurssiDto kurssiDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    AIPEKurssiDto updateKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId, AIPEKurssiDto kurssiDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void removeKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<AIPEOppiaineSuppeaDto> getOppiaineet(@P("perusteId") Long perusteId, Long vaiheId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    AIPEOppiaineDto getOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    AIPEOppiaineDto updateOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, AIPEOppiaineDto oppiaineDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    AIPEOppiaineDto addOppiaine(@P("perusteId") Long perusteId, Long vaiheId, AIPEOppiaineDto oppiaineDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void removeOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    AIPEOppiaineDto addOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     AIPEVaiheDto getVaihe(@P("perusteId") Long perusteId, Long vaiheId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    AIPEVaiheDto addVaihe(@P("perusteId") Long perusteId, AIPEVaiheDto vaiheDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    AIPEVaiheDto updateVaihe(@P("perusteId") Long perusteId, Long vaiheId, AIPEVaiheDto vaiheDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void removeVaihe(@P("perusteId") Long perusteId, Long vaiheId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<AIPEVaiheSuppeaDto> getVaiheet(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LaajaalainenOsaaminenDto getLaajalainen(@P("perusteId") Long perusteId, Long laajalainenId);
+    LaajaalainenOsaaminenDto getLaajaalainen(@P("perusteId") Long perusteId, Long laajalainenId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    LaajaalainenOsaaminenDto addLaajaalainen(@P("perusteId") Long perusteId, LaajaalainenOsaaminenDto laajaalainenDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    LaajaalainenOsaaminenDto updateLaajaalainen(@P("perusteId") Long perusteId, Long laajalainenId, LaajaalainenOsaaminenDto laajaalainenDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void removeLaajaalainen(@P("perusteId") Long perusteId, Long laajalainenId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<LaajaalainenOsaaminenDto> getLaajaalaiset(@P("perusteId") Long perusteId);
