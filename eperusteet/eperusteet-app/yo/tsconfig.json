@@ -155,6 +155,10 @@
     "./app/scripts/controllers/modals/aikakatko.ts",
     "./app/scripts/controllers/modals/tilanvaihtovirhe.ts",
     "./app/scripts/aipe/api.ts",
-    "./app/scripts/aipe/state.ts"
+    "./app/scripts/aipe/state.ts",
+    "./app/scripts/aipe/laajaalainen/state.ts",
+    "./app/scripts/aipe/vaihe/state.ts",
+    "./app/scripts/aipe/vaihe/oppiaine/state.ts",
+    "./app/scripts/aipe/vaihe/oppiaine/kurssi/state.ts"
   ]
 }

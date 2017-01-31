@@ -1,8 +1,21 @@
 <div class="aipe">
     <div class="laajaalaiset">
+        <div class="laajalaiset-listaus">
+            <div ng-repeat="laajaalainen in laajaalaiset">
+                <pre ng-bind="laajaalainen | json"></pre>
+            </div>
+        </div>
+        <button class="btn btn-primary" ng-bind="'lisaa-laajaalainen' | kaanna"></button>
     </div>
     <div class="vaiheet">
+        <div class="vaihe-listaus">
+            <div ng-repeat="vaihe in vaiheet">
+                <pre ng-bind="vaihe | json"></pre>
+            </div>
+        </div>
+        <button class="btn btn-primary" ng-bind="'lisaa-vaihe' | kaanna"></button>
     </div>
     <div class="sisalto">
+
     </div>
 </div>
