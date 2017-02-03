@@ -26,5 +26,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AIPEVaiheDto extends AIPEVaiheSuppeaDto {
-
+    private TekstiOsaDto siirtymaEdellisesta;
+    private TekstiOsaDto tehtava;
+    private TekstiOsaDto siirtymaSeuraavaan;
+    private TekstiOsaDto laajaalainenOsaaminen;
+    private TekstiOsaDto paikallisestiPaatettavatAsiat;
 }

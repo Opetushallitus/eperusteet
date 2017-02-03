@@ -48,7 +48,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Audited
 @Table(name = "yl_aipe_oppiaine")
-public class AIPEOppiaine extends AbstractAuditedReferenceableEntity {
+public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEOppiaine> {
 
     @NotNull
     @Column(updatable = false)
@@ -145,4 +145,10 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity {
                    @JoinColumn(name = "oppimaara_id")})
     @OrderColumn(name = "oppimaara_order")
     private List<AIPEOppiaine> oppimaarat;
+
+    @Override
+    public AIPEOppiaine kloonaa() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

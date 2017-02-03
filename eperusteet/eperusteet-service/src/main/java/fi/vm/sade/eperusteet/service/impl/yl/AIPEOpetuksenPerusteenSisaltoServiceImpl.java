@@ -16,6 +16,9 @@
 
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
@@ -23,10 +26,19 @@ import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.repository.AIPEKurssiRepository;
+import fi.vm.sade.eperusteet.repository.AIPEOppiaineRepository;
+import fi.vm.sade.eperusteet.repository.AIPEVaiheRepository;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -34,6 +46,31 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPerusteenSisaltoService {
+
+    @Autowired
+    private AIPEVaiheRepository vaiheRepository;
+
+    @Autowired
+    private AIPEOppiaineRepository oppiaineRepository;
+
+    @Autowired
+    private AIPEKurssiRepository kurssiRepository;
+
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
+
+    @Autowired
+    private PerusteRepository perusteRepository;
+
+    @Transactional
+    private Peruste getPeruste(Long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        if (peruste == null) {
+            throw new BusinessRuleViolationException("perustetta-ei-olemassa");
+        }
+        return peruste;
+    }
 
     @Override
     public LaajaalainenOsaaminenDto getLaajaalainen(Long perusteId, Long laajalainenId) {
@@ -122,7 +159,13 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public AIPEVaiheDto addVaihe(Long perusteId, AIPEVaiheDto vaiheDto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        vaiheDto.setId(null);
+        Peruste peruste = getPeruste(perusteId);
+        AIPEOpetuksenSisalto sisalto = peruste.getAipeOpetuksenPerusteenSisalto();
+        AIPEVaihe vaihe = mapper.map(vaiheDto, AIPEVaihe.class);
+        vaihe = vaiheRepository.save(vaihe);
+        sisalto.getVaiheet().add(vaihe);
+        return mapper.map(vaihe, AIPEVaiheDto.class);
     }
 
     @Override

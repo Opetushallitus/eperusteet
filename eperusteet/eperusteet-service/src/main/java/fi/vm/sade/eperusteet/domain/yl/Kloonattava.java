@@ -14,21 +14,13 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
-
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.UUID;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.domain.yl;
 
 /**
  *
  * @author nkala
+ * @param <T>
  */
-@Getter
-@Setter
-public class AIPEKurssiBaseDto {
-    private Long id;
-    private UUID tunniste;
-    private LokalisoituTekstiDto nimi;
+public interface Kloonattava<T> {
+    public T kloonaa();
 }

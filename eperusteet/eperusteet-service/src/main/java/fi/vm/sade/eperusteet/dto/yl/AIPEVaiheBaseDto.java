@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,5 +27,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AIPEVaiheBaseDto {
-
+    private Long id;
+    private UUID tunniste;
 }

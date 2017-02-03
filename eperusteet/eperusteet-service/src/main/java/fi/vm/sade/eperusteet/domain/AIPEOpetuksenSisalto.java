@@ -17,15 +17,21 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -55,6 +61,17 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto {
     @Setter
     @JoinColumn(name = "sisalto_id")
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
+
+    @Getter
+    @Audited
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinTable(name = "aipe_opetuksensisalto_vaihe",
+               joinColumns = {
+                   @JoinColumn(name = "opetus_id")},
+               inverseJoinColumns = {
+                   @JoinColumn(name = "vaihe_id")})
+    @OrderColumn(name = "vaihe_order")
+    private List<AIPEVaihe> vaiheet = new ArrayList<>();
 
     public AIPEOpetuksenSisalto kloonaa(Peruste peruste) {
         AIPEOpetuksenSisalto kopio = new AIPEOpetuksenSisalto();

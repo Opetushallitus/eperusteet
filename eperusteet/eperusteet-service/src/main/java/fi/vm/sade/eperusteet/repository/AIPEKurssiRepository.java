@@ -14,21 +14,17 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.UUID;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.yl.AIPEKurssi;
+import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
-public class AIPEKurssiBaseDto {
-    private Long id;
-    private UUID tunniste;
-    private LokalisoituTekstiDto nimi;
+@Repository
+public interface AIPEKurssiRepository extends JpaWithVersioningRepository<AIPEKurssi, Long> {
+
 }
