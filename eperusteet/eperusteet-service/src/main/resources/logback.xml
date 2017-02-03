@@ -9,6 +9,7 @@
   <logger name="org.hibernate" level="error"/>
   <logger name="org.hibernate.tool.hbm2ddl" level="off"/>
   <logger name="org.springframework" level="warn"/>
+  <logger name="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" level="error"/>
   <logger name="fi.vm.sade" level="info"/>
   <logger name="fi.vm.sade.eperusteet" level="debug"/>
   <logger name="fi.vm.sade.eperusteet.PROFILING" level="trace"/>

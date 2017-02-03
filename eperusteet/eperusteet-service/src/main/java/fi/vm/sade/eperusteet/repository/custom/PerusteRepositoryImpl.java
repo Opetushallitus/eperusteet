@@ -21,20 +21,16 @@ import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import java.util.*;
 
 /**
  *
@@ -103,7 +99,12 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     }
 
     private Predicate buildPredicate(
-        Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pq, Set<Long> koodistostaHaetut) {
+        Root<Peruste> root,
+        Join<TekstiPalanen, LokalisoituTeksti> teksti,
+        CriteriaBuilder cb,
+        PerusteQuery pq,
+        Set<Long> koodistostaHaetut
+    ) {
         final Expression<Date> voimassaoloAlkaa = root.get(Peruste_.voimassaoloAlkaa);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
         final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);

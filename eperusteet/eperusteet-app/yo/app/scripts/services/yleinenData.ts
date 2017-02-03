@@ -121,7 +121,7 @@ angular.module('eperusteApp')
         oletusSuoritustapa: 'aipe',
         hasTutkintonimikkeet: false,
         hakuState: 'root.selaus.perusopetuslista',
-        sisaltoTunniste: 'posisalto',
+        sisaltoTunniste: 'aipesisalto',
         hasPdfCreation: false
       },
       'koulutustyyppi_12': {
