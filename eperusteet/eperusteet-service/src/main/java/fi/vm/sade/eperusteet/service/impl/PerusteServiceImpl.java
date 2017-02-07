@@ -54,14 +54,6 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +64,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -998,28 +999,31 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     /**
      * Luo uuden perusteen perusrakenteella.
      *
-     * @param perusteprojektiDto
-     * @param koulutustyyppi
-     * @param yksikko
-     * @param isReforminMukainen
-     * @param tyyppi
+     * @param koulutustyyppi Koulutustyyppi
+     * @param yksikko Yksikkö
+     * @param isReforminMukainen Reformin mukainen
+     * @param tyyppi Tyyppi
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
-    public Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi, boolean isReforminMukainen) {
+    public Peruste luoPerusteRunko(
+            KoulutusTyyppi koulutustyyppi,
+            LaajuusYksikko yksikko,
+            PerusteTyyppi tyyppi,
+            boolean isReforminMukainen
+    ) {
         if (koulutustyyppi == null) {
             throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
         }
-
-        KoulutusTyyppi ekoulutustyyppi = koulutustyyppi;
 
         Peruste peruste = new Peruste();
         peruste.setKoulutustyyppi(koulutustyyppi.toString());
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
 
-        if (!isReforminMukainen && ekoulutustyyppi.isAmmatillinen()) {
-            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
+        if (!isReforminMukainen && koulutustyyppi.isAmmatillinen()) {
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO,
+                    yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE));
         }
 
         Suoritustapa st = null;
@@ -1032,16 +1036,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null
                     ? yksikko
                     : LaajuusYksikko.OSAAMISPISTE);
-        } else if (ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
+        } else if (koulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
             peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
-        } else if (ekoulutustyyppi == KoulutusTyyppi.ESIOPETUS
-                || ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUSVALMISTAVA
-                || ekoulutustyyppi == KoulutusTyyppi.LISAOPETUS
-                || ekoulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
+        } else if (koulutustyyppi == KoulutusTyyppi.ESIOPETUS
+                || koulutustyyppi == KoulutusTyyppi.PERUSOPETUSVALMISTAVA
+                || koulutustyyppi == KoulutusTyyppi.LISAOPETUS
+                || koulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
             peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
-        } else if (ekoulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS ||
-                    ekoulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS ||
-                    ekoulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS ) {
+        } else if (koulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS ||
+                    koulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS ||
+                    koulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS ) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS, LaajuusYksikko.KURSSI);
             LukiokoulutuksenPerusteenSisalto sisalto = new LukiokoulutuksenPerusteenSisalto();
             initLukioOpetuksenYleisetTavoitteet(sisalto);

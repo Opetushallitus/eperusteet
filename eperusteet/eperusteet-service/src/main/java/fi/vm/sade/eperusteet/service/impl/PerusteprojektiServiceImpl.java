@@ -235,10 +235,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
-            if (yksikko == null
-                    && perusteprojektiDto.isReforminMukainen()
-                    && koulutustyyppi != null
-                    && koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
+            if (koulutustyyppi == null) {
+                throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla koulutustyyppi");
+            }
+
+            if (yksikko == null && !perusteprojektiDto.isReforminMukainen() && koulutustyyppi
+                    .isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
 
@@ -671,7 +673,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                 suoritustapa.getRakenne(),
                                 KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                         if (!validointi.ongelmat.isEmpty()) {
-                            updateStatus.addStatus("rakenteen-validointi-virhe", suoritustapa.getSuoritustapakoodi(), validointi);
+                            updateStatus.addStatus("rakenteen-validointi-virhe",
+                                    suoritustapa.getSuoritustapakoodi(),
+                                    validointi);
                             updateStatus.setVaihtoOk(false);
                         }
                     }
