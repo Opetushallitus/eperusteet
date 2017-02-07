@@ -426,6 +426,7 @@ angular.module('eperusteApp')
     $scope.showBackLink = function () {
       return !($state.is('root.perusteprojekti.suoritustapa.sisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
+               $state.is('root.perusteprojekti.suoritustapa.aipesisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.vksisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.eosisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.lukiosisalto'));

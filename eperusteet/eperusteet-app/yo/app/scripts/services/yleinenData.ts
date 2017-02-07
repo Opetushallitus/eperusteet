@@ -116,14 +116,6 @@ angular.module('eperusteApp')
         sisaltoTunniste: 'sisalto',
         hasPdfCreation: true
       },
-      'koulutustyyppi_17': {
-        nimi: 'aikuistenperusopetus',
-        oletusSuoritustapa: 'aipe',
-        hasTutkintonimikkeet: false,
-        hakuState: 'root.selaus.perusopetuslista',
-        sisaltoTunniste: 'aipesisalto',
-        hasPdfCreation: false
-      },
       'koulutustyyppi_12': {
         nimi: 'erikoisammattitutkinto',
         oletusSuoritustapa: 'naytto',
@@ -146,6 +138,14 @@ angular.module('eperusteApp')
         hasTutkintonimikkeet: false,
         hakuState: 'root.selaus.perusopetuslista',
         sisaltoTunniste: 'posisalto',
+        hasPdfCreation: false
+      },
+      'koulutustyyppi_17': {
+        nimi: 'aikuistenperusopetus',
+        oletusSuoritustapa: 'aipe',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.aikuisperusopetuslista',
+        sisaltoTunniste: 'aipesisalto',
         hasPdfCreation: false
       },
       'koulutustyyppi_6': {

@@ -69,7 +69,11 @@
     </thead>
     <tbody>
       <tr ng-repeat="peruste in perusteet.data">
-        <td><a ui-sref="root.esitys.peruste({ perusteId: peruste.id, suoritustapa:  hakuparametrit.suoritustapa})"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span></a></td>
+        <td>
+            <a ui-sref="root.esitys.peruste({ perusteId: peruste.id, suoritustapa: hakuparametrit.suoritustapa })">
+                <span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span>
+            </a>
+        </td>
         <td>
             <ul style="list-style:none; padding-left:0; margin-bottom: 0;" ng-repeat="koulutus in peruste.koulutukset">
                 <li>{{koulutusalaNimi(koulutus.koulutusalakoodi).nimi|kaanna}}</li>

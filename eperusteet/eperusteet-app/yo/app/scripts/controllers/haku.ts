@@ -43,6 +43,11 @@ angular.module('eperusteApp')
         templateUrl: 'views/perusopetuslistaus.html',
         controller: 'EsiopetusListaController',
       })
+    .state('root.selaus.aikuisperusopetuslista', {
+        url: '/aikuisperusopetus',
+        templateUrl: 'views/aikuisperusopetuslistaus.html',
+        controller: 'AikuisperusopetusListaController',
+    })
       .state('root.selaus.perusopetuslista', {
         url: '/perusopetus',
         templateUrl: 'views/perusopetuslistaus.html',
@@ -286,6 +291,25 @@ angular.module('eperusteApp')
           eo.$url = $state.href('root.selaus.esiopetus', {perusteId: eo.id});
         })
         .value();
+    }, Notifikaatiot.serverCb);
+  })
+  .controller('AikuisperusopetusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot, YleinenData) {
+    $scope.lista = [];
+    $q.all([
+        Perusteet.get({ tyyppi: 'koulutustyyppi_17' }).$promise
+    ]).then(res => {
+        if (res[0].sivuja > 1) {
+            console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
+        }
+
+        $scope.lista = _([].concat(res[0].data)).sortBy('voimassaoloLoppuu')
+            .reverse()
+            .each(peruste => {
+                peruste.$url = $state.href('root.selaus.aikuisperusopetus', {
+                    perusteId: peruste.id
+                });
+            })
+            .value();
     }, Notifikaatiot.serverCb);
   })
   .controller('PerusopetusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot, YleinenData) {

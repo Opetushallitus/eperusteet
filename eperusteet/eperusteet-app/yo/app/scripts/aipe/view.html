@@ -1,19 +1,69 @@
-<div class="aipe">
-    <div class="laajaalaiset">
-        <div class="laajalaiset-listaus">
-            <div ng-repeat="laajaalainen in laajaalaiset">
-                <pre ng-bind="laajaalainen | json"></pre>
+<!--<div class="aipe">
+    <div class="sisallot">
+        <pre>{{ peruste | json }}</pre>
+        <div class="laajaalaiset">
+            <div class="laajalaiset-listaus">
+                <div ng-repeat="laajaalainen in laajaalaiset">
+                    <pre>{{ laajaalainen | json }}</pre>
+                </div>
             </div>
+            <button class="btn btn-primary" kaanna="'lisaa-laajaalainen'" ui-sref=".laajaalainen"></button>
         </div>
-        <button class="btn btn-primary" ng-bind="'lisaa-laajaalainen' | kaanna"></button>
-    </div>
-    <div class="vaiheet">
-        <div class="vaihe-listaus">
-            <div ng-repeat="vaihe in vaiheet">
-                <pre ng-bind="vaihe | json"></pre>
+        <div class="vaiheet">
+            <div class="vaihe-listaus">
+                <div ng-repeat="vaihe in vaiheet">
+                    <pre>{{ vaihe | json }}</pre>
+                </div>
             </div>
+            <button class="btn btn-primary" kaanna="'lisaa-vaihe'" ui-sref=".vaihe"></button>
         </div>
-        <button class="btn btn-primary" ng-bind="'lisaa-vaihe' | kaanna"></button>
     </div>
-    <div class="sisalto"></div>
+</div>-->
+
+<div class="main-content" id="main">
+    <div class="row tutkinto-sisalto">
+        <div class="tutkinto">
+            <div class="esityksen-tarkastelu">
+                <a class="url" href="{{ $esitysurl }}" icon-role="sunglasses" kaanna="'tarkastele-esitysta'"></a>
+            </div>
+
+            <div ng-hide="editing">
+                <div class="toolbar-input pull-left">
+                    <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value)"></rajaus>
+                </div>
+                <a ng-click="avaaSuljeKaikki()" class="open-close action-link"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div ng-hide="editing">
+                <h2>{{'opetuksen-sisallot' | kaanna}}</h2>
+                <div content-tree="datat.opetus.lapset" filter-by="rajaus" no-content-placeholder="suoritustavalle-ei-ole-viela-sisaltoa"></div>
+            </div>
+
+            <h2 ng-hide="editing">
+                <span kaanna="'tekstikappaleet'"></span>
+                <span> (</span>
+                <span ng-bind="peruste.sisalto.lapset.length || 0"></span>
+                <span>)</span>
+                <div class="pull-right buttons">
+                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto(projekti, peruste)" ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-import" kaanna="tuo-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="addTekstikappale()" icon-role="ep-text-add" kaanna="'lisaa-tutkintokohtainen-osa'"></button>
+                    <button class="btn btn-default btn-sm" ng-click="edit()" icon-role="edit" kaanna="'muokkaa-rakennetta'">
+                    </button>
+                </div>
+            </h2>
+            <div ng-show="editing">
+                <h2>
+                    {{'muokkaa-tekstikappaleiden-rakennetta' | kaanna}}
+                    <a ng-click="avaaSuljeKaikki()" class="open-close action-link"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                </h2>
+            </div>
+            <div class="clearfix"></div>
+
+            <div content-tree="peruste.sisalto.lapset" filter-by="rajaus" no-content-placeholder="peruste-ei-sisaltoa"
+                 edit-mode="editing"></div>
+
+        </div>
+    </div>
 </div>

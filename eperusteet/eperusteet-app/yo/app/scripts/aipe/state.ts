@@ -18,6 +18,11 @@ angular.module('eperusteApp')
 .config($stateProvider => $stateProvider
 .state("root.perusteprojekti.suoritustapa.aipesisalto", {
     url: "/aipesisalto",
+    controller: ($scope, $state) => {
+        $scope.$esitysurl = $state.href('root.selaus.aikuisperusopetuslista', {
+            perusteId: $scope.peruste.id
+        });
+    },
     resolve: {
         perusteprojektit: (Api) => Api.all("perusteprojektit"),
         perusteprojekti: (perusteprojektit, $stateParams) => perusteprojektit.one($stateParams.perusteProjektiId).get(),

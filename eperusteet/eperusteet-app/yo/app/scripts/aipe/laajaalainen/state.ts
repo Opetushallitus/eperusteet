@@ -16,7 +16,7 @@
 
 angular.module('eperusteApp')
 .config($stateProvider => $stateProvider
-.state("root.perusteprojekti.aipe.laajaalainen", {
+.state("root.perusteprojekti.suoritustapa.aipesisalto.laajaalainen", {
     url: "/laajaalainen/:laajaalainenId",
     resolve: {
         laajaalainen: (laajaalaiset, $stateParams) => laajaalaiset.get($stateParams.laajaalainenId),

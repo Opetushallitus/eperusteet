@@ -245,6 +245,8 @@
     "poistetaanko-kommentti": "Poistetaanko kommentti?",
 
     "lisaa-sisalto": "Lisää sisältöä",
+    "lisaa-laajaalainen": "Lisää laaja-alainen",
+    "lisaa-vaihe": "Lisää vaihe",
 
     "perusopetus-tehtava" : "Oppiaineen tehtävä",
     "perusopetus-ohjaus" : "Ohjaus ja tuki",
@@ -340,6 +342,7 @@
 
     "esiopetus": "Esiopetus",
     "perusopetus": "Perusopetus",
+    "aikuistenperusopetus": "Aikuistenperusopetus",
     "lisaopetus": "Lisäopetus",
     "lukiokoulutus": "Lukiokoulutus",
     "ammatillinen-peruskoulutus": "Ammatillinen peruskoulutus",

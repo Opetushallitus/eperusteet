@@ -16,7 +16,7 @@
 
 angular.module('eperusteApp')
 .config($stateProvider => $stateProvider
-.state("root.perusteprojekti.aipe.vaihe", {
+.state("root.perusteprojekti.suoritustapa.aipesisalto.vaihe", {
     url: "/vaihe/:vaiheId",
     resolve: {
         vaihe: (vaiheet, $stateParams) => vaiheet.get($stateParams.vaiheId),
