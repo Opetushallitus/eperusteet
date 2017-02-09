@@ -32,6 +32,7 @@ import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
@@ -163,6 +164,7 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
         List<AIPEKurssiSuppeaDto> kurssit1 = sisalto.getKurssit(perusteId, vaiheId, oppiaineId1);
         Long kurssiId = kurssit1.get(0).getId();
         AIPEKurssiDto kurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId1, kurssiId);
+        assertEquals(kurssi.getId(), kurssiId);
 
         assertTrue(kurssi.getNimi().isPresent());
         assertTrue(kurssi.getKuvaus().isPresent());
@@ -171,17 +173,19 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
             AIPEKurssiDto muuttunutKurssi = new AIPEKurssiDto();
             muuttunutKurssi.setKuvaus(TestUtils.olt("uusi kuvaus"));
             String vanhaNimi = kurssi.getNimi().get().get(Kieli.FI);
-            kurssi = sisalto.updateKurssi(perusteId, vaiheId, oppiaineId1, kurssiId, muuttunutKurssi);
-            assertEquals(kurssi.getId(), kurssiId);
-            assertEquals(kurssi.getKuvaus().get().get(Kieli.FI), "uusi kuvaus");
-            assertEquals(kurssi.getNimi().get().get(Kieli.FI), vanhaNimi);
+            muuttunutKurssi = sisalto.updateKurssi(perusteId, vaiheId, oppiaineId1, kurssiId, muuttunutKurssi);
+            assertEquals(kurssi.getId(), muuttunutKurssi.getId());
+            assertEquals(muuttunutKurssi.getKuvaus().get().get(Kieli.FI), "uusi kuvaus");
+            assertEquals(muuttunutKurssi.getNimi().get().get(Kieli.FI), vanhaNimi);
         }
 
         { // Kurssin poisto
-            sisalto.removeKurssi(perusteId, vaiheId, oppiaineId1, kurssiId);
+            sisalto.removeKurssi(perusteId, vaiheId, oppiaineId1, kurssi.getId());
             try {
-                AIPEKurssiDto poistettuKurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId1, kurssiId);
+                AIPEKurssiDto poistettuKurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId1, kurssi.getId());
                 fail("Kurssi ei pitäisi olla olemassa");
+            }
+            catch (BusinessRuleViolationException ex) {
             }
             finally {
             }
