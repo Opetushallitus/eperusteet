@@ -22,7 +22,10 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
+import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
@@ -33,6 +36,8 @@ import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
@@ -63,6 +68,10 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteRepository perusteRepository;
+
+    @Dto
+    @Autowired
+    private DtoMapper mapper;
 
     private Peruste peruste;
     private Long perusteId;
@@ -193,7 +202,19 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testTavoitteet() {
+    public void testLaajaalaisetOsaamiset() {
+        Set<LaajaalainenOsaaminen> laajaalaiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
+        LaajaalainenOsaaminenDto uusi = new LaajaalainenOsaaminenDto();
+        uusi.setNimi(TestUtils.olt(TestUtils.uniikkiString()));
+        laajaalaiset.add(mapper.map(uusi, LaajaalainenOsaaminen.class));
+    }
 
+    @Test
+    public void testTavoitteet() {
+        AIPEVaihe vaihe = peruste.getAipeOpetuksenPerusteenSisalto().getVaiheet().get(0);
+        AIPEOppiaine oa = vaihe.getOppiaineet().get(0);
+        List<OpetuksenTavoite> tavoitteet = oa.getTavoitteet();
+        assertTrue(tavoitteet.isEmpty());
+        OpetuksenTavoite tavoite = new OpetuksenTavoite();
     }
 }

@@ -79,17 +79,35 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
 
     @Getter
     @Setter
-    @Valid
-    @JoinColumn(name = "tavoitteet_id", nullable = true)
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private TekstiOsa tavoitteet;
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    private TekstiOsa tyotavat;
 
     @Getter
     @Setter
-    @Valid
-    @JoinColumn(name = "arviointi_id", nullable = true)
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    private TekstiOsa ohjaus;
+
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
     private TekstiOsa arviointi;
+
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    private TekstiOsa sisaltoalueinfo;
+
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable
+    @OrderColumn
+    private List<OpetuksenTavoite> tavoitteet = new ArrayList<>();
+
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable
+    @OrderColumn
+    private List<KeskeinenSisaltoalue> sisaltoalueet = new ArrayList<>();
 
     @Getter
     @Setter
