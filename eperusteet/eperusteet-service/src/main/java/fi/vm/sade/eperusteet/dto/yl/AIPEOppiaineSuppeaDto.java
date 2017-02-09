@@ -31,13 +31,13 @@ import lombok.Setter;
 public class AIPEOppiaineSuppeaDto extends AIPEOppiaineBaseDto {
     private Optional<Boolean> koosteinen;
     private Optional<Boolean> abstrakti;
-    private Date muokattu;
+    private Optional<Date> muokattu;
 
-    private TekstiOsaDto tehtava;
-    private TekstiOsaDto tavoitteet;
-    private TekstiOsaDto arviointi;
+    private Optional<TekstiOsaDto> tehtava;
+    private Optional<TekstiOsaDto> tavoitteet;
+    private Optional<TekstiOsaDto> arviointi;
 
-    private LokalisoituTekstiDto pakollinenKurssiKuvaus;
-    private LokalisoituTekstiDto syventavaKurssiKuvaus;
-    private LokalisoituTekstiDto soveltavaKurssiKuvaus;
+    private Optional<LokalisoituTekstiDto> pakollinenKurssiKuvaus;
+    private Optional<LokalisoituTekstiDto> syventavaKurssiKuvaus;
+    private Optional<LokalisoituTekstiDto> soveltavaKurssiKuvaus;
 }

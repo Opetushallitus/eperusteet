@@ -37,6 +37,12 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
     List<AIPEKurssiSuppeaDto> getKurssit(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<AIPEOppiaineSuppeaDto> getOppimaarat(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    AIPEOppiaineDto addOppimaara(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, AIPEOppiaineDto oppiaineDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     AIPEKurssiDto getKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
@@ -62,9 +68,6 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void removeOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    AIPEOppiaineDto addOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     AIPEVaiheDto getVaihe(@P("perusteId") Long perusteId, Long vaiheId);

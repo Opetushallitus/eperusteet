@@ -26,6 +26,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -67,4 +68,13 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi koodi;
+
+    @Getter
+    @ManyToOne(cascade = {})
+    @JoinTable(name = "aipeoppiaine_aipekurssi",
+               joinColumns = {
+                   @JoinColumn(name = "kurssi_id")},
+               inverseJoinColumns = {
+                   @JoinColumn(name = "oppiaine_id")})
+    private AIPEOppiaine oppiaine;
 }

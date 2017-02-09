@@ -161,6 +161,23 @@ public class AIPEOpetuksenSisaltoController {
         return ResponseEntity.ok(sisalto.getOppiaine(perusteId, vaiheId, oppiaineId));
     }
 
+    @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/oppimaarat", method = GET)
+    public ResponseEntity<List<AIPEOppiaineSuppeaDto>> getOppimaarat(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("vaiheId") final Long vaiheId,
+            @PathVariable("oppiaineId") final Long oppiaineId) {
+        return ResponseEntity.ok(sisalto.getOppimaarat(perusteId, vaiheId, oppiaineId));
+    }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/oppimaarat", method = POST)
+    public ResponseEntity<AIPEOppiaineDto> addOppimaara(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("vaiheId") final Long vaiheId,
+            @PathVariable("oppiaineId") final Long oppiaineId,
+            @RequestBody AIPEOppiaineDto oppiaineDto) {
+        return ResponseEntity.ok(sisalto.addOppimaara(perusteId, vaiheId, oppiaineId, oppiaineDto));
+    }
+
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit", method = GET)
     public ResponseEntity<List<AIPEKurssiSuppeaDto>> getKurssit(
             @PathVariable("perusteId") final Long perusteId,

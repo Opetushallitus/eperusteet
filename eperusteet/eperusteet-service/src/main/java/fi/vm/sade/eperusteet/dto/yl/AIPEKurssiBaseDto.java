@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.UUID;
 import lombok.Getter;
@@ -29,6 +30,6 @@ import lombok.Setter;
 @Setter
 public class AIPEKurssiBaseDto {
     private Long id;
-    private UUID tunniste;
-    private LokalisoituTekstiDto nimi;
+    private Optional<UUID> tunniste;
+    private Optional<LokalisoituTekstiDto> nimi;
 }

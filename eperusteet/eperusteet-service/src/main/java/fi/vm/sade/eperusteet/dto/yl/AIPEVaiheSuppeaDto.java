@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,5 +28,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AIPEVaiheSuppeaDto extends AIPEVaiheBaseDto {
-    private LokalisoituTekstiDto nimi;
+    private Optional<LokalisoituTekstiDto> nimi;
 }

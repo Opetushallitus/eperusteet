@@ -36,6 +36,10 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
+import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -171,6 +175,35 @@ public abstract class TestUtils {
 
     public static Optional<TekstiOsaDto> oto(String otsikko, String teksti) {
         return Optional.of(new TekstiOsaDto(olt(otsikko), olt(teksti)));
+    }
+
+    public static AIPEVaiheDto createVaihe() {
+        AIPEVaiheDto vaihe = new AIPEVaiheDto();
+        vaihe.setNimi(olt(uniikkiString()));
+        vaihe.setLaajaalainenOsaaminen(oto(uniikkiString(), uniikkiString()));
+        vaihe.setTehtava(oto(uniikkiString(), uniikkiString()));
+        return vaihe;
+    }
+
+    public static LaajaalainenOsaaminenDto createLaajaalainen() {
+        LaajaalainenOsaaminenDto lDto = new LaajaalainenOsaaminenDto();
+        lDto.setNimi(olt(uniikkiString()));
+        lDto.setKuvaus(olt(uniikkiString()));
+        return lDto;
+    }
+
+    public static AIPEKurssiDto createAIPEKurssi() {
+        AIPEKurssiDto kurssi = new AIPEKurssiDto();
+        kurssi.setNimi(olt(uniikkiString()));
+        kurssi.setKuvaus(olt(uniikkiString()));
+        return kurssi;
+    }
+
+    public static AIPEOppiaineDto createAIPEOppiaine() {
+        AIPEOppiaineDto kurssi = new AIPEOppiaineDto();
+        kurssi.setNimi(olt(uniikkiString()));
+        kurssi.setTehtava(oto(uniikkiString(), uniikkiString()));
+        return kurssi;
     }
 
 }

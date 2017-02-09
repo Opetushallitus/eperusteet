@@ -21,6 +21,8 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -88,6 +90,23 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
                    @JoinColumn(name = "oppiaine_id")})
     @OrderColumn(name = "oppiaine_order")
     private List<AIPEOppiaine> oppiaineet = new ArrayList<>(0);
+
+    public AIPEOppiaine getOppiaine(Long oppiaineId) {
+        Optional<AIPEOppiaine> result = oppiaineet.stream()
+                .filter(oppiaine -> Objects.equals(oppiaine.getId(), oppiaineId))
+                .findFirst();
+
+        if (!result.isPresent()) {
+            result = oppiaineet.stream()
+                .map(AIPEOppiaine::getOppimaarat)
+                .flatMap(x -> x.stream())
+                .filter(oppiaine -> {
+                    return Objects.equals(oppiaine.getId(), oppiaineId);
+                })
+                .findFirst();
+        }
+        return result.get();
+    }
 
     @Override
     public AIPEVaihe kloonaa() {

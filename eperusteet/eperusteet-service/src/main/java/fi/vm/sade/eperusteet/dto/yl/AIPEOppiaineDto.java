@@ -16,8 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,10 +26,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AIPEOppiaineDto extends AIPEOppiaineSuppeaDto {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<AIPEOppiaineSuppeaDto> oppimaarat;
-    
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<AIPEKurssiSuppeaDto> kurssit;
 
 }

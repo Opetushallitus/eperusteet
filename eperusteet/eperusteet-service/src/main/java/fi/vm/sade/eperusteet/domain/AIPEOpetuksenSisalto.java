@@ -19,10 +19,13 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -62,6 +65,11 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto {
     @JoinColumn(name = "sisalto_id")
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @Getter
+    @JoinTable
+    private Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = new HashSet<>();
+
     @Getter
     @Audited
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
@@ -72,6 +80,18 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto {
                    @JoinColumn(name = "vaihe_id")})
     @OrderColumn(name = "vaihe_order")
     private List<AIPEVaihe> vaiheet = new ArrayList<>();
+
+    public Optional<AIPEVaihe> getVaihe(Long vaiheId) {
+        return vaiheet.stream()
+                .filter(vaihe -> Objects.equals(vaihe.getId(), vaiheId))
+                .findFirst();
+    }
+
+    public Optional<LaajaalainenOsaaminen> getLaajaalainenOsaaminen(Long laajaalainenosaaminenId) {
+        return laajaalaisetosaamiset.stream()
+                .filter(vaihe -> Objects.equals(vaihe.getId(), laajaalainenosaaminenId))
+                .findFirst();
+    }
 
     public AIPEOpetuksenSisalto kloonaa(Peruste peruste) {
         AIPEOpetuksenSisalto kopio = new AIPEOpetuksenSisalto();

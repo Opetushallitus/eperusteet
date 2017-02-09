@@ -18,7 +18,10 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.yl.AIPEKurssi;
+import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
 import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
@@ -29,13 +32,15 @@ import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.repository.AIPEKurssiRepository;
 import fi.vm.sade.eperusteet.repository.AIPEOppiaineRepository;
 import fi.vm.sade.eperusteet.repository.AIPEVaiheRepository;
+import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author nkala
  */
 @Service
+@Transactional
 public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPerusteenSisaltoService {
 
     @Autowired
@@ -55,6 +61,9 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Autowired
     private AIPEKurssiRepository kurssiRepository;
+
+    @Autowired
+    private LaajaalainenOsaaminenRepository laajaalainenOsaaminenRepository;
 
     @Autowired
     @Dto
@@ -72,14 +81,77 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         return peruste;
     }
 
+    @Transactional
+    private AIPEOpetuksenSisalto getPerusteSisalto(Long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        if (peruste == null) {
+            throw new BusinessRuleViolationException("perustetta-ei-olemassa");
+        }
+
+        AIPEOpetuksenSisalto sisalto = peruste.getAipeOpetuksenPerusteenSisalto();
+        if (sisalto == null) {
+            throw new BusinessRuleViolationException("perusteella-ei-oikeaa-sisaltoa");
+        }
+        return sisalto;
+    }
+
+    private AIPEVaihe getVaiheImpl(Long perusteId, Long vaiheId) {
+        Peruste peruste = getPeruste(perusteId);
+        AIPEOpetuksenSisalto sisalto = peruste.getAipeOpetuksenPerusteenSisalto();
+        AIPEVaihe vaihe = sisalto.getVaihe(vaiheId).get();
+        if (vaihe == null) {
+            throw new BusinessRuleViolationException("vaihetta-ei-olemassa");
+        }
+        return vaihe;
+    }
+
+    private AIPEOppiaine getOppiaineImpl(Long perusteID, Long vaiheId, Long oppiaineId) {
+        AIPEVaihe vaihe = getVaiheImpl(perusteID, vaiheId);
+        AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
+        if (oppiaine == null) {
+            throw new BusinessRuleViolationException("oppiainetta-ei-olemassa");
+        }
+        return oppiaine;
+    }
+
+    private AIPEKurssi getKurssiImpl(Long perusteID, Long vaiheId, Long oppiaineId, Long kurssiId) {
+        AIPEOppiaine oppiaine = getOppiaineImpl(perusteID, vaiheId, oppiaineId);
+        Optional<AIPEKurssi> kurssi = oppiaine.getKurssi(kurssiId);
+        if (!kurssi.isPresent()) {
+            throw new BusinessRuleViolationException("kurssia-ei-olemassa");
+        }
+        return kurssi.get();
+    }
+
+    @Override
+    public List<AIPEOppiaineSuppeaDto> getOppimaarat(Long perusteId, Long vaiheId, Long oppiaineId) {
+        AIPEOppiaine parent = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        return mapper.mapAsList(parent.getOppimaarat(), AIPEOppiaineSuppeaDto.class);
+    }
+
+    @Override
+    public AIPEOppiaineDto addOppimaara(Long perusteId, Long vaiheId, Long oppiaineId, AIPEOppiaineDto oppiaineDto) {
+        AIPEOppiaine parent = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        oppiaineDto.setId(null);
+        AIPEOppiaine oppimaara = mapper.map(oppiaineDto, AIPEOppiaine.class);
+        oppimaara = oppiaineRepository.save(oppimaara);
+        parent.getOppimaarat().add(oppimaara);
+        return mapper.map(oppimaara, AIPEOppiaineDto.class);
+    }
+
     @Override
     public LaajaalainenOsaaminenDto getLaajaalainen(Long perusteId, Long laajalainenId) {
-        return null;
+        LaajaalainenOsaaminen lo = getPerusteSisalto(perusteId).getLaajaalainenOsaaminen(laajalainenId).get();
+        return mapper.map(lo, LaajaalainenOsaaminenDto.class);
     }
 
     @Override
     public LaajaalainenOsaaminenDto addLaajaalainen(Long perusteId, LaajaalainenOsaaminenDto laajaalainenDto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        laajaalainenDto.setId(null);
+        LaajaalainenOsaaminen lo = mapper.map(laajaalainenDto, LaajaalainenOsaaminen.class);
+        lo = laajaalainenOsaaminenRepository.save(lo);
+        getPerusteSisalto(perusteId).getLaajaalaisetosaamiset().add(lo);
+        return mapper.map(lo, LaajaalainenOsaaminenDto.class);
     }
 
     @Override
@@ -92,69 +164,100 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+//    private void assertKurssit() {
+//    }
+
     @Override
     public AIPEKurssiDto getKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId) {
-        return null;
+        return mapper.map(getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId), AIPEKurssiDto.class);
     }
 
     @Override
     public List<AIPEKurssiSuppeaDto> getKurssit(Long perusteId, Long vaiheId, Long oppiaineId) {
-        return new ArrayList<>();
+        AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        return mapper.mapAsList(oppiaine.getKurssit(), AIPEKurssiSuppeaDto.class);
     }
 
     @Override
     public AIPEKurssiDto addKurssi(Long perusteId, Long vaiheId, Long oppiaineId, AIPEKurssiDto kurssiDto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        kurssiDto.setId(null);
+        AIPEKurssi kurssi = mapper.map(kurssiDto, AIPEKurssi.class);
+        kurssi = kurssiRepository.save(kurssi);
+        oppiaine.getKurssit().add(kurssi);
+        return mapper.map(kurssi, AIPEKurssiDto.class);
     }
 
     @Override
     public AIPEKurssiDto updateKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId, AIPEKurssiDto kurssiDto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AIPEKurssi kurssi = getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId);
+        kurssiDto.setId(kurssiId);
+        kurssi = mapper.map(kurssiDto, kurssi);
+        return mapper.map(kurssi, AIPEKurssiDto.class);
+    }
+
+    private void removeKurssiImpl(AIPEOppiaine oppiaine, AIPEKurssi kurssi) {
+        if (oppiaine.getKurssit().remove(kurssi)) {
+            kurssiRepository.delete(kurssi);
+        }
     }
 
     @Override
     public void removeKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        AIPEKurssi kurssi = getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId);
+        removeKurssiImpl(oppiaine, kurssi);
     }
 
     @Override
     public AIPEOppiaineDto getOppiaine(Long perusteId, Long vaiheId, Long oppiaineId) {
-        return null;
+        return mapper.map(getOppiaineImpl(perusteId, vaiheId, oppiaineId), AIPEOppiaineDto.class);
     }
 
     @Override
     public AIPEOppiaineDto updateOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, AIPEOppiaineDto oppiaineDto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        oppiaineDto.setId(oppiaineId);
+        oppiaine = mapper.map(oppiaineDto, oppiaine);
+        return mapper.map(oppiaine, AIPEOppiaineDto.class);
     }
 
     @Override
     public AIPEOppiaineDto addOppiaine(Long perusteId, Long vaiheId, AIPEOppiaineDto oppiaineDto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AIPEVaihe vaihe = vaiheRepository.findOne(vaiheId);
+        oppiaineDto.setId(null);
+        AIPEOppiaine oa = mapper.map(oppiaineDto, AIPEOppiaine.class);
+        oa = oppiaineRepository.save(oa);
+        vaihe.getOppiaineet().add(oa);
+        return mapper.map(oa, AIPEOppiaineDto.class);
     }
 
     @Override
     public void removeOppiaine(Long perusteId, Long vaiheId, Long oppiaineId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public AIPEOppiaineDto addOppiaine(Long perusteId, Long vaiheId, Long oppiaineId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        if (vaihe.getOppiaineet().remove(oppiaine)) {
+            oppiaineRepository.delete(oppiaine);
+        }
     }
 
     @Override
     public List<AIPEOppiaineSuppeaDto> getOppiaineet(Long perusteId, Long vaiheId) {
-        return new ArrayList<>();
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        List<AIPEOppiaine> oppiaineet = vaihe.getOppiaineet();
+        return mapper.mapAsList(oppiaineet, AIPEOppiaineSuppeaDto.class);
     }
 
     @Override
     public AIPEVaiheDto getVaihe(Long perusteId, Long vaiheId) {
-        return null;
+        AIPEVaihe vaihe = vaiheRepository.findOne(vaiheId);
+        return mapper.map(vaihe, AIPEVaiheDto.class);
     }
 
     @Override
     public List<AIPEVaiheSuppeaDto> getVaiheet(Long perusteId) {
-        return new ArrayList<>();
+        List<AIPEVaihe> vaiheet = getPeruste(perusteId).getAipeOpetuksenPerusteenSisalto().getVaiheet();
+        return mapper.mapAsList(vaiheet, AIPEVaiheSuppeaDto.class);
     }
 
     @Override
@@ -170,17 +273,29 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public AIPEVaiheDto updateVaihe(Long perusteId, Long vaiheId, AIPEVaiheDto vaiheDto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        vaiheDto.setId(vaiheId);
+        vaihe = mapper.map(vaiheDto, vaihe);
+        return mapper.map(vaihe, AIPEVaiheDto.class);
     }
 
     @Override
     public void removeVaihe(Long perusteId, Long vaiheId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        if (!vaihe.getOppiaineet().isEmpty()) {
+            throw new BusinessRuleViolationException("vaiheella-oppiaineita");
+        }
+        AIPEOpetuksenSisalto perusteenSisalto = getPerusteSisalto(perusteId);
+        if (perusteenSisalto.getVaiheet().remove(vaihe)) {
+            vaiheRepository.delete(vaihe);
+        }
     }
 
     @Override
     public List<LaajaalainenOsaaminenDto> getLaajaalaiset(Long perusteId) {
-        return new ArrayList<>();
+        Peruste peruste = getPeruste(perusteId);
+        Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
+        return mapper.mapAsList(laajaalaisetosaamiset, LaajaalainenOsaaminenDto.class);
     }
 
 }

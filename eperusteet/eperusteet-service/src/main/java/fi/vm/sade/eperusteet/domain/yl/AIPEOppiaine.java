@@ -22,6 +22,8 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -144,11 +146,26 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
                inverseJoinColumns = {
                    @JoinColumn(name = "oppimaara_id")})
     @OrderColumn(name = "oppimaara_order")
-    private List<AIPEOppiaine> oppimaarat;
+    private List<AIPEOppiaine> oppimaarat = new ArrayList<>(0);
+
+    @Getter
+    @ManyToOne(cascade = {})
+    @JoinTable(name = "aipeoppiaine_aipeoppiaine",
+               joinColumns = {
+                   @JoinColumn(name = "oppimaara_id")},
+               inverseJoinColumns = {
+                   @JoinColumn(name = "oppiaine_id")})
+    private AIPEOppiaine oppiaine;
 
     @Override
     public AIPEOppiaine kloonaa() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Optional<AIPEKurssi> getKurssi(Long kurssiId) {
+        return kurssit.stream()
+                .filter(kurssi -> Objects.equals(kurssi.getId(), kurssiId))
+                .findFirst();
     }
 
 }
