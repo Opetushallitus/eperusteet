@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,12 +31,4 @@ public class AIPEOppiaineSuppeaDto extends AIPEOppiaineBaseDto {
     private Optional<Boolean> koosteinen;
     private Optional<Boolean> abstrakti;
     private Optional<Date> muokattu;
-
-    private Optional<TekstiOsaDto> tehtava;
-    private Optional<TekstiOsaDto> tavoitteet;
-    private Optional<TekstiOsaDto> arviointi;
-
-    private Optional<LokalisoituTekstiDto> pakollinenKurssiKuvaus;
-    private Optional<LokalisoituTekstiDto> syventavaKurssiKuvaus;
-    private Optional<LokalisoituTekstiDto> soveltavaKurssiKuvaus;
 }

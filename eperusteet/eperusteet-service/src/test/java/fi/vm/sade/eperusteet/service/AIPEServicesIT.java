@@ -44,6 +44,7 @@ import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
 import java.util.List;
 import java.util.Set;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -114,8 +115,8 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
 
             AIPEKurssiDto omKurssi = TestUtils.createAIPEKurssi();
             sisalto.addKurssi(perusteId, vaihe.getId(), oppimaaraDto.getId(), omKurssi);
-//            List<AIPEKurssiSuppeaDto> omKurssit = sisalto.getKurssit(perusteId, vaihe.getId(), oppimaaraDto.getId());
-//            assertEquals(omKurssit.size(), 1);
+            List<AIPEKurssiSuppeaDto> omKurssit = sisalto.getKurssit(perusteId, vaihe.getId(), oppimaaraDto.getId());
+            assertEquals(omKurssit.size(), 1);
         }
 
         perusteRepository.flush();
@@ -204,9 +205,10 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
     @Test
     public void testLaajaalaisetOsaamiset() {
         Set<LaajaalainenOsaaminen> laajaalaiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
-        LaajaalainenOsaaminenDto uusi = new LaajaalainenOsaaminenDto();
-        uusi.setNimi(TestUtils.olt(TestUtils.uniikkiString()));
-        laajaalaiset.add(mapper.map(uusi, LaajaalainenOsaaminen.class));
+        laajaalaiset.add(mapper.map(TestUtils.createLaajaalainen(), LaajaalainenOsaaminen.class));
+        perusteRepository.flush();
+        Peruste p = perusteRepository.findOne(perusteId);
+        assertFalse(p.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset().isEmpty());
     }
 
     @Test
@@ -215,6 +217,8 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
         AIPEOppiaine oa = vaihe.getOppiaineet().get(0);
         List<OpetuksenTavoite> tavoitteet = oa.getTavoitteet();
         assertTrue(tavoitteet.isEmpty());
+
         OpetuksenTavoite tavoite = new OpetuksenTavoite();
+//        tavoite.set
     }
 }
