@@ -22,15 +22,17 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.io.Serializable;
-import java.util.*;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  *
@@ -301,13 +303,20 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             return perusopetuksenPerusteenSisalto.containsViite(viite);
         }
 
+        if (aipeOpetuksenPerusteenSisalto != null) {
+            return aipeOpetuksenPerusteenSisalto.containsViite(viite);
+        }
+
         if (esiopetuksenPerusteenSisalto != null) {
             return esiopetuksenPerusteenSisalto.containsViite(viite);
         }
 
-        return lukiokoulutuksenPerusteenSisalto != null
-                && lukiokoulutuksenPerusteenSisalto.containsViite(viite);
+        if  (lukiokoulutuksenPerusteenSisalto != null
+                && lukiokoulutuksenPerusteenSisalto.containsViite(viite)) {
+            return lukiokoulutuksenPerusteenSisalto.containsViite(viite);
+        }
 
+        throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");
     }
 
     public interface Valmis {}

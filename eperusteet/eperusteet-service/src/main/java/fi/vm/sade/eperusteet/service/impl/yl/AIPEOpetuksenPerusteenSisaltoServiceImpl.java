@@ -22,28 +22,19 @@ import fi.vm.sade.eperusteet.domain.yl.AIPEKurssi;
 import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
 import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
-import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
-import fi.vm.sade.eperusteet.repository.AIPEKurssiRepository;
-import fi.vm.sade.eperusteet.repository.AIPEOppiaineRepository;
-import fi.vm.sade.eperusteet.repository.AIPEVaiheRepository;
-import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  *
@@ -98,11 +89,11 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     private AIPEVaihe getVaiheImpl(Long perusteId, Long vaiheId) {
         Peruste peruste = getPeruste(perusteId);
         AIPEOpetuksenSisalto sisalto = peruste.getAipeOpetuksenPerusteenSisalto();
-        AIPEVaihe vaihe = sisalto.getVaihe(vaiheId).get();
-        if (vaihe == null) {
+        Optional<AIPEVaihe> vaihe = sisalto.getVaihe(vaiheId);
+        if (!vaihe.isPresent()) {
             throw new BusinessRuleViolationException("vaihetta-ei-olemassa");
         }
-        return vaihe;
+        return vaihe.get();
     }
 
     private AIPEOppiaine getOppiaineImpl(Long perusteID, Long vaiheId, Long oppiaineId) {

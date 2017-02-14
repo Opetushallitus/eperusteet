@@ -233,9 +233,13 @@ angular.module('eperusteApp')
       return peruste.koulutustyyppi === 'koulutustyyppi_16';
     };
 
+    this.isAipe = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_17';
+    };
+
     this.isValmaTelma = function(koulutustyyppiTaiPeruste) {
       if(koulutustyyppiTaiPeruste){
-        var ortherKoulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste) ? koulutustyyppiTaiPeruste : koulutustyyppiTaiPeruste.koulutustyyppi;
+        const ortherKoulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste) ? koulutustyyppiTaiPeruste : koulutustyyppiTaiPeruste.koulutustyyppi;
         return ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_18' || ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_5';
       }
       return false;

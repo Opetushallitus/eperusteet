@@ -144,12 +144,8 @@ angular.module('eperusteApp')
 
     $scope.osaAlueAlitila = $state.includes('**.tutkinnonosa.osaalue');
 
-    $rootScope.$on('$stateChangeStart', function(event, toState){
-      if (toState.name === 'root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue') {
-        $scope.osaAlueAlitila = true;
-      } else {
-        $scope.osaAlueAlitila = false;
-      }
+    $rootScope.$on('$stateChangeStart', function(event, toState) {
+      $scope.osaAlueAlitila = toState.name === 'root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue';
     });
 
     $scope.$watch('editableTutkinnonOsa.nimi', function () {

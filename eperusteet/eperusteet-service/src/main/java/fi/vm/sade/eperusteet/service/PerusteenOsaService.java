@@ -23,10 +23,11 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import java.util.List;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  *
@@ -70,7 +71,7 @@ public interface PerusteenOsaService {
     PerusteenOsaDto.Laaja get(@P("id") final Long id);
 
     @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'LUKU')")
-    public PerusteenOsaDto.Laaja getByViite(final Long viiteId);
+    PerusteenOsaDto.Laaja getByViite(final Long viiteId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     List<Revision> getVersiot(@P("id") Long id);
@@ -104,27 +105,27 @@ public interface PerusteenOsaService {
     List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueetVersio(Long id, Integer versioId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
-    public OsaamistavoiteLaajaDto addOsaamistavoite(@P("id") final Long id, final Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto);
+    OsaamistavoiteLaajaDto addOsaamistavoite(@P("id") final Long id, final Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS') or hasPermission(#id, 'perusteenosa', 'KORJAUS')")
-    public OsaamistavoiteLaajaDto updateOsaamistavoite(@P("id") final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteLaajaDto osaamistavoite);
+    OsaamistavoiteLaajaDto updateOsaamistavoite(@P("id") final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteLaajaDto osaamistavoite);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    public List<OsaamistavoiteLaajaDto> getOsaamistavoitteet(final Long id, final Long osaAlueId);
+    List<OsaamistavoiteLaajaDto> getOsaamistavoitteet(final Long id, final Long osaAlueId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
-    public void removeOsaamistavoite(@P("id") final Long id, final Long osaAlueId, final Long osaamistavoiteId);
+    void removeOsaamistavoite(@P("id") final Long id, final Long osaAlueId, final Long osaamistavoiteId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
-    public void removeOsaAlue(@P("id") final Long id, final Long osaAlueId);
+    void removeOsaAlue(@P("id") final Long id, final Long osaAlueId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosaviite', 'LUKU')")
-    public List<Revision> getVersiotByViite(final Long id);
+    List<Revision> getVersiotByViite(final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosaviite', 'LUKU')")
-    public PerusteenOsaDto getVersioByViite(Long id, Integer versioId);
+    PerusteenOsaDto getVersioByViite(Long id, Integer versioId);
 
     @PreAuthorize("permitAll()")
-    public Revision getLastModifiedRevision(final Long id);
+    Revision getLastModifiedRevision(final Long id);
 
 }

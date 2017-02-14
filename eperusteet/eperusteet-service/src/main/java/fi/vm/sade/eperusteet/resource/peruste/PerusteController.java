@@ -28,10 +28,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,8 +35,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Controller
 @RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
@@ -260,8 +262,8 @@ public class PerusteController {
     @InternalApi
     public ResponseEntity<SuoritustapaDto> getSuoritustapa(
             @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi
+    ) {
         return handleGet(perusteId, 1, new Supplier<SuoritustapaDto>() {
             @Override
             public SuoritustapaDto get() {
