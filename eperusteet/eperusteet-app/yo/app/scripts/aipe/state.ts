@@ -75,21 +75,18 @@ angular.module("eperusteApp")
                         $scope.editing = true;
                     },
                     save: () => {
-                        console.log("save");
-                        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, () => {
+                        $scope.sisalto.save().then(() => {
                             Notifikaatiot.onnistui("osien-rakenteen-päivitys-onnistui");
+                            $scope.editing = false;
                         });
                     },
                     cancel: () => {
-                        console.log("cancel");
                         $scope.editing = false;
                     },
                     validate: () => {
-                        console.log("validate");
                         return true;
                     },
                     notify: value => {
-                        console.log("notify: ", value);
                     }
                 });
             }

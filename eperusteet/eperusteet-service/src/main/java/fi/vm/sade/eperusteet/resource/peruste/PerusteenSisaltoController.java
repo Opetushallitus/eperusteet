@@ -120,7 +120,8 @@ public class PerusteenSisaltoController {
         viiteService.removeSisalto(perusteId, id);
     }
 
-    @RequestMapping(value = "/sisalto/{id}", method = POST)
+
+    @RequestMapping(value = "/sisalto/{id}", method = {POST, PUT})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSisaltoViite(
         @PathVariable("perusteId") final Long perusteId,
