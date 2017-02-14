@@ -27,19 +27,17 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
+import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
+import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
-import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -213,6 +211,16 @@ public class TutkinnonRakenneController {
     public TutkinnonOsaViiteDto getTutkinnonOsaViite(
         @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @PathVariable("viiteId") final Long viiteId) {
         return perusteService.getTutkinnonOsaViite(id, suoritustapakoodi, viiteId);
+    }
+
+    @RequestMapping(value = "/tutkinnonosat/koodi/{koodiUri}", method = GET)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public TutkinnonOsaViiteDto getTutkinnonOsaViiteByKoodi(
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("koodiUri") final String koodiUri) {
+        return perusteService.getTutkinnonOsaViiteByKoodiUri(id, suoritustapakoodi, koodiUri);
     }
 
 }

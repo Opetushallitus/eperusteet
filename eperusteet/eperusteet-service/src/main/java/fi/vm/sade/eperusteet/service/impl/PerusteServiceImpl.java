@@ -1267,6 +1267,22 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return yleistTavoitteet;
     }
 
+    @Override
+    public TutkinnonOsaViiteDto getTutkinnonOsaViiteByKoodiUri(Long perusteId, Suoritustapakoodi suoritustapakoodi, String koodiUri) {
+        final Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOneByKoodiUri(koodiUri, suoritustapakoodi);
+
+        if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)) {
+            throw new BusinessRuleViolationException("Virheellinen viiteId");
+        }
+
+        TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
+        TutkinnonOsaDto tutkinnonOsaDto = mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class);
+        viiteDto.setTutkinnonOsaDto(tutkinnonOsaDto);
+
+        return viiteDto;
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
 
 }

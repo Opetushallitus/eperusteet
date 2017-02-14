@@ -39,6 +39,8 @@ public interface TutkinnonOsaViiteRepository extends JpaWithVersioningRepository
 
     Long countByTutkinnonOsaId(Long perusteenOsaId);
 
-
     List<TutkinnonOsaViite> findAllByTutkinnonOsa(TutkinnonOsa perusteenOsa);
+
+    @Query("SELECT tov FROM TutkinnonOsaViite tov WHERE tov.tutkinnonOsa.koodiUri = ?1 AND tov.suoritustapa.suoritustapakoodi = ?2")
+    TutkinnonOsaViite findOneByKoodiUri(String koodiUri, Suoritustapakoodi st);
 }
