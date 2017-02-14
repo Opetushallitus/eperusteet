@@ -36,20 +36,25 @@ angular.module("eperusteApp")
                          Editointikontrollit, TekstikappaleOperations, Notifikaatiot, SuoritustavanSisalto,
                          Algoritmit) => {
                 $scope.peruste = peruste;
+                $scope.peruste.sisalto = sisalto;
                 $scope.vaiheet = vaiheet;
                 $scope.laajaalaiset = laajaalaiset;
-                $scope.sisalto = sisalto;
                 $scope.esitysUrl = $state.href("root.selaus.aikuisperusopetuslista", {
                     perusteId: $scope.peruste.id
                 });
                 $scope.rajaus = "";
 
-                Algoritmit.kaikilleLapsisolmuille($scope.sisalto, "lapset", lapsi => {
-                    lapsi.$url = $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
-                        suoritustapa: "aipe",
-                        perusteenOsaViiteId: lapsi.id,
-                        versio: ""
-                    });
+                Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, "lapset", lapsi => {
+                    lapsi.$url = lapsi.perusteenOsa.tunniste === "laajaalainenosaaminen" ?
+                        $state.href("root.perusteprojekti.suoritustapa.osalistaus", {
+                            suoritustapa: "aipe",
+                            osanTyyppi: "osaaminen"
+                        }) :
+                        $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
+                            suoritustapa: "aipe",
+                            perusteenOsaViiteId: lapsi.id,
+                            versio: ""
+                        });
                 });
 
                 $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
@@ -75,7 +80,7 @@ angular.module("eperusteApp")
                         $scope.editing = true;
                     },
                     save: () => {
-                        $scope.sisalto.save().then(() => {
+                        $scope.peruste.sisalto.save().then(() => {
                             Notifikaatiot.onnistui("osien-rakenteen-päivitys-onnistui");
                             $scope.editing = false;
                         });

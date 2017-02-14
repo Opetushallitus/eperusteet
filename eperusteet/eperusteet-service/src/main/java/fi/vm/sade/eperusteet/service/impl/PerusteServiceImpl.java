@@ -975,6 +975,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
             pov.setVanhempi(sisalto);
             sisalto.getLapset().add(pov);
+        } else if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
+            PerusteenOsaViite sisalto = peruste.getAipeOpetuksenPerusteenSisalto().getSisalto();
+            TekstiKappale tk = new TekstiKappale();
+            HashMap<Kieli, String> hm = new HashMap<>();
+            hm.put(Kieli.FI, "Laaja-alaiset osaamiset");
+            tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
+            tk.setTunniste(PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
+            PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
+            pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
+            pov.setVanhempi(sisalto);
+            sisalto.getLapset().add(pov);
         } else {
             for (Suoritustapa st : peruste.getSuoritustavat()) {
                 PerusteenOsaViite sisalto = st.getSisalto();

@@ -44,7 +44,7 @@
             <h2 ng-hide="editing">
                 <span kaanna="'tekstikappaleet'"></span>
                 <span> (</span>
-                <span ng-bind="sisalto.lapset.length || 0"></span>
+                <span ng-bind="peruste.sisalto.lapset.length || 0"></span>
                 <span>)</span>
                 <div class="pull-right buttons">
                     <button type="button"
@@ -79,7 +79,7 @@
             </div>
             <div class="clearfix"></div>
 
-            <div content-tree="sisalto.lapset"
+            <div content-tree="peruste.sisalto.lapset"
                  filter-by="rajaus"
                  no-content-placeholder="peruste-ei-sisaltoa"
                  edit-mode="editing"></div>
