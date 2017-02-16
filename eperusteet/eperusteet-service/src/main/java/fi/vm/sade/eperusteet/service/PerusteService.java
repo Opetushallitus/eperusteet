@@ -150,13 +150,13 @@ public interface PerusteService {
     @PreAuthorize("permitAll()")
     Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery);
 
-    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'LUKU')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     TutkintonimikeKoodiDto addTutkintonimikeKoodi(@P("perusteId") Long perusteId, TutkintonimikeKoodiDto dto);
 
-    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void removeTutkintonimikeKoodi(@P("perusteId") Long perusteId, Long tutkintonimikeKoodiId);
 
     @PostAuthorize("returnObject == null or hasPermission(returnObject.id, 'peruste', 'LUKU')")
