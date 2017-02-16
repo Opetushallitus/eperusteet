@@ -24,7 +24,7 @@ angular.module('eperusteApp')
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
     Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi, Projektiryhma,
-    PerusteprojektiTyoryhmat, TekstikappaleOperations, SuoritustavanSisalto, $location) {
+    PerusteprojektiTyoryhmat, TekstikappaleOperations, SuoritustavanSisalto, $location, YleinenData) {
     $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
     function lisaaSisalto(method, sisalto, cb) {
       cb = cb || angular.noop;
@@ -49,10 +49,13 @@ angular.module('eperusteApp')
     const isEsiopetus = _.any(["koulutustyyppi_15", "koulutustyyppi_22"], (tyyppi) => tyyppi === $scope.peruste.koulutustyyppi);
     $scope.muodostumisKompensaattori = isEsiopetus ? 1 : 0;
 
-    $scope.$esitysurl = $state.href('root.esitys.peruste', {
-      perusteId: $scope.peruste.id,
-      suoritustapa: $stateParams.suoritustapa
-    }) + '?prestate=' + $location.url();
+    // Osoitetaan julkiselle puolelle
+    $scope.$esitysurl = $scope.projekti.esikatseltavissa
+        ? YleinenData.getPerusteEsikatseluHost() + '/esitys/' + $scope.peruste.id + '/' + $stateParams.suoritustapa + '/tiedot'
+        : $state.href('root.esitys.peruste', {
+            perusteId: $scope.peruste.id,
+            suoritustapa: $stateParams.suoritustapa
+        }) + '?prestate=' + $location.url();
 
     $scope.onTyoryhmia = function() {
       return !_.isEmpty($scope.tyoryhmat);
