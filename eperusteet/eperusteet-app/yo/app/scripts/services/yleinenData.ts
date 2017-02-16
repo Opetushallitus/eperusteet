@@ -94,6 +94,7 @@ angular.module('eperusteApp')
         nimi: 'ammattitutkinto',
         oletusSuoritustapa: 'naytto',
         hasTutkintonimikkeet: true,
+        hasLaajuus: true,
         hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
         sisaltoTunniste: 'sisalto',
         hasPdfCreation: true
@@ -119,6 +120,7 @@ angular.module('eperusteApp')
       'koulutustyyppi_12': {
         nimi: 'erikoisammattitutkinto',
         oletusSuoritustapa: 'naytto',
+        hasLaajuus: true,
         hasTutkintonimikkeet: true,
         hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
         sisaltoTunniste: 'sisalto',
