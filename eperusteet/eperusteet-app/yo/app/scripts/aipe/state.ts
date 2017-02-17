@@ -23,26 +23,50 @@ angular.module("eperusteApp")
         perusteprojekti: (perusteprojektit, $stateParams) => perusteprojektit.one($stateParams.perusteProjektiId).get(),
         perusteet: (Api) => Api.all("perusteet"),
         peruste: (perusteprojekti, perusteet) => perusteet.get(perusteprojekti._peruste),
-        aipeopetus: (peruste) => peruste.one("aipeopetus"),
-        vaiheet: (aipeopetus) => aipeopetus.one("vaiheet").getList(),
-        laajaalaiset: (aipeopetus) => aipeopetus.one("laajaalaiset").getList(),
-        sisallot: (peruste) => peruste.all("suoritustavat/aipe/sisalto"),
-        sisalto: (peruste) => peruste.one("suoritustavat/aipe/sisalto").get()
+        aipeopetus: (peruste, $stateParams) => peruste.one("aipeopetus"),
+        vaiheet: (aipeopetus) => aipeopetus.all("vaiheet").getList(),
+        laajaalaiset: (aipeopetus) => aipeopetus.all("laajaalaiset").getList(),
+        sisallot: (peruste, $stateParams) => peruste.all("suoritustavat/" + $stateParams.suoritustapa + "/sisalto"),
+        sisalto: (peruste, $stateParams) => peruste.one("suoritustavat/" + $stateParams.suoritustapa + "/sisalto").get()
     },
     views: {
         "": {
             templateUrl: "scripts/aipe/view.html",
             controller: ($scope, $state, $stateParams, peruste, vaiheet, laajaalaiset, sisalto, sisallot,
                          Editointikontrollit, TekstikappaleOperations, Notifikaatiot, SuoritustavanSisalto,
-                         Algoritmit) => {
+                         Algoritmit, Utils) => {
                 $scope.peruste = peruste;
                 $scope.peruste.sisalto = sisalto;
                 $scope.vaiheet = vaiheet;
-                $scope.laajaalaiset = laajaalaiset;
+                $scope.opetus = {
+                    lapset: [
+                        {
+                            nimi: 'laaja-alainen-osaaminen',
+                            tyyppi: 'osaaminen',
+                            lapset: laajaalaiset
+                        }
+                    ]
+                };
                 $scope.esitysUrl = $state.href("root.selaus.aikuisperusopetuslista", {
                     perusteId: $scope.peruste.id
                 });
                 $scope.rajaus = "";
+
+                _.each($scope.opetus.lapset, area => {
+                    area.$type = 'ep-parts';
+                    area.$url = $state.href('root.perusteprojekti.suoritustapa.osalistaus', {
+                        suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi
+                    });
+                    area.$orderFn = area.tyyppi == Utils.nameSort;
+                    Algoritmit.kaikilleLapsisolmuille(area, 'lapset', lapsi => {
+                        lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.osaalue', {
+                            suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0
+                        });
+                        if (lapsi.koosteinen) {
+                            lapsi.lapset = _.sortBy(lapsi.oppimaarat, Utils.nameSort);
+                        }
+                    });
+                });
 
                 Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, "lapset", lapsi => {
                     lapsi.$url = lapsi.perusteenOsa.tunniste === "laajaalainenosaaminen" ?

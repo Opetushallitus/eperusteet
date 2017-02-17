@@ -1,25 +1,3 @@
-<!--<div class="aipe">
-    <div class="sisallot">
-        <pre>{{ peruste | json }}</pre>
-        <div class="laajaalaiset">
-            <div class="laajalaiset-listaus">
-                <div ng-repeat="laajaalainen in laajaalaiset">
-                    <pre>{{ laajaalainen | json }}</pre>
-                </div>
-            </div>
-            <button class="btn btn-primary" kaanna="'lisaa-laajaalainen'" ui-sref=".laajaalainen"></button>
-        </div>
-        <div class="vaiheet">
-            <div class="vaihe-listaus">
-                <div ng-repeat="vaihe in vaiheet">
-                    <pre>{{ vaihe | json }}</pre>
-                </div>
-            </div>
-            <button class="btn btn-primary" kaanna="'lisaa-vaihe'" ui-sref=".vaihe"></button>
-        </div>
-    </div>
-</div>-->
-
 <div class="main-content" id="main">
     <div class="row tutkinto-sisalto">
         <div class="tutkinto">
@@ -31,21 +9,23 @@
                 <div class="toolbar-input pull-left">
                     <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value)"></rajaus>
                 </div>
-                <a ng-click="avaaSuljeKaikki()" class="open-close action-link"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                <a ng-click="avaaSuljeKaikki()" class="open-close action-link">
+                    <span class="avaa-sulje" icon-role="ep-open-close">
+                        <span kaanna="'avaa-sulje-kaikki'"></span>
+                    </span>
+                </a>
             </div>
 
             <div class="clearfix"></div>
 
             <div ng-hide="editing">
-                <h2>{{'opetuksen-sisallot' | kaanna}}</h2>
-                <div content-tree="datat.opetus.lapset" filter-by="rajaus" no-content-placeholder="suoritustavalle-ei-ole-viela-sisaltoa"></div>
+                <h2 kaanna="'opetuksen-sisallot'"></h2>
+                <div content-tree="opetus.lapset" filter-by="rajaus" no-content-placeholder="suoritustavalle-ei-ole-viela-sisaltoa"></div>
             </div>
 
             <h2 ng-hide="editing">
                 <span kaanna="'tekstikappaleet'"></span>
-                <span> (</span>
-                <span ng-bind="peruste.sisalto.lapset.length || 0"></span>
-                <span>)</span>
+                <span>({{peruste.sisalto.lapset.length || 0}})</span>
                 <div class="pull-right buttons">
                     <button type="button"
                             class="btn btn-default btn-sm"
