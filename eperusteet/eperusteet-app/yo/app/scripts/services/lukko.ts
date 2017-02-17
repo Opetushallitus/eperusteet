@@ -141,6 +141,14 @@ angular.module('eperusteApp')
           default: return null;
         }
       },
+      'root.perusteprojekti.suoritustapa.aipeosaalue': function() {
+        switch($stateParams.osanTyyppi) {
+          case 'oppiaineet': return LukkoOppiaine;
+          //case 'vuosiluokat': return LukkoVuosiluokkakokonaisuus;
+          case 'osaaminen': return LukkoLaajaalainenOsaaminen;
+          default: return null;
+        }
+      },
       'root.perusteprojekti.suoritustapa.lisaaLukioKurssi': _.constant(LukkoLukiokurssi),
       'root.perusteprojekti.suoritustapa.muokkaakurssia': _.constant(LukkoLukiokurssi)
     };

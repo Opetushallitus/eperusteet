@@ -19,11 +19,13 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class PerusopetuksenPerusteenSisaltoServiceImpl
@@ -49,6 +51,10 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl
     @Transactional(readOnly = true)
     protected PerusopetuksenPerusteenSisalto getByPerusteId(Long perusteId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        if (sisalto == null) {
+            throw new BusinessRuleViolationException("Perusteen sisältöä ei löydy");
+        }
+
         return sisalto;
     }
 }

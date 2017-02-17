@@ -1,0 +1,25 @@
+<div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
+    <div id="ck-toolbar-top"></div>
+    <div id="ck-toolbar-bottom"></div>
+</div>
+<div class="row">
+    <div class="col-md-12 ep-sisalto-inner">
+        <div ng-if="!editing">
+            <div ng-bind-html="valitseKieli(laajaalainen.kuvaus) | unsafe"></div>
+        </div>
+        <div ng-if="editing">
+            <div class="tekstikappale edit-tekstikappale">
+                <div class="list-group-item">
+                    <h3 kaanna="muokkaus-teksikappaleen-nimi-header"></h3>
+                    <h3 class="list-group-item-text" ng-model="laajaalainen.nimi" ckeditor editing-enabled="true"
+                        editor-placeholder="muokkaus-teksikappaleen-nimi-placeholder" slocalized></h3>
+                </div>
+                <div class="list-group-item">
+                    <h3 kaanna="muokkaus-tekstikappaleen-teksti-header"></h3>
+                    <div class="list-group-item-text" ng-model="laajaalainen.kuvaus" ckeditor editing-enabled="true"
+                         editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" slocalized></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -31,7 +31,7 @@ angular.module("eperusteApp")
     },
     views: {
         "": {
-            templateUrl: "scripts/aipe/view.html",
+            templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipesisalto/view.html",
             controller: ($scope, $state, $stateParams, peruste, vaiheet, laajaalaiset, sisalto, sisallot,
                          Editointikontrollit, TekstikappaleOperations, Notifikaatiot, SuoritustavanSisalto,
                          Algoritmit, Utils) => {
@@ -54,12 +54,12 @@ angular.module("eperusteApp")
 
                 _.each($scope.opetus.lapset, area => {
                     area.$type = 'ep-parts';
-                    area.$url = $state.href('root.perusteprojekti.suoritustapa.osalistaus', {
+                    area.$url = $state.href('root.perusteprojekti.suoritustapa.aipeosalistaus', {
                         suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi
                     });
                     area.$orderFn = area.tyyppi == Utils.nameSort;
                     Algoritmit.kaikilleLapsisolmuille(area, 'lapset', lapsi => {
-                        lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.osaalue', {
+                        lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.aipeosaalue', {
                             suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0
                         });
                         if (lapsi.koosteinen) {
@@ -70,7 +70,7 @@ angular.module("eperusteApp")
 
                 Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, "lapset", lapsi => {
                     lapsi.$url = lapsi.perusteenOsa.tunniste === "laajaalainenosaaminen" ?
-                        $state.href("root.perusteprojekti.suoritustapa.osalistaus", {
+                        $state.href("root.perusteprojekti.suoritustapa.aipeosalistaus", {
                             suoritustapa: "aipe",
                             osanTyyppi: "osaaminen"
                         }) :
@@ -99,15 +99,13 @@ angular.module("eperusteApp")
 
                 Editointikontrollit.registerCallback({
                     edit: () => {
-                        console.log("edit");
                         $scope.rajaus = "";
                         $scope.editing = true;
                     },
-                    save: () => {
-                        $scope.peruste.sisalto.save().then(() => {
-                            Notifikaatiot.onnistui("osien-rakenteen-päivitys-onnistui");
-                            $scope.editing = false;
-                        });
+                    save: async () => {
+                        $scope.peruste.sisalto.save();
+                        Notifikaatiot.onnistui("osien-rakenteen-päivitys-onnistui");
+                        $scope.editing = false;
                     },
                     cancel: () => {
                         $scope.editing = false;

@@ -72,14 +72,6 @@ $stateProvider
         PerusteProjektiSivunavi.setVisible();
     }
 })
-.state('root.perusteprojekti.suoritustapa.aipeosalistaus', {
-    url: '/aipeosat/:osanTyyppi',
-    templateUrl: 'views/partials/perusteprojekti/osalistaus.html',
-    controller: 'AipeOsalistausController',
-    onEnter: PerusteProjektiSivunavi => {
-        PerusteProjektiSivunavi.setVisible();
-    }
-})
 .state('root.perusteprojekti.suoritustapa.osaalue', {
     url: '/osat/:osanTyyppi/:osanId/:tabId',
     templateUrl: 'views/partials/perusteprojekti/osaalue.html',

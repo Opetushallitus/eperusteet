@@ -33,7 +33,7 @@ angular.module('eperusteApp')
         editableModel: '='
       },
       controller: 'OsallinenOsaController',
-      link: function (scope, element) {
+      link: function (scope : any, element: any) {
         var el = $compile(angular.element(scope.config.fieldRenderer))(scope);
         element.find('.tutkinnonosa-sisalto').empty().append(el);
       }
