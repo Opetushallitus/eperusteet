@@ -105,7 +105,7 @@ angular.module('eperusteApp')
       scope: {},
       template: '<div id="backtotop" ng-hide="hidden" title="{{\'takaisin-ylos\' | kaanna}}">' +
         '<a class="action-link" icon-role="arrow-up" ng-click="backToTop()"></a></div>',
-      link: function (scope) {
+      link: function (scope: any) {
         var active = true;
         scope.backToTop = function () {
           Utils.scrollTo('#ylasivuankkuri');

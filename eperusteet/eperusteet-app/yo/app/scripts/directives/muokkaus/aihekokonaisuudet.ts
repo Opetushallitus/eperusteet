@@ -252,7 +252,6 @@ angular.module('eperusteApp')
 
     function init() {
       var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
-      console.log('PerusteProjektiSivunavi.refresh()');
       PerusteProjektiSivunavi.refresh();
 
       if(versio) {

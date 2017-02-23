@@ -23,10 +23,6 @@ $stateProvider
     url: '/aipeosat/:osanTyyppi',
     templateUrl: 'views/partials/perusteprojekti/osalistaus.html',
     resolve: {
-        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
-        projektinTiedotAlustettu: perusteprojektiTiedot => perusteprojektiTiedot.projektinTiedotAlustettu(),
-        perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => perusteprojektiTiedot.alustaPerusteenSisalto($stateParams),
-
         perusteprojektit: (Api) => Api.all("perusteprojektit"),
         perusteprojekti: (perusteprojektit, $stateParams) => perusteprojektit.one($stateParams.perusteProjektiId).get(),
         perusteet: (Api) => Api.all("perusteet"),
@@ -56,12 +52,12 @@ $stateProvider
             tabId: 0
         });
 
-        $scope.add = () => {
+        $scope.add = async () => {
             $state.go('root.perusteprojekti.suoritustapa.aipeosaalue', {
                 suoritustapa: $stateParams.suoritustapa,
                 osanTyyppi: $stateParams.osanTyyppi,
                 osanId: 'uusi'
-            })
+            });
         };
     },
     onEnter: PerusteProjektiSivunavi => {

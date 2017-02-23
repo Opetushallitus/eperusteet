@@ -34,9 +34,10 @@ angular.module("eperusteApp")
             templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipesisalto/view.html",
             controller: ($scope, $state, $stateParams, peruste, vaiheet, laajaalaiset, sisalto, sisallot,
                          Editointikontrollit, TekstikappaleOperations, Notifikaatiot, SuoritustavanSisalto,
-                         Algoritmit, Utils) => {
+                         Algoritmit, Utils, Api) => {
                 $scope.peruste = peruste;
-                $scope.peruste.sisalto = sisalto;
+                $scope.sisalto = sisalto;
+                $scope.peruste.sisalto = Api.copy(sisalto);
                 $scope.vaiheet = vaiheet;
                 $scope.opetus = {
                     lapset: [
@@ -83,13 +84,13 @@ angular.module("eperusteApp")
 
                 $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 
-                $scope.addTekstikappale = () => {
-                    sisallot.post({}).then(res => {
-                        const params = {
-                            perusteenOsaViiteId: res.id,
-                            versio: ""
-                        };
-                        $state.go("root.perusteprojekti.suoritustapa.tekstikappale", params, { reload: true });
+                $scope.addTekstikappale = async () => {
+                    const res = await sisallot.post({});
+                    $state.go("root.perusteprojekti.suoritustapa.tekstikappale", {
+                        perusteenOsaViiteId: res.id,
+                        versio: ""
+                    }, {
+                        reload: true
                     });
                 };
 
@@ -98,22 +99,26 @@ angular.module("eperusteApp")
                 };
 
                 Editointikontrollit.registerCallback({
-                    edit: () => {
+                    edit: async () => {
+                        $scope.sisalto.id = undefined;
+                        $scope.sisalto = await $scope.sisalto.get();
+                        $scope.peruste.sisalto = Api.copy($scope.sisalto);
                         $scope.rajaus = "";
                         $scope.editing = true;
                     },
                     save: async () => {
-                        $scope.peruste.sisalto.save();
+                        await $scope.peruste.sisalto.save();
                         Notifikaatiot.onnistui("osien-rakenteen-päivitys-onnistui");
                         $scope.editing = false;
                     },
                     cancel: () => {
+                        $scope.peruste.sisalto = Api.copy($scope.sisalto);
                         $scope.editing = false;
                     },
                     validate: () => {
                         return true;
                     },
-                    notify: value => {
+                    notify: () => {
                     }
                 });
             }

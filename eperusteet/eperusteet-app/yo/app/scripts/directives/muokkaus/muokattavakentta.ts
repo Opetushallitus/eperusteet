@@ -28,7 +28,7 @@ angular.module('eperusteApp')
         piilotaOtsikko: '@?',
         field: '='
       },
-      link: function(scope, element, attrs) {
+      link: function(scope: any, element: any, attrs: any) {
         scope.otsikko = _.isString(scope.model) ? 'muokkaus-' + scope.model + '-header' : scope.model;
         scope.hasModel = !_.isString(scope.model);
         element.addClass('list-group-item ');
@@ -135,7 +135,7 @@ angular.module('eperusteApp')
         };
 
       },
-      link: function(scope, element) {
+      link: function(scope: any, element: any) {
         var typeParams = scope.field.type.split('.');
 
         $q.all({object: scope.objectReady, editMode: Editointikontrollit.getEditModePromise()}).then(function(values) {
@@ -250,7 +250,7 @@ angular.module('eperusteApp')
       templateUrl: 'views/directives/vaihtoehtoisenkentanraami.html',
       restrict: 'E',
       transclude: true,
-      link: function (scope, element) {
+      link: function (scope, element: any) {
         scope.$watch('editEnabled', function () {
           var buttons = element.find('.field-buttons');
           var header = element.closest('li.kentta').find('.osio-otsikko');
@@ -273,7 +273,7 @@ angular.module('eperusteApp')
       priority: 5,
       restrict: 'A',
       require: 'ngModel',
-      link: function(scope, element, attrs, ngModelCtrl) {
+      link: function(scope, element, attrs, ngModelCtrl: any) {
 
         ngModelCtrl.$formatters.push(function(modelValue) {
           if(angular.isUndefined(modelValue)) { return; }
@@ -311,7 +311,7 @@ angular.module('eperusteApp')
       restrict: 'A',
       require: 'ngModel',
       scope: false,
-      link: function(scope, element, attrs, ngModelCtrl) {
+      link: function(scope, element, attrs, ngModelCtrl: any) {
         ngModelCtrl.$formatters.push(function(modelValue) {
           if(angular.isUndefined(modelValue)) { return; }
           if(modelValue === null) { return; }

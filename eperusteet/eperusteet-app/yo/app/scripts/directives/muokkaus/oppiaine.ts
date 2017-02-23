@@ -81,7 +81,7 @@ angular.module('eperusteApp')
         versiot: '='
       },
       controller: 'OppiaineController',
-      link: function (scope, element) {
+      link: function (scope, element: any) {
         scope.$watch('editEnabled', function (value) {
           if (!value) {
             element.find('.info-placeholder').hide();
@@ -350,8 +350,10 @@ angular.module('eperusteApp')
             $scope.editableModel.vuosiluokkakokonaisuudet.push(field.empty());
           }
         },
-        fieldRenderer: '<div ng-show="editEnabled" oppiaineen-osiot="editableModel" fields="config.fields" ' +
-          'vuosiluokkakokonaisuudet="$parent.vuosiluokkakokonaisuudet"></div>',
+        fieldRenderer: '<div ng-show="editEnabled"' +
+        '                    oppiaineen-osiot="editableModel"' +
+        '                    fields="config.fields" ' +
+        '                    vuosiluokkakokonaisuudet="$parent.vuosiluokkakokonaisuudet"></div>',
         fields: [
           /*{
             path: 'tekstikappaleet[].teksti',
@@ -640,7 +642,7 @@ angular.module('eperusteApp')
         versiot: '='
       },
       controller: 'LukioOppiaineController',
-      link: function (scope, element) {
+      link: function (scope, element: any) {
         scope.$watch('editEnabled', function (value) {
           if (!value) {
             element.find('.info-placeholder').hide();

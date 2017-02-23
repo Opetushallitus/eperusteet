@@ -260,23 +260,30 @@ angular.module('eperusteApp', [
       });
     });
 
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+    $rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) => {
       $rootScope.lastState = {
         state: _.clone(fromState),
         params: _.clone(fromParams)
       };
 
-      if (Editointikontrollit.getEditMode() && fromState.name !== 'root.perusteprojekti.suoritustapa.tutkinnonosat' &&
-        fromState.name !== 'root.perusteprojekti.suoritustapa.koulutuksenosa') {
+      // Todo: Why exclude some states?
+      if (Editointikontrollit.getEditMode()
+          && fromState.name !== 'root.perusteprojekti.suoritustapa.tutkinnonosat'
+          && fromState.name !== 'root.perusteprojekti.suoritustapa.koulutuksenosa') {
         event.preventDefault();
 
-        var data = {toState: toState, toParams: toParams};
         Varmistusdialogi.dialogi({
-          successCb: function(data) {
-            $state.go(data.toState, data.toParams);
-          }, data: data, otsikko: 'vahvista-liikkuminen', teksti: 'tallentamattomia-muutoksia',
-          lisaTeksti: 'haluatko-jatkaa',
-          primaryBtn: 'poistu-sivulta'
+            successCb: data => {
+                $state.go(data.toState, data.toParams);
+            },
+            data: {
+                toState: toState,
+                toParams: toParams
+            },
+            otsikko: 'vahvista-liikkuminen',
+            teksti: 'tallentamattomia-muutoksia',
+            lisaTeksti: 'haluatko-jatkaa',
+            primaryBtn: 'poistu-sivulta'
         })();
       }
     });
@@ -314,13 +321,3 @@ angular.module('eperusteApp', [
   .run(function($rootScope) {
     $rootScope.$$isEmpty = _.isEmpty;
   });
-  // For debugging
-  // .run(function($rootScope) {
-  //   $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams, error) {
-  //     console.log('Success', event, toState, error);
-  //   });
-  //   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-  //     console.log('Failure', event, error);
-  //   });
-  // });
-
