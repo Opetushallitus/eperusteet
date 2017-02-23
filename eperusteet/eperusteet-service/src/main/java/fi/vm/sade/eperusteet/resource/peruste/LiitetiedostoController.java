@@ -18,6 +18,11 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.LiiteService;
+import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.KUVA;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
@@ -57,6 +62,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/perusteet/{perusteId}/kuvat")
 public class LiitetiedostoController {
 
+    @Autowired
+    private EperusteetAudit audit;
+
     private static final int BUFSIZE = 64 * 1024;
     final Tika tika = new Tika();
 
@@ -95,6 +103,7 @@ public class LiitetiedostoController {
             UUID id = liitteet.add(perusteId, tyyppi, nimi, koko, pis);
             HttpHeaders h = new HttpHeaders();
             h.setLocation(ucb.path("/perusteet/{perusteId}/kuvat/{id}").buildAndExpand(perusteId, id.toString()).toUri());
+            audit.withAudit(LogMessage.builder(perusteId, KUVA, LISAYS));
             return new ResponseEntity<>(id.toString(), h, HttpStatus.CREATED);
         }
     }
@@ -129,7 +138,10 @@ public class LiitetiedostoController {
     public void delete(
         @PathVariable("perusteId") Long perusteId,
         @PathVariable("id") UUID id) {
-        liitteet.delete(perusteId, id);
+        audit.withAudit(LogMessage.builder(perusteId, KUVA, POISTO), (Void) -> {
+            liitteet.delete(perusteId, id);
+            return null;
+        });
     }
 
     @RequestMapping(method = RequestMethod.GET)

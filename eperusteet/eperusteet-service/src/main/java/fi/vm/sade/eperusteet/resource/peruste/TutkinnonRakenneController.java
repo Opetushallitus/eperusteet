@@ -27,19 +27,28 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
+import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
+import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.SUORITUSTAVANRAKENNE;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSA;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSAVIITE;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.KLOONAUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LIITOS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.PALAUTUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import fi.vm.sade.eperusteet.service.audit.LogMessage;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
-import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -50,6 +59,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}")
 @InternalApi
 public class TutkinnonRakenneController {
+
+    @Autowired
+    private EperusteetAudit audit;
 
     @Autowired
     private PerusteenOsaViiteService perusteenOsaViiteService;
@@ -76,16 +88,18 @@ public class TutkinnonRakenneController {
             @PathVariable final Suoritustapakoodi suoritustapakoodi,
             @RequestBody TutkinnonOsaViiteDto osa
     ) {
-        if (osa.getTutkinnonOsa() != null) {
-            return perusteService.attachTutkinnonOsa(perusteId, suoritustapakoodi, osa);
-        }
-        return perusteService.addTutkinnonOsa(perusteId, suoritustapakoodi, osa);
+        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, LISAYS), (Void) -> {
+            if (osa.getTutkinnonOsa() != null) {
+                return perusteService.attachTutkinnonOsa(perusteId, suoritustapakoodi, osa);
+            }
+            return perusteService.addTutkinnonOsa(perusteId, suoritustapakoodi, osa);
+        });
     }
 
     /**
      * Liitää olemassa olevan tutkinnon osan perusteeseen
      *
-     * @param id tutkinnon id
+     * @param perusteId tutkinnon id
      * @param suoritustapakoodi suoritustapa (naytto,ops)
      * @param osa liitettävä tutkinnon osa
      * @return tutkinnonosat
@@ -93,14 +107,21 @@ public class TutkinnonRakenneController {
     @RequestMapping(value = "/tutkinnonosat", method = PUT)
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public TutkinnonOsaViiteDto attachTutkinnonOsa(@PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @RequestBody TutkinnonOsaViiteDto osa) {
-        return perusteService.attachTutkinnonOsa(id, suoritustapakoodi, osa);
+    public TutkinnonOsaViiteDto attachTutkinnonOsa(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @RequestBody TutkinnonOsaViiteDto osa) {
+        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, LIITOS), (Void) -> {
+            return perusteService.attachTutkinnonOsa(perusteId, suoritustapakoodi, osa);
+        });
     }
 
     @RequestMapping(value = "/rakenne", method = GET)
     @ResponseBody
     public ResponseEntity<RakenneModuuliDto> getRakenne(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @RequestHeader(value = "If-None-Match", required = false) String eTag) {
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @RequestHeader(value = "If-None-Match", required = false) String eTag) {
         Integer revisio = revisionOf(eTag);
         RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(id, suoritustapakoodi, revisio);
         if (rakenne == null) {
@@ -113,7 +134,9 @@ public class TutkinnonRakenneController {
     @ResponseBody
     @CacheControl(age = CacheControl.ONE_YEAR)
     public ResponseEntity<RakenneModuuliDto> getRakenneVersio(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @PathVariable("versioId") final Integer versioId) {
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("versioId") final Integer versioId) {
         RakenneModuuliDto t = perusteService.getRakenneVersio(id, suoritustapakoodi, versioId);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -124,7 +147,8 @@ public class TutkinnonRakenneController {
     @RequestMapping(value = "/rakenne/versiot", method = GET)
     @ResponseBody
     public List<CombinedDto<Revision, HenkiloTietoDto>> getRakenneVersiot(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
         List<Revision> versiot = perusteService.getRakenneVersiot(id, Suoritustapakoodi.of(suoritustapakoodi));
         List<CombinedDto<Revision, HenkiloTietoDto>> laajennetut = new ArrayList<>();
         for (Revision r : versiot) {
@@ -153,65 +177,89 @@ public class TutkinnonRakenneController {
     @ResponseBody
     @InternalApi
     public ResponseEntity<List<TutkinnonOsaTilaDto>> getTutkinnonOsienTilat(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi) {
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi) {
         return ResponseEntity.ok(perusteService.getTutkinnonOsienTilat(id, suoritustapakoodi));
     }
 
     @RequestMapping(value = "/tutkinnonosat/versiot/{versio}", method = GET)
     @ResponseBody
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(
-        @PathVariable("perusteId") final Long id,
-        @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
-        @PathVariable("versio") final Integer versio) {
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("versio") final Integer versio) {
         return perusteService.getTutkinnonOsat(id, suoritustapakoodi, versio);
     }
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}/muokattavakopio", method = POST)
     public TutkinnonOsaViiteDto kloonaaTutkinnonOsa(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
-        @PathVariable("osanId") final Long id) {
-        return perusteenOsaViiteService.kloonaaTutkinnonOsa(perusteId, suoritustapakoodi, id);
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("osanId") final Long id) {
+        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, KLOONAUS), (Void) -> {
+            return perusteenOsaViiteService.kloonaaTutkinnonOsa(perusteId, suoritustapakoodi, id);
+        });
     }
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}", method = DELETE)
     @ResponseBody
     public void removeTutkinnonOsa(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @PathVariable("osanId") final Long osanId) {
-        perusteService.removeTutkinnonOsa(id, suoritustapakoodi, osanId);
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("osanId") final Long osanId) {
+        audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, POISTO), (Void) -> {
+            perusteService.removeTutkinnonOsa(perusteId, suoritustapakoodi, osanId);
+            return null;
+        });
     }
 
     @RequestMapping(value = "/rakenne/palauta/{versioId}", method = POST)
     @ResponseBody
     @CacheControl(age = CacheControl.ONE_YEAR)
     public ResponseEntity<RakenneModuuliDto> revertRakenneVersio(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @PathVariable("versioId") final Integer versioId) {
-        RakenneModuuliDto t = perusteService.revertRakenneVersio(id, suoritustapakoodi, versioId);
-        if (t == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(t, HttpStatus.OK);
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("versioId") final Integer versioId) {
+        return audit.withAudit(LogMessage.builder(perusteId, SUORITUSTAVANRAKENNE, PALAUTUS)
+                .palautus(perusteId, versioId.longValue()), (Void) -> {
+            RakenneModuuliDto t = perusteService.revertRakenneVersio(perusteId, suoritustapakoodi, versioId);
+            if (t == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(t, HttpStatus.OK);
+        });
     }
 
     @RequestMapping(value = "/rakenne", method = POST)
     @ResponseBody
     public RakenneModuuliDto updatePerusteenRakenne(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @RequestBody UpdateDto<RakenneModuuliDto> rakenne) {
-        return perusteService.updateTutkinnonRakenne(id, suoritustapakoodi, rakenne);
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @RequestBody UpdateDto<RakenneModuuliDto> rakenne) {
+        return audit.withAudit(LogMessage.builder(perusteId, SUORITUSTAVANRAKENNE, MUOKKAUS), (Void) -> {
+            return perusteService.updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne);
+        });
     }
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}", method = POST)
     @ResponseBody
     public TutkinnonOsaViiteDto updateTutkinnonOsa(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @PathVariable("osanId") final Long osanId, @RequestBody TutkinnonOsaViiteUpdateDto osa) {
-        return perusteService.updateTutkinnonOsa(id, suoritustapakoodi, osa);
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("osanId") final Long osanId,
+            @RequestBody TutkinnonOsaViiteUpdateDto osa) {
+        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSA, LISAYS), (Void) -> {
+            return perusteService.updateTutkinnonOsa(perusteId, suoritustapakoodi, osa);
+        });
     }
 
     @RequestMapping(value = "/tutkinnonosat/{viiteId}", method = GET)
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public TutkinnonOsaViiteDto getTutkinnonOsaViite(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @PathVariable("viiteId") final Long viiteId) {
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("viiteId") final Long viiteId) {
         return perusteService.getTutkinnonOsaViite(id, suoritustapakoodi, viiteId);
     }
 

@@ -24,11 +24,18 @@ import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTEENOSAVIITE;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.KLOONAUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LIITOS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -39,6 +46,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapa}")
 @InternalApi
 public class PerusteenSisaltoController {
+
+    @Autowired
+    private EperusteetAudit audit;
 
     @Autowired
     private PerusteService service;
@@ -60,7 +70,9 @@ public class PerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
         @RequestBody(required = false) final PerusteenOsaViiteDto.Matala dto) {
-        return service.addSisaltoUUSI(perusteId, Suoritustapakoodi.of(suoritustapa), dto);
+        return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, LISAYS), (Void) -> {
+            return service.addSisaltoUUSI(perusteId, Suoritustapakoodi.of(suoritustapa), dto);
+        });
     }
 
     @RequestMapping(value = "/sisalto", method = PUT)
@@ -70,7 +82,9 @@ public class PerusteenSisaltoController {
         @PathVariable("suoritustapa") final String suoritustapa,
         @RequestBody final PerusteenOsaViiteDto.Matala dto
     ) {
-        return service.addSisaltoUUSI(perusteId, Suoritustapakoodi.of(suoritustapa), dto);
+        return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, MUOKKAUS), (Void) -> {
+            return service.addSisaltoUUSI(perusteId, Suoritustapakoodi.of(suoritustapa), dto);
+        });
     }
 
     @RequestMapping(value = "/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
@@ -78,7 +92,9 @@ public class PerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("perusteenosaViiteId") final Long perusteenosaViiteId) {
-        return new ResponseEntity<>(service.addSisaltoLapsi(perusteId, perusteenosaViiteId, null), HttpStatus.CREATED);
+        return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, LIITOS), (Void) -> {
+            return new ResponseEntity<>(service.addSisaltoLapsi(perusteId, perusteenosaViiteId, null), HttpStatus.CREATED);
+        });
     }
 
     @RequestMapping(value = "/sisalto/{parentId}/lapsi/{childId}", method = POST)
@@ -88,9 +104,11 @@ public class PerusteenSisaltoController {
         @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("parentId") final Long parentId,
         @PathVariable("childId") final Long childId) {
-        PerusteenOsaViiteDto.Matala viite = new PerusteenOsaViiteDto.Matala();
-        viite.setPerusteenOsaRef(new EntityReference(childId));
-        return service.addSisaltoLapsi(perusteId, parentId, viite);
+        return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, LIITOS), (Void) -> {
+            PerusteenOsaViiteDto.Matala viite = new PerusteenOsaViiteDto.Matala();
+            viite.setPerusteenOsaRef(new EntityReference(childId));
+            return service.addSisaltoLapsi(perusteId, parentId, viite);
+        });
     }
 
         @RequestMapping(value = "/sisalto", method = GET)
@@ -117,7 +135,10 @@ public class PerusteenSisaltoController {
     public void removeSisaltoViite(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
-        viiteService.removeSisalto(perusteId, id);
+        audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, POISTO), (Void) -> {
+            viiteService.removeSisalto(perusteId, id);
+            return null;
+        });
     }
 
 
@@ -127,14 +148,19 @@ public class PerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
         @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja pov) {
-        viiteService.reorderSubTree(perusteId, id, pov);
+        audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, MUOKKAUS), (Void) -> {
+            viiteService.reorderSubTree(perusteId, id, pov);
+            return null;
+        });
     }
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
-        return viiteService.kloonaaTekstiKappale(perusteId, id);
+        return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, KLOONAUS), (Void) -> {
+            return viiteService.kloonaaTekstiKappale(perusteId, id);
+        });
     }
 
 }
