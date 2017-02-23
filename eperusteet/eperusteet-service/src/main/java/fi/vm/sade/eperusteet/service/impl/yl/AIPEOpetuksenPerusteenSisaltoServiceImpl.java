@@ -105,6 +105,15 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         return oppiaine;
     }
 
+    private LaajaalainenOsaaminen getLaajaalainenImpl(Long perusteId, Long laajalainenId) {
+        AIPEOpetuksenSisalto sisalto = getPerusteSisalto(perusteId);
+        Optional<LaajaalainenOsaaminen> optLo = sisalto.getLaajaalainenOsaaminen(laajalainenId);
+        if (!optLo.isPresent()) {
+            throw new BusinessRuleViolationException("laajaalainen-ei-olemassa");
+        }
+        return optLo.get();
+    }
+
     private AIPEKurssi getKurssiImpl(Long perusteID, Long vaiheId, Long oppiaineId, Long kurssiId) {
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteID, vaiheId, oppiaineId);
         Optional<AIPEKurssi> kurssi = oppiaine.getKurssi(kurssiId);
@@ -132,8 +141,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public LaajaalainenOsaaminenDto getLaajaalainen(Long perusteId, Long laajalainenId) {
-        LaajaalainenOsaaminen lo = getPerusteSisalto(perusteId).getLaajaalainenOsaaminen(laajalainenId).get();
-        return mapper.map(lo, LaajaalainenOsaaminenDto.class);
+        return mapper.map(getLaajaalainenImpl(perusteId, laajalainenId), LaajaalainenOsaaminenDto.class);
     }
 
     @Override
@@ -147,16 +155,15 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public LaajaalainenOsaaminenDto updateLaajaalainen(Long perusteId, Long laajalainenId, LaajaalainenOsaaminenDto laajaalainenDto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LaajaalainenOsaaminen lo = getLaajaalainenImpl(perusteId, laajalainenId);
+        mapper.map(laajaalainenDto, lo);
+        return mapper.map(lo, LaajaalainenOsaaminenDto.class);
     }
 
     @Override
-    public void removeLaajaalainen(Long perusteId, Long laajalainenId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void removeLaajaalainen(Long perusteId, Long laajaalainenId) {
+        laajaalainenOsaaminenRepository.delete(laajaalainenId);
     }
-
-//    private void assertKurssit() {
-//    }
 
     @Override
     public AIPEKurssiDto getKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId) {

@@ -16,16 +16,11 @@
 
 package fi.vm.sade.eperusteet.service.yl;
 
-import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
-import java.util.List;
+import fi.vm.sade.eperusteet.dto.yl.*;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  *

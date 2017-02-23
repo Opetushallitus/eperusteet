@@ -21,25 +21,13 @@ import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 /**
  *
