@@ -15,11 +15,17 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KommenttiService;
+import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.KOMMENTTI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +33,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
@@ -42,6 +47,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @RequestMapping("/kommentit")
 @InternalApi
 public class KommenttiController {
+
+    @Autowired
+    private EperusteetAudit audit;
 
     @Autowired
     KommenttiService service;
@@ -100,16 +108,23 @@ public class KommenttiController {
 
     @RequestMapping(method = {POST, PUT})
     public ResponseEntity<KommenttiDto> add(@RequestBody KommenttiDto body) {
-        return new ResponseEntity<>(service.add(body), HttpStatus.CREATED);
+        return audit.withAudit(LogMessage.builder(null, KOMMENTTI, LISAYS), (Void) -> {
+            return new ResponseEntity<>(service.add(body), HttpStatus.CREATED);
+        });
     }
 
     @RequestMapping(value = "/{id}", method = {POST, PUT})
     public ResponseEntity<KommenttiDto> update(@PathVariable("id") final long id, @RequestBody KommenttiDto body) {
-        return new ResponseEntity<>(service.update(id, body), HttpStatus.OK);
+        return audit.withAudit(LogMessage.builder(null, KOMMENTTI, MUOKKAUS), (Void) -> {
+            return new ResponseEntity<>(service.update(id, body), HttpStatus.OK);
+        });
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)
     public void delete(@PathVariable("id") final long id) {
-        service.delete(id);
+        audit.withAudit(LogMessage.builder(null, KOMMENTTI, POISTO), (Void) -> {
+            service.delete(id);
+            return null;
+        });
     }
 }

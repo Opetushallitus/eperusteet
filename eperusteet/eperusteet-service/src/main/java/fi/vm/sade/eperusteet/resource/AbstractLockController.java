@@ -15,19 +15,16 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
+import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import fi.vm.sade.eperusteet.service.LockService;
+import fi.vm.sade.eperusteet.service.internal.LockManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
-import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
-
-import fi.vm.sade.eperusteet.service.internal.LockManager;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -48,7 +45,7 @@ public abstract class AbstractLockController<T> {
         handleContext(ctx);
         LukkoDto lock = service().getLock(ctx);
         lukkomanageri.lisaaNimiLukkoon(lock);
-        return lock == null ? new ResponseEntity<LukkoDto>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.OK);
+        return lock == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.OK);
     }
 
     @RequestMapping(method = POST)

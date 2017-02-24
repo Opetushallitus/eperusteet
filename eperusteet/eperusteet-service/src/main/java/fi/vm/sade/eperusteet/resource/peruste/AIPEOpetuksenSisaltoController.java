@@ -18,15 +18,22 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.KURSSI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.LAAJAALAINENOSAAMINEN;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.OPPIMAARA;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.VAIHE;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -37,6 +44,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @InternalApi
 public class AIPEOpetuksenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(AIPEOpetuksenSisaltoController.class);
+
+    @Autowired
+    private EperusteetAudit audit;
 
     @Autowired
     AIPEOpetuksenPerusteenSisaltoService sisalto;
@@ -54,7 +64,9 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @RequestBody AIPEVaiheDto vaiheDto
     ) {
-        return ResponseEntity.ok(sisalto.addVaihe(perusteId, vaiheDto));
+        return audit.withAudit(LogMessage.builder(perusteId, VAIHE, LISAYS), (Void) -> {
+            return ResponseEntity.ok(sisalto.addVaihe(perusteId, vaiheDto));
+        });
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}", method = GET)
@@ -70,7 +82,10 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("vaiheId") final Long vaiheId
     ) {
-        sisalto.removeVaihe(perusteId, vaiheId);
+        audit.withAudit(LogMessage.builder(perusteId, VAIHE, POISTO), (Void) -> {
+            sisalto.removeVaihe(perusteId, vaiheId);
+            return null;
+        });
         return ResponseEntity.ok().build();
     }
 
@@ -81,7 +96,9 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable("vaiheId") final Long vaiheId,
             @RequestBody AIPEVaiheDto vaiheDto
     ) {
-        return ResponseEntity.ok(sisalto.updateVaihe(perusteId, vaiheId, vaiheDto));
+        return audit.withAudit(LogMessage.builder(perusteId, VAIHE, MUOKKAUS), (Void) -> {
+            return ResponseEntity.ok(sisalto.updateVaihe(perusteId, vaiheId, vaiheDto));
+        });
     }
 
     @RequestMapping(value = "/laajaalaiset", method = GET)
@@ -96,7 +113,9 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long perusteId,
             @RequestBody LaajaalainenOsaaminenDto loDto
     ) {
-        return ResponseEntity.ok(sisalto.addLaajaalainen(perusteId, loDto));
+        return audit.withAudit(LogMessage.builder(perusteId, LAAJAALAINENOSAAMINEN, LISAYS), (Void) -> {
+            return ResponseEntity.ok(sisalto.addLaajaalainen(perusteId, loDto));
+        });
     }
 
     @RequestMapping(value = "/laajaalaiset/{laajaalainenId}", method = PUT)
@@ -105,7 +124,9 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long laajaalainenId,
             @RequestBody LaajaalainenOsaaminenDto loDto
     ) {
-        return ResponseEntity.ok(sisalto.updateLaajaalainen(perusteId, laajaalainenId, loDto));
+        return audit.withAudit(LogMessage.builder(perusteId, LAAJAALAINENOSAAMINEN, MUOKKAUS), (Void) -> {
+            return ResponseEntity.ok(sisalto.updateLaajaalainen(perusteId, laajaalainenId, loDto));
+        });
     }
 
     @RequestMapping(value = "/laajaalaiset/{laajalainenId}", method = GET)
@@ -121,7 +142,10 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long perusteId,
             @PathVariable final Long laajaalainenId
     ) {
-        sisalto.removeLaajaalainen(perusteId, laajaalainenId);
+        audit.withAudit(LogMessage.builder(perusteId, LAAJAALAINENOSAAMINEN, POISTO), (Void) -> {
+            sisalto.removeLaajaalainen(perusteId, laajaalainenId);
+            return null;
+        });
         return ResponseEntity.ok().build();
     }
 
@@ -139,7 +163,9 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long vaiheId,
             @RequestBody AIPEOppiaineDto oppiaineDto
     ) {
-        return ResponseEntity.ok(sisalto.addOppiaine(perusteId, vaiheId, oppiaineDto));
+        return audit.withAudit(LogMessage.builder(perusteId, VAIHE, LISAYS), (Void) -> {
+            return ResponseEntity.ok(sisalto.addOppiaine(perusteId, vaiheId, oppiaineDto));
+        });
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}", method = PUT)
@@ -149,7 +175,9 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long oppiaineId,
             @RequestBody AIPEOppiaineDto oppiaineDto
     ) {
-        return ResponseEntity.ok(sisalto.updateOppiaine(perusteId, vaiheId, oppiaineId, oppiaineDto));
+        return audit.withAudit(LogMessage.builder(perusteId, VAIHE, MUOKKAUS), (Void) -> {
+            return ResponseEntity.ok(sisalto.updateOppiaine(perusteId, vaiheId, oppiaineId, oppiaineDto));
+        });
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}", method = DELETE)
@@ -158,7 +186,10 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId
     ) {
-        sisalto.removeOppiaine(perusteId, vaiheId, oppiaineId);
+        audit.withAudit(LogMessage.builder(perusteId, VAIHE, POISTO), (Void) -> {
+            sisalto.removeOppiaine(perusteId, vaiheId, oppiaineId);
+            return null;
+        });
         return ResponseEntity.ok().build();
     }
 
@@ -187,7 +218,9 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long oppiaineId,
             @RequestBody AIPEOppiaineDto oppiaineDto
     ) {
-        return ResponseEntity.ok(sisalto.addOppimaara(perusteId, vaiheId, oppiaineId, oppiaineDto));
+        return audit.withAudit(LogMessage.builder(perusteId, OPPIMAARA, LISAYS), (Void) -> {
+            return ResponseEntity.ok(sisalto.addOppimaara(perusteId, vaiheId, oppiaineId, oppiaineDto));
+        });
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit", method = GET)
@@ -216,7 +249,9 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long oppiaineId,
             @RequestBody AIPEKurssiDto kurssiDto
     ) {
-        return ResponseEntity.ok(sisalto.addKurssi(perusteId, vaiheId, oppiaineId, kurssiDto));
+        return audit.withAudit(LogMessage.builder(perusteId, KURSSI, LISAYS), (Void) -> {
+            return ResponseEntity.ok(sisalto.addKurssi(perusteId, vaiheId, oppiaineId, kurssiDto));
+        });
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit/{kurssiId}", method = PUT)
@@ -227,7 +262,9 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long kurssiId,
             @RequestBody AIPEKurssiDto kurssiDto
     ) {
-        return ResponseEntity.ok(sisalto.updateKurssi(perusteId, vaiheId, oppiaineId, kurssiId, kurssiDto));
+        return audit.withAudit(LogMessage.builder(perusteId, KURSSI, MUOKKAUS), (Void) -> {
+            return ResponseEntity.ok(sisalto.updateKurssi(perusteId, vaiheId, oppiaineId, kurssiId, kurssiDto));
+        });
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit/{kurssiId}", method = DELETE)
@@ -237,7 +274,10 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long oppiaineId,
             @PathVariable final Long kurssiId
     ) {
-        sisalto.removeKurssi(perusteId, vaiheId, oppiaineId, kurssiId);
+        audit.withAudit(LogMessage.builder(perusteId, KURSSI, POISTO), (Void) -> {
+            sisalto.removeKurssi(perusteId, vaiheId, oppiaineId, kurssiId);
+            return null;
+        });
         return ResponseEntity.ok().build();
     }
 

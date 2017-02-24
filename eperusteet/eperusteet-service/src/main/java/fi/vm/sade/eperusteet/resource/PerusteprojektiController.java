@@ -25,6 +25,15 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTEPROJEKTI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TYORYHMA;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LUONTI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.TILAMUUTOS;
+import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,6 +53,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/perusteprojektit")
 @InternalApi
 public class PerusteprojektiController {
+
+    @Autowired
+    private EperusteetAudit audit;
 
     @Autowired
     private PerusteprojektiService service;
@@ -100,24 +112,36 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PerusteprojektiDto update(@PathVariable("id") final long id, @RequestBody PerusteprojektiDto perusteprojektiDto) {
-        perusteprojektiDto = service.update(id, perusteprojektiDto);
-        return perusteprojektiDto;
+    public PerusteprojektiDto update(
+            @PathVariable("id") final long id,
+            @RequestBody PerusteprojektiDto perusteprojektiDto) {
+        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, LISAYS).add("perusteprojektiId", id), (Void) -> {
+            return service.update(id, perusteprojektiDto);
+        });
     }
 
     @RequestMapping(value = "/{id}/tila/{tila}", method = POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public TilaUpdateStatus updateTila(@PathVariable("id") final long id, @PathVariable("tila") final String tila, final Long siirtymaPaattyy) {
-        return service.updateTila(id, ProjektiTila.of(tila), siirtymaPaattyy != null ? new Date(siirtymaPaattyy) : null);
+    public TilaUpdateStatus updateTila(
+            @PathVariable("id") final long id,
+            @PathVariable("tila") final String tila,
+            final Long siirtymaPaattyy) {
+        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, TILAMUUTOS).add("perusteprojektiId", id), (Void) -> {
+            return service.updateTila(id, ProjektiTila.of(tila), siirtymaPaattyy != null ? new Date(siirtymaPaattyy) : null);
+        });
     }
 
     @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public ResponseEntity<PerusteprojektiDto> add(@RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto, UriComponentsBuilder ucb) {
-        PerusteprojektiDto perusteprojektiDto = service.save(perusteprojektiLuontiDto);
-        return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
+    public ResponseEntity<PerusteprojektiDto> add(
+            @RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto,
+            UriComponentsBuilder ucb) {
+        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, LUONTI), (Void) -> {
+            PerusteprojektiDto perusteprojektiDto = service.save(perusteprojektiLuontiDto);
+            return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
+        });
     }
 
     private HttpHeaders buildHeadersFor(Long id, UriComponentsBuilder ucb) {
@@ -154,10 +178,12 @@ public class PerusteprojektiController {
     public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilot(
             @PathVariable("id") final Long id,
             @RequestBody List<TyoryhmaHenkiloDto> tyoryhma) {
-        List<TyoryhmaHenkiloDto> res = tyoryhma.stream()
-                .map(thd -> service.saveTyoryhma(id, thd))
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return audit.withAudit(LogMessage.builder(null, TYORYHMA, LUONTI).add("perusteprojektiId", id), (Void) -> {
+            List<TyoryhmaHenkiloDto> res = tyoryhma.stream()
+                    .map(thd -> service.saveTyoryhma(id, thd))
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        });
     }
 
     @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = POST)
@@ -166,16 +192,20 @@ public class PerusteprojektiController {
             @PathVariable("id") final Long id,
             @PathVariable("nimi") final String nimi,
             @RequestBody List<String> tyoryhma) {
-        List<TyoryhmaHenkiloDto> res = service.saveTyoryhma(id, nimi, tyoryhma);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return audit.withAudit(LogMessage.builder(null, TYORYHMA, MUOKKAUS).add("perusteprojektiId", id), (Void) -> {
+            List<TyoryhmaHenkiloDto> res = service.saveTyoryhma(id, nimi, tyoryhma);
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        });
     }
 
     @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = DELETE)
     public ResponseEntity<TyoryhmaHenkiloDto> removeTyoryhmat(
             @PathVariable("id") final Long id,
             @PathVariable("nimi") final String nimi) {
-        service.removeTyoryhma(id, nimi);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, POISTO).add("perusteprojektiId", id), (Void) -> {
+            service.removeTyoryhma(id, nimi);
+            return new ResponseEntity<>(HttpStatus.OK);
+        });
     }
 
     @RequestMapping(value = "/{id}/perusteenosat/{pid}/tyoryhmat", method = POST)
@@ -184,7 +214,9 @@ public class PerusteprojektiController {
             @PathVariable("id") final Long id,
             @PathVariable("pid") final Long pid,
             @RequestBody List<String> tyoryhmat) {
-        return new ResponseEntity<>(service.setPerusteenOsaViiteTyoryhmat(id, pid, tyoryhmat), HttpStatus.OK);
+        return audit.withAudit(LogMessage.builder(null, TYORYHMA, MUOKKAUS).add("perusteprojektiId", id), (Void) -> {
+            return new ResponseEntity<>(service.setPerusteenOsaViiteTyoryhmat(id, pid, tyoryhmat), HttpStatus.OK);
+        });
     }
 
     @RequestMapping(value = "/{id}/perusteenosat/{pid}/tyoryhmat", method = GET)

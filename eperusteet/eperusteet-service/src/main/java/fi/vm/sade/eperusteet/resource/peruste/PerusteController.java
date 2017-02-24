@@ -24,10 +24,20 @@ import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTE;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINTONIMIKEKOODI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,19 +45,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
 @Api(value = "Perusteet", description = "Perusteiden hallintaan liittyvät operaatiot")
 public class PerusteController {
+
+    @Autowired
+    private EperusteetAudit audit;
 
     @Autowired
     private KoodistoClient koodistoService;
@@ -131,7 +138,9 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
-        return service.update(id, perusteDto);
+        return audit.withAudit(LogMessage.builder(id, PERUSTE, MUOKKAUS), (Void) -> {
+            return service.update(id, perusteDto);
+        });
     }
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)
@@ -140,8 +149,10 @@ public class PerusteController {
     public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
             @PathVariable("perusteId") final long id,
             @PathVariable("tutkintonimikeKoodiId") final Long tnkId) {
-        service.removeTutkintonimikeKoodi(id, tnkId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return audit.withAudit(LogMessage.builder(id, TUTKINTONIMIKEKOODI, POISTO), (Void) -> {
+            service.removeTutkintonimikeKoodi(id, tnkId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        });
     }
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = {POST, PUT})
@@ -150,8 +161,10 @@ public class PerusteController {
     public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
             @PathVariable("perusteId") final long id,
             @RequestBody final TutkintonimikeKoodiDto tnk) {
-        TutkintonimikeKoodiDto tutkintonimikeKoodi = service.addTutkintonimikeKoodi(id, tnk);
-        return new ResponseEntity<>(tutkintonimikeKoodi, HttpStatus.OK);
+        return audit.withAudit(LogMessage.builder(id, TUTKINTONIMIKEKOODI, MUOKKAUS), (Void) -> {
+            TutkintonimikeKoodiDto tutkintonimikeKoodi = service.addTutkintonimikeKoodi(id, tnk);
+            return new ResponseEntity<>(tutkintonimikeKoodi, HttpStatus.OK);
+        });
     }
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = GET)
