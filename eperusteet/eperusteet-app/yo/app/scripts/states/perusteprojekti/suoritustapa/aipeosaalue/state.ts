@@ -35,7 +35,7 @@ $stateProvider
             : laajaalaiset.get($stateParams.osanId)
     },
     controller: ($scope, $q, $stateParams, laajaalaiset, laajaalainen, Editointikontrollit, Notifikaatiot,
-                 YleinenData, ProjektinMurupolkuService, Api) => {
+                 YleinenData, ProjektinMurupolkuService) => {
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
         $scope.isNew = $stateParams.osanId === 'uusi';
         $scope.isOsaaminen = true;

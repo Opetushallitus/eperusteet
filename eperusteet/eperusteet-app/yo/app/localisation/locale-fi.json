@@ -312,6 +312,11 @@
     "rakenne-validointi-uniikit": "Ryhmässä on samoja tutkinnon osia",
     "luo-uusi-ryhma": "Luo uusi ryhmä",
     "luo-kooste": "Luo kooste excel",
+    "tutkinnon-osa": "Tutkinnon osa",
+    "ongelma": "Ongelma",
+    "varoitukset": "Varoitukset",
+    "ominaisuus-ei-tuettu": "Ominaisuus ei ole tuettu käyttämälläsi selaimella.",
+    "tiedostossa-ongelmia": "Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.",
     "muokkaa-ryhmaa": "Muokkaa ryhmää",
     "muokkaa-tutkinnon-osaa": "Muokkaa tutkinnon osaa",
     "perustiedot": "Perustiedot",
@@ -577,7 +582,7 @@
     "tuo-excel": "Tuo Excel",
     "tuo-excel-tiedostosta": "Tuo Excel-tiedostosta...",
     "tutkinnon-tyyppi": "Tutkinnon tyyppi",
-    "excel-tiedostossasi-oli-virheitä": "Excel-tiedostossasi oli virheitä",
+    "excel-tiedostossasi-oli-virheita": "Excel-tiedostossasi oli virheitä",
     "excel-ei-kahta-samaa": "Tutkintokoodin täytyy olla uniikki",
     "valitse-nimi": "Valitse nimi",
     "valitse-diaarinumero": "Valitse diaarinumero",
@@ -953,6 +958,7 @@
 
     "laaja-alaisen-osaamisen-alueet": "Laaja-alaisen osaamisen alueet",
     "tyhjenna-valinnat": "Palauta valinnat alkutilaan",
+    "perusopetus-perusteet": "Perusopetuksen opetussuunnitelman perusteet",
     "perusopetus-arviointi": "Oppimisen arviointi",
     "perusopetus-sisaltoalueet" : "Sisältöalueet",
 

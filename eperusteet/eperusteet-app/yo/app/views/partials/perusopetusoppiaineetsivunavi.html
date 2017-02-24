@@ -1,12 +1,12 @@
+<!-- partials/perusopetusoppiaineetsivunavi.html -->
 <div class="perusopetus">
-  <!-- partials/perusopetusoppiaineetsivunavi.html -->
-  <div ng-repeat="oppiaine in section.items | orderBy:section.$oppiaineOrder">
-    <div class="oppiaine {{ section.isCurrentOppiaine(oppiaine.id) && 'oppiaine-selected' }}"
-        ng-click="section.selectOppiaine(oppiaine.id)" kaanna="oppiaine.nimi"></div>
+    <div ng-repeat="oppiaine in section.items | orderBy:section.$oppiaineOrder">
+        <div class="oppiaine {{ section.isCurrentOppiaine(oppiaine.id) && 'oppiaine-selected' }}"
+             ng-click="section.selectOppiaine(oppiaine.id)" kaanna="oppiaine.nimi"></div>
 
-    <div ng-repeat="oppimaara in oppiaine.oppimaarat | orderBy:section.$oppiaineOrder">
-      <div class="oppiaine oppimaara {{ section.isCurrentOppiaine(oppimaara.id) && 'oppiaine-selected' }}"
-           ng-click="section.selectOppiaine(oppimaara.id)" kaanna="oppimaara.nimi"></div>
+        <div ng-repeat="oppimaara in oppiaine.oppimaarat | orderBy:section.$oppiaineOrder">
+            <div class="oppiaine oppimaara {{ section.isCurrentOppiaine(oppimaara.id) && 'oppiaine-selected' }}"
+                 ng-click="section.selectOppiaine(oppimaara.id)" kaanna="oppimaara.nimi"></div>
+        </div>
     </div>
-  </div>
 </div>

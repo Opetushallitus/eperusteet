@@ -1,12 +1,13 @@
+<!-- fileselect.html -->
 <div>
-  <!-- fileselect.html -->
-  <input class="hidden" id="fileDirectiveSelectInput" type="file">
+    <input class="hidden" id="fileDirectiveSelectInput" type="file">
 
-  <button icon-role="file" id="addFile" type="button" class="btn btn-default"><span>{{flabel | kaanna}}</span></button>
+    <button icon-role="file" id="addFile" type="button" class="btn btn-default"><span>{{flabel | kaanna}}</span>
+    </button>
 
-  <div ng-show="file">
-    {{file.name}}
-    <button id="reloadFile" type="button" class="btn btn-default" icon-role="refresh"></button>
-  </div>
+    <div ng-show="file">
+        {{file.name}}
+        <button id="reloadFile" type="button" class="btn btn-default" icon-role="refresh"></button>
+    </div>
 
 </div>

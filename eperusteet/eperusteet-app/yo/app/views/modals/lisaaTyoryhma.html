@@ -1,46 +1,50 @@
-<!-- lisaaTyoryhma.html -->
-
+<!-- modals/lisaaTyoryhma.html -->
 <div class="modal-header">
-  <h1 ng-if="uusi">{{'luo-tyoryhma'|kaanna}} <ohje teksti="ohje-tyoryhma-luonti"></ohje></h1>
-  <h1 ng-if="!uusi" kaanna>muokkaa-tyoryhmaa</h1>
+    <h1 ng-if="uusi">{{'luo-tyoryhma'|kaanna}}
+        <ohje teksti="ohje-tyoryhma-luonti"></ohje>
+    </h1>
+    <h1 ng-if="!uusi" kaanna>muokkaa-tyoryhmaa</h1>
 </div>
 
 <div class="modal-body tyoryhma-modal">
-  <label for="nimi" kaanna>tyoryhman-nimi</label>*
-  <input ng-change="validoiRyhma(ryhma.nimi)" id="nimi" ng-model="ryhma.nimi" type="text" class="form-control">
+    <label for="nimi" kaanna>tyoryhman-nimi</label>*
+    <input ng-change="validoiRyhma(ryhma.nimi)" id="nimi" ng-model="ryhma.nimi" type="text" class="form-control">
 
-  <div ng-show="virheellinenNimi" class="talert alert alert-error" kaanna>nimi-on-jo-kaytossa</div>
+    <div ng-show="virheellinenNimi" class="talert alert alert-error" kaanna>nimi-on-jo-kaytossa</div>
 
-  <div class="tjasenet">
-    <label kaanna>valitse-jasenet</label>
-    <div class="row">
-      <div class="col-xs-5">
-        <select class="form-control" ng-multiple="true" ng-model="from" id="" name="" multiple
-          ng-options="j.sukunimi + ', ' + j.etunimet + ' (' + j.username + ')' for j in jasenet | orderBy:'sukunimi' | filter:poistaLisatyt"></select>
-      </div>
+    <div class="tjasenet">
+        <label kaanna>valitse-jasenet</label>
+        <div class="row">
+            <div class="col-xs-5">
+                <select class="form-control" ng-multiple="true" ng-model="from" name="" multiple
+                        ng-options="j.sukunimi + ', ' + j.etunimet + ' (' + j.username + ')' for j in jasenet | orderBy:'sukunimi' | filter:poistaLisatyt"></select>
+            </div>
 
-      <div class="col-xs-2">
-        <div class="painikkeet">
-          <button ng-click="siirraVasemmalle(to); to.length = 0" ng-disabled="to.length === 0" class="btn btn-default" icon-role="arrow-left"></button>
-          <button ng-click="siirraOikealle(from, ryhma.jasenet); from.length = 0" ng-disabled="from.length === 0" class="btn btn-default" icon-role="arrow-right"></button>
+            <div class="col-xs-2">
+                <div class="painikkeet">
+                    <button ng-click="siirraVasemmalle(to); to.length = 0" ng-disabled="to.length === 0"
+                            class="btn btn-default" icon-role="arrow-left"></button>
+                    <button ng-click="siirraOikealle(from, ryhma.jasenet); from.length = 0"
+                            ng-disabled="from.length === 0" class="btn btn-default" icon-role="arrow-right"></button>
+                </div>
+            </div>
+
+            <div class="col-xs-5">
+                <select class="form-control" ng-multiple="true" ng-model="to" name="" multiple
+                        ng-options="jasenMap[j].sukunimi + ', ' + jasenMap[j].etunimet + ' (' + jasenMap[j].username + ')' for j in ryhma.jasenet | orderBy:apulajittelija"></select>
+            </div>
         </div>
-      </div>
-
-      <div class="col-xs-5">
-        <select class="form-control" ng-multiple="true" ng-model="to" id="" name="" multiple
-          ng-options="jasenMap[j].sukunimi + ', ' + jasenMap[j].etunimet + ' (' + jasenMap[j].username + ')' for j in ryhma.jasenet | orderBy:apulajittelija"></select>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal-footer">
-  <div class="pull-left" ng-if="!uusi">
-    <button class="btn btn-danger" ng-click="poista()" kaanna>poista</button>
-  </div>
-  <button class="btn btn-default" ng-click="peruuta()" kaanna>peru</button>
-  <button class="btn btn-primary" ng-disabled="virheellinenNimi || ryhma.jasenet.length === 0 || ryhma.nimi.length < 1" ng-click="ok()">
-    <span ng-if="!uusi" kaanna>tallenna-tyoryhma</span>
-    <span ng-if="uusi" kaanna>tallenna-muutokset</span>
-  </button>
+    <div class="pull-left" ng-if="!uusi">
+        <button class="btn btn-danger" ng-click="poista()" kaanna>poista</button>
+    </div>
+    <button class="btn btn-default" ng-click="peruuta()" kaanna>peru</button>
+    <button class="btn btn-primary"
+            ng-disabled="virheellinenNimi || ryhma.jasenet.length === 0 || ryhma.nimi.length < 1" ng-click="ok()">
+        <span ng-if="!uusi" kaanna>tallenna-tyoryhma</span>
+        <span ng-if="uusi" kaanna>tallenna-muutokset</span>
+    </button>
 </div>

@@ -26,7 +26,6 @@ angular.module("eperusteApp")
             versiot: "="
         },
         controller: ($scope, Notifikaatiot, PerusteProjektiSivunavi, YleinenData, $stateParams, $state, Api) => {
-            const suoritustapa = 'aipe';
             $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
             $scope.isNew = $stateParams.osanId === 'uusi';
             $scope.editableModel = Api.copy($scope.model);
@@ -42,7 +41,7 @@ angular.module("eperusteApp")
                     editTitle: 'muokkaa-osaaminen',
                     newTitle: 'uusi-osaaminen',
                     backLabel: 'laaja-alainen-osaaminen',
-                    backState: ['root.perusteprojekti.suoritustapa.' + suoritustapa + 'osalistaus', {
+                    backState: ['root.perusteprojekti.suoritustapa.' + $stateParams.suoritustapa + 'osalistaus', {
                         suoritustapa: $stateParams.suoritustapa,
                         osanTyyppi: 'osaaminen'
                     }],

@@ -1,28 +1,13 @@
-<!--
-  ~  Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-  ~
-  ~  This program is free software: Licensed under the EUPL, Version 1.1 or - as
-  ~  soon as they will be approved by the European Commission - subsequent versions
-  ~  of the EUPL (the "Licence");
-  ~
-  ~  You may not use this work except in compliance with the Licence.
-  ~  You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-  ~
-  ~  This program is distributed in the hope that it will be useful,
-  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~  European Union Public Licence for more details.
-  -->
-
+<!-- partials/lukio/include/kurssiOsavalitsin.html -->
 <div class="dropdown">
-  <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle"
-          ng-show="isAddAvailable()"
-          icon-role="add">{{'muokkaus-lisaa-osio' | kaanna}}
-  </button>
-  <ul class="pull-right dropdown-menu">
-    <li ng-repeat="field in muokattavatOsat" ng-show="!field.obj">
-      <a class="action-link" ng-click="addOsa(field.id)" kaanna="'kurssi-osa-'+field.id">
-      </a>
-    </li>
-  </ul>
+    <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle"
+            ng-show="isAddAvailable()"
+            icon-role="add">{{'muokkaus-lisaa-osio' | kaanna}}
+    </button>
+    <ul class="pull-right dropdown-menu">
+        <li ng-repeat="field in muokattavatOsat" ng-show="!field.obj">
+            <a class="action-link" ng-click="addOsa(field.id)" kaanna="'kurssi-osa-'+field.id">
+            </a>
+        </li>
+    </ul>
 </div>

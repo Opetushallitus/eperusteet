@@ -1,18 +1,18 @@
-<!-- osaaalue.html -->
+<!-- partials/perusteprojekti/osaaalue.html -->
 <div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
-  <div id="ck-toolbar-top"></div>
-  <div id="ck-toolbar-bottom"></div>
+    <div id="ck-toolbar-top"></div>
+    <div id="ck-toolbar-bottom"></div>
 </div>
 <div class="row">
-  <div class="col-md-12 ep-sisalto-inner">
-    <div ng-if="isVuosiluokka">
-      <muokkaus-vuosiluokka model="dataObject" versiot="versiot"></muokkaus-vuosiluokka>
+    <div class="col-md-12 ep-sisalto-inner">
+        <div ng-if="isVuosiluokka">
+            <muokkaus-vuosiluokka model="dataObject" versiot="versiot"></muokkaus-vuosiluokka>
+        </div>
+        <div ng-if="isOppiaine">
+            <muokkaus-oppiaine model="dataObject" versiot="versiot"></muokkaus-oppiaine>
+        </div>
+        <div ng-if="isOsaaminen">
+            <perusopetus-muokkaus-osaaminen model="dataObject" versiot="versiot"></perusopetus-muokkaus-osaaminen>
+        </div>
     </div>
-    <div ng-if="isOppiaine">
-      <muokkaus-oppiaine model="dataObject" versiot="versiot"></muokkaus-oppiaine>
-    </div>
-    <div ng-if="isOsaaminen">
-      <perusopetus-muokkaus-osaaminen model="dataObject" versiot="versiot"></perusopetus-muokkaus-osaaminen>
-    </div>
-  </div>
 </div>

@@ -1,36 +1,46 @@
+<!-- formfield.html -->
 <div class="form-group">
-  <!-- formfield.html -->
-  <label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}<span ng-transclude></span></label>
-  <div class="col-sm-9" ng-if="!isDate">
-    <numberinput luokka="form-control" ng-if="isNumber" type="{{type}}" model="input.model" min="{{min}}" max="{{max}}" form="form" step="{{step}}"></numberinput>
-    <input id="{{inputElId}}" ng-if="isText && type !== 'diaari'" ng-class="inputClasses()" ng-model="input.model" type="{{type}}" placeholder="{{placeholder | kaanna}}" ng-required="!!postfix">
-    <input id="{{inputElId}}" ng-if="isText && type === 'diaari'" name="diaari"  ng-class="inputClasses()" ng-model="input.model"
-           type="{{type}}" placeholder="{{placeholder | kaanna}}"  ng-required="!!postfix">
-    <p class="alert alert-warning" ng-show="form.diaari.$error.jyraavanhan" kaanna>diaarinumerolla-jyraa-vanhan</p>
-    <input ng-if="isMultiText && type === 'text'" id="{{inputElId}}" class="form-control" ng-model="input.model" type="{{type}}" slocalized ng-required="!!postfix"></input>
-    <textarea id="{{inputElId}}" ng-if="isMultiText && type === 'textarea'" class="form-control msd-elastic" ng-model="input.model" slocalized ng-required="!!postfix"></textarea>
-    <select id="{{inputElId}}" ng-if="options && !flatOptions" class="form-control" ng-model="input.model" ng-required="!!postfix"
-      ng-options="obj.value as obj.label for obj in options">
-      <option value="" ng-if="placeholder">{{placeholder | kaanna}}</option>
-    </select>
-    <select id="{{inputElId}}" ng-if="options && flatOptions" class="form-control" ng-model="input.model" ng-required="!!postfix"
-      ng-options="kaanna(obj) for obj in options">
-      <option value="" ng-if="placeholder">{{placeholder | kaanna}}</option>
-    </select>
-    <label class="formfield-label" ng-if="isLabel && input.model">{{input.model | kaanna}}</label>
-    <label class="formfield-label placeholder" ng-if="isLabel && !input.model">{{placeholder | kaanna}}</label>
-  </div>
-  <div class="col-sm-9 form-clear" ng-if="isDate">
-    <ng-form name="innerForm">
-      <div class="input-group">
-        <input type="text" name="innerName" class="form-control" datepicker-popup="{{datePicker.format}}" ng-model="input.model"
-               placeholder="{{placeholder | kaanna}}" is-open="datePicker.state" datepicker-options="datePicker.options"
-               show-button-bar="false" dateformatvalidator id="{{inputElId}}">
-        <span class="input-group-btn">
-          <button type="button" class="btn btn-default" ng-click="datePicker.open($event)" icon-role="calendar"></button>
-        </span>
-      </div>
-      <p class="alert alert-error" ng-show="innerForm.innerName.$invalid" kaanna>kelvoton-pvm</p>
-    </ng-form>
-  </div>
+    <label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}<span ng-transclude></span></label>
+    <div class="col-sm-9" ng-if="!isDate">
+        <numberinput luokka="form-control" ng-if="isNumber" type="{{type}}" model="input.model" min="{{min}}"
+                     max="{{max}}" form="form" step="{{step}}"></numberinput>
+        <input id="{{inputElId}}" ng-if="isText && type !== 'diaari'" ng-class="inputClasses()" ng-model="input.model"
+               type="{{type}}" placeholder="{{placeholder | kaanna}}" ng-required="!!postfix">
+        <input id="{{inputElId}}" ng-if="isText && type === 'diaari'" name="diaari" ng-class="inputClasses()"
+               ng-model="input.model"
+               type="{{type}}" placeholder="{{placeholder | kaanna}}" ng-required="!!postfix">
+        <p class="alert alert-warning" ng-show="form.diaari.$error.jyraavanhan" kaanna>diaarinumerolla-jyraa-vanhan</p>
+        <input ng-if="isMultiText && type === 'text'" id="{{inputElId}}" class="form-control" ng-model="input.model"
+               type="{{type}}" slocalized ng-required="!!postfix">
+        <textarea id="{{inputElId}}" ng-if="isMultiText && type === 'textarea'" class="form-control msd-elastic"
+                  ng-model="input.model" slocalized ng-required="!!postfix"></textarea>
+        <select id="{{inputElId}}" ng-if="options && !flatOptions" class="form-control" ng-model="input.model"
+                ng-required="!!postfix"
+                ng-options="obj.value as obj.label for obj in options">
+            <option value="" ng-if="placeholder">{{placeholder | kaanna}}</option>
+        </select>
+        <select id="{{inputElId}}" ng-if="options && flatOptions" class="form-control" ng-model="input.model"
+                ng-required="!!postfix"
+                ng-options="kaanna(obj) for obj in options">
+            <option value="" ng-if="placeholder">{{placeholder | kaanna}}</option>
+        </select>
+        <label class="formfield-label" ng-if="isLabel && input.model">{{input.model | kaanna}}</label>
+        <label class="formfield-label placeholder" ng-if="isLabel && !input.model">{{placeholder | kaanna}}</label>
+    </div>
+    <div class="col-sm-9 form-clear" ng-if="isDate">
+        <ng-form name="innerForm">
+            <div class="input-group">
+                <input type="text" name="innerName" class="form-control" datepicker-popup="{{datePicker.format}}"
+                       ng-model="input.model"
+                       placeholder="{{placeholder | kaanna}}" is-open="datePicker.state"
+                       datepicker-options="datePicker.options"
+                       show-button-bar="false" dateformatvalidator id="{{inputElId}}">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="datePicker.open($event)"
+                            icon-role="calendar"></button>
+                </span>
+            </div>
+            <p class="alert alert-error" ng-show="innerForm.innerName.$invalid" kaanna>kelvoton-pvm</p>
+        </ng-form>
+    </div>
 </div>

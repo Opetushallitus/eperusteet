@@ -1,24 +1,30 @@
-<!-- osanmuokkauskohdealueet.html -->
+<!-- directives/perusopetus/osanmuokkauskohdealueet.html -->
 
 <div class="modal-header">
-  <kielenvaihto modal="true"></kielenvaihto>
-  <h2>{{luonti ? 'luo-uusi-ryhma' : 'muokkaa-ryhmaa'| kaanna}}</h2>
+    <kielenvaihto modal="true"></kielenvaihto>
+    <h2>{{luonti ? 'luo-uusi-ryhma' : 'muokkaa-ryhmaa'| kaanna}}</h2>
 </div>
 
 <div class="modal-body">
-  <div class="osanmuokkaus-kohdealueet">
-    <h1 kaanna="muokkaus-kohdealueet"></h1>
-    <div class="row rivi" ng-repeat="kohdealue in kohdealueet">
-      <div class="col-xs-9">
-        <input ng-model="kohdealue.nimi" type="text" slocalized class="form-control">
-      </div>
-      <div class="col-xs-3">
-        <button class="btn btn-danger" ng-click="poistaKohdealue(kohdealue)" icon-role="remove" kaanna="'poista-kohdealue'"></button>
-      </div>
+    <div class="osanmuokkaus-kohdealueet">
+        <h1 kaanna="muokkaus-kohdealueet"></h1>
+        <div class="row rivi" ng-repeat="kohdealue in kohdealueet">
+            <div class="col-xs-9">
+                <input ng-model="kohdealue.nimi" type="text" slocalized class="form-control">
+            </div>
+            <div class="col-xs-3">
+                <button class="btn btn-danger"
+                        ng-click="poistaKohdealue(kohdealue)"
+                        icon-role="remove"
+                        kaanna="'poista-kohdealue'"></button>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <button class="btn btn-primary"
+                ng-click="lisaaKohdealue()"
+                icon-role="add"
+                kaanna="'lisaa-tavoitealue'"></button>
     </div>
-    <div class="clearfix"></div>
-    <button class="btn btn-primary" ng-click="lisaaKohdealue()" icon-role="add" kaanna="'lisaa-tavoitealue'"></button>
-  </div>
 </div>
 
 <div class="modal-footer">

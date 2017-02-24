@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .service('ProjektinMurupolkuService', function ($rootScope, $state) {
     var PREFIX = 'root.perusteprojekti.';

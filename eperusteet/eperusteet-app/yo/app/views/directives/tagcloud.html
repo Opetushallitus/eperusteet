@@ -1,24 +1,25 @@
-<!-- tagcloud.html -->
+<!-- directives/tagcloud.html -->
 
 <p ng-show="showEmptyPlaceholder()" kaanna="ei-asetettu"></p>
 <ul class="tagcloud">
-  <li ng-repeat="tag in model | filter:notHidden | orderBy:orderFn">
-    <span ng-if="openable === 'true'" ohje="false" ohje-click-anywhere="false" teksti="tag.teksti" otsikko="tag.nimi" suunta="bottom"
-          extra="tag.extra">
-      <span class="tc-tag">
-        <a class="action-link closer" ng-if="editMode" icon-role="remove"
-           title="{{'poista' | kaanna}}" ng-click="remove(tag)"></a>
-        <span class="clickable">{{tag.nimi | kaanna}}</span>
-      </span>
-    </span>
-    <span ng-if="openable !== 'true'" class="tc-tag">
-      <a class="action-link closer" ng-if="editMode" icon-role="remove"
-         title="{{'poista' | kaanna}}" ng-click="remove(tag)"></a>
-      {{tag.nimi | kaanna}}
-    </span>
-  </li>
-  <li ng-if="editMode" class="tc-add-button">
-    <button class="btn btn-default" icon-role="add" kaanna="addLabel"
-            ng-click="openDialog()"></button>
-  </li>
+    <li ng-repeat="tag in model | filter:notHidden | orderBy:orderFn">
+        <span ng-if="openable === 'true'" ohje="false" ohje-click-anywhere="false" teksti="tag.teksti" otsikko="tag.nimi"
+              suunta="bottom"
+              extra="tag.extra">
+            <span class="tc-tag">
+                <a class="action-link closer" ng-if="editMode" icon-role="remove"
+                   title="{{'poista' | kaanna}}" ng-click="remove(tag)"></a>
+            <span class="clickable">{{tag.nimi | kaanna}}</span>
+          </span>
+        </span>
+        <span ng-if="openable !== 'true'" class="tc-tag">
+            <a class="action-link closer" ng-if="editMode" icon-role="remove"
+               title="{{'poista' | kaanna}}" ng-click="remove(tag)"></a>
+            {{tag.nimi | kaanna}}
+        </span>
+    </li>
+    <li ng-if="editMode" class="tc-add-button">
+        <button class="btn btn-default" icon-role="add" kaanna="addLabel"
+                ng-click="openDialog()"></button>
+    </li>
 </ul>

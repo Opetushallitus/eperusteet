@@ -1,27 +1,34 @@
-<!-- tagcloudmodal.html -->
-
+<!-- modals/tagcloudmodal.html -->
 <div class="modal-header">
-  <h3 kaanna="addLabel"></h3>
+    <h3 kaanna="addLabel"></h3>
 </div>
 
 <div class="modal-body tag-modal">
-  <accordion close-others="false">
-    <accordion-group ng-repeat="tag in model | orderBy:orderFn" is-open="tag.$isopen" ng-class="{chosen: !tag.$hidden}">
-      <accordion-heading>
-        <div ng-class="tag.$hidden ? 'unchecked' : 'checked'" class="tag-indicator"
-             ng-click="toggle(tag, $event)">
-          <span class="glyphicon" ng-class="tag.$hidden ? 'glyphicon-unchecked' : 'glyphicon-check'"></span>
-        </div>
-        <span class="glyphicon" ng-class="tag.$isopen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
-        {{tag.nimi | kaanna}}
-      </accordion-heading>
-      <div ng-bind-html="tag.teksti | kaanna | unsafe"></div>
-    </accordion-group>
-  </accordion>
+    <accordion close-others="false">
+        <accordion-group ng-repeat="tag in model | orderBy:orderFn"
+                         is-open="tag.$isopen"
+                         ng-class="{chosen: !tag.$hidden}">
+            <accordion-heading>
+                <div ng-class="tag.$hidden ? 'unchecked' : 'checked'"
+                     class="tag-indicator"
+                     ng-click="toggle(tag, $event)">
+                    <span class="glyphicon" ng-class="tag.$hidden ? 'glyphicon-unchecked' : 'glyphicon-check'"></span>
+                </div>
+                <span class="glyphicon"
+                      ng-class="tag.$isopen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+                {{tag.nimi | kaanna}}
+            </accordion-heading>
+            <div ng-bind-html="tag.teksti | kaanna | unsafe"></div>
+        </accordion-group>
+    </accordion>
 
-  <button ng-if="hasLisaaUusi" class="btn btn-default" ng-click="lisaaUusiVaihtoehto()" icon-role="add" kaanna="'lisaa'"></button>
+    <button ng-if="hasLisaaUusi"
+            class="btn btn-default"
+            ng-click="lisaaUusiVaihtoehto()"
+            icon-role="add"
+            kaanna="'lisaa'"></button>
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-default" ng-click="$close()" kaanna="sulje"></button>
+    <button class="btn btn-default" ng-click="$close()" kaanna="sulje"></button>
 </div>

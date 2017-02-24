@@ -1,5 +1,4 @@
-<!-- varmistusdialogi.html -->
-
+<!-- modals/varmistusdialogi.html -->
 <div class="modal-header">
   <h3>{{otsikko | kaanna}}</h3>
 </div>
@@ -8,7 +7,7 @@
   <p>{{lisaTeksti | kaanna}}</p>
 </div>
 <div class="modal-footer">
-    <input ng-model="comment.text" ng-if="comment.enabled" placeholder="{{comment.placeholder|kaanna}}">
+    <input ng-model="comment.text" ng-if="comment.enabled" placeholder="{{comment.placeholder | kaanna}}">
     <button class="btn" ng-click="peruuta()">{{opts.secondaryBtn | kaanna}}</button>
     <button class="btn btn-primary" ng-click="ok()">{{opts.primaryBtn | kaanna}}</button>
 </div>

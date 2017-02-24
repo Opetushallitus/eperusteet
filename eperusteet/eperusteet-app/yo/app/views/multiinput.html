@@ -1,14 +1,23 @@
-<div class="input-group">
 <!-- multiinput.html -->
-
-  <textarea class="form-control msd-elastic multiinput-resize" ng-if="type === 'textarea'" ng-model="mlData[activeLang]"></textarea>
-  <input ng-if="type !== 'textarea'" ng-model="mlData[activeLang]" class="form-control" type="text" ng-required="required">
-    <div class="input-group-btn" dropdown is-open="kielivalintaAuki" ng-class="{'textarea-selector': type === 'textarea'}">
+<div class="input-group">
+    <textarea class="form-control msd-elastic multiinput-resize"
+              ng-if="type === 'textarea'"
+              ng-model="mlData[activeLang]"></textarea>
+    <input ng-if="type !== 'textarea'"
+           ng-model="mlData[activeLang]"
+           class="form-control"
+           type="text"
+           ng-required="required">
+    <div class="input-group-btn"
+         dropdown is-open="kielivalintaAuki"
+         ng-class="{'textarea-selector': type === 'textarea'}">
         <button type="button" class="btn btn-default dropdown-toggle">
             {{ activeLang | kaanna }} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-            <li ng-repeat="lang in langs"><a class="action-link" ng-click="vaihdaKieli(lang, $event)">{{ lang | kaanna }}</a></li>
+            <li ng-repeat="lang in langs"><a class="action-link" ng-click="vaihdaKieli(lang, $event)">
+                {{lang | kaanna}}</a>
+            </li>
         </ul>
     </div>
 </div>

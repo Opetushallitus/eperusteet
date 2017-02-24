@@ -1,39 +1,39 @@
+<!-- directives/kielenvaihto.html -->
 <div ng-class="{modalkielenvaihto: isModal}">
-  <!-- kielenvaihto.html -->
 
-  <div ng-if="isModal">
-    <span kaanna="'sisallon-kieli'"></span>:
-    <span dropdown class="kieli-dropdown">
-      <button class="btn btn-default dropdown-toggle">{{sisaltokieli|kaanna}} <span class="caret"></span></button>
-      <ul class="dropdown-menu dropdown-menu-right" role="menu">
-        <li ng-class="{active: kieli === sisaltokieli}" ng-repeat="kieli in sisaltokielet | orderBy:kieliOrder">
-          <a ng-click="setSisaltokieli(kieli)">{{kieli|kaanna}}</a>
-        </li>
-      </ul>
-    </span>
-  </div>
-
-  <span ng-if="!isModal">
-    <span ng-if="uiLangChangeAllowed">
-      <span kaanna="'ui-kieli'"></span>:
-      <span dropdown class="kieli-dropdown">
-        <a class="action-link dropdown-toggle">{{kieli|kaanna}} <span class="caret"></span></a>
+    <div ng-if="isModal">
+        <span kaanna="'sisallon-kieli'"></span>:
+        <span dropdown class="kieli-dropdown">
+        <button class="btn btn-default dropdown-toggle">{{sisaltokieli|kaanna}} <span class="caret"></span></button>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-          <li ng-class="{active: koodi.koodi === kieli}" ng-repeat="koodi in koodit | orderBy:kieliOrder">
-            <a ng-click="vaihdaKieli(koodi.koodi)">{{koodi.nimi|kaanna}}</a>
-          </li>
+            <li ng-class="{active: kieli === sisaltokieli}" ng-repeat="kieli in sisaltokielet | orderBy:kieliOrder">
+                <a ng-click="setSisaltokieli(kieli)">{{kieli|kaanna}}</a>
+            </li>
         </ul>
-      </span>
-    </span>
+        </span>
+    </div>
 
-    <span kaanna="'sisallon-kieli'"></span>:
-    <span dropdown class="kieli-dropdown">
-      <a class="action-link dropdown-toggle">{{sisaltokieli|kaanna}} <span class="caret"></span></a>
-      <ul class="dropdown-menu dropdown-menu-right" role="menu">
-        <li ng-class="{active: kieli === sisaltokieli}" ng-repeat="kieli in sisaltokielet | orderBy:kieliOrder">
-          <a ng-click="setSisaltokieli(kieli)">{{kieli|kaanna}}</a>
-        </li>
-      </ul>
+    <span ng-if="!isModal">
+        <span ng-if="uiLangChangeAllowed">
+            <span kaanna="'ui-kieli'"></span>:
+            <span dropdown class="kieli-dropdown">
+                <a class="action-link dropdown-toggle">{{kieli|kaanna}} <span class="caret"></span></a>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li ng-class="{active: koodi.koodi === kieli}" ng-repeat="koodi in koodit | orderBy:kieliOrder">
+                        <a ng-click="vaihdaKieli(koodi.koodi)">{{koodi.nimi|kaanna}}</a>
+                    </li>
+                </ul>
+            </span>
+        </span>
+
+        <span kaanna="'sisallon-kieli'"></span>:
+        <span dropdown class="kieli-dropdown">
+            <a class="action-link dropdown-toggle">{{sisaltokieli|kaanna}} <span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li ng-class="{active: kieli === sisaltokieli}" ng-repeat="kieli in sisaltokielet | orderBy:kieliOrder">
+                    <a ng-click="setSisaltokieli(kieli)">{{kieli|kaanna}}</a>
+                </li>
+            </ul>
+        </span>
     </span>
-  </span>
 </div>

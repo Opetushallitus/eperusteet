@@ -1,9 +1,9 @@
+<!-- directives/murupolku.html -->
 <span>
-  <!-- murupolku.html -->
-  <ol class="breadcrumb projektin-murupolku" ng-show="(isActive || isTekstikappale) && items.length">
-    <li ng-repeat="crumb in items">
-      <a ng-show="crumb.url && !isTekstikappale" ng-href="{{crumb.url}}">{{crumb.label | kaanna}}</a>
-      <span ng-hide="crumb.url && !isTekstikappale">{{crumb.label | kaanna}}</span>
-    </li>
-  </ol>
+    <ol class="breadcrumb projektin-murupolku" ng-show="(isActive || isTekstikappale) && items.length">
+        <li ng-repeat="crumb in items">
+            <a ng-show="crumb.url && !isTekstikappale" ng-href="{{crumb.url}}">{{crumb.label | kaanna}}</a>
+            <span ng-hide="crumb.url && !isTekstikappale">{{crumb.label | kaanna}}</span>
+        </li>
+    </ol>
 </span>

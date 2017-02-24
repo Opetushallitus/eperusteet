@@ -1,111 +1,182 @@
+<!-- partials/ammattitaito.html -->
 <div class="ammattitaito">
-  <div ng-class="{'panel panel-default panel-small arviointi-kohdealueet': !eiKohdealueita, 'arviointi-ei-kohdealueita': eiKohdealueita}">
-    <span class="toggler" ng-show="ammattitaito.length && !eiKohdealueita"><a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
-    <span class="toggler" ng-show="ammattitaito[0].vaatimuksenKohteet.length && eiKohdealueita"><a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
-    <div class="panel-body">
-      <accordion close-others="false">
-      <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="ammattitaito">
-        <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in ammattitaito" is-open="kohdealue.$accordionOpen">
-        <accordion-heading>
-          <h3 class="panel-title" ng-hide="eiKohdealueita">
-            <arvioinnin-tekstikentta sisalto="kohdealue" sisaltoalue="ammattitaito" sisaltoteksti="kohdealue.otsikko"
-               sisaltoalue="$parent.ammattitaito.arvioinninKohdealueet" edit-allowed="editAllowed" editmode="editEnabled"></arvioinnin-tekstikentta>
-          </h3>
-        </accordion-heading>
-
-        <accordion close-others="false">
-        <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.vaatimuksenKohteet">
-
-          <accordion-group class="arvioinnin-kohde" ng-class="{'kohde-edit': vaatimuksenkohde === originalKohde}"
-                           ng-repeat="vaatimuksenkohde in kohdealue.vaatimuksenKohteet" is-open="vaatimuksenkohde.$accordionOpen" is-disabled="editableKohde">
-          <accordion-heading>
-            <span ng-show="vaatimuksenkohde !== originalKohde">
-              {{vaatimuksenkohde.otsikko | kaanna}}
-              <a ng-show="editEnabled" ng-click="kohde.poista(kohdealue.vaatimuksenKohteet, vaatimuksenkohde, $event)" class="action-link muokkausnappi" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
-              <a ng-show="editEnabled" ng-click="kohde.muokkaa(vaatimuksenkohde, $event)" class="muokkausnappi action-link" icon-role="edit"></a>
-            </span>
-            <span ng-show="vaatimuksenkohde === originalKohde">
-              <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" slocalized placeholder="{{'ammattitaito-uusi-kohde-placeholder' | kaanna}}">
-              <div class="muokkaus-napit pull-right">
-                <button class="btn btn-default btn-xs" ng-click="kohde.peruMuokkaus()" kaanna>peru</button>
-                <button class="btn btn-primary btn-xs" ng-click="kohde.poistuMuokkauksesta(kohdealue.vaatimuksenKohteet, $index)" kaanna>ok</button>
-              </div>
-            </span>
-          </accordion-heading>
-
-          <div style="margin-bottom: 5px">
-            <div ng-if="vaatimuksenkohde !== originalKohde" ng-bind="vaatimuksenkohde.selite | kaanna"></div>
-            <input ng-if="vaatimuksenkohde === originalKohde" ng-model="editableKohde.selite" type="text" class="form-control" slocalized>
-          </div>
-
-            <table>
-            <tr ng-repeat="taso in vaatimukset" ng-class-odd="'raita'" ng-class-even="'ei-raitaa'">
-              <td>
-                <!--<table ng-if="vaatimuksenkohde === originalKohde" ng-repeat="vaatimusRyhma in editableKohde.vaatimusRyhmat">-->
-                <table ng-if="vaatimuksenkohde === originalKohde">
-                  <tbody ui-sortable="kriteeriSortableOptions" ng-model="editableKohde.vaatimukset">
-                  <tr ng-repeat="vaatimus in editableKohde.vaatimukset">
-                    <td class="dragger" ng-class="{'drag-enable': editableKohde.vaatimukset.length > 1}"><span class="glyphicon glyphicon-resize-vertical"></span></td>
-                    <td class="rivi" style="padding-bottom: 5px;">
-                      <textarea class="form-control msd-elastic" ng-model="vaatimus.selite" slocalized
-                                placeholder="{{'ammattitaito-uusi-vaatimus-placeholder' | kaanna}}"></textarea>
-                      <input style="max-width: 200px;" ng-model="vaatimus.ammattitaitovaatimusKoodi" class="form-control" placeholder="{{'ammattitaito-ammattitaitovaatimuskoodi-placeholder' | kaanna}}"/>
-                    </td>
-                    <td class="toiminnot">
-                      <a class="action-link" ng-click="rivi.poista(editableKohde.vaatimukset, $index)" icon-role="minus" title="{{'ammattitaito-poista-kriteeri' | kaanna}}"></a>
-                    </td>
-                  </tr>
-                  <tr class="row-adder"><td></td><td></td><td class="toiminnot">
-                    <a class="action-link" ng-click="rivi.uusi(editableKohde, $event)" icon-role="add" title="{{'ammattitaito-uusi-kriteeri' | kaanna}}"></a>
-                  </td></tr>
-                  </tbody>
-                </table>
-
-                <ul ng-if="originalKohde !== vaatimuksenkohde">
-                  <li ng-repeat="vaatimus in vaatimuksenkohde.vaatimukset">{{vaatimus.selite | kaanna}} <span ng-if="vaatimus.ammattitaitovaatimusKoodi">({{vaatimus.ammattitaitovaatimusKoodi}})</span></li>
-                </ul>
-              </td>
-            </tr>
-          </table>
-
-          </accordion-group> <!-- arvioinnin-kohde -->
-        </div>
-        </accordion>
-
-        <!-- Kohteen lisäys -->
-        <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled">
-          <div class="panel-body">
-            <div ng-show="kohde.isAdding(kohdealue)">
-              <input focus-me="kohdealue.$newkohde.showInputArea" class="form-control" type="text" ng-model="kohdealue.$newkohde.nimi" placeholder="{{'ammattitaito-uusi-kohde-placeholder' | kaanna}}"/><br/>
-              <div class="muokkaus-napit">
-                <button class="btn btn-default btn-xs" ng-click="kohde.cancel(kohdealue)" kaanna>peru</button>
-                <button class="btn btn-primary btn-xs" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" ng-click="kohde.uusi(kohdealue)" kaanna>lisaa</button>
-              </div>
-            </div>
-            <button type="button" class="btn btn-default btn-xs" ng-show="!kohde.isAdding(kohdealue)"
-              ng-click="kohde.uusiWizard(kohdealue)" icon-role="add" kaanna="ammattitaito-uusi-kohde" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-          </div>
-        </div>
-
-      </accordion-group>
-      </div> <!-- sortableKohdealueet-->
-      </accordion>
-
-      <!-- Kohdealueen lisäys -->
-      <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled && !eiKohdealueita">
+    <div ng-class="{'panel panel-default panel-small arviointi-kohdealueet': !eiKohdealueita, 'arviointi-ei-kohdealueita': eiKohdealueita}">
+        <span class="toggler" ng-show="ammattitaito.length && !eiKohdealueita">
+            <a class="action-link" kaanna="'avaa-sulje-kaikki'" ng-click="toggleAll()"></a>
+        </span>
+        <span class="toggler" ng-show="ammattitaito[0].vaatimuksenKohteet.length && eiKohdealueita">
+            <a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a>
+        </span>
         <div class="panel-body">
-          <input class="form-control" ng-show="$parent.showNewKohdealueInput" type="text" ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.kohdealue.uusi()"
-            on-esc="$parent.cancelNewKohdealue()" focus-me="$parent.showNewKohdealueInput" placeholder="{{'ammattitaito-uusi-kohdealue-placeholder' | kaanna}}"/>
-          <div class="muokkaus-napit" ng-show="$parent.showNewKohdealueInput">
-            <button class="btn btn-default btn-xs" ng-click="$parent.kohdealue.cancel()" kaanna>peru</button>
-            <button class="btn btn-primary btn-xs" ng-disabled="!$parent.uudenKohdealueenNimi" ng-click="$parent.kohdealue.uusi()" kaanna>lisaa</button>
-          </div>
-          <button type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput"
-            ng-click="$parent.showNewKohdealueInput = true" icon-role="add" kaanna="ammattitaito-uusi-kohde" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+            <accordion close-others="false">
+                <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="ammattitaito">
+                    <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}"
+                                     ng-repeat="kohdealue in ammattitaito" is-open="kohdealue.$accordionOpen">
+                        <accordion-heading>
+                            <h3 class="panel-title" ng-hide="eiKohdealueita">
+                                <arvioinnin-tekstikentta sisalto="kohdealue" sisaltoalue="ammattitaito"
+                                                         sisaltoteksti="kohdealue.otsikko"
+                                                         sisaltoalue="$parent.ammattitaito.arvioinninKohdealueet"
+                                                         edit-allowed="editAllowed"
+                                                         editmode="editEnabled"></arvioinnin-tekstikentta>
+                            </h3>
+                        </accordion-heading>
+
+                        <accordion close-others="false">
+                            <div id="sortableKohteet" ui-sortable="sortableOptions"
+                                 ng-model="kohdealue.vaatimuksenKohteet">
+
+                                <accordion-group class="arvioinnin-kohde"
+                                                 ng-class="{'kohde-edit': vaatimuksenkohde === originalKohde}"
+                                                 ng-repeat="vaatimuksenkohde in kohdealue.vaatimuksenKohteet"
+                                                 is-open="vaatimuksenkohde.$accordionOpen" is-disabled="editableKohde">
+                                    <accordion-heading>
+                                        <span ng-show="vaatimuksenkohde !== originalKohde">
+                                            {{vaatimuksenkohde.otsikko | kaanna}}
+                                            <a ng-show="editEnabled"
+                                               ng-click="kohde.poista(kohdealue.vaatimuksenKohteet, vaatimuksenkohde, $event)"
+                                               class="action-link muokkausnappi" icon-role="remove"
+                                               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
+                                            <a ng-show="editEnabled"
+                                               ng-click="kohde.muokkaa(vaatimuksenkohde, $event)"
+                                               class="muokkausnappi action-link"
+                                               icon-role="edit"></a>
+                                        </span>
+                                        <span ng-show="vaatimuksenkohde === originalKohde">
+                                            <input class="form-control kohdeotsikko"
+                                                   ng-model="editableKohde.otsikko"
+                                                   slocalized
+                                                   placeholder="{{'ammattitaito-uusi-kohde-placeholder' | kaanna}}">
+                                            <div class="muokkaus-napit pull-right">
+                                                <button class="btn btn-default btn-xs"
+                                                        ng-click="kohde.peruMuokkaus()"
+                                                        kaanna>peru</button>
+                                                <button class="btn btn-primary btn-xs"
+                                                        ng-click="kohde.poistuMuokkauksesta(kohdealue.vaatimuksenKohteet, $index)"
+                                                        kaanna>ok</button>
+                                            </div>
+                                        </span>
+                                    </accordion-heading>
+
+                                    <div style="margin-bottom: 5px">
+                                        <div ng-if="vaatimuksenkohde !== originalKohde"
+                                             ng-bind="vaatimuksenkohde.selite | kaanna"></div>
+                                        <input ng-if="vaatimuksenkohde === originalKohde"
+                                               ng-model="editableKohde.selite"
+                                               type="text"
+                                               class="form-control"
+                                               slocalized>
+                                    </div>
+
+                                    <table>
+                                        <tr ng-repeat="taso in vaatimukset"
+                                            ng-class-odd="'raita'"
+                                            ng-class-even="'ei-raitaa'">
+                                            <td>
+                                                <table ng-if="vaatimuksenkohde === originalKohde">
+                                                    <tbody ui-sortable="kriteeriSortableOptions"
+                                                           ng-model="editableKohde.vaatimukset">
+                                                    <tr ng-repeat="vaatimus in editableKohde.vaatimukset">
+                                                        <td class="dragger"
+                                                            ng-class="{'drag-enable': editableKohde.vaatimukset.length > 1}">
+                                                            <span class="glyphicon glyphicon-resize-vertical"></span>
+                                                        </td>
+                                                        <td class="rivi" style="padding-bottom: 5px;">
+                                                            <textarea class="form-control msd-elastic"
+                                                                      ng-model="vaatimus.selite"
+                                                                      slocalized
+                                                                      placeholder="{{'ammattitaito-uusi-vaatimus-placeholder' | kaanna}}"></textarea>
+                                                            <input style="max-width: 200px;"
+                                                                   ng-model="vaatimus.ammattitaitovaatimusKoodi"
+                                                                   class="form-control"
+                                                                   placeholder="{{'ammattitaito-ammattitaitovaatimuskoodi-placeholder' | kaanna}}"/>
+                                                        </td>
+                                                        <td class="toiminnot">
+                                                            <a class="action-link"
+                                                               ng-click="rivi.poista(editableKohde.vaatimukset, $index)"
+                                                               icon-role="minus"
+                                                               title="{{'ammattitaito-poista-kriteeri' | kaanna}}">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="row-adder">
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="toiminnot">
+                                                            <a class="action-link"
+                                                               ng-click="rivi.uusi(editableKohde, $event)"
+                                                               icon-role="add"
+                                                               title="{{'ammattitaito-uusi-kriteeri' | kaanna}}"></a>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <ul ng-if="originalKohde !== vaatimuksenkohde">
+                                                    <li ng-repeat="vaatimus in vaatimuksenkohde.vaatimukset">
+                                                        {{vaatimus.selite | kaanna}}
+                                                        <span ng-if="vaatimus.ammattitaitovaatimusKoodi">({{vaatimus.ammattitaitovaatimusKoodi}})</span>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </accordion-group>
+                            </div>
+                        </accordion>
+
+                        <!-- Kohteen lisäys -->
+                        <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled">
+                            <div class="panel-body">
+                                <div ng-show="kohde.isAdding(kohdealue)">
+                                    <input focus-me="kohdealue.$newkohde.showInputArea" class="form-control" type="text"
+                                           ng-model="kohdealue.$newkohde.nimi"
+                                           placeholder="{{'ammattitaito-uusi-kohde-placeholder' | kaanna}}"/><br/>
+                                    <div class="muokkaus-napit">
+                                        <button class="btn btn-default btn-xs" ng-click="kohde.cancel(kohdealue)"
+                                                kaanna>peru
+                                        </button>
+                                        <button class="btn btn-primary btn-xs"
+                                                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"
+                                                ng-click="kohde.uusi(kohdealue)" kaanna>lisaa
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-default btn-xs"
+                                        ng-show="!kohde.isAdding(kohdealue)"
+                                        ng-click="kohde.uusiWizard(kohdealue)" icon-role="add"
+                                        kaanna="ammattitaito-uusi-kohde"
+                                        oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                            </div>
+                        </div>
+
+                    </accordion-group>
+                </div>
+            </accordion>
+
+            <!-- Kohdealueen lisäys -->
+            <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled && !eiKohdealueita">
+                <div class="panel-body">
+                    <input class="form-control" ng-show="$parent.showNewKohdealueInput" type="text"
+                           ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.kohdealue.uusi()"
+                           on-esc="$parent.cancelNewKohdealue()" focus-me="$parent.showNewKohdealueInput"
+                           placeholder="{{'ammattitaito-uusi-kohdealue-placeholder' | kaanna}}"/>
+                    <div class="muokkaus-napit" ng-show="$parent.showNewKohdealueInput">
+                        <button class="btn btn-default btn-xs" ng-click="$parent.kohdealue.cancel()" kaanna>peru
+                        </button>
+                        <button class="btn btn-primary btn-xs" ng-disabled="!$parent.uudenKohdealueenNimi"
+                                ng-click="$parent.kohdealue.uusi()" kaanna>lisaa
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput"
+                            ng-click="$parent.showNewKohdealueInput = true" icon-role="add"
+                            kaanna="ammattitaito-uusi-kohde"
+                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                </div>
+            </div>
+
         </div>
-      </div>
-
     </div>
-  </div>
 
-  </div>
+</div>

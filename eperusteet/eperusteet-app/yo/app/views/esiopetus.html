@@ -1,20 +1,18 @@
-<div>
-  <!-- esiopetus.html -->
-  <h1 kaanna="otsikko"></h1>
+<!-- esiopetus.html -->
+<h1 kaanna="otsikko"></h1>
 
-  <div id="sivunavi-sisalto-wrapper">
+<div id="sivunavi-sisalto-wrapper">
     <div class="sivunavi-navigaatio">
-      <sivunavigaatio header="navi.header" sections="navi.sections" show-one="navi.showOne"></sivunavigaatio>
+        <sivunavigaatio header="navi.header" sections="navi.sections" show-one="navi.showOne"></sivunavigaatio>
     </div>
 
     <div class="sivunavi-clear"></div>
     <div class="sivunavi-sisalto perusopetus">
-      <div class="row">
-        <div class="col-md-12">
-          <h1>{{ valittuTekstisisalto.perusteenOsa.nimi | kaanna }}</h1>
-          <termisto-tekstikentta tekstikentta="valittuTekstisisalto.teksti"></termisto-tekstikentta>
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{{ valittuTekstisisalto.perusteenOsa.nimi | kaanna }}</h1>
+                <termisto-tekstikentta tekstikentta="valittuTekstisisalto.teksti"></termisto-tekstikentta>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>

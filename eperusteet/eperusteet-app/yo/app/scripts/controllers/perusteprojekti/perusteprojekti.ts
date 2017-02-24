@@ -14,11 +14,9 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
 
 angular.module('eperusteApp')
-.config($stateProvider => {
-$stateProvider
+.config($stateProvider => $stateProvider
 .state('root.perusteprojekti', {
     url: '/perusteprojekti/:perusteProjektiId',
     templateUrl: 'views/perusteprojekti.html',
@@ -312,12 +310,12 @@ $stateProvider
     onEnter: PerusteProjektiSivunavi => {
         PerusteProjektiSivunavi.setVisible(true);
     }
-});
-})
+}))
 .controller('PerusteprojektiCtrl', ($scope, $state, $stateParams,
                                     koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService, TiedoteService,
                                     PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
-                                    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService, Kieli) => {
+                                    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet,
+                                    TermistoService, Kieli) => {
     $scope.muokkausEnabled = false;
     $scope.pdfEnabled = false;
 
@@ -348,7 +346,11 @@ $stateProvider
     $scope.$watch(() => PerusteProjektiService.getSuoritustapa(),
         () => $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste));
 
-    const amFooter = '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="ep-text-add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
+    const amFooter = '<button class="btn btn-default"' +
+        '                     kaanna="lisaa-tutkintokohtainen-osa"' +
+        '                     icon-role="ep-text-add"' +
+        '                     ng-click="$parent.lisaaTekstikappale()"' +
+        '                     oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
     $scope.sivunavi = {

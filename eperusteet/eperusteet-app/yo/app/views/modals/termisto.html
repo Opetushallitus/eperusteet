@@ -1,24 +1,27 @@
-<!-- termisto.html -->
-
+<!-- modals/termisto.html -->
 <div class="modal-header">
-  <kielenvaihto modal="true"></kielenvaihto>
-  <h2>{{creating ? 'uusi-termi' : 'muokkaa-termia' | kaanna}}</h2>
+    <kielenvaihto modal="true"></kielenvaihto>
+    <h2>{{creating ? 'uusi-termi' : 'muokkaa-termia' | kaanna}}</h2>
 </div>
 
 <div class="modal-body termi-muokkaus">
-  <h3 kaanna="termi"></h3>
-  <input class="form-control" slocalized ng-model="termimodel.termi" type="text" required="true"></input>
-  <h3 kaanna="selitys"></h3>
-  <div id="toolbar" style="display: none">
-    <div id="ck-toolbar-top"></div>
-    <div id="ck-toolbar-bottom"></div>
-  </div>
-  <div ckeditor ng-model="termimodel.selitys" slocalized editor-placeholder="termin-selitys-placeholder"></div>
-  <div class="clearfix"></div>
+    <h3 kaanna="termi"></h3>
+    <input class="form-control" slocalized ng-model="termimodel.termi" type="text" required="true">
+    <h3 kaanna="selitys"></h3>
+    <div id="toolbar" style="display: none">
+        <div id="ck-toolbar-top"></div>
+        <div id="ck-toolbar-bottom"></div>
+    </div>
+    <div ckeditor ng-model="termimodel.selitys" slocalized editor-placeholder="termin-selitys-placeholder"></div>
+    <div class="clearfix"></div>
 </div>
 
 <div class="modal-footer">
-  <button ng-if="!creating" class="btn btn-danger pull-left" ng-click="delete()" kaanna="poista" icon-role="remove"></button>
-  <button class="btn btn-default" ng-click="$dismiss()" kaanna="peruuta"></button>
-  <button class="btn btn-primary" ng-click="ok()" kaanna="tallenna"></button>
+    <button ng-if="!creating"
+            class="btn btn-danger pull-left"
+            ng-click="delete()"
+            kaanna="poista"
+            icon-role="remove"></button>
+    <button class="btn btn-default" ng-click="$dismiss()" kaanna="peruuta"></button>
+    <button class="btn btn-primary" ng-click="ok()" kaanna="tallenna"></button>
 </div>

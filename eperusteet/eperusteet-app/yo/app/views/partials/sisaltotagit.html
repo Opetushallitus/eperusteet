@@ -1,15 +1,6 @@
+<!-- partials/sisaltotagit.html -->
 <div ng-controller="TagFilterController">
-  <!-- sisaltotagit.html -->
-  <ul>
-    <li ng-repeat="tag in model.tags.items"></li>
-  </ul>
-  <!--
-  <div class="tag-action-buttons">
-    <button class="btn btn-default btn-xs action-link" icon-role="remove" ng-click="model.tags.clear()" kaanna>Tyhjennä</button>
-    <button class="btn btn-default btn-xs action-link" icon-role="add" ng-click="model.dialog.addButtonPressed()" kaanna>Lisää</button>
-    <div id="tag-filter-add-dialog" ng-show="model.dialog.isOpen">
-      <button class="btn btn-default" ng-click="model.dialog.close()" kaanna>sulje</button>
-    </div>
-  </div>
-  -->
+    <ul>
+        <li ng-repeat="tag in model.tags.items"></li>
+    </ul>
 </div>

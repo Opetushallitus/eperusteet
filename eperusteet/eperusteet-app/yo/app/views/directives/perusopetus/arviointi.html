@@ -1,37 +1,48 @@
-<!-- arviointi.html -->
+<!-- directives/perusopetus/arviointi.html -->
 
 <table class="table table-bordered perusopetuksen-arviointi ">
-  <thead>
+    <thead>
     <tr ng-show="editMode">
-      <th><input class="form-control" placeholder="{{ 'arvioinnin-kohde' | kaanna }}" slocalized ng-model="atavoite.arvioinninKuvaus"></input></th>
-      <th><input class="form-control" placeholder="{{ 'arvion-hyva-osaaminen' | kaanna }}"slocalized ng-model="atavoite.arvioinninOsaamisenKuvaus"></input></th>
-      <th></th>
+        <th>
+            <input class="form-control"
+                   placeholder="{{ 'arvioinnin-kohde' | kaanna }}"
+                   slocalized
+                   ng-model="atavoite.arvioinninKuvaus">
+        </th>
+        <th>
+            <input class="form-control"
+                   placeholder="{{ 'arvion-hyva-osaaminen' | kaanna }}"
+                   slocalized
+                   ng-model="atavoite.arvioinninOsaamisenKuvaus">
+        </th>
+        <th>
+        </th>
     </tr>
     <tr ng-hide="editMode">
-      <th ng-bind="atavoite.arvioinninKuvaus || 'arvioinnin-kohde' | kaanna"></th>
-      <th ng-bind="atavoite.arvioinninOsaamisenKuvaus || 'arvion-hyva-osaaminen' | kaanna"></th>
+        <th ng-bind="atavoite.arvioinninKuvaus || 'arvioinnin-kohde' | kaanna"></th>
+        <th ng-bind="atavoite.arvioinninOsaamisenKuvaus || 'arvion-hyva-osaaminen' | kaanna"></th>
     </tr>
-  </thead>
-  <tbody>
+    </thead>
+    <tbody>
     <tr ng-repeat="arviointi in model">
-      <td>
-        <span ng-if="!editMode">{{arviointi.arvioinninKohde | kaanna}}</span>
-        <span ng-if="editMode">
+        <td>
+            <span ng-if="!editMode">{{arviointi.arvioinninKohde | kaanna}}</span>
+            <span ng-if="editMode">
           <input ng-model="arviointi.arvioinninKohde" slocalized class="form-control">
         </span>
-      </td>
-      <td>
-        <span ng-if="!editMode">{{arviointi.hyvanOsaamisenKuvaus | kaanna}}</span>
-        <span ng-if="editMode">
+        </td>
+        <td>
+            <span ng-if="!editMode">{{arviointi.hyvanOsaamisenKuvaus | kaanna}}</span>
+            <span ng-if="editMode">
           <textarea ng-model="arviointi.hyvanOsaamisenKuvaus" slocalized class="form-control msd-elastic"></textarea>
         </span>
-      </td>
-      <td ng-if="editMode">
-        <a icon-role="remove" ng-click="removeKohde($index)" title="{{'poista'|kaanna}}"></a>
-      </td>
+        </td>
+        <td ng-if="editMode">
+            <a icon-role="remove" ng-click="removeKohde($index)" title="{{'poista'|kaanna}}"></a>
+        </td>
     </tr>
-  </tbody>
+    </tbody>
 </table>
 <div ng-if="editMode">
-  <button icon-role="add" class="btn btn-default" kaanna="arviointi-uusi-kriteeri" ng-click="addKohde()"></button>
+    <button icon-role="add" class="btn btn-default" kaanna="arviointi-uusi-kriteeri" ng-click="addKohde()"></button>
 </div>

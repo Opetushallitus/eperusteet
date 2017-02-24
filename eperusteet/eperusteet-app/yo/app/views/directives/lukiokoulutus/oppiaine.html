@@ -1,135 +1,164 @@
-<!-- oppiaine.html -->
+<!-- directives/lukiokoulutus/oppiaine.html -->
 <div class="oppiaine-view" ng-class="{'oppiaine-view-edit' : editEnabled}">
-  <osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot"
-                 overwritten-vaihda-versio="vaihdaVersio" overwritten-revert-cb="oppiaineRevertCb"
-                 overwritten-delete-redirect-cb="goBackFromDelete">
-    <div ng-if="editEnabled">
-      <div class="oppiaine-header">
-        <table>
-          <tbody>
-            <tr ng-show="editableModel._oppiaine">
-              <th kaanna="'oppiaine'"></th>
-              <td>{{ $oppiaineenNimi | kaanna}}</td>
-            </tr>
-            <tr ng-show="editableModel.koosteinen">
-              <th kaanna="'oppiaine'"></th>
-              <td>{{editableModel.nimi | kaanna}}</td>
-            </tr>
-            <tr ng-show="editableModel._oppiaine">
-              <th kaanna="'oppimaara'"></th>
-              <td>{{editableModel.nimi | kaanna}}</td>
-            </tr>
-            <tr ng-show="editableModel.koosteinen">
-              <th kaanna="'oppimaarat'"></th>
-              <td>
-                <ul>
-                  <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="'ei-oppimaaria'"></li>
-                  <li ng-repeat="oppimaara in editableModel.$oppimaarat | orderBy:nameSort">{{oppimaara.nimi | kaanna}}</li>
-                </ul>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <hr ng-show="editableModel.koosteinen || editableModel._oppiaine">
+    <osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot"
+                   overwritten-vaihda-versio="vaihdaVersio" overwritten-revert-cb="oppiaineRevertCb"
+                   overwritten-delete-redirect-cb="goBackFromDelete">
+        <div ng-if="editEnabled">
+            <div class="oppiaine-header">
+                <table>
+                    <tbody>
+                    <tr ng-show="editableModel._oppiaine">
+                        <th kaanna="'oppiaine'"></th>
+                        <td>{{ $oppiaineenNimi | kaanna}}</td>
+                    </tr>
+                    <tr ng-show="editableModel.koosteinen">
+                        <th kaanna="'oppiaine'"></th>
+                        <td>{{editableModel.nimi | kaanna}}</td>
+                    </tr>
+                    <tr ng-show="editableModel._oppiaine">
+                        <th kaanna="'oppimaara'"></th>
+                        <td>{{editableModel.nimi | kaanna}}</td>
+                    </tr>
+                    <tr ng-show="editableModel.koosteinen">
+                        <th kaanna="'oppimaarat'"></th>
+                        <td>
+                            <ul>
+                                <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="'ei-oppimaaria'"></li>
+                                <li ng-repeat="oppimaara in editableModel.$oppimaarat | orderBy:nameSort">
+                                    {{oppimaara.nimi | kaanna}}
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr ng-show="editableModel.koosteinen || editableModel._oppiaine">
 
-        <div class="non-collapsibles">
-        <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
-        <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" slocalized required>
-        <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
-           kaanna>Nimi on pakollinen tieto</p>
+            <div class="non-collapsibles">
+                <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
+                <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" slocalized required>
+                <p class="alert alert-error"
+                   ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
+                   kaanna>Nimi on pakollinen tieto</p>
 
-        <label for="koodi-input" class="header" kaanna="muokkaus-tutkinnon-osan-koodi-header"></label>
-        <div class="fixed-group">
-          <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodiArvo" editointi-kontrolli disabled="disabled">
-          <div class="addon"><button class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button></div>
+                <label for="koodi-input" class="header" kaanna="muokkaus-tutkinnon-osan-koodi-header"></label>
+                <div class="fixed-group">
+                    <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodiArvo"
+                           editointi-kontrolli disabled="disabled">
+                    <div class="addon">
+                        <button class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button>
+                    </div>
+                </div>
+
+                <div ng-show="!editableModel._oppiaine">
+                    <label class="header" kaanna="'oppimaarat'"></label>
+                    <label class="inputwrapper"><input class="form-control" type="radio"
+                                                       ng-model="editableModel.koosteinen" ng-value="false">
+                        {{'yksi-oppimaara'|kaanna}}</label>
+                    <label class="inputwrapper"><input class="form-control" ng-click="editableModel.abstrakti = false"
+                                                       type="radio" ng-model="editableModel.koosteinen" ng-value="true">
+                        {{'useita-oppimaaria'|kaanna}}</label>
+                </div>
+                <label style="margin-top: 10px" ng-show="editableModel.koosteinen === false" class="inputwrapper">
+                    <input class="form-control" type="checkbox" ng-model="editableModel.abstrakti">
+                    {{'paikallisessa-laadinnassa-maariteltava'|kaanna}}
+                </label>
+                <div ng-show="editableModel.koosteinen === false">
+                    <label for="pakollinen-kurssi-kuvaus" class="header"
+                           kaanna="pakollinen-kurssi-kuvaus-header"></label>
+                    <div id="pakollinen-kurssi-kuvaus" class="full-width" ckeditor slocalized
+                         ng-model="editableModel.pakollinenKurssiKuvaus"
+                         editor-placeholder="pakollinen-kurssi-kuvaus-placeholder"></div>
+
+                    <label for="syventava-kurssi-kuvaus" class="header" kaanna="syventava-kurssi-kuvaus-header"></label>
+                    <div id="syventava-kurssi-kuvaus" class="full-width" ckeditor slocalized
+                         ng-model="editableModel.syventavaKurssiKuvaus"
+                         editor-placeholder="syventava-kurssi-kuvaus-placeholder"></div>
+
+                    <label for="soveltava-kurssi-kuvaus" class="header" kaanna="soveltava-kurssi-kuvaus-header"></label>
+                    <div id="soveltava-kurssi-kuvaus" class="full-width" ckeditor slocalized
+                         ng-model="editableModel.soveltavaKurssiKuvaus"
+                         editor-placeholder="soveltava-kurssi-kuvaus-placeholder"></div>
+                </div>
+            </div>
+            <h3 kaanna="'osiot'" class="osioheader"></h3>
         </div>
 
-        <div ng-show="!editableModel._oppiaine">
-          <label class="header" kaanna="'oppimaarat'"></label>
-          <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="false">
-            {{'yksi-oppimaara'|kaanna}}</label>
-          <label class="inputwrapper"><input class="form-control" ng-click="editableModel.abstrakti = false" type="radio" ng-model="editableModel.koosteinen" ng-value="true">
-            {{'useita-oppimaaria'|kaanna}}</label>
+        <div ng-if="!editEnabled">
+            <div class="oppiaine-header">
+                <table>
+                    <tbody>
+                    <tr ng-show="editableModel._oppiaine">
+                        <th kaanna="oppiaine"></th>
+                        <td>
+                            <a ng-href="{{oppiaineMap[editableModel._oppiaine].$url}}">
+                                {{oppiaineMap[editableModel._oppiaine].nimi | kaanna}}</a>
+                        </td>
+                    </tr>
+                    <tr ng-show="editableModel._oppiaine">
+                        <th kaanna="oppimaara"></th>
+                        <td>{{editableModel.nimi | kaanna}}</td>
+                    </tr>
+                    <tr>
+                        <th kaanna="muokkaus-tutkinnon-osan-koodi-header"></th>
+                        <td>{{editableModel.koodiArvo ? editableModel.koodiArvo : ('ei-asetettu' | kaanna)}}</td>
+                    </tr>
+                    <tr ng-show="editableModel.pakollinenKurssiKuvaus">
+                        <th kaanna="pakollinen-kurssi-kuvaus-header"></th>
+                        <td>
+                            <div ng-bind-html="editableModel.pakollinenKurssiKuvaus|kaanna|unsafe"
+                                 termisto-viitteet="editableModel.pakollinenKurssiKuvaus"></div>
+                        </td>
+                    </tr>
+                    <tr ng-show="editableModel.syventavaKurssiKuvaus">
+                        <th kaanna="syventava-kurssi-kuvaus-header"></th>
+                        <td>
+                            <div ng-bind-html="editableModel.syventavaKurssiKuvaus|kaanna|unsafe"
+                                 termisto-viitteet="editableModel.syventavaKurssiKuvaus"></div>
+                        </td>
+                    </tr>
+                    <tr ng-show="editableModel.soveltavaKurssiKuvaus">
+                        <th kaanna="soveltava-kurssi-kuvaus-header"></th>
+                        <td>
+                            <div ng-bind-html="editableModel.soveltavaKurssiKuvaus|kaanna|unsafe"
+                                 termisto-viitteet="editableModel.soveltavaKurssiKuvaus"></div>
+                        </td>
+                    </tr>
+                    <tr ng-show="editableModel.koosteinen">
+                        <th kaanna="oppimaarat"></th>
+                        <td>
+                            <ul>
+                                <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="ei-oppimaaria"></li>
+                                <li ng-repeat="oppimaara in editableModel.$oppimaarat | orderBy:nameSort">
+                                    <a ng-href="{{oppimaara.$url}}">{{oppimaara.nimi | kaanna}}</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="oppiaineKurssit" ng-show="kurssit.length">
+                    <h3 kaanna="'oppiaine-kurssit'"></h3>
+                    <div ng-repeat="(kurssiTyyppi, ks) in kurssitByTyyppi" ng-show="ks.length">
+                        <h4 ng-bind="('kurssi-tyyppi-selite-'+kurssiTyyppi) | kaanna"></h4>
+                        <ul>
+                            <li ng-repeat="kurssi in ks">
+                                <a kaanna="(kurssi.nimi | kaanna) + ((kurssi.lokalisoituKoodi | kaanna) ? ' ('+(kurssi.lokalisoituKoodi | kaanna)+')' : '')"
+                                   ng-click="gotoKurssi(kurssi)" class="clickable"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-repeat="osamodel in yleisetosat"
+                 muokattava-osio="editableModel"
+                 type="tekstikappale"
+                 static="true"
+                 path="{{osamodel}}"></div>
         </div>
-        <label style="margin-top: 10px" ng-show="editableModel.koosteinen === false" class="inputwrapper">
-          <input class="form-control" type="checkbox" ng-model="editableModel.abstrakti">{{'paikallisessa-laadinnassa-maariteltava'|kaanna}}
-        </label>
-        <div ng-show="editableModel.koosteinen === false">
-          <label for="pakollinen-kurssi-kuvaus" class="header" kaanna="pakollinen-kurssi-kuvaus-header"></label>
-          <div id="pakollinen-kurssi-kuvaus" class="full-width" ckeditor slocalized ng-model="editableModel.pakollinenKurssiKuvaus" editor-placeholder="pakollinen-kurssi-kuvaus-placeholder"></div>
 
-          <label for="syventava-kurssi-kuvaus" class="header" kaanna="syventava-kurssi-kuvaus-header"></label>
-          <div id="syventava-kurssi-kuvaus" class="full-width" ckeditor slocalized ng-model="editableModel.syventavaKurssiKuvaus" editor-placeholder="syventava-kurssi-kuvaus-placeholder"></div>
-
-          <label for="soveltava-kurssi-kuvaus" class="header" kaanna="soveltava-kurssi-kuvaus-header"></label>
-          <div id="soveltava-kurssi-kuvaus" class="full-width" ckeditor slocalized ng-model="editableModel.soveltavaKurssiKuvaus" editor-placeholder="soveltava-kurssi-kuvaus-placeholder"></div>
-        </div>
-      </div>
-      <h3 kaanna="'osiot'" class="osioheader"></h3>
-    </div>
-
-    <div ng-if="!editEnabled">
-      <div class="oppiaine-header">
-        <table>
-          <tbody>
-            <tr ng-show="editableModel._oppiaine">
-              <th kaanna="oppiaine"></th>
-              <td>
-                <a ng-href="{{oppiaineMap[editableModel._oppiaine].$url}}">{{oppiaineMap[editableModel._oppiaine].nimi | kaanna}}</a>
-              </td>
-            </tr>
-            <tr ng-show="editableModel._oppiaine">
-              <th kaanna="oppimaara"></th>
-              <td>{{editableModel.nimi | kaanna}}</td>
-            </tr>
-            <tr>
-              <th kaanna="muokkaus-tutkinnon-osan-koodi-header"></th>
-              <td>{{editableModel.koodiArvo ? editableModel.koodiArvo : ('ei-asetettu'|kaanna)}}</td>
-            </tr>
-            <tr ng-show="editableModel.pakollinenKurssiKuvaus">
-              <th kaanna="pakollinen-kurssi-kuvaus-header"></th>
-              <td><div ng-bind-html="editableModel.pakollinenKurssiKuvaus|kaanna|unsafe" termisto-viitteet="editableModel.pakollinenKurssiKuvaus"></div></td>
-            </tr>
-            <tr ng-show="editableModel.syventavaKurssiKuvaus">
-              <th kaanna="syventava-kurssi-kuvaus-header"></th>
-              <td><div ng-bind-html="editableModel.syventavaKurssiKuvaus|kaanna|unsafe" termisto-viitteet="editableModel.syventavaKurssiKuvaus"></div></td>
-            </tr>
-            <tr ng-show="editableModel.soveltavaKurssiKuvaus">
-              <th kaanna="soveltava-kurssi-kuvaus-header"></th>
-              <td><div ng-bind-html="editableModel.soveltavaKurssiKuvaus|kaanna|unsafe" termisto-viitteet="editableModel.soveltavaKurssiKuvaus"></div></td>
-            </tr>
-            <tr ng-show="editableModel.koosteinen">
-              <th kaanna="oppimaarat"></th>
-              <td>
-                <ul>
-                  <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="ei-oppimaaria"></li>
-                  <li ng-repeat="oppimaara in editableModel.$oppimaarat | orderBy:nameSort">
-                    <a ng-href="{{oppimaara.$url}}">{{oppimaara.nimi | kaanna}}</a>
-                  </li>
-                </ul>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="oppiaineKurssit" ng-show="kurssit.length">
-          <h3 kaanna="'oppiaine-kurssit'"></h3>
-          <div ng-repeat="(kurssiTyyppi, ks) in kurssitByTyyppi" ng-show="ks.length">
-            <h4 ng-bind="('kurssi-tyyppi-selite-'+kurssiTyyppi) | kaanna"></h4>
-            <ul>
-              <li ng-repeat="kurssi in ks">
-                <a kaanna="(kurssi.nimi | kaanna) + ((kurssi.lokalisoituKoodi | kaanna) ? ' ('+(kurssi.lokalisoituKoodi | kaanna)+')' : '')"
-                   ng-click="gotoKurssi(kurssi)" class="clickable"></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div ng-repeat="osamodel in yleisetosat" muokattava-osio="editableModel" type="tekstikappale" static="true"
-           path="{{osamodel}}"></div>
-    </div>
-
-  </osallinen-osa>
+    </osallinen-osa>
 </div>

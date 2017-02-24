@@ -1,67 +1,75 @@
-<!-- tuotekstikappale.html -->
-
+<!-- modals/tuotekstikappale.html -->
 <div class="modal-header">
-  <h2 kaanna>tekstisisällön-tuonti</h2>
+    <h2 kaanna>tekstisisällön-tuonti</h2>
 </div>
 
 <div class="modal-body">
-  <div ng-show="!valittuPeruste">
-    <div class="tuo-nykyisesta-perusteesta">
-      <a class="action-link pull-left" icon-role="add" ng-click="valitse(nykyinenPeruste)"
-         kaanna="'tuo-nykyisesta-perusteesta'" style="margin-top: 10px;"></a>
-      <div class="checkbox pull-right">
-        <label>
-          <input type="checkbox" ng-model="luonnokset" ng-change="fetchOmat()")>
-          {{'myos-luonnokset' | kaanna}}
-        </label>
-      </div>
-      <div class="clearfix"></div>
+    <div ng-show="!valittuPeruste">
+        <div class="tuo-nykyisesta-perusteesta">
+            <a class="action-link pull-left" icon-role="add" ng-click="valitse(nykyinenPeruste)"
+               kaanna="'tuo-nykyisesta-perusteesta'" style="margin-top: 10px;"></a>
+            <div class="checkbox pull-right">
+                <label>
+                    <input type="checkbox" ng-model="luonnokset" ng-change="fetchOmat()">
+                    {{'myos-luonnokset' | kaanna}}
+                </label>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <rajaus ng-if="!lataa" model="syote" placeholder="hae-perusteita" callback="haku(value)"></rajaus>
+        <div style="margin-top: 8px" class="results">
+            <table class="table table-striped">
+                <tr>
+                    <th kaanna>nimi</th>
+                    <th kaanna>voimassaoloLoppuu</th>
+                </tr>
+                <tr ng-repeat="peruste in perusteet">
+                    <td>
+                        <a ng-click="valitse(peruste)" class="action-link">{{ peruste.nimi | kaanna }}</a>
+                    </td>
+                    <td>
+                        <span ng-show="peruste.voimassaoloLoppuu">{{ peruste.voimassaoloLoppuu | aikaleima }}</span>
+                        <span ng-hide="peruste.voimassaoloLoppuu" kaanna>ei-päättymis-päivämäärää</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <rajaus ng-if="!lataa" model="syote" placeholder="hae-perusteita" callback="haku(value)"></rajaus>
-    <div style="margin-top: 8px" class="results">
-      <table class="table table-striped">
-        <tr>
-          <th kaanna>nimi</th>
-          <th kaanna>voimassaoloLoppuu</th>
-        </tr>
-        <tr ng-repeat="peruste in perusteet">
-          <td>
-            <a ng-click="valitse(peruste)" class="action-link">{{ peruste.nimi | kaanna }}</a>
-          </td>
-          <td>
-            <span ng-show="peruste.voimassaoloLoppuu">{{ peruste.voimassaoloLoppuu | aikaleima }}</span>
-            <span ng-hide="peruste.voimassaoloLoppuu" kaanna>ei-päättymis-päivämäärää</span>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
 
-  <div ng-if="valittuPeruste" style="margin-top: 8px">
-    <tabset ng-if="valittuPeruste.suoritustavat.length > 1" class="tekstikappale-tuonti-tabs" justified="true">
-      <tab ng-click="vaihdaSuoritustapa(st)" ng-repeat="st in valittuPeruste.suoritustavat | orderBy:'-suoritustapakoodi'" heading="{{ st.suoritustapakoodi | kaanna }}"></tab>
-    </tabset>
-    <rajaus ng-show="search.term.length !== 0 || filtered.length > 0" model="search.term" placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>
-    <h3>{{ valittuPeruste.nimi | kaanna }}</h3>
-    <div class="alert alert-warning" ng-show="filtered.length === 0" kaanna="ei-tekstikappaleita"></div>
-    <table ng-show="filtered.length > 0" class="table table-striped">
-      <tr>
-        <th class="has-checkbox"><input class="form-control" ng-change="toggleKaikki(kaikkiValittu)" ng-model="kaikkiValittu" type="checkbox"></th>
-        <th width="50%" kaanna>otsikko</th>
-        <th kaanna>muokattu-viimeksi</th>
-      </tr>
-      <tr ng-repeat="s in filtered = (valittuPeruste.$sisalto | filter:search.filterFn) | orderBy:orderFn | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage">
-        <td><input ng-change="updateTotal()" ng-model="s.$valittu" type="checkbox" class="form-control"></td>
-        <td ng-click="s.$valittu = !s.$valittu; updateTotal()">{{ s.perusteenOsa.nimi | kaanna }}</td>
-        <td>{{ s.perusteenOsa.muokattu | aikaleima }}</td>
-      </tr>
-    </table>
-    <pagination ng-show="filtered.length > 0" ng-model="paginate.current" total-items="filtered.length" items-per-page="paginate.perPage"></pagination>
-  </div>
+    <div ng-if="valittuPeruste" style="margin-top: 8px">
+        <tabset ng-if="valittuPeruste.suoritustavat.length > 1" class="tekstikappale-tuonti-tabs" justified="true">
+            <tab ng-click="vaihdaSuoritustapa(st)"
+                 ng-repeat="st in valittuPeruste.suoritustavat | orderBy:'-suoritustapakoodi'"
+                 heading="{{ st.suoritustapakoodi | kaanna }}"></tab>
+        </tabset>
+        <rajaus ng-show="search.term.length !== 0 || filtered.length > 0" model="search.term"
+                placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>
+        <h3>{{ valittuPeruste.nimi | kaanna }}</h3>
+        <div class="alert alert-warning" ng-show="filtered.length === 0" kaanna="ei-tekstikappaleita"></div>
+        <table ng-show="filtered.length > 0" class="table table-striped">
+            <tr>
+                <th class="has-checkbox"><input class="form-control" ng-change="toggleKaikki(kaikkiValittu)"
+                                                ng-model="kaikkiValittu" type="checkbox"></th>
+                <th width="50%" kaanna>otsikko</th>
+                <th kaanna>muokattu-viimeksi</th>
+            </tr>
+            <tr ng-repeat="s in filtered = (valittuPeruste.$sisalto | filter:search.filterFn) | orderBy:orderFn | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage">
+                <td>
+                    <input ng-change="updateTotal()" ng-model="s.$valittu" type="checkbox" class="form-control">
+                </td>
+                <td ng-click="s.$valittu = !s.$valittu; updateTotal()">{{ s.perusteenOsa.nimi | kaanna }}</td>
+                <td>{{ s.perusteenOsa.muokattu | aikaleima }}</td>
+            </tr>
+        </table>
+        <pagination ng-show="filtered.length > 0" ng-model="paginate.current" total-items="filtered.length"
+                    items-per-page="paginate.perPage"></pagination>
+    </div>
 </div>
 
 <div class="modal-footer">
-  <button ng-show="valittuPeruste" class="btn" ng-click="takaisin()" kaanna>takaisin</button>
-  <button class="btn btn-danger" ng-click="peru()" kaanna>peru</button>
-  <button ng-disabled="valitut === 0" ng-show="valittuPeruste" class="btn btn-primary" ng-click="ok()">{{'tuo-valitut'|kaanna}} ({{valitut}})</button>
+    <button ng-show="valittuPeruste" class="btn" ng-click="takaisin()" kaanna>takaisin</button>
+    <button class="btn btn-danger" ng-click="peru()" kaanna>peru</button>
+    <button ng-disabled="valitut === 0" ng-show="valittuPeruste" class="btn btn-primary" ng-click="ok()">
+        {{'tuo-valitut'|kaanna}} ({{valitut}})
+    </button>
 </div>

@@ -1,43 +1,59 @@
-<!-- tavoitteet.html -->
+<!-- directives/lukiokoulutus/tavoitteet.html -->
 <div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
-  <div id="ck-toolbar-top"></div>
-  <div id="ck-toolbar-bottom"></div>
+    <div id="ck-toolbar-top"></div>
+    <div id="ck-toolbar-bottom"></div>
 </div>
 <div class="row">
-  <div class="col-md-12 ep-sisalto-inner">
-    <div class="action-buttons" ng-if="!editEnabled && versiot.latest">
-      <button class="btn btn-default" icon-role="edit" ng-click="edit()" kaanna="muokkaa"
-              oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+    <div class="col-md-12 ep-sisalto-inner">
+        <div class="action-buttons" ng-if="!editEnabled && versiot.latest">
+            <button class="btn btn-default"
+                    icon-role="edit"
+                    ng-click="edit()"
+                    kaanna="muokkaa"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+        </div>
+        <div ng-if="!editEnabled">
+
+            <revert-note object="yleisetTavoitteet" revert-cb="revertCb(response)" versions="versiot"
+                         change-version="vaihdaVersio()"></revert-note>
+            <div ng-if="!yleisetTavoitteet.otsikko" kaanna="yleisettavoitteet-ei-otsikkoa"></div>
+            <h1><span ng-bind="yleisetTavoitteet.otsikko | kaanna"></span></h1>
+            <div ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe"
+                 termisto-viitteet="yleisetTavoitteet.kuvaus"></div>
+            <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"
+                 termisto-viitteet="aihekokonaisuudet.yleiskuvaus"></div>
+            <versiotiedot ng-hide="editEnabled"></versiotiedot>
+
+            <kommentit></kommentit>
+
+        </div>
+
+        <div ng-if="editEnabled">
+
+            <form name="yleisetTavoitteetForm" role="form">
+
+                <label for="otsikko-input" class="header" kaanna="lisaa-yleisettavoitteet-otsikko-header"
+                       vaaditaan></label>
+                <input id="otsikko-input"
+                       class="form-control"
+                       ng-model="yleisetTavoitteet.otsikko"
+                       slocalized
+                       type="text"
+                       required="true"
+                       data-empty-place-holder-enabled="true"
+                       placeholder="{{'otsikko' | kaanna}}">
+                <p class="alert alert-error"
+                   ng-show="(yleisetTavoitteetForm.$error.required && yleisetTavoitteetForm.$error.required[1].$dirty)"
+                   kaanna>Otsikko on pakollinen tieto</p>
+
+                <label for="kuvaus-input" class="header" kaanna="lisaa-yleisettavoitteet-kuvaus-header"></label>
+                <div id="kuvaus-input" ckeditor ng-if="editEnabled" slocalized ng-model="yleisetTavoitteet.kuvaus"
+                     editor-placeholder="yleisettavoitteet-kuvaus-placeholder"></div>
+
+                <div style="margin-top: 30px;"></div>
+            </form>
+
+        </div>
+
     </div>
-    <div ng-if="!editEnabled">
-
-      <revert-note object="yleisetTavoitteet" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-      <div ng-if="!yleisetTavoitteet.otsikko" kaanna="yleisettavoitteet-ei-otsikkoa"></div>
-      <h1><span ng-bind="yleisetTavoitteet.otsikko | kaanna"></span></h1>
-      <div ng-bind-html="yleisetTavoitteet.kuvaus|kaanna|unsafe" termisto-viitteet="yleisetTavoitteet.kuvaus"></div>
-      <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe" termisto-viitteet="aihekokonaisuudet.yleiskuvaus"></div>
-      <versiotiedot ng-hide="editEnabled"></versiotiedot>
-
-      <kommentit></kommentit>
-
-    </div>
-
-    <div ng-if="editEnabled">
-
-      <form name="yleisetTavoitteetForm" role="form">
-
-        <label for="otsikko-input" class="header" kaanna="lisaa-yleisettavoitteet-otsikko-header" vaaditaan></label>
-        <input id="otsikko-input" class="form-control" ng-model="yleisetTavoitteet.otsikko" slocalized type="text" required="true" data-empty-place-holder-enabled="true" placeholder="{{'otsikko' | kaanna}}"></input>
-        <p class="alert alert-error" ng-show="(yleisetTavoitteetForm.$error.required && yleisetTavoitteetForm.$error.required[1].$dirty)"
-           kaanna>Otsikko on pakollinen tieto</p>
-
-        <label for="kuvaus-input" class="header" kaanna="lisaa-yleisettavoitteet-kuvaus-header"></label>
-        <div id="kuvaus-input" ckeditor ng-if="editEnabled" slocalized ng-model="yleisetTavoitteet.kuvaus" editor-placeholder="yleisettavoitteet-kuvaus-placeholder"></div>
-
-        <div style="margin-top: 30px;"></div>
-      </form>
-
-    </div>
-
-  </div>
 </div>

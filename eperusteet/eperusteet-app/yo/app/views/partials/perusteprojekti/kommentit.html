@@ -1,3 +1,4 @@
+<!-- partials/perusteprojekti/kommentit.html -->
 <div>
     <table class="table">
         <tr>
@@ -11,7 +12,8 @@
             <td ng-bind="kommentti.sisalto"></td>
             <td ng-bind="kommentti.muokattu | aikaleima"></td>
             <td>
-                <button class="btn btn-default" ng-click="goToKommenttiLocation(kommentti)" ng-bind="'siirry' | kaanna"></button>
+                <button class="btn btn-default" ng-click="goToKommenttiLocation(kommentti)"
+                        ng-bind="'siirry' | kaanna"></button>
             </td>
         </tr>
     </table>

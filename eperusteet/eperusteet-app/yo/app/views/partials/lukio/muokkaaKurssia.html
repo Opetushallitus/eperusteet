@@ -1,38 +1,22 @@
-<!--
-  ~  Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-  ~
-  ~  This program is free software: Licensed under the EUPL, Version 1.1 or - as
-  ~  soon as they will be approved by the European Commission - subsequent versions
-  ~  of the EUPL (the "Licence");
-  ~
-  ~  You may not use this work except in compliance with the Licence.
-  ~  You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-  ~
-  ~  This program is distributed in the hope that it will be useful,
-  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~  European Union Public Licence for more details.
-  -->
-
-
+<!-- partials/lukio/muokkaaKurssia.html -->
 <div class="muokkaa-kurssia kurssi-form">
-  <h2 kaanna="'muokkaa-kurssia'"></h2>
+    <h2 kaanna="'muokkaa-kurssia'"></h2>
 
-  <div class="non-collapsibles">
-    <form name="kurssiForm" role="form">
-      <div class="action-buttons">
-        <div class="floater" ng-include="'views/partials/lukio/include/kurssiOsavalitsin.html'">
-        </div>
+    <div class="non-collapsibles">
+        <form name="kurssiForm" role="form">
+            <div class="action-buttons">
+                <div class="floater" ng-include="'views/partials/lukio/include/kurssiOsavalitsin.html'">
+                </div>
 
-        <button class="btn floating"
-                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
-                ng-click="deleteKurssi()">
-          <span icon-role="remove" class="ng-scope"></span>
-          <span ng-bind="'poista' | kaanna"></span>
-        </button>
-      </div>
+                <button class="btn floating"
+                        oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                        ng-click="deleteKurssi()">
+                    <span icon-role="remove" class="ng-scope"></span>
+                    <span ng-bind="'poista' | kaanna"></span>
+                </button>
+            </div>
 
-      <div ng-include="'views/partials/lukio/include/kurssiLomakeKentat.html'"></div>
-    </form>
-  </div>
+            <div ng-include="'views/partials/lukio/include/kurssiLomakeKentat.html'"></div>
+        </form>
+    </div>
 </div>

@@ -1,19 +1,21 @@
-<!-- koulutuksenOsaOsaAlue.html -->
+<!-- partials/muokkaus/koulutuksenOsaOsaAlue.html -->
 <h1 kaanna="'muokkaa-osa-aluetta'"></h1>
 <p kaanna="tahdella-pakolliset"></p>
 <hr class="versioraja">
 
 <div class="non-collapsibles">
-  <label class="header" kaanna="'koulutuksenosa'"></label>
-  <p kaanna="tutkinnonOsa.nimi"></p>
-  <label class="header">{{'nimi'| kaanna}}*</label>
-  <input class="form-control" slocalized ng-model="osaAlue.nimi" type="text"></input>
+    <label class="header" kaanna="'koulutuksenosa'"></label>
+    <p kaanna="tutkinnonOsa.nimi"></p>
+    <label class="header">{{'nimi'| kaanna}}*</label>
+    <input class="form-control" slocalized ng-model="osaAlue.nimi" type="text">
 
-  <label class="header" kaanna="'kuvaus'"></label>
-  <div ckeditor class="form-control" slocalized ng-model="osaAlue.kuvaus" type="text"></div>
+    <label class="header" kaanna="'kuvaus'"></label>
+    <div ckeditor class="form-control" slocalized ng-model="osaAlue.kuvaus" type="text"></div>
 
-  <hr class="mujuviiva">
+    <hr class="mujuviiva">
 
-  <valmaarviointi valmaarviointi="valma.valmatavoitteet" edit-enabled="true" mainLevelEditing="false" ei-kohdealueita="true"></valmaarviointi>
-  <valmaarviointi valmaarviointi="valma.valmaarviointi" type="arviointi" edit-enabled="true" mainLevelEditing="false" ei-kohdealueita="true"></valmaarviointi>
+    <valmaarviointi valmaarviointi="valma.valmatavoitteet" edit-enabled="true" mainLevelEditing="false"
+                    ei-kohdealueita="true"></valmaarviointi>
+    <valmaarviointi valmaarviointi="valma.valmaarviointi" type="arviointi" edit-enabled="true" mainLevelEditing="false"
+                    ei-kohdealueita="true"></valmaarviointi>
 </div>

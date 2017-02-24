@@ -1,20 +1,20 @@
+<!-- perusopetuslistaus.html -->
 <div>
-    <!-- perusopetuslistaus.html -->
     <table class="table table-striped">
         <thead>
-            <tr>
-                <th kaanna="'nimi'"></th>
-                <th kaanna="'diaarinumero'"></th>
-                <th kaanna="'voimassaoloLoppuu'"></th>
-            </tr>
+        <tr>
+            <th kaanna="'nimi'"></th>
+            <th kaanna="'diaarinumero'"></th>
+            <th kaanna="'voimassaoloLoppuu'"></th>
+        </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="po in lista">
-                <td><a href="{{ po.$url }}" kaanna="po.nimi"></a></td>
-                <td ng-bind="po.diaarinumero"></td>
-                <td ng-if="po.voimassaoloLoppuu">{{ po.voimassaoloLoppuu | aikaleima }}</td>
-                <td ng-if="!po.voimassaoloLoppuu" kaanna="'paattymisaikaa-ei-ole-maaritetty'"></td>
-            </tr>
+        <tr ng-repeat="po in lista">
+            <td><a href="{{ po.$url }}" kaanna="po.nimi"></a></td>
+            <td ng-bind="po.diaarinumero"></td>
+            <td ng-if="po.voimassaoloLoppuu">{{ po.voimassaoloLoppuu | aikaleima }}</td>
+            <td ng-if="!po.voimassaoloLoppuu" kaanna="'paattymisaikaa-ei-ole-maaritetty'"></td>
+        </tr>
         </tbody>
     </table>
 </div>

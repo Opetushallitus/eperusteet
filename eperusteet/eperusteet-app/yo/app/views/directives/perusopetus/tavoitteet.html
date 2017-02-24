@@ -1,91 +1,118 @@
-<!-- tavoitteet.html -->
+<!-- directives/perusopetus/tavoitteet.html -->
 
 <div class="opetuksen-tavoitteet" ui-tree="treeOptions"
      data-drag-enabled="editMode && !currentEditable" data-empty-place-holder-enabled="false">
-  <div class="panel panel-default panel-small arviointi-kohdealueet">
-    <span class="toggler" ng-show="model.tavoitteet.length"><a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
+    <div class="panel panel-default panel-small arviointi-kohdealueet">
+        <span class="toggler" ng-show="model.tavoitteet.length">
+            <a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a>
+        </span>
 
-    <div class="panel-body">
-      <div class="panel-group">
+        <div class="panel-body">
+            <div class="panel-group">
 
-        <div ng-model="model.tavoitteet" ui-tree-nodes>
-          <div ng-hide="tavoite.$rejected || tavoite.$hide" class="panel panel-default tavoite" ng-repeat="tavoite in model.tavoitteet" ui-tree-node
-               ng-class="{'kohde-edit': tavoite.$editing}">
-            <div class="panel-body">
-              <div ng-if="editMode" ng-show="!currentEditable" class="muokkausnappi">
-                <button class="btn btn-default icon-only" ng-click="tavoiteFn.edit(tavoite)" icon-role="edit"
-                        title="{{'muokkaa'|kaanna}}"></button>
-                <button class="btn btn-default icon-only" ng-click="tavoiteFn.remove($index)"
-                        icon-role="remove" title="{{'poista'|kaanna}}"></button>
-              </div>
+                <div ng-model="model.tavoitteet" ui-tree-nodes>
+                    <div ng-hide="tavoite.$rejected || tavoite.$hide" class="panel panel-default tavoite"
+                         ng-repeat="tavoite in model.tavoitteet" ui-tree-node
+                         ng-class="{'kohde-edit': tavoite.$editing}">
+                        <div class="panel-body">
+                            <div ng-if="editMode" ng-show="!currentEditable" class="muokkausnappi">
+                                <button class="btn btn-default icon-only" ng-click="tavoiteFn.edit(tavoite)"
+                                        icon-role="edit"
+                                        title="{{'muokkaa'|kaanna}}"></button>
+                                <button class="btn btn-default icon-only" ng-click="tavoiteFn.remove($index)"
+                                        icon-role="remove" title="{{'poista'|kaanna}}"></button>
+                            </div>
 
-              <div class="pull-left sorter-handle" ui-tree-handle>
-                <div ng-show="editMode && !currentEditable" class="icon" icon-role="drag"></div>
-              </div>
-              <div class="tavoite-sisalto" ng-class="{collapsed: !tavoite.$accordionOpen}">
-                <h4 ng-show="tavoite.$editing" kaanna="nimi"></h4>
-                <h4 class="tavoite-otsikko action-link" ng-show="!tavoite.$editing" ng-click="tavoiteFn.toggle(tavoite)"
-                  ng-bind-html="tavoite.tavoite | kaanna | unsafe"></h4>
-                <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" slocalized editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
+                            <div class="pull-left sorter-handle" ui-tree-handle>
+                                <div ng-show="editMode && !currentEditable" class="icon" icon-role="drag"></div>
+                            </div>
+                            <div class="tavoite-sisalto" ng-class="{collapsed: !tavoite.$accordionOpen}">
+                                <h4 ng-show="tavoite.$editing" kaanna="nimi"></h4>
+                                <h4 class="tavoite-otsikko action-link" ng-show="!tavoite.$editing"
+                                    ng-click="tavoiteFn.toggle(tavoite)"
+                                    ng-bind-html="tavoite.tavoite | kaanna | unsafe"></h4>
+                                <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" slocalized
+                                     editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
 
-                <h4 ng-show="tavoite.$valittuKohdealue || tavoite.$editing" kaanna="'kohdealue'"></h4>
-                <!-- <div ng&#45;hide="tavoite.$editing" tag&#45;cloud="tavoite.$kohdealueet" openable="false" edit&#45;mode="false"></div> -->
-                <p ng-if="tavoite.$valittuKohdealue && !tavoite.$editing">{{ tavoite.$valittuKohdealue ? tavoite.$valittuKohdealue.nimi : '' | kaanna }}</p>
-                <div ng-if="tavoite.$editing">
-                  <div class="input-group">
-                    <select class="form-control"
-                            ng-model="tavoite.$valittuKohdealue" ng-change="asetaKohdealue(tavoite)"
-                            ng-options="kaannaKohdealue(ka) for ka in kohdealueet"></select>
-                    <span class="input-group-btn">
-                      <button ng-click="poistaValittuKohdealue(tavoite)" icon-role="remove" kaanna="'poista'" class="btn btn-default" type="button"></button>
-                    </span>
-                  </div>
-                </div>
+                                <h4 ng-show="tavoite.$valittuKohdealue || tavoite.$editing" kaanna="'kohdealue'"></h4>
+                                <p ng-if="tavoite.$valittuKohdealue && !tavoite.$editing">
+                                    {{ tavoite.$valittuKohdealue ? tavoite.$valittuKohdealue.nimi : '' | kaanna }}
+                                </p>
+                                <div ng-if="tavoite.$editing">
+                                    <div class="input-group">
+                                        <select class="form-control"
+                                                ng-model="tavoite.$valittuKohdealue" ng-change="asetaKohdealue(tavoite)"
+                                                ng-options="kaannaKohdealue(ka) for ka in kohdealueet"></select>
+                                        <span class="input-group-btn">
+                                            <button ng-click="poistaValittuKohdealue(tavoite)"
+                                                    icon-role="remove"
+                                                    kaanna="'poista'"
+                                                    class="btn btn-default"
+                                                    type="button"></button>
+                                        </span>
+                                    </div>
+                                </div>
 
-                <div class="tavoite-collapser action-link" ng-show="!tavoite.$accordionOpen" ng-click="tavoite.$accordionOpen = true">…</div>
-                <div class="collapsible" collapse="!tavoite.$accordionOpen">
-                  <div ng-if="tavoite.$editing || tavoite.laajattavoitteet">
-                    <h4 kaanna="laaja-alainen-osaaminen"></h4>
-                    <div tag-cloud="tavoite.$osaaminen" openable="true" edit-mode="tavoite.$editing" add-label="lisaa-laaja-alainen-osaaminen"></div>
-                  </div>
+                                <div class="tavoite-collapser action-link" ng-show="!tavoite.$accordionOpen"
+                                     ng-click="tavoite.$accordionOpen = true">…
+                                </div>
+                                <div class="collapsible" collapse="!tavoite.$accordionOpen">
+                                    <div ng-if="tavoite.$editing || tavoite.laajattavoitteet">
+                                        <h4 kaanna="laaja-alainen-osaaminen"></h4>
+                                        <div tag-cloud="tavoite.$osaaminen" openable="true" edit-mode="tavoite.$editing"
+                                             add-label="lisaa-laaja-alainen-osaaminen"></div>
+                                    </div>
 
-                  <div ng-if="tavoite.$editing || tavoite.sisaltoalueet">
-                    <h4 kaanna="sisaltoalueet"></h4>
-                    <div tag-cloud="tavoite.$sisaltoalueet" openable="true" edit-mode="tavoite.$editing" add-label="lisaa-sisaltoalue"></div>
-                  </div>
+                                    <div ng-if="tavoite.$editing || tavoite.sisaltoalueet">
+                                        <h4 kaanna="sisaltoalueet"></h4>
+                                        <div tag-cloud="tavoite.$sisaltoalueet" openable="true"
+                                             edit-mode="tavoite.$editing" add-label="lisaa-sisaltoalue"></div>
+                                    </div>
 
-                  <div ng-if="tavoite.$editing || hasArviointi(tavoite)">
-                    <h4 ng-if="!tavoite.$editing" kaanna="tavoite.arvioinninOtsikko || 'arviointi'"></h4>
+                                    <div ng-if="tavoite.$editing || hasArviointi(tavoite)">
+                                        <h4 ng-if="!tavoite.$editing"
+                                            kaanna="tavoite.arvioinninOtsikko || 'arviointi'"></h4>
 
-                    <div ng-if="tavoite.$editing">
-                      <h4 kaanna="'arviointi'"></h4>
-                      <div class="arvioinnin-otsikko">
-                        <label kaanna="'arvioinnin-otsikko'"></label>
-                        <div class="arvioinnin-muokkaus-kentta">
-                          <input placeholder="{{ 'arvioinnin-otsikko' | kaanna }}" type="text" class="form-control" slocalized ng-model="tavoite.arvioinninOtsikko"></input>
+                                        <div ng-if="tavoite.$editing">
+                                            <h4 kaanna="'arviointi'"></h4>
+                                            <div class="arvioinnin-otsikko">
+                                                <label kaanna="'arvioinnin-otsikko'"></label>
+                                                <div class="arvioinnin-muokkaus-kentta">
+                                                    <input placeholder="{{ 'arvioinnin-otsikko' | kaanna }}"
+                                                           type="text"
+                                                           class="form-control"
+                                                           slocalized
+                                                           ng-model="tavoite.arvioinninOtsikko">
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+
+                                        <button ng-hide="hasArviointi(tavoite)" class="btn btn-default"
+                                                ng-click="addArviointi(tavoite)" icon-role="add"
+                                                kaanna="lisaa-arviointi"></button>
+                                        <div ng-show="hasArviointi(tavoite)"
+                                             atavoite="tavoite"
+                                             perusopetuksen-arviointi="tavoite.arvioinninkohteet"
+                                             edit-mode="tavoite.$editing"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="muokkausnappi" ng-if="editMode" ng-show="tavoite.$editing">
+                                <button class="btn btn-default" kaanna="peruuta" ng-click="tavoiteFn.cancel()"></button>
+                                <button class="btn btn-primary" ng-click="tavoiteFn.ok()">
+                                    {{tavoite.$new ? 'lisaa' : 'ok' | kaanna}}
+                                </button>
+                            </div>
                         </div>
-                      </div>
-                      <div class="clearfix"></div>
                     </div>
-
-                    <button ng-hide="hasArviointi(tavoite)" class="btn btn-default" ng-click="addArviointi(tavoite)" icon-role="add"
-                            kaanna="lisaa-arviointi"></button>
-                    <div ng-show="hasArviointi(tavoite)" atavoite="tavoite" perusopetuksen-arviointi="tavoite.arvioinninkohteet" edit-mode="tavoite.$editing"></div>
-                  </div>
                 </div>
-              </div>
-              <div class="muokkausnappi" ng-if="editMode" ng-show="tavoite.$editing">
-                <button class="btn btn-default" kaanna="peruuta" ng-click="tavoiteFn.cancel()"></button>
-                <button class="btn btn-primary" ng-click="tavoiteFn.ok()">{{tavoite.$new ? 'lisaa' : 'ok' | kaanna}}</button>
-              </div>
+
             </div>
-          </div>
+
+            <button ng-show="editMode && !currentEditable" class="btn btn-default" ng-click="tavoiteFn.add()"
+                    icon-role="add"
+                    kaanna="lisaa-opetuksen-tavoite"></button>
         </div>
-
-      </div> <!-- panel-group -->
-
-      <button ng-show="editMode && !currentEditable" class="btn btn-default" ng-click="tavoiteFn.add()" icon-role="add"
-        kaanna="lisaa-opetuksen-tavoite"></button>
     </div>
-  </div>
 </div>

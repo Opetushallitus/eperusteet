@@ -1,19 +1,4 @@
-<!-- sisalto.html -->
-<!--
-Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-
-This program is free software: Licensed under the EUPL, Version 1.1 or - as
-soon as they will be approved by the European Commission - subsequent versions
-of the EUPL (the "Licence");
-
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-European Union Public Licence for more details.
--->
+<!-- partials/perusteprojekti/sisalto.html -->
 <div class="main-content" id="main">
     <div class="row tutkinto-sisalto">
         <div ng-if="tiivistelma" class="tiivistelma">
@@ -23,12 +8,14 @@ European Union Public Licence for more details.
 
         <div class="esityksen-tarkastelu">
             <a icon-role="sunglasses" class="url" href="{{ $esitysurl }}" kaanna="'tarkastele-esitysta'"></a>
-            <a icon-role="comment" class="url pull-right" ui-sref="root.perusteprojekti.kommentit" kaanna="'kaikki-kommentit'"></a>
+            <a icon-role="comment" class="url pull-right" ui-sref="root.perusteprojekti.kommentit"
+               kaanna="'kaikki-kommentit'"></a>
         </div>
 
         <div ng-show="peruste.suoritustavat.length > 1 && !muokkausTutkintokohtaisetOsat">
             <ul class="nav nav-tabs nav-justified suoritustapa-valinta">
-                <li ng-class="{ active: valittuSuoritustapa === st.suoritustapakoodi }" ng-repeat="st in peruste.suoritustavat"
+                <li ng-class="{ active: valittuSuoritustapa === st.suoritustapakoodi }"
+                    ng-repeat="st in peruste.suoritustavat"
                     ng-click="vaihdaSuoritustapa(st.suoritustapakoodi)">
                     <a class="action-link suoritustapa">{{ st.suoritustapakoodi | kaanna }}</a>
                 </li>
@@ -38,12 +25,19 @@ European Union Public Licence for more details.
         <div class="tutkinto">
             <div ng-hide="muokkausTutkintokohtaisetOsat">
                 <div class="toolbar-input pull-left">
-                    <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value, tyyppi)"></rajaus>
+                    <rajaus model="rajaus" placeholder="etsi-sisallosta"
+                            callback="rajaaSisaltoa(value, tyyppi)"></rajaus>
                 </div>
                 <!-- Lisäyspainikkeet -->
                 <div class="pull-right buttons">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto(projekti, peruste)" ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-import" kaanna="tuo-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-add" kaanna="lisaa-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto(projekti, peruste)"
+                            ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-import"
+                            kaanna="tuo-tutkintokohtainen-osa"
+                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()"
+                            ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-add"
+                            kaanna="lisaa-tutkintokohtainen-osa"
+                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
                     <button class="btn btn-default btn-sm"
                             ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"
                             ng-show="valittuSuoritustapa !== ''" icon-role="edit" kaanna="muokkaa-rakennetta"
@@ -56,33 +50,46 @@ European Union Public Licence for more details.
 
             <h2 ng-hide="muokkausTutkintokohtaisetOsat">
                 <span kaanna="'tekstikappaleet'"></span>
-                <span ng-show="peruste.sisalto.lapset.length - muodostumisKompensaattori > 0">(<span ng-bind="peruste.sisalto.lapset.length - muodostumisKompensaattori"></span>)</span>
-                <a ng-click="avaaSuljeKaikki()" class="action-link open-close"><span class="avaa-sulje" icon-role="ep-open-close" kaanna="'avaa-sulje-kaikki'"></span></a>
+                <span ng-show="peruste.sisalto.lapset.length - muodostumisKompensaattori > 0">(<span
+                        ng-bind="peruste.sisalto.lapset.length - muodostumisKompensaattori"></span>)</span>
+                <a ng-click="avaaSuljeKaikki()" class="action-link open-close">
+                    <span class="avaa-sulje"
+                          icon-role="ep-open-close"
+                          kaanna="'avaa-sulje-kaikki'"></span>
+                </a>
                 <!-- Työryhmävalitsin -->
                 <span ng-show="onTyoryhmia()">
                     <span class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                                data-toggle="dropdown">
                             <span ng-show="tyyppi === 'kaikki'" kaanna="'kaikki'"></span>
                             <span ng-hide="tyyppi === 'kaikki'" ng-bind="tyyppi"></span>
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                             <li role="presentation">
-                                <a class="action-link" ng-click="rajaaSisaltoa(rajaus, 'kaikki')" role="menuitem" tabindex="-1" kaanna>kaikki</a>
+                                <a class="action-link" ng-click="rajaaSisaltoa(rajaus, 'kaikki')" role="menuitem"
+                                   tabindex="-1" kaanna>kaikki</a>
                             </li>
                             <li ng-repeat="(k, v) in tyoryhmat" role="presentation">
-                                <a class="action-link" ng-click="rajaaSisaltoa(rajaus, k)" role="menuitem" tabindex="-1">{{ k }}</a>
+                                <a class="action-link" ng-click="rajaaSisaltoa(rajaus, k)" role="menuitem"
+                                   tabindex="-1">{{ k }}</a>
                             </li>
                         </ul>
                     </span>
-                    <a ng-click="naytaRyhmanHenkilot(tyyppi, tyoryhmat, ryhma)" class="usericon action-link" icon-role="user"></a>
+                    <a ng-click="naytaRyhmanHenkilot(tyyppi, tyoryhmat, ryhma)" class="usericon action-link"
+                       icon-role="user"></a>
                 </span>
             </h2>
 
             <div ng-show="muokkausTutkintokohtaisetOsat" class="rakenteen-muokkaus">
                 <h2 kaanna>Muokkaa tekstikappaleiden rakennetta</h2>
-                <a ng-click="avaaSuljeKaikki()" class="action-link"><span class="avaa-sulje" icon-role="ep-open-close" kaanna="'avaa-sulje-kaikki'"></span></a>
+                <a ng-click="avaaSuljeKaikki()" class="action-link">
+                    <span class="avaa-sulje" icon-role="ep-open-close"
+                          kaanna="'avaa-sulje-kaikki'"></span>
+                </a>
             </div>
+
             <div class="clearfix"></div>
 
             <div ng-hide="muokkausTutkintokohtaisetOsat">

@@ -1,72 +1,80 @@
+<!-- directives/osalistaus.html -->
 <div>
-<!-- osalistaus.html -->
-  <div class="tutkinnonosa-lista-toolbar">
-    <div class="toolbar-input">
-      <rajaus model="search.term" callback="searchChanged(value)" placeholder="{{search.placeholder}}"></rajaus>
-      <div class="pull-left" id="osalistausextrafilter"></div>
-      <div class="clearfix"></div>
+    <div class="tutkinnonosa-lista-toolbar">
+        <div class="toolbar-input">
+            <rajaus model="search.term" callback="searchChanged(value)" placeholder="{{search.placeholder}}"></rajaus>
+            <div class="pull-left" id="osalistausextrafilter"></div>
+            <div class="clearfix"></div>
+        </div>
     </div>
-  </div>
 
-  <div>
-    <table class="table table-striped" style="margin-top: 0">
-      <tr>
-        <th ng-if="kaytaJarjestysnumeroa" width="6%">
-          <a class="action-link" ng-click="asetaJarjestys('jarjestys')">{{ 'lajittelu-jarjestysnumero' | kaanna }}
-            <span ng-show="jarjestysTapa === 'jarjestys'">
-              <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
-            </span>
-          </a>
-        </th>
-        <th width="50%">
-          <a class="action-link" ng-click="asetaJarjestys('nimi')">{{'nimi' | kaanna}}
-            <span ng-show="jarjestysTapa === 'nimi'">
-              <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
-            </span>
-          </a>
-        </th>
-        <th width="10%" ng-if="hasLaajuus">
-          <a class="action-link" ng-click="asetaJarjestys('laajuus')">{{'laajuus' | kaanna}}
-            <span ng-show="jarjestysTapa === 'laajuus'">
-              <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
-            </span>
-          </a>
-        </th>
-        <th width="25%">
-          <a class="action-link" ng-click="asetaJarjestys('muokattu')">{{'muokattu-viimeksi' | kaanna}}
-            <span ng-show="jarjestysTapa === 'muokattu'">
-              <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
-            </span>
-          </a>
-        </th>
-        <th width="5%" ng-bind="'tila' | kaanna"></th>
-      </tr>
-      <tr ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
-        <td ng-if="kaytaJarjestysnumeroa">
-          {{ v.jarjestys || '-' }}
-        </td>
-        <td>
-          <a ng-href="{{urlGenerator({value: v})}}">{{ v.nimi || vateConverter('uusi-tutkinnonosa') | kaanna }}</a>
-        </td>
-        <td ng-if="hasLaajuus">
-          <span ng-if="v.laajuus">
-            {{ v.laajuus }}
-            <span ng-show="v.laajuusMaksimi && v.laajuus < v.laajuusMaksimi"> - {{ v.laajuusMaksimi }}</span>
-            {{ unit || '' | kaanna }}
-          </span>
-        </td>
-        <td>
-          {{ v.muokattu || 0 | aikaleima }}
-        </td>
-        <td>
-          <span ng-if="v.$$tila">
-            <span ng-show="v.$$tila.kaannettava" data-toggle="tooltip" title="{{ 'kaannettava-ohje' | kaanna }}" class="glyphicon glyphicon-globe"></span>
-            <span ng-show="v.$$tila.valmis" data-toggle="tooltip" title="{{ 'valmis-ohje' | kaanna }}" class="glyphicon glyphicon-ok"></span>
-          </span>
-        </td>
-      </tr>
-    </table>
+    <div>
+        <table class="table table-striped" style="margin-top: 0">
+            <tr>
+                <th ng-if="kaytaJarjestysnumeroa" width="6%">
+                    <a class="action-link" ng-click="asetaJarjestys('jarjestys')">
+                        {{ 'lajittelu-jarjestysnumero' | kaanna }}
+                        <span ng-show="jarjestysTapa === 'jarjestys'">
+                            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+                        </span>
+                    </a>
+                </th>
+                <th width="50%">
+                    <a class="action-link" ng-click="asetaJarjestys('nimi')">{{'nimi' | kaanna}}
+                        <span ng-show="jarjestysTapa === 'nimi'">
+                            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+                        </span>
+                    </a>
+                </th>
+                <th width="10%" ng-if="hasLaajuus">
+                    <a class="action-link" ng-click="asetaJarjestys('laajuus')">{{'laajuus' | kaanna}}
+                        <span ng-show="jarjestysTapa === 'laajuus'">
+                            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+                        </span>
+                    </a>
+                </th>
+                <th width="25%">
+                    <a class="action-link" ng-click="asetaJarjestys('muokattu')">{{'muokattu-viimeksi' | kaanna}}
+                        <span ng-show="jarjestysTapa === 'muokattu'">
+                            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+                        </span>
+                    </a>
+                </th>
+                <th width="5%" ng-bind="'tila' | kaanna"></th>
+            </tr>
+            <tr ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
+                <td ng-if="kaytaJarjestysnumeroa">
+                    {{ v.jarjestys || '-' }}
+                </td>
+                <td>
+                    <a ng-href="{{urlGenerator({value: v})}}">{{ v.nimi || vateConverter('uusi-tutkinnonosa') | kaanna
+                        }}</a>
+                </td>
+                <td ng-if="hasLaajuus">
+                    <span ng-if="v.laajuus">
+                        {{ v.laajuus }}
+                        <span ng-show="v.laajuusMaksimi && v.laajuus < v.laajuusMaksimi"> - {{ v.laajuusMaksimi }}</span>
+                        {{ unit || '' | kaanna }}
+                    </span>
+                </td>
+                <td>
+                    {{ v.muokattu || 0 | aikaleima }}
+                </td>
+                <td>
+                    <span ng-if="v.$$tila">
+                        <span ng-show="v.$$tila.kaannettava"
+                              data-toggle="tooltip"
+                              title="{{ 'kaannettava-ohje' | kaanna }}"
+                              class="glyphicon glyphicon-globe"></span>
+                        <span ng-show="v.$$tila.valmis"
+                              data-toggle="tooltip"
+                              title="{{ 'valmis-ohje' | kaanna }}"
+                              class="glyphicon glyphicon-ok"></span>
+                    </span>
+                </td>
+            </tr>
+        </table>
 
-    <div class="info-box" ng-show="model.length === 0 && emptyPlaceholder" kaanna="emptyPlaceholder"></div>
-  </div>
+        <div class="info-box" ng-show="model.length === 0 && emptyPlaceholder" kaanna="emptyPlaceholder"></div>
+    </div>
 </div>

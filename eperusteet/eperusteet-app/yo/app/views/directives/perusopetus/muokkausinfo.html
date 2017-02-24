@@ -1,12 +1,19 @@
-<!-- muokkausinfo.html -->
+<!-- directives/perusopetus/muokkausinfo.html -->
 
 <div>
-  <table class="muokkausinfo" ng-show="getOppiaine()">
-    <tr><th kaanna="oppiaine"></th><td>{{getOppiaine() | kaanna}}</td></tr>
-    <tr ng-show="getVuosiluokkakokonaisuus()">
-      <th kaanna="vuosiluokkakokonaisuus"></th><td>{{getVuosiluokkakokonaisuus() | kaanna}}</td>
-    </tr>
-    <tr ng-if="muokkausinfoOsa"><th kaanna="'osa'"></th><td>{{muokkausinfoOsa | kaanna}}</td></tr>
-  </table>
+    <table class="muokkausinfo" ng-show="getOppiaine()">
+        <tr>
+            <th kaanna="oppiaine"></th>
+            <td>{{getOppiaine() | kaanna}}</td>
+        </tr>
+        <tr ng-show="getVuosiluokkakokonaisuus()">
+            <th kaanna="vuosiluokkakokonaisuus"></th>
+            <td>{{getVuosiluokkakokonaisuus() | kaanna}}</td>
+        </tr>
+        <tr ng-if="muokkausinfoOsa">
+            <th kaanna="'osa'"></th>
+            <td>{{muokkausinfoOsa | kaanna}}</td>
+        </tr>
+    </table>
 </div>
 <hr>

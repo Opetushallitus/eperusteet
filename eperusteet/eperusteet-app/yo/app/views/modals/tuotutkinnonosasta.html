@@ -1,32 +1,45 @@
-<!-- tuotutkinnonosasta.html -->
+<!-- modals/tuotutkinnonosasta.html -->
 
 <div modal="modalVisible" close="close()" options="{windowClass:'modal-to-haku'}">
-  <div class="modal-header">
-    <h1 kaanna="tuo-toisesta-suoritustavasta"></h1>
-  </div>
+    <div class="modal-header">
+        <h1 kaanna="tuo-toisesta-suoritustavasta"></h1>
+    </div>
 
-  <div class="modal-body">
-    <select style="margin-bottom: 8px" class="form-control" ng-model="valittuSuoritustapa" ng-change="paivitaTulokset(valittuSuoritustapa)">
-      <option ng-repeat="st in suoritustavat" ng-selected="{{ valittuSuoritustapa === st }}" value="{{ st }}">{{ st | kaanna }}</option>
-    </select>
-    <rajaus model="search.term" callback="search.changed(value)" placeholder="tutkinnon-osa-haku-placeholder"></rajaus>
-    <table class="tuotutkinnonosat-table table table-striped" ng-show="filtered.length > 0">
-      <tr>
-        <th class="has-checkbox"><input ng-change="valitseKaikki(kaikkiValittu)" ng-model="kaikkiValittu" type="checkbox" class="form-control"></th>
-        <th kaanna>nimi</th>
-      </tr>
+    <div class="modal-body">
+        <select style="margin-bottom: 8px" class="form-control" ng-model="valittuSuoritustapa"
+                ng-change="paivitaTulokset(valittuSuoritustapa)">
+            <option ng-repeat="st in suoritustavat" ng-selected="{{valittuSuoritustapa === st}}" value="{{ st }}">
+                {{st | kaanna}}
+            </option>
+        </select>
+        <rajaus model="search.term" callback="search.changed(value)"
+                placeholder="tutkinnon-osa-haku-placeholder"></rajaus>
+        <table class="tuotutkinnonosat-table table table-striped" ng-show="filtered.length > 0">
+            <tr>
+                <th class="has-checkbox">
+                    <input ng-change="valitseKaikki(kaikkiValittu)" ng-model="kaikkiValittu"
+                           type="checkbox" class="form-control">
+                </th>
+                <th kaanna>nimi</th>
+            </tr>
 
-      <tr ng-repeat="tulos in filtered = (tulokset | filter:search.filterFn) | orderBy:orderFn | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage">
-        <td class="has-checkbox"><input ng-change="updateTotal()" ng-model="tulos.$$valitse" type="checkbox" class="form-control"></td>
-        <td class="pointer" ng-click="vaihdaValinta(tulos)">{{ tulos.nimi | kaanna }}</td>
-      </tr>
-    </table>
-    <div class="alert alert-warning" ng-show="filtered.length === 0 && valittuSuoritustapa" kaanna="tutkinnon-osia-ei-loytynyt"></div>
-    <pagination ng-model="paginate.current" total-items="filtered.length" items-per-page="paginate.perPage"></pagination>
-  </div>
+            <tr ng-repeat="tulos in filtered = (tulokset | filter:search.filterFn) | orderBy:orderFn | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage">
+                <td class="has-checkbox">
+                    <input ng-change="updateTotal()" ng-model="tulos.$$valitse" type="checkbox" class="form-control">
+                </td>
+                <td class="pointer" ng-click="vaihdaValinta(tulos)">{{ tulos.nimi | kaanna }}</td>
+            </tr>
+        </table>
+        <div class="alert alert-warning" ng-show="filtered.length === 0 && valittuSuoritustapa"
+             kaanna="tutkinnon-osia-ei-loytynyt"></div>
+        <pagination ng-model="paginate.current" total-items="filtered.length"
+                    items-per-page="paginate.perPage"></pagination>
+    </div>
 
-  <div class="modal-footer">
-    <button class="btn" ng-click="peruuta()" kaanna>peru</button>
-    <button class="btn btn-primary" ng-click="ok()" ng-disabled="valitut === 0">{{'tuo-valitut'|kaanna}} ({{valitut}})</button>
-  </div>
+    <div class="modal-footer">
+        <button class="btn" ng-click="peruuta()" kaanna>peru</button>
+        <button class="btn btn-primary" ng-click="ok()" ng-disabled="valitut === 0">{{'tuo-valitut'|kaanna}}
+            ({{valitut}})
+        </button>
+    </div>
 </div>
