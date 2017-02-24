@@ -1,76 +1,77 @@
-<!-- directives/lukiokoulutus/aihekokonaisuudet.html -->
-<div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
-    <div id="ck-toolbar-top"></div>
-    <div id="ck-toolbar-bottom"></div>
-</div>
-<div class="row">
-    <div class="col-md-12 ep-sisalto-inner">
+<div>
+    <div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
+        <div id="ck-toolbar-top"></div>
+        <div id="ck-toolbar-bottom"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 ep-sisalto-inner">
 
-        <div class="action-buttons" ng-if="!editEnabled">
-            <button class="btn btn-default" icon-role="edit" ng-click="edit()" kaanna="muokkaa"
-                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
-        </div>
-        <div ng-if="!editEnabled">
-            <revert-note object="aihekokonaisuudet" revert-cb="revertCb(response)" versions="versiot"
-                         change-version="vaihdaVersio()"></revert-note>
+            <div class="action-buttons" ng-if="!editEnabled">
+                <button class="btn btn-default" icon-role="edit" ng-click="edit()" kaanna="muokkaa"
+                        oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+            </div>
+            <div ng-if="!editEnabled">
+                <revert-note object="aihekokonaisuudet" revert-cb="revertCb(response)" versions="versiot"
+                             change-version="vaihdaVersio()"></revert-note>
 
-            <div ng-if="!aihekokonaisuudet.otsikko" kaanna="aihekokonaisuudet-ei-otsikkoa"></div>
-            <h1><span ng-bind="aihekokonaisuudet.otsikko | kaanna"></span></h1>
-            <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"
-                 termisto-viitteet="aihekokonaisuudet.yleiskuvaus"></div>
+                <div ng-if="!aihekokonaisuudet.otsikko" kaanna="aihekokonaisuudet-ei-otsikkoa"></div>
+                <h1><span ng-bind="aihekokonaisuudet.otsikko | kaanna"></span></h1>
+                <div ng-bind-html="aihekokonaisuudet.yleiskuvaus|kaanna|unsafe"
+                     termisto-viitteet="aihekokonaisuudet.yleiskuvaus"></div>
 
-            <versiotiedot ng-hide="editEnabled"></versiotiedot>
+                <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
-            <div ng-repeat="v in model | orderBy:nro">
-                <div>
-                    <div class="action-buttons">
-                        <button class="btn btn-default"
-                                icon-role="edit"
-                                ng-click="gotoViewAihekokonaisuus(v.id)"
-                                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
-                    </div>
-
-                    <h3 class="panel-title osio-otsikko"
-                        ng-click="v.$isCollapsed = !v.$isCollapsed">
-                        <span class="glyphicon" ng-class="v.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
-                        <span ng-bind="v.nimi | kaanna"></span>
-                    </h3>
-
-                    <div class="panel-body" collapse="v.$isCollapsed">
-                        <div ng-bind-html="v.kuvaus|kaanna|unsafe" termisto-viitteet="v.kuvaus"></div>
-                        <div ng-if="v.muokattu" class="muokattuViimeksi">
-                            <span kaanna="'muokattu-viimeksi'"></span>: <span
-                                ng-bind="v.muokattu || 0 | aikaleima"></span>
+                <div ng-repeat="v in model | orderBy:nro">
+                    <div>
+                        <div class="action-buttons">
+                            <button class="btn btn-default"
+                                    icon-role="edit"
+                                    ng-click="gotoViewAihekokonaisuus(v.id)"
+                                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
                         </div>
-                    </div>
 
+                        <h3 class="panel-title osio-otsikko"
+                            ng-click="v.$isCollapsed = !v.$isCollapsed">
+                            <span class="glyphicon" ng-class="v.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                            <span ng-bind="v.nimi | kaanna"></span>
+                        </h3>
+
+                        <div class="panel-body" collapse="v.$isCollapsed">
+                            <div ng-bind-html="v.kuvaus|kaanna|unsafe" termisto-viitteet="v.kuvaus"></div>
+                            <div ng-if="v.muokattu" class="muokattuViimeksi">
+                                <span kaanna="'muokattu-viimeksi'"></span>: <span
+                                    ng-bind="v.muokattu || 0 | aikaleima"></span>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
+
+                <kommentit></kommentit>
+
             </div>
 
-            <kommentit></kommentit>
+            <div ng-if="editEnabled">
+
+                <form name="aihekokonaisuudetYleiskuvausForm" role="form">
+
+                    <label for="otsikko-input" class="header" kaanna="lisaa-aihekokonaisuus-otsikko-header"
+                           vaaditaan></label>
+                    <input id="otsikko-input" class="form-control" ng-model="aihekokonaisuudet.otsikko" slocalized
+                           type="text" required="true" data-empty-place-holder-enabled="true"
+                           placeholder="{{'otsikko' | kaanna}}"/>
+                    <p class="alert alert-error"
+                       ng-show="(aihekokonaisuudetYleiskuvausForm.$error.required && aihekokonaisuudetYleiskuvausForm.$error.required[1].$dirty)"
+                       kaanna>Otsikko on pakollinen tieto</p>
+
+                    <label for="yleiskuvaus-input" class="header" kaanna="lisaa-aihekokonaisuus-yleiskuvaus-header"></label>
+                    <div id="yleiskuvaus-input" ckeditor ng-if="editEnabled" slocalized
+                         ng-model="aihekokonaisuudet.yleiskuvaus"
+                         editor-placeholder="aihekokonaisuudet-yleiskuvaus-placeholder"></div>
+                </form>
+
+            </div>
 
         </div>
-
-        <div ng-if="editEnabled">
-
-            <form name="aihekokonaisuudetYleiskuvausForm" role="form">
-
-                <label for="otsikko-input" class="header" kaanna="lisaa-aihekokonaisuus-otsikko-header"
-                       vaaditaan></label>
-                <input id="otsikko-input" class="form-control" ng-model="aihekokonaisuudet.otsikko" slocalized
-                       type="text" required="true" data-empty-place-holder-enabled="true"
-                       placeholder="{{'otsikko' | kaanna}}"/>
-                <p class="alert alert-error"
-                   ng-show="(aihekokonaisuudetYleiskuvausForm.$error.required && aihekokonaisuudetYleiskuvausForm.$error.required[1].$dirty)"
-                   kaanna>Otsikko on pakollinen tieto</p>
-
-                <label for="yleiskuvaus-input" class="header" kaanna="lisaa-aihekokonaisuus-yleiskuvaus-header"></label>
-                <div id="yleiskuvaus-input" ckeditor ng-if="editEnabled" slocalized
-                     ng-model="aihekokonaisuudet.yleiskuvaus"
-                     editor-placeholder="aihekokonaisuudet-yleiskuvaus-placeholder"></div>
-            </form>
-
-        </div>
-
     </div>
 </div>
