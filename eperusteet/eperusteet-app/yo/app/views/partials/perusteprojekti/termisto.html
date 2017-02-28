@@ -36,8 +36,8 @@
     </span>
     </p>
 
-    <pagination ng-show="termisto.length > 0" ng-model="paginate.current"
-                total-items="filtered.length" items-per-page="paginate.perPage"></pagination>
+    <uib-pagination ng-show="termisto.length > 0" ng-model="paginate.current"
+                total-items="filtered.length" items-per-page="paginate.perPage"></uib-pagination>
 
     <p ng-show="termisto.length === 0" kaanna="ei-termeja"></p>
 

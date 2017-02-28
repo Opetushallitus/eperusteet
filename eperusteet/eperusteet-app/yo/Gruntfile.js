@@ -449,10 +449,9 @@ module.exports = function(grunt) {
   grunt.registerTask('test', [
     'ts',
     'clean:server',
-    'copy:fonts', // needed if testing while "grunt dev" is running :)
+    'copy:fonts',
     'concurrent:test',
     'autoprefixer',
-//  'connect:test',
     'regex-check',
     'karma'
   ]);
@@ -466,7 +465,6 @@ module.exports = function(grunt) {
     'ngtemplates',
     'concat',
     'copy:dist',
-//  'ngmin',
     'cssmin',
     'uglify',
     'rev',

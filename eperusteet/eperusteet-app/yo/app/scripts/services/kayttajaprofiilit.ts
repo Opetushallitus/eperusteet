@@ -29,20 +29,20 @@ angular.module('eperusteApp')
     });
   })
   .service('Profiili', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit, $stateParams, $http, $q) {
-    var info: any = {
+    const info: any = {
       resolved: false,
       suosikit: [],
       preferenssit: {}
     };
 
-    var infoQ = $q.defer();
+    const infoQ = $q.defer();
     info.$resolved = infoQ.promise;
     info.$resolved.then(function(value) {
       info.resolved = value;
     });
 
     function prepareParams(params) {
-      var processed = _.omit(params, function (value) {
+      const processed = _.omit(params, function (value) {
         return _.isUndefined(value);
       });
       _.each(processed, function (value) {
@@ -99,18 +99,18 @@ angular.module('eperusteApp')
       casTiedot: function() {
         // TODO Käyttäjätiedot voisi hakea ensisijaisesti CAS:sta eikä fallbackina
         // käyttäjäprofiilille. CAS:ssa on kuitenkin aina kirjaantuneen käyttäjän tiedot.
-        var deferred = $q.defer();
+        const deferred = $q.defer();
         if (!info.$casFetched) {
           info.$casFetched = true;
-          $http.get('/cas/me').success(function(res) {
-            if (res.oid) {
-              info.oid = res.oid;
-              info.lang = res.lang;
-              info.groups = res.groups;
+          $http.get('/cas/me').then(res => {
+            if (res.data.oid) {
+              info.oid = res.data.oid;
+              info.lang = res.data.lang;
+              info.groups = res.data.groups;
             }
-            deferred.resolve(res);
+            deferred.resolve(res.data);
             $rootScope.$broadcast('fetched:casTiedot');
-          }).error(function() {
+          }).catch(() => {
             deferred.resolve({});
             $rootScope.$broadcast('fetched:casTiedot');
           });
@@ -139,12 +139,12 @@ angular.module('eperusteApp')
       },
       // Suosikit
       asetaSuosikki: function(state, nimi, success, customParams) {
-        var stateParams = customParams || $stateParams;
+        let stateParams = customParams || $stateParams;
         stateParams = _.omit(stateParams, ['prestate', 'projekti']);
         success = success || angular.noop;
         state = _.isObject(state) ? state.current.name : state;
 
-        var vanha = _(info.suosikit).filter(function(s) {
+        const vanha = _(info.suosikit).filter(function(s) {
           return state === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
         }).first();
 
@@ -172,8 +172,8 @@ angular.module('eperusteApp')
         return _.clone(info.suosikit);
       },
       haeSuosikki: function(state) {
-        var stateParams = _.omit($stateParams, ['prestate', 'projekti']);
-        var haku = _.filter(info.suosikit, function(s) {
+        const stateParams = _.omit($stateParams, ['prestate', 'projekti']);
+        const haku = _.filter(info.suosikit, function(s) {
           return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
         });
         return _.first(haku);
@@ -182,7 +182,7 @@ angular.module('eperusteApp')
         return $state.href(info.suosikit[id].sisalto.tila, info.suosikit[id].sisalto.parametrit);
       },
       paivitaSuosikki: function(suosikki) {
-        var payload = _.clone(suosikki);
+        const payload = _.clone(suosikki);
         payload.sisalto = JSON.stringify(payload.sisalto);
         return Suosikit.update({suosikkiId: payload.id}, payload).$promise.then(function(res) {
           parseResponse(res);

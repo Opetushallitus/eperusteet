@@ -20,11 +20,11 @@
                 <rajaus ng-if="!sections" size="small" model="search.term" placeholder="etsi-sisallosta"></rajaus>
             </div>
             <div ng-if="sections">
-                <accordion close-others="showOne">
-                    <accordion-group ng-repeat="section in sections" is-open="section.$open"
+                <uib-accordion close-others="showOne">
+                    <uib-accordion-group ng-repeat="section in sections" is-open="section.$open"
                                      ng-class="{'panel-chosen': section.$open, 'menu': !section.include}">
-                        <accordion-heading><span ng-click="onSectionChange(section)">{{section.title | kaanna}}</span>
-                        </accordion-heading>
+                        <uib-accordion-heading><span ng-click="onSectionChange(section)">{{section.title | kaanna}}</span>
+                        </uib-accordion-heading>
                         <div ng-if="section.include" ng-include="section.include"></div>
                         <div ng-if="!section.include" class="list-group">
                             <a class="list-group-item item" ng-repeat="item in section.items"
@@ -38,8 +38,8 @@
                                       ep-highlight="search.term" ng-bind="item.label|kaanna"></span>
                             </a>
                         </div>
-                    </accordion-group>
-                </accordion>
+                    </uib-accordion-group>
+                </uib-accordion>
             </div>
 
             <a class="list-group-item item" ng-repeat="item in items" ng-class="itemClasses(item)"

@@ -8,11 +8,11 @@
             <a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a>
         </span>
         <div class="panel-body">
-            <accordion close-others="false">
+            <uib-accordion close-others="false">
                 <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="ammattitaito">
-                    <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}"
+                    <uib-accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}"
                                      ng-repeat="kohdealue in ammattitaito" is-open="kohdealue.$accordionOpen">
-                        <accordion-heading>
+                        <uib-accordion-heading>
                             <h3 class="panel-title" ng-hide="eiKohdealueita">
                                 <arvioinnin-tekstikentta sisalto="kohdealue" sisaltoalue="ammattitaito"
                                                          sisaltoteksti="kohdealue.otsikko"
@@ -20,17 +20,17 @@
                                                          edit-allowed="editAllowed"
                                                          editmode="editEnabled"></arvioinnin-tekstikentta>
                             </h3>
-                        </accordion-heading>
+                        </uib-accordion-heading>
 
-                        <accordion close-others="false">
+                        <uib-accordion close-others="false">
                             <div id="sortableKohteet" ui-sortable="sortableOptions"
                                  ng-model="kohdealue.vaatimuksenKohteet">
 
-                                <accordion-group class="arvioinnin-kohde"
+                                <uib-accordion-group class="arvioinnin-kohde"
                                                  ng-class="{'kohde-edit': vaatimuksenkohde === originalKohde}"
                                                  ng-repeat="vaatimuksenkohde in kohdealue.vaatimuksenKohteet"
                                                  is-open="vaatimuksenkohde.$accordionOpen" is-disabled="editableKohde">
-                                    <accordion-heading>
+                                    <uib-accordion-heading>
                                         <span ng-show="vaatimuksenkohde !== originalKohde">
                                             {{vaatimuksenkohde.otsikko | kaanna}}
                                             <a ng-show="editEnabled"
@@ -56,7 +56,7 @@
                                                         kaanna>ok</button>
                                             </div>
                                         </span>
-                                    </accordion-heading>
+                                    </uib-accordion-heading>
 
                                     <div style="margin-bottom: 5px">
                                         <div ng-if="vaatimuksenkohde !== originalKohde"
@@ -122,9 +122,9 @@
                                         </tr>
                                     </table>
 
-                                </accordion-group>
+                                </uib-accordion-group>
                             </div>
-                        </accordion>
+                        </uib-accordion>
 
                         <!-- Kohteen lisäys -->
                         <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled">
@@ -151,9 +151,9 @@
                             </div>
                         </div>
 
-                    </accordion-group>
+                    </uib-accordion-group>
                 </div>
-            </accordion>
+            </uib-accordion>
 
             <!-- Kohdealueen lisäys -->
             <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled && !eiKohdealueita">

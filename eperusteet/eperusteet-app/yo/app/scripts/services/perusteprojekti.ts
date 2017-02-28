@@ -41,8 +41,8 @@ angular.module('eperusteApp')
       success = success || angular.noop;
       failure = failure || Notifikaatiot.serverCb;
       $http.get(SERVICE_LOC + urlPostfix, query)
-        .success(success)
-        .error(failure);
+        .then(res => success(res))
+        .catch(err => failure(err));
     };
 
     const hae = (query, success, failure) => haku(query, success, failure, '/perusteprojektit/info');

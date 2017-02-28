@@ -30,7 +30,7 @@
     <div class="col-sm-9 form-clear" ng-if="isDate">
         <ng-form name="innerForm">
             <div class="input-group">
-                <input type="text" name="innerName" class="form-control" datepicker-popup="{{datePicker.format}}"
+                <input type="text" name="innerName" class="form-control" uib-datepicker-popup="{{datePicker.format}}"
                        ng-model="input.model"
                        placeholder="{{placeholder | kaanna}}" is-open="datePicker.state"
                        datepicker-options="datePicker.options"

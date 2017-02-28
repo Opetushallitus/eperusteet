@@ -13,17 +13,17 @@
                     <button type="button"
                             class="btn btn-default"
                             ng-model="projekti.koulutustyyppi"
-                            btn-radio="'koulutustyyppi_11'"
+                            uib-btn-radio="'koulutustyyppi_11'"
                             kaanna="ammattitutkinto"></button>
                     <button type="button"
                             class="btn btn-default"
                             ng-model="projekti.koulutustyyppi"
-                            btn-radio="'koulutustyyppi_12'"
+                            uib-btn-radio="'koulutustyyppi_12'"
                             kaanna="erikoisammattitutkinto"></button>
                     <button type="button"
                             class="btn btn-default"
                             ng-model="projekti.koulutustyyppi"
-                            btn-radio="'koulutustyyppi_1'"
+                            uib-btn-radio="'koulutustyyppi_1'"
                             kaanna="perustutkinto"></button>
                 </div>
                 <button ng-hide="peruste.id"
@@ -216,13 +216,13 @@
 
         <h2>{{ projekti.nimi | kaanna }} ({{ projekti.diaarinumero}})</h2>
 
-        <tabset justified="true">
-            <tab heading="{{ 'tekstikappaleet' | kaanna }}">
+        <uib-tabset justified="true">
+            <uib-tab heading="{{ 'tekstikappaleet' | kaanna }}">
                 <div ng-include src="'views/partials/excelTekstikappale.html'"></div>
-            </tab>
-            <tab heading="{{ 'tutkinnonosat' | kaanna }}">
+            </uib-tab>
+            <uib-tab heading="{{ 'tutkinnonosat' | kaanna }}">
                 <div ng-include src="'views/partials/excelTutkinnonOsat.html'"></div>
-            </tab>
-        </tabset>
+            </uib-tab>
+        </uib-tabset>
     </div>
 </div>

@@ -1,12 +1,12 @@
 <!-- partials/vtosaalue.html -->
 <div>
-    <accordion>
-        <accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen">
-            <accordion-heading>
+    <uib-accordion>
+        <uib-accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen">
+            <uib-accordion-heading>
                 <span class="glyphicon"
                       ng-class="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
                 <span kaanna="'osaamistavoitteet'"></span>
-            </accordion-heading>
+            </uib-accordion-heading>
 
             <div class="non-collapsibles">
                 <label class="space-magic" kaanna="'kohde'"></label>
@@ -37,16 +37,16 @@
                 <div ng-model="osaAlue.valmaTelmaSisalto.osaamistavoite.oatekstina" slocalized
                      ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
             </div>
-        </accordion-group>
-    </accordion>
+        </uib-accordion-group>
+    </uib-accordion>
 
-    <accordion>
-        <accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen">
-            <accordion-heading>
+    <uib-accordion>
+        <uib-accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen">
+            <uib-accordion-heading>
                 <span class="glyphicon"
                       ng-class="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
                 <span kaanna="'osaamisen-arviointi'"></span>
-            </accordion-heading>
+            </uib-accordion-heading>
 
             <div class="non-collapsibles">
                 <label class="space-magic" kaanna="'kohde'"></label>
@@ -77,6 +77,6 @@
                 <div ng-model="osaAlue.valmaTelmaSisalto.osaamisenarviointi.oatekstina" slocalized ckeditor
                      editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
             </div>
-        </accordion-group>
-    </accordion>
+        </uib-accordion-group>
+    </uib-accordion>
 </div>

@@ -21,8 +21,8 @@
             </a>
         </div>
         <div class="clearfix"></div>
-        <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="fryhmat.length"
-                    items-per-page="itemsPerPage"></pagination>
+        <uib-pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="fryhmat.length"
+                    items-per-page="itemsPerPage"></uib-pagination>
     </div>
     <div class="alert alert-error" ng-show="error" kaanna>ryhmien-hakeminen-epaonnistui</div>
 </div>

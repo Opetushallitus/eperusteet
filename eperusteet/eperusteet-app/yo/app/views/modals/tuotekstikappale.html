@@ -37,11 +37,11 @@
     </div>
 
     <div ng-if="valittuPeruste" style="margin-top: 8px">
-        <tabset ng-if="valittuPeruste.suoritustavat.length > 1" class="tekstikappale-tuonti-tabs" justified="true">
-            <tab ng-click="vaihdaSuoritustapa(st)"
+        <uib-tabset ng-if="valittuPeruste.suoritustavat.length > 1" class="tekstikappale-tuonti-tabs" justified="true">
+            <uib-tab ng-click="vaihdaSuoritustapa(st)"
                  ng-repeat="st in valittuPeruste.suoritustavat | orderBy:'-suoritustapakoodi'"
-                 heading="{{ st.suoritustapakoodi | kaanna }}"></tab>
-        </tabset>
+                 heading="{{ st.suoritustapakoodi | kaanna }}"></uib-tab>
+        </uib-tabset>
         <rajaus ng-show="search.term.length !== 0 || filtered.length > 0" model="search.term"
                 placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>
         <h3>{{ valittuPeruste.nimi | kaanna }}</h3>
@@ -61,8 +61,8 @@
                 <td>{{ s.perusteenOsa.muokattu | aikaleima }}</td>
             </tr>
         </table>
-        <pagination ng-show="filtered.length > 0" ng-model="paginate.current" total-items="filtered.length"
-                    items-per-page="paginate.perPage"></pagination>
+        <uib-pagination ng-show="filtered.length > 0" ng-model="paginate.current" total-items="filtered.length"
+                    items-per-page="paginate.perPage"></uib-pagination>
     </div>
 </div>
 

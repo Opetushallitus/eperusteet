@@ -7,7 +7,7 @@
                 <div class="col-sm-9">
                 <span class="input-group">
                     <input type="text" id="toimikausiAlku" name="toimikausiAlku" class="form-control"
-                           datepicker-popup="{{format}}"
+                           uib-datepicker-popup="{{format}}"
                            ng-model="projekti.toimikausiAlku" placeholder="{{'anna-toimikausi_alku'| kaanna}}"
                            is-open="kalenteriTilat.toimikausiAlkuButton"
                            datepicker-options="dateOptions" show-button-bar="false" date-comparison-validator
@@ -34,7 +34,7 @@
                 <div class="col-sm-9">
                 <span class="input-group">
                     <input type="text" id="toimikausiLoppu" name="toimikausiLoppu" class="form-control"
-                           datepicker-popup="{{format}}"
+                           uib-datepicker-popup="{{format}}"
                            ng-model="projekti.toimikausiLoppu" placeholder="{{'anna-toimikausi_loppu'| kaanna}}"
                            is-open="kalenteriTilat.toimikausiLoppuButton"
                            datepicker-options="dateOptions" show-button-bar="false" date-comparison-validator

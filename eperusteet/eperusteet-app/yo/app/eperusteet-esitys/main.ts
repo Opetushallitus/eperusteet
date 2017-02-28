@@ -14,26 +14,25 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 /**
  * Esityspuolen moduuli. Yhteistä koodia eperusteet ja eperusteet-opintopolku
  * -projektien välillä.
  * Käyttää joko omia ep-alkuisia komponentteja tai yleisiä komponentteja, jotka täytyy
  * määritellä moduulin ulkopuolella.
  */
-angular.module('eperusteet.esitys', [
-]).provider('epEsitysSettings', function() {
-  var settings = {
-    'perusopetusState': 'root.perusopetus',
-    'lukiokoulutusState': 'root.lukiokoulutus'
-  };
+angular.module('eperusteet.esitys', [])
+.provider('epEsitysSettings', function epEsitysSettings() {
+    let settings = {
+        'perusopetusState': 'root.perusopetus',
+        'lukiokoulutusState': 'root.lukiokoulutus'
+    };
 
-  this.setValue = function(key, value) {
-    settings[key] = value;
-  };
+    this.setValue = (key, value) => {
+        settings[key] = value;
+    };
 
-  this.$get = function() {
-    return settings;
-  };
+    this.$get = () => {
+        return settings;
+    };
 });
+

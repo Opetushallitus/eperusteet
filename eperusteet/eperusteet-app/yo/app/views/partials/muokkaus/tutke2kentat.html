@@ -40,11 +40,11 @@
     </div>
 
     <div ng-if="!mainLevelEditing">
-        <accordion close-others="viewOptions.oneAtATime">
-            <accordion-group ng-show="!tutke2osa.$fetching" ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open"
+        <uib-accordion close-others="viewOptions.oneAtATime">
+            <uib-accordion-group ng-show="!tutke2osa.$fetching" ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open"
                              class="panel-clean osa-alue" ng-class="{'kohde-edit': alue.$editing}"
                              id="{{alue.$uniqueId}}">
-                <accordion-heading>
+                <uib-accordion-heading>
                     <div class="row">
                         <div class="col-sm-9">
                             <span class="glyphicon"
@@ -78,7 +78,7 @@
                             </div>
                         </div>
                     </div>
-                </accordion-heading>
+                </uib-accordion-heading>
 
                 <label class="header" kaanna="'kuvaus'" ng-if="alue.kuvaus"></label>
                 <div editMode="false" type="text" ng-bind-html="alue.kuvaus | kaanna | unsafe"></div>
@@ -129,8 +129,8 @@
                     </div>
                 </div>
 
-            </accordion-group>
-        </accordion>
+            </uib-accordion-group>
+        </uib-accordion>
     </div>
 
 </div>

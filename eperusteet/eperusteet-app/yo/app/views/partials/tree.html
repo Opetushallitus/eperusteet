@@ -1,10 +1,10 @@
 <!-- partials/tree.html -->
 <div>
-    <div id="osaamisala-varoitus" tooltip="{{'osaamisalaryhma-varoitus' | kaanna}}" tooltip-trigger="show"></div>
+    <div id="osaamisala-varoitus" uib-tooltip="{{'osaamisalaryhma-varoitus' | kaanna}}" tooltip-trigger="show"></div>
     <div id="vierastutkinto-varoitus"
          tooltip="{{vateConverter('vierastutkinto-pitaa-olla-vierastutkintoryhmassa') | kaanna}}"
          tooltip-trigger="show"></div>
-    <div id="vierastutkinto-varoitus2" tooltip="{{vateConverter('vierastutkinto-ei-muita-ryhmia') | kaanna}}"
+    <div id="vierastutkinto-varoitus2" uib-tooltip="{{vateConverter('vierastutkinto-ei-muita-ryhmia') | kaanna}}"
          tooltip-trigger="show"></div>
     <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
         <div ng-show="!muokkaus && !vanhempi && naytaKuvaus()">
@@ -131,9 +131,9 @@
                     </li>
                 </ul>
                 <div class="sp-pagination">
-                    <pagination ng-show="tutkinnonOsat.multiPage" ng-model="tutkinnonOsat.sivu"
+                    <uib-pagination ng-show="tutkinnonOsat.multiPage" ng-model="tutkinnonOsat.sivu"
                                 ng-change="valitseSivu(tutkinnonOsat.sivu)"
-                                total-items="uniikit.length" items-per-page="tutkinnonOsat.perSivu"></pagination>
+                                total-items="uniikit.length" items-per-page="tutkinnonOsat.perSivu"></uib-pagination>
                 </div>
             </div>
         </div>

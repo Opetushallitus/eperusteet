@@ -1,12 +1,12 @@
 <!-- partials/valmaarviointi.html -->
 <div class="valmaarviointi">
-    <accordion>
-        <accordion-group class="panel-clean osa-alue" is-open="$$valmaOpen">
-            <accordion-heading ng-if="eiKohdealueita">
+    <uib-accordion>
+        <uib-accordion-group class="panel-clean osa-alue" is-open="$$valmaOpen">
+            <uib-accordion-heading ng-if="eiKohdealueita">
                 <span class="glyphicon"
                       ng-class="$$valmaOpen?'glyphicon-chevron-down':'glyphicon-chevron-right'"></span>
                 <span kaanna="isArviointi?'osaamisen-arviointi':'osaamistavoitteet' | kaanna"></span>
-            </accordion-heading>
+            </uib-accordion-heading>
 
             <div ng-if="editEnabled">
 
@@ -27,11 +27,12 @@
                         <table style="width: 100%;">
                             <tbody ui-sortable="kriteeriSortableOptions" ng-model="valmaitem.tavoitteet">
                             <tr ng-repeat="tavoite in valmaitem.tavoitteet">
-                                <td class="dragger" ng-class="{'drag-enable': valmaitem.tavoitteet.length > 1}"><span
-                                        class="glyphicon glyphicon-resize-vertical"></span></td>
+                                <td class="dragger" ng-class="{'drag-enable': valmaitem.tavoitteet.length > 1}">
+                                    <span class="glyphicon glyphicon-resize-vertical"></span>
+                                </td>
                                 <td class="rivi" style="padding-bottom: 5px;">
-                          <textarea class="form-control msd-elastic" ng-model="tavoite" slocalized
-                                    placeholder="{{isArviointi?'valmaarviointi-uusi-arviointi-placeholder':'valmaarviointi-uusi-tavoite-placeholder' | kaanna}}"></textarea>
+                                    <textarea class="form-control msd-elastic" ng-model="tavoite" slocalized
+                                              placeholder="{{isArviointi?'valmaarviointi-uusi-arviointi-placeholder':'valmaarviointi-uusi-tavoite-placeholder' | kaanna}}"></textarea>
                                 </td>
                                 <td class="toiminnot">
                                     <a class="action-link" ng-click="rivi.poista(valmaitem.tavoitteet, $index)"
@@ -126,7 +127,7 @@
                 </div>
             </div>
 
-        </accordion-group>
-    </accordion>
+        </uib-accordion-group>
+    </uib-accordion>
 
 </div>
