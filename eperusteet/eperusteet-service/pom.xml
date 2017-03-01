@@ -291,6 +291,8 @@
             <groupId>fi.vm.sade</groupId>
             <artifactId>auditlogger</artifactId>
             <version>6.0.0-SNAPSHOT</version>
+            <!--https://github.com/Opetushallitus/valinta-tulos-service/tree/topic/valintalaskenta-ui-tallennus-valintarekisteriin-->
+            <!--<version>7.0.0-rc1-SNAPSHOT</version>-->
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
