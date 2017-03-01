@@ -156,12 +156,11 @@ public class PermissionManager {
             tmp.put(ProjektiTila.VALMIS, perm);
 
             perm = Maps.newHashMap();
-            perm.put(KORJAUS, r0);
+            perm.put(KORJAUS, r1);
             perm.put(LUKU, r5);
             tmp.put(ProjektiTila.JULKAISTU, perm);
 
             perm = Maps.newHashMap();
-            perm.put(LUKU, r5);
             perm.put(TILANVAIHTO, r1);
             tmp.put(ProjektiTila.POISTETTU, perm);
 
@@ -318,10 +317,13 @@ public class PermissionManager {
         }
 
         if (LUKU.equals(permission)) {
+            PerusteTila tila = helper.findPerusteTilaFor(targetType, targetId);
             //tarkistetaan onko lukuoikeus suoraan julkaistu -statuksen perusteella
-            if (PerusteTila.VALMIS == helper.findPerusteTilaFor(targetType, targetId)) {
+            if (PerusteTila.VALMIS == tila) {
                 return true;
-            } else {
+            }
+            // Esikatselu (vain luonnoksille)
+            else if (PerusteTila.LUONNOS == tila) {
                 if (Target.PERUSTEPROJEKTI.equals(targetType)) {
                     List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaById((Long) targetId);
                     if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond()) {
