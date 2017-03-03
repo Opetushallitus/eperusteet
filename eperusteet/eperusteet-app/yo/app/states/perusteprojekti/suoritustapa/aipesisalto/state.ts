@@ -31,12 +31,11 @@ angular.module("eperusteApp")
     },
     views: {
         "": {
-            templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipesisalto/view.html",
+            templateUrl: "states/perusteprojekti/suoritustapa/aipesisalto/view.html",
             controller: ($scope, $state, $stateParams, peruste, vaiheet, laajaalaiset, sisalto, sisallot,
                          Editointikontrollit, TekstikappaleOperations, Notifikaatiot, SuoritustavanSisalto,
                          Algoritmit, Utils, Api) => {
                 $scope.peruste = peruste;
-                $scope.sisalto = sisalto;
                 $scope.peruste.sisalto = Api.copy(sisalto);
                 $scope.vaiheet = vaiheet;
                 $scope.opetus = {
@@ -100,9 +99,9 @@ angular.module("eperusteApp")
 
                 Editointikontrollit.registerCallback({
                     edit: async () => {
-                        $scope.sisalto.id = undefined;
-                        $scope.sisalto = await $scope.sisalto.get();
-                        $scope.peruste.sisalto = Api.copy($scope.sisalto);
+                        sisalto.id = undefined;
+                        sisalto = await sisalto.get();
+                        $scope.peruste.sisalto = Api.copy(sisalto);
                         $scope.rajaus = "";
                         $scope.editing = true;
                     },
@@ -112,7 +111,7 @@ angular.module("eperusteApp")
                         $scope.editing = false;
                     },
                     cancel: () => {
-                        $scope.peruste.sisalto = Api.copy($scope.sisalto);
+                        $scope.peruste.sisalto = Api.copy(sisalto);
                         $scope.editing = false;
                     },
                     validate: () => {

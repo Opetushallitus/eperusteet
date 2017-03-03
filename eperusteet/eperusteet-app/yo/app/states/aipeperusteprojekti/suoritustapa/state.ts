@@ -14,20 +14,15 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-.directive('oikeustarkastelu', PerusteprojektiOikeudetService => {
-    return {
-        restrict: 'A',
-        link: function postLink(scope: any, element: any, attrs: any) {
-            let oikeudet = scope.$eval(attrs.oikeustarkastelu);
-
-            if (!angular.isArray(oikeudet)) {
-                oikeudet = [oikeudet];
-            }
-
-            if (!_.any(oikeudet, o => PerusteprojektiOikeudetService.onkoOikeudet(o.target, o.permission))) {
-                element.hide();
-            }
-        }
-    };
-});
+angular.module("eperusteApp")
+.config($stateProvider => $stateProvider
+.state("root.aipeperusteprojekti.suoritustapa", {
+    url: "/suoritustapa/:suoritustapa",
+    resolve: {
+        sisallot: (peruste, $stateParams) => peruste.all("suoritustavat/" + $stateParams.suoritustapa + "/sisalto"),
+        sisalto: (peruste, $stateParams) => peruste.one("suoritustavat/" + $stateParams.suoritustapa + "/sisalto").get(),
+        vaiheet: (aipeopetus) => aipeopetus.all("vaiheet").getList(),
+        laajaalaiset: (aipeopetus) => aipeopetus.all("laajaalaiset").getList()
+    },
+    template: "<div ui-view></div>"
+}));

@@ -3,8 +3,9 @@
     <div class="sivunavi-box" ng-class="{'sivunavi-collapsed': menuCollapsed, 'sivunavi-open': !menuCollapsed}">
 
         <div class="sivunavi-toggler-wrapper">
-            <div class="sivunavi-toggler" ng-click="toggleSideMenu()"
-                 ng-attr-title="{{menuCollapsed && ('sivunavigointi-avaa-menu'|kaanna) || ('sivunavigointi-sulje-menu'|kaanna)}}">
+            <div class="sivunavi-toggler"
+                 ng-click="toggleSideMenu()"
+                 ng-attr-title="{{menuCollapsed && ('sivunavigointi-avaa-menu' | kaanna) || ('sivunavigointi-sulje-menu' | kaanna)}}">
                 <div class="sivunavi-valinta">
                     <span class="glyphicon glyphicon-align-justify"></span>
                 </div>
@@ -59,6 +60,7 @@
                 <p class="no-results">{{ 'ei-tuloksia' | kaanna }}</p>
             </div>
         </div>
+
         <div id="sivunavi-footer-content"></div>
     </div>
 </div>

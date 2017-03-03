@@ -147,7 +147,7 @@ angular.module('eperusteApp')
         } else {
           doSave(data, saveCb);
         }
-      });
+      }).catch(err => console.error(err));
     }
 
     return {

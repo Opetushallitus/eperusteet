@@ -14,11 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _, document */
-
 angular.module('eperusteApp')
-  .service('Algoritmit', function(Kaanna) {
+  .service('Algoritmit', function (Kaanna) {
     function rajausVertailu(input, kentta) {
       kentta = arguments.length > 2 ? kentta[arguments[2]] : kentta;
       for (var i = 3; i < arguments.length; ++i) {
@@ -29,7 +26,7 @@ angular.module('eperusteApp')
     }
 
     function mapLapsisolmut(objekti, lapsienAvain, cb) {
-      return _.map(_.isArray(objekti) ? objekti : objekti[lapsienAvain], function(solmu) {
+      return _.map(_.isArray(objekti) ? objekti : objekti[lapsienAvain], function (solmu) {
         solmu = _.clone(solmu);
         solmu[lapsienAvain] = mapLapsisolmut(solmu, lapsienAvain, cb);
         return cb(solmu);
@@ -39,7 +36,7 @@ angular.module('eperusteApp')
     function kaikilleLapsisolmuille(objekti, lapsienAvain, cb, depth) {
       depth = depth || 0;
       if(!_.isEmpty(objekti)){
-        _.forEach(objekti[lapsienAvain], function(solmu) {
+        _.forEach(objekti[lapsienAvain], function (solmu) {
           if (!cb(solmu, depth)) {
             kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
           }
@@ -51,7 +48,7 @@ angular.module('eperusteApp')
       done = done || angular.noop;
       list = list || [];
       if (_.isEmpty(list)) { done(); return; }
-      cb(_.first(list), function() { asyncTraverse(_.rest(list), cb, done); });
+      cb(_.first(list), function () { asyncTraverse(_.rest(list), cb, done); });
     }
 
     function match(input, to) {

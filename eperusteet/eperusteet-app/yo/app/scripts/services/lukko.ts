@@ -141,10 +141,10 @@ angular.module('eperusteApp')
           default: return null;
         }
       },
-      'root.perusteprojekti.suoritustapa.aipeosaalue': function() {
+      'root.aipeperusteprojekti.suoritustapa.osaalue': function() {
         switch($stateParams.osanTyyppi) {
           case 'oppiaineet': return LukkoOppiaine;
-          //case 'vuosiluokat': return LukkoVuosiluokkakokonaisuus;
+          //case 'vuosiluokat': return LukkoVaihe;
           case 'osaaminen': return LukkoLaajaalainenOsaaminen;
           default: return null;
         }

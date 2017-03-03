@@ -14,14 +14,11 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteApp')
-.config($stateProvider => {
-$stateProvider
+.config($stateProvider => $stateProvider
 .state('root.perusteprojekti.suoritustapa.aipeosaalue', {
-    url: '/aipeosat/:osanTyyppi/:osanId',
-    templateUrl: 'scripts/states/perusteprojekti/suoritustapa/aipeosaalue/view.html',
+    url: '/aipeosat/:osanTyyppi/:osanId/:tabId',
+    templateUrl: 'states/perusteprojekti/suoritustapa/aipeosaalue/view.html',
     resolve: {
         perusteprojektit: (Api) => Api.all("perusteprojektit"),
         perusteprojekti: (perusteprojektit, $stateParams) => perusteprojektit.one($stateParams.perusteProjektiId).get(),
@@ -34,24 +31,36 @@ $stateProvider
             ? Api.restangularizeElement(laajaalaiset, {}, '')
             : laajaalaiset.get($stateParams.osanId)
     },
-    controller: ($scope, $q, $stateParams, laajaalaiset, laajaalainen, Editointikontrollit, Notifikaatiot,
+    controller: ($scope, $q, $stateParams, laajaalaiset, laajaalainen, vaiheet, Editointikontrollit, Notifikaatiot,
                  YleinenData, ProjektinMurupolkuService) => {
-        $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
         $scope.isNew = $stateParams.osanId === 'uusi';
-        $scope.isOsaaminen = true;
+        $scope.isVaihe = $stateParams.osanTyyppi === AIPEService.VAIHEET;
+        $scope.isOppiaine = $stateParams.osanTyyppi === AIPEService.OPPIAINEET;
+        $scope.isOsaaminen = $stateParams.osanTyyppi === AIPEService.OSAAMINEN;
         $scope.versiot = {
             latest: true
         };
-        $scope.laajaalainen = laajaalainen;
-        $scope.dataObject = laajaalainen;
+        const getOsa = () => {
+            switch ($stateParams.osanTyyppi) {
+                case AIPEService.VAIHEET:
+                    return vaiheet;
+                case AIPEService.OSAAMINEN:
+                    return laajaalainen;
+                default:
+                    throw "osan tyyppi viallinen";
+            }
+        };
+        $scope.dataObject = getOsa();
+
         $scope.edit = () => {
             Editointikontrollit.startEditing();
         };
 
-        ProjektinMurupolkuService.set('osanTyyppi', $stateParams.osanTyyppi, 'osaaminen');
-        ProjektinMurupolkuService.set('osanId', $stateParams.osanId, $scope.laajaalainen.nimi);
+        const labels = _.invert(AIPEService.LABELS);
+        ProjektinMurupolkuService.set('osanTyyppi', $stateParams.osanTyyppi, labels[$stateParams.osanTyyppi]);
+        ProjektinMurupolkuService.set('osanId', $stateParams.osanId, $scope.dataObject.nimi);
     },
     onEnter: PerusteProjektiSivunavi => {
         PerusteProjektiSivunavi.setVisible();
     }
-})});
+}));

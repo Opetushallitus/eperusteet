@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-md-12 ep-sisalto-inner">
+        <div class="action-buttons">
+            <button icon-role="add"
+                    class="floater btn"
+                    ng-click="add()"
+                    kaanna="osaaminenSisalto.addLabel"></button>
+        </div>
+        <h1 kaanna="osaaminenSisalto.label"></h1>
+        <div osalistaus="laajaalaiset"
+             search-placeholder="etsi-sisallosta"
+             empty-placeholder="{{sisaltoState.emptyPlaceholder}}"
+             show-laajuus="false"
+             url-generator="createUrl(value)"
+             options="options"></div>
+    </div>
+</div>

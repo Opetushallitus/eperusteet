@@ -11,12 +11,10 @@ angular.module("eperusteApp")
                     //     // TODO Ota käyttöön myöhemmin
                     //     // $state.go("root.virhe");
                     // });
-                }
-                else if (response.data && response.data.syy) {
+                } else if (response.data && response.data.syy) {
                     let syy = response.data.syy;
                     Notifikaatiot.varoitus(_.isArray(syy) ? syy[0] : syy);
-                }
-                else {
+                } else {
                     Notifikaatiot.varoitus(Kaanna.kaanna("odottamaton-virhe"));
                 }
             }

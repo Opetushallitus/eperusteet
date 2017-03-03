@@ -45,12 +45,13 @@ module.exports = function(grunt) {
           '<%= yeoman.app %>/scripts/**/*.ts',
           '<%= yeoman.app %>/ckeditor-plugins/**/*.ts',
           '<%= yeoman.app %>/eperusteet-esitys/**/*.ts',
+          '<%= yeoman.app %>/states/**/*.ts',
           '<%= yeoman.test %>/**/*.ts'
         ],
         options: {
           module: 'commonjs',
           target: 'es3',
-          lib: ["DOM", "ES2015", "ES5"],
+          lib: ["dom", "es2015"],
           alwaysStrict: true
         }
       }

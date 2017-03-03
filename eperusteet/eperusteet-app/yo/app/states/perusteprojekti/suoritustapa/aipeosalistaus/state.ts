@@ -14,11 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteApp')
-.config($stateProvider => {
-$stateProvider
+.config($stateProvider => $stateProvider
 .state('root.perusteprojekti.suoritustapa.aipeosalistaus', {
     url: '/aipeosat/:osanTyyppi',
     templateUrl: 'views/partials/perusteprojekti/osalistaus.html',
@@ -31,7 +28,7 @@ $stateProvider
         vaiheet: (aipeopetus) => aipeopetus.all("vaiheet").getList(),
         laajaalaiset: (aipeopetus) => aipeopetus.all("laajaalaiset").getList()
     },
-    controller: ($scope, $state, $stateParams, PerusopetusService, virheService, laajaalaiset, vaiheet) => {
+    controller: ($scope, $state, $stateParams, PerusopetusService, virheService, laajaalaiset) => {
         $scope.sisaltoState = _.find(PerusopetusService.sisallot, {
             tyyppi: $stateParams.osanTyyppi
         });
@@ -52,7 +49,7 @@ $stateProvider
             tabId: 0
         });
 
-        $scope.add = async () => {
+        $scope.add = () => {
             $state.go('root.perusteprojekti.suoritustapa.aipeosaalue', {
                 suoritustapa: $stateParams.suoritustapa,
                 osanTyyppi: $stateParams.osanTyyppi,
@@ -63,5 +60,4 @@ $stateProvider
     onEnter: PerusteProjektiSivunavi => {
         PerusteProjektiSivunavi.setVisible();
     }
-})
-});
+}));

@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/*global _, moment*/
-
 angular.module('eperusteApp')
   .service('YleinenData', function($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna, $q, $location, Kieli) {
     this.dateOptions = {
@@ -238,8 +235,10 @@ angular.module('eperusteApp')
     };
 
     this.isValmaTelma = function(koulutustyyppiTaiPeruste) {
-      if(koulutustyyppiTaiPeruste){
-        const ortherKoulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste) ? koulutustyyppiTaiPeruste : koulutustyyppiTaiPeruste.koulutustyyppi;
+      if(koulutustyyppiTaiPeruste) {
+        const ortherKoulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste)
+            ? koulutustyyppiTaiPeruste
+            : koulutustyyppiTaiPeruste.koulutustyyppi;
         return ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_18' || ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_5';
       }
       return false;

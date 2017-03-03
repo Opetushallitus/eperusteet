@@ -3,7 +3,7 @@
     "target": "es3",
     "module": "commonjs",
     "sourceMap": true,
-    "lib": ["DOM", "ES2015", "ES5"]
+    "lib": ["dom", "es2015"]
   },
   "files": [
     "./typings/index.d.ts",
@@ -19,6 +19,7 @@
     "./app/eperusteet-esitys/views/lukiokoulutus.ts",
     "./app/scripts/api.ts",
     "./app/scripts/misc.ts",
+    "./app/scripts/services/aipe.ts",
     "./app/scripts/services/pdf.ts",
     "./app/scripts/services/projektiryhma.ts",
     "./app/scripts/services/excel.ts",
@@ -154,8 +155,12 @@
     "./app/scripts/controllers/modals/rakenneosamodal.ts",
     "./app/scripts/controllers/modals/aikakatko.ts",
     "./app/scripts/controllers/modals/tilanvaihtovirhe.ts",
-    "./app/scripts/states/perusteprojekti/suoritustapa/aipesisalto/state.ts",
-    "./app/scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/state.ts",
-    "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/state.ts"
+    "./app/states/aipeperusteprojekti/state.ts",
+    "./app/states/aipeperusteprojekti/suoritustapa/state.ts",
+    "./app/states/aipeperusteprojekti/suoritustapa/sisalto/state.ts",
+    "./app/states/aipeperusteprojekti/suoritustapa/osalistaus/state.ts",
+    "./app/states/aipeperusteprojekti/suoritustapa/osaalue/state.ts",
+    "./app/states/aipeperusteprojekti/suoritustapa/vaiheet/state.ts",
+    "./app/states/aipeperusteprojekti/suoritustapa/tekstikappale/state.ts"
   ]
 }

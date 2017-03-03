@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .factory('PerusteprojektiTila', function ($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/:id/tila/:tila', {id: '@id'});
@@ -107,24 +103,30 @@ angular.module('eperusteApp')
         YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi].sisaltoTunniste : 'sisalto';
     }
 
-    /**
-     * Luo oikea url perusteprojektille
-     * @param peruste optional
-     */
     function urlFn(method, projekti, peruste) {
       peruste = peruste || projekti.peruste;
       projekti = _.clone(projekti) || get();
       if (peruste && !projekti.koulutustyyppi) {
         projekti.koulutustyyppi = peruste.koulutustyyppi;
       }
-      var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-      var suoritustapa = getSuoritustapa() || getRightSuoritustapa(peruste, projekti);
+
+      const oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
+      let suoritustapa = getRightSuoritustapa(peruste, projekti);
 
       if (!_.includes(YleinenData.suoritustavat, suoritustapa)) {
         suoritustapa = oletus;
       }
 
       const sisaltoTunniste = getSisaltoTunniste(projekti);
+
+      // Aipella erillainen tilarakenne
+      if (suoritustapa === 'aipe') {
+          return $state[method]('root.aipeperusteprojekti.suoritustapa.sisalto', {
+              perusteProjektiId: projekti.id,
+              suoritustapa
+          });
+      }
+
       return $state[method]('root.perusteprojekti.suoritustapa.' + sisaltoTunniste, {
         perusteProjektiId: projekti.id,
         suoritustapa
@@ -357,8 +359,8 @@ angular.module('eperusteApp')
     deferred.resolve(this);
     return deferred.promise;
   })
-  .service('PerusteprojektiOikeudetService', function ($rootScope, $stateParams,
-                                                       PerusteprojektiOikeudet, PerusteprojektiTiedotService) {
+  .service('PerusteprojektiOikeudetService', function ($rootScope, $stateParams, PerusteprojektiOikeudet,
+                                                       PerusteprojektiTiedotService) {
     var oikeudet;
     var projektiId = null;
     var projektiTila = null;
