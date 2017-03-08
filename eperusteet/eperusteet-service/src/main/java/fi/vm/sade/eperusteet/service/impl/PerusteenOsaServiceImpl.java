@@ -147,14 +147,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
-        
+
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             TutkinnonOsa tutkinnonOsa = (TutkinnonOsa) updated;
             tutkinnonOsa.setOsaAlueet(createOsaAlueIfNotExist(tutkinnonOsa.getOsaAlueet()));
             tutkinnonOsa.setValmaTelmaSisalto( createValmatelmaIfNotExist( tutkinnonOsa.getValmaTelmaSisalto() ) );
         }
 
-        if ( current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
+        if (current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
             throw new BusinessRuleViolationException("Vain korjaukset sallittu");
         }
 
