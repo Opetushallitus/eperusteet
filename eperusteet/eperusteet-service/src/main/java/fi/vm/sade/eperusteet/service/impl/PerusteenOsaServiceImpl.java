@@ -94,7 +94,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Autowired
     private ValmaTelmaSisaltoRepository valmaTelmaSisaltoRepository;
 
-
     @Override
     @Transactional(readOnly = true)
     public List<PerusteenOsaDto.Suppea> getAll() {
@@ -146,6 +145,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
+        perusteenOsaDto.setTila(current.getTila());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
 
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
