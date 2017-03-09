@@ -16,17 +16,20 @@
 package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Lists;
-import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.Collections;
@@ -52,14 +55,21 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
+
     @Autowired
     private TutkinnonOsaRepository tutkinnonOsaRepository;
+
     @PersistenceContext
     private EntityManager em;
 
     private ArviointiAsteikko arviointiasteikko;
+
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
 
     @Before
     public void setUp() {
@@ -126,5 +136,15 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         TekstiKappale tk = new TekstiKappale();
         tk.setNimi(TekstiPalanen.of(Kieli.FI, "<i>otsikko</i>"));
         perusteenOsaRepository.saveAndFlush(tk);
+    }
+
+    @Test
+    public void testPerusteenOsaTilaNotUpdatable() {
+        TekstiKappale tk = new TekstiKappale();
+        tk.asetaTila(PerusteTila.LUONNOS);
+        TekstiKappaleDto tkDto = new TekstiKappaleDto();
+        tkDto.setTila(PerusteTila.VALMIS);
+        tk = mapper.map(tkDto, tk);
+        Assert.assertEquals(tk.getTila(), PerusteTila.LUONNOS);
     }
 }
