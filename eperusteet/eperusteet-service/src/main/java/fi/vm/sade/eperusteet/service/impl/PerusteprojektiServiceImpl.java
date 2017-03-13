@@ -635,10 +635,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
 
-        if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi()) && ProjektiTila.VALMIS.equals(projekti.getTila())) {
-            throw new BusinessRuleViolationException("valmista-pohjaa-ei-voi-palauttaa");
-        }
-
         // Tarkistetaan mahdolliset tilat
         updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
         if (!updateStatus.isVaihtoOk()) {
@@ -663,9 +659,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
         Peruste peruste = projekti.getPeruste();
+        boolean isValmisPohja = PerusteTyyppi.POHJA.equals(peruste.getTyyppi()) && (VALMIS.equals(projekti.getTila()) || PerusteTila.VALMIS.equals(peruste.getTila()));
 
         // Perusteen validointi
-        if (peruste != null && peruste.getSuoritustavat() != null
+        if (!isValmisPohja && peruste.getSuoritustavat() != null
                 && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
@@ -856,11 +853,23 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         if (tila == ProjektiTila.POISTETTU) {
-            setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
+            if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
+                projekti.setTila(ProjektiTila.POISTETTU);
+                projekti.getPeruste().asetaTila(PerusteTila.POISTETTU);
+            }
+            else {
+                setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
+            }
         }
 
         if (tila == LAADINTA) {
-            setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
+            if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
+                projekti.setTila(ProjektiTila.LAADINTA);
+                projekti.getPeruste().asetaTila(PerusteTila.LUONNOS);
+            }
+            else {
+                setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
+            }
         }
 
         if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.POHJA
