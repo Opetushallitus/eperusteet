@@ -635,6 +635,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
 
+        if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi()) && ProjektiTila.VALMIS.equals(projekti.getTila())) {
+            throw new BusinessRuleViolationException("valmista-pohjaa-ei-voi-palauttaa");
+        }
+
         // Tarkistetaan mahdolliset tilat
         updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
         if (!updateStatus.isVaihtoOk()) {
