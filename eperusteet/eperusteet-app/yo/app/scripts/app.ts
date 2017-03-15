@@ -311,7 +311,7 @@ angular.module('eperusteApp', [
         virheService.virhe({state: toState.to});
     });
 
-    // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (reload, iltalehti...),
+    // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (reload, muu verkkosivu...),
     // niin varoitetaan, että hän menettää muutoksensa jos jatkaa.
     $window.addEventListener('beforeunload', function (event) {
         if (Editointikontrollit.getEditMode()) {

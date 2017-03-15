@@ -374,12 +374,8 @@ $sisalto-min-height: 450px;
 }
 
 .version-warning {
-  position: absolute;
-  top: -63px;
   border: 1px solid #ddd;
   background-color: #f2f2f2;
-  width: 70%;
-  z-index: 1020;
   .note {
     font-size: 30px;
     line-height: 38px;
@@ -396,6 +392,7 @@ $sisalto-min-height: 450px;
     }
   }
   .content {
+    min-height: 45px;
     p {
       margin: 0;
       margin-top: 5px;

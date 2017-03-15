@@ -231,7 +231,6 @@ angular.module('eperusteApp')
         switch (perusteenTyyppi) {
             case 'YL': {
                 const tiedot1 = service.getYlTiedot();
-                console.log(tiedot1);
                 _.each(PerusopetusService.LABELS, (key, label) => {
                     const item = {
                         label: label,
@@ -240,12 +239,10 @@ angular.module('eperusteApp')
                     items.push(item);
                     mapYL(items, tiedot1[key], key, item);
                 });
-                console.log(items);
                 break;
             }
             case 'AIPE': {
                 const tiedot1 = service.getYlTiedot();
-                console.log(tiedot1);
                 _.each(AIPEService.LABELS, (key, value) => {
                     const item = {
                         label: value,
@@ -257,8 +254,6 @@ angular.module('eperusteApp')
                     items.push(item);
                     mapYL(items, tiedot1[key], key, item);
                 });
-                console.log(items);
-
                 break;
             }
             case 'LU': {
@@ -317,7 +312,6 @@ angular.module('eperusteApp')
         if (!service) {
             PerusteprojektiTiedotService.then(function (res) {
                 service = res;
-                console.log(res);
                 load();
             });
         } else {

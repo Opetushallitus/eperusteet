@@ -30,9 +30,7 @@
             <h1 ng-show="editoi" kaanna="vateConverter('tutkinnon-muodostuminen-muokkaus')"></h1>
         </div>
 
-        <div class="max-sm-leveys">
-            <versiotiedot ng-hide="editoi"></versiotiedot>
-        </div>
+        <versiotiedot ng-hide="editoi"></versiotiedot>
         <div class="tree-presentation">
             <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
         </div>

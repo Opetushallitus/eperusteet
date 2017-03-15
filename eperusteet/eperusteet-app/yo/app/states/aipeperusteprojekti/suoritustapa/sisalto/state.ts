@@ -23,7 +23,7 @@ angular.module("eperusteApp")
             templateUrl: "states/aipeperusteprojekti/suoritustapa/sisalto/view.html",
             controller: ($scope, $state, $stateParams, peruste, vaiheet, laajaalaiset, sisalto, sisallot,
                          Editointikontrollit, TekstikappaleOperations, Notifikaatiot, SuoritustavanSisalto,
-                         Algoritmit, Utils, Api) => {
+                         Algoritmit, Utils, Api, PerusteProjektiService) => {
                 $scope.peruste = peruste;
                 $scope.peruste.sisalto = Api.copy(sisalto);
                 $scope.opetus = {
@@ -76,20 +76,26 @@ angular.module("eperusteApp")
                 });
 
                 Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, "lapset", lapsi => {
-                    lapsi.$url = lapsi.perusteenOsa.tunniste === "laajaalainenosaaminen" ?
-                        $state.href("root.aipeperusteprojekti.suoritustapa.osalistaus", {})
-                        : $state.href("root.aipeperusteprojekti.suoritustapa.tekstikappale", {
-                            suoritustapa: "aipe",
+                    lapsi.$url = lapsi.perusteenOsa.tunniste === "laajaalainenosaaminen"
+                        ? $state.href("root.aipeperusteprojekti.suoritustapa.osalistaus", {
+                            osanTyyppi: AIPEService.OSAAMINEN
+                        })
+                        : $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
+                            perusteProjektiId: $stateParams.perusteProjektiId,
+                            suoritustapa: $stateParams.suoritustapa,
                             perusteenOsaViiteId: lapsi.id,
                             versio: ""
                         });
                 });
 
+                PerusteProjektiService.setSuoritustapa("aipe");
                 $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 
                 $scope.addTekstikappale = async () => {
                     const res = await sisallot.post({});
-                    $state.go("root.aipeperusteprojekti.suoritustapa.tekstikappale", {
+                    $state.go("root.perusteprojekti.suoritustapa.tekstikappale", {
+                        perusteProjektiId: $stateParams.perusteProjektiId,
+                        suoritustapa: $stateParams.suoritustapa,
                         perusteenOsaViiteId: res.id,
                         versio: ""
                     }, {

@@ -3,12 +3,6 @@ html {
   -ms-overflow-style: scrollbar;
 }
 
-.max-sm-leveys {
-  @media (min-width: $screen-sm-min) {
-    max-width: $screen-sm-min;
-  }
-}
-
 h1 {
   margin-bottom: 30px;
 }

@@ -23,7 +23,7 @@ angular.module("eperusteApp")
         perusteprojektiOikeudet: PerusteprojektiOikeudetService => PerusteprojektiOikeudetService,
         perusteprojektiOikeudetNouto: (perusteprojektiOikeudet, $stateParams) => perusteprojektiOikeudet.noudaOikeudet($stateParams),
         perusteprojektit: (Api) => Api.all("perusteprojektit"),
-        perusteprojekti: (perusteprojektit, $stateParams) => perusteprojektit.one($stateParams.perusteProjektiId).get(),
+        perusteprojekti: (Api, $stateParams) => Api.one("perusteprojektit", $stateParams.perusteProjektiId).get(),
         perusteet: (Api) => Api.all("perusteet"),
         peruste: (perusteprojekti, perusteet) => perusteet.get(perusteprojekti._peruste),
         aipeopetus: (peruste) => peruste.one("aipeopetus")

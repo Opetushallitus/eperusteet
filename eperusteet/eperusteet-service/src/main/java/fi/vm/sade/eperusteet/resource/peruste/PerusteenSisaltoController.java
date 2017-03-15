@@ -25,17 +25,14 @@ import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTEENOSAVIITE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.KLOONAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LIITOS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTEENOSAVIITE;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -132,9 +129,8 @@ public class PerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeSisaltoViite(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+    public void removeSisaltoViite(@PathVariable final Long perusteId,
+                                   @PathVariable final Long id) {
         audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, POISTO), (Void) -> {
             viiteService.removeSisalto(perusteId, id);
             return null;

@@ -32,26 +32,20 @@ import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.OSAALUE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.OSAAMISTAVOITE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSA;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSAVIITE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LUKITUKSENVAPAUTUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LUKITUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.PALAUTUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import io.swagger.annotations.Api;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.*;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Controller
@@ -328,8 +322,8 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/lukko", method = GET)
     @ResponseBody
     public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id,
-        @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
-        HttpServletResponse response) {
+                                              @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+                                              HttpServletResponse response) {
         LukkoDto lock = service.getLock(id);
         response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
         return new ResponseEntity<>(lock, lock == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
