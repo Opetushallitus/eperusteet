@@ -39,7 +39,7 @@ angular.module("eperusteApp")
                     editTitle: 'muokkaa-osaaminen',
                     newTitle: 'uusi-osaaminen',
                     backLabel: 'laaja-alainen-osaaminen',
-                    backState: ['root.perusteprojekti.suoritustapa.' + $stateParams.suoritustapa + 'osalistaus', {
+                    backState: ['root.aipeperusteprojekti.suoritustapa.osalistaus', {
                         suoritustapa: $stateParams.suoritustapa,
                         osanTyyppi: 'osaaminen'
                     }],

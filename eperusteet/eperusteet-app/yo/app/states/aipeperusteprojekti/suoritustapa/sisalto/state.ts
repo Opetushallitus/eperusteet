@@ -80,7 +80,7 @@ angular.module("eperusteApp")
                         ? $state.href("root.aipeperusteprojekti.suoritustapa.osalistaus", {
                             osanTyyppi: AIPEService.OSAAMINEN
                         })
-                        : $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
+                        : $state.href("root.aipeperusteprojekti.suoritustapa.tekstikappale", {
                             perusteProjektiId: $stateParams.perusteProjektiId,
                             suoritustapa: $stateParams.suoritustapa,
                             perusteenOsaViiteId: lapsi.id,
@@ -93,7 +93,7 @@ angular.module("eperusteApp")
 
                 $scope.addTekstikappale = async () => {
                     const res = await sisallot.post({});
-                    $state.go("root.perusteprojekti.suoritustapa.tekstikappale", {
+                    $state.go("root.aipeperusteprojekti.suoritustapa.tekstikappale", {
                         perusteProjektiId: $stateParams.perusteProjektiId,
                         suoritustapa: $stateParams.suoritustapa,
                         perusteenOsaViiteId: res.id,

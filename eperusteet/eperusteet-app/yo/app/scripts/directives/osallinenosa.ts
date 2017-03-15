@@ -40,9 +40,8 @@ angular.module('eperusteApp')
         }
     }
 })
-.controller('OsallinenOsaController', ($scope, $state, VersionHelper, $q, Lukitus,
-                                       Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout,
-                                       $stateParams) => {
+.controller('OsallinenOsaController', ($scope, $state, VersionHelper, $q, Lukitus, Editointikontrollit, FieldSplitter,
+                                       Varmistusdialogi, $rootScope, Utils, $timeout, $stateParams) => {
     $scope.isLocked = false;
     $scope.isNew = $stateParams.osanId === 'uusi';
     $scope.editEnabled = false;
@@ -114,12 +113,12 @@ angular.module('eperusteApp')
         }, 200);
     };
 
-    $scope.removeWhole = function () {
+    $scope.removeWhole = () => {
         Varmistusdialogi.dialogi({
             otsikko: 'varmista-poisto',
             teksti: $scope.config.removeWholeConfirmationText || '',
             primaryBtn: 'poista',
-            successCb: function () {
+            successCb: () => {
                 $scope.config.removeWholeFn(function () {
                     Editointikontrollit.unregisterCallback();
                     if ($scope.overwrittenDeleteRedirectCb) {

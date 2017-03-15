@@ -143,9 +143,9 @@ angular.module('eperusteApp')
       },
       'root.aipeperusteprojekti.suoritustapa.osaalue': function() {
         switch($stateParams.osanTyyppi) {
-          case 'oppiaineet': return LukkoOppiaine;
+          //case 'oppiaineet': return LukkoOppiaine;
           //case 'vuosiluokat': return LukkoVaihe;
-          case 'osaaminen': return LukkoLaajaalainenOsaaminen;
+          //case 'osaaminen': return LukkoLaajaalainenOsaaminen;
           default: return null;
         }
       },
@@ -203,8 +203,13 @@ angular.module('eperusteApp')
           return d.promise;
         }
       } else {
-        console.log('Tilalle "' + $state.current.name + '" ei ole määritetty lukkotyyppiä');
-        return $q.defer().promise;
+        console.warn('Tilalle "' + $state.current.name + '" ei ole määritetty lukkotyyppiä');
+        var d = $q.defer();
+        d.resolve();
+        if (cb) {
+          cb();
+        }
+        return d.promise;
       }
     }
 
