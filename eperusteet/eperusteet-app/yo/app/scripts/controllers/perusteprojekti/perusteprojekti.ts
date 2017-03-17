@@ -369,6 +369,10 @@ angular.module('eperusteApp')
                 $scope.sivunavi.suoritustapa = '';
                 $scope.sivunavi.footer = '';
                 break;
+            case 'AIPE':
+                $scope.sivunavi.suoritustapa = '';
+                $scope.sivunavi.footer = '';
+                break;
             default:
                 $scope.sivunavi.footer = amFooter;
                 $scope.sivunavi.suoritustapa = PerusteProjektiService.getSuoritustapa();

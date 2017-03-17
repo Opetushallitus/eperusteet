@@ -1,69 +1,72 @@
 <!-- perusteprojekti.html -->
 <div class="project-header">
-  <div class="row">
-    <button class="btn btn-primary btn-header-pdf pull-right" ng-hide="muokkausEnabled" ng-click="luoPdf()"
-            oikeustarkastelu="{ target: 'peruste', permission: 'luku' }" ng-if="pdfEnabled">
-        <img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}
-    </button>
-    <div class="col-xs-6">
-      <div class="project-otsikkotiedot">
-        <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()" projekti-id="projekti.id" korvattavat-diaarinumerot="peruste.korvattavatDiaarinumerot"></statusbadge>
-        <h2>{{ projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
-        <table>
-          <tr>
-            <th>{{'projekti-header-koulutustyyppi'| kaanna}}:</th>
-            <td>{{peruste.koulutustyyppi|| 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}<td>
-          </tr>
-          <tr>
-            <th>{{'projekti-header-koulutusala'| kaanna}}:</th>
-            <td>{{koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}</td>
-          </tr>
-          <tr>
-            <th>{{'projekti-header-paatosPvm'| kaanna}}:</th>
-            <td>{{projekti.paatosPvm| date:'dd.MM.yyyy'}}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
+    <div class="row">
+        <button class="btn btn-primary btn-header-pdf pull-right" ng-hide="muokkausEnabled" ng-click="luoPdf()"
+                oikeustarkastelu="{ target: 'peruste', permission: 'luku' }" ng-if="pdfEnabled">
+            <img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}
+        </button>
+        <div class="col-xs-6">
+            <div class="project-otsikkotiedot">
+                <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()"
+                             projekti-id="projekti.id"
+                             korvattavat-diaarinumerot="peruste.korvattavatDiaarinumerot"></statusbadge>
+                <h2>{{ projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
+                <table>
+                    <tr>
+                        <th>{{'projekti-header-koulutustyyppi'| kaanna}}:</th>
+                        <td>{{peruste.koulutustyyppi|| 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}
+                        <td>
+                    </tr>
+                    <tr>
+                        <th>{{'projekti-header-koulutusala'| kaanna}}:</th>
+                        <td>{{koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{{'projekti-header-paatosPvm'| kaanna}}:</th>
+                        <td>{{projekti.paatosPvm| date:'dd.MM.yyyy'}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
-    <div class="col-xs-6 headernavi">
-      <ul>
-        <li>
-          <a class="action-link" ng-click="lisaaTiedote()"
-             icon-role="envelope" kaanna="'lisaa-tiedote'"></a>
-        </li>
-        <li>
-          <a ui-sref="root.perusteprojekti.termisto({ perusteProjektiId: projekti.id })"
-             ui-sref-active="headernavi-active" icon-role="book" kaanna="'perusteen-termisto'"></a>
-        </li>
-        <li>
-          <a ui-sref="root.perusteprojekti.tiedot({ perusteProjektiId: projekti.id })"
-             ui-sref-active="headernavi-active" icon-role="info" kaanna="'projektin-tiedot'"></a>
-        </li>
-        <li>
-          <a ui-sref="root.perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
-             ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="'projekti-peruste'" oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'luku' }"></a>
-        </li>
-        <li>
-          <a ui-sref="root.perusteprojekti.projektiryhma({perusteProjektiId: projekti.id})"
-             ui-sref-active="headernavi-active" icon-role="user" kaanna="'projekti-projektiryhma'"></a>
-        </li>
-      </ul>
+        <div class="col-xs-6 headernavi">
+            <ul>
+                <li>
+                    <a class="action-link" ng-click="lisaaTiedote()"
+                       icon-role="envelope" kaanna="'lisaa-tiedote'"></a>
+                </li>
+                <li>
+                    <a ui-sref="root.perusteprojekti.termisto({ perusteProjektiId: projekti.id })"
+                       ui-sref-active="headernavi-active" icon-role="book" kaanna="'perusteen-termisto'"></a>
+                </li>
+                <li>
+                    <a ui-sref="root.perusteprojekti.tiedot({ perusteProjektiId: projekti.id })"
+                       ui-sref-active="headernavi-active" icon-role="info" kaanna="'projektin-tiedot'"></a>
+                </li>
+                <li>
+                    <a ui-sref="root.perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
+                       ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="'projekti-peruste'"
+                       oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'luku' }"></a>
+                </li>
+                <li>
+                    <a ui-sref="root.perusteprojekti.projektiryhma({perusteProjektiId: projekti.id})"
+                       ui-sref-active="headernavi-active" icon-role="user" kaanna="'projekti-projektiryhma'"></a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </div>
 
 <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible(), 'show-back': showBackLink()}">
-  <div class="sivunavi-navigaatio">
-    <div class="sivunavi-takaisin" ng-if="showBackLink()">
-      <a ng-href="{{backLink}}" icon-role="back" kaanna="takaisin-paanakymaan"></a>
-      <!-- <a ui-sref="root.perusteprojekti.suoritustapa.sisalto" icon-role="back" kaanna="takaisin-paanakymaan"></a> -->
+    <div class="sivunavi-navigaatio">
+        <div class="sivunavi-takaisin" ng-if="showBackLink()">
+            <a ng-href="{{backLink}}" icon-role="back" kaanna="takaisin-paanakymaan"></a>
+        </div>
+        <sivunavigaatio items="sivunavi.items" header="sivunavi.suoritustapa" footer="sivunavi.footer"></sivunavigaatio>
     </div>
-    <sivunavigaatio items="sivunavi.items" header="sivunavi.suoritustapa" footer="sivunavi.footer">
-    </sivunavigaatio>
-  </div>
-  <div class="sivunavi-clear"></div>
-  <div class="sivunavi-sisalto">
-    <div ui-view></div>
-  </div>
+    <div class="sivunavi-clear"></div>
+    <div class="sivunavi-sisalto">
+        <div ui-view></div>
+    </div>
 </div>

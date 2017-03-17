@@ -23,6 +23,9 @@ $stateProvider
     url: '/aipeosat/:osanTyyppi/:osanId',
     templateUrl: 'scripts/states/perusteprojekti/suoritustapa/aipeosaalue/view.html',
     resolve: {
+        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
+        projektinTiedotAlustettu: perusteprojektiTiedot => perusteprojektiTiedot.projektinTiedotAlustettu(),
+        perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => perusteprojektiTiedot.alustaPerusteenSisalto($stateParams),
         perusteprojektit: (Api) => Api.all("perusteprojektit"),
         perusteprojekti: (perusteprojektit, $stateParams) => perusteprojektit.one($stateParams.perusteProjektiId).get(),
         perusteet: (Api) => Api.all("perusteet"),

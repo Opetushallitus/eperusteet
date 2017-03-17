@@ -15,20 +15,19 @@
  */
 
 import Lokalisoitu = Lokalisointi.Lokalisoitu;
-'use strict';
-
-/// <reference path="../../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q, LukiokoulutusService,
-    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils, Kielimapper, LukioKurssiService, $log) {
+    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils, Kielimapper, LukioKurssiService, AIPEService) {
   var STATE_OSAT_ALKU = 'root.perusteprojekti.suoritustapa.';
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
   var STATE_OSALISTAUS = 'root.perusteprojekti.suoritustapa.osalistaus';
+  var STATE_AIPE_OSALISTAUS = 'root.perusteprojekti.suoritustapa.aipeosalistaus';
   var STATE_LUKIOOSALISTAUS = 'root.perusteprojekti.suoritustapa.lukioosat';
   var STATE_OSAALUE = 'root.perusteprojekti.suoritustapa.osaalue';
+  var STATE_AIPE_OSAALUE = 'root.perusteprojekti.suoritustapa.aipeosaalue';
 
   var STATE_LUKIOOSAALUE = 'root.perusteprojekti.suoritustapa.lukioosaalue',
       STATE_LUKIOKURSSI = 'root.perusteprojekti.suoritustapa.kurssi';
@@ -86,9 +85,13 @@ angular.module('eperusteApp')
 
     if (lapsi.perusteenOsa.tunniste === 'rakenne') {
        return ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}];
-    }
-    else if (lapsi.perusteenOsa.tunniste === 'laajaalainenosaaminen') {
-       return ['root.perusteprojekti.suoritustapa.osalistaus', {
+    } else if (lapsi.perusteenOsa.tunniste === 'laajaalainenosaaminen' && perusteenTyyppi === 'AIPE') {
+        return [STATE_AIPE_OSALISTAUS, {
+            suoritustapa: 'aipe',
+            osanTyyppi: 'osaaminen'
+        }];
+    } else if (lapsi.perusteenOsa.tunniste === 'laajaalainenosaaminen') {
+       return [STATE_OSALISTAUS, {
          suoritustapa: 'perusopetus',
          osanTyyppi: 'osaaminen'
        }];
@@ -173,7 +176,11 @@ angular.module('eperusteApp')
     targetItems.push({
       depth: level,
       label: nimi,
-      link: link || [perusteenTyyppi == 'LU' ? STATE_LUKIOOSAALUE : STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
+      link: link || [perusteenTyyppi == 'LU' ? STATE_LUKIOOSAALUE : perusteenTyyppi == 'AIPE' ? STATE_AIPE_OSAALUE : STATE_OSAALUE, {
+          osanTyyppi: key,
+          osanId: osa.id,
+          tabId: 0
+      }],
       isActive: isYlRouteActive,
       $$parentItem: parent
     });
@@ -191,11 +198,14 @@ angular.module('eperusteApp')
   }
 
   function mapYL(target, osat, key, parent) {
-    _(osat).sortBy((key === 'oppiaineet' || key === 'oppiaineet-oppimaarat'
+    _(osat)
+        .sortBy((key === 'oppiaineet' || key === 'oppiaineet-oppimaarat'
         || key === 'oppiaineet_oppimaarat'
-        || key === 'aihekokonaisuudet') ? 'jnro' : Utils.nameSort).each(function (osa) {
-      ylMapper(target, osa, key, 1, null, parent);
-    }).value();
+        || key === 'aihekokonaisuudet') ? 'jnro' : Utils.nameSort)
+        .each(function (osa) {
+            ylMapper(target, osa, key, 1, null, parent);
+        })
+        .value();
   }
   function lukioOsanTyyppi(key) {
     switch (key) {
@@ -218,6 +228,18 @@ angular.module('eperusteApp')
           };
           items.push(item);
           mapYL(items, tiedot1[key], key, item);
+        });
+        break;
+      }
+      case 'AIPE': {
+        var aipeTiedot = service.getYlTiedot();
+        _.each(AIPEService.LABELS, (key, label) => {
+          let item = {
+            label: label,
+            link: [STATE_AIPE_OSALISTAUS, { suoritustapa: 'aipe', osanTyyppi: key }]
+          };
+          items.push(item);
+          mapYL(items, aipeTiedot[key], key, item);
         });
         break;
       }
@@ -257,6 +279,7 @@ angular.module('eperusteApp')
     data.projekti.peruste = service.getPeruste();
     data.projekti.peruste.sisalto = service.getSisalto();
     perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL'
+            : YleinenData.isAipe(data.projekti.peruste) ? 'AIPE'
             : YleinenData.isLukiokoulutus(data.projekti.peruste) ? 'LU'
             : YleinenData.isSimple(data.projekti.peruste) ? 'ESI'
             : 'AM';

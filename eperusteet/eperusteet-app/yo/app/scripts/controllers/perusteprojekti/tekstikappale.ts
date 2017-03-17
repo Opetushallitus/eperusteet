@@ -234,8 +234,10 @@ angular.module('eperusteApp')
       }
     }
 
-    if ($stateParams.suoritustapa || YleinenData.isPerusopetus($scope.$parent.peruste) ||
-          YleinenData.isLukiokoulutus($scope.$parent.peruste)) {
+    if ($stateParams.suoritustapa
+        || YleinenData.isPerusopetus($scope.$parent.peruste)
+        || YleinenData.isLukiokoulutus($scope.$parent.peruste)
+        || YleinenData.isAipe($scope.$parent.peruste)) {
       PerusteprojektiTiedotService.then(function (instance) {
         $scope.tiedotService = instance;
         haeSisalto();

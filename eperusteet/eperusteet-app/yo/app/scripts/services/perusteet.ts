@@ -110,6 +110,18 @@ angular.module('eperusteApp')
       kohdealueet: {method: 'GET', isArray: true, url: baseUrl + '/kohdealueet'}
     });
   })
+  .factory('AIPEOppiaineet', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/aipeopetus/vaiheet/:vaiheId/oppiaineet/:osanId';
+    return $resource(baseUrl, {
+        vaiheId: '@vaiheId',
+        osanId: '@id'
+    }, {
+      oppimaarat: {method: 'GET', isArray: true, url: baseUrl + '/oppimaarat'},
+      lisaaKohdealue: {method: 'POST', isArray: false, url: baseUrl + '/kohdealueet'},
+      poistaKohdealue: {method: 'DELETE', isArray: false, url: baseUrl + '/kohdealueet/:kohdealueId'},
+      kohdealueet: {method: 'GET', isArray: true, url: baseUrl + '/kohdealueet'}
+    });
+  })
   .factory('LukionOppiaineet', function($resource, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/oppiaineet/:osanId';
     return $resource(baseUrl, {osanId: '@id'}, {
@@ -152,6 +164,16 @@ angular.module('eperusteApp')
   .factory('LaajaalaisetOsaamiset', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/laajaalaisetosaamiset/:osanId', {
       osanId: '@id'
+    });
+  })
+  .factory('AIPELaajaalaisetOsaamiset', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/aipeopetus/laajaalaiset/:osanId', {
+      osanId: '@id'
+    });
+  })
+  .factory('AIPEVaiheet', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/aipeopetus/vaiheet/:vaiheId', {
+      vaiheId: '@id'
     });
   })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {

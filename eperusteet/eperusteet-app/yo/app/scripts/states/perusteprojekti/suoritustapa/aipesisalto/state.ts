@@ -19,6 +19,9 @@ angular.module("eperusteApp")
 .state("root.perusteprojekti.suoritustapa.aipesisalto", {
     url: "/aipesisalto",
     resolve: {
+        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
+        projektinTiedotAlustettu: perusteprojektiTiedot => perusteprojektiTiedot.projektinTiedotAlustettu(),
+        perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => perusteprojektiTiedot.alustaPerusteenSisalto($stateParams),
         perusteprojektit: (Api) => Api.all("perusteprojektit"),
         perusteprojekti: (perusteprojektit, $stateParams) => perusteprojektit.one($stateParams.perusteProjektiId).get(),
         perusteet: (Api) => Api.all("perusteet"),
@@ -34,7 +37,7 @@ angular.module("eperusteApp")
             templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipesisalto/view.html",
             controller: ($scope, $state, $stateParams, peruste, vaiheet, laajaalaiset, sisalto, sisallot,
                          Editointikontrollit, TekstikappaleOperations, Notifikaatiot, SuoritustavanSisalto,
-                         Algoritmit, Utils, Api) => {
+                         Algoritmit, Utils, Api, PerusteenOsat) => {
                 $scope.peruste = peruste;
                 $scope.sisalto = sisalto;
                 $scope.peruste.sisalto = Api.copy(sisalto);

@@ -14,11 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 /**
  * Sivunavigaatioelementti
  * @param items lista menuelementtejä, objekti jolla avaimet:
@@ -45,7 +40,7 @@ angular.module('eperusteApp')
       },
       controller: 'SivuNaviController',
       transclude: true,
-      link: function (scope, element) {
+      link: function (scope: any, element: any) {
         var transcluded = element.find('#sivunavi-tc').contents();
         scope.hasTransclude = transcluded.length > 0;
 
@@ -63,7 +58,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams, $log) {
+  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams) {
     $scope.menuCollapsed = true;
     $scope.onSectionChange = _.isFunction($scope.onSectionChange) ? $scope.onSectionChange : angular.noop;
 
@@ -287,7 +282,7 @@ angular.module('eperusteApp')
         epHighlight: '='
       },
       restrict: 'A',
-      link: function (scope, element) {
+      link: function (scope, element: any) {
         scope.$watch('epHighlight', function (value) {
           matcher = new RegExp('(' + value + ')', 'i');
           var text = element.text();

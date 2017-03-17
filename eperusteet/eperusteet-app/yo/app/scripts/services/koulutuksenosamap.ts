@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .service('Kielimapper', function() {
     var constKoulutuksenosat = {
-      'et-ole-vielä-tallentanut-tutkinnonosia': 'et-ole-vielä-tallentanut-koulutuksenosia',
+      'et-ole-viela-tallentanut-tutkinnonosia': 'et-ole-vielä-tallentanut-koulutuksenosia',
       'haetaan-tutkinnon-osia': 'haetaan-koulutuksen-osia',
       'haku-tutkinnon-nimi-placeholder': 'haku-koulutuksen-nimi-placeholder',
       'koodi-virhe-2': 'koodi-virhe-2',
