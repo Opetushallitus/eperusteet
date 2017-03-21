@@ -56,7 +56,8 @@
     "./app/scripts/services/colorcalculator.ts",
     "./app/scripts/services/kieli.ts",
     "./app/scripts/services/proxyservice.ts",
-      "./app/scripts/services/aipe.ts",
+    "./app/scripts/services/aipe.ts",
+
     "./app/scripts/app.ts",
     "./app/scripts/directives/valmiskaannos.ts",
     "./app/scripts/directives/generictree.ts",
@@ -113,6 +114,7 @@
     "./app/scripts/directives/multiinput.ts",
     "./app/scripts/directives/rajaus.ts",
     "./app/scripts/directives/formfield.ts",
+    "./app/scripts/directives/muokkaus/vaihe.ts",
     "./app/scripts/filters/customfilters.ts",
     "./app/scripts/filters/kaanna.ts",
     "./app/scripts/filters/tutkintokoodi.ts",

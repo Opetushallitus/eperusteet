@@ -34,15 +34,19 @@ $stateProvider
         vaiheet: (aipeopetus) => aipeopetus.all("vaiheet").getList(),
         laajaalaiset: (aipeopetus) => aipeopetus.all("laajaalaiset").getList()
     },
-    controller: ($scope, $state, $stateParams, PerusopetusService, virheService, laajaalaiset, vaiheet) => {
-        $scope.sisaltoState = _.find(PerusopetusService.sisallot, {
+    controller: ($scope, $state, $stateParams, AIPEService, virheService, laajaalaiset, vaiheet) => {
+        $scope.sisaltoState = _.find(AIPEService.sisallot, {
             tyyppi: $stateParams.osanTyyppi
         });
         if (!$scope.sisaltoState) {
             virheService.virhe('virhe-sivua-ei-löytynyt');
         }
 
-        $scope.osaAlueet = laajaalaiset;
+        if ($stateParams.osanTyyppi === AIPEService.OSAAMINEN) {
+            $scope.osaAlueet = laajaalaiset;
+        } else {
+            $scope.osaAlueet = vaiheet;
+        }
 
         $scope.options = {
             extrafilter: null

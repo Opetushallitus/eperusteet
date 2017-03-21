@@ -32,27 +32,40 @@ $stateProvider
         peruste: (perusteprojekti, perusteet) => perusteet.get(perusteprojekti._peruste),
         aipeopetus: (peruste, $stateParams) => peruste.one("aipeopetus"),
         vaiheet: (aipeopetus) => aipeopetus.all("vaiheet").getList(),
+        isOsaaminen: ($stateParams, AIPEService) => $stateParams.osanTyyppi === AIPEService.OSAAMINEN,
+        isVaihe: ($stateParams, AIPEService) => $stateParams.osanTyyppi === AIPEService.VAIHEET,
+        isNew: ($stateParams) => $stateParams.osanId === 'uusi',
+        vaihe: (vaiheet, $stateParams, Api, isVaihe, isNew) => isVaihe && !isNew
+            ? vaiheet.get($stateParams.osanId)
+            : Api.restangularizeElement(vaiheet, {}, ''),
         laajaalaiset: (aipeopetus) => aipeopetus.all("laajaalaiset").getList(),
-        laajaalainen: (laajaalaiset, $stateParams, Api) => $stateParams.osanId === 'uusi'
-            ? Api.restangularizeElement(laajaalaiset, {}, '')
-            : laajaalaiset.get($stateParams.osanId)
+        laajaalainen: (laajaalaiset, $stateParams, Api, isOsaaminen, isNew) => isOsaaminen && !isNew
+            ? laajaalaiset.get($stateParams.osanId)
+            : Api.restangularizeElement(laajaalaiset, {}, '')
     },
     controller: ($scope, $q, $stateParams, laajaalaiset, laajaalainen, Editointikontrollit, Notifikaatiot,
-                 YleinenData, ProjektinMurupolkuService) => {
+                 YleinenData, ProjektinMurupolkuService, vaiheet, vaihe, isOsaaminen, isVaihe, isNew) => {
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
-        $scope.isNew = $stateParams.osanId === 'uusi';
-        $scope.isOsaaminen = true;
+        $scope.isNew = isNew;
         $scope.versiot = {
             latest: true
         };
-        $scope.laajaalainen = laajaalainen;
-        $scope.dataObject = laajaalainen;
+
+        if (isOsaaminen) {
+            $scope.osanTyyppi = 'osaaminen';
+            $scope.isOsaaminen = true;
+            $scope.dataObject = laajaalainen;
+        } else if (isVaihe) {
+            $scope.osanTyyppi = 'vaiheet';
+            $scope.isVaihe = true;
+            $scope.dataObject = vaihe;
+        }
         $scope.edit = () => {
             Editointikontrollit.startEditing();
         };
 
-        ProjektinMurupolkuService.set('osanTyyppi', $stateParams.osanTyyppi, 'osaaminen');
-        ProjektinMurupolkuService.set('osanId', $stateParams.osanId, $scope.laajaalainen.nimi);
+        ProjektinMurupolkuService.set('osanTyyppi', $stateParams.osanTyyppi, $scope.osanTyyppi);
+        ProjektinMurupolkuService.set('osanId', $stateParams.osanId, $scope.dataObject.nimi);
     },
     onEnter: PerusteProjektiSivunavi => {
         PerusteProjektiSivunavi.setVisible();

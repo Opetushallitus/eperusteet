@@ -4,11 +4,8 @@
 </div>
 <div class="row">
     <div class="col-md-12 ep-sisalto-inner">
-        <div ng-if="isVuosiluokka">
-            <muokkaus-vuosiluokka model="dataObject" versiot="versiot"></muokkaus-vuosiluokka>
-        </div>
-        <div ng-if="isOppiaine">
-            <muokkaus-oppiaine model="dataObject" versiot="versiot"></muokkaus-oppiaine>
+        <div ng-if="isVaihe">
+            <muokkaus-vaihe model="dataObject" versiot="versiot"></muokkaus-vaihe>
         </div>
         <div ng-if="isOsaaminen">
             <muokkaus-osaaminen model="dataObject" versiot="versiot"></muokkaus-osaaminen>

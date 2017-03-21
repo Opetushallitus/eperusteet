@@ -19,26 +19,14 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 /**
  *
@@ -62,22 +50,22 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
 
     @Getter
     @Setter
-    @ManyToOne(cascade = CascadeType.ALL, optional = true)
+    @ManyToOne(cascade = CascadeType.ALL)
     private TekstiOsa siirtymaEdellisesta;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tehtava;
 
     @Getter
     @Setter
-    @ManyToOne(cascade = CascadeType.ALL, optional = true)
+    @ManyToOne(cascade = CascadeType.ALL)
     private TekstiOsa siirtymaSeuraavaan;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa paikallisestiPaatettavatAsiat;
 
     @Getter
@@ -99,18 +87,16 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
         if (!result.isPresent()) {
             result = oppiaineet.stream()
                 .map(AIPEOppiaine::getOppimaarat)
-                .flatMap(x -> x.stream())
-                .filter(oppiaine -> {
-                    return Objects.equals(oppiaine.getId(), oppiaineId);
-                })
+                .flatMap(Collection::stream)
+                .filter(oppiaine -> Objects.equals(oppiaine.getId(), oppiaineId))
                 .findFirst();
         }
-        return result.get();
+
+        return result.orElse(null);
     }
 
     @Override
     public AIPEVaihe kloonaa() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

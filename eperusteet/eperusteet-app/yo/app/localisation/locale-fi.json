@@ -127,6 +127,13 @@
     "ui-kieli": "Käyttöliittymäkieli",
 
     "nimeton": "<Nimetön>",
+    "vaiheet": "Vaiheet",
+    "tyhja-placeholder-vaiheet": "Vaiheita ei ole lisätty.",
+    "vaihe-tehtava": "Vaiheen tehtävä",
+    "uusi-vaihe": "Uusi vaihe",
+    "muokkaa-vaihe": "Muokkaa vaihetta",
+    "poistetaanko-vaihe": "Poistetaanko vaihe?",
+    "poista-vaihe": "Poista vaihe",
 
     "OPINTOVIIKKO": "ov",
     "OSAAMISPISTE": "osp",

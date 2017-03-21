@@ -12,7 +12,7 @@
                 <a class="action-link yleiskuvaus-toggle" ng-click="osa.$showkuvaus = !osa.$showkuvaus">
                     {{osa.$showkuvaus ? 'piilota-osaamiskokonaisuuden-kuvaus' : 'nayta-osaamiskokonaisuuden-kuvaus' | kaanna}}
                 </a>
-                <div class="yleiskuvaus" uib-collapse="!osa.$showkuvaus" ng-bind-html="osa.kuvaus | kaanna | unsafe"></div>
+                <div class="yleiskuvaus" collapse="!osa.$showkuvaus" ng-bind-html="osa.kuvaus | kaanna | unsafe"></div>
             </div>
         </uib-accordion-group>
     </uib-accordion>

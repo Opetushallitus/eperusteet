@@ -133,8 +133,7 @@ angular.module('eperusteApp')
     });
 
   })
-  .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService,
-      virheService, $log) {
+  .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService, virheService, $log) {
     $scope.sisaltoState = _.find(PerusopetusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
       $log.error('Tyyppi: '+ $stateParams.osanTyyppi);

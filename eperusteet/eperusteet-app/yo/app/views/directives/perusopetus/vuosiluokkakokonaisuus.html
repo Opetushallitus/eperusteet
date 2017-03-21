@@ -105,7 +105,7 @@
               </span>
                     </h3>
                 </div>
-                <div class="panel-body" uib-collapse="field.$isCollapsed">
+                <div class="panel-body" collapse="field.$isCollapsed">
                     <div ng-if="field.type" vuosiluokkakokonaisuuden-osaaminen="editableModel[field.path]"
                          edit-enabled="field.$editing"></div>
                     <div ng-if="!field.type">
@@ -128,7 +128,7 @@
                         <span ng-bind="editableModel[field.path].otsikko || field.localeKey | kaanna"></span>
                     </h3>
                 </div>
-                <div class="panel-body" uib-collapse="field.$isCollapsed">
+                <div class="panel-body" collapse="field.$isCollapsed">
                     <div ng-if="field.type" vuosiluokkakokonaisuuden-osaaminen="editableModel[field.path]"
                          edit-enabled="editEnabled"></div>
                     <div ng-if="!field.type">
