@@ -13,20 +13,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Set;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.Date;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
 @Getter
 @Setter
-public class PerusteDto extends PerusteBaseDto {
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Set<SuoritustapaDto> suoritustavat;
+public class KVLiiteJulkinenDto extends KVLiiteDto {
+    private LokalisoituTekstiDto nimi;
+    private String koulutustyyppi;
+    private LokalisoituTekstiDto kuvaus;
+    private MaarayskirjeDto maarayskirje;
+    private String diaarinumero;
+    private Date voimassaoloAlkaa;
+    private Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus;
+    private Boolean periytynyt;
 }

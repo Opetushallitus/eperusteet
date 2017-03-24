@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/*global _, moment*/
-
 angular.module('eperusteApp')
   .service('YleinenData', function($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna, $q, $location, Kieli) {
     this.dateOptions = {
@@ -311,6 +308,7 @@ angular.module('eperusteApp')
       return Kaanna.kaannaSisalto(teksti);
     };
 
+
     var kurssityypitDefer = $q.defer();
     /**
      * @returns Promise<LukiokurssityyppiSelectOption>
@@ -340,6 +338,4 @@ angular.module('eperusteApp')
         tyyppi: 'VALTAKUNNALLINEN_SOVELTAVA'
       }
     ]);
-
-
   });

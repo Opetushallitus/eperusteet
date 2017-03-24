@@ -67,6 +67,9 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     PerusteDto update(@P("perusteId") Long perusteId, PerusteDto perusteDto);
 
+    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
+    PerusteUpdateDto updateFull(@P("perusteId") Long perusteId, PerusteUpdateDto perusteDto);
+
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteDto getByIdAndSuoritustapa(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
@@ -191,4 +194,7 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     TutkinnonOsaViiteDto getTutkinnonOsaViiteByKoodiUri(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapakoodi, String koodiUri);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 }

@@ -273,6 +273,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
         }
 
+        if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
+            KVLiite kvliite = new KVLiite();
+            if (perusteprojektiDto.getPerusteId() != null) {
+                Peruste pohja = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
+                if (pohja != null) {
+                    kvliite.setPohja(pohja.getKvliite());
+                }
+            }
+            peruste.setKvliite(kvliite);
+        }
+
         if (tyyppi == PerusteTyyppi.POHJA) {
             TekstiPalanen pnimi = TekstiPalanen.of(Kieli.FI, perusteprojektiDto.getNimi());
             peruste.setNimi(pnimi);

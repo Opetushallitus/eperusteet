@@ -128,8 +128,16 @@ public class PerusteController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     @InternalApi
-    public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
-        return service.update(id, perusteDto);
+    public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteUpdateDto perusteDto) {
+        return service.updateFull(id, perusteDto);
+    }
+
+    @RequestMapping(value = "/{perusteId}/kvliite", method = GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public KVLiiteJulkinenDto getKvLiite(
+            @PathVariable("perusteId") final long id) {
+        return service.getJulkinenKVLiite(id);
     }
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)

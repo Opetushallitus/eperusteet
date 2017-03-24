@@ -1,0 +1,270 @@
+// Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+// 
+// This program is free software: Licensed under the EUPL, Version 1.1 or - as
+// soon as they will be approved by the European Commission - subsequent versions
+// of the EUPL (the "Licence");
+// 
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// European Union Public Licence for more details.
+
+mixin kvliiteKentta(nimi, kentta)
+  .panel.panel-default.panel-clean
+    .panel-heading
+      h3.panel-title(kaanna=nimi)
+    .panel-body(ng-if='kvliitePeriytynyt')
+      p(ng-hide='editEnabled', ng-bind-html='peruste.kvliite.' + kentta + ' | kaanna | unsafe')
+    .panel-body(ng-if='!kvliitePeriytynyt')
+      div(ckeditor='', ng-if='editEnabled', slocalized='', ng-model='editablePeruste.kvliite.' + kentta)
+      p(ng-hide='editEnabled', ng-bind-html='editablePeruste.kvliite.' + kentta + '| kaanna | unsafe')
+
+.row
+  .col-md-12
+    .action-buttons
+      button.floater.btn.btn-default(ng-if='voiMuokata()', ng-hide='editEnabled', ng-click='muokkaa()', icon-role='edit', kaanna="'muokkaa'", oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'muokkaus' }")
+    h1(kaanna='') projekti-peruste
+    .clearfix
+    form.form-horizontal(name='perusteForm', role='form', novalidate='', ng-submit='void(0)')
+      div(ng-form='projektinPerusteForm')
+        .panel.panel-default.panel-clean
+          .panel-heading
+            h3.panel-title(kaanna='') nimi
+          .panel-body
+            input.form-control(ng-show='editEnabled', ng-model='editablePeruste.nimi', slocalized='')
+            p(ng-hide='editEnabled') {{ peruste.nimi | kaanna }}
+        .panel.panel-default.panel-clean
+          .panel-heading
+            h3.panel-title(kaanna="'maarayksen-diaarinumero'")
+          .panel-body
+            input.form-control(ng-show='editEnabled', ng-model='editablePeruste.diaarinumero')
+            p(ng-hide='editEnabled') {{ peruste.diaarinumero | kaanna }}
+        .panel.panel-default.panel-clean
+          .panel-heading
+            h3.panel-title(kaanna='') voimaantulo-pvm
+          .panel-body
+            div(ng-if='editEnabled')
+              formfield(model='editablePeruste', model-var='voimassaoloAlkaa', label='voimaantulo-pvm', type='date', placeholder='anna-voimaantulo-pvm')
+            div(ng-show='!editEnabled')
+              span(model='', pvm='peruste.voimassaoloAlkaa')
+        ul.nav.nav-tabs.nav-justified(ng-show='isAmmatillinen')
+          li(ng-class='{ active: !$$showingKvliite }', ng-click='$$showingKvliite = !$$showingKvliite')
+            a.action-link(ng-bind="'tiedot' | kaanna")
+          li(ng-class='{ active: $$showingKvliite }', ng-click='$$showingKvliite = !$$showingKvliite')
+            a.action-link(ng-bind="'kvliite' | kaanna")
+        br
+        div(ng-show='isAmmatillinen && $$showingKvliite')
+          +kvliiteKentta('suorittaneen-osaaminen', 'suorittaneenOsaaminen')
+          +kvliiteKentta('tyotehtavat-joissa-voi-toimia', 'tyotehtavatJoissaVoiToimia')
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna="'tutkintotodistuksen-antaja'")
+            .panel-body
+              input.form-control(ng-show='editEnabled', ng-model='editablePeruste.kvliite.tutkintotodistuksenAntaja')
+              p(ng-hide='editEnabled') {{ peruste.kvliite.tutkintotodistuksenAntaja | kaanna }}
+          +kvliiteKentta('arvosana-asteikko', 'arvosanaAsteikko')
+          +kvliiteKentta('jatkoopinto-kelpoisuus', 'jatkoopintoKelpoisuus')
+          +kvliiteKentta('kansainvaliset-sopimukset', 'kansainvalisetSopimukset')
+          +kvliiteKentta('saadosperusta', 'saadosPerusta')
+          +kvliiteKentta('pohjakoulutusvaatimukset', 'pohjakoulutusvaatimukset')
+          .panel.panel-default.panel-clean(ng-repeat='(st, sisalto) in kvliite.muodostumisenKuvaus')
+            .panel-heading
+              h3.panel-title
+                span(ng-bind="'tutkinnon-muodostuminen' | kaanna")
+                |  (
+                span(ng-bind='st | kaanna')
+                | )
+            .panel-body
+              p(ng-bind-html='sisalto | kaanna | unsafe ')
+          +kvliiteKentta('lisatietoja', 'lisatietoja')
+
+        div(ng-show='!$$showingKvliite')
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna="'korvattavat-perusteet'")
+            .panel-body
+              small-spinner(ng-show='ladataanKorvattavia')
+              p(ng-show='editablePeruste.korvattavatDiaarinumerot.length === 0') {{&apos;ei-korvattavia-perusteita&apos;| kaanna}}
+              table.table(ng-hide='ladataanKorvattavia || editablePeruste.korvattavatDiaarinumerot.length === 0')
+                tr
+                  th  {{&apos;diaarinumero-label&apos;| kaanna}}
+                  th  {{&apos;perusteen-nimi&apos;| kaanna}}
+                  th(ng-show='editEnabled')
+                tr(ng-repeat='korvattava in editablePeruste.korvattavatDiaarinumerot')
+                  td  {{korvattava}}
+                  td(ng-show="korvattavaDiaariNimiMap[korvattava] === 'korvattavaa-ei-loydy-jarjestelmasta'")
+                    em {{korvattavaDiaariNimiMap[korvattava]| kaanna}}
+                  td(ng-hide="korvattavaDiaariNimiMap[korvattava] === 'korvattavaa-ei-loydy-jarjestelmasta'")  {{korvattavaDiaariNimiMap[korvattava]| kaanna}}
+                  td(ng-show='editEnabled')
+                    button.btn.btn-default.btn-sm(type='button', ng-click='poistaKorvattavaDiaari(korvattava)', icon-role='remove') {{&apos;poista&apos;| kaanna}}
+              .row(ng-show='editEnabled')
+                .col-xs-6
+                  .input-group
+                    input.form-control(type='text', ng-model='uusiKorvattavaDiaari')
+                    |  
+                    span.input-group-btn
+                      button.btn.btn-default.btn-sm(ng-disabled='!uusiKorvattavaDiaari', type='button', ng-click='lisaaKorvattavaDiaari(uusiKorvattavaDiaari)', icon-role='add') {{&apos;ok&apos;| kaanna}}
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna="'perusteen-kielet'")
+            .panel-body
+              span.inline-alert(ng-show='editEnabled && editablePeruste.kielet.length === 0', kaanna="'lisaa-ainakin-yksi-kieli'")
+              span.perusteen-kieli(ng-repeat='kieli in editablePeruste.kielet| orderBy:kieliOrder')
+                span(kaanna='kieli')
+                a.action-link.perusteen-kieli-poisto(ng-click='poistaKieli(kieli)', ng-if='editEnabled', icon-role='remove')
+              span(ng-if='editEnabled && !kaikkiKieletValittu()')
+                span.dropdown
+                  a.dropdown-toggle.action-link(ng-if='editEnabled', data-toggle='dropdown')
+                    span(kaanna="'lisaa-kieli'")
+                    span.caret
+                  ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1')
+                    li(ng-if='kieli.available', ng-repeat='kieli in valittavatKielet', role='presentation')
+                      a.action-link(ng-click='lisaaKieli(kieli.koodi)', role='menuitem', tabindex='-1', ng-bind='kieli.koodi | kaanna')
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna="'peruste-koulutukset'")
+            .panel-body
+              p(ng-show='editablePeruste.koulutukset.length === 0 && !editEnabled', kaanna="'ei-koulutuksia'")
+              .koulutukset(ng-show='editablePeruste.koulutukset.length> 0')
+                .koulutus(ng-repeat='koulutus in editablePeruste.koulutukset')
+                  .poisto(ng-if='editEnabled')
+                    button.btn.btn-default.btn-xs(type='button', icon-role='remove', ng-click='poistaKoulutus(koulutus.koulutuskoodiArvo)', kaanna='poista')
+                  table.aligned
+                    tr
+                      th {{&apos;koulutuksen-nimi&apos;| kaanna}}
+                      td {{koulutus.nimi| kaanna}}
+                    tr
+                      th {{&apos;perusteen-koodi&apos;| kaanna}}
+                      td {{koulutus.koulutuskoodiArvo}}
+                    tr
+                      th {{&apos;haku-koulutusala&apos;| kaanna}}
+                      td {{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}
+                    tr
+                      th {{&apos;haku-opintoala&apos;| kaanna}}
+                      td {{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}
+              div
+                button.btn.btn-default(type='button', ng-if='editEnabled', icon-role='add', ng-click='avaaKoodistoModaali()', ng-disabled='hakemassa', kaanna='lisaa-koulutus')
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna="'osaamisalat'")
+            .panel-body
+              table.table.table-striped(ng-show='editablePeruste.osaamisalat.length> 0')
+                tr
+                  th(kaanna="'nimi'")
+                  th(kaanna="'koodi'")
+                  th(ng-if='editEnabled')
+                tr(ng-repeat='oa in editablePeruste.osaamisalat')
+                  td(kaanna='oa.nimi')
+                  td(ng-bind='oa.arvo')
+                  td(ng-if='editEnabled')
+                    button.btn.btn-danger(type='button', icon-role='remove', ng-click='Osaamisala.poista(oa)', kaanna="'poista'")
+              |  
+              button.btn.btn-default(type='button', ng-show='editEnabled', icon-role='add', ng-click='Osaamisala.lisaa()', kaanna="'hae-koodistosta'")
+          .panel.panel-default.panel-clean(ng-if='$perusteellaTutkintonimikkeet')
+            .panel-heading
+              h3.panel-title(kaanna='') tutkintonimikkeet
+            .panel-body
+              table.table.table-striped(ng-show='koodisto.length> 0')
+                thead
+                  tr
+                    th(kaanna='osaamisala')
+                    th(kaanna='tutkintonimike')
+                    th(kaanna='tutkinnonosa')
+                    th(ng-show='editEnabled')
+                tbody
+                  tr(ng-repeat='koodi in koodisto')
+                    td
+                      span(ng-show='koodi.osaamisalaArvo') {{ koodi.$osaamisalaNimi | kaanna }} ({{ koodi.osaamisalaArvo}})
+                    td {{ koodi.$tutkintonimikeNimi | kaanna }} ({{ koodi.tutkintonimikeArvo}})
+                    td
+                      span(ng-show='koodi.tutkinnonOsaArvo') {{ koodi.$tutkinnonOsaNimi | kaanna }} ({{ koodi.tutkinnonOsaArvo}})
+                    td(ng-show='editEnabled')
+                      button.btn.btn-xs.btn-default(type='button', ng-click='poistaTutkintonimike(koodi)', kaanna='poista')
+              div(ng-hide='koodisto.length> 0')
+                p(kaanna='et-ole-lisannyt-viela-tutkintonimikkeita')
+              div(ng-show='editEnabled')
+                button.btn.btn-default(type='button', ng-disabled='!koodisto.$resolved', ng-click='lisaaNimike()', icon-role='add', kaanna='lisaa-nimike')
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna='') voimassaolo
+            .panel-body
+              div(ng-if='editEnabled')
+                formfield(model='editablePeruste', model-var='voimassaoloLoppuu', label='voimassaolo-paattymispvm', type='date', placeholder='anna-voimaantulo-loppu-pvm')
+              table.aligned(ng-show='!editEnabled')
+                tr
+                  th(kaanna='') voimassaolo-paattymispvm
+                  td(pvm='peruste.voimassaoloLoppuu')
+          .panel.panel-default.panel-clean(ng-show='editablePeruste.voimassaoloLoppuu')
+            .panel-heading
+              h3.panel-title(kaanna="'siirtyman-paattyminen'")
+            .panel-body
+              div(ng-if='editEnabled')
+                formfield(model='editablePeruste', model-var='siirtymaPaattyy', type='date', placeholder="{{'anna-siirtyman-paattymis-pvm' | kaanna}}")
+              .aligned(ng-show='!editEnabled', pvm='peruste.siirtymaPaattyy')
+              p  ({{&apos;siirtyman-kuvaus&apos; | kaanna}})
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna='') tiivistelma
+            .panel-body
+              div(ckeditor='', ng-if='editEnabled', slocalized='', ng-model='editablePeruste.kuvaus')
+              span(ng-show='hasContent(peruste.kuvaus) && !editEnabled', ng-bind-html='peruste.kuvaus | kaanna | unsafe')
+              p(ng-show='!hasContent(peruste.kuvaus) && !editEnabled', kaanna='ei-tiivistelmaa')
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna='') maarayksen-paatospaivamaara
+            .panel-body
+              div(ng-if='editEnabled')
+                formfield(model='editablePeruste', model-var='paatospvm', label='päätöspvm-label', type='date', placeholder='anna-paatos-pvm')
+              table.aligned(ng-show='!editEnabled')
+                tr
+                  th(kaanna='') p&auml;&auml;t&ouml;spvm-label
+                  td(pvm='peruste.paatospvm')
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna='') maarayskirje
+            .panel-body
+              .form-group(ng-show='editEnabled')
+                label.col-sm-3.control-label(kaanna='sijainti')
+                .col-sm-9
+                  input.col-sm-12.form-control(ng-model='editablePeruste.maarayskirje.url', slocalized='', placeholder='https://')
+              table.aligned(ng-show='!editEnabled')
+                tr
+                  th(kaanna='sijainti')
+                  td
+                    a(ng-show='hasContent(peruste.maarayskirje.url)', ng-href='{{ peruste.maarayskirje.url | kaanna }}') {{ peruste.maarayskirje.url | kaanna }}
+                    p(ng-show='!hasContent(peruste.maarayskirje.url)', kaanna='ei-asetettu')
+          .panel.panel-default.panel-clean
+            .panel-heading
+              h3.panel-title(kaanna='') muutosmaaraykset
+            .panel-body
+              table.table.table-striped
+                thead
+                  tr
+                    th.col-sm-4(kaanna='nimi')
+                    th.col-sm-6  {{&apos;sijainti&apos; | kaanna}}*
+                    th(kaanna='toiminnot', ng-show='editEnabled')
+                tbody
+                  tr(ng-repeat='muutosmaarays in editablePeruste.muutosmaaraykset', ng-show='editEnabled')
+                    td
+                      input.form-control.col-sm-12(ng-model='muutosmaarays.nimi', slocalized='')
+                    td
+                      input.form-control.col-sm-12(ng-model='muutosmaarays.url', slocalized='', required='', placeholder='https://')
+                    td(ng-show='editEnabled')
+                      button.btn.btn-warning(type='button', ng-click='poistaMuutosmaarays(muutosmaarays)', kaanna='poista')
+                  tr(ng-repeat='muutosmaarays in peruste.muutosmaaraykset', ng-show='!editEnabled')
+                    td
+                      p(ng-show='hasContent(muutosmaarays.nimi)') {{ muutosmaarays.nimi | kaanna }}
+                      p(ng-show='!hasContent(muutosmaarays.nimi)', kaanna='ei-asetettu')
+                    td
+                      a(ng-show='hasContent(muutosmaarays.url)', ng-href='{{ muutosmaarays.url | kaanna }}') {{ muutosmaarays.url | kaanna }}
+                      p(ng-show='!hasContent(muutosmaarays.url)', kaanna='ei-asetettu')
+                  tr(ng-show='peruste.muutosmaaraykset.length === 0 && !editEnabled')
+                    td
+                      p(kaanna='ei-asetettu')
+                    td
+                      p(kaanna='ei-asetettu')
+              |  
+              button.btn.btn-default(type='button', ng-click='lisaaMuutosmaarays()', icon-role='add', kaanna='lisaa-muutosmaarays', ng-show='editEnabled')

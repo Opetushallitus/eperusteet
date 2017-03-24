@@ -13,20 +13,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
 @Getter
 @Setter
-public class PerusteDto extends PerusteBaseDto {
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Set<SuoritustapaDto> suoritustavat;
+public class PerusteUpdateDto extends PerusteDto {
+    private KVLiiteDto kvliite;
+
 }
