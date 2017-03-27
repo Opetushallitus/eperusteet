@@ -50,14 +50,21 @@ angular.module("eperusteApp")
         Koodisto, Perusteet, YleinenData, PerusteProjektiService,
         perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
         Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal,
-        PerusteenTutkintonimikkeet, valittavatKielet, Kieli) {
+        PerusteenTutkintonimikkeet, valittavatKielet, Kieli, Arviointiasteikot) {
 
         $scope.kvliiteReadonly = true;
-        Perusteet.kvliite({perusteId: $scope.peruste.id}).$promise
-            .then(kvliite => {
-                $scope.kvliite = kvliite;
-                $scope.kvliitePeriytynyt = !kvliite || kvliite.periytynyt;
-            });
+
+        (async function lataaKvliite() {
+            const arviointiasteikotP = Arviointiasteikot.list().$promise;
+            const kvliite = await Perusteet.kvliite({perusteId: $scope.peruste.id}).$promise;
+            const arviointiasteikot = await arviointiasteikotP;
+            $scope.arviointiasteikot = arviointiasteikot;
+            $scope.arviointiasteikotMap = _.indexBy(arviointiasteikot, "id");
+            $scope.kvliite = kvliite;
+            $scope.kvliitePeriytynyt = !kvliite || kvliite.periytynyt;
+            $scope.peruste.kvliite = kvliite;
+            $scope.editablePeruste.kvliite = kvliite;
+        })();
 
         const AmmatillisetKoulutustyypit = [ "koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12" ];
         const isAmmatillinen = (koulutustyyppi) => _.includes(AmmatillisetKoulutustyypit, koulutustyyppi);

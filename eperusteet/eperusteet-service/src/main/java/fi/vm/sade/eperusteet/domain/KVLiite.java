@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
@@ -103,12 +104,11 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     private String tutkintotodistuksenAntaja;
 
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen arvosanaAsteikko;
+    private ArviointiAsteikko arvosanaAsteikko;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

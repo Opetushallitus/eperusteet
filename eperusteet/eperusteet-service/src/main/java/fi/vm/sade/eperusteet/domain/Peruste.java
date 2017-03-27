@@ -175,8 +175,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private KVLiite kvliite;
 
     public void setKvliite(KVLiite liite) {
-        this.kvliite = liite;
-        liite.setPeruste(this);
+        if (liite != null) {
+            this.kvliite = liite;
+            liite.setPeruste(this);
+        }
     }
 
     /**

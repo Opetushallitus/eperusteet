@@ -29,4 +29,5 @@ import lombok.Setter;
 public class PerusteDto extends PerusteBaseDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<SuoritustapaDto> suoritustavat;
+    private KVLiiteDto kvliite;
 }

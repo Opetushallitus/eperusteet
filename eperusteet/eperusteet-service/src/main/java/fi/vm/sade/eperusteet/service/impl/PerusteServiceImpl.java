@@ -546,7 +546,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public PerusteUpdateDto updateFull(Long id, PerusteUpdateDto perusteDto) {
+    public PerusteDto updateFull(Long id, PerusteDto perusteDto) {
         Peruste current = perusteet.findOne(id);
         update(id, perusteDto);
 
@@ -568,7 +568,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         perusteet.save(current);
-        return mapper.map(current, PerusteUpdateDto.class);
+        return mapper.map(current, PerusteDto.class);
     }
 
     private Peruste updateValmisPeruste(Peruste current, Peruste updated) {
@@ -1329,11 +1329,19 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             if (pohjaLiite == null) {
                 pohjaLiite = kvliite;
             }
+            else {
+                kvliiteDto.setPeriytynyt(true);
+            }
 
             pohjaLiiteDto = mapper.map(pohjaLiite, KVLiiteDto.class);
 
-            kvliiteDto.setSuorittaneenOsaaminen(pohjaLiiteDto.getSuorittaneenOsaaminen());
-            kvliiteDto.setTyotehtavatJoissaVoiToimia(pohjaLiiteDto.getTyotehtavatJoissaVoiToimia());
+            if (kvliiteDto.getSuorittaneenOsaaminen() == null) {
+                kvliiteDto.setSuorittaneenOsaaminen(pohjaLiiteDto.getSuorittaneenOsaaminen());
+            }
+            if (kvliiteDto.getTyotehtavatJoissaVoiToimia() == null) {
+                kvliiteDto.setTyotehtavatJoissaVoiToimia(pohjaLiiteDto.getTyotehtavatJoissaVoiToimia());
+            }
+
             kvliiteDto.setTutkintotodistuksenAntaja(pohjaLiiteDto.getTutkintotodistuksenAntaja());
             kvliiteDto.setArvosanaAsteikko(pohjaLiiteDto.getArvosanaAsteikko());
             kvliiteDto.setJatkoopintoKelpoisuus(pohjaLiiteDto.getJatkoopintoKelpoisuus());
@@ -1342,7 +1350,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             kvliiteDto.setPohjakoulutusvaatimukset(pohjaLiiteDto.getPohjakoulutusvaatimukset());
             kvliiteDto.setLisatietoja(pohjaLiiteDto.getLisatietoja());
             kvliiteDto.setTutkinnonVirallinenAsema(pohjaLiiteDto.getTutkinnonVirallinenAsema());
-            kvliiteDto.setPeriytynyt(true);
         }
 
         kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);

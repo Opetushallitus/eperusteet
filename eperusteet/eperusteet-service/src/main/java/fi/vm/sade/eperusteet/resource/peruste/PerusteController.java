@@ -128,7 +128,7 @@ public class PerusteController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     @InternalApi
-    public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteUpdateDto perusteDto) {
+    public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
         return service.updateFull(id, perusteDto);
     }
 
