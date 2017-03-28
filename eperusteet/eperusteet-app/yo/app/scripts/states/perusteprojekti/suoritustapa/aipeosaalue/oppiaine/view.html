@@ -1,26 +1,94 @@
 <div>
-    <button icon-role="edit"
-            style="margin-left: 10px;"
-            ng-hide="editEnabled || !versiot.latest"
-            ng-click="muokkaa()"
-            class="btn btn-default pull-right"
-            kaanna="'muokkaa'"
-            oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+    <projektin-murupolku></projektin-murupolku>
 
-    <button icon-role="plus"
-            style="margin-left: 10px;"
-            ng-hide="editEnabled || !versiot.latest || editEnabled.oppiaine"
-            ng-click="lisaaOppimaara()"
-            class="btn btn-default pull-right"
-            kaanna="'lisaa-oppimaara'"
-            oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
+    <div ng-if="!editEnabled">
+        <button icon-role="edit"
+                style="margin-left: 10px;"
+                ng-hide="!versiot.latest"
+                ng-click="muokkaa()"
+                class="btn btn-default pull-right"
+                kaanna="'muokkaa'"
+                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
 
-    <button icon-role="plus"
-            ng-hide="editEnabled || !versiot.latest"
-            ng-click="lisaaKurssi()"
-            class="btn btn-default pull-right"
-            kaanna="'lisaa-kurssi'"
-            oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
+        <button icon-role="plus"
+                style="margin-left: 10px;"
+                ng-hide="!versiot.latest || editableModel._oppiaine"
+                ng-click="lisaaOppimaara()"
+                class="btn btn-default pull-right"
+                kaanna="'lisaa-oppimaara'"
+                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
+
+        <button icon-role="plus"
+                ng-hide="!versiot.latest"
+                ng-click="lisaaKurssi()"
+                class="btn btn-default pull-right"
+                kaanna="'lisaa-kurssi'"
+                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
+
+        <h1>
+            <span>{{editableModel.nimi || 'nimeton-oppiaine' | kaanna}}</span>
+        </h1>
+
+        <versiotiedot></versiotiedot>
+
+        <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
+            <div class="panel-heading">
+                <h3 class="panel-title osio-otsikko" ng-click="field.$isCollapsed = !field.$isCollapsed">
+                    <span class="glyphicon"
+                          ng-class="field.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                    <span ng-bind="editableModel[field.path].otsikko | kaanna"></span>
+                </h3>
+            </div>
+            <div class="panel-body" collapse="field.$isCollapsed">
+                <div ng-bind-html="editableModel[field.path].teksti | kaanna | unsafe"></div>
+            </div>
+        </div>
+
+        <!-- Kurssit -->
+        <div class="panel-heading">
+            <h3 class="panel-title osio-otsikko"
+                ng-click="kurssit.$isCollapsed = !kurssit.$isCollapsed">
+                    <span class="glyphicon"
+                          ng-class="kurssit.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                <span kaanna="'kurssit'"></span>
+            </h3>
+        </div>
+        <div class="panel-body" collapse="kurssit.$isCollapsed">
+            <div ng-show="kurssit.length == 0">
+                <span kaanna="'tyhja-placeholder-kurssit'"></span>
+            </div>
+        </div>
+
+        <!-- Oppiaineet -->
+        <div ng-if="!editableModel._oppiaine">
+            <div class="panel-heading">
+                <h3 class="panel-title osio-otsikko"
+                    ng-click="oppiaineet.$isCollapsed = oppiaineet.oppiaineet.$isCollapsed">
+                    <span class="glyphicon"
+                          ng-class="oppiaineet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                    <span kaanna="'oppimaarat'"></span>
+                </h3>
+            </div>
+            <div class="panel-body" collapse="oppiaineet.$isCollapsed">
+                <div ng-show="oppimaarat.length == 0">
+                    <span kaanna="'tyhja-placeholder-oppiaineet'"></span>
+                </div>
+                <table class="table table-striped" ng-show="oppimaarat.length > 0">
+                    <tr>
+                        <th>
+                            {{'nimi'| kaanna}}
+                        </th>
+                    </tr>
+                    <tr ng-repeat="oppimaara in oppimaarat">
+                        <td>
+                            <a ui-sref="root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine({oppiaineId: oppimaara.id})"
+                               ng-bind="oppimaara.nimi || 'nimeton-oppimaara' | kaanna"></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <div ng-if="editEnabled">
         <button icon-role="remove"
@@ -50,35 +118,37 @@
                 </li>
             </ul>
         </div>
-    </div>
 
-    <projektin-murupolku></projektin-murupolku>
+        <h1>
+            <span >{{isNew ? 'uusi-oppiaine' : 'muokkaa-oppiainetta' | kaanna}}</span>
+        </h1>
 
-    <h1>
-        <span ng-show="!editEnabled">{{editableModel.nimi || 'nimeton-oppiaine' | kaanna}}</span>
-        <span ng-show="editEnabled">{{isNew ? 'uusi-oppiaine' : 'muokkaa-oppiainetta' | kaanna}}</span>
-    </h1>
+        <hr>
 
+        <form name="nimiForm" role="form">
+            <div class="non-collapsibles">
+                <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header' | kaanna}}*</label>
+                <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" slocalized required>
+                <p class="alert alert-error"
+                   ng-show="(nimiForm.$error.required && nimiForm.$error.required[0].$dirty) || nimiValidationError"
+                   kaanna="'nimi-on-pakollinen'"></p>
+            </div>
+        </form>
 
-    <versiotiedot ng-hide="editEnabled"></versiotiedot>
+        <div class="non-collapsibles">
+            <label for="koodi-input" class="header" kaanna="muokkaus-tutkinnon-osan-koodi-header"></label>
+            <div class="fixed-group">
+                <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodi.koodiArvo"
+                       editointi-kontrolli disabled="disabled">
+                <div class="addon">
+                    <button class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button>
+                </div>
+            </div>
 
-    <hr ng-show="editEnabled">
-
-    <form name="tutkinnonOsaHeaderForm" role="form">
-        <div ng-if="!editEnabled">
-            <div ng-bind-html="valitseKieli(editableModel.kuvaus) | unsafe"></div>
+            <!--<label for="pakollinen-kurssi-kuvaus-input" class="header">{{'pakollinenKurssiKuvaus' | kaanna}}*</label>
+            <input id="pakollinen-kurssi-kuvaus-input" class="form-control" ng-model="editableModel.koodi" slocalized required>-->
         </div>
 
-        <div class="non-collapsibles" ng-if="editEnabled">
-            <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header' | kaanna}}*</label>
-            <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" slocalized required>
-            <p class="alert alert-error"
-               ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
-               kaanna="'nimi-on-pakollinen'"></p>
-        </div>
-    </form>
-
-    <div ng-if="editEnabled">
         <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
             <div class="panel-heading vuosiluokka-osio" ng-class="'osio-' + field.path">
                 <div class="action-buttons">
@@ -115,21 +185,6 @@
                          ng-model="editableModel[field.path].teksti"
                          editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder"></div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div ng-if="!editEnabled">
-        <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
-            <div class="panel-heading vuosiluokka-osio">
-                <h3 class="panel-title osio-otsikko" ng-click="field.$isCollapsed = !field.$isCollapsed">
-                    <span class="glyphicon"
-                          ng-class="field.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
-                    <span ng-bind="editableModel[field.path].otsikko | kaanna"></span>
-                </h3>
-            </div>
-            <div class="panel-body" collapse="field.$isCollapsed">
-                <div ng-bind-html="editableModel[field.path].teksti | kaanna | unsafe"></div>
             </div>
         </div>
     </div>

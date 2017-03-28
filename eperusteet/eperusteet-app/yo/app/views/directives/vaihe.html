@@ -117,7 +117,7 @@
 
     <div ng-if="!editEnabled">
         <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
-            <div class="panel-heading vuosiluokka-osio">
+            <div class="panel-heading">
                 <h3 class="panel-title osio-otsikko" ng-click="field.$isCollapsed = !field.$isCollapsed">
                     <span class="glyphicon"
                           ng-class="field.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
@@ -130,7 +130,7 @@
         </div>
 
         <!-- Oppiaineet -->
-        <div class="panel-heading vuosiluokka-osio">
+        <div class="panel-heading">
             <h3 class="panel-title osio-otsikko"
                 ng-click="editableModel.oppiaineet.$isCollapsed = !editableModel.oppiaineet.$isCollapsed">
                     <span class="glyphicon"

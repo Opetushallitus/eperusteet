@@ -67,22 +67,22 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tyotavat;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa ohjaus;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa arviointi;
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa sisaltoalueinfo;
 
     @Getter
@@ -109,7 +109,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @ValidHtml
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "syventava_kurssi_kuvaus", nullable = true)
+    @JoinColumn(name = "syventava_kurssi_kuvaus")
     private TekstiPalanen syventavaKurssiKuvaus;
 
     @Getter
@@ -117,12 +117,8 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @ValidHtml
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "soveltava_kurssi_kuvaus", nullable = true)
+    @JoinColumn(name = "soveltava_kurssi_kuvaus")
     private TekstiPalanen soveltavaKurssiKuvaus;
-
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinTable
-//    private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
 
     @Getter
     @Audited

@@ -145,6 +145,7 @@
     "poistetaanko-vaihe": "Poistetaanko vaihe?",
     "poista-vaihe": "Poista vaihe",
     "nimeton-oppiaine": "Nimetön oppiaine",
+    "nimeton-oppimaara": "Nimetön oppimäärä",
 
     "OPINTOVIIKKO": "ov",
     "OSAAMISPISTE": "osp",
@@ -889,6 +890,7 @@
     "oppiaine-osio-tyotavat": "Oppimisympäristöt ja työtavat",
     "oppiaine-osio-ohjaus": "Ohjaus ja tuki",
     "oppiaine-osio-arviointi": "Oppilaan oppimisen arviointi",
+    "oppiaine-osio-sisaltoalueinfo": "Oppiaineen sisältöalueinfo",
     "uusi-osaaminen": "Laaja-alainen osaaminen - uusi osaamiskokonaisuus",
     "muokkaa-osaaminen": "Laaja-alainen osaaminen - muokkaa osaamiskokonaisuutta",
     "poistetaanko-oppiaineen-osio": "Poistetaanko osio? Kaikki osion sisältö poistetaan.",

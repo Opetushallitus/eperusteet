@@ -158,6 +158,7 @@
     "./app/scripts/controllers/modals/tilanvaihtovirhe.ts",
     "./app/scripts/states/perusteprojekti/suoritustapa/aipesisalto/state.ts",
     "./app/scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/state.ts",
-    "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/state.ts"
+    "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/state.ts",
+    "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/state.ts"
   ]
 }

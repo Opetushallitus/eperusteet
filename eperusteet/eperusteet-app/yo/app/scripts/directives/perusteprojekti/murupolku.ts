@@ -51,6 +51,9 @@ angular.module('eperusteApp')
       'suoritustapa.aipeosaalue': {
         items: [{url: 'aipeosalistaus', label: {getName: 'osanTyyppi'}}, 'custom', {getName: 'osanId'}]
       },
+      'suoritustapa.aipeosaalue.oppiaine': {
+        items: [{url: 'aipeosalistaus', label: {getName: 'osanTyyppi'}}, 'custom', {getName: 'osanId'}]
+      },
       'suoritustapa.lukioosaalue': {
         items: [{url: 'lukioosat', label: {getName: 'osanTyyppi'}}, 'custom', {getName: 'osanId'}]
       }
