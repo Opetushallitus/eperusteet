@@ -110,15 +110,12 @@ angular.module('eperusteApp')
                 AIPELaajaalaisetOsaamiset.save(commonParams(), data, successCb, errorCb);
                 break;
             default:
-                // Sisältö
-                //PerusopetuksenSisalto.save(commonParams(), data, successCb, errorCb);
                 break;
         }
     };
 
     this.updateSisaltoViitteet = function (sisalto, data, success) {
         const payload = commonParams(sisalto);
-        //PerusopetuksenSisalto.updateViitteet(payload, success, Notifikaatiot.serverCb);
         console.warn("updateSisaltoViitteet");
     };
 
@@ -153,10 +150,6 @@ angular.module('eperusteApp')
                 return AIPEVaiheet.query(commonParams(), data => {
                     cached[tyyppi] = data;
                 }).$promise;
-            case this.OPPIAINEET:
-                let deferred = $q.defer();
-                deferred.resolve();
-                return deferred.promise;
             default:
                 return [];
         }

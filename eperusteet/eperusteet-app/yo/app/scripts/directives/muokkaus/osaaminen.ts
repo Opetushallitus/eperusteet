@@ -21,7 +21,8 @@ angular.module("eperusteApp")
         restrict: "E",
         scope: {
             model: "=",
-            versiot: "="
+            versiot: "=",
+            service: "="
         },
         controller: ($scope, Notifikaatiot, PerusteProjektiSivunavi, YleinenData, $stateParams, $state, Api) => {
             $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
@@ -47,6 +48,7 @@ angular.module("eperusteApp")
                     removeWholeConfirmationText: 'poistetaanko-osaamiskokonaisuus',
                     removeWholeFn: async cb => {
                         await $scope.editableModel.remove();
+                        $scope.service.clearCache();
                         cb();
                     },
                     fields: [],
@@ -61,6 +63,7 @@ angular.module("eperusteApp")
                             if ($scope.isNew) {
                                 $scope.editableModel = await $scope.editableModel.post();
                                 Notifikaatiot.onnistui('tallennus-onnistui');
+                                $scope.service.clearCache();
                                 $state.go($state.current, {
                                     suoritustapa: $stateParams.suoritustapa,
                                     osanTyyppi: $stateParams.osanTyyppi,

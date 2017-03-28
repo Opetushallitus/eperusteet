@@ -20,7 +20,15 @@
             oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
 
     <div ng-if="editEnabled">
-        <div class="dropdown pull-right" style="margin-left: 10px;">
+        <button icon-role="remove"
+                style="margin-left: 10px;"
+                ng-if="!isNew"
+                class="btn btn-danger pull-right"
+                ng-click="poista()">
+            {{'poista-vaihe' | kaanna}}
+        </button>
+
+        <div class="dropdown pull-right">
             <button editointi-kontrolli
                     class="btn btn-default dropdown-toggle"
                     icon-role="add">
@@ -39,13 +47,6 @@
                 </li>
             </ul>
         </div>
-
-        <button icon-role="remove"
-                ng-if="!isNew"
-                class="btn btn-danger pull-right"
-                ng-click="poista()">
-            {{'poista-vaihe' | kaanna}}
-        </button>
     </div>
 
     <projektin-murupolku></projektin-murupolku>

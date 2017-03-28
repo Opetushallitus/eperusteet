@@ -52,6 +52,7 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue", {
         };
         $scope.$state = $state;
         $scope.isOppiaine = () => $state.is('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine');
+        $scope.aipeService = AIPEService;
 
         if (isOsaaminen) {
             $scope.isOsaaminen = () => $state.is('root.perusteprojekti.suoritustapa.aipeosaalue');

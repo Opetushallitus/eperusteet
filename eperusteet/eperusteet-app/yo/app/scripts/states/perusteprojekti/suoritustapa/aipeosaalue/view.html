@@ -8,7 +8,7 @@
             <muokkaus-vaihe model="dataObject" versiot="versiot"></muokkaus-vaihe>
         </div>
         <div ng-if="isOsaaminen()">
-            <muokkaus-osaaminen model="dataObject" versiot="versiot"></muokkaus-osaaminen>
+            <muokkaus-osaaminen model="dataObject" versiot="versiot" service="aipeService"></muokkaus-osaaminen>
         </div>
         <div ng-if="isOppiaine()">
             <div ui-view></div>
