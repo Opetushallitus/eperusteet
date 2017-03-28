@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 /**
  * Form field with label and input field.
  * @param {Object} model Model base object for input, e.g. a.b.c => a is model
