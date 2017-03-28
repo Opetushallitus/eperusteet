@@ -1,9 +1,4 @@
 <div>
-    <revert-note object="model"
-                 revert-cb="revertCb(response)"
-                 versions="versiot"
-                 change-version="vaihdaVersio()"></revert-note>
-
     <button icon-role="edit"
             style="margin-left: 10px;"
             ng-hide="editEnabled || !versiot.latest"
@@ -13,10 +8,18 @@
             oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
 
     <button icon-role="plus"
-            ng-hide="editEnabled || !versiot.latest"
-            ng-click="lisaaOppiaine()"
+            style="margin-left: 10px;"
+            ng-hide="editEnabled || !versiot.latest || editEnabled.oppiaine"
+            ng-click="lisaaOppimaara()"
             class="btn btn-default pull-right"
-            kaanna="'lisaa-oppiaine'"
+            kaanna="'lisaa-oppimaara'"
+            oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
+
+    <button icon-role="plus"
+            ng-hide="editEnabled || !versiot.latest"
+            ng-click="lisaaKurssi()"
+            class="btn btn-default pull-right"
+            kaanna="'lisaa-kurssi'"
             oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
 
     <div ng-if="editEnabled">
@@ -44,20 +47,22 @@
                 ng-if="!isNew"
                 class="btn btn-danger pull-right"
                 ng-click="poista()">
-            {{'poista-vaihe' | kaanna}}
+            {{'poista-oppiaine' | kaanna}}
         </button>
     </div>
 
     <projektin-murupolku></projektin-murupolku>
 
     <h1>
-        <span ng-show="!editEnabled">{{editableModel.nimi | kaanna}}</span>
-        <span ng-show="editEnabled">{{isNew ? 'uusi-vaihe' : 'muokkaa-vaihe' | kaanna}}</span>
+        <span ng-show="!editEnabled">{{editableModel.nimi || 'nimeton-oppiaine' | kaanna}}</span>
+        <span ng-show="editEnabled">{{isNew ? 'uusi-oppiaine' : 'muokkaa-oppiainetta' | kaanna}}</span>
     </h1>
 
 
     <versiotiedot ng-hide="editEnabled"></versiotiedot>
+
     <hr ng-show="editEnabled">
+
     <form name="tutkinnonOsaHeaderForm" role="form">
         <div ng-if="!editEnabled">
             <div ng-bind-html="valitseKieli(editableModel.kuvaus) | unsafe"></div>
@@ -70,7 +75,6 @@
                ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
                kaanna="'nimi-on-pakollinen'"></p>
         </div>
-
     </form>
 
     <div ng-if="editEnabled">
@@ -128,21 +132,8 @@
             </div>
         </div>
     </div>
-
-    <div>
-        <table class="table table-striped">
-            <tr>
-                <th>
-                    {{'nimi'| kaanna}}
-                </th>
-            </tr>
-            <tr ng-repeat="oppiaine in editableModel.oppiaineet">
-                <td>
-                    <a ui-sref=".oppiaine({oppiaineId: oppiaine.id})"
-                       ng-bind="oppiaine.nimi || 'nimeton-oppiaine' | kaanna"></a>
-                </td>
-            </tr>
-        </table>
-    </div>
-
 </div>
+
+<!--<pre>{{editableModel | json}}</pre>
+<pre>{{oppimaarat | json}}</pre>
+<pre>{{kurssit | json}}</pre>-->

@@ -20,20 +20,14 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import java.util.UUID;
 
 /**
  *
@@ -70,7 +64,8 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity {
     private Koodi koodi;
 
     @Getter
-    @ManyToOne(cascade = {})
+    @NotAudited
+    @ManyToOne
     @JoinTable(name = "aipeoppiaine_aipekurssi",
                joinColumns = {
                    @JoinColumn(name = "kurssi_id")},

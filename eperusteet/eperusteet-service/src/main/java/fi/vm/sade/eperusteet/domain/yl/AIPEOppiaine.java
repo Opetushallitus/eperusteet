@@ -20,28 +20,16 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 /**
  *
@@ -159,25 +147,22 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @Audited
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinTable(name = "aipeoppiaine_aipeoppiaine",
-               joinColumns = {
-                   @JoinColumn(name = "oppiaine_id")},
-               inverseJoinColumns = {
-                   @JoinColumn(name = "oppimaara_id")})
+               joinColumns = {@JoinColumn(name = "oppiaine_id")},
+               inverseJoinColumns = {@JoinColumn(name = "oppimaara_id")})
     @OrderColumn(name = "oppimaara_order")
     private List<AIPEOppiaine> oppimaarat = new ArrayList<>(0);
 
     @Getter
-    @ManyToOne(cascade = {})
+    @NotAudited
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "aipeoppiaine_aipeoppiaine",
-               joinColumns = {
-                   @JoinColumn(name = "oppimaara_id")},
-               inverseJoinColumns = {
-                   @JoinColumn(name = "oppiaine_id")})
+               joinColumns = {@JoinColumn(name = "oppimaara_id")},
+               inverseJoinColumns = {@JoinColumn(name = "oppiaine_id")})
     private AIPEOppiaine oppiaine;
 
     @Override
     public AIPEOppiaine kloonaa() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Optional<AIPEKurssi> getKurssi(Long kurssiId) {

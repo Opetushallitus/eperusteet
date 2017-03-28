@@ -49,6 +49,10 @@ angular.module("eperusteApp")
                     }
                 })();
             };
+            $scope.lisaaOppiaine = async () => {
+                const oppiaine = await $scope.model.oppiaineet.post({});
+                $scope.editableModel.oppiaineet.push(oppiaine);
+            };
 
             $scope.fields = [
                 {
@@ -122,8 +126,6 @@ angular.module("eperusteApp")
                     $rootScope.$broadcast('notifyCKEditor');
                 },
                 add: field => {
-                    console.log(field, $scope.editableModel, $scope.editableModel[field.path],
-                        !$scope.editableModel[field.path]);
                     field.visible = true;
                     if (!$scope.editableModel[field.path]) {
                         $scope.editableModel[field.path] = {

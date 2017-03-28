@@ -16,12 +16,13 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 
 /**
  *
@@ -33,5 +34,5 @@ public class AIPEOppiaineBaseDto {
     private Long id;
     private UUID tunniste;
     private Optional<LokalisoituTekstiDto> nimi;
-    private Reference oppiaine;
+    private EntityReference oppiaine;
 }

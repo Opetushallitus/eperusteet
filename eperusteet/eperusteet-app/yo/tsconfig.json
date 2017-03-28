@@ -57,7 +57,6 @@
     "./app/scripts/services/kieli.ts",
     "./app/scripts/services/proxyservice.ts",
     "./app/scripts/services/aipe.ts",
-
     "./app/scripts/app.ts",
     "./app/scripts/directives/valmiskaannos.ts",
     "./app/scripts/directives/generictree.ts",

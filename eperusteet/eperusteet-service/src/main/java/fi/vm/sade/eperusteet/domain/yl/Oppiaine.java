@@ -21,25 +21,24 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
-import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.*;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
+
+import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -140,7 +139,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
 
     @RelatesToPeruste
     @Getter
-    @ManyToOne(optional = true)
+    @ManyToOne
     private Oppiaine oppiaine;
 
     @Getter

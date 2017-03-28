@@ -27,6 +27,9 @@
     </appender>
     
     <logger name="org.apache.fop" level="off"/>
+
+    <!--<logger name="org.hibernate.type" level="ALL" />
+    <logger name="org.hibernate" level="DEBUG" />-->
     <logger name="org.hibernate" level="error"/>
     <logger name="org.hibernate.tool.hbm2ddl" level="off"/>
     <logger name="org.springframework" level="warn"/>

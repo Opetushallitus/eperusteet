@@ -16,24 +16,13 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
 import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -41,18 +30,16 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
-import java.util.List;
-import java.util.Set;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 /**
  *

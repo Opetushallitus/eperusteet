@@ -200,10 +200,10 @@ public abstract class TestUtils {
     }
 
     public static AIPEOppiaineDto createAIPEOppiaine() {
-        AIPEOppiaineDto kurssi = new AIPEOppiaineDto();
-        kurssi.setNimi(olt(uniikkiString()));
-        kurssi.setTehtava(oto(uniikkiString(), uniikkiString()));
-        return kurssi;
+        AIPEOppiaineDto oppiaine = new AIPEOppiaineDto();
+        oppiaine.setNimi(olt(uniikkiString()));
+        oppiaine.setTehtava(oto(uniikkiString(), uniikkiString()));
+        return oppiaine;
     }
 
 }
