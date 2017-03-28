@@ -42,7 +42,8 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue", {
         oppiaineet: (vaihe, isVaihe, isNew) => isVaihe && !isNew ? vaihe.all("oppiaineet").getList() : null
     },
     controller: ($scope, $q, $state, $stateParams, laajaalaiset, laajaalainen, Editointikontrollit, Notifikaatiot,
-                 YleinenData, ProjektinMurupolkuService, vaiheet, vaihe, isOsaaminen, isVaihe, isNew, oppiaineet) => {
+                 YleinenData, ProjektinMurupolkuService, vaiheet, vaihe, isOsaaminen, isVaihe, isNew, oppiaineet,
+                 AIPEService) => {
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
         $scope.isNew = isNew;
         $scope.osanTyyppi = $stateParams.osanTyyppi;
@@ -65,7 +66,8 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue", {
             Editointikontrollit.startEditing();
         };
 
-        ProjektinMurupolkuService.set("osanTyyppi", $stateParams.osanTyyppi, $scope.osanTyyppi);
+        const labels = _.invert(AIPEService.LABELS);
+        ProjektinMurupolkuService.set("osanTyyppi", $stateParams.osanTyyppi, labels[$stateParams.osanTyyppi]);
         ProjektinMurupolkuService.set("osanId", $stateParams.osanId, $scope.dataObject.nimi);
     },
     onEnter: PerusteProjektiSivunavi => {

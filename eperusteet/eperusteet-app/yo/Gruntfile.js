@@ -454,6 +454,7 @@ module.exports = function(grunt) {
 
       grunt.task.run([
         'ts',
+        'pug',
         'clean:server',
         'concurrent:server',
         'copy:fonts',

@@ -35,7 +35,7 @@
                                           ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
                                 </div>
                                 <span class="linktext" ng-class="{'action-link': !!item.href}"
-                                      ep-highlight="search.term" ng-bind="item.label|kaanna"></span>
+                                      ep-highlight="search.term" ng-bind="item.label || 'nimeton' | kaanna"></span>
                             </a>
                         </div>
                     </uib-accordion-group>
@@ -53,7 +53,7 @@
                     <span ng-show="item.$leaf && item.$glyph" icon-role="{{item.$glyph}}"></span>
                 </div>
                 <span class="linktext" ng-class="{'action-link': !!item.href}" ep-highlight="search.term"
-                      ng-bind="item.label|kaanna"></span>
+                      ng-bind="item.label || 'nimeton' | kaanna"></span>
             </a>
             <div class="list-group-item" ng-if="!sections" ng-show="!hasResults && search.term">
                 <p class="no-results">{{ 'ei-tuloksia' | kaanna }}</p>

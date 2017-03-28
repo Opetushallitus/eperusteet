@@ -21,8 +21,7 @@ angular.module('eperusteApp')
     this.OPPIAINEET = 'oppiaineet';
     this.LABELS = {
         'laaja-alainen-osaaminen': this.OSAAMINEN,
-        'vaiheet': this.VAIHEET,
-        'oppiaineet': this.OPPIAINEET
+        'vaiheet': this.VAIHEET
     };
     let tiedot = null;
     let cached = {};

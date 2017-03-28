@@ -191,9 +191,7 @@ angular.module('eperusteApp')
     };
   })
 
-  // FIXME: Taitaa olla deprekoitunut
-  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService,
-    ProjektinMurupolkuService) {
+  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService, ProjektinMurupolkuService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
     $scope.isOsaaminen = $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN;

@@ -103,10 +103,18 @@ angular.module('eperusteApp')
 
   var processNode = function (node, level = 0, parent?) {
     _.each(node.lapset, function (lapsi) {
-      var label = lapsi.perusteenOsa ? lapsi.perusteenOsa.nimi : '';
+      let label;
+      if (lapsi.perusteenOsa) {
+          label = lapsi.perusteenOsa.nimi;
+      }
+      if (!label || label === '') {
+          label = 'nimeton';
+      }
+
       var link = null,
           special = null,
           isActive = null;
+
       if (lapsi.perusteenOsa && lapsi.perusteenOsa.osanTyyppi
                 && specialPerusteenOsaParts[lapsi.perusteenOsa.osanTyyppi]) {
         special = specialPerusteenOsaParts[lapsi.perusteenOsa.osanTyyppi];
@@ -165,8 +173,9 @@ angular.module('eperusteApp')
 
   function ylMapper(targetItems, osa, key, level, link?, parent?) {
     level = level || 0;
-    var nimi:Lokalisoitu = _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi;
-    if (perusteenTyyppi === 'LU' && key === 'oppiaineet_oppimaarat'
+    let nimi:Lokalisoitu = _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi;
+    if (perusteenTyyppi === 'LU'
+        && key === 'oppiaineet_oppimaarat'
         && (osa.lokalisoitukoodi || osa.koodiArvo)) {
       // Oppiaineelle ei varmaan tunnusta haluttu?
       if (link && link[0] == STATE_LUKIOKURSSI) {

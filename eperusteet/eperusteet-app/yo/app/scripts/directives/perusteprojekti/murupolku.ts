@@ -21,6 +21,7 @@ angular.module('eperusteApp')
     var URLS = {
       tutkinnonosat: ['suoritustapa.tutkinnonosat'],
       osalistaus: ['suoritustapa.osalistaus'],
+      aipeosalistaus: ['suoritustapa.aipeosalistaus'],
       lukioosat: ['suoritustapa.lukioosat'],
       koulutuksenosa: ['suoritustapa.koulutuksenosat']
     };
@@ -46,6 +47,9 @@ angular.module('eperusteApp')
       },
       'suoritustapa.osaalue': {
         items: [{url: 'osalistaus', label: {getName: 'osanTyyppi'}}, 'custom', {getName: 'osanId'}]
+      },
+      'suoritustapa.aipeosaalue': {
+        items: [{url: 'aipeosalistaus', label: {getName: 'osanTyyppi'}}, 'custom', {getName: 'osanId'}]
       },
       'suoritustapa.lukioosaalue': {
         items: [{url: 'lukioosat', label: {getName: 'osanTyyppi'}}, 'custom', {getName: 'osanId'}]

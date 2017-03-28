@@ -136,7 +136,7 @@
     "ru": "Venäjä",
     "ui-kieli": "Käyttöliittymäkieli",
 
-    "nimeton": "<Nimetön>",
+    "nimeton": "Nimetön",
     "vaiheet": "Vaiheet",
     "tyhja-placeholder-vaiheet": "Vaiheita ei ole lisätty.",
     "vaihe-tehtava": "Vaiheen tehtävä",
@@ -230,7 +230,7 @@
     "laajuuden-yksikkö": "Laajuuden yksikkö",
     "reformin-mukainen": "Reformin mukainen",
 
-    "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
+    "uusi-tutkinnonosa": "Uusi tutkinnon osa",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",

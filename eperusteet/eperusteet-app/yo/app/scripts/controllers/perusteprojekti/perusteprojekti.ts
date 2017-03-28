@@ -14,7 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-
 angular.module('eperusteApp')
 .config($stateProvider => $stateProvider
 .state('root.perusteprojekti', {
