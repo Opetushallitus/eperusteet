@@ -50,6 +50,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.ServletException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -94,6 +95,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {
+            PersistenceException.class,
             MappingException.class,
             NestedRuntimeException.class,
             NestedCheckedException.class,

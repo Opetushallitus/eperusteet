@@ -128,22 +128,34 @@
                 <div ng-bind-html="editableModel[field.path].teksti | kaanna | unsafe"></div>
             </div>
         </div>
-    </div>
 
-    <div ng-if="!editEnabled">
-        <table class="table table-striped">
-            <tr>
-                <th>
-                    {{'nimi'| kaanna}}
-                </th>
-            </tr>
-            <tr ng-repeat="oppiaine in editableModel.oppiaineet">
-                <td>
-                    <a ui-sref=".oppiaine({oppiaineId: oppiaine.id})"
-                       ng-bind="oppiaine.nimi || 'nimeton-oppiaine' | kaanna"></a>
-                </td>
-            </tr>
-        </table>
+        <!-- Oppiaineet -->
+        <div class="panel-heading vuosiluokka-osio">
+            <h3 class="panel-title osio-otsikko"
+                ng-click="editableModel.oppiaineet.$isCollapsed = !editableModel.oppiaineet.$isCollapsed">
+                    <span class="glyphicon"
+                          ng-class="editableModel.oppiaineet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                <span kaanna="'oppiaineet'"></span>
+            </h3>
+        </div>
+        <div class="panel-body" collapse="editableModel.oppiaineet.$isCollapsed">
+            <div ng-show="editableModel.oppiaineet.length == 0">
+                <span kaanna="'tyhja-placeholder-oppiaineet'"></span>
+            </div>
+            <table class="table table-striped" ng-show="editableModel.oppiaineet.length > 0">
+                <tr>
+                    <th>
+                        {{'nimi'| kaanna}}
+                    </th>
+                </tr>
+                <tr ng-repeat="oppiaine in editableModel.oppiaineet">
+                    <td>
+                        <a ui-sref=".oppiaine({oppiaineId: oppiaine.id})"
+                           ng-bind="oppiaine.nimi || 'nimeton-oppiaine' | kaanna"></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
 </div>

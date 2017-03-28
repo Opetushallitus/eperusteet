@@ -37,7 +37,7 @@ angular.module("eperusteApp")
                     primaryBtn: 'poista',
                     successCb: async () => {
                         Editointikontrollit.cancelEditing();
-                        await $scope.model.remove();
+                        await $scope.editableModel.remove();
                         AIPEService.clearCache();
                         $state.go('root.perusteprojekti.suoritustapa.aipeosalistaus', {
                             suoritustapa: $stateParams.suoritustapa,
@@ -161,20 +161,19 @@ angular.module("eperusteApp")
                 save: async () => {
                     if ($scope.isNew) {
                         $scope.editableModel = await $scope.editableModel.post();
-                        Notifikaatiot.onnistui('tallennus-onnistui');
-                        AIPEService.clearCache();
-                        $state.go($state.current, {
-                            suoritustapa: $stateParams.suoritustapa,
-                            osanTyyppi: $stateParams.osanTyyppi,
-                            osanId: $scope.editableModel.id
-                        }, {
-                            reload: true
-                        });
                     } else {
                         $scope.editableModel = await $scope.editableModel.save();
-                        Notifikaatiot.onnistui('tallennus-onnistui');
-                        $scope.model = Api.copy($scope.editableModel);
                     }
+
+                    Notifikaatiot.onnistui('tallennus-onnistui');
+                    AIPEService.clearCache();
+                    $state.go($state.current, {
+                        suoritustapa: $stateParams.suoritustapa,
+                        osanTyyppi: $stateParams.osanTyyppi,
+                        osanId: $scope.editableModel.id
+                    }, {
+                        reload: true
+                    });
                 },
                 cancel: () => {
                     if ($scope.isNew) {

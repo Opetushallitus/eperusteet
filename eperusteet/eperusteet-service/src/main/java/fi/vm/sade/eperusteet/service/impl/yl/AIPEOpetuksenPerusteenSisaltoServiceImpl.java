@@ -284,9 +284,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
             throw new BusinessRuleViolationException("vaiheella-oppiaineita");
         }
         AIPEOpetuksenSisalto perusteenSisalto = getPerusteSisalto(perusteId);
-        if (perusteenSisalto.getVaiheet().remove(vaihe)) {
-            vaiheRepository.delete(vaihe);
-        }
+        perusteenSisalto.getVaiheet().remove(vaihe);
     }
 
     @Override
