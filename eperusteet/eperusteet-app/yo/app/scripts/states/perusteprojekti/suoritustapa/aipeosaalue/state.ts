@@ -39,7 +39,7 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue", {
         laajaalainen: (laajaalaiset, $stateParams, Api, isOsaaminen, isNew) => isOsaaminen && !isNew
             ? laajaalaiset.get($stateParams.osanId)
             : Api.restangularizeElement(laajaalaiset, {}, ""),
-        oppiaineet: (vaihe, isVaihe) => isVaihe ? vaihe.all("oppiaineet").getList() : null
+        oppiaineet: (vaihe, isVaihe, isNew) => isVaihe && !isNew ? vaihe.all("oppiaineet").getList() : null
     },
     controller: ($scope, $q, $state, $stateParams, laajaalaiset, laajaalainen, Editointikontrollit, Notifikaatiot,
                  YleinenData, ProjektinMurupolkuService, vaiheet, vaihe, isOsaaminen, isVaihe, isNew, oppiaineet) => {
