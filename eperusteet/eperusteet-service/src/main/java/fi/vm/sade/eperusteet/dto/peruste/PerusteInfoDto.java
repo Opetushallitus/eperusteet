@@ -34,5 +34,6 @@ public class PerusteInfoDto {
     private LokalisoituTekstiDto nimi;
     private String diaarinumero;
     private Date voimassaoloLoppuu;
+    private Date voimassaoloAlkaa;
     private PerusteTila tila;
 }

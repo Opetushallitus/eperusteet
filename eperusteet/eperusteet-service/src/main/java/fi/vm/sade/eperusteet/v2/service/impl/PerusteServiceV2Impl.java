@@ -66,7 +66,7 @@ public class PerusteServiceV2Impl implements PerusteServiceV2, ApplicationListen
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getAmosaaYhteinenPohja() {
-        List<Peruste> loydetyt = perusteet.findByDiaarinumero(new Diaarinumero("amosaa/yhteiset"));
+        List<Peruste> loydetyt = perusteet.findAllByDiaarinumero(new Diaarinumero("amosaa/yhteiset"));
 
         if (loydetyt.size() == 1) {
             return getKokoSisalto(loydetyt.get(0).getId());

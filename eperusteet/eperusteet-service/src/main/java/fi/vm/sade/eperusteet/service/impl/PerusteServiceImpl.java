@@ -55,6 +55,14 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,15 +73,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -273,6 +272,23 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             });
         }
 
+        // Lisätään korvaavat ja korvattavat perusteet
+        for (PerusteHakuDto haettu : resultDto) {
+            Set<Diaarinumero> korvattavatDiaarinumerot = haettu.getKorvattavatDiaarinumerot().stream()
+                    .map(diaariStr -> new Diaarinumero(diaariStr))
+                    .collect(Collectors.toSet());
+
+            if (!korvattavatDiaarinumerot.isEmpty()) {
+                Set<Peruste> korvattavat = perusteet.findAllByDiaarinumerot(korvattavatDiaarinumerot);
+                List<PerusteInfoDto> korvattavatDto = mapper.mapAsList(korvattavat, PerusteInfoDto.class);
+                haettu.setKorvattavatPerusteet(korvattavatDto);
+            }
+
+            Set<Peruste> korvaajat = perusteet.findAllKorvaavatByDiaarinumero(haettu.getDiaarinumero());
+            List<PerusteInfoDto> korvaajatDto = mapper.mapAsList(korvaajat, PerusteInfoDto.class);
+            haettu.setKorvaavatPerusteet(korvaajatDto);
+        }
+
         return resultDto;
     }
 
@@ -310,7 +326,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getAmosaaYhteinenPohja() {
-        List<Peruste> loydetyt = perusteet.findByDiaarinumero(new Diaarinumero("amosaa/yhteiset"));
+        List<Peruste> loydetyt = perusteet.findAllByDiaarinumero(new Diaarinumero("amosaa/yhteiset"));
 
         if (loydetyt.size() == 1) {
             return getKokoSisalto(loydetyt.get(0).getId());
