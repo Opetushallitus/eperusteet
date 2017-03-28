@@ -1,36 +1,44 @@
-<!-- muodostumissaannot.html -->
+<!-- partials/perusteprojekti/muodostumissaannot.html -->
 <div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
-  <div id="ck-toolbar-top"></div>
-  <div id="ck-toolbar-bottom"></div>
+    <div id="ck-toolbar-top"></div>
+    <div id="ck-toolbar-bottom"></div>
 </div>
 <div class="row">
-  <div class="col-md-12 ep-sisalto-inner">
+    <div class="col-md-12 ep-sisalto-inner">
 
-    <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
+        <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot"
+                     change-version="vaihdaVersio()"></revert-note>
 
-    <div class="part-header-wrapper">
-      <div class="action-buttons">
-        <div class="floater" ng-attr-title="{{lockNotification}}">
-          <button ng-disabled="isLocked" ng-hide="editoi || !versiot.latest" ng-click="muokkaa()"
-                  class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-                  oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+        <div class="part-header-wrapper">
+            <div class="action-buttons">
+                <div class="floater" ng-attr-title="{{lockNotification}}">
+                    <button ng-disabled="isLocked"
+                            ng-hide="editoi || !versiot.latest"
+                            ng-click="muokkaa()"
+                            class="btn btn-default"
+                            icon-role="edit"
+                            kaanna="'muokkaa'"
+                            oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+                </div>
+                <div class="floater" ng-if="!editoi && isLocked">
+                    <lukko tip="lockNotification"></lukko>
+                </div>
+            </div>
+
+            <h1 ng-show="!editoi && rakenne.muodostumisOtsikko">{{rakenne.muodostumisOtsikko.nimi|kaanna}}</h1>
+            <h1 ng-show="!editoi && !rakenne.muodostumisOtsikko" kaanna="vateConverter('tutkinnon-muodostuminen')"></h1>
+            <h1 ng-show="editoi" kaanna="vateConverter('tutkinnon-muodostuminen-muokkaus')"></h1>
         </div>
-        <div class="floater" ng-if="!editoi && isLocked"><lukko tip="lockNotification"></lukko></div>
-      </div>
 
-      <h1 ng-show="!editoi && rakenne.muodostumisOtsikko">{{rakenne.muodostumisOtsikko.nimi|kaanna}}</h1>
-      <h1 ng-show="!editoi && !rakenne.muodostumisOtsikko" kaanna="vateConverter('tutkinnon-muodostuminen')"></h1>
-      <h1 ng-show="editoi" kaanna="vateConverter('tutkinnon-muodostuminen-muokkaus')"></h1>
-    </div>
+        <div class="max-sm-leveys">
+            <versiotiedot ng-hide="editoi"></versiotiedot>
+        </div>
+        <div class="tree-presentation">
+            <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
+        </div>
+        <div class="clearfix"></div>
 
-    <div class="max-sm-leveys">
-      <versiotiedot ng-hide="editoi"></versiotiedot>
-    </div>
-    <div class="tree-presentation">
-      <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
-    </div>
-    <div class="clearfix"></div>
-    <kommentit></kommentit>
+        <kommentit></kommentit>
 
-  </div>
+    </div>
 </div>

@@ -25,10 +25,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.*;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import java.io.Serializable;
-import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.Serializable;
+import java.util.*;
+
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.*;
 
 /**
  * @author harrik
@@ -350,7 +352,8 @@ public class PermissionManager {
         } else {
             boolean allowed = false;
             for (Pair<String, ProjektiTila> ppt : findPerusteProjektiTila(targetType, targetId)) {
-                allowed = allowed | hasAnyRole(authentication, ppt.getFirst(), getAllowedRoles(targetType, ppt.getSecond(), permission));
+                allowed = allowed | hasAnyRole(authentication, ppt.getFirst(),
+                        getAllowedRoles(targetType, ppt.getSecond(), permission));
             }
             return allowed;
         }
@@ -397,11 +400,11 @@ public class PermissionManager {
     }
 
     /**
-     * @param authentication
-     * @param targetId
-     * @param targetType
-     * @param tila
-     * @return
+     * @param authentication authentication
+     * @param targetId targetId
+     * @param targetType targetType
+     * @param tila tila
+     * @return oikeussetti
      */
     // TODO: tila parametrin voisi varmaan karsia pois
     private Set<Permission> getPermissions(Authentication authentication, Serializable targetId, Target targetType, ProjektiTila tila) {

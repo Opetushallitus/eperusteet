@@ -27,6 +27,7 @@ import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -160,6 +161,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto;
 
     @Getter
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private AIPEOpetuksenSisalto aipeOpetuksenPerusteenSisalto;
+
+    @Getter
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
@@ -256,6 +261,9 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             case PERUSOPETUS:
                 viite = this.getPerusopetuksenPerusteenSisalto().getSisalto();
                 break;
+            case AIPE:
+                viite = this.getAipeOpetuksenPerusteenSisalto().getSisalto();
+                break;
             case LUKIOKOULUTUS:
                 viite = this.getLukiokoulutuksenPerusteenSisalto().getSisalto();
                 break;
@@ -273,6 +281,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     public void setPerusopetuksenPerusteenSisalto(PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto) {
         this.perusopetuksenPerusteenSisalto = perusopetuksenPerusteenSisalto;
         this.perusopetuksenPerusteenSisalto.setPeruste(this);
+    }
+
+    public void setSisalto(AIPEOpetuksenSisalto sisalto) {
+        this.aipeOpetuksenPerusteenSisalto = sisalto;
+        this.aipeOpetuksenPerusteenSisalto.setPeruste(this);
     }
 
     public void setEsiopetuksenPerusteenSisalto(EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto) {
@@ -300,12 +313,20 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             return perusopetuksenPerusteenSisalto.containsViite(viite);
         }
 
+        if (aipeOpetuksenPerusteenSisalto != null) {
+            return aipeOpetuksenPerusteenSisalto.containsViite(viite);
+        }
+
         if (esiopetuksenPerusteenSisalto != null) {
             return esiopetuksenPerusteenSisalto.containsViite(viite);
         }
 
-        return lukiokoulutuksenPerusteenSisalto != null
-                && lukiokoulutuksenPerusteenSisalto.containsViite(viite);
+        if  (lukiokoulutuksenPerusteenSisalto != null
+                && lukiokoulutuksenPerusteenSisalto.containsViite(viite)) {
+            return lukiokoulutuksenPerusteenSisalto.containsViite(viite);
+        }
+
+        throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");
     }
 
     public interface Valmis {}

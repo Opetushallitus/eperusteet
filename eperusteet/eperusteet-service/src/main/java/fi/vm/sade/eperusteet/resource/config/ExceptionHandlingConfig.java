@@ -21,15 +21,7 @@ import fi.vm.sade.eperusteet.service.exception.LockingException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.exception.ServiceException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
+import ma.glasnost.orika.MappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -57,6 +49,16 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
+
+import javax.servlet.ServletException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -92,11 +94,13 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {
-        NestedRuntimeException.class,
-        NestedCheckedException.class,
-        IOException.class,
-        ServletException.class,
-        ValidationException.class})
+            MappingException.class,
+            NestedRuntimeException.class,
+            NestedCheckedException.class,
+            IOException.class,
+            ServletException.class,
+            ValidationException.class
+    })
     public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ResponseStatus rs = e.getClass().getAnnotation(ResponseStatus.class);

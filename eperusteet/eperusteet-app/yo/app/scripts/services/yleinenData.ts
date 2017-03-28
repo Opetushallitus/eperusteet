@@ -139,6 +139,14 @@ angular.module('eperusteApp')
         sisaltoTunniste: 'posisalto',
         hasPdfCreation: false
       },
+      'koulutustyyppi_17': {
+        nimi: 'aikuistenperusopetus',
+        oletusSuoritustapa: 'aipe',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.aikuisperusopetuslista',
+        sisaltoTunniste: 'aipesisalto',
+        hasPdfCreation: false
+      },
       'koulutustyyppi_6': {
         nimi: 'lisaopetus',
         oletusSuoritustapa: 'lisaopetus',
@@ -224,9 +232,13 @@ angular.module('eperusteApp')
       return peruste.koulutustyyppi === 'koulutustyyppi_16';
     };
 
+    this.isAipe = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_17';
+    };
+
     this.isValmaTelma = function(koulutustyyppiTaiPeruste) {
       if(koulutustyyppiTaiPeruste){
-        var ortherKoulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste) ? koulutustyyppiTaiPeruste : koulutustyyppiTaiPeruste.koulutustyyppi;
+        const ortherKoulutustyyppiTaiPeruste = _.isString(koulutustyyppiTaiPeruste) ? koulutustyyppiTaiPeruste : koulutustyyppiTaiPeruste.koulutustyyppi;
         return ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_18' || ortherKoulutustyyppiTaiPeruste === 'koulutustyyppi_5';
       }
       return false;

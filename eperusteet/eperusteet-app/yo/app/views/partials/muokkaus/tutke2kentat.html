@@ -1,117 +1,136 @@
+<!-- partials/muokkaus/tutke2kentat.html -->
 <div class="tutke2">
-  <!-- tutke2kentat.html -->
 
-  <div class="osa-alue-navi" ng-show="!mainLevelEditing && tutke2osa.osaAlueet.length > 1"><span kaanna>osa-alueet</span>
-    <ul>
-      <li ng-repeat="alue in tutke2osa.osaAlueet">
-        <a class="action-link" ng-click="osaAlue.jumpTo(alue)" kaanna="alue.nimi"></a>
-      </li>
-    </ul>
-  </div>
-  <p class="info-placeholder" ng-show="!tutke2osa.$fetching && (!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0) && !mainLevelEditing" kaanna>ei-osa-alueita</p>
-  <div class="non-collapsibles" ng-if="mainLevelEditing">
-    <label class="header" kaanna>osa-alueet</label>
-    <div class="clearfix"></div>
-    <div ng-show="tutke2osa.$editing.length > 0">
-      <div class="sisalto" ui-tree data-drag-enabled="mainLevelEditing"
-           data-empty-place-holder-enabled="false" data-max-depth="1">
-        <div ui-tree-nodes class="sisalto-group" ng-model="tutke2osa.$editing">
-          <li ng-repeat="alue in tutke2osa.$editing" ui-tree-node>
-            <div class="input-group" >
-              <span class="input-group-addon"><div icon-role="resize-vertical" class="draghandle" ui-tree-handle></div></span>
-              <input type="text" ng-model="alue.nimi" class="form-control" slocalized>
-              <span class="input-group-btn">
-                <button class="btn btn-default" icon-role="remove" type="button" ng-click="osaAlue.remove(alue)" kaanna="'poista'" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-              </span>
-            </div>
-          </li>
-        </div>
-      </div>
+    <div class="osa-alue-navi" ng-show="!mainLevelEditing && tutke2osa.osaAlueet.length > 1"><span
+            kaanna>osa-alueet</span>
+        <ul>
+            <li ng-repeat="alue in tutke2osa.osaAlueet">
+                <a class="action-link" ng-click="osaAlue.jumpTo(alue)" kaanna="alue.nimi"></a>
+            </li>
+        </ul>
     </div>
-    <button class="btn btn-default" icon-role="add" ng-click="osaAlue.add()" kaanna="lisaa-osa-alue" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-  </div>
-
-  <div ng-if="!mainLevelEditing">
-    <accordion close-others="viewOptions.oneAtATime">
-      <!-- osa-alueet -->
-      <accordion-group ng-show="!tutke2osa.$fetching" ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open"
-                       class="panel-clean osa-alue" ng-class="{'kohde-edit': alue.$editing}" id="{{alue.$uniqueId}}">
-        <accordion-heading>
-          <div class="row">
-            <div class="col-sm-9">
-              <span class="glyphicon" ng-class="alue.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
-              <span ng-show="!alue.$editing" class="otsikko">{{alue.nimi| kaanna}}</span>
-              <input ng-show="alue.$editing" class="osa-alue-nimi" ng-model="osaAlue.$editing.nimi" slocalized ng-click="$event.stopPropagation()">
-              <span ng-hide="isEditingInProgress()">
-                <select ng-if="alue.$groups.$size > 1" ng-options="item.value as item.label|kaanna for item in alue.$groups.$options"
-                        ng-model="alue.$chosen" ng-click="$event.stopPropagation()"></select>
-              </span>
+    <p class="info-placeholder"
+       ng-show="!tutke2osa.$fetching && (!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0) && !mainLevelEditing"
+       kaanna>ei-osa-alueita</p>
+    <div class="non-collapsibles" ng-if="mainLevelEditing">
+        <label class="header" kaanna>osa-alueet</label>
+        <div class="clearfix"></div>
+        <div ng-show="tutke2osa.$editing.length > 0">
+            <div class="sisalto" ui-tree data-drag-enabled="mainLevelEditing"
+                 data-empty-place-holder-enabled="false" data-max-depth="1">
+                <div ui-tree-nodes class="sisalto-group" ng-model="tutke2osa.$editing">
+                    <li ng-repeat="alue in tutke2osa.$editing" ui-tree-node>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <div icon-role="resize-vertical" class="draghandle"
+                                                                 ui-tree-handle></div>
+                            </span>
+                            <input type="text" ng-model="alue.nimi" class="form-control" slocalized>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" icon-role="remove" type="button" ng-click="osaAlue.remove(alue)"
+                                        kaanna="'poista'" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                            </span>
+                        </div>
+                    </li>
+                </div>
             </div>
-            <div class="col-sm-3">
-              <div class="muokkaus-napit pull-right"
-                ng-hide="alue.$editing || isEditingInProgress() || !tutke2osa.versiot.latest || originalViite.tutkinnonOsa.tila === 'valmis'">
-                <button class="btn btn-default" ng-click="osaAlue.edit(alue, $event)" kaanna="'muokkaa'" icon-role="edit"
-                  oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-              </div>
-              <div class="muokkaus-napit pull-right"
-                ng-show="!alue.$editing && !isEditingInProgress() && tutke2osa.versiot.latest && originalViite.tutkinnonOsa.tila === 'valmis'">
-                <button class="btn btn-default" ng-click="osaAlue.edit(alue, $event)" kaanna="'muokkaa'" icon-role="edit"
-                  oikeustarkastelu="{ target: 'peruste', permission: 'korjaus' }"></button>
-              </div>
-              <div class="muokkaus-napit pull-right" ng-show="alue.$editing">
-                <button class="btn btn-default" ng-click="osaAlue.removeDirect(alue, $event)" kaanna="poista-osa-alue" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-              </div>
-            </div>
-          </div>
-        </accordion-heading>
-
-        <label class="header" kaanna="'kuvaus'" ng-if="alue.kuvaus"></label>
-        <div editMode="false" type="text" ng-bind-html="alue.kuvaus | kaanna | unsafe"></div>
-
-        <div ng-if="alue.koodiArvo">
-          <label class="header" kaanna="'koodi'"></label>:<span> {{ alue.koodiArvo || '-' }}</span>
         </div>
+        <button class="btn btn-default" icon-role="add" ng-click="osaAlue.add()" kaanna="lisaa-osa-alue"
+                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+    </div>
 
-        <!-- osaamistavoitteet -->
-        <p class="info-placeholder" ng-show="!alue.$editing && (!alue.osaamistavoitteet || alue.osaamistavoitteet.length === 0)
-        && (!alue.valmaTelmaSisalto || alue.valmaTelmaSisalto.length === 0)" kaanna>
-          Ei osaamistavoitteita.
-        </p>
-        <div ng-if="alue.valmaTelmaSisalto && alue.valmaTelmaSisalto.length !== 0">
-          <valmaarviointi valmaarviointi="alue.valmaTelmaSisalto.osaamistavoite" mainLevelEditing="false" ei-kohdealueita="true"></valmaarviointi>
-          <valmaarviointi valmaarviointi="alue.valmaTelmaSisalto.osaamisenarviointi" type="arviointi" mainLevelEditing="false" ei-kohdealueita="true"></valmaarviointi>
-        </div>
+    <div ng-if="!mainLevelEditing">
+        <uib-accordion close-others="viewOptions.oneAtATime">
+            <uib-accordion-group ng-show="!tutke2osa.$fetching" ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open"
+                             class="panel-clean osa-alue" ng-class="{'kohde-edit': alue.$editing}"
+                             id="{{alue.$uniqueId}}">
+                <uib-accordion-heading>
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <span class="glyphicon"
+                                  ng-class="alue.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+                            <span ng-show="!alue.$editing" class="otsikko">{{alue.nimi| kaanna}}</span>
+                            <input ng-show="alue.$editing" class="osa-alue-nimi" ng-model="osaAlue.$editing.nimi"
+                                   slocalized ng-click="$event.stopPropagation()">
+                            <span ng-hide="isEditingInProgress()">
+                                <select ng-if="alue.$groups.$size > 1"
+                                        ng-options="item.value as item.label|kaanna for item in alue.$groups.$options"
+                                        ng-model="alue.$chosen" ng-click="$event.stopPropagation()"></select>
+                            </span>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="muokkaus-napit pull-right"
+                                 ng-hide="alue.$editing || isEditingInProgress() || !tutke2osa.versiot.latest || originalViite.tutkinnonOsa.tila === 'valmis'">
+                                <button class="btn btn-default" ng-click="osaAlue.edit(alue, $event)" kaanna="'muokkaa'"
+                                        icon-role="edit"
+                                        oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                            </div>
+                            <div class="muokkaus-napit pull-right"
+                                 ng-show="!alue.$editing && !isEditingInProgress() && tutke2osa.versiot.latest && originalViite.tutkinnonOsa.tila === 'valmis'">
+                                <button class="btn btn-default" ng-click="osaAlue.edit(alue, $event)" kaanna="'muokkaa'"
+                                        icon-role="edit"
+                                        oikeustarkastelu="{ target: 'peruste', permission: 'korjaus' }"></button>
+                            </div>
+                            <div class="muokkaus-napit pull-right" ng-show="alue.$editing">
+                                <button class="btn btn-default" ng-click="osaAlue.removeDirect(alue, $event)"
+                                        kaanna="poista-osa-alue" icon-role="remove"
+                                        oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                            </div>
+                        </div>
+                    </div>
+                </uib-accordion-heading>
 
-        <div ng-if="!alue.$editing" ng-repeat="pakollisuus in [true, false]">
-          <div class="panel panel-default panel-clean" ng-repeat="tavoite in getTavoitteet(alue, pakollisuus)" ng-class="{'kohde-edit': tavoite.$editing}">
+                <label class="header" kaanna="'kuvaus'" ng-if="alue.kuvaus"></label>
+                <div editMode="false" type="text" ng-bind-html="alue.kuvaus | kaanna | unsafe"></div>
 
-            <div ng-if="!tavoite.$editing">
-              <div class="panel-heading">
-                <h3>
-                  {{pakollisuus && 'pakolliset-osaamistavoitteet' || 'valinnaiset-osaamistavoitteet' | kaanna}}, {{tavoite.laajuus}} {{ yksikko | kaanna }}
-                </h3>
-              </div>
-              <div class="panel-body non-collapsibles">
-                <div ng-if="tavoite.koodiArvo">
-                  <label class="header" kaanna="'koodi'"></label>:<span> {{ tavoite.koodiArvo || '-' }}</span>
+                <div ng-if="alue.koodiArvo">
+                    <label class="header" kaanna="'koodi'"></label>:<span> {{ alue.koodiArvo || '-' }}</span>
                 </div>
 
-                <label class="header" kaanna>tavoitteet</label>
-                <p ng-bind-html="tavoite.tavoitteet | kaanna | unsafe"></p>
-                <label class="header" kaanna>arviointi</label>
-                <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" mainLevelEditing="tavoite.$editing" ei-kohdealueita="true"></arviointi>
-                <label class="header" kaanna>tutkinnonosa-tunnustaminen</label>
-                <p ng-bind-html="tavoite.tunnustaminen | kaanna | unsafe"></p>
-                <label class="header" kaanna>ammattitaitovaatimukset</label>
-                <ammattitaito ammattitaito="tavoite.ammattitaitovaatimuksetLista" mainLevelEditing="false" ei-kohdealueita="true"></ammattitaito>
-              </div>
-            </div>
+                <!-- osaamistavoitteet -->
+                <p class="info-placeholder" ng-show="!alue.$editing && (!alue.osaamistavoitteet || alue.osaamistavoitteet.length === 0) && (!alue.valmaTelmaSisalto || alue.valmaTelmaSisalto.length === 0)" kaanna>
+                    Ei osaamistavoitteita.
+                </p>
+                <div ng-if="alue.valmaTelmaSisalto && alue.valmaTelmaSisalto.length !== 0">
+                    <valmaarviointi valmaarviointi="alue.valmaTelmaSisalto.osaamistavoite" mainLevelEditing="false"
+                                    ei-kohdealueita="true"></valmaarviointi>
+                    <valmaarviointi valmaarviointi="alue.valmaTelmaSisalto.osaamisenarviointi" type="arviointi"
+                                    mainLevelEditing="false" ei-kohdealueita="true"></valmaarviointi>
+                </div>
 
-          </div>
-        </div>
+                <div ng-if="!alue.$editing" ng-repeat="pakollisuus in [true, false]">
+                    <div class="panel panel-default panel-clean" ng-repeat="tavoite in getTavoitteet(alue, pakollisuus)"
+                         ng-class="{'kohde-edit': tavoite.$editing}">
 
-      </accordion-group>
-    </accordion>
-  </div>
+                        <div ng-if="!tavoite.$editing">
+                            <div class="panel-heading">
+                                <h3>
+                                    {{pakollisuus && 'pakolliset-osaamistavoitteet' || 'valinnaiset-osaamistavoitteet' | kaanna}}, {{tavoite.laajuus}} {{ yksikko | kaanna }}
+                                </h3>
+                            </div>
+                            <div class="panel-body non-collapsibles">
+                                <div ng-if="tavoite.koodiArvo">
+                                    <label class="header" kaanna="'koodi'"></label>:<span> {{ tavoite.koodiArvo || '-' }}</span>
+                                </div>
+
+                                <label class="header" kaanna>tavoitteet</label>
+                                <p ng-bind-html="tavoite.tavoitteet | kaanna | unsafe"></p>
+                                <label class="header" kaanna>arviointi</label>
+                                <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet"
+                                           mainLevelEditing="tavoite.$editing" ei-kohdealueita="true"></arviointi>
+                                <label class="header" kaanna>tutkinnonosa-tunnustaminen</label>
+                                <p ng-bind-html="tavoite.tunnustaminen | kaanna | unsafe"></p>
+                                <label class="header" kaanna>ammattitaitovaatimukset</label>
+                                <ammattitaito ammattitaito="tavoite.ammattitaitovaatimuksetLista"
+                                              mainLevelEditing="false" ei-kohdealueita="true"></ammattitaito>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </uib-accordion-group>
+        </uib-accordion>
+    </div>
 
 </div>

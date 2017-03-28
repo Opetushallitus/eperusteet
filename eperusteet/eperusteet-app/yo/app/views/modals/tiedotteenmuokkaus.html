@@ -1,5 +1,4 @@
-<!-- tiedotteenmuokkaus.html -->
-
+<!-- modals/tiedotteenmuokkaus.html -->
 <div class="modal-header">
   <kielenvaihto modal="true"></kielenvaihto>
   <h2>{{creating ? 'uusi-tiedote' : 'muokkaa-tiedotetta' | kaanna}}</h2>
@@ -17,7 +16,13 @@
     </tr>
   </table>
   <h3 kaanna="'otsikko'"></h3>
-  <input class="form-control" ng-model="model.otsikko" slocalized type="text" required="true" data-empty-place-holder-enabled="true" placeholder="{{'tiedote-otsikko-placeholder' | kaanna}}"></input>
+  <input class="form-control"
+         ng-model="model.otsikko"
+         slocalized
+         type="text"
+         required="true"
+         data-empty-place-holder-enabled="true"
+         placeholder="{{'tiedote-otsikko-placeholder' | kaanna}}">
   <h3 kaanna="'tiedoteteksti'"></h3>
   <div id="toolbar" style="display: none">
     <div id="ck-toolbar-top"></div>

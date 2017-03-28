@@ -31,8 +31,8 @@ angular.module('eperusteApp')
         cb();
         return;
       }
-      $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
-        taydennykset = koodistoMapping(re.data);
+      $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then((res) => {
+        taydennykset = koodistoMapping(res.data);
         nykyinenKoodisto = koodisto;
         taydennykset = _.sortBy(taydennykset, Utils.nameSort);
         cb();

@@ -40,10 +40,10 @@ angular.module('eperusteApp')
     };
   })
 
-  .service('AikaleimaCache', function ($rootScope, DSCacheFactory) {
+  .service('AikaleimaCache', function ($rootScope, CacheFactory) {
     var cache = null;
     this.create = function () {
-      cache = DSCacheFactory.createCache('momentCache', {
+      cache = CacheFactory.createCache('momentCache', {
         capacity: 1024,
         maxAge: 60000,
         deleteOnExpire: 'aggressive'

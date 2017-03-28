@@ -14,459 +14,431 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
 
 angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('root.perusteprojekti', {
-        url: '/perusteprojekti/:perusteProjektiId',
-        templateUrl: 'views/perusteprojekti.html',
-        controller: 'PerusteprojektiCtrl',
-        resolve: {
-          'koulutusalaService': 'Koulutusalat',
-          'opintoalaService': 'Opintoalat',
-          'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', '$log', function(perusteprojektiTiedot, $stateParams) {
-              return perusteprojektiTiedot.alustaProjektinTiedot($stateParams);
-            }],
-          'perusteprojektiOikeudet': 'PerusteprojektiOikeudetService',
-          'perusteprojektiOikeudetNouto': ['perusteprojektiOikeudet', '$stateParams', function(perusteprojektiOikeudet, $stateParams) {
-              perusteprojektiOikeudet.noudaOikeudet($stateParams);
-          }]
-        },
-        abstract: true
-      })
-      .state('root.perusteprojekti.suoritustapa.lukioosat', {
-        url: '/lukioosat/:osanTyyppi{versio:(?:/[^/]+)?}',
-        templateUrl: 'views/partials/lukio/osat/osalistaus.html',
-        controller: 'LukioOsalistausController',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
-            return perusteprojektiTiedot.projektinTiedotAlustettu();
-          }],
-          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
-            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
-            }]
-        },
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(true);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.lukioosaalue', {
-        url: '/lukioosat/:osanTyyppi/:osanId/:tabId/:editEnabled{versio:(?:/[^/]+)?}',
-        templateUrl: 'views/partials/lukio/osat/osaalue.html',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
-            return perusteprojektiTiedot.projektinTiedotAlustettu();
-          }],
-          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
-            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
-            }]
-        },
-        controller: 'LukioOsaAlueController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.osalistaus', {
-        url: '/osat/:osanTyyppi',
-        templateUrl: 'views/partials/perusteprojekti/osalistaus.html',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
-            return perusteprojektiTiedot.projektinTiedotAlustettu();
-          }],
-          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
-            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
-            }]
-        },
-        controller: 'OsalistausController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.osaalue', {
-        url: '/osat/:osanTyyppi/:osanId/:tabId',
-        templateUrl: 'views/partials/perusteprojekti/osaalue.html',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
-            return perusteprojektiTiedot.projektinTiedotAlustettu();
-          }],
-          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
-            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
-            }]
-        },
-        controller: 'OsaAlueController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.muokkaus', {
-        url: '/muokkaus/:osanTyyppi/:osanId',
-        templateUrl: 'views/muokkaus.html',
-        controller: 'OsanMuokkausController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa', {
-        url: '/:suoritustapa',
-        template: '<div ui-view></div>',
-        navigaationimi: 'navi-perusteprojekti',
-        resolve: {
-          'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
-            return perusteprojektiTiedot.projektinTiedotAlustettu();
-          }],
-          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
-            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
-            }]
-        },
-        controller: function($timeout, $scope, $state, $stateParams, YleinenData, Kielimapper, perusteprojektiTiedot) {
-          // !!! Alustetaan kaikkia alitiloja varten !!!!
-          $scope.isVaTe = YleinenData.isValmaTelma(perusteprojektiTiedot.getPeruste());
-          $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
-          const hasCurrentSuoritustapa = _.any($scope.peruste.suoritustavat, st => st.suoritustapakoodi === $stateParams.suoritustapa);
-          if (!hasCurrentSuoritustapa && !_.isEmpty($scope.peruste.suoritustavat)) {
+.config($stateProvider => $stateProvider
+.state('root.perusteprojekti', {
+    url: '/perusteprojekti/:perusteProjektiId',
+    templateUrl: 'views/perusteprojekti.html',
+    controller: 'PerusteprojektiCtrl',
+    resolve: {
+        koulutusalaService: Koulutusalat => Koulutusalat,
+        opintoalaService: Opintoalat => Opintoalat,
+        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
+        perusteprojektiAlustus: (perusteprojektiTiedot, $stateParams) => perusteprojektiTiedot.alustaProjektinTiedot($stateParams),
+        perusteprojektiOikeudet: PerusteprojektiOikeudetService => PerusteprojektiOikeudetService,
+        perusteprojektiOikeudetNouto: (perusteprojektiOikeudet, $stateParams) => perusteprojektiOikeudet.noudaOikeudet($stateParams)
+    },
+    abstract: true
+})
+.state('root.perusteprojekti.suoritustapa.lukioosat', {
+    url: '/lukioosat/:osanTyyppi{versio:(?:/[^/]+)?}',
+    templateUrl: 'views/partials/lukio/osat/osalistaus.html',
+    controller: 'LukioOsalistausController',
+    resolve: {
+        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
+        projektinTiedotAlustettu: perusteprojektiTiedot => perusteprojektiTiedot.projektinTiedotAlustettu(),
+        perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => perusteprojektiTiedot.alustaPerusteenSisalto($stateParams)
+    },
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(true)
+    }
+})
+.state('root.perusteprojekti.suoritustapa.lukioosaalue', {
+    url: '/lukioosat/:osanTyyppi/:osanId/:tabId/:editEnabled{versio:(?:/[^/]+)?}',
+    templateUrl: 'views/partials/lukio/osat/osaalue.html',
+    controller: 'LukioOsaAlueController',
+    resolve: {
+        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
+        projektinTiedotAlustettu: perusteprojektiTiedot => perusteprojektiTiedot.projektinTiedotAlustettu(),
+        perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => perusteprojektiTiedot.alustaPerusteenSisalto($stateParams)
+    },
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible()
+    }
+})
+.state('root.perusteprojekti.suoritustapa.osalistaus', {
+    url: '/osat/:osanTyyppi',
+    templateUrl: 'views/partials/perusteprojekti/osalistaus.html',
+    controller: 'OsalistausController',
+    resolve: {
+        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
+        projektinTiedotAlustettu: perusteprojektiTiedot => perusteprojektiTiedot.projektinTiedotAlustettu(),
+        perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => perusteprojektiTiedot.alustaPerusteenSisalto($stateParams)
+    },
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
+    }
+})
+.state('root.perusteprojekti.suoritustapa.osaalue', {
+    url: '/osat/:osanTyyppi/:osanId/:tabId',
+    templateUrl: 'views/partials/perusteprojekti/osaalue.html',
+    controller: 'OsaAlueController',
+    resolve: {
+        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
+        projektinTiedotAlustettu: perusteprojektiTiedot => perusteprojektiTiedot.projektinTiedotAlustettu(),
+        perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => perusteprojektiTiedot.alustaPerusteenSisalto($stateParams)
+    },
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
+    }
+})
+.state('root.perusteprojekti.suoritustapa.muokkaus', {
+    url: '/muokkaus/:osanTyyppi/:osanId',
+    templateUrl: 'views/muokkaus.html',
+    controller: 'OsanMuokkausController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.suoritustapa', {
+    url: '/:suoritustapa',
+    template: '<div ui-view></div>',
+    navigaationimi: 'navi-perusteprojekti',
+    resolve: {
+        perusteprojektiTiedot: (PerusteprojektiTiedotService) => PerusteprojektiTiedotService,
+        projektinTiedotAlustettu: (perusteprojektiTiedot) => perusteprojektiTiedot.projektinTiedotAlustettu(),
+        perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => perusteprojektiTiedot.alustaPerusteenSisalto($stateParams)
+    },
+    controller: ($timeout, $scope, $state, $stateParams, YleinenData, Kielimapper, perusteprojektiTiedot) => {
+        // !!! Alustetaan kaikkia alitiloja varten !!!!
+        $scope.isVaTe = YleinenData.isValmaTelma(perusteprojektiTiedot.getPeruste());
+        $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
+        const hasCurrentSuoritustapa = _.any($scope.peruste.suoritustavat, st => st.suoritustapakoodi === $stateParams.suoritustapa);
+        if (!hasCurrentSuoritustapa && !_.isEmpty($scope.peruste.suoritustavat)) {
             $state.go($state.current.name, _.merge({
-              suoritustapa: $scope.peruste.suoritustavat[0].suoritustapakoodi
+                suoritustapa: $scope.peruste.suoritustavat[0].suoritustapakoodi
             }));
-          }
-        },
-        abstract: true
-      })
-      .state('root.perusteprojekti.suoritustapa.muodostumissaannot', {
-        url: '/rakenne{versio:(?:/[^/]+)?}',
-        templateUrl: 'views/partials/perusteprojekti/muodostumissaannot.html',
-        controller: 'PerusteprojektiMuodostumissaannotCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.koulutuksenosat', {
-        url: '/koulutuksenosat',
-        templateUrl: 'views/partials/perusteprojekti/tutkinnonosat.html',
-        controller: 'PerusteprojektiTutkinnonOsatCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.koulutuksenosa', {
-        url: '/koulutuksenosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
-        templateUrl: 'views/partials/muokkaus/koulutuksenosa.html',
-        controller: 'muokkausKoulutuksenosaCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
-        }],
-        resolve: {
-          rakenne: function($stateParams, PerusteenRakenne) {
-            return PerusteenRakenne.haeByPerusteprojektiP($stateParams.perusteProjektiId, $stateParams.suoritustapa);
-          }
         }
-      })
-      .state('root.perusteprojekti.suoritustapa.tutkinnonosat', {
-        url: '/tutkinnonosat',
-        templateUrl: 'views/partials/perusteprojekti/tutkinnonosat.html',
-        controller: 'PerusteprojektiTutkinnonOsatCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.tutkinnonosa', {
-        url: '/tutkinnonosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
-        templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
-        controller: 'muokkausTutkinnonosaCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.tekstikappale', {
-        url: '/tekstikappale/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
-        templateUrl: 'views/partials/muokkaus/tekstikappale.html',
-        controller: 'muokkausTekstikappaleCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible();
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue', {
-        url: '/osaalue/{osaAlueId}',
-        templateUrl: 'views/partials/muokkaus/tutkinnonOsaOsaAlue.html',
-        controller: 'TutkinnonOsaOsaAlueCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.koulutuksenosa.osaalue', {
-        url: '/osaalue/{osaAlueId}',
-        templateUrl: 'views/partials/muokkaus/koulutuksenOsaOsaAlue.html',
-        controller: 'KoulutuksenOsaOsaAlueCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.sisalto', {
-        url: '/sisalto',
-        templateUrl: 'views/partials/perusteprojekti/sisalto.html',
-        controller: 'PerusteprojektisisaltoCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.posisalto', {
-        url: '/posisalto',
-        templateUrl: 'views/partials/perusteprojekti/perusopetus.html',
-        controller: 'PerusopetusSisaltoController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.lukiosisalto', {
-        url: '/lukiosisalto',
-        templateUrl: 'views/partials/perusteprojekti/lukiokoulutus.html',
-        controller: 'LukiokoulutussisaltoController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.losisalto', {
-        url: '/losisalto',
-        templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
-        controller: 'EsiopetusSisaltoController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.vksisalto', {
-        url: '/vksisalto',
-        templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
-        controller: 'EsiopetusSisaltoController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.eosisalto', {
-        url: '/eosisalto',
-        templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
-        controller: 'EsiopetusSisaltoController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.tiedot', {
-        url: '/perustiedot',
-        templateUrl: 'views/partials/perusteprojekti/tiedot.html',
-        controller: 'ProjektinTiedotCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.peruste', {
-        url: '/peruste',
-        templateUrl: 'views/partials/perusteprojekti/peruste.html',
-        controller: 'PerusteenTiedotCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }],
-        resolve: {
-          valittavatKielet: function(Perusteet) {
+    },
+    abstract: true
+})
+.state('root.perusteprojekti.suoritustapa.muodostumissaannot', {
+    url: '/rakenne{versio:(?:/[^/]+)?}',
+    templateUrl: 'views/partials/perusteprojekti/muodostumissaannot.html',
+    controller: 'PerusteprojektiMuodostumissaannotCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
+    }
+})
+.state('root.perusteprojekti.suoritustapa.koulutuksenosat', {
+    url: '/koulutuksenosat',
+    templateUrl: 'views/partials/perusteprojekti/tutkinnonosat.html',
+    controller: 'PerusteprojektiTutkinnonOsatCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
+    }
+})
+.state('root.perusteprojekti.suoritustapa.koulutuksenosa', {
+    url: '/koulutuksenosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
+    templateUrl: 'views/partials/muokkaus/koulutuksenosa.html',
+    controller: 'muokkausKoulutuksenosaCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
+    },
+    resolve: {
+        rakenne: ($stateParams, PerusteenRakenne) => PerusteenRakenne.haeByPerusteprojektiP(
+            $stateParams.perusteProjektiId, $stateParams.suoritustapa)
+    }
+})
+.state('root.perusteprojekti.suoritustapa.tutkinnonosat', {
+    url: '/tutkinnonosat',
+    templateUrl: 'views/partials/perusteprojekti/tutkinnonosat.html',
+    controller: 'PerusteprojektiTutkinnonOsatCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
+    }
+})
+.state('root.perusteprojekti.suoritustapa.tutkinnonosa', {
+    url: '/tutkinnonosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
+    templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
+    controller: 'muokkausTutkinnonosaCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
+    }
+})
+.state('root.perusteprojekti.suoritustapa.tekstikappale', {
+    url: '/tekstikappale/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
+    templateUrl: 'views/partials/muokkaus/tekstikappale.html',
+    controller: 'muokkausTekstikappaleCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
+    }
+})
+.state('root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue', {
+    url: '/osaalue/{osaAlueId}',
+    templateUrl: 'views/partials/muokkaus/tutkinnonOsaOsaAlue.html',
+    controller: 'TutkinnonOsaOsaAlueCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.suoritustapa.koulutuksenosa.osaalue', {
+    url: '/osaalue/{osaAlueId}',
+    templateUrl: 'views/partials/muokkaus/koulutuksenOsaOsaAlue.html',
+    controller: 'KoulutuksenOsaOsaAlueCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.suoritustapa.sisalto', {
+    url: '/sisalto',
+    templateUrl: 'views/partials/perusteprojekti/sisalto.html',
+    controller: 'PerusteprojektisisaltoCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.suoritustapa.posisalto', {
+    url: '/posisalto',
+    templateUrl: 'views/partials/perusteprojekti/perusopetus.html',
+    controller: 'PerusopetusSisaltoController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.suoritustapa.lukiosisalto', {
+    url: '/lukiosisalto',
+    templateUrl: 'views/partials/perusteprojekti/lukiokoulutus.html',
+    controller: 'LukiokoulutussisaltoController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.suoritustapa.losisalto', {
+    url: '/losisalto',
+    templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
+    controller: 'EsiopetusSisaltoController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.suoritustapa.vksisalto', {
+    url: '/vksisalto',
+    templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
+    controller: 'EsiopetusSisaltoController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.suoritustapa.eosisalto', {
+    url: '/eosisalto',
+    templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
+    controller: 'EsiopetusSisaltoController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.tiedot', {
+    url: '/perustiedot',
+    templateUrl: 'views/partials/perusteprojekti/tiedot.html',
+    controller: 'ProjektinTiedotCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.peruste', {
+    url: '/peruste',
+    templateUrl: 'views/partials/perusteprojekti/peruste.html',
+    controller: 'PerusteenTiedotCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    },
+    resolve: {
+        valittavatKielet: Perusteet => {
             return Perusteet.valittavatKielet().$promise;
-          }
         }
-      })
-      .state('root.perusteprojekti.projektiryhma', {
-        url: '/projektiryhma',
-        templateUrl: 'views/partials/perusteprojekti/projektiryhma.html',
-        controller: 'ProjektiryhmaCtrl',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.termisto', {
-        url: '/termisto',
-        templateUrl: 'views/partials/perusteprojekti/termisto.html',
-        controller: 'TermistoController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojektiwizard', {
-        url: '/perusteprojekti',
-        template: '<div ui-view></div>',
-        abstract: true
-      })
-      .state('root.perusteprojektiwizard.pohja', {
-        url: '/perustepohja',
-        templateUrl: 'views/partials/perusteprojekti/tiedot.html',
-        controller: 'ProjektinTiedotCtrl',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService'}
-      })
-      .state('root.perusteprojektiwizard.tiedot', {
-        url: '/perustiedot',
-        templateUrl: 'views/partials/perusteprojekti/tiedot.html',
-        controller: 'ProjektinTiedotCtrl',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService'}
-      })
-      .state('root.perusteprojekti.suoritustapa.lisaaLukioKurssi', {
-        url: '/lukiokurssi/luo',
-        templateUrl: 'views/partials/lukio/lisaaKurssi.html',
-        controller: 'LisaaLukioKurssiController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(true);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.kurssi', {
-        url: '/lukiokurssi/:kurssiId',
-        templateUrl: 'views/partials/lukio/kurssi.html',
-        controller: 'NaytaLukiokurssiController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(true);
-        }]
-      })
-      .state('root.perusteprojekti.suoritustapa.muokkaakurssia', {
-        url: '/lukiokurssi/:kurssiId/muokkaa',
-        templateUrl: 'views/partials/lukio/muokkaaKurssia.html',
-        controller: 'MuokkaaLukiokurssiaController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(true);
-        }]
-      });
-  })
-  .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
-      koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService, TiedoteService,
-      PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
-      SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService, Kieli) {
+    }
+})
+.state('root.perusteprojekti.projektiryhma', {
+    url: '/projektiryhma',
+    templateUrl: 'views/partials/perusteprojekti/projektiryhma.html',
+    controller: 'ProjektiryhmaCtrl',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojekti.termisto', {
+    url: '/termisto',
+    templateUrl: 'views/partials/perusteprojekti/termisto.html',
+    controller: 'TermistoController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(false);
+    }
+})
+.state('root.perusteprojektiwizard', {
+    url: '/perusteprojekti',
+    template: '<div ui-view></div>',
+    abstract: true
+})
+.state('root.perusteprojektiwizard.pohja', {
+    url: '/perustepohja',
+    templateUrl: 'views/partials/perusteprojekti/tiedot.html',
+    controller: 'ProjektinTiedotCtrl',
+    resolve: {
+        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService
+    }
+})
+.state('root.perusteprojektiwizard.tiedot', {
+    url: '/perustiedot',
+    templateUrl: 'views/partials/perusteprojekti/tiedot.html',
+    controller: 'ProjektinTiedotCtrl',
+    resolve: {
+        perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService
+    }
+})
+.state('root.perusteprojekti.suoritustapa.lisaaLukioKurssi', {
+    url: '/lukiokurssi/luo',
+    templateUrl: 'views/partials/lukio/lisaaKurssi.html',
+    controller: 'LisaaLukioKurssiController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(true);
+    }
+})
+.state('root.perusteprojekti.suoritustapa.kurssi', {
+    url: '/lukiokurssi/:kurssiId',
+    templateUrl: 'views/partials/lukio/kurssi.html',
+    controller: 'NaytaLukiokurssiController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(true);
+    }
+})
+.state('root.perusteprojekti.suoritustapa.muokkaakurssia', {
+    url: '/lukiokurssi/:kurssiId/muokkaa',
+    templateUrl: 'views/partials/lukio/muokkaaKurssia.html',
+    controller: 'MuokkaaLukiokurssiaController',
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible(true);
+    }
+}))
+.controller('PerusteprojektiCtrl', ($scope, $state, $stateParams,
+                                    koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService, TiedoteService,
+                                    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
+                                    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet,
+                                    TermistoService, Kieli) => {
     $scope.muokkausEnabled = false;
     $scope.pdfEnabled = false;
 
-    $scope.lisaaTiedote = function() {
-      TiedoteService.lisaaTiedote(null, $stateParams.perusteProjektiId);
+    $scope.lisaaTiedote = () => {
+        TiedoteService.lisaaTiedote(null, $stateParams.perusteProjektiId);
     };
 
-    $scope.luoPdf = function () {
-      PdfCreation.setPerusteId($scope.projekti._peruste);
-      PdfCreation.openModal();
+    $scope.luoPdf = () => {
+        PdfCreation.setPerusteId($scope.projekti._peruste);
+        PdfCreation.openModal();
     };
 
     function init() {
-      $scope.projekti = perusteprojektiTiedot.getProjekti();
-      $scope.peruste = perusteprojektiTiedot.getPeruste();
-      Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
-      $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
-      $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
-      TermistoService.setPeruste($scope.peruste);
-      ProxyService.set('perusteId', $scope.peruste.id);
+        $scope.projekti = perusteprojektiTiedot.getProjekti();
+        $scope.peruste = perusteprojektiTiedot.getPeruste();
+        Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
+        $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
+        $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
+        TermistoService.setPeruste($scope.peruste);
+        ProxyService.set('perusteId', $scope.peruste.id);
     }
+
     init();
 
-    $scope.$on('update:perusteprojekti', function () {
-      $scope.projekti = perusteprojektiTiedot.getProjekti();
-    });
+    $scope.$on('update:perusteprojekti', () => $scope.projekti = perusteprojektiTiedot.getProjekti());
 
     // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
-    $scope.$watch(function () {
-      return PerusteProjektiService.getSuoritustapa();
-    }, function () {
-      $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
-    });
+    $scope.$watch(() => PerusteProjektiService.getSuoritustapa(),
+        () => $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste));
 
-    var amFooter = '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="ep-text-add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
+    const amFooter = '<button class="btn btn-default"' +
+        '                     kaanna="lisaa-tutkintokohtainen-osa"' +
+        '                     icon-role="ep-text-add"' +
+        '                     ng-click="$parent.lisaaTekstikappale()"' +
+        '                     oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
     $scope.sivunavi = {
-      suoritustapa: PerusteProjektiService.getSuoritustapa(),
-      items: [],
-      footer: amFooter,
-      type: 'AM'
+        suoritustapa: PerusteProjektiService.getSuoritustapa(),
+        items: [],
+        footer: amFooter,
+        type: 'AM'
     };
-    var sivunaviItemsChanged = function (items) {
-      $scope.sivunavi.items = items;
+    const sivunaviItemsChanged = items => {
+        $scope.sivunavi.items = items;
     };
-    var sivunaviTypeChanged = function (type) {
-      $scope.sivunavi.type = type;
-      switch (type) {
-        case 'YL':
-          $scope.sivunavi.suoritustapa = '';
-          $scope.sivunavi.footer = '';
-          break;
-        default:
-          $scope.sivunavi.footer = amFooter;
-          $scope.sivunavi.suoritustapa = PerusteProjektiService.getSuoritustapa();
-          break;
-      }
+    const sivunaviTypeChanged = type => {
+        $scope.sivunavi.type = type;
+        switch (type) {
+            case 'YL':
+                $scope.sivunavi.suoritustapa = '';
+                $scope.sivunavi.footer = '';
+                break;
+            case 'AIPE':
+                $scope.sivunavi.suoritustapa = '';
+                $scope.sivunavi.footer = '';
+                break;
+            default:
+                $scope.sivunavi.footer = amFooter;
+                $scope.sivunavi.suoritustapa = PerusteProjektiService.getSuoritustapa();
+                break;
+        }
     };
     PerusteProjektiSivunavi.register('itemsChanged', sivunaviItemsChanged);
     PerusteProjektiSivunavi.register('typeChanged', sivunaviTypeChanged);
     PerusteProjektiSivunavi.refresh(true);
 
-    $scope.$on('$stateChangeSuccess', function() {
-      var newSuoritustapa = PerusteProjektiService.getSuoritustapa();
-      if (newSuoritustapa !== $scope.sivunavi.suoritustapa) {
-        PerusteProjektiSivunavi.refresh(true);
-      }
-      $scope.sivunavi.suoritustapa = $scope.sivunavi.type === 'AM' ? newSuoritustapa : '';
+    $scope.$on('$stateChangeSuccess', () => {
+        const newSuoritustapa = PerusteProjektiService.getSuoritustapa();
+        if (newSuoritustapa !== $scope.sivunavi.suoritustapa) {
+            PerusteProjektiSivunavi.refresh(true);
+        }
+        $scope.sivunavi.suoritustapa = $scope.sivunavi.type === 'AM' ? newSuoritustapa : '';
     });
 
     Navigaatiopolku.setProject($scope.projekti, $scope.peruste);
 
-    $scope.koulutusalaNimi = function(koodi) {
-      return koulutusalaService.haeKoulutusalaNimi(koodi);
-    };
+    $scope.koulutusalaNimi = koodi => koulutusalaService.haeKoulutusalaNimi(koodi);
 
-    $scope.canChangePerusteprojektiStatus = function() {
-      return perusteprojektiOikeudet.onkoOikeudet('perusteprojekti', 'tilanvaihto');
-    };
+    $scope.canChangePerusteprojektiStatus = () => perusteprojektiOikeudet
+        .onkoOikeudet('perusteprojekti', 'tilanvaihto');
 
-    $scope.showBackLink = function () {
-      return !($state.is('root.perusteprojekti.suoritustapa.sisalto') ||
-               $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
-               $state.is('root.perusteprojekti.suoritustapa.vksisalto') ||
-               $state.is('root.perusteprojekti.suoritustapa.eosisalto') ||
-               $state.is('root.perusteprojekti.suoritustapa.lukiosisalto'));
-    };
+    $scope.showBackLink = () => !(
+        $state.is('root.perusteprojekti.suoritustapa.sisalto') ||
+        $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
+        $state.is('root.perusteprojekti.suoritustapa.aipesisalto') ||
+        $state.is('root.perusteprojekti.suoritustapa.vksisalto') ||
+        $state.is('root.perusteprojekti.suoritustapa.eosisalto') ||
+        $state.is('root.perusteprojekti.suoritustapa.lukiosisalto')
+    );
+    $scope.isNaviVisible = () => PerusteProjektiSivunavi.isVisible();
 
-    $scope.isNaviVisible = function () {
-      return PerusteProjektiSivunavi.isVisible();
-    };
-
-    $scope.$on('update:perusteprojekti', function () {
-      perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(function () {
+    $scope.$on('update:perusteprojekti', () => perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(() => {
         init();
         PerusteProjektiSivunavi.refresh(true);
-      });
-    });
+    }));
 
-    $scope.lisaaTekstikappale = function () {
-      function lisaaSisalto(method, sisalto, cb) {
-        cb = cb || angular.noop;
-        SuoritustapaSisalto[method]({
-          perusteId: $scope.projekti._peruste,
-          suoritustapa: PerusteProjektiService.getSuoritustapa()
-        }, sisalto, cb, Notifikaatiot.serverCb);
-      }
-      lisaaSisalto('save', {}, function(response) {
-        TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-        $state.go('root.perusteprojekti.suoritustapa.tekstikappale', {
-          perusteenOsaViiteId: response.id,
-          versio: ''
+    $scope.lisaaTekstikappale = () => {
+        function lisaaSisalto(method, sisalto, cb) {
+            cb = cb || angular.noop;
+            SuoritustapaSisalto[method]({
+                perusteId: $scope.projekti._peruste,
+                suoritustapa: PerusteProjektiService.getSuoritustapa()
+            }, sisalto, cb, Notifikaatiot.serverCb);
+        }
+
+        lisaaSisalto('save', {}, res => {
+            TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
+            $state.go('root.perusteprojekti.suoritustapa.tekstikappale', {
+                perusteenOsaViiteId: res.id,
+                versio: ''
+            });
         });
-      });
     };
 
-    $scope.$on('enableEditing', function() {
-      $scope.muokkausEnabled = true;
+    $scope.$on('enableEditing', () => {
+        $scope.muokkausEnabled = true;
     });
-    $scope.$on('disableEditing', function() {
-      $scope.muokkausEnabled = false;
+    $scope.$on('disableEditing', () => {
+        $scope.muokkausEnabled = false;
     });
 
-    $scope.$on('$destroy', function () {
-      Kieli.resetSisaltokielet();
+    $scope.$on('$destroy', () => {
+        Kieli.resetSisaltokielet();
     });
-  });
+});

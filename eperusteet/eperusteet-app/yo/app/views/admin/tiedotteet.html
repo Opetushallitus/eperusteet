@@ -1,66 +1,76 @@
 <!-- admin/tiedotteet.html -->
 <div class="admin-tiedotteet">
-  <div class="hallintapainikkeet">
-    <button class="btn btn-default" icon-role="add" kaanna="uusi-tiedote" ng-click="edit()"></button>
-  </div>
-
-  <h2><span kaanna="'tiedotteet'"></span><ohje teksti="ohje-tiedotteet"></ohje></h2>
-
-  <div class="tilarajaus">
-    <div class="tilarajaus-item">
-      <rajaus model="search.term" placeholder="etsi-tiedotteista" callback="search.changed(value)"></rajaus>
+    <div class="hallintapainikkeet">
+        <button class="btn btn-default" icon-role="add" kaanna="uusi-tiedote" ng-click="edit()"></button>
     </div>
-  </div>
 
-  <p ng-show="!tiedotteet || tiedotteet.length === 0" kaanna="ei-tiedotteita"></p>
-  <table ng-show="tiedotteet.length > 0" class="table table-striped admin-table">
-    <tr>
-      <th width="20%">
-        <a class="action-link" ng-click="setOrderBy('luotu')">
-          <span kaanna="'luotu'"></span>
-          <span ng-show="jarjestysTapa === 'luotu'">
-            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
-          </span>
-        </a>
-      </th>
-      <th width="20%">
-        <a class="action-link" ng-click="setOrderBy('muokattu')">
-          <span kaanna="'muokattu'"></span>
-          <span ng-show="jarjestysTapa === 'muokattu'">
-            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
-          </span>
-        </a>
-      </th>
-      <th>
-        <a class="action-link" ng-click="setOrderBy('nimi')">
-          <span kaanna="'otsikko'"></span>
-          <span ng-show="jarjestysTapa === 'nimi'">
-            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
-          </span>
-        </a>
-      </th>
-      <th width="10%">
-        <a class="action-link" ng-click="setOrderBy('julkinen')">
-          <span kaanna="'julkinen-tiedote-header'"></span>
-          <span ng-show="jarjestysTapa === 'julkinen'">
-            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
-          </span>
-        </a>
-      </th>
-      <th kaanna="'toiminto'" width="20%"></th>
-    </tr>
-    <tr ng-repeat="tiedote in filtered = (tiedotteet | filter:search.filterFn) | orderBy:orderFn:jarjestysOrder | startFrom:(paginate.current-1)*paginate.perPage | limitTo: paginate.perPage">
-      <td>{{tiedote.luotu | aikaleima}}</td>
-      <td>{{tiedote.muokattu | aikaleima}}</td>
-      <td><a ui-sref="root.tiedote({tiedoteId: tiedote.id})" ep-highlight="search.term" ng-bind="tiedote.otsikko | kaanna"></a></td>
-      <td class="has-checkbox"><span icon-role="ok" ng-show="tiedote.julkinen"></span></td>
-      <td>
-        <button class="btn btn-default rivinappi" icon-role="edit" kaanna="'muokkaa'" ng-click="edit(tiedote)"></button>
-        <button class="btn btn-default rivinappi" icon-role="remove" kaanna="'poista'" ng-click="delete(tiedote)"></button>
-      </td>
-    </tr>
-  </table>
+    <h2><span kaanna="'tiedotteet'"></span>
+        <ohje teksti="ohje-tiedotteet"></ohje>
+    </h2>
 
-  <pagination ng-model="paginate.current" total-items="filtered.length" items-per-page="paginate.perPage"></pagination>
+    <div class="tilarajaus">
+        <div class="tilarajaus-item">
+            <rajaus model="search.term" placeholder="etsi-tiedotteista" callback="search.changed(value)"></rajaus>
+        </div>
+    </div>
+
+    <p ng-show="!tiedotteet || tiedotteet.length === 0" kaanna="ei-tiedotteita"></p>
+    <table ng-show="tiedotteet.length > 0" class="table table-striped admin-table">
+        <tr>
+            <th width="20%">
+                <a class="action-link" ng-click="setOrderBy('luotu')">
+                    <span kaanna="'luotu'"></span>
+                    <span ng-show="jarjestysTapa === 'luotu'">
+            <span class="glyphicon"
+                  ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </span>
+                </a>
+            </th>
+            <th width="20%">
+                <a class="action-link" ng-click="setOrderBy('muokattu')">
+                    <span kaanna="'muokattu'"></span>
+                    <span ng-show="jarjestysTapa === 'muokattu'">
+            <span class="glyphicon"
+                  ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </span>
+                </a>
+            </th>
+            <th>
+                <a class="action-link" ng-click="setOrderBy('nimi')">
+                    <span kaanna="'otsikko'"></span>
+                    <span ng-show="jarjestysTapa === 'nimi'">
+            <span class="glyphicon"
+                  ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+          </span>
+                </a>
+            </th>
+            <th width="10%">
+                <a class="action-link" ng-click="setOrderBy('julkinen')">
+                    <span kaanna="'julkinen-tiedote-header'"></span>
+                    <span ng-show="jarjestysTapa === 'julkinen'">
+            <span class="glyphicon"
+                  ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </span>
+                </a>
+            </th>
+            <th kaanna="'toiminto'" width="20%"></th>
+        </tr>
+        <tr ng-repeat="tiedote in filtered = (tiedotteet | filter:search.filterFn) | orderBy:orderFn:jarjestysOrder | startFrom:(paginate.current-1)*paginate.perPage | limitTo: paginate.perPage">
+            <td>{{tiedote.luotu | aikaleima}}</td>
+            <td>{{tiedote.muokattu | aikaleima}}</td>
+            <td><a ui-sref="root.tiedote({tiedoteId: tiedote.id})" ep-highlight="search.term"
+                   ng-bind="tiedote.otsikko | kaanna"></a></td>
+            <td class="has-checkbox"><span icon-role="ok" ng-show="tiedote.julkinen"></span></td>
+            <td>
+                <button class="btn btn-default rivinappi" icon-role="edit" kaanna="'muokkaa'"
+                        ng-click="edit(tiedote)"></button>
+                <button class="btn btn-default rivinappi" icon-role="remove" kaanna="'poista'"
+                        ng-click="delete(tiedote)"></button>
+            </td>
+        </tr>
+    </table>
+
+    <uib-pagination ng-model="paginate.current" total-items="filtered.length"
+                items-per-page="paginate.perPage"></uib-pagination>
 
 </div>

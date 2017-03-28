@@ -13,22 +13,26 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-'use strict';
 
-describe('angular-ui-select', function() {
+package fi.vm.sade.eperusteet.dto.yl;
 
-  // load the service's module
-  beforeEach(module('eperusteApp'));
+import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.Getter;
+import lombok.Setter;
 
-  var $templateCache;
-  beforeEach(inject(function(_$templateCache_) {
-      $templateCache = _$templateCache_;
-  }));
+import java.util.UUID;
 
-  it('should have the IE9 template fix', function() {
-    var fix = $templateCache.get("eperusteet/ui-select-choices-fix.html");
-    expect($templateCache.get('bootstrap/choices.tpl.html')).toBe(fix);
-  });
-
-});
-
+/**
+ *
+ * @author nkala
+ */
+@Getter
+@Setter
+public class AIPEOppiaineBaseDto {
+    private Long id;
+    private UUID tunniste;
+    private Optional<LokalisoituTekstiDto> nimi;
+    private EntityReference oppiaine;
+}

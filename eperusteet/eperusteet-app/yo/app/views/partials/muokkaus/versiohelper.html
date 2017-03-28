@@ -1,28 +1,28 @@
-<!-- versiohelper.html -->
-
+<!-- partials/muokkaus/versiohelper.html -->
 <div class="modal-header">
-  <h1 kaanna>versiohistoria</h1>
+    <h1 kaanna>versiohistoria</h1>
 </div>
 
 <div class="modal-body">
-  <table class="table table-hover versiohistoria">
-    <tr>
-      <th class="versio" kaanna>versio</th>
-      <th kaanna>muokkaaja</th>
-      <th class="kommentti" kaanna>kommentti</th>
-      <th class="muokattu" kaanna>muokattu</th>
-    </tr>
-    <tr ng-repeat="ver in versions.list | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage"
-        ng-click="close(ver)" class="navigoitava" title="{{'tarkastele-versiota' | kaanna}}">
-      <td><a class="action-link" ng-click="$event.stopPropagation(); close(ver);">{{ ver.index }}</a></td>
-      <td>{{ ver.$nimi }}</td>
-      <td>{{ ver.kommentti || '-' }}</td>
-      <td>{{ ver.pvm | aikaleima:'time' }}</td>
-    </tr>
-  </table>
-  <pagination ng-model="paginate.current" items-per-page="paginate.perPage" total-items="versions.list.length"></pagination>
+    <table class="table table-hover versiohistoria">
+        <tr>
+            <th class="versio" kaanna>versio</th>
+            <th kaanna>muokkaaja</th>
+            <th class="kommentti" kaanna>kommentti</th>
+            <th class="muokattu" kaanna>muokattu</th>
+        </tr>
+        <tr ng-repeat="ver in versions.list | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage"
+            ng-click="close(ver)" class="navigoitava" title="{{'tarkastele-versiota' | kaanna}}">
+            <td><a class="action-link" ng-click="$event.stopPropagation(); close(ver);">{{ver.index}}</a></td>
+            <td>{{ver.$nimi}}</td>
+            <td>{{ver.kommentti || '-'}}</td>
+            <td>{{ver.pvm | aikaleima:'time'}}</td>
+        </tr>
+    </table>
+    <uib-pagination ng-model="paginate.current" items-per-page="paginate.perPage"
+                total-items="versions.list.length"></uib-pagination>
 </div>
 
 <div class="modal-footer">
-  <button class="btn" ng-click="close()" kaanna>sulje</button>
+    <button class="btn" ng-click="close()" kaanna>sulje</button>
 </div>

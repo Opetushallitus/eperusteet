@@ -1,108 +1,114 @@
-<!-- tekstikappale.html -->
-<!--
-Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-
-This program is free software: Licensed under the EUPL, Version 1.1 or - as
-soon as they will be approved by the European Commission - subsequent versions
-of the EUPL (the "Licence");
-
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-European Union Public Licence for more details.
--->
-
+<!-- partials/muokkaus/tekstikappale.html -->
 <div id="toolbar" class="navbar-fixed-top ck-toolbar" style="display: none">
-  <div id="ck-toolbar-top"></div>
-  <div id="ck-toolbar-bottom"></div>
+    <div id="ck-toolbar-top"></div>
+    <div id="ck-toolbar-bottom"></div>
 </div>
 <div class="row">
-  <div class="col-md-12 ep-sisalto-inner">
-    <div>
-      <revert-note object="tekstikappale" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
+    <div class="col-md-12 ep-sisalto-inner">
+        <div>
+            <revert-note object="tekstikappale" revert-cb="revertCb(response)" versions="versiot"
+                         change-version="vaihdaVersio()"></revert-note>
 
-      <div class="part-header-wrapper">
-        <div class="action-buttons">
-          <div class="floater" ng-attr-title="{{lockNotification}}">
-            <button ng-disabled="isLocked" ng-hide="tekstikappale.tila !== 'valmis' || editEnabled || !versiot.latest"
-              ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-              oikeustarkastelu="[{target:'peruste',permission:'korjaus'}]"></button>
-            <button ng-disabled="isLocked" ng-hide="tekstikappale.tila === 'valmis' || editEnabled || !versiot.latest"
-              ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-              oikeustarkastelu="[{target:'peruste',permission:'muokkaus'}]"></button>
-          </div>
-          <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
-            ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"
-            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-          <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
-            class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="kopioi-muokattavaksi"
-            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+            <div class="part-header-wrapper">
+                <div class="action-buttons">
+                    <div class="floater" ng-attr-title="{{lockNotification}}">
+                        <button ng-disabled="isLocked"
+                                ng-hide="tekstikappale.tila !== 'valmis' || editEnabled || !versiot.latest"
+                                ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+                                oikeustarkastelu="[{target:'peruste',permission:'korjaus'}]"></button>
+                        <button ng-disabled="isLocked"
+                                ng-hide="tekstikappale.tila === 'valmis' || editEnabled || !versiot.latest"
+                                ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+                                oikeustarkastelu="[{target:'peruste',permission:'muokkaus'}]"></button>
+                    </div>
+                    <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'"
+                            ng-hide="editEnabled || !versiot.latest"
+                            ng-click="addLapsi()" class="floater btn btn-default" icon-role="add"
+                            kaanna="lisaa-aliotsikko"
+                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                    <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
+                            class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="kopioi-muokattavaksi"
+                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 
-          <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'" oikeustarkastelu="{target:'peruste',permission:'muokkaus'}"></button>
-          <div class="floater" ng-if="editEnabled && peruste && peruste.osaamisalat && peruste.osaamisalat.length > 0">
-            <span class="dropdown">
-              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-                <span ng-hide="editableTekstikappale.osaamisala" kaanna="'ei-osaamisalan-kuvausta'"></span>
-                <span ng-show="editableTekstikappale.osaamisala">{{ editableTekstikappale.osaamisala.nimi | kaanna }} ({{ editableTekstikappale.osaamisala.arvo }})</span>
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                <li role="presentation">
-                  <a class="action-link" ng-click="valitseOsaamisala(null)" role="menuitem" tabindex="-1" kaanna="'ei-osaamisalan-kuvausta'"></a>
-                </li>
-                <li ng-repeat="oa in peruste.osaamisalat" role="presentation">
-                  <a class="action-link" ng-click="valitseOsaamisala(oa)" role="menuitem" tabindex="-1">{{ oa.nimi | kaanna }} ({{ oa.arvo }})</a>
-                </li>
-              </ul>
-            </span>
-          </div>
+                    <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)"
+                            class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'"
+                            oikeustarkastelu="{target:'peruste',permission:'muokkaus'}"></button>
+                    <div class="floater"
+                         ng-if="editEnabled && peruste && peruste.osaamisalat && peruste.osaamisalat.length > 0">
+                        <span class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                                <span ng-hide="editableTekstikappale.osaamisala" kaanna="'ei-osaamisalan-kuvausta'"></span>
+                                <span ng-show="editableTekstikappale.osaamisala">
+                                    {{ editableTekstikappale.osaamisala.nimi | kaanna }} ({{ editableTekstikappale.osaamisala.arvo }})
+                                </span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                <li role="presentation">
+                                <a class="action-link" ng-click="valitseOsaamisala(null)" role="menuitem" tabindex="-1"
+                                   kaanna="'ei-osaamisalan-kuvausta'"></a>
+                                </li>
+                                <li ng-repeat="oa in peruste.osaamisalat" role="presentation">
+                                    <a class="action-link" ng-click="valitseOsaamisala(oa)" role="menuitem" tabindex="-1">
+                                        {{ oa.nimi | kaanna }} ({{ oa.arvo }})
+                                    </a>
+                                </li>
+                            </ul>
+                        </span>
+                    </div>
 
-          <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
+                    <div class="floater" ng-if="!editEnabled && isLocked">
+                        <lukko tip="lockNotification"></lukko>
+                    </div>
+                </div>
+
+                <projektin-murupolku></projektin-murupolku>
+
+                <h1 ng-if="editEnabled">
+                    <span ng-show="isNew" kaanna>luonti-tekstikappale</span>
+                    <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
+                </h1>
+                <h1 ng-if="!editEnabled">
+                    <span style="margin-right: 4px" ng-bind-html="tekstikappale.nimi | kaanna"></span>
+                    <valmiskaannos style="font-size: 20px" is-editing="editEnabled"
+                                   ng-model="editableTekstikappale"></valmiskaannos>
+                </h1>
+                <h5 ng-if="!editEnabled && tekstikappale.osaamisala">
+                    <b>{{ 'osaamisalan-kuvaus' | kaanna }}</b>:
+                    {{ tekstikappale.osaamisala.nimi | kaanna }} ({{ tekstikappale.osaamisala.arvo }})
+                </h5>
+            </div>
+
+            <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
+                <div ng-if="!editEnabled">
+                    <versiotiedot ng-hide="editEnabled"></versiotiedot>
+
+                    <div class="tyoryhma-rivi">
+                        <span class="tyoryhma" ng-repeat="tr in tyoryhmat">
+                            <a ng-click="poistaTyoryhma(tr)" class="action-link" icon-role="remove"
+                               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
+                            {{ tr }}
+                        </span>
+                        <button ng-hide="kaikkiTyoryhmat.length === 0"
+                                ng-disabled="kaikkiTyoryhmat.length === tyoryhmat.length"
+                                ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default"
+                                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"
+                                kaanna="lisaa-tyoryhma"></button>
+                    </div>
+
+                    <div math-display ng-bind-html="valitseKieli(tekstikappale.teksti) | kuvalinkit | unsafe"
+                         termisto-viitteet="tekstikappale.teksti"></div>
+                </div>
+                <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" model="field.localeKey"
+                     kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}"
+                     muokkauskentta-raamit>
+                    <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
+                </div>
+                <valmiskaannos ng-if="editEnabled" is-editing="editEnabled"
+                               ng-model="editableTekstikappale"></valmiskaannos>
+            </div>
+            <kommentit></kommentit>
         </div>
 
-        <projektin-murupolku></projektin-murupolku>
-
-        <h1 ng-if="editEnabled">
-          <span ng-show="isNew" kaanna>luonti-tekstikappale</span>
-          <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
-        </h1>
-        <h1 ng-if="!editEnabled">
-            <span style="margin-right: 4px" ng-bind-html="tekstikappale.nimi | kaanna"></span>
-            <valmiskaannos style="font-size: 20px" is-editing="editEnabled" ng-model="editableTekstikappale"></valmiskaannos>
-        </h1>
-        <h5 ng-if="!editEnabled && tekstikappale.osaamisala">
-          <b>{{ 'osaamisalan-kuvaus' | kaanna }}</b>:
-          {{ tekstikappale.osaamisala.nimi | kaanna }} ({{ tekstikappale.osaamisala.arvo }})
-        </h5>
-      </div>
-
-      <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
-        <div ng-if="!editEnabled">
-          <versiotiedot ng-hide="editEnabled"></versiotiedot>
-
-          <div class="tyoryhma-rivi">
-            <span class="tyoryhma" ng-repeat="tr in tyoryhmat">
-              <a ng-click="poistaTyoryhma(tr)" class="action-link" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
-              {{ tr }}
-            </span>
-            <button ng-hide="kaikkiTyoryhmat.length === 0" ng-disabled="kaikkiTyoryhmat.length === tyoryhmat.length"
-              ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default"
-              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" kaanna="lisaa-tyoryhma"></button>
-          </div>
-
-          <div math-display ng-bind-html="valitseKieli(tekstikappale.teksti) | kuvalinkit | unsafe" termisto-viitteet="tekstikappale.teksti"></div>
-        </div>
-        <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" model="field.localeKey"
-          kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}" muokkauskentta-raamit>
-          <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
-        </div>
-        <valmiskaannos ng-if="editEnabled" is-editing="editEnabled" ng-model="editableTekstikappale"></valmiskaannos>
-      </div>
-      <kommentit></kommentit>
     </div>
-
-  </div>
 </div>

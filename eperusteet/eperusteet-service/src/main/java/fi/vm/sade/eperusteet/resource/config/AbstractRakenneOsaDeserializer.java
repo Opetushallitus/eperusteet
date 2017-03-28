@@ -15,21 +15,19 @@
  */
 package fi.vm.sade.eperusteet.resource.config;
 
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class AbstractRakenneOsaDeserializer extends StdDeserializer<AbstractRakenneOsaDto> {
 
@@ -38,8 +36,7 @@ public class AbstractRakenneOsaDeserializer extends StdDeserializer<AbstractRake
     }
 
     @Override
-    public AbstractRakenneOsaDto deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
-        JsonProcessingException {
+    public AbstractRakenneOsaDto deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         final TreeNode tree = jp.readValueAsTree();
         final ObjectCodec codec = jp.getCodec();
         TreeNode erikoisuus = tree.get("erikoisuus");

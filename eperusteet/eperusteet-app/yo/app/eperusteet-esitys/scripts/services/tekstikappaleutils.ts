@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteet.esitys')
 .service('epTekstikappaleChildResolver', function (Algoritmit, $q, PerusteenOsat) {
   var lapset = null;
@@ -72,7 +70,6 @@ angular.module('eperusteet.esitys')
     return _(parents).drop(1).value();
   };
 })
-
 .directive('epTekstiotsikko', function () {
   return {
     restrict: 'E',
@@ -86,7 +83,7 @@ angular.module('eperusteet.esitys')
     '    <a ng-if="amEsitys" ui-sref="^.tekstikappale({osanId: model.id})" icon-role="new-window"></a>' +
     '    <a ng-if="!amEsitys" ui-sref="^.tekstikappale({tekstikappaleId: model.id})" icon-role="new-window"></a>' +
     '  </span></span>',
-    link: function (scope, element) {
+    link: function (scope: any, element: any) {
       var headerEl = angular.element('<h' + scope.level + '>');
       element.find('.otsikko-wrap').wrap(headerEl);
       scope.amEsitys = scope.linkVar === 'osanId';

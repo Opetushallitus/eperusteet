@@ -9,19 +9,19 @@
     <h2><span kaanna="'perusteprojektit'"></span><ohje teksti="ohje-perusteprojekti"></ohje></h2>
 
     <div class="tilarajaus">
-        <div class="tilarajaus-item">
-            <label for="admin-tilarajaus" kaanna="rajaa-tila"></label>
-        </div>
-        <div class="tilarajaus-item">
-            <select ng-model="tilaRajain" class="form-control" id="admin-tilarajaus"
-                                                               ng-options="tila as ('tila-'+tila)|kaanna for tila in tilat">
-                <option value="">{{'kaikki'|kaanna}}</option>
-            </select>
-        </div>
-        <div class="tilarajaus-divider"></div>
-        <div class="tilarajaus-item">
-            <rajaus model="rajaus" placeholder="etsi-perusteprojekteista"></rajaus>
-        </div>
+      <div class="tilarajaus-item">
+        <label for="admin-tilarajaus" kaanna="rajaa-tila"></label>
+      </div>
+      <div class="tilarajaus-item">
+        <select ng-model="tilaRajain" class="form-control" id="admin-tilarajaus"
+                ng-options="tila as ('tila-'+tila)|kaanna for tila in tilat">
+            <option value="">{{'kaikki' | kaanna}}</option>
+        </select>
+      </div>
+      <div class="tilarajaus-divider"></div>
+      <div class="tilarajaus-item">
+        <rajaus model="rajaus" placeholder="etsi-perusteprojekteista"></rajaus>
+      </div>
     </div>
 
     <table class="table table-striped admin-table">
@@ -60,5 +60,5 @@
         </tr>
     </table>
 
-    <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="filteredPp.length" items-per-page="itemsPerPage"></pagination>
+    <uib-pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="filteredPp.length" items-per-page="itemsPerPage"></uib-pagination>
 </div>

@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -96,6 +95,13 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto;
 
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private AIPEOpetuksenSisalto aipeSisalto;
+
     @ManyToOne
     @Getter
     @Setter
@@ -126,6 +132,10 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
 
     public PerusteenOsaViite(EsiopetuksenPerusteenSisalto sisalto) {
         this.esiopetuksenPerusteenSisalto = sisalto;
+    }
+
+    PerusteenOsaViite(AIPEOpetuksenSisalto sisalto) {
+        this.aipeSisalto = sisalto;
     }
 
     @Override

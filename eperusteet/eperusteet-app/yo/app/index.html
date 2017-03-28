@@ -1,32 +1,17 @@
 <!doctype html>
-
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if IE 9]>         <html class="no-js lt-ie10"> <![endif]-->
-<!--[if !(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+<html class="no-js">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <title>ePerusteet</title>
     <script type="text/javascript" src="/virkailija-raamit/apply-raamit.js"></script>
     <!-- build:css(.tmp) styles/eperusteet.css -->
     <link rel="stylesheet" href="styles/eperusteet.css">
     <!-- endbuild -->
-    <!-- build:css(.tmp) styles/select.min.css -->
-    <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.min.css">
-    <!-- endbuild -->
   </head>
   <body ng-app="eperusteApp" style="height:100%; background-color: white">
-    <!-- build:js scripts/ieshims.js -->
-    <!--[if lt IE 9]>
-    <script src="bower_components/es5-shim/es5-shim.js"></script>
-    <script src="bower_components/json3/lib/json3.js"></script>
-    <![endif]-->
-    <!-- endbuild  -->
-    <!-- Add your site or application content here -->
     <div class="container-fluid main-container" id="ylasivuankkuri">
       <div class="row">
         <div class="col-md-12">
@@ -73,7 +58,7 @@
     <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
     <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-ui-utils/ui-utils.min.js"></script>
-    <script src="bower_components/angular-ui-sortable/src/sortable.js"></script>
+    <script src="bower_components/angular-ui-sortable/sortable.min.js"></script>
     <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
     <script src="bower_components/angular-elastic/elastic.js"></script>
     <script src="bower_components/lodash/lodash.min.js"></script>
@@ -92,11 +77,11 @@
     <script src="bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <!-- endbuild -->
 
-    <script src="bower_components/ckeditor/ckeditor.js?v=4.4.7"></script>
+    <script src="bower_components/ckeditor/ckeditor.js?v=4.6.2"></script>
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
-    <script src="scripts/services/api.js"></script>
+    <script src="scripts/api.js"></script>
     <script src="scripts/misc.js"></script>
     <script src="scripts/directives/valmiskaannos.js"></script>
     <script src="scripts/directives/generictree.js"></script>
@@ -139,6 +124,7 @@
     <script src="scripts/controllers/perusteprojekti/osanmuokkaus.js"></script>
     <script src="scripts/directives/muokkaus/vuosiluokkakokonaisuus.js"></script>
     <script src="scripts/directives/muokkaus/oppiaine.js"></script>
+    <script src="scripts/directives/muokkaus/perusopetusosaaminen.js"></script>
     <script src="scripts/directives/muokkaus/osaaminen.js"></script>
     <script src="scripts/controllers/excel.js"></script>
     <script src="scripts/controllers/tiedotteet.js"></script>
@@ -172,7 +158,6 @@
     <script src="scripts/services/haku.js"></script>
     <script src="scripts/services/kayttajaprofiilit.js"></script>
     <script src='scripts/services/koulutusalat.js'></script>
-    <script src='scripts/services/admin.js'></script>
     <script src="scripts/controllers/suosikit.js"></script>
     <script src="scripts/services/yleinenData.js"></script>
     <script src="scripts/services/arviointi.js"></script>
@@ -190,9 +175,6 @@
     <script src="scripts/directives/pikamenu.js"></script>
     <script src="scripts/directives/editinplace.js"></script>
     <script src="scripts/directives/termistoviitteet.js"></script>
-
-
-
     <script src="scripts/services/lukiokoulutus.js"></script>
     <script src="scripts/services/perusteprojekti.js"></script>
     <script src="scripts/controllers/perusteprojekti/projektinTiedot.js"></script>
@@ -208,7 +190,7 @@
     <script src="scripts/controllers/lukiokoulutus.js"></script>
     <script src="scripts/controllers/kurssit.js"></script>
     <script src="scripts/directives/datecomparisonvalidator.js"></script>
-    <script src="scripts/directives/muokkaus/muokattavaKentta.js"></script>
+    <script src="scripts/directives/muokkaus/muokattavakentta.js"></script>
     <script src="scripts/directives/arviointi.js"></script>
     <script src="scripts/directives/ammattitaitovaatimukset.js"></script>
     <script src="scripts/directives/valmaarviointi.js"></script>
@@ -228,7 +210,6 @@
     <script src="scripts/controllers/admin.js"></script>
     <script src="scripts/directives/numberinput.js"></script>
     <script src="scripts/directives/dateformatter.js"></script>
-    <script src="scripts/services/admin.js"></script>
     <script src="scripts/services/koulutusalat.js"></script>
     <script src="scripts/controllers/modals/tilanvaihtovirhe.js"></script>
     <script src="scripts/directives/diaarinumerouniikki.js"></script>
@@ -239,7 +220,12 @@
     <script src="scripts/directives/hallintalinkki.js"></script>
     <script src="scripts/directives/muokkaus/aihekokonaisuudet.js"></script>
     <script src="scripts/directives/muokkaus/lukiokoulutusyleisettavoitteet.js"></script>
-
+    <script src="scripts/states/perusteprojekti/suoritustapa/aipesisalto/state.js"></script>
+    <script src="scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/state.js"></script>
+    <script src="scripts/states/perusteprojekti/suoritustapa/aipeosaalue/state.js"></script>
+    <script src="scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/state.js"></script>
+    <script src="scripts/services/aipe.js"></script>
+    <script src="scripts/directives/muokkaus/vaihe.js"></script>
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/esitys.js -->
@@ -248,10 +234,10 @@
     <script src="eperusteet-esitys/views/yksinkertainen.js"></script>
     <script src="eperusteet-esitys/views/perusopetus.js"></script>
     <script src="eperusteet-esitys/views/lukiokoulutus.js"></script>
-    <script src="eperusteet-esitys/services/menubuilder.js"></script>
-    <script src="eperusteet-esitys/services/tekstikappaleutils.js"></script>
-    <script src="eperusteet-esitys/services/sivunavigaatio.js"></script>
-    <script src="eperusteet-esitys/services/stateservice.js"></script>
+    <script src="eperusteet-esitys/scripts/services/menubuilder.js"></script>
+    <script src="eperusteet-esitys/scripts/services/tekstikappaleutils.js"></script>
+    <script src="eperusteet-esitys/scripts/services/sivunavigaatio.js"></script>
+    <script src="eperusteet-esitys/scripts/services/stateservice.js"></script>
     <!-- endbuild -->
   </body>
 </html>

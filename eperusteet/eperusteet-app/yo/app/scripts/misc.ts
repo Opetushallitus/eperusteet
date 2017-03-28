@@ -13,7 +13,7 @@ namespace Types {
         poistettu: boolean;
         perusteenOsaId?: number;
         suoritustapa?: string;
-    };
+    }
 
     export interface Kayttajatieto {
         username?: string;
@@ -23,7 +23,7 @@ namespace Types {
         oidHenkilo?: string;
         kieliKoodi?: string;
         $$esitysnimi?: string;
-    };
+    }
 }
 
 // TODO: Keksi parempi nimi ja paikka
@@ -68,7 +68,7 @@ namespace Logic {
     }
 
 
-};
+}
 
 // TODO: Keksi parempi nimi ja paikka
 namespace Endpoints {
@@ -76,7 +76,7 @@ namespace Endpoints {
 
     export const init = (Api) => {
         _Api = Api;
-    }
+    };
 
     const kayttajaCache = {};
 

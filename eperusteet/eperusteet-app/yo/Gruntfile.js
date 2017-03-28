@@ -68,7 +68,7 @@ module.exports = function(grunt) {
         options: {
           module: 'commonjs',
           target: 'es3',
-          lib: ['DOM', 'ES2015', 'ES5'], // FIXME: Ei toimi
+          lib: ["DOM", "ES2015", "ES5"],
           alwaysStrict: true
         }
       }
@@ -472,10 +472,9 @@ module.exports = function(grunt) {
     'ts',
     'pug',
     'clean:server',
-    'copy:fonts', // needed if testing while "grunt dev" is running :)
+    'copy:fonts',
     'concurrent:test',
     'autoprefixer',
-//  'connect:test',
     'regex-check',
     'karma'
   ]);
@@ -490,7 +489,6 @@ module.exports = function(grunt) {
     'ngtemplates',
     'concat',
     'copy:dist',
-//  'ngmin',
     'cssmin',
     'uglify',
     'rev',

@@ -23,15 +23,12 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -142,7 +139,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
 
     @RelatesToPeruste
     @Getter
-    @ManyToOne(optional = true)
+    @ManyToOne
     private Oppiaine oppiaine;
 
     @Getter

@@ -14,10 +14,21 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+package fi.vm.sade.eperusteet.dto.yl;
 
-angular.module('eperusteApp')
-  .service('Admin', function() {
-    return {
-    };
-  });
+import com.google.common.base.Optional;
+import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ *
+ * @author nkala
+ */
+@Getter
+@Setter
+public class AIPEOppiaineSuppeaDto extends AIPEOppiaineBaseDto {
+    private Optional<Boolean> koosteinen;
+    private Optional<Boolean> abstrakti;
+    private Optional<Date> muokattu;
+}

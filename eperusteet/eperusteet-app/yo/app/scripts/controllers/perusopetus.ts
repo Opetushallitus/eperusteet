@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
       PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, VlkUtils) {
@@ -137,8 +133,7 @@ angular.module('eperusteApp')
     });
 
   })
-  .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService,
-      virheService, $log) {
+  .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService, virheService, $log) {
     $scope.sisaltoState = _.find(PerusopetusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
       $log.error('Tyyppi: '+ $stateParams.osanTyyppi);

@@ -20,6 +20,10 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
+import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.DOKUMENTTI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.GENEROI;
+import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +47,9 @@ public class DokumenttiController {
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiController.class);
 
     @Autowired
+    private EperusteetAudit audit;
+
+    @Autowired
     PerusteRepository perusteRepository;
 
 
@@ -58,6 +65,7 @@ public class DokumenttiController {
         @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi,
         @RequestParam(value = "version", defaultValue = "uusi") final String version
     ) throws DokumenttiException {
+        LogMessage.builder(perusteId, DOKUMENTTI, GENEROI).log();
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         final DokumenttiDto createDtoFor = service.createDtoFor(

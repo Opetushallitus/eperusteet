@@ -30,6 +30,7 @@ public enum Suoritustapakoodi {
     LISAOPETUS("lisaopetus"),
     VARHAISKASVATUS("varhaiskasvatus"),
     ESIOPETUS("esiopetus"),
+    AIPE("aipe"),
     LUKIOKOULUTUS("lukiokoulutus");
 
     private final String koodi;

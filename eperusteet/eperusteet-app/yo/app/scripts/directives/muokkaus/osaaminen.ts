@@ -14,91 +14,85 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
-angular.module('eperusteApp')
-  .directive('muokkausOsaaminen', function () {
+angular.module("eperusteApp")
+.directive("muokkausOsaaminen", () => {
     return {
-      templateUrl: 'views/directives/perusopetus/osaaminen.html',
-      restrict: 'E',
-      scope: {
-        model: '=',
-        versiot: '='
-      },
-      controller: 'MuokkausOsaaminenController'
-    };
-  })
-
-  .controller('MuokkausOsaaminenController', function ($scope, PerusopetusService, Notifikaatiot,
-    PerusteProjektiSivunavi, YleinenData, $stateParams, CloneHelper, $timeout, $state, Lukitus) {
-    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
-    $scope.editableModel = {};
-    $scope.editEnabled = false;
-
-    var cloner = CloneHelper.init(['nimi', 'kuvaus']);
-
-    var callbacks = {
-      edit: function () {
-        cloner.clone($scope.editableModel);
-      },
-      save: function () {
-        var isNew = !$scope.editableModel.id;
-        PerusopetusService.saveOsa($scope.editableModel, $stateParams, function (tallennettu) {
-          $scope.editableModel = tallennettu;
-          PerusopetusService.clearCache();
-          if (isNew) {
-            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: tallennettu.id}), {reload: true});
-          } else {
-            Lukitus.vapauta();
-          }
-          Notifikaatiot.onnistui('tallennus-onnistui');
-        });
-      },
-      cancel: function () {
-        cloner.restore($scope.editableModel);
-        if ($scope.editableModel.$isNew) {
-          $timeout(function () {
-            $state.go.apply($state, $scope.data.options.backState);
-          });
-        } else {
-          Lukitus.vapauta();
+        templateUrl: "views/directives/osaaminen.html",
+        restrict: "E",
+        scope: {
+            model: "=",
+            versiot: "="
+        },
+        controller: ($scope, Notifikaatiot, PerusteProjektiSivunavi, YleinenData, $stateParams, $state, Api) => {
+            $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
+            $scope.isNew = $stateParams.osanId === 'uusi';
+            $scope.editableModel = Api.copy($scope.model);
+            $scope.editEnabled = false;
+            $scope.data = {
+                options: {
+                    title: () => {
+                        if (!$scope.editableModel.nimi) {
+                            return 'uusi-tutkinnonosa';
+                        }
+                        return $scope.editableModel.nimi;
+                    },
+                    editTitle: 'muokkaa-osaaminen',
+                    newTitle: 'uusi-osaaminen',
+                    backLabel: 'laaja-alainen-osaaminen',
+                    backState: ['root.perusteprojekti.suoritustapa.' + $stateParams.suoritustapa + 'osalistaus', {
+                        suoritustapa: $stateParams.suoritustapa,
+                        osanTyyppi: 'osaaminen'
+                    }],
+                    removeWholeLabel: 'poista-osaamiskokonaisuus',
+                    removeWholeConfirmationText: 'poistetaanko-osaamiskokonaisuus',
+                    removeWholeFn: async cb => {
+                        await $scope.editableModel.remove();
+                        cb();
+                    },
+                    fields: [],
+                    editingCallbacks: {
+                        edit: async () => {
+                            if (!$scope.isNew) {
+                                $scope.model = await $scope.model.get();
+                                $scope.editableModel = Api.copy($scope.model);
+                            }
+                        },
+                        save: async () => {
+                            if ($scope.isNew) {
+                                $scope.editableModel = await $scope.editableModel.post();
+                                Notifikaatiot.onnistui('tallennus-onnistui');
+                                $state.go($state.current, {
+                                    suoritustapa: $stateParams.suoritustapa,
+                                    osanTyyppi: $stateParams.osanTyyppi,
+                                    osanId: $scope.editableModel.id
+                                }, {
+                                    reload: true
+                                });
+                            } else {
+                                $scope.editableModel = await $scope.editableModel.save();
+                                Notifikaatiot.onnistui('tallennus-onnistui');
+                                $scope.model = Api.copy($scope.editableModel);
+                            }
+                        },
+                        cancel: () => {
+                            if ($scope.isNew) {
+                                $state.go($scope.data.options.backState[0], $scope.data.options.backState[1], {
+                                    reload: true
+                                });
+                            } else {
+                                $scope.editableModel = Api.copy($scope.model);
+                            }
+                        },
+                        notify: value => {
+                            $scope.editEnabled = value;
+                            PerusteProjektiSivunavi.setVisible(!value);
+                        },
+                        validate: () => {
+                            return true;
+                        }
+                    }
+                }
+            };
         }
-      },
-      notify: function (value) {
-        $scope.editEnabled = value;
-        PerusteProjektiSivunavi.setVisible(!value);
-      },
-      validate: function () {
-        return true;
-      }
     };
-
-    $scope.data = {
-      options: {
-        title: function () {
-          return $scope.editableModel.nimi;
-        },
-        editTitle: 'muokkaa-osaaminen',
-        newTitle: 'uusi-osaaminen',
-        backLabel: 'laaja-alainen-osaaminen',
-        backState: ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: PerusopetusService.OSAAMINEN}],
-        removeWholeLabel: 'poista-osaamiskokonaisuus',
-        removeWholeConfirmationText: 'poistetaanko-osaamiskokonaisuus',
-        removeWholeFn: function(then) {
-          PerusopetusService.deleteOsa($scope.editableModel, function() {
-            PerusopetusService.clearCache();
-            then();
-          });
-        },
-        fields: [],
-        editingCallbacks: callbacks
-      }
-    };
-
-
-    $scope.model.then(function (data) {
-      $scope.editableModel = angular.copy(data);
-    });
-
-  });
+});

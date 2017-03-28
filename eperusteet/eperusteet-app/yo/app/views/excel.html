@@ -1,166 +1,228 @@
-<div>
 <!-- excel.html -->
-
-  <h2 kaanna>tuo-excel</h2>
-  <p ng-show="!supportsFileReader" kaanna>Ominaisuus ei ole tuettu käyttämälläsi selaimella.</p>
-  <div ng-show="supportsFileReader && alussa || errors.length !== 0" class="panel panel-default">
-    <div class="clearfix"></div>
-    <form class="panel-body">
-      <div class="clearfix"></div>
-      <div class="form-group col-xs-12">
-        <label kaanna>tutkinnon-tyyppi</label>
+<div>
+    <h2 kaanna="'tuo-excel'"></h2>
+    <p ng-show="!supportsFileReader" kaanna="'ominaisuus-ei-tuettu'"></p>
+    <div ng-show="supportsFileReader && alussa || errors.length !== 0" class="panel panel-default">
         <div class="clearfix"></div>
-        <div ng-hide="peruste.id" class="btn-group">
-          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_11'" kaanna="ammattitutkinto"></button>
-          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_12'" kaanna="erikoisammattitutkinto"></button>
-          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_1'" kaanna="perustutkinto"></button>
-        </div>
-        <button ng-hide="peruste.id" ng-click="mergeProjekti(true)" type="button" class="btn btn-default" kaanna="tuo-perustepohja"></button>
-        <div ng-if="peruste.id" class="btn-group">
-          <div class="alert alert-info">
-            {{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}: <b>{{ peruste.nimi | kaanna }} ({{ koulutustyypitMap[peruste.koulutustyyppi].nimi | kaanna }})</b>
-            <div ng-show="peruste.tutkintokoodi">{{ 'tutkintokoodi' | kaanna }}: <b>{{ peruste.tutkintokoodi | kaanna }}</b></div>
-            <div ng-show="peruste.voimassaoloAlkaa">{{ 'voimassaoloAlkaa' | kaanna }}: <b>{{ peruste.voimassaoloAlkaa | aikaleima }}</b></div>
-            <div ng-show="peruste.voimassaoloLoppuu">{{ 'voimassaoloLoppuu' | kaanna }}: <b>{{ peruste.voimassaoloLoppuu | aikaleima }}</b></div>
-            <div ng-show="peruste.siirtymaAlkaa">{{ 'siirtymaAlkaa' | kaanna }}: <b>{{ peruste.siirtymaAlkaa | aikaleima }}</b></div>
-            <div style="margin-top: 10px">
-              <button class="btn btn-danger" ng-click="peruutaPohjaValinta()" kaanna>peruuta</button>
+        <form class="panel-body">
+            <div class="clearfix"></div>
+            <div class="form-group col-xs-12">
+                <label kaanna="'tutkinnon-tyyppi'"></label>
+                <div class="clearfix"></div>
+                <div ng-hide="peruste.id" class="btn-group">
+                    <button type="button"
+                            class="btn btn-default"
+                            ng-model="projekti.koulutustyyppi"
+                            uib-btn-radio="'koulutustyyppi_11'"
+                            kaanna="ammattitutkinto"></button>
+                    <button type="button"
+                            class="btn btn-default"
+                            ng-model="projekti.koulutustyyppi"
+                            uib-btn-radio="'koulutustyyppi_12'"
+                            kaanna="erikoisammattitutkinto"></button>
+                    <button type="button"
+                            class="btn btn-default"
+                            ng-model="projekti.koulutustyyppi"
+                            uib-btn-radio="'koulutustyyppi_1'"
+                            kaanna="perustutkinto"></button>
+                </div>
+                <button ng-hide="peruste.id"
+                        ng-click="mergeProjekti(true)"
+                        type="button"
+                        class="btn btn-default"
+                        kaanna="tuo-perustepohja"></button>
+                <div ng-if="peruste.id" class="btn-group">
+                    <div class="alert alert-info">{{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}:
+                        <b>{{ peruste.nimi | kaanna }} ({{koulutustyypitMap[peruste.koulutustyyppi].nimi | kaanna}})</b>
+                        <div ng-show="peruste.tutkintokoodi">{{ 'tutkintokoodi' | kaanna }}:
+                            <b>{{ peruste.tutkintokoodi | kaanna }}</b>
+                        </div>
+                        <div ng-show="peruste.voimassaoloAlkaa">{{ 'voimassaoloAlkaa' | kaanna }}:
+                            <b>{{ peruste.voimassaoloAlkaa | aikaleima }}</b>
+                        </div>
+                        <div ng-show="peruste.voimassaoloLoppuu">{{ 'voimassaoloLoppuu' | kaanna }}:
+                            <b>{{ peruste.voimassaoloLoppuu | aikaleima }}</b>
+                        </div>
+                        <div ng-show="peruste.siirtymaAlkaa">{{ 'siirtymaAlkaa' | kaanna }}:
+                            <b>{{ peruste.siirtymaAlkaa | aikaleima }}</b>
+                        </div>
+                        <div style="margin-top: 10px">
+                            <button class="btn btn-danger" ng-click="peruutaPohjaValinta()" kaanna="'peruuta'"></button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group col-xs-12">
-        <div class="clearfix"></div>
-        <label>{{ 'tiedosto' | kaanna }} (.xslx)</label>
-        <file-select id="fileselect-button" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
-      </div>
-    </form>
-  </div>
-
-  <div ng-hide="alussa" class="excel-alkuun">
-    <a icon-role="back" class="action-link"
-       ng-click="alussa = true; clearSelect();" kaanna="'alkuun'"></a>
-  </div>
-
-  <!-- virheet -->
-  <div ng-show="errors.length > 0">
-    <div class="alert alert-danger" kaanna>excel-tiedostossasi-oli-virheitä</div>
-    <h3 kaanna>virheet</h3>
-    <table class="table"> <tr>
-        <th kaanna>solu</th>
-        <th kaanna>odotettu-arvo</th>
-        <th kaanna>annettu-arvo</th>
-      </tr>
-      <tr ng-repeat="error in errors" class="danger">
-        <td>{{ error.cell}}</td>
-        <td>{{ error.expected | kaanna }}</td>
-        <td>{{ error.actual | kaanna }}</td>
-      </tr>
-    </table>
-  </div>
-
-  <div ng-show="warnings.length > 0">
-    <div class="alert alert-warning">
-      Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.
-      <a ng-click="naytaVirheet = !naytaVirheet" class="action-link">
-        <h3>Varoitukset
-          <span ng-show="!naytaVirheet" class="glyphicon glyphicon-chevron-down"></span>
-          <span ng-show="naytaVirheet" class="glyphicon glyphicon-chevron-up"></span>
-        </h3>
-      </a>
-    </div>
-
-    <div class="bg-warning" ng-show="naytaVirheet">
-      <table class="table">
-        <tr>
-          <th>Solu</th>
-          <th>Tutkinnon osa</th>
-          <th>Ongelma</th>
-        </tr>
-        <tr ng-repeat="warning in warnings" class="warning">
-          <td>{{ warning.cell}}</td>
-          <td>{{ warning.name | kaanna }}</td>
-          <td>{{ warning.warning | kaanna }}</td>
-        </tr>
-      </table>
-    </div>
-  </div>
-
-  <div ng-show="!lukeeTiedostoa && !alussa && errors.length === 0 && !peruste.$perusteTallennettu">
-    <form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form" novalidate>
-      <div class="form-area">
-        <div class="form-group">
-          <label class="col-sm-3">{{ 'projektin-nimi-label' | kaanna }}<span>*</span></label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="projekti.nimi" placeholder="{{ 'valitse-nimi' | kaanna }}"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-3">{{ 'projektin-oid-label' | kaanna }}<span>*</span></label>
-          <div class="col-sm-9">
-            <div class="input-group">
-              <input ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
-              <span class="input-group-btn">
-                <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
-              </span>
+            <div class="form-group col-xs-12">
+                <div class="clearfix"></div>
+                <label>{{'tiedosto' | kaanna}} (.xslx)</label>
+                <file-select id="fileselect-button"
+                             before-select="clearSelect"
+                             on-select="onFileSelect"
+                             on-progress="onProgress"
+                             read-type="binary"></file-select>
             </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-3">{{ 'diaarinumero-label' | kaanna }}<span>*</span></label>
-          <div class="col-sm-9">
-            <input name="diaarinumero" type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero'| kaanna}}"></input>
-          </div>
-        </div>
-
-        <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-          <label for="koulutustyyppi" class="col-sm-3">{{ 'laajuuden-yksikkö' | kaanna }}<span>*</span></label>
-          <div class="col-md-9">
-            <select id="koulutustyyppi" ng-model="projekti.laajuusYksikko" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-              <option ng-repeat="yk in yksikot" value="{{ yk}}" ng-selected="projekti.laajuusYksikko === yk">{{ yk | kaanna }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-          <label for="koulutustyyppi" class="col-sm-3">{{ 'liitä-suoritustapaan' | kaanna }}<span>*</span></label>
-          <div class="col-md-9">
-            <select id="koulutustyyppi" ng-model="suoritustapa" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-              <option ng-repeat="st in suoritustavat" value="{{ st}}" ng-selected="suoritustapa === st">{{ st | kaanna }}</option>
-            </select>
-          </div>
-        </div>
-        <button ng-click="tallennaPerusteprojekti(projekti)" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid" kaanna>luo-perusteprojekti-nappi</button>
-      </div>
-    </form>
-  </div>
-  <div ng-show="peruste.$perusteTallennettu">
-    <div class="alert alert-success">
-      {{ 'perusteprojekti' | kaanna }}
-      <a ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: haettuProjekti.id, suoritustapa: haettuPeruste.suoritustavat[0].suoritustapakoodi })">
-        <b>{{ haettuProjekti.nimi | kaanna }}</b>
-      </a>
-      {{ 'tallennettiin-onnistuneesti' | kaanna }}
+        </form>
     </div>
 
-    <div ng-show="!uploadSuccessTekstikappaleet" class="alert alert-warning">
-      <span class="glyphicon glyphicon-exclamation-sign"></span>
-      {{ 'et-ole-vielä-tallentanut-tekstikappaleita' | kaanna }}
+    <div ng-hide="alussa" class="excel-alkuun">
+        <a icon-role="back"
+           class="action-link"
+           ng-click="alussa = true; clearSelect();"
+           kaanna="'alkuun'"></a>
     </div>
 
-    <div ng-show="!uploadSuccessTutkinnonosat" class="alert alert-warning">
-      <span class="glyphicon glyphicon-exclamation-sign"></span>
-      {{ 'et-ole-vielä-tallentanut-tutkinnonosia' | kaanna }}
+    <!-- virheet -->
+    <div ng-show="errors.length > 0">
+        <div class="alert alert-danger" kaanna="'excel-tiedostossasi-oli-virheita'"></div>
+        <h3 kaanna="'virheet'"></h3>
+        <table class="table">
+            <tr>
+                <th kaanna="'solu'"></th>
+                <th kaanna="'odotettu-arvo'"></th>
+                <th kaanna="'annettu-arvo'"></th>
+            </tr>
+            <tr ng-repeat="error in errors" class="danger">
+                <td>{{error.cell}}</td>
+                <td>{{error.expected | kaanna}}</td>
+                <td>{{error.actual | kaanna}}</td>
+            </tr>
+        </table>
     </div>
 
-    <h2>{{ projekti.nimi | kaanna }} ({{ projekti.diaarinumero}})</h2>
+    <div ng-show="warnings.length > 0">
+        <div class="alert alert-warning">
+            <span kaanna="'tiedostossa-ongelmia'"></span>
+            <a ng-click="naytaVirheet = !naytaVirheet" class="action-link">
+                <h3>
+                    <span kaanna="'varoitukset'"></span>
+                    <span ng-show="!naytaVirheet" class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="naytaVirheet" class="glyphicon glyphicon-chevron-up"></span>
+                </h3>
+            </a>
+        </div>
 
-    <tabset justified="true">
-      <tab heading="{{ 'tekstikappaleet' | kaanna }}">
-        <div ng-include src="'views/partials/excelTekstikappale.html'"></div>
-      </tab>
-      <tab heading="{{ 'tutkinnonosat' | kaanna }}">
-        <div ng-include src="'views/partials/excelTutkinnonOsat.html'"></div>
-      </tab>
-    </tabset>
-  </div>
+        <div class="bg-warning" ng-show="naytaVirheet">
+            <table class="table">
+                <tr>
+                    <th kaanna="'solu'"></th>
+                    <th kaanna="'tutkinnon-osa'"></th>
+                    <th kaanna="'ongelma'"></th>
+                </tr>
+                <tr ng-repeat="warning in warnings" class="warning">
+                    <td>{{warning.cell}}</td>
+                    <td>{{warning.name | kaanna}}</td>
+                    <td>{{warning.warning | kaanna}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div ng-show="!lukeeTiedostoa && !alussa && errors.length === 0 && !peruste.$perusteTallennettu">
+        <form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form" novalidate>
+            <div class="form-area">
+                <div class="form-group">
+                    <label class="col-sm-3">{{'projektin-nimi-label' | kaanna}}<span>*</span></label>
+                    <div class="col-sm-9">
+                        <input type="text"
+                               class="form-control"
+                               ng-model="projekti.nimi"
+                               placeholder="{{'valitse-nimi' | kaanna}}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3">{{ 'projektin-oid-label' | kaanna }}<span>*</span></label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <input ng-model="projekti.$ryhmaNimi[lang]"
+                                   type="text"
+                                   class="form-control"
+                                   disabled/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="haeRyhma()" kaanna="'hae-ryhma'"></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3">{{ 'diaarinumero-label' | kaanna }}<span>*</span></label>
+                    <div class="col-sm-9">
+                        <input name="diaarinumero"
+                               type="text"
+                               class="form-control"
+                               ng-model="projekti.diaarinumero"
+                               placeholder="{{'valitse-diaarinumero'| kaanna}}"/>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+                    <label for="koulutustyyppi" class="col-sm-3">
+                        {{'laajuuden-yksikkö' | kaanna}}<span>*</span></label>
+                    <div class="col-md-9">
+                        <select id="koulutustyyppi"
+                                ng-model="projekti.laajuusYksikko"
+                                class="form-control"
+                                ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+                            <option ng-repeat="yk in yksikot"
+                                    value="{{ yk}}"
+                                    ng-selected="projekti.laajuusYksikko === yk">
+                                {{yk | kaanna}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+                    <label for="koulutustyyppi" class="col-sm-3">
+                        {{'liitä-suoritustapaan' | kaanna}}<span>*</span>
+                    </label>
+                    <div class="col-md-9">
+                        <select id="koulutustyyppi"
+                                ng-model="suoritustapa"
+                                class="form-control"
+                                ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+                            <option ng-repeat="st in suoritustavat"
+                                    value="{{ st}}"
+                                    ng-selected="suoritustapa === st">
+                                {{st | kaanna}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <button ng-click="tallennaPerusteprojekti(projekti)"
+                        class="btn btn-primary"
+                        ng-disabled="perusteprojektiForm.$invalid"
+                        kaanna="'luo-perusteprojekti-nappi'">
+                </button>
+            </div>
+        </form>
+    </div>
+    <div ng-show="peruste.$perusteTallennettu">
+        <div class="alert alert-success">
+            {{ 'perusteprojekti' | kaanna }}
+            <a ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: haettuProjekti.id, suoritustapa: haettuPeruste.suoritustavat[0].suoritustapakoodi })">
+                <b>{{ haettuProjekti.nimi | kaanna }}</b>
+            </a>
+            {{ 'tallennettiin-onnistuneesti' | kaanna }}
+        </div>
+
+        <div ng-show="!uploadSuccessTekstikappaleet" class="alert alert-warning">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            {{ 'et-ole-vielä-tallentanut-tekstikappaleita' | kaanna }}
+        </div>
+
+        <div ng-show="!uploadSuccessTutkinnonosat" class="alert alert-warning">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            {{ 'et-ole-viela-tallentanut-tutkinnonosia' | kaanna }}
+        </div>
+
+        <h2>{{ projekti.nimi | kaanna }} ({{ projekti.diaarinumero}})</h2>
+
+        <uib-tabset justified="true">
+            <uib-tab heading="{{ 'tekstikappaleet' | kaanna }}">
+                <div ng-include src="'views/partials/excelTekstikappale.html'"></div>
+            </uib-tab>
+            <uib-tab heading="{{ 'tutkinnonosat' | kaanna }}">
+                <div ng-include src="'views/partials/excelTutkinnonOsat.html'"></div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
 </div>

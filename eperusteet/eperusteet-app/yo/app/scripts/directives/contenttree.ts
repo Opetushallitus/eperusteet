@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteApp')
   .directive('contentTree', function (TEXT_HIERARCHY_MAX_DEPTH) {
     return {

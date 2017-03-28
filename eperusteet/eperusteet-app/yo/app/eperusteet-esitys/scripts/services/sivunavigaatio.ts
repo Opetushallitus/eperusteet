@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 /**
  * Sivunavigaatioelementti
  * @param items lista menuelementtejä, objekti jolla avaimet:
@@ -43,7 +39,7 @@
       },
       controller: 'epSivuNaviController',
       transclude: true,
-      link: function (scope, element, attrs) {
+      link: function (scope: any, element: any, attrs: any) {
         var transcluded = element.find('#sivunavi-tc').contents();
         scope['hasTransclude'] = transcluded.length > 0;
         scope.disableRajaus = !_.isEmpty(attrs.disableRajaus);

@@ -1,27 +1,11 @@
-<!--
-Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-
-This program is free software: Licensed under the EUPL, Version 1.1 or - as
-soon as they will be approved by the European Commission - subsequent versions
-of the EUPL (the "Licence");
-
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-European Union Public Licence for more details.
--->
-
-<div class="main-content" id="main">
 <!-- esitys.html -->
-  <div class="painikkeet pull-right">
-    <a class="action-link" ng-click="luoPdf()" icon-role="save" kaanna="lataa-peruste-pdf-muodossa"></a>
-  </div>
-  <h1>
-    <span kaanna="peruste.nimi || 'nimetön'"></span>
-  </h1>
+<div class="main-content" id="main">
+    <div class="painikkeet pull-right">
+        <a class="action-link" ng-click="luoPdf()" icon-role="save" kaanna="lataa-peruste-pdf-muodossa"></a>
+    </div>
+    <h1>
+        <span kaanna="peruste.nimi || 'nimetön'"></span>
+    </h1>
     <div ng-if="$prestate || peruste.tila !== 'valmis'" class="alert alert-info">
         <h4 kaanna="'perusteen-esikatselu'"></h4>
         <p kaanna="'laadinnan-esikatselu-info'"></p>
@@ -30,12 +14,13 @@ European Union Public Licence for more details.
         <div class="sivunavi-navigaatio sivunavi-simple">
             <div class="sivunavi-takaisin">
                 <a ng-if="!$prestate" ng-href="{{backLink}}" icon-role="back" kaanna="takaisin-hakuun"></a>
-                <a ng-if="$prestate" ng-href="{{ '#' + $prestate }}" icon-role="back" kaanna="'takaisin-laadintaan'"></a>
+                <a ng-if="$prestate" ng-href="{{ '#' + $prestate }}" icon-role="back"
+                   kaanna="'takaisin-laadintaan'"></a>
             </div>
             <ep-sivunavigaatio items="navi.items" header="navi.header">
-              <select ng-show="suoritustavat.length > 1" class="form-control input-sm"
-                      ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)"
-                      ng-options="kaanna(st) for st in suoritustavat"></select>
+                <select ng-show="suoritustavat.length > 1" class="form-control input-sm"
+                        ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)"
+                        ng-options="kaanna(st) for st in suoritustavat"></select>
             </ep-sivunavigaatio>
         </div>
         <div class="sivunavi-clear"></div>

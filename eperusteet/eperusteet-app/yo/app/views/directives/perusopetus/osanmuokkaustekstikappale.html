@@ -1,26 +1,24 @@
-<!-- osanmuokkaustekstikappale.html -->
-
 <div>
-  <div class="action-buttons" ng-show="!editMode">
-    <button class="btn btn-default" ng-click="edit()" icon-role="edit" kaanna="'muokkaa'"></button>
-  </div>
-  <h1 ng-show="editMode">{{getTitle() | kaanna}}</h1>
-  <h1 ng-hide="editMode">{{model.otsikko | kaanna}}</h1>
-  <div ng-if="editMode" class="tekstikappale edit-tekstikappale">
-    <div perusopetus-muokkaus-info></div>
-    <div class="list-group-item">
-      <h3 kaanna="muokkaus-teksikappaleen-nimi-header"></h3>
-      <h3 class="list-group-item-text" ng-model="model.otsikko" ckeditor editing-enabled="true"
-          editor-placeholder="muokkaus-teksikappaleen-nimi-placeholder" slocalized></h3>
+    <div class="action-buttons" ng-show="!editMode">
+        <button class="btn btn-default" ng-click="edit()" icon-role="edit" kaanna="'muokkaa'"></button>
     </div>
-    <div class="list-group-item">
-      <h3 kaanna="muokkaus-tekstikappaleen-teksti-header"></h3>
-      <div class="list-group-item-text" ng-model="model.teksti" ckeditor editing-enabled="true"
-          editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" slocalized></div>
+    <h1 ng-show="editMode">{{getTitle() | kaanna}}</h1>
+    <h1 ng-hide="editMode">{{model.otsikko | kaanna}}</h1>
+    <div ng-if="editMode" class="tekstikappale edit-tekstikappale">
+        <div perusopetus-muokkaus-info></div>
+        <div class="list-group-item">
+            <h3 kaanna="muokkaus-teksikappaleen-nimi-header"></h3>
+            <h3 class="list-group-item-text" ng-model="model.otsikko" ckeditor editing-enabled="true"
+                editor-placeholder="muokkaus-teksikappaleen-nimi-placeholder" slocalized></h3>
+        </div>
+        <div class="list-group-item">
+            <h3 kaanna="muokkaus-tekstikappaleen-teksti-header"></h3>
+            <div class="list-group-item-text" ng-model="model.teksti" ckeditor editing-enabled="true"
+                 editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" slocalized></div>
+        </div>
     </div>
-  </div>
-  <div ng-if="!editMode" class="tekstikappale">
-    <div perusopetus-muokkaus-info></div>
-    <div ng-bind-html="valitseKieli(model.teksti) | unsafe"></div>
-  </div>
+    <div ng-if="!editMode" class="tekstikappale">
+        <div perusopetus-muokkaus-info></div>
+        <div ng-bind-html="valitseKieli(model.teksti) | unsafe"></div>
+    </div>
 </div>

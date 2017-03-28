@@ -14,155 +14,137 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
-  .directive('osallinenOsa', function ($compile) {
+.directive('osallinenOsa', $compile => {
     return {
-      templateUrl: 'views/directives/osallinenosa.html',
-      restrict: 'AE',
-      transclude: true,
-      scope: {
-        model: '=',
-        config: '=',
-        versiot: '=',
-        overwrittenVaihdaVersio: '=',
-        overwrittenRevertCb: '=',
-        overwrittenDeleteRedirectCb: '=',
-        editableModel: '='
-      },
-      controller: 'OsallinenOsaController',
-      link: function (scope, element) {
-        var el = $compile(angular.element(scope.config.fieldRenderer))(scope);
-        element.find('.tutkinnonosa-sisalto').empty().append(el);
-      }
-    };
-  })
-
-  .controller('OsallinenOsaController', function ($scope, $state, VersionHelper, $q, Lukitus,
-      Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout,
-      $stateParams) {
+        templateUrl: 'views/directives/osallinenosa.html',
+        restrict: 'AE',
+        transclude: true,
+        scope: {
+            model: '=',
+            config: '=',
+            versiot: '=',
+            overwrittenVaihdaVersio: '=',
+            overwrittenRevertCb: '=',
+            overwrittenDeleteRedirectCb: '=',
+            editableModel: '='
+        },
+        controller: 'OsallinenOsaController',
+        link: function (scope: any, element: any) {
+            if (_.has(scope.config.fieldRenderer)) {
+                element
+                    .find('.tutkinnonosa-sisalto')
+                    .empty()
+                    .append($compile(angular.element(scope.config.fieldRenderer))(scope));
+            }
+        }
+    }
+})
+.controller('OsallinenOsaController', ($scope, $state, VersionHelper, $q, Lukitus,
+                                       Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout,
+                                       $stateParams) => {
     $scope.isLocked = false;
     $scope.isNew = $stateParams.osanId === 'uusi';
     $scope.editEnabled = false;
-    if ($scope.isNew) {
-      $timeout(function () {
-        $scope.muokkaa();
-      }, 200);
-    }
-    else {
-      Lukitus.genericTarkista(function() {
-        $scope.isLocked = false;
-      }, function(lukonOmistaja) {
-        $scope.isLocked = true;
-        $scope.lockNotification = lukonOmistaja;
-      });
-    }
-
-
-    function refreshPromise() {
-      var deferred = $q.defer();
-      $scope.modelPromise = deferred.promise;
-      $scope.editableModel.$isNew = $scope.isNew;
-      deferred.resolve($scope.editableModel);
-    }
-    refreshPromise();
-
-    $scope.isPublished = function () {
-      return $scope.model.tila === 'julkaistu';
-    };
-
-    $scope.canAdd = function () {
-      return true;
-    };
-
-    $scope.generateBackHref = function () {
-      if ($scope.config && $scope.config.backState) {
-        return $state.href.apply($state, $scope.config.backState);
-      }
-    };
-
-    $scope.vaihdaVersio = function () {
-      if ($scope.overwrittenVaihdaVersio) {
-        $scope.overwrittenVaihdaVersio();
-      } else {
-        $scope.versiot.hasChanged = true;
-        VersionHelper.setUrl($scope.versiot);
-        //VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, responseFn);
-      }
-    };
-
-    $scope.revertCb = function (response) {
-      if ($scope.overwrittenRevertCb) {
-        $scope.overwrittenRevertCb(response);
-      } else {
-        // TODO
-        //responseFn(response);
-        //saveCb(response);
-      }
-    };
+    $scope.muokkaa = () => Lukitus.lukitse(Editointikontrollit.startEditing);
 
     if ($scope.config.editingCallbacks) {
-      Editointikontrollit.registerCallback($scope.config.editingCallbacks);
-      Editointikontrollit.registerEditModeListener(function (mode) {
-        $scope.editEnabled = mode;
-      });
+        Editointikontrollit.registerCallback($scope.config.editingCallbacks);
+        Editointikontrollit.registerEditModeListener((mode) => {
+            $scope.editEnabled = mode;
+        });
     }
 
-    $scope.muokkaa = _.bind(Lukitus.lukitse, {}, Editointikontrollit.startEditing);
+    if ($scope.isNew) {
+        $scope.muokkaa();
+    } else {
+        Lukitus.genericTarkista(() => {
+            $scope.isLocked = false;
+        }, (lukonOmistaja) => {
+            $scope.isLocked = true;
+            $scope.lockNotification = lukonOmistaja;
+        });
+    }
+
+    $scope.isPublished = () => {
+        return $scope.model.tila === 'julkaistu';
+    };
+
+    $scope.generateBackHref = () => {
+        return $state.href($scope.config.backState);
+    };
+
+    $scope.vaihdaVersio = () => {
+        if ($scope.overwrittenVaihdaVersio) {
+            $scope.overwrittenVaihdaVersio();
+        } else {
+            $scope.versiot.hasChanged = true;
+            VersionHelper.setUrl($scope.versiot);
+            //VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, responseFn);
+        }
+    };
+
+    $scope.revertCb = response => {
+        if ($scope.overwrittenRevertCb) {
+            $scope.overwrittenRevertCb(response);
+        } else {
+            // TODO
+            //responseFn(response);
+            //saveCb(response);
+        }
+    };
 
     $scope.addField = function (field) {
-      var splitfield = FieldSplitter.process(field);
-      var cssClass;
-      if (splitfield.isMulti()) {
-        var index = splitfield.addArrayItem($scope.editableModel);
-        //$rootScope.$broadcast('osafield:update');
-        cssClass = splitfield.getClass(index);
-        field.$setEditable = index;
-      } else {
-        field.visible = true;
-        field.$added = true;
-        cssClass = FieldSplitter.getClass(field);
-      }
-      ($scope.config.addFieldCb || angular.noop)(field);
-      $rootScope.$broadcast('osafield:update');
-      $timeout(function () {
-        Utils.scrollTo('li.' + cssClass);
-      }, 200);
+        let splitfield = FieldSplitter.process(field);
+        let cssClass;
+        if (splitfield.isMulti()) {
+            const index = splitfield.addArrayItem($scope.editableModel);
+            //$rootScope.$broadcast('osafield:update');
+            cssClass = splitfield.getClass(index);
+            field.$setEditable = index;
+        } else {
+            field.visible = true;
+            field.$added = true;
+            cssClass = FieldSplitter.getClass(field);
+        }
+        ($scope.config.addFieldCb || angular.noop)(field);
+        $rootScope.$broadcast('osafield:update');
+        $timeout(() => {
+            Utils.scrollTo('li.' + cssClass);
+        }, 200);
     };
 
     $scope.removeWhole = function () {
-      Varmistusdialogi.dialogi({
-        otsikko: 'varmista-poisto',
-        teksti: $scope.config.removeWholeConfirmationText || '',
-        primaryBtn: 'poista',
-        successCb: function() {
-          $scope.config.removeWholeFn(function() {
-            Editointikontrollit.unregisterCallback();
-            if ($scope.overwrittenDeleteRedirectCb) {
-              $scope.overwrittenDeleteRedirectCb();
-            } else {
-              $state.go($scope.config.backState[0], $scope.config.backState[1], { reload: true });
+        Varmistusdialogi.dialogi({
+            otsikko: 'varmista-poisto',
+            teksti: $scope.config.removeWholeConfirmationText || '',
+            primaryBtn: 'poista',
+            successCb: function () {
+                $scope.config.removeWholeFn(function () {
+                    Editointikontrollit.unregisterCallback();
+                    if ($scope.overwrittenDeleteRedirectCb) {
+                        $scope.overwrittenDeleteRedirectCb();
+                    } else {
+                        $state.go($scope.config.backState[0], $scope.config.backState[1], {
+                            reload: true
+                        });
+                    }
+                });
             }
-          });
-        }
-      })();
+        })();
     };
 
     $scope.actionButtonFn = function (button) {
-      (button.callback || angular.noop)();
+        (button.callback || angular.noop)();
     };
 
     $scope.shouldHide = function (button) {
-      var custom = button.hide ? button.hide : '';
-      var defaults = $scope.editEnabled || !$scope.versiot.latest;
-      if (!custom) {
-        return defaults;
-      }
-      var parsed = $scope.$eval(custom);
-      return defaults || parsed;
+        const custom = button.hide ? button.hide : '';
+        const defaults = $scope.editEnabled || !$scope.versiot.latest;
+        if (!custom) {
+            return defaults;
+        }
+        const parsed = $scope.$eval(custom);
+        return defaults || parsed;
     };
-
-    $scope.$watch('editableModel', refreshPromise);
- });
+});

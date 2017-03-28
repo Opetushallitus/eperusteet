@@ -1,8 +1,8 @@
 <!-- navi.html -->
 <ol class="breadcrumb">
-  <li><a ui-sref="root.aloitussivu" icon-role="home"></a></li>
-  <li ng-repeat="np in navigaatiopolku">
-    <a ng-show="np.url" ng-href="{{ np.url }}">{{np.label|kaanna}}</a>
-    <span ng-hide="np.url">{{ np.label|kaanna }}</span>
-  </li>
+    <li><a ui-sref="root.aloitussivu" icon-role="home"></a></li>
+    <li ng-repeat="np in navigaatiopolku">
+        <a ng-show="np.url" ng-href="{{ np.url }}">{{np.label|kaanna}}</a>
+        <span ng-hide="np.url">{{ np.label|kaanna }}</span>
+    </li>
 </ol>

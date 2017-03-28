@@ -45,7 +45,7 @@ angular.module('eperusteApp')
         controller: 'AloitusSivuController'
       });
   })
-  .controller('AloitusSivuController', function ($scope, $state, YleinenData, $log) {
+  .controller('AloitusSivuController', function ($scope, $state, YleinenData) {
     $scope.valinnat = [
       {
         koodi: 'koulutustyyppi_15',
@@ -54,6 +54,10 @@ angular.module('eperusteApp')
       {
         koodi: 'koulutustyyppi_16',
         helper: 'selaa-perusteita'
+      },
+      {
+        koodi: 'koulutustyyppi_17',
+        helper: 'selaa-perustetta'
       },
       {
         koodi: 'koulutustyyppi_2',
@@ -70,8 +74,8 @@ angular.module('eperusteApp')
         helper: 'hae-perusteita'
       },
     ];
-    _.each($scope.valinnat, function (item) {
-      var info = YleinenData.koulutustyyppiInfo[item.koodi] || {};
+    _.each($scope.valinnat, (item) => {
+      const info = YleinenData.koulutustyyppiInfo[item.koodi] || {};
       item.label = item.label || info.nimi;
       item.url = $state.href(info.hakuState);
     });

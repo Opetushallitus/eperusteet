@@ -1,10 +1,10 @@
-<div ng-hide="editointi || !onLataaja" class="kommentit">
 <!-- kommentit.html -->
+<div ng-hide="editointi || !onLataaja" class="kommentit">
     <hr>
     <div>
         <div class="kommentti-alue">
             <div>
-                <h2><span kaanna="'keskustelu'"></span><span ng-if="sisalto">&nbsp;({{ sisalto.$yhteensa }} {{ 'kommenttia' | kaanna }})</span>
+                <h2><span kaanna="'keskustelu'"></span><span ng-if="sisalto">&nbsp;({{sisalto.$yhteensa}} {{'kommenttia' | kaanna}})</span>
                 <small-spinner ng-hide="nayta"></small-spinner>
                 </h2>
             </div>
@@ -15,7 +15,7 @@
             <div ng-show="editoi" class="kommentti-uusi">
                 <textarea maxlength="{{ $kommenttiMaxLength.maara }}" class="form-control msd-elastic kommentti-textarea" ng-model="editoitava"></textarea>
                 <div class="alert alert-danger" role="alert" ng-show="editoitava && editoitava.length >= $kommenttiMaxLength.maara">
-                    {{ "kommentti-ei-saa-ylittaa" | kaanna:$kommenttiMaxLength }}
+                    {{"kommentti-ei-saa-ylittaa" | kaanna:$kommenttiMaxLength}}
                 </div>
                 <div class="kommentti-painikkeet">
                     <button class="btn" ng-click="editoi = false" kaanna="'peruuta'"></button>

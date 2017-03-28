@@ -37,7 +37,7 @@ angular.module('eperusteApp')
         korvattavatDiaarinumerot: '=',
       },
       controller: 'StatusbadgeCtrl',
-      link: function (scope, element) {
+      link: function (scope: any, element: any) {
         // To fit long status names into the badge, adjust letter spacing
         var el = element.find('.status-name');
 

@@ -1,23 +1,26 @@
-<!-- pikamenu.html -->
+<!-- partials/perusteprojekti/pikamenu.html -->
 <h1 id="pikamenu-header" ng-transclude>
 </h1>
-<div id="tutkinnonosat-pikamenu-button" ng-show="!editEnabled" ng-click="pikamenu.opened = !pikamenu.opened"
+<div id="tutkinnonosat-pikamenu-button"
+     ng-show="!editEnabled"
+     ng-click="pikamenu.opened = !pikamenu.opened"
      ng-class="{'pikamenu-opened': pikamenu.opened}">
-  <span class="glyphicon glyphicon-chevron-down"></span>
+    <span class="glyphicon glyphicon-chevron-down"></span>
 </div>
 <div id="pikamenu-wrapper">
-  <div id="tutkinnonosat-pikamenu" ng-show="pikamenu.opened">
-    <div id="tutkinnonosat-pikamenu-list">
-      <ul class="list-group">
-        <li class="list-group-item" ng-repeat="key in keys(rakenne.tutkinnonOsat) | orderBy:pikamenu.orderFn">
-          <a ng-show="tutkinnonOsaViite.tutkinnonOsa.id != key" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: rakenne.tutkinnonOsat[key].id, versio: '' })">
-            {{rakenne.tutkinnonOsat[key].nimi || 'nimetön' | kaanna}}
-          </a>
-          <span class="active" ng-show="tutkinnonOsaViite.tutkinnonOsa.id == key">
-            {{rakenne.tutkinnonOsat[key].nimi || 'nimetön' | kaanna}}
-          </span>
-        </li>
-      </ul>
+    <div id="tutkinnonosat-pikamenu" ng-show="pikamenu.opened">
+        <div id="tutkinnonosat-pikamenu-list">
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="key in keys(rakenne.tutkinnonOsat) | orderBy:pikamenu.orderFn">
+                    <a ng-show="tutkinnonOsaViite.tutkinnonOsa.id != key"
+                       ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: rakenne.tutkinnonOsat[key].id, versio: '' })">
+                        {{rakenne.tutkinnonOsat[key].nimi || 'nimetön' | kaanna}}
+                    </a>
+                    <span class="active" ng-show="tutkinnonOsaViite.tutkinnonOsa.id == key">
+                        {{rakenne.tutkinnonOsat[key].nimi || 'nimetön' | kaanna}}
+                    </span>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </div>

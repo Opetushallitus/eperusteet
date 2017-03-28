@@ -105,8 +105,8 @@ angular.module('eperusteApp')
         var kohde = {
           otsikko: {},
           selite: {
-            fi: "Opiskelija tai tutkinnon suorittaja",
-            sv: "Den studerande eller examinanden"
+            fi: "Tutkinnon suorittaja",
+            sv: "Den examinanden"
           },
           _arviointiAsteikko: kohdealue.$newkohde.arviointiasteikko.id,
           osaamistasonKriteerit: [],

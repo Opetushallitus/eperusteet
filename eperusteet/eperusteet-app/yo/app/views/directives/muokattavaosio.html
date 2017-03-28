@@ -1,29 +1,38 @@
 <div ng-if="hasContent" class="panel panel-default panel-clean">
-  <!-- muokattavaosio.html -->
-  <div class="panel-heading">
-    <div class="action-buttons">
-      <button class="btn btn-default" icon-role="edit" ng-click="edit()"
-              oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
-      <button ng-if="type === 'tekstikappale' && !cantremove" class="btn btn-default" icon-role="remove"
-              oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]" ng-click="poista()"></button>
-    </div>
+    <div class="panel-heading">
+        <div class="action-buttons">
+            <button class="btn btn-default"
+                    icon-role="edit"
+                    ng-click="edit()"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
+            <button ng-if="type === 'tekstikappale' && !cantremove"
+                    class="btn btn-default"
+                    icon-role="remove"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                    ng-click="poista()"></button>
+        </div>
 
-    <h3 class="panel-title osio-otsikko" ng-click="realModel.$isCollapsed = !realModel.$isCollapsed">
-      <span class="glyphicon"
-            ng-class="realModel.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
-      <span ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model[path].otsikko) | unsafe" termisto-viitteet="valitseKieli(model[path].otsikko)"></span>
-      <span ng-if="type === 'sisaltoalueet'">{{ model.sisaltoalueinfo ? model.sisaltoalueinfo.otsikko : 'sisaltoalueet' | kaanna }}</span>
-      <span ng-if="type === 'tavoitteet'" kaanna="'opetuksen-tavoitteet'"></span>
-      <span ng-if="type === 'kohdealueet'" kaanna="'opetuksen-kohdealueet'"></span>
-    </h3>
-  </div>
-  <div class="panel-body" collapse="realModel.$isCollapsed">
-    <div ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model[path].teksti) | unsafe" termisto-viitteet="valitseKieli(model[path].teksti)"></div>
-    <div ng-if="type === 'sisaltoalueet'">
-      <p ng-if="model.sisaltoalueinfo" ng-bind-html="valitseKieli(model.sisaltoalueinfo.teksti) | unsafe" termisto-viitteet="valitseKieli(model.sisaltoalueinfo.teksti)"></p>
-      <div sisaltoalueet="model[path]"></div>
+        <h3 class="panel-title osio-otsikko" ng-click="realModel.$isCollapsed = !realModel.$isCollapsed">
+        <span class="glyphicon"
+              ng-class="realModel.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+            <span ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model[path].otsikko) | unsafe"
+                  termisto-viitteet="valitseKieli(model[path].otsikko)"></span>
+            <span ng-if="type === 'sisaltoalueet'">{{ model.sisaltoalueinfo ? model.sisaltoalueinfo.otsikko : 'sisaltoalueet' | kaanna }}</span>
+            <span ng-if="type === 'tavoitteet'" kaanna="'opetuksen-tavoitteet'"></span>
+            <span ng-if="type === 'kohdealueet'" kaanna="'opetuksen-kohdealueet'"></span>
+        </h3>
     </div>
-    <div ng-if="type === 'tavoitteet'" tavoitteet="model" oppiaine="oppiaine" vuosiluokka="vuosiluokka"></div>
-    <div ng-if="type === 'kohdealueet'" kohdealueet="model[path]"></div>
-  </div>
+    <div class="panel-body" collapse="realModel.$isCollapsed">
+        <div ng-if="type === 'tekstikappale'"
+             ng-bind-html="valitseKieli(model[path].teksti) | unsafe"
+             termisto-viitteet="valitseKieli(model[path].teksti)"></div>
+        <div ng-if="type === 'sisaltoalueet'">
+            <p ng-if="model.sisaltoalueinfo"
+               ng-bind-html="valitseKieli(model.sisaltoalueinfo.teksti) | unsafe"
+               termisto-viitteet="valitseKieli(model.sisaltoalueinfo.teksti)"></p>
+            <div sisaltoalueet="model[path]"></div>
+        </div>
+        <div ng-if="type === 'tavoitteet'" tavoitteet="model" oppiaine="oppiaine" vuosiluokka="vuosiluokka"></div>
+        <div ng-if="type === 'kohdealueet'" kohdealueet="model[path]"></div>
+    </div>
 </div>

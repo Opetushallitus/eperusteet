@@ -1,107 +1,133 @@
+<!-- partials/valmaarviointi.html -->
 <div class="valmaarviointi">
-  <accordion>
-    <accordion-group class="panel-clean osa-alue" is-open="$$valmaOpen">
-      <accordion-heading ng-if="eiKohdealueita">
-        <span class="glyphicon" ng-class="$$valmaOpen?'glyphicon-chevron-down':'glyphicon-chevron-right'"></span>
-        <span kaanna="isArviointi?'osaamisen-arviointi':'osaamistavoitteet' | kaanna"></span>
-      </accordion-heading>
+    <uib-accordion>
+        <uib-accordion-group class="panel-clean osa-alue" is-open="$$valmaOpen">
+            <uib-accordion-heading ng-if="eiKohdealueita">
+                <span class="glyphicon"
+                      ng-class="$$valmaOpen?'glyphicon-chevron-down':'glyphicon-chevron-right'"></span>
+                <span kaanna="isArviointi?'osaamisen-arviointi':'osaamistavoitteet' | kaanna"></span>
+            </uib-accordion-heading>
 
-      <div ng-if="editEnabled">
+            <div ng-if="editEnabled">
 
-        <div ng-if="!isArviointi">
+                <div ng-if="!isArviointi">
 
-          <div ng-repeat="valmaitem in valmaarviointi">
-            <a ng-attr-title="{{'poista-osaamistavoite'|kaanna}}" ng-click="removeItem(valmaitem)" class="action-link pull-right" ng-if="editEnabled" icon-role="remove"></a>
-            <label class="space-magic" kaanna="'osaamistavoitteet-nimi'"></label>
-            <input class="form-control" ng-model="valmaitem.nimi" slocalized placeholder="{{'valmaarviointi-kuvaus-placeholder' | kaanna}}">
+                    <div ng-repeat="valmaitem in valmaarviointi">
+                        <a ng-attr-title="{{'poista-osaamistavoite'|kaanna}}" ng-click="removeItem(valmaitem)"
+                           class="action-link pull-right" ng-if="editEnabled" icon-role="remove"></a>
+                        <label class="space-magic" kaanna="'osaamistavoitteet-nimi'"></label>
+                        <input class="form-control" ng-model="valmaitem.nimi" slocalized
+                               placeholder="{{'valmaarviointi-kuvaus-placeholder' | kaanna}}">
 
-            <label class="space-magic" kaanna="isArviointi?'kuvaus':'kohde'"></label>
-            <input class="form-control kohdeotsikko" ng-model="valmaitem.kohde" slocalized placeholder="{{isArviointi?'valmaarviointi-arviointi-kuvaus':'valmaarviointi-uusi-kohde' | kaanna}}">
+                        <label class="space-magic" kaanna="isArviointi?'kuvaus':'kohde'"></label>
+                        <input class="form-control kohdeotsikko" ng-model="valmaitem.kohde" slocalized
+                               placeholder="{{isArviointi?'valmaarviointi-arviointi-kuvaus':'valmaarviointi-uusi-kohde' | kaanna}}">
 
-            <label class="space-magic" kaanna="'kriteerit'"></label>
-            <table style="width: 100%;">
-              <tbody ui-sortable="kriteeriSortableOptions" ng-model="valmaitem.tavoitteet">
-              <tr ng-repeat="tavoite in valmaitem.tavoitteet">
-                <td class="dragger" ng-class="{'drag-enable': valmaitem.tavoitteet.length > 1}"><span class="glyphicon glyphicon-resize-vertical"></span></td>
-                <td class="rivi" style="padding-bottom: 5px;">
+                        <label class="space-magic" kaanna="'kriteerit'"></label>
+                        <table style="width: 100%;">
+                            <tbody ui-sortable="kriteeriSortableOptions" ng-model="valmaitem.tavoitteet">
+                            <tr ng-repeat="tavoite in valmaitem.tavoitteet">
+                                <td class="dragger" ng-class="{'drag-enable': valmaitem.tavoitteet.length > 1}">
+                                    <span class="glyphicon glyphicon-resize-vertical"></span>
+                                </td>
+                                <td class="rivi" style="padding-bottom: 5px;">
+                                    <textarea class="form-control msd-elastic" ng-model="tavoite" slocalized
+                                              placeholder="{{isArviointi?'valmaarviointi-uusi-arviointi-placeholder':'valmaarviointi-uusi-tavoite-placeholder' | kaanna}}"></textarea>
+                                </td>
+                                <td class="toiminnot">
+                                    <a class="action-link" ng-click="rivi.poista(valmaitem.tavoitteet, $index)"
+                                       icon-role="minus" title="{{'valmaarviointi-poista-kriteeri' | kaanna}}"></a>
+                                </td>
+                            </tr>
+                            <tr class="row-adder">
+                                <td></td>
+                                <td></td>
+                                <td class="toiminnot">
+                                    <a ng-if="valmaitem.tavoitteet && valmaitem.tavoitteet.length !== 0"
+                                       class="action-link" ng-click="rivi.uusi(valmaitem, $event)" icon-role="add"
+                                       title="{{'valmaarviointi-uusi-kriteeri' | kaanna}}"></a>
+                                    <button ng-if="!valmaitem.tavoitteet || valmaitem.tavoitteet.length === 0"
+                                            ng-click="rivi.uusi(valmaitem, $event)"
+                                            class="btn btn-primary" icon-role="add"
+                                            kaanna="'valmaarviointi-uusi-kriteeri'"></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <label class="space-magic" kaanna="'osaamistavoitteet-selite'"></label>
+                        <input class="form-control" ng-model="valmaitem.selite" slocalized
+                               placeholder="{{'valmaarviointi-kuvaus-placeholder' | kaanna}}">
+
+                        <hr class="mujuviiva">
+                    </div>
+
+                    <button ng-if="!isArviointi" ng-click="addNewGroup()" class="btn btn-primary" icon-role="add"
+                            kaanna="'uusi-tavoite-joukko'"></button>
+                </div>
+
+                <div ng-if="isArviointi">
+                    <label class="space-magic" kaanna="isArviointi?'kuvaus':'kohde'"></label>
+                    <input class="form-control kohdeotsikko" ng-model="valmaarviointi.kohde" slocalized
+                           placeholder="{{isArviointi?'valmaarviointi-arviointi-kuvaus':'valmaarviointi-uusi-kohde' | kaanna}}">
+
+
+                    <label class="space-magic" kaanna="'kriteerit'"></label>
+                    <table style="width: 100%;">
+                        <tbody ui-sortable="kriteeriSortableOptions" ng-model="valmaarviointi.tavoitteet">
+                        <tr ng-repeat="tavoite in valmaarviointi.tavoitteet">
+                            <td class="dragger" ng-class="{'drag-enable': valmaarviointi.tavoitteet.length > 1}"><span
+                                    class="glyphicon glyphicon-resize-vertical"></span></td>
+                            <td class="rivi" style="padding-bottom: 5px;">
                           <textarea class="form-control msd-elastic" ng-model="tavoite" slocalized
                                     placeholder="{{isArviointi?'valmaarviointi-uusi-arviointi-placeholder':'valmaarviointi-uusi-tavoite-placeholder' | kaanna}}"></textarea>
-                </td>
-                <td class="toiminnot">
-                  <a class="action-link" ng-click="rivi.poista(valmaitem.tavoitteet, $index)" icon-role="minus" title="{{'valmaarviointi-poista-kriteeri' | kaanna}}"></a>
-                </td>
-              </tr>
-              <tr class="row-adder">
-                <td></td><td></td>
-                <td class="toiminnot">
-                  <a ng-if="valmaitem.tavoitteet && valmaitem.tavoitteet.length !== 0" class="action-link" ng-click="rivi.uusi(valmaitem, $event)" icon-role="add" title="{{'valmaarviointi-uusi-kriteeri' | kaanna}}"></a>
-                  <button ng-if="!valmaitem.tavoitteet || valmaitem.tavoitteet.length === 0" ng-click="rivi.uusi(valmaitem, $event)"
-                          class="btn btn-primary" icon-role="add" kaanna="'valmaarviointi-uusi-kriteeri'"></button>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+                            </td>
+                            <td class="toiminnot">
+                                <a class="action-link" ng-click="rivi.poista(valmaarviointi.tavoitteet, $index)"
+                                   icon-role="minus" title="{{'valmaarviointi-poista-kriteeri' | kaanna}}"></a>
+                            </td>
+                        </tr>
+                        <tr class="row-adder">
+                            <td></td>
+                            <td></td>
+                            <td class="toiminnot">
+                                <a ng-if="valmaarviointi.tavoitteet && valmaarviointi.tavoitteet.length !== 0"
+                                   class="action-link" ng-click="rivi.uusi(valmaarviointi, $event)" icon-role="add"
+                                   title="{{'valmaarviointi-uusi-kriteeri' | kaanna}}"></a>
+                                <button ng-if="!valmaarviointi.tavoitteet || valmaarviointi.tavoitteet.length === 0"
+                                        ng-click="rivi.uusi(valmaarviointi, $event)"
+                                        class="btn btn-primary" icon-role="add"
+                                        kaanna="'valmaarviointi-uusi-kriteeri'"></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-            <label class="space-magic" kaanna="'osaamistavoitteet-selite'"></label>
-            <input class="form-control" ng-model="valmaitem.selite" slocalized placeholder="{{'valmaarviointi-kuvaus-placeholder' | kaanna}}">
+            </div>
 
-            <hr class="mujuviiva">
-          </div>
+            <div ng-if="!editEnabled">
 
-          <button ng-if="!isArviointi" ng-click="addNewGroup()" class="btn btn-primary" icon-role="add" kaanna="'uusi-tavoite-joukko'"></button>
-        </div>
+                <div ng-if="isArviointi">
+                    <p>{{valmaarviointi.kohde | kaanna}}</p>
+                    <ul>
+                        <li ng-repeat="tavoite in valmaarviointi.tavoitteet">{{tavoite | kaanna}}</li>
+                    </ul>
+                    <p>{{valmaarviointi.selite | kaanna}}</p>
+                </div>
 
-        <div ng-if="isArviointi">
-          <label class="space-magic" kaanna="isArviointi?'kuvaus':'kohde'"></label>
-          <input class="form-control kohdeotsikko" ng-model="valmaarviointi.kohde" slocalized placeholder="{{isArviointi?'valmaarviointi-arviointi-kuvaus':'valmaarviointi-uusi-kohde' | kaanna}}">
+                <div ng-repeat="tavoite in valmaarviointi" ng-if="!isArviointi">
+                    <h3>{{tavoite.nimi | kaanna}}</h3>
+                    <p>{{tavoite.kohde | kaanna}}</p>
+                    <ul>
+                        <li ng-repeat="kriteeri in tavoite.tavoitteet">{{kriteeri | kaanna}}</li>
+                    </ul>
+                    <p>{{tavoite.selite | kaanna}}</p>
+                    <hr class="mujuviiva">
+                </div>
+            </div>
 
+        </uib-accordion-group>
+    </uib-accordion>
 
-          <label class="space-magic" kaanna="'kriteerit'"></label>
-          <table style="width: 100%;">
-            <tbody ui-sortable="kriteeriSortableOptions" ng-model="valmaarviointi.tavoitteet">
-            <tr ng-repeat="tavoite in valmaarviointi.tavoitteet">
-              <td class="dragger" ng-class="{'drag-enable': valmaarviointi.tavoitteet.length > 1}"><span class="glyphicon glyphicon-resize-vertical"></span></td>
-              <td class="rivi" style="padding-bottom: 5px;">
-                          <textarea class="form-control msd-elastic" ng-model="tavoite" slocalized
-                                    placeholder="{{isArviointi?'valmaarviointi-uusi-arviointi-placeholder':'valmaarviointi-uusi-tavoite-placeholder' | kaanna}}"></textarea>
-              </td>
-              <td class="toiminnot">
-                <a class="action-link" ng-click="rivi.poista(valmaarviointi.tavoitteet, $index)" icon-role="minus" title="{{'valmaarviointi-poista-kriteeri' | kaanna}}"></a>
-              </td>
-            </tr>
-            <tr class="row-adder"><td></td><td></td><td class="toiminnot">
-              <a ng-if="valmaarviointi.tavoitteet && valmaarviointi.tavoitteet.length !== 0" class="action-link" ng-click="rivi.uusi(valmaarviointi, $event)" icon-role="add" title="{{'valmaarviointi-uusi-kriteeri' | kaanna}}"></a>
-              <button ng-if="!valmaarviointi.tavoitteet || valmaarviointi.tavoitteet.length === 0" ng-click="rivi.uusi(valmaarviointi, $event)"
-                      class="btn btn-primary" icon-role="add" kaanna="'valmaarviointi-uusi-kriteeri'"></button>
-            </td></tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-
-      <div ng-if="!editEnabled">
-
-        <div ng-if="isArviointi">
-          <p>{{valmaarviointi.kohde | kaanna}}</p>
-          <ul>
-            <li ng-repeat="tavoite in valmaarviointi.tavoitteet">{{tavoite | kaanna}}</li>
-          </ul>
-          <p>{{valmaarviointi.selite | kaanna}}</p>
-        </div>
-
-        <div ng-repeat="tavoite in valmaarviointi" ng-if="!isArviointi">
-          <h3>{{tavoite.nimi | kaanna}}</h3>
-          <p>{{tavoite.kohde | kaanna}}</p>
-          <ul>
-            <li ng-repeat="kriteeri in tavoite.tavoitteet">{{kriteeri | kaanna}}</li>
-          </ul>
-          <p>{{tavoite.selite | kaanna}}</p>
-          <hr class="mujuviiva">
-        </div>
-      </div>
-
-      </accordion-group>
-    </accordion>
-
-  </div>
+</div>

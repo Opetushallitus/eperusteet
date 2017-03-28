@@ -1,31 +1,32 @@
-<!-- koodistoModal.html -->
-
+<!-- modals/koodistoModal.html -->
 <div class="modal-header">
-  <h2>{{ 'hae-koodistosta' | kaanna }} ({{ tyyppi | kaanna }})</h2>
+    <h2>{{ 'hae-koodistosta' | kaanna }} ({{ tyyppi | kaanna }})</h2>
 </div>
 
 <div class="modal-body">
-  <input id="koodisto_modal_autofocus" ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control"
-         placeholder="{{ 'rajaa-tuloksia' | kaanna }}" ng-disabled="lataa">
-  <p class="results-amount">
-      <span ng-show="!!syote">{{totalItems}} {{'hakutulosta' | kaanna}}</span>
-      <span ng-show="lataa">{{ 'haetaan-koodistosta' | kaanna }}<small-spinner></small-spinner></span>
-  </p>
-  <div class="results">
-    <table class="table table-striped">
-      <tr>
-        <th class="col-xs-3" kaanna>koodi</th>
-        <th class="col-xs-9" kaanna>nimi</th>
-      </tr>
-      <tr ng-repeat="l in loydetyt | startFrom:itemsPerPage*(nykyinen-1) | limitTo:itemsPerPage">
-        <td class="col-xs-3"><a class="action-link" ng-click="ok(l)">{{ l.koodiArvo }}</a></td>
-        <td class="col-xs-9">{{ l.nimi | kaanna }}</td>
-      </tr>
-    </table>
-  </div>
-  <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="totalItems" items-per-page="itemsPerPage"></pagination>
+    <input id="koodisto_modal_autofocus" ng-change="haku(syote, kieli)" type="text" ng-model="syote"
+           class="form-control"
+           placeholder="{{ 'rajaa-tuloksia' | kaanna }}" ng-disabled="lataa">
+    <p class="results-amount">
+        <span ng-show="!!syote">{{totalItems}} {{'hakutulosta' | kaanna}}</span>
+        <span ng-show="lataa">{{ 'haetaan-koodistosta' | kaanna }}<small-spinner></small-spinner></span>
+    </p>
+    <div class="results">
+        <table class="table table-striped">
+            <tr>
+                <th class="col-xs-3" kaanna>koodi</th>
+                <th class="col-xs-9" kaanna>nimi</th>
+            </tr>
+            <tr ng-repeat="l in loydetyt | startFrom:itemsPerPage*(nykyinen-1) | limitTo:itemsPerPage">
+                <td class="col-xs-3"><a class="action-link" ng-click="ok(l)">{{ l.koodiArvo }}</a></td>
+                <td class="col-xs-9">{{ l.nimi | kaanna }}</td>
+            </tr>
+        </table>
+    </div>
+    <uib-pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="totalItems"
+                items-per-page="itemsPerPage"></uib-pagination>
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
+    <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
 </div>

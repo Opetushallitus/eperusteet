@@ -1,6 +1,4 @@
-<!-- sisaltoalueet.html -->
-
 <div class="sisaltoalueotsikko" ng-repeat="alue in model">
-  <h4 kaanna="alue.nimi"></h4>
-  <div ng-bind-html="valitseKieli(alue.kuvaus) | unsafe"></div>
+    <h4 kaanna="alue.nimi"></h4>
+    <div ng-bind-html="valitseKieli(alue.kuvaus) | unsafe"></div>
 </div>

@@ -1,4 +1,5 @@
 {
+    "aipe-opetuksen-sisalto-puuttuu": "Aikuisten perusopetuksen sisältö puuttuu",
     "edellinen": "Edellinen",
     "oletus": "Oletus",
     "kieli": "Kieli",
@@ -136,6 +137,14 @@
     "ui-kieli": "Käyttöliittymäkieli",
 
     "nimeton": "<Nimetön>",
+    "vaiheet": "Vaiheet",
+    "tyhja-placeholder-vaiheet": "Vaiheita ei ole lisätty.",
+    "vaihe-tehtava": "Vaiheen tehtävä",
+    "uusi-vaihe": "Uusi vaihe",
+    "muokkaa-vaihe": "Muokkaa vaihetta",
+    "poistetaanko-vaihe": "Poistetaanko vaihe?",
+    "poista-vaihe": "Poista vaihe",
+    "nimeton-oppiaine": "Nimetön oppiaine",
 
     "OPINTOVIIKKO": "ov",
     "OSAAMISPISTE": "osp",
@@ -254,6 +263,8 @@
     "poistetaanko-kommentti": "Poistetaanko kommentti?",
 
     "lisaa-sisalto": "Lisää sisältöä",
+    "lisaa-laajaalainen": "Lisää laaja-alainen",
+    "lisaa-vaihe": "Lisää vaihe",
 
     "perusopetus-tehtava" : "Oppiaineen tehtävä",
     "perusopetus-ohjaus" : "Ohjaus ja tuki",
@@ -319,6 +330,11 @@
     "rakenne-validointi-uniikit": "Ryhmässä on samoja tutkinnon osia",
     "luo-uusi-ryhma": "Luo uusi ryhmä",
     "luo-kooste": "Luo kooste excel",
+    "tutkinnon-osa": "Tutkinnon osa",
+    "ongelma": "Ongelma",
+    "varoitukset": "Varoitukset",
+    "ominaisuus-ei-tuettu": "Ominaisuus ei ole tuettu käyttämälläsi selaimella.",
+    "tiedostossa-ongelmia": "Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.",
     "muokkaa-ryhmaa": "Muokkaa ryhmää",
     "muokkaa-tutkinnon-osaa": "Muokkaa tutkinnon osaa",
     "perustiedot": "Perustiedot",
@@ -349,6 +365,7 @@
 
     "esiopetus": "Esiopetus",
     "perusopetus": "Perusopetus",
+    "aikuistenperusopetus": "Aikuistenperusopetus",
     "lisaopetus": "Lisäopetus",
     "lukiokoulutus": "Lukiokoulutus",
     "ammatillinen-peruskoulutus": "Ammatillinen peruskoulutus",
@@ -388,6 +405,7 @@
     "koulutustyyppi_12": "Erikoisammattitutkinto",
     "koulutustyyppi_15": "Esiopetus",
     "koulutustyyppi_16": "Perusopetus",
+    "koulutustyyppi_17": "Aikuisten perusopetus",
     "koulutustyyppi_6": "Lisäopetus",
     "koulutustyyppi_20": "Varhaiskasvatus",
     "koulutustyyppi_23": "Valmistava lukiokoulutus",
@@ -579,12 +597,12 @@
     "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Koodistosta ei löytynyt tutkinnon osalle määritettyä koodia",
     "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnonosakoodia ei löytynyt tutkinnon osilta",
 
-    "et-ole-vielä-tallentanut-tutkinnonosia": "Et ole vielä liittänyt kaikkia tutkinnon osia perusteeseen",
+    "et-ole-viela-tallentanut-tutkinnonosia": "Et ole vielä liittänyt kaikkia tutkinnon osia perusteeseen",
     "et-ole-vielä-tallentanut-tekstikappaleita": "Et ole vielä liittänyt kaikkia tekstikappaleita perusteeseen",
     "tuo-excel": "Tuo Excel",
     "tuo-excel-tiedostosta": "Tuo Excel-tiedostosta...",
     "tutkinnon-tyyppi": "Tutkinnon tyyppi",
-    "excel-tiedostossasi-oli-virheitä": "Excel-tiedostossasi oli virheitä",
+    "excel-tiedostossasi-oli-virheita": "Excel-tiedostossasi oli virheitä",
     "excel-ei-kahta-samaa": "Tutkintokoodin täytyy olla uniikki",
     "valitse-nimi": "Valitse nimi",
     "valitse-diaarinumero": "Valitse diaarinumero",
@@ -961,6 +979,7 @@
 
     "laaja-alaisen-osaamisen-alueet": "Laaja-alaisen osaamisen alueet",
     "tyhjenna-valinnat": "Palauta valinnat alkutilaan",
+    "perusopetus-perusteet": "Perusopetuksen opetussuunnitelman perusteet",
     "perusopetus-arviointi": "Oppimisen arviointi",
     "perusopetus-sisaltoalueet" : "Sisältöalueet",
 

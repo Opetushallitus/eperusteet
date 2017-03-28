@@ -1,0 +1,20 @@
+<osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
+    <div ng-if="!editEnabled">
+        <div ng-bind-html="valitseKieli(editableModel.kuvaus) | unsafe"></div>
+    </div>
+
+    <div ng-if="editEnabled">
+        <div class="tekstikappale edit-tekstikappale">
+            <div class="list-group-item">
+                <h3 kaanna="muokkaus-teksikappaleen-nimi-header"></h3>
+                <h3 class="list-group-item-text" ng-model="editableModel.nimi" ckeditor editing-enabled="true"
+                    editor-placeholder="muokkaus-teksikappaleen-nimi-placeholder" slocalized></h3>
+            </div>
+            <div class="list-group-item">
+                <h3 kaanna="muokkaus-tekstikappaleen-teksti-header"></h3>
+                <div class="list-group-item-text" ng-model="editableModel.kuvaus" ckeditor editing-enabled="true"
+                     editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" slocalized></div>
+            </div>
+        </div>
+    </div>
+</osallinen-osa>

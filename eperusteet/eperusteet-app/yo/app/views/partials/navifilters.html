@@ -1,29 +1,33 @@
 <!-- navifilters.html -->
 <div ng-repeat="section in $parent.section.model.sections">
-  <accordion ng-if="section.title && section.items && section.items.length > 0" close-others="$parent.section.model.oneAtATime">
-    <accordion-group class="inner-accordion" is-open="section.$open">
-      <accordion-heading>
-        <span class="glyphicon" ng-class="{'glyphicon-chevron-down': section.$open, 'glyphicon-chevron-right': !section.$open}"></span>
-        {{section.title | kaanna}}
-      </accordion-heading>
-      <div ng-if="!section.include">
-        <ul>
-          <li ng-repeat="item in section.items | orderBy:orderFn">
-            <label><input type="checkbox" ng-model="item.$selected" ng-change="section.update(item, section)">{{item.label | kaanna}}</label>
-          </li>
-        </ul>
-      </div>
-      <div ng-if="section.include" ng-include="section.include"></div>
-    </accordion-group>
-  </accordion>
-  <div ng-if="!section.title">
-    <div ng-if="!section.include && section.items && section.items.length > 0">
-      <ul>
-        <li ng-repeat="item in section.items | orderBy:orderFn">
-          <label><input type="checkbox" ng-model="item.$selected" ng-change="section.update(item, section)">{{item.label | kaanna}}</label>
-        </li>
-      </ul>
+    <uib-accordion ng-if="section.title && section.items && section.items.length > 0"
+               close-others="$parent.section.model.oneAtATime">
+        <uib-accordion-group class="inner-accordion" is-open="section.$open">
+            <uib-accordion-heading>
+                <span class="glyphicon"
+                      ng-class="{'glyphicon-chevron-down': section.$open, 'glyphicon-chevron-right': !section.$open}"></span>
+                {{section.title | kaanna}}
+            </uib-accordion-heading>
+            <div ng-if="!section.include">
+                <ul>
+                    <li ng-repeat="item in section.items | orderBy:orderFn">
+                        <label><input type="checkbox" ng-model="item.$selected"
+                                      ng-change="section.update(item, section)">{{item.label | kaanna}}</label>
+                    </li>
+                </ul>
+            </div>
+            <div ng-if="section.include" ng-include="section.include"></div>
+        </uib-accordion-group>
+    </uib-accordion>
+    <div ng-if="!section.title">
+        <div ng-if="!section.include && section.items && section.items.length > 0">
+            <ul>
+                <li ng-repeat="item in section.items | orderBy:orderFn">
+                    <label><input type="checkbox" ng-model="item.$selected" ng-change="section.update(item, section)">
+                        {{item.label | kaanna}}</label>
+                </li>
+            </ul>
+        </div>
+        <div ng-if="section.include" ng-include="section.include"></div>
     </div>
-    <div ng-if="section.include" ng-include="section.include"></div>
-  </div>
 </div>

@@ -1,15 +1,15 @@
 <!-- tiedote.html -->
 <div class="tiedote-view">
-  <h1 kaanna="'tiedote'"></h1>
-  <a icon-role="chevron-left" ng-if="$backurl" ng-href="{{ $backurl }}" kaanna="$backurlHeader"></a>
-  <h2>{{tiedote.otsikko | kaanna}}</h2>
-  <div class="tiedote-tiedot">
-    <div ng-if="perusteprojekti">
-      <span kaanna="'tiedote-liittyy-perusteprojektiin'"></span>:
-      <a href="{{ perusteprojekti.$url }}" kaanna="perusteprojekti.nimi"></a>
+    <h1 kaanna="'tiedote'"></h1>
+    <a icon-role="chevron-left" ng-if="$backurl" ng-href="{{ $backurl }}" kaanna="$backurlHeader"></a>
+    <h2>{{tiedote.otsikko | kaanna}}</h2>
+    <div class="tiedote-tiedot">
+        <div ng-if="perusteprojekti">
+            <span kaanna="'tiedote-liittyy-perusteprojektiin'"></span>:
+            <a href="{{ perusteprojekti.$url }}" kaanna="perusteprojekti.nimi"></a>
+        </div>
+        {{ tiedote.nimi || tiedote.muokkaaja }}, {{tiedote.luotu | aikaleima}}
+        <span class="badge" ng-if="tiedote.julkinen">{{'tiedote-julkinen' | kaanna}}</span>
     </div>
-    {{ tiedote.nimi || tiedote.muokkaaja }}, {{tiedote.luotu | aikaleima}}
-    <span class="badge" ng-if="tiedote.julkinen">{{'tiedote-julkinen' | kaanna}}</span>
-  </div>
-  <div class="tiedote-leipateksti" ng-bind-html="tiedote.sisalto | kaanna | unsafe"></div>
+    <div class="tiedote-leipateksti" ng-bind-html="tiedote.sisalto | kaanna | unsafe"></div>
 </div>

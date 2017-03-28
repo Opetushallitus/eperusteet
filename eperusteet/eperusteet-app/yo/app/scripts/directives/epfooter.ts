@@ -27,15 +27,15 @@ angular.module('eperusteApp')
         deferred.resolve(data);
       } else {
         fetched = true;
-        $http.get($window.location.pathname + 'buildversion.txt').success(function (res) {
+        $http.get($window.location.pathname + 'buildversion.txt').then(res => {
           var result;
           data = {};
-          while ((result = pattern.exec(res)) !== null) {
+          while ((result = pattern.exec(res.data)) !== null) {
             data[result[1]] = result[1] === 'vcsRevision' ? result[2].substr(0, 8) :
               result[2].replace(/\s\s*$/, '');
           }
           deferred.resolve(data);
-        }).error(function () {
+        }).catch(() => {
           data = null;
           deferred.resolve(data);
         });

@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .factory('LukkoRakenne', function(SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/rakenne/lukko/', {
@@ -78,6 +74,12 @@ angular.module('eperusteApp')
       perusteId: '@perusteId'
     });
   })
+  .factory('LukkoAIPELaajaalainenOsaaminen', function (SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/aipe/laajaalaisetosaamiset/:osanId/lukko', {
+      osanId: '@osanId',
+      perusteId: '@perusteId'
+    });
+  })
   .factory('LukkoVuosiluokkakokonaisuus', function (SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/vuosiluokkakokonaisuudet/:osanId/lukko', {
       osanId: '@osanId',
@@ -106,7 +108,7 @@ angular.module('eperusteApp')
                                 LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
                                 LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite,
                                 LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, LukkoLukioRakenne,
-                                LukkoLukioAihekokonaisuus, LukkoLukioYleisetTavoitteet, $log) {
+                                LukkoLukioAihekokonaisuus, LukkoLukioYleisetTavoitteet, LukkoAIPELaajaalainenOsaaminen) {
 
     var lukitsin = null;
     var etag = null;
@@ -138,6 +140,14 @@ angular.module('eperusteApp')
           // case '': return LukkoPerusteenosaByTutkinnonOsaViite;
           case 'vuosiluokat': return LukkoVuosiluokkakokonaisuus;
           case 'osaaminen': return LukkoLaajaalainenOsaaminen;
+          default: return null;
+        }
+      },
+      'root.perusteprojekti.suoritustapa.aipeosaalue': function() {
+        switch($stateParams.osanTyyppi) {
+          //case 'oppiaineet': return LukkoOppiaine;
+          //case 'vuosiluokat': return LukkoVuosiluokkakokonaisuus;
+          case 'osaaminen': return LukkoAIPELaajaalainenOsaaminen;
           default: return null;
         }
       },
@@ -195,8 +205,14 @@ angular.module('eperusteApp')
           return d.promise;
         }
       } else {
-        console.log('Tilalle "' + $state.current.name + '" ei ole määritetty lukkotyyppiä');
-        return $q.defer().promise;
+        console.warn('Tilalle "' + $state.current.name + '" ei ole määritetty lukkotyyppiä');
+
+        var d = $q.defer();
+        d.resolve();
+        if (cb) {
+          cb();
+        }
+        return d.promise;
       }
     }
 

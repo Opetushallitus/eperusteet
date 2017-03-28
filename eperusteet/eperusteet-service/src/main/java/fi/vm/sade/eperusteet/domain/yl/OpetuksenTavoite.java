@@ -95,6 +95,15 @@ public class OpetuksenTavoite extends AbstractReferenceableEntity {
     @RelatesToPeruste
     @NotAudited
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "yl_aipe_oppiaineen_yl_opetuksen_tavoite",
+            joinColumns = @JoinColumn(name = "tavoitteet_id", nullable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
+    private Set<AIPEOppiaine> aipeOppiaineet = new HashSet<>();
+
+    @Getter
+    @RelatesToPeruste
+    @NotAudited
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_oppiaineen_vlkok_yl_opetuksen_tavoite",
             joinColumns = @JoinColumn(name = "tavoitteet_id", nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "yl_oppiaineen_vlkok_id", nullable = false, updatable = false))

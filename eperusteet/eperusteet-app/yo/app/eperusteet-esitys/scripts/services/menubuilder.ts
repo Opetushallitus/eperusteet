@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteet.esitys')
 .service('epMenuBuilder', function (Algoritmit, $state, Kieli, Utils, epEsitysSettings) {
   function oppiaineSort(aineet) {

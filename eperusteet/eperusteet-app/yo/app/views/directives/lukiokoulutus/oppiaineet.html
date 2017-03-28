@@ -1,120 +1,120 @@
-<!-- oppiaineet.html
-  ~  Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-  ~
-  ~  This program is free software: Licensed under the EUPL, Version 1.1 or - as
-  ~  soon as they will be approved by the European Commission - subsequent versions
-  ~  of the EUPL (the "Licence");
-  ~
-  ~  You may not use this work except in compliance with the Licence.
-  ~  You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-  ~
-  ~  This program is distributed in the hope that it will be useful,
-  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~  European Union Public Licence for more details.
-  -->
-
 <div class="lukio-oppiaineet-puu lukio-oppiaine-tab">
-  <div class="puu-top" ng-if="!treehelpers.editMode">
-    <div class="action-buttons" ng-show="versiot.latest">
-      <button icon-role="edit" class="floater btn"
-              oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
-              ng-click="toEditMode()" kaanna="'muokkaa-rakennetta'"></button>
-    </div>
-    <div style="clear: both">
-      <revert-note object="rakenne" revert-cb="revertCb(response)"
-                   versions="versiot" change-version="vaihdaVersio()"></revert-note>
-      <versiotiedot></versiotiedot>
-    </div>
-  </div>
-  <div class="main-column tree">
-    <div class="tree-con">
-      <div class="left search-field-container">
-        <rajaus size="small" classes="puun-rajaus" model="treehelpers.haku"
-                callback="treeHaku()"
-                placeholder="{{ 'lukio-etsi-oppiaineista-ja-kursseista' || kaanna }}"></rajaus>
-      </div>
-      <div class="action-buttons left" ng-show="!treehelpers.editMode">
-        <button icon-role="add" class="floater btn"
-                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
-                ng-click="addOppiaine()" kaanna="'lisaa-oppiaine'"></button>
-      </div>
-      <div class="legends">
-        <div class="left legend" ng-repeat="tyyppi in ['pakollinen', 'valtakunnallinen_syventava', 'valtakunnallinen_soveltava']">
-          <span class="colorbox kurssi-tyyppi {{tyyppi}}"></span>
-          <span class="legend-name" ng-bind="'kurssi-tyyppi-selite-'+tyyppi | kaanna"></span>
+    <div class="puu-top" ng-if="!treehelpers.editMode">
+        <div class="action-buttons" ng-show="versiot.latest">
+            <button icon-role="edit"
+                    class="floater btn"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                    ng-click="toEditMode()"
+                    kaanna="'muokkaa-rakennetta'"></button>
         </div>
-      </div>
+        <div style="clear: both">
+            <revert-note object="rakenne"
+                         revert-cb="revertCb(response)"
+                         versions="versiot"
+                         change-version="vaihdaVersio()"></revert-note>
+            <versiotiedot></versiotiedot>
+        </div>
     </div>
-    <div class="opetussialtopuu tree" ng-class="{'tree-edit-mode': treehelpers.editMode}">
-      <div class="ylapainikkeet">
-        <span class="rakenne-nimi ng-binding"> </span>
-        <div class="pull-right">
-          <a class="group-toggler action-link" ng-click="togglaaPolut()">
-            <span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span>
-          </a>
-        </div>
-      </div>
-      <div class="tree-yliviiva"></div>
-      <generic-tree tree-provider="treeOsatProvider"
-                    ui-sortable-config="kurssiTreeConfig"></generic-tree>
-    </div>
-  </div>
-  <div class="liittamattomat-column" ng-class="{'tree-edit-mode': treehelpers.editMode}">
-    <div class="kelluva" ui-scrollfix="+160">
-      <h4 kaanna="lukio-liitamattomat-kurssit"></h4>
-
-      <div class="tree-con">
-        <div class="action-buttons" ng-show="!treehelpers.editMode">
-          <button icon-role="add" class="floater btn"
-                  oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
-                  ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
-        </div>
-        <div class="search-field-container">
-          <rajaus size="small" classes="puun-rajaus" model="treehelpers.liittamattomienHaku"
-                  callback="treeLiittamattomienHaku()"
-                  placeholder="{{ 'lukio-etsi-liittamattomista-kursseista' || kaanna }}"></rajaus>
-        </div>
-      </div>
-      <div ui-sortable="liittamattomatKurssitConfig" ng-model="liittamattomatKurssit"
-           class="recursivetreeLiittamattomat">
-        <generic-tree tree-provider="liittamattomatOsatProvider"
-                      ui-sortable-config="liittamattomatKurssitConfig"></generic-tree>
-      </div>
-      <pagination ng-show="liittamattomatKurssitPagination.multiPage"
-                  ng-model="liittamattomatKurssitPagination.currentPage"
-                  ng-change="liittamattomatKurssitPagination.changePage(liittamattomatKurssitPagination.currentPage)"
-                  total-items="liittamattomatKurssitPagination.total"
-                  items-per-page="liittamattomatKurssitPagination.showPerPage"></pagination>
-
-      <div ng-show="!treehelpers.editMode" kaanna="lukio-liitetyt-kurssit-ohje"></div>
-      <div ng-show="treehelpers.editMode">
-
-        <h4 kaanna="lukio-liitetyt-kurssit"></h4>
-
+    <div class="main-column tree">
         <div class="tree-con">
-          <div class="search-field-container">
-            <rajaus size="small" classes="puun-rajaus" model="treehelpers.liitettyjenHaku"
-                    callback="treeLiitettyjenHaku()"
-                    placeholder="{{ 'lukio-etsi-liitetyista-kursseista' || kaanna }}"></rajaus>
-          </div>
+            <div class="left search-field-container">
+                <rajaus size="small"
+                        classes="puun-rajaus"
+                        model="treehelpers.haku"
+                        callback="treeHaku()"
+                        placeholder="{{ 'lukio-etsi-oppiaineista-ja-kursseista' || kaanna }}"></rajaus>
+            </div>
+            <div class="action-buttons left" ng-show="!treehelpers.editMode">
+                <button icon-role="add"
+                        class="floater btn"
+                        oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                        ng-click="addOppiaine()"
+                        kaanna="'lisaa-oppiaine'"></button>
+            </div>
+            <div class="legends">
+                <div class="left legend"
+                     ng-repeat="tyyppi in ['pakollinen', 'valtakunnallinen_syventava', 'valtakunnallinen_soveltava']">
+                    <span class="colorbox kurssi-tyyppi {{tyyppi}}"></span>
+                    <span class="legend-name" ng-bind="'kurssi-tyyppi-selite-'+tyyppi | kaanna"></span>
+                </div>
+            </div>
         </div>
-        <div ui-sortable="liitetytKurssitConfig" ng-model="liitetytKurssit"
-             class="recursivetreeLiittamattomat">
-          <generic-tree tree-provider="liitetytOsatProvider"
-                        ui-sortable-config="liitetytKurssitConfig"></generic-tree>
+        <div class="opetussialtopuu tree" ng-class="{'tree-edit-mode': treehelpers.editMode}">
+            <div class="ylapainikkeet">
+                <span class="rakenne-nimi ng-binding"> </span>
+                <div class="pull-right">
+                    <a class="group-toggler action-link" ng-click="togglaaPolut()">
+                        <span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span>
+                    </a>
+                </div>
+            </div>
+            <div class="tree-yliviiva"></div>
+            <generic-tree tree-provider="treeOsatProvider"
+                          ui-sortable-config="kurssiTreeConfig"></generic-tree>
         </div>
-        <pagination ng-show="liitetytKurssitPagination.multiPage"
-                    ng-model="liitetytKurssitPagination.currentPage"
-                    ng-change="liitetytKurssitPagination.changePage(liitetytKurssitPagination.currentPage)"
-                    total-items="liitetytKurssitPagination.total"
-                    items-per-page="liitetytKurssitPagination.showPerPage"></pagination>
-      </div>
     </div>
-  </div>
-  <div style="clear: both;">
-    <br />
-    <kommentit></kommentit>
-  </div>
+    <div class="liittamattomat-column" ng-class="{'tree-edit-mode': treehelpers.editMode}">
+        <div class="kelluva" ui-scrollfix="+160">
+            <h4 kaanna="lukio-liitamattomat-kurssit"></h4>
+
+            <div class="tree-con">
+                <div class="action-buttons" ng-show="!treehelpers.editMode">
+                    <button icon-role="add"
+                            class="floater btn"
+                            oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"
+                            ng-click="addKurssi()" kaanna="'lisaa-kurssi'"></button>
+                </div>
+                <div class="search-field-container">
+                    <rajaus size="small"
+                            classes="puun-rajaus"
+                            model="treehelpers.liittamattomienHaku"
+                            callback="treeLiittamattomienHaku()"
+                            placeholder="{{ 'lukio-etsi-liittamattomista-kursseista' || kaanna }}"></rajaus>
+                </div>
+            </div>
+            <div ui-sortable="liittamattomatKurssitConfig"
+                 ng-model="liittamattomatKurssit"
+                 class="recursivetreeLiittamattomat">
+                <generic-tree tree-provider="liittamattomatOsatProvider"
+                              ui-sortable-config="liittamattomatKurssitConfig"></generic-tree>
+            </div>
+            <uib-pagination ng-show="liittamattomatKurssitPagination.multiPage"
+                        ng-model="liittamattomatKurssitPagination.currentPage"
+                        ng-change="liittamattomatKurssitPagination.changePage(liittamattomatKurssitPagination.currentPage)"
+                        total-items="liittamattomatKurssitPagination.total"
+                        items-per-page="liittamattomatKurssitPagination.showPerPage"></uib-pagination>
+
+            <div ng-show="!treehelpers.editMode" kaanna="lukio-liitetyt-kurssit-ohje"></div>
+            <div ng-show="treehelpers.editMode">
+
+                <h4 kaanna="lukio-liitetyt-kurssit"></h4>
+
+                <div class="tree-con">
+                    <div class="search-field-container">
+                        <rajaus size="small"
+                                classes="puun-rajaus"
+                                model="treehelpers.liitettyjenHaku"
+                                callback="treeLiitettyjenHaku()"
+                                placeholder="{{ 'lukio-etsi-liitetyista-kursseista' || kaanna }}"></rajaus>
+                    </div>
+                </div>
+                <div ui-sortable="liitetytKurssitConfig"
+                     ng-model="liitetytKurssit"
+                     class="recursivetreeLiittamattomat">
+                    <generic-tree tree-provider="liitetytOsatProvider"
+                                  ui-sortable-config="liitetytKurssitConfig"></generic-tree>
+                </div>
+                <uib-pagination ng-show="liitetytKurssitPagination.multiPage"
+                            ng-model="liitetytKurssitPagination.currentPage"
+                            ng-change="liitetytKurssitPagination.changePage(liitetytKurssitPagination.currentPage)"
+                            total-items="liitetytKurssitPagination.total"
+                            items-per-page="liitetytKurssitPagination.showPerPage"></uib-pagination>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both;">
+        <br/>
+        <kommentit></kommentit>
+    </div>
 </div>
 

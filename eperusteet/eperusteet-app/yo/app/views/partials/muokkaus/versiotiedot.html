@@ -1,22 +1,31 @@
+<!-- partials/muokkaus/versiotiedot.html -->
 <div>
-  <!-- versiotiedot.html -->
-  <div ng-if="versiot.chosen" class="muokkaustiedot" ng-hide="editEnabled">
-    <div class="muokattu-viimeksi">
-      <span ng-show="versiot.chosen.index > 1" kaanna>muokattu-viimeksi</span><span ng-show="versiot.chosen.index === 1" kaanna>luotu</span>: {{lastModified() | aikaleima:'ago'}}
+    <div ng-if="versiot.chosen" class="muokkaustiedot" ng-hide="editEnabled">
+        <div class="muokattu-viimeksi">
+            <span ng-show="versiot.chosen.index > 1" kaanna>muokattu-viimeksi</span><span
+                ng-show="versiot.chosen.index === 1" kaanna>luotu</span>: {{lastModified() | aikaleima:'ago'}}
+        </div>
+        <div class="versiotiedot">
+            <ul>
+                <li ng-show="versiot.list.length > 1">
+                    <span kaanna>versio</span>:
+                    <select ng-model="versiot.chosen"
+                            ng-options="ver.index for ver in versiot.list"
+                            ng-change="vaihdaVersio()"></select>
+                </li>
+                <li ng-show="versiot.list.length === 1">
+                    <span kaanna>versio</span>: 1
+                </li>
+                <li ng-show="versiot.list.length > 1">
+                    <a class="action-link" kaanna ng-click="history()">nayta-versiohistoria</a>
+                </li>
+            </ul>
+        </div>
+        <div class="muokkaaja">
+            <span ng-show="versiot.chosen.index > 1" kaanna>muokkaaja</span>
+            <span ng-show="versiot.chosen.index === 1" kaanna>luoja</span>: {{versiot.chosen.$nimi}}
+        </div>
+        <div class="clearfix" ng-if="!dontFixVersiot"></div>
     </div>
-    <div class="versiotiedot">
-      <ul>
-        <li ng-show="versiot.list.length > 1">
-          <span kaanna>versio</span>: <select ng-model="versiot.chosen" ng-options="ver.index for ver in versiot.list" ng-change="vaihdaVersio()"></select>
-        </li>
-        <li ng-show="versiot.list.length === 1"><span kaanna>versio</span>: 1</li>
-        <li ng-show="versiot.list.length > 1"><a class="action-link" kaanna ng-click="history()">nayta-versiohistoria</a></li>
-      </ul>
-    </div>
-    <div class="muokkaaja">
-      <span ng-show="versiot.chosen.index > 1" kaanna>muokkaaja</span><span ng-show="versiot.chosen.index === 1" kaanna>luoja</span>: {{ versiot.chosen.$nimi }}
-    </div>
-    <div class="clearfix" ng-if="!dontFixVersiot"></div>
-  </div>
-  <hr class="versioraja">
+    <hr class="versioraja">
 </div>

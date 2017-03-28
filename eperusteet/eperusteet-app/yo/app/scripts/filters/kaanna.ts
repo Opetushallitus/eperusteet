@@ -23,12 +23,12 @@ angular.module('eperusteApp')
       function getTranslation(input, lang) {
         return input[lang] || input[lang.toUpperCase()] || input['kieli_' + lang + '#1'];
       }
-      var primary = getTranslation(obj, key);
+      let primary = getTranslation(obj, key);
       if (primary) {
         return primary;
       }
-      var secondaryKey = key === 'fi' || key === 'FI' ? 'sv' : 'fi';
-      var secondary = getTranslation(obj, secondaryKey);
+      let secondaryKey = key === 'fi' || key === 'FI' ? 'sv' : 'fi';
+      let secondary = getTranslation(obj, secondaryKey);
       if (secondary) {
         return '[' + secondary + ']';
       }
@@ -39,7 +39,7 @@ angular.module('eperusteApp')
       if (_.isEmpty(input)) {
         return '';
       }
-      var sisaltokieli = Kieli.getSisaltokieli();
+      let sisaltokieli = Kieli.getSisaltokieli();
       return translate(input, sisaltokieli);
     }
 
@@ -57,7 +57,7 @@ angular.module('eperusteApp')
   })
   .directive('kaanna', function(Kaanna, $compile, IconMapping) {
     function resolvePostfix(attrs) {
-      var postfix = attrs.kaannaPostfix || '';
+      let postfix = attrs.kaannaPostfix || '';
       if (postfix) {
         postfix = ' ' + postfix;
       }
@@ -74,33 +74,33 @@ angular.module('eperusteApp')
     }
     return {
       restrict: 'A',
-      link: function (scope, el, attrs) {
+      link: function (scope, el: any, attrs: any) {
         function kaannaValue(value) {
           return _.isObject(value) ? Kaanna.kaannaSisalto(value) : Kaanna.kaanna(value);
         }
-        var original = getAttr(attrs.kaanna, scope) || el.text();
-        var postfix = resolvePostfix(attrs);
+        const original = getAttr(attrs.kaanna, scope) || el.text();
+        let postfix = resolvePostfix(attrs);
         if (_.isObject(original)) {
-          el.text(Kaanna.kaannaSisalto(original)+postfix);
+          el.text(Kaanna.kaannaSisalto(original) + postfix);
           if (attrs.iconRole) {
             IconMapping.addIcon(attrs.iconRole, el);
           }
           scope.$watch(function () {
             return getAttr(attrs.kaanna, scope);
           }, function (value) {
-            el.text(kaannaValue(value)+postfix);
+            el.text(kaannaValue(value) + postfix);
           });
           scope.$on('changed:sisaltokieli', function () {
-            el.text(kaannaValue(getAttr(attrs.kaanna, scope))+postfix);
+            el.text(kaannaValue(getAttr(attrs.kaanna, scope)) + postfix);
           });
         } else {
-          var textEl = angular.element('<span>').attr('translate', original);
+          let textEl = angular.element('<span>').attr('translate', original);
           if (attrs.kaannaValues) {
             textEl.attr('translate-values', attrs.kaannaValues);
           }
           el.html('').append(textEl).append(postfix);
           if (attrs.iconRole) {
-            var iconEl = angular.element('<span>').attr('icon-role', attrs.iconRole);
+            let iconEl = angular.element('<span>').attr('icon-role', attrs.iconRole);
             el.removeAttr('icon-role');
             el.prepend(iconEl);
           }

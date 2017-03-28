@@ -1,110 +1,123 @@
+<!-- perusopetus.html -->
 <div>
-  <!-- perusopetus.html -->
-  <h1 kaanna>Perusopetuksen opetussuunnitelman perusteet</h1>
+    <h1 kaanna="'perusopetus-perusteet'"></h1>
 
-  <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
-    <div class="sivunavi-navigaatio">
-      <sivunavigaatio2 on-section-change="onSectionChange" header="navi.header" sections="navi.sections" show-one="navi.showOne"></sivunavigaatio2>
-    </div>
-
-    <div class="sivunavi-clear"></div>
-    <div class="sivunavi-sisalto perusopetus">
-      <div class="row">
-        <div class="col-md-12">
-          <div ng-if="activeSection === 'suunnitelma' && valittuTekstisisalto">
-            <h1>{{ valittuTekstisisalto.nimi | kaanna }}</h1>
-            <termisto-tekstikentta tekstikentta="valittuTekstisisalto.teksti"></termisto-tekstikentta>
-          </div>
-
-          <div ng-if="activeSection === 'vlk' && valittuVuosiluokkakokonaisuus">
-            <h1>{{ valittuVuosiluokkakokonaisuus.nimi | kaanna }}</h1>
-            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.tehtava)">
-              <h2>{{ valittuVuosiluokkakokonaisuus.tehtava.otsikko | kaanna  }}</h2>
-              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.tehtava.teksti"></termisto-tekstikentta>
-            </div>
-            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.siirtymaEdellisesta)">
-              <h2>{{ valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.otsikko | kaanna  }}</h2>
-              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.teksti"></termisto-tekstikentta>
-            </div>
-            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan)">
-              <h2>{{ valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.otsikko | kaanna  }}</h2>
-              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.teksti"></termisto-tekstikentta>
-            </div>
-            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen)">
-              <h2>{{ valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.otsikko | kaanna  }}</h2>
-              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.teksti"></termisto-tekstikentta>
-            </div>
-            <div ng-if="valittuVuosiluokkakokonaisuus.laajaalaisetOsaamiset">
-              <h2 kaanna="'laaja-alaiset-osaamiset'"></h2>
-              <div ng-repeat="osaaminen in valittuVuosiluokkakokonaisuus.laajaalaisetOsaamiset ">
-                <h4>{{ osaamiset[osaaminen.laajaalainenOsaaminen].nimi | kaanna }}</h4>
-                <termisto-tekstikentta tekstikentta="osaaminen.kuvaus"></termisto-tekstikentta>
-              </div>
-            </div>
-            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat)">
-              <h2>{{ valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.otsikko | kaanna  }}</h2>
-              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.teksti"></termisto-tekstikentta>
-            </div>
-          </div>
-
-          <div ng-if="activeSection === 'sisalto' && valittuOppiaine && valittuOppiaine.oppiaine && valittuOppiaine.vuosiluokkakokonaisuudet">
-            <h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
-            <div ng-show="currentSection === 'sisalto'" class="vuosiluokkavalitsin">
-              <ul class="nav nav-pills">
-                <li ng-repeat="(id, kokonaisuus) in valittuOppiaine.vuosiluokkakokonaisuudet" ng-class="{ active: filtterit.valittuKokonaisuus === kokonaisuus._vuosiluokkaKokonaisuus }">
-                  <a class="fixme action-link" ng-click="valitseOppiaineenVuosiluokka(kokonaisuus._vuosiluokkaKokonaisuus)">
-                    {{ vuosiluokkakokonaisuudetMap[kokonaisuus._vuosiluokkaKokonaisuus].nimi | kaanna }}
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div class="clearfix"></div>
-
-            <div>
-              <div ng-if="hasContent(valittuOppiaine.oppiaine.tehtava)">
-                <h3>{{ valittuOppiaine.oppiaine.tehtava.otsikko | kaanna }}</h3>
-                <termisto-tekstikentta tekstikentta="valittuOppiaine.oppiaine.tehtava.teksti || '-'"></termisto-tekstikentta>
-              </div>
-
-              <div ng-show="valittuOppiaine.vlks">
-                <h2>{{ vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks._vuosiluokkaKokonaisuus].nimi | kaanna }}</h2>
-                <hr>
-              </div>
-
-              <div ng-hide="filterSisalto.tehtava || !hasContent(valittuOppiaine.vlks.tehtava)">
-                <h3>{{ valittuOppiaine.vlks.tehtava.otsikko | kaanna }}</h3>
-                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tehtava.teksti || '-'"></termisto-tekstikentta>
-              </div>
-
-              <div ng-hide="filterSisalto.ohjaus || !hasContent(valittuOppiaine.vlks.ohjaus)">
-                <h3>{{ valittuOppiaine.vlks.ohjaus.otsikko | kaanna }}</h3>
-                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.ohjaus.teksti || '-'"></termisto-tekstikentta>
-              </div>
-
-              <div ng-hide="filterSisalto.tyotavat || !hasContent(valittuOppiaine.vlks.tyotavat)">
-                <h3>{{ valittuOppiaine.vlks.tyotavat.otsikko | kaanna }}</h3>
-                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tyotavat.teksti || '-'"></termisto-tekstikentta>
-              </div>
-
-              <div ng-hide="!hasContent(valittuOppiaine.vlks.sisaltoalueinfo)">
-                <h3>{{ valittuOppiaine.vlks.sisaltoalueinfo.otsikko | kaanna }}</h3>
-                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.sisaltoalueinfo.teksti || '-'"></termisto-tekstikentta>
-              </div>
-
-              <div ng-repeat="sa in valittuOppiaine.vlks.sisaltoalueet">
-                <h3>{{ sa.nimi | kaanna }}</h3>
-                <termisto-tekstikentta tekstikentta="sa.kuvaus || '-'"></termisto-tekstikentta>
-              </div>
-
-              <div ng-hide="filterSisalto.tavoitteet" ng-if="valittuOppiaine.vlks._vuosiluokkaKokonaisuus">
-                <h3 kaanna="'perusopetus-tavoitteet'"></h3>
-                <div tavoitteet="valittuOppiaine.vlks" oppiaine="valittuOppiaine" osaamiset="osaamiset" vuosiluokka="valittuOppiaine.sisallot"></div>
-              </div>
-            </div>
-          </div>
+    <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
+        <div class="sivunavi-navigaatio">
+            <sivunavigaatio2 on-section-change="onSectionChange"
+                             header="navi.header"
+                             sections="navi.sections"
+                             show-one="navi.showOne"></sivunavigaatio2>
         </div>
-      </div>
+
+        <div class="sivunavi-clear"></div>
+        <div class="sivunavi-sisalto perusopetus">
+            <div class="row">
+                <div class="col-md-12">
+                    <div ng-if="activeSection === 'suunnitelma' && valittuTekstisisalto">
+                        <h1>{{valittuTekstisisalto.nimi | kaanna}}</h1>
+                        <termisto-tekstikentta tekstikentta="valittuTekstisisalto.teksti"></termisto-tekstikentta>
+                    </div>
+
+                    <div ng-if="activeSection === 'vlk' && valittuVuosiluokkakokonaisuus">
+                        <h1>{{valittuVuosiluokkakokonaisuus.nimi | kaanna}}</h1>
+                        <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.tehtava)">
+                            <h2>{{valittuVuosiluokkakokonaisuus.tehtava.otsikko | kaanna}}</h2>
+                            <termisto-tekstikentta
+                                    tekstikentta="valittuVuosiluokkakokonaisuus.tehtava.teksti"></termisto-tekstikentta>
+                        </div>
+                        <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.siirtymaEdellisesta)">
+                            <h2>{{valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.otsikko | kaanna}}</h2>
+                            <termisto-tekstikentta
+                                    tekstikentta="valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.teksti"></termisto-tekstikentta>
+                        </div>
+                        <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan)">
+                            <h2>{{valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.otsikko | kaanna}}</h2>
+                            <termisto-tekstikentta
+                                    tekstikentta="valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.teksti"></termisto-tekstikentta>
+                        </div>
+                        <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen)">
+                            <h2>{{valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.otsikko | kaanna}}</h2>
+                            <termisto-tekstikentta
+                                    tekstikentta="valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.teksti"></termisto-tekstikentta>
+                        </div>
+                        <div ng-if="valittuVuosiluokkakokonaisuus.laajaalaisetOsaamiset">
+                            <h2 kaanna="'laaja-alaiset-osaamiset'"></h2>
+                            <div ng-repeat="osaaminen in valittuVuosiluokkakokonaisuus.laajaalaisetOsaamiset ">
+                                <h4>{{osaamiset[osaaminen.laajaalainenOsaaminen].nimi | kaanna}}</h4>
+                                <termisto-tekstikentta tekstikentta="osaaminen.kuvaus"></termisto-tekstikentta>
+                            </div>
+                        </div>
+                        <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat)">
+                            <h2>{{valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.otsikko | kaanna}}</h2>
+                            <termisto-tekstikentta
+                                    tekstikentta="valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.teksti"></termisto-tekstikentta>
+                        </div>
+                    </div>
+
+                    <div ng-if="activeSection === 'sisalto' && valittuOppiaine && valittuOppiaine.oppiaine && valittuOppiaine.vuosiluokkakokonaisuudet">
+                        <h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
+                        <div ng-show="currentSection === 'sisalto'" class="vuosiluokkavalitsin">
+                            <ul class="nav nav-pills">
+                                <li ng-repeat="(id, kokonaisuus) in valittuOppiaine.vuosiluokkakokonaisuudet"
+                                    ng-class="{ active: filtterit.valittuKokonaisuus === kokonaisuus._vuosiluokkaKokonaisuus }">
+                                    <a class="fixme action-link" ng-click="valitseOppiaineenVuosiluokka(kokonaisuus._vuosiluokkaKokonaisuus)">
+                                        {{ vuosiluokkakokonaisuudetMap[kokonaisuus._vuosiluokkaKokonaisuus].nimi | kaanna }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <div>
+                            <div ng-if="hasContent(valittuOppiaine.oppiaine.tehtava)">
+                                <h3>{{valittuOppiaine.oppiaine.tehtava.otsikko | kaanna}}</h3>
+                                <termisto-tekstikentta tekstikentta="valittuOppiaine.oppiaine.tehtava.teksti || '-'"></termisto-tekstikentta>
+                            </div>
+
+                            <div ng-show="valittuOppiaine.vlks">
+                                <h2>{{vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks._vuosiluokkaKokonaisuus].nimi | kaanna}}</h2>
+                                <hr>
+                            </div>
+
+                            <div ng-hide="filterSisalto.tehtava || !hasContent(valittuOppiaine.vlks.tehtava)">
+                                <h3>{{valittuOppiaine.vlks.tehtava.otsikko | kaanna}}</h3>
+                                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tehtava.teksti || '-'"></termisto-tekstikentta>
+                            </div>
+
+                            <div ng-hide="filterSisalto.ohjaus || !hasContent(valittuOppiaine.vlks.ohjaus)">
+                                <h3>{{valittuOppiaine.vlks.ohjaus.otsikko | kaanna}}</h3>
+                                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.ohjaus.teksti || '-'"></termisto-tekstikentta>
+                            </div>
+
+                            <div ng-hide="filterSisalto.tyotavat || !hasContent(valittuOppiaine.vlks.tyotavat)">
+                                <h3>{{valittuOppiaine.vlks.tyotavat.otsikko | kaanna}}</h3>
+                                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tyotavat.teksti || '-'"></termisto-tekstikentta>
+                            </div>
+
+                            <div ng-hide="!hasContent(valittuOppiaine.vlks.sisaltoalueinfo)">
+                                <h3>{{valittuOppiaine.vlks.sisaltoalueinfo.otsikko | kaanna}}</h3>
+                                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.sisaltoalueinfo.teksti || '-'"></termisto-tekstikentta>
+                            </div>
+
+                            <div ng-repeat="sa in valittuOppiaine.vlks.sisaltoalueet">
+                                <h3>{{sa.nimi | kaanna}}</h3>
+                                <termisto-tekstikentta tekstikentta="sa.kuvaus || '-'"></termisto-tekstikentta>
+                            </div>
+
+                            <div ng-hide="filterSisalto.tavoitteet"
+                                 ng-if="valittuOppiaine.vlks._vuosiluokkaKokonaisuus">
+                                <h3 kaanna="'perusopetus-tavoitteet'"></h3>
+                                <div tavoitteet="valittuOppiaine.vlks"
+                                     oppiaine="valittuOppiaine"
+                                     osaamiset="osaamiset"
+                                     vuosiluokka="valittuOppiaine.sisallot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

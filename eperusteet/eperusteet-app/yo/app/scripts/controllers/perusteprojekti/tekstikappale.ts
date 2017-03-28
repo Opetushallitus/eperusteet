@@ -40,12 +40,16 @@ angular.module('eperusteApp')
 
     this.add = function () {
       if (YleinenData.isPerusopetus(peruste)) {
-        PerusopetusService.saveOsa({}, {osanTyyppi: 'tekstikappale'}, function (response) {
+        PerusopetusService.saveOsa({}, {
+            osanTyyppi: 'tekstikappale'
+        }, response => {
           TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
           goToView(response);
         });
-      } else if(YleinenData.isLukiokoulutus(peruste)) {
-        LukiokoulutusService.saveOsa({}, {osanTyyppi: 'tekstikappale'}, function (response) {
+      } else if (YleinenData.isLukiokoulutus(peruste)) {
+        LukiokoulutusService.saveOsa({}, {
+            osanTyyppi: 'tekstikappale'
+        }, response => {
           TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
           goToView(response);
         });
@@ -230,8 +234,10 @@ angular.module('eperusteApp')
       }
     }
 
-    if ($stateParams.suoritustapa || YleinenData.isPerusopetus($scope.$parent.peruste) ||
-          YleinenData.isLukiokoulutus($scope.$parent.peruste)) {
+    if ($stateParams.suoritustapa
+        || YleinenData.isPerusopetus($scope.$parent.peruste)
+        || YleinenData.isLukiokoulutus($scope.$parent.peruste)
+        || YleinenData.isAipe($scope.$parent.peruste)) {
       PerusteprojektiTiedotService.then(function (instance) {
         $scope.tiedotService = instance;
         haeSisalto();

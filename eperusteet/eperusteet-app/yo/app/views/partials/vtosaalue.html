@@ -1,72 +1,82 @@
+<!-- partials/vtosaalue.html -->
 <div>
-  <accordion>
-    <accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen">
-      <accordion-heading>
-        <span class="glyphicon" ng-class="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
-        <span kaanna="'osaamistavoitteet'"></span>
-      </accordion-heading>
+    <uib-accordion>
+        <uib-accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen">
+            <uib-accordion-heading>
+                <span class="glyphicon"
+                      ng-class="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+                <span kaanna="'osaamistavoitteet'"></span>
+            </uib-accordion-heading>
 
-      <div class="non-collapsibles">
-        <label class="space-magic" kaanna="'kohde'"></label>
-        <input class="form-control" slocalized ng-model="osaAlue.valmaTelmaSisalto.osaamistavoite.kohde" type="text"></input>
+            <div class="non-collapsibles">
+                <label class="space-magic" kaanna="'kohde'"></label>
+                <input class="form-control" slocalized ng-model="osaAlue.valmaTelmaSisalto.osaamistavoite.kohde"
+                       type="text"/>
 
-        <div>
-          <label class="space-magic" kaanna="'kriteerit'"></label>
-          <div class="container-items" ui-sortable="sortableOptions" ng-model="osaAlue.valmaTelmaSisalto.osaamistavoite.kriteerit">
-            <div ng-repeat="kriteeri in osaAlue.valmaTelmaSisalto.osaamistavoite.kriteerit">
-              <div style="margin-bottom: 5px" class="input-group">
-                <span class="input-group-addon handle" icon-role="drag"></span>
-                <input ng-model="kriteeri" slocalized type="text" class="form-control" placeholder="Kirjoita kriteeri...">
-                <span class="input-group-btn">
+                <div>
+                    <label class="space-magic" kaanna="'kriteerit'"></label>
+                    <div class="container-items" ui-sortable="sortableOptions"
+                         ng-model="osaAlue.valmaTelmaSisalto.osaamistavoite.kriteerit">
+                        <div ng-repeat="kriteeri in osaAlue.valmaTelmaSisalto.osaamistavoite.kriteerit">
+                            <div style="margin-bottom: 5px" class="input-group">
+                                <span class="input-group-addon handle" icon-role="drag"></span>
+                                <input ng-model="kriteeri" slocalized type="text" class="form-control"
+                                       placeholder="Kirjoita kriteeri...">
+                                <span class="input-group-btn">
                   <button ng-click="kriteerit.poista(osaAlue.valmaTelmaSisalto.osaamistavoite.kriteerit, kriteeri)"
                           class="btn btn-danger" type="button" icon-role="remove" kaanna="'poista'"></button>
                 </span>
-              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button ng-click="kriteerit.lisaa(osaAlue.valmaTelmaSisalto.osaamistavoite.kriteerit)"
+                            class="btn btn-primary" icon-role="add" kaanna="'lisaa-kriteeri'"></button>
+                </div>
+
+                <label class="space-magic" kaanna="'osaamisen-arviointi-tekstina'"></label>
+                <div ng-model="osaAlue.valmaTelmaSisalto.osaamistavoite.oatekstina" slocalized
+                     ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
             </div>
-          </div>
-          <button ng-click="kriteerit.lisaa(osaAlue.valmaTelmaSisalto.osaamistavoite.kriteerit)"
-                  class="btn btn-primary" icon-role="add" kaanna="'lisaa-kriteeri'"></button>
-        </div>
+        </uib-accordion-group>
+    </uib-accordion>
 
-        <label class="space-magic" kaanna="'osaamisen-arviointi-tekstina'"></label>
-        <div ng-model="osaAlue.valmaTelmaSisalto.osaamistavoite.oatekstina" slocalized
-             ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
-      </div>
-    </accordion-group>
-  </accordion>
+    <uib-accordion>
+        <uib-accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen">
+            <uib-accordion-heading>
+                <span class="glyphicon"
+                      ng-class="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+                <span kaanna="'osaamisen-arviointi'"></span>
+            </uib-accordion-heading>
 
-  <accordion>
-    <accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen">
-      <accordion-heading>
-        <span class="glyphicon" ng-class="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
-        <span kaanna="'osaamisen-arviointi'"></span>
-      </accordion-heading>
+            <div class="non-collapsibles">
+                <label class="space-magic" kaanna="'kohde'"></label>
+                <div ckeditor class="form-control" slocalized
+                     ng-model="osaAlue.valmaTelmaSisalto.osaamisenarviointi.kohde" type="text"></div>
 
-      <div class="non-collapsibles">
-        <label class="space-magic" kaanna="'kohde'"></label>
-        <div ckeditor class="form-control" slocalized ng-model="osaAlue.valmaTelmaSisalto.osaamisenarviointi.kohde" type="text"></div>
-
-        <div>
-          <label class="space-magic" kaanna="'kriteerit'"></label>
-          <div class="container-items-2" ui-sortable="sortableOptions2" ng-model="osaAlue.valmaTelmaSisalto.osaamisenarviointi.kriteerit">
-            <div ng-repeat="kriteeri in osaAlue.valmaTelmaSisalto.osaamisenarviointi.kriteerit">
-              <div style="margin-bottom: 5px" class="input-group">
-                <span class="input-group-addon handle" icon-role="drag"></span>
-                <input ng-model="kriteeri" slocalized type="text" class="form-control" placeholder="Kirjoita kriteeri...">
-                <span class="input-group-btn">
+                <div>
+                    <label class="space-magic" kaanna="'kriteerit'"></label>
+                    <div class="container-items-2" ui-sortable="sortableOptions2"
+                         ng-model="osaAlue.valmaTelmaSisalto.osaamisenarviointi.kriteerit">
+                        <div ng-repeat="kriteeri in osaAlue.valmaTelmaSisalto.osaamisenarviointi.kriteerit">
+                            <div style="margin-bottom: 5px" class="input-group">
+                                <span class="input-group-addon handle" icon-role="drag"></span>
+                                <input ng-model="kriteeri" slocalized type="text" class="form-control"
+                                       placeholder="Kirjoita kriteeri...">
+                                <span class="input-group-btn">
                   <button ng-click="kriteerit.poista(osaAlue.valmaTelmaSisalto.osaamisenarviointi.kriteerit, kriteeri)"
                           class="btn btn-danger" type="button" icon-role="remove" kaanna="'poista'"></button>
                 </span>
-              </div>
-            </div>
-          </div>
-          <button ng-click="kriteerit.lisaa(osaAlue.valmaTelmaSisalto.osaamisenarviointi.kriteerit)"
-                  class="btn btn-primary" icon-role="add" kaanna="'lisaa-kriteeri'"></button>
-        </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button ng-click="kriteerit.lisaa(osaAlue.valmaTelmaSisalto.osaamisenarviointi.kriteerit)"
+                            class="btn btn-primary" icon-role="add" kaanna="'lisaa-kriteeri'"></button>
+                </div>
 
-        <label class="space-magic" kaanna="'osaamisen-arviointi-tekstina'"></label>
-        <div ng-model="osaAlue.valmaTelmaSisalto.osaamisenarviointi.oatekstina" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
-      </div>
-    </accordion-group>
-  </accordion>
+                <label class="space-magic" kaanna="'osaamisen-arviointi-tekstina'"></label>
+                <div ng-model="osaAlue.valmaTelmaSisalto.osaamisenarviointi.oatekstina" slocalized ckeditor
+                     editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
+            </div>
+        </uib-accordion-group>
+    </uib-accordion>
 </div>
