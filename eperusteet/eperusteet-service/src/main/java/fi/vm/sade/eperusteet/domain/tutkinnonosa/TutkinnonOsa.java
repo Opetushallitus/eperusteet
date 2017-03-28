@@ -23,21 +23,19 @@ import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimuk
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -204,7 +202,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         if (other instanceof TutkinnonOsa) {
             TutkinnonOsa that = (TutkinnonOsa) other;
             result = super.structureEquals(that);
-            result &= refXnor(getKuvaus(), that.getKuvaus());
+            result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
             result &= Objects.equals(getTyyppi(), that.getTyyppi());
             result &= Objects.equals(getKoodiArvo(), that.getKoodiArvo());
             result &= Objects.equals(getKoodiUri(), that.getKoodiUri());

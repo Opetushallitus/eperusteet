@@ -1,71 +1,48 @@
 <!-- partials/perusteprojekti/perustiodot.html -->
 <div ng-controller="ProjektinperustiedotCtrl">
-    <div ng-form="perustiedotForm" name="perustiedotForm" class="form-group-wrapper"
-         ng-if="$parent.wizardissa() || $parent.editEnabled">
-        <formfield label="projektin-nimi-label" model="projekti" model-var="nimi" form="form"
-                   name="projektinNimi" required="required" placeholder="anna-projektin-nimi-placeholder" max="255">
-            <ohje teksti="luonti-projektin-nimi-ohje"></ohje>
-        </formfield>
-        <div class="form-group">
-            <label class="col-sm-3 control-label">{{'projektin-oid-label' | kaanna}}*</label>
-            <div class="col-sm-9">
-                <div class="input-group">
-                    <input ng-if="$ryhmaNimi" ng-model="$ryhmaNimi[lang]" type="" class="form-control" disabled>
-                    <input ng-if="!$ryhmaNimi" ng-model="projekti.ryhmaOid" type="" class="form-control" disabled>
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
-                    </span>
-                </div>
-            </div>
+  <div ng-form="perustiedotForm" name="perustiedotForm" class="form-group-wrapper" ng-if="$parent.wizardissa() || $parent.editEnabled">
+    <formfield label="projektin-nimi-label" model="projekti" model-var="nimi" form="form"
+               name="projektinNimi" required="required" placeholder="anna-projektin-nimi-placeholder" max="255">
+      <ohje teksti="luonti-projektin-nimi-ohje"></ohje>
+    </formfield>
+    <div class="form-group">
+      <label class="col-sm-3 control-label">{{'projektin-oid-label' | kaanna}}*</label>
+      <div class="col-sm-9">
+        <div class="input-group">
+          <input ng-if="$ryhmaNimi" ng-model="$ryhmaNimi[lang]" type="" class="form-control" disabled>
+          <input ng-if="!$ryhmaNimi" ng-model="projekti.ryhmaOid" type="" class="form-control" disabled>
+          <span class="input-group-btn">
+            <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
+          </span>
         </div>
-
-        <formfield label="diaarinumero-label" model="projekti" model-var="diaarinumero" form="perustiedotForm"
-                   ng-if="!$parent.pohja()"
-                   name="diaarinumero" required="required" placeholder="anna-diaarinumero-placeholder" max="255"
-                   type="diaari">
-            <ohje teksti="luonti-diaarinumero-ohje"></ohje>
-        </formfield>
-        <formfield ng-if="$parent.wizardissa()" label="koulutustyyppi-label" ng-hide="projekti.perusteId"
-                   model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit"
-                   placeholder="valitse-koulutustyyppi"></formfield>
-        <formfield ng-model="projekti.reforminMukainen" label="reformin-mukainen"
-                   ng-if="reforminMukainen(projekti.koulutustyyppi)"
-                   model="projekti" model-var="reforminMukainen" type="checkbox"></formfield>
-        <span ng-if="!$parent.pohja()">
-            <formfield ng-model="projekti.koulutustyyppi" label="laajuuden-yksikkö"
-                       ng-if="tarvitseeLaajuuden(projekti.koulutustyyppi) && !projekti.reforminMukainen"
-                       model="projekti" model-var="laajuusYksikko" options="yksikot"></formfield>
-            <formfield label="päätöspvm-label" model="projekti" model-var="paatosPvm" placeholder="anna-päätöspäivämäärä"
-                       type="date">
-                <ohje teksti="luonti-paatospaivamaara-ohje"></ohje>
-            </formfield>
-            <formfield label="yhteistyotaho-label" model="projekti" model-var="yhteistyotaho"
-                       placeholder="anna-yhteistyotaho-placeholder" max="255"></formfield>
-        </span>
-
+      </div>
     </div>
-    <div ng-if="!$parent.editEnabled && !$parent.wizardissa()">
-        <table class="perustiedot">
-            <tr>
-                <th kaanna="'projektin-nimi-label'"></th>
-                <td>{{ projekti.nimi | kaanna }}</td>
-            </tr>
-            <tr>
-                <th kaanna="'projektin-ryhma'"></th>
-                <td>{{ $ryhmaNimi | kaanna }}</td>
-            </tr>
-            <tr>
-                <th kaanna="'diaarinumero-label'"></th>
-                <td>{{ projekti.diaarinumero }}</td>
-            </tr>
-            <tr>
-                <th kaanna="'päätöspvm-label'"></th>
-                <td pvm="{{ projekti.paatosPvm }}"></td>
-            </tr>
-            <tr>
-                <th kaanna="'yhteistyotaho-label'"></th>
-                <td>{{ projekti.yhteistyotaho }}</td>
-            </tr>
-        </table>
-    </div>
+
+    <formfield label="diaarinumero-label" model="projekti" model-var="diaarinumero" form="perustiedotForm" ng-if="!$parent.pohja()"
+               name="diaarinumero" required="required" placeholder="anna-diaarinumero-placeholder" max="255" type="diaari">
+      <ohje teksti="luonti-diaarinumero-ohje"></ohje>
+    </formfield>
+    <formfield ng-if="$parent.wizardissa()" label="koulutustyyppi-label" ng-hide="projekti.perusteId"
+               model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit" placeholder="valitse-koulutustyyppi"></formfield>
+    <formfield ng-model="projekti.reforminMukainen" label="reformin-mukainen" ng-if="reforminMukainen(projekti.koulutustyyppi)"
+               model="projekti" model-var="reforminMukainen" type="checkbox"></formfield>
+    <span ng-if="!$parent.pohja()">
+      <formfield ng-model="projekti.koulutustyyppi" label="laajuuden-yksikkö" ng-if="tarvitseeLaajuuden(projekti.koulutustyyppi)"
+                 model="projekti" model-var="laajuusYksikko" options="yksikot"></formfield>
+      <formfield label="päätöspvm-label" model="projekti" model-var="paatosPvm" placeholder="anna-päätöspäivämäärä" type="date">
+        <ohje teksti="luonti-paatospaivamaara-ohje"></ohje>
+      </formfield>
+      <formfield label="yhteistyotaho-label" model="projekti" model-var="yhteistyotaho" placeholder="anna-yhteistyotaho-placeholder" max="255"></formfield>
+    </span>
+
+  </div>
+  <div ng-if="!$parent.editEnabled && !$parent.wizardissa()">
+    <table class="perustiedot">
+      <tr><th kaanna="'projektin-nimi-label'"></th><td>{{ projekti.nimi | kaanna }}</td></tr>
+      <tr><th kaanna="'projektin-ryhma'"></th><td>{{ $ryhmaNimi | kaanna }}</td></tr>
+      <tr><th kaanna="'diaarinumero-label'"></th><td>{{ projekti.diaarinumero }}</td></tr>
+      <tr><th kaanna="'päätöspvm-label'"></th><td pvm="{{ projekti.paatosPvm }}"></td></tr>
+      <tr><th kaanna="'yhteistyotaho-label'"></th><td>{{ projekti.yhteistyotaho }}</td></tr>
+    </table>
+  </div>
 </div>

@@ -38,6 +38,24 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
+    pug: {
+      compile: {
+        options: {
+          data: {
+            debug: true
+          }
+        },
+        files: [{
+          src: '<%= yeoman.app %>/eperusteet-esitys/**/*.pug',
+          expand: true,
+          ext: '.html'
+        }, {
+          src: '<%= yeoman.app %>/views/**/*.pug',
+          expand: true,
+          ext: '.html'
+        }]
+      }
+    },
     ts: {
       default: {
         src: [
@@ -61,6 +79,10 @@ module.exports = function(grunt) {
       }
     },
     watch: {
+      pug: {
+        files: ['<%= yeoman.app %>/**/*.pug'],
+        tasks: ['pug', 'regex-check']
+      },
       css: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.scss', '<%= yeoman.app %>/eperusteet-esitys/styles/{,*/}*.scss'],
         tasks: ['sass', 'copy:fonts', 'autoprefixer']
@@ -448,6 +470,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', [
     'ts',
+    'pug',
     'clean:server',
     'copy:fonts',
     'concurrent:test',
@@ -461,6 +484,7 @@ module.exports = function(grunt) {
     'clean:dist',
     'useminPrepare',
     'concurrent:dist',
+    'pug',
     'autoprefixer',
     'ngtemplates',
     'concat',

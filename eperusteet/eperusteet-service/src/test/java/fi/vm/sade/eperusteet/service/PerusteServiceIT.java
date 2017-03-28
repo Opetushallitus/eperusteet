@@ -198,6 +198,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testKvLiite() {
+        KVLiiteJulkinenDto kvliiteDto = perusteService.getJulkinenKVLiite(peruste.getId());
+        assertEquals(kvliiteDto.getNimi().getId(), peruste.getNimi().getId());
+    }
+
+    @Test
     public void testGetByDiaari() {
 
         Peruste p = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSTUTKINTO, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);

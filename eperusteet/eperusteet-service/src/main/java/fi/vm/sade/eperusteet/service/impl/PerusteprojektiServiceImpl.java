@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -39,6 +39,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -54,7 +55,13 @@ import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
+import static fi.vm.sade.eperusteet.service.util.Util.*;
 import fi.vm.sade.generic.rest.CachingRestClient;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,16 +72,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
-import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
-import static fi.vm.sade.eperusteet.service.util.Util.*;
-import static java.util.stream.Collectors.toMap;
 
 /**
  *
@@ -235,10 +232,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
-            if (yksikko == null
-                    && perusteprojektiDto.isReforminMukainen()
-                    && koulutustyyppi != null
-                    && koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
+            if (koulutustyyppi == null) {
+                throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla koulutustyyppi");
+            }
+
+            if (yksikko == null && koulutustyyppi
+                    .isOneOf(KoulutusTyyppi.PERUSTUTKINTO,
+                            KoulutusTyyppi.AMMATTITUTKINTO,
+                            KoulutusTyyppi.ERIKOISAMMATTITUTKINTO,
+                            KoulutusTyyppi.TELMA,
+                            KoulutusTyyppi.VALMA)) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
 
@@ -268,6 +271,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
             perusteprojektiDto.setKoulutustyyppi(pohjaPeruste.getKoulutustyyppi());
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
+        }
+
+        if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
+            KVLiite kvliite = new KVLiite();
+            if (perusteprojektiDto.getPerusteId() != null) {
+                Peruste pohja = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
+                if (pohja != null) {
+                    kvliite.setPohja(pohja.getKvliite());
+                }
+            }
+            peruste.setKvliite(kvliite);
         }
 
         if (tyyppi == PerusteTyyppi.POHJA) {
@@ -656,9 +670,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
         Peruste peruste = projekti.getPeruste();
+        boolean isValmisPohja = PerusteTyyppi.POHJA.equals(peruste.getTyyppi()) && (VALMIS.equals(projekti.getTila()) || PerusteTila.VALMIS.equals(peruste.getTila()));
 
         // Perusteen validointi
-        if (peruste != null && peruste.getSuoritustavat() != null
+        if (!isValmisPohja && peruste.getSuoritustavat() != null
                 && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
@@ -671,7 +686,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                 suoritustapa.getRakenne(),
                                 KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                         if (!validointi.ongelmat.isEmpty()) {
-                            updateStatus.addStatus("rakenteen-validointi-virhe", suoritustapa.getSuoritustapakoodi(), validointi);
+                            updateStatus.addStatus("rakenteen-validointi-virhe",
+                                    suoritustapa.getSuoritustapakoodi(),
+                                    validointi);
                             updateStatus.setVaihtoOk(false);
                         }
                     }
@@ -847,11 +864,23 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         if (tila == ProjektiTila.POISTETTU) {
-            setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
+            if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
+                projekti.setTila(ProjektiTila.POISTETTU);
+                projekti.getPeruste().asetaTila(PerusteTila.POISTETTU);
+            }
+            else {
+                setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
+            }
         }
 
         if (tila == LAADINTA) {
-            setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
+            if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
+                projekti.setTila(ProjektiTila.LAADINTA);
+                projekti.getPeruste().asetaTila(PerusteTila.LUONNOS);
+            }
+            else {
+                setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
+            }
         }
 
         if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.POHJA

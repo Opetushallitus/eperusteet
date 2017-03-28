@@ -139,8 +139,16 @@ public class PerusteController {
     @InternalApi
     public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
         return audit.withAudit(LogMessage.builder(id, PERUSTE, MUOKKAUS), (Void) -> {
-            return service.update(id, perusteDto);
+            return service.updateFull(id, perusteDto);
         });
+    }
+
+    @RequestMapping(value = "/{perusteId}/kvliite", method = GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public KVLiiteJulkinenDto getKvLiite(
+            @PathVariable("perusteId") final long id) {
+        return service.getJulkinenKVLiite(id);
     }
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)

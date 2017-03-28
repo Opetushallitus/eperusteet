@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/*global _, moment*/
-
 angular.module('eperusteApp')
   .service('YleinenData', function($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna, $q, $location, Kieli) {
     this.dateOptions = {
@@ -94,6 +91,7 @@ angular.module('eperusteApp')
         nimi: 'ammattitutkinto',
         oletusSuoritustapa: 'naytto',
         hasTutkintonimikkeet: true,
+        hasLaajuus: true,
         hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
         sisaltoTunniste: 'sisalto',
         hasPdfCreation: true
@@ -119,6 +117,7 @@ angular.module('eperusteApp')
       'koulutustyyppi_12': {
         nimi: 'erikoisammattitutkinto',
         oletusSuoritustapa: 'naytto',
+        hasLaajuus: true,
         hasTutkintonimikkeet: true,
         hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
         sisaltoTunniste: 'sisalto',
@@ -321,6 +320,7 @@ angular.module('eperusteApp')
       return Kaanna.kaannaSisalto(teksti);
     };
 
+
     var kurssityypitDefer = $q.defer();
     /**
      * @returns Promise<LukiokurssityyppiSelectOption>
@@ -350,6 +350,4 @@ angular.module('eperusteApp')
         tyyppi: 'VALTAKUNNALLINEN_SOVELTAVA'
       }
     ]);
-
-
   });

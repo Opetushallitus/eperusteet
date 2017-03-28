@@ -87,11 +87,11 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     @Override
     public boolean structureEquals(PerusteenOsa other) {
         boolean result = false;
-        if ( other instanceof TekstiKappale ) {
+        if (other instanceof TekstiKappale) {
             TekstiKappale that = (TekstiKappale)other;
             result = super.structureEquals(that);
-            result &= Objects.equals(getOsaamisala(), that.getOsaamisala());
-            result &= refXnor(getTeksti(), that.getTeksti());
+            result &= getOsaamisala() == null || Objects.equals(getOsaamisala(), that.getOsaamisala());
+            result &= getTeksti() == null || refXnor(getTeksti(), that.getTeksti());
          }
         return result;
     }

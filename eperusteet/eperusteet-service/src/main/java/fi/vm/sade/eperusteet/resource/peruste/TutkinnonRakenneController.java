@@ -32,6 +32,8 @@ import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import java.util.ArrayList;
+import java.util.List;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.SUORITUSTAVANRAKENNE;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSA;
@@ -261,6 +263,16 @@ public class TutkinnonRakenneController {
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("viiteId") final Long viiteId) {
         return perusteService.getTutkinnonOsaViite(id, suoritustapakoodi, viiteId);
+    }
+
+    @RequestMapping(value = "/tutkinnonosat/koodi/{koodiUri}", method = GET)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public TutkinnonOsaViiteDto getTutkinnonOsaViiteByKoodi(
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("koodiUri") final String koodiUri) {
+        return perusteService.getTutkinnonOsaViiteByKoodiUri(id, suoritustapakoodi, koodiUri);
     }
 
 }

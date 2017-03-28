@@ -13,21 +13,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto.peruste;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.repository;
+
+import fi.vm.sade.eperusteet.domain.KVLiite;
+import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
-@Getter
-@Setter
-public class PerusteDto extends PerusteBaseDto {
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Set<SuoritustapaDto> suoritustavat;
-    private KVLiiteDto kvliite;
+@Repository
+public interface KVLiiteRepository extends JpaWithVersioningRepository<KVLiite, Long> {
+
 }

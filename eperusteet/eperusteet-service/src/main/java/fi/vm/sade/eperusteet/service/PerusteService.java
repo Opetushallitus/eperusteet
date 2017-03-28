@@ -67,6 +67,9 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     PerusteDto update(@P("perusteId") Long perusteId, PerusteDto perusteDto);
 
+    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
+    PerusteDto updateFull(@P("perusteId") Long perusteId, PerusteDto perusteDto);
+
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteDto getByIdAndSuoritustapa(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
@@ -150,14 +153,14 @@ public interface PerusteService {
     @PreAuthorize("permitAll()")
     Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery);
 
-    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'LUKU')")
-    List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
-    TutkintonimikeKoodiDto addTutkintonimikeKoodi(Long perusteId, TutkintonimikeKoodiDto dto);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    TutkintonimikeKoodiDto addTutkintonimikeKoodi(@P("perusteId") Long perusteId, TutkintonimikeKoodiDto dto);
 
-    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
-    void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void removeTutkintonimikeKoodi(@P("perusteId") Long perusteId, Long tutkintonimikeKoodiId);
 
     @PostAuthorize("returnObject == null or hasPermission(returnObject.id, 'peruste', 'LUKU')")
     PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
@@ -181,11 +184,17 @@ public interface PerusteService {
     LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteetByVersion(long perusteId, int revision);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void tallennaYleisetTavoitteet(Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto);
+    void tallennaYleisetTavoitteet(@P("perusteId") Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<Revision> getYleisetTavoitteetVersiot(Long perusteId);
+    List<Revision> getYleisetTavoitteetVersiot(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    LukiokoulutuksenYleisetTavoitteetDto palautaYleisetTavoitteet(long perusteId, int revisio);
+    LukiokoulutuksenYleisetTavoitteetDto palautaYleisetTavoitteet(@P("perusteId") long perusteId, int revisio);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    TutkinnonOsaViiteDto getTutkinnonOsaViiteByKoodiUri(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapakoodi, String koodiUri);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 }

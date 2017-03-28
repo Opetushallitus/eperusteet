@@ -22,6 +22,7 @@
     "grunt-contrib-htmlmin": "0.3.0",
     "grunt-contrib-imagemin": "1.0.0",
     "grunt-contrib-jshint": "0.10.0",
+    "grunt-contrib-pug": "1.0.0",
     "grunt-contrib-uglify": "0.5.0",
     "grunt-contrib-watch": "0.6.1",
     "grunt-focus": "0.1.1",
@@ -31,7 +32,7 @@
     "grunt-rev": "0.1.0",
     "grunt-sass": "1.2.1",
     "grunt-svgmin": "0.4.0",
-    "grunt-ts": "6.0.0-beta.6",
+    "grunt-ts": "6.0.0-beta.14",
     "grunt-usemin": "2.4.0",
     "jasmine-core": "2.5.2",
     "karma": "0.13.21",
@@ -40,8 +41,8 @@
     "karma-ng-scenario": "0.1.0",
     "karma-phantomjs-launcher": "0.1.4",
     "load-grunt-tasks": "0.6.0",
-    "typescript": "2.1.4",
-    "node-sass": "3.8.0"
+    "node-sass": "3.8.0",
+    "typescript": "2.2"
   },
   "engines": {
     "node": "6.3.1"
