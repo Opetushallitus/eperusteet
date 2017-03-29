@@ -50,7 +50,7 @@
                 ng-click="kurssit.$isCollapsed = !kurssit.$isCollapsed">
                     <span class="glyphicon"
                           ng-class="kurssit.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
-                <span kaanna="'kurssit'"></span>
+                <span kaanna="'oppiaine-kurssit'"></span>
             </h3>
         </div>
         <div class="panel-body" collapse="kurssit.$isCollapsed">
@@ -59,11 +59,10 @@
             </div>
         </div>
 
-        <!-- Oppiaineet -->
+        <!-- Oppimäärät -->
         <div ng-if="!editableModel._oppiaine">
             <div class="panel-heading">
-                <h3 class="panel-title osio-otsikko"
-                    ng-click="oppiaineet.$isCollapsed = oppiaineet.oppiaineet.$isCollapsed">
+                <h3 class="panel-title osio-otsikko" ng-click="oppiaineet.$isCollapsed = !oppiaineet.$isCollapsed">
                     <span class="glyphicon"
                           ng-class="oppiaineet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
                     <span kaanna="'oppimaarat'"></span>
@@ -138,15 +137,33 @@
         <div class="non-collapsibles">
             <label for="koodi-input" class="header" kaanna="muokkaus-tutkinnon-osan-koodi-header"></label>
             <div class="fixed-group">
-                <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodi.koodiArvo"
+                <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodi.arvo"
                        editointi-kontrolli disabled="disabled">
                 <div class="addon">
                     <button class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button>
                 </div>
             </div>
 
-            <!--<label for="pakollinen-kurssi-kuvaus-input" class="header">{{'pakollinenKurssiKuvaus' | kaanna}}*</label>
-            <input id="pakollinen-kurssi-kuvaus-input" class="form-control" ng-model="editableModel.koodi" slocalized required>-->
+            <label for="pakollinen-kurssi-kuvaus-input"
+                   class="header">{{'pakollinen-kurssi-kuvaus-header' | kaanna}}</label>
+            <input id="pakollinen-kurssi-kuvaus-input"
+                   class="form-control"
+                   ng-model="editableModel.pakollinenKurssiKuvaus"
+                   slocalized>
+
+            <label for="syventava-kurssi-kuvaus-input"
+                   class="header">{{'syventava-kurssi-kuvaus-header' | kaanna}}</label>
+            <input id="syventava-kurssi-kuvaus-input"
+                   class="form-control"
+                   ng-model="editableModel.syventavaKurssiKuvaus"
+                   slocalized>
+
+            <label for="soveltava-kurssi-kuvaus-input"
+                   class="header">{{'soveltava-kurssi-kuvaus-header' | kaanna}}</label>
+            <input id="soveltava-kurssi-kuvaus-input"
+                   class="form-control"
+                   ng-model="editableModel.soveltavaKurssiKuvaus"
+                   slocalized>
         </div>
 
         <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
@@ -190,6 +207,6 @@
     </div>
 </div>
 
-<!--<pre>{{editableModel | json}}</pre>
+<pre>{{editableModel | json}}</pre>
 <pre>{{oppimaarat | json}}</pre>
-<pre>{{kurssit | json}}</pre>-->
+<pre>{{kurssit | json}}</pre>

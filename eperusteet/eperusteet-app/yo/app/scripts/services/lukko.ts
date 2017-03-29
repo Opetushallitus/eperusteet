@@ -145,9 +145,10 @@ angular.module('eperusteApp')
       },
       'root.perusteprojekti.suoritustapa.aipeosaalue': function() {
         switch($stateParams.osanTyyppi) {
+          // Todo: toteuta lukot palvelinpuolelle
           //case 'oppiaineet': return LukkoOppiaine;
           //case 'vuosiluokat': return LukkoVuosiluokkakokonaisuus;
-          case 'osaaminen': return LukkoAIPELaajaalainenOsaaminen;
+          //case 'osaaminen': return LukkoAIPELaajaalainenOsaaminen;
           default: return null;
         }
       },

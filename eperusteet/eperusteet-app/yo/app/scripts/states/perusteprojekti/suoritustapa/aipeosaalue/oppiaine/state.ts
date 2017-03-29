@@ -166,7 +166,7 @@ $stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine', {
             }
             MuokkausUtils.nestedSet($scope.editableModel.koodi, 'koodisto', ',', koodisto.koodisto.koodistoUri);
             MuokkausUtils.nestedSet($scope.editableModel.koodi, 'uri', ',', koodisto.koodiUri);
-            MuokkausUtils.nestedSet($scope.editableModel.koodi, 'koodiArvo', ',', koodisto.koodiArvo);
+            MuokkausUtils.nestedSet($scope.editableModel.koodi, 'arvo', ',', koodisto.koodiArvo);
         }, {
             tyyppi: () => { return 'oppiaineetyleissivistava2'; },
             ylarelaatioTyyppi: () => { return ''; },
