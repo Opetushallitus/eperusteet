@@ -146,6 +146,9 @@
     "poista-vaihe": "Poista vaihe",
     "nimeton-oppiaine": "Nimetön oppiaine",
     "nimeton-oppimaara": "Nimetön oppimäärä",
+    "nimeton-kurssi": "Nimetön kurssi",
+    "poista-kurssi": "Poista kurssi",
+    "uusi-kurssi": "Uusi kurssi",
 
     "OPINTOVIIKKO": "ov",
     "OSAAMISPISTE": "osp",

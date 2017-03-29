@@ -152,11 +152,7 @@ angular.module("eperusteApp")
             mapModel();
 
             Editointikontrollit.registerCallback({
-                edit: async () => {
-                    if (!$scope.isNew) {
-                        $scope.model = await $scope.model.get();
-                        $scope.editableModel = Api.copy($scope.model);
-                    }
+                edit: () => {
                 },
                 save: async () => {
                     if ($scope.isNew) {

@@ -73,7 +73,7 @@ angular.module('eperusteApp')
         placeholder: '@',
         step: '@?'
       },
-      link: function (scope, element, attrs) {
+      link: function (scope: any, element: any, attrs: any) {
         scope.postfix = '';
         scope.type = scope.type || 'text';
         scope.flatOptions = _.isArray(scope.options) &&

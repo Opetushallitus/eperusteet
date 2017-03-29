@@ -51,7 +51,6 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue", {
             latest: true
         };
         $scope.$state = $state;
-        $scope.isOppiaine = () => $state.is('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine');
         $scope.aipeService = AIPEService;
 
         if (isOsaaminen) {

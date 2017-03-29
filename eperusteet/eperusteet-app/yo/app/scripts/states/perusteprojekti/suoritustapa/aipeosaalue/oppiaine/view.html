@@ -31,6 +31,15 @@
 
         <versiotiedot></versiotiedot>
 
+        <table>
+            <tbody>
+            <tr>
+                <th kaanna="muokkaus-tutkinnon-osan-koodi-header" style="padding-right: 20px;"></th>
+                <td>{{editableModel.koodi.arvo ? editableModel.koodi.arvo : ('ei-asetettu' | kaanna)}}</td>
+            </tr>
+            </tbody>
+        </table>
+
         <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
             <div class="panel-heading">
                 <h3 class="panel-title osio-otsikko" ng-click="field.$isCollapsed = !field.$isCollapsed">
@@ -44,19 +53,34 @@
             </div>
         </div>
 
-        <!-- Kurssit -->
-        <div class="panel-heading">
-            <h3 class="panel-title osio-otsikko"
-                ng-click="kurssit.$isCollapsed = !kurssit.$isCollapsed">
-                    <span class="glyphicon"
-                          ng-class="kurssit.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
-                <span kaanna="'oppiaine-kurssit'"></span>
+        <div class="panel-heading" ng-if="editableModel.pakollinenKurssiKuvaus">
+            <h3 class="panel-title osio-otsikko" ng-click="editableModel.pakollinenKurssiKuvaus.$isCollapsed = !editableModel.pakollinenKurssiKuvaus.$isCollapsed">
+                    <span class="glyphicon" ng-class="editableModel.pakollinenKurssiKuvaus.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                <span ng-bind="'pakollinen-kurssi-kuvaus-header' | kaanna"></span>
             </h3>
         </div>
-        <div class="panel-body" collapse="kurssit.$isCollapsed">
-            <div ng-show="kurssit.length == 0">
-                <span kaanna="'tyhja-placeholder-kurssit'"></span>
-            </div>
+        <div class="panel-body" collapse="editableModel.pakollinenKurssiKuvaus.$isCollapsed">
+            <div ng-bind-html="editableModel.pakollinenKurssiKuvaus | kaanna"></div>
+        </div>
+
+        <div class="panel-heading" ng-if="editableModel.syventavaKurssiKuvaus">
+            <h3 class="panel-title osio-otsikko" ng-click="editableModel.syventavaKurssiKuvaus.$isCollapsed = !editableModel.syventavaKurssiKuvaus.$isCollapsed">
+                <span class="glyphicon" ng-class="editableModel.syventavaKurssiKuvaus.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                <span ng-bind="'syventava-kurssi-kuvaus-header' | kaanna"></span>
+            </h3>
+        </div>
+        <div class="panel-body" collapse="editableModel.syventavaKurssiKuvaus.$isCollapsed">
+            <div ng-bind-html="editableModel.syventavaKurssiKuvaus | kaanna"></div>
+        </div>
+
+        <div class="panel-heading" ng-if="editableModel.soveltavaKurssiKuvaus">
+            <h3 class="panel-title osio-otsikko" ng-click="editableModel.soveltavaKurssiKuvaus.$isCollapsed = !editableModel.soveltavaKurssiKuvaus.$isCollapsed">
+                <span class="glyphicon" ng-class="editableModel.soveltavaKurssiKuvaus.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                <span ng-bind="'soveltava-kurssi-kuvaus-header' | kaanna"></span>
+            </h3>
+        </div>
+        <div class="panel-body" collapse="editableModel.soveltavaKurssiKuvaus.$isCollapsed">
+            <div ng-bind-html="editableModel.soveltavaKurssiKuvaus | kaanna"></div>
         </div>
 
         <!-- Oppimäärät -->
@@ -86,6 +110,34 @@
                     </tr>
                 </table>
             </div>
+        </div>
+
+        <!-- Kurssit -->
+        <div class="panel-heading">
+            <h3 class="panel-title osio-otsikko"
+                ng-click="kurssit.$isCollapsed = !kurssit.$isCollapsed">
+                    <span class="glyphicon"
+                          ng-class="kurssit.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                <span kaanna="'oppiaine-kurssit'"></span>
+            </h3>
+        </div>
+        <div class="panel-body" collapse="kurssit.$isCollapsed">
+            <div ng-show="kurssit.length == 0">
+                <span kaanna="'tyhja-placeholder-kurssit'"></span>
+            </div>
+            <table class="table table-striped" ng-show="kurssit.length > 0">
+                <tr>
+                    <th>
+                        {{'nimi'| kaanna}}
+                    </th>
+                </tr>
+                <tr ng-repeat="kurssi in kurssit">
+                    <td>
+                        <a ui-sref="root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kurssi({kurssiId: kurssi.id})"
+                           ng-bind="kurssi.nimi || 'nimeton-kurssi' | kaanna"></a>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -167,7 +219,7 @@
         </div>
 
         <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
-            <div class="panel-heading vuosiluokka-osio" ng-class="'osio-' + field.path">
+            <div class="panel-heading" ng-class="'osio-' + field.path">
                 <div class="action-buttons">
                     <span ng-show="field.$editing">
                         <button class="btn btn-default" kaanna="'peruuta'" ng-click="fieldOps.cancel(field)"></button>

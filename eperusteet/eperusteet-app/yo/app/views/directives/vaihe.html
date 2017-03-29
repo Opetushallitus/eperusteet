@@ -76,7 +76,7 @@
 
     <div ng-if="editEnabled">
         <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
-            <div class="panel-heading vuosiluokka-osio" ng-class="'osio-' + field.path">
+            <div class="panel-heading" ng-class="'osio-' + field.path">
                 <div class="action-buttons">
                     <span ng-show="field.$editing">
                         <button class="btn btn-default" kaanna="'peruuta'" ng-click="fieldOps.cancel(field)"></button>
@@ -156,6 +156,18 @@
                 </tr>
             </table>
         </div>
-    </div>
 
+        <!-- Tavoitealueet -->
+        <div class="panel-heading">
+            <h3 class="panel-title osio-otsikko"
+                ng-click="editableModel.oppiaineet.$isCollapsed = !editableModel.oppiaineet.$isCollapsed">
+                    <span class="glyphicon"
+                          ng-class="editableModel.oppiaineet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                <span kaanna="'opetuksen-kohdealueet'"></span>
+            </h3>
+        </div>
+        <div>
+            tavoitealueet
+        </div>
+    </div>
 </div>

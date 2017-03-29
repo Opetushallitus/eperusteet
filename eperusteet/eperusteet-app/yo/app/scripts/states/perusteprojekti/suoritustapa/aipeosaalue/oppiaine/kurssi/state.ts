@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
+
+angular.module('eperusteApp')
+.config($stateProvider => {
+$stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kurssi', {
+    url: '/kurssit/:kurssiId',
+    resolve: {
+        kurssi: (oppiaine, $stateParams) => oppiaine.one("kurssit", $stateParams.kurssiId).get()
+    },
+    views: {
+        'aipeosaalue@root.perusteprojekti.suoritustapa.aipeosaalue': {
+            templateUrl: 'scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/kurssi/view.html',
+            controller: ($scope, Editointikontrollit, PerusteProjektiSivunavi, Notifikaatiot, kurssi, Api,
+                         Koodisto, MuokkausUtils) => {
+                $scope.editEnabled = false;
+                $scope.editableModel = Api.copy(kurssi);
+                $scope.muokkaa = () => Editointikontrollit.startEditing();
+                $scope.poista = () => {
+                    console.log("oispa");
+                };
+                $scope.openKoodisto = Koodisto.modaali(koodisto => {
+                    if (!$scope.editableModel.koodi) {
+                        $scope.editableModel['koodi'] = {};
+                    }
+                    MuokkausUtils.nestedSet($scope.editableModel.koodi, 'koodisto', ',', koodisto.koodisto.koodistoUri);
+                    MuokkausUtils.nestedSet($scope.editableModel.koodi, 'uri', ',', koodisto.koodiUri);
+                    MuokkausUtils.nestedSet($scope.editableModel.koodi, 'arvo', ',', koodisto.koodiArvo);
+                }, {
+                    tyyppi: () => { return 'oppiaineetyleissivistava2'; },
+                    ylarelaatioTyyppi: () => { return ''; },
+                    tarkista: _.constant(true)
+                });
+
+                Editointikontrollit.registerCallback({
+                    edit: async () => {
+                        // Onko tarpeellinen?
+                        kurssi = await kurssi.get();
+                        $scope.editableModel= Api.copy(kurssi);
+                    },
+                    save: async () => {
+                        $scope.editableModel = await $scope.editableModel.save();
+                        Notifikaatiot.onnistui('tallennus-onnistui');
+                        kurssi = Api.copy($scope.editableModel);
+                    },
+                    cancel: () => {
+                        $scope.editableModel = Api.copy(kurssi);
+                    },
+                    notify: value => {
+                        $scope.editEnabled = value;
+                        PerusteProjektiSivunavi.setVisible(!value);
+                    }
+                });
+            }
+        }
+    },
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
+    }
+})});
