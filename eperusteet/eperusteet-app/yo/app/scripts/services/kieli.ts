@@ -18,13 +18,13 @@
 /* global _ */
 
 angular.module('eperusteApp')
+  .value('UiKieli', { kielikoodi: 'fi' })
   .service('KielipreferenssiUpdater', function ($rootScope, Profiili) {
     $rootScope.$on('changed:sisaltokieli', function (event, value) {
       Profiili.setPreferenssi('sisaltokieli', value);
     });
     this.noop = angular.noop;
   })
-  .value('UiKieli',{ kielikoodi: 'fi' })
   .service('Kieli', function ($rootScope, $state, $stateParams, UiKieli) {
     var sisaltokieli = 'fi';
 
