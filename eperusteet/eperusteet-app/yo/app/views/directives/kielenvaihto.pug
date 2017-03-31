@@ -1,0 +1,32 @@
+div(ng-class='{modalkielenvaihto: isModal}')
+  div(ng-if='isModal')
+    span(ng-bind="'sisallon-kieli' | kaanna")
+    =": "
+    span.kieli-dropdown(dropdown='')
+      button.btn.btn-default.dropdown-toggle
+        span(ng-bind="sisaltokieli | kaanna")
+        span.caret
+      ul.dropdown-menu.dropdown-menu-right(role='menu')
+        li(ng-class='{active: kieli === sisaltokieli}', ng-repeat='kieli in sisaltokielet | orderBy:kieliOrder')
+          a(ng-click='setSisaltokieli(kieli)' ng-bind="kieli.kieli | kaanna")
+
+  span(ng-if='!isModal')
+    span(ng-if='uiLangChangeAllowed')
+      span(kaanna="'ui-kieli'")
+      =": "
+      span.kieli-dropdown(dropdown='')
+        a.action-link.dropdown-toggle
+          span(ng-bind="kieli | kaanna")
+          span.caret
+        ul.dropdown-menu.dropdown-menu-right(role='menu')
+          li(ng-class='{active: koodi.koodi === kieli}', ng-repeat='koodi in koodit | orderBy:kieliOrder')
+            a(ng-click='vaihdaKieli(koodi.koodi)' ng-bind="koodi.nimi")
+    span(kaanna="'sisallon-kieli'")
+    =": "
+    span.kieli-dropdown(dropdown='')
+      a.action-link.dropdown-toggle
+        span(ng-bind="sisaltokieli | kaanna")
+        span.caret
+      ul.dropdown-menu.dropdown-menu-right(role='menu')
+        li(ng-class='{active: kieli === sisaltokieli}', ng-repeat='kieli in sisaltokielet | orderBy:kieliOrder')
+          a(ng-click='setSisaltokieli(kieli)' ng-bind="kieli.kieli | kaanna" ng-class="{ 'not-used': !kieli.inUse }")
