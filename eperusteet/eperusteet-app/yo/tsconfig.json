@@ -95,6 +95,7 @@
         "./app/scripts/directives/hallintalinkki.ts",
         "./app/scripts/directives/tuotutkinnonosa.ts",
         "./app/scripts/directives/arviointi.ts",
+        "./app/scripts/directives/ammattitaitovaatimukset.ts",
         "./app/scripts/directives/oikeustarkastelu.ts",
         "./app/scripts/directives/ckeditor.ts",
         "./app/scripts/directives/statusbadge.ts",
@@ -103,6 +104,8 @@
         "./app/scripts/directives/numberinput.ts",
         "./app/scripts/directives/dateformatter.ts",
         "./app/scripts/directives/datecomparisonvalidator.ts",
+        "./app/scripts/directives/valmaarviointi.ts",
+        "./app/scripts/controllers/perusteprojekti/koulutuksenosa.ts",
         "./app/scripts/directives/muokattavaosio.ts",
         "./app/scripts/directives/koodisto.ts",
         "./app/scripts/directives/termistoviitteet.ts",
@@ -164,6 +167,7 @@
         "./app/scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/state.ts",
         "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/state.ts",
         "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/state.ts",
-        "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/kurssi/state.ts"
+        "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/kurssi/state.ts",
+        "./app/scripts/components/muokattavaosio/muokattavaosio.ts"
     ]
 }

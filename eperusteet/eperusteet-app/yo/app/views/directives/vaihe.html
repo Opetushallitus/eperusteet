@@ -102,7 +102,7 @@
                 </h3>
             </div>
 
-            <div class="panel-body" collapse="field.$isCollapsed">
+            <div class="panel-body" uib-collapse="field.$isCollapsed">
                 <div ng-if="!field.$editing" ng-bind-html="editableModel[field.path].teksti | kaanna"></div>
                 <div ng-if="field.$editing">
                     <div class="msd-elastic"
@@ -124,7 +124,7 @@
                     <span ng-bind="editableModel[field.path].otsikko | kaanna"></span>
                 </h3>
             </div>
-            <div class="panel-body" collapse="field.$isCollapsed">
+            <div class="panel-body" uib-collapse="field.$isCollapsed">
                 <div ng-bind-html="editableModel[field.path].teksti | kaanna | unsafe"></div>
             </div>
         </div>
@@ -138,7 +138,7 @@
                 <span kaanna="'oppiaineet'"></span>
             </h3>
         </div>
-        <div class="panel-body" collapse="editableModel.oppiaineet.$isCollapsed">
+        <div class="panel-body" uib-collapse="editableModel.oppiaineet.$isCollapsed">
             <div ng-show="editableModel.oppiaineet.length == 0">
                 <span kaanna="'tyhja-placeholder-oppiaineet'"></span>
             </div>
@@ -160,14 +160,15 @@
         <!-- Tavoitealueet -->
         <div class="panel-heading">
             <h3 class="panel-title osio-otsikko"
-                ng-click="editableModel.oppiaineet.$isCollapsed = !editableModel.oppiaineet.$isCollapsed">
+                ng-click="editableModel.opetuksenKohdealueet.$isCollapsed = !editableModel.opetuksenKohdealueet.$isCollapsed">
                     <span class="glyphicon"
-                          ng-class="editableModel.oppiaineet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                          ng-class="editableModel.opetuksenKohdealueet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
                 <span kaanna="'opetuksen-kohdealueet'"></span>
             </h3>
         </div>
-        <div>
-            tavoitealueet
-        </div>
+        <!--<div class="panel-body" uib-collapse="editableModel.opetuksenKohdealueet.$isCollapsed">
+            <aipe-muokattava-osio model="editableModel.opetuksenKohdealueet" facade="opetuksenKohdealueetFacade"></aipe-muokattava-osio>
+            <pre>{{editableModel.opetuksenKohdealueet | json}}</pre>
+        </div>-->
     </div>
 </div>

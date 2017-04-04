@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .factory('PerusteTutkinnonosa', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:osanId', {
@@ -241,7 +237,7 @@ angular.module('eperusteApp')
       palautaAihekokonaisuus: {method: 'POST', isArray: false, url: baseUrl + '/:aihekokonaisuusId/palauta/:versioId'}
     });
   })
-  .service('SuoritustavanSisalto', function($modal, $state, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {
+  .service('SuoritustavanSisalto', function($uibModal, $state, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {
     function lisaaSisalto(perusteId, method, sisalto, cb) {
       cb = cb || angular.noop;
       SuoritustapaSisalto[method]({
@@ -286,7 +282,7 @@ angular.module('eperusteApp')
           });
         }
 
-        $modal.open({
+        $uibModal.open({
           templateUrl: 'views/modals/tuotekstikappale.html',
           controller: 'TuoTekstikappale',
           size: 'lg',

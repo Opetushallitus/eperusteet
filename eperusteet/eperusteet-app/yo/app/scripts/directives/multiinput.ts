@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .directive('mlInput', function($translate, YleinenData, $timeout) {
     return {
@@ -49,7 +46,7 @@ angular.module('eperusteApp')
           $scope.activeLang = uusiKieli;
         };
       },
-      link: function(scope, element) {
+      link: function(scope: any, element: any) {
         if (!scope.mlData) {
           console.log('You must set ml-data for ml-input.');
         }

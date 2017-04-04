@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .directive('projektiryhmaHenkilot', function() {
     return {
@@ -40,11 +37,11 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('ProjektiryhmaModalCtrl', function($scope, $modalInstance) {
-    $scope.ok = function() { $modalInstance.close(); };
-    $scope.peruuta = function() { $modalInstance.dismiss(); };
+  .controller('ProjektiryhmaModalCtrl', function($scope, $uibModalInstance) {
+    $scope.ok = function() { $uibModalInstance.close(); };
+    $scope.peruuta = function() { $uibModalInstance.dismiss(); };
   })
-  .controller('ProjektiryhmaCtrl', function($scope, $modal, $stateParams, PerusteprojektiJasenet, Notifikaatiot,
+  .controller('ProjektiryhmaCtrl', function($scope, $uibModal, $stateParams, PerusteprojektiJasenet, Notifikaatiot,
     Projektiryhma, PerusteProjektiService, kayttajaToiminnot, PerusteprojektiTyoryhmat) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
@@ -69,7 +66,7 @@ angular.module('eperusteApp')
     }, errorCb);
 
     $scope.muokkaaTyoryhmaa = function(ryhma) {
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/lisaaTyoryhma.html',
         controller: 'LuoTyoryhmaModalCtrl',
         resolve: {
@@ -102,7 +99,7 @@ angular.module('eperusteApp')
     };
 
   })
-  .controller('LuoTyoryhmaModalCtrl', function($scope, $modalInstance, Varmistusdialogi, ryhma, ryhmat, jasenet) {
+  .controller('LuoTyoryhmaModalCtrl', function($scope, $uibModalInstance, Varmistusdialogi, ryhma, ryhmat, jasenet) {
     $scope.uusi = ryhma ? false : true;
 
     $scope.ryhma = {
@@ -147,12 +144,12 @@ angular.module('eperusteApp')
       to = [];
     };
 
-    $scope.ok = _.partial($modalInstance.close, $scope.ryhma);
-    $scope.peruuta = $modalInstance.dismiss;
+    $scope.ok = _.partial($uibModalInstance.close, $scope.ryhma);
+    $scope.peruuta = $uibModalInstance.dismiss;
     $scope.poista = function() {
       Varmistusdialogi.dialogi({
         otsikko: 'poistetaanko-tyoryhma',
-        successCb: _.partial($modalInstance.close, null)
+        successCb: _.partial($uibModalInstance.close, null)
       })();
     };
   })

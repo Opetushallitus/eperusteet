@@ -2,7 +2,7 @@ div(ng-class='{modalkielenvaihto: isModal}')
   div(ng-if='isModal')
     span(ng-bind="'sisallon-kieli' | kaanna")
     =": "
-    span.kieli-dropdown(dropdown='')
+    span.kieli-dropdown(uib-dropdown='')
       button.btn.btn-default.dropdown-toggle
         span(ng-bind="sisaltokieli | kaanna")
         span.caret
@@ -14,7 +14,7 @@ div(ng-class='{modalkielenvaihto: isModal}')
     span(ng-if='uiLangChangeAllowed')
       span(kaanna="'ui-kieli'")
       =": "
-      span.kieli-dropdown(dropdown='')
+      span.kieli-dropdown(uib-dropdown='')
         a.action-link.dropdown-toggle
           span(ng-bind="kieli | kaanna")
           span.caret
@@ -23,7 +23,7 @@ div(ng-class='{modalkielenvaihto: isModal}')
             a(ng-click='vaihdaKieli(koodi.koodi)' ng-bind="koodi.nimi")
     span(kaanna="'sisallon-kieli'")
     =": "
-    span.kieli-dropdown(dropdown='')
+    span.kieli-dropdown(uib-dropdown='')
       a.action-link.dropdown-toggle
         span(ng-bind="sisaltokieli | kaanna")
         span.caret

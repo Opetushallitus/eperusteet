@@ -14,12 +14,11 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
 angular.module('eperusteApp')
   .directive('editointiKontrolli', function($rootScope, Editointikontrollit) {
     return {
       restrict: 'A',
-      link: function(scope, element, attrs: any) {
+      link: function(scope, element: any, attrs: any) {
         Editointikontrollit.getEditModePromise().then(function(editMode) {
           if(!editMode) {
             hideOrDisableElement();

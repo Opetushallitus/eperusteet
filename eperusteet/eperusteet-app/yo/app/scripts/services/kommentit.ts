@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .factory('KommentitByParent', function(SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/kommentit/parent/:id', { id: '@id' }, {

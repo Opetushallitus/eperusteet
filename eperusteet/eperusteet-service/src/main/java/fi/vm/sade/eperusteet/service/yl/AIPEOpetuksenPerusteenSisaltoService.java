@@ -50,6 +50,9 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
     void removeKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<OpetuksenKohdealueDto> getKohdealueet(@P("perusteId") Long perusteId, Long vaiheId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<AIPEOppiaineSuppeaDto> getOppiaineet(@P("perusteId") Long perusteId, Long vaiheId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")

@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/* global $ */
-
 angular.module('eperusteApp')
   .directive('kommenttiViesti', function ($timeout, $compile, kommenttiViestiTemplate, Algoritmit, YleinenData) {
     return {
@@ -28,7 +24,7 @@ angular.module('eperusteApp')
         depth: '=',
         parent: '='
       },
-      link: function (scope: any, element) {
+      link: function (scope: any, element: any) {
         scope.$watch('sisalto.$resolved', function () {
           scope.processMessages();
           $timeout(function () {

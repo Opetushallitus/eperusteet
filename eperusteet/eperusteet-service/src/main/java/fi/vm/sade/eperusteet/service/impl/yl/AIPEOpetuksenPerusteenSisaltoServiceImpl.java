@@ -240,6 +240,11 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     @Override
+    public List<OpetuksenKohdealueDto> getKohdealueet(Long perusteId, Long vaiheId) {
+        return mapper.mapAsList(getVaiheImpl(perusteId, vaiheId).getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
+    }
+
+    @Override
     public List<AIPEOppiaineSuppeaDto> getOppiaineet(Long perusteId, Long vaiheId) {
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
         List<AIPEOppiaine> oppiaineet = vaihe.getOppiaineet();

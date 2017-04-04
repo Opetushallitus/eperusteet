@@ -95,7 +95,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .factory('PdfCreation', function($modal, YleinenData) {
+  .factory('PdfCreation', function($uibModal, YleinenData) {
     var service: any = {};
     var perusteId = null;
 
@@ -104,7 +104,7 @@ angular.module('eperusteApp')
     };
 
     service.openModal = function() {
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/pdfcreation.html',
         controller: 'PdfCreationController',
         resolve: {

@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .factory('TiedotteetCRUD', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/tiedotteet/:tiedoteId', {
@@ -24,7 +21,7 @@ angular.module('eperusteApp')
     });
   })
 
-  .controller('SivupalkkiTiedotteetController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
+  .controller('SivupalkkiTiedotteetController', function ($scope, Algoritmit, $uibModal, Varmistusdialogi, TiedotteetCRUD,
     Notifikaatiot) {
     $scope.tiedotteet = [];
     $scope.naytto = {limit: 5, shown: 5};
@@ -47,7 +44,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('TiedotteidenHallintaController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
+  .controller('TiedotteidenHallintaController', function ($scope, Algoritmit, $uibModal, Varmistusdialogi, TiedotteetCRUD,
     Notifikaatiot, Utils, TiedoteService) {
     $scope.tiedotteet = [];
     $scope.jarjestysTapa = 'muokattu';
@@ -111,7 +108,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .service('TiedoteService', function($modal, TiedotteetCRUD, Notifikaatiot, Utils) {
+  .service('TiedoteService', function($uibModal, TiedotteetCRUD, Notifikaatiot, Utils) {
     function doDelete(item, cb) {
       cb = cb || _.noop;
       TiedotteetCRUD.delete({}, item, function () {
@@ -132,7 +129,7 @@ angular.module('eperusteApp')
       saveCb = saveCb || _.noop;
       deleteCb = deleteCb || _.noop;
 
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/tiedotteenmuokkaus.html',
         controller: 'TiedotteenMuokkausController',
         size: 'lg',
@@ -157,7 +154,7 @@ angular.module('eperusteApp')
   })
 
   .controller('TiedotteenMuokkausController', function ($scope, model, perusteprojektiId, Varmistusdialogi,
-      $modalInstance, $rootScope) {
+      $uibModalInstance, $rootScope) {
     $scope.model = _.cloneDeep(model);
     $scope.creating = !model;
     $scope.perusteprojektiId = perusteprojektiId;
@@ -177,7 +174,7 @@ angular.module('eperusteApp')
       if ($scope.model.$liitaPerusteprojekti) {
         $scope.model._perusteprojekti = perusteprojektiId;
       }
-      $modalInstance.close($scope.model);
+      $uibModalInstance.close($scope.model);
     };
 
     $scope.delete = function () {
@@ -185,7 +182,7 @@ angular.module('eperusteApp')
         otsikko: 'vahvista-poisto',
         teksti: 'poistetaanko-tiedote',
       })(function() {
-        $modalInstance.close(_.extend($scope.model, {$dodelete: true}));
+        $uibModalInstance.close(_.extend($scope.model, {$dodelete: true}));
       });
     };
   })

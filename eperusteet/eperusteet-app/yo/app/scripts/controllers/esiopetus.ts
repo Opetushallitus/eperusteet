@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .controller('EsiopetusController', function ($scope, $state, Algoritmit, sisalto, Notifikaatiot, PerusteenOsat, YleinenData) {
     $scope.peruste = sisalto[0];

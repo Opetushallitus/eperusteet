@@ -18,7 +18,7 @@
 /* global _, $ */
 
 angular.module('eperusteApp')
-  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot, Utils) {
+  .service('Koodisto', function($http, $uibModal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot, Utils) {
     var taydennykset = [];
     var koodistoVaihtoehdot = ['tutkinnonosat', 'tutkintonimikkeet', 'koulutus', 'osaamisala'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
@@ -108,7 +108,7 @@ angular.module('eperusteApp')
           tarkista: _.constant(false)
         }, resolve || {});
         failureCb = failureCb || angular.noop;
-        $modal.open({
+        $uibModal.open({
           templateUrl: 'views/modals/koodistoModal.html',
           controller: 'KoodistoModalCtrl',
           resolve: resolve
@@ -125,7 +125,7 @@ angular.module('eperusteApp')
       haeYlarelaatiot: haeYlarelaatiot
     };
   })
-  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $timeout, Koodisto, tyyppi, ylarelaatioTyyppi,
+  .controller('KoodistoModalCtrl', function($scope, $uibModalInstance, $timeout, Koodisto, tyyppi, ylarelaatioTyyppi,
                                             TutkinnonOsanKoodiUniqueResource, Notifikaatiot, tarkista) {
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
     $scope.tyyppi = tyyppi;
@@ -169,17 +169,17 @@ angular.module('eperusteApp')
         TutkinnonOsanKoodiUniqueResource.get({tutkinnonosakoodi: koodi.koodiUri},
           function (res) {
             if (res.vastaus) {
-              $modalInstance.close(koodi);
+              $uibModalInstance.close(koodi);
             } else {
               Notifikaatiot.varoitus('tutkinnon-osan-koodi-kaytossa');
             }
           });
       } else {
-        $modalInstance.close(koodi);
+        $uibModalInstance.close(koodi);
       }
     };
     $scope.peruuta = function() {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
   })
   .directive('koodistoSelect', function(Koodisto) {
@@ -205,7 +205,7 @@ angular.module('eperusteApp')
           return;
         }
       },
-      link: function($scope, el, attrs) {
+      link: function($scope: any, el, attrs: any) {
         attrs.$observe('ylarelaatiotyyppi', function() {
             $scope.ylarelaatioTyyppi = attrs.ylarelaatiotyyppi || '';
         });

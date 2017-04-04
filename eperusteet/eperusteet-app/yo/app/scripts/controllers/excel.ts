@@ -26,7 +26,7 @@ angular.module('eperusteApp')
         controller: 'ExcelCtrl',
       });
   })
-  .controller('ExcelCtrl', function($scope, $modal, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
+  .controller('ExcelCtrl', function($scope, $uibModal, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
     Koodisto, PerusteprojektiResource, PerusteTutkinnonosat, $translate,
     SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData, Utils, PerusteProjektiService) {
     $scope.koulutustyypit = YleinenData.koulutustyypit;
@@ -191,7 +191,7 @@ angular.module('eperusteApp')
     };
 
     $scope.haeRyhma = function() {
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/tuotyoryhma.html',
         controller: 'TyoryhmanTuontiModalCtrl'
       })

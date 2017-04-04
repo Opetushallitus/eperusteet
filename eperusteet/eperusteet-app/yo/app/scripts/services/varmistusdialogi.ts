@@ -14,10 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteApp')
-  .service('Varmistusdialogi', function($modal) {
+  .service('Varmistusdialogi', function($uibModal) {
 
     function dialogi(options) {
       return function(success, failure) {
@@ -37,7 +35,7 @@ angular.module('eperusteApp')
         var successCb = success || options.successCb || angular.noop;
         var failureCb = failure || options.failureCb || angular.noop;
 
-        $modal.open({
+        $uibModal.open({
           templateUrl: 'views/modals/varmistusdialogi.html',
           controller: 'VarmistusDialogiCtrl',
           resolve: resolve
@@ -49,7 +47,7 @@ angular.module('eperusteApp')
       dialogi: dialogi
     };
   })
-  .controller('VarmistusDialogiCtrl', function($scope, $modalInstance, opts, data, otsikko, teksti, lisaTeksti, comment) {
+  .controller('VarmistusDialogiCtrl', function($scope, $uibModalInstance, opts, data, otsikko, teksti, lisaTeksti, comment) {
     $scope.opts = opts;
     $scope.otsikko = otsikko;
     $scope.teksti = teksti;
@@ -58,13 +56,13 @@ angular.module('eperusteApp')
 
     $scope.ok = function() {
       if (data !== null) {
-        $modalInstance.close(data);
+        $uibModalInstance.close(data);
       } else {
-        $modalInstance.close();
+        $uibModalInstance.close();
       }
     };
 
     $scope.peruuta = function() {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
   });

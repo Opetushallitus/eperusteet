@@ -308,7 +308,7 @@ angular.module('eperusteApp')
         kielikoodi = 'fi';
       }
       if (this.kielikoodi !== kielikoodi) {
-        moment.lang(kielikoodi);
+        moment.locale(kielikoodi);
         $translate.use(kielikoodi);
         this.kieli = kielikoodi;
         $rootScope.$broadcast('notifyCKEditor');

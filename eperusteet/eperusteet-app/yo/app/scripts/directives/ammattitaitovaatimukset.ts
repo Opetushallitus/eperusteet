@@ -14,9 +14,6 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
-/*global _*/
-
 angular.module('eperusteApp')
   .controller('ammattitaitoCtrl', function ($scope, YleinenData, $timeout, Utils, Varmistusdialogi ) {
 
@@ -169,7 +166,7 @@ angular.module('eperusteApp')
         eiKohdealueita: '@'
       },
       controller: 'ammattitaitoCtrl',
-      link: function(scope) {
+      link: function(scope: any) {
         scope.eiKohdealueita = (scope.eiKohdealueita === 'true' || scope.eiKohdealueita === true);
         scope.editAllowed = (scope.editAllowed === 'true' || scope.editAllowed === true);
 
@@ -296,7 +293,7 @@ angular.module('template/accordion/accordion-group.html', []).run(['$templateCac
     '      <a class="accordion-toggle" ng-click="$parent.isElementDragged() || toggleOpen()" accordion-transclude="heading"><span ng-class="{\'text-muted\': isDisabled}">{{heading}}</span></a>\n' +
     '    </h4>\n' +
     '  </div>\n' +
-    '  <div class="panel-collapse" collapse="!isOpen">\n' +
+    '  <div class="panel-collapse" uib-collapse="!isOpen">\n' +
     '	  <div class="panel-body" ng-transclude></div>\n' +
     '  </div>\n' +
     '</div>');

@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .service('OrderHelper', function () {
     this.ORDER_OPTIONS = [
@@ -53,7 +50,7 @@ angular.module('eperusteApp')
         koulutustyyppi: '='
       },
       controller: 'OsalistausDirectiveController',
-      link: function (scope, element, attrs) {
+      link: function (scope: any, element: any, attrs) {
         if (scope.options && scope.options.extrafilter) {
           var el = $compile(scope.options.extrafilter.template)(scope);
           element.find('#osalistausextrafilter').empty().append(el);

@@ -14,9 +14,6 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .directive('termistoTekstikentta', function() {
     return {
@@ -32,7 +29,7 @@ angular.module('eperusteApp')
       scope: {
         model: '=termistoViitteet'
       },
-      link: function (scope, element) {
+      link: function (scope: any, element: any) {
         scope.popovers = [];
         function destroy() {
           element.find(TERMI_MATCHER).each(function () {

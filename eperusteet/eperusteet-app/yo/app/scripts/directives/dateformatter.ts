@@ -14,15 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/*global moment*/
-
 angular.module('eperusteApp')
   .directive('dateformatter', function (YleinenData) {
     return {
       restrict: 'A',
       require: 'ngModel',
-      link: function (scope, element, attrs, ctrl) {
+      link: function (scope, element, attrs, ctrl: any) {
 
         ctrl.$parsers.unshift(function(viewValue) {
           if (typeof viewValue === 'object' || viewValue === '') {
@@ -46,8 +43,8 @@ angular.module('eperusteApp')
   .directive('pvm', function (Kaanna) {
     return {
       restrict: 'A',
-      link: function (scope, element, attrs) {
-        scope.$watch(attrs.pvm, function (value) {
+      link: function (scope, element: any, attrs: any) {
+        scope.$watch(attrs.pvm, function (value: any) {
           if (!value) {
             element.text(Kaanna.kaanna('ei-asetettu'));
             return;

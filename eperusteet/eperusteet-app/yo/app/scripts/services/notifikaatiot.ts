@@ -14,16 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
-  .controller('JarjestelmaVirheModalCtrl', function ($scope, $modalInstance, $state, viesti) {
+  .controller('JarjestelmaVirheModalCtrl', function ($scope, $uibModalInstance, $state, viesti) {
     $scope.viesti = viesti;
-    $scope.ok = $modalInstance.close;
+    $scope.ok = $uibModalInstance.close;
   })
-  .service('Notifikaatiot', function ($rootScope, $timeout, NOTIFICATION_DELAY_SUCCESS, NOTIFICATION_DELAY_WARNING, $modal, $state, Kaanna) {
+  .service('Notifikaatiot', function ($rootScope, $timeout, NOTIFICATION_DELAY_SUCCESS, NOTIFICATION_DELAY_WARNING, $uibModal, $state, Kaanna) {
     var viestit = [];
 
     function refresh() {
@@ -65,7 +61,7 @@ angular.module('eperusteApp')
 
     function fataali(viesti, cb) {
       cb = _.isFunction(cb) ? cb : angular.noop;
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/jarjestelmavirhe.html',
         controller: 'JarjestelmaVirheModalCtrl',
         resolve: {viesti: function () {

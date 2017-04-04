@@ -14,15 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
-  .service('TutkinnonOsanTuonti', function($modal) {
+  .service('TutkinnonOsanTuonti', function($uibModal) {
     function suoritustavoista(peruste, nykyinenTyyppi, successCb, failureCb) {
       failureCb = failureCb || function() {};
       return function() {
-        $modal.open({
+        $uibModal.open({
           templateUrl: 'views/modals/tuotutkinnonosasta.html',
           controller: 'TuoTutkinnonOsaSuoritustavastaaCtrl',
           resolve: {
@@ -37,7 +34,7 @@ angular.module('eperusteApp')
     function kaikista(tyyppi, successCb, failureCb) {
       failureCb = failureCb || function() {};
       return function() {
-        $modal.open({
+        $uibModal.open({
           templateUrl: 'views/modals/haetutkinnonosa.html',
           controller: 'TuoTutkinnonOsaCtrl',
           resolve: {
@@ -53,7 +50,7 @@ angular.module('eperusteApp')
       suoritustavoista: suoritustavoista
     };
   })
-  .controller('TuoTutkinnonOsaSuoritustavastaaCtrl', function(PerusteenOsat, $scope, $modalInstance, peruste,
+  .controller('TuoTutkinnonOsaSuoritustavastaaCtrl', function(PerusteenOsat, $scope, $uibModalInstance, peruste,
       PerusteTutkinnonosat, Notifikaatiot, suoritustapa, Algoritmit, Kaanna) {
     $scope.tulokset = [];
     $scope.valitut = 0;
@@ -130,13 +127,13 @@ angular.module('eperusteApp')
     $scope.paivitaTulokset($scope.valittuSuoritustapa);
 
     $scope.ok = function() {
-      $modalInstance.close(_.filter($scope.tulokset, function(tulos) {
+      $uibModalInstance.close(_.filter($scope.tulokset, function(tulos) {
         return tulos.$$valitse;
       }));
     };
-    $scope.peruuta = function() { $modalInstance.dismiss(); };
+    $scope.peruuta = function() { $uibModalInstance.dismiss(); };
   })
-  .controller('TuoTutkinnonOsaCtrl', function(PerusteenOsat, $scope, $modalInstance,
+  .controller('TuoTutkinnonOsaCtrl', function(PerusteenOsat, $scope, $uibModalInstance,
     Perusteet, PerusteRakenteet, PerusteTutkinnonosat, tyyppi, OmatPerusteprojektit, Kieli) {
 
     $scope.haku = true;
@@ -171,7 +168,7 @@ angular.module('eperusteApp')
       $scope.haku = true;
     };
     $scope.valitse = function() {
-      $modalInstance.close(_.filter($scope.perusteenosat, function(osa) { return osa.$$valitse; }));
+      $uibModalInstance.close(_.filter($scope.perusteenosat, function(osa) { return osa.$$valitse; }));
     };
 
     $scope.paivitaHaku = function() {
@@ -205,7 +202,7 @@ angular.module('eperusteApp')
     };
 
     $scope.peruuta = function() {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
 
     $scope.paivitaHaku();

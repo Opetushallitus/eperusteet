@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-'use strict';
 
 /**
  * Elementti seuraa vieritystä jos ohitetaan yläreuna.
@@ -26,7 +25,7 @@ angular.module('eperusteApp')
     var DISABLE_WIDTH = 992;
     return {
       restrict: 'A',
-      link: function (scope, element) {
+      link: function (scope: any, element: any) {
         var window = angular.element($window),
              parent = element.parent();
 

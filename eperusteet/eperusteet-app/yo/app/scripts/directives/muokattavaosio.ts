@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .directive('muokattavaOsio', function() {
     return {
@@ -31,7 +28,7 @@ angular.module('eperusteApp')
         poistoCb: '=?'
       },
       controller: 'MuokattavaOsioController',
-      link: function (scope, element, attrs) {
+      link: function (scope: any, element: any, attrs: any) {
         scope.cantremove = !_.isEmpty(attrs.static);
       }
     };

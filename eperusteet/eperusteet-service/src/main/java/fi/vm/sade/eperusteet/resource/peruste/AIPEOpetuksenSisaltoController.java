@@ -142,6 +142,14 @@ public class AIPEOpetuksenSisaltoController {
         return ResponseEntity.ok().build();
     }
 
+    @RequestMapping(value = "/vaiheet/{vaiheId}/kohdealueet", method = GET)
+    public ResponseEntity<List<OpetuksenKohdealueDto>> getKohdealueet(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long vaiheId
+    ) {
+        return ResponseEntity.ok(sisalto.getKohdealueet(perusteId, vaiheId));
+    }
+
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet", method = GET)
     public ResponseEntity<List<AIPEOppiaineSuppeaDto>> getOppiaineet(
             @PathVariable final Long perusteId,

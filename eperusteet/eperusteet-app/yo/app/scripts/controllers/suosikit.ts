@@ -14,11 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
-  .controller('SuosikitCtrl', function($scope, Profiili, $modal) {
+  .controller('SuosikitCtrl', function($scope, Profiili, $uibModal) {
     $scope.suosikit = {};
     $scope.naytto = {limit: 5, shown: 5};
 
@@ -31,7 +28,7 @@ angular.module('eperusteApp')
     $scope.$on('kayttajaProfiiliPaivittyi', paivitaSuosikit);
 
     $scope.edit = function () {
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/suosikkienMuokkaus.html',
         controller: 'SuosikkienMuokkausController',
         size: 'lg'

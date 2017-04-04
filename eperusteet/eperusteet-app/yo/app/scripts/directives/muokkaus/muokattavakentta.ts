@@ -14,9 +14,6 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
-/*global _*/
-
 angular.module('eperusteApp')
   .directive('muokkauskenttaRaamit', function(Utils) {
     return {

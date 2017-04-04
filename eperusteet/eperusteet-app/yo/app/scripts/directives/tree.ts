@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .service('treeTemplate', function () {
     function toimintoValikko(config) {
@@ -204,7 +200,7 @@ angular.module('eperusteApp')
         callbacks: '='
       },
       controller: 'treeController',
-      link: function(scope, el) {
+      link: function(scope: any, el: any) {
         $animate.enabled(false, el);
         if (!scope.vanhempi) {
           var templateElement = angular.element(treeTemplate.root());
@@ -657,13 +653,13 @@ angular.module('eperusteApp')
     });
   })
 
-  .config(function ($tooltipProvider) {
-    $tooltipProvider.setTriggers({
-        'mouseenter': 'mouseleave',
-        'click': 'click',
-        'focus': 'blur',
-        'never': 'mouseleave',
-        'show': 'hide'
+  .config(function ($uibTooltipProvider) {
+      $uibTooltipProvider.setTriggers({
+          'mouseenter': 'mouseleave',
+          'click': 'click',
+          'focus': 'blur',
+          'never': 'mouseleave',
+          'show': 'hide'
     });
   })
 

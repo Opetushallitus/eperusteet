@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .factory('TermistoCRUD', function ($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/termisto/:id', {
@@ -102,7 +99,7 @@ angular.module('eperusteApp')
   })
 
   .controller('TermistoController', function($scope, TermistoService, YleinenData, Algoritmit, Kaanna,
-      $modal, Varmistusdialogi) {
+      $uibModal, Varmistusdialogi) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.termisto = [];
     $scope.filtered = [];
@@ -168,7 +165,7 @@ angular.module('eperusteApp')
     };
 
     $scope.edit = function (item) {
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/termisto.html',
         controller: 'TermistoMuokkausController',
         size: 'lg',
@@ -190,7 +187,7 @@ angular.module('eperusteApp')
   })
 
   .controller('TermistoMuokkausController', function ($scope, termimodel, Varmistusdialogi,
-      $modalInstance, $rootScope, TermistoService) {
+      $uibModalInstance, $rootScope, TermistoService) {
     $scope.termimodel = termimodel;
     $scope.creating = !termimodel;
     if ($scope.creating) {
@@ -199,7 +196,7 @@ angular.module('eperusteApp')
 
     $scope.ok = function () {
       $rootScope.$broadcast('notifyCKEditor');
-      $modalInstance.close($scope.termimodel);
+      $uibModalInstance.close($scope.termimodel);
     };
 
     $scope.delete = function () {
@@ -207,7 +204,7 @@ angular.module('eperusteApp')
         otsikko: 'vahvista-poisto',
         teksti: 'poistetaanko-termi',
       })(function() {
-        $modalInstance.close(_.extend($scope.termimodel, {$delete: true}));
+        $uibModalInstance.close(_.extend($scope.termimodel, {$delete: true}));
       });
     };
   });

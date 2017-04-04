@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _, document */
-
 angular.module('eperusteApp')
   .service('Algoritmit', function(Kaanna) {
     function rajausVertailu(input, kentta) {

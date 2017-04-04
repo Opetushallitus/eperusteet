@@ -1,6 +1,6 @@
 <!-- partials/ohje.html -->
 <span class="ohje">
-  <span class="popover-element" uib-popover-title="{{title || 'ohje' |kaanna}}" popover="{{textObject|kaanna}}"
+  <span class="popover-element" uib-popover-title="{{title || 'ohje' |kaanna}}" uib-popover="{{textObject|kaanna}}"
         popover-trigger="show" popover-placement="{{suunta || 'right'}}"
         ng-mouseenter="show(true, true)" ng-mouseleave="mouseleave()" ng-click="show(!tt_isOpen)"
         ng-class="{open: tt_isOpen, badge: ohje !== 'false'}">

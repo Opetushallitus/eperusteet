@@ -14,19 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/*global moment*/
-
 angular.module('eperusteApp')
   .directive('dateComparisonValidator', function() {
     return {
       restrict: 'A',
       require: 'ngModel',
-//      scope: {
-//        vertailtavaKenttaNimi: '@dateComparisonName',
-//        aikaisempiAjankohta: '@dateComparisonEarlier'
-//      },
-      link: function(scope, element, attrs, ctrl) {
+      link: function(scope, element, attrs: any, ctrl: any) {
 
         var vertailtavaKenttaNimi = attrs.dateComparisonName;
         var aikaisempiAjankohta = attrs.dateComparisonEarlier;

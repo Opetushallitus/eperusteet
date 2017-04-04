@@ -14,14 +14,11 @@
 * European Union Public Licence for more details.
 */
 
-/* global _ */
-'use strict';
-
 angular.module('eperusteApp')
-  .service('Tyoryhmat', function($modal) {
+  .service('Tyoryhmat', function($uibModal) {
     return {
       valitse: function(valittavat, valitut, successCb) {
-        $modal.open({
+        $uibModal.open({
           templateUrl: 'views/modals/tyoryhmavalitsin.html',
           controller: 'valitseTyoryhmatModalCtrl',
           resolve: {
@@ -33,7 +30,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('valitseTyoryhmatModalCtrl', function($scope, $modalInstance, valittavat, valitut) {
+  .controller('valitseTyoryhmatModalCtrl', function($scope, $uibModalInstance, valittavat, valitut) {
     $scope.valitut = valitut;
     $scope.valittavat = _.difference(valittavat, valitut);
     $scope.uudet = {};
@@ -43,9 +40,9 @@ angular.module('eperusteApp')
     };
 
     $scope.ok = function() {
-      $modalInstance.close(_.filter(_.keys($scope.uudet), function(k) {
+      $uibModalInstance.close(_.filter(_.keys($scope.uudet), function(k) {
         return $scope.uudet[k];
       }));
     };
-    $scope.peruuta = $modalInstance.dismiss;
+    $scope.peruuta = $uibModalInstance.dismiss;
   });

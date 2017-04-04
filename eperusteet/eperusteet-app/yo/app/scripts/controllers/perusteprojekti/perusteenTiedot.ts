@@ -49,7 +49,7 @@ angular.module("eperusteApp")
     .controller("PerusteenTiedotCtrl", function($scope, $stateParams, $state,
         Koodisto, Perusteet, YleinenData, PerusteProjektiService,
         perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
-        Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal,
+        Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $uibModal,
         PerusteenTutkintonimikkeet, valittavatKielet, Kieli, Arviointiasteikot) {
 
         $scope.kvliiteReadonly = true;
@@ -210,16 +210,16 @@ angular.module("eperusteApp")
         };
 
         $scope.lisaaNimike = function() {
-            $modal.open({
+            $uibModal.open({
                 templateUrl: "views/modals/lisaaTutkintonimike.html",
-                controller: function($q, $scope, $modalInstance) {
+                controller: function($q, $scope, $uibModalInstance) {
                     $scope.koodit = {};
                     $scope.valmisCb = function(res) {
                         $scope.koodit[res.koodisto.koodistoUri] = res;
                     };
 
-                    $scope.ok = $modalInstance.close;
-                    $scope.peru = $modalInstance.dismiss;
+                    $scope.ok = $uibModalInstance.close;
+                    $scope.peru = $uibModalInstance.dismiss;
                 }
             })
                 .result.then(function(uusi) {
@@ -376,16 +376,16 @@ angular.module("eperusteApp")
         });
     })
 
-    .directive("datepickerPopup", ["datepickerPopupConfig", "dateParser", "dateFilter", function (datepickerPopupConfig, dateParser, dateFilter) {
+    .directive("datepickerPopup", function (uibDatepickerPopupConfig, dateFilter) {
         return {
             "restrict": "A",
             "require": "^ngModel",
-            "link": function ($scope, element, attrs, ngModel) {
+            "link": function ($scope, element, attrs, ngModel: any) {
                 let dateFormat;
 
                 // FIXME Temp fix for Angular 1.3 support [#2659](https://github.com/angular-ui/bootstrap/issues/2659)
-                attrs.$observe("datepickerPopup", function(value) {
-                    dateFormat = value || datepickerPopupConfig.datepickerPopup;
+                attrs.$observe("uibDatepickerPopup", function(value) {
+                    dateFormat = value || uibDatepickerPopupConfig.datepickerPopup;
                     ngModel.$render();
                 });
 
@@ -394,4 +394,4 @@ angular.module("eperusteApp")
                 });
             }
         };
-    }]);
+    });

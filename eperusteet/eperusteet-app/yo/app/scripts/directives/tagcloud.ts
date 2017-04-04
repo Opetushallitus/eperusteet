@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .directive('tagCloud', function () {
     return {
@@ -32,7 +29,7 @@ angular.module('eperusteApp')
       controller: 'TagCloudController'
     };
   })
-  .controller('TagCloudController', function ($scope, $modal, Utils) {
+  .controller('TagCloudController', function ($scope, $uibModal, Utils) {
     $scope.notHidden = function (item) {
       return !item.$hidden;
     };
@@ -44,7 +41,7 @@ angular.module('eperusteApp')
     $scope.orderFn = Utils.nameSort;
 
     $scope.openDialog = function () {
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/tagcloudmodal.html',
         controller: 'TagCloudModalController',
         resolve: {

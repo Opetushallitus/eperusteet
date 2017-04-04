@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteApp')
 
   /**
@@ -25,7 +23,7 @@ angular.module('eperusteApp')
     return {
       restrict: 'A',
       compile: function() {
-        return function postLink(scope, element, attrs) {
+        return function postLink(scope, element, attrs: any) {
           if (attrs.kaanna) {
             return;
           }

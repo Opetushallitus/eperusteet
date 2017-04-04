@@ -14,11 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
-  .controller('ProjektiTiedotSisaltoModalCtrl', function($scope, $modalInstance, YleinenData, PerusteprojektiResource,
+  .controller('ProjektiTiedotSisaltoModalCtrl', function($scope, $uibModalInstance, YleinenData, PerusteprojektiResource,
                                                          Notifikaatiot, Perusteet, pohja) {
     $scope.ominaisuudet = {};
     $scope.suoritustavat = [];
@@ -56,11 +53,11 @@ angular.module('eperusteApp')
       $scope.ominaisuudet = {};
     };
     $scope.ok = function(peruste) {
-      $modalInstance.close(peruste);
+      $uibModalInstance.close(peruste);
     };
-    $scope.peruuta = function() { $modalInstance.dismiss(); };
+    $scope.peruuta = function() { $uibModalInstance.dismiss(); };
   })
-  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout, $translate,
+  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $uibModal, $timeout, $translate,
     PerusteprojektiResource, PerusteProjektiService, perusteprojektiTiedot, Notifikaatiot,
     Perusteet, Editointikontrollit, Organisaatioryhmat) {
     PerusteProjektiService.watcher($scope, 'projekti');
@@ -121,7 +118,7 @@ angular.module('eperusteApp')
     }
 
     $scope.haeRyhma = function() {
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/tuotyoryhma.html',
         controller: 'TyoryhmanTuontiModalCtrl'
       })
@@ -170,7 +167,7 @@ angular.module('eperusteApp')
       }, Notifikaatiot.serverCb);
     };
   })
-  .controller('TyoryhmanTuontiModalCtrl', function($scope, $modalInstance, $translate, Organisaatioryhmat, Algoritmit) {
+  .controller('TyoryhmanTuontiModalCtrl', function($scope, $uibModalInstance, $translate, Organisaatioryhmat, Algoritmit) {
     $scope.haetaan = true;
     $scope.error = false;
     $scope.rajaus = '';
@@ -203,6 +200,6 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.valitse = $modalInstance.close;
-    $scope.peruuta = $modalInstance.dismiss;
+    $scope.valitse = $uibModalInstance.close;
+    $scope.peruuta = $uibModalInstance.dismiss;
   });

@@ -14,9 +14,6 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .service('tabHelper', function () {
     // Helper to deal with ui-router weirdness

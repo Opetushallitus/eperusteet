@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteApp')
   .service('ColorCalculator', function() {
     var PATTERN = /^(\w{2})(\w{2})(\w{2})$/;

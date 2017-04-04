@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 /**
  * Number input field
  * can be of type:
@@ -39,7 +37,7 @@ angular.module('eperusteApp')
         step: '@?'
       },
       replace: true,
-      link: function (scope, element, attrs) {
+      link: function (scope: any, element: any, attrs: any) {
         $timeout(function () {
           var input = element.find('input');
           if (attrs.labelId) {
@@ -63,7 +61,7 @@ angular.module('eperusteApp')
     }
     return {
       require: 'ngModel',
-      link: function(scope, element, attrs, ctrl) {
+      link: function(scope, element, attrs, ctrl: any) {
         ctrl.$parsers.unshift(function (viewValue) {
           var valid = isValid(viewValue);
           ctrl.$setValidity('integer', valid);
@@ -104,7 +102,7 @@ angular.module('eperusteApp')
     }
     return {
       require: 'ngModel',
-      link: function(scope, element, attrs, ctrl) {
+      link: function(scope, element, attrs, ctrl: any) {
         ctrl.$parsers.unshift(function(viewValue) {
           var valid = isValid(viewValue);
           ctrl.$setValidity('float', valid);
@@ -130,7 +128,7 @@ angular.module('eperusteApp')
     }
     return {
       require: 'ngModel',
-      link: function(scope, element, attrs, ctrl) {
+      link: function(scope, element, attrs: any, ctrl: any) {
         var stepValue = parseFloat(attrs.stepValidate);
         ctrl.$parsers.push(function(viewValue) {
           // Precondition: viewValue is either

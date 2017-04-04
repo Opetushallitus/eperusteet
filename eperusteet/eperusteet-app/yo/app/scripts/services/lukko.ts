@@ -98,13 +98,13 @@ angular.module('eperusteApp')
       viiteId: '@viiteId'
     });
   })
-  .controller('LukittuSisaltoMuuttunutModalCtrl', function($scope, $modalInstance) {
-    $scope.ok = function() { $modalInstance.close(); };
-    $scope.peruuta = function() { $modalInstance.dismiss(); };
+  .controller('LukittuSisaltoMuuttunutModalCtrl', function($scope, $uibModalInstance) {
+    $scope.ok = function() { $uibModalInstance.close(); };
+    $scope.peruuta = function() { $uibModalInstance.dismiss(); };
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
   .service('Lukitus', function ($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout, $q,
-                                Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
+                                Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $uibModal, Editointikontrollit, Kaanna,
                                 LukkoOppiaine, LukkoLukioOppiaine, LukkoLukiokurssi, LukkoLukioAihekokonaisuudet, PerusopetusService, LukiokoulutusService,
                                 LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite,
                                 LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen, LukkoLukioRakenne,
@@ -250,7 +250,7 @@ angular.module('eperusteApp')
       lukitsin = function() {
         Resource.save(obj, function(res, headers) {
           if (editointiCheck && etag && headers().etag !== etag && Editointikontrollit.getEditMode()) {
-            $modal.open({
+            $uibModal.open({
               templateUrl: 'views/modals/sisaltoMuuttunut.html',
               controller: 'LukittuSisaltoMuuttunutModalCtrl'
             }).result.then(function() {

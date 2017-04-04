@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('TuoTekstikappale', function($q, $scope, $modalInstance, Notifikaatiot, peruste,
+  .controller('TuoTekstikappale', function($q, $scope, $uibModalInstance, Notifikaatiot, peruste,
       suoritustapa, PerusteenRakenne, SuoritustapaSisalto, YleinenData, Perusteet, Algoritmit,
       Kaanna, OmatPerusteprojektit, Kieli) {
     var sisallot = {};
@@ -143,8 +143,8 @@ angular.module('eperusteApp')
       $scope.paginate.current = 1;
       $scope.valitut = 0;
     };
-    $scope.peru = function() { $modalInstance.dismiss(); };
+    $scope.peru = function() { $uibModalInstance.dismiss(); };
     $scope.ok = function() {
-      $modalInstance.close(_.filter($scope.valittuPeruste.$sisalto, '$valittu'));
+      $uibModalInstance.close(_.filter($scope.valittuPeruste.$sisalto, '$valittu'));
     };
   });

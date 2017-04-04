@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteApp')
 
   //LUKIO Opetuksen yleiset tavoitteet

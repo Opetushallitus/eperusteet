@@ -14,13 +14,12 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
 angular.module('eperusteApp')
   .directive('editointikontrollit', function($window) {
     return {
       templateUrl: 'views/partials/editointikontrollit.html',
       restrict: 'E',
-      link: function(scope) {
+      link: function(scope: any) {
         var window = angular.element($window),
             container = angular.element('.edit-controls'),
             wrapper = angular.element('.editointi-wrapper');

@@ -51,7 +51,7 @@ angular.module('eperusteApp')
       perusteHaku: perusteHaku
     };
   })
-  .service('PerusteProjektiService', function ($rootScope, $state, $q, $modal, YleinenData) {
+  .service('PerusteProjektiService', function ($rootScope, $state, $q, $uibModal, YleinenData) {
     var pp = {};
     var suoritustapa = '';
 
@@ -131,7 +131,7 @@ angular.module('eperusteApp')
 
     function mergeProjekti(projekti, tuoPohja) {
       var deferred = $q.defer();
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/projektiSisaltoTuonti.html',
         controller: 'ProjektiTiedotSisaltoModalCtrl',
         resolve: {

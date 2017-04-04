@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 /**
  * Statusbadge:
  * <statusbadge status="luonnos|..." editable="true|false"></statusbadge>
@@ -54,7 +51,7 @@ angular.module('eperusteApp')
   })
 
   .controller('StatusbadgeCtrl', function ($scope, PerusteprojektinTilanvaihto,
-    PerusteprojektiTila, Notifikaatiot, $http, SERVICE_LOC, $modal) {
+    PerusteprojektiTila, Notifikaatiot, $http, SERVICE_LOC, $uibModal) {
     $scope.iconMapping = {
       laadinta: 'pencil',
       kommentointi: 'comment',
@@ -88,7 +85,7 @@ angular.module('eperusteApp')
               if (vastaus.vaihtoOk) {
                 $scope.status = newStatus;
               } else {
-                $modal.open({
+                $uibModal.open({
                   templateUrl: 'views/modals/tilanVaihtoVirhe.html',
                   controller: 'TilanvaihtovirheCtrl',
                   size: 'lg',

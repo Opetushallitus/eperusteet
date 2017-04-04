@@ -16,7 +16,7 @@
 
 angular.module('eperusteApp')
 .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $timeout,
-    $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
+    $uibModal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
     Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi, Projektiryhma,
     PerusteprojektiTyoryhmat, TekstikappaleOperations, SuoritustavanSisalto, $location, YleinenData) {
@@ -80,7 +80,7 @@ angular.module('eperusteApp')
         $scope.filterJasen = function(jasen) { return $scope.tyyppi === 'kaikki' || $scope.tyoryhmat[$scope.tyyppi][jasen.oidHenkilo]; };
         $scope.filterRyhma = function(ryhma) { return _.some(ryhma, $scope.filterJasen); };
         $scope.naytaRyhmanHenkilot = function(tyyppi, tyoryhmat, ryhma) {
-            $modal.open({
+            $uibModal.open({
                 template: '' +
                     '<div class="modal-header"><h2 kaanna>tyoryhma</h2></div>' +
                     '<div class="modal-body">' +
@@ -89,11 +89,11 @@ angular.module('eperusteApp')
                     '<div class="modal-footer">' +
                     '  <button class="btn btn-primary" ng-click="ok()" kaanna>sulje</button>' +
                     '</div>',
-                controller: function($scope, $modalInstance, tyoryhmat, ryhma) {
+                controller: function($scope, $uibModalInstance, tyoryhmat, ryhma) {
                     $scope.tyyppi = tyyppi;
                     $scope.tyoryhmat = tyoryhmat;
                     $scope.ryhma = ryhma;
-                    $scope.ok = $modalInstance.dismiss;
+                    $scope.ok = $uibModalInstance.dismiss;
                 },
                 resolve: {
                     tyyppi: function() { return tyyppi; },

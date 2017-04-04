@@ -14,10 +14,6 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .factory('TutkinnonOsanKoodiUniqueResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/tutkinnonosat/koodi/uniikki/:tutkinnonosakoodi');

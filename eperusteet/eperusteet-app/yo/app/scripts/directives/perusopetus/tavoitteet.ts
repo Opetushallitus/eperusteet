@@ -14,11 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .directive('tavoitteet', function() {
     return {
@@ -32,13 +27,13 @@ angular.module('eperusteApp')
         providedOppiaine: '=?oppiaine'
       },
       controller: 'TavoitteetController',
-      link: function(scope) {
+      link: function(scope: any) {
         // TODO call on model update
         scope.mapModel();
       }
     };
   })
-  .controller('TavoitteetController', function($scope, $modal, PerusopetusService, $state, $rootScope, $timeout,
+  .controller('TavoitteetController', function($scope, $uibModal, PerusopetusService, $state, $rootScope, $timeout,
     CloneHelper, OsanMuokkausHelper, $stateParams, ProxyService, Oppiaineet, Kaanna) {
     $scope.osaamiset = $scope.providedOsaamiset || OsanMuokkausHelper.getOsaamiset();
     if (_.isEmpty($scope.osaamiset)) {

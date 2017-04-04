@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/*global _*/
-
 angular.module('eperusteApp')
   .controller('EsiopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
     TekstikappaleOperations, SuoritustapaSisalto, TutkinnonOsaEditMode, Notifikaatiot, $stateParams, Editointikontrollit, YleinenData) {

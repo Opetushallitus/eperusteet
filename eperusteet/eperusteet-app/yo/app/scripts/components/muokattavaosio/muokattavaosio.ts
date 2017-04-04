@@ -14,25 +14,20 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
-
-import com.google.common.base.Optional;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
-
-/**
- *
- * @author nkala
- */
-@Getter
-@Setter
-public class AIPEVaiheDto extends AIPEVaiheSuppeaDto {
-    private Optional<TekstiOsaDto> siirtymaEdellisesta;
-    private Optional<TekstiOsaDto> tehtava;
-    private Optional<TekstiOsaDto> siirtymaSeuraavaan;
-    private Optional<TekstiOsaDto> laajaalainenOsaaminen;
-    private Optional<TekstiOsaDto> paikallisestiPaatettavatAsiat;
-    private Optional<List<OpetuksenKohdealueDto>> opetuksenKohdealueet;
+interface AipeMuokattavaOsio {
+    save(object: any): Promise<any>;
 }
+
+angular.module('eperusteApp')
+.component('aipeMuokattavaOsio', {
+    templateUrl: 'scripts/components/muokattavaosio/muokattavaosio.html',
+    bindings: {
+        model: '<',
+        facade: '<'
+    },
+    controller: function () {
+        this.$onInit = () => {
+            this.facade.save(this.model);
+        };
+    }
+});

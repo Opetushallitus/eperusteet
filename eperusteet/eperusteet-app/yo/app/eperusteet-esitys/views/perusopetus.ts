@@ -14,11 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
- angular.module('eperusteet.esitys')
+angular.module('eperusteet.esitys')
  .controller('epPerusopetusController', function($q, $scope, $timeout, sisalto, PerusteenOsat,
    $state, $stateParams, epMenuBuilder, Utils, MurupolkuData,
    Oppiaineet, TermistoService, Kieli, $document, $rootScope, epPerusopetusStateService, epEsitysSettings) {

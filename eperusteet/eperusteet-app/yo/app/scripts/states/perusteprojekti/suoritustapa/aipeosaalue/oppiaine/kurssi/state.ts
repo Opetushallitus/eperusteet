@@ -30,7 +30,7 @@ $stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kur
                 $scope.editableModel = Api.copy(kurssi);
                 $scope.muokkaa = () => Editointikontrollit.startEditing();
                 $scope.poista = () => {
-                    console.log("oispa");
+                    console.warn("poisto ei toteutettu");
                 };
                 $scope.openKoodisto = Koodisto.modaali(koodisto => {
                     if (!$scope.editableModel.koodi) {

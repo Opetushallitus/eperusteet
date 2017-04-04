@@ -18,7 +18,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, $log,
+  .service('VersionHelper', function(PerusteenOsat, $uibModal, RakenneVersiot, $log,
         RakenneVersio, Notifikaatiot, $state, $location, $stateParams, TutkinnonOsaViitteet,
         LukioYleisetTavoitteetService, LukioAihekokonaisuudetService, LukioKurssiService,
         LukioOppiaineService, Kayttajatiedot, $q) {
@@ -282,7 +282,7 @@ angular.module('eperusteApp')
     };
 
     this.historyView = function(data) {
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/partials/muokkaus/versiohelper.html',
         controller: 'HistoryViewCtrl',
         resolve: {
@@ -298,14 +298,14 @@ angular.module('eperusteApp')
       });
     };
   })
-  .controller('HistoryViewCtrl', function ($scope, versions, $modalInstance) {
+  .controller('HistoryViewCtrl', function ($scope, versions, $uibModalInstance) {
     $scope.versions = versions;
     $scope.close = function(versio) {
       if (versio) {
-        $modalInstance.close(versio);
+        $uibModalInstance.close(versio);
       }
       else {
-        $modalInstance.dismiss();
+        $uibModalInstance.dismiss();
       }
     };
     $scope.paginate = {

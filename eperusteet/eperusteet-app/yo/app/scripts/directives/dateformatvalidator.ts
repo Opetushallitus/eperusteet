@@ -14,16 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .directive('dateformatvalidator', function (YleinenData) {
     return {
       restrict: 'A',
       require: 'ngModel',
-      link: function (scope, element, attrs, ngModel) {
+      link: function (scope, element, attrs, ngModel: any) {
         var parsedMoment: any;
 
         ngModel.$parsers.unshift(function(viewValue) {

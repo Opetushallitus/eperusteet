@@ -14,9 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
- angular.module('eperusteet.esitys')
+angular.module('eperusteet.esitys')
 .controller('epEsitysSisaltoController', function($scope, $state, $stateParams, PerusteenOsat, YleinenData,
   MurupolkuData, epParentFinder, epTekstikappaleChildResolver) {
   $scope.linkVar = $stateParams.osanId ? 'osanId' : 'tekstikappaleId';

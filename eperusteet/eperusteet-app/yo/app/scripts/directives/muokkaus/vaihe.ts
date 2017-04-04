@@ -53,6 +53,16 @@ angular.module("eperusteApp")
                 $scope.editableModel.oppiaineet.push(oppiaine);
             };
 
+            const facadeObj: AipeMuokattavaOsio = {
+                save: (obj: any) => {
+                    return new Promise(((resolve, reject) => {
+                        console.log(obj);
+                        resolve();
+                    }));
+                }
+            };
+            $scope.opetuksenKohdealueetFacade = facadeObj;
+
             $scope.fields = [
                 {
                     path: 'siirtymaEdellisesta',

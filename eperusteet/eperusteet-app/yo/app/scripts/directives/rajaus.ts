@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 /**
  * Rajaus
  * callback: optional, called on change
@@ -54,7 +52,7 @@ angular.module('eperusteApp')
           $scope.changed();
         };
       },
-      link: function (scope, element, attrs) {
+      link: function (scope: any, element, attrs) {
         attrs.$observe('placeholder', function (value) {
           scope.placeholderstring = value;
         });

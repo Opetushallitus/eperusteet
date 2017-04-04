@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteet.esitys')
 .controller('epYksinkertainenPerusteController', function($q, $scope, $timeout, sisalto, PerusteenOsat,
   $state, $stateParams, epMenuBuilder, Algoritmit, Utils, MurupolkuData,

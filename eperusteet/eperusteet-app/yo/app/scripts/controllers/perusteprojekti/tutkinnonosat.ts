@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams, $rootScope,
     perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,

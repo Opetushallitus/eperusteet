@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteApp')
   .factory('Suosikit', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId', {}, {

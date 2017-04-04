@@ -14,10 +14,8 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
-
 angular.module('eperusteApp')
-  .controller('IlmoitusdialogiCtrl', function($scope, $modalInstance, sisalto) {
+  .controller('IlmoitusdialogiCtrl', function($scope, $uibModalInstance, sisalto) {
     $scope.sisalto = sisalto;
-    $scope.ok = $modalInstance.close;
+    $scope.ok = $uibModalInstance.close;
 });

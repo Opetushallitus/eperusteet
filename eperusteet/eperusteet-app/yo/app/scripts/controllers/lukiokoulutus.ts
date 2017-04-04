@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/*global _*/
-/*global jQuery*/
-
 interface PaginationDetails {
   currentPage:number,
   showPerPage:number,

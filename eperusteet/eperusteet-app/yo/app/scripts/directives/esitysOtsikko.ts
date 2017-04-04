@@ -14,14 +14,13 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
 angular.module('eperusteApp')
   .directive('esitysOtsikko', function() {
     return {
       template: '<div ng-transclude></div>',
       restrict: 'E',
       transclude: true,
-      link: function postLink(scope, element/*, attrs*/) {
+      link: function postLink(scope: any, element: any) {
         element.addClass('h' + scope.syvyys);
       }
     };

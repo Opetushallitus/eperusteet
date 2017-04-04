@@ -14,11 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-/* global _ */
-'use strict';
-
 angular.module('eperusteApp')
-  .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma,
+  .controller('MuodostumisryhmaModalCtrl', function($scope, $uibModalInstance, ryhma,
     vanhempi, suoritustapa, leikelauta, Varmistusdialogi, YleinenData, Koodisto, Utils, peruste) {
     $scope.vanhempi = vanhempi;
     $scope.leikelauta = leikelauta;
@@ -81,7 +78,7 @@ angular.module('eperusteApp')
           uusiryhma.rooli = 'määritelty';
         }
       }
-      $modalInstance.close(uusiryhma);
+      $uibModalInstance.close(uusiryhma);
     };
 
     $scope.poista = function () {
@@ -94,7 +91,7 @@ angular.module('eperusteApp')
     };
 
     $scope.peruuta = function() {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
 
     $scope.$watch('ryhma.rooli', function(rooli) {

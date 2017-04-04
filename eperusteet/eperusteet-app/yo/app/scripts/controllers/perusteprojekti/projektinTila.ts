@@ -14,18 +14,15 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
-  .service('PerusteprojektinTilanvaihto', function ($modal) {
+  .service('PerusteprojektinTilanvaihto', function ($uibModal) {
     var that = this;
     this.start = function(parametrit, setFn, successCb) {
       successCb = successCb || angular.noop;
       if (_.isFunction(setFn)) {
         that.setFn = setFn;
       }
-      $modal.open({
+      $uibModal.open({
         templateUrl: 'views/modals/perusteprojektinTila.html',
         controller: 'PerusteprojektinTilaModal',
         resolve: {
@@ -47,14 +44,14 @@ angular.module('eperusteApp')
       that.setFn(status, siirtymaPaattyy, successCb);
     };
   })
-  .controller('PerusteprojektinTilaModal', function ($scope, $modal, $modalInstance, $state, data) {
+  .controller('PerusteprojektinTilaModal', function ($scope, $uibModal, $uibModalInstance, $state, data) {
     $scope.data = data;
     $scope.data.selected = null;
     $scope.data.editable = false;
 
     $scope.valitse = function () {
-      $modalInstance.close();
-      $modal.open({
+      $uibModalInstance.close();
+      $uibModal.open({
         templateUrl: 'views/modals/perusteprojektinTilaVarmistus.html',
         controller: 'PerusteprojektinTilaVarmistusModal',
         resolve: {
@@ -64,11 +61,11 @@ angular.module('eperusteApp')
     };
 
     $scope.peruuta = function () {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
   })
   .controller('PerusteprojektinTilaVarmistusModal', function ($scope,
-      $modalInstance, data, PerusteprojektinTilanvaihto, Perusteet, YleinenData) {
+      $uibModalInstance, data, PerusteprojektinTilanvaihto, Perusteet, YleinenData) {
     $scope.data = data;
 
     $scope.datePicker = {
@@ -97,7 +94,7 @@ angular.module('eperusteApp')
     }
 
     $scope.edellinen = function () {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
       PerusteprojektinTilanvaihto.start({currentStatus: data.oldStatus, mahdollisetTilat: data.mahdollisetTilat, korvattavatDiaarinumerot: data.korvattavatDiaarinumerot});
     };
 
@@ -106,10 +103,10 @@ angular.module('eperusteApp')
         $scope.data.siirtymaPaattyy = $scope.data.siirtymaPaattyy.valueOf();
       }
       PerusteprojektinTilanvaihto.set(data.selected, $scope.data.siirtymaPaattyy);
-      $modalInstance.close();
+      $uibModalInstance.close();
     };
 
     $scope.peruuta = function () {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
   });

@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-// NOTE: The default configuration for pagination is set in app.js run function
-
 /**
  * Override pagination template to get glyphs as first/last icons.
  */

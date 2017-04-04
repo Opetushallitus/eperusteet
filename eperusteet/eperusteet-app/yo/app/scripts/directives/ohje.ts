@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 /**
  * Ohje
  * Ikoni tooltipille ja siihen liittyvä kelluva ohjeteksti.
@@ -43,7 +41,7 @@ angular.module('eperusteApp')
         ohje: '@?',
         extra: '='
       },
-      link: function (scope, element, attrs) {
+      link: function (scope: any, element: any, attrs: any) {
         scope.showing = false;
         var DELAY = 500;
         var timer = null;

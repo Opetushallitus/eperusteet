@@ -14,14 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
 angular.module('eperusteApp')
-  .controller('UudelleenohjausModalCtrl', function($scope, $modalInstance, status, redirect) {
+  .controller('UudelleenohjausModalCtrl', function($scope, $uibModalInstance, status, redirect) {
     $scope.status = status;
     $scope.casurl = redirect;
 
     $scope.ok = function() {
-      $modalInstance.close();
+      $uibModalInstance.close();
     };
   });

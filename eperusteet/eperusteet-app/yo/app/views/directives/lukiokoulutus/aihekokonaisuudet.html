@@ -36,7 +36,7 @@
                             <span ng-bind="v.nimi | kaanna"></span>
                         </h3>
 
-                        <div class="panel-body" collapse="v.$isCollapsed">
+                        <div class="panel-body" uib-collapse="v.$isCollapsed">
                             <div ng-bind-html="v.kuvaus|kaanna|unsafe" termisto-viitteet="v.kuvaus"></div>
                             <div ng-if="v.muokattu" class="muokattuViimeksi">
                                 <span kaanna="'muokattu-viimeksi'"></span>: <span

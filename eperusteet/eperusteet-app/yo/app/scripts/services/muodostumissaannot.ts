@@ -14,12 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
-  .service('Muodostumissaannot', function($modal, $q) {
+  .service('Muodostumissaannot', function($uibModal, $q) {
     var skratchpadHasContent = false;
     function osienLaajuudenSumma(rakenneOsat) {
       return _(rakenneOsat || [])
@@ -175,7 +171,7 @@ angular.module('eperusteApp')
 
     function ryhmaModaali(thenCb, peruste) {
       return function(suoritustapa, ryhma, vanhempi, leikelauta) {
-        $modal.open({
+        $uibModal.open({
           templateUrl: 'views/modals/ryhmaModal.html',
           controller: 'MuodostumisryhmaModalCtrl',
           resolve: {
@@ -194,7 +190,7 @@ angular.module('eperusteApp')
 
     function rakenneosaModaali(thenCb) {
       return function(rakenneosa) {
-        $modal.open({
+        $uibModal.open({
           templateUrl: 'views/modals/rakenneosaModal.html',
           controller: 'RakenneosaModalCtrl',
           resolve: {

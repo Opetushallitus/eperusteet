@@ -22,7 +22,7 @@
             <span ng-if="type === 'kohdealueet'" kaanna="'opetuksen-kohdealueet'"></span>
         </h3>
     </div>
-    <div class="panel-body" collapse="realModel.$isCollapsed">
+    <div class="panel-body" uib-collapse="realModel.$isCollapsed">
         <div ng-if="type === 'tekstikappale'"
              ng-bind-html="valitseKieli(model[path].teksti) | unsafe"
              termisto-viitteet="valitseKieli(model[path].teksti)"></div>

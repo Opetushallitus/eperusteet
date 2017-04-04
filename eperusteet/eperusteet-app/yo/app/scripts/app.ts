@@ -66,7 +66,7 @@ angular.module('eperusteApp', [
 
     $locationProvider.hashPrefix('');
 
-    moment.lang(preferred);
+    moment.locale(preferred);
 })
 .config(epEsitysSettingsProvider => {
     epEsitysSettingsProvider.setValue('perusopetusState', 'root.selaus.perusopetus');
@@ -208,14 +208,14 @@ angular.module('eperusteApp', [
     });
     angular.element(window).on('mousemove', f);
 })
-.run(($rootScope, $modal, $location, $window, $state, $http, paginationConfig, Editointikontrollit,
+.run(($rootScope, $uibModal, $location, $window, $state, $http, uibPaginationConfig, Editointikontrollit,
                Varmistusdialogi, Kaanna, virheService, $log) => {
-    paginationConfig.firstText = '';
-    paginationConfig.previousText = '';
-    paginationConfig.nextText = '';
-    paginationConfig.lastText = '';
-    paginationConfig.maxSize = 5;
-    paginationConfig.rotate = false;
+    uibPaginationConfig.firstText = '';
+    uibPaginationConfig.previousText = '';
+    uibPaginationConfig.nextText = '';
+    uibPaginationConfig.lastText = '';
+    uibPaginationConfig.maxSize = 5;
+    uibPaginationConfig.rotate = false;
 
     let onAvattuna = false;
 
@@ -248,7 +248,7 @@ angular.module('eperusteApp', [
             return;
         }
 
-        const uudelleenohjausModaali = $modal.open({
+        const uudelleenohjausModaali = $uibModal.open({
             templateUrl: 'views/modals/uudelleenohjaus.html',
             controller: 'UudelleenohjausModalCtrl',
             resolve: {

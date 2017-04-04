@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-/* global _ */
-
 angular.module('eperusteApp')
   .service('OsanMuokkausHelper', function ($q, $stateParams, PerusopetusService,
                                            LukiokoulutusService,
@@ -304,7 +301,7 @@ angular.module('eperusteApp')
         editMode: '@'
       },
       controller: 'OsanmuokkausTekstikappaleController',
-      link: function (scope, element, attrs) {
+      link: function (scope: any, element, attrs: any) {
         attrs.$observe('editMode', function (val) {
           scope.editMode = val !== 'false';
         });
@@ -361,7 +358,7 @@ angular.module('eperusteApp')
         model: '=',
         config: '='
       },
-      controller: function($rootScope, $scope, $modal, ProxyService, $q, Notifikaatiot, OsanMuokkausHelper, $document) {
+      controller: function($rootScope, $scope, $uibModal, ProxyService, $q, Notifikaatiot, OsanMuokkausHelper, $document) {
         function uudetKohdealueetCb(kohdealueet) {
           OsanMuokkausHelper.getOppiaine().kohdealueet = kohdealueet;
           $rootScope.$broadcast('update:oppiaineenkohdealueet');
@@ -380,9 +377,9 @@ angular.module('eperusteApp')
 
 
         $scope.muokkaaKohdealueita = function() {
-          $modal.open({
+          $uibModal.open({
             templateUrl: 'views/directives/perusopetus/osanmuokkauskohdealueet.html',
-            controller: function($scope, $modalInstance, Oppiaineet, OsanMuokkausHelper) {
+            controller: function($scope, $uibModalInstance, Oppiaineet, OsanMuokkausHelper) {
               $scope.kohdealueet = _.map(_.clone(OsanMuokkausHelper.getOppiaine().kohdealueet) || [], function(ka) {
                 ka.$vanhaNimi = _.clone(ka.nimi);
                 return ka;
@@ -418,7 +415,7 @@ angular.module('eperusteApp')
                 .then(Oppiaineet.kohdealueet({
                       perusteId: ProxyService.get('perusteId'),
                       osanId: OsanMuokkausHelper.getOppiaine().id
-                  }, $modalInstance.close)
+                  }, $uibModalInstance.close)
                 );
               };
             }
@@ -432,7 +429,7 @@ angular.module('eperusteApp')
     return {
       templateUrl: 'views/directives/perusopetus/muokkausinfo.html',
       restrict: 'AE',
-      link: function (scope, element, attrs) {
+      link: function (scope: any, element, attrs: any) {
         scope.muokkausinfoOsa = attrs.osa || '';
       },
       controller: function ($scope) {
