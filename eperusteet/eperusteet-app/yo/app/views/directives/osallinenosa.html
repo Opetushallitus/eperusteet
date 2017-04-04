@@ -38,12 +38,13 @@
                 {{config.removeWholeLabel || 'poista' | kaanna}}
             </button>
 
-            <div class="dropdown">
+            <div class="dropdown" uib-dropdown>
                 <button editointi-kontrolli
                         class="btn btn-default btn-sm dropdown-toggle"
                         ng-disabled="!canAdd()"
                         ng-show="config.fields.length > 0"
-                        icon-role="add">
+                        icon-role="add"
+                        uib-dropdown-toggle>
                     {{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}
                 </button>
 

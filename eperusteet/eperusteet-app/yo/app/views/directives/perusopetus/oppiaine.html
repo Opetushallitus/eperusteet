@@ -19,7 +19,7 @@
                     <tr ng-show="editableModel.koosteinen">
                         <th kaanna="'oppimaarat'"></th>
                         <td>
-                            <ul>
+                            <ul ng-if="angular.isArray(editableModel.$oppimaarat)">
                                 <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="'ei-oppimaaria'"></li>
                                 <li ng-repeat="oppimaara in editableModel.$oppimaarat | orderBy:nameSort">
                                     {{oppimaara.nimi | kaanna}}
@@ -92,7 +92,7 @@
                     <tr ng-show="editableModel.koosteinen">
                         <th kaanna="oppimaarat"></th>
                         <td>
-                            <ul>
+                            <ul ng-if="angular.isArray(editableModel.$oppimaarat)">
                                 <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="ei-oppimaaria"></li>
                                 <li ng-repeat="oppimaara in editableModel.$oppimaarat | orderBy:nameSort">
                                     <a ng-href="{{oppimaara.$url}}">{{oppimaara.nimi | kaanna}}</a>

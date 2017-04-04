@@ -1,12 +1,12 @@
 // Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-// 
+//
 // This program is free software: Licensed under the EUPL, Version 1.1 or - as
 // soon as they will be approved by the European Commission - subsequent versions
 // of the EUPL (the "Licence");
-// 
+//
 // You may not use this work except in compliance with the Licence.
 // You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -132,7 +132,7 @@ mixin asteikonNimi(asteikko)
                 .col-xs-6
                   .input-group
                     input.form-control(type='text', ng-model='uusiKorvattavaDiaari')
-                    |  
+                    |
                     span.input-group-btn
                       button.btn.btn-default.btn-sm(ng-disabled='!uusiKorvattavaDiaari', type='button', ng-click='lisaaKorvattavaDiaari(uusiKorvattavaDiaari)', icon-role='add') {{&apos;ok&apos;| kaanna}}
           .panel.panel-default.panel-clean
@@ -144,8 +144,8 @@ mixin asteikonNimi(asteikko)
                 span(kaanna='kieli')
                 a.action-link.perusteen-kieli-poisto(ng-click='poistaKieli(kieli)', ng-if='editEnabled', icon-role='remove')
               span(ng-if='editEnabled && !kaikkiKieletValittu()')
-                span.dropdown
-                  a.dropdown-toggle.action-link(ng-if='editEnabled', data-toggle='dropdown')
+                span.dropdown(uib-dropdown="")
+                  a.dropdown-toggle.action-link(ng-if='editEnabled', data-toggle='dropdown', uib-dropdown-toggle="")
                     span(kaanna="'lisaa-kieli'")
                     span.caret
                   ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1')
@@ -189,7 +189,7 @@ mixin asteikonNimi(asteikko)
                   td(ng-bind='oa.arvo')
                   td(ng-if='editEnabled')
                     button.btn.btn-danger(type='button', icon-role='remove', ng-click='Osaamisala.poista(oa)', kaanna="'poista'")
-              |  
+              |
               button.btn.btn-default(type='button', ng-show='editEnabled', icon-role='add', ng-click='Osaamisala.lisaa()', kaanna="'hae-koodistosta'")
           .panel.panel-default.panel-clean(ng-if='$perusteellaTutkintonimikkeet')
             .panel-heading
@@ -294,5 +294,5 @@ mixin asteikonNimi(asteikko)
                       p(kaanna='ei-asetettu')
                     td
                       p(kaanna='ei-asetettu')
-              |  
+              |
               button.btn.btn-default(type='button', ng-click='lisaaMuutosmaarays()', icon-role='add', kaanna='lisaa-muutosmaarays', ng-show='editEnabled')

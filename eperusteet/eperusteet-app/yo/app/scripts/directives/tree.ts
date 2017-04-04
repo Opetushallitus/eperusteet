@@ -17,7 +17,7 @@
 angular.module('eperusteApp')
   .service('treeTemplate', function () {
     function toimintoValikko(config) {
-      return '<span class="solmu-valikko" dropdown><a class="action-link solmu-valikko-toggle" dropdown-toggle><span class="solmu-caret"></span></a>' +
+      return '<span class="solmu-valikko" uib-dropdown><a class="action-link solmu-valikko-toggle" uib-dropdown-toggle><span class="solmu-caret"></span></a>' +
       '<ul class="dropdown-menu dropdown-menu-right" role="menu">' +
       '<li><a icon-role="edit" kaanna="\'muokkaa\'" ng-click="' + config.edit + '"></a></li>' +
       (config.copy ? '<li><a icon-role="ep-group" kaanna="\'kopioi-leikelaudalle\'" ng-click="' + config.copy + '"></a></li>' : '') +

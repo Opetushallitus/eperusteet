@@ -118,14 +118,14 @@ angular.module('eperusteApp')
       var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
       var suoritustapa = getSuoritustapa() || getRightSuoritustapa(peruste, projekti);
 
-      if (!_.includes(YleinenData.suoritustavat, suoritustapa)) {
+      if (!_.includes(YleinenData.suoritustavat, suoritustapa) || oletus === 'aipe') {
         suoritustapa = oletus;
       }
 
       const sisaltoTunniste = getSisaltoTunniste(projekti);
       return $state[method]('root.perusteprojekti.suoritustapa.' + sisaltoTunniste, {
         perusteProjektiId: projekti.id,
-        suoritustapa
+        suoritustapa: suoritustapa
       });
     }
 

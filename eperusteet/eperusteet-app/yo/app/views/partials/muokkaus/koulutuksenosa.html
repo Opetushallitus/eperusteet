@@ -29,8 +29,13 @@
             <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].id)" kaanna="vateConverter('poista-tutkinnonosa')"></button>
 
             <div class="floater" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi !== 'tutke2'">
-              <div class="dropdown">
-                <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="'muokkaus-lisaa-sisalto'"></button>
+              <div class="dropdown" uib-dropdown>
+                <button editointi-kontrolli
+                        class="btn btn-default btn-sm dropdown-toggle"
+                        ng-disabled="allVisible()"
+                        icon-role="add"
+                        kaanna="'muokkaus-lisaa-sisalto'"
+                        uib-dropdown-toggle></button>
                 <ul class="pull-right dropdown-menu">
                   <li ng-repeat="field in fields | orderBy:'order'">
                     <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
