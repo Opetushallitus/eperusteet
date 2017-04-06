@@ -94,9 +94,10 @@
 
             <!-- kuvaus -->
             <label for="kuvaus-input" class="header">{{'kurssi-kuvaus-header' | kaanna}}</label>
-            <input id="kuvaus-input"
-                   class="form-control"
+            <div id="msd-elastic"
+                   class=""
                    ng-model="editableModel.kuvaus"
+                   ckeditor
                    slocalized>
         </div>
 

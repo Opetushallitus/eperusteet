@@ -34,6 +34,9 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                 $scope.oppimaarat = oppimaarat;
                 $scope.kurssit = kurssit;
                 $scope.muokkaa = () => Editointikontrollit.startEditing();
+                $scope.isOppimaara = !!oppiaine._oppiaine;
+                $scope.canAddKurssit = _.isEmpty(oppimaarat);
+                $scope.canAddOppimaara = !$scope.isOppimaara && _.isEmpty(kurssit);
                 $scope.lisaaOppimaara = async () => {
                     const oppimaara = await oppimaarat.post({});
                     await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
@@ -41,6 +44,7 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                     });
                     oppimaarat.push(oppimaara);
                 };
+
                 $scope.lisaaKurssi = async () => {
                     const kurssi = await kurssit.post({});
                     await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kurssi", {

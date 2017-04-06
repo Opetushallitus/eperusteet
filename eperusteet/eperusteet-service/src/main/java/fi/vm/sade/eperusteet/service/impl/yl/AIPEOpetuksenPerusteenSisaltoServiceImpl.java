@@ -131,6 +131,9 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     @Override
     public AIPEOppiaineDto addOppimaara(Long perusteId, Long vaiheId, Long oppiaineId, AIPEOppiaineDto oppiaineDto) {
         AIPEOppiaine parent = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        if (parent.getKurssit() != null && !parent.getKurssit().isEmpty()) {
+            throw new BusinessRuleViolationException("oppimaaraa-ei-voi-lisata-jos-kursseja");
+        }
         oppiaineDto.setId(null);
         AIPEOppiaine oppimaara = mapper.map(oppiaineDto, AIPEOppiaine.class);
         oppimaara = oppiaineRepository.save(oppimaara);
@@ -178,6 +181,9 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     @Override
     public AIPEKurssiDto addKurssi(Long perusteId, Long vaiheId, Long oppiaineId, AIPEKurssiDto kurssiDto) {
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        if (oppiaine.getOppimaarat() != null && !oppiaine.getOppimaarat().isEmpty()) {
+            throw new BusinessRuleViolationException("kurssia-ei-voi-lisata-jos-oppiaineita");
+        }
         kurssiDto.setId(null);
         AIPEKurssi kurssi = mapper.map(kurssiDto, AIPEKurssi.class);
         kurssi = kurssiRepository.save(kurssi);
