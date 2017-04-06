@@ -28,13 +28,12 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -195,9 +194,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     private void removeKurssiImpl(AIPEOppiaine oppiaine, AIPEKurssi kurssi) {
-        if (oppiaine.getKurssit().remove(kurssi)) {
-            kurssiRepository.delete(kurssi);
-        }
+        oppiaine.getKurssit().remove(kurssi);
     }
 
     @Override
@@ -234,8 +231,14 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     public void removeOppiaine(Long perusteId, Long vaiheId, Long oppiaineId) {
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
-        if (vaihe.getOppiaineet().remove(oppiaine)) {
-            oppiaineRepository.delete(oppiaine);
+//        Set<AIPEOppiaine> oppiaineet = new HashSet<>();
+        if (!vaihe.getOppiaineet().remove(oppiaine)) {
+            // FIXME: JoinTable, mäppäys lapsioliosta parentiin ja envers
+            for (AIPEOppiaine parent : vaihe.getOppiaineet()) {
+                if (parent.getOppimaarat().remove(oppiaine)) {
+                    break;
+                }
+            }
         }
     }
 

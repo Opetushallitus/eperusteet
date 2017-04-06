@@ -46,11 +46,7 @@ module.exports = function(grunt) {
           }
         },
         files: [{
-          src: '<%= yeoman.app %>/eperusteet-esitys/**/*.pug',
-          expand: true,
-          ext: '.html'
-        }, {
-          src: '<%= yeoman.app %>/views/**/*.pug',
+          src: '<%= yeoman.app %>/**/*.pug',
           expand: true,
           ext: '.html'
         }]

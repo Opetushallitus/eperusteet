@@ -24,13 +24,26 @@ $stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kur
     views: {
         'aipeosaalue@root.perusteprojekti.suoritustapa.aipeosaalue': {
             templateUrl: 'scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/kurssi/view.html',
-            controller: ($scope, Editointikontrollit, PerusteProjektiSivunavi, Notifikaatiot, kurssi, Api,
-                         Koodisto, MuokkausUtils) => {
+            controller: ($scope, $state, $stateParams, AIPEService, Editointikontrollit, PerusteProjektiSivunavi, Notifikaatiot, kurssi, Api,
+                         Koodisto, MuokkausUtils, Varmistusdialogi) => {
                 $scope.editEnabled = false;
                 $scope.editableModel = Api.copy(kurssi);
                 $scope.muokkaa = () => Editointikontrollit.startEditing();
                 $scope.poista = () => {
-                    console.warn("poisto ei toteutettu");
+                    Varmistusdialogi.dialogi({
+                        otsikko: 'varmista-poisto',
+                        teksti: 'poistetaanko-kurssi',
+                        primaryBtn: 'poista',
+                        successCb: async () => {
+                            Editointikontrollit.cancelEditing();
+                            await $scope.editableModel.remove();
+                            await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
+                                oppiaineId: kurssi._oppiaine
+                            }, {
+                                reload: true
+                            });
+                        }
+                    })();
                 };
                 $scope.openKoodisto = Koodisto.modaali(koodisto => {
                     if (!$scope.editableModel.koodi) {
@@ -49,7 +62,7 @@ $stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kur
                     edit: async () => {
                         // Onko tarpeellinen?
                         kurssi = await kurssi.get();
-                        $scope.editableModel= Api.copy(kurssi);
+                        $scope.editableModel = Api.copy(kurssi);
                     },
                     save: async () => {
                         $scope.editableModel = await $scope.editableModel.save();

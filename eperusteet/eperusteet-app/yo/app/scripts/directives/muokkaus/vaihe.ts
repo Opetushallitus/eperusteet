@@ -26,20 +26,20 @@ angular.module("eperusteApp")
         controller: ($scope, YleinenData, $stateParams, Api, Editointikontrollit, Notifikaatiot, $state,
                      PerusteProjektiSivunavi, Varmistusdialogi, AIPEService, Utils, $rootScope, Kieli, Kaanna) => {
             $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
-            $scope.isNew = $stateParams.osanId === 'uusi';
+            $scope.isNew = $stateParams.osanId === "uusi";
             $scope.editableModel = Api.copy($scope.model);
             $scope.editEnabled = false;
             $scope.muokkaa = () => Editointikontrollit.startEditing();
             $scope.poista = () => {
                 Varmistusdialogi.dialogi({
-                    otsikko: 'varmista-poisto',
-                    teksti: 'poistetaanko-vaihe',
-                    primaryBtn: 'poista',
+                    otsikko: "varmista-poisto",
+                    teksti: "poistetaanko-vaihe",
+                    primaryBtn: "poista",
                     successCb: async () => {
                         Editointikontrollit.cancelEditing();
                         await $scope.editableModel.remove();
                         AIPEService.clearCache();
-                        $state.go('root.perusteprojekti.suoritustapa.aipeosalistaus', {
+                        $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                             suoritustapa: $stateParams.suoritustapa,
                             osanTyyppi: AIPEService.VAIHEET
                         }, {
@@ -48,8 +48,12 @@ angular.module("eperusteApp")
                     }
                 })();
             };
+
             $scope.lisaaOppiaine = async () => {
                 const oppiaine = await $scope.model.oppiaineet.post({});
+                await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
+                    oppiaineId: oppiaine.id
+                });
                 $scope.editableModel.oppiaineet.push(oppiaine);
             };
 
@@ -65,23 +69,23 @@ angular.module("eperusteApp")
 
             $scope.fields = [
                 {
-                    path: 'siirtymaEdellisesta',
-                    localeKey: 'siirtyma-edellisesta',
+                    path: "siirtymaEdellisesta",
+                    localeKey: "siirtyma-edellisesta",
                     order: 1
                 },
                 {
-                    path: 'tehtava',
-                    localeKey: 'vaihe-tehtava',
+                    path: "tehtava",
+                    localeKey: "vaihe-tehtava",
                     order: 2
                 },
                 {
-                    path: 'siirtymaSeuraavaan',
-                    localeKey: 'siirtyma-seuraavaan',
+                    path: "siirtymaSeuraavaan",
+                    localeKey: "siirtyma-seuraavaan",
                     order: 3
                 },
                 {
-                    path: 'paikallisestiPaatettavatAsiat',
-                    localeKey: 'paikallisesti-paatettavat-asiat',
+                    path: "paikallisestiPaatettavatAsiat",
+                    localeKey: "paikallisesti-paatettavat-asiat",
                     order: 4
                 }
             ];
@@ -108,9 +112,9 @@ angular.module("eperusteApp")
 
                     if ($scope.fieldOps.hasContent(field)) {
                         Varmistusdialogi.dialogi({
-                            otsikko: 'varmista-poisto',
-                            teksti: 'poistetaanko-osio',
-                            primaryBtn: 'poista',
+                            otsikko: "varmista-poisto",
+                            teksti: "poistetaanko-osio",
+                            primaryBtn: "poista",
                             successCb: () => {
                                 doRemove();
                             }
@@ -132,7 +136,7 @@ angular.module("eperusteApp")
                 ok: field => {
                     field.$editing = false;
                     fieldBackups[field.path] = null;
-                    $rootScope.$broadcast('notifyCKEditor');
+                    $rootScope.$broadcast("notifyCKEditor");
                 },
                 add: field => {
                     field.visible = true;
@@ -171,7 +175,7 @@ angular.module("eperusteApp")
                         $scope.editableModel = await $scope.editableModel.save();
                     }
 
-                    Notifikaatiot.onnistui('tallennus-onnistui');
+                    Notifikaatiot.onnistui("tallennus-onnistui");
                     AIPEService.clearCache();
                     $state.go($state.current, {
                         suoritustapa: $stateParams.suoritustapa,

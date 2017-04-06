@@ -1,3 +1,11 @@
+mixin kentta(nimi)
+  .panel-heading
+    h3.panel-title.osio-otsikko(ng-click=nimi + '.$isCollapsed = !' + nimi + '.$isCollapsed')
+      span.glyphicon(ng-class=nimi + ".$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
+      span(ng-bind='editableModel[' + nimi + '.path].otsikko | kaanna')
+  .panel-body(uib-collapse='field.$isCollapsed')
+    div(ng-bind-html='editableModel[' + nimi + '.path].teksti | kaanna | unsafe')
+
 div
   projektin-murupolku
 
@@ -104,27 +112,30 @@ div
         .addon
           button.btn.btn-default(ng-click='openKoodisto()', kaanna='hae-koodistosta')
 
-      label.header(for='pakollinen-kurssi-kuvaus-input') {{'pakollinen-kurssi-kuvaus-header' | kaanna}}
-      #pakollinen-kurssi-kuvaus-input.msd-elastic(ckeditor='', ng-model='editableModel.pakollinenKurssiKuvaus', slocalized='')
-        label.header(for='syventava-kurssi-kuvaus-input') {{'syventava-kurssi-kuvaus-header' | kaanna}}
-        #syventava-kurssi-kuvaus-input.msd-elastic(ckeditor='', ng-model='editableModel.syventavaKurssiKuvaus', slocalized='')
-          label.header(for='soveltava-kurssi-kuvaus-input') {{'soveltava-kurssi-kuvaus-header' | kaanna}}
-          #soveltava-kurssi-kuvaus-input.msd-elastic(ckeditor='', ng-model='editableModel.soveltavaKurssiKuvaus', slocalized='')
-          div(ng-repeat="field in fields | filter:filterFn | orderBy:'order'")
-            .panel-heading(ng-class="'osio-' + field.path")
-              .action-buttons
-                span(ng-show='field.$editing')
-                  button.btn.btn-default(kaanna="'peruuta'", ng-click='fieldOps.cancel(field)')
-                  button.btn.btn-primary(kaanna="'ok'", ng-click='fieldOps.ok(field)')
-                span(ng-hide='field.$editing')
-                  button.btn.btn-default(icon-role='edit', ng-click='fieldOps.edit(field)')
-                  button.btn.btn-default(icon-role='remove', ng-click='fieldOps.remove(field)', oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }")
-              h3.panel-title.osio-otsikko(ng-click='!field.$editing ? field.$isCollapsed = !field.$isCollapsed : null')
-                span.glyphicon(ng-hide='field.$editing', ng-class="field.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
-                span(ng-hide='field.$editing', ng-bind='editableModel[field.path].otsikko | kaanna')
-                span.form-group(ng-if='field.$editing')
-                  input.form-control(slocalized='', ng-model='editableModel[field.path].otsikko', placeholder="{{'muokkaus-teksikappaleen-nimi-placeholder' | kaanna}}")
-            .panel-body(uib-collapse='field.$isCollapsed')
-              div(ng-if='!field.$editing', ng-bind-html='editableModel[field.path].teksti | kaanna')
-              div(ng-if='field.$editing')
-                .msd-elastic(slocalized='', ckeditor='', ng-model='editableModel[field.path].teksti', editor-placeholder='muokkaus-tekstikappaleen-teksti-placeholder')
+    div(ng-repeat="field in fields | filter:filterFn | orderBy:'order'")
+      .panel-heading(ng-class="'osio-' + field.path")
+        .action-buttons
+          span(ng-show='field.$editing')
+            button.btn.btn-default(kaanna="'peruuta'", ng-click='fieldOps.cancel(field)')
+            button.btn.btn-primary(kaanna="'ok'", ng-click='fieldOps.ok(field)')
+          span(ng-hide='field.$editing')
+            button.btn.btn-default(icon-role='edit', ng-click='fieldOps.edit(field)')
+            button.btn.btn-default(icon-role='remove', ng-click='fieldOps.remove(field)', oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }")
+        h3.panel-title.osio-otsikko(ng-click='!field.$editing ? field.$isCollapsed = !field.$isCollapsed : null')
+          span.glyphicon(ng-hide='field.$editing', ng-class="field.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
+          span(ng-hide='field.$editing', ng-bind='editableModel[field.path].otsikko | kaanna')
+          span.form-group(ng-if='field.$editing')
+            input.form-control(slocalized='', ng-model='editableModel[field.path].otsikko', placeholder="{{'muokkaus-teksikappaleen-nimi-placeholder' | kaanna}}")
+      .panel-body(uib-collapse='field.$isCollapsed')
+        div(ng-if='!field.$editing', ng-bind-html='editableModel[field.path].teksti | kaanna')
+        div(ng-if='field.$editing')
+          .msd-elastic(slocalized='', ckeditor='', ng-model='editableModel[field.path].teksti', editor-placeholder='muokkaus-tekstikappaleen-teksti-placeholder')
+
+    h3.panel-title.osio-otsikko(ng-bind="'pakollinen-kurssi-kuvaus-header' | kaanna")
+    #pakollinen-kurssi-kuvaus-input.msd-elastic(ckeditor, ng-model='editableModel.pakollinenKurssiKuvaus', slocalized)
+
+    h3.panel-title.osio-otsikko(ng-bind="'syventava-kurssi-kuvaus-header' | kaanna")
+    #syventava-kurssi-kuvaus-input.msd-elastic(ckeditor, ng-model='editableModel.syventavaKurssiKuvaus', slocalized)
+
+    h3.panel-title.osio-otsikko(ng-bind="'soveltava-kurssi-kuvaus-header' | kaanna")
+    #soveltava-kurssi-kuvaus-input.msd-elastic(ckeditor, ng-model='editableModel.soveltavaKurssiKuvaus', slocalized)

@@ -19,6 +19,7 @@ angular.module('eperusteApp')
     this.OSAAMINEN = 'osaaminen';
     this.VAIHEET = 'vaiheet';
     this.OPPIAINEET = 'oppiaineet';
+    this.KURSSIT = 'kurssit';
     this.LABELS = {
         'laaja-alainen-osaaminen': this.OSAAMINEN,
         'vaiheet': this.VAIHEET
@@ -32,26 +33,22 @@ angular.module('eperusteApp')
         return tiedot.getProjekti()._peruste;
     };
 
-    this.sisallot = [
-        {
-            tyyppi: this.OSAAMINEN,
-            label: 'laaja-alainen-osaaminen',
-            emptyPlaceholder: 'tyhja-placeholder-osaaminen',
-            addLabel: 'lisaa-osaamiskokonaisuus'
-        },
-        {
-            tyyppi: this.VAIHEET,
-            label: 'vaiheet',
-            emptyPlaceholder: 'tyhja-placeholder-vaiheet',
-            addLabel: 'lisaa-vaihe'
-        },
-        {
-            tyyppi: this.OPPIAINEET,
-            label: 'oppiaineet',
-            emptyPlaceholder: 'tyhja-placeholder-oppiaineet',
-            addLabel: 'lisaa-oppiaine'
-        },
-    ];
+    this.sisallot = [{
+        tyyppi: this.OSAAMINEN,
+        label: 'laaja-alainen-osaaminen',
+        emptyPlaceholder: 'tyhja-placeholder-osaaminen',
+        addLabel: 'lisaa-osaamiskokonaisuus'
+    }, {
+        tyyppi: this.VAIHEET,
+        label: 'vaiheet',
+        emptyPlaceholder: 'tyhja-placeholder-vaiheet',
+        addLabel: 'lisaa-vaihe'
+    }, {
+        tyyppi: this.OPPIAINEET,
+        label: 'oppiaineet',
+        emptyPlaceholder: 'tyhja-placeholder-oppiaineet',
+        addLabel: 'lisaa-oppiaine'
+    }];
 
     const errorCb = function (err) {
         Notifikaatiot.serverCb(err);
@@ -141,7 +138,7 @@ angular.module('eperusteApp')
         if (useCache && cached[tyyppi]) {
             return promisify(cached[tyyppi]);
         }
-        switch(tyyppi) {
+        switch (tyyppi) {
             case this.OSAAMINEN:
                 return AIPELaajaalaisetOsaamiset.query(commonParams(), function (data) {
                     cached[tyyppi] = data;

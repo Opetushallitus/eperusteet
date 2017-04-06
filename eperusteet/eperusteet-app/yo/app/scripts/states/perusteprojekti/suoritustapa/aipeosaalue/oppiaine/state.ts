@@ -14,18 +14,18 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
+angular.module("eperusteApp")
 .config($stateProvider => {
-$stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine', {
-    url: '/oppiaineet/:oppiaineId',
+$stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
+    url: "/oppiaineet/:oppiaineId",
     resolve: {
         oppiaine: (vaihe, $stateParams, Api) => vaihe.one("oppiaineet", $stateParams.oppiaineId).get(),
         kurssit: (oppiaine, $stateParams) => oppiaine.all("kurssit").getList(),
         oppimaarat: (oppiaine) => oppiaine.all("oppimaarat").getList()
     },
     views: {
-        'aipeosaalue@root.perusteprojekti.suoritustapa.aipeosaalue': {
-            templateUrl: 'scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/view.html',
+        "aipeosaalue@root.perusteprojekti.suoritustapa.aipeosaalue": {
+            templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/view.html",
             controller: ($scope, oppiaine, Api, kurssit, Editointikontrollit, PerusteProjektiSivunavi, Notifikaatiot,
                          oppiaineet, oppimaarat, Varmistusdialogi, $state, $stateParams, AIPEService, $rootScope,
                          Utils, Kieli, Kaanna, Koodisto, MuokkausUtils) => {
@@ -36,57 +36,70 @@ $stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine', {
                 $scope.muokkaa = () => Editointikontrollit.startEditing();
                 $scope.lisaaOppimaara = async () => {
                     const oppimaara = await oppimaarat.post({});
+                    await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
+                        oppiaineId: oppimaara.id
+                    });
                     oppimaarat.push(oppimaara);
                 };
                 $scope.lisaaKurssi = async () => {
                     const kurssi = await kurssit.post({});
+                    await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kurssi", {
+                        kurssiId: kurssi.id
+                    });
                     kurssit.push(kurssi);
                 };
+
                 $scope.poista = async () => {
                     Varmistusdialogi.dialogi({
-                        otsikko: 'varmista-poisto',
-                        teksti: 'poistetaanko-oppiaine',
-                        primaryBtn: 'poista',
+                        otsikko: "varmista-poisto",
+                        teksti: "poistetaanko-oppiaine",
+                        primaryBtn: "poista",
                         successCb: async () => {
-                            Editointikontrollit.cancelEditing();
+                            console.log(oppiaine);
+                            await Editointikontrollit.cancelEditing();
                             await $scope.editableModel.remove();
-                            $state.go('root.perusteprojekti.suoritustapa.aipeosalistaus', {
-                                suoritustapa: $stateParams.suoritustapa,
-                                osanTyyppi: AIPEService.VAIHEET
-                            }, {
-                                reload: true
-                            });
+
+                            if (oppiaine._oppiaine) {
+                                await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
+                                    oppiaineId: oppiaine._oppiaine
+                                }, {
+                                    reload: true
+                                });
+                            }
+                            else {
+                                $state.go("root.perusteprojekti.suoritustapa.aipeosalistaus", {
+                                    suoritustapa: $stateParams.suoritustapa,
+                                    osanTyyppi: AIPEService.VAIHEET
+                                }, {
+                                    reload: true
+                                });
+                            }
                         }
                     })();
                 };
 
-                $scope.fields = [
-                    {
-                        path: 'tehtava',
-                        localeKey: 'oppiaine-osio-tehtava',
-                        order: 1
-                    },
-                    {
-                        path: 'tyotavat',
-                        localeKey: 'oppiaine-osio-tyotavat',
-                        order: 2
-                    },
-                    {
-                        path: 'ohjaus',
-                        localeKey: 'oppiaine-osio-ohjaus',
-                        order: 3
-                    },
-                    {
-                        path: 'arviointi',
-                        localeKey: 'oppiaine-osio-arviointi',
-                        order: 4
-                    },
-                    {
-                        path: 'sisaltoalueinfo',
-                        localeKey: 'oppiaine-osio-sisaltoalueinfo',
-                        order: 5
-                    }
-                ];
+                $scope.fields = [{
+                    path: "tehtava",
+                    localeKey: "oppiaine-osio-tehtava",
+                    order: 1
+                }, {
+                    path: "tyotavat",
+                    localeKey: "oppiaine-osio-tyotavat",
+                    order: 2
+                }, {
+                    path: "ohjaus",
+                    localeKey: "oppiaine-osio-ohjaus",
+                    order: 3
+                }, {
+                    path: "arviointi",
+                    localeKey: "oppiaine-osio-arviointi",
+                    order: 4
+                }, {
+                    path: "sisaltoalueinfo",
+                    localeKey: "oppiaine-osio-sisaltoalueinfo",
+                    order: 5
+                }];
+
                 $scope.fieldOps = {
                     hasContent: (field) => {
                         const model = $scope.editableModel[field.path];
@@ -109,9 +122,9 @@ $stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine', {
 
                         if ($scope.fieldOps.hasContent(field)) {
                             Varmistusdialogi.dialogi({
-                                otsikko: 'varmista-poisto',
-                                teksti: 'poistetaanko-osio',
-                                primaryBtn: 'poista',
+                                otsikko: "varmista-poisto",
+                                teksti: "poistetaanko-osio",
+                                primaryBtn: "poista",
                                 successCb: () => {
                                     doRemove();
                                 }
@@ -133,7 +146,7 @@ $stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine', {
                     ok: field => {
                         field.$editing = false;
                         fieldBackups[field.path] = null;
-                        $rootScope.$broadcast('notifyCKEditor');
+                        $rootScope.$broadcast("notifyCKEditor");
                     },
                     add: field => {
                         field.visible = true;
@@ -143,7 +156,7 @@ $stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine', {
                                 teksti: {}
                             };
                             const modelField = $scope.editableModel[field.path];
-                            modelField.otsikko[Kieli.getSisaltokieli()]= Kaanna.kaanna(field.localeKey);
+                            modelField.otsikko[Kieli.getSisaltokieli()] = Kaanna.kaanna(field.localeKey);
                         }
                         field.$editing = true;
                     }
@@ -164,25 +177,25 @@ $stateProvider.state('root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine', {
 
                 $scope.openKoodisto = Koodisto.modaali(koodisto => {
                     if (!$scope.editableModel.koodi) {
-                        $scope.editableModel['koodi'] = {};
+                        $scope.editableModel["koodi"] = {};
                     }
-                    MuokkausUtils.nestedSet($scope.editableModel.koodi, 'koodisto', ',', koodisto.koodisto.koodistoUri);
-                    MuokkausUtils.nestedSet($scope.editableModel.koodi, 'uri', ',', koodisto.koodiUri);
-                    MuokkausUtils.nestedSet($scope.editableModel.koodi, 'arvo', ',', koodisto.koodiArvo);
+                    MuokkausUtils.nestedSet($scope.editableModel.koodi, "koodisto", ",", koodisto.koodisto.koodistoUri);
+                    MuokkausUtils.nestedSet($scope.editableModel.koodi, "uri", ",", koodisto.koodiUri);
+                    MuokkausUtils.nestedSet($scope.editableModel.koodi, "arvo", ",", koodisto.koodiArvo);
                 }, {
-                    tyyppi: () => { return 'oppiaineetyleissivistava2'; },
-                    ylarelaatioTyyppi: () => { return ''; },
+                    tyyppi: () => { return "oppiaineetyleissivistava2"; },
+                    ylarelaatioTyyppi: () => { return ""; },
                     tarkista: _.constant(true)
                 });
 
                 Editointikontrollit.registerCallback({
                     edit: async () => {
                         oppiaine = await oppiaine.get();
-                        $scope.editableModel= Api.copy(oppiaine);
+                        $scope.editableModel = Api.copy(oppiaine);
                     },
                     save: async () => {
                         $scope.editableModel = await $scope.editableModel.save();
-                        Notifikaatiot.onnistui('tallennus-onnistui');
+                        Notifikaatiot.onnistui("tallennus-onnistui");
                         oppiaine = Api.copy($scope.editableModel);
                     },
                     cancel: () => {
