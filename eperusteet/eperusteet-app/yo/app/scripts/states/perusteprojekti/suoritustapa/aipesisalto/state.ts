@@ -55,6 +55,7 @@ angular.module("eperusteApp")
             perusteId: $scope.peruste.id
         });
         $scope.rajaus = "";
+        $scope.editing = false;
 
         $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 

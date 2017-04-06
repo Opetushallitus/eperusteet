@@ -1,7 +1,14 @@
-<div>
-    <div class="pull-right" ng-attr-title="{{lockNotification}}">
+<div ng-attr-title="{{lockNotification}}">
 
-        <button class="btn btn-default"
+    <revert-note object="model"
+                 revert-cb="revertCb(response)"
+                 versions="versiot"
+                 change-version="vaihdaVersio()"></revert-note>
+
+    <projektin-murupolku></projektin-murupolku>
+
+    <div ng-if="!editEnabled">
+        <button class="btn btn-default pull-right"
                 icon-role="{{actionButton.role}}"
                 ng-disabled="isLocked"
                 ng-click="actionButtonFn(actionButton)"
@@ -13,71 +20,66 @@
         <button ng-disabled="isLocked"
                 ng-if="!isPublished()"
                 icon-role="edit"
-                ng-hide="editEnabled || !versiot.latest"
+                ng-hide="!versiot.latest"
                 ng-click="muokkaa()"
-                class="btn btn-default"
+                class="btn btn-default pull-right"
                 kaanna="'muokkaa'"
                 oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
 
-        <button ng-show="isPublished() && !editEnabled"
+        <button ng-show="isPublished()"
                 ng-click="kopioiMuokattavaksi()"
-                class="btn btn-danger"
+                class="btn btn-danger pull-right"
                 icon-role="ep-text-clone"
                 kaanna="'kopioi-muokattavaksi'"
                 oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 
-        <div ng-if="!editEnabled && isLocked">
+        <div ng-if="isLocked">
             <lukko tip="lockNotification"></lukko>
         </div>
 
-        <div ng-if="editEnabled">
-            <button icon-role="remove"
-                    ng-if="!isNew"
-                    class="btn btn-danger"
-                    ng-click="removeWhole()">
-                {{config.removeWholeLabel || 'poista' | kaanna}}
-            </button>
+        <h1>
+            <span>{{config.title() | kaanna}}</span>
+        </h1>
 
-            <div class="dropdown" uib-dropdown>
-                <button editointi-kontrolli
-                        class="btn btn-default btn-sm dropdown-toggle"
-                        ng-disabled="!canAdd()"
-                        ng-show="config.fields.length > 0"
-                        icon-role="add"
-                        uib-dropdown-toggle>
-                    {{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}
-                </button>
-
-                <ul class="pull-right dropdown-menu">
-                    <li ng-repeat="field in config.fields | orderBy:'order'"
-                        ng-class="{divider: field.divider}">
-                        <a class="action-link"
-                           ng-if="!field.divider"
-                           ng-class="{'disabled-link': field.visible}"
-                           ng-click="field.visible ? void(0) : addField(field)"
-                           kaanna="field.menuLabel || field.localeKey">
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <versiotiedot></versiotiedot>
     </div>
 
-    <revert-note object="model"
-                 revert-cb="revertCb(response)"
-                 versions="versiot"
-                 change-version="vaihdaVersio()"></revert-note>
+    <div ng-if="editEnabled">
+        <button icon-role="remove"
+                style="margin-left: 10px;"
+                ng-if="!isNew"
+                class="btn btn-danger pull-right"
+                ng-click="removeWhole()">
+            {{config.removeWholeLabel || 'poista' | kaanna}}
+        </button>
 
-    <projektin-murupolku></projektin-murupolku>
+        <div class="dropdown pull-right" uib-dropdown>
+            <button editointi-kontrolli
+                    class="btn btn-default btn-sm dropdown-toggle"
+                    ng-show="config.fields.length > 0"
+                    icon-role="add"
+                    uib-dropdown-toggle>
+                {{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}
+            </button>
 
-    <h1>
-        <span ng-show="!editEnabled">{{config.title() | kaanna}}</span>
-        <span ng-show="editEnabled">{{ isNew ? config.newTitle : config.editTitle | kaanna}}</span>
-    </h1>
+            <ul class="pull-right dropdown-menu">
+                <li ng-repeat="field in config.fields | orderBy:'order'"
+                    ng-class="{divider: field.divider}">
+                    <a class="action-link"
+                       ng-if="!field.divider"
+                       ng-class="{'disabled-link': field.visible}"
+                       ng-click="field.visible ? void(0) : addField(field)"
+                       kaanna="field.menuLabel || field.localeKey">
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-    <versiotiedot ng-hide="editEnabled"></versiotiedot>
+        <h1>
+            <span>{{ isNew ? config.newTitle : config.editTitle | kaanna}}</span>
+        </h1>
 
-    <hr ng-show="editEnabled">
+    </div>
 
     <form name="tutkinnonOsaHeaderForm" role="form">
         <div ng-transclude></div>

@@ -5,7 +5,7 @@
                 <a class="url" ng-href="{{esitysUrl}}" icon-role="sunglasses" kaanna="'tarkastele-esitysta'"></a>
             </div>
 
-            <div ng-hide="editing">
+            <div ng-if="!editing">
                 <div class="toolbar-input pull-left">
                     <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value)"></rajaus>
                 </div>
@@ -14,40 +14,39 @@
                         <span kaanna="'avaa-sulje-kaikki'"></span>
                     </span>
                 </a>
-            </div>
 
-            <div class="clearfix"></div>
+                <div class="clearfix"></div>
 
-            <div ng-hide="editing">
                 <h2 kaanna="'opetuksen-sisallot'"></h2>
                 <div content-tree="opetus.lapset" filter-by="rajaus" no-content-placeholder="suoritustavalle-ei-ole-viela-sisaltoa"></div>
+
+                <h2>
+                    <span kaanna="'tekstikappaleet'"></span>
+                    <span>({{peruste.sisalto.lapset.length || 0}})</span>
+                    <div class="pull-right buttons">
+                        <button type="button"
+                                class="btn btn-default btn-sm"
+                                ng-click="tuoSisalto(projekti, peruste)"
+                                icon-role="ep-text-import"
+                                kaanna="tuo-tutkintokohtainen-osa"
+                                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                        <button type="button"
+                                class="btn btn-default btn-sm"
+                                ng-click="addTekstikappale()"
+                                icon-role="ep-text-add"
+                                kaanna="'lisaa-tutkintokohtainen-osa'"></button>
+                        <button class="btn btn-default btn-sm"
+                                ng-click="edit()"
+                                icon-role="edit"
+                                kaanna="'muokkaa-rakennetta'">
+                        </button>
+                    </div>
+                </h2>
             </div>
 
-            <h2 ng-hide="editing">
-                <span kaanna="'tekstikappaleet'"></span>
-                <span>({{peruste.sisalto.lapset.length || 0}})</span>
-                <div class="pull-right buttons">
-                    <button type="button"
-                            class="btn btn-default btn-sm"
-                            ng-click="tuoSisalto(projekti, peruste)"
-                            ng-show="valittuSuoritustapa !== ''"
-                            icon-role="ep-text-import"
-                            kaanna="tuo-tutkintokohtainen-osa"
-                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-                    <button type="button"
-                            class="btn btn-default btn-sm"
-                            ng-click="addTekstikappale()"
-                            icon-role="ep-text-add"
-                            kaanna="'lisaa-tutkintokohtainen-osa'"></button>
-                    <button class="btn btn-default btn-sm"
-                            ng-click="edit()"
-                            icon-role="edit"
-                            kaanna="'muokkaa-rakennetta'">
-                    </button>
-                </div>
-            </h2>
+            <div ng-if="editing">
+                <div class="clearfix"></div>
 
-            <div ng-show="editing">
                 <h2>
                     <span kaanna="'muokkaa-tekstikappaleiden-rakennetta'"></span>
                     <a ng-click="avaaSuljeKaikki()" class="open-close action-link">
@@ -62,7 +61,6 @@
                  filter-by="rajaus"
                  no-content-placeholder="peruste-ei-sisaltoa"
                  edit-mode="editing"></div>
-
         </div>
     </div>
 </div>
