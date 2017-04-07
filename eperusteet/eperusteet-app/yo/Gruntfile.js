@@ -403,7 +403,7 @@ module.exports = function(grunt) {
     ngtemplates: {
       dist: {
         cwd: '<%= yeoman.app %>',
-        src: 'views/**/*.html',
+        src: ['views/**/*.html', 'scripts/**/*.html'],
         dest: '<%= yeoman.dist %>/scripts/scripts.js',
         //append: true,
         options:    {
