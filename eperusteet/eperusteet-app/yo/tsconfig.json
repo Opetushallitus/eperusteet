@@ -3,6 +3,7 @@
         "target": "es3",
         "module": "commonjs",
         "sourceMap": true,
+        "alwaysStrict": true,
         "lib": [
             "DOM",
             "ES2015",
