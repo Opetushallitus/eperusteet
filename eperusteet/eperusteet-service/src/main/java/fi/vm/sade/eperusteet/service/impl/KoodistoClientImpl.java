@@ -76,6 +76,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
+    @Cacheable("koodistokoodihaku")
     public Stream<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
         return getAll(koodisto).stream()
                 .filter(koodi -> koodi.getKoodiArvo().contains(haku) || Arrays.stream(koodi.getMetadata())

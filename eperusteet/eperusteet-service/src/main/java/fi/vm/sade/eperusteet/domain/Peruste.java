@@ -22,12 +22,12 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -73,6 +73,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     private Maarayskirje maarayskirje;
+
+    @Getter
+    @Setter
+    @NotNull
+    private boolean koulutusvienti = false;
 
     @Getter
     @Setter

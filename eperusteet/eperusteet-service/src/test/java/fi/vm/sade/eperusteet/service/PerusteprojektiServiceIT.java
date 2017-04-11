@@ -18,30 +18,35 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import org.junit.Assert;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -66,6 +71,10 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiService service;
+
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
 
     @PersistenceContext
     private EntityManager em;
@@ -181,6 +190,35 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals(trh.getKayttajaOid(), henkilo);
         Assert.assertEquals(trh.getNimi(), ryhma);
         Assert.assertNotNull(trh.getId());
+    }
+
+    @Test
+    @Rollback(true)
+    public void testPerusteidenHakeminen() {
+        PerusteprojektiDto normaaliDto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        Perusteprojekti normaali = mapper.map(normaaliDto, Perusteprojekti.class);
+        normaali.getPeruste().setKoulutusvienti(true);
+        normaali.getPeruste().setDiaarinumero(new Diaarinumero("1234"));
+        normaali.getPeruste().setVoimassaoloAlkaa(new Date());
+
+        PerusteprojektiDto esikatseltava = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        PerusteprojektiDto cDto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        service.updateTila(normaali.getId(), ProjektiTila.JULKAISTU, null);
+        em.flush();
+
+        List<Peruste> perusteet = perusteRepository.findAll();
+
+        {   // Haku
+            // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
+            PerusteQuery pquery = new PerusteQuery();
+            pquery.setTila(PerusteTila.VALMIS.toString());
+            // Oletuksena älä palauta pohjia
+            if (pquery.getPerusteTyyppi() == null) {
+                pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());
+            }
+            PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+            Page<PerusteHakuDto> haku = perusteService.findBy(p, pquery);
+        }
     }
 
     @Test

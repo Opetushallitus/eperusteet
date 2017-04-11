@@ -115,11 +115,11 @@ mixin asteikonNimi(asteikko)
               h3.panel-title(kaanna="'korvattavat-perusteet'")
             .panel-body
               small-spinner(ng-show='ladataanKorvattavia')
-              p(ng-show='editablePeruste.korvattavatDiaarinumerot.length === 0') {{&apos;ei-korvattavia-perusteita&apos;| kaanna}}
+              p(ng-show='editablePeruste.korvattavatDiaarinumerot.length === 0') {{'ei-korvattavia-perusteita'| kaanna}}
               table.table(ng-hide='ladataanKorvattavia || editablePeruste.korvattavatDiaarinumerot.length === 0')
                 tr
-                  th  {{&apos;diaarinumero-label&apos;| kaanna}}
-                  th  {{&apos;perusteen-nimi&apos;| kaanna}}
+                  th  {{'diaarinumero-label'| kaanna}}
+                  th  {{'perusteen-nimi'| kaanna}}
                   th(ng-show='editEnabled')
                 tr(ng-repeat='korvattava in editablePeruste.korvattavatDiaarinumerot')
                   td  {{korvattava}}
@@ -127,14 +127,14 @@ mixin asteikonNimi(asteikko)
                     em {{korvattavaDiaariNimiMap[korvattava]| kaanna}}
                   td(ng-hide="korvattavaDiaariNimiMap[korvattava] === 'korvattavaa-ei-loydy-jarjestelmasta'")  {{korvattavaDiaariNimiMap[korvattava]| kaanna}}
                   td(ng-show='editEnabled')
-                    button.btn.btn-default.btn-sm(type='button', ng-click='poistaKorvattavaDiaari(korvattava)', icon-role='remove') {{&apos;poista&apos;| kaanna}}
+                    button.btn.btn-default.btn-sm(type='button', ng-click='poistaKorvattavaDiaari(korvattava)', icon-role='remove') {{'poista'| kaanna}}
               .row(ng-show='editEnabled')
                 .col-xs-6
                   .input-group
                     input.form-control(type='text', ng-model='uusiKorvattavaDiaari')
                     |
                     span.input-group-btn
-                      button.btn.btn-default.btn-sm(ng-disabled='!uusiKorvattavaDiaari', type='button', ng-click='lisaaKorvattavaDiaari(uusiKorvattavaDiaari)', icon-role='add') {{&apos;ok&apos;| kaanna}}
+                      button.btn.btn-default.btn-sm(ng-disabled='!uusiKorvattavaDiaari', type='button', ng-click='lisaaKorvattavaDiaari(uusiKorvattavaDiaari)', icon-role='add') {{'ok'| kaanna}}
           .panel.panel-default.panel-clean
             .panel-heading
               h3.panel-title(kaanna="'perusteen-kielet'")
@@ -162,16 +162,16 @@ mixin asteikonNimi(asteikko)
                     button.btn.btn-default.btn-xs(type='button', icon-role='remove', ng-click='poistaKoulutus(koulutus.koulutuskoodiArvo)', kaanna='poista')
                   table.aligned
                     tr
-                      th {{&apos;koulutuksen-nimi&apos;| kaanna}}
+                      th {{'koulutuksen-nimi'| kaanna}}
                       td {{koulutus.nimi| kaanna}}
                     tr
-                      th {{&apos;perusteen-koodi&apos;| kaanna}}
+                      th {{'perusteen-koodi'| kaanna}}
                       td {{koulutus.koulutuskoodiArvo}}
                     tr
-                      th {{&apos;haku-koulutusala&apos;| kaanna}}
+                      th {{'haku-koulutusala'| kaanna}}
                       td {{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}
                     tr
-                      th {{&apos;haku-opintoala&apos;| kaanna}}
+                      th {{'haku-opintoala'| kaanna}}
                       td {{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}
               div
                 button.btn.btn-default(type='button', ng-if='editEnabled', icon-role='add', ng-click='avaaKoodistoModaali()', ng-disabled='hakemassa', kaanna='lisaa-koulutus')
@@ -232,7 +232,7 @@ mixin asteikonNimi(asteikko)
               div(ng-if='editEnabled')
                 formfield(model='editablePeruste', model-var='siirtymaPaattyy', type='date', placeholder="{{'anna-siirtyman-paattymis-pvm' | kaanna}}")
               .aligned(ng-show='!editEnabled', pvm='peruste.siirtymaPaattyy')
-              p  ({{&apos;siirtyman-kuvaus&apos; | kaanna}})
+              p  ({{'siirtyman-kuvaus' | kaanna}})
           .panel.panel-default.panel-clean
             .panel-heading
               h3.panel-title(kaanna='') tiivistelma
@@ -266,13 +266,25 @@ mixin asteikonNimi(asteikko)
                     p(ng-show='!hasContent(peruste.maarayskirje.url)', kaanna='ei-asetettu')
           .panel.panel-default.panel-clean
             .panel-heading
+              h3.panel-title(ng-bind="'koulutusvienti' | kaanna")
+            .panel-body
+              div(ng-show="editEnabled")
+                .checkbox
+                  label
+                    input(type="checkbox" ng-model="editablePeruste.koulutusvienti")
+                    span(ng-bind="'vain-koulutusvienti' | kaanna")
+              .aligned(ng-show="!editEnabled")
+                span(ng-show="peruste.koulutusvienti" ng-bind="'kyllä' | kaanna")
+                span(ng-hide="peruste.koulutusvienti" ng-bind="'ei' | kaanna")
+          .panel.panel-default.panel-clean
+            .panel-heading
               h3.panel-title(kaanna='') muutosmaaraykset
             .panel-body
               table.table.table-striped
                 thead
                   tr
                     th.col-sm-4(kaanna='nimi')
-                    th.col-sm-6  {{&apos;sijainti&apos; | kaanna}}*
+                    th.col-sm-6 {{'sijainti' | kaanna}}*
                     th(kaanna='toiminnot', ng-show='editEnabled')
                 tbody
                   tr(ng-repeat='muutosmaarays in editablePeruste.muutosmaaraykset', ng-show='editEnabled')
@@ -294,5 +306,4 @@ mixin asteikonNimi(asteikko)
                       p(kaanna='ei-asetettu')
                     td
                       p(kaanna='ei-asetettu')
-              |
               button.btn.btn-default(type='button', ng-click='lisaaMuutosmaarays()', icon-role='add', kaanna='lisaa-muutosmaarays', ng-show='editEnabled')

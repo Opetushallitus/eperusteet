@@ -21,16 +21,15 @@ import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-
+import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 /**
  *
@@ -123,6 +122,13 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             }
         }
 
+        if (pq.isKoulutusvienti()) {
+            pred = cb.and(pred, cb.isTrue(root.get(Peruste_.koulutusvienti)));
+        }
+        else {
+            pred = cb.and(pred, cb.isFalse(root.get(Peruste_.koulutusvienti)));
+        }
+
         if (pq.getDiaarinumero() != null) {
             pred = cb.and(pred, cb.equal(root.get(Peruste_.diaarinumero), cb.literal(new Diaarinumero(pq.getDiaarinumero()))));
         }
@@ -157,6 +163,10 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Predicate tilat = cb.disjunction();
 
         if (pq.isTuleva()) {
+            tilat = cb.or(tilat, cb.and(cb.isNotNull(voimassaoloAlkaa), cb.lessThan(cb.currentDate(), voimassaoloAlkaa)));
+        }
+
+        if (pq.isKoulutusvienti()) {
             tilat = cb.or(tilat, cb.and(cb.isNotNull(voimassaoloAlkaa), cb.lessThan(cb.currentDate(), voimassaoloAlkaa)));
         }
 

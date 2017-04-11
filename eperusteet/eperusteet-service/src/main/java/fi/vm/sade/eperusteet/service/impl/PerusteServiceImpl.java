@@ -556,6 +556,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
             current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
             current.setPaatospvm(updated.getPaatospvm());
+            current.setKoulutusvienti(updated.isKoulutusvienti());
         }
 
         perusteet.save(current);
@@ -598,6 +599,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setNimi(updated.getNimi());
         current.setPaatospvm(updated.getPaatospvm());
         current.setDiaarinumero(updated.getDiaarinumero());
+        current.setKoulutusvienti(updated.isKoulutusvienti());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
             throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");

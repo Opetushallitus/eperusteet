@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.service.util;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,33 +35,44 @@ import org.springframework.stereotype.Service;
 public class KoodistoServiceMock implements KoodistoClient {
 
     @Override
+    public KoodistoKoodiDto get(String koodisto, String koodi) {
+        KoodistoKoodiDto result = new KoodistoKoodiDto();
+        result.setKoodiUri(koodisto);
+        result.setKoodiUri(koodi);
+        return result;
+    }
+
+    @Override
     public KoodistoKoodiDto get(String koodistoUri, String koodiUri, Long versio) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        KoodistoKoodiDto result = get(koodistoUri, koodiUri);
+        result.setVersio(versio.toString());
+        return result;
     }
 
     @Override
     public KoodiDto getKoodi(String koodisto, String koodiUri) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        KoodiDto result = new KoodiDto();
+        result.setKoodisto(koodisto);
+        result.setUri(koodiUri);
+        result.setNimi(lt(uniikkiString()).asMap());
+        return result;
     }
 
     @Override
     public KoodiDto getKoodi(String koodisto, String koodiUri, Long versio) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        KoodiDto result = getKoodi(koodisto, koodiUri);
+        result.setVersio(versio);
+        return result;
     }
 
     @Override
     public void addNimiAndUri(KoodiDto koodi) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        koodi.setNimi(lt(uniikkiString()).asMap());
     }
 
     @Override
     public List<KoodistoKoodiDto> getAll(String koodisto) {
         return Collections.emptyList();
-    }
-
-    @Override
-    public KoodistoKoodiDto get(String koodisto, String koodi) {
-        return null;
     }
 
     @Override

@@ -120,7 +120,8 @@ public class PerusteController {
             @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)"),
             @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
-            @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista")
+            @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),
+            @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä")
     })
     public Page<PerusteHakuDto> getAll(@ApiIgnore PerusteQuery pquery) {
         // Vain valmiita perusteita voi hakea tämän rajapinnan avulla

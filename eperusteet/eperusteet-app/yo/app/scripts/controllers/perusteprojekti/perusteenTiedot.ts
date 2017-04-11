@@ -77,7 +77,7 @@ angular.module("eperusteApp")
                 fixTimefield("paatospvm");
                 fixTimefield("voimassaoloAlkaa");
                 fixTimefield("voimassaoloLoppuu");
-                $scope.editablePeruste = angular.copy($scope.peruste);
+                $scope.editablePeruste = _.cloneDeep($scope.peruste);
                 if (!$scope.editablePeruste.kvliite) {
                     $scope.editablePeruste.kvliite = {};
                 }

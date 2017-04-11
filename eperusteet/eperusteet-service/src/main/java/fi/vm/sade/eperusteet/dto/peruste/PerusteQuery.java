@@ -26,7 +26,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PerusteQuery {
-
     private int sivu = 0;
     private int sivukoko = 25;
     private boolean tuleva = true;
@@ -47,6 +46,7 @@ public class PerusteQuery {
     private String jarjestys;
     private boolean tutkintonimikkeet = false;
     private boolean osaamisalat = false;
+    private boolean koulutusvienti = false;
 
     public void setTyyppi(List<String> tyyppi) {
         this.koulutustyyppi = tyyppi;
