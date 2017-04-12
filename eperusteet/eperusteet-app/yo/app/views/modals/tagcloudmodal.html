@@ -5,7 +5,7 @@
 
 <div class="modal-body tag-modal">
     <uib-accordion close-others="false">
-        <uib-accordion-group ng-repeat="tag in model | orderBy:orderFn"
+        <div uib-accordion-group ng-repeat="tag in model | orderBy:orderFn"
                          is-open="tag.$isopen"
                          ng-class="{chosen: !tag.$hidden}">
             <uib-accordion-heading>
@@ -19,7 +19,7 @@
                 {{tag.nimi | kaanna}}
             </uib-accordion-heading>
             <div ng-bind-html="tag.teksti | kaanna | unsafe"></div>
-        </uib-accordion-group>
+        </div>
     </uib-accordion>
 
     <button ng-if="hasLisaaUusi"

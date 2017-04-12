@@ -43,6 +43,16 @@ angular.module('eperusteApp')
     },
     controller: function (Kaanna) {
 
+        function generateArraySetter(findFrom, manipulator = _.noop) {
+            return item => {
+                const found = _.find(findFrom, findItem => parseInt(findItem, 10) === item.id);
+                item = _.clone(item);
+                item.$hidden = !found;
+                item.teksti = item.kuvaus;
+                return manipulator(item) || item;
+            };
+        }
+
         this.$onInit = () => {
             _.each(this.model, tavoite => {
                 tavoite.$accordionOpen = true;
@@ -52,29 +62,25 @@ angular.module('eperusteApp')
                     tavoite.$valittuKohdealue = _.find(this.vaihe.opetuksenKohdealueet,
                         ka => ka.id.toString() === tavoite.kohdealueet[0]);
                 }
+
+                // Alustetaan laaja-alaiset
+                tavoite.$osaaminen = _.map(this.laajaalaiset, generateArraySetter(tavoite.laajattavoitteet));
             });
         };
 
         this.toggleAll = () => {
-            console.log("toggle all");
             _.each(this.model, (tavoite) => {
                 tavoite.$accordionOpen = !tavoite.$accordionOpen;
             })
         };
 
-        this.treeOptions = {
-            dropped: function() {
-                console.log("map");
-                //$scope.mapModel(true);
-            }
-        };
+        this.treeOptions = {};
 
         this.lisaaTavoite = () => {
             this.model.push({
                 $accordionOpen: true,
                 $editing: false
             });
-            console.log("lisää tavoite");
         };
 
         this.poistaTavoite = (tavoite) => {
@@ -94,6 +100,14 @@ angular.module('eperusteApp')
 
         this.poistaValittuKohdealue = (tavoite) => {
             tavoite.$valittuKohdealue = undefined;
-        }
+        };
+
+        this.addArvioinninKohde = (tavoite) => {
+            tavoite.arvioinninkohteet.push({});
+        };
+
+        this.removeArvioinninKohde = (tavoite, index) => {
+            tavoite.arvioinninkohteet.splice(index, 1);
+        };
     }
 });

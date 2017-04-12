@@ -200,6 +200,11 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                         $scope.editableModel = Api.copy(oppiaine);
                     },
                     save: async () => {
+                        _.each($scope.editableModel.tavoitteet, tavoite => {
+                            tavoite.laajattavoitteet = _(tavoite.$osaaminen)
+                                .map(t => t.id)
+                                .value();
+                        });
                         $scope.editableModel = await $scope.editableModel.save();
                         Notifikaatiot.onnistui("tallennus-onnistui");
                         oppiaine = Api.copy($scope.editableModel);

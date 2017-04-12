@@ -94,52 +94,12 @@
 
             <!-- kuvaus -->
             <label for="kuvaus-input" class="header">{{'kurssi-kuvaus-header' | kaanna}}</label>
-            <div id="msd-elastic"
-                   class=""
+            <div id="kuvaus-input"
+                   class="msd-elastic"
                    ng-model="editableModel.kuvaus"
                    ckeditor
                    slocalized>
+            </div>
         </div>
-
-        <!--<div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
-            <div class="panel-heading" ng-class="'osio-' + field.path">
-                <div class="action-buttons">
-                    <span ng-show="field.$editing">
-                        <button class="btn btn-default" kaanna="'peruuta'" ng-click="fieldOps.cancel(field)"></button>
-                        <button class="btn btn-primary" kaanna="'ok'" ng-click="fieldOps.ok(field)"></button>
-                    </span>
-                    <span ng-hide="field.$editing">
-                        <button icon-role="edit" class="btn btn-default" ng-click="fieldOps.edit(field)"></button>
-                        <button icon-role="remove" class="btn btn-default" ng-click="fieldOps.remove(field)"
-                                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-                    </span>
-                </div>
-
-                <h3 class="panel-title osio-otsikko"
-                    ng-click="!field.$editing ? field.$isCollapsed = !field.$isCollapsed : null">
-                    <span ng-hide="field.$editing" class="glyphicon"
-                          ng-class="field.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
-                    <span ng-hide="field.$editing"
-                          ng-bind="editableModel[field.path].otsikko | kaanna"></span>
-                    <span ng-if="field.$editing" class="form-group">
-                        <input slocalized ng-model="editableModel[field.path].otsikko" class="form-control"
-                               placeholder="{{'muokkaus-teksikappaleen-nimi-placeholder' | kaanna}}">
-                    </span>
-                </h3>
-            </div>
-
-            <div class="panel-body" uib-collapse="field.$isCollapsed">
-                <div ng-if="!field.$editing" ng-bind-html="editableModel[field.path].teksti | kaanna"></div>
-                <div ng-if="field.$editing">
-                    <div class="msd-elastic"
-                         slocalized
-                         ckeditor
-                         ng-model="editableModel[field.path].teksti"
-                         editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder"></div>
-                </div>
-            </div>
-        </div>-->
     </div>
 </div>
-
-<!--<pre>{{editableModel | json}}</pre>-->
