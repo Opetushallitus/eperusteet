@@ -202,6 +202,7 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                     save: async () => {
                         _.each($scope.editableModel.tavoitteet, tavoite => {
                             tavoite.laajattavoitteet = _(tavoite.$osaaminen)
+                                .filter(item => !item.$hidden)
                                 .map(t => t.id)
                                 .value();
                         });
