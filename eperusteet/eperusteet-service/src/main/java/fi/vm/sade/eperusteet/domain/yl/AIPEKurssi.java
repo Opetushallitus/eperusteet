@@ -20,13 +20,16 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import java.util.UUID;
-import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -69,4 +72,16 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity {
             joinColumns = { @JoinColumn(name = "kurssi_id", insertable = false, updatable = false)},
             inverseJoinColumns = { @JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
     private AIPEOppiaine oppiaine;
+
+    @ManyToMany
+    @JoinTable
+    private Set<OpetuksenTavoite> tavoitteet = new HashSet<>();
+
+    public Set<OpetuksenTavoite> getTavoitteet() {
+        return tavoitteet;
+    }
+
+    public void setTavoitteet(Set<OpetuksenTavoite> tavoitteet) {
+        this.tavoitteet = tavoitteet;
+    }
 }

@@ -62,12 +62,10 @@ mixin tavoite-muokkaus
   h4(kaanna="'laaja-alainen-osaaminen'")
   div(tag-cloud="tavoite.$osaaminen", openable="true", edit-mode="$ctrl.editing", add-label="lisaa-laaja-alainen-osaaminen")
 
-  div
-    input.form-control(ng-model="tavoite.arvioinninOtsikko", slocalized, placeholder="{{'arvioinnin-otsikko' | kaanna}}")
-
-    br
-
-    +arviointi
+  h4(kaanna="'arviointi'")
+  input.form-control(ng-model="tavoite.arvioinninOtsikko", slocalized, placeholder="{{'arvioinnin-otsikko' | kaanna}}")
+  br
+  +arviointi
 
 mixin tavoite-sisalto
   .tavoite-sisalto

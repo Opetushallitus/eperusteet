@@ -79,7 +79,12 @@ angular.module('eperusteApp')
         this.lisaaTavoite = () => {
             this.model.push({
                 $accordionOpen: true,
-                $editing: false
+                $editing: false,
+                sisaltoalueet: [],
+                laajattavoitteet: [],
+                kohdealueet: [],
+                arvioinninkohteet: [],
+                $osaaminen: _.map(this.laajaalaiset, generateArraySetter([]))
             });
         };
 

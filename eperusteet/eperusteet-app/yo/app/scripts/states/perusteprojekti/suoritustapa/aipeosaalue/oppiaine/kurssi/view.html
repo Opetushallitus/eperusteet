@@ -25,7 +25,7 @@
             </tbody>
         </table>
 
-        <div class="panel-heading" ng-if="editableModel.kuvaus">
+        <div class="panel-heading">
             <h3 class="panel-title osio-otsikko" ng-click="editableModel.kuvaus.$isCollapsed = !editableModel.kuvaus.$isCollapsed">
                 <span class="glyphicon" ng-class="editableModel.kuvaus.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
                 <span ng-bind="'kurssi-kuvaus-header' | kaanna"></span>
@@ -33,6 +33,29 @@
         </div>
         <div class="panel-body" uib-collapse="editableModel.kuvaus.$isCollapsed">
             <div ng-bind-html="editableModel.kuvaus | kaanna"></div>
+        </div>
+
+        <div class="panel-heading">
+            <h3 class="panel-title osio-otsikko" ng-click="editableModel.tavoitteet.$isCollapsed = !editableModel.tavoitteet.$isCollapsed">
+                <span class="glyphicon" ng-class="editableModel.tavoitteet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                <span ng-bind="'liitetyt-tavoitteet' | kaanna"></span>
+            </h3>
+        </div>
+        <div class="panel-body" uib-collapse="editableModel.tavoitteet.$isCollapsed">
+
+            <table class="table table-default table-bordered perusopetuksen-arviointi">
+                <thead>
+                <tr>
+                    <th kaanna="'nimi'"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="tavoite in oppiaine.tavoitteet | filter:tavoitteetFilter">
+                    <td kaanna="tavoite.tavoite"></td>
+                </tr>
+                </tbody>
+            </table>
+
         </div>
     </div>
 
@@ -72,17 +95,15 @@
         <hr>
 
         <form name="nimiForm" role="form">
-            <div class="non-collapsibles">
-                <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header' | kaanna}}*</label>
-                <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" slocalized required>
-                <p class="alert alert-error"
-                   ng-show="(nimiForm.$error.required && nimiForm.$error.required[0].$dirty) || nimiValidationError"
-                   kaanna="'nimi-on-pakollinen'"></p>
-            </div>
+            <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header' | kaanna}}*</label>
+            <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" slocalized required>
+            <p class="alert alert-error"
+               ng-show="(nimiForm.$error.required && nimiForm.$error.required[0].$dirty) || nimiValidationError"
+               kaanna="'nimi-on-pakollinen'"></p>
         </form>
 
+        <!-- koodi -->
         <div class="non-collapsibles">
-            <!-- koodi -->
             <label for="koodi-input" class="header" kaanna="muokkaus-tutkinnon-osan-koodi-header"></label>
             <div class="fixed-group">
                 <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodi.arvo"
@@ -91,15 +112,35 @@
                     <button class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button>
                 </div>
             </div>
-
-            <!-- kuvaus -->
-            <label for="kuvaus-input" class="header">{{'kurssi-kuvaus-header' | kaanna}}</label>
-            <div id="kuvaus-input"
-                   class="msd-elastic"
-                   ng-model="editableModel.kuvaus"
-                   ckeditor
-                   slocalized>
-            </div>
         </div>
+
+        <!-- kuvaus -->
+        <label for="kuvaus-input" class="header">{{'kurssi-kuvaus-header' | kaanna}}</label>
+        <div id="kuvaus-input"
+             class="msd-elastic"
+             ng-model="editableModel.kuvaus"
+             ckeditor
+             slocalized>
+        </div>
+
+        <!-- Tavoitteet -->
+        <label class="header">{{'liitetyt-tavoitteet' | kaanna}}</label>
+        <table class="table table-default table-bordered perusopetuksen-arviointi">
+            <thead>
+                <tr>
+                    <th kaanna="'nimi'"></th>
+                    <th kaanna="'valitse'"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="tavoite in oppiaine.tavoitteet">
+                    <td kaanna="tavoite.tavoite"></td>
+                    <td>
+                        <input type="checkbox" ng-model="tavoite.$valittu" title="{{'valitse' | kaanna}}">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <pre>{{oppiaine.tavoitteet | json}}</pre>
     </div>
 </div>

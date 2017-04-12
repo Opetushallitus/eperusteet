@@ -59,12 +59,13 @@ angular.module('eperusteApp')
     }
 
     return {
+        // FIXME: async/await
         startEditing: function () {
             let deferred = $q.defer();
             handleBadCode(scope.editingCallback.edit(), () => {
                 setEditMode(true);
                 $rootScope.$broadcast('enableEditing');
-            });
+            }, (err) => console.error(err));
             return deferred.promise;
         },
         saveEditing: function (kommentti) {
