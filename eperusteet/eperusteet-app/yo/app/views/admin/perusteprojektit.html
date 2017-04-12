@@ -1,5 +1,5 @@
-<!-- admin/perusteprojektit.html -->
 <div>
+    <!-- admin/perusteprojektit.html -->
     <div class="hallintapainikkeet">
         <a ui-sref="root.excel" kaanna="tuo-excel-tiedostosta"></a>
         <button ui-sref="root.perusteprojektiwizard.tiedot" class="btn" icon-role="plus" kaanna="'uusi-perusteprojekti'"></button>
@@ -44,20 +44,20 @@
             </th>
             <th width="25%" kaanna>toiminto</th>
         </tr>
-        <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in filteredPp = (perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa)">
-            <td>
-                <a ng-if="pp.tila !== 'poistettu'" ng-href="{{pp.$url}}">{{ pp.nimi | kaanna }}</a>
-                <span ng-if="pp.tila === 'poistettu'">{{ pp.nimi | kaanna }}</span>
-                <span class="badge" ng-if="pp.tyyppi === 'pohja'" kaanna="'pohja'"></span>
-            </td>
-            <td>
-                {{ 'tila-' + pp.tila | kaanna }}
-            </td>
-            <td>
-                <button type="button" class="btn btn-default rivinappi" ng-click="palauta(pp)"
-                                                                        icon-role="open" ng-if="pp.tila === 'poistettu'" kaanna="'palauta'"></button>
-            </td>
-        </tr>
+        <!-- <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in filteredPp = (perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa)"> -->
+        <!--     <td> -->
+        <!--         <a ng-if="pp.tila !== 'poistettu'" ng-href="{{pp.$url}}">{{ pp.nimi | kaanna }}</a> -->
+        <!--         <span ng-if="pp.tila === 'poistettu'">{{ pp.nimi | kaanna }}</span> -->
+        <!--         <span class="badge" ng-if="pp.tyyppi === 'pohja'" kaanna="'pohja'"></span> -->
+        <!--     </td> -->
+        <!--     <td> -->
+        <!--         {{ 'tila-' + pp.tila | kaanna }} -->
+        <!--     </td> -->
+        <!--     <td> -->
+        <!--         <button type="button" class="btn btn-default rivinappi" ng-click="palauta(pp)" -->
+        <!--                 icon-role="open" ng-if="pp.tila === 'poistettu'" kaanna="'palauta'"></button> -->
+        <!--     </td> -->
+        <!-- </tr> -->
     </table>
 
     <uib-pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="filteredPp.length" items-per-page="itemsPerPage"></uib-pagination>
