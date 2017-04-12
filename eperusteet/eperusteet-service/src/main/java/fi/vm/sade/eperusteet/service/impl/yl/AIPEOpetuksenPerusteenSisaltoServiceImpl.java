@@ -18,22 +18,20 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.yl.AIPEKurssi;
-import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
-import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
-import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  *
@@ -220,7 +218,11 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
         oppiaineDto.setId(oppiaineId);
         oppiaine = mapper.map(oppiaineDto, oppiaine);
-        return mapper.map(oppiaine, AIPEOppiaineDto.class);
+        List<OpetuksenTavoite> tavoitteet = oppiaine.getTavoitteet();
+        List<OpetuksenTavoiteDto> tavoitteetDtos = mapper.mapAsList(tavoitteet, OpetuksenTavoiteDto.class);
+        AIPEOppiaineDto dto = mapper.map(oppiaine, AIPEOppiaineDto.class);
+        dto.setTavoitteet(tavoitteetDtos);
+        return dto;
     }
 
     @Override
@@ -263,7 +265,9 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     @Override
     public AIPEVaiheDto getVaihe(Long perusteId, Long vaiheId) {
         AIPEVaihe vaihe = vaiheRepository.findOne(vaiheId);
-        return mapper.map(vaihe, AIPEVaiheDto.class);
+        AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
+        dto.setOpetuksenKohdealueet(mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class));
+        return dto;
     }
 
     @Override

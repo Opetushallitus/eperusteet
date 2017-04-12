@@ -29,7 +29,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OpetuksenKohdealueDto implements ReferenceableDto {
-
     public Long id;
     public Optional<LokalisoituTekstiDto> nimi;
     @JsonInclude(JsonInclude.Include.NON_NULL)

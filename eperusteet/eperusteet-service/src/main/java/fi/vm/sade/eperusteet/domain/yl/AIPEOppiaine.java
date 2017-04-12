@@ -20,15 +20,16 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import java.util.*;
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 /**
  *
@@ -84,7 +85,6 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa sisaltoalueinfo;
 
-    @Getter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable
     @OrderColumn
@@ -156,6 +156,21 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @Override
     public AIPEOppiaine kloonaa() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<OpetuksenTavoite> getTavoitteet() {
+        return new ArrayList<>(tavoitteet);
+    }
+
+    public void addOpetuksenTavoite(OpetuksenTavoite tavoite) {
+        tavoitteet.add(tavoite);
+    }
+
+    public void setTavoitteet(List<OpetuksenTavoite> tavoitteet) {
+        this.tavoitteet.clear();
+        if (tavoitteet != null) {
+            this.tavoitteet.addAll(tavoitteet);
+        }
     }
 
     public Optional<AIPEKurssi> getKurssi(Long kurssiId) {

@@ -149,6 +149,7 @@
     "nimeton-oppiaine": "Nimetön oppiaine",
     "nimeton-oppimaara": "Nimetön oppimäärä",
     "nimeton-kurssi": "Nimetön kurssi",
+    "nimeton-tavoite": "Nimetön tavoite",
     "poista-kurssi": "Poista kurssi",
     "uusi-kurssi": "Uusi kurssi",
 
@@ -919,6 +920,7 @@
     "lisaa-sisaltoalue": "Lisää sisältöalue",
     "sisaltoalueen-nimi": "Sisältöalueen nimi",
     "tavoitteen-kuvaus-placeholder": "Lisää tavoitteen kuvaus",
+    "tavoitteen-nimi-placeholder": "Lisää tavoitteen nimi",
     "lisaa-arviointi": "Lisää arviointi",
     "lisaa-laaja-alainen-osaaminen": "Lisää laaja-alainen osaaminen",
     "lisaa-opetuksen-tavoite": "Lisää opetuksen tavoite",

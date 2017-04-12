@@ -56,16 +56,16 @@ angular.module("eperusteApp")
                 });
                 $scope.editableModel.oppiaineet.push(oppiaine);
             };
-
-            const facadeObj: AipeMuokattavaOsio = {
-                save: (obj: any) => {
-                    return new Promise(((resolve, reject) => {
-                        console.log(obj);
-                        resolve();
-                    }));
-                }
+            $scope.poistaKohdealue = ka => {
+                _.remove($scope.editableModel.opetuksenKohdealueet, ka);
             };
-            $scope.opetuksenKohdealueetFacade = facadeObj;
+            $scope.lisaaKohdealue = () => {
+                $scope.editableModel.opetuksenKohdealueet.push({
+                    nimi: {
+                        fi: 'Uusi tavoitealue'
+                    }
+                });
+            };
 
             $scope.fields = [
                 {

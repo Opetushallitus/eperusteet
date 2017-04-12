@@ -87,6 +87,18 @@ div
             td
               a(ui-sref='root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kurssi({kurssiId: kurssi.id})', ng-bind="kurssi.nimi || 'nimeton-kurssi' | kaanna")
 
+    // Tavoitteet
+    .panel-heading(ng-if='editableModel.tavoitteet')
+      h3.panel-title.osio-otsikko(ng-click='editableModel.tavoitteet.$isCollapsed = !editableModel.tavoitteet.$isCollapsed')
+        span.glyphicon(ng-class="editableModel.tavoitteet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
+        span(ng-bind="'perusopetus-tavoitteet' | kaanna")
+
+    .panel-body(uib-collapse='editableModel.tavoitteet.$isCollapsed')
+      div(ng-show='editableModel.tavoitteet.length == 0')
+        span(kaanna="'tyhja-placeholder-opetuksen-yleiset-tavoitteet'")
+      div(ng-show="editableModel.tavoitteet.length > 0")
+        tavoitteet(model="editableModel.tavoitteet", laajaalaiset="laajaalaiset", vaihe="vaihe", editing="false")
+
   // Editoitaessa
   div(ng-if='editEnabled')
     button.btn.btn-danger.pull-right(icon-role='remove', style='margin-left: 10px;', ng-if='!isNew', ng-click='poista()')  {{'poista-oppiaine' | kaanna}}
@@ -140,3 +152,7 @@ div
 
     h3.panel-title.osio-otsikko(ng-bind="'soveltava-kurssi-kuvaus-header' | kaanna")
     #soveltava-kurssi-kuvaus-input.msd-elastic(ckeditor, ng-model='editableModel.soveltavaKurssiKuvaus', slocalized)
+
+    // Tavoitteet
+    h3.panel-title.osio-otsikko(ng-bind="'perusopetus-tavoitteet' | kaanna")
+    tavoitteet(model="editableModel.tavoitteet", laajaalaiset="laajaalaiset", vaihe="vaihe", editing="true")

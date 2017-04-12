@@ -181,6 +181,7 @@ $tag-color: #FEE7A4;
   }
   .tavoite-otsikko {
     font-weight: 700;
+    min-height: 30px;
     font-size: 15px;
     border-bottom: 1px solid lighten($brand-primary, 50%);
   }
@@ -348,7 +349,7 @@ h4 .drag-handle {
   padding-top: 15px;
   position: relative;
   width: 40px;
-  min-height: 110px;
+  //min-height: 110px;
   cursor: move;
   .icon {
     font-size: 24px;

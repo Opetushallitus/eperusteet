@@ -19,9 +19,10 @@ package fi.vm.sade.eperusteet.dto.yl;
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  *
@@ -41,7 +42,7 @@ public class AIPEOppiaineDto extends AIPEOppiaineSuppeaDto {
     private Optional<LokalisoituTekstiDto> syventavaKurssiKuvaus;
     private Optional<LokalisoituTekstiDto> soveltavaKurssiKuvaus;
 
-    private Optional<List<OpetuksenTavoiteDto>> tavoitteet;
+    private List<OpetuksenTavoiteDto> tavoitteet;
 
     private Optional<List<KeskeinenSisaltoalueDto>> sisaltoalueet;
 

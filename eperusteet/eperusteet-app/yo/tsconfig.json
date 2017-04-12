@@ -169,6 +169,7 @@
         "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/state.ts",
         "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/state.ts",
         "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/kurssi/state.ts",
-        "./app/scripts/components/muokattavaosio/muokattavaosio.ts"
+        "./app/scripts/states/perusteprojekti/suoritustapa/aipemuokkaus/state.ts",
+        "./app/scripts/components/tavoitteet/tavoitteet.ts"
     ]
 }

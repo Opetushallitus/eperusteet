@@ -34,5 +34,5 @@ public class AIPEVaiheDto extends AIPEVaiheSuppeaDto {
     private Optional<TekstiOsaDto> siirtymaSeuraavaan;
     private Optional<TekstiOsaDto> laajaalainenOsaaminen;
     private Optional<TekstiOsaDto> paikallisestiPaatettavatAsiat;
-    private Optional<List<OpetuksenKohdealueDto>> opetuksenKohdealueet;
+    private List<OpetuksenKohdealueDto> opetuksenKohdealueet;
 }

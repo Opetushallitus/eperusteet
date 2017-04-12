@@ -1,0 +1,102 @@
+mixin tavoite-painikkeet
+  .muokkausnappi(ng-if="$ctrl.editing")
+    button.btn.btn-default.icon-only(ng-click="$ctrl.poistaTavoite(tavoite)", icon-role="remove", title="{{'poista' | kaanna}}")
+
+mixin tavoite-handle
+  .sorter-handle.pull-left(ui-tree-handle)
+    .icon(icon-role="drag")
+
+mixin tavoite-naytto
+  h4.tavoite-otsikko.action-link(kaanna="tavoite.tavoite || 'nimeton-tavoite'", ng-click="tavoite.$accordionOpen = !tavoite.$accordionOpen")
+
+  .div(uib-collapse="!tavoite.$accordionOpen")
+    h4(kaanna="'kohdealueet'")
+    p(kaanna="tavoite.$valittuKohdealue.nimi || 'ei-asetettu'")
+
+    h4(kaanna="'laaja-alainen-osaaminen'")
+    p(kaanna="tavoite.laajattavoitteet.length || 'ei-asetettu'")
+
+    h4(kaanna="'sisaltoalueet'")
+    p(kaanna="tavoite.sisaltoalueet || 'ei-asetettu'")
+
+    div(ng-if="tavoite.arvioinninkohteet.length")
+      h4(kaanna="tavoite.arvioinninOtsikko || 'ei-asetettu'")
+      p(kaanna="tavoite.arvioinninKuvaus || 'ei-asetettu'")
+      p(kaanna="tavoite.arvioinninOsaamisenKuvaus || 'ei-asetettu'")
+      table.table.table-default()
+        tr(ng-repeat="arvioinninKohde in $ctrl.model.arvioinninkohteet")
+          td {{arvioinninKohde}}
+
+  .div(ng-hide="tavoite.$accordionOpen")
+    .tavoite-collapser.action-link(ng-click="tavoite.$accordionOpen = true") …
+
+mixin tavoite-muokkaus
+  h4(kaanna="'nimi'")
+  input.form-control(ng-model="tavoite.tavoite", slocalized, placeholder="{{'tavoitteen-nimi-placeholder' | kaanna}}")
+
+  h4(kaanna="'kohdealueet'")
+  .input-group
+    select.form-control(ng-model="tavoite.$valittuKohdealue",
+                        ng-change="$ctrl.asetaKohdealue(tavoite)",
+                        ng-options="$ctrl.kaannaKohdealue(ka) for ka in $ctrl.vaihe.opetuksenKohdealueet")
+    span.input-group-btn
+      button.btn.btn-default(ng-click='$ctrl.poistaValittuKohdealue(tavoite)', icon-role='remove', kaanna="'poista'", type='button')
+
+  h4(kaanna="'laaja-alainen-osaaminen'")
+  p(kaanna="tavoite.laajattavoitteet || 'ei-asetettu'")
+
+  h4(kaanna="'sisaltoalueet'")
+  p(kaanna="tavoite.sisaltoalueet || 'ei-asetettu'")
+
+  div(ng-if="tavoite.arvioinninkohteet.length")
+    h4(kaanna="tavoite.arvioinninOtsikko || 'ei-asetettu'")
+    p(kaanna="tavoite.arvioinninKuvaus || 'ei-asetettu'")
+    p(kaanna="tavoite.arvioinninOsaamisenKuvaus || 'ei-asetettu'")
+    table.table.table-default()
+      tr(ng-repeat="arvioinninKohde in $ctrl.model.arvioinninkohteet")
+        td {{arvioinninKohde}}
+
+mixin tavoite-sisalto
+  .tavoite-sisalto
+    .div(ng-if="!$ctrl.editing")
+      +tavoite-naytto
+
+    .div(ng-if="$ctrl.editing")
+      +tavoite-muokkaus
+
+
+mixin tavoite
+  +tavoite-painikkeet
+
+  div(ng-if="$ctrl.editing")
+    +tavoite-handle
+
+  +tavoite-sisalto
+
+mixin tavoitteet
+  span.toggler(ng-show="$ctrl.model.length")
+    a.action-link(kaanna="'avaa-sulje-kaikki'", ng-click="$ctrl.toggleAll()")
+
+  // Näyttö
+  div(ng-if="!$ctrl.editing")
+    .panel.panel-default.panel-small
+      .panel-body
+        .panel-group
+          .panel.panel-default(ng-repeat="tavoite in $ctrl.model")
+            .panel-body
+              +tavoite
+
+  // Muokkaus
+  div(ng-if="$ctrl.editing")
+    .panel.panel-default.panel-small
+      .panel-body(ui-tree="$ctrl.treeOptions")
+        .panel-group(ng-model="$ctrl.model", ui-tree-nodes="")
+          .panel.panel-default(ng-repeat="tavoite in $ctrl.model" ui-tree-node="")
+            .panel-body
+              +tavoite
+
+    button.btn.btn-default(ng-click="$ctrl.lisaaTavoite()", icon-role="add", kaanna="'lisaa-opetuksen-tavoite'")
+
+  pre {{$ctrl.model | json}}
+
++tavoitteet

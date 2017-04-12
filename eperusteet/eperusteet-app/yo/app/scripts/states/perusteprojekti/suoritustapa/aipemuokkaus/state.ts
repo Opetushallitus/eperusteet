@@ -14,20 +14,17 @@
  * European Union Public Licence for more details.
  */
 
-interface AipeMuokattavaOsio {
-    save(object: any): Promise<any>;
-}
-
-angular.module('eperusteApp')
-.component('aipeMuokattavaOsio', {
-    templateUrl: 'scripts/components/muokattavaosio/muokattavaosio.html',
-    bindings: {
-        model: '<',
-        facade: '<'
+angular.module("eperusteApp")
+.config($stateProvider => {
+$stateProvider.state("root.perusteprojekti.suoritustapa.aipemuokkaus", {
+    url: "/aipemuokkaus/:osanTyyppi/:osanId",
+    templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipemuokkaus/view.html",
+    resolve: {
     },
-    controller: function () {
-        this.$onInit = () => {
-            this.facade.save(this.model);
-        };
+    controller: ($scope) => {
+
+    },
+    onEnter: PerusteProjektiSivunavi => {
+        PerusteProjektiSivunavi.setVisible();
     }
-});
+})});

@@ -113,6 +113,35 @@
                 </div>
             </div>
         </div>
+
+        <!-- Tavoitealueet -->
+        <div class="panel-heading">
+            <h3 class="panel-title osio-otsikko"
+                ng-click="editableModel.opetuksenKohdealueet.$isCollapsed = !editableModel.opetuksenKohdealueet.$isCollapsed">
+                <span class="glyphicon"
+                      ng-class="editableModel.opetuksenKohdealueet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+                <span kaanna="'opetuksen-kohdealueet'"></span>
+            </h3>
+        </div>
+        <div class="panel-body" uib-collapse="editableModel.opetuksenKohdealueet.$isCollapsed">
+            <div class="container-fluid">
+                <div class="row rivi" ng-repeat="kohdealue in editableModel.opetuksenKohdealueet">
+                    <div class="col-xs-9">
+                        <input ng-model="kohdealue.nimi" type="text" slocalized class="form-control">
+                    </div>
+                    <div class="col-xs-3">
+                        <button class="btn btn-danger"
+                                ng-click="poistaKohdealue(kohdealue)"
+                                icon-role="remove"
+                                kaanna="'poista-kohdealue'"></button>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary"
+                    ng-click="lisaaKohdealue()"
+                    icon-role="add"
+                    kaanna="'lisaa-tavoitealue'"></button>
+        </div>
     </div>
 
     <div ng-if="!editEnabled">
@@ -167,8 +196,13 @@
             </h3>
         </div>
         <div class="panel-body" uib-collapse="editableModel.opetuksenKohdealueet.$isCollapsed">
-            <aipe-muokattava-osio model="editableModel.opetuksenKohdealueet" facade="opetuksenKohdealueetFacade"></aipe-muokattava-osio>
-            <pre>{{editableModel.opetuksenKohdealueet | json}}</pre>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tr ng-repeat="opetuksenKohdealue in editableModel.opetuksenKohdealueet">
+                        <td kaanna="opetuksenKohdealue.nimi"></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>

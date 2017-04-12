@@ -95,7 +95,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @Getter
     @Setter
     @Valid
-    @JoinColumn(name = "tavoitteet_id", nullable = true)
+    @JoinColumn(name = "tavoitteet_id")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tavoitteet;
 

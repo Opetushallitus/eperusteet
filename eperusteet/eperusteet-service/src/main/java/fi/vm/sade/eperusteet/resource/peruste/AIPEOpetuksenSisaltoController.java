@@ -87,7 +87,7 @@ public class AIPEOpetuksenSisaltoController {
 
     @RequestMapping(value = "/vaiheet/{vaiheId}", method = PUT)
     @ResponseBody
-    public ResponseEntity<AIPEVaiheSuppeaDto> updateVaihe(
+    public ResponseEntity<AIPEVaiheDto> updateVaihe(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("vaiheId") final Long vaiheId,
             @RequestBody AIPEVaiheDto vaiheDto

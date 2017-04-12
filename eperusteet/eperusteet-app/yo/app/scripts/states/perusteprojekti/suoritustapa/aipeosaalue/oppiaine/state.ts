@@ -28,7 +28,7 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
             templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/view.html",
             controller: ($scope, oppiaine, Api, kurssit, Editointikontrollit, PerusteProjektiSivunavi, Notifikaatiot,
                          oppiaineet, oppimaarat, Varmistusdialogi, $state, $stateParams, AIPEService, $rootScope,
-                         Utils, Kieli, Kaanna, Koodisto, MuokkausUtils) => {
+                         Utils, Kieli, Kaanna, Koodisto, MuokkausUtils, laajaalaiset, vaihe) => {
                 $scope.editEnabled = false;
                 $scope.editableModel = Api.copy(oppiaine);
                 $scope.oppimaarat = oppimaarat;
@@ -44,6 +44,8 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                     });
                     oppimaarat.push(oppimaara);
                 };
+                $scope.laajaalaiset = laajaalaiset;
+                $scope.vaihe = vaihe;
 
                 $scope.lisaaKurssi = async () => {
                     const kurssi = await kurssit.post({});
