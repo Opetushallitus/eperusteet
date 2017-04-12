@@ -24,7 +24,7 @@ angular.module('eperusteApp')
       var element = angular.element(selector);
       if (element.length) {
         $window.scrollTo(0, element.eq(0).offset().top + (offset || 0));
-      }
+     }
     };
 
     function presaveStrip(obj) {

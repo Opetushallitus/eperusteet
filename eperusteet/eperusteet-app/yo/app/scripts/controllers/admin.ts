@@ -86,7 +86,7 @@ angular.module('eperusteApp')
         $scope.jarjestys = (data) => {
             switch ($scope.jarjestysTapa) {
                 case 'nimi':
-                    return Utils.nameSort(data);
+                    return data.nimi;
                 case 'haltija':
                     return data.haltija;
                 case 'diaarinumero':
