@@ -43,7 +43,7 @@ mixin arviointi
           span(ng-if="!$ctrl.editing", kaanna="arvioinninKohde.hyvanOsaamisenKuvaus")
           textarea.form-control.msd-elastic(ng-model='arvioinninKohde.hyvanOsaamisenKuvaus', slocalized , ng-if="$ctrl.editing")
         td(ng-if="$ctrl.editing")
-          a(icon-role="remove", ng-click="$ctrl.removeArvioinninKohde(tavoite, $index)", title="{{'poista' | kaanna}}")
+          a(icon-role="remove", ng-click="$ctrl.removeArvioinninKohde(tavoite, $index)", title="{{'poista' | kaanna}}", style="cursor: pointer;")
 
   button.btn.btn-default(icon-role="add", kaanna="'arviointi-uusi-kriteeri'", ng-click="$ctrl.addArvioinninKohde(tavoite)", ng-if="$ctrl.editing")
 
@@ -107,7 +107,5 @@ mixin tavoitteet
               +tavoite
 
     button.btn.btn-default(ng-click="$ctrl.lisaaTavoite()", icon-role="add", kaanna="'lisaa-opetuksen-tavoite'")
-
-  pre {{$ctrl.model | json}}
 
 +tavoitteet

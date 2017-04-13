@@ -31,7 +31,7 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue", {
         isNew: ($stateParams) => $stateParams.osanId === "uusi",
         vaihe: (vaiheet, $stateParams, Api, isVaihe, isNew) => isVaihe && !isNew
             ? vaiheet.get($stateParams.osanId)
-            : Api.restangularizeElement(vaiheet, {}, ""),
+            : Api.restangularizeElement(vaiheet, { opetuksenKohdealueet: [] }, ""),
         laajaalaiset: (aipeopetus) => aipeopetus.all("laajaalaiset").getList(),
         laajaalainen: (laajaalaiset, $stateParams, Api, isOsaaminen, isNew) => isOsaaminen && !isNew
             ? laajaalaiset.get($stateParams.osanId)

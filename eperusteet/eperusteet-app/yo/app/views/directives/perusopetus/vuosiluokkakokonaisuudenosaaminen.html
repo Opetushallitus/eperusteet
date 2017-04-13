@@ -1,6 +1,6 @@
 <div class="osaaminen">
     <uib-accordion close-others="oneAtATime">
-        <uib-accordion-group ng-repeat="osa in yleiset | orderBy:orderFn" is-open="osa.$isOpen"
+        <div uib-accordion-group ng-repeat="osa in yleiset | orderBy:orderFn" is-open="osa.$isOpen"
                          ng-class="{editing: osa.$editing}">
             <uib-accordion-heading>
                 <span ng-bind-html="osa.nimi | kaanna"></span>
@@ -14,6 +14,6 @@
                 </a>
                 <div class="yleiskuvaus" uib-collapse="!osa.$showkuvaus" ng-bind-html="osa.kuvaus | kaanna | unsafe"></div>
             </div>
-        </uib-accordion-group>
+        </div>
     </uib-accordion>
 </div>

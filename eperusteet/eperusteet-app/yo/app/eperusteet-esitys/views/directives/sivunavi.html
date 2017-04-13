@@ -21,7 +21,7 @@
 
       <div ng-if="sections">
         <uib-accordion close-others="showOne">
-          <uib-accordion-group ng-repeat="section in sections" is-open="section.$open" ng-class="{'panel-chosen': section.$open, 'menu': !section.include}">
+          <div uib-accordion-group ng-repeat="section in sections" is-open="section.$open" ng-class="{'panel-chosen': section.$open, 'menu': !section.include}">
             <uib-accordion-heading>
                 <span ng-click="onSectionChange(section)">{{section.title | kaanna}}</span>
             </uib-accordion-heading>
@@ -36,7 +36,7 @@
                 <span class="linktext" ng-class="{'action-link': !!item.href}" ep-highlight="search.term" ng-bind="item.label|kaanna"></span>
               </a>
             </div>
-          </uib-accordion-group>
+          </div>
         </uib-accordion>
       </div>
 

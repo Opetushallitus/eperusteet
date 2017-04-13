@@ -10,7 +10,7 @@
         <div class="panel-body">
             <uib-accordion close-others="false">
                 <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="ammattitaito">
-                    <uib-accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}"
+                    <div uib-accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}"
                                      ng-repeat="kohdealue in ammattitaito" is-open="kohdealue.$accordionOpen">
                         <uib-accordion-heading>
                             <h3 class="panel-title" ng-hide="eiKohdealueita">
@@ -26,7 +26,7 @@
                             <div id="sortableKohteet" ui-sortable="sortableOptions"
                                  ng-model="kohdealue.vaatimuksenKohteet">
 
-                                <uib-accordion-group class="arvioinnin-kohde"
+                                <div uib-accordion-group class="arvioinnin-kohde"
                                                  ng-class="{'kohde-edit': vaatimuksenkohde === originalKohde}"
                                                  ng-repeat="vaatimuksenkohde in kohdealue.vaatimuksenKohteet"
                                                  is-open="vaatimuksenkohde.$accordionOpen" is-disabled="editableKohde">
@@ -122,7 +122,7 @@
                                         </tr>
                                     </table>
 
-                                </uib-accordion-group>
+                                </div>
                             </div>
                         </uib-accordion>
 
@@ -151,7 +151,7 @@
                             </div>
                         </div>
 
-                    </uib-accordion-group>
+                    </div>
                 </div>
             </uib-accordion>
 

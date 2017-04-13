@@ -1,7 +1,7 @@
 <!-- partials/vtosaalue.html -->
 <div>
     <uib-accordion>
-        <uib-accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen">
+        <div uib-accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen">
             <uib-accordion-heading>
                 <span class="glyphicon"
                       ng-class="osaAlue.valmaTelmaSisalto.$$osaamistavoiteOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
@@ -37,11 +37,11 @@
                 <div ng-model="osaAlue.valmaTelmaSisalto.osaamistavoite.oatekstina" slocalized
                      ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
             </div>
-        </uib-accordion-group>
+        </div>
     </uib-accordion>
 
     <uib-accordion>
-        <uib-accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen">
+        <div uib-accordion-group class="panel-clean osa-alue" is-open="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen">
             <uib-accordion-heading>
                 <span class="glyphicon"
                       ng-class="osaAlue.valmaTelmaSisalto.$$osaamisenArviointiOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
@@ -77,6 +77,6 @@
                 <div ng-model="osaAlue.valmaTelmaSisalto.osaamisenarviointi.oatekstina" slocalized ckeditor
                      editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
             </div>
-        </uib-accordion-group>
+        </div>
     </uib-accordion>
 </div>

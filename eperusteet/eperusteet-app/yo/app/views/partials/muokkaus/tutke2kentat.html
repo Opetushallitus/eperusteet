@@ -41,7 +41,7 @@
 
     <div ng-if="!mainLevelEditing">
         <uib-accordion close-others="viewOptions.oneAtATime">
-            <uib-accordion-group ng-show="!tutke2osa.$fetching" ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open"
+            <div uib-accordion-group ng-show="!tutke2osa.$fetching" ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open"
                              class="panel-clean osa-alue" ng-class="{'kohde-edit': alue.$editing}"
                              id="{{alue.$uniqueId}}">
                 <uib-accordion-heading>
@@ -129,7 +129,7 @@
                     </div>
                 </div>
 
-            </uib-accordion-group>
+            </div>
         </uib-accordion>
     </div>
 

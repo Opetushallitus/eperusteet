@@ -1,7 +1,7 @@
 <!-- partials/valmaarviointi.html -->
 <div class="valmaarviointi">
     <uib-accordion>
-        <uib-accordion-group class="panel-clean osa-alue" is-open="$$valmaOpen">
+        <div uib-accordion-group class="panel-clean osa-alue" is-open="$$valmaOpen">
             <uib-accordion-heading ng-if="eiKohdealueita">
                 <span class="glyphicon"
                       ng-class="$$valmaOpen?'glyphicon-chevron-down':'glyphicon-chevron-right'"></span>
@@ -127,7 +127,7 @@
                 </div>
             </div>
 
-        </uib-accordion-group>
+        </div>
     </uib-accordion>
 
 </div>
