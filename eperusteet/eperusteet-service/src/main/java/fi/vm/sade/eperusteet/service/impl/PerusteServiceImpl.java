@@ -1386,6 +1386,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             kvliiteDto.setTutkinnonVirallinenAsema(pohjaLiiteDto.getTutkinnonVirallinenAsema());
         }
 
+        // TODO: Koulutuskoodin perusteella kansainvälisten koulutustasojen liittäminen
+        
+
         kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
         return kvliiteDto;
     }

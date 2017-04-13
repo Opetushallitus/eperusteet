@@ -12,21 +12,85 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // European Union Public Licence for more details.
 
+
+mixin kvliiteKenttaString(nimi, kentta, muokattava)
+  .panel.panel-default.panel-clean
+    .panel-heading
+      h4(kaanna=nimi)
+    .panel-body(ng-if='kvliitePeriytynyt')
+      p(ng-bind-html='peruste.kvliite.' + kentta + ' | kaanna | unsafe')
+    .panel-body(ng-if='!kvliitePeriytynyt')
+      input.form-control(ng-show='editEnabled', ng-model='editablePeruste.kvliite.' + kentta)
+      p(ng-hide='editEnabled' ng-bind="editablePeruste.kvliite." + kentta + " | kaanna")
+
+
 mixin kvliiteKentta(nimi, kentta, muokattava)
   - muokattava = muokattava || 'false'
   .panel.panel-default.panel-clean
     .panel-heading
-      h3.panel-title(kaanna=nimi)
+      h4(kaanna=nimi)
     .panel-body(ng-if='kvliitePeriytynyt && !' + muokattava)
       p(ng-bind-html='peruste.kvliite.' + kentta + ' | kaanna | unsafe')
     .panel-body(ng-if='!kvliitePeriytynyt || ' + muokattava)
       div(ckeditor ng-if='editEnabled', slocalized ng-model='editablePeruste.kvliite.' + kentta)
       p(ng-hide='editEnabled', ng-bind-html='editablePeruste.kvliite.' + kentta + '| kaanna | unsafe')
 
+
 mixin asteikonNimi(asteikko)
   span(ng-repeat="taso in " + asteikko + ".osaamistasot")
     span(ng-bind="taso.otsikko | kaanna")
     span(ng-if="!$last" style="margin: 0 3px 0 3px;") /
+
+
+mixin kvliite()
+  div(ng-show='isAmmatillinen && $$showingKvliite')
+    h3(ng-bind="'tutkinnon-suorittaneen-ammatillinen-osaaminen' | kaanna")
+    .panel.panel-default.panel-clean(ng-repeat='(st, sisalto) in kvliite.muodostumisenKuvaus')
+      .panel-heading
+        h4
+          span(ng-bind="'tutkinnon-muodostuminen' | kaanna")
+          |  (
+          span(ng-bind='st | kaanna')
+          | )
+      .panel-body
+        p(ng-bind-html='sisalto | kaanna | unsafe ')
+    +kvliiteKentta('suorittaneen-osaaminen', 'suorittaneenOsaaminen', 'true')
+
+    h3(ng-bind="'tutkinnon-virallinen-asema' | kaanna")
+    +kvliiteKentta('tyotehtavat-joissa-voi-toimia', 'tyotehtavatJoissaVoiToimia', 'true')
+    +kvliiteKenttaString('tutkintotodistuksen-antaja', 'tutkintotodistuksenAntaja')
+    +kvliiteKenttaString('tutkinnosta-paattava-viranomainen', 'tutkinnostaPaattavaViranomainen')
+
+    .panel.panel-default.panel-clean
+      .panel-heading
+        h4(ng-bind="'tutkinnon-taso' | kaanna")
+      .panel-body -
+
+    .panel.panel-default.panel-clean
+      .panel-heading
+        h4(kaanna="'arvosana-asteikko'")
+      .panel-body(ng-if='kvliitePeriytynyt')
+        div.alert.alert-info(ng-show="!peruste.kvliite._arvosanaAsteikko" ng-bind="'arvosana-asteikkoa-ei-valittu' | kaanna")
+        div(ng-show="peruste.kvliite._arvosanaAsteikko")
+          +asteikonNimi("arviointiasteikotMap[peruste.kvliite._arvosanaAsteikko]")
+      .panel-body(ng-if='!kvliitePeriytynyt')
+        div.alert.alert-info(ng-show="!editEnabled && !editablePeruste.kvliite._arvosanaAsteikko" ng-bind="'arvosana-asteikkoa-ei-valittu' | kaanna")
+        div(ng-show="!editEnabled && peruste.kvliite._arvosanaAsteikko")
+          +asteikonNimi("arviointiasteikotMap[peruste.kvliite._arvosanaAsteikko]")
+        div(ng-show="editEnabled")
+          div(ng-repeat="asteikko in arviointiasteikot")
+            .checkbox
+              label
+                input(type="radio" name="valittuAsteikko" ng-model="editablePeruste.kvliite._arvosanaAsteikko" value="{{ asteikko.id }}")
+                +asteikonNimi("asteikko")
+    +kvliiteKentta('jatkoopinto-kelpoisuus', 'jatkoopintoKelpoisuus')
+    +kvliiteKentta('kansainvaliset-sopimukset', 'kansainvalisetSopimukset')
+    +kvliiteKentta('saadosperusta', 'saadosPerusta')
+
+    h3(ng-bind="'tutkintotodistuksen-saaminen' | kaanna")
+    +kvliiteKentta('tutkintotodistuksen-saaminen', 'tutkintotodistuksenSaaminen')
+    +kvliiteKentta('pohjakoulutusvaatimukset', 'pohjakoulutusvaatimukset')
+    +kvliiteKentta('lisatietoja', 'lisatietoja')
 
 .row
   .col-md-12
@@ -62,53 +126,7 @@ mixin asteikonNimi(asteikko)
           li(ng-class='{ active: $$showingKvliite }', ng-click='$$showingKvliite = !$$showingKvliite')
             a.action-link(ng-bind="'kvliite' | kaanna")
         br
-        div(ng-show='isAmmatillinen && $$showingKvliite')
-          +kvliiteKentta('suorittaneen-osaaminen', 'suorittaneenOsaaminen', 'true')
-          +kvliiteKentta('tyotehtavat-joissa-voi-toimia', 'tyotehtavatJoissaVoiToimia', 'true')
-
-          .panel.panel-default.panel-clean
-            .panel-heading
-              h3.panel-title(kaanna="'tutkintotodistuksen-antaja'")
-            .panel-body(ng-if='kvliitePeriytynyt')
-              p(ng-bind-html='peruste.kvliite.tutkintotodistuksenAntaja | kaanna | unsafe')
-            .panel-body(ng-if='!kvliitePeriytynyt')
-              input.form-control(ng-show='editEnabled', ng-model='editablePeruste.kvliite.tutkintotodistuksenAntaja')
-              p(ng-hide='editEnabled') {{ editablePeruste.kvliite.tutkintotodistuksenAntaja | kaanna }}
-
-          .panel.panel-default.panel-clean
-            .panel-heading
-              h3.panel-title(kaanna="'arvosana-asteikko'")
-            .panel-body(ng-if='kvliitePeriytynyt')
-              div.alert.alert-info(ng-show="!peruste.kvliite._arvosanaAsteikko" ng-bind="'arvosana-asteikkoa-ei-valittu' | kaanna")
-              div(ng-show="peruste.kvliite._arvosanaAsteikko")
-                +asteikonNimi("arviointiasteikotMap[peruste.kvliite._arvosanaAsteikko]")
-            .panel-body(ng-if='!kvliitePeriytynyt')
-              div.alert.alert-info(ng-show="!editEnabled && !editablePeruste.kvliite._arvosanaAsteikko" ng-bind="'arvosana-asteikkoa-ei-valittu' | kaanna")
-              div(ng-show="!editEnabled && peruste.kvliite._arvosanaAsteikko")
-                +asteikonNimi("arviointiasteikotMap[peruste.kvliite._arvosanaAsteikko]")
-              div(ng-show="editEnabled")
-                div(ng-repeat="asteikko in arviointiasteikot")
-                  .checkbox
-                    label
-                      input(type="radio" name="valittuAsteikko" ng-model="editablePeruste.kvliite._arvosanaAsteikko" value="{{ asteikko.id }}")
-                      +asteikonNimi("asteikko")
-
-
-          +kvliiteKentta('jatkoopinto-kelpoisuus', 'jatkoopintoKelpoisuus')
-          +kvliiteKentta('kansainvaliset-sopimukset', 'kansainvalisetSopimukset')
-          +kvliiteKentta('saadosperusta', 'saadosPerusta')
-          +kvliiteKentta('pohjakoulutusvaatimukset', 'pohjakoulutusvaatimukset')
-          .panel.panel-default.panel-clean(ng-repeat='(st, sisalto) in kvliite.muodostumisenKuvaus')
-            .panel-heading
-              h3.panel-title
-                span(ng-bind="'tutkinnon-muodostuminen' | kaanna")
-                |  (
-                span(ng-bind='st | kaanna')
-                | )
-            .panel-body
-              p(ng-bind-html='sisalto | kaanna | unsafe ')
-          +kvliiteKentta('lisatietoja', 'lisatietoja')
-
+        +kvliite()
         div(ng-show='!$$showingKvliite')
           .panel.panel-default.panel-clean
             .panel-heading

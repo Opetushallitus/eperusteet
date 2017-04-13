@@ -104,6 +104,10 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     private String tutkintotodistuksenAntaja;
 
+    @Getter
+    @Setter
+    private String tutkinnostaPaattavaViranomainen;
+
     @ManyToOne
     @Getter
     @Setter
@@ -136,6 +140,13 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen tutkintotodistuksenSaaminen;
+
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen pohjakoulutusvaatimukset;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
@@ -144,5 +155,4 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen lisatietoja;
-
 }
