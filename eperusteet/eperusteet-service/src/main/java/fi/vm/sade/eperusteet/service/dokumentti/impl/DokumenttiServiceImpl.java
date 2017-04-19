@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
+import fi.vm.sade.eperusteet.service.dokumentti.KVLiiteBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
@@ -96,6 +97,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     private PdfService pdfService;
+
+    @Autowired
+    private KVLiiteBuilderService kvLiiteBuilderService;
 
     @Autowired
     private DokumenttiStateService dokumenttiStateService;
@@ -243,17 +247,18 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     private byte[] generateFor(DokumenttiDto dto)
-            throws IOException, TransformerException, ParserConfigurationException, Docbook4JException, SAXException {
+            throws IOException,TransformerException, ParserConfigurationException, Docbook4JException, SAXException {
 
         Peruste peruste = perusteRepository.findOne(dto.getPerusteId());
         Kieli kieli = dto.getKieli();
         Suoritustapakoodi suoritustapakoodi = dto.getSuoritustapakoodi();
-
+        Dokumentti dokumentti = mapper.map(dto, Dokumentti.class);
         byte[] toReturn = null;
+        ValidationResult result;
+        GeneratorVersion version = dto.getGeneratorVersion();
 
         LOG.info("Generate PDF (perusteId=" + dto.getPerusteId() + ")");
-
-        switch (dto.getGeneratorVersion()) {
+        switch (version) {
             case VANHA:
                 String xmlpath = builder.generateXML(peruste, kieli, suoritustapakoodi);
                 LOG.debug("Temporary xml file: {}", xmlpath);
@@ -283,28 +288,39 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
                 break;
             case UUSI:
-                Dokumentti dokumentti = mapper.map(dto, Dokumentti.class);
                 Document doc = newBuilder.generateXML(peruste, dokumentti, kieli, suoritustapakoodi);
                 toReturn = pdfService.xhtml2pdf(doc);
 
-                // Validointi
-                ValidationResult result = DokumenttiUtils.validatePdf(toReturn);
+                // Validoidaan dokumnetti
+                result = DokumenttiUtils.validatePdf(toReturn);
                 if (result.isValid()) {
                     LOG.info("PDF (peruste " + dto.getId() + ") is a valid PDF/A-1b file");
-                }
-                else {
+                } else {
                     LOG.warn("PDF (peruste " + dto.getId() + ") is not valid, error(s) :");
-                    for (ValidationResult.ValidationError error : result.getErrorsList()) {
-                        LOG.warn(error.getErrorCode() + " : " + error.getDetails());
-                    }
+                    result.getErrorsList().forEach(error -> LOG
+                            .warn(error.getErrorCode() + " : " + error.getDetails()));
+                }
+
+                break;
+            case KVLIITE:
+                doc = kvLiiteBuilderService.generateXML(peruste, dokumentti, kieli);
+                toReturn = pdfService.xhtml2pdf(doc, version);
+
+                // Validoi kvliite
+                result = DokumenttiUtils.validatePdf(toReturn);
+                if (result.isValid()) {
+                    LOG.info("PDF (peruste " + dto.getId() + ") is a valid PDF/A-1b file");
+                } else {
+                    LOG.warn("PDF (peruste " + dto.getId() + ") is not valid, error(s) :");
+                    result.getErrorsList().forEach(error -> LOG
+                            .warn(error.getErrorCode() + " : " + error.getDetails()));
                 }
 
                 break;
             default:
                 break;
         }
-
-       return toReturn;
+        return toReturn;
     }
 
     /*

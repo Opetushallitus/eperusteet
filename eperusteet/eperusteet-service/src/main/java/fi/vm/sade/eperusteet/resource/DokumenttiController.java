@@ -18,11 +18,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
-import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.DOKUMENTTI;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.GENEROI;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
@@ -35,19 +31,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.DOKUMENTTI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.GENEROI;
+
 /**
  *
  * @author jussini
  */
 @RestController
 @RequestMapping("/dokumentit")
-@InternalApi
+//@InternalApi
 public class DokumenttiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiController.class);
-
-    @Autowired
-    private EperusteetAudit audit;
 
     @Autowired
     PerusteRepository perusteRepository;
@@ -60,10 +56,10 @@ public class DokumenttiController {
     @ResponseBody
     @ApiOperation("luo dokumentti")
     public ResponseEntity<DokumenttiDto> create(
-        @RequestParam("perusteId") final long perusteId,
-        @RequestParam(value = "kieli", defaultValue = "fi") final String kieli,
-        @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi,
-        @RequestParam(value = "version", defaultValue = "uusi") final String version
+            @RequestParam("perusteId") final long perusteId,
+            @RequestParam(value = "kieli", defaultValue = "fi") final String kieli,
+            @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi,
+            @RequestParam(value = "version", defaultValue = "uusi") final String version
     ) throws DokumenttiException {
         LogMessage.builder(perusteId, DOKUMENTTI, GENEROI).log();
         HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -73,19 +69,20 @@ public class DokumenttiController {
                 Kieli.of(kieli),
                 Suoritustapakoodi.of(suoritustapakoodi),
                 GeneratorVersion.of(version));
+
         if (createDtoFor.getTila() != DokumenttiTila.EPAONNISTUI) {
             service.setStarted(createDtoFor);
             service.generateWithDto(createDtoFor);
             status = HttpStatus.ACCEPTED;
         }
+
         return new ResponseEntity<>(createDtoFor, status);
     }
 
     @RequestMapping(value = "/{dokumenttiId}", method = RequestMethod.GET, produces = "application/pdf")
     @ResponseBody
     @CacheControl(age = CacheControl.ONE_YEAR, nonpublic = false)
-    public ResponseEntity<Object> get(
-        @PathVariable("dokumenttiId") final Long dokumenttiId) {
+    public ResponseEntity<Object> get(@PathVariable("dokumenttiId") final Long dokumenttiId) {
         byte[] pdfdata = service.get(dokumenttiId);
 
         if (pdfdata == null || pdfdata.length == 0) {
@@ -104,6 +101,7 @@ public class DokumenttiController {
                 headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + ".pdf\"");
             }
         }
+
         return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
     }
 
@@ -112,7 +110,8 @@ public class DokumenttiController {
     public ResponseEntity<Long> getDokumenttiId(
             @RequestParam final Long perusteId,
             @RequestParam(defaultValue = "fi") final String kieli,
-            @RequestParam(value = "suoritustapa", defaultValue = "naytto") final String suoritustapa) {
+            @RequestParam(value = "suoritustapa", defaultValue = "naytto") final String suoritustapa
+    ) {
         Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
         Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli), s);
         return ResponseEntity.ok(dokumenttiId);
@@ -121,29 +120,29 @@ public class DokumenttiController {
     @RequestMapping(method = RequestMethod.GET, params = "perusteId")
     @ResponseBody
     public ResponseEntity<DokumenttiDto> getLatest(
-        @RequestParam("perusteId") final Long perusteId,
-        @RequestParam(defaultValue = "fi") final String kieli,
-        @RequestParam("suoritustapa") final String suoritustapa)
-    {
+            @RequestParam("perusteId") final Long perusteId,
+            @RequestParam(defaultValue = "fi") final String kieli,
+            @RequestParam("suoritustapa") final String suoritustapa
+    ) {
         try {
             Kieli k = Kieli.of(kieli);
             Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
             DokumenttiDto dto = service.findLatest(perusteId, k, s);
+
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (IllegalArgumentException ex) {
             LOG.warn("{}", ex.getMessage());
+
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @RequestMapping(value = "/{dokumenttiId}/tila", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<DokumenttiDto> query(
-        @PathVariable("dokumenttiId") final Long dokumenttiId) {
+    public ResponseEntity<DokumenttiDto> query(@PathVariable("dokumenttiId") final Long dokumenttiId) {
         LOG.debug("query {}", dokumenttiId);
         DokumenttiDto dto = service.query(dokumenttiId);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
-
 }

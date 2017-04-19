@@ -15,34 +15,13 @@ import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LiiteService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
-import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiBase;
-import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
+import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiPeruste;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.*;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -52,6 +31,29 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
+
+import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 
 /**
  * @author isaul
@@ -80,6 +82,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     @Autowired
     private TermistoRepository termistoRepository;
+
+    @Autowired
+    private PerusteService perusteService;
 
     @Override
     public Document generateXML(Peruste peruste, Dokumentti dokumentti, Kieli kieli,
@@ -110,7 +115,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         PerusteenOsaViite sisalto = suoritustapa.getSisalto();
 
-        DokumenttiBase docBase = new DokumenttiBase();
+        DokumenttiPeruste docBase = new DokumenttiPeruste();
         docBase.setDocument(doc);
         docBase.setHeadElement(headElement);
         docBase.setBodyElement(bodyElement);
@@ -144,7 +149,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         return doc;
     }
 
-    private void addMetaPages(DokumenttiBase docBase) {
+    private void addMetaPages(DokumenttiPeruste docBase) {
         // Nimi
         Element title = docBase.getDocument().createElement("title");
         String nimi = getTextString(docBase, docBase.getPeruste().getNimi());
@@ -282,7 +287,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addSisaltoelementit(DokumenttiBase docBase) {
+    private void addSisaltoelementit(DokumenttiPeruste docBase) {
         for (PerusteenOsaViite lapsi : docBase.getSisalto().getLapset()) {
             PerusteenOsa po = lapsi.getPerusteenOsa();
             if (po == null) {
@@ -296,7 +301,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addTutkinnonMuodostuminen(DokumenttiBase docBase) {
+    private void addTutkinnonMuodostuminen(DokumenttiPeruste docBase) {
         addHeader(docBase, messages.translate("docgen.tutkinnon_muodostuminen.title", docBase.getKieli()));
         RakenneModuuli rakenne = docBase.getSisalto().getSuoritustapa().getRakenne();
 
@@ -317,7 +322,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.getGenerator().increaseNumber();
     }
 
-    private void addRakenneOsa(DokumenttiBase docBase, AbstractRakenneOsa osa, Element tbody, int depth) {
+    private void addRakenneOsa(DokumenttiPeruste docBase, AbstractRakenneOsa osa, Element tbody, int depth) {
         if (osa instanceof RakenneModuuli) {
             // Ryhmä
             RakenneModuuli rakenneModuuli = (RakenneModuuli) osa;
@@ -375,7 +380,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addRakenneModuuli(DokumenttiBase docBase, RakenneModuuli rakenneModuuli, Element tbody, int depth) {
+    private void addRakenneModuuli(DokumenttiPeruste docBase, RakenneModuuli rakenneModuuli, Element tbody, int depth) {
         String nimi = getTextString(docBase, rakenneModuuli.getNimi());
         MuodostumisSaanto muodostumisSaanto = rakenneModuuli.getMuodostumisSaanto();
 
@@ -450,7 +455,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addTutkinnonosat(DokumenttiBase docBase) {
+    private void addTutkinnonosat(DokumenttiPeruste docBase) {
         Set<Suoritustapa> suoritustavat = docBase.getPeruste().getSuoritustavat();
         Set<TutkinnonOsaViite> osat = new TreeSet<>((o1, o2) -> {
             String nimi1 = getTextString(docBase, o1.getTutkinnonOsa().getNimi());
@@ -521,7 +526,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.getGenerator().increaseNumber();
     }
 
-    private void addTekstikappaleet(DokumenttiBase docBase, PerusteenOsaViite parent) {
+    private void addTekstikappaleet(DokumenttiPeruste docBase, PerusteenOsaViite parent) {
         for (PerusteenOsaViite lapsi : parent.getLapset()) {
             PerusteenOsa po = lapsi.getPerusteenOsa();
             if (po == null || !(po instanceof TekstiKappale)) {
@@ -548,7 +553,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addAmmattitaitovaatimukset(DokumenttiBase docBase,
+    private void addAmmattitaitovaatimukset(DokumenttiPeruste docBase,
             List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista,
             TekstiPalanen ammattitaitovaatimukset) {
         String ammattitaitovaatimuksetText = getTextString(docBase, ammattitaitovaatimukset);
@@ -608,7 +613,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 });
     }
 
-    private void addValmatelmaSisalto(DokumenttiBase docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
+    private void addValmatelmaSisalto(DokumenttiPeruste docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
         if (valmaTelmaSisalto == null) {
             return;
         }
@@ -617,7 +622,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         addValmaArviointi(docBase, valmaTelmaSisalto);
     }
 
-    private void addValmaOsaamistavoitteet(DokumenttiBase docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
+    private void addValmaOsaamistavoitteet(DokumenttiPeruste docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
         if (valmaTelmaSisalto.getOsaamistavoite().size() > 0) {
             addTeksti(docBase, messages.translate("docgen.valma.osaamistavoitteet.title", docBase.getKieli()), "h5");
         }
@@ -645,7 +650,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addValmaArviointi(DokumenttiBase docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
+    private void addValmaArviointi(DokumenttiPeruste docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
         if (valmaTelmaSisalto.getOsaamisenarviointi() != null || valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null) {
             addTeksti(docBase, messages.translate("docgen.valma.osaamisenarviointi.title", docBase.getKieli()), "h5");
 
@@ -673,7 +678,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addAmmattitaidonOsoittamistavat(DokumenttiBase docBase, TutkinnonOsa osa) {
+    private void addAmmattitaidonOsoittamistavat(DokumenttiPeruste docBase, TutkinnonOsa osa) {
         String ammattitaidonOsoittamistavatText = getTextString(docBase, osa.getAmmattitaidonOsoittamistavat());
         if (StringUtils.isEmpty(ammattitaidonOsoittamistavatText)) {
             return;
@@ -683,7 +688,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         addTeksti(docBase, ammattitaidonOsoittamistavatText, "div");
     }
 
-    private void addArviointi(DokumenttiBase docBase, Arviointi arviointi, TutkinnonOsaTyyppi tyyppi) {
+    private void addArviointi(DokumenttiPeruste docBase, Arviointi arviointi, TutkinnonOsaTyyppi tyyppi) {
         if (arviointi == null) {
             return;
         }
@@ -778,7 +783,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addTavoitteet(DokumenttiBase docBase, TutkinnonOsa osa) {
+    private void addTavoitteet(DokumenttiPeruste docBase, TutkinnonOsa osa) {
         String TavoitteetText = getTextString(docBase, osa.getTavoitteet());
         if (StringUtils.isEmpty(TavoitteetText)) {
             return;
@@ -788,7 +793,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         addTeksti(docBase, TavoitteetText, "div");
     }
 
-    private void addTutke2Osat(DokumenttiBase docBase, TutkinnonOsa osa) {
+    private void addTutke2Osat(DokumenttiPeruste docBase, TutkinnonOsa osa) {
         List<OsaAlue> osaAlueet = osa.getOsaAlueet();
 
         for (OsaAlue osaAlue : osaAlueet) {
@@ -870,7 +875,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addKasitteet(DokumenttiBase docBase) {
+    private void addKasitteet(DokumenttiPeruste docBase) {
         List<Termi> termit = termistoRepository.findByPerusteId(docBase.getPeruste().getId());
         if (termit.size() == 0) {
             return;
@@ -918,22 +923,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         return laajuusBuilder.toString();
     }
 
-    private String getOtsikko(DokumenttiBase docBase, TutkinnonOsaViite viite) {
+    private String getOtsikko(DokumenttiPeruste docBase, TutkinnonOsaViite viite) {
         TutkinnonOsa osa = viite.getTutkinnonOsa();
         return getTextString(docBase, osa.getNimi())
                 + getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli());
-    }
-
-    private Element newBoldElement(Document doc, String teksti) {
-        Element strong = doc.createElement("strong");
-        strong.appendChild(doc.createTextNode(teksti));
-        return strong;
-    }
-
-    private Element newItalicElement(Document doc, String teksti) {
-        Element emphasis = doc.createElement("em");
-        emphasis.appendChild(doc.createTextNode(teksti));
-        return emphasis;
     }
 
     private String getKokoTeksti(MuodostumisSaanto saanto, Kieli kieli) {
@@ -990,21 +983,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         return laajuusBuilder.toString();
     }
 
-    private void printDocument(Document doc) throws IOException, TransformerException {
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        transformer.transform(new DOMSource(doc), new StreamResult(new OutputStreamWriter(out, "UTF-8")));
-        LOG.debug(out.toString());
-    }
-
-    private void buildImages(DokumenttiBase docBase) {
+    private void buildImages(DokumenttiPeruste docBase) {
         XPathFactory xPathfactory = XPathFactory.newInstance();
         XPath xpath = xPathfactory.newXPath();
         try {

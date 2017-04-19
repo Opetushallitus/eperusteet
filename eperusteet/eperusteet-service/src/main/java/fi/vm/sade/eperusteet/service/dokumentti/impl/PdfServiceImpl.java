@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
+import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.service.internal.PdfService;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
@@ -43,8 +43,24 @@ public class PdfServiceImpl implements PdfService {
     @Value("classpath:docgen/xhtml-to-xslfo.xsl")
     private Resource template;
 
+    @Value("classpath:docgen/kvliite.xsl")
+    private Resource kvLiiteTemplate;
+
     @Value("classpath:docgen/fop.xconf")
     private Resource config;
+
+    @Override
+    public byte[] xhtml2pdf(Document document, GeneratorVersion version) throws IOException, TransformerException, SAXException {
+        File xslt = template.getFile();
+        switch (version) {
+            case KVLIITE:
+                xslt = kvLiiteTemplate.getFile();
+                break;
+            default:
+                break;
+        }
+        return convertDocument2PDF(document, xslt);
+    }
 
     @Override
     public byte[] xhtml2pdf(Document document) throws IOException, TransformerException, SAXException {

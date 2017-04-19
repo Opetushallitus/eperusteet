@@ -7,11 +7,6 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.Map;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.pdfbox.preflight.PreflightDocument;
 import org.apache.pdfbox.preflight.ValidationResult;
@@ -23,6 +18,16 @@ import org.jsoup.helper.W3CDom;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author isaul
@@ -65,7 +70,7 @@ public class DokumenttiUtils {
         }
     }
 
-    public static void addHeader(DokumenttiBase docBase, String text) {
+    public static void addHeader(DokumenttiPeruste docBase, String text) {
         if (text != null) {
             Element header = docBase.getDocument().createElement("h" + docBase.getGenerator().getDepth());
             header.setAttribute("number", docBase.getGenerator().generateNumber());
@@ -95,8 +100,13 @@ public class DokumenttiUtils {
     }
 
     public static String getTextString(DokumenttiBase docBase, LokalisoituTekstiDto lokalisoituTekstiDto) {
-        LokalisoituTeksti lokalisoituTeksti = docBase.getMapper().map(lokalisoituTekstiDto, LokalisoituTeksti.class);
-        return getTextString(docBase, lokalisoituTeksti);
+        if (lokalisoituTekstiDto != null && lokalisoituTekstiDto.getTekstit() != null && docBase.getKieli() != null
+                && lokalisoituTekstiDto.getTekstit().containsKey(docBase.getKieli())
+                && lokalisoituTekstiDto.getTekstit().get(docBase.getKieli()) != null) {
+            return unescapeHtml5(lokalisoituTekstiDto.getTekstit().get(docBase.getKieli()));
+        } else {
+            return "";
+        }
     }
 
     public static String getTextString(DokumenttiBase docBase, LokalisoituTeksti lokalisoituTeksti) {
@@ -168,5 +178,34 @@ public class DokumenttiUtils {
         }
 
         return result;
+    }
+
+    public static ByteArrayOutputStream printDocument(Document doc) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            transformer.transform(new DOMSource(doc), new StreamResult(new OutputStreamWriter(out, "UTF-8")));
+        } catch (IOException | TransformerException ex) {
+            return out;
+        }
+        return out;
+    }
+
+    public static Element newBoldElement(Document doc, String teksti) {
+        Element strong = doc.createElement("strong");
+        strong.appendChild(doc.createTextNode(teksti));
+        return strong;
+    }
+
+    public static Element newItalicElement(Document doc, String teksti) {
+        Element emphasis = doc.createElement("em");
+        emphasis.appendChild(doc.createTextNode(teksti));
+        return emphasis;
     }
 }

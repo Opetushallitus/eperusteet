@@ -7,7 +7,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum GeneratorVersion {
     VANHA("vanha"),
-    UUSI("uusi");
+    UUSI("uusi"),
+    KVLIITE("kvliite");
 
     private final String version;
 

@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service.dokumentti.impl.util;
 import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,9 +34,7 @@ public class DokumenttiBase {
     Element headElement;
     Element bodyElement;
     Peruste peruste;
-    CharapterNumberGenerator generator;
     Kieli kieli;
-    Dokumentti dokumentti;
     DtoMapper mapper;
-    PerusteenOsaViite sisalto;
+    Dokumentti dokumentti;
 }
