@@ -32,8 +32,8 @@
         </table>
         <div class="alert alert-warning" ng-show="filtered.length === 0 && valittuSuoritustapa"
              kaanna="tutkinnon-osia-ei-loytynyt"></div>
-        <uib-pagination ng-model="paginate.current" total-items="filtered.length"
-                    items-per-page="paginate.perPage"></uib-pagination>
+        <ep-pagination ng-model="paginate.current" total-items="filtered.length"
+                    items-per-page="paginate.perPage"></ep-pagination>
     </div>
 
     <div class="modal-footer">
