@@ -197,11 +197,11 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         assertEquals(new EntityReference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
     }
 
-    @Test
-    public void testKvLiite() {
-        KVLiiteJulkinenDto kvliiteDto = perusteService.getJulkinenKVLiite(peruste.getId());
-        assertEquals(kvliiteDto.getNimi().getId(), peruste.getNimi().getId());
-    }
+//    @Test
+//    public void testKvLiite() {
+//        KVLiiteJulkinenDto kvliiteDto = perusteService.getJulkinenKVLiite(peruste.getId());
+//        assertEquals(kvliiteDto.getNimi().getId(), peruste.getNimi().getId());
+//    }
 
     @Test
     public void testGetByDiaari() {
