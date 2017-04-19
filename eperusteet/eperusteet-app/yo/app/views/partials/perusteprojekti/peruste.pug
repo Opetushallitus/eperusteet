@@ -64,7 +64,12 @@ mixin kvliite()
     .panel.panel-default.panel-clean
       .panel-heading
         h4(ng-bind="'tutkinnon-taso' | kaanna")
-      .panel-body -
+      .panel-body
+        ul
+          li(ng-repeat="taso in kvliite.tasot")
+            span(ng-bind="taso.asteikko | kaanna")
+            =" "
+            span(ng-bind="taso.taso")
 
     .panel.panel-default.panel-clean
       .panel-heading
@@ -91,6 +96,7 @@ mixin kvliite()
     +kvliiteKentta('tutkintotodistuksen-saaminen', 'tutkintotodistuksenSaaminen')
     +kvliiteKentta('pohjakoulutusvaatimukset', 'pohjakoulutusvaatimukset')
     +kvliiteKentta('lisatietoja', 'lisatietoja')
+
 
 .row
   .col-md-12

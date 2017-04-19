@@ -19,8 +19,6 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,7 +41,6 @@ public class KVLiiteDto {
     private LokalisoituTekstiDto pohjakoulutusvaatimukset;
     private LokalisoituTekstiDto lisatietoja;
     private LokalisoituTekstiDto tutkintotodistuksenSaaminen;
-    private List<KoodiDto> tasot = new ArrayList<>();
     private KoodiDto tutkinnonTaso;
     private String tutkinnostaPaattavaViranomainen;
 }

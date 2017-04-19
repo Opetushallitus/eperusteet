@@ -1326,6 +1326,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return yleistTavoitteet;
     }
 
+    private boolean isTasoKoodi(String koodi) {
+        return koodi != null
+                && (koodi.startsWith("eqf_")
+                || koodi.startsWith("nqf_")
+                || koodi.startsWith("isced2011koulutusastetaso"));
+    }
+
     @Override
     @IgnorePerusteUpdateCheck
     public KVLiiteJulkinenDto getJulkinenKVLiite(long perusteId) {
@@ -1385,7 +1392,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         // TODO: Koulutuskoodin perusteella kansainvälisten koulutustasojen liittäminen
-        
+        for (Koulutus koulutus : peruste.getKoulutukset()) {
+            String koulutuskoodiUri = koulutus.getKoulutuskoodiUri();
+            List<String> tasokoodit = koodistoService.getAlarelaatio(koulutuskoodiUri).stream()
+                    .map(relaatio -> relaatio.getKoodisto().getKoodistoUri())
+                    .filter(koodisto -> isTasoKoodi(koodisto))
+                    .collect(Collectors.toList());
+            kvliiteDto.setTasot(tasokoodit);
+        }
 
         kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
         return kvliiteDto;

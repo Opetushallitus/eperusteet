@@ -18,7 +18,9 @@ package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +38,7 @@ public class KVLiiteJulkinenDto extends KVLiiteDto {
     private MaarayskirjeDto maarayskirje;
     private String diaarinumero;
     private Date voimassaoloAlkaa;
+    private List<String> tasot = new ArrayList<>();
     private Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus;
     private Boolean periytynyt;
 }
