@@ -29,20 +29,19 @@ import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.KVLiiteDokumentti;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.StringJoiner;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.StringJoiner;
 
 /**
  * @author isaul
@@ -440,11 +439,11 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             leftTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
                     messages.translate("docgen.kvliite.taso", docBase.getKieli())));
             // TODO: Varsinainen toteutus
-            kvLiiteJulkinenDto.getTasot().forEach(taso -> {
-                if (taso.getNimi() != null && taso.getNimi().containsKey(docBase.getKieli().toString())) {
-                    DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli().toString()), "div", leftTd);
-                }
-            });
+//            kvLiiteJulkinenDto.getTasot().forEach(taso -> {
+//                if (taso.getNimi() != null && taso.getNimi().containsKey(docBase.getKieli().toString())) {
+//                    DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli().toString()), "div", leftTd);
+//                }
+//            });
 
             rightTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
                     messages.translate("docgen.kvliite.arviointi-asteikko", docBase.getKieli())));
