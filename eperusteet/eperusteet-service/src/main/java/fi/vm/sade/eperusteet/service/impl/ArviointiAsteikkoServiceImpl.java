@@ -18,12 +18,14 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  *
@@ -46,6 +48,7 @@ public class ArviointiAsteikkoServiceImpl implements ArviointiAsteikkoService {
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     public ArviointiAsteikkoDto get(Long id) {
         return mapper.map(repository.findOne(id), ArviointiAsteikkoDto.class);
     }
