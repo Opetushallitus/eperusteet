@@ -134,7 +134,7 @@ angular.module("eperusteApp")
         };
 
         async function fetchLatest() {
-            const docs = await Promise.all(_.map(kielet.lista, kieli => Pdf.haeUusin(perusteId, kieli, suoritustapa)));
+            const docs: any = await Promise.all(_.map(kielet.lista, kieli => Pdf.haeUusin(perusteId, kieli, suoritustapa)));
             for (const doc of docs) {
                 if (doc.id !== null) {
                     doc.url = Pdf.haeLinkki(doc.id);
@@ -142,7 +142,7 @@ angular.module("eperusteApp")
                 $scope.docs[doc.kieli] = doc;
             }
 
-            const kvliitteet = await Promise.all(_.map(YleinenData.kvliitekielet, kieli => Pdf.hae(perusteId, kieli, "kvliite", suoritustapa)));
+            const kvliitteet: any = await Promise.all(_.map(YleinenData.kvliitekielet, kieli => Pdf.hae(perusteId, kieli, "kvliite", suoritustapa)));
             for (const kvliite of kvliitteet) {
                 if (kvliite.id !== null) {
                     kvliite.url = Pdf.haeLinkki(kvliite.id);
