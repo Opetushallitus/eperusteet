@@ -139,9 +139,9 @@ angular.module('eperusteApp')
 
         $scope.rajaaSisaltoa = (pp) => {
             return (!$scope.tilaRajain || $scope.tilaRajain === pp.tila) && (_.isEmpty($scope.rajaus) ||
-                Algoritmit.match($scope.rajaus, pp.nimi) ||
-                Algoritmit.match($scope.rajaus, 'tila-' + pp.tila) ||
-                (_.isEmpty(pp.perusteendiaarinumero) ? false : Algoritmit.match($scope.rajaus, pp.perusteendiaarinumero)) ||
-                Algoritmit.match($scope.rajaus, pp.diaarinumero));
+                Algoritmit.match($scope.rajaus, pp.nimi, false) ||
+                Algoritmit.match($scope.rajaus, 'tila-' + pp.tila, false) ||
+                (_.isEmpty(pp.perusteendiaarinumero) ? false : Algoritmit.match($scope.rajaus, pp.perusteendiaarinumero, false)) ||
+                Algoritmit.match($scope.rajaus, pp.diaarinumero, false));
         };
     });

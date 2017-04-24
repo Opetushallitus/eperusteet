@@ -35,7 +35,7 @@ angular.module('eperusteApp')
 
     function kaikilleLapsisolmuille(objekti, lapsienAvain, cb, depth) {
       depth = depth || 0;
-      if(!_.isEmpty(objekti)){
+      if (!_.isEmpty(objekti)) {
         _.forEach(objekti[lapsienAvain], function(solmu) {
           if (!cb(solmu, depth)) {
             kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
@@ -51,8 +51,8 @@ angular.module('eperusteApp')
       cb(_.first(list), function() { asyncTraverse(_.rest(list), cb, done); });
     }
 
-    function match(input, to) {
-      var vertailu = Kaanna.kaanna(to) || '';
+    function match(input, to, kaanna = true) {
+      var vertailu = kaanna ? (Kaanna.kaanna(to) || '') : to;
       return vertailu.toLowerCase().indexOf(input.toLowerCase()) !== -1;
     }
 
