@@ -447,13 +447,15 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
             rightTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
                     messages.translate("docgen.kvliite.arviointi-asteikko", docBase.getKieli())));
-            ArviointiAsteikkoDto arviointiAsteikkoDto = arviointiAsteikkoService
-                    .get(kvLiiteJulkinenDto.getArvosanaAsteikko().getIdLong());
-            StringJoiner joiner = new StringJoiner(" / ");
-            arviointiAsteikkoDto.getOsaamistasot()
-                    .forEach(osaamistasoDto -> joiner
-                            .add(DokumenttiUtils.getTextString(docBase, osaamistasoDto.getOtsikko())));
-            DokumenttiUtils.addTeksti(docBase, joiner.toString(), "div", rightTd);
+            if (kvLiiteJulkinenDto.getArvosanaAsteikko() != null) {
+                ArviointiAsteikkoDto arviointiAsteikkoDto = arviointiAsteikkoService
+                        .get(kvLiiteJulkinenDto.getArvosanaAsteikko().getIdLong());
+                StringJoiner joiner = new StringJoiner(" / ");
+                arviointiAsteikkoDto.getOsaamistasot()
+                        .forEach(osaamistasoDto -> joiner
+                                .add(DokumenttiUtils.getTextString(docBase, osaamistasoDto.getOtsikko())));
+                DokumenttiUtils.addTeksti(docBase, joiner.toString(), "div", rightTd);
+            }
         }
 
         {

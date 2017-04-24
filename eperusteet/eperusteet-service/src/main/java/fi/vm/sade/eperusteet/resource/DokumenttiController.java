@@ -19,6 +19,8 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.DOKUMENTTI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.GENEROI;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
@@ -30,9 +32,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.DOKUMENTTI;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.GENEROI;
 
 /**
  *
@@ -122,12 +121,17 @@ public class DokumenttiController {
     public ResponseEntity<DokumenttiDto> getLatest(
             @RequestParam("perusteId") final Long perusteId,
             @RequestParam(defaultValue = "fi") final String kieli,
-            @RequestParam("suoritustapa") final String suoritustapa
+            @RequestParam("suoritustapa") final String suoritustapa,
+            @RequestParam(defaultValue = "") final String version
     ) {
         try {
-            Kieli k = Kieli.of(kieli);
-            Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
-            DokumenttiDto dto = service.findLatest(perusteId, k, s);
+            Kieli kielikoodi = Kieli.of(kieli);
+            Suoritustapakoodi suoritustapakoodi = Suoritustapakoodi.of(suoritustapa);
+            GeneratorVersion gversion = null;
+            if (!"".equals(version)) {
+                gversion = GeneratorVersion.of(version);
+            }
+            DokumenttiDto dto = service.findLatest(perusteId, kielikoodi, suoritustapakoodi, gversion);
 
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (IllegalArgumentException ex) {

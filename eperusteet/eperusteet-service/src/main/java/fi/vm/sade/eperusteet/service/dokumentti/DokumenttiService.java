@@ -54,4 +54,7 @@ public interface DokumenttiService {
 
     @PreAuthorize("isAuthenticated()")
     DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
+
+    @PreAuthorize("isAuthenticated()")
+    DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version);
 }

@@ -208,6 +208,12 @@ angular.module('eperusteApp')
                   : me.koulutustyyppiInfo[key].hasLaajuus; })
         .value();
 
+    this.kvliitekielet = [
+        'fi',
+        'sv',
+        'en'
+    ];
+
     this.kielet = {
       'suomi': 'fi',
       'ruotsi': 'sv'

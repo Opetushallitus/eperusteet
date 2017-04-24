@@ -33,6 +33,26 @@ import fi.vm.sade.eperusteet.service.internal.PdfService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -49,26 +69,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -141,10 +141,28 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
+        return findLatest(id, kieli, suoritustapakoodi, null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
+    public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version) {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
-        List<Dokumentti> documents = dokumenttiRepository
-                .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(
-                        id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort);
+        List<Dokumentti> documents;
+        if (version != null) {
+            documents = dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndGeneratorVersion(
+                            id, kieli, DokumenttiTila.VALMIS, version, sort).stream()
+                    .filter(doc -> doc.getGeneratorVersion() == GeneratorVersion.KVLIITE)
+                    .collect(Collectors.toList());
+        }
+        else {
+            documents = dokumenttiRepository
+                    .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(
+                            id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort).stream()
+                    .filter(doc -> doc.getGeneratorVersion() != GeneratorVersion.KVLIITE)
+                    .collect(Collectors.toList());
+        }
         if (documents.size() > 0) {
             return mapper.map(documents.get(0), DokumenttiDto.class);
         } else {
