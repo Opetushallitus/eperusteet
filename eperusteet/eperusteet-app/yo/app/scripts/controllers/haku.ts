@@ -14,10 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     var paramList = '?nimi&koulutusala&tyyppi&opintoala';
@@ -425,7 +421,7 @@ angular.module('eperusteApp')
       return Math.max($scope.sivuja, 1);
     };
 
-    $scope.hakuMuuttui = _.debounce(_.bind($scope.haePerusteet, $scope, 1), hakuViive, {'leading': false});
+    $scope.hakuMuuttui = _.debounce(_.bind($scope.haePerusteet, $scope, 1), hakuViive, { 'leading': false });
 
     $scope.korosta = function(otsikko) {
       if ($scope.hakuparametrit.nimi === null || $scope.hakuparametrit.nimi.length < 3) {
@@ -433,6 +429,7 @@ angular.module('eperusteApp')
       }
       return otsikko.replace(pat, '<b>$1</b>');
     };
+
     $scope.valitseKieli = function(nimi) {
       return YleinenData.valitseKieli(nimi);
     };
@@ -457,5 +454,4 @@ angular.module('eperusteApp')
     };
 
     $scope.$on('changed:sisaltokieli', $scope.tyhjenna);
-
   });

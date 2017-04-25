@@ -35,8 +35,7 @@ angular.module("eperusteApp")
         };
 
         vm.$onInit = function() {
-            vm.valittuSivu = vm.nykyinen;
-            console.log(vm);
+            vm.valittuSivu = vm.ngModel;
         }
     }
 });
