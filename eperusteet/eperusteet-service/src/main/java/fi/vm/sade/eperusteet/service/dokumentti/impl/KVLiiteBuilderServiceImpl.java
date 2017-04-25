@@ -29,19 +29,20 @@ import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.KVLiiteDokumentti;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.StringJoiner;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.StringJoiner;
 
 /**
  * @author isaul
@@ -101,7 +102,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
         // Rakennetaan varsinainen dokumentti
         addKVLiite(docBase);
-        LOG.debug(DokumenttiUtils.printDocument(docBase.getDocument()).toString());
+        //LOG.debug(DokumenttiUtils.printDocument(docBase.getDocument()).toString());
 
         return doc;
     }
