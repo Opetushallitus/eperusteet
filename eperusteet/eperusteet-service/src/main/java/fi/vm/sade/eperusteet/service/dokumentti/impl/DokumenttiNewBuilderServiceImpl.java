@@ -7,6 +7,9 @@ import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.domain.yl.AIPEKurssi;
+import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
+import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -112,9 +115,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         rootElement.appendChild(headElement);
         rootElement.appendChild(bodyElement);
 
-        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
-        PerusteenOsaViite sisalto = suoritustapa.getSisalto();
-
         DokumenttiPeruste docBase = new DokumenttiPeruste();
         docBase.setDocument(doc);
         docBase.setHeadElement(headElement);
@@ -124,16 +124,31 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.setPeruste(peruste);
         docBase.setDokumentti(dokumentti);
         docBase.setMapper(mapper);
-        docBase.setSisalto(sisalto);
+        if (suoritustapakoodi.equals(Suoritustapakoodi.AIPE)) {
+            AIPEOpetuksenSisalto aipeOpetuksenPerusteenSisalto = peruste.getAipeOpetuksenPerusteenSisalto();
+            docBase.setAipeOpetuksenSisalto(aipeOpetuksenPerusteenSisalto);
+            docBase.setSisalto(aipeOpetuksenPerusteenSisalto.getSisalto());
+        } else {
+            Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+            PerusteenOsaViite sisalto = suoritustapa.getSisalto();
+            docBase.setSisalto(sisalto);
+        }
 
         // Kansilehti & Infosivu
         addMetaPages(docBase);
 
-        // Tutkinnon muodostuminen
-        addSisaltoelementit(docBase);
 
-        // Tutkinnonosat
-        addTutkinnonosat(docBase);
+        if (suoritustapakoodi.equals(Suoritustapakoodi.AIPE)) {
+            // AIPE-osat
+            addAipeSisalto(docBase);
+        } else {
+            // Tutkinnon muodostuminen
+            addSisaltoelementit(docBase);
+
+            // Tutkinnonosat
+            addTutkinnonosat(docBase);
+        }
+
 
         // Tekstikappaleet
         addTekstikappaleet(docBase, docBase.getSisalto());
@@ -873,6 +888,64 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 }
             }
         }
+    }
+
+    private void addAipeSisalto(DokumenttiPeruste docBase) {
+        AIPEOpetuksenSisalto aipeSisalto = docBase.getAipeOpetuksenSisalto();
+        addVaiheet(docBase, aipeSisalto);
+    }
+
+    private void addVaiheet(DokumenttiPeruste docBase, AIPEOpetuksenSisalto aipeSisalto) {
+        // Otsikko
+
+        // Vaiheet
+        aipeSisalto.getVaiheet().forEach(aipeVaihe -> addVaihe(docBase, aipeVaihe));
+    }
+
+    private void addVaihe(DokumenttiPeruste docBase, AIPEVaihe vaihe) {
+        vaihe.getNimi();
+        vaihe.getSiirtymaEdellisesta();
+        vaihe.getTehtava();
+        vaihe.getSiirtymaSeuraavaan();
+        vaihe.getPaikallisestiPaatettavatAsiat();
+        addOppiaineet(docBase, vaihe.getOppiaineet());
+    }
+
+    private void addOppiaineet(DokumenttiPeruste docBase, List<AIPEOppiaine> oppiaineet) {
+        oppiaineet.forEach(aipeOppiaine -> addOppiaine(docBase, aipeOppiaine));
+    }
+
+    private void addOppiaine(DokumenttiPeruste docBase, AIPEOppiaine oppiaine) {
+        oppiaine.getNimi();
+
+        oppiaine.getKoodi();
+        oppiaine.getTyotavat();
+        oppiaine.getOhjaus();
+        oppiaine.getArviointi();
+        oppiaine.getSisaltoalueinfo();
+        oppiaine.getPakollinenKurssiKuvaus();
+        oppiaine.getSyventavaKurssiKuvaus();
+        oppiaine.getSoveltavaKurssiKuvaus();
+
+        // Oppimäärät
+        addOppiaineet(docBase, oppiaine.getOppimaarat());
+
+        // Kurssit
+        addKurssit(docBase, oppiaine.getKurssit());
+
+        // Tavoitteet
+        oppiaine.getTavoitteet();
+    }
+
+    private void addKurssit(DokumenttiPeruste docBase, List<AIPEKurssi> kurssit) {
+        kurssit.forEach(aipeKurssi -> addKurssi(docBase, aipeKurssi));
+    }
+
+    private void addKurssi(DokumenttiPeruste docBase, AIPEKurssi kurssi) {
+        kurssi.getNimi();
+        kurssi.getKoodi();
+        kurssi.getKuvaus();
+        kurssi.getTavoitteet();
     }
 
     private void addKasitteet(DokumenttiPeruste docBase) {

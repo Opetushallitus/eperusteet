@@ -25,19 +25,11 @@ import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINTONIMIKEKOODI;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,8 +37,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTE;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINTONIMIKEKOODI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Controller
 @RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
@@ -139,9 +141,7 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
-        return audit.withAudit(LogMessage.builder(id, PERUSTE, MUOKKAUS), (Void) -> {
-            return service.updateFull(id, perusteDto);
-        });
+        return audit.withAudit(LogMessage.builder(id, PERUSTE, MUOKKAUS), (Void) -> service.updateFull(id, perusteDto));
     }
 
     @RequestMapping(value = "/{perusteId}/kvliite", method = GET)

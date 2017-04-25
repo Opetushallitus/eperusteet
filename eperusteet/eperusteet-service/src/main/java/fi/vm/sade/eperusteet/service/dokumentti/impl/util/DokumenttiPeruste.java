@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.dokumentti.impl.util;
 
+import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,4 +29,5 @@ import lombok.Setter;
 public class DokumenttiPeruste extends DokumenttiBase {
     CharapterNumberGenerator generator;
     PerusteenOsaViite sisalto;
+    AIPEOpetuksenSisalto aipeOpetuksenSisalto;
 }
