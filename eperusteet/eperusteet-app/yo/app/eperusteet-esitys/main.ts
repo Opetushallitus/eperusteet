@@ -21,7 +21,7 @@
  * määritellä moduulin ulkopuolella.
  */
 angular.module('eperusteet.esitys', [])
-.provider('epEsitysSettings', function epEsitysSettings() {
+.provider('epEsitysSettings', [function epEsitysSettings() {
     let settings = {
         'perusopetusState': 'root.perusopetus',
         'lukiokoulutusState': 'root.lukiokoulutus'
@@ -34,5 +34,4 @@ angular.module('eperusteet.esitys', [])
     this.$get = () => {
         return settings;
     };
-});
-
+}]);
