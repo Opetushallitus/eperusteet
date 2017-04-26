@@ -38,18 +38,15 @@ angular.module("eperusteApp")
         $scope.peruste.sisalto = Api.copy(sisalto);
         $scope.vaiheet = vaiheet;
         $scope.opetus = {
-            lapset: [
-                {
-                    nimi: 'laaja-alainen-osaaminen',
-                    tyyppi: 'osaaminen',
-                    lapset: laajaalaiset
-                },
-                {
-                    nimi: 'vaiheet',
-                    tyyppi: 'vaiheet',
-                    lapset: vaiheet
-                }
-            ]
+            lapset: [{
+                nimi: 'laaja-alainen-osaaminen',
+                tyyppi: 'osaaminen',
+                lapset: laajaalaiset
+            }, {
+                nimi: 'vaiheet',
+                tyyppi: 'vaiheet',
+                lapset: vaiheet
+            }]
         };
         $scope.esitysUrl = $state.href("root.selaus.aikuisperusopetuslista", {
             perusteId: $scope.peruste.id

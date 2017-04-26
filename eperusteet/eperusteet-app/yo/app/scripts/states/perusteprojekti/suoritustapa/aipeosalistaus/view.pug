@@ -1,0 +1,22 @@
+div
+  div.col-md-12.ep-sisalto-inner
+    div.action-buttons
+      button.floater.btn(ng-if="canSort" icon-role="sort" ng-click="sort()" kaanna="'jarjesta'")
+      button.floater.btn(icon-role="add" ng-click="add()" kaanna="sisaltoState.addLabel")
+
+    h1(kaanna="sisaltoState.label")
+    table.table
+      thead
+        tr
+          th(width="2%" ng-bind="'lajittelu-jarjestysnumero' | kaanna")
+          th(ng-bind="'nimi' | kaanna")
+          th(ng-if="hasMuokattu" ng-bind="'muokattu' | kaanna" width="20%")
+      tbody(ui-sortable="sortableOptions" ng-model="osaAlueet")
+        tr(ng-repeat="osa in osaAlueet")
+          // td(ng-hide="isSorting" ng-bind="'L' + ($index + 1)")
+          td(ng-hide="isSorting" ng-bind="$index + 1")
+          td(ng-show="isSorting")
+            span.handle(icon-role="sort")
+          td
+            a(ng-href="{{ osa.$$url }}" ng-bind="osa.nimi | kaanna")
+          td(ng-if="hasMuokattu" ng-bind="osa.muokattu | aikaleima")

@@ -83,11 +83,13 @@ angular.module('eperusteApp')
       $scope.updatePosition();
     });
 
-    $scope.$on('enableEditing', function () {
-      $scope.editStarted = true;
-      $scope.setMargins();
-      $scope.kommentti = '';
-      $scope.updatePosition();
+    $scope.$on('enableEditing', () => {
+      $scope.$evalAsync(() => {
+        $scope.editStarted = true;
+        $scope.setMargins();
+        $scope.kommentti = '';
+        $scope.updatePosition();
+      });
     });
 
     $scope.$on('disableEditing', function () {

@@ -17,10 +17,9 @@
 package fi.vm.sade.eperusteet.service.yl;
 
 import fi.vm.sade.eperusteet.dto.yl.*;
+import java.util.List;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.List;
 
 /**
  *
@@ -96,5 +95,8 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<LaajaalainenOsaaminenDto> getLaajaalaiset(@P("perusteId") Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void updateLaajaalainenOsaaminenJarjestys(Long perusteId, List<LaajaalainenOsaaminenDto> laajaalaiset);
 
 }

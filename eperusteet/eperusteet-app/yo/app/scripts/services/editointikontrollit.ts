@@ -33,7 +33,7 @@ angular.module('eperusteApp')
     let cbListener = _.noop;
     let editmodeListener = null;
 
-    function setEditMode(mode) {
+    async function setEditMode(mode) {
         scope.editMode = mode;
         scope.editModeDefer = $q.defer();
         scope.editModeDefer.resolve(scope.editMode);
@@ -45,37 +45,25 @@ angular.module('eperusteApp')
         }
     }
 
-    function handleBadCode(maybe, resolve = _.noop, reject = _.noop) {
-        if (!scope.editingCallback) {
-            console.warn("Editing callback is missing");
-            return;
-        }
-
-        if (!_.isObject(maybe)) {
-            resolve();
-        } else {
-            maybe.then(resolve).catch(reject);
-        }
-    }
-
     return {
-        // FIXME: async/await
-        startEditing: function () {
-            let deferred = $q.defer();
-            handleBadCode(scope.editingCallback.edit(), () => {
+        async startEditing() {
+            try {
+                await scope.editingCallback.edit();
                 setEditMode(true);
                 $rootScope.$broadcast('enableEditing');
-            }, (err) => console.error(err));
-            return deferred.promise;
+            }
+            catch (ex) {
+                console.error("startEditing", ex);
+            }
         },
-        saveEditing: function (kommentti) {
+        async saveEditing(kommentti) {
             $rootScope.$broadcast('editointikontrollit:preSave');
             $rootScope.$broadcast('notifyCKEditor');
-            var err;
+            let err;
 
             function mandatoryFieldValidator(fields, target) {
                 err = undefined;
-                var fieldsf = _.filter(fields || [], function (field) {
+                const fieldsf = _.filter(fields || [], function (field) {
                     return field.mandatory;
                 });
 
@@ -99,7 +87,7 @@ angular.module('eperusteApp')
                 }
             }
 
-            function afterSave() {
+            async function afterSave() {
                 setEditMode(false);
                 $rootScope.$broadcast('disableEditing');
             }
@@ -128,11 +116,11 @@ angular.module('eperusteApp')
                 }
             }
         },
-        cancelEditing: function () {
+        async cancelEditing() {
             setEditMode(false);
             $rootScope.$broadcast('disableEditing');
             $rootScope.$broadcast('notifyCKEditor');
-            scope.editingCallback.cancel();
+            await scope.editingCallback.cancel();
         },
         registerCallback: function (callback) {
             if (!callback || !_.isFunction(callback.edit) ||

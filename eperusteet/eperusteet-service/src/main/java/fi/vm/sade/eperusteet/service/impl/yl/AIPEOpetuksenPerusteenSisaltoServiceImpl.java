@@ -25,13 +25,15 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  *
@@ -40,6 +42,9 @@ import java.util.Set;
 @Service
 @Transactional
 public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPerusteenSisaltoService {
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private AIPEVaiheRepository vaiheRepository;
@@ -308,8 +313,32 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     @Override
     public List<LaajaalainenOsaaminenDto> getLaajaalaiset(Long perusteId) {
         Peruste peruste = getPeruste(perusteId);
-        Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
+        List<LaajaalainenOsaaminen> laajaalaisetosaamiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
         return mapper.mapAsList(laajaalaisetosaamiset, LaajaalainenOsaaminenDto.class);
     }
 
+    @Override
+    public void updateLaajaalainenOsaaminenJarjestys(Long perusteId, List<LaajaalainenOsaaminenDto> laajaalaiset) {
+        AIPEOpetuksenSisalto sisalto = getPeruste(perusteId).getAipeOpetuksenPerusteenSisalto();
+        if (laajaalaiset.size() != sisalto.getLaajaalaisetosaamiset().size()) {
+            Set<Long> nykyiset = sisalto.getLaajaalaisetosaamiset().stream()
+                    .map(LaajaalainenOsaaminen::getId)
+                    .collect(Collectors.toSet());
+            Set<Long> uudet = laajaalaiset.stream()
+                    .map(LaajaalainenOsaaminenDto::getId)
+                    .collect(Collectors.toSet());
+            if (nykyiset.size() != uudet.size() || uudet.containsAll(nykyiset)) {
+                throw new BusinessRuleViolationException("laajaa-alaisia-ei-voi-muuttaa");
+            }
+        }
+
+        Map<Long, LaajaalainenOsaaminen> loMap = sisalto.getLaajaalaisetosaamiset().stream()
+                .collect(Collectors.toMap(LaajaalainenOsaaminen::getId, lo -> lo));
+
+        Integer idx = 0;
+        for (LaajaalainenOsaaminenDto laajaalainen : laajaalaiset) {
+            loMap.get(laajaalainen.getId()).setJarjestys(idx);
+            idx += 1;
+        }
+    }
 }

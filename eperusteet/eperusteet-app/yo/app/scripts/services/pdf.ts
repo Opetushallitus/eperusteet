@@ -204,7 +204,6 @@ angular.module("eperusteApp")
 
         $scope.generate = async function(kieli, versio = $scope.versiot.valittu) {
             enableActions(false);
-            $scope.docs[kieli] = null;
             $scope.tila = "jonossa";
             try {
                 const res = await Pdf.generoiPdf(perusteId, kieli, suoritustapa, versio)

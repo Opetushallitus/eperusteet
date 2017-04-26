@@ -67,7 +67,6 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
 
     @Override
     public LaajaalainenOsaaminenDto updateLaajaalainenOsaaminen(Long perusteId, LaajaalainenOsaaminenDto dto) {
-
         LaajaalainenOsaaminen current = osaaminenRepository.findBy(perusteId, dto.getId());
         notNull(current, "Päivitettävää tietoa ei ole olemassa");
         lockService.assertLock(LaajaalainenOsaaminenContext.of(perusteId, dto.getId()));

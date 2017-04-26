@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import java.util.Date;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,4 +30,7 @@ import lombok.Setter;
 public class AIPEVaiheBaseDto {
     private Long id;
     private UUID tunniste;
+
+    private Date luotu;
+    private Date muokattu;
 }

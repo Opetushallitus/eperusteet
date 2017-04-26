@@ -37,7 +37,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -127,7 +126,7 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
 
     @Test
     public void testLaajaalaistenLuonti() {
-        Set<LaajaalainenOsaaminen> laajaalaiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
+        List<LaajaalainenOsaaminen> laajaalaiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
         assertTrue(laajaalaiset.size() == 3);
     }
 
@@ -191,7 +190,7 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
 
     @Test
     public void testLaajaalaisetOsaamiset() {
-        Set<LaajaalainenOsaaminen> laajaalaiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
+        List<LaajaalainenOsaaminen> laajaalaiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
         laajaalaiset.add(mapper.map(TestUtils.createLaajaalainen(), LaajaalainenOsaaminen.class));
         perusteRepository.flush();
         Peruste p = perusteRepository.findOne(perusteId);
