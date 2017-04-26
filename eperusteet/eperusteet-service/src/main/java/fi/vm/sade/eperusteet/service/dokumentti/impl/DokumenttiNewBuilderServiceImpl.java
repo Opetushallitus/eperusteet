@@ -7,9 +7,7 @@ import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
-import fi.vm.sade.eperusteet.domain.yl.AIPEKurssi;
-import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
-import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
+import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -160,7 +158,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         buildImages(docBase);
 
         // Tulostetaan dokumentti
-        //printDocument(docBase.getDocument());
+        LOG.debug(printDocument(docBase.getDocument()).toString());
         return doc;
     }
 
@@ -549,8 +547,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             }
             TekstiKappale tk = (TekstiKappale) po;
 
-            if (po.getTunniste() != PerusteenOsaTunniste.RAKENNE
-                    && po.getTunniste() != PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN) {
+            PerusteenOsaTunniste tunniste = po.getTunniste();
+            if (tunniste != PerusteenOsaTunniste.NORMAALI && tunniste != PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN) {
                 String nimi = getTextString(docBase, tk.getNimi());
                 addHeader(docBase, nimi);
 
@@ -564,6 +562,23 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                 docBase.getGenerator().decreaseDepth();
                 docBase.getGenerator().increaseNumber();
+
+            } else if (tunniste == PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN
+                    && docBase.getAipeOpetuksenSisalto() != null) {
+                AIPEOpetuksenSisalto aipeOpetuksenSisalto = docBase.getAipeOpetuksenSisalto();
+
+                Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = aipeOpetuksenSisalto.getLaajaalaisetosaamiset();
+                if (laajaalaisetosaamiset.size() > 0) {
+                    addHeader(docBase, messages.translate("docgen.laaja_alaiset_osaamiset.title", docBase.getKieli()));
+
+                    laajaalaisetosaamiset.forEach(laajaalainenOsaaminen -> {
+                        String nimi = getTextString(docBase, laajaalainenOsaaminen.getNimi());
+                        addTeksti(docBase, nimi, "h5");
+
+                        String teksti = getTextString(docBase, laajaalainenOsaaminen.getKuvaus());
+                        addTeksti(docBase, teksti, "div");
+                    });
+                }
             }
         }
     }
@@ -896,19 +911,34 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addVaiheet(DokumenttiPeruste docBase, AIPEOpetuksenSisalto aipeSisalto) {
-        // Otsikko
 
         // Vaiheet
         aipeSisalto.getVaiheet().forEach(aipeVaihe -> addVaihe(docBase, aipeVaihe));
     }
 
     private void addVaihe(DokumenttiPeruste docBase, AIPEVaihe vaihe) {
-        vaihe.getNimi();
-        vaihe.getSiirtymaEdellisesta();
-        vaihe.getTehtava();
-        vaihe.getSiirtymaSeuraavaan();
-        vaihe.getPaikallisestiPaatettavatAsiat();
-        addOppiaineet(docBase, vaihe.getOppiaineet());
+        addHeader(docBase, getTextString(docBase, vaihe.getNimi()));
+
+        docBase.getGenerator().increaseDepth();
+
+        addTekstiOsa(docBase, vaihe.getSiirtymaEdellisesta());
+        addTekstiOsa(docBase, vaihe.getTehtava());
+        addTekstiOsa(docBase, vaihe.getSiirtymaSeuraavaan());
+        addTekstiOsa(docBase, vaihe.getPaikallisestiPaatettavatAsiat());
+
+        if (vaihe.getOppiaineet().size() > 0) {
+            addOppiaineet(docBase, vaihe.getOppiaineet());
+        }
+
+        docBase.getGenerator().decreaseDepth();
+        docBase.getGenerator().increaseNumber();
+    }
+
+    private void addTekstiOsa(DokumenttiPeruste docBase, TekstiOsa tekstiOsa) {
+        if (tekstiOsa != null) {
+            addTeksti(docBase, getTextString(docBase, tekstiOsa.getOtsikko()), "h5");
+            addTeksti(docBase, getTextString(docBase, tekstiOsa.getTeksti()), "div");
+        }
     }
 
     private void addOppiaineet(DokumenttiPeruste docBase, List<AIPEOppiaine> oppiaineet) {
@@ -916,25 +946,109 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addOppiaine(DokumenttiPeruste docBase, AIPEOppiaine oppiaine) {
-        oppiaine.getNimi();
+        StringBuilder nimiBuilder = new StringBuilder();
+        nimiBuilder.append(getTextString(docBase, oppiaine.getNimi()));
+        if (oppiaine.getKoodi() != null && oppiaine.getKoodi().getUri() != null) {
+            String uri = oppiaine.getKoodi().getUri();
+            String[] splitArray = uri.split("_");
+            if (splitArray.length > 0) {
+                nimiBuilder.append(" (");
+                nimiBuilder.append(splitArray[splitArray.length - 1].toUpperCase());
+                nimiBuilder.append(")");
+            }
+        }
 
-        oppiaine.getKoodi();
-        oppiaine.getTyotavat();
-        oppiaine.getOhjaus();
-        oppiaine.getArviointi();
-        oppiaine.getSisaltoalueinfo();
-        oppiaine.getPakollinenKurssiKuvaus();
-        oppiaine.getSyventavaKurssiKuvaus();
-        oppiaine.getSoveltavaKurssiKuvaus();
+        if (oppiaine.getNimi() != null) {
+            addHeader(docBase, nimiBuilder.toString());
+        } else if (oppiaine.getOppiaine() == null) {
+            addHeader(docBase, messages.translate("docgen.nimeton_oppiaine", docBase.getKieli()));
+        } else {
+            addHeader(docBase, messages.translate("docgen.nimeton_oppimaara", docBase.getKieli()));
+        }
 
-        // Oppimäärät
-        addOppiaineet(docBase, oppiaine.getOppimaarat());
+        docBase.getGenerator().increaseDepth();
 
-        // Kurssit
-        addKurssit(docBase, oppiaine.getKurssit());
+        addTekstiOsa(docBase, oppiaine.getTyotavat());
+        addTekstiOsa(docBase, oppiaine.getOhjaus());
+        addTekstiOsa(docBase, oppiaine.getArviointi());
+        addTekstiOsa(docBase, oppiaine.getSisaltoalueinfo());
+
+        if (oppiaine.getPakollinenKurssiKuvaus() != null) {
+            addTeksti(docBase, messages.translate("docgen.pakollinen_kurssi_kuvaus.title", docBase.getKieli()), "h5");
+            addTeksti(docBase, getTextString(docBase, oppiaine.getPakollinenKurssiKuvaus()), "div");
+        }
+
+        if (oppiaine.getSyventavaKurssiKuvaus() != null) {
+            addTeksti(docBase, messages.translate("docgen.syventava_kurssi_kuvaus.title", docBase.getKieli()), "h5");
+            addTeksti(docBase, getTextString(docBase, oppiaine.getSyventavaKurssiKuvaus()), "div");
+        }
+
+        if (oppiaine.getSoveltavaKurssiKuvaus() != null) {
+            addTeksti(docBase, messages.translate("docgen.soveltava_kurssi_kuvaus.title", docBase.getKieli()), "h5");
+            addTeksti(docBase, getTextString(docBase, oppiaine.getSoveltavaKurssiKuvaus()), "div");
+        }
 
         // Tavoitteet
-        oppiaine.getTavoitteet();
+        if (oppiaine.getTavoitteet().size() > 0) {
+            addTeksti(docBase, messages.translate("docgen.tavoitteet.title", docBase.getKieli()), "h5");
+            addOppiaineTavoitteet(docBase, oppiaine.getTavoitteet());
+        }
+
+        // Kurssit
+        if (oppiaine.getKurssit().size() > 0) {
+            addTeksti(docBase, messages.translate("docgen.kurssit.title", docBase.getKieli()), "h5");
+            addKurssit(docBase, oppiaine.getKurssit());
+        }
+
+        // Oppimäärät
+        if (oppiaine.getOppimaarat().size() > 0) {
+            addOppiaineet(docBase, oppiaine.getOppimaarat());
+        }
+
+        docBase.getGenerator().decreaseDepth();
+        docBase.getGenerator().increaseNumber();
+    }
+
+    private void addOppiaineTavoitteet(DokumenttiPeruste docBase, List<OpetuksenTavoite> tavoiteet) {
+        tavoiteet.forEach(opetuksenTavoite -> {
+            Element table = docBase.getDocument().createElement("table");
+            docBase.getBodyElement().appendChild(table);
+            table.setAttribute("border", "1");
+
+            // Tavoitteen otsikko
+            {
+                Element tr = docBase.getDocument().createElement("tr");
+                table.appendChild(tr);
+
+                Element th = docBase.getDocument().createElement("th");
+                tr.appendChild(th);
+                tr.setAttribute("bgcolor", "#AAAAAA");
+                th.setTextContent(getTextString(docBase, opetuksenTavoite.getTavoite()));
+            }
+
+            {
+                Element tr = docBase.getDocument().createElement("tr");
+                table.appendChild(tr);
+
+                Element td = docBase.getDocument().createElement("td");
+                tr.appendChild(td);
+
+                // Tavoitealueet
+                addTeksti(docBase, messages.translate("docgen.tavoitealueet.title", docBase.getKieli()), "h6", td);
+                opetuksenTavoite.getKohdealueet().forEach(opetuksenKohdealue -> {
+                    addTeksti(docBase, getTextString(docBase, opetuksenKohdealue.getNimi()), "p", td);
+                });
+
+                // Laaja-alainen osaaminen
+                addTeksti(docBase, messages.translate("docgen.laaja_alainen_osaaminen.title", docBase.getKieli()), "h6", td);
+                opetuksenTavoite.getLaajattavoitteet().forEach(laajaalainenOsaaminen -> {
+                    addTeksti(docBase, getTextString(docBase, laajaalainenOsaaminen.getNimi()), "p", td);
+                });
+
+                // Arviointi
+                addTeksti(docBase, getTextString(docBase, opetuksenTavoite.getArvioinninOtsikko()), "h6", td);
+            }
+        });
     }
 
     private void addKurssit(DokumenttiPeruste docBase, List<AIPEKurssi> kurssit) {
@@ -942,10 +1056,33 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addKurssi(DokumenttiPeruste docBase, AIPEKurssi kurssi) {
-        kurssi.getNimi();
-        kurssi.getKoodi();
-        kurssi.getKuvaus();
-        kurssi.getTavoitteet();
+        StringBuilder nimiBuilder = new StringBuilder();
+        nimiBuilder.append(getTextString(docBase, kurssi.getNimi()));
+        if (kurssi.getKoodi() != null && kurssi.getKoodi().getUri() != null) {
+            String uri = kurssi.getKoodi().getUri();
+            String[] splitArray = uri.split("_");
+            if (splitArray.length > 0) {
+                nimiBuilder.append(" (");
+                nimiBuilder.append(splitArray[splitArray.length - 1].toUpperCase());
+                nimiBuilder.append(")");
+            }
+        }
+
+        addTeksti(docBase, nimiBuilder.toString(), "h6");
+        addTeksti(docBase, getTextString(docBase, kurssi.getKuvaus()), "div");
+
+        // Liitetyt tavoitteet
+        if (kurssi.getTavoitteet().size() > 0) {
+            addTeksti(docBase, messages.translate("docgen.liitetyt_tavoitteet", docBase.getKieli()) + ":", "p");
+            Element ul = docBase.getDocument().createElement("ul");
+            docBase.getBodyElement().appendChild(ul);
+
+            kurssi.getTavoitteet().forEach(opetuksenTavoite -> {
+                Element li = docBase.getDocument().createElement("li");
+                ul.appendChild(li);
+                li.setTextContent(getTextString(docBase, opetuksenTavoite.getTavoite()));
+            });
+        }
     }
 
     private void addKasitteet(DokumenttiPeruste docBase) {
