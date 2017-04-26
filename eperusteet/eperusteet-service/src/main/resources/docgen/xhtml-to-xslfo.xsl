@@ -107,7 +107,7 @@
                     <fo:block font-size="10pt" text-align="start"/>
                 </fo:static-content>
                 <fo:static-content flow-name="ra-right">
-                    <fo:block text-align="end" font-size="10pt" color="#6C6D70">
+                    <fo:block font-size="10pt" text-align="end" color="#6C6D70">
                         <fo:page-number/>
                     </fo:block>
                 </fo:static-content>
@@ -120,21 +120,21 @@
                     </fo:block>
                 </fo:static-content>
                 <fo:static-content flow-name="rs-left">
-                    <fo:block text-align="start" color="#007ec5" margin-left="20mm"
-                              margin-top="5mm" display-align="before">
+                    <fo:block text-align="start" color="#007ec5"
+                              margin-left="20mm" margin-top="5mm" display-align="before">
                         <fo:retrieve-marker retrieve-class-name="chapter"/>
                     </fo:block>
                 </fo:static-content>
                 <fo:static-content flow-name="re-right">
-                    <fo:block text-align="start" color="#007ec5" margin-left="20mm"
-                              margin-bottom="5mm" display-align="after">
+                    <fo:block text-align="start" color="#007ec5"
+                              margin-left="20mm" margin-bottom="5mm" display-align="after">
                         <fo:retrieve-marker retrieve-class-name="chapter"/>
                     </fo:block>
                 </fo:static-content>
                 <fo:static-content flow-name="xsl-footnote-separator">
                     <fo:block text-align-last="justify">
-                        <fo:leader leader-pattern="rule" leader-length.maximum="100%" leader-length.optimum="100%"
-                                   rule-thickness="1pt" color="#6E6C6C"/>
+                        <fo:leader font-size="8pt" rule-thickness="1pt" color="#6E6C6C"
+                                   leader-pattern="rule" leader-length.maximum="100%" leader-length.optimum="100%"/>
                     </fo:block>
                 </fo:static-content>
                 <xsl:apply-templates select="body"/>
@@ -614,7 +614,7 @@
     </xsl:template>
 
     <xsl:template match="p">
-        <fo:block space-after="0.75em">
+        <fo:block font-size="10pt" space-after="0.75em">
             <xsl:apply-templates select="*|text()"/>
         </fo:block>
     </xsl:template>
@@ -922,7 +922,7 @@
                             <xsl:text>0pt</xsl:text>
                         </xsl:when>
                         <xsl:otherwise>
-                            <xsl:text>12pt</xsl:text>
+                            <xsl:text>10pt</xsl:text>
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:attribute>
@@ -953,7 +953,7 @@
                 <fo:block>&#x2022;</fo:block>
             </fo:list-item-label>
             <fo:list-item-body start-indent="body-start()">
-                <fo:block>
+                <fo:block font-size="10pt">
                     <xsl:apply-templates select="*|text()"/>
                 </fo:block>
             </fo:list-item-body>
