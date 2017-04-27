@@ -38,7 +38,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Audited
 @Table(name="yl_laajaalainen_osaaminen")
-public class LaajaalainenOsaaminen extends AbstractReferenceableEntity {
+public class LaajaalainenOsaaminen extends AbstractReferenceableEntity implements AIPEJarjestettava {
 
     @NotNull
     @Column(updatable = false)

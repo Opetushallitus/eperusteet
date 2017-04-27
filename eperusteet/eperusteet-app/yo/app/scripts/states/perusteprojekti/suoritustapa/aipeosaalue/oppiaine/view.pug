@@ -10,9 +10,9 @@ div
   projektin-murupolku
 
   div(ng-if='!editEnabled')
-    button.btn.btn-default.pull-right(icon-role='edit', style='margin-left: 10px;', ng-hide='!versiot.latest', ng-click='muokkaa()', kaanna="'muokkaa'", oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]")
-    button.btn.btn-default.pull-right(icon-role='plus' ng-show="canAddOppimaara && versiot.latest" style="margin-left: 10px;" ng-click="lisaaOppimaara()" kaanna="'lisaa-oppimaara'" oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]")
-    button.btn.btn-default.pull-right(icon-role='plus' ng-show="canAddKurssit" ng-click='lisaaKurssi()' kaanna="'lisaa-kurssi'" oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]")
+    button.btn.btn-default.pull-right(ng-disabled="isSorting" icon-role='edit', style='margin-left: 10px;', ng-hide='!versiot.latest', ng-click='muokkaa()', kaanna="'muokkaa'", oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]")
+    button.btn.btn-default.pull-right(ng-disabled="isSorting" icon-role='plus' ng-show="canAddOppimaara && versiot.latest" style="margin-left: 10px;" ng-click="lisaaOppimaara()" kaanna="'lisaa-oppimaara'" oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]")
+    button.btn.btn-default.pull-right(ng-disabled="isSorting" icon-role='plus' ng-show="canAddKurssit" ng-click='lisaaKurssi()' kaanna="'lisaa-kurssi'" oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]")
     h1(ng-bind="editableModel.nimi || 'nimeton-oppiaine' | kaanna")
     versiotiedot
 
@@ -58,18 +58,13 @@ div
     // Oppimäärät
     div(ng-show="canAddOppimaara || oppimaarat.length > 0")
       .panel-heading
-        h3.panel-title.osio-otsikko(ng-click='oppiaineet.$isCollapsed = !oppiaineet.$isCollapsed')
-          span.glyphicon(ng-class="oppiaineet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
+        h3.panel-title.osio-otsikko(ng-click='oppimaarat.$isCollapsed = !oppimaarat.$isCollapsed')
+          span.glyphicon(ng-class="oppimaarat.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
           span(kaanna="'oppimaarat'")
-      .panel-body(uib-collapse='oppiaineet.$isCollapsed')
+      .panel-body(uib-collapse='oppimaarat.$isCollapsed')
         div(ng-show='oppimaarat.length == 0')
           span(kaanna="'tyhja-placeholder-oppiaineet'")
-        table.table.table-striped(ng-show='oppimaarat.length> 0')
-          tr
-            th(ng-bind="'nimi'| kaanna")
-          tr(ng-repeat='oppimaara in oppimaarat')
-            td
-              a(ui-sref='root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine({oppiaineId: oppimaara.id})', ng-bind="oppimaara.nimi || 'nimeton-oppimaara' | kaanna")
+        sortable-table(ng-hide="oppimaarat.length === 0" is-sorting="isSorting" ng-change="updateOppimaarat" allow-sorting="true" ng-model="oppimaarat")
 
     // Kurssit
     div(ng-show="canAddKurssit || kurssit.length !== 0")
@@ -80,12 +75,7 @@ div
       .panel-body(uib-collapse='kurssit.$isCollapsed')
         div(ng-show='kurssit.length == 0')
           span(kaanna="'tyhja-placeholder-kurssit'")
-        table.table.table-striped(ng-show='kurssit.length > 0')
-          tr
-            th(ng-bind="'nimi'| kaanna")
-          tr(ng-repeat='kurssi in kurssit')
-            td
-              a(ui-sref='root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kurssi({kurssiId: kurssi.id})', ng-bind="kurssi.nimi || 'nimeton-kurssi' | kaanna")
+        sortable-table(ng-hide="kurssit.length === 0" is-sorting="isSorting" ng-change="updateKurssit" ng-model="kurssit")
 
     // Tavoitteet
     .panel-heading(ng-if='editableModel.tavoitteet')

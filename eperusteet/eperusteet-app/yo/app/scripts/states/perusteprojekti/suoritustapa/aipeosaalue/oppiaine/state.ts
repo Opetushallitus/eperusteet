@@ -29,11 +29,24 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
             controller: ($scope, oppiaine, Api, kurssit, Editointikontrollit, PerusteProjektiSivunavi, Notifikaatiot,
                          oppiaineet, oppimaarat, Varmistusdialogi, $state, $stateParams, AIPEService, $rootScope,
                          Utils, Kieli, Kaanna, Koodisto, MuokkausUtils, laajaalaiset, vaihe) => {
+                for (const oa of oppimaarat) {
+                    oa.$$url = $state.href("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
+                        oppiaineId: oa.id
+                    });
+                }
+
+                for (const kurssi of kurssit) {
+                    kurssi.$$url = $state.href("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kurssi", {
+                        kurssiId: kurssi.id
+                    });
+                }
+
+                $scope.isSorting = false;
                 $scope.editEnabled = false;
                 $scope.editableModel = Api.copy(oppiaine);
+
                 $scope.oppimaarat = oppimaarat;
                 $scope.kurssit = kurssit;
-                $scope.muokkaa = () => Editointikontrollit.startEditing();
                 $scope.isOppimaara = !!oppiaine._oppiaine;
                 $scope.canAddKurssit = _.isEmpty(oppimaarat);
                 $scope.canAddOppimaara = !$scope.isOppimaara && _.isEmpty(kurssit);
@@ -53,6 +66,14 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                         kurssiId: kurssi.id
                     });
                     kurssit.push(kurssi);
+                };
+
+                $scope.updateOppimaarat = async (oppimaarat) => {
+                    return oppimaarat.customPUT();
+                };
+
+                $scope.updateKurssit = async (kurssit) => {
+                    return kurssit.customPUT();
                 };
 
                 $scope.poista = async () => {
@@ -194,30 +215,33 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                     tarkista: _.constant(true)
                 });
 
-                Editointikontrollit.registerCallback({
-                    edit: async () => {
-                        oppiaine = await oppiaine.get();
-                        $scope.editableModel = Api.copy(oppiaine);
-                    },
-                    save: async () => {
-                        _.each($scope.editableModel.tavoitteet, tavoite => {
-                            tavoite.laajattavoitteet = _(tavoite.$osaaminen)
-                                .filter(item => !item.$hidden)
-                                .map(t => t.id)
-                                .value();
-                        });
-                        $scope.editableModel = await $scope.editableModel.save();
-                        Notifikaatiot.onnistui("tallennus-onnistui");
-                        oppiaine = Api.copy($scope.editableModel);
-                    },
-                    cancel: () => {
-                        $scope.editableModel = Api.copy(oppiaine);
-                    },
-                    notify: value => {
-                        $scope.editEnabled = value;
-                        PerusteProjektiSivunavi.setVisible(!value);
-                    }
-                });
+                $scope.muokkaa = () => {
+                    Editointikontrollit.registerCallback({
+                        edit: async () => {
+                            oppiaine = await oppiaine.get();
+                            $scope.editableModel = Api.copy(oppiaine);
+                        },
+                        save: async () => {
+                            _.each($scope.editableModel.tavoitteet, tavoite => {
+                                tavoite.laajattavoitteet = _(tavoite.$osaaminen)
+                                    .filter(item => !item.$hidden)
+                                    .map(t => t.id)
+                                    .value();
+                            });
+                            $scope.editableModel = await $scope.editableModel.save();
+                            Notifikaatiot.onnistui("tallennus-onnistui");
+                            oppiaine = Api.copy($scope.editableModel);
+                        },
+                        cancel: () => {
+                            $scope.editableModel = Api.copy(oppiaine);
+                        },
+                        notify: value => {
+                            $scope.editEnabled = value;
+                            PerusteProjektiSivunavi.setVisible(!value);
+                        }
+                    });
+                    Editointikontrollit.startEditing();
+                };
             }
         }
     },

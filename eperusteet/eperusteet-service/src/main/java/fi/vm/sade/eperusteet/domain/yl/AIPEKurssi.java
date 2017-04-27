@@ -20,16 +20,15 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  *
@@ -38,7 +37,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "yl_aipe_kurssi", schema = "public")
 @Audited
-public class AIPEKurssi extends AbstractAuditedReferenceableEntity {
+public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AIPEJarjestettava {
 
     @Getter
     @Column(nullable = false, unique = true, updatable = false)
@@ -64,6 +63,10 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi koodi;
+
+    @Getter
+    @Setter
+    private Integer jarjestys;
 
     @Getter
     @ManyToOne

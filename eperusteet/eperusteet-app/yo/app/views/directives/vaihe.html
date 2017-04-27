@@ -5,6 +5,7 @@
                  change-version="vaihdaVersio()"></revert-note>
 
     <button icon-role="edit"
+            ng-disabled="isSorting"
             style="margin-left: 10px;"
             ng-hide="editEnabled || !versiot.latest"
             ng-click="muokkaa()"
@@ -13,6 +14,7 @@
             oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
 
     <button icon-role="plus"
+            ng-disabled="isSorting"
             ng-hide="editEnabled || !versiot.latest"
             ng-click="lisaaOppiaine()"
             class="btn btn-default pull-right"
@@ -74,7 +76,7 @@
 
     </form>
 
-    <div ng-if="editEnabled">
+    <div ng-show="editEnabled">
         <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
             <div class="panel-heading" ng-class="'osio-' + field.path">
                 <div class="action-buttons">
@@ -144,7 +146,7 @@
         </div>
     </div>
 
-    <div ng-if="!editEnabled">
+    <div ng-hide="editEnabled">
         <div ng-repeat="field in fields | filter:filterFn | orderBy:'order'">
             <div class="panel-heading">
                 <h3 class="panel-title osio-otsikko" ng-click="field.$isCollapsed = !field.$isCollapsed">
@@ -171,19 +173,8 @@
             <div ng-show="editableModel.oppiaineet.length == 0">
                 <span kaanna="'tyhja-placeholder-oppiaineet'"></span>
             </div>
-            <table class="table table-striped" ng-show="editableModel.oppiaineet.length > 0">
-                <tr>
-                    <th>
-                        {{'nimi'| kaanna}}
-                    </th>
-                </tr>
-                <tr ng-repeat="oppiaine in editableModel.oppiaineet">
-                    <td>
-                        <a ui-sref=".oppiaine({oppiaineId: oppiaine.id})"
-                           ng-bind="oppiaine.nimi || 'nimeton-oppiaine' | kaanna"></a>
-                    </td>
-                </tr>
-            </table>
+            <sortable-table ng-show="editableModel.oppiaineet.length > 0" is-sorting="isSorting"
+                ng-change="updateOppiaineet" allow-sorting="true" ng-model="editableModel.oppiaineet"></sortable-table>
         </div>
 
         <!-- Tavoitealueet -->

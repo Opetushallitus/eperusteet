@@ -38,7 +38,7 @@ $stateProvider
         });
 
         $scope.isSorting = false;
-        $scope.canSort = _.includes(["osaaminen"], $stateParams.osanTyyppi);
+        $scope.canSort = _.includes(["osaaminen", "vaiheet"], $stateParams.osanTyyppi);
 
         let backup = laajaalaiset.clone();
 
@@ -62,7 +62,24 @@ $stateProvider
             extrafilter: null
         };
 
-        $scope.sort = () => Editointikontrollit.startEditing();
+        $scope.sort = () => {
+            Editointikontrollit.registerCallback({
+                async edit() {
+                    $scope.isSorting = true;
+                },
+                async save() {
+                    $scope.isSorting = false;
+                    await $scope.osaAlueet.customPUT();
+                    Notifikaatiot.onnistui("tallennus-onnistui");
+                },
+                cancel() {
+                    $scope.isSorting = false;
+                    $scope.osaAlueet = backup.clone();
+                }
+            });
+            Editointikontrollit.startEditing();
+        };
+
 
         $scope.sortableOptions = {
             cursor: "move",
@@ -71,21 +88,6 @@ $stateProvider
             delay: 100,
             tolerance: "pointer",
         };
-
-        Editointikontrollit.registerCallback({
-            async edit() {
-                $scope.isSorting = true;
-            },
-            async save() {
-                $scope.isSorting = false;
-                await $scope.osaAlueet.customPUT();
-                Notifikaatiot.onnistui("tallennus-onnistui");
-            },
-            cancel() {
-                $scope.isSorting = false;
-                $scope.osaAlueet = backup.clone();
-            }
-        });
 
         $scope.add = async () => {
             $state.go("root.perusteprojekti.suoritustapa.aipeosaalue", {

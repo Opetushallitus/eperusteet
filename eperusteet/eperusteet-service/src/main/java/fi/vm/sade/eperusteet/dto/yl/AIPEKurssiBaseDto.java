@@ -17,13 +17,13 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.domain.yl.AIPEHasId;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.UUID;
 
 /**
  *
@@ -31,7 +31,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class AIPEKurssiBaseDto {
+public class AIPEKurssiBaseDto implements AIPEHasId {
     private Long id;
     private Optional<UUID> tunniste;
     private Optional<LokalisoituTekstiDto> nimi;

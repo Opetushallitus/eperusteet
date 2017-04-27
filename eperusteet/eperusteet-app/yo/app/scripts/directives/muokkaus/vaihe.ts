@@ -49,8 +49,17 @@ angular.module("eperusteApp")
                 })();
             };
 
+            const createOppiaineUrl = (oppiaine) => $state.href(".oppiaine", { oppiaineId: oppiaine.id });
+
+            if ($scope.editableModel && _.isArray($scope.editableModel.oppiaineet)) {
+                for (const oa of $scope.editableModel.oppiaineet) {
+                    oa.$$url = createOppiaineUrl(oa);
+                }
+            }
+
             $scope.lisaaOppiaine = async () => {
                 const oppiaine = await $scope.model.oppiaineet.post({});
+                oppiaine.$$url = createOppiaineUrl(oppiaine);
                 await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                     oppiaineId: oppiaine.id
                 });
@@ -146,7 +155,7 @@ angular.module("eperusteApp")
                             teksti: {}
                         };
                         const modelField = $scope.editableModel[field.path];
-                        modelField.otsikko[Kieli.getSisaltokieli()]= Kaanna.kaanna(field.localeKey);
+                        modelField.otsikko[Kieli.getSisaltokieli()] = Kaanna.kaanna(field.localeKey);
                     }
                     field.$editing = true;
                 }
@@ -165,10 +174,15 @@ angular.module("eperusteApp")
             }
             mapModel();
 
+            $scope.updateOppiaineet = async () =>
+                $scope.model.all("oppiaineet").customPUT($scope.editableModel.oppiaineet);
+
+            $scope.isSorting = false;
+
             Editointikontrollit.registerCallback({
-                edit: () => {
+                async edit() {
                 },
-                save: async () => {
+                async save() {
                     if ($scope.isNew) {
                         $scope.editableModel = await $scope.editableModel.post();
                     } else {
@@ -185,8 +199,8 @@ angular.module("eperusteApp")
                         reload: true
                     });
                 },
-                cancel: () => {
-                    if ($scope.isNew) {
+                cancel() {
+                    if ($scope.isNew && $scope.data) {
                         $state.go($scope.data.options.backState[0], $scope.data.options.backState[1], {
                             reload: true
                         });
@@ -194,11 +208,11 @@ angular.module("eperusteApp")
                         $scope.editableModel = Api.copy($scope.model);
                     }
                 },
-                notify: value => {
+                notify(value) {
                     $scope.editEnabled = value;
                     PerusteProjektiSivunavi.setVisible(!value);
                 },
-                validate: () => {
+                validate() {
                     return true;
                 }
             });

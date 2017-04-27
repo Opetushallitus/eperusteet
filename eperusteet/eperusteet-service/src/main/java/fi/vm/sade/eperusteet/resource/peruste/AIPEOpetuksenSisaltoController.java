@@ -94,6 +94,63 @@ public class AIPEOpetuksenSisaltoController {
                 (Void) -> ResponseEntity.ok(sisalto.updateVaihe(perusteId, vaiheId, vaiheDto)));
     }
 
+    @RequestMapping(value = "/vaiheet", method = PUT)
+    public ResponseEntity updateVaiheetJarjestys(
+            @PathVariable final Long perusteId,
+            @RequestBody List<AIPEVaiheBaseDto> jarjestys
+    ) {
+        audit.withAudit(LogMessage.builder(perusteId, VAIHE, JARJESTA),
+                (Void) -> {
+                    sisalto.updateVaiheetJarjestys(perusteId, jarjestys);
+                    return null;
+                });
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/oppimaarat", method = PUT)
+    public ResponseEntity updateOppimaaratJarjestys(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long vaiheId,
+            @PathVariable final Long oppiaineId,
+            @RequestBody List<AIPEOppiaineBaseDto> jarjestys
+    ) {
+        audit.withAudit(LogMessage.builder(perusteId, KURSSI, JARJESTA),
+                (Void) -> {
+                    sisalto.updateOppimaaratJarjestys(perusteId, vaiheId, oppiaineId, jarjestys);
+                    return null;
+                });
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit", method = PUT)
+    public ResponseEntity updateKurssitJarjestys(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long vaiheId,
+            @PathVariable final Long oppiaineId,
+            @RequestBody List<AIPEKurssiBaseDto> jarjestys
+    ) {
+        audit.withAudit(LogMessage.builder(perusteId, KURSSI, JARJESTA),
+                (Void) -> {
+                    sisalto.updateKurssitJarjestys(perusteId, vaiheId, oppiaineId, jarjestys);
+                    return null;
+                });
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet", method = PUT)
+    public ResponseEntity updateOppiaineetJarjestys(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long vaiheId,
+            @RequestBody List<AIPEOppiaineBaseDto> jarjestys
+    ) {
+        audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, JARJESTA),
+                (Void) -> {
+                    sisalto.updateOppiaineetJarjestys(perusteId, vaiheId, jarjestys);
+                    return null;
+                });
+        return ResponseEntity.ok().build();
+    }
+
     @RequestMapping(value = "/laajaalaiset", method = GET)
     public ResponseEntity<List<LaajaalainenOsaaminenDto>> getOsaamiset(
             @PathVariable final Long perusteId
@@ -111,7 +168,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/laajaalaiset", method = PUT)
-    public ResponseEntity addOsaaminen(
+    public ResponseEntity updateLaajaalaisetJarjestys(
             @PathVariable final Long perusteId,
             @RequestBody List<LaajaalainenOsaaminenDto> jarjestys
     ) {

@@ -19,14 +19,13 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import java.util.*;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.*;
 
 /**
  *
@@ -35,7 +34,7 @@ import java.util.*;
 @Entity
 @Audited
 @Table(name = "yl_aipe_vaihe")
-public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEVaihe> {
+public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEVaihe>, AIPEJarjestettava {
     @NotNull
     @Column(updatable = false)
     @Getter
@@ -69,6 +68,10 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
     private TekstiOsa paikallisestiPaatettavatAsiat;
 
     @Getter
+    @Setter
+    private Integer jarjestys;
+
+    @Getter
     @Audited
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "aipevaihe_kohdealue",
@@ -85,7 +88,7 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
                    @JoinColumn(name = "vaihe_id")},
                inverseJoinColumns = {
                    @JoinColumn(name = "oppiaine_id")})
-    @OrderColumn(name = "oppiaine_order")
+    @OrderBy("jarjestys, id")
     private List<AIPEOppiaine> oppiaineet = new ArrayList<>(0);
 
     public AIPEOppiaine getOppiaine(Long oppiaineId) {

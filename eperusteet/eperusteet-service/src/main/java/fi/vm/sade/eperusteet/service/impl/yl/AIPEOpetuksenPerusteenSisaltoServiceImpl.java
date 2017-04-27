@@ -317,28 +317,51 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         return mapper.mapAsList(laajaalaisetosaamiset, LaajaalainenOsaaminenDto.class);
     }
 
-    @Override
-    public void updateLaajaalainenOsaaminenJarjestys(Long perusteId, List<LaajaalainenOsaaminenDto> laajaalaiset) {
-        AIPEOpetuksenSisalto sisalto = getPeruste(perusteId).getAipeOpetuksenPerusteenSisalto();
-        if (laajaalaiset.size() != sisalto.getLaajaalaisetosaamiset().size()) {
-            Set<Long> nykyiset = sisalto.getLaajaalaisetosaamiset().stream()
-                    .map(LaajaalainenOsaaminen::getId)
+    private <T extends AIPEJarjestettava, G extends AIPEHasId> void updateJarjestys(List<T> muutettavat, List<G> jarjestys) {
+        if (jarjestys.size() != muutettavat.size()) {
+            Set<Long> nykyiset = muutettavat.stream()
+                    .map(T::getId)
                     .collect(Collectors.toSet());
-            Set<Long> uudet = laajaalaiset.stream()
-                    .map(LaajaalainenOsaaminenDto::getId)
+            Set<Long> uudet = jarjestys.stream()
+                    .map(G::getId)
                     .collect(Collectors.toSet());
             if (nykyiset.size() != uudet.size() || uudet.containsAll(nykyiset)) {
-                throw new BusinessRuleViolationException("laajaa-alaisia-ei-voi-muuttaa");
+                throw new BusinessRuleViolationException("sisaltoja-ei-voi-muuttaa-jarjestettaessa");
             }
         }
 
-        Map<Long, LaajaalainenOsaaminen> loMap = sisalto.getLaajaalaisetosaamiset().stream()
-                .collect(Collectors.toMap(LaajaalainenOsaaminen::getId, lo -> lo));
+        Map<Long, T> loMap = muutettavat.stream()
+                .collect(Collectors.toMap(T::getId, obj -> obj));
 
         Integer idx = 0;
-        for (LaajaalainenOsaaminenDto laajaalainen : laajaalaiset) {
-            loMap.get(laajaalainen.getId()).setJarjestys(idx);
+        for (AIPEHasId obj : jarjestys) {
+            loMap.get(obj.getId()).setJarjestys(idx);
             idx += 1;
         }
+    }
+
+    @Override
+    public void updateVaiheetJarjestys(Long perusteId, List<AIPEVaiheBaseDto> jarjestys) {
+        updateJarjestys(getPerusteSisalto(perusteId).getVaiheet(), jarjestys);
+    }
+
+    @Override
+    public void updateOppiaineetJarjestys(Long perusteId, Long vaiheId, List<AIPEOppiaineBaseDto> jarjestys) {
+        updateJarjestys(getVaiheImpl(perusteId, vaiheId).getOppiaineet(), jarjestys);
+    }
+
+    @Override
+    public void updateOppimaaratJarjestys(Long perusteId, Long vaiheId, Long oppiaineId, List<AIPEOppiaineBaseDto> jarjestys) {
+        updateJarjestys(getOppiaineImpl(perusteId, vaiheId, oppiaineId).getOppimaarat(), jarjestys);
+    }
+
+    @Override
+    public void updateKurssitJarjestys(Long perusteId, Long vaiheId, Long oppiaineId, List<AIPEKurssiBaseDto> jarjestys) {
+        updateJarjestys(getOppiaineImpl(perusteId, vaiheId, oppiaineId).getKurssit(), jarjestys);
+    }
+
+    @Override
+    public void updateLaajaalainenOsaaminenJarjestys(Long perusteId, List<LaajaalainenOsaaminenDto> laajaalaiset) {
+        updateJarjestys(getPerusteSisalto(perusteId).getLaajaalaisetosaamiset(), laajaalaiset);
     }
 }

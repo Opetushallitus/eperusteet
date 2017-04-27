@@ -51,9 +51,10 @@ angular.module('eperusteApp')
                 await scope.editingCallback.edit();
                 setEditMode(true);
                 $rootScope.$broadcast('enableEditing');
+                $rootScope.$$ekEditing = true;
             }
             catch (ex) {
-                console.error("startEditing", ex);
+                $rootScope.$$ekEditing = false;
             }
         },
         async saveEditing(kommentti) {
@@ -66,6 +67,8 @@ angular.module('eperusteApp')
                 const fieldsf = _.filter(fields || [], function (field) {
                     return field.mandatory;
                 });
+
+                $rootScope.$$ekEditing = false;
 
                 if (!target) {
                     return false;
@@ -90,6 +93,7 @@ angular.module('eperusteApp')
             async function afterSave() {
                 setEditMode(false);
                 $rootScope.$broadcast('disableEditing');
+                $rootScope.$$ekEditing = false;
             }
 
             function after() {
@@ -121,6 +125,7 @@ angular.module('eperusteApp')
             $rootScope.$broadcast('disableEditing');
             $rootScope.$broadcast('notifyCKEditor');
             await scope.editingCallback.cancel();
+            $rootScope.$$ekEditing = false;
         },
         registerCallback: function (callback) {
             if (!callback || !_.isFunction(callback.edit) ||

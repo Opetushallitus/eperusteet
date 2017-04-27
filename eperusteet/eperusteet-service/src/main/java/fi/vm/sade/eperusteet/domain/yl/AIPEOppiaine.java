@@ -20,16 +20,15 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import java.util.*;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.*;
 
 /**
  *
@@ -38,7 +37,7 @@ import java.util.*;
 @Entity
 @Audited
 @Table(name = "yl_aipe_oppiaine")
-public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEOppiaine> {
+public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEOppiaine>, AIPEJarjestettava {
 
     @NotNull
     @Column(updatable = false)
@@ -58,6 +57,10 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi koodi;
+
+    @Getter
+    @Setter
+    private Integer jarjestys;
 
     @Getter
     @Setter
@@ -125,7 +128,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @JoinTable(name = "aipeoppiaine_aipekurssi",
                joinColumns = { @JoinColumn(name = "oppiaine_id") },
                inverseJoinColumns = { @JoinColumn(name = "kurssi_id") })
-    @OrderColumn(name = "kurssit_order")
+    @OrderBy("jarjestys, id")
     private List<AIPEKurssi> kurssit = new ArrayList<>();
 
     @Getter
@@ -142,7 +145,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @JoinTable(name = "aipeoppiaine_aipeoppiaine",
                joinColumns = {@JoinColumn(name = "oppiaine_id")},
                inverseJoinColumns = {@JoinColumn(name = "oppimaara_id")})
-    @OrderColumn(name = "oppimaara_order")
+    @OrderBy("jarjestys, id")
     private List<AIPEOppiaine> oppimaarat = new ArrayList<>();
 
     @Getter

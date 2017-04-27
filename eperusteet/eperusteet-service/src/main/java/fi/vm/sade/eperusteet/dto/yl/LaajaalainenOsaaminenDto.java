@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.domain.yl.AIPEHasId;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.UUID;
@@ -28,7 +29,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LaajaalainenOsaaminenDto implements ReferenceableDto {
+public class LaajaalainenOsaaminenDto implements ReferenceableDto, AIPEHasId {
     private Long id;
     private UUID tunniste;
     private Optional<LokalisoituTekstiDto> nimi;

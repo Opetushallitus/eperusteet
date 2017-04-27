@@ -14,24 +14,13 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
-
-import fi.vm.sade.eperusteet.domain.yl.AIPEHasId;
-import java.util.Date;
-import java.util.UUID;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.domain.yl;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
-public class AIPEVaiheBaseDto implements AIPEHasId {
-    private Long id;
-    private UUID tunniste;
-
-    private Date luotu;
-    private Date muokattu;
+public interface AIPEJarjestettava extends AIPEHasId {
+    Integer getJarjestys();
+    void setJarjestys(Integer value);
 }

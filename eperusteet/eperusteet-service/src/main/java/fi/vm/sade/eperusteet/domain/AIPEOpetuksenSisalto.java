@@ -65,7 +65,7 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto {
     @JoinTable(name = "aipe_opetuksensisalto_vaihe",
                joinColumns = @JoinColumn(name = "opetus_id"),
                inverseJoinColumns = @JoinColumn(name = "vaihe_id"))
-    @OrderColumn(name = "vaihe_order")
+    @OrderBy("jarjestys, id")
     private List<AIPEVaihe> vaiheet = new ArrayList<>();
 
     public Optional<AIPEVaihe> getVaihe(Long vaiheId) {
