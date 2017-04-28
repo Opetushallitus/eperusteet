@@ -80,7 +80,7 @@
             </div>
             <ep-pagination ng-show="liittamattomatKurssitPagination.multiPage"
                         ng-model="liittamattomatKurssitPagination.currentPage"
-                        ng-change="liittamattomatKurssitPagination.changePage(liittamattomatKurssitPagination.currentPage)"
+                        ng-change="liittamattomatKurssitPagination.changePage"
                         total-items="liittamattomatKurssitPagination.total"
                         items-per-page="liittamattomatKurssitPagination.showPerPage"></ep-pagination>
 
@@ -106,7 +106,7 @@
                 </div>
                 <ep-pagination ng-show="liitetytKurssitPagination.multiPage"
                             ng-model="liitetytKurssitPagination.currentPage"
-                            ng-change="liitetytKurssitPagination.changePage(liitetytKurssitPagination.currentPage)"
+                            ng-change="liitetytKurssitPagination.changePage"
                             total-items="liitetytKurssitPagination.total"
                             items-per-page="liitetytKurssitPagination.showPerPage"></ep-pagination>
             </div>
