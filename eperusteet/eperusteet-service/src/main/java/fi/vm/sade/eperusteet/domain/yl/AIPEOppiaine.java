@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -147,6 +148,13 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
                inverseJoinColumns = {@JoinColumn(name = "oppimaara_id")})
     @OrderBy("jarjestys, id")
     private List<AIPEOppiaine> oppimaarat = new ArrayList<>();
+
+    @ValidHtml(whitelist = WhitelistType.NORMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen kielikasvatus;
 
     @Getter
     @NotAudited

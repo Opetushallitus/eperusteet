@@ -340,6 +340,23 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         }
     }
 
+    public boolean onKieliKoodi(String koodiArvo) {
+        return koodiArvo.startsWith("A")
+            || koodiArvo.startsWith("B")
+            || koodiArvo.startsWith("C")
+            || koodiArvo.startsWith("ENA")
+            || koodiArvo.startsWith("ENA")
+            || koodiArvo.startsWith("LA")
+            || koodiArvo.startsWith("LK")
+            || koodiArvo.startsWith("MK")
+            || koodiArvo.startsWith("RU")
+            || koodiArvo.startsWith("SK")
+            || koodiArvo.startsWith("TK")
+            || koodiArvo.startsWith("TK")
+            || koodiArvo.startsWith("VK");
+    };
+
+
     @Override
     public void updateVaiheetJarjestys(Long perusteId, List<AIPEVaiheBaseDto> jarjestys) {
         updateJarjestys(getPerusteSisalto(perusteId).getVaiheet(), jarjestys);

@@ -31,11 +31,17 @@ div
       .panel-body(uib-collapse='field.$isCollapsed')
         div(ng-bind-html='editableModel[field.path].teksti | kaanna | unsafe')
 
+    .panel-heading(ng-if='editableModel.kielikasvatus && isKieli()')
+      h3.panel-title.osio-otsikko(ng-click='editableModel.kielikasvatus.$isCollapsed = !editableModel.kielikasvatus.$isCollapsed')
+        span.glyphicon(ng-class="editableModel.kielikasvatus.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
+        span(ng-bind="'kielikasvatus' | kaanna")
+    .panel-body(ng-if='isKieli()' uib-collapse='editableModel.kielikasvatus.$isCollapsed')
+      div(ng-bind-html='editableModel.kielikasvatus | kaanna')
+
     .panel-heading(ng-if='editableModel.pakollinenKurssiKuvaus')
       h3.panel-title.osio-otsikko(ng-click='editableModel.pakollinenKurssiKuvaus.$isCollapsed = !editableModel.pakollinenKurssiKuvaus.$isCollapsed')
         span.glyphicon(ng-class="editableModel.pakollinenKurssiKuvaus.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
         span(ng-bind="'pakollinen-kurssi-kuvaus-header' | kaanna")
-
     .panel-body(uib-collapse='editableModel.pakollinenKurssiKuvaus.$isCollapsed')
       div(ng-bind-html='editableModel.pakollinenKurssiKuvaus | kaanna')
 
@@ -133,6 +139,10 @@ div
         div(ng-if='!field.$editing', ng-bind-html='editableModel[field.path].teksti | kaanna')
         div(ng-if='field.$editing')
           .msd-elastic(slocalized='', ckeditor='', ng-model='editableModel[field.path].teksti', editor-placeholder='muokkaus-tekstikappaleen-teksti-placeholder')
+
+    div(ng-show="isKieli()")
+      h3.panel-title.osio-otsikko(ng-bind="'kielikasvatus-kuvaus-header' | kaanna")
+      #kielikasvatus-kuvaus-input.msd-elastic(ckeditor, ng-model='editableModel.kielikasvatus', slocalized)
 
     h3.panel-title.osio-otsikko(ng-bind="'pakollinen-kurssi-kuvaus-header' | kaanna")
     #pakollinen-kurssi-kuvaus-input.msd-elastic(ckeditor, ng-model='editableModel.pakollinenKurssiKuvaus', slocalized)

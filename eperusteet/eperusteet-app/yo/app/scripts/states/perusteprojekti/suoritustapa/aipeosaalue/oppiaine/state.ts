@@ -60,6 +60,24 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                 $scope.laajaalaiset = laajaalaiset;
                 $scope.vaihe = vaihe;
 
+                function onKieliKoodi(koodiarvo: string): boolean {
+                    return _.startsWith(koodiarvo, "A")
+                        || _.startsWith(koodiarvo, "B")
+                        || _.startsWith(koodiarvo, "C")
+                        || _.startsWith(koodiarvo, "ENA")
+                        || _.startsWith(koodiarvo, "ENA")
+                        || _.startsWith(koodiarvo, "LA")
+                        || _.startsWith(koodiarvo, "LK")
+                        || _.startsWith(koodiarvo, "MK")
+                        || _.startsWith(koodiarvo, "RU")
+                        || _.startsWith(koodiarvo, "SK")
+                        || _.startsWith(koodiarvo, "TK")
+                        || _.startsWith(koodiarvo, "TK")
+                        || _.startsWith(koodiarvo, "VK");
+                };
+
+                $scope.isKieli = () => oppiaine.koodi && onKieliKoodi(oppiaine.koodi.arvo);
+
                 $scope.lisaaKurssi = async () => {
                     const kurssi = await kurssit.post({});
                     await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kurssi", {
