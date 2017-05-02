@@ -221,7 +221,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private Stream<Peruste> getPerusteetByUris(Stream<String> urit, Function<String, Stream<Peruste>> perusteByUriFinder) {
-        return urit.map(uri -> perusteByUriFinder.apply(uri)).flatMap(Function.identity());
+        return urit.map(perusteByUriFinder).flatMap(Function.identity());
     }
 
     @Override
@@ -231,8 +231,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         // Ladataan koodistosta osaamisala ja tutkintonimikehakua vastaavat koodit
         if (pquery.getNimi() != null && pquery.isOsaamisalat()) {
-            koodistostaHaetut = Stream.concat(koodistostaHaetut, getPerusteetByUris(
-                    koodistoService.filterBy("osaamisala", pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri), perusteet::findAllByOsaamisala));
+            Stream<KoodistoKoodiDto> urit = koodistoService.filterBy("osaamisala", pquery.getNimi());
+            Stream <Peruste> osaamisalat = getPerusteetByUris(urit.map(KoodistoKoodiDto::getKoodiUri),
+                    perusteet::findAllByOsaamisala);
+            koodistostaHaetut = Stream.concat(koodistostaHaetut, osaamisalat);
         }
 
         // Haetaan perusteiden id:t mihin on liitetty osaamisalat tai tutkintonimikkeet
