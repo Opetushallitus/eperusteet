@@ -53,7 +53,7 @@ angular.module('eperusteApp')
 
     function match(input, to, kaanna = true) {
       var vertailu = kaanna ? (Kaanna.kaanna(to) || '') : to;
-      return vertailu.toLowerCase().indexOf(input.toLowerCase()) !== -1;
+      return _.isString(vertailu) && _.isString(input) && vertailu.toLowerCase().indexOf(input.toLowerCase()) !== -1;
     }
 
     function access(object) {

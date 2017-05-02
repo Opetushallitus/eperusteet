@@ -16,7 +16,7 @@
 
 angular.module("eperusteApp")
 .component("epPagination", {
-    template: '<ul uib-pagination ng-model="vm.ngModel" boundary-links="vm.boundaryLinks" ng-change="vm.valitseSivu(vm.valittuSivu)" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" previous-text="«" next-text="»"></ul>',
+    template: '<ul uib-pagination ng-model="vm.ngModel" boundary-links="vm.boundaryLinks" ng-change="vm.valitseSivu(vm.ngModel)" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" previous-text="«" next-text="»"></ul>',
     bindings: {
         totalItems: "<",
         itemsPerPage: "<",
@@ -33,9 +33,5 @@ angular.module("eperusteApp")
                 vm.ngChange(sivu);
             }
         };
-
-        vm.$onInit = function() {
-            vm.valittuSivu = vm.nykyinen;
-        }
     }
 });
