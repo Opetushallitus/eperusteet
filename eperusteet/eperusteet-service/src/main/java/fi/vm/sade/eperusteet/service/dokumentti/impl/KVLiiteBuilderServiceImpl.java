@@ -102,7 +102,9 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
         // Rakennetaan varsinainen dokumentti
         addKVLiite(docBase);
-        //LOG.debug(DokumenttiUtils.printDocument(docBase.getDocument()).toString());
+
+        // Tulostetaan dokumentti konsoliin
+        LOG.debug(DokumenttiUtils.printDocument(docBase.getDocument()).toString());
 
         return doc;
     }
@@ -152,7 +154,6 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         Element flagImg = docBase.getDocument().createElement("img");
         flagTd.appendChild(flagImg);
         flagImg.setAttribute("src", "kvliite/fi.jpg");
-
     }
 
     private void addTutkintoNimiSuomeksi(KVLiiteDokumentti docBase) {
