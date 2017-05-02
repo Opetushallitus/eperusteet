@@ -145,7 +145,7 @@ angular.module('eperusteApp')
         hasTutkintonimikkeet: false,
         hakuState: 'root.selaus.aikuisperusopetuslista',
         sisaltoTunniste: 'aipesisalto',
-        hasPdfCreation: false
+        hasPdfCreation: true
       },
       'koulutustyyppi_6': {
         nimi: 'lisaopetus',
