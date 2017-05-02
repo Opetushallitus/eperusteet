@@ -1,0 +1,12 @@
+div
+  .hallintapainikkeet
+    button.btn.btn-default(ng-click="uusi()" icon-role="plus" ng-bind="'lisaa-opas' | kaanna")
+  h2(ng-bind="'oppaat' | kaanna")
+
+  rajaus(model="rajaus" placeholder="etsi-oppaista")
+
+
+// table.table.table-striped.admin-table
+  tr
+    th(width="50%")
+      a.action-link
