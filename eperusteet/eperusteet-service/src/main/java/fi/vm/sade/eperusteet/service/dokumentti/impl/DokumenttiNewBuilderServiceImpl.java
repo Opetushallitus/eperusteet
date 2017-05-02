@@ -157,7 +157,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Kuvat
         buildImages(docBase);
 
-        // Tulostetaan dokumentti
+        // Tulostetaan dokumentti konsoliin
         LOG.debug(printDocument(docBase.getDocument()).toString());
         return doc;
     }
@@ -1035,18 +1035,50 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                 // Tavoitealueet
                 addTeksti(docBase, messages.translate("docgen.tavoitealueet.title", docBase.getKieli()), "h6", td);
-                opetuksenTavoite.getKohdealueet().forEach(opetuksenKohdealue -> {
-                    addTeksti(docBase, getTextString(docBase, opetuksenKohdealue.getNimi()), "p", td);
-                });
+                opetuksenTavoite.getKohdealueet().forEach(opetuksenKohdealue -> addTeksti(docBase,
+                        getTextString(docBase, opetuksenKohdealue.getNimi()), "p", td));
 
                 // Laaja-alainen osaaminen
                 addTeksti(docBase, messages.translate("docgen.laaja_alainen_osaaminen.title", docBase.getKieli()), "h6", td);
-                opetuksenTavoite.getLaajattavoitteet().forEach(laajaalainenOsaaminen -> {
-                    addTeksti(docBase, getTextString(docBase, laajaalainenOsaaminen.getNimi()), "p", td);
-                });
+                StringJoiner joiner = new StringJoiner(", ");
+                opetuksenTavoite.getLaajattavoitteet().forEach(laajaalainenOsaaminen -> joiner
+                        .add(getTextString(docBase, laajaalainenOsaaminen.getNimi())));
+                addTeksti(docBase, joiner.toString(), "p", td);
 
                 // Arviointi
                 addTeksti(docBase, getTextString(docBase, opetuksenTavoite.getArvioinninOtsikko()), "h6", td);
+
+                Element arviointiTable = docBase.getDocument().createElement("table");
+                td.appendChild(arviointiTable);
+                arviointiTable.setAttribute("border", "1");
+
+                // Arviointi otsikkorivi
+                Element arviointiTr = docBase.getDocument().createElement("tr");
+                arviointiTable.appendChild(arviointiTr);
+                arviointiTr.setAttribute("bgcolor", "#EEEEEE");
+
+                Element arvioinninKuvausTh = docBase.getDocument().createElement("th");
+                arviointiTr.appendChild(arvioinninKuvausTh);
+                arvioinninKuvausTh.setTextContent(getTextString(docBase, opetuksenTavoite.getArvioinninKuvaus()));
+
+                Element arvioinninOsaamisenKuvausTh = docBase.getDocument().createElement("th");
+                arviointiTr.appendChild(arvioinninOsaamisenKuvausTh);
+                arvioinninOsaamisenKuvausTh.setTextContent(getTextString(docBase,
+                        opetuksenTavoite.getArvioinninOsaamisenKuvaus()));
+
+                // Arvioinnin tavoitteet
+                opetuksenTavoite.getArvioinninkohteet().forEach(tavoitteenArviointi -> {
+                    Element kohdeTr = docBase.getDocument().createElement("tr");
+                    arviointiTable.appendChild(kohdeTr);
+                    Element kohdeTd = docBase.getDocument().createElement("td");
+                    kohdeTr.appendChild(kohdeTd);
+                    kohdeTd.setTextContent(getTextString(docBase, tavoitteenArviointi.getArvioinninKohde()));
+
+                    Element hyvanOsaamisenKuvausTd = docBase.getDocument().createElement("td");
+                    kohdeTr.appendChild(hyvanOsaamisenKuvausTd);
+                    hyvanOsaamisenKuvausTd.setTextContent(getTextString(docBase,
+                            tavoitteenArviointi.getHyvanOsaamisenKuvaus()));
+                });
             }
         });
     }
