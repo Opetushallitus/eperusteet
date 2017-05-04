@@ -15,23 +15,23 @@
  */
 
 angular.module("eperusteApp")
-.component("epPagination", {
-    template: '<ul uib-pagination ng-model="vm.ngModel" boundary-links="vm.boundaryLinks" ng-change="vm.valitseSivu(vm.ngModel)" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" previous-text="«" next-text="»"></ul>',
-    bindings: {
-        totalItems: "<",
-        itemsPerPage: "<",
-        boundaryLinks: "<",
-        ngModel: "=",
-        ngChange: "<",
-    },
-    controllerAs: "vm",
-    controller() {
-        const vm = this;
-
-        vm.valitseSivu = (sivu) => {
-            if (_.isFunction(vm.ngChange)) {
-                vm.ngChange(sivu);
-            }
-        };
+.directive("epPagination", () => {
+    return {
+        template: '<ul uib-pagination ng-model="ngModel" boundary-links="boundaryLinks" ng-change="valitseSivu(ngModel)" total-items="totalItems" items-per-page="itemsPerPage" previous-text="«" next-text="»"></ul>',
+        restrict: "E",
+        scope: {
+            totalItems: "=",
+            itemsPerPage: "=",
+            boundaryLinks: "=",
+            ngModel: "=",
+            ngChange: "=",
+        },
+        controller($scope) {
+            $scope.valitseSivu = (sivu) => {
+                if (_.isFunction($scope.ngChange)) {
+                    $scope.ngChange(sivu);
+                }
+            };
+        }
     }
 });
