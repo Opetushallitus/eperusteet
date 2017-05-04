@@ -18,12 +18,13 @@ angular.module("eperusteApp")
 .directive("sortableTable", () => {
     return {
         templateUrl: "scripts/directives/sortabletable.html",
+        restrict: "E",
         scope: {
             ngModel: "=",
-            showIdx: "<",
-            ngChange: "<", // Sallii muokkauksen jos määritelty
+            showIdx: "=",
+            ngChange: "=", // Sallii muokkauksen jos määritelty
             isSorting: "=",
-            nimeton: "<"
+            nimeton: "="
         },
         controller($scope, $state, Editointikontrollit, Notifikaatiot, Api) {
             $scope.ngModel = $scope.ngModel || [];
