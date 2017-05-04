@@ -33,86 +33,86 @@ interface Kohdealue {
 }
 
 angular.module('eperusteApp')
-.component('tavoitteet', {
-    templateUrl: 'scripts/components/tavoitteet/tavoitteet.html',
-    bindings: {
-        model: '<',
-        laajaalaiset: '<',
-        vaihe: '<',
-        editing: '<'
-    },
-    controller: function (Kaanna) {
-
-        function generateArraySetter(findFrom, manipulator = _.noop) {
-            return item => {
-                const found = _.find(findFrom, findItem => parseInt(findItem, 10) === item.id);
-                item = _.clone(item);
-                item.$hidden = !found;
-                item.teksti = item.kuvaus;
-                return manipulator(item) || item;
-            };
-        }
-
-        this.$onInit = () => {
-            _.each(this.model, tavoite => {
+.directive('aipeTavoitteet', () => {
+    return {
+        templateUrl: 'scripts/components/tavoitteet/tavoitteet.html',
+        restrict: 'E',
+        scope: {
+            model: '=',
+            laajaalaiset: '=',
+            vaihe: '=',
+            editing: '='
+        },
+        controller: function ($scope, Kaanna) {
+            _.each($scope.model, tavoite => {
                 tavoite.$accordionOpen = true;
 
                 // Alustetaan valitut kohdealueet
                 if (tavoite.kohdealueet && tavoite.kohdealueet.length > 0) {
-                    tavoite.$valittuKohdealue = _.find(this.vaihe.opetuksenKohdealueet,
+                    tavoite.$valittuKohdealue = _.find($scope.vaihe.opetuksenKohdealueet,
                         ka => ka.id.toString() === tavoite.kohdealueet[0]);
                 }
 
                 // Alustetaan laaja-alaiset
-                tavoite.$osaaminen = _.map(this.laajaalaiset, generateArraySetter(tavoite.laajattavoitteet));
+                tavoite.$osaaminen = _.map($scope.laajaalaiset, generateArraySetter(tavoite.laajattavoitteet));
             });
-        };
 
-        this.toggleAll = () => {
-            _.each(this.model, (tavoite) => {
-                tavoite.$accordionOpen = !tavoite.$accordionOpen;
-            })
-        };
+            function generateArraySetter(findFrom, manipulator = _.noop) {
+                return item => {
+                    const found = _.find(findFrom, findItem => parseInt(findItem, 10) === item.id);
+                    item = _.clone(item);
+                    item.$hidden = !found;
+                    item.teksti = item.kuvaus;
+                    return manipulator(item) || item;
+                };
+            }
 
-        this.treeOptions = {};
+            $scope.toggleAll = () => {
+                _.each($scope.model, (tavoite) => {
+                    tavoite.$accordionOpen = !tavoite.$accordionOpen;
+                })
+            };
 
-        this.lisaaTavoite = () => {
-            this.model.push({
-                $accordionOpen: true,
-                $editing: false,
-                sisaltoalueet: [],
-                laajattavoitteet: [],
-                kohdealueet: [],
-                arvioinninkohteet: [],
-                $osaaminen: _.map(this.laajaalaiset, generateArraySetter([]))
-            });
-        };
+            $scope.treeOptions = {};
 
-        this.poistaTavoite = (tavoite) => {
-            _.remove(this.model, tavoite);
-        };
+            $scope.lisaaTavoite = () => {
+                $scope.model.push({
+                    $accordionOpen: true,
+                    $editing: false,
+                    sisaltoalueet: [],
+                    laajattavoitteet: [],
+                    kohdealueet: [],
+                    arvioinninkohteet: [],
+                    $osaaminen: _.map($scope.laajaalaiset, generateArraySetter([]))
+                });
+            };
 
-        this.asetaKohdealue = (tavoite) => {
-            const valittu = tavoite.$valittuKohdealue ? [tavoite.$valittuKohdealue] : [];
-            tavoite.kohdealueet = _(valittu)
-                .map(item => item.id)
-                .value();
-        };
+            $scope.poistaTavoite = (tavoite) => {
+                _.remove($scope.model, tavoite);
+            };
 
-        this.kaannaKohdealue = (ka) => {
-            return Kaanna.kaanna(ka.nimi);
-        };
+            $scope.asetaKohdealue = (tavoite) => {
+                const valittu = tavoite.$valittuKohdealue ? [tavoite.$valittuKohdealue] : [];
+                tavoite.kohdealueet = _(valittu)
+                    .map(item => item.id)
+                    .value();
+            };
 
-        this.poistaValittuKohdealue = (tavoite) => {
-            tavoite.$valittuKohdealue = undefined;
-        };
+            $scope.kaannaKohdealue = (ka) => {
+                return Kaanna.kaanna(ka.nimi);
+            };
 
-        this.addArvioinninKohde = (tavoite) => {
-            tavoite.arvioinninkohteet.push({});
-        };
+            $scope.poistaValittuKohdealue = (tavoite) => {
+                tavoite.$valittuKohdealue = undefined;
+            };
 
-        this.removeArvioinninKohde = (tavoite, index) => {
-            tavoite.arvioinninkohteet.splice(index, 1);
-        };
-    }
+            $scope.addArvioinninKohde = (tavoite) => {
+                tavoite.arvioinninkohteet.push({});
+            };
+
+            $scope.removeArvioinninKohde = (tavoite, index) => {
+                tavoite.arvioinninkohteet.splice(index, 1);
+            };
+        }
+    };
 });

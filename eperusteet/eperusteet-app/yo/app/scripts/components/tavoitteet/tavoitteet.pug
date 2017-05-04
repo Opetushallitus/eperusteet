@@ -1,6 +1,6 @@
 mixin tavoite-painikkeet
-  .muokkausnappi(ng-if="$ctrl.editing")
-    button.btn.btn-default.icon-only(ng-click="$ctrl.poistaTavoite(tavoite)", icon-role="remove", title="{{'poista' | kaanna}}")
+  .muokkausnappi(ng-if="editing")
+    button.btn.btn-default.icon-only(ng-click="poistaTavoite(tavoite)", icon-role="remove", title="{{'poista' | kaanna}}")
 
 mixin tavoite-handle
   .sorter-handle.pull-left(ui-tree-handle)
@@ -14,7 +14,7 @@ mixin tavoite-naytto
     p(kaanna="tavoite.$valittuKohdealue.nimi || 'ei-asetettu'")
 
     h4(kaanna="'laaja-alainen-osaaminen'")
-    div(tag-cloud="tavoite.$osaaminen", openable="true", edit-mode="$ctrl.editing", add-label="lisaa-laaja-alainen-osaaminen")
+    div(tag-cloud="tavoite.$osaaminen", openable="true", edit-mode="editing", add-label="lisaa-laaja-alainen-osaaminen")
 
     h4(kaanna="tavoite.arvioinninOtsikko || 'arviointi'")
     +arviointi
@@ -25,10 +25,10 @@ mixin tavoite-naytto
 mixin arviointi
   table.table.table-default.table-bordered.perusopetuksen-arviointi
     thead
-      tr(ng-if="!$ctrl.editing")
+      tr(ng-if="!editing")
         th(ng-bind="tavoite.arvioinninKuvaus || 'arvioinnin-kohde' | kaanna")
         th(ng-bind="tavoite.arvioinninOsaamisenKuvaus || 'arvion-hyva-osaaminen' | kaanna")
-      tr(ng-if="$ctrl.editing")
+      tr(ng-if="editing")
         th
           input.form-control(placeholder="{{'arvioinnin-kohde' | kaanna}}", slocalized, ng-model="tavoite.arvioinninKuvaus")
         th
@@ -37,15 +37,15 @@ mixin arviointi
     tbody
       tr(ng-repeat="arvioinninKohde in tavoite.arvioinninkohteet")
         td
-          span(ng-if="!$ctrl.editing", kaanna="arvioinninKohde.arvioinninKohde")
-          input.form-control(ng-model='arvioinninKohde.arvioinninKohde', slocalized, ng-if="$ctrl.editing")
+          span(ng-if="!editing", kaanna="arvioinninKohde.arvioinninKohde")
+          input.form-control(ng-model='arvioinninKohde.arvioinninKohde', slocalized, ng-if="editing")
         td
-          span(ng-if="!$ctrl.editing", kaanna="arvioinninKohde.hyvanOsaamisenKuvaus")
-          textarea.form-control.msd-elastic(ng-model='arvioinninKohde.hyvanOsaamisenKuvaus', slocalized , ng-if="$ctrl.editing")
-        td(ng-if="$ctrl.editing")
-          a(icon-role="remove", ng-click="$ctrl.removeArvioinninKohde(tavoite, $index)", title="{{'poista' | kaanna}}", style="cursor: pointer;")
+          span(ng-if="!editing", kaanna="arvioinninKohde.hyvanOsaamisenKuvaus")
+          textarea.form-control.msd-elastic(ng-model='arvioinninKohde.hyvanOsaamisenKuvaus', slocalized , ng-if="editing")
+        td(ng-if="editing")
+          a(icon-role="remove", ng-click="removeArvioinninKohde(tavoite, $index)", title="{{'poista' | kaanna}}", style="cursor: pointer;")
 
-  button.btn.btn-default(icon-role="add", kaanna="'arviointi-uusi-kriteeri'", ng-click="$ctrl.addArvioinninKohde(tavoite)", ng-if="$ctrl.editing")
+  button.btn.btn-default(icon-role="add", kaanna="'arviointi-uusi-kriteeri'", ng-click="addArvioinninKohde(tavoite)", ng-if="editing")
 
 mixin tavoite-muokkaus
   h4(kaanna="'nimi'")
@@ -54,13 +54,13 @@ mixin tavoite-muokkaus
   h4(kaanna="'kohdealueet'")
   .input-group
     select.form-control(ng-model="tavoite.$valittuKohdealue",
-                        ng-change="$ctrl.asetaKohdealue(tavoite)",
-                        ng-options="$ctrl.kaannaKohdealue(ka) for ka in $ctrl.vaihe.opetuksenKohdealueet")
+                        ng-change="asetaKohdealue(tavoite)",
+                        ng-options="kaannaKohdealue(ka) for ka in vaihe.opetuksenKohdealueet")
     span.input-group-btn
-      button.btn.btn-default(ng-click='$ctrl.poistaValittuKohdealue(tavoite)', icon-role='remove', kaanna="'poista'", type='button')
+      button.btn.btn-default(ng-click='poistaValittuKohdealue(tavoite)', icon-role='remove', kaanna="'poista'", type='button')
 
   h4(kaanna="'laaja-alainen-osaaminen'")
-  div(tag-cloud="tavoite.$osaaminen", openable="true", edit-mode="$ctrl.editing", add-label="lisaa-laaja-alainen-osaaminen")
+  div(tag-cloud="tavoite.$osaaminen", openable="true", edit-mode="editing", add-label="lisaa-laaja-alainen-osaaminen")
 
   h4(kaanna="'arviointi'")
   input.form-control(ng-model="tavoite.arvioinninOtsikko", slocalized, placeholder="{{'arvioinnin-otsikko' | kaanna}}")
@@ -69,43 +69,44 @@ mixin tavoite-muokkaus
 
 mixin tavoite-sisalto
   .tavoite-sisalto
-    .div(ng-if="!$ctrl.editing")
+    .div(ng-if="!editing")
       +tavoite-naytto
 
-    .div(ng-if="$ctrl.editing")
+    .div(ng-if="editing")
       +tavoite-muokkaus
 
 
 mixin tavoite
   +tavoite-painikkeet
 
-  div(ng-if="$ctrl.editing")
+  div(ng-if="editing")
     +tavoite-handle
 
   +tavoite-sisalto
 
 mixin tavoitteet
-  span.toggler(ng-show="$ctrl.model.length")
-    a.action-link(kaanna="'avaa-sulje-kaikki'", ng-click="$ctrl.toggleAll()")
+  span.toggler(ng-show="model.length")
+    a.action-link(kaanna="'avaa-sulje-kaikki'", ng-click="toggleAll()")
 
   // Näyttö
-  div(ng-if="!$ctrl.editing")
+  div(ng-if="!editing")
     .panel.panel-default.panel-small
       .panel-body
         .panel-group
-          .panel.panel-default(ng-repeat="tavoite in $ctrl.model")
+          .panel.panel-default(ng-repeat="tavoite in model")
             .panel-body
               +tavoite
 
   // Muokkaus
-  div(ng-if="$ctrl.editing")
+  div(ng-if="editing")
     .panel.panel-default.panel-small
-      .panel-body(ui-tree="$ctrl.treeOptions")
-        .panel-group(ng-model="$ctrl.model", ui-tree-nodes="")
-          .panel.panel-default(ng-repeat="tavoite in $ctrl.model" ui-tree-node="")
+      .panel-body(ui-tree="treeOptions")
+        .panel-group(ng-model="model", ui-tree-nodes="")
+          .panel.panel-default(ng-repeat="tavoite in model" ui-tree-node="")
             .panel-body
               +tavoite
 
-    button.btn.btn-default(ng-click="$ctrl.lisaaTavoite()", icon-role="add", kaanna="'lisaa-opetuksen-tavoite'")
+    button.btn.btn-default(ng-click="lisaaTavoite()", icon-role="add", kaanna="'lisaa-opetuksen-tavoite'")
 
-+tavoitteet
+div
+  +tavoitteet
