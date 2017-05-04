@@ -30,7 +30,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 /**
  *
@@ -110,6 +112,8 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
         final Kieli kieli = Kieli.of(pq.getKieli());
 
+        Expression<java.sql.Date> currentDate = cb.literal(new java.sql.Date(pq.getNykyinenAika()));
+
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
 
         if (pq.getNimi() != null) {
@@ -164,42 +168,42 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Predicate tilat = cb.disjunction();
 
         if (pq.isTuleva()) {
-            tilat = cb.or(tilat, cb.and(cb.isNotNull(voimassaoloAlkaa), cb.lessThan(cb.currentDate(), voimassaoloAlkaa)));
+            tilat = cb.or(tilat, cb.and(cb.isNotNull(voimassaoloAlkaa), cb.lessThan(currentDate, voimassaoloAlkaa)));
         }
 
         if (pq.isKoulutusvienti()) {
-            tilat = cb.or(tilat, cb.and(cb.isNotNull(voimassaoloAlkaa), cb.lessThan(cb.currentDate(), voimassaoloAlkaa)));
+            tilat = cb.or(tilat, cb.and(cb.isNotNull(voimassaoloAlkaa), cb.lessThan(currentDate, voimassaoloAlkaa)));
         }
 
         if (pq.isVoimassaolo()) {
-            Predicate alkaa = cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(cb.currentDate(), voimassaoloAlkaa));
-            Predicate loppuu = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThanOrEqualTo(cb.currentDate(), voimassaoloLoppuu));
+            Predicate alkaa = cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa));
+            Predicate loppuu = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThanOrEqualTo(currentDate, voimassaoloLoppuu));
             tilat = cb.or(tilat, cb.and(alkaa, loppuu));
 
             // Voimassaolon loppumista ei ole määritelty
             tilat = cb.or(tilat, cb.and(cb.isNull(voimassaoloLoppuu),
-                    cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(cb.currentDate(), voimassaoloAlkaa))));
+                    cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa))));
 
             // Voimassaolon alkamista ei ole määritelty
             tilat = cb.or(tilat, cb.and(cb.isNull(voimassaoloAlkaa),
-                    cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThanOrEqualTo(cb.currentDate(), voimassaoloLoppuu))));
+                    cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThanOrEqualTo(currentDate, voimassaoloLoppuu))));
 
             // Voimassaolon alkamista tai loppumista ei ole määritelty
             tilat = cb.or(tilat, cb.and(cb.isNull(voimassaoloAlkaa), cb.isNull(voimassaoloLoppuu)));
         }
 
         if (pq.isSiirtyma()) {
-            Predicate alkaa = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(cb.currentDate(), voimassaoloLoppuu));
-            Predicate loppuu = cb.and(cb.isNotNull(siirtymaPaattyy), cb.lessThanOrEqualTo(cb.currentDate(), siirtymaPaattyy));
+            Predicate alkaa = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu));
+            Predicate loppuu = cb.and(cb.isNotNull(siirtymaPaattyy), cb.lessThanOrEqualTo(currentDate, siirtymaPaattyy));
             tilat = cb.or(tilat, cb.and(alkaa, loppuu));
         }
 
         if (pq.isPoistunut()) {
-            tilat = cb.or(tilat, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(cb.currentDate(), siirtymaPaattyy)));
+            tilat = cb.or(tilat, cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(currentDate, siirtymaPaattyy)));
 
             // Siirtymän loppumista ei ole määritelty
             tilat = cb.or(tilat, cb.and(cb.isNull(siirtymaPaattyy),
-                    cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(cb.currentDate(), voimassaoloLoppuu))));
+                    cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu))));
         }
 
         pred = cb.and(pred, tilat);
@@ -229,11 +233,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         return c == null || c.isEmpty();
     }
 
-    private static final Function<Tuple, Peruste> EXTRACT_PERUSTE = new Function<Tuple, Peruste>() {
-        @Override
-        public Peruste apply(Tuple f) {
-            return f.get(0, Peruste.class);
-        }
-    };
+    private static final Function<Tuple, Peruste> EXTRACT_PERUSTE = f -> f.get(0, Peruste.class);
 
 }

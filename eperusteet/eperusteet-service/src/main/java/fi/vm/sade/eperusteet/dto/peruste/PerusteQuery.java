@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import java.util.Date;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,6 +48,7 @@ public class PerusteQuery {
     private boolean tutkintonimikkeet = false;
     private boolean osaamisalat = false;
     private boolean koulutusvienti = false;
+    private long nykyinenAika = new Date().getTime();
 
     public void setTyyppi(List<String> tyyppi) {
         this.koulutustyyppi = tyyppi;
