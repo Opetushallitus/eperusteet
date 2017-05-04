@@ -19,7 +19,7 @@
 // FIXME
 angular.module('eperusteApp')
   .service('EpImageService', function ($q, Upload, SERVICE_LOC, PerusteprojektiTiedotService, PerusteenKuvat) {
-    var pts = null;
+    let pts = null;
     PerusteprojektiTiedotService.then(function(resolved) { pts = resolved; });
 
     this.getAll = function () {
@@ -27,9 +27,9 @@ angular.module('eperusteApp')
     };
 
     this.save = function (image) {
-      var deferred = $q.defer();
-      var url = (SERVICE_LOC + '/perusteet/' + pts.getPeruste().id + '/kuvat');
-      var data = {
+      const deferred = $q.defer();
+      const url = (SERVICE_LOC + '/perusteet/' + pts.getPeruste().id + '/kuvat');
+      const data = {
         url: url,
         fields: {
           nimi: image.name
@@ -58,6 +58,8 @@ angular.module('eperusteApp')
       rejected: [],
       chosen: null
     };
+
+    $scope.file = null;
 
     $scope.$watch('model.files[0]', function () {
       if (_.isArray($scope.model.files) && $scope.model.files.length > 0) {
@@ -150,8 +152,8 @@ angular.module('eperusteApp')
   })
   .filter('kuvalinkit', function(EpImageService) {
     return function(text) {
-      var modified = false;
-      var tmp = angular.element('<div>'+text+'</div>');
+      let modified = false;
+      const tmp = angular.element('<div>' + text + '</div>');
       tmp.find('img[data-uid]').each(function () {
             var el = angular.element(this);
             var url = EpImageService.getUrl({id: el.attr('data-uid')});
@@ -168,11 +170,11 @@ angular.module('eperusteApp')
   })
   .filter("kuvalinkit", () => {
     return (text) => {
-      let tmp = angular.element("<div>" + text + "</div>");
+      const tmp = angular.element("<div>" + text + "</div>");
       tmp.find("img").each(function () {
         let el = angular.element(this);
         el.wrap("<figure></figure>");
-        if(el.attr("alt")) {
+        if (el.attr("alt")) {
           el.parent().append("<figcaption>" + el.attr("alt") + "</figcaption>");
           el.parent().wrap("<div style=\"text-align: center;\"></div>");
         }
