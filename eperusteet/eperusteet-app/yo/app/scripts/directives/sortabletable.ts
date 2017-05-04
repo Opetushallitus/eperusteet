@@ -21,7 +21,7 @@ angular.module("eperusteApp")
         restrict: "E",
         scope: {
             ngModel: "=",
-            showIdx: "=",
+            showIdx: "=?",
             ngChange: "=", // Sallii muokkauksen jos määritelty
             isSorting: "=",
             nimeton: "="
