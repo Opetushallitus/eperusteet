@@ -2,18 +2,18 @@ table.table.table-hover
   thead
     tr
       th(width="2%")
-        a(ng-if="vm.allowSorting && !vm.isSorting" ng-click="vm.sort()" icon-role="sort" style="cursor: pointer;")
+        a(ng-if="allowSorting && !isSorting" ng-click="sort()" icon-role="sort" style="cursor: pointer;")
       th(ng-bind="'nimi' | kaanna")
-      th(ng-show="vm.hasMuokattu" ng-bind="'muokattu' | kaanna" width="30%")
+      th(ng-show="hasMuokattu" ng-bind="'muokattu' | kaanna" width="30%")
 
-  tbody(ui-sortable="vm.sortableOptions" ng-model="vm.ngModel")
-    tr(ng-repeat="rivi in vm.ngModel" style="cursor: pointer;")
+  tbody(ui-sortable="sortableOptions" ng-model="ngModel")
+    tr(ng-repeat="rivi in ngModel" style="cursor: pointer;")
       td
-        span(ng-hide="vm.isSorting")
+        span(ng-hide="isSorting")
           a(ng-bind="$index + 1" ng-href="{{ rivi.$$url }}")
-        span.handle(ng-show="vm.isSorting" icon-role="sort")
+        span.handle(ng-show="isSorting" icon-role="sort")
       td
-        a(ng-if="rivi.$$url" ng-href="{{ rivi.$$url }}" ng-bind="(rivi.nimi || vm.nimeton) | kaanna")
+        a(ng-if="rivi.$$url" ng-href="{{ rivi.$$url }}" ng-bind="(rivi.nimi || nimeton) | kaanna")
         span(ng-if="!rivi.$$url" ng-bind="rivi.nimi | kaanna")
 
-      td(ng-show="vm.hasMuokattu" ng-bind="rivi.muokattu | aikaleima")
+      td(ng-show="hasMuokattu" ng-bind="rivi.muokattu | aikaleima")

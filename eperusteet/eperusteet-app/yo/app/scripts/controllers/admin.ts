@@ -67,8 +67,8 @@ angular.module('eperusteApp')
         $scope.tilaRajain = null;
         $scope.tilat = [];
         $scope.filteredPp = [];
-        $scope.itemsPerPage = 2;
-        $scope.nykyinen = 10;
+        $scope.itemsPerPage = 10;
+        $scope.nykyinen = 1;
         $scope.alaraja = 0;
         $scope.ylaraja = $scope.alaraja + $scope.itemsPerPage;
 
