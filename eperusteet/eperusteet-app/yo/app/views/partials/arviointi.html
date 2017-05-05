@@ -14,13 +14,16 @@
         <div class="panel-body">
             <uib-accordion close-others="false">
                 <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
-                    <div uib-accordion-group class="arvioinnin-kohdealue"
+                    <div uib-accordion-group
+                         class="arvioinnin-kohdealue"
+                         template-url="views/partials/accordiongroup.html"
                          heading="{{kohdealue.otsikko | kaanna}}"
                          ng-repeat="kohdealue in arviointi"
                          is-open="kohdealue.$accordionOpen">
                         <uib-accordion-heading>
                             <h3 class="panel-title" ng-hide="eiKohdealueita">
-                                <arvioinnin-tekstikentta sisalto="kohdealue" sisaltoalue="arviointi"
+                                <arvioinnin-tekstikentta sisalto="kohdealue"
+                                                         sisaltoalue="arviointi"
                                                          sisaltoteksti="kohdealue.otsikko"
                                                          sisaltoalue="$parent.arviointi.arvioinninKohdealueet"
                                                          edit-allowed="editAllowed"
@@ -38,6 +41,7 @@
                                      ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet"
                                      is-open="arvioinninkohde.$accordionOpen"
                                      is-disabled="editableKohde">
+
                                     <uib-accordion-heading>
                                         <span ng-show="arvioinninkohde !== originalKohde">
                                             {{arvioinninkohde.otsikko | kaanna}}

@@ -50,7 +50,7 @@
         <div ng-bind-html="tutkinnonOsa.arviointi.lisatiedot | kaanna | unsafe"></div>
       </div>
     </div>
-    <div ng-if="k !== 'arviointi' && _.isEmpty(tutkinnonOsa[k])">
+    <div ng-if="k !== 'arviointi' && tutkinnonOsa[k]">
       <h3 kaanna="k"></h3>
       <termisto-tekstikentta tekstikentta="tutkinnonOsa[k]"></termisto-tekstikentta>
     </div>
