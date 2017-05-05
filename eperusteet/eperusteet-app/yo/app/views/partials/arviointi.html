@@ -15,9 +15,9 @@
             <uib-accordion close-others="false">
                 <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
                     <div uib-accordion-group class="arvioinnin-kohdealue"
-                                     heading="{{kohdealue.otsikko | kaanna}}"
-                                     ng-repeat="kohdealue in arviointi"
-                                     is-open="kohdealue.$accordionOpen">
+                         heading="{{kohdealue.otsikko | kaanna}}"
+                         ng-repeat="kohdealue in arviointi"
+                         is-open="kohdealue.$accordionOpen">
                         <uib-accordion-heading>
                             <h3 class="panel-title" ng-hide="eiKohdealueita">
                                 <arvioinnin-tekstikentta sisalto="kohdealue" sisaltoalue="arviointi"
@@ -33,10 +33,11 @@
                                  ui-sortable="sortableOptions"
                                  ng-model="kohdealue.arvioinninKohteet">
                                 <div class="arvioinnin-kohde"
-                                                 ng-class="{'kohde-edit': arvioinninkohde === originalKohde}"
-                                                 ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet"
-                                                 is-open="arvioinninkohde.$accordionOpen"
-                                                 is-disabled="editableKohde">
+                                     uib-accordion-group
+                                     ng-class="{'kohde-edit': arvioinninkohde === originalKohde}"
+                                     ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet"
+                                     is-open="arvioinninkohde.$accordionOpen"
+                                     is-disabled="editableKohde">
                                     <uib-accordion-heading>
                                         <span ng-show="arvioinninkohde !== originalKohde">
                                             {{arvioinninkohde.otsikko | kaanna}}
@@ -46,15 +47,15 @@
                                             <a ng-show="editEnabled" ng-click="kohde.muokkaa(arvioinninkohde, $event)"
                                                class="muokkausnappi action-link" icon-role="edit"></a>
                                         </span>
-                                        <span ng-show="arvioinninkohde === originalKohde">
-                                            <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" slocalized
-                                                   placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}">
-                                            <div class="muokkaus-napit pull-right">
-                                                <button class="btn btn-default btn-xs" ng-click="kohde.peruMuokkaus()" kaanna>peru</button>
-                                                <button class="btn btn-primary btn-xs" ng-click="kohde.poistuMuokkauksesta(kohdealue.arvioinninKohteet, $index)" kaanna="'ok'"></button>
-                                            </div>
-                                        </span>
                                     </uib-accordion-heading>
+                                    <div ng-show="arvioinninkohde === originalKohde">
+                                        <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" slocalized
+                                                placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}">
+                                        <div class="muokkaus-napit pull-right" style="margin-top: -4px;">
+                                            <button class="btn btn-default btn-xs" ng-click="kohde.peruMuokkaus()" kaanna>peru</button>
+                                            <button class="btn btn-primary btn-xs" ng-click="kohde.poistuMuokkauksesta(kohdealue.arvioinninKohteet, $index)" kaanna="'ok'"></button>
+                                        </div>
+                                    </div>
 
                                     <div style="margin-bottom: 5px">
                                         <div ng-if="arvioinninkohde !== originalKohde"
@@ -65,11 +66,8 @@
                                     </div>
 
                                     <table>
-                                        <tr ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot"
-                                            ng-class-odd="'raita'" ng-class-even="'ei-raitaa'">
-                                            <td class="otsikko">
-                                                <span>{{taso.otsikko | kaanna}}</span>
-                                            </td>
+                                        <tr ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'" ng-class-even="'ei-raitaa'">
+                                            <td class="otsikko" ng-bind="taso.otsikko | kaanna"></td>
                                             <td>
                                                 <table ng-if="arvioinninkohde === originalKohde"
                                                        ng-repeat="osaamistasonKriteeri in editableKohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
@@ -113,7 +111,7 @@
                                             </td>
                                         </tr>
                                     </table>
-                                </div>
+                                </div><!-- uib-accordion-group-->
                             </div>
                         </uib-accordion>
 
@@ -122,15 +120,15 @@
                             <div class="panel-body">
                                 <div ng-show="kohde.isAdding(kohdealue)">
                                     <input focus-me="kohdealue.$newkohde.showInputArea" class="form-control" type="text"
-                                           ng-model="kohdealue.$newkohde.nimi"
-                                           placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}"/><br/>
+                                            ng-model="kohdealue.$newkohde.nimi"
+                                            placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}"/><br/>
                                     <h4 kaanna>arviointi-asteikon-valinta</h4>
                                     <label ng-repeat="arviointiasteikko in arviointiasteikot">
                                         <input type="radio"
-                                               ng-model="kohdealue.$newkohde.arviointiasteikko"
-                                               ng-value="arviointiasteikko"
-                                               name="asteikonvalinta"
-                                               ng-change="arviointiasteikkoChanged(kohdealue)">
+                                                ng-model="kohdealue.$newkohde.arviointiasteikko"
+                                                ng-value="arviointiasteikko"
+                                                name="asteikonvalinta"
+                                                ng-change="arviointiasteikkoChanged(kohdealue)">
                                         <span ng-repeat="osaamistaso in arviointiasteikko.osaamistasot">
                                             {{osaamistaso.otsikko | kaanna}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? '&nbsp;/&nbsp;': ''}}
                                         </span>
@@ -154,9 +152,8 @@
                                         oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
                             </div>
                         </div>
-
                     </div>
-                </div>
+                </div><!-- sortableKohdealueet -->
             </uib-accordion>
 
             <!-- Kohdealueen lisäys -->
@@ -183,8 +180,6 @@
                             oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
                 </div>
             </div>
-
         </div>
     </div>
-
 </div>
