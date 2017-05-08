@@ -159,25 +159,25 @@
             </uib-accordion>
 
             <!-- Kohdealueen lisäys -->
-            <!-- <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled && !eiKohdealueita"> -->
-            <!--     <div class="panel-body"> -->
-            <!--         <input class="form-control" ng-show="$parent.showNewKohdealueInput" type="text" -->
-            <!--                ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.kohdealue.uusi()" -->
-            <!--                on-esc="$parent.cancelNewKohdealue()" focus-me="$parent.showNewKohdealueInput" -->
-            <!--                placeholder="{{'ammattitaito-uusi-kohdealue-placeholder' | kaanna}}"/> -->
-            <!--         <div class="muokkaus-napit" ng-show="$parent.showNewKohdealueInput"> -->
-            <!--             <button class="btn btn-default btn-xs" ng-click="$parent.kohdealue.cancel()" kaanna>peru -->
-            <!--             </button> -->
-            <!--             <button class="btn btn-primary btn-xs" ng-disabled="!$parent.uudenKohdealueenNimi" -->
-            <!--                     ng-click="$parent.kohdealue.uusi()" kaanna>lisaa -->
-            <!--             </button> -->
-            <!--         </div> -->
-            <!--         <button type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput" -->
-            <!--                 ng-click="$parent.showNewKohdealueInput = true" icon-role="add" -->
-            <!--                 kaanna="ammattitaito-uusi-kohde" -->
-            <!--                 oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button> -->
-            <!--     </div> -->
-            <!-- </div> -->
+            <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled && !eiKohdealueita">
+                <div class="panel-body">
+                    <input class="form-control" ng-show="$parent.showNewKohdealueInput" type="text"
+                           ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.kohdealue.uusi()"
+                           on-esc="$parent.cancelNewKohdealue()" focus-me="$parent.showNewKohdealueInput"
+                           placeholder="{{'ammattitaito-uusi-kohdealue-placeholder' | kaanna}}"/>
+                    <div class="muokkaus-napit" ng-show="$parent.showNewKohdealueInput">
+                        <button class="btn btn-default btn-xs" ng-click="$parent.kohdealue.cancel()" kaanna>peru
+                        </button>
+                        <button class="btn btn-primary btn-xs" ng-disabled="!$parent.uudenKohdealueenNimi"
+                                ng-click="$parent.kohdealue.uusi()" kaanna>lisaa
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput"
+                            ng-click="$parent.showNewKohdealueInput = true" icon-role="add"
+                            kaanna="ammattitaito-uusi-kohde"
+                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
