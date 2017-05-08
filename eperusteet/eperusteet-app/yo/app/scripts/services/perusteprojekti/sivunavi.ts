@@ -206,15 +206,17 @@ angular.module('eperusteApp')
     }
   }
 
-  function mapYL(target, osat, key, parent) {
-    _(osat)
-        .sortBy((key === 'oppiaineet' || key === 'oppiaineet-oppimaarat'
-        || key === 'oppiaineet_oppimaarat'
-        || key === 'aihekokonaisuudet') ? 'jnro' : Utils.nameSort)
-        .each(function (osa) {
-            ylMapper(target, osa, key, 1, null, parent);
-        })
-        .value();
+  function mapYL(target, osat, key, parent, doSort = true) {
+    let chain = _(osat);
+    if (doSort) {
+        chain = chain.sortBy((key === 'oppiaineet' || key === 'oppiaineet-oppimaarat'
+            || key === 'oppiaineet_oppimaarat'
+            || key === 'aihekokonaisuudet') ? 'jnro' : Utils.nameSort);
+    }
+    chain.each(function (osa) {
+        ylMapper(target, osa, key, 1, null, parent);
+    })
+    .value();
   }
   function lukioOsanTyyppi(key) {
     switch (key) {
@@ -248,7 +250,7 @@ angular.module('eperusteApp')
             link: [STATE_AIPE_OSALISTAUS, { suoritustapa: 'aipe', osanTyyppi: key }]
           };
           items.push(item);
-          mapYL(items, aipeTiedot[key], key, item);
+          mapYL(items, aipeTiedot[key], key, item, false);
         });
         break;
       }
