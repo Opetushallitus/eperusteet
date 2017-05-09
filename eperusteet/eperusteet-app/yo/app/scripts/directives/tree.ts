@@ -28,7 +28,7 @@ angular.module('eperusteApp')
 
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaSolmunNimi(rakenne) | kaanna }}' +
-      '<span ng-if="!rakenne.erikoisuus && apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">,' +
+      '<span ng-if="!rakenne.erikoisuus && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">,' +
       '  <strong>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}' +
       '    <span ng-if="tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi"> - {{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi }}</span>' +
       '  </strong>' +
@@ -140,7 +140,7 @@ angular.module('eperusteApp')
       toimintoValikko({edit: 'rakenneosaModaali(rakenne)', remove: 'poista(rakenne, vanhempi)'}) +
       '  </div>' +
       '  <div class="pull-right" ng-if="!onOsa(rakenne)">' +
-      '    <span class="right-item" ng-if="apumuuttujat.suoritustapa !== \'naytto\' && isNumber(rakenne.muodostumisSaanto.laajuus.minimi)">' +
+      '    <span class="right-item" ng-if="isNumber(rakenne.muodostumisSaanto.laajuus.minimi)">' +
       laajuudenIlmaisu +
       '    </span>' +
       '    <span class="right-item" ng-if="isNumber(rakenne.muodostumisSaanto.koko.minimi)">' +
