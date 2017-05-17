@@ -46,16 +46,17 @@ public final class LocalizedMessagesServiceImpl implements LocalizedMessagesServ
     @Override
     public String translate(String key, Kieli kieli) {
 
-        // koitetaan ensin lokalisointipalvelusta
+        // Koitetaan hakea lokalisointipalvelimelta käänös
         LokalisointiDto valueDto = lokalisointiService.get(key, kieli.toString());
         if (valueDto != null) {
             return valueDto.getValue();
         }
 
-        LOG.warn("Fallback to messageSource for lokalisointi {} ({})", key, kieli.toString());
-        // ja sitten messagesourcesta, heittää NoSuchMessageExceptionin jos
-        // ei löydy
-        return messageSource.getMessage(key, null, Locale.forLanguageTag(kieli.toString()));
+        try {
+            return messageSource.getMessage(key, null, Locale.forLanguageTag(kieli.toString()));
+        } catch (NoSuchMessageException ex) {
+            return "[" + kieli.toString() + " " + key + "]";
+        }
     }
 
 }

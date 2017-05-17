@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
@@ -60,8 +61,13 @@ public class LokalisointiServiceImpl implements LokalisointiService {
     public LokalisointiDto get(String key, String locale) {
         RestTemplate restTemplate = new RestTemplate();
         String url = lokalisointiServiceUrl + "category=" + category + "&locale=" + locale + "&key=" + key;
-        LOG.debug("get lokalisointi url: {}", url);
-        LokalisointiDto[] re = restTemplate.getForObject(url, LokalisointiDto[].class);
+        LokalisointiDto[] re;
+        try {
+            re = restTemplate.getForObject(url, LokalisointiDto[].class);
+        } catch (RestClientException ex) {
+            LOG.error("Rest client error: {}", ex.getLocalizedMessage());
+            re = new LokalisointiDto[]{};
+        }
 
         if (re.length > 1) {
             LOG.warn("Got more than one object: {} from {}", re, url);

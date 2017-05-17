@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.DOKUMENTTI;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.GENEROI;
@@ -39,7 +40,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/dokumentit")
-//@InternalApi
+@InternalApi
 public class DokumenttiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiController.class);
