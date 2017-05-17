@@ -262,16 +262,28 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             case ESIOPETUS:
             case LISAOPETUS:
             case VARHAISKASVATUS:
-                viite = this.getEsiopetuksenPerusteenSisalto().getSisalto();
+                EsiopetuksenPerusteenSisalto esiopetusSisalto = this.getEsiopetuksenPerusteenSisalto();
+                if (esiopetusSisalto != null) {
+                    viite = esiopetusSisalto.getSisalto();
+                }
                 break;
             case PERUSOPETUS:
-                viite = this.getPerusopetuksenPerusteenSisalto().getSisalto();
+                PerusopetuksenPerusteenSisalto poSisalto = this.getPerusopetuksenPerusteenSisalto();
+                if (poSisalto != null) {
+                    viite = poSisalto.getSisalto();
+                }
                 break;
             case AIPE:
-                viite = this.getAipeOpetuksenPerusteenSisalto().getSisalto();
+                AIPEOpetuksenSisalto aipeSisalto = this.getAipeOpetuksenPerusteenSisalto();
+                if (aipeSisalto != null) {
+                    viite = aipeSisalto.getSisalto();
+                }
                 break;
             case LUKIOKOULUTUS:
-                viite = this.getLukiokoulutuksenPerusteenSisalto().getSisalto();
+                LukiokoulutuksenPerusteenSisalto lukioSisalto = this.getLukiokoulutuksenPerusteenSisalto();
+                if (lukioSisalto != null) {
+                    viite = lukioSisalto.getSisalto();
+                }
                 break;
             default:
                 // Ammatilliset

@@ -495,7 +495,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (peruste == null) {
             throw new NotExistsException("Perustetta ei ole olemassa");
         }
-        return mapper.map(peruste.getSisalto(suoritustapakoodi), view);
+        PerusteenOsaViite sisalto = peruste.getSisalto(suoritustapakoodi);
+        if (sisalto == null) {
+            throw new NotExistsException("Perusteen sisältörakennetta ei ole olemassa");
+        }
+        return mapper.map(sisalto, view);
     }
 
     @Override
