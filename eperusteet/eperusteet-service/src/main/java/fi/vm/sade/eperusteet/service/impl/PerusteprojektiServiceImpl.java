@@ -336,7 +336,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojektiDto.setId(id);
         perusteprojektiDto.setTila(vanhaProjekti.getTila());
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
+        perusteprojekti.setPeruste(vanhaProjekti.getPeruste());
         perusteprojekti = repository.save(perusteprojekti);
+
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
 

@@ -100,7 +100,6 @@ $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
                         teksti: "poistetaanko-oppiaine",
                         primaryBtn: "poista",
                         successCb: async () => {
-                            console.log(oppiaine);
                             await Editointikontrollit.cancelEditing();
                             await $scope.editableModel.remove();
 
