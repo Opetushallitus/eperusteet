@@ -88,6 +88,9 @@ public interface PerusteService {
     @PreAuthorize("permitAll()")
     Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery);
 
+    @PreAuthorize("isAuthenticated()")
+    Page<PerusteHakuDto> findByInternal(PageRequest page, PerusteQuery pquery);
+
     @PreAuthorize("permitAll()")
     List<PerusteInfoDto> getAllPerusopetusInfo();
 

@@ -226,6 +226,20 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, cb.equal(kielet, kieli));
         }
 
+        // Tutkinnon osien tuontia varten
+        if (pq.getEsikatseltavissa() != null) {
+            Join<Peruste, Perusteprojekti> perusteprojekti = root.join(Peruste_.perusteprojekti);
+
+            // Jos peruste on esikatseltavissa tai/ja julkaistu
+            Predicate esikatseltavissaTaiJulkaistu= cb.disjunction();
+            esikatseltavissaTaiJulkaistu = cb.or(esikatseltavissaTaiJulkaistu,
+                    cb.isTrue(perusteprojekti.get(Perusteprojekti_.esikatseltavissa)));
+            esikatseltavissaTaiJulkaistu = cb.or(esikatseltavissaTaiJulkaistu,
+                    cb.isTrue(cb.equal(root.get(Peruste_.tila), PerusteTila.VALMIS)));
+
+            pred = cb.and(pred, esikatseltavissaTaiJulkaistu);
+        }
+
         return pred;
     }
 

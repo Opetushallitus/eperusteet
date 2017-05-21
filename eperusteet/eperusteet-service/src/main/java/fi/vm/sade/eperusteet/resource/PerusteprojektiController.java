@@ -115,9 +115,8 @@ public class PerusteprojektiController {
     public PerusteprojektiDto update(
             @PathVariable("id") final long id,
             @RequestBody PerusteprojektiDto perusteprojektiDto) {
-        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, LISAYS).add("perusteprojektiId", id), (Void) -> {
-            return service.update(id, perusteprojektiDto);
-        });
+        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, LISAYS).add("perusteprojektiId", id),
+                (Void) -> service.update(id, perusteprojektiDto));
     }
 
     @RequestMapping(value = "/{id}/tila/{tila}", method = POST)

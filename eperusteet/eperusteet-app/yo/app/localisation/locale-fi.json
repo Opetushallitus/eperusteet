@@ -1133,5 +1133,6 @@
     "peruste-lukio-oppiaineessa-ei-kursseja": "Peruste sisältää oppiaineen/määrän, jolla ei ole kursseja",
     "peruste-lukio-kooodi-puuttuu": "Koodi puuttuu",
     "peruste-lukio-sama-koodi": "Samaa koodia on käytetty useamman kerran",
-    "kurssi-osa-arviointi": "Arviointi"
+    "kurssi-osa-arviointi": "Arviointi",
+    "ohje-tutkinnon-osan-tuonti": "Vain julkaistuista ja esikatselussa olevista perusteista voi tuoda tutkinnon osia."
 }

@@ -293,6 +293,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    public Page<PerusteHakuDto> findByInternal(PageRequest page, PerusteQuery pquery) {
+        // Voidaan käyttää vain esikatseltaviin perusteprojektien perusteisiin
+        pquery.setEsikatseltavissa(true);
+        return findBy(page, pquery);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery) {
         Page<Peruste> result = perusteet.findBy(page, pquery);
         return new PageDto<>(result, PerusteInfoDto.class, page, mapper);
@@ -319,6 +327,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 dto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
             }
         }
+
         return dto;
     }
 

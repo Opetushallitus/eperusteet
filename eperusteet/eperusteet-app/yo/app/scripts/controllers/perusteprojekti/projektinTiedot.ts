@@ -136,7 +136,7 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaPerusteprojekti = function() {
-      var projekti = PerusteProjektiService.get();
+      let projekti = PerusteProjektiService.get();
       if($scope.isLukiokoulutus()) {
         //Lukiokoulutus
         projekti.laajuusYksikko = 'KURSSI';
@@ -149,7 +149,8 @@ angular.module('eperusteApp')
       else { projekti.id = null; }
 
       if ($scope.pohja()) {
-        projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi', 'ryhmaOid', 'perusteId', 'reforminMukainen'), {
+        projekti = _.merge(_.pick(projekti,'id', 'nimi', 'koulutustyyppi', 'ryhmaOid', 'perusteId', 'reforminMukainen',
+            'esikatseltavissa', '_peruste'), {
           tyyppi: 'pohja'
         });
       }

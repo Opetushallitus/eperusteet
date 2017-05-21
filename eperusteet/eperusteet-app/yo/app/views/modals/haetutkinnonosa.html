@@ -1,57 +1,79 @@
 <!-- modals/haetutkinnonosa.html -->
-<div modal="modalVisible" close="close()" options="{windowClass:'modal-to-haku'}">
-  <div class="modal-header">
-    <h1>{{'hae-tutkinnon-osia' | kaanna}}</h1>
+<div class="modal-header">
+    <h1><span kaanna="'hae-tutkinnon-osia'"></span>
+        <span ng-if="haku">
+            <ohje teksti="ohje-tutkinnon-osan-tuonti"></ohje>
+        </span>
+    </h1>
     <h3 ng-if="!haku">{{ valittu.nimi | kaanna }}</h3>
-  </div>
+</div>
 
-  <div class="modal-body">
+<div class="modal-body">
     <div ng-show="haku">
-      <label>{{'tutkinnon-nimella' | kaanna}}</label>
-      <div class="checkbox pull-right">
-        <label>
-          <input type="checkbox" ng-model="luonnokset" ng-change="fetchOmat()">
-          {{'myos-luonnokset' | kaanna}}
-        </label>
-      </div>
-      <input ng-change="hakuMuuttui()" ng-model="data.hakustr" class="form-control" type="text" placeholder="Hae tutkintoja...">
-      <p class="results-amount">{{perusteet['kokonaismäärä']}} {{'hakutulosta' | kaanna}}</p>
-      <div class="results">
-        <table class="table table-striped">
-          <tr>
-            <th kaanna>haku-nimi</th>
-            <th kaanna>haku-voimaantulopvm</th>
-          </tr>
-          <tr ng-repeat="peruste in perusteet">
-            <td><a class="action-link" ng-click="jatka(peruste)">{{ peruste.nimi | kaanna }}</a></td>
-            <td>{{peruste.voimassaoloAlkaa|date:'dd.MM.yyyy'}}</td>
-          </tr>
-        </table>
-      </div>
-      <ep-pagination ng-model="data.nykyinensivu" ng-change="paivitaHaku"
-                  total-items="perusteet['kokonaismäärä']" items-per-page="sivukoko"
-                  boundary-links="true"></ep-pagination>
+        <div class="checkbox pull-right">
+            <label>
+                {{'myos-luonnokset' | kaanna}}
+                <input type="checkbox" ng-model="luonnokset" ng-change="hakuMuuttui()">
+            </label>
+        </div>
+        <label style="margin-top: 10px;">{{'tutkinnon-nimella' | kaanna}}</label>
+        <input ng-change="hakuMuuttui()" ng-model="data.hakustr" class="form-control" type="text"
+               placeholder="Hae tutkintoja...">
+        <p class="results-amount">{{perusteet['kokonaismäärä']}} {{'hakutulosta' | kaanna}}</p>
+        <div class="table-responsive results">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="col-md-8" kaanna="'haku-nimi'"></th>
+                        <th class="col-md-4" kaanna="'haku-voimaantulopvm'"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="peruste in perusteet.data" ng-click="jatka(peruste)" style="cursor: pointer;">
+                        <td>{{peruste.nimi | kaanna}}</td>
+                        <td>
+                            <span ng-if="peruste.voimassaoloAlkaa">{{peruste.voimassaoloAlkaa | date:'dd.MM.yyyy'}}</span>
+                            <span ng-if="!peruste.voimassaoloAlkaa">{{peruste.tila | kaanna}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ep-pagination ng-model="data.nykyinensivu"
+                       ng-change="paivitaHaku"
+                       total-items="perusteet['kokonaismäärä']"
+                       items-per-page="sivukoko"
+                       boundary-links="false"></ep-pagination>
     </div>
-    <div ng-hide="haku">
-      <table class="table table-striped">
-        <tr>
-          <th>Valitse</th>
-          <th>Tutkinnon osa</th>
-          <th>Laajuus</th>
-        </tr>
-        <tr ng-repeat="osa in perusteenosat">
-          <td class="has-checkbox"><input ng-model="osa.$$valitse" type="checkbox" class="form-control"></td>
-          <td>{{ osa.nimi | kaanna }}</td>
-          <td>{{ osa.laajuus}}</td>
-        </tr>
-      </table>
-    </div>
-    <div class="clearfix"></div>
-  </div>
 
-  <div class="modal-footer">
-    <button ng-hide="haku" class="btn" ng-click="takaisin()" kaanna>takaisin</button>
-    <button class="btn" ng-click="peruuta()" kaanna>peru</button>
-    <button ng-show="!haku" class="btn btn-primary" ng-click="valitse()" kaanna>tuo-valitut</button>
-  </div>
+    <div ng-hide="haku">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="col-md-2" kaanna="'valitse'"></th>
+                        <th class="col-md-6" kaanna="'tutkinnon-osa'"></th>
+                        <th class="col-md-2" kaanna="'laajuus'"></th>
+                        <th class="col-md-2" kaanna="'suoritustapa'"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="osa in osat">
+                        <td class="has-checkbox">
+                            <input ng-model="osa.$$valitse" type="checkbox" class="form-control">
+                        </td>
+                        <td>{{osa.nimi | kaanna}}</td>
+                        <td>{{osa.laajuus}}</td>
+                        <td>{{osa.suoritustapakoodi | kaanna}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button ng-hide="haku" class="btn" ng-click="takaisin()" kaanna="'takaisin'"></button>
+    <button class="btn" ng-click="peruuta()" kaanna="'peru'"></button>
+    <button ng-show="!haku" class="btn btn-primary" ng-click="valitse()" kaanna="'tuo-valitut'"></button>
 </div>

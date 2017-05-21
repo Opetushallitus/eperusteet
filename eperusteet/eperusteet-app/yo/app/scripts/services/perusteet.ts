@@ -25,6 +25,14 @@ angular.module('eperusteApp')
   .factory('PerusteenOsaViite', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:viiteId');
   })
+  .factory('PerusteKaikki', function($resource, SERVICE_LOC) {
+    const baseUrl = SERVICE_LOC + '/perusteet/:perusteId/kaikki';
+    return $resource(baseUrl, {
+      perusteId: '@id'
+    }, {
+      get: {method: 'GET', isArray: false}
+    });
+  })
   .factory('PerusteTutkinnonosat', function($resource, SERVICE_LOC) {
     const baseUrl = SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat';
     return $resource(baseUrl, {
@@ -78,6 +86,9 @@ angular.module('eperusteApp')
       diaari: {method: 'GET', url: SERVICE_LOC + '/perusteet/diaari'},
       kvliite: {method: 'GET', url: SERVICE_LOC + '/perusteet/:perusteId/kvliite'}
     });
+  })
+  .factory('PerusteetInternal', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/internal', {}, {});
   })
   .factory('PerusopetuksenSisalto', function($resource, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/perusopetus/sisalto';

@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -43,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTE;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINTONIMIKEKOODI;
@@ -104,7 +104,7 @@ public class PerusteController {
 
     @RequestMapping(method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteiden haku")
+    @ApiOperation(value = "perusteiden sisäinen haku")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sivu", dataType = "integer", paramType = "query"),
             @ApiImplicitParam(name = "sivukoko", dataType = "integer", paramType = "query"),
@@ -134,6 +134,15 @@ public class PerusteController {
         }
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findBy(p, pquery);
+    }
+
+    @RequestMapping(value = "/internal", method = GET)
+    @ResponseBody
+    @InternalApi
+    @ApiOperation(value = "perusteiden sisäinen haku")
+    public Page<PerusteHakuDto> getAllInternal(@ApiIgnore PerusteQuery pquery) {
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        return service.findByInternal(p, pquery);
     }
 
     @RequestMapping(value = "/{perusteId}", method = POST)
@@ -209,12 +218,7 @@ public class PerusteController {
     @ApiOperation(value = "perusteen tietojen haku")
     public ResponseEntity<PerusteDto> get(@PathVariable("perusteId") final long id) {
 
-        return handleGet(id, 1, new Supplier<PerusteDto>() {
-            @Override
-            public PerusteDto get() {
-                return service.get(id);
-            }
-        });
+        return handleGet(id, 1, () -> service.get(id));
     }
 
     @RequestMapping(value = "/{perusteId}/version", method = GET)
@@ -268,15 +272,8 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/kaikki", method = GET)
     @ResponseBody
     @ApiOperation(value = "perusteen kaikkien tietojen haku")
-    public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
-            @PathVariable("perusteId") final long id) {
-
-        return handleGet(id, 3600, new Supplier<PerusteKaikkiDto>() {
-            @Override
-            public PerusteKaikkiDto get() {
-                return service.getKokoSisalto(id);
-            }
-        });
+    public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(@PathVariable("perusteId") final long id) {
+        return handleGet(id, 3600, () -> service.getKokoSisalto(id));
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
@@ -286,15 +283,10 @@ public class PerusteController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("suoritustapakoodi") final String suoritustapakoodi
     ) {
-        return handleGet(perusteId, 1, new Supplier<SuoritustapaDto>() {
-            @Override
-            public SuoritustapaDto get() {
-                return service.getSuoritustapa(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
-            }
-        });
+        return handleGet(perusteId, 1, () -> service.getSuoritustapa(perusteId, Suoritustapakoodi.of(suoritustapakoodi)));
     }
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, int age, Supplier<T> response) {
-        return CacheableResponse.create(service.getPerusteVersion(perusteId), age, response);
+        return CacheableResponse.create(service.getPerusteVersion(perusteId), age, response::get);
     }
 }

@@ -209,6 +209,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Set<Liite> liitteet = new HashSet<>();
 
+    @OneToOne(mappedBy = "peruste")
+    @Getter
+    @Setter
+    private Perusteprojekti perusteprojekti;
+
     public void attachLiite(Liite liite) {
         liitteet.add(liite);
     }

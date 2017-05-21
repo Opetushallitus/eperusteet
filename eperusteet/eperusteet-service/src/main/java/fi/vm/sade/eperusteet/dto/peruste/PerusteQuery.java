@@ -49,6 +49,7 @@ public class PerusteQuery {
     private boolean osaamisalat = false;
     private boolean koulutusvienti = false;
     private long nykyinenAika = new Date().getTime();
+    private Boolean esikatseltavissa;
 
     public void setTyyppi(List<String> tyyppi) {
         this.koulutustyyppi = tyyppi;
