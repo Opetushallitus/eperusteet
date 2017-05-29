@@ -39,7 +39,7 @@ angular.module("eperusteApp")
                         Editointikontrollit.cancelEditing();
                         await $scope.editableModel.remove();
                         AIPEService.clearCache();
-                        $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
+                        $state.go("root.perusteprojekti.suoritustapa.aipeosalistaus", {
                             suoritustapa: $stateParams.suoritustapa,
                             osanTyyppi: AIPEService.VAIHEET
                         }, {
