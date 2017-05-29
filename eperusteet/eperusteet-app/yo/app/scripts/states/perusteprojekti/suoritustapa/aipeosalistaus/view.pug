@@ -1,8 +1,8 @@
 div
   div.col-md-12.ep-sisalto-inner
     div.action-buttons
-      button.floater.btn(ng-if="canSort" icon-role="sort" ng-click="sort()" kaanna="'jarjesta'")
-      button.floater.btn(icon-role="add" ng-click="add()" kaanna="sisaltoState.addLabel")
+      button.floater.btn(ng-if="canSort && peruste.tila !== 'valmis'" icon-role="sort" ng-click="sort()" kaanna="'jarjesta'")
+      button.floater.btn(icon-role="add" ng-if="peruste.tila !== 'valmis'" ng-click="add()" kaanna="sisaltoState.addLabel")
 
     h1(kaanna="sisaltoState.label")
     table.table
