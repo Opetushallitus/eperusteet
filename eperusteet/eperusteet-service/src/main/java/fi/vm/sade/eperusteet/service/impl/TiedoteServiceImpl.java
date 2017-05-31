@@ -43,6 +43,12 @@ public class TiedoteServiceImpl implements TiedoteService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen) {
+        return getAll(vainJulkiset, alkaen, null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen, Long perusteId) {
         if (!SecurityUtil.isAuthenticated()) {
             vainJulkiset = true;
