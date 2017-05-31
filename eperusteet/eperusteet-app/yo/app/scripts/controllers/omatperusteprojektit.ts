@@ -27,7 +27,7 @@ angular.module('eperusteApp')
         $scope.projektit = _(vastaus)
           .filter(function(pp) { return pp.diaarinumero; /*ei ole pohja*/ })
           .map(function(pp) {
-            pp.url = PerusteProjektiService.getUrl(pp);
+            pp.url = PerusteProjektiService.getUrl(pp, pp.peruste);
             return pp;
           })
           .reverse()
