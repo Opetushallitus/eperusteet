@@ -139,13 +139,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 .map(pp -> {
                     Peruste peruste = pp.getPeruste();
                     PerusteprojektiKevytDto ppk = mapper.map(pp, PerusteprojektiKevytDto.class);
-                    ppk.setPerusteendiaarinumero(peruste.getDiaarinumero() != null ? peruste.getDiaarinumero().toString() : null);
-                    ppk.setKoulutustyyppi(peruste.getKoulutustyyppi());
-                    ppk.setTyyppi(peruste.getTyyppi());
-                    ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
-                            .map(Suoritustapa::getSuoritustapakoodi)
-                            .map(stk -> stk.toString())
-                            .collect(Collectors.toSet()));
+                    if (ppk != null && peruste != null) {
+                        String pdiaari = peruste.getDiaarinumero() != null ? peruste.getDiaarinumero().toString() : null;
+                        ppk.setPerusteendiaarinumero(pdiaari);
+                        ppk.setKoulutustyyppi(peruste.getKoulutustyyppi());
+                        ppk.setTyyppi(peruste.getTyyppi());
+                        ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
+                                .map(Suoritustapa::getSuoritustapakoodi)
+                                .map(stk -> stk.toString())
+                                .collect(Collectors.toSet()));
+                    }
                     return ppk;
                 })
                 .collect(Collectors.toList());
