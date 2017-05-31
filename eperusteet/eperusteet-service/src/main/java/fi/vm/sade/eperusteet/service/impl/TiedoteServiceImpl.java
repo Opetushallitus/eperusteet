@@ -1,8 +1,11 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Tiedote;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TiedoteRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.TiedoteService;
@@ -35,13 +38,26 @@ public class TiedoteServiceImpl implements TiedoteService {
     @Autowired
     private KayttajanTietoService kayttajat;
 
+    @Autowired
+    private PerusteRepository perusteRepository;
+
     @Override
     @Transactional(readOnly = true)
-    public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen) {
+    public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen, Long perusteId) {
         if (!SecurityUtil.isAuthenticated()) {
             vainJulkiset = true;
         }
-        List<Tiedote> tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen));
+
+        List<Tiedote> tiedotteet = null;
+        if (perusteId == null) {
+            tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen));
+        }
+        else {
+            Peruste peruste = perusteRepository.findOne(perusteId);
+            Perusteprojekti perusteprojekti = peruste.getPerusteprojekti();
+            tiedotteet = repository.findAllByPerusteprojekti(vainJulkiset, new Date(alkaen), perusteprojekti);
+
+        }
         return mapper.mapAsList(tiedotteet, TiedoteDto.class);
     }
 

@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface TiedoteService {
     @PreAuthorize("permitAll()")
     @PostFilter("filterObject.julkinen or filterObject.perusteprojekti == null or hasPermission(filterObject.perusteprojekti.id, 'perusteprojekti', 'LUKU')")
-    List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen);
+    List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen, Long perusteprojektiId);
 
     @PostAuthorize("returnObject == null or returnObject.julkinen or isAuthenticated()")
     TiedoteDto getTiedote(@P("tiedoteId") Long tiedoteId);
