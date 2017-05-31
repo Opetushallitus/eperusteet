@@ -36,8 +36,9 @@ public class TiedoteController {
     @ResponseBody
     public List<TiedoteDto> getAll(
         @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,
+        @RequestParam(value = "perusteprojekti", required = false) Long perusteId,
         @RequestParam(value = "alkaen", required = false, defaultValue = "0") Long alkaen) {
-        return tiedoteService.getAll(vainJulkiset, alkaen);
+        return tiedoteService.getAll(vainJulkiset, alkaen, perusteId);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
