@@ -112,15 +112,40 @@ angular.module('eperusteApp')
     function urlFn(method, projekti, peruste) {
       peruste = peruste || projekti.peruste;
       projekti = _.clone(projekti) || get();
+
       if (peruste && !projekti.koulutustyyppi) {
         projekti.koulutustyyppi = peruste.koulutustyyppi;
       }
-      var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-      var suoritustapa = getSuoritustapa() || getRightSuoritustapa(peruste, projekti);
 
-      if (!_.includes(YleinenData.suoritustavat, suoritustapa) || oletus === 'aipe') {
-        suoritustapa = oletus;
+      function suoritustapavalitsin() {
+        let suoritustapakoodit;
+        if (projekti.peruste && _.isArray(projekti.peruste.suoritustavat)) {
+          suoritustapakoodit = _.map(projekti.peruste.suoritustavat, "suoritustapakoodi");
+        }
+        else if (projekti && _.isArray(projekti.suoritustavat) && !_.isEmpty(projekti.suoritustavat)) {
+          suoritustapakoodit = projekti.suoritustavat;
+        }
+
+        if (_.isArray(suoritustapakoodit) && !_.isEmpty(suoritustapakoodit)) {
+          if (_.size(suoritustapakoodit) === 1) {
+            return suoritustapakoodit[0];
+          }
+          else {
+            return _.includes(suoritustapakoodit, 'naytto')
+              ? 'naytto'
+              : suoritustapakoodit[0];
+          }
+        }
+        else {
+          const suoritustapa = getSuoritustapa() || getRightSuoritustapa(peruste, projekti);
+          const oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
+          return (!_.includes(YleinenData.suoritustavat, suoritustapa) || oletus === 'aipe')
+            ? oletus
+            : suoritustapa;
+        }
       }
+
+      const suoritustapa = suoritustapavalitsin();
 
       const sisaltoTunniste = getSisaltoTunniste(projekti);
       return $state[method]('root.perusteprojekti.suoritustapa.' + sisaltoTunniste, {

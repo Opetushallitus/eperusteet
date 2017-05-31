@@ -20,10 +20,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import java.io.Serializable;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
 
 @Getter
 @Setter
@@ -36,6 +36,10 @@ public class PerusteprojektiKevytDto implements Serializable  {
     private String diaarinumero;
     private String koulutustyyppi;
     private PerusteTyyppi tyyppi;
+    private Set<String> suoritustavat;
+
+    public PerusteprojektiKevytDto() {
+    }
 
     public PerusteprojektiKevytDto(Long id, String nimi, Diaarinumero perusteDiaari, Diaarinumero diaarinumero,
                                    String koulutustyyppi, PerusteTyyppi tyyppi, ProjektiTila tila) {

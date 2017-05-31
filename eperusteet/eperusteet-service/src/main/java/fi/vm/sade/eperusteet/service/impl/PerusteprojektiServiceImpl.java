@@ -135,7 +135,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public List<PerusteprojektiKevytDto> getKevytBasicInfo() {
-        return repository.findAllKevyt();
+        return repository.findAll().stream()
+                .map(pp -> {
+                    Peruste peruste = pp.getPeruste();
+                    PerusteprojektiKevytDto ppk = mapper.map(pp, PerusteprojektiKevytDto.class);
+                    ppk.setPerusteendiaarinumero(peruste.getDiaarinumero() != null ? peruste.getDiaarinumero().toString() : null);
+                    ppk.setKoulutustyyppi(peruste.getKoulutustyyppi());
+                    ppk.setTyyppi(peruste.getTyyppi());
+                    ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
+                            .map(Suoritustapa::getSuoritustapakoodi)
+                            .map(stk -> stk.toString())
+                            .collect(Collectors.toSet()));
+                    return ppk;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

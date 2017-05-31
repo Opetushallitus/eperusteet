@@ -55,5 +55,4 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
             " p.tila" +
             ") FROM Perusteprojekti p")
     List<PerusteprojektiKevytDto> findAllKevyt();
-
 }
