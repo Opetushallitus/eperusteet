@@ -22,11 +22,14 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,8 +53,10 @@ public interface PerusteprojektiService {
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
     List<PerusteprojektiInfoDto> getBasicInfo();
 
-    @PreAuthorize("isAuthenticated()")
-    @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    Page<PerusteprojektiKevytDto> findBy(PageRequest page, PerusteprojektiQueryDto query);
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     List<PerusteprojektiKevytDto> getKevytBasicInfo();
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")

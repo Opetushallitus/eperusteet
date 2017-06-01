@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
@@ -38,6 +39,8 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,8 +74,10 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/perusteHaku", method = GET)
     @ResponseBody
-    public ResponseEntity<List<PerusteprojektiKevytDto>> getAllKevyt() {
-        return new ResponseEntity<>(service.getKevytBasicInfo(), HttpStatus.OK);
+    public Page<PerusteprojektiKevytDto> getAllKevyt(PerusteprojektiQueryDto pquery) {
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
+        Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
+        return page;
     }
 
     @RequestMapping(value = "/omat", method = GET)

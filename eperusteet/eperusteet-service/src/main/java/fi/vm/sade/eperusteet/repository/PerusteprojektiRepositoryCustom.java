@@ -13,26 +13,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.repository.custom;
+
+package fi.vm.sade.eperusteet.repository;
+
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.NoRepositoryBean;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
-public final class RepositoryUtil {
-
-    private RepositoryUtil() {
-        //apuluokka
-    }
-
-    public static final char ESCAPE_CHAR = '\\';
-
-    public static String kuten(String teksti) {
-        StringBuilder b = new StringBuilder("%");
-        b.append(teksti.toLowerCase().replace("" + ESCAPE_CHAR, "" + ESCAPE_CHAR + ESCAPE_CHAR).replace("_", ESCAPE_CHAR
-                + "_").replace("%", ESCAPE_CHAR + "%"));
-        b.append("%");
-        return b.toString();
-    }
-
+@NoRepositoryBean
+public interface PerusteprojektiRepositoryCustom {
+    Page<Perusteprojekti> findBy(PageRequest page, PerusteprojektiQueryDto query);
 }

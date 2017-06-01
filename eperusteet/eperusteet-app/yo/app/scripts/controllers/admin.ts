@@ -59,63 +59,55 @@ angular.module('eperusteApp')
         }
     })
 
-    .controller('AdminPerusteprojektitController', function ($rootScope, $scope, PerusteProjektit,
+    .controller('AdminPerusteprojektitController', function ($rootScope, $scope, Api,
         Algoritmit, PerusteprojektiTila, Notifikaatiot, Kaanna, YleinenData, Varmistusdialogi,
         PerusteProjektiService, Utils) {
         $scope.jarjestysTapa = 'nimi';
         $scope.jarjestysOrder = false;
         $scope.tilaRajain = null;
-        $scope.tilat = [];
         $scope.filteredPp = [];
         $scope.itemsPerPage = 10;
         $scope.nykyinen = 1;
         $scope.alaraja = 0;
         $scope.ylaraja = $scope.alaraja + $scope.itemsPerPage;
+        $scope.rajaus = "";
+        $scope.tilat = [
+            "poistettu",
+            "laadinta",
+            "kommentointi",
+            "viimeistely",
+            "valmis",
+            "julkaistu"
+        ];
 
-        $scope.asetaJarjestys = (tyyppi, suunta) => {
-            if ($scope.jarjestysTapa === tyyppi) {
-                $scope.jarjestysOrder = !$scope.jarjestysOrder;
-                suunta = $scope.jarjestysOrder;
-            }
-            else {
-                $scope.jarjestysOrder = false;
-                $scope.jarjestysTapa = tyyppi;
-            }
-        };
+        async function updateSearch() {
+            const perusteprojektit = await Api.one("perusteprojektit/perusteHaku").get({
+                nimi: $scope.rajaus,
+                tila: $scope.tilaRajain && $scope.tilaRajain.toUpperCase(),
+                sivu: $scope.nykyinen - 1,
+                sivukoko: $scope.itemsPerPage,
+            });
+            $scope.perusteprojektit = _.map(perusteprojektit.data, (pp) => {
+                return {
+                    ...pp,
+                    suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(pp.koulutustyyppi),
+                    $$url: PerusteProjektiService.getUrl(pp),
+                };
+            });
+            $scope.nykyinen = perusteprojektit.sivu + 1;
+            $scope.kokonaismaara = perusteprojektit.kokonaismäärä;
+        }
+        updateSearch();
 
-        $scope.jarjestys = (data) => {
-            switch ($scope.jarjestysTapa) {
-                case 'nimi':
-                    return data.nimi;
-                case 'haltija':
-                    return data.haltija;
-                case 'diaarinumero':
-                    return data.diaarinumero;
-                case 'tila':
-                    return data.tila;
-                default:
-                    break;
-            }
-        };
+        const dUpdateSearch = _.debounce(updateSearch, 300);
+
+        $scope.$watch("rajaus", updateSearch);
+        $scope.$watch("tilaRajain", updateSearch);
 
         $scope.valitseSivu = (sivu) => {
-            if (sivu > 0 && sivu <= Math.ceil(_.size($scope.filteredPp) / $scope.itemsPerPage)) {
-                $scope.nykyinen = sivu;
-                $scope.alaraja = $scope.itemsPerPage * (sivu - 1);
-                $scope.ylaraja = $scope.alaraja + $scope.itemsPerPage;
-            }
+            $scope.nykyinen = sivu;
+            updateSearch();
         };
-
-        PerusteProjektit.perusteHaku({}, (res) => {
-            let mahdollisetTilat = {};
-            _.forEach(res.data, projekti => {
-                projekti.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-                projekti.$url = PerusteProjektiService.getUrl(projekti);
-                mahdollisetTilat[projekti.tila] = true;
-            });
-            $scope.tilat = _.keys(mahdollisetTilat);
-            $scope.perusteprojektit = res.data;
-        });
 
         $scope.palauta = (pp) => {
             const uusiTila = 'laadinta';
@@ -135,13 +127,5 @@ angular.module('eperusteApp')
                     }
                 }, Notifikaatiot.serverCb);
             });
-        };
-
-        $scope.rajaaSisaltoa = (pp) => {
-            return (!$scope.tilaRajain || $scope.tilaRajain === pp.tila) && (_.isEmpty($scope.rajaus) ||
-                Algoritmit.match($scope.rajaus, pp.nimi, false) ||
-                Algoritmit.match($scope.rajaus, 'tila-' + pp.tila, false) ||
-                (_.isEmpty(pp.perusteendiaarinumero) ? false : Algoritmit.match($scope.rajaus, pp.perusteendiaarinumero, false)) ||
-                Algoritmit.match($scope.rajaus, pp.diaarinumero, false));
         };
     });

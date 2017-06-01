@@ -35,6 +35,7 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
@@ -66,6 +67,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -152,6 +155,27 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     return ppk;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PerusteprojektiKevytDto> findBy(PageRequest page, PerusteprojektiQueryDto query) {
+        Page<PerusteprojektiKevytDto> result = repository.findBy(page, query).map(pp -> {
+            PerusteprojektiKevytDto ppk = mapper.map(pp, PerusteprojektiKevytDto.class);
+            Peruste peruste = pp.getPeruste();
+            if (ppk != null && peruste != null) {
+                String pdiaari = peruste.getDiaarinumero() != null ? peruste.getDiaarinumero().toString() : null;
+                ppk.setPerusteendiaarinumero(pdiaari);
+                ppk.setKoulutustyyppi(peruste.getKoulutustyyppi());
+                ppk.setTyyppi(peruste.getTyyppi());
+                ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
+                        .map(Suoritustapa::getSuoritustapakoodi)
+                        .map(stk -> stk.toString())
+                        .collect(Collectors.toSet()));
+            }
+            return ppk;
+        });
+        return result;
     }
 
     @Override

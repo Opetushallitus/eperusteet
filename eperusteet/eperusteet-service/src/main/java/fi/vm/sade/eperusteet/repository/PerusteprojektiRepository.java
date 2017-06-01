@@ -30,7 +30,7 @@ import org.springframework.stereotype.Repository;
  * @author harrik
  */
 @Repository
-public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long> {
+public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long>, PerusteprojektiRepositoryCustom {
 
     List<Perusteprojekti> findByDiaarinumero(Diaarinumero diaarinumero);
     Perusteprojekti findOneByDiaarinumeroAndTila(Diaarinumero diaarinumero, ProjektiTila tila);

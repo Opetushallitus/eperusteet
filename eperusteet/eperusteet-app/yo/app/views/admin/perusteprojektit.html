@@ -44,9 +44,9 @@
             </th>
             <th width="25%" kaanna>toiminto</th>
         </tr>
-        <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in filteredPp = (perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa)">
+        <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in perusteprojektit">
             <td>
-                <a ng-if="pp.tila !== 'poistettu'" ng-href="{{pp.$url}}" ng-bind="pp.nimi">
+                <a ng-if="pp.tila !== 'poistettu'" ng-href="{{pp.$$url}}" ng-bind="pp.nimi">
                 </a>
                 <span ng-if="pp.tila === 'poistettu'" ng-bind="pp.nimi"></span>
                 <span class="badge" ng-if="pp.tyyppi === 'pohja'" kaanna="'pohja'"></span>
@@ -59,7 +59,7 @@
         </tr>
     </table>
 
-    <ep-pagination ng-model="nykyinen" ng-change="valitseSivu" total-items="filteredPp.length"
+    <ep-pagination ng-model="nykyinen" ng-change="valitseSivu" total-items="kokonaismaara"
         items-per-page="itemsPerPage"></ep-pagination>
 </div>
 
