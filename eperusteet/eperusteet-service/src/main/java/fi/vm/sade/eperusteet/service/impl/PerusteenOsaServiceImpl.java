@@ -140,7 +140,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public <T extends PerusteenOsaDto.Laaja> T update(T perusteenOsaDto) {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
