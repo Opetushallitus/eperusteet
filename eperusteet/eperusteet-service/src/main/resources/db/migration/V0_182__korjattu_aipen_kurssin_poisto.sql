@@ -1,0 +1,1 @@
+ALTER TABLE aipeoppiaine_aipekurssi_AUD DROP CONSTRAINT fk_dkg4s0i4reqbsiqvvjypsts7;
