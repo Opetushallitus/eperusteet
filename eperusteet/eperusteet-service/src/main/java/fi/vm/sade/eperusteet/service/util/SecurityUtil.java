@@ -39,7 +39,11 @@ public final class SecurityUtil {
     public static void allow(String principalName) {
         Principal p = getAuthenticatedPrincipal();
         if ( p == null || !p.getName().equals(principalName)) {
-            throw new AccessDeniedException("Pääsy evätty");
+            if (p != null) {
+                throw new AccessDeniedException("Pääsy evätty (" + p + " != " + principalName + ")");
+            } else {
+                throw new AccessDeniedException("Pääsy evätty (null != " + principalName + ")");
+            }
         }
     }
 
