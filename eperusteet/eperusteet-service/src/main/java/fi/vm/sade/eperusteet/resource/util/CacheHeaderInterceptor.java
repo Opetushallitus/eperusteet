@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.resource.util;
 
-import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
