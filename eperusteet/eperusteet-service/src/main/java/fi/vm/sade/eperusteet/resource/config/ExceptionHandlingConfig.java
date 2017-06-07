@@ -56,7 +56,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +65,6 @@ import java.util.Map;
  *
  * @author teele1
  */
-//TODO: vaatii refaktorointia
 @ControllerAdvice
 public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
@@ -182,14 +180,17 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
                 map.put("lukko", lukko);
             }
         } else if (ex instanceof NotExistsException) {
-//            suppresstrace = true;
+            suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
         } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
-        } else if (ex instanceof SocketException) {
-            suppresstrace = true;
-            map.put("syy", ex.getLocalizedMessage());
-            map.put("avain", "client-abort-virhe");
+        } else if (ex instanceof IOException) {
+            String simpleName = ex.getCause().getClass().getSimpleName();
+            if (simpleName.equals("ClientAbortException")) {
+                suppresstrace = true;
+                map.put("syy", ex.getLocalizedMessage());
+                map.put("avain", "client-abort-virhe");
+            }
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");
