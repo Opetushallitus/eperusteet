@@ -111,7 +111,7 @@ public class SwaggerConfig {
         return new ApiInfo(
             "Oppijan verkkopalvelukokonaisuus / ePerusteet julkinen rajapinta",
             "",
-            "Spring MVC API based on the swagger 1.2 spec",
+            "Spring MVC API based on the swagger 2.0 and 1.2 spec",
             "https://confluence.csc.fi/display/oppija/Rajapinnat+toisen+asteen+ja+perusasteen+toimijoille",
             contact,
             "EUPL 1.1",

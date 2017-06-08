@@ -41,7 +41,8 @@ cas.group-role-attribute=cn
 cas.group-search-base=ou\=groups
 cas.group-search-filter=(uniqueMember\={0})
 cas.sendRenew=false
-cas.service.authentication-service=https\://${host.virkailija}/authentication-service
+cas.service.organisaatio-service=https\://${host.virkailija}/organisaatio-service
+cas.service.oppijanumerorekisteri-service=https\://${host.virkailija}/oppijanumerorekisteri-service
 cas.service.eperusteet-service=https\://${host.virkailija}/eperusteet-service
 cas.service.organisaatio-service=https\://${host.virkailija}/organisaatio-service
 cas.user-search-base=ou\=people

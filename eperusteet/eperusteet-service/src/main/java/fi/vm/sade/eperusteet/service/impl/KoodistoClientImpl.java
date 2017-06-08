@@ -38,7 +38,7 @@ import java.util.stream.Stream;
  * @author nkala
  */
 @Service
-@Profile(value = "default")
+@Profile("default")
 public class KoodistoClientImpl implements KoodistoClient {
 
     @Value("${koodisto.service.url:https://virkailija.opintopolku.fi/koodisto-service}")

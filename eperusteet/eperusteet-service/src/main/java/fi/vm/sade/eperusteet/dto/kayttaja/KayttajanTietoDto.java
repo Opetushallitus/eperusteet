@@ -27,7 +27,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class KayttajanTietoDto {
-    String username;
     String kutsumanimi;
     String etunimet;
     String sukunimi;

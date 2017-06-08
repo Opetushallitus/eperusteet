@@ -59,10 +59,14 @@ import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import static fi.vm.sade.eperusteet.service.util.Util.*;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toMap;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,10 +88,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiServiceImpl.class);
 
-    private final String authQueryPath = "/resources/henkilo?count=9999&index=0&org=";
+    private static final String HENKILO_YHTEYSTIEDOT_API = "/s2s/henkilo/yhteystiedot";
 
-    @Value("${cas.service.authentication-service:''}")
-    private String authServiceUrl;
+    @Value("${cas.service.oppijanumerorekisteri-service:''}")
+    private String onrServiceUrl;
 
     @Autowired
     @Dto
@@ -206,7 +210,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public List<KayttajanTietoDto> getJasenet(Long id) {
-        CachingRestClient crc = restClientFactory.get(authServiceUrl);
+        CachingRestClient crc = restClientFactory.get(onrServiceUrl);
         Perusteprojekti p = repository.findOne(id);
         List<KayttajanTietoDto> kayttajat;
         ObjectMapper omapper = new ObjectMapper();
@@ -216,19 +220,22 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         try {
-            String url = authServiceUrl + authQueryPath + p.getRyhmaOid();
-            String json = crc.getAsString(url);
-            kayttajat = KayttajanTietoParser.parsiKayttajat(omapper.readTree(json).get("results"));
+            String url = onrServiceUrl + HENKILO_YHTEYSTIEDOT_API;
+            String ryhmaOid = p.getRyhmaOid();
+            HttpResponse response = crc.post(url, "application/json", "{ \"organisaatioOids\": [\"" + ryhmaOid + "\"] }");
+            InputStream contentStream = response.getEntity().getContent();
+            kayttajat = KayttajanTietoParser.parsiKayttajat(omapper.readTree(IOUtils.toString(contentStream)));
         } catch (IOException ex) {
             throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
         }
+
         return kayttajat;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id) {
-        CachingRestClient crc = restClientFactory.get(authServiceUrl);
+        CachingRestClient crc = restClientFactory.get(onrServiceUrl);
         Perusteprojekti p = repository.findOne(id);
 
         if (p == null || p.getRyhmaOid() == null || p.getRyhmaOid().isEmpty()) {
@@ -238,10 +245,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> kayttajat = new ArrayList<>();
 
         try {
-            String url = authServiceUrl + authQueryPath + p.getRyhmaOid();
+            String url = onrServiceUrl + HENKILO_YHTEYSTIEDOT_API;
+            String ryhmaOid = p.getRyhmaOid();
+            HttpResponse response = crc.post(url, "application/json", "{ \"organisaatioOids\": [\"" + ryhmaOid + "\"] }");
+            InputStream contentStream = response.getEntity().getContent();
             ObjectMapper omapper = new ObjectMapper();
-            JsonNode tree = omapper.readTree(crc.getAsString(url));
-            for (JsonNode node : tree.get("results")) {
+
+            JsonNode tree = omapper.readTree(IOUtils.toString(contentStream));
+            for (JsonNode node : tree) {
                 String oid = node.get("oidHenkilo").asText();
                 KayttajanTietoDto kayttaja = kayttajanTietoService.hae(oid);
                 KayttajanProjektitiedotDto kayttajanProjektitiedot = kayttajanTietoService.haePerusteprojekti(oid, id);
@@ -886,7 +897,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (tila == ProjektiTila.JULKAISTU && projekti.getTila() == ProjektiTila.VALMIS) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
-            Optional.ofNullable(peruste)
+            Optional.of(peruste)
                     .ifPresent(p -> p.getSuoritustavat()
                     .forEach(suoritustapa -> p.getKielet()
                             .forEach(kieli -> {
