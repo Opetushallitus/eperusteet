@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
  * @author nkala
  */
 @Service
-@Profile(value = "test")
+@Profile("test")
 public class KoodistoServiceMock implements KoodistoClient {
 
     @Override

@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
@@ -125,13 +127,10 @@ public class LockManagerImpl implements LockManager {
                 if (ktd != null) {
                     String kutsumanimi = ktd.getKutsumanimi();
                     String sukunimi = ktd.getSukunimi();
-                    String username = ktd.getUsername();
-                    if (username != null && sukunimi != null && kutsumanimi != null) {
-                        lock.setHaltijaNimi(kutsumanimi + " " + sukunimi + " (" + username + ")");
-                    }
-                    else if (username != null) {
-                        lock.setHaltijaNimi(username);
-                    }
+                    String haltijaNimi = Stream.of(kutsumanimi, sukunimi)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.joining(" "));
+                    lock.setHaltijaNimi(haltijaNimi);
                 }
             } catch (InterruptedException | ExecutionException | TimeoutException ex) {
             }
