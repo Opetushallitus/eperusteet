@@ -224,6 +224,10 @@ abbr[data-viite] {
   border-bottom: 1px dotted #999;
 }
 
+abbr[title] {
+  text-decoration: none;
+}
+
 strong.ep-match {
   color: lighten($brand-primary, 15%);
 }
