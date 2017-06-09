@@ -71,7 +71,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     }
 
     @Override
-    @Cacheable(value = "kayttajat")
+    @Cacheable("kayttajat")
     public KayttajanTietoDto hae(String oid) {
         if (oid == null || oid.isEmpty()) {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
