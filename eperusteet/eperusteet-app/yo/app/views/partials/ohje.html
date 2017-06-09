@@ -1,10 +1,11 @@
 <!-- partials/ohje.html -->
 <span class="ohje">
-    <span class="popover-element badge"
+    <span class="popover-element"
           uib-popover="{{textObject | kaanna}}"
           popover-title="{{title || 'ohje' | kaanna}}"
-          popover-trigger="'click'"
-          popover-placement="{{suunta || 'right'}}">
+          popover-trigger="'outsideClick'"
+          popover-placement="{{suunta || 'right'}}"
+          ng-class="{badge: ohje !== 'false'}">
         <span ng-transclude></span>
         <span ng-if="ohje !== 'false'">?</span>
     </span>
