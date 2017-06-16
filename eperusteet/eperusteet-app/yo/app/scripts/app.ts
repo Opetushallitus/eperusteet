@@ -31,7 +31,8 @@ angular.module('eperusteApp', [
     'eperusteet.esitys',
     'ngFileUpload',
     'eGenericTree',
-    'eMathDisplay'
+    'eMathDisplay',
+    'LocalStorageModule'
 ])
 .constant('SERVICE_LOC', '/eperusteet-service/api')
 .constant('ORGANISATION_SERVICE_LOC', '/lokalisointi/cxf/rest/v1/localisation')
