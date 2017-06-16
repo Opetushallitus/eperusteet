@@ -63,7 +63,9 @@ angular.module('eperusteApp')
     };
 
     $scope.appliedClasses = function () {
-      var classes = {editable: $scope.editable};
+      var classes = {
+          editable: $scope.editable
+      };
       classes[$scope.status] = true;
       return classes;
     };
