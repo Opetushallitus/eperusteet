@@ -184,13 +184,10 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             map.put("syy", ex.getLocalizedMessage());
         } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
-        } else if (ex instanceof IOException) {
-            String simpleName = ex.getCause().getClass().getSimpleName();
-            if (simpleName.equals("ClientAbortException")) {
-                suppresstrace = true;
-                map.put("syy", ex.getLocalizedMessage());
-                map.put("avain", "client-abort-virhe");
-            }
+        } else if (ex.getCause().getClass().getSimpleName().equals("ClientAbortException")) {
+            suppresstrace = true;
+            map.put("syy", ex.getLocalizedMessage());
+            map.put("avain", "client-abort-virhe");
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");

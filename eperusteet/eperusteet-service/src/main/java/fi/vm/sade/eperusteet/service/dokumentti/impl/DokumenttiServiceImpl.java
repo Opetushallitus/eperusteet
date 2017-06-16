@@ -69,6 +69,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -229,9 +230,19 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @IgnorePerusteUpdateCheck
     public Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
-        List<Dokumentti> documents = dokumenttiRepository
-                .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(
-                        perusteId, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort);
+
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
+        List<Dokumentti> documents;
+        if (suoritustavat.isEmpty()) {
+            documents = dokumenttiRepository
+                    .findByPerusteIdAndKieliAndTila(
+                            perusteId, kieli, DokumenttiTila.VALMIS, sort);
+        } else {
+            documents = dokumenttiRepository
+                    .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(
+                            perusteId, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort);
+        }
 
         if (!documents.isEmpty()) {
             return documents.get(0).getId();
