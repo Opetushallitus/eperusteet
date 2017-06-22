@@ -90,6 +90,12 @@ $pikamenu-size: 22px;
       margin-left: 5px;
     }
     margin-top: -5px;
+    a {
+      text-decoration: none;
+      span {
+        text-decoration: none;
+      }
+    }
   }
   input {
     margin-left: 5px;
@@ -514,13 +520,23 @@ $sisalto-min-height: 450px;
 }
 
 .to-vapaat-tekstit {
-  margin-top: 50px;
-
   .tovp-header {
     margin-bottom: 5px;
 
     .handle {
       cursor: move;
+    }
+
+    .field-buttons {
+      font-size: 120%;
+      font-weight: 700;
+      margin-top: 8px;
+      a {
+        text-decoration: none;
+        span {
+          text-decoration: none;
+        }
+      }
     }
   }
 
@@ -536,4 +552,28 @@ $sisalto-min-height: 450px;
     top: -1px;
     margin-right: 4px;
   }
+}
+
+.container-items {
+  min-height: 32px;
+  //border: 1px dashed lightgray;
+  & > div {
+    margin-bottom: 15px;
+  }
+}
+
+.sortable-placeholder {
+  background-color: #f8f8f8;
+}
+
+.table-layout {
+  display: table;
+  width: 100%;
+}
+.table-layout .table-cell {
+  display: table-cell;
+}
+
+.table-cell-fixed {
+  width: 280px;
 }

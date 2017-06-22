@@ -90,7 +90,7 @@ angular.module('eperusteApp')
     MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, AmmattitaitoHelper, PerusteProjektiSivunavi,
     Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
     Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService,
-    ProjektinMurupolkuService) {
+    ProjektinMurupolkuService, localStorageService) {
 
     Utils.scrollTo('#ylasivuankkuri');
 
@@ -107,6 +107,21 @@ angular.module('eperusteApp')
     $scope.editEnabled = false;
     $scope.editointikontrollit = Editointikontrollit;
     $scope.nimiValidationError = false;
+
+    $scope.leikelauta = localStorageService.get('leikelauta');
+    $scope.leikeautaOpen = false;
+    if (localStorageService.isSupported) {
+      $scope.leikeautaOpen = localStorageService.get('leikeautaOpen');
+    }
+    $scope.toggleLeikelauta = () => {
+      if (localStorageService.isSupported) {
+        $scope.leikeautaOpen = ! $scope.leikeautaOpen;
+        localStorageService.set('leikeautaOpen', $scope.leikeautaOpen);
+      } else {
+          Notifikaatiot.varoitus("selain-ei-tue");
+      }
+    };
+
 
     var tutkinnonOsaDefer = $q.defer();
     $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
@@ -189,12 +204,101 @@ angular.module('eperusteApp')
       Utils.scrollTo('#vapaatTekstitAnchor');
     };
 
+    $scope.skratchpad = [];
+    /*$scope.skratchpadSortableOptions = {
+      handle: '.handle',
+      connectWith: '.container-items',
+      cursor: 'move',
+      cursorAt: {top : 10, left: 10},
+      tolerance: 'pointer',
+      helper: 'clone',
+      update: (event, ui) => {
+          console.log('update', event, ui);
+      },
+      start: (event, ui) => {
+        console.log('start', event, ui);
+      },
+      stop: (event, ui) => {
+        console.log('stop', event, ui);
+      }
+    };*/
+
+    $scope.kopioLeikelautaan = (tyyppi, osa) => {
+      if (localStorageService.isSupported) {
+          $scope.leikelauta = localStorageService.get('leikelauta');
+          if ($scope.leikelauta == null) {
+              $scope.leikelauta = {};
+          }
+          if ($scope.leikelauta[tyyppi] == null) {
+              $scope.leikelauta[tyyppi] = [];
+          }
+          $scope.leikelauta[tyyppi].push(osa);
+          localStorageService.set('leikelauta', $scope.leikelauta);
+      }
+    };
+    $scope.poistaLeikelaudasta = (tyyppi, id) => {
+        if (localStorageService.isSupported) {
+            $scope.leikelauta = localStorageService.get('leikelauta');
+            if ($scope.leikelauta != null && $scope.leikelauta[tyyppi] != null) {
+                $scope.leikelauta[tyyppi].splice(id, 1);
+            }
+            localStorageService.set('leikelauta', $scope.leikelauta);
+        }
+    };
+
+    $scope.liitaLeikelaudasta = (tyyppi, id) => {
+        if (localStorageService.isSupported) {
+            $scope.leikelauta = localStorageService.get('leikelauta');
+
+            if ($scope.leikelauta != null && $scope.leikelauta[tyyppi] != null) {
+                const osa = _.cloneDeep($scope.leikelauta[tyyppi][id]);
+                console.log(tyyppi, osa);
+                if ($scope.editableTutkinnonOsaViite.tutkinnonOsa[tyyppi] == null) {
+                    $scope.editableTutkinnonOsaViite.tutkinnonOsa[tyyppi] = [];
+                }
+                $scope.editableTutkinnonOsaViite.tutkinnonOsa[tyyppi].push(osa);
+            }
+        }
+    };
+
     $scope.sortableOptions = {
       handle: '.handle',
       connectWith: '.container-items',
       cursor: 'move',
-      cursorAt: {top : 2, left: 2},
+      cursorAt: {
+          top : 15,
+          left: 15
+      },
       tolerance: 'pointer',
+      axis: "y",
+      //helper: 'clone',
+      /*sort: (event, ui) => {
+        console.log('sort', event, ui);
+      },*/
+      forceHelperSize: true,
+      placeholder: "sortable-placeholder",
+      forcePlaceholderSize: true,
+      opacity: '.7',
+      /*helper: (e, item) => {
+        console.log("helper", item);
+        return item.clone();
+      },
+      update: (event, ui) => {
+        console.log('update', event, ui);
+      },
+      start: (event, ui) => {
+        console.log('start', event, ui);
+        const el = angular.element(ui.item);
+        const elScope = el.scope();
+        //elScope.sorting = true;
+        //el.addClass("hidden");
+      },
+      stop: (event, ui) => {
+        console.log('stop', event, ui);
+        const el = angular.element(ui.item);
+        //const elScope = el.scope();
+        //elScope.sorting = false;
+      }*/
     };
 
     $scope.fields = [{

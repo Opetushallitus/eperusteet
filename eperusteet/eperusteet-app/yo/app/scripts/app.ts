@@ -128,6 +128,12 @@ angular.module('eperusteApp', [
         };
     }]);
 })
+.config(localStorageServiceProvider => {
+    localStorageServiceProvider
+        .setPrefix('eperusteApp')
+        .setStorageType('localStorage')
+        .setNotify(true, true);
+})
 .run(() => {
     _.mixin({
         arraySwap: function (array, a, b) {

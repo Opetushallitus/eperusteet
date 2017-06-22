@@ -20,6 +20,7 @@
     "angular-ui-select": "0.9.6",
     "angular-ui-sortable": "https://github.com/nkala/ui-sortable.git#v0.13.4x",
     "angular-ui-router": "0.2.13",
+    "angular-local-storage": "0.6.0",
     "ckeditor": "4.6.2",
     "es5-shim": "2.3.0",
     "jquery": "1.11.0",
@@ -31,8 +32,7 @@
     "bootstrap-sass-official": "3.3.3",
     "eperusteet-frontend-utils": "Opetushallitus/eperusteet-frontend-utils#master",
     "restangular": "1.5.2",
-    "es6-promise": "4.0.5",
-    "angular-local-storage": "0.6.0"
+    "es6-promise": "4.0.5"
   },
   "devDependencies": {
     "angular-mocks": "1.4.14",
