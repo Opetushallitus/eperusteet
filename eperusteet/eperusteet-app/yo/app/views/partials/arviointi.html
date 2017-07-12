@@ -13,6 +13,8 @@
         </span>
         <div class="panel-body">
             <uib-accordion close-others="false">
+                <pre ng-bind="arviointi.length | json"></pre>
+                <pre ng-bind="sortableOptions.$$id | json"></pre>
                 <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
                     <div uib-accordion-group
                          class="arvioinnin-kohdealue"
@@ -32,10 +34,11 @@
                         </uib-accordion-heading>
 
                         <uib-accordion close-others="false">
+                            <pre ng-bind="kohdealue.arvioinninKohteet.length | json"></pre>
                             <div id="sortableKohteet"
                                  ui-sortable="sortableOptions"
                                  ng-model="kohdealue.arvioinninKohteet">
-                                <div class="arvioinnin-kohde"
+                                <div class="arvioinnin-kohde container-items-kohteet"
                                      uib-accordion-group
                                      ng-class="{'kohde-edit': arvioinninkohde === originalKohde}"
                                      ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet"

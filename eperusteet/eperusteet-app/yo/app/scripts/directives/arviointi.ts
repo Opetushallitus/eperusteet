@@ -198,14 +198,37 @@ angular.module('eperusteApp')
 
         scope.elementDragged = false;
 
-        scope.sortableOptions = {
-          axis: 'y',
-          start: function() {
-            scope.elementDragged = true;
-          },
-          stop: function() {
-            // ei toimi
+
+        let sourceClone = null;
+        function start(ev, ui) {
+          if (ui.item.sortable.sourceModel) {
+  	        sourceClone = ui.item.sortable.sourceModel.slice();
           }
+        }
+
+        function stop(ev, ui) {
+  	      let { droptarget, sourceModel } = ui.item.sortable;
+          if (sourceModel && droptarget && ev.target !== droptarget[0]) {
+            sourceModel.length = 0;
+            sourceModel.push(...sourceClone);
+            sourceClone = null;
+          }
+        }
+
+        function helper(ev, ui) {
+          return ui.clone();
+        }
+
+        scope.sortableOptions = {
+          $$id: "arviointi sortable",
+          connectWith: '.container-items-kohteet, .container-items-leikelauta',
+          helper,
+          start,
+          stop,
+          // start: function(ev, ui) {
+          //   start(ev, ui);
+          //   scope.elementDragged = true;
+          // }
         };
 
         scope.kriteeriSortableOptions = {

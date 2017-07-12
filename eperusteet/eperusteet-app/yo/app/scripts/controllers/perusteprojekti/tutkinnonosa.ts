@@ -18,6 +18,62 @@ angular.module('eperusteApp')
   .factory('TutkinnonOsanKoodiUniqueResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/tutkinnonosat/koodi/uniikki/:tutkinnonosakoodi');
   })
+  .service('TutkinnonOsaLeikelautaService', () => {
+    function createHelpers() {
+      let sourceClone = null;
+      return {
+        start(ev, ui) {
+          if (ui.item.sortable.sourceModel) {
+  	        sourceClone = ui.item.sortable.sourceModel.slice();
+          }
+        },
+
+        stop(ev, ui) {
+  	      let { droptarget, sourceModel } = ui.item.sortable;
+          if (sourceClone && droptarget && ev.target !== droptarget[0]) {
+            sourceModel.length = 0;
+            sourceModel.push(...sourceClone);
+            sourceClone = null;
+          }
+        },
+
+        update(ev, ui) {
+            ui.item.sortable.cancel();
+        },
+
+        helper(ev, ui) {
+          return ui.clone();
+        }
+      }
+    }
+
+    return {
+      createConnectedSortable(connectWithName, original = {}) {
+        return {
+          ...original,
+          ...createHelpers()
+        }
+      },
+      createLeikelautaSortable($scope, original = {}) {
+        return {
+          ...original,
+          ...createHelpers(),
+          update(ev, ui) {
+      	    // const { sourceModel, index, droptargetModel } = ui.item.sortable;
+            // const item = sourceModel[index];
+            // if (sourceModel !== $scope.leikelauta && droptargetModel === $scope.leikelauta) {
+              // console.log("Leikelaudalle");
+            ui.item.sortable.cancel();
+            // }
+          }
+        };
+      },
+      asetaLeikelauta() {
+      },
+      kopioiLeikelautaan(osa) {
+      }
+    };
+  })
   .service('TutkinnonosanTiedotService', function(PerusteenOsat, $q, TutkinnonOsanOsaAlue, Osaamistavoite) {
     var FIELD_ORDER = {
       tavoitteet: 3,
@@ -90,7 +146,7 @@ angular.module('eperusteApp')
     MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, AmmattitaitoHelper, PerusteProjektiSivunavi,
     Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
     Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService,
-    ProjektinMurupolkuService, localStorageService) {
+    ProjektinMurupolkuService, localStorageService, TutkinnonOsaLeikelautaService) {
 
     Utils.scrollTo('#ylasivuankkuri');
 
@@ -192,8 +248,8 @@ angular.module('eperusteApp')
       });
     }
 
-    $scope.removeVapaaTeksti = function(vapaatTekstit, sisalto) {
-      _.remove(vapaatTekstit, sisalto);
+    $scope.removeByIdx = function(vapaatTekstit, idx) {
+      vapaatTekstit.splice(idx, 1);
     };
 
     $scope.addVapaaTeksti = function(vapaatTekstit) {
@@ -204,73 +260,55 @@ angular.module('eperusteApp')
       Utils.scrollTo('#vapaatTekstitAnchor');
     };
 
-    $scope.skratchpad = [];
-    /*$scope.skratchpadSortableOptions = {
+    const storageLeikelauta = localStorageService.get('leikelauta')
+    // $scope.leikelauta = _.isArray(storageLeikelauta) ? _.filter(storageLeikelauta, _.isObject) : [];
+    $scope.leikelauta = [];
+    $scope.leikelautaSortableOptions = TutkinnonOsaLeikelautaService.createLeikelautaSortable($scope, {
       handle: '.handle',
-      connectWith: '.container-items',
+      connectWith: '.container-items, .container-items-kohteet, .container-items-leikelauta',
       cursor: 'move',
       cursorAt: {top : 10, left: 10},
-      tolerance: 'pointer',
-      helper: 'clone',
-      update: (event, ui) => {
-          console.log('update', event, ui);
-      },
-      start: (event, ui) => {
-        console.log('start', event, ui);
-      },
-      stop: (event, ui) => {
-        console.log('stop', event, ui);
-      }
-    };*/
+    });
 
-    $scope.kopioLeikelautaan = (tyyppi, osa) => {
+    $scope.kopioLeikelautaan = (osa) => {
       if (localStorageService.isSupported) {
-          $scope.leikelauta = localStorageService.get('leikelauta');
-          if ($scope.leikelauta == null) {
-              $scope.leikelauta = {};
-          }
-          if ($scope.leikelauta[tyyppi] == null) {
-              $scope.leikelauta[tyyppi] = [];
-          }
-          $scope.leikelauta[tyyppi].push(osa);
-          localStorageService.set('leikelauta', $scope.leikelauta);
+        $scope.leikelauta.push(osa);
+        localStorageService.set('leikelauta', $scope.leikelauta);
       }
     };
-    $scope.poistaLeikelaudasta = (tyyppi, id) => {
-        if (localStorageService.isSupported) {
-            $scope.leikelauta = localStorageService.get('leikelauta');
-            if ($scope.leikelauta != null && $scope.leikelauta[tyyppi] != null) {
-                $scope.leikelauta[tyyppi].splice(id, 1);
-            }
-            localStorageService.set('leikelauta', $scope.leikelauta);
-        }
+
+    $scope.poistaLeikelaudasta = (idx) => {
+      $scope.leikelauta.splice(idx, 1);
+      if (localStorageService.isSupported) {
+        localStorageService.set('leikelauta', $scope.leikelauta);
+      }
     };
 
-    $scope.liitaLeikelaudasta = (tyyppi, id) => {
-        if (localStorageService.isSupported) {
-            $scope.leikelauta = localStorageService.get('leikelauta');
+    // $scope.sortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable($scope, ".vapaat-tekstit", {
+    //   handle: '.handle',
+    //   connectWith: '.container-items, .container-items-leikelauta',
+    //   cursor: 'move',
+    //   cursorAt: {
+    //       top : 15,
+    //       left: 15
+    //   },
+    //   tolerance: 'pointer',
+    //   forceHelperSize: true,
+    //   placeholder: "sortable-placeholder",
+    //   forcePlaceholderSize: true,
+    //   opacity: '.7',
+    // });
 
-            if ($scope.leikelauta != null && $scope.leikelauta[tyyppi] != null) {
-                const osa = _.cloneDeep($scope.leikelauta[tyyppi][id]);
-                console.log(tyyppi, osa);
-                if ($scope.editableTutkinnonOsaViite.tutkinnonOsa[tyyppi] == null) {
-                    $scope.editableTutkinnonOsaViite.tutkinnonOsa[tyyppi] = [];
-                }
-                $scope.editableTutkinnonOsaViite.tutkinnonOsa[tyyppi].push(osa);
-            }
-        }
-    };
-
-    $scope.sortableOptions = {
+    $scope.sortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable(".vapaat-tekstit", {
       handle: '.handle',
-      connectWith: '.container-items',
+      connectWith: '.container-items, .container-items-leikelauta',
       cursor: 'move',
       cursorAt: {
           top : 15,
           left: 15
       },
       tolerance: 'pointer',
-      axis: "y",
+      // axis: "y",
       //helper: 'clone',
       /*sort: (event, ui) => {
         console.log('sort', event, ui);
@@ -299,7 +337,7 @@ angular.module('eperusteApp')
         //const elScope = el.scope();
         //elScope.sorting = false;
       }*/
-    };
+    });
 
     $scope.fields = [{
         path: 'tutkinnonOsa.tavoitteet',
@@ -318,19 +356,19 @@ angular.module('eperusteApp')
         localeKey: 'tutkinnon-osan-ammattitaitovaatimukset-taulukko',
         type: 'ammattitaito',
         collapsible: true
-      },{
+      }, {
         path: 'tutkinnonOsa.ammattitaidonOsoittamistavat',
         localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
         type: 'editor-area',
         localized: true,
         collapsible: true
-      },{
+      }, {
         path: 'tutkinnonOsa.arviointi.lisatiedot',
         localeKey: 'tutkinnon-osan-arviointi-teksti',
         type: 'editor-area',
         localized: true,
         collapsible: true
-      },{
+      }, {
         path: 'tutkinnonOsa.arviointi.arvioinninKohdealueet',
         localeKey: 'tutkinnon-osan-arviointi-taulukko',
         type: 'arviointi',
