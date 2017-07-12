@@ -118,7 +118,8 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
 
         if (pq.getNimi() != null) {
-            Predicate nimessa = cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pq.getNimi())));
+            Expression<String> nimiLit = cb.literal(RepositoryUtil.kuten(pq.getNimi()));
+            Predicate nimessa = cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), nimiLit);
             List<Predicate> preds = new ArrayList<>();
             preds.add(nimessa);
 
@@ -136,8 +137,9 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
                         .join(TutkinnonOsa_.nimi)
                         .join(TekstiPalanen_.teksti);
                 Predicate tutkinnonOsaJulkaistu = cb.equal(tutkinnonOsa.get(TutkinnonOsa_.tila), PerusteTila.VALMIS);
-                Predicate tosanNimessa = cb.like(cb.lower(tutkinnonOsanNimi.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pq.getNimi())));
-                preds.add(cb.and(tutkinnonOsaJulkaistu, tosanNimessa));
+                Predicate tosanKoodiArvossa = cb.like(tutkinnonOsa.get(TutkinnonOsa_.koodiArvo), nimiLit);
+                Predicate tosanNimessa = cb.like(cb.lower(tutkinnonOsanNimi.get(LokalisoituTeksti_.teksti)), nimiLit);
+                preds.add(cb.and(tutkinnonOsaJulkaistu, cb.or(tosanKoodiArvossa, tosanNimessa)));
             }
 
             if (preds.size() < 2) {
