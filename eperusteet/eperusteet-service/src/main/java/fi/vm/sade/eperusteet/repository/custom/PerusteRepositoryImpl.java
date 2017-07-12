@@ -19,20 +19,21 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa_;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite_;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-
+import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 /**
  *
@@ -118,12 +119,31 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         if (pq.getNimi() != null) {
             Predicate nimessa = cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pq.getNimi())));
+            List<Predicate> preds = new ArrayList<>();
+            preds.add(nimessa);
+
             if (koodistostaHaetut.size() > 0) {
                 Predicate haettuKoodistosta = root.get(Peruste_.id).in(koodistostaHaetut);
-                pred = cb.and(pred, cb.or(nimessa, haettuKoodistosta));
+                preds.add(haettuKoodistosta);
             }
-            else {
-                pred = cb.and(pred, nimessa);
+
+            if (pq.isTutkinnonosat()) {
+                Join<TutkinnonOsaViite, TutkinnonOsa> tutkinnonOsa = root
+                        .join(Peruste_.suoritustavat)
+                        .join(Suoritustapa_.tutkinnonOsat)
+                        .join(TutkinnonOsaViite_.tutkinnonOsa);
+                Join<TekstiPalanen, LokalisoituTeksti> tutkinnonOsanNimi = tutkinnonOsa
+                        .join(TutkinnonOsa_.nimi)
+                        .join(TekstiPalanen_.teksti);
+                Predicate tutkinnonOsaJulkaistu = cb.equal(tutkinnonOsa.get(TutkinnonOsa_.tila), PerusteTila.VALMIS);
+                Predicate tosanNimessa = cb.like(cb.lower(tutkinnonOsanNimi.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pq.getNimi())));
+                preds.add(cb.and(tutkinnonOsaJulkaistu, tosanNimessa));
+            }
+
+            if (preds.size() < 2) {
+                pred = cb.and(pred, preds.get(0));
+            } else {
+                pred = cb.and(pred, cb.or(preds.toArray(new Predicate[preds.size()])));
             }
         }
 
@@ -143,7 +163,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             Join<Peruste, Suoritustapa> suoritustapa = root.join(Peruste_.suoritustavat);
             pred = cb.and(pred, cb.equal(suoritustapa.get(Suoritustapa_.suoritustapakoodi), suoritustapakoodi));
         }
-
         if (!empty(pq.getKoulutustyyppi())) {
             pred = cb.and(pred, root.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
         }
