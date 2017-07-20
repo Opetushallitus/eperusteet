@@ -324,7 +324,7 @@ angular.module('eperusteApp')
           if(localizedModelValue === null) {
             localizedModelValue = {};
           }
-          if (viewValue !== '') {
+          if (!_.isUndefined(viewValue) && !_.isNull(viewValue)) {
             localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
           }
           return localizedModelValue;
