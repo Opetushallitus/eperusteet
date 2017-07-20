@@ -46,6 +46,7 @@ public class PerusteQuery {
     private Long muokattu;
     private String jarjestys;
     private boolean tutkintonimikkeet = false;
+    private boolean tutkinnonosat = false;
     private boolean osaamisalat = false;
     private boolean koulutusvienti = false;
     private long nykyinenAika = new Date().getTime();

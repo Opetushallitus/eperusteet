@@ -239,7 +239,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         // Haetaan perusteiden id:t mihin on liitetty osaamisalat tai tutkintonimikkeet
         if (pquery.getNimi() != null && pquery.isTutkintonimikkeet()) {
             koodistostaHaetut = Stream.concat(koodistostaHaetut, getPerusteetByUris(
-                    koodistoService.filterBy("tutkintonimikkeet", pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri), tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
+                    koodistoService.filterBy(
+                            "tutkintonimikkeet",
+                            pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri),
+                            tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
         }
 
         // Lisätään mahdolliset perusteet hakujoukkoon
