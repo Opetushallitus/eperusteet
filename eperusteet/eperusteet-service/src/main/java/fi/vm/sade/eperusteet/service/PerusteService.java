@@ -61,6 +61,9 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteDto get(@P("perusteId") final Long id);
 
+    @PreAuthorize("permitAll()")
+    boolean isDiaariValid(String diaarinumero);
+
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id);
 
