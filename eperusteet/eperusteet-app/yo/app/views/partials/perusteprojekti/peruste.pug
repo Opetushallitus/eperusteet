@@ -66,10 +66,7 @@ mixin kvliite()
         h4(ng-bind="'tutkinnon-taso' | kaanna")
       .panel-body
         ul
-          li(ng-repeat="taso in kvliite.tasot")
-            span(ng-bind="taso.asteikko | kaanna")
-            =" "
-            span(ng-bind="taso.taso")
+          li(ng-repeat="taso in kvliite.tasot" ng-bind="taso.nimi | kaanna")
 
     .panel.panel-default.panel-clean
       .panel-heading

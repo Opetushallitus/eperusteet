@@ -14,21 +14,20 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.koodisto;
+package fi.vm.sade.eperusteet.dto.peruste;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author nkala
  */
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class KoodistoMetadataDto {
-    private String nimi;
-    private String kieli;
-    private String kuvaus;
+public class KVLiiteTasoDto {
+    String codeUri;
+    String codeValue;
+    LokalisoituTekstiDto nimi;
 }

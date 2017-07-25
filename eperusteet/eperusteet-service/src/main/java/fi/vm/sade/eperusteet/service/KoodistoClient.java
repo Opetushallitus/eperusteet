@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import java.util.List;
 import java.util.stream.Stream;
@@ -37,6 +38,10 @@ public interface KoodistoClient {
     List<KoodistoKoodiDto> getAlarelaatio(String koodi);
 
     List<KoodistoKoodiDto> getYlarelaatio(String koodi);
+
+    KoodistoKoodiLaajaDto getAllByVersio(String koodi, String versio);
+
+    KoodistoKoodiDto getLatest(String koodi);
 
     KoodiDto getKoodi(String koodisto, String koodiUri);
 

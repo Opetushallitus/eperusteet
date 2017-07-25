@@ -22,13 +22,11 @@ import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author nkala
  */
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KoodistoMetadataDto {
-    private String nimi;
-    private String kieli;
-    private String kuvaus;
+public class KoodistoKoodiLaajaDto extends KoodistoKoodiDto {
+    private KoodiElementti[] includesCodeElements;
 }
