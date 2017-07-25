@@ -53,8 +53,10 @@ import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -168,6 +170,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private KoodistoClient koodistoService;
+
+    private List<Pattern> diaariNumeroPatterns = new ArrayList<>();
+
+    @PostConstruct
+    public void init() {
+        diaariNumeroPatterns.add(Pattern.compile("^\\w-\\w{3}/\\w{3}/\\w{4}$"));
+        diaariNumeroPatterns.add(Pattern.compile("^OPH-\\w{1,5}-\\w{1,4}$"));
+    }
 
     @Override
     public List<PerusteDto> getUusimmat() {
@@ -536,7 +546,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    public boolean isDiaariValid(String diaarinumero) {
+        return diaarinumero == null || diaarinumero == "" || diaariNumeroPatterns.stream()
+                .anyMatch(pattern -> pattern.matcher(diaarinumero).matches());
+    }
+
+    @Override
     public PerusteDto update(Long perusteId, PerusteDto perusteDto) {
+        if (!isDiaariValid(perusteDto.getDiaarinumero())) {
+            throw new BusinessRuleViolationException("diaarinumero-ei-validi");
+        }
+
         Peruste current = perusteet.findOne(perusteId);
         if (current == null || current.getTila() == PerusteTila.POISTETTU) {
             throw new NotExistsException("Päivitettävää perustetta ei ole olemassa tai se on poistettu");
