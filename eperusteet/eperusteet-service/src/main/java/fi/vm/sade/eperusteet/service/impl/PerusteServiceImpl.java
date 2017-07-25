@@ -1347,7 +1347,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return koodi != null
                 && (koodi.startsWith("eqf_")
                 || koodi.startsWith("nqf_")
-                || koodi.startsWith("isced2011koulutusastetaso"));
+                || koodi.startsWith("isced2011koulutusastetaso1_"));
     }
 
     @Override
@@ -1409,16 +1409,38 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         // TODO: Koulutuskoodin perusteella kansainvälisten koulutustasojen liittäminen
-        for (Koulutus koulutus : peruste.getKoulutukset()) {
-            String koulutuskoodiUri = koulutus.getKoulutuskoodiUri();
-            List<String> tasokoodit = koodistoService.getAlarelaatio(koulutuskoodiUri).stream()
-                    .map(relaatio -> relaatio.getKoodisto().getKoodistoUri())
-                    .filter(koodisto -> isTasoKoodi(koodisto))
-                    .collect(Collectors.toList());
-            kvliiteDto.setTasot(tasokoodit);
-        }
+        Set<String> tasokoodiFilter = new HashSet<>();
+        kvliiteDto.setTasot(peruste.getKoulutukset().stream()
+                .map(koulutus -> koulutus.getKoulutuskoodiUri())
+                .map(koulutusKoodiUri -> koodistoService.getLatest(koulutusKoodiUri))
+                .map(latest -> koodistoService.getAllByVersio(latest.getKoodiUri(), latest.getVersio()))
+                .map(all -> Arrays.stream(all.getIncludesCodeElements()))
+                .flatMap(x -> x)
+                .filter(el -> isTasoKoodi(el.getCodeElementUri()))
+                .filter(el -> tasokoodiFilter.add(el.getCodeElementUri()))
+                .map(el -> {
+                    KVLiiteTasoDto result = new KVLiiteTasoDto();
+                    result.setCodeUri(el.getCodeElementUri());
+                    result.setCodeValue(el.getCodeElementValue());
 
-        kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
+                    if (el.getCodeElementUri().startsWith("nqf_") || el.getCodeElementUri().startsWith("eqf_")) {
+                        result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
+                            .collect(Collectors.toMap(
+                                    lokaali -> lokaali.getKieli().toLowerCase(),
+                                    lokaali -> lokaali.getKuvaus() + " " + el.getCodeElementValue()))));
+                    }
+                    else if (el.getCodeElementUri().startsWith("isced2011")) { // ISCED
+                        result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
+                            .collect(Collectors.toMap(
+                                    lokaali -> lokaali.getKieli().toLowerCase(),
+                                    lokaali -> "ISCED " + el.getCodeElementValue()))));
+                    }
+                    else {
+                        result.setNimi(null);
+                    }
+                    return result;
+                })
+                .collect(Collectors.toList()));
         return kvliiteDto;
     }
 
@@ -1439,5 +1461,4 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
-
 }

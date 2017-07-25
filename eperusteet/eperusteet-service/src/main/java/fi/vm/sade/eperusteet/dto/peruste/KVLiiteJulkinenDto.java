@@ -38,7 +38,7 @@ public class KVLiiteJulkinenDto extends KVLiiteDto {
     private MaarayskirjeDto maarayskirje;
     private String diaarinumero;
     private Date voimassaoloAlkaa;
-    private List<String> tasot = new ArrayList<>();
+    private List<KVLiiteTasoDto> tasot = new ArrayList<>();
     private Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus;
     private Boolean periytynyt;
 }

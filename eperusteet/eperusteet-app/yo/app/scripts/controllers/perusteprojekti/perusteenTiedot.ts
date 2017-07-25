@@ -58,25 +58,7 @@ angular.module("eperusteApp")
             const arviointiasteikotP = Arviointiasteikot.list().$promise;
             const kvliite = await Perusteet.kvliite({perusteId: $scope.peruste.id}).$promise;
             const arviointiasteikot = await arviointiasteikotP;
-            kvliite.tasot = _.map(kvliite.tasot, taso => {
-                const result = {
-                    asteikko: undefined,
-                    taso: undefined
-                };
-                if (_.startsWith(taso, "isced")) {
-                    result.asteikko = "isced";
-                    result.taso = taso[_.size(taso) - 1];
-                }
-                else if (_.startsWith(taso, "eqf")) {
-                    result.asteikko = "eqf";
-                    result.taso = _.split(taso, "_")[1];
-                }
-                else if (_.startsWith(taso, "nqf")) {
-                    result.asteikko = "nqf";
-                    result.taso = _.split(taso, "_")[1];
-                }
-                return result;
-            });
+            kvliite.tasot = _.filter(kvliite.tasot, taso => taso.nimi);
             $scope.arviointiasteikot = arviointiasteikot;
             $scope.arviointiasteikotMap = _.indexBy(arviointiasteikot, "id");
             $scope.kvliite = kvliite;
