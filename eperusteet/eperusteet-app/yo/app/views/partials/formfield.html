@@ -10,7 +10,6 @@
                ng-model="input.model"
                type="{{type}}" placeholder="{{placeholder | kaanna}}" ng-required="!!postfix">
         <p class="alert alert-warning" ng-show="form.diaari.$error.jyraavanhan" kaanna>diaarinumerolla-jyraa-vanhan</p>
-        <pre ng-bind="input | json"></pre>
         <input ng-if="isMultiText && type === 'text'" id="{{inputElId}}" class="form-control" ng-model="input.model"
                type="{{type}}" slocalized ng-required="!!postfix" ng-trim="false">
         <textarea id="{{inputElId}}" ng-if="isMultiText && type === 'textarea'" class="form-control msd-elastic"
