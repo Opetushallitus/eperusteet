@@ -547,7 +547,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public boolean isDiaariValid(String diaarinumero) {
-        return diaariNumeroPatterns.stream()
+        return diaarinumero == null || diaarinumero == "" || diaariNumeroPatterns.stream()
                 .anyMatch(pattern -> pattern.matcher(diaarinumero).matches());
     }
 
