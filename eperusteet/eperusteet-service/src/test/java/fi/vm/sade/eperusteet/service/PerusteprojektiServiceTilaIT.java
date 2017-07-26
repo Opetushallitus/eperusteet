@@ -374,7 +374,6 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
             }
         });
         lockService.unlock(ctx);
-
     }
 
     @Test
@@ -533,7 +532,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
         PerusteDto pDto = perusteService.get(new Long(projektiDto.getPeruste().getId()));
         pDto.setNimi(TestUtils.lt(TestUtils.uniikkiString()));
-        pDto.setDiaarinumero(TestUtils.uniikkiString());
+        pDto.setDiaarinumero(TestUtils.validiDiaarinumero());
         pDto.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
         perusteService.update(pDto.getId(), pDto);
 

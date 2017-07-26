@@ -65,6 +65,10 @@ public abstract class TestUtils {
         return koodi;
     }
 
+    public static String validiDiaarinumero() {
+        return "OPH-" + (++uniikki).toString() + "-1234";
+    }
+
     public static Arviointi teeArviointi(ArviointiAsteikko arviointiasteikko) {
         Arviointi arviointi = new Arviointi();
         arviointi.setLisatiedot(tekstiPalanenOf(Kieli.FI, "lisätieto"));
