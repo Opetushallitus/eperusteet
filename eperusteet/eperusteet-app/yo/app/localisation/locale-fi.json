@@ -339,6 +339,7 @@
     "haku-opintoala" : "Opintoala",
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
     "hae-koodistosta": "Hae koodistosta",
+    "tyhjenna-koodin-arvo": "Poista valinta",
 
     "rakenne-validointi-maara-laajuus-minimi": "Minimikoon kattavat osat eivät riitä kattamaan vaadittua minimilaajuutta",
     "rakenne-validointi-maara-laajuus-maksimi": "Maksimikoon kattavat osat eivät riitä kattamaan vaadittua maksimilaajuutta",
