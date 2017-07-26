@@ -246,6 +246,10 @@ angular.module('eperusteApp')
       tarkista: _.constant(true)
     });
 
+    $scope.cleanKoodi = () => {
+      $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodiUri = null;
+      $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo = null;
+    };
 
     $scope.kopioiMuokattavaksi = function() {
       PerusteenOsaViitteet.kloonaaTutkinnonOsa({
