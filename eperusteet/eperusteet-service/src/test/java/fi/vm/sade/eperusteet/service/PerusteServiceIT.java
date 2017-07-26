@@ -225,7 +225,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void testGetByDiaari() {
 
         Peruste p = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSTUTKINTO, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
-        p.setDiaarinumero(new Diaarinumero("123456"));
+        p.setDiaarinumero(new Diaarinumero(TestUtils.validiDiaarinumero()));
         perusteService.update(p.getId(), mapper.map(p, PerusteDto.class));
         p.asetaTila(PerusteTila.VALMIS);
 
