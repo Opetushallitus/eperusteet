@@ -55,9 +55,9 @@ mixin kvliite()
       .panel-body
         p(ng-bind-html='sisalto | kaanna | unsafe ')
     +kvliiteKentta('suorittaneen-osaaminen', 'suorittaneenOsaaminen', 'true')
+    +kvliiteKentta('tyotehtavat-joissa-voi-toimia', 'tyotehtavatJoissaVoiToimia', 'true')
 
     h3(ng-bind="'tutkinnon-virallinen-asema' | kaanna")
-    +kvliiteKentta('tyotehtavat-joissa-voi-toimia', 'tyotehtavatJoissaVoiToimia', 'true')
     +kvliiteKenttaString('tutkintotodistuksen-antaja', 'tutkintotodistuksenAntaja')
     +kvliiteKenttaString('tutkinnosta-paattava-viranomainen', 'tutkinnostaPaattavaViranomainen')
 
