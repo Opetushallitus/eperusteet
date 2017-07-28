@@ -541,7 +541,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return diaarinumero == null
                 || "".equals(diaarinumero)
                 || Pattern.matches("^\\w-\\w{3}/\\w{3}/\\w{4}$", diaarinumero)
-                || Pattern.matches("^OPH-\\w{1,5}-\\w{1,4}$", diaarinumero);
+                || Pattern.matches("^OPH-\\d{1,5}-\\d{1,4}$", diaarinumero);
     }
 
     @Override
