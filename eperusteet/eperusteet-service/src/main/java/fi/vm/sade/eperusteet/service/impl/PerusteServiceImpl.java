@@ -1454,6 +1454,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     }
                     return result;
                 })
+                .sorted((a, b) -> Integer.compare(a.getJarjestys(), b.getJarjestys()))
                 .collect(Collectors.toList()));
         return kvliiteDto;
     }
