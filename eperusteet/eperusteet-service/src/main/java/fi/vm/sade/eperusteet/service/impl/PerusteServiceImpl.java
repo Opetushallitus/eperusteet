@@ -540,6 +540,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public boolean isDiaariValid(String diaarinumero) {
         return diaarinumero == null
                 || "".equals(diaarinumero)
+                || Pattern.matches("^\\w{3}/\\w{3}/\\w{4}$", diaarinumero)
                 || Pattern.matches("^\\w-\\w{3}/\\w{3}/\\w{4}$", diaarinumero)
                 || Pattern.matches("^OPH-\\d{1,5}-\\d{1,4}$", diaarinumero);
     }
@@ -1424,7 +1425,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         // TODO: Koulutuskoodin perusteella kansainvälisten koulutustasojen liittäminen
         Set<String> tasokoodiFilter = new HashSet<>();
         kvliiteDto.setTasot(peruste.getKoulutukset().stream()
-                .map(koulutus -> koulutus.getKoulutuskoodiUri())
+                .map(Koulutus::getKoulutuskoodiUri)
                 .map(koulutusKoodiUri -> koodistoService.getLatest(koulutusKoodiUri))
                 .map(latest -> koodistoService.getAllByVersio(latest.getKoodiUri(), latest.getVersio()))
                 .map(all -> Arrays.stream(all.getIncludesCodeElements()))

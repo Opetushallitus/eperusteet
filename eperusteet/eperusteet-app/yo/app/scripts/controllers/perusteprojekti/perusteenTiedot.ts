@@ -332,12 +332,12 @@ angular.module("eperusteApp")
             if (!$scope.editablePeruste.voimassaoloLoppuu) {
                 delete $scope.editablePeruste.siirtymaPaattyy;
             }
-            Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, function(vastaus) {
-                $scope.peruste = vastaus;
+            Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, res => {
+                $scope.peruste = res;
                 PerusteProjektiService.update();
                 Notifikaatiot.onnistui("tallennettu");
-            }, function() {
-                Notifikaatiot.fataali("tallentaminen-epaonnistui");
+            }, err => {
+                Notifikaatiot.serverCb(err);
             });
         };
 
