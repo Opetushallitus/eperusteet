@@ -1422,7 +1422,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             kvliiteDto.setTutkinnonVirallinenAsema(pohjaLiiteDto.getTutkinnonVirallinenAsema());
         }
 
-        // TODO: Koulutuskoodin perusteella kansainvälisten koulutustasojen liittäminen
         Set<String> tasokoodiFilter = new HashSet<>();
         kvliiteDto.setTasot(peruste.getKoulutukset().stream()
                 .map(Koulutus::getKoulutuskoodiUri)

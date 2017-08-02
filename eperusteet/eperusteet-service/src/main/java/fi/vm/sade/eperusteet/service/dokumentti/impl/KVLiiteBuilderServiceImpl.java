@@ -316,7 +316,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             tr.appendChild(td);
 
             // Muodostuminen
-            {
+            if (kvLiiteJulkinenDto.getMuodostumisenKuvaus() != null) {
                 Element p = docBase.getDocument().createElement("p");
                 td.appendChild(p);
                 p.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
@@ -440,12 +440,13 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
             leftTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
                     messages.translate("docgen.kvliite.taso", docBase.getKieli())));
-            // TODO: Varsinainen toteutus
-//            kvLiiteJulkinenDto.getTasot().forEach(taso -> {
-//                if (taso.getNimi() != null && taso.getNimi().containsKey(docBase.getKieli().toString())) {
-//                    DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli().toString()), "div", leftTd);
-//                }
-//            });
+            if (kvLiiteJulkinenDto.getTasot() != null) {
+                kvLiiteJulkinenDto.getTasot().forEach(taso -> {
+                    if (taso.getNimi() != null && taso.getNimi().get(docBase.getKieli()) != null) {
+                        DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli()), "div", leftTd);
+                    }
+                });
+            }
 
             rightTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
                     messages.translate("docgen.kvliite.arviointi-asteikko", docBase.getKieli())));
