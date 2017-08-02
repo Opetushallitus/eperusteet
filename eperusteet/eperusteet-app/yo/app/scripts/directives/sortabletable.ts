@@ -26,7 +26,7 @@ angular.module("eperusteApp")
             isSorting: "=",
             nimeton: "="
         },
-        controller($scope, $state, Editointikontrollit, Notifikaatiot, Api) {
+        controller($scope, Editointikontrollit, Notifikaatiot, $log) {
             $scope.ngModel = $scope.ngModel || [];
             $scope.showIdx = $scope.showIdx || true;
             $scope.isSorting = false;
@@ -54,9 +54,13 @@ angular.module("eperusteApp")
                         $scope.isSorting = true;
                     },
                     async save() {
-                        $scope.isSorting = false;
-                        await $scope.ngChange($scope.ngModel);
-                        Notifikaatiot.onnistui("tallennus-onnistui");
+                        try {
+                            $scope.isSorting = false;
+                            await $scope.ngChange($scope.ngModel);
+                            Notifikaatiot.onnistui("tallennus-onnistui");
+                        } catch (err) {
+                            $log.error(err);
+                        }
                     },
                     cancel() {
                         $scope.isSorting = false;

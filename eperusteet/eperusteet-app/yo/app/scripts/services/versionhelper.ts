@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-/* global _ */
-'use strict';
-
 angular.module('eperusteApp')
   .service('VersionHelper', function(PerusteenOsat, $uibModal, RakenneVersiot, $log,
         RakenneVersio, Notifikaatiot, $state, $location, $stateParams, TutkinnonOsaViitteet,
