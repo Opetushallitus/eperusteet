@@ -519,13 +519,13 @@ $sisalto-min-height: 450px;
   border-top: 1px solid #111;
 }
 
+.handle {
+  cursor: move;
+}
+
 .to-vapaat-tekstit {
   .tovp-header {
     margin-bottom: 5px;
-
-    .handle {
-      cursor: move;
-    }
 
     .field-buttons {
       font-size: 120%;

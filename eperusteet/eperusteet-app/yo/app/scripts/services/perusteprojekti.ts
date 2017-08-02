@@ -210,7 +210,7 @@ angular.module('eperusteApp')
       this.mode = mode;
     };
     this.getMode = function () {
-      var ret = this.mode;
+      const ret = this.mode;
       this.mode = false;
       return ret;
     };

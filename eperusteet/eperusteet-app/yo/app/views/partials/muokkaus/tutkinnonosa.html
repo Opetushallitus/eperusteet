@@ -260,8 +260,7 @@
                                     ui-sortable="leikelautaSortableOptions"
                                     ng-model="leikelauta">
                                     <li class="skratchpad-item"
-                                        ng-repeat="element in leikelauta track by $index"
-                                        style="cursor: default">
+                                        ng-repeat="element in leikelauta track by $index">
                                         <div class="sp-action-icon">
                                             <a icon-role="remove"
                                                class="action-link"
@@ -269,15 +268,10 @@
                                                ng-attr-title="{{'poista' | kaanna}}">
                                             </a>
                                         </div>
-                                        <!-- <div class="sp-badge"> -->
-                                        <!--     <a icon-role="paste" -->
-                                        <!--        class="action-link" -->
-                                        <!--        ng-click="liitaLeikelaudasta('vapaatTekstit', $index)" -->
-                                        <!--        ng-attr-title="{{'liita-leikelaudalta' | kaanna}}"> -->
-                                        <!--     </a> -->
-                                        <!-- </div> -->
-                                        <div class="sp-name">
+                                        <div class="sp-badge">
                                             <span class="handle" icon-role="drag"></span>
+                                        </div>
+                                        <div class="sp-name">
                                             <span kaanna="element.nimi"></span>
                                         </div>
                                     </li>
