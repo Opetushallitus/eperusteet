@@ -16,7 +16,7 @@
         </encoder>
     </appender>
 
-    <logger name="fi.vm.sade.auditlog.Audit" level="info" additivity="false">
+    <logger name="fi.vm.sade.auditlog.Audit" level="info" additivity="true">
         <appender-ref ref="ROLLING" />
     </logger>
     

@@ -120,7 +120,7 @@ public class PerusteprojektiController {
     public PerusteprojektiDto update(
             @PathVariable("id") final long id,
             @RequestBody PerusteprojektiDto perusteprojektiDto) {
-        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, LISAYS).add("perusteprojektiId", id),
+        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, LISAYS).addTarget("perusteprojektiId", id),
                 (Void) -> service.update(id, perusteprojektiDto));
     }
 
@@ -131,7 +131,7 @@ public class PerusteprojektiController {
             @PathVariable("id") final long id,
             @PathVariable("tila") final String tila,
             final Long siirtymaPaattyy) {
-        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, TILAMUUTOS).add("perusteprojektiId", id), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, TILAMUUTOS).addTarget("perusteprojektiId", id), (Void) -> {
             return service.updateTila(id, ProjektiTila.of(tila), siirtymaPaattyy != null ? new Date(siirtymaPaattyy) : null);
         });
     }
@@ -182,7 +182,7 @@ public class PerusteprojektiController {
     public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilot(
             @PathVariable("id") final Long id,
             @RequestBody List<TyoryhmaHenkiloDto> tyoryhma) {
-        return audit.withAudit(LogMessage.builder(null, TYORYHMA, LUONTI).add("perusteprojektiId", id), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, TYORYHMA, LUONTI).addTarget("perusteprojektiId", id), (Void) -> {
             List<TyoryhmaHenkiloDto> res = tyoryhma.stream()
                     .map(thd -> service.saveTyoryhma(id, thd))
                     .collect(Collectors.toList());
@@ -196,7 +196,7 @@ public class PerusteprojektiController {
             @PathVariable("id") final Long id,
             @PathVariable("nimi") final String nimi,
             @RequestBody List<String> tyoryhma) {
-        return audit.withAudit(LogMessage.builder(null, TYORYHMA, MUOKKAUS).add("perusteprojektiId", id), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, TYORYHMA, MUOKKAUS).addTarget("perusteprojektiId", id), (Void) -> {
             List<TyoryhmaHenkiloDto> res = service.saveTyoryhma(id, nimi, tyoryhma);
             return new ResponseEntity<>(res, HttpStatus.OK);
         });
@@ -206,7 +206,7 @@ public class PerusteprojektiController {
     public ResponseEntity<TyoryhmaHenkiloDto> removeTyoryhmat(
             @PathVariable("id") final Long id,
             @PathVariable("nimi") final String nimi) {
-        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, POISTO).add("perusteprojektiId", id), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, POISTO).addTarget("perusteprojektiId", id), (Void) -> {
             service.removeTyoryhma(id, nimi);
             return new ResponseEntity<>(HttpStatus.OK);
         });
@@ -218,7 +218,7 @@ public class PerusteprojektiController {
             @PathVariable("id") final Long id,
             @PathVariable("pid") final Long pid,
             @RequestBody List<String> tyoryhmat) {
-        return audit.withAudit(LogMessage.builder(null, TYORYHMA, MUOKKAUS).add("perusteprojektiId", id), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, TYORYHMA, MUOKKAUS).addTarget("perusteprojektiId", id), (Void) -> {
             return new ResponseEntity<>(service.setPerusteenOsaViiteTyoryhmat(id, pid, tyoryhmat), HttpStatus.OK);
         });
     }

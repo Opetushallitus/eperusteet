@@ -142,7 +142,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Page<PerusteHakuDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         assertEquals(3, perusteet.getTotalElements());
     }
-
+    
     @Test
     public void testFindByKoulutus() {
         PerusteQuery pquery = new PerusteQuery();
