@@ -16,8 +16,13 @@
 
 package fi.vm.sade.eperusteet.service.audit;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.auditlog.AbstractLogMessage;
 import fi.vm.sade.auditlog.SimpleLogMessageBuilder;
+import fi.vm.sade.eperusteet.service.util.Pair;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,35 +41,47 @@ public class LogMessage extends AbstractLogMessage {
 
     public static LogMessageBuilder builder(Long perusteId, EperusteetMessageFields target, EperusteetOperation op) {
         LogMessageBuilder result = new LogMessageBuilder()
-                .add("target", target.toString())
+                .addTarget("tyyppi", target)
+                .addTarget("peruste", perusteId)
                 .setOperation(op)
                 .id(EperusteetAudit.username());
-
-        if (perusteId != null) {
-            result.add("peruste", perusteId.toString());
-        }
         return result;
     }
 
-    public static <T extends AuditLoggableDto> LogMessageBuilder builder(Long perusteId, EperusteetMessageFields target, EperusteetOperation op, T dto) {
-        return builder(perusteId, target, op)
-            .addDto(dto);
+    public void log() {
+        EperusteetAudit.AUDIT.log(this);
     }
 
     public static class LogMessageBuilder extends SimpleLogMessageBuilder<LogMessageBuilder> {
-        private Number beforeRev;
+        private Long beforeRev;
+        private Long afterRev;
+        private List<Pair<String, String>> targets = new ArrayList<>();
 
-        public LogMessage build() {
+        public LogMessage build(EperusteetAudit audit) {
+            JsonNodeFactory nodeFactory = new JsonNodeFactory(false);
+
+            // FIXME: auditlogger syö vain merkkijonoja
+            { // Changes
+                ObjectNode changes = nodeFactory.objectNode();
+                changes.put("rev", nodeFactory.objectNode()
+                    .put("oldValue", beforeRev)
+                    .put("newValue", afterRev));
+                mapping.put("changes", changes.toString());
+            }
+
+            { // Target
+                ObjectNode targetsObj = nodeFactory.objectNode();
+                for (Pair<String, String> target : targets) {
+                    targetsObj.put(target.getFirst(), target.getSecond());
+                }
+                mapping.put("target", targetsObj.toString());
+            }
+
+            { // User
+                mapping.put("user", audit.getLoggableUser().toString());
+            }
+
             return new LogMessage(mapping);
-        }
-
-        public void log() {
-            EperusteetAudit.AUDIT.log(build());
-        }
-
-        public <T extends AuditLoggableDto> LogMessageBuilder addDto(T dto) {
-            dto.auditLog(this);
-            return this;
         }
 
         public LogMessageBuilder palautus(Long id, Long version) {
@@ -72,22 +89,35 @@ public class LogMessage extends AbstractLogMessage {
                 .safePut("versio", id.toString());
         }
 
+        public LogMessageBuilder addTarget(String name, Object op) {
+            if (op != null) {
+                targets.add(Pair.of(name, op.toString()));
+            }
+            return this;
+        }
+
         public LogMessageBuilder setOperation(EperusteetOperation op) {
             return safePut("operation", op.toString());
         }
 
         public LogMessageBuilder beforeRevision(Number rev) {
-            beforeRev = rev;
+            if (rev != null) {
+                this.beforeRev = rev.longValue();
+            }
+            else {
+                this.beforeRev = 0L;
+            }
             return this;
         }
 
         public LogMessageBuilder afterRevision(Number rev) {
-            if (beforeRev != null) {
-                return add("rev", rev.toString(), beforeRev.toString());
+            if (rev != null) {
+                this.afterRev = rev.longValue();
             }
             else {
-                return add("rev", rev.toString());
+                this.afterRev = 0L;
             }
+            return this;
         }
     }
 
