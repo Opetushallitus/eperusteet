@@ -1422,6 +1422,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             kvliiteDto.setTutkinnonVirallinenAsema(pohjaLiiteDto.getTutkinnonVirallinenAsema());
         }
 
+        kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
+
         Set<String> tasokoodiFilter = new HashSet<>();
         kvliiteDto.setTasot(peruste.getKoulutukset().stream()
                 .map(Koulutus::getKoulutuskoodiUri)
