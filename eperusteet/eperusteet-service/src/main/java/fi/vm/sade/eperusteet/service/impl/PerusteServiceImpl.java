@@ -540,9 +540,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public boolean isDiaariValid(String diaarinumero) {
         return diaarinumero == null
                 || "".equals(diaarinumero)
-                || Pattern.matches("^\\w{3}/\\w{3}/\\w{4}$", diaarinumero)
-                || Pattern.matches("^\\w-\\w{3}/\\w{3}/\\w{4}$", diaarinumero)
-                || Pattern.matches("^OPH-\\d{1,5}-\\d{1,4}$", diaarinumero);
+                || Pattern.matches("^\\d{1,3}/\\d{3}/\\d{4}$", diaarinumero)
+                || Pattern.matches("^OPH-\\d{1,5}-\\d{4}$", diaarinumero);
     }
 
     @Override

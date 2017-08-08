@@ -178,17 +178,17 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         assertFalse(perusteService.isDiaariValid("diaari"));
         assertFalse(perusteService.isDiaariValid("1-234/567/8910, päivitetty"));
         assertFalse(perusteService.isDiaariValid("oph-12345-1111"));
+        assertFalse(perusteService.isDiaariValid("1-234/567/8910"));
+        assertFalse(perusteService.isDiaariValid("OPH-12345-111"));
         assertTrue(perusteService.isDiaariValid(""));
         assertTrue(perusteService.isDiaariValid(null));
         assertTrue(perusteService.isDiaariValid("234/567/8910"));
-        assertTrue(perusteService.isDiaariValid("1-234/567/8910"));
         assertTrue(perusteService.isDiaariValid("OPH-1-1111"));
         assertTrue(perusteService.isDiaariValid("OPH-12-1111"));
         assertTrue(perusteService.isDiaariValid("OPH-123-1111"));
         assertTrue(perusteService.isDiaariValid("OPH-1234-1111"));
         assertTrue(perusteService.isDiaariValid("OPH-12345-1111"));
-        assertTrue(perusteService.isDiaariValid("OPH-12345-111"));
-        assertTrue(perusteService.isDiaariValid("OPH-12345-11"));
+        assertTrue(perusteService.isDiaariValid("OPH-12345-1134"));
     }
 
     @Test
