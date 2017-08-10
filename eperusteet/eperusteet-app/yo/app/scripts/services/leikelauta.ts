@@ -71,6 +71,26 @@ angular.module("eperusteApp")
             },
             stop(event, ui) {
                 kopioiLeikelautaan();
+            },
+            over(event, ui) {
+                const
+                    sender = ui.sender,
+                    target = event.target,
+                    item = ui.item;
+
+                if (sender && target && item) {
+
+                    console.log(sender.context.id, target.id, item.sortable.model.$osanTyyppi);
+                    if (sender.context.id === 'leikelauta'
+                        && target.id !== item.sortable.model.$osanTyyppi
+                        && target.id !== 'leikelauta') {
+                        ui.placeholder.css({backgroundColor: 'red'});
+                        //ui.placeholder.css({display: "none"});
+                    } else {
+                        ui.placeholder.css({backgroundColor: '#f8f8f8'});
+                        //ui.placeholder.css({display: "block"});
+                    }
+                }
             }
         }
     }
