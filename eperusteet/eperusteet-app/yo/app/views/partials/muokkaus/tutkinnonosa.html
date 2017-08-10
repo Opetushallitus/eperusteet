@@ -60,11 +60,11 @@
                             </div>
                         </div>
                         <button icon-role="list-alt" class="btn pull-right"
-                                ng-hide="leikeautaOpen"
+                                ng-hide="isLeikelautaOpen"
                                 ng-click="toggleLeikelauta()"
                                 kaanna="'avaa-leikelauta'"></button>
                         <button icon-role="list-alt" class="btn pull-right"
-                                ng-show="leikeautaOpen"
+                                ng-show="isLeikelautaOpen"
                                 ng-click="toggleLeikelauta()"
                                 kaanna="'sulje-leikelauta'"></button>
                     </div>
@@ -94,12 +94,12 @@
             <hr ng-show="editEnabled">
 
             <div class="table-layout">
-                <div class="table-cell" ng-class="{'max-sm-leveys': leikeautaOpen}">
+                <div class="table-cell" ng-class="{'max-sm-leveys': isLeikelautaOpen}">
                     <valmiskaannos ng-if="editEnabled"
                                    is-editing="editEnabled"
                                    ng-model="editableTutkinnonOsaViite.tutkinnonOsa"></valmiskaannos>
 
-                    <form name="tutkinnonOsaHeaderForm" role="form">
+                    <form name="tutkinnonOsaHeaderForm">
                         <div class="non-collapsibles" ng-if="editEnabled">
                             <div ng-show="isNew">
                                 <label class="header">{{'tyyppi'|kaanna}}
@@ -157,7 +157,7 @@
                             <label for="koodi-input" class="header"
                                    kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')"></label>
                             <div class="fixed-group">
-                                <input id="koodi-input" class="form-control" type="text"
+                                <input id="koodi-input" class="form-control"
                                        ng-model="editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo" editointi-kontrolli
                                        disabled="disabled">
                                 <div class="addon">
@@ -197,12 +197,11 @@
                                 </div>
                             </div>
 
-                            <pre ng-bind="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit.length  | json"></pre>
-                            <div id="vapaatTekstitAnchor"
+                            <div id="vapaatTekstit"
                                  class="container-items"
-                                 ng-if="editEnabled"
                                  ui-sortable="sortableOptions"
-                                 ng-model="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit">
+                                 ng-model="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit"
+                                 ng-if="editEnabled">
                                 <div ng-repeat="vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit track by $index">
                                     <div class="row tovp-header">
                                         <div class="col-xs-10">
@@ -219,12 +218,6 @@
                                                class="action-link pull-right"
                                                ng-click="removeByIdx(editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit, $index)"
                                                ng-attr-title="{{'poista-tekstikappale-otsikko' | kaanna}}">
-                                            </a>
-                                            <a icon-role="copy"
-                                               class="action-link pull-right"
-                                               ng-if="leikeautaOpen"
-                                               ng-click="kopioLeikelautaan(vt)"
-                                               ng-attr-title="{{'kopio-leikelaudalle' | kaanna}}">
                                             </a>
                                         </div>
                                     </div>
@@ -246,39 +239,10 @@
                                       kontrollit="editointikontrollit"
                                       yksikko="yksikko"></tutke2kentat>
                     </div>
-
                 </div>
-                <div class="table-cell table-cell-fixed" ng-if="editEnabled && leikeautaOpen">
-                    <!-- Leikelauta -->
-                    <div class="skratchpad-wrapper" follow-scroll>
-                        <div class="skratchpad-list">
-                            <div class="skratchpad-list-header" kaanna="'leikelauta'"></div>
-                            <pre ng-bind="leikelauta.length | json"></pre>
-                            <div class="skratchpad-list-body">
-                                <div ng-if="leikelauta.length === 0" class="skratchpad-help"></div>
-                                <ul class="tree-group skratchpad container-items-leikelauta"
-                                    ui-sortable="leikelautaSortableOptions"
-                                    ng-model="leikelauta">
-                                    <li class="skratchpad-item"
-                                        ng-repeat="element in leikelauta track by $index">
-                                        <div class="sp-action-icon">
-                                            <a icon-role="remove"
-                                               class="action-link"
-                                               ng-click="poistaLeikelaudasta($index)"
-                                               ng-attr-title="{{'poista' | kaanna}}">
-                                            </a>
-                                        </div>
-                                        <div class="sp-badge">
-                                            <span class="handle" icon-role="drag"></span>
-                                        </div>
-                                        <div class="sp-name">
-                                            <span kaanna="element.nimi"></span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+
+                <div class="table-cell table-cell-fixed" ng-if="editEnabled && isLeikelautaOpen">
+                    <leikelauta is-open="isLeikelautaOpen"></leikelauta>
                 </div>
             </div>
 

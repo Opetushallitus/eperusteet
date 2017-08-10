@@ -13,9 +13,10 @@
         </span>
         <div class="panel-body">
             <uib-accordion close-others="false">
-                <pre ng-bind="arviointi.length | json"></pre>
-                <pre ng-bind="sortableOptions.$$id | json"></pre>
-                <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
+                <div id="sortableKohdealueet"
+                     class="container-items-arviointi"
+                     ui-sortable="sortableOptions"
+                     ng-model="arviointi">
                     <div uib-accordion-group
                          class="arvioinnin-kohdealue"
                          template-url="views/partials/accordiongroup.html"
@@ -34,11 +35,11 @@
                         </uib-accordion-heading>
 
                         <uib-accordion close-others="false">
-                            <pre ng-bind="kohdealue.arvioinninKohteet.length | json"></pre>
                             <div id="sortableKohteet"
+                                 class="container-items-kohteet"
                                  ui-sortable="sortableOptions"
                                  ng-model="kohdealue.arvioinninKohteet">
-                                <div class="arvioinnin-kohde container-items-kohteet"
+                                <div class="arvioinnin-kohde"
                                      uib-accordion-group
                                      ng-class="{'kohde-edit': arvioinninkohde === originalKohde}"
                                      ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet"
@@ -68,7 +69,7 @@
                                         <div ng-if="arvioinninkohde !== originalKohde"
                                              ng-bind="arvioinninkohde.selite | kaanna"></div>
                                         <input ng-if="arvioinninkohde === originalKohde" ng-model="editableKohde.selite"
-                                               type="text" class="form-control" slocalized
+                                               class="form-control" slocalized
                                                placeholder="{{'arviointi-uusi-kohde-selite-placeholder' | kaanna}}">
                                     </div>
 
@@ -118,7 +119,8 @@
                                             </td>
                                         </tr>
                                     </table>
-                                </div><!-- uib-accordion-group-->
+                                </div>
+                                <!-- uib-accordion-group-->
                             </div>
                         </uib-accordion>
 

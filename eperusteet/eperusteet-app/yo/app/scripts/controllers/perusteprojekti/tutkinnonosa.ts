@@ -18,63 +18,6 @@ angular.module('eperusteApp')
 .factory('TutkinnonOsanKoodiUniqueResource', ($resource, SERVICE_LOC) => {
     return $resource(SERVICE_LOC + '/tutkinnonosat/koodi/uniikki/:tutkinnonosakoodi');
 })
-.service('TutkinnonOsaLeikelautaService', () => {
-    function createHelpers() {
-        let sourceClone = null;
-        return {
-            start(event, ui) {
-                if (ui.item.sortable.sourceModel) {
-                    sourceClone = ui.item.sortable.sourceModel.slice();
-                }
-            },
-
-            stop(event, ui) {
-                let {droptarget, sourceModel} = ui.item.sortable;
-                if (sourceClone && droptarget && event.target !== droptarget[0]) {
-                    sourceModel.length = 0;
-                    sourceModel.push(...sourceClone);
-                    sourceClone = null;
-                }
-            },
-
-            update(event, ui) {
-                ui.item.sortable.cancel();
-            },
-
-            helper(event, ui) {
-                return ui.clone();
-            }
-        }
-    }
-
-    return {
-        createConnectedSortable(connectWithName, original = {}) {
-            return {
-                ...original,
-                ...createHelpers()
-            }
-        },
-        createLeikelautaSortable($scope, original = {}) {
-            return {
-                ...original,
-                ...createHelpers(),
-                update(event, ui) {
-                    // const { sourceModel, index, droptargetModel } = ui.item.sortable;
-                    // const item = sourceModel[index];
-                    // if (sourceModel !== $scope.leikelauta && droptargetModel === $scope.leikelauta) {
-                    console.log("Leikelaudalle", event, ui);
-                    ui.item.sortable.cancel();
-                }
-            };
-        },
-        asetaLeikelauta() {
-
-        },
-        kopioiLeikelautaan(osa) {
-
-        }
-    };
-})
 .service('TutkinnonosanTiedotService', (PerusteenOsat, $q, TutkinnonOsanOsaAlue, Osaamistavoite) => {
     const FIELD_ORDER = {
         tavoitteet: 3,
@@ -170,20 +113,18 @@ angular.module('eperusteApp')
     $scope.editointikontrollit = Editointikontrollit;
     $scope.nimiValidationError = false;
 
-    $scope.leikelauta = localStorageService.get('leikelauta');
-    $scope.leikeautaOpen = false;
+    $scope.isLeikelautaOpen = false;
     if (localStorageService.isSupported) {
-        $scope.leikeautaOpen = localStorageService.get('leikeautaOpen');
+        $scope.isLeikelautaOpen = localStorageService.get('leikeautaOpen');
     }
     $scope.toggleLeikelauta = () => {
         if (localStorageService.isSupported) {
-            $scope.leikeautaOpen = !$scope.leikeautaOpen;
-            localStorageService.set('leikeautaOpen', $scope.leikeautaOpen);
+            $scope.isLeikelautaOpen = !$scope.isLeikelautaOpen;
+            localStorageService.set('leikeautaOpen', $scope.isLeikelautaOpen);
         } else {
             Notifikaatiot.varoitus("selain-ei-tue");
         }
     };
-
 
     let tutkinnonOsaDefer = $q.defer();
     $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
@@ -234,7 +175,6 @@ angular.module('eperusteApp')
     async function getRakenne() {
         $scope.rakenne = await PerusteenRakenne
             .haeByPerusteprojekti($stateParams.perusteProjektiId, $stateParams.suoritustapa);
-        console.log($scope.rakenne);
         if (TutkinnonOsaEditMode.getMode()) {
             $scope.isNew = true;
             $scope.muokkaa();
@@ -264,49 +204,13 @@ angular.module('eperusteApp')
             nimi: {},
             teksti: {}
         });
-        Utils.scrollTo('#vapaatTekstitAnchor');
+        Utils.scrollTo('#vapaatTekstit');
     };
 
-    //const storageLeikelauta = localStorageService.get('leikelauta');
-
-    // $scope.leikelauta = _.isArray(storageLeikelauta) ? _.filter(storageLeikelauta, _.isObject) : [];
-    $scope.leikelauta = [];
-    $scope.leikelautaSortableOptions = TutkinnonOsaLeikelautaService.createLeikelautaSortable($scope, {
-        handle: '.handle',
-        connectWith: '.container-items, .container-items-kohteet, .container-items-leikelauta',
-        cursor: 'move',
-        cursorAt: {top: 10, left: 10},
-        tolerance: 'pointer',
-        forceHelperSize: true,
-        placeholder: "sortable-placeholder",
-        forcePlaceholderSize: true,
-        opacity: '.7'
-    });
-
-    $scope.kopioLeikelautaan = osa => {
-        if (localStorageService.isSupported) {
-            $scope.leikelauta.push(osa);
-            localStorageService.set('leikelauta', $scope.leikelauta);
-        }
-    };
-
-    $scope.poistaLeikelaudasta = idx => {
-        $scope.leikelauta.splice(idx, 1);
-        if (localStorageService.isSupported) {
-            localStorageService.set('leikelauta', $scope.leikelauta);
-        }
-    };
-
-    $scope.sortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable(".vapaat-tekstit", {
-        handle: '.handle',
+    $scope.sortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable({
         connectWith: '.container-items, .container-items-leikelauta',
-        cursor: 'move',
-        cursorAt: {top: 10, left: 10},
-        tolerance: 'pointer',
-        forceHelperSize: true,
-        placeholder: "sortable-placeholder",
-        forcePlaceholderSize: true,
-        opacity: '.7'
+        handle: '.handle',
+        cursorAt: { top: 10, left: 10 }
     });
 
     $scope.fields = [{

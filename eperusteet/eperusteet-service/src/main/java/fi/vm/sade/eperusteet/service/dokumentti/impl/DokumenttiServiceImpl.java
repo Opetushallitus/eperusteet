@@ -211,17 +211,19 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         if (dokumentti != null) {
             Peruste peruste = perusteRepository.findOne(dokumentti.getPerusteId());
+            if (peruste == null) {
+                return null;
+            }
 
             String name = SecurityUtil.getAuthenticatedPrincipal().getName();
-
             if (name.equals("anonymousUser") && !peruste.getTila().equals(PerusteTila.VALMIS)) {
                 return null;
             }
 
             return dokumentti.getData();
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     @Override

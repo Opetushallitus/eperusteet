@@ -51,7 +51,7 @@ angular.module('eperusteApp')
     };
 
     var valmisteleKriteerit = function (arr, tasot) {
-      _.each(tasot, function(taso) {
+      _.each(tasot, function (taso) {
         arr.push({
           _osaamistaso: taso.id,
           kriteerit: [{}]
@@ -94,7 +94,7 @@ angular.module('eperusteApp')
       isAdding: function (kohdealue) {
         return !_.isEmpty(kohdealue.$newkohde);
       },
-      uusi: function(kohdealue) {
+      uusi: function (kohdealue) {
         if(angular.isUndefined(kohdealue.arvioinninKohteet) || kohdealue.arvioinninKohteet === null) {
           kohdealue.arvioinninKohteet = [];
         }
@@ -120,7 +120,7 @@ angular.module('eperusteApp')
           $scope.kohde.muokkaa(kohde);
         });
       },
-      cancel: function(kohdealue) {
+      cancel: function (kohdealue) {
         kohdealue.$newkohde = null;
       },
       poistuMuokkauksesta: function (list, index) {
@@ -166,13 +166,8 @@ angular.module('eperusteApp')
       $scope.uudenKohdealueenNimi = 'automaattinen';
       $scope.kohdealue.uusi();
     }
-
-    /*if ($scope.eiKohdealueita && (angular.isUndefined($scope.arviointi.kohdealue) || $scope.arviointi.kohdealue === null)) {
-      $scope.uudenKohdealueenNimi = 'automaattinen';
-      $scope.kohdealue.uusi();
-    }*/
   })
-  .directive('arviointi', function(YleinenData, $timeout) {
+  .directive('arviointi', function (YleinenData, $timeout, TutkinnonOsaLeikelautaService) {
     return {
       templateUrl: 'views/partials/arviointi.html',
       restrict: 'E',
@@ -184,7 +179,7 @@ angular.module('eperusteApp')
         tyyppi: '@?'
       },
       controller: 'arviointiCtrl',
-      link: function(scope: any) {
+      link: function (scope: any) {
         scope.eiKohdealueita = (scope.eiKohdealueita === 'true' || scope.eiKohdealueita === true);
         scope.editAllowed = (scope.editAllowed === 'true' || scope.editAllowed === true);
 
@@ -192,51 +187,22 @@ angular.module('eperusteApp')
 
         YleinenData.haeArviointiasteikot();
 
-        scope.$on('arviointiasteikot', function() {
+        scope.$on('arviointiasteikot', function () {
           scope.arviointiasteikot = YleinenData.arviointiasteikot;
         });
 
         scope.elementDragged = false;
 
-
-        let sourceClone = null;
-        function start(ev, ui) {
-          if (ui.item.sortable.sourceModel) {
-  	        sourceClone = ui.item.sortable.sourceModel.slice();
-          }
-        }
-
-        function stop(ev, ui) {
-  	      let { droptarget, sourceModel } = ui.item.sortable;
-          if (sourceModel && droptarget && ev.target !== droptarget[0]) {
-            sourceModel.length = 0;
-            sourceModel.push(...sourceClone);
-            sourceClone = null;
-          }
-        }
-
-        function helper(ev, ui) {
-          return ui.clone();
-        }
-
-        scope.sortableOptions = {
+        scope.sortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable({
           $$id: "arviointi sortable",
           connectWith: '.container-items-kohteet, .container-items-leikelauta',
-          helper,
-          start,
-          stop,
-          // start: function(ev, ui) {
-          //   start(ev, ui);
-          //   scope.elementDragged = true;
-          // }
-        };
+        });
 
-        scope.kriteeriSortableOptions = {
-          axis: 'y',
+        scope.kriteeriSortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable({
           cancel: '.row-adder',
           handle: '.drag-enable',
           items: 'tr:not(.row-adder)'
-        };
+        });
 
         scope.$watch('editEnabled', function (value) {
           scope.sortableOptions.disabled = !value;
@@ -249,7 +215,7 @@ angular.module('eperusteApp')
           });
         });
 
-        scope.isElementDragged = function() {
+        scope.isElementDragged = function () {
           if (scope.elementDragged) {
             scope.elementDragged = false;
             return true;
@@ -285,7 +251,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('onEnter', function() {
+  .directive('onEnter', function () {
     return function (scope, element, attrs) {
       element.bind('keydown keypress', function (event) {
         if(event.which === 13) {
@@ -298,8 +264,8 @@ angular.module('eperusteApp')
       });
     };
   })
-  .directive('onEsc', function() {
-    return function(scope, element, attrs) {
+  .directive('onEsc', function () {
+    return function (scope, element, attrs) {
       element.bind('keydown keypress', function (event) {
         if(event.which === 27) {
           scope.$apply(function (){
@@ -311,11 +277,11 @@ angular.module('eperusteApp')
       });
     };
   })
-  .directive('focusMe', function($timeout) {
-    return function(scope, element, attrs) {
-      scope.$watch(attrs.focusMe, function(value) {
+  .directive('focusMe', function ($timeout) {
+    return function (scope, element, attrs) {
+      scope.$watch(attrs.focusMe, function (value) {
         if(value === true) {
-          $timeout(function() {
+          $timeout(function () {
             element[0].focus();
           }, 100);
         }
@@ -327,7 +293,7 @@ angular.module('eperusteApp')
     $scope.muokkaustila = false;
     $scope.editoitava = null;
 
-    $scope.poistaAlkio = function(item, list, event) {
+    $scope.poistaAlkio = function (item, list, event) {
       $scope.estaEventti(event);
       if (_.isEmpty(item)) {
         _.remove(list, item);
@@ -337,19 +303,19 @@ angular.module('eperusteApp')
         otsikko: 'varmista-osion-poisto-otsikko',
         teksti: 'varmista-osion-poisto-teksti',
         primaryBtn: 'poista',
-        successCb: function() {
+        successCb: function () {
           _.remove(list, item);
         }
       })();
     };
 
-    $scope.estaEventti = function($event) {
+    $scope.estaEventti = function ($event) {
       if ($event) {
         $event.stopPropagation();
       }
     };
 
-    $scope.asetaMuokkaustila = function(mode, $event) {
+    $scope.asetaMuokkaustila = function (mode, $event) {
       $scope.muokkaustila = mode;
       $scope.editoitava = mode ? angular.copy($scope.sisaltoteksti) : null;
       $scope.estaEventti($event);
@@ -367,7 +333,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .directive('arvioinninTekstikentta', function() {
+  .directive('arvioinninTekstikentta', function () {
     return {
       templateUrl: 'views/partials/arvioinninTekstikentta.html',
       restrict: 'E',
@@ -395,7 +361,7 @@ angular.module('eperusteApp')
 
 // Kustomoitu accordion group, lisätty isElementDragged-tarkastelu
 // jotta ui-sortable toimii accordionin kanssa.
-angular.module('template/accordion/accordion-group.html', []).run(['$templateCache', function($templateCache) {
+angular.module('template/accordion/accordion-group.html', []).run(['$templateCache', function ($templateCache) {
   $templateCache.put('template/accordion/accordion-group.html',
     '<div class="panel panel-default">\n' +
     '  <div class="panel-heading">\n' +

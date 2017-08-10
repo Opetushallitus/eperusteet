@@ -556,7 +556,7 @@ $sisalto-min-height: 450px;
 
 .container-items-leikelauta {
   min-height: 32px;
-  //border: 1px dashed lightgray;
+  list-style-type: none;
   & > div {
     margin-bottom: 15px;
   }
@@ -564,7 +564,39 @@ $sisalto-min-height: 450px;
 
 .container-items {
   min-height: 32px;
-  //border: 1px dashed lightgray;
+  list-style-type: none;
+  & > div {
+    margin-bottom: 15px;
+  }
+}
+
+.container-items-arviointi {
+  min-height: 32px;
+  list-style-type: none;
+  & > div {
+    margin-bottom: 15px;
+  }
+}
+
+.container-items-kohteet {
+  min-height: 32px;
+  list-style-type: none;
+  & > div {
+    margin-bottom: 15px;
+  }
+}
+
+.container-items-ammattitaito {
+  min-height: 32px;
+  list-style-type: none;
+  & > div {
+    margin-bottom: 15px;
+  }
+}
+
+.container-items-vaatimuksenKohteet {
+  min-height: 32px;
+  list-style-type: none;
   & > div {
     margin-bottom: 15px;
   }
