@@ -31,13 +31,50 @@ angular.module('eperusteApp')
                 url: '/tiedotteet',
                 templateUrl: 'views/admin/tiedotteet.html',
                 controller: 'TiedotteidenHallintaController'
+            })
+            .state('root.admin.oppaat', {
+                url: '/oppaat',
+                templateUrl: 'views/admin/oppaat.html',
+                controller: 'OpasHallintaController'
             });
+    })
+
+    .controller('OpasHallintaController', ($scope, $state, Api) => {
+      const projektitEp = Api.one("oppaat").one("projektit");
+
+      $scope.rajaus = "";
+      $scope.nykyinen = 0;
+      $scope.kokonaismaara = 0;
+      $scope.itemsPerPage = 20;
+      $scope.oppaat = [];
+
+      $scope.updateOpaslist = async () => {
+        const result = await projektitEp.get({
+          nimi: $scope.rajaus,
+          sivukoko: $scope.itemsPerPage,
+          sivu: $scope.nykyinen
+        });
+
+        $scope.oppaat = result.data;
+      };
+
+      $scope.valitseSivu = (sivu) => {
+        $scope.nykyinen = sivu;
+        $scope.updateOpaslist();
+      };
+
+      $scope.luoUusi = () => {
+        $state.go("root.oppaat.uusi");
+      };
+
+      $scope.updateOpaslist();
     })
 
     .controller('AdminBaseController', function ($scope, $state) {
         $scope.tabs = [
             {label: 'perusteprojektit', state: 'root.admin.perusteprojektit'},
-            {label: 'tiedotteet', state: 'root.admin.tiedotteet'}
+            {label: 'tiedotteet', state: 'root.admin.tiedotteet'},
+            {label: 'oppaat', state: 'root.admin.oppaat'}
         ];
 
         $scope.chooseTab = function ($index) {

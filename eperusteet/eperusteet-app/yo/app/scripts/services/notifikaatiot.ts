@@ -14,6 +14,18 @@
  * European Union Public Licence for more details.
  */
 
+interface NotifikaatiotI {
+  normaali: (msg: string | Object, ilmanKuvaa?: boolean) => void;
+  onnistui: (msg: string | Object, ilmanKuvaa?: boolean) => void;
+  varoitus: (msg: string | Object, ilmanKuvaa?: boolean) => void;
+  fataali: (msg: string | Object, cb: Function) => void;
+  serverCb: (msg: string | Object) => void;
+  serverLukitus: (response: any) => void;
+  viestit: () => any[];
+  paivita: () => void;
+  poista: (i: string | Object) => void;
+}
+
 angular.module('eperusteApp')
   .controller('JarjestelmaVirheModalCtrl', function ($scope, $uibModalInstance, $state, viesti) {
     $scope.viesti = viesti;

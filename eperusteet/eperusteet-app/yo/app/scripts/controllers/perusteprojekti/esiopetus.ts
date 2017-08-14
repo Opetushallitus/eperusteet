@@ -67,7 +67,9 @@ angular.module('eperusteApp')
         $state.go('root.perusteprojekti.suoritustapa.tekstikappale', {
           perusteenOsaViiteId: response.id,
           versio: ''
-        },{reload: true});
+        }, {
+          reload: true
+        });
       }, Notifikaatiot.serverCb);
     };
 

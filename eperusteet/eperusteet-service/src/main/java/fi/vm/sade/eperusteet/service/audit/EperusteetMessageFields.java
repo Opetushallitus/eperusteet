@@ -30,6 +30,7 @@ public enum EperusteetMessageFields {
     KUVA,
     LAAJAALAINENOSAAMINEN,
     OPH,
+    OPAS,
     OPPIAINE,
     OPPIMAARA,
     OSAAMISTAVOITE,

@@ -546,46 +546,70 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public PerusteDto update(Long perusteId, PerusteDto perusteDto) {
-        if (!isDiaariValid(perusteDto.getDiaarinumero())) {
-            throw new BusinessRuleViolationException("diaarinumero-ei-validi");
-        }
-
         Peruste current = perusteet.findOne(perusteId);
+
         if (current == null || current.getTila() == PerusteTila.POISTETTU) {
             throw new NotExistsException("Päivitettävää perustetta ei ole olemassa tai se on poistettu");
         }
-        perusteet.lock(current);
-        Peruste updated = mapper.map(perusteDto, Peruste.class);
-        if (updated.getMuutosmaaraykset() != null) {
-            for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
-                muutosmaarays.setPeruste(current);
-            }
-        }
 
-        if (!current.getKoulutustyyppi().equals(updated.getKoulutustyyppi())) {
-            throw new BusinessRuleViolationException("Koulutustyyppiä ei voi vaihtaa");
-        }
-
-        if (current.getTila() == PerusteTila.VALMIS) {
-            current = updateValmisPeruste(current, updated);
-        } else {
-            // FIXME: refactor
-            current.setDiaarinumero(updated.getDiaarinumero());
+        if (current.getTyyppi() == PerusteTyyppi.OPAS) {
+            perusteet.lock(current);
+            Peruste updated = mapper.map(perusteDto, Peruste.class);
             current.setKielet(updated.getKielet());
-            current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
-            current.setKoulutukset(updated.getKoulutukset());
             current.setKuvaus(updated.getKuvaus());
-            current.setMaarayskirje(updated.getMaarayskirje());
-            current.setMuutosmaaraykset(updated.getMuutosmaaraykset());
             current.setNimi(updated.getNimi());
-            current.setOsaamisalat(updated.getOsaamisalat());
-            current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
-            current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
-            current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
-            current.setPaatospvm(updated.getPaatospvm());
-            current.setKoulutusvienti(updated.isKoulutusvienti());
-        }
+            current.setOsaamisalat(null);
+            current.setSiirtymaPaattyy(null);
+            current.setVoimassaoloAlkaa(null);
+            current.setVoimassaoloLoppuu(null);
+            current.setPaatospvm(null);
+            current.setKoulutusvienti(false);
+            current.setDiaarinumero(null);
+            current.setKorvattavatDiaarinumerot(null);
+            current.setKoulutukset(null);
+            current.setMaarayskirje(null);
+            current.setMuutosmaaraykset(null);
 
+            perusteet.save(current);
+        }
+        else {
+            if (!isDiaariValid(perusteDto.getDiaarinumero())) {
+                throw new BusinessRuleViolationException("diaarinumero-ei-validi");
+            }
+
+            perusteet.lock(current);
+            Peruste updated = mapper.map(perusteDto, Peruste.class);
+            if (updated.getMuutosmaaraykset() != null) {
+                for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
+                    muutosmaarays.setPeruste(current);
+                }
+            }
+
+            if (!current.getKoulutustyyppi().equals(updated.getKoulutustyyppi())) {
+                throw new BusinessRuleViolationException("Koulutustyyppiä ei voi vaihtaa");
+            }
+
+            if (current.getTila() == PerusteTila.VALMIS) {
+                current = updateValmisPeruste(current, updated);
+            } else {
+                // FIXME: refactor
+                current.setDiaarinumero(updated.getDiaarinumero());
+                current.setKielet(updated.getKielet());
+                current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
+                current.setKoulutukset(updated.getKoulutukset());
+                current.setKuvaus(updated.getKuvaus());
+                current.setMaarayskirje(updated.getMaarayskirje());
+                current.setMuutosmaaraykset(updated.getMuutosmaaraykset());
+                current.setNimi(updated.getNimi());
+                current.setOsaamisalat(updated.getOsaamisalat());
+                current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
+                current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
+                current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
+                current.setPaatospvm(updated.getPaatospvm());
+                current.setKoulutusvienti(updated.isKoulutusvienti());
+            }
+
+        }
         perusteet.save(current);
         return mapper.map(current, PerusteDto.class);
     }
@@ -595,21 +619,23 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste current = perusteet.findOne(id);
         update(id, perusteDto);
 
-        KVLiite liite = current.getKvliite();
-        KVLiiteDto kvliiteDto = perusteDto.getKvliite();
+        if (current.getTyyppi() != PerusteTyyppi.OPAS) {
+            KVLiite liite = current.getKvliite();
+            KVLiiteDto kvliiteDto = perusteDto.getKvliite();
 
-        if (current.getKvliite() == null) {
-            if (current.getTyyppi() == PerusteTyyppi.POHJA) {
-                liite = mapper.map(kvliiteDto, KVLiite.class);
-                kvliiteRepository.save(liite);
+            if (current.getKvliite() == null) {
+                if (current.getTyyppi() == PerusteTyyppi.POHJA) {
+                    liite = mapper.map(kvliiteDto, KVLiite.class);
+                    kvliiteRepository.save(liite);
+                }
             }
-        }
-        else if (kvliiteDto != null) {
-            if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
-                throw new BusinessRuleViolationException("virheellinen-liite");
+            else if (kvliiteDto != null) {
+                if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
+                    throw new BusinessRuleViolationException("virheellinen-liite");
+                }
+                kvliiteDto.setId(liite.getId());
+                mapper.map(kvliiteDto, liite);
             }
-            kvliiteDto.setId(liite.getId());
-            mapper.map(kvliiteDto, liite);
         }
 
         perusteet.save(current);
@@ -1123,12 +1149,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else if (koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko);
         } else if (koulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
-            peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
+            peruste.setSisalto(new PerusopetuksenPerusteenSisalto());
         } else if (koulutustyyppi == KoulutusTyyppi.ESIOPETUS
                 || koulutustyyppi == KoulutusTyyppi.PERUSOPETUSVALMISTAVA
                 || koulutustyyppi == KoulutusTyyppi.LISAOPETUS
                 || koulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
-            peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
+            peruste.setSisalto(new EsiopetuksenPerusteenSisalto());
         } else if (koulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS
                 || koulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS
                 || koulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS) {
@@ -1158,7 +1184,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     private void initLukioOpetussuunitelmaRakenne(Peruste peruste, LukiokoulutuksenPerusteenSisalto sisalto) {
         sisalto.getOpetussuunnitelma().setSisalto(sisalto);
-        peruste.setLukiokoulutuksenPerusteenSisalto(sisalto);
+        peruste.setSisalto(sisalto);
         LukioOpetussuunnitelmaRakenne rakenne = sisalto.getOpetussuunnitelma();
         rakenne.setNimi(TekstiPalanen.of(Kieli.FI, "Oppiaineet"));
         rakenne.setTunniste(PerusteenOsaTunniste.RAKENNE);
@@ -1229,7 +1255,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 || KoulutusTyyppi.VARHAISKASVATUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
             EsiopetuksenPerusteenSisalto uusiSisalto = kloonaaEsiopetuksenSisalto(peruste, vanha.getEsiopetuksenPerusteenSisalto());
             uusiSisalto.setPeruste(peruste);
-            peruste.setEsiopetuksenPerusteenSisalto(uusiSisalto);
+            peruste.setSisalto(uusiSisalto);
             peruste = perusteet.save(peruste);
         } else {
             Set<Suoritustapa> suoritustavat = vanha.getSuoritustavat();
@@ -1251,7 +1277,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             peruste = perusteet.save(peruste);
             if (KoulutusTyyppi.PERUSOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
-                peruste.setPerusopetuksenPerusteenSisalto(kloonaaPerusopetuksenSisalto(peruste, vanha.getPerusopetuksenPerusteenSisalto()));
+                peruste.setSisalto(kloonaaPerusopetuksenSisalto(peruste, vanha.getPerusopetuksenPerusteenSisalto()));
             } else {
                 lisaaTutkinnonMuodostuminen(peruste);
             }

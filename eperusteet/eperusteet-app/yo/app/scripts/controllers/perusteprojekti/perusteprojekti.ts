@@ -26,7 +26,31 @@ angular.module('eperusteApp')
         perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
         perusteprojektiAlustus: (perusteprojektiTiedot, $stateParams) => perusteprojektiTiedot.alustaProjektinTiedot($stateParams),
         perusteprojektiOikeudet: PerusteprojektiOikeudetService => PerusteprojektiOikeudetService,
-        perusteprojektiOikeudetNouto: (perusteprojektiOikeudet, $stateParams) => perusteprojektiOikeudet.noudaOikeudet($stateParams)
+        perusteprojektiOikeudetNouto: (perusteprojektiOikeudet, $stateParams) => perusteprojektiOikeudet.noudaOikeudet($stateParams),
+        perusteprojekti: async (perusteprojektiTiedot) => {
+          await perusteprojektiTiedot.projektinTiedotAlustettu();
+          return perusteprojektiTiedot.getProjekti();
+        },
+        peruste: async (perusteprojektiTiedot) => {
+          await perusteprojektiTiedot.projektinTiedotAlustettu();
+          return perusteprojektiTiedot.getPeruste();
+        },
+        perusteprojektiBackLink: ($state, $stateParams, PerusteProjektiService, perusteprojekti, peruste) => {
+          console.log("Getting backlink");
+          console.log(perusteprojekti);
+          console.log(peruste);
+          if (peruste.tyyppi !== "opas") {
+            console.log("Not opas");
+            return PerusteProjektiService.getUrl(perusteprojekti);
+          }
+          else {
+            return $state.href("root.perusteprojekti.suoritustapa.opassisalto", {
+              ...$stateParams,
+              perusteProjektiId: perusteprojekti.id,
+              suoritustapa: 'opas'
+            })
+          }
+        }
     },
     abstract: true
 })
@@ -96,8 +120,17 @@ angular.module('eperusteApp')
     navigaationimi: 'navi-perusteprojekti',
     resolve: {
         perusteprojektiTiedot: (PerusteprojektiTiedotService) => PerusteprojektiTiedotService,
-        projektinTiedotAlustettu: (perusteprojektiTiedot) => perusteprojektiTiedot.projektinTiedotAlustettu(),
-        perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => perusteprojektiTiedot.alustaPerusteenSisalto($stateParams)
+        projektinTiedotAlustettu: async (perusteprojektiTiedot) => {
+          const result = await perusteprojektiTiedot.projektinTiedotAlustettu();
+          console.log("Odotoetaan");
+          return result;
+        },
+        perusteenSisaltoAlustus: async (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => {
+          console.log("Alustutko nyt?");
+          const result = await perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
+          console.log("Alustetaan sisältöä");
+          return result;
+        }
     },
     controller: ($timeout, $scope, $state, $stateParams, YleinenData, Kielimapper, perusteprojektiTiedot) => {
         // !!! Alustetaan kaikkia alitiloja varten !!!!
@@ -109,6 +142,7 @@ angular.module('eperusteApp')
                 suoritustapa: $scope.peruste.suoritustavat[0].suoritustapakoodi
             }));
         }
+
     },
     abstract: true
 })
@@ -314,9 +348,11 @@ angular.module('eperusteApp')
                                     koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService, TiedoteService,
                                     PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
                                     SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet,
-                                    TermistoService, Kieli) => {
+                                    TermistoService, Kieli, perusteprojektiBackLink) => {
+    console.log("Backlink", perusteprojektiBackLink);
     $scope.muokkausEnabled = false;
     $scope.pdfEnabled = false;
+    $scope.backLink = perusteprojektiBackLink;
 
     $scope.lisaaTiedote = () => {
         TiedoteService.lisaaTiedote(null, $stateParams.perusteProjektiId);
@@ -331,7 +367,6 @@ angular.module('eperusteApp')
         $scope.projekti = perusteprojektiTiedot.getProjekti();
         $scope.peruste = perusteprojektiTiedot.getPeruste();
         Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
-        $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
         $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
         TermistoService.setPeruste($scope.peruste);
         ProxyService.set('perusteId', $scope.peruste.id);
@@ -342,8 +377,11 @@ angular.module('eperusteApp')
     $scope.$on('update:perusteprojekti', () => $scope.projekti = perusteprojektiTiedot.getProjekti());
 
     // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
-    $scope.$watch(() => PerusteProjektiService.getSuoritustapa(),
+
+    if (_.size($scope.peruste.suoritustavat) > 1) {
+      $scope.$watch(() => PerusteProjektiService.getSuoritustapa(),
         () => $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste));
+    }
 
     const amFooter = '<button class="btn btn-default"' +
         '                     kaanna="lisaa-tutkintokohtainen-osa"' +
@@ -399,6 +437,7 @@ angular.module('eperusteApp')
 
     $scope.showBackLink = () => !(
         $state.is('root.perusteprojekti.suoritustapa.sisalto') ||
+        $state.is('root.perusteprojekti.suoritustapa.opassisalto') ||
         $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
         $state.is('root.perusteprojekti.suoritustapa.aipesisalto') ||
         $state.is('root.perusteprojekti.suoritustapa.vksisalto') ||

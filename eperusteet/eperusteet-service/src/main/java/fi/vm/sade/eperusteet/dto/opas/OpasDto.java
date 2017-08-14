@@ -14,10 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.peruste;
+package fi.vm.sade.eperusteet.dto.opas;
 
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,10 +29,18 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusteprojektiQueryDto {
-    private int sivu = 0;
-    private int sivukoko = 25;
+@JsonIgnoreProperties(ignoreUnknown=true)
+public class OpasDto {
+    private Long id;
     private String nimi;
+    private EntityReference peruste;
+    private String diaarinumero;
+    private Date paatosPvm;
+    private Date toimikausiAlku;
+    private Date toimikausiLoppu;
+    private String tehtavaluokka;
+    private String tehtava;
+    private String yhteistyotaho;
     private ProjektiTila tila;
-    private PerusteTyyppi tyyppi;
+    private String ryhmaOid;
 }

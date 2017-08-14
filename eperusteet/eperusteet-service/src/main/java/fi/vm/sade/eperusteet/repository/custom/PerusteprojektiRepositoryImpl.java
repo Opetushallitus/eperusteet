@@ -19,6 +19,9 @@ package fi.vm.sade.eperusteet.repository.custom;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.Peruste_;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti_;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
@@ -33,7 +36,9 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.springframework.data.domain.Page;
@@ -95,19 +100,28 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         Expression<String> targetName = cb.lower(root.get(Perusteprojekti_.nimi));
         Expression<Diaarinumero> targetDiaari = root.get(Perusteprojekti_.diaarinumero);
         Expression<ProjektiTila> targetTila = root.get(Perusteprojekti_.tila);
+        Join<Perusteprojekti, Peruste> joined = root.join(Perusteprojekti_.peruste);
+        Path<PerusteTyyppi> tyyppi = joined.get(Peruste_.tyyppi);
+
+//        Expression<PerusteTila> targetTila = root.get(Perusteprojekti_.peruste);
 
         Expression<String> haku = cb.literal(RepositoryUtil.kuten(pq.getNimi()));
         Expression<Diaarinumero> diaarihaku = cb.literal(new Diaarinumero(pq.getNimi()));
 
         Predicate nimessa = cb.like(targetName, haku);
         Predicate diaarissa = cb.equal(targetDiaari, diaarihaku);
-        Predicate nimihaku = cb.or(nimessa, diaarissa);
+        Predicate result = cb.or(nimessa, diaarissa);
 
-        if (pq.getTila() != null) {
-            return cb.and(nimihaku, cb.equal(targetTila, pq.getTila()));
+        if (pq.getTyyppi() == null) {
+            result = cb.and(result, cb.notEqual(tyyppi, PerusteTyyppi.OPAS));
         }
         else {
-            return nimihaku;
+            result = cb.and(result, cb.equal(tyyppi, pq.getTyyppi()));
         }
+
+        if (pq.getTila() != null) {
+            result = cb.and(result, cb.equal(targetTila, pq.getTila()));
+        }
+        return result;
     }
 }

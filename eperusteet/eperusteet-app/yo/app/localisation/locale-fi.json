@@ -1136,5 +1136,16 @@
     "peruste-lukio-kooodi-puuttuu": "Koodi puuttuu",
     "peruste-lukio-sama-koodi": "Samaa koodia on käytetty useamman kerran",
     "kurssi-osa-arviointi": "Arviointi",
-    "ohje-tutkinnon-osan-tuonti": "Vain julkaistuista ja esikatselussa olevista perusteista voi tuoda tutkinnon osia."
+    "ohje-tutkinnon-osan-tuonti": "Vain julkaistuista ja esikatselussa olevista perusteista voi tuoda tutkinnon osia.",
+
+    "oppaat": "Oppaat",
+    "uusi-opas": "Uusi opas",
+    "ohje-oppaat": "",
+    "oppaan-nimi-label": "Oppaan nimi",
+    "anna-oppaan-nimi-placeholder": "Anna oppaan nimi",
+    "oppaan-oid-label": "Opastyöryhmä",
+    "luonti-opas-nimi-ohje": "",
+    "luo-opas-nappi": "Luo opas",
+
+    "asd": ""
 }

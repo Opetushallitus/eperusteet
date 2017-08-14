@@ -102,6 +102,13 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private AIPEOpetuksenSisalto aipeSisalto;
 
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private OpasSisalto opasSisalto;
+
     @ManyToOne
     @Getter
     @Setter
@@ -134,7 +141,11 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
         this.esiopetuksenPerusteenSisalto = sisalto;
     }
 
-    PerusteenOsaViite(AIPEOpetuksenSisalto sisalto) {
+    public PerusteenOsaViite(OpasSisalto sisalto) {
+        this.opasSisalto = sisalto;
+    }
+
+    public PerusteenOsaViite(AIPEOpetuksenSisalto sisalto) {
         this.aipeSisalto = sisalto;
     }
 

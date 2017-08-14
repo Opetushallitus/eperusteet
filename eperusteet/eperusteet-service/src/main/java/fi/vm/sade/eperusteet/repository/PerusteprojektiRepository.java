@@ -33,16 +33,17 @@ import org.springframework.stereotype.Repository;
 public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long>, PerusteprojektiRepositoryCustom {
 
     List<Perusteprojekti> findByDiaarinumero(Diaarinumero diaarinumero);
+
     Perusteprojekti findOneByDiaarinumeroAndTila(Diaarinumero diaarinumero, ProjektiTila tila);
 
     Perusteprojekti findOneByPerusteDiaarinumeroAndTila(Diaarinumero diaarinumero, ProjektiTila tila);
 
     Perusteprojekti findOneByRyhmaOid(String ryhmaOid);
 
-    @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' ")
+    @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' AND p.peruste.tyyppi != 'Opas'")
     List<Perusteprojekti> findAllKeskeneraiset();
 
-    @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' AND (p.luoja = ?1 OR p.ryhmaOid IN (?2))")
+    @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' AND (p.luoja = ?1 OR p.ryhmaOid IN (?2)) AND p.peruste.tyyppi != 'Opas'")
     List<Perusteprojekti> findOmatPerusteprojektit(String userOid, Set<String> orgs);
 
     @Query("SELECT new fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto(" +
@@ -53,6 +54,6 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
             " p.peruste.koulutustyyppi, " +
             " p.peruste.tyyppi, " +
             " p.tila" +
-            ") FROM Perusteprojekti p")
+            ") FROM Perusteprojekti p WHERE p.peruste.tyyppi != 'Opas'")
     List<PerusteprojektiKevytDto> findAllKevyt();
 }

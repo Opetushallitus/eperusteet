@@ -46,8 +46,7 @@
         </tr>
         <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in perusteprojektit">
             <td>
-                <a ng-if="pp.tila !== 'poistettu'" ng-href="{{pp.$$url}}" ng-bind="pp.nimi">
-                </a>
+                <a ng-href="{{ pp.$$url }}" ng-if="pp.tila !== 'poistettu'" ng-bind="pp.nimi"></a>
                 <span ng-if="pp.tila === 'poistettu'" ng-bind="pp.nimi"></span>
                 <span class="badge" ng-if="pp.tyyppi === 'pohja'" kaanna="'pohja'"></span>
             </td>
