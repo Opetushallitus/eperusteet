@@ -321,9 +321,11 @@ angular.module('eperusteApp')
           if(angular.isUndefined(localizedModelValue)) {
             localizedModelValue = {};
           }
+
           if(localizedModelValue === null) {
             localizedModelValue = {};
           }
+
           if (!_.isUndefined(viewValue) && !_.isNull(viewValue)) {
             localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
           }
@@ -338,6 +340,7 @@ angular.module('eperusteApp')
           }
           ngModelCtrl.$render();
         });
+
       }
     };
   });
