@@ -626,7 +626,7 @@
     "excel-ei-kahta-samaa": "Tutkintokoodin täytyy olla uniikki",
     "valitse-nimi": "Valitse nimi",
     "valitse-diaarinumero": "Valitse diaarinumero",
-    "diaarinumero-ei-validi": "Diaarinumero ei ole validi. Diarinumeron pitää olla muotoa X-XXX/XXX/XXXX, XXX/XXX/XXXX tai OPH-XXXXX-XXXX",
+    "diaarinumero-ei-validi": "Diaarinumero ei ole validi. Diarinumeron pitää olla muotoa XXX/XXX/XXXX tai OPH-XXXXX-XXXX",
     "maarayksen-diaarinumero": "Määräyksen diaarinumero",
     "suoritustapa": "Suoritustapa",
     "liita-perusteeseen": "Liitä perusteeseen",
