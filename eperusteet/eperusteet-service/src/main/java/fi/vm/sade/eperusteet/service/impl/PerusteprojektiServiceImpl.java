@@ -64,7 +64,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toMap;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
@@ -1007,6 +1006,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
             setSisaltoTila(peruste, peruste.getEsiopetuksenPerusteenSisalto().getSisalto(), tila);
+        }
+
+        if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
+            setSisaltoTila(peruste, peruste.getLukiokoulutuksenPerusteenSisalto().getSisalto(), tila);
+        }
+
+        if (peruste.getAipeOpetuksenPerusteenSisalto() != null) {
+            setSisaltoTila(peruste, peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(), tila);
         }
 
         peruste.asetaTila(tila);

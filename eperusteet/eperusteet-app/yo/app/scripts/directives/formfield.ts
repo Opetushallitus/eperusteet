@@ -68,10 +68,11 @@ angular.module('eperusteApp')
         max: '@?',
         name: '@',
         placeholder: '@',
-        step: '@?'
+        step: '@?',
+        ngRequired: '@?'
       },
       link: function (scope: any, element: any, attrs: any) {
-        scope.postfix = '';
+        scope.postfix = scope.ngRequired ? '*' : '';
         scope.type = scope.type || 'text';
         scope.flatOptions = _.isArray(scope.options) &&
                 scope.options.length > 0 && !_.isObject(scope.options[0]);
@@ -106,22 +107,6 @@ angular.module('eperusteApp')
             element.find('input').attr('maxlength', attrs.max);
           });
         }
-
-        attrs.$observe('required', function(value) {
-          if (value === 'required' || value === 'true' || value === '') {
-            scope.postfix = '*';
-            $timeout(function () {
-              element.find('input').attr('required', '');
-            });
-          } else if (value) {
-            var parsed = $parse(value);
-            scope.$watch(function () {
-              return parsed(scope.$parent);
-            }, function (value) {
-              scope.postfix = value ? '*' : '';
-            });
-          }
-        });
 
         bindLabel();
 
