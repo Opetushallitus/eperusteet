@@ -27,7 +27,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RakenneOsaDto extends AbstractRakenneOsaDto {
-    private boolean pakollinen;
     private String erikoisuus;
     private EntityReference tutkinnonOsaViite;
 

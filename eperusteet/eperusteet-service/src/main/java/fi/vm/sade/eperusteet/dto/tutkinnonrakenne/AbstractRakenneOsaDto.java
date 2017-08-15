@@ -28,6 +28,7 @@ public abstract class AbstractRakenneOsaDto {
     private LokalisoituTekstiDto kuvaus;
     private KoodiDto vieras;
     private UUID tunniste;
+    private Boolean pakollinen;
 
     public final void foreach(final Visitor visitor) {
         foreach(visitor, 0);

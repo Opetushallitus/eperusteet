@@ -482,7 +482,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
             linkElement.appendChild(doc.createTextNode(nimiBldr.toString()));
 
-            if (rakenneOsa.isPakollinen()) {
+            if (rakenneOsa.getPakollinen()) {
                 String glyph = messages.translate("docgen.rakenneosa.pakollinen.glyph", kieli);
                 Element em = newBoldElement(doc, glyph);
                 linkElement.appendChild(doc.createTextNode(", "));
