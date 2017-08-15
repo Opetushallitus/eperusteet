@@ -523,6 +523,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
             TutkinnonOsaTyyppi tyyppi = osa.getTyyppi();
             if (tyyppi == TutkinnonOsaTyyppi.NORMAALI) {
+                //addKoodi(docBase, osa);
                 addTavoitteet(docBase, osa);
                 addAmmattitaitovaatimukset(docBase, osa.getAmmattitaitovaatimuksetLista(), osa.getAmmattitaitovaatimukset());
                 addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());
@@ -811,6 +812,16 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         });
             }
         }
+    }
+
+    private void addKoodi(DokumenttiPeruste docBase, TutkinnonOsa osa) {
+        String koodiArvo = osa.getKoodiArvo();
+        if (StringUtils.isEmpty(koodiArvo)) {
+            return;
+        }
+
+        addTeksti(docBase, messages.translate("docgen.koodi.title", docBase.getKieli()), "h5");
+        addTeksti(docBase, koodiArvo, "div");
     }
 
     private void addTavoitteet(DokumenttiPeruste docBase, TutkinnonOsa osa) {
@@ -1167,8 +1178,20 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     private String getOtsikko(DokumenttiPeruste docBase, TutkinnonOsaViite viite) {
         TutkinnonOsa osa = viite.getTutkinnonOsa();
-        return getTextString(docBase, osa.getNimi())
-                + getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli());
+        StringBuilder otsikkoBuilder = new StringBuilder();
+        otsikkoBuilder.append(getTextString(docBase, osa.getNimi()));
+
+        otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli()));
+
+        String koodi = osa.getKoodiArvo();
+        if (koodi != null) {
+            otsikkoBuilder
+                    .append(" (")
+                    .append(koodi)
+                    .append(")");
+        }
+
+        return otsikkoBuilder.toString();
     }
 
     private String getKokoTeksti(MuodostumisSaanto saanto, Kieli kieli) {

@@ -836,7 +836,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         for (KevytTekstiKappale vt : tutkinnonOsa.getVapaatTekstit()) {
             String otsikko = "";
             String body = "";
-            if (vt.getNimi().getTeksti() != null) {
+            if (vt.getNimi() != null && vt.getNimi().getTeksti() != null) {
                 otsikko = vt.getNimi().getTeksti().get(kieli);
             }
             if (vt.getTeksti() != null && vt.getTeksti().getTeksti() != null) {
