@@ -121,6 +121,12 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             return false;
         }
 
+        if ((this.getPakollinen() == null && moduuli.getPakollinen() != null)
+                || (this.getPakollinen() != null && moduuli.getPakollinen() == null)
+                || this.getPakollinen() != moduuli.getPakollinen()) {
+            return false;
+        }
+
         if (this.getRooli() != moduuli.getRooli()) {
             return false;
         }
