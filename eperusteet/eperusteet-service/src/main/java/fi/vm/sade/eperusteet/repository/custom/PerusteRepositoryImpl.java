@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite_;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
@@ -229,8 +230,11 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         pred = cb.and(pred, tilat);
 
-        if (!Strings.isNullOrEmpty(pq.getTila())) {
-            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), PerusteTila.of(pq.getTila())));
+        if (!empty(pq.getTila())) {
+            Set<PerusteTila> perusteTilat = pq.getTila().stream()
+                    .map(PerusteTila::of)
+                    .collect(Collectors.toSet());
+            pred = cb.and(pred, root.get(Peruste_.tila).in(perusteTilat));
         }
 
         if (!Strings.isNullOrEmpty(pq.getPerusteTyyppi())) {

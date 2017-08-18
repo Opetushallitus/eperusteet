@@ -173,7 +173,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 ppk.setTyyppi(peruste.getTyyppi());
                 ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
                         .map(Suoritustapa::getSuoritustapakoodi)
-                        .map(stk -> stk.toString())
+                        .map(Suoritustapakoodi::toString)
                         .collect(Collectors.toSet()));
             }
             return ppk;
