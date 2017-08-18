@@ -6,12 +6,10 @@ import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,10 +27,8 @@ import static org.junit.Assert.assertEquals;
  *
  * @author isaul
  */
-@Ignore
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class PerusteServiceAikaIT {
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceIT.class);
+public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
@@ -59,6 +55,7 @@ public class PerusteServiceAikaIT {
     private Date nykyinenAika;
 
     public PerusteServiceAikaIT() {
+
     }
 
     @Before
@@ -152,7 +149,7 @@ public class PerusteServiceAikaIT {
         pquery.setSiirtyma(false);
         pquery.setPoistunut(false);
         Page<PerusteHakuDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
-        assertEquals(3, perusteet.getTotalElements());
+        assertEquals(5, perusteet.getTotalElements());
     }
 
     @Test
@@ -164,7 +161,7 @@ public class PerusteServiceAikaIT {
         pquery.setSiirtyma(true);
         pquery.setPoistunut(false);
         Page<PerusteHakuDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
-        assertEquals(2, perusteet.getTotalElements());
+        assertEquals(1, perusteet.getTotalElements());
     }
 
     @Test

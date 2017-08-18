@@ -258,7 +258,8 @@ public class PerusteController {
     @RequestMapping(value = "/diaari", method = GET)
     @ResponseBody
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),})
+            @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query")
+    })
     @ApiOperation(value = "perusteen yksilöintietojen haku diaarinumerolla")
     public ResponseEntity<PerusteInfoDto> getByDiaari(@ApiIgnore final Diaarinumero diaarinumero) {
         PerusteInfoDto t = service.getByDiaari(diaarinumero);
