@@ -20,6 +20,9 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author nkala
@@ -30,5 +33,14 @@ public class PerusteprojektiQueryDto {
     private int sivu = 0;
     private int sivukoko = 25;
     private String nimi;
-    private ProjektiTila tila;
+    private Set<ProjektiTila> tila;
+
+    public void setTila(ProjektiTila tila) {
+        this.tila = new HashSet<>();
+        this.tila.add(tila);
+    }
+
+    public void setTila(Set<ProjektiTila> tila) {
+        this.tila = tila;
+    }
 }

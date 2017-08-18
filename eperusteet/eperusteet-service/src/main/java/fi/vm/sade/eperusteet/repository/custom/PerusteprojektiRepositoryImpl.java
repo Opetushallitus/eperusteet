@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepositoryCustom;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -103,11 +104,15 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         Predicate diaarissa = cb.equal(targetDiaari, diaarihaku);
         Predicate nimihaku = cb.or(nimessa, diaarissa);
 
-        if (pq.getTila() != null) {
-            return cb.and(nimihaku, cb.equal(targetTila, pq.getTila()));
+        if (!empty(pq.getTila())) {
+            return cb.and(nimihaku, root.get(Perusteprojekti_.tila).in(pq.getTila()));
         }
         else {
             return nimihaku;
         }
+    }
+
+    private static boolean empty(Collection<?> c) {
+        return c == null || c.isEmpty();
     }
 }
