@@ -13,9 +13,11 @@
         <label for="admin-tilarajaus" kaanna="rajaa-tila"></label>
       </div>
       <div class="tilarajaus-item">
-        <select ng-model="tilaRajain" class="form-control" id="admin-tilarajaus"
-                ng-options="tila as ('tila-'+tila) | kaanna for tila in tilat">
-            <option value="">{{'kaikki' | kaanna}}</option>
+        <select id="admin-tilarajaus"
+                ng-model="tilaRajain"
+                ng-options="tila as ('tila-'+tila) | kaanna for tila in tilat"
+                class="form-control">
+            <option value="">{{'kaikki-ilman-arkistoituja' | kaanna}}</option>
         </select>
       </div>
       <div class="tilarajaus-divider"></div>
