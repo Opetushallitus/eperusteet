@@ -86,29 +86,21 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
                 this.rooli = moduuli.getRooli();
             }
 
-            //XXX: mergeState ei ole rekursiivinen?
             this.setOsat(moduuli.getOsat());
             this.nimi = moduuli.getNimi();
             this.setKuvaus(moduuli.getKuvaus());
             this.muodostumisSaanto = moduuli.getMuodostumisSaanto() == null ? null : new MuodostumisSaanto(moduuli.getMuodostumisSaanto());
             this.osaamisala = moduuli.getOsaamisala();
-
-            assert (isSame(moduuli, false));
         }
 
     }
 
     @Override
     public boolean isSame(AbstractRakenneOsa moduuli, boolean excludeText) {
-
-        if ((moduuli instanceof RakenneModuuli)) {
-            return isSame((RakenneModuuli) moduuli, excludeText);
-        }
-        return false;
+        return (moduuli instanceof RakenneModuuli) && isSame((RakenneModuuli) moduuli, excludeText);
     }
 
     public boolean isSame(RakenneModuuli moduuli, boolean excludeText) {
-
         if (!super.isSame(moduuli, excludeText)) {
             return false;
         }
@@ -153,7 +145,6 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     }
 
     public boolean isInRakenne(TutkinnonOsaViite viite, boolean ylinTaso) {
-
         for (AbstractRakenneOsa rakenneosa : osat) {
             if (rakenneosa instanceof RakenneModuuli) {
                 if (((RakenneModuuli) rakenneosa).isInRakenne(viite, false)) {
@@ -168,5 +159,4 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
 
         return false;
     }
-
 }
