@@ -81,9 +81,18 @@ angular.module('eperusteApp')
         ];
 
         async function updateSearch() {
+            let tila;
+            if ($scope.tilaRajain) {
+                tila = $scope.tilaRajain.toUpperCase();
+            } else {
+                tila = _($scope.tilat)
+                    .filter(tila => tila !== "poistettu")
+                    .map(tila => tila.toUpperCase())
+                    .value();
+            }
             const perusteprojektit = await Api.one("perusteprojektit/perusteHaku").get({
                 nimi: $scope.rajaus,
-                tila: $scope.tilaRajain && $scope.tilaRajain.toUpperCase(),
+                tila: tila,
                 sivu: $scope.nykyinen - 1,
                 sivukoko: $scope.itemsPerPage,
             });
