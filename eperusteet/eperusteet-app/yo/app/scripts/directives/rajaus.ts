@@ -38,7 +38,7 @@ angular.module('eperusteApp')
           $scope.callback({value: $scope.model});
         };
         $scope.applyClasses = function () {
-          var classes = 'input-group rajauslaatikko';
+          let classes = 'input-group rajauslaatikko';
           if ($scope.classes) {
             classes += (' ' + $scope.classes);
           }

@@ -21,7 +21,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-angular-templates');
   grunt.loadNpmTasks('grunt-ts');
   require('load-grunt-tasks')(grunt);
-//require('time-grunt')(grunt);
+  //require('time-grunt')(grunt);
 
   // configurable paths
   var yeomanConfig = {
@@ -38,6 +38,9 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
+    typings: {
+      install: {}
+    },
     pug: {
       compile: {
         options: {
@@ -449,6 +452,7 @@ module.exports = function(grunt) {
       }
 
       grunt.task.run([
+        'typings:install',
         'ts',
         'pug',
         'clean:server',
@@ -466,6 +470,7 @@ module.exports = function(grunt) {
   grunt.registerTask('dev', devTask(true));
 
   grunt.registerTask('test', [
+    'typings:install',
     'ts',
     'pug',
     'clean:server',
@@ -477,6 +482,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'typings:install',
     'ts',
     'clean:dist',
     'pug',

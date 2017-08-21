@@ -153,14 +153,14 @@ module Lokalisointi {
         teksti?: Lokalisoitu;
     }
 
-    function joinString(a:Lokalisoitu, b:Lokalisoitu, key?:string):string {
+    function joinString(a: Lokalisoitu, b: Lokalisoitu, key?: string): string {
         if (!a[key] && !b[key]) {
             return null;
         }
         return (a[key] || '') + (b[key] || '');
     }
 
-    function join(a:Lokalisoitu, b:Lokalisoitu) {
+    function join(a: Lokalisoitu, b: Lokalisoitu) {
         return <Lokalisoitu>{
             fi: joinString(a, b, 'fi'),
             sv: joinString(a, b, 'sv'),
@@ -168,7 +168,7 @@ module Lokalisointi {
         };
     }
 
-    function forAll(constant:string):Lokalisoitu {
+    function forAll(constant: string): Lokalisoitu {
         return {
             fi: constant,
             sv: constant,
@@ -176,14 +176,25 @@ module Lokalisointi {
         };
     }
 
-    export function concat(...a:(Lokalisoitu | string)[]):Lokalisoitu {
+    export function concat(...a: (Lokalisoitu | string)[]): Lokalisoitu {
         if (a.length == 0) {
             return forAll(null);
         }
-        var j:Lokalisoitu = a[0];
-        for (var i = 1; i < a.length; ++i) {
+
+        let j: Lokalisoitu;
+        if (typeof a[0] === "string") {
+            j = {
+                fi: <string> a[0],
+                sv: <string> a[0],
+                en: <string> a[0]
+            }
+        } else {
+            j = <Lokalisoitu> a[0];
+        }
+
+        for (let i = 1; i < a.length; ++i) {
             if (a[i]) {
-                j = join(j, _.isObject(a[i]) ? a[i] : forAll(<string>a[i]));
+                j = join(j, _.isObject(a[i]) ? <Lokalisoitu> a[i] : forAll(<string>a[i]));
             }
         }
         return j;

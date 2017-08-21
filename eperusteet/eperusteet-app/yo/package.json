@@ -33,6 +33,7 @@
     "grunt-sass": "1.2.1",
     "grunt-svgmin": "0.4.0",
     "grunt-ts": "6.0.0-beta.14",
+    "grunt-typings": "0.1.5",
     "grunt-usemin": "2.4.0",
     "jasmine-core": "2.5.2",
     "karma": "0.13.21",
@@ -42,7 +43,7 @@
     "karma-phantomjs-launcher": "0.1.4",
     "load-grunt-tasks": "0.6.0",
     "node-sass": "3.8.0",
-    "typescript": "2.2"
+    "typescript": "2.4.2"
   },
   "engines": {
     "node": "6.3.1"
