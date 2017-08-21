@@ -1,34 +1,38 @@
 <div>
     <!-- admin/perusteprojektit.html -->
     <div class="hallintapainikkeet">
-        <a ui-sref="root.excel" kaanna="tuo-excel-tiedostosta"></a>
+        <a ui-sref="root.excel" kaanna="'tuo-excel-tiedostosta'"></a>
         <button ui-sref="root.perusteprojektiwizard.tiedot" class="btn" icon-role="plus" kaanna="'uusi-perusteprojekti'"></button>
         <button ui-sref="root.perusteprojektiwizard.pohja" class="btn" icon-role="plus" kaanna="'luo-uusi-perustepohja'"></button>
     </div>
 
-    <h2><span kaanna="'perusteprojektit'"></span><ohje teksti="ohje-perusteprojekti"></ohje></h2>
+    <h2>
+        <span kaanna="'perusteprojektit'"></span>
+        <ohje teksti="'ohje-perusteprojekti'"></ohje>
+    </h2>
 
     <div class="tilarajaus">
       <div class="tilarajaus-item">
-        <label for="admin-tilarajaus" kaanna="rajaa-tila"></label>
+        <label for="admin-tilarajaus" kaanna="'rajaa-tila'"></label>
       </div>
       <div class="tilarajaus-item">
         <select id="admin-tilarajaus"
                 ng-model="tilaRajain"
                 ng-options="tila as ('tila-'+tila) | kaanna for tila in tilat"
+                ng-change="updateTila()"
                 class="form-control">
             <option value="">{{'kaikki-ilman-arkistoituja' | kaanna}}</option>
         </select>
       </div>
       <div class="tilarajaus-divider"></div>
       <div class="tilarajaus-item">
-        <rajaus model="rajaus" placeholder="etsi-perusteprojekteista"></rajaus>
+        <rajaus model="rajaus" placeholder="etsi-perusteprojekteista" callback="updateRajaus(value)"></rajaus>
       </div>
     </div>
 
     <table class="table table-striped admin-table">
         <tr>
-            <th width="50%">
+            <th width="40%">
                 <a class="action-link" ng-click="asetaJarjestys('nimi')">
                     <span ng-bind="'nimi' | kaanna"></span>
                     <span ng-show="jarjestysTapa === 'nimi'">
@@ -44,24 +48,38 @@
                     </span>
                 </a>
             </th>
-            <th width="25%" kaanna>toiminto</th>
-        </tr>
-        <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in perusteprojektit">
-            <td>
-                <a ng-if="pp.tila !== 'poistettu'" ng-href="{{pp.$$url}}" ng-bind="pp.nimi">
+            <th width="20%">
+                <a class="action-link" ng-click="asetaJarjestys('muokattu')">
+                    <span ng-bind="'muokattu' | kaanna"></span>
+                    <span ng-show="jarjestysTapa === 'muokattu'">
+                        <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+                    </span>
                 </a>
+            </th>
+            <th width="20%" kaanna="'toiminto'"></th>
+        </tr>
+        <tr ng-repeat="pp in perusteprojektit">
+            <td>
+                <a ng-if="pp.tila !== 'poistettu'" ng-href="{{pp.$$url}}" ng-bind="pp.nimi"></a>
                 <span ng-if="pp.tila === 'poistettu'" ng-bind="pp.nimi"></span>
                 <span class="badge" ng-if="pp.tyyppi === 'pohja'" kaanna="'pohja'"></span>
             </td>
             <td ng-bind="'tila-' + pp.tila | kaanna"></td>
+            <td ng-bind="pp.muokattu | aikaleima"></td>
             <td>
-                <button type="button" class="btn btn-default rivinappi" ng-click="palauta(pp)"
-                        icon-role="open" ng-if="pp.tila === 'poistettu'" kaanna="'palauta'"></button>
+                <button type="button"
+                        class="btn btn-default rivinappi"
+                        ng-click="palauta(pp)"
+                        icon-role="open" ng-if="pp.tila === 'poistettu'"
+                        kaanna="'palauta'"></button>
             </td>
         </tr>
     </table>
 
-    <ep-pagination ng-model="nykyinen" ng-change="valitseSivu" total-items="kokonaismaara"
-        items-per-page="itemsPerPage"></ep-pagination>
+    <ep-pagination ng-model="nykyinen"
+                   ng-change="valitseSivu"
+                   total-items="kokonaismaara"
+                   items-per-page="itemsPerPage">
+    </ep-pagination>
 </div>
 
