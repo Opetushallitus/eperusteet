@@ -35,24 +35,26 @@ angular.module('eperusteApp')
           await perusteprojektiTiedot.projektinTiedotAlustettu();
           return perusteprojektiTiedot.getPeruste();
         },
-        perusteprojektiBackLink: ($state, $stateParams, PerusteProjektiService, perusteprojekti, peruste) => {
-          console.log("Getting backlink");
-          console.log(perusteprojekti);
-          console.log(peruste);
-          if (peruste.tyyppi !== "opas") {
-            console.log("Not opas");
-            return PerusteProjektiService.getUrl(perusteprojekti);
-          }
-          else {
-            return $state.href("root.perusteprojekti.suoritustapa.opassisalto", {
-              ...$stateParams,
-              perusteProjektiId: perusteprojekti.id,
-              suoritustapa: 'opas'
-            })
-          }
+        isOpas: async (peruste) => {
+          return peruste.tyyppi === "opas";
+        },
+        perusteprojektiBackLink: async ($state, $stateParams, $timeout, PerusteProjektiService, perusteprojekti, peruste) => {
+          return new Promise((resolve, reject) => {
+            let result = "";
+            if (peruste.tyyppi !== "opas") {
+              result = PerusteProjektiService.getUrl(perusteprojekti, peruste);
+            }
+            else {
+              result = $state.href("root.perusteprojekti.suoritustapa.opassisalto", {
+                ...$stateParams,
+                perusteProjektiId: perusteprojekti.id,
+                suoritustapa: 'opas'
+              })
+            }
+            return resolve(result);
+          });
         }
     },
-    abstract: true
 })
 .state('root.perusteprojekti.suoritustapa.lukioosat', {
     url: '/lukioosat/:osanTyyppi{versio:(?:/[^/]+)?}',
@@ -122,13 +124,10 @@ angular.module('eperusteApp')
         perusteprojektiTiedot: (PerusteprojektiTiedotService) => PerusteprojektiTiedotService,
         projektinTiedotAlustettu: async (perusteprojektiTiedot) => {
           const result = await perusteprojektiTiedot.projektinTiedotAlustettu();
-          console.log("Odotoetaan");
           return result;
         },
         perusteenSisaltoAlustus: async (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => {
-          console.log("Alustutko nyt?");
           const result = await perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
-          console.log("Alustetaan sisältöä");
           return result;
         }
     },
@@ -348,11 +347,12 @@ angular.module('eperusteApp')
                                     koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService, TiedoteService,
                                     PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
                                     SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet,
-                                    TermistoService, Kieli, perusteprojektiBackLink) => {
-    console.log("Backlink", perusteprojektiBackLink);
+                                    TermistoService, Kieli, perusteprojektiBackLink, isOpas) => {
+    $scope.isOpas = isOpas; // Käytetään alinäkymissä
     $scope.muokkausEnabled = false;
     $scope.pdfEnabled = false;
     $scope.backLink = perusteprojektiBackLink;
+    $scope.$$kaannokset = perusteprojektiTiedot.getPerusteprojektiKaannokset($scope.isOpas && "opas");
 
     $scope.lisaaTiedote = () => {
         TiedoteService.lisaaTiedote(null, $stateParams.perusteProjektiId);
@@ -360,7 +360,7 @@ angular.module('eperusteApp')
 
     $scope.luoPdf = () => {
         PdfCreation.setPerusteId($scope.projekti._peruste);
-        PdfCreation.openModal();
+        PdfCreation.openModal($scope.isOpas, $scope.isAmmatillinen);
     };
 
     function init() {

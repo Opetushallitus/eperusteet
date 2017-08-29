@@ -4,16 +4,18 @@
 </div>
 
 <div class="modal-body">
-    <h4 kaanna>luo-pdf-dokumentti-perusteesta</h4>
+    <h4 kaanna="isOpas ? 'luo-pdf-dokumentti-oppaasta' : 'luo-pdf-dokumentti-perusteesta'"></h4>
     <div class="luodut">
-        <p>{{'valitse-dokumenttin-versio' | kaanna}}:</p>
-        <div class="modal-data">
-            <div ng-repeat="versio in versiot.lista">
-                <label>
-                    <input type="radio" ng-model="versiot.valittu" ng-value="versio"
-                        name="versionvalinta" ng-disabled="generateInProgress">
-                    {{versio | kaanna}}
-                </label>
+        <div ng-show="!isOpas">
+            <p>{{'valitse-dokumenttin-versio' | kaanna}}:</p>
+            <div class="modal-data">
+                <div ng-repeat="versio in versiot.lista">
+                    <label>
+                        <input type="radio" ng-model="versiot.valittu" ng-value="versio"
+                            name="versionvalinta" ng-disabled="generateInProgress" />
+                        {{versio | kaanna}}
+                    </label>
+                </div>
             </div>
         </div>
         <div class="modal-data">
@@ -39,25 +41,27 @@
         </div>
     </div>
 
-    <div style="margin-top: 20px;"></div>
-    <h4 kaanna>luo-kv-liite</h4>
-    <div class="modal-data">
-        <div ng-repeat="kieli in kvliitekielet">
-            <div style="margin-bottom: 10px;"></div>
-            <div class="row">
-                <div class="col-xs-3" style="padding-right: 2px;">
-                    <button class="btn btn-default" ng-click="generate(kieli, 'kvliite')" style="width: 100%" ng-disabled="generateInProgress">
-                        <span icon-role="cog"></span>
-                        <span ng-bind="'luo' | kaanna"></span>
-                        (<span ng-bind="kieli | kaanna"></span>)
-                    </button>
-                </div>
-                <div class="col-xs-9" style="padding-left: 2px;">
-                    <button class="btn btn-default" ng-click="download(kieli, 'kvliite')" ng-disabled="!hasPdf(kieli, 'kvliite')" style="width: 100%">
-                        <span icon-role="save"></span>
-                        <span ng-bind="'lataa' | kaanna"></span>
-                        {{'luotu' | kaanna}} {{kvliitteet[kieli].valmistumisaika | aikaleima}}
-                    </button>
+    <div ng-show="isAmmatillinen && !isOpas">
+        <div style="margin-top: 20px;"></div>
+        <h4 kaanna>luo-kv-liite</h4>
+        <div class="modal-data">
+            <div ng-repeat="kieli in kvliitekielet">
+                <div style="margin-bottom: 10px;"></div>
+                <div class="row">
+                    <div class="col-xs-3" style="padding-right: 2px;">
+                        <button class="btn btn-default" ng-click="generate(kieli, 'kvliite')" style="width: 100%" ng-disabled="generateInProgress">
+                            <span icon-role="cog"></span>
+                            <span ng-bind="'luo' | kaanna"></span>
+                            (<span ng-bind="kieli | kaanna"></span>)
+                        </button>
+                    </div>
+                    <div class="col-xs-9" style="padding-left: 2px;">
+                        <button class="btn btn-default" ng-click="download(kieli, 'kvliite')" ng-disabled="!hasPdf(kieli, 'kvliite')" style="width: 100%">
+                            <span icon-role="save"></span>
+                            <span ng-bind="'lataa' | kaanna"></span>
+                            {{'luotu' | kaanna}} {{kvliitteet[kieli].valmistumisaika | aikaleima}}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

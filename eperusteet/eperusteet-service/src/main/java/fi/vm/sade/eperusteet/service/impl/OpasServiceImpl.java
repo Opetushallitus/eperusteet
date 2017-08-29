@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.OpasSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -28,7 +27,6 @@ import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.DiaarinumeroHakuDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -76,17 +74,6 @@ public class OpasServiceImpl implements OpasService {
     @Transactional
     public OpasDto save(OpasLuontiDto opasDto) {
         Perusteprojekti perusteprojekti = mapper.map(opasDto, Perusteprojekti.class);
-
-        if (opasDto.getDiaarinumero() == null) {
-            throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
-        }
-
-        DiaarinumeroHakuDto diaariHaku = perusteprojektiService.onkoDiaarinumeroKaytossa(new Diaarinumero(opasDto.getDiaarinumero()));
-
-        if (diaariHaku.getLoytyi()) {
-            throw new BusinessRuleViolationException("Diaarinumero on jo käytössä");
-        }
-
         if (opasDto.getRyhmaOid() == null) {
             throw new BusinessRuleViolationException("Opastyöryhmää ei ole asetettu");
         }
@@ -107,7 +94,7 @@ public class OpasServiceImpl implements OpasService {
         return mapper.map(perusteprojekti, OpasDto.class);
     }
 
-     @Override
+    @Override
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
         pquery.setTila(PerusteTila.VALMIS.toString());

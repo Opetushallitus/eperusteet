@@ -31,6 +31,4 @@ div
         button(type="button" class="btn btn-default rivinappi" ng-click="palauta(opas)"
                icon-role="open" ng-if="pp.tila === 'poistettu'" kaanna="'palauta'")
 
-  pre(ng-bind="oppaat | json")
-
   ep-pagination(ng-model="nykyinen" ng-change="valitseSivu" total-items="kokonaismaara" items-per-page="itemsPerPage")

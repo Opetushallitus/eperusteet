@@ -19,7 +19,6 @@ package fi.vm.sade.eperusteet.dto.opas;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,13 +33,6 @@ public class OpasDto {
     private Long id;
     private String nimi;
     private EntityReference peruste;
-    private String diaarinumero;
-    private Date paatosPvm;
-    private Date toimikausiAlku;
-    private Date toimikausiLoppu;
-    private String tehtavaluokka;
-    private String tehtava;
-    private String yhteistyotaho;
     private ProjektiTila tila;
     private String ryhmaOid;
 }

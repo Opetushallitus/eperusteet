@@ -77,6 +77,9 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     @Autowired
     private PermissionChecker permissionChecker;
 
+    @Autowired
+    private PerusteRepository perusteet;
+
     @Override
     @Transactional(readOnly = false)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(Long perusteId, Long id) {
@@ -195,9 +198,6 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         repository.flush();
         return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
     }
-
-    @Autowired
-    private PerusteRepository perusteet;
 
     private List<PerusteenOsaViite> findViitteet(Long perusteId, Long viiteId) {
         PerusteenOsaViite viite = findViite(perusteId, viiteId);

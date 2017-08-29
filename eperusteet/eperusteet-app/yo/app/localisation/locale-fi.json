@@ -668,6 +668,7 @@
     "jonossa": "Luonti on jonossa",
 
     "voimaantulo-pvm": "Voimaantulo",
+    "voimassaolo-alkamispvm": "Voimassaolon alkaminen",
     "voimassaolo-paattymispvm": "Voimassaolon päättyminen",
     "anna-voimaantulo-pvm": "Anna voimaantulopäivämäärä",
     "anna-voimaantulo-loppu-pvm": "Anna voimassaolon päättymispäivämäärä",
@@ -1138,14 +1139,19 @@
     "kurssi-osa-arviointi": "Arviointi",
     "ohje-tutkinnon-osan-tuonti": "Vain julkaistuista ja esikatselussa olevista perusteista voi tuoda tutkinnon osia.",
 
+    "projekti-opas": "Projektin tiedot",
+    "projekti-opastyoryhma": "Opastyöryhmä",
+    "oppaan-kielet": "Oppaan kielet",
+    "luo-pdf-dokumentti-oppaasta": "Luo dokumentti oppaasta",
     "oppaat": "Oppaat",
     "uusi-opas": "Uusi opas",
     "ohje-oppaat": "",
+    "luo-uusi-opas": "Luo uusi opas",
+    "etsi-oppaista": "Etsi oppaista",
+    "luo-opas": "Luo opas",
     "oppaan-nimi-label": "Oppaan nimi",
     "anna-oppaan-nimi-placeholder": "Anna oppaan nimi",
     "oppaan-oid-label": "Opastyöryhmä",
     "luonti-opas-nimi-ohje": "",
-    "luo-opas-nappi": "Luo opas",
-
-    "asd": ""
+    "luo-opas-nappi": "Luo opas"
 }

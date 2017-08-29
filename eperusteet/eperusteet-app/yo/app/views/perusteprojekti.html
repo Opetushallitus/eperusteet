@@ -11,9 +11,9 @@
                              projekti-id="projekti.id"
                              korvattavat-diaarinumerot="peruste.korvattavatDiaarinumerot"></statusbadge>
                 <h2>{{ projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
-                <table>
+                <table ng-hide="isOpas">
                     <tr>
-                        <th>{{'projekti-header-koulutustyyppi'| kaanna}}:</th>
+                        <th>{{ 'projekti-header-koulutustyyppi' | kaanna }}:</th>
                         <td>{{peruste.koulutustyyppi|| 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}
                         <td>
                     </tr>
@@ -46,12 +46,12 @@
                 </li>
                 <li>
                     <a ui-sref="root.perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
-                       ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="'projekti-peruste'"
+                       ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="$$kaannokset['projekti-peruste']"
                        oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'luku' }"></a>
                 </li>
                 <li>
-                    <a ui-sref="root.perusteprojekti.projektiryhma({perusteProjektiId: projekti.id})"
-                       ui-sref-active="headernavi-active" icon-role="user" kaanna="'projekti-projektiryhma'"></a>
+                    <a ui-sref="root.perusteprojekti.projektiryhma({ perusteProjektiId: projekti.id })"
+                       ui-sref-active="headernavi-active" icon-role="user" kaanna="$$kaannokset['projekti-projektiryhma']"></a>
                 </li>
             </ul>
         </div>

@@ -266,48 +266,62 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     Palauttaa suoritustavan mukaisen sisällön.
     */
     public PerusteenOsaViite getSisalto(Suoritustapakoodi suoritustapakoodi) {
-        switch (suoritustapakoodi) {
-            case ESIOPETUS:
+        if (this.tyyppi == PerusteTyyppi.OPAS) {
+            return this.getOppaanSisalto().getSisalto();
+        }
+
+        KoulutusTyyppi kt = KoulutusTyyppi.of(this.koulutustyyppi);
+        switch (kt) {
+            // Yksinkertaiset perusteet
             case LISAOPETUS:
+            case ESIOPETUS:
             case VARHAISKASVATUS:
+            case PERUSOPETUSVALMISTAVA:
                 EsiopetuksenPerusteenSisalto esiopetusSisalto = this.getEsiopetuksenPerusteenSisalto();
                 if (esiopetusSisalto != null) {
                     return esiopetusSisalto.getSisalto();
                 }
                 break;
+
+            // Perusopetuksen rakenteella
             case PERUSOPETUS:
                 PerusopetuksenPerusteenSisalto poSisalto = this.getPerusopetuksenPerusteenSisalto();
                 if (poSisalto != null) {
                     return poSisalto.getSisalto();
                 }
                 break;
-            case AIPE:
+
+            // AIPE-rakenteella
+            case AIKUISTENPERUSOPETUS:
                 AIPEOpetuksenSisalto aipeSisalto = this.getAipeOpetuksenPerusteenSisalto();
                 if (aipeSisalto != null) {
                     return aipeSisalto.getSisalto();
                 }
                 break;
+
+            // Lukiorakenteella
             case LUKIOKOULUTUS:
+            case LUKIOVALMISTAVAKOULUTUS:
+            case AIKUISTENLUKIOKOULUTUS:
                 LukiokoulutuksenPerusteenSisalto lukioSisalto = this.getLukiokoulutuksenPerusteenSisalto();
                 if (lukioSisalto != null) {
                     return lukioSisalto.getSisalto();
                 }
                 break;
-            case OPAS:
-                OpasSisalto opasSisalto = this.getOppaanSisalto();
-                if (opasSisalto != null) {
-                    return opasSisalto.getSisalto();
-                }
-                break;
-            case REFORMI:
-            case OPS:
-            case NAYTTO:
+
+            // Ammatillisella rakenteella
+            case TELMA:
+            case VALMA:
+            case PERUSTUTKINTO:
+            case AMMATTITUTKINTO:
+            case ERIKOISAMMATTITUTKINTO:
                 // Ammatilliset
-                for(Suoritustapa suoritustapa : this.getSuoritustavat()) {
+                for (Suoritustapa suoritustapa : this.getSuoritustavat()) {
                     if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
                         return suoritustapa.getSisalto();
                     }
                 }
+                break;
         }
         return null;
     }
@@ -363,6 +377,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         if  (lukiokoulutuksenPerusteenSisalto != null
                 && lukiokoulutuksenPerusteenSisalto.containsViite(viite)) {
             return lukiokoulutuksenPerusteenSisalto.containsViite(viite);
+        }
+
+        if  (this.oppaanSisalto != null
+                && this.oppaanSisalto.containsViite(viite)) {
+            return this.oppaanSisalto.containsViite(viite);
         }
 
         throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");

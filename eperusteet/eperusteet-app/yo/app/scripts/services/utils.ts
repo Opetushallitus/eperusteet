@@ -141,7 +141,7 @@ angular.module('eperusteApp')
   });
 
 
-module Lokalisointi {
+namespace Lokalisointi {
     export interface Lokalisoitu {
         fi?: string;
         sv?: string;
@@ -161,7 +161,7 @@ module Lokalisointi {
     }
 
     function join(a:Lokalisoitu, b:Lokalisoitu) {
-        return <Lokalisoitu>{
+        return <Lokalisoitu> {
             fi: joinString(a, b, 'fi'),
             sv: joinString(a, b, 'sv'),
             en: joinString(a, b, 'en')
@@ -176,17 +176,15 @@ module Lokalisointi {
         };
     }
 
-    export function concat(...a:(Lokalisoitu | string)[]):Lokalisoitu {
+    export function concat(...a: (Lokalisoitu | string)[]):Lokalisoitu {
         if (a.length == 0) {
             return forAll(null);
         }
-        var j:Lokalisoitu = a[0];
-        for (var i = 1; i < a.length; ++i) {
-            if (a[i]) {
-                j = join(j, _.isObject(a[i]) ? a[i] : forAll(<string>a[i]));
-            }
-        }
-        return j;
+        return _.reduce(a, (acc, next) => {
+            return join(acc, typeof next === "string"
+                ? forAll(next)
+                : next);
+        }, forAll(null));
     }
 }
 

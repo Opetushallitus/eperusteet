@@ -28,5 +28,4 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class OpasLuontiDto extends OpasDto {
-    private String ryhmaOid;
 }

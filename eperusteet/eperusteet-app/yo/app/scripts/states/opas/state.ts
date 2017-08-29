@@ -88,7 +88,6 @@ angular
           $scope.tallennaOpas = async opas => {
             try {
               const response = await oppaat.customPOST(opas);
-              console.log(response);
             } catch (ex) {
               Notifikaatiot.varoitus(ex);
             }

@@ -1,8 +1,7 @@
 div
   .uusi-projekti-content
     h1(ng-bind="'luo-uusi-opas' | kaanna")
-    pre(ng-bind="opas | json")
-    p(kaanna="'tahdella-pakolliset'")
+    // p(kaanna="'tahdella-pakolliset'")
     .action-buttons
       button.floater.btn.btn-default(ng-click='muokkaa()', icon-role='edit', kaanna="'muokkaa'", oikeustarkastelu="{ target: 'perusteprojekti', permission: 'muokkaus' }")
     div.form-horizontal.projekti-form(ng-form="opasprojektiForm")
@@ -18,7 +17,7 @@ div
                 input.form-control(ng-hide='$$ryhmaNimi', ng-model='opas.ryhmaOid', disabled)
                 span.input-group-btn
                   button.btn.btn-default(ng-click='haeRyhma()', kaanna="'hae-ryhma'")
-          formfield(label='diaarinumero-label', model='opas', model-var='diaarinumero', form='perustiedotForm', name='diaarinumero', required, placeholder='anna-diaarinumero-placeholder', max='255', type='diaari')
+          // formfield(label='diaarinumero-label', model='opas', model-var='diaarinumero', form='perustiedotForm', name='diaarinumero', required, placeholder='anna-diaarinumero-placeholder', max='255', type='diaari')
             ohje(teksti='luonti-diaarinumero-ohje')
       .projekti-form-buttons
         button#cancel.btn(ui-sref='root.admin.oppaat', kaanna="'peruuta'" style="margin-right: 5px")
