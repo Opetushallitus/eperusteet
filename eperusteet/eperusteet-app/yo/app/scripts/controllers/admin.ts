@@ -74,10 +74,12 @@ angular.module('eperusteApp')
         $scope.jarjestysTapa = 'nimi';
         $scope.jarjestysOrder = false;
         $scope.tilaRajain = null;
+        $scope.koulutustyyppiRajain = null;
         $scope.itemsPerPage = 10;
         $scope.nykyinen = 1;
         $scope.rajaus = "";
         $scope.tilat = _.keys(ProjektiTila).map(t => ProjektiTila[t]);
+        $scope.koulutustyypit = YleinenData.koulutustyypit;
 
         async function updateSearch() {
             let tila;
@@ -89,12 +91,14 @@ angular.module('eperusteApp')
                     .map(tila => tila.toUpperCase())
                     .value();
             }
-            // Todo: jarjestysTapa ja jarjestysOrder pitäisi toteuttaa hakuun
             const perusteprojektit = await Api.one("perusteprojektit/perusteHaku").get({
                 nimi: $scope.rajaus,
                 tila: tila,
+                koulutustyyppi: $scope.koulutustyyppiRajain,
                 sivu: $scope.nykyinen - 1,
                 sivukoko: $scope.itemsPerPage,
+                jarjestysTapa: $scope.jarjestysTapa,
+                jarjestysOrder: $scope.jarjestysOrder
             });
             $scope.$apply(() => {
                 $scope.perusteprojektit = _.map(perusteprojektit.data, (pp) => {
@@ -106,6 +110,7 @@ angular.module('eperusteApp')
                 });
                 $scope.nykyinen = perusteprojektit.sivu + 1;
                 $scope.kokonaismaara = perusteprojektit.kokonaismäärä;
+                console.log($scope.nykyinen, $scope.kokonaismaara);
             });
         }
 
@@ -134,6 +139,7 @@ angular.module('eperusteApp')
                 $scope.jarjestysOrder = false;
                 $scope.jarjestysTapa = tyyppi;
             }
+            updateSearch();
         };
 
         $scope.palauta = (pp) => {
