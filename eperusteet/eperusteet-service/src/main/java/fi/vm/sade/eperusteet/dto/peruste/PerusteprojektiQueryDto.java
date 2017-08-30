@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,6 +35,9 @@ public class PerusteprojektiQueryDto {
     private int sivukoko = 25;
     private String nimi;
     private Set<ProjektiTila> tila;
+    private List<String> koulutustyyppi;
+    private String jarjestysTapa;
+    private Boolean jarjestysOrder;
 
     public void setTila(ProjektiTila tila) {
         this.tila = new HashSet<>();
