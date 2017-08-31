@@ -52,9 +52,12 @@
                                                class="muokkausnappi action-link" icon-role="edit"></a>
                                         </span>
                                     </uib-accordion-heading>
+
                                     <div ng-show="arvioinninkohde === originalKohde">
-                                        <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" slocalized
-                                                placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}">
+                                        <input class="form-control kohdeotsikko"
+                                               ng-model="editableKohde.otsikko"
+                                               slocalized
+                                               placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}">
                                         <div class="muokkaus-napit pull-right" style="margin-top: -4px;">
                                             <button class="btn btn-default btn-xs" ng-click="kohde.peruMuokkaus()" kaanna>peru</button>
                                             <button class="btn btn-primary btn-xs" ng-click="kohde.poistuMuokkauksesta(kohdealue.arvioinninKohteet, $index)" kaanna="'ok'"></button>
@@ -70,7 +73,9 @@
                                     </div>
 
                                     <table>
-                                        <tr ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'" ng-class-even="'ei-raitaa'">
+                                        <tr ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot"
+                                            ng-class-odd="'raita'"
+                                            ng-class-even="'ei-raitaa'">
                                             <td class="otsikko" ng-bind="taso.otsikko | kaanna"></td>
                                             <td>
                                                 <table ng-if="arvioinninkohde === originalKohde"
@@ -115,7 +120,47 @@
                                             </td>
                                         </tr>
                                     </table>
-                                </div><!-- uib-accordion-group-->
+
+                                    <!-- Arviointiasteikon muuttaminen -->
+                                    <div class="panel panel-default muokkaus-lisays" ng-if="arvioinninkohde === originalKohde">
+                                        <div class="panel-body">
+                                            <div ng-show="editableKohde.$editArviointiasteikko">
+                                                <h4 kaanna="'arviointi-asteikon-valinta'"></h4>
+                                                <label ng-repeat="arviointiasteikko in arviointiasteikot">
+                                                    <input type="radio"
+                                                           ng-model="editableKohde.$uusiArviointiAsteikko"
+                                                           ng-value="arviointiasteikko"
+                                                           name="asteikonvalinta">
+                                                    <span ng-repeat="osaamistaso in arviointiasteikko.osaamistasot">
+                                                        {{osaamistaso.otsikko | kaanna}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? '&nbsp;/&nbsp;': ''}}
+                                                    </span>
+                                                </label>
+                                                <div class="muokkaus-napit">
+                                                    <button class="btn btn-default btn-xs"
+                                                            ng-click="kohde.cancelEditingArviointiasteikko(arvioinninkohde)"
+                                                            kaanna="'peru'">
+                                                    </button>
+                                                    <button class="btn btn-primary btn-xs"
+                                                            ng-disabled="!editableKohde.$uusiArviointiAsteikko"
+                                                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"
+                                                            ng-click="kohde.cahngeArviointiasteikko(arvioinninkohde)"
+                                                            kaanna="'vahvista'">
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <button type="button"
+                                                    class="btn btn-default btn-xs"
+                                                    ng-show="!editableKohde.$editArviointiasteikko"
+                                                    ng-click="kohde.editArviointiasteikko(arvioinninkohde)"
+                                                    icon-role="edit"
+                                                    kaanna="'vaihda-arviointiasteikko'"
+                                                    oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }">
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- uib-accordion-group-->
                             </div>
                         </uib-accordion>
 
