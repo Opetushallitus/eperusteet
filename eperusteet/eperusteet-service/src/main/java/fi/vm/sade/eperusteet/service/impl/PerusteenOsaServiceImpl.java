@@ -145,6 +145,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
+        if (current != null && current.getTila() == PerusteTila.POISTETTU) {
+            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+        }
+
         perusteenOsaDto.setTila(current.getTila());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
 
@@ -234,6 +238,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
+
+        if (tutkinnonOsa != null && tutkinnonOsa.getTila() == PerusteTila.POISTETTU) {
+            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+        }
+
         OsaAlue osaAlue;
         if (osaAlueDto != null) {
             osaAlue = mapper.map(osaAlueDto, OsaAlue.class);
@@ -399,6 +408,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
         }
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
+
+        if (tutkinnonOsa != null && tutkinnonOsa.getTila() == PerusteTila.POISTETTU) {
+            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+        }
+
         tutkinnonOsa.getOsaAlueet().remove(osaAlue);
         osaAlueRepository.delete(osaAlue);
     }
@@ -442,6 +456,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public void removeOsaamistavoite(Long id, Long osaAlueId, Long osaamistavoiteId) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
+        PerusteenOsa current = perusteenOsaRepo.findOne(id);
+        if (current != null && current.getTila() == PerusteTila.POISTETTU) {
+            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+        }
+
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
             throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
@@ -458,6 +477,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional(readOnly = false)
     public OsaamistavoiteLaajaDto updateOsaamistavoite(Long id, Long osaAlueId, Long osaamistavoiteId, OsaamistavoiteLaajaDto osaamistavoite) {
         assertExists(id);
+        PerusteenOsa current = perusteenOsaRepo.findOne(id);
+        if (current != null && current.getTila() == PerusteTila.POISTETTU) {
+            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+        }
+
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
@@ -476,6 +500,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     public void delete(final Long id) {
         assertExists(id);
+        PerusteenOsa current = perusteenOsaRepo.findOne(id);
+        if (current != null && current.getTila() == PerusteTila.POISTETTU) {
+            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+        }
+
         lockManager.lock(id);
         try {
             List<KommenttiDto> allByPerusteenOsa = kommenttiService.getAllByPerusteenOsa(id);
