@@ -132,12 +132,16 @@ angular.module("eperusteApp")
             if (_.indexOf($scope.editablePeruste.korvattavatDiaarinumerot, uusiKorvattavaDiaari) !== -1) {
                 Notifikaatiot.varoitus("diaari-jo-listalla");
             }
-            if (uusiKorvattavaDiaari !== $scope.editablePeruste.diaarinumero) {
+            else if (!YleinenData.isDiaariValid(uusiKorvattavaDiaari)) {
+                Notifikaatiot.varoitus("diaarinumero-ei-validi");
+            }
+            else if (uusiKorvattavaDiaari === $scope.editablePeruste.diaarinumero) {
+                Notifikaatiot.varoitus("oma-diaarinumero");
+            }
+            else {
                 $scope.editablePeruste.korvattavatDiaarinumerot.push(uusiKorvattavaDiaari);
                 noudaDiaarilleNimi(uusiKorvattavaDiaari);
                 $scope.uusiKorvattavaDiaari = "";
-            } else {
-                Notifikaatiot.varoitus("oma-diaarinumero");
             }
         };
 
