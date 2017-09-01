@@ -48,6 +48,7 @@ public class DokumenttiController {
     @Autowired
     PerusteRepository perusteRepository;
 
+
     @Autowired
     DokumenttiService service;
 
@@ -60,7 +61,7 @@ public class DokumenttiController {
             @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi,
             @RequestParam(value = "version", defaultValue = "uusi") final String version
     ) throws DokumenttiException {
-        LogMessage.builder(perusteId, DOKUMENTTI, GENEROI).build().log();
+        LogMessage.builder(perusteId, DOKUMENTTI, GENEROI).log();
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         final DokumenttiDto createDtoFor = service.createDtoFor(

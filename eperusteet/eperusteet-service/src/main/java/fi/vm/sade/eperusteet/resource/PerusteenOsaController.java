@@ -128,7 +128,7 @@ public class PerusteenOsaController {
             @PathVariable("versioId") final Integer versioId) {
         return audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, PALAUTUS)
                 .palautus(id, versioId.longValue())
-                .addTarget("tutkinnonosaId", id), (Void) -> {
+                .add("tutkinnonosaId", id), (Void) -> {
             PerusteenOsaDto.Laaja t = service.revertToVersio(id, versioId);
             return new ResponseEntity<>(t, HttpStatus.OK);
         });
@@ -164,7 +164,7 @@ public class PerusteenOsaController {
             @PathVariable("id") final Long id,
             @RequestBody PerusteenOsaUpdateDto dto) {
         return audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, MUOKKAUS)
-                .addTarget("tutkinnonosaId", id), (Void) -> {
+                .add("tutkinnonosaId", id), (Void) -> {
             return service.update(dto);
         });
     }
@@ -181,7 +181,7 @@ public class PerusteenOsaController {
     public OsaAlueLaajaDto addTutkinnonOsaOsaAlue(
             @PathVariable("id") final Long id,
             @RequestBody(required = false) OsaAlueLaajaDto osaAlueDto) {
-        return audit.withAudit(LogMessage.builder(null, OSAALUE, LISAYS).addTarget("tutkinnonosaId", id), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, OSAALUE, LISAYS).add("tutkinnonosaId", id), (Void) -> {
             return service.addTutkinnonOsaOsaAlue(id, osaAlueDto);
         });
     }
@@ -214,7 +214,7 @@ public class PerusteenOsaController {
             @PathVariable("viiteId") final Long viiteId,
             @PathVariable("osaAlueId") final Long osaAlueId,
             @RequestBody OsaAlueKokonaanDto osaAlue) {
-        return audit.withAudit(LogMessage.builder(null, OSAALUE, MUOKKAUS).addTarget("tutkinnonosaId", viiteId), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, OSAALUE, MUOKKAUS).add("tutkinnonosaId", viiteId), (Void) -> {
             return new ResponseEntity<>(service.updateTutkinnonOsaOsaAlue(viiteId, osaAlueId, osaAlue), HttpStatus.OK);
         });
     }
@@ -247,7 +247,7 @@ public class PerusteenOsaController {
     public void removeOsaAlue(
         @PathVariable("id") final Long id,
         @PathVariable("osaAlueId") final Long osaAlueId) {
-        audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, POISTO).addTarget("tutkinnonosaId", id), (Void) -> {
+        audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, POISTO).add("tutkinnonosaId", id), (Void) -> {
             service.removeOsaAlue(id, osaAlueId);
             return null;
         });
@@ -267,7 +267,7 @@ public class PerusteenOsaController {
             @PathVariable("id") final Long id,
             @PathVariable("osaAlueId") final Long osaAlueId,
             @RequestBody(required = false) OsaamistavoiteLaajaDto osaamistavoiteDto) {
-        return audit.withAudit(LogMessage.builder(null, OSAAMISTAVOITE, LISAYS).addTarget("tutkinnonosaId", id), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, OSAAMISTAVOITE, LISAYS).add("tutkinnonosaId", id), (Void) -> {
             return service.addOsaamistavoite(id, osaAlueId, osaamistavoiteDto);
         });
     }
@@ -287,7 +287,7 @@ public class PerusteenOsaController {
             @PathVariable("osaAlueId") final Long osaAlueId,
             @PathVariable("osaamistavoiteId") final Long osaamistavoiteId,
             @RequestBody OsaamistavoiteLaajaDto osaamistavoite) {
-        return audit.withAudit(LogMessage.builder(null, OSAAMISTAVOITE, MUOKKAUS).addTarget("tutkinnonosaId", id), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, OSAAMISTAVOITE, MUOKKAUS).add("tutkinnonosaId", id), (Void) -> {
             osaamistavoite.setId(osaamistavoiteId);
             return service.updateOsaamistavoite(id, osaAlueId, osaamistavoiteId, osaamistavoite);
         });
@@ -319,7 +319,7 @@ public class PerusteenOsaController {
             @PathVariable("id") final Long id,
             @PathVariable("osaAlueId") final Long osaAlueId,
             @PathVariable("osaamistavoiteId") final Long osaamistavoiteId) {
-        audit.withAudit(LogMessage.builder(null, OSAAMISTAVOITE, POISTO).addTarget("tutkinnonosaId", id), (Void) -> {
+        audit.withAudit(LogMessage.builder(null, OSAAMISTAVOITE, POISTO).add("tutkinnonosaId", id), (Void) -> {
             service.removeOsaamistavoite(id, osaAlueId, osaamistavoiteId);
             return null;
         });
@@ -341,7 +341,7 @@ public class PerusteenOsaController {
             @PathVariable("id") final Long id,
             @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
             HttpServletResponse response) {
-        return audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, LUKITUS).addTarget("tutkinnonosaId", id), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, LUKITUS).add("tutkinnonosaId", id), (Void) -> {
             LukkoDto lock = service.lock(id);
             response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
             return new ResponseEntity<>(lock, HttpStatus.OK);
@@ -351,7 +351,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/lukko", method = DELETE)
     @ResponseBody
     public void unlock(@PathVariable("id") final Long id) {
-        audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, LUKITUKSENVAPAUTUS).addTarget("tutkinnonosaId", id), (Void) -> {
+        audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, LUKITUKSENVAPAUTUS).add("tutkinnonosaId", id), (Void) -> {
             service.unlock(id);
             return null;
         });
@@ -374,7 +374,7 @@ public class PerusteenOsaController {
             @PathVariable("viiteId") final Long viiteId,
             @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
             HttpServletResponse response) {
-        return audit.withAudit(LogMessage.builder(null, TUTKINNONOSAVIITE, LUKITUS).addTarget("tutkinnonosaId", viiteId), (Void) -> {
+        return audit.withAudit(LogMessage.builder(null, TUTKINNONOSAVIITE, LUKITUS).add("tutkinnonosaId", viiteId), (Void) -> {
             LukkoDto lock = tutkinnonOsaViiteService.lockPerusteenOsa(viiteId);
             response.addHeader("ETag", String.valueOf(tutkinnonOsaViiteService.getLatestRevision(viiteId)));
             return new ResponseEntity<>(lock, HttpStatus.OK);
@@ -384,7 +384,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/tutkinnonosaviite/{viiteId}/lukko", method = DELETE)
     @ResponseBody
     public void unlockByTutkinnonOsaViite(@PathVariable("viiteId") final Long viiteId) {
-        audit.withAudit(LogMessage.builder(null, TUTKINNONOSAVIITE, LUKITUKSENVAPAUTUS).addTarget("tutkinnonosaId", viiteId), (Void) -> {
+        audit.withAudit(LogMessage.builder(null, TUTKINNONOSAVIITE, LUKITUKSENVAPAUTUS).add("tutkinnonosaId", viiteId), (Void) -> {
             tutkinnonOsaViiteService.unlockPerusteenOsa(viiteId);
             return null;
         });
@@ -395,7 +395,7 @@ public class PerusteenOsaController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void delete(@PathVariable final Long id) {
-        audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, POISTO).addTarget("tutkinnonosaId", id), (Void) -> {
+        audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, POISTO).add("tutkinnonosaId", id), (Void) -> {
             service.delete(id);
             return null;
         });

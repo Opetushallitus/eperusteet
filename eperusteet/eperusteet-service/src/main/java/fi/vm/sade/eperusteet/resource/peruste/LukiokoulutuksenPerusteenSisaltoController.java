@@ -178,8 +178,8 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("id") Long id,
             @PathVariable("version") Integer version) {
         return audit.withAudit(LogMessage.builder(perusteId, KURSSI, PALAUTUS)
-                .addTarget("kurssi", id.toString())
-                .addTarget("versio", version.toString()), (Void) -> {
+                .add("kurssi", id.toString())
+                .add("versio", version.toString()), (Void) -> {
             return kurssit.revertLukiokurssiTarkasteleDtoByIdAndVersion(perusteId, id, version);
         });
     }
