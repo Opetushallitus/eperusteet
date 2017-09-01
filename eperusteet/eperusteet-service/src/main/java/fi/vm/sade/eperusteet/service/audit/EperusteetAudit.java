@@ -16,19 +16,15 @@
 
 package fi.vm.sade.eperusteet.service.audit;
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.auditlog.ApplicationType;
 import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.eperusteet.service.audit.LogMessage.LogMessageBuilder;
 import fi.vm.sade.eperusteet.service.revision.RevisionMetaService;
 import java.util.function.Function;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
 
 /**
  *
@@ -39,25 +35,7 @@ public class EperusteetAudit {
     @Autowired
     private RevisionMetaService revisionMetaService;
 
-    @Autowired
-    private HttpServletRequest request;
-
-    JsonNodeFactory nodeFactory = new JsonNodeFactory(false);
-
-    public ObjectNode getLoggableUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String oid = auth != null ? auth.getName() : "";
-        String ip = request.getHeader("X-Forwarded-For");
-        String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
-        String userAgent = request.getHeader("User-Agent");
-        return nodeFactory.objectNode()
-                .put("oid", oid)
-                .put("ip", ip)
-//                .put("session", sessionId) TODO: ?
-                .put("userAgent", userAgent);
-    }
-
-    public static final Audit AUDIT = new Audit("eperusteet-service", ApplicationType.BACKEND);
+    public static final Audit AUDIT = new Audit("eperusteet-service", ApplicationType.VIRKAILIJA);
 
     public static String username() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -69,11 +47,11 @@ public class EperusteetAudit {
     public <T> T withAudit(LogMessageBuilder audit, Function<Void, T> fn) {
         audit.beforeRevision(revisionMetaService.getCurrentRevision());
         T result = fn.apply(null);
-        audit.afterRevision(revisionMetaService.getCurrentRevision()).build(this).log();
+        audit.afterRevision(revisionMetaService.getCurrentRevision()).log();
         return result;
     }
 
     public void withAudit(LogMessageBuilder audit) {
-        audit.afterRevision(revisionMetaService.getCurrentRevision()).build(this).log();
+        audit.afterRevision(revisionMetaService.getCurrentRevision()).log();
     }
 }
