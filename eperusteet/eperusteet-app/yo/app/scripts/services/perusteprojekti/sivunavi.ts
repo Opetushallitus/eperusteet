@@ -173,7 +173,7 @@ angular.module('eperusteApp')
 
   function ylMapper(targetItems, osa, key, level, link?, parent?) {
     level = level || 0;
-    let nimi:Lokalisoitu = _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi;
+    let nimi: Lokalisoitu = _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi;
     if (perusteenTyyppi === 'LU'
         && key === 'oppiaineet_oppimaarat'
         && (osa.lokalisoitukoodi || osa.koodiArvo)) {

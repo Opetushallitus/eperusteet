@@ -1,5 +1,5 @@
 <!-- formfield.html -->
-<div class="form-group">
+<div class="form-group" ng-model-options="{ allowInvalid: true }">
     <label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}<span ng-transclude></span></label>
     <div class="col-sm-9" ng-if="!isDate">
         <numberinput luokka="form-control" ng-if="isNumber" type="{{type}}" model="input.model" min="{{min}}"
@@ -11,7 +11,7 @@
                type="{{type}}" placeholder="{{placeholder | kaanna}}" ng-required="!!postfix">
         <p class="alert alert-warning" ng-show="form.diaari.$error.jyraavanhan" kaanna>diaarinumerolla-jyraa-vanhan</p>
         <input ng-if="isMultiText && type === 'text'" id="{{inputElId}}" class="form-control" ng-model="input.model"
-               type="{{type}}" slocalized ng-required="!!postfix">
+               type="{{type}}" slocalized ng-required="!!postfix" ng-trim="false">
         <textarea id="{{inputElId}}" ng-if="isMultiText && type === 'textarea'" class="form-control msd-elastic"
                   ng-model="input.model" slocalized ng-required="!!postfix"></textarea>
         <select id="{{inputElId}}" ng-if="options && !flatOptions" class="form-control" ng-model="input.model"

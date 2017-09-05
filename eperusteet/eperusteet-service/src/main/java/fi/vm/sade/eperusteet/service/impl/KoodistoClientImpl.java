@@ -16,22 +16,23 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -41,12 +42,15 @@ import java.util.stream.Stream;
 @Profile("default")
 public class KoodistoClientImpl implements KoodistoClient {
 
-    @Value("${koodisto.service.url:https://virkailija.opintopolku.fi/koodisto-service}")
+    // FIXME
+    @Value("${koodisto.service.url:https://testi.virkailija.opintopolku.fi/koodisto-service}")
     private String koodistoServiceUrl;
 
     private static final String KOODISTO_API = "/rest/json/";
     private static final String YLARELAATIO = "relaatio/sisaltyy-ylakoodit/";
     private static final String ALARELAATIO = "relaatio/sisaltyy-alakoodit/";
+    private static final String CODEELEMENT = "/rest/codeelement";
+    private static final String LATEST = CODEELEMENT + "/latest/";
 
     @Autowired
     @Koodisto
@@ -70,6 +74,9 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     @Cacheable("koodistokoodit")
     public KoodistoKoodiDto get(String koodistoUri, String koodiUri, Long versio) {
+        if (koodistoUri == null || koodiUri == null) {
+            return null;
+        }
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + koodistoUri + "/koodi/" + koodiUri + (versio != null ? "?koodistoVersio=" + versio.toString() : "");
         KoodistoKoodiDto re = restTemplate.getForObject(url, KoodistoKoodiDto.class);
@@ -84,8 +91,8 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     private Map<String, String> metadataToLocalized(KoodistoKoodiDto koodistoKoodi) {
-        return Arrays.asList(koodistoKoodi.getMetadata()).stream()
-                .collect(Collectors.toMap(k -> k.getKieli().toLowerCase(), k -> k.getNimi()));
+        return Arrays.stream(koodistoKoodi.getMetadata())
+                .collect(Collectors.toMap(k -> k.getKieli().toLowerCase(), KoodistoMetadataDto::getNimi));
     }
 
     @Override
@@ -96,6 +103,22 @@ public class KoodistoClientImpl implements KoodistoClient {
         KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
         return koodistoDtot;
+    }
+
+    @Override
+    public KoodistoKoodiLaajaDto getAllByVersio(String koodi, String versio) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = koodistoServiceUrl + CODEELEMENT + "/" + koodi + "/" + versio;
+        KoodistoKoodiLaajaDto koodiVersio = restTemplate.getForObject(url, KoodistoKoodiLaajaDto.class);
+        return koodiVersio;
+    }
+
+    @Override
+    public KoodistoKoodiDto getLatest(String koodi) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = koodistoServiceUrl + LATEST + koodi;
+        KoodistoKoodiDto result = restTemplate.getForObject(url, KoodistoKoodiDto.class);
+        return result;
     }
 
     @Override
@@ -111,8 +134,10 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public void addNimiAndUri(KoodiDto koodi) {
         KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri(), koodi.getVersio());
-        koodi.setArvo(koodistoKoodi.getKoodiArvo());
-        koodi.setNimi(metadataToLocalized(koodistoKoodi));
+        if (koodistoKoodi != null) {
+            koodi.setArvo(koodistoKoodi.getKoodiArvo());
+            koodi.setNimi(metadataToLocalized(koodistoKoodi));
+        }
     }
 
     @Override

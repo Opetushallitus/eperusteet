@@ -34,7 +34,7 @@ public enum Kieli {
 
     private final String koodi;
 
-    private Kieli(String koodi) {
+    Kieli(String koodi) {
         this.koodi = koodi;
     }
 

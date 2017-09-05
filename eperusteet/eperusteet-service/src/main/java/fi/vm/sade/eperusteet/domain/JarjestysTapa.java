@@ -13,25 +13,34 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.domain;
 
-package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import lombok.Getter;
-import lombok.Setter;
+public enum JarjestysTapa {
+    NIMI("nimi"),
+    TILA("tila"),
+    LUOTU("luotu"),
+    MUOKATTU("muokattu");
 
-/**
- *
- * @author jhyoty
- */
-@Getter
-@Setter
-public class RakenneOsaDto extends AbstractRakenneOsaDto {
-    private String erikoisuus;
-    private EntityReference tutkinnonOsaViite;
+    private final String tapa;
+
+    JarjestysTapa(String tapa) {
+        this.tapa = tapa;
+    }
 
     @Override
-    protected void foreach(final Visitor visitor, final int depth) {
-        visitor.visit(this, depth);
+    public String toString() {
+        return tapa;
+    }
+
+    @JsonCreator
+    public static JarjestysTapa of(String tapa) {
+        for (JarjestysTapa s : values()) {
+            if (s.tapa.equalsIgnoreCase(tapa)) {
+                return s;
+            }
+        }
+        throw new IllegalArgumentException(tapa + " ei ole kelvollinen järjestystapa");
     }
 }

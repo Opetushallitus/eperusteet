@@ -58,25 +58,7 @@ angular.module("eperusteApp")
             const arviointiasteikotP = Arviointiasteikot.list().$promise;
             const kvliite = await Perusteet.kvliite({perusteId: $scope.peruste.id}).$promise;
             const arviointiasteikot = await arviointiasteikotP;
-            kvliite.tasot = _.map(kvliite.tasot, taso => {
-                const result = {
-                    asteikko: undefined,
-                    taso: undefined
-                };
-                if (_.startsWith(taso, "isced")) {
-                    result.asteikko = "isced";
-                    result.taso = taso[_.size(taso) - 1];
-                }
-                else if (_.startsWith(taso, "eqf")) {
-                    result.asteikko = "eqf";
-                    result.taso = _.split(taso, "_")[1];
-                }
-                else if (_.startsWith(taso, "nqf")) {
-                    result.asteikko = "nqf";
-                    result.taso = _.split(taso, "_")[1];
-                }
-                return result;
-            });
+            kvliite.tasot = _.filter(kvliite.tasot, taso => taso.nimi);
             $scope.arviointiasteikot = arviointiasteikot;
             $scope.arviointiasteikotMap = _.indexBy(arviointiasteikot, "id");
             $scope.kvliite = kvliite;
@@ -150,12 +132,16 @@ angular.module("eperusteApp")
             if (_.indexOf($scope.editablePeruste.korvattavatDiaarinumerot, uusiKorvattavaDiaari) !== -1) {
                 Notifikaatiot.varoitus("diaari-jo-listalla");
             }
-            if (uusiKorvattavaDiaari !== $scope.editablePeruste.diaarinumero) {
+            else if (!YleinenData.isDiaariValid(uusiKorvattavaDiaari)) {
+                Notifikaatiot.varoitus("diaarinumero-ei-validi");
+            }
+            else if (uusiKorvattavaDiaari === $scope.editablePeruste.diaarinumero) {
+                Notifikaatiot.varoitus("oma-diaarinumero");
+            }
+            else {
                 $scope.editablePeruste.korvattavatDiaarinumerot.push(uusiKorvattavaDiaari);
                 noudaDiaarilleNimi(uusiKorvattavaDiaari);
                 $scope.uusiKorvattavaDiaari = "";
-            } else {
-                Notifikaatiot.varoitus("oma-diaarinumero");
             }
         };
 
@@ -350,12 +336,12 @@ angular.module("eperusteApp")
             if (!$scope.editablePeruste.voimassaoloLoppuu) {
                 delete $scope.editablePeruste.siirtymaPaattyy;
             }
-            Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, function(vastaus) {
-                $scope.peruste = vastaus;
+            Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, res => {
+                $scope.peruste = res;
                 PerusteProjektiService.update();
                 Notifikaatiot.onnistui("tallennettu");
-            }, function() {
-                Notifikaatiot.fataali("tallentaminen-epaonnistui");
+            }, err => {
+                Notifikaatiot.serverCb(err);
             });
         };
 

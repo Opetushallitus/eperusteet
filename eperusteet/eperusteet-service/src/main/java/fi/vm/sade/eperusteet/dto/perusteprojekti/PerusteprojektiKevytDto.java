@@ -21,7 +21,10 @@ import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
+
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,6 +40,8 @@ public class PerusteprojektiKevytDto implements Serializable  {
     private String koulutustyyppi;
     private PerusteTyyppi tyyppi;
     private Set<String> suoritustavat;
+    private Date luotu;
+    private PerusteVersionDto globalVersion;
 
     public PerusteprojektiKevytDto() {
     }

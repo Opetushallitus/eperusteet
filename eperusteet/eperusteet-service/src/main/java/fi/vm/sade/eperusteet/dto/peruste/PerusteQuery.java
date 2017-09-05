@@ -16,7 +16,10 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,13 +42,14 @@ public class PerusteQuery {
     private String kieli = "fi";
     private List<String> opintoala;
     private String suoritustapa;
-    private String tila;
+    private Set<String> tila;
     private String koulutuskoodi;
     private String perusteTyyppi;
     private String diaarinumero;
     private Long muokattu;
     private String jarjestys;
     private boolean tutkintonimikkeet = false;
+    private boolean tutkinnonosat = false;
     private boolean osaamisalat = false;
     private boolean koulutusvienti = false;
     private long nykyinenAika = new Date().getTime();
@@ -57,5 +61,14 @@ public class PerusteQuery {
 
     public List<String> getTyyppi() {
         return this.koulutustyyppi;
+    }
+
+    public void setTila(String tila) {
+        this.tila = new HashSet<>();
+        this.tila.add(tila);
+    }
+
+    public void setTila(Set<String> tila) {
+        this.tila = tila;
     }
 }

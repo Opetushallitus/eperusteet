@@ -97,8 +97,6 @@ angular.module('eperusteApp')
         $scope.tutke2osa.$editing.push(newAlue);
       },
       edit: function (alue, $event) {
-        stopEvent($event);
-        //FIXME remove reload
         $state.go('root.perusteprojekti.suoritustapa.' +
             ($scope.isKoulutuksenOsa ? 'koulutuksenosa' : 'tutkinnonosa') + '.osaalue',
             { osaAlueId: alue.id }, {reload: $scope.isKoulutuksenOsa});

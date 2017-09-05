@@ -301,9 +301,7 @@ angular.module('eperusteApp')
         $scope.lista = _([].concat(res[0].data)).sortBy('voimassaoloLoppuu')
             .reverse()
             .each(peruste => {
-                peruste.$url = $state.href('root.selaus.aikuisperusopetus', {
-                    perusteId: peruste.id
-                });
+                peruste.$url = YleinenData.getPerusteEsikatseluHost() + '/aipe/' + peruste.id + '/tiedot';
             })
             .value();
     }, Notifikaatiot.serverCb);

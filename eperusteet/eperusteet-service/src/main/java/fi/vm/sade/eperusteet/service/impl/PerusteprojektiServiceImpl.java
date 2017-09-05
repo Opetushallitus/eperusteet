@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
@@ -64,7 +65,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toMap;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
@@ -153,8 +153,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         ppk.setTyyppi(peruste.getTyyppi());
                         ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
                                 .map(Suoritustapa::getSuoritustapakoodi)
-                                .map(stk -> stk.toString())
+                                .map(Suoritustapakoodi::toString)
                                 .collect(Collectors.toSet()));
+                        if (peruste.getGlobalVersion() != null) {
+                            ppk.setGlobalVersion(mapper.map(peruste.getGlobalVersion(), PerusteVersionDto.class));
+                        }
                     }
                     return ppk;
                 })
@@ -174,11 +177,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 ppk.setTyyppi(peruste.getTyyppi());
                 ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
                         .map(Suoritustapa::getSuoritustapakoodi)
-                        .map(stk -> stk.toString())
+                        .map(Suoritustapakoodi::toString)
                         .collect(Collectors.toSet()));
+                if (peruste.getGlobalVersion() != null) {
+                    ppk.setGlobalVersion(mapper.map(peruste.getGlobalVersion(), PerusteVersionDto.class));
+                }
             }
             return ppk;
         });
+
         return result;
     }
 
@@ -1007,6 +1014,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
             setSisaltoTila(peruste, peruste.getEsiopetuksenPerusteenSisalto().getSisalto(), tila);
+        }
+
+        if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
+            setSisaltoTila(peruste, peruste.getLukiokoulutuksenPerusteenSisalto().getSisalto(), tila);
+        }
+
+        if (peruste.getAipeOpetuksenPerusteenSisalto() != null) {
+            setSisaltoTila(peruste, peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(), tila);
         }
 
         peruste.asetaTila(tila);

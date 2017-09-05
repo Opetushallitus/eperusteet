@@ -36,7 +36,7 @@ angular.module("eperusteApp")
             }
         });
     })
-    .service("Pdf", function(Dokumentti, SERVICE_LOC) {
+    .service("Pdf", function (Dokumentti, SERVICE_LOC) {
         function generoiPdf(perusteId, kieli, suoritustapa, version) {
             return Dokumentti.save({
                 perusteId: perusteId,
@@ -59,7 +59,6 @@ angular.module("eperusteApp")
         }
 
         function haeLinkki(tokenId) {
-            // dis like, ewwww
             return SERVICE_LOC + "/dokumentit/" + tokenId;
         }
 
@@ -193,20 +192,20 @@ angular.module("eperusteApp")
         }
 
         function startPolling(id) {
-            $scope.poller = $timeout(function() {
+            $scope.poller = $timeout(() => {
                 getStatus(id);
             }, 3000);
         }
 
-        $scope.$on("$destroy", function() {
+        $scope.$on("$destroy", () => {
             $timeout.cancel($scope.poller);
         });
 
-        $scope.generate = async function(kieli, versio = $scope.versiot.valittu) {
+        $scope.generate = async function (kieli, versio = $scope.versiot.valittu) {
             enableActions(false);
             $scope.tila = "jonossa";
             try {
-                const res = await Pdf.generoiPdf(perusteId, kieli, suoritustapa, versio)
+                const res = await Pdf.generoiPdf(perusteId, kieli, suoritustapa, versio);
                 if (res.id !== null) {
                     pdfToken = res.id;
                     startPolling(res.id);

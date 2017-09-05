@@ -39,6 +39,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -173,6 +174,24 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testDiaarinumeroValidi() {
+        assertFalse(perusteService.isDiaariValid("diaari"));
+        assertFalse(perusteService.isDiaariValid("1-234/567/8910, päivitetty"));
+        assertFalse(perusteService.isDiaariValid("oph-12345-1111"));
+        assertFalse(perusteService.isDiaariValid("1-234/567/8910"));
+        assertFalse(perusteService.isDiaariValid("OPH-12345-111"));
+        assertTrue(perusteService.isDiaariValid(""));
+        assertTrue(perusteService.isDiaariValid(null));
+        assertTrue(perusteService.isDiaariValid("234/567/8910"));
+        assertTrue(perusteService.isDiaariValid("OPH-1-1111"));
+        assertTrue(perusteService.isDiaariValid("OPH-12-1111"));
+        assertTrue(perusteService.isDiaariValid("OPH-123-1111"));
+        assertTrue(perusteService.isDiaariValid("OPH-1234-1111"));
+        assertTrue(perusteService.isDiaariValid("OPH-12345-1111"));
+        assertTrue(perusteService.isDiaariValid("OPH-12345-1134"));
+    }
+
+    @Test
     public void testAddTutkinnonRakenne() {
 
         TutkinnonOsaViiteDto v1 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
@@ -207,7 +226,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void testGetByDiaari() {
 
         Peruste p = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSTUTKINTO, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
-        p.setDiaarinumero(new Diaarinumero("123456"));
+        p.setDiaarinumero(new Diaarinumero(TestUtils.validiDiaarinumero()));
         perusteService.update(p.getId(), mapper.map(p, PerusteDto.class));
         p.asetaTila(PerusteTila.VALMIS);
 

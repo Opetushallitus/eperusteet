@@ -53,6 +53,7 @@ import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.EntityNotFoundException;
@@ -239,7 +240,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         // Haetaan perusteiden id:t mihin on liitetty osaamisalat tai tutkintonimikkeet
         if (pquery.getNimi() != null && pquery.isTutkintonimikkeet()) {
             koodistostaHaetut = Stream.concat(koodistostaHaetut, getPerusteetByUris(
-                    koodistoService.filterBy("tutkintonimikkeet", pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri), tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
+                    koodistoService.filterBy(
+                            "tutkintonimikkeet",
+                            pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri),
+                            tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
         }
 
         // Lisätään mahdolliset perusteet hakujoukkoon
@@ -533,7 +537,19 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    public boolean isDiaariValid(String diaarinumero) {
+        return diaarinumero == null
+                || "".equals(diaarinumero)
+                || Pattern.matches("^\\d{1,3}/\\d{3}/\\d{4}$", diaarinumero)
+                || Pattern.matches("^OPH-\\d{1,5}-\\d{4}$", diaarinumero);
+    }
+
+    @Override
     public PerusteDto update(Long perusteId, PerusteDto perusteDto) {
+        if (!isDiaariValid(perusteDto.getDiaarinumero())) {
+            throw new BusinessRuleViolationException("diaarinumero-ei-validi");
+        }
+
         Peruste current = perusteet.findOne(perusteId);
         if (current == null || current.getTila() == PerusteTila.POISTETTU) {
             throw new NotExistsException("Päivitettävää perustetta ei ole olemassa tai se on poistettu");
@@ -1344,7 +1360,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return koodi != null
                 && (koodi.startsWith("eqf_")
                 || koodi.startsWith("nqf_")
-                || koodi.startsWith("isced2011koulutusastetaso"));
+                || koodi.startsWith("isced2011koulutusastetaso1_"));
     }
 
     @Override
@@ -1405,17 +1421,41 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             kvliiteDto.setTutkinnonVirallinenAsema(pohjaLiiteDto.getTutkinnonVirallinenAsema());
         }
 
-        // TODO: Koulutuskoodin perusteella kansainvälisten koulutustasojen liittäminen
-        for (Koulutus koulutus : peruste.getKoulutukset()) {
-            String koulutuskoodiUri = koulutus.getKoulutuskoodiUri();
-            List<String> tasokoodit = koodistoService.getAlarelaatio(koulutuskoodiUri).stream()
-                    .map(relaatio -> relaatio.getKoodisto().getKoodistoUri())
-                    .filter(koodisto -> isTasoKoodi(koodisto))
-                    .collect(Collectors.toList());
-            kvliiteDto.setTasot(tasokoodit);
-        }
-
         kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
+
+        Set<String> tasokoodiFilter = new HashSet<>();
+        kvliiteDto.setTasot(peruste.getKoulutukset().stream()
+                .map(Koulutus::getKoulutuskoodiUri)
+                .map(koulutusKoodiUri -> koodistoService.getLatest(koulutusKoodiUri))
+                .map(latest -> koodistoService.getAllByVersio(latest.getKoodiUri(), latest.getVersio()))
+                .map(all -> Arrays.stream(all.getIncludesCodeElements()))
+                .flatMap(x -> x)
+                .filter(el -> isTasoKoodi(el.getCodeElementUri()))
+                .filter(el -> tasokoodiFilter.add(el.getCodeElementUri()))
+                .map(el -> {
+                    KVLiiteTasoDto result = new KVLiiteTasoDto();
+                    result.setCodeUri(el.getCodeElementUri());
+                    result.setCodeValue(el.getCodeElementValue());
+
+                    if (el.getCodeElementUri().startsWith("nqf_") || el.getCodeElementUri().startsWith("eqf_")) {
+                        result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
+                            .collect(Collectors.toMap(
+                                    lokaali -> lokaali.getKieli().toLowerCase(),
+                                    lokaali -> lokaali.getKuvaus() + " " + el.getCodeElementValue()))));
+                    }
+                    else if (el.getCodeElementUri().startsWith("isced2011")) { // ISCED
+                        result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
+                            .collect(Collectors.toMap(
+                                    lokaali -> lokaali.getKieli().toLowerCase(),
+                                    lokaali -> "ISCED " + el.getCodeElementValue()))));
+                    }
+                    else {
+                        result.setNimi(null);
+                    }
+                    return result;
+                })
+                .sorted((a, b) -> Integer.compare(a.getJarjestys(), b.getJarjestys()))
+                .collect(Collectors.toList()));
         return kvliiteDto;
     }
 
@@ -1436,5 +1476,4 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
-
 }

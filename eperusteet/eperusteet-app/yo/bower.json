@@ -21,7 +21,7 @@
     "angular-ui-sortable": "https://github.com/nkala/ui-sortable.git#v0.13.4x",
     "angular-ui-router": "0.2.13",
     "angular-local-storage": "0.6.0",
-    "ckeditor": "4.6.2",
+    "ckeditor": "4.7.0",
     "es5-shim": "2.3.0",
     "jquery": "1.11.0",
     "js-xlsx": "SheetJS/js-xlsx#0.7.11",

@@ -48,6 +48,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  *
  * @author teele1
@@ -63,6 +65,10 @@ public abstract class TestUtils {
     public static Koodi teeKoodi() {
         Koodi koodi = new Koodi();
         return koodi;
+    }
+
+    public static String validiDiaarinumero() {
+        return "OPH-" + (++uniikki).toString() + "-1234";
     }
 
     public static Arviointi teeArviointi(ArviointiAsteikko arviointiasteikko) {
@@ -108,7 +114,7 @@ public abstract class TestUtils {
     }
 
     static public RakenneOsa teeRakenneOsa(long id, Integer laajuus, Integer laajuusMax) {
-        assert(laajuus < laajuusMax);
+        assertTrue(laajuus < laajuusMax);
         RakenneOsa to = teeRakenneOsa(id, laajuus);
         to.getTutkinnonOsaViite().setLaajuusMaksimi(new BigDecimal(laajuusMax));
         return to;

@@ -36,6 +36,7 @@
     "paivita": "Päivitä",
     "peru": "Peruuta",
     "poista": "Poista",
+    "rajaa": "Rajaa",
     "rajaa-tuloksia": "Rajaa...",
     "ei-projekteja": "Sinulla ei ole käynnissä olevia perusteprojekteja.",
     "takaisin": "Takaisin",
@@ -339,6 +340,7 @@
     "haku-opintoala" : "Opintoala",
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
     "hae-koodistosta": "Hae koodistosta",
+    "tyhjenna-koodin-arvo": "Poista valinta",
 
     "rakenne-validointi-maara-laajuus-minimi": "Minimikoon kattavat osat eivät riitä kattamaan vaadittua minimilaajuutta",
     "rakenne-validointi-maara-laajuus-maksimi": "Maksimikoon kattavat osat eivät riitä kattamaan vaadittua maksimilaajuutta",
@@ -581,6 +583,7 @@
     "tutke2-osalta-puuttuu-osa-alue-koodi": "Tutkinnon osien osa-alueilta puuttuu koodi",
 
     "arviointi-kohdealueet": "Arvioinnin kohdealueet",
+    "vaihda-arviointiasteikko": "Vaihda arviointiasteikko",
 
     "keskustelu": "Keskustelu",
     "takaisin-tiedotteiden-hallintaan": "Takaisin tiedotteiden hallintaan",
@@ -630,6 +633,7 @@
     "excel-ei-kahta-samaa": "Tutkintokoodin täytyy olla uniikki",
     "valitse-nimi": "Valitse nimi",
     "valitse-diaarinumero": "Valitse diaarinumero",
+    "diaarinumero-ei-validi": "Diaarinumero ei ole validi. Diarinumeron pitää olla muotoa XXX/XXX/XXXX tai OPH-XXXXX-XXXX",
     "maarayksen-diaarinumero": "Määräyksen diaarinumero",
     "suoritustapa": "Suoritustapa",
     "liita-perusteeseen": "Liitä perusteeseen",
@@ -732,6 +736,7 @@
     "rajaa-tutkinnonosia": "Rajaa tutkinnon osia...",
 
     "kaikki": "Kaikki",
+    "kaikki-ilman-arkistoituja": "Kaikki ilman arkistoituja",
 
     "hallinta": "Hallinta",
     "hallintapaneeli": "Hallintapaneeli",

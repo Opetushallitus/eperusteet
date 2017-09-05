@@ -1,9 +1,10 @@
-<!-- multiinput.html -->
 <div class="input-group">
+    <!-- multiinput.html -->
     <textarea class="form-control msd-elastic multiinput-resize"
               ng-if="type === 'textarea'"
               ng-model="mlData[activeLang]"></textarea>
-    <input ng-if="type !== 'textarea'"
+    <input ng-model-options="{ allowInvalid: true }"
+           ng-if="type !== 'textarea'"
            ng-model="mlData[activeLang]"
            class="form-control"
            type="text"

@@ -1,27 +1,53 @@
 <div>
     <!-- admin/perusteprojektit.html -->
     <div class="hallintapainikkeet">
-        <a ui-sref="root.excel" kaanna="tuo-excel-tiedostosta"></a>
-        <button ui-sref="root.perusteprojektiwizard.tiedot" class="btn" icon-role="plus" kaanna="'uusi-perusteprojekti'"></button>
-        <button ui-sref="root.perusteprojektiwizard.pohja" class="btn" icon-role="plus" kaanna="'luo-uusi-perustepohja'"></button>
+        <a ui-sref="root.excel" kaanna="'tuo-excel-tiedostosta'"></a>
+        <button ui-sref="root.perusteprojektiwizard.tiedot"
+                class="btn"
+                icon-role="plus"
+                kaanna="'uusi-perusteprojekti'"></button>
+        <button ui-sref="root.perusteprojektiwizard.pohja"
+                class="btn"
+                icon-role="plus"
+                kaanna="'luo-uusi-perustepohja'"></button>
     </div>
 
-    <h2><span kaanna="'perusteprojektit'"></span><ohje teksti="ohje-perusteprojekti"></ohje></h2>
+    <h2>
+        <span kaanna="'perusteprojektit'"></span>
+        <ohje teksti="'ohje-perusteprojekti'"></ohje>
+    </h2>
 
     <div class="tilarajaus">
-      <div class="tilarajaus-item">
-        <label for="admin-tilarajaus" kaanna="rajaa-tila"></label>
-      </div>
-      <div class="tilarajaus-item">
-        <select ng-model="tilaRajain" class="form-control" id="admin-tilarajaus"
-                ng-options="tila as ('tila-'+tila) | kaanna for tila in tilat">
-            <option value="">{{'kaikki' | kaanna}}</option>
-        </select>
-      </div>
-      <div class="tilarajaus-divider"></div>
-      <div class="tilarajaus-item">
-        <rajaus model="rajaus" placeholder="etsi-perusteprojekteista"></rajaus>
-      </div>
+        <div class="tilarajaus-item">
+            <label kaanna="'rajaa'"></label>
+        </div>
+        <div class="tilarajaus-item">
+            <select id="admin-tilarajaus"
+                    title="tila"
+                    class="form-control"
+                    ng-model="tilaRajain"
+                    ng-options="tila as ('tila-'+tila) | kaanna for tila in tilat"
+                    ng-change="updateTila()">
+                <option value="">{{'kaikki-ilman-arkistoituja' | kaanna}}</option>
+            </select>
+        </div>
+        <div class="tilarajaus-item">
+            <select id="admin-koulutustyyppirajaus"
+                    title="koulutustyyppirajaus"
+                    class="form-control"
+                    ng-model="koulutustyyppiRajain"
+                    ng-options="koulutustyyppi | kaanna for koulutustyyppi in koulutustyypit"
+                    ng-change="updateTila()">
+                <option value="">{{'koulutustyyppi-label' | kaanna}}</option>
+            </select>
+        </div>
+        <div class="tilarajaus-divider"></div>
+        <div class="tilarajaus-item">
+            <rajaus model="rajaus"
+                    placeholder="etsi-perusteprojekteista"
+                    callback="updateRajaus(value)">
+            </rajaus>
+        </div>
     </div>
 
     <table class="table table-striped admin-table">
@@ -30,7 +56,8 @@
                 <a class="action-link" ng-click="asetaJarjestys('nimi')">
                     <span ng-bind="'nimi' | kaanna"></span>
                     <span ng-show="jarjestysTapa === 'nimi'">
-                        <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+                        <span class="glyphicon"
+                              ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
                     </span>
                 </a>
             </th>
@@ -38,28 +65,59 @@
                 <a class="action-link" ng-click="asetaJarjestys('tila')">
                     <span kaanna="'tila'"></span>
                     <span ng-show="jarjestysTapa === 'tila'">
-                        <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+                        <span class="glyphicon"
+                              ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
                     </span>
                 </a>
             </th>
-            <th width="25%" kaanna>toiminto</th>
-        </tr>
-        <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in perusteprojektit">
-            <td>
-                <a ng-if="pp.tila !== 'poistettu'" ng-href="{{pp.$$url}}" ng-bind="pp.nimi">
+            <th width="10%">
+                <a class="action-link" ng-click="asetaJarjestys('luotu')">
+                    <span ng-bind="'luotu' | kaanna"></span>
+                    <span ng-show="jarjestysTapa === 'luotu'">
+                        <span class="glyphicon"
+                              ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+                    </span>
                 </a>
-                <span ng-if="pp.tila === 'poistettu'" ng-bind="pp.nimi"></span>
-                <span class="badge" ng-if="pp.tyyppi === 'pohja'" kaanna="'pohja'"></span>
+            </th>
+            <th width="10%">
+                <a class="action-link" ng-click="asetaJarjestys('muokattu')">
+                    <span ng-bind="'muokattu' | kaanna"></span>
+                    <span ng-show="jarjestysTapa === 'muokattu'">
+                        <span class="glyphicon"
+                              ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+                    </span>
+                </a>
+            </th>
+            <th width="20%" kaanna="'toiminto'"></th>
+        </tr>
+        <tr ng-repeat="pp in perusteprojektit">
+            <td>
+                <a ng-if="pp.tila !== 'poistettu'"
+                   ng-href="{{pp.$$url}}"
+                   ng-bind="pp.nimi"></a>
+                <span ng-if="pp.tila === 'poistettu'"
+                      ng-bind="pp.nimi"></span>
+                <span class="badge"
+                      ng-if="pp.tyyppi === 'pohja'"
+                      kaanna="'pohja'"></span>
             </td>
             <td ng-bind="'tila-' + pp.tila | kaanna"></td>
+            <td ng-bind="pp.luotu | aikaleima:'time':'date'"></td>
+            <td ng-bind="pp.globalVersion.aikaleima | aikaleima:'time':'date'"></td>
             <td>
-                <button type="button" class="btn btn-default rivinappi" ng-click="palauta(pp)"
-                        icon-role="open" ng-if="pp.tila === 'poistettu'" kaanna="'palauta'"></button>
+                <button type="button"
+                        class="btn btn-default rivinappi"
+                        ng-click="palauta(pp)"
+                        icon-role="open" ng-if="pp.tila === 'poistettu'"
+                        kaanna="'palauta'"></button>
             </td>
         </tr>
     </table>
 
-    <ep-pagination ng-model="nykyinen" ng-change="valitseSivu" total-items="kokonaismaara"
-        items-per-page="itemsPerPage"></ep-pagination>
+    <ep-pagination ng-model="nykyinen"
+                   ng-change="valitseSivu"
+                   total-items="kokonaismaara"
+                   items-per-page="itemsPerPage">
+    </ep-pagination>
 </div>
 

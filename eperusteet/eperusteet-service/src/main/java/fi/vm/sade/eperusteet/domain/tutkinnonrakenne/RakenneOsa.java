@@ -41,8 +41,6 @@ public class RakenneOsa extends AbstractRakenneOsa {
 
     private String erikoisuus;
 
-    private boolean pakollinen;
-
     @Override
     public boolean isSame(AbstractRakenneOsa other, boolean excludeText) {
 
@@ -52,7 +50,7 @@ public class RakenneOsa extends AbstractRakenneOsa {
 
         if (other instanceof RakenneOsa) {
             final RakenneOsa ro = (RakenneOsa) other;
-            return this.pakollinen == ro.isPakollinen()
+            return this.getPakollinen() == ro.getPakollinen()
                 && Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite())
                 && (erikoisuus == null ? ro.getErikoisuus() == null : erikoisuus.equals(ro.getErikoisuus()));
         }
