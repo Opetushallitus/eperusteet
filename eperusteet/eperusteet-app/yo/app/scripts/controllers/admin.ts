@@ -40,13 +40,30 @@ angular.module('eperusteApp')
                 url: '/tiedotteet',
                 templateUrl: 'views/admin/tiedotteet.html',
                 controller: 'TiedotteidenHallintaController'
-            });
+            })
+            .state('root.admin.oppaat', {
+                name: "oppaat",
+                url: '/oppaat',
+                controller: 'OppaidenHallintaController',
+                templateUrl: 'views/admin/oppaat.html',
+                resolve: {
+                    oppaat() {
+                        return [];
+                    }
+                }
+            })
+    })
+
+    .controller('OppaidenHallintaController', ($scope, oppaat) => {
+        $scope.rajaus = "";
+        console.log("Hello from oppaat", oppaat)
     })
 
     .controller('AdminBaseController', ($scope, $state) => {
         $scope.tabs = [
             {label: 'perusteprojektit', state: 'root.admin.perusteprojektit'},
-            {label: 'tiedotteet', state: 'root.admin.tiedotteet'}
+            {label: 'tiedotteet', state: 'root.admin.tiedotteet'},
+            {label: 'oppaat', state: 'root.admin.oppaat'}
         ];
 
         $scope.chooseTab = $index => {

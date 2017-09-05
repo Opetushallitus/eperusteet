@@ -14,6 +14,16 @@
  * European Union Public Licence for more details.
  */
 
+
+const env = {
+    debugMode: false
+};
+
+var win: any = window;
+if (win && win.__env) {
+    _.merge(env, win.__env);
+}
+
 angular.module('eperusteApp', [
     'ngSanitize',
     'ui.router',
@@ -46,7 +56,7 @@ angular.module('eperusteApp', [
 .constant('LUKITSIN_MAKSIMI', 20000)
 .constant('TEXT_HIERARCHY_MAX_DEPTH', 8)
 .constant('SHOW_VERSION_FOOTER', true)
-.constant('DEBUG_UI_ROUTER', false)
+.constant('DEBUG_UI_ROUTER', env.debugMode)
 .config(($sceProvider, $urlRouterProvider, $translateProvider, $urlMatcherFactoryProvider, $locationProvider) => {
     const preferred = 'fi';
 
@@ -334,7 +344,7 @@ angular.module('eperusteApp', [
         $rootScope.$on("$stateChangeSuccess", (event, state, params) => {
             console.info(
                 "%c" + state.name, "color: #ffb05b; background: #333; font-weight: bold",
-                "(" + state.url + (state.templateUrl && (" | " + state.templateUrl) + ")"),
+                "(" + (state.url || "") + ((state.templateUrl || "") && (" | " + (state.templateUrl || "")) + ")"),
                 params);
         });
     }
