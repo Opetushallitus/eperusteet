@@ -14,11 +14,6 @@
 * European Union Public Licence for more details.
 */
 
-'use strict';
-/*global _*/
-
-/// <reference path="../../ts_packages/tsd.d.ts" />
-
 angular.module('eperusteApp')
   .directive('kenttalistaus', function($q, MuokkausUtils, $timeout, FieldSplitter) {
     return {

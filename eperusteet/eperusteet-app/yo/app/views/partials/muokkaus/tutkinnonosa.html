@@ -47,6 +47,23 @@
                 </ul>
               </div>
             </div>
+
+            <div ng-show="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
+              <div class="dropdown" uib-dropdown>
+                <button editointi-kontrolli
+                        class="btn btn-default btn-sm dropdown-toggle pull-right"
+                        ng-disabled="allVisible()"
+                        icon-role="add"
+                        kaanna="'muokkaus-lisaa-sisalto'"
+                        uib-dropdown-toggle></button>
+                <ul class="pull-right dropdown-menu">
+                  <li ng-repeat="field in menuItemsTutke2 | orderBy:'order'">
+                    <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
+                    <a class="action-link" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{ vateConverter('muokkaus-' + field.localeKey + '-header') | kaanna}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -95,7 +112,7 @@
             </div>
 
             <div ng-show="isVaTe" ng-click="toggleLaajuusRange()" class="laajuus-tyyppi-valitsin">
-              <input ng-model="$laajuusRangena" type="checkbox">
+              <input ng-model="$laajuusRangena" type="checkbox" title="laajuus">
               <span kaanna="'laajuus-maarita-alueella'"></span>
             </div>
 
@@ -141,6 +158,10 @@
         </div>
       </div>
 
+      <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
+        <kenttalistaus hide-empty-placeholder="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit" edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="tutke2Fields"></kenttalistaus>
+      </div>
+
       <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'">
         <kenttalistaus hide-empty-placeholder="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit" edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
 
@@ -164,7 +185,7 @@
                 <div class="col-xs-10">
                   <div class="input-group">
                     <span class="input-group-addon handle" icon-role="drag"></span>
-                    <input class="form-control" slocalized ng-model="vt.nimi" placeholder="{{ 'otsikko' | kaanna }}"></input>
+                      <input class="form-control" slocalized ng-model="vt.nimi" placeholder="{{ 'otsikko' | kaanna }}"/>
                   </div>
                 </div>
                 <div class="col-xs-2">
@@ -182,17 +203,25 @@
 
       <div class="non-collapsibles" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
         <label class="header" for="tutke2-kuvaus" kaanna>kuvaus</label>
-        <textarea id="tutke2-kuvaus" class="form-control msd-elastic" ng-show="editEnabled" slocalized
-          ng-model="editableTutkinnonOsaViite.tutkinnonOsa.kuvaus"></textarea>
+        <textarea id="tutke2-kuvaus"
+                  class="form-control msd-elastic"
+                  ng-show="editEnabled"
+                  slocalized
+                  ng-model="editableTutkinnonOsaViite.tutkinnonOsa.kuvaus">
+        </textarea>
         <p ng-show="!editEnabled">{{tutkinnonOsaViite.tutkinnonOsa.kuvaus| kaanna}}</p>
       </div>
 
-      <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
-        <tutke2kentat edit-enabled="editEnabled" tutkinnonosa-viite="tutkinnonOsaPromise" kontrollit="editointikontrollit"
-                      yksikko="yksikko"></tutke2kentat>
+      <div ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'" class="tutkinnonosa-sisalto">
+        <tutke2kentat edit-enabled="editEnabled"
+                      tutkinnonosa-viite="tutkinnonOsaPromise"
+                      kontrollit="editointikontrollit"
+                      yksikko="yksikko">
+        </tutke2kentat>
       </div>
 
       <kommentit></kommentit>
+
     </div>
   </div>
 </div>
