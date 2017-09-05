@@ -110,7 +110,6 @@ angular.module('eperusteApp')
                 });
                 $scope.nykyinen = perusteprojektit.sivu + 1;
                 $scope.kokonaismaara = perusteprojektit.kokonaismäärä;
-                console.log($scope.nykyinen, $scope.kokonaismaara);
             });
         }
 

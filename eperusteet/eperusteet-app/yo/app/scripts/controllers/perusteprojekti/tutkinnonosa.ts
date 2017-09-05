@@ -233,6 +233,13 @@ angular.module('eperusteApp')
         collapsible: true
       }];
 
+    $scope.tutke2Fields = [{
+      path: 'tutkinnonOsa.arviointi.arvioinninKohdealueet',
+      localeKey: 'tutkinnon-osan-arviointi-taulukko',
+      type: 'arviointi',
+      collapsible: true
+    }];
+
     _.each($scope.fields, function (field) {
       field.order = TutkinnonosanTiedotService.order(_.last(field.path.split('.')));
     });
@@ -479,6 +486,7 @@ angular.module('eperusteApp')
       $scope.ammattitaitoHelper.initFromFields($scope.fields);
 
       $scope.menuItems = _.reject($scope.fields, 'mandatory');
+      $scope.menuItemsTutke2 = _.reject($scope.tutke2Fields, 'mandatory');
       if ($scope.arviointiHelper) {
         $scope.arviointiHelper.setMenu($scope.menuItems);
       }
