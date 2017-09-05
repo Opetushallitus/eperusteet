@@ -286,9 +286,13 @@ angular.module('eperusteApp')
       return peruste.koulutustyyppi === 'koulutustyyppi_12' ? 'naytto' : suoritustapa;
     };
 
-    this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi) {
+    this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi, reformi) {
       if (this.koulutustyyppiInfo[koulutustyyppi]) {
-        return this.koulutustyyppiInfo[koulutustyyppi].oletusSuoritustapa;
+        if (reformi) {
+          return 'reformi';
+        } else {
+          return this.koulutustyyppiInfo[koulutustyyppi].oletusSuoritustapa;
+        }
       }
       return 'ops';
     };

@@ -15,107 +15,127 @@
  */
 
 angular.module('eperusteApp')
-  .service('Algoritmit', function(Kaanna) {
+.service('Algoritmit', Kaanna => {
     function rajausVertailu(input, kentta) {
-      kentta = arguments.length > 2 ? kentta[arguments[2]] : kentta;
-      for (var i = 3; i < arguments.length; ++i) {
-        if (!kentta) { return undefined; }
-        kentta = kentta[arguments[i]];
-      }
-      return match(input, kentta);
+        kentta = arguments.length > 2 ? kentta[arguments[2]] : kentta;
+        for (var i = 3; i < arguments.length; ++i) {
+            if (!kentta) {
+                return undefined;
+            }
+            kentta = kentta[arguments[i]];
+        }
+        return match(input, kentta);
     }
 
     function mapLapsisolmut(objekti, lapsienAvain, cb) {
-      return _.map(_.isArray(objekti) ? objekti : objekti[lapsienAvain], function(solmu) {
-        solmu = _.clone(solmu);
-        solmu[lapsienAvain] = mapLapsisolmut(solmu, lapsienAvain, cb);
-        return cb(solmu);
-      });
+        return _.map(_.isArray(objekti) ? objekti : objekti[lapsienAvain], function (solmu) {
+            solmu = _.clone(solmu);
+            solmu[lapsienAvain] = mapLapsisolmut(solmu, lapsienAvain, cb);
+            return cb(solmu);
+        });
     }
 
     function kaikilleLapsisolmuille(objekti, lapsienAvain, cb, depth) {
-      depth = depth || 0;
-      if (!_.isEmpty(objekti)) {
-        _.forEach(objekti[lapsienAvain], function(solmu) {
-          if (!cb(solmu, depth)) {
-            kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
-          }
-        });
-      }
+        depth = depth || 0;
+        if (!_.isEmpty(objekti)) {
+            _.forEach(objekti[lapsienAvain], function (solmu) {
+                if (!cb(solmu, depth)) {
+                    kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
+                }
+            });
+        }
     }
 
     function asyncTraverse(list, cb, done) {
-      done = done || angular.noop;
-      list = list || [];
-      if (_.isEmpty(list)) { done(); return; }
-      cb(_.first(list), function() { asyncTraverse(_.rest(list), cb, done); });
+        done = done || angular.noop;
+        list = list || [];
+        if (_.isEmpty(list)) {
+            done();
+            return;
+        }
+        cb(_.first(list), function () {
+            asyncTraverse(_.rest(list), cb, done);
+        });
     }
 
     function match(input, to, kaanna = true) {
-      var vertailu = kaanna ? (Kaanna.kaanna(to) || '') : to;
-      return _.isString(vertailu) && _.isString(input) && vertailu.toLowerCase().indexOf(input.toLowerCase()) !== -1;
+        var vertailu = kaanna ? (Kaanna.kaanna(to) || '') : to;
+        return _.isString(vertailu) && _.isString(input) && vertailu.toLowerCase().indexOf(input.toLowerCase()) !== -1;
     }
 
     function access(object) {
-      if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-          object = object && _.isPlainObject(object) ? object[arguments[i]] : undefined;
+        if (arguments.length > 1) {
+            for (var i = 1; i < arguments.length; i++) {
+                object = object && _.isPlainObject(object) ? object[arguments[i]] : undefined;
+            }
         }
-      }
-      return object;
+        return object;
     }
 
     function perusteenSuoritustavanYksikko(peruste, suoritustapa) {
-      var foundSt = _.find(peruste.suoritustavat, function(st) {
-        return st.suoritustapakoodi === suoritustapa;
-      });
-      return foundSt ? foundSt.laajuusYksikko : 'OPINTOPISTE';
+        var foundSt = _.find(peruste.suoritustavat, function (st) {
+            return st.suoritustapakoodi === suoritustapa;
+        });
+        return foundSt ? foundSt.laajuusYksikko : 'OPINTOPISTE';
     }
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
-      var lapsellaOn = false;
-      _.forEach(juuri.lapset, function(osa) {
-        lapsellaOn = kaikilleTutkintokohtaisilleOsille(osa, cb) || lapsellaOn;
-      });
-      return cb(juuri, lapsellaOn) || lapsellaOn;
+        var lapsellaOn = false;
+        _.forEach(juuri.lapset, function (osa) {
+            lapsellaOn = kaikilleTutkintokohtaisilleOsille(osa, cb) || lapsellaOn;
+        });
+        return cb(juuri, lapsellaOn) || lapsellaOn;
     }
 
     function normalizeTeksti(teksti) {
-      function poistaTurhat(t) {
-        t = t || '';
-        var txt = document.createElement('textarea');
-        txt.innerHTML = t;
-        t = txt.value;
-        t = t.replace(/[\u00A0|\u0000-\u001F]/g, ' ');
+        function poistaTurhat(t) {
+            t = t || '';
+            var txt = document.createElement('textarea');
+            txt.innerHTML = t;
+            t = txt.value;
+            t = t.replace(/[\u00A0|\u0000-\u001F]/g, ' ');
 
-        var last;
-        do {
-          last = t;
-          t = last.replace(/  /g, ' ');
-        } while (_.size(last) !== _.size(t));
-        return t.trim();
-      }
+            var last;
+            do {
+                last = t;
+                t = last.replace(/  /g, ' ');
+            } while (_.size(last) !== _.size(t));
+            return t.trim();
+        }
 
-      if (_.isString(teksti)) {
-        return poistaTurhat(teksti);
-      }
-      else if (_.isPlainObject(teksti)) {
-        return _.zipObject(_.keys(teksti), _.map(_.values(teksti), poistaTurhat));
-      }
-      else {
-        return teksti;
-      }
+        if (_.isString(teksti)) {
+            return poistaTurhat(teksti);
+        }
+        else if (_.isPlainObject(teksti)) {
+            return _.zipObject(_.keys(teksti), _.map(_.values(teksti), poistaTurhat));
+        }
+        else {
+            return teksti;
+        }
+    }
+
+    function removeFieldsRecursiveFromObject(obj, pattern: RegExp, depth = 0) {
+        if (_.isObject(obj)) {
+            _.each(obj, (value, key) => {
+                removeFieldsRecursiveFromObject(obj[key], pattern, depth + 1);
+
+                if (pattern instanceof RegExp && pattern.test(key)) {
+                    delete obj[key];
+                }
+            });
+        }
     }
 
     return {
-      normalizeTeksti: normalizeTeksti,
-      rajausVertailu: rajausVertailu,
-      mapLapsisolmut: mapLapsisolmut,
-      kaikilleLapsisolmuille: kaikilleLapsisolmuille,
-      asyncTraverse: asyncTraverse,
-      match: match,
-      access: access,
-      perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko,
-      kaikilleTutkintokohtaisilleOsille: kaikilleTutkintokohtaisilleOsille,
+        normalizeTeksti: normalizeTeksti,
+        rajausVertailu: rajausVertailu,
+        mapLapsisolmut: mapLapsisolmut,
+        kaikilleLapsisolmuille: kaikilleLapsisolmuille,
+        asyncTraverse: asyncTraverse,
+        match: match,
+        access: access,
+        perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko,
+        kaikilleTutkintokohtaisilleOsille: kaikilleTutkintokohtaisilleOsille,
+        removeFieldsRecursiveFromObject: removeFieldsRecursiveFromObject
     };
-  });
+});

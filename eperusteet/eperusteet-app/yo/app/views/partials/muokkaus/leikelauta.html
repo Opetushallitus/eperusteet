@@ -1,0 +1,31 @@
+<!-- partials/muokkaus/leikelauta.html -->
+<div class="skratchpad-wrapper" follow-scroll>
+    <div class="skratchpad-list">
+        <div class="skratchpad-list-header" kaanna="'leikelauta'"></div>
+        <div class="skratchpad-list-body">
+            <div ng-if="leikelauta.length === 0" class="skratchpad-help"></div>
+            <ul id="leikelauta"
+                class="tree-group skratchpad container-items-leikelauta"
+                ui-sortable="leikelautaSortableOptions"
+                ng-model="leikelauta">
+                <li class="skratchpad-item"
+                    style="cursor: default"
+                    ng-repeat="element in leikelauta track by $index">
+                    <div class="sp-action-icon">
+                        <a icon-role="remove"
+                           class="action-link"
+                           ng-click="poistaLeikelaudasta($index)"
+                           ng-attr-title="{{'poista' | kaanna}}">
+                        </a>
+                    </div>
+                    <div class="sp-badge">
+                        <span class="handle" icon-role="drag"></span>
+                    </div>
+                    <div class="sp-name">
+                        <span kaanna="element.$osanNimi || element.$osanTyyppi || 'nimeton'"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

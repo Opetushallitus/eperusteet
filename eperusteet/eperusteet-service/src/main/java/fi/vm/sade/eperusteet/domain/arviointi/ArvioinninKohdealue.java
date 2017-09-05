@@ -119,6 +119,9 @@ public class ArvioinninKohdealue implements Serializable {
         }
         if (obj instanceof ArvioinninKohdealue) {
             final ArvioinninKohdealue other = (ArvioinninKohdealue) obj;
+            if (!Objects.equals(this.id, other.id)) {
+                return false;
+            }
             if (!Objects.equals(this.otsikko, other.otsikko)) {
                 return false;
             }

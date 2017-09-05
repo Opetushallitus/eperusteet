@@ -9,7 +9,10 @@
         </span>
         <div class="panel-body">
             <uib-accordion close-others="false">
-                <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="ammattitaito">
+                <div id="sortableAmmattitaitoKohdealueet"
+                     ui-sortable="sortableOptions"
+                     ng-model="ammattitaito"
+                     class="container-items-ammattitaito">
                     <div uib-accordion-group class="arvioinnin-kohdealue"
                          template-url="views/partials/accordiongroup.html"
                          ng-repeat="kohdealue in ammattitaito"
@@ -23,8 +26,9 @@
                         </uib-accordion-heading>
 
                         <uib-accordion close-others="false">
-                            <div id="sortableKohteet" ui-sortable="sortableOptions"
-                                 ng-model="kohdealue.vaatimuksenKohteet">
+                            <div id="sortableAmmattitaitoKohteet" ui-sortable="kohdeSortableOptions"
+                                 ng-model="kohdealue.vaatimuksenKohteet"
+                                 class="container-items-vaatimuksenKohteet">
 
                                 <div uib-accordion-group
                                      class="arvioinnin-kohde"

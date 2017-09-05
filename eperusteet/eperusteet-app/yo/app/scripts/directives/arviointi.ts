@@ -9,8 +9,7 @@
 * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
 *
 * This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 * European Union Public Licence for more details.
 */
 
@@ -229,9 +228,9 @@ angular
                 }
                 kriteeri.kriteerit.push({});
                 // Set focus to newly added field
-                var parent = angular.element(event.currentTarget).closest("table");
+                let parent = angular.element(event.currentTarget).closest("table");
                 $timeout(function () {
-                    var found = parent.find(".form-control");
+                    let found = parent.find(".form-control");
                     if (found.length > 0) {
                         found[found.length - 1].focus();
                     }
@@ -246,13 +245,8 @@ angular
             $scope.uudenKohdealueenNimi = "automaattinen";
             $scope.kohdealue.uusi();
         }
-
-        /*if ($scope.eiKohdealueita && (angular.isUndefined($scope.arviointi.kohdealue) || $scope.arviointi.kohdealue === null)) {
-          $scope.uudenKohdealueenNimi = 'automaattinen';
-          $scope.kohdealue.uusi();
-        }*/
     })
-    .directive("arviointi", function (YleinenData, $timeout) {
+    .directive("arviointi", function (YleinenData, $timeout, TutkinnonOsaLeikelautaService) {
         return {
             templateUrl: "views/partials/arviointi.html",
             restrict: "E",
@@ -280,22 +274,16 @@ angular
 
                 scope.elementDragged = false;
 
-                scope.sortableOptions = {
-                    axis: "y",
-                    start: function () {
-                        scope.elementDragged = true;
-                    },
-                    stop: function () {
-                        // ei toimi
-                    }
-                };
+                scope.sortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable({
+                    $$id: "arviointi sortable",
+                    connectWith: ".container-items-kohteet, .container-items-leikelauta",
+                });
 
-                scope.kriteeriSortableOptions = {
-                    axis: "y",
+                scope.kriteeriSortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable({
                     cancel: ".row-adder",
                     handle: ".drag-enable",
                     items: "tr:not(.row-adder)"
-                };
+                });
 
                 scope.$watch("editEnabled", function (value) {
                     scope.sortableOptions.disabled = !value;
@@ -322,7 +310,7 @@ angular
                  * ui-sortable voidaan disabloida lukutilassa.
                  */
                 function setAccordion(mode) {
-                    var obj = scope.arviointi;
+                    let obj = scope.arviointi;
                     _.each(obj, function (kohdealue) {
                         kohdealue.$accordionOpen = mode;
                         _.each(kohdealue.arvioinninKohteet, function (kohde) {
@@ -332,7 +320,7 @@ angular
                 }
 
                 function accordionState() {
-                    var obj = _.first(scope.arviointi);
+                    let obj = _.first(scope.arviointi);
                     return obj && obj.$accordionOpen;
                 }
 
@@ -456,14 +444,14 @@ angular.module("template/accordion/accordion-group.html", []).run([
     function ($templateCache) {
         $templateCache.put(
             "template/accordion/accordion-group.html",
-            '<div class="panel panel-default">\n' +
-            '  <div class="panel-heading">\n' +
-            '    <h4 class="panel-title">\n' +
-            '      <a class="accordion-toggle" ng-click="$parent.isElementDragged() || toggleOpen()" accordion-transclude="heading"><span ng-class="{\'text-muted\': isDisabled}">{{heading}}</span></a>\n' +
+            "<div class='panel panel-default'>\n" +
+            "  <div class='panel-heading'>\n" +
+            "    <h4 class='panel-title'>\n" +
+            "      <a class='accordion-toggle' ng-click='$parent.isElementDragged() || toggleOpen()' accordion-transclude='heading'><span ng-class='{\"text-muted\": isDisabled}'>{{heading}}</span></a>\n" +
             "    </h4>\n" +
             "  </div>\n" +
-            '  <div class="panel-collapse" uib-collapse="!isOpen">\n' +
-            '	  <div class="panel-body" ng-transclude></div>\n' +
+            "  <div class='panel-collapse' uib-collapse='!isOpen'>\n" +
+            "    <div class='panel-body' ng-transclude></div>\n" +
             "  </div>\n" +
             "</div>"
         );

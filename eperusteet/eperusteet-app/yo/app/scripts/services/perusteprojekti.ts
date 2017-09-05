@@ -138,7 +138,11 @@ angular.module('eperusteApp')
         }
         else {
           const suoritustapa = getSuoritustapa() || getRightSuoritustapa(peruste, projekti);
-          const oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
+          let reformi = false;
+          if (peruste && peruste.reforminMukainen) {
+              reformi = true;
+          }
+          const oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi, reformi);
           return (!_.includes(YleinenData.suoritustavat, suoritustapa) || oletus === 'aipe')
             ? oletus
             : suoritustapa;
@@ -206,7 +210,7 @@ angular.module('eperusteApp')
       this.mode = mode;
     };
     this.getMode = function () {
-      var ret = this.mode;
+      const ret = this.mode;
       this.mode = false;
       return ret;
     };

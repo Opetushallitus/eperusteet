@@ -31,7 +31,8 @@ angular.module('eperusteApp', [
     'eperusteet.esitys',
     'ngFileUpload',
     'eGenericTree',
-    'eMathDisplay'
+    'eMathDisplay',
+    'LocalStorageModule'
 ])
 .constant('SERVICE_LOC', '/eperusteet-service/api')
 .constant('ORGANISATION_SERVICE_LOC', '/lokalisointi/cxf/rest/v1/localisation')
@@ -126,6 +127,12 @@ angular.module('eperusteApp', [
             }
         };
     }]);
+})
+.config(localStorageServiceProvider => {
+    localStorageServiceProvider
+        .setPrefix('eperusteApp')
+        .setStorageType('localStorage')
+        .setNotify(true, true);
 })
 .run(() => {
     _.mixin({
