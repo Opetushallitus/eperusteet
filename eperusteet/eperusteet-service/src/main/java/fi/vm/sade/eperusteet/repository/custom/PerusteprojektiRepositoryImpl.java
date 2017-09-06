@@ -157,11 +157,10 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
 
         if (pq.getTyyppi() == null) {
             result = cb.and(result, cb.notEqual(tyyppi, PerusteTyyppi.OPAS));
-        }
-
-        if (!empty(pq.getKoulutustyyppi())) {
-            Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
-            result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
+            if (!empty(pq.getKoulutustyyppi())) {
+                Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
+                result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
+            }
         }
         else {
             result = cb.and(result, cb.equal(tyyppi, pq.getTyyppi()));
