@@ -54,6 +54,7 @@ angular.module('eperusteApp')
         '</span>' +
         '<span ng-if="!onOsa(rakenne) && rakenne.nimi">' +
         '  <strong>{{ rakenne.nimi || "nimetön" | kaanna }}</strong>' +
+        '  <span ng-if="rakenne.pakollinen">({{"pakollinen" | kaanna}})</span>' +
         '</span>';
     }
 
@@ -202,16 +203,19 @@ angular.module('eperusteApp')
       controller: 'treeController',
       link: function(scope: any, el: any) {
         $animate.enabled(false, el);
+
         if (!scope.vanhempi) {
           var templateElement = angular.element(treeTemplate.root());
           $compile(templateElement)(scope);
           el.replaceWith(templateElement);
         }
+
         function renderChildren() {
           $compile(treeTemplate.leafChildren())(scope, function (cloned) {
             el.append(cloned);
           });
         }
+
         if (scope.muokkaus || (_.isArray(scope.rakenne.osat) && scope.rakenne.osat.length > 0)) {
           // Give the browser a breather once in a while to retain responsiveness
           if (_.random() > 0.8) {

@@ -89,6 +89,7 @@ $border-color: #0C566E;
       -webkit-hyphens: manual;
       hyphens: manual;
       text-align: justify;
+      list-style-type: none;
     }
 
     .arviointi {
@@ -97,9 +98,9 @@ $border-color: #0C566E;
       border: 1px solid $border-color;
 
       .arviointi-otsikko {
-	      background: $border-color;
-	      color: #fff;
-	      padding: 5px;
+        background: $border-color;
+        color: #fff;
+        padding: 5px;
       }
       .arviointi-sisalto {
 	      padding: 10px;

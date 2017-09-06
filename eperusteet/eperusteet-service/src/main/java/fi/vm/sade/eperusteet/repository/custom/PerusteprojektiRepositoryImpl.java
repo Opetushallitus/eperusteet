@@ -18,16 +18,12 @@ package fi.vm.sade.eperusteet.repository.custom;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.Peruste_;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti_;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepositoryCustom;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -41,14 +37,17 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.StringUtils;
 
 /**
  *
  * @author nkala
  */
+@Slf4j
 public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryCustom {
 
     @PersistenceContext
@@ -64,7 +63,14 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
             query.setFirstResult(page.getOffset());
             query.setMaxResults(page.getPageSize());
         }
-        return new PageImpl<>(Lists.transform(query.getResultList(), EXTRACT_PERUSTEPROJEKTI), page, countQuery.getSingleResult());
+
+        // SQL query
+        //log.debug(query.unwrap(Query.class).getQueryString());
+
+        List<Tuple> resultList = query.getResultList();
+        Long singleResult = countQuery.getSingleResult();
+
+        return new PageImpl<>(Lists.transform(resultList, EXTRACT_PERUSTEPROJEKTI), page, singleResult);
     }
 
     private TypedQuery<Long> getCountQuery(PerusteprojektiQueryDto pquery) {
@@ -82,14 +88,51 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         Root<Perusteprojekti> root = query.from(Perusteprojekti.class);
         Predicate pred = buildPredicate(root, cb, pquery);
         query.distinct(true);
-        final Expression<String> n = cb.lower(root.get(Perusteprojekti_.nimi));
 
         final List<Order> order = new ArrayList<>();
-        order.add(cb.asc(n));
+        final Expression<String> nimi = cb.lower(root.get(Perusteprojekti_.nimi));
+        final Path<Date> perusteVersion = root.join(Perusteprojekti_.peruste)
+                .join(Peruste_.globalVersion)
+                .get(PerusteVersion_.aikaleima);
+
+        if (!StringUtils.isEmpty(pquery.getJarjestysTapa())) {
+            Boolean jarjestysOrder = pquery.getJarjestysOrder();
+            switch (JarjestysTapa.of(pquery.getJarjestysTapa())) {
+                case NIMI:
+                    addOrderExpression(cb, order, nimi, jarjestysOrder);
+                    break;
+                case TILA:
+                    addOrderExpression(cb, order, root.get(Perusteprojekti_.tila), jarjestysOrder);
+                    addOrderExpression(cb, order, nimi, false);
+                    break;
+                case LUOTU:
+                    addOrderExpression(cb, order, root.get(Perusteprojekti_.luotu), jarjestysOrder);
+                    addOrderExpression(cb, order, nimi, false);
+                    break;
+                case MUOKATTU:
+                    addOrderExpression(cb, order, perusteVersion, jarjestysOrder);
+                    addOrderExpression(cb, order, nimi, false);
+                    break;
+                default:
+                    addOrderExpression(cb, order, nimi, false);
+                    break;
+            }
+        } else {
+            order.add(cb.asc(nimi));
+        }
         order.add(cb.asc(root.get(Perusteprojekti_.id)));
-        query.multiselect(root, n).where(pred).orderBy(order);
+
+        query.multiselect(root, nimi, perusteVersion).where(pred).orderBy(order);
 
         return em.createQuery(query);
+    }
+
+    private void addOrderExpression(CriteriaBuilder cb, List<Order> order, Expression<?> ex, Boolean jarjestysOrder) {
+        if (jarjestysOrder == null || !jarjestysOrder) {
+            order.add(cb.asc(ex));
+        } else {
+            order.add(cb.desc(ex));
+        }
     }
 
     private Predicate buildPredicate(
@@ -115,13 +158,23 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         if (pq.getTyyppi() == null) {
             result = cb.and(result, cb.notEqual(tyyppi, PerusteTyyppi.OPAS));
         }
+
+        if (!empty(pq.getKoulutustyyppi())) {
+            Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
+            result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
+        }
         else {
             result = cb.and(result, cb.equal(tyyppi, pq.getTyyppi()));
         }
 
-        if (pq.getTila() != null) {
-            result = cb.and(result, cb.equal(targetTila, pq.getTila()));
+        if (!empty(pq.getTila())) {
+            return cb.and(result, root.get(Perusteprojekti_.tila).in(pq.getTila()));
+        } else {
+            return result;
         }
-        return result;
+    }
+
+    private static boolean empty(Collection<?> c) {
+        return c == null || c.isEmpty();
     }
 }

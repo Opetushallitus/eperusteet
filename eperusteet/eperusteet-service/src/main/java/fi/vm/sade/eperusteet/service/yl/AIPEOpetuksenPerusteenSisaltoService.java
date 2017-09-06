@@ -42,7 +42,7 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     AIPEKurssiDto addKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, AIPEKurssiDto kurssiDto);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     AIPEKurssiDto updateKurssi(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId, AIPEKurssiDto kurssiDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
@@ -57,7 +57,7 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     AIPEOppiaineDto getOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     AIPEOppiaineDto updateOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId, AIPEOppiaineDto oppiaineDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
@@ -72,7 +72,7 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     AIPEVaiheDto addVaihe(@P("perusteId") Long perusteId, AIPEVaiheDto vaiheDto);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     AIPEVaiheDto updateVaihe(@P("perusteId") Long perusteId, Long vaiheId, AIPEVaiheDto vaiheDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
@@ -87,7 +87,7 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     LaajaalainenOsaaminenDto addLaajaalainen(@P("perusteId") Long perusteId, LaajaalainenOsaaminenDto laajaalainenDto);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     LaajaalainenOsaaminenDto updateLaajaalainen(@P("perusteId") Long perusteId, Long laajalainenId, LaajaalainenOsaaminenDto laajaalainenDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")

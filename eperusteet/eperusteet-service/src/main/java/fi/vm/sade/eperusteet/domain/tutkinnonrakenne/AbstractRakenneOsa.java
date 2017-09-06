@@ -59,6 +59,10 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    @Getter
+    @Setter
+    private Boolean pakollinen = false;
+
     public AbstractRakenneOsa() {
         this.tunniste = UUID.randomUUID();
     }

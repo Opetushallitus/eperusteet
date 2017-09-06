@@ -48,6 +48,7 @@ angular.module('eperusteApp')
       $scope.ryhma.osaamisala = ryhma && ryhma.osaamisala && ryhma.osaamisala.osaamisalakoodiUri ? ryhma.osaamisala : null;
       if (!$scope.ryhma.nimi) { $scope.ryhma.nimi = {}; }
       if (!$scope.ryhma.kuvaus) { $scope.ryhma.kuvaus = {}; }
+      $scope.ryhma.pakollinen = ryhma && ryhma.pakollinen ? ryhma.pakollinen : false;
     })();
 
     $scope.lisaaTutkintoKoodi = Koodisto.modaali(function(koodi) {

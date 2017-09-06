@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -73,6 +74,9 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     @Cacheable("koodistokoodit")
     public KoodistoKoodiDto get(String koodistoUri, String koodiUri, Long versio) {
+        if (koodistoUri == null || koodiUri == null) {
+            return null;
+        }
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + koodistoUri + "/koodi/" + koodiUri + (versio != null ? "?koodistoVersio=" + versio.toString() : "");
         KoodistoKoodiDto re = restTemplate.getForObject(url, KoodistoKoodiDto.class);
@@ -87,8 +91,8 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     private Map<String, String> metadataToLocalized(KoodistoKoodiDto koodistoKoodi) {
-        return Arrays.asList(koodistoKoodi.getMetadata()).stream()
-                .collect(Collectors.toMap(k -> k.getKieli().toLowerCase(), k -> k.getNimi()));
+        return Arrays.stream(koodistoKoodi.getMetadata())
+                .collect(Collectors.toMap(k -> k.getKieli().toLowerCase(), KoodistoMetadataDto::getNimi));
     }
 
     @Override
@@ -130,8 +134,10 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public void addNimiAndUri(KoodiDto koodi) {
         KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri(), koodi.getVersio());
-        koodi.setArvo(koodistoKoodi.getKoodiArvo());
-        koodi.setNimi(metadataToLocalized(koodistoKoodi));
+        if (koodistoKoodi != null) {
+            koodi.setArvo(koodistoKoodi.getKoodiArvo());
+            koodi.setNimi(metadataToLocalized(koodistoKoodi));
+        }
     }
 
     @Override

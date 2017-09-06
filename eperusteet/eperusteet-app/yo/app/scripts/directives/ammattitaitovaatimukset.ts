@@ -154,7 +154,7 @@ angular.module('eperusteApp')
     }
 
   })
-  .directive('ammattitaito', function(YleinenData, $timeout) {
+  .directive('ammattitaito', function(YleinenData, $timeout, TutkinnonOsaLeikelautaService) {
 
     return {
       templateUrl: 'views/partials/ammattitaito.html',
@@ -180,23 +180,26 @@ angular.module('eperusteApp')
 
         scope.elementDragged = false;
 
-        scope.sortableOptions = {
-          axis: 'y',
+        scope.sortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable({
+          connectWith: '.container-items-ammattitaito, .container-items-leikelauta',
           start: function() {
             scope.elementDragged = true;
           },
-          stop: function() {
-            // ei toimi
-          }
-        };
+        });
 
+        scope.kohdeSortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable({
+          connectWith: '.container-items-vaatimuksenKohteet, .container-items-leikelauta',
+          start: function() {
+            scope.elementDragged = true;
+          },
+        });
 
-        scope.kriteeriSortableOptions = {
+        scope.kriteeriSortableOptions = TutkinnonOsaLeikelautaService.createConnectedSortable({
           axis: 'y',
           cancel: '.row-adder',
           handle: '.drag-enable',
           items: 'tr:not(.row-adder)'
-        };
+        });
 
         scope.$watch('editEnabled', function (value) {
           scope.sortableOptions.disabled = !value;

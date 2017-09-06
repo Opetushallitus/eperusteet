@@ -50,12 +50,11 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>
     <script src="bower_components/angular-translate/angular-translate.min.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
-    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-ui-utils/ui-utils.min.js"></script>
     <script src="bower_components/angular-ui-sortable/src/sortable.js"></script>
     <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
@@ -63,21 +62,24 @@
     <script src="bower_components/angular-i18n/angular-locale_fi-fi.js"></script>
     <script src="bower_components/angular-cache/dist/angular-cache.min.js"></script>
     <script src="bower_components/angular-ui-select/dist/select.min.js"></script>
+    <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
     <script src="bower_components/ng-file-upload/ng-file-upload.min.js"></script>
     <script src="bower_components/ng-file-upload/ng-file-upload-shim.min.js"></script>
     <script src="bower_components/restangular/dist/restangular.min.js"></script>
     <script src="bower_components/lodash/lodash.min.js"></script>
-    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.min.js"></script>
     <script src="bower_components/js-xlsx/jszip.js"></script>
     <script src="bower_components/js-xlsx/dist/xlsx.min.js"></script>
     <script src="bower_components/moment/min/moment.min.js"></script>
     <script src="bower_components/moment/locale/fi.js"></script>
     <script src="bower_components/moment/locale/sv.js"></script>
     <script src="bower_components/eperusteet-frontend-utils/mathdisplay.js"></script>
+    <script src="bower_components/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script src="bower_components/ckeditor/ckeditor.js"></script>
     <!-- endbuild -->
 
+    <script src="bower_components/ckeditor/ckeditor.js?v=4.6.2"></script>
     <script src="bower_components/ckeditor/ckeditor.js"></script>
-
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
     <script src="scripts/api.js"></script>
@@ -96,6 +98,7 @@
     <script src="scripts/services/utils.js"></script>
     <script src="scripts/services/kieli.js"></script>
     <script src="scripts/services/kuvat.js"></script>
+    <script src="scripts/services/leikelauta.js"></script>
     <script src="scripts/services/koulutuksenosamap.js"></script>
     <script src="scripts/services/ulkopuoliset.js"></script>
     <script src="scripts/services/algoritmit.js"></script>
@@ -117,6 +120,7 @@
     <script src="scripts/directives/kommentit.js"></script>
     <script src="scripts/directives/kommenttiviesti.js"></script>
     <script src="scripts/directives/osalistaus.js"></script>
+    <script src="scripts/directives/muokkaus/leikelauta.js"></script>
     <script src="scripts/directives/osallinenosa.js"></script>
     <script src="scripts/directives/muokattavaosio.js"></script>
     <script src="scripts/directives/perusopetus/tavoitteet.js"></script>
@@ -243,8 +247,5 @@
     <script src="eperusteet-esitys/scripts/services/sivunavigaatio.js"></script>
     <script src="eperusteet-esitys/scripts/services/stateservice.js"></script>
     <!-- endbuild -->
-
-    <!-- MathJax -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
   </body>
 </html>

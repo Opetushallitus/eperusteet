@@ -133,7 +133,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
 
         if (viiteDto.getLaajuus() != null
                 && viiteDto.getLaajuusMaksimi() != null
-                && viiteDto.getLaajuusMaksimi().compareTo(viiteDto.getLaajuus()) == -1) {
+                && viiteDto.getLaajuusMaksimi().compareTo(viiteDto.getLaajuus()) < 0) {
             throw new BusinessRuleViolationException("Laajuuden maksimin täytyy olla suurempi kuin minimiarvon");
         }
 

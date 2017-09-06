@@ -18,6 +18,9 @@ package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +34,18 @@ public class PerusteprojektiQueryDto {
     private int sivu = 0;
     private int sivukoko = 25;
     private String nimi;
-    private ProjektiTila tila;
     private PerusteTyyppi tyyppi;
+    private Set<ProjektiTila> tila;
+    private List<String> koulutustyyppi;
+    private String jarjestysTapa;
+    private Boolean jarjestysOrder;
+
+    public void setTila(ProjektiTila tila) {
+        this.tila = new HashSet<>();
+        this.tila.add(tila);
+    }
+
+    public void setTila(Set<ProjektiTila> tila) {
+        this.tila = tila;
+    }
 }

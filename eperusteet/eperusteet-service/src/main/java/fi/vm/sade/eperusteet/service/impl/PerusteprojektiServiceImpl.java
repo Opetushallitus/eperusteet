@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
@@ -152,8 +153,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         ppk.setTyyppi(peruste.getTyyppi());
                         ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
                                 .map(Suoritustapa::getSuoritustapakoodi)
-                                .map(stk -> stk.toString())
+                                .map(Suoritustapakoodi::toString)
                                 .collect(Collectors.toSet()));
+                        if (peruste.getGlobalVersion() != null) {
+                            ppk.setGlobalVersion(mapper.map(peruste.getGlobalVersion(), PerusteVersionDto.class));
+                        }
                     }
                     return ppk;
                 })
@@ -173,11 +177,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 ppk.setTyyppi(peruste.getTyyppi());
                 ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
                         .map(Suoritustapa::getSuoritustapakoodi)
-                        .map(stk -> stk.toString())
+                        .map(Suoritustapakoodi::toString)
                         .collect(Collectors.toSet()));
+                if (peruste.getGlobalVersion() != null) {
+                    ppk.setGlobalVersion(mapper.map(peruste.getGlobalVersion(), PerusteVersionDto.class));
+                }
             }
             return ppk;
         });
+
         return result;
     }
 

@@ -36,6 +36,7 @@
     "paivita": "Päivitä",
     "peru": "Peruuta",
     "poista": "Poista",
+    "rajaa": "Rajaa",
     "rajaa-tuloksia": "Rajaa...",
     "ei-projekteja": "Sinulla ei ole käynnissä olevia perusteprojekteja.",
     "takaisin": "Takaisin",
@@ -364,6 +365,11 @@
     "pakollinen": "Pakollinen",
     "poistetaanko-ryhma": "Poistetaanko ryhmä?",
     "leikelauta": "Leikelauta",
+    "avaa-leikelauta": "Avaa leikelauta",
+    "sulje-leikelauta": "Sulje leikelauta",
+    "kopio-leikelaudalle": "Kopioi leikelaudalle",
+    "liita-leikelaudalta": "Liitä leikelaudalta",
+    "selain-ei-tue": "Selaimesta puuttuu tuki ominaisuudelle",
     "tutkinnon-osa-haku-placeholder": "Rajaa tutkinnon osia...",
     "etsi-sisallosta": "Rajaa sisältöä...",
     "etsi-perusteprojekteista": "Etsi perusteprojekteista...",
@@ -577,6 +583,7 @@
     "tutke2-osalta-puuttuu-osa-alue-koodi": "Tutkinnon osien osa-alueilta puuttuu koodi",
 
     "arviointi-kohdealueet": "Arvioinnin kohdealueet",
+    "vaihda-arviointiasteikko": "Vaihda arviointiasteikko",
 
     "keskustelu": "Keskustelu",
     "takaisin-tiedotteiden-hallintaan": "Takaisin tiedotteiden hallintaan",
@@ -626,7 +633,7 @@
     "excel-ei-kahta-samaa": "Tutkintokoodin täytyy olla uniikki",
     "valitse-nimi": "Valitse nimi",
     "valitse-diaarinumero": "Valitse diaarinumero",
-    "diaarinumero-ei-validi": "Diaarinumero ei ole validi. Diarinumeron pitää olla muotoa X-XXX/XXX/XXXX, XXX/XXX/XXXX tai OPH-XXXXX-XXXX",
+    "diaarinumero-ei-validi": "Diaarinumero ei ole validi. Diarinumeron pitää olla muotoa XXX/XXX/XXXX tai OPH-XXXXX-XXXX",
     "maarayksen-diaarinumero": "Määräyksen diaarinumero",
     "suoritustapa": "Suoritustapa",
     "liita-perusteeseen": "Liitä perusteeseen",
@@ -730,6 +737,7 @@
     "rajaa-tutkinnonosia": "Rajaa tutkinnon osia...",
 
     "kaikki": "Kaikki",
+    "kaikki-ilman-arkistoituja": "Kaikki ilman arkistoituja",
 
     "hallinta": "Hallinta",
     "hallintapaneeli": "Hallintapaneeli",

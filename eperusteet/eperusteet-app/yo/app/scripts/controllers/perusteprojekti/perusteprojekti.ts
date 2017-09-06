@@ -169,7 +169,7 @@ angular.module('eperusteApp')
         PerusteProjektiSivunavi.setVisible();
     },
     resolve: {
-        rakenne: ($stateParams, PerusteenRakenne) => PerusteenRakenne.haeByPerusteprojektiP(
+        rakenne: ($stateParams, PerusteenRakenne) => PerusteenRakenne.haeByPerusteprojekti(
             $stateParams.perusteProjektiId, $stateParams.suoritustapa)
     }
 })

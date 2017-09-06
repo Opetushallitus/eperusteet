@@ -7,6 +7,8 @@
            placeholder="{{$parent.field.titleplaceholder|kaanna}}">
     <span class="inline-alert" ng-show="$parent.field.$editing && isEmpty(model)" kaanna="nimi-on-pakollinen"></span>
 </div>
-<h3 ng-show="!canCollapse"><span ng-bind="(hasModel ? model : otsikko) | kaanna"></span><span
-        ng-show="$parent.field.mandatory">*</span></h3>
+<h3 ng-show="!canCollapse">
+    <span ng-bind="(hasModel ? model : otsikko) | kaanna"></span>
+    <span ng-show="$parent.field.mandatory">*</span>
+</h3>
 <div uib-collapse="collapsed" ng-transclude></div>
