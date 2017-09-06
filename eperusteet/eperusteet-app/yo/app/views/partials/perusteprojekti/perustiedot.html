@@ -18,15 +18,15 @@
       </div>
     </div>
 
-    <formfield label="diaarinumero-label" model="projekti" model-var="diaarinumero" form="perustiedotForm" ng-if="!$parent.pohja()"
+    <formfield label="diaarinumero-label" model="projekti" model-var="diaarinumero" form="perustiedotForm" ng-if="!$parent.pohja() && !isOpas"
                name="diaarinumero" required="required" placeholder="anna-diaarinumero-placeholder" max="255" type="diaari">
       <ohje teksti="luonti-diaarinumero-ohje"></ohje>
     </formfield>
-    <formfield ng-if="$parent.wizardissa()" label="koulutustyyppi-label" ng-hide="projekti.perusteId"
+    <formfield ng-if="$parent.wizardissa() && !isOpas" label="koulutustyyppi-label" ng-hide="projekti.perusteId"
                model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit" placeholder="valitse-koulutustyyppi"></formfield>
-    <formfield ng-model="projekti.reforminMukainen" label="reformin-mukainen" ng-if="reforminMukainen(projekti.koulutustyyppi)"
+    <formfield ng-model="projekti.reforminMukainen && !isOpas" label="reformin-mukainen" ng-if="reforminMukainen(projekti.koulutustyyppi)"
                model="projekti" model-var="reforminMukainen" type="checkbox"></formfield>
-    <span ng-if="!$parent.pohja()">
+    <span ng-if="!$parent.pohja() && !isOpas">
       <formfield ng-model="projekti.koulutustyyppi" label="laajuuden-yksikkö" ng-if="tarvitseeLaajuuden(projekti.koulutustyyppi)"
                  model="projekti" model-var="laajuusYksikko" options="yksikot"></formfield>
       <formfield label="päätöspvm-label" model="projekti" model-var="paatosPvm" placeholder="anna-päätöspäivämäärä" type="date">
@@ -40,9 +40,9 @@
     <table class="perustiedot">
       <tr><th kaanna="'projektin-nimi-label'"></th><td>{{projekti.nimi | kaanna}}</td></tr>
       <tr><th kaanna="'projektin-ryhma'"></th><td>{{$ryhmaNimi | kaanna}}</td></tr>
-      <tr ng-if="!$parent.pohja()"><th kaanna="'diaarinumero-label'"></th><td>{{projekti.diaarinumero}}</td></tr>
-      <tr ng-if="!$parent.pohja()"><th kaanna="'päätöspvm-label'"></th><td pvm="{{projekti.paatosPvm}}"></td></tr>
-      <tr ng-if="!$parent.pohja()"><th kaanna="'yhteistyotaho-label'"></th><td>{{projekti.yhteistyotaho}}</td></tr>
+      <tr ng-if="!$parent.pohja() && !isOpas"><th kaanna="'diaarinumero-label'"></th><td>{{projekti.diaarinumero}}</td></tr>
+      <tr ng-if="!$parent.pohja() && !isOpas"><th kaanna="'päätöspvm-label'"></th><td pvm="{{projekti.paatosPvm}}"></td></tr>
+      <tr ng-if="!$parent.pohja() && !isOpas"><th kaanna="'yhteistyotaho-label'"></th><td>{{projekti.yhteistyotaho}}</td></tr>
     </table>
   </div>
 </div>

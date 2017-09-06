@@ -14,12 +14,9 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.peruste;
+package fi.vm.sade.eperusteet.dto.opas;
 
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import java.util.HashSet;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,22 +26,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusteprojektiQueryDto {
-    private int sivu = 0;
-    private int sivukoko = 25;
-    private String nimi;
-    private PerusteTyyppi tyyppi;
-    private Set<ProjektiTila> tila;
-    private Set<String> koulutustyyppi;
-    private String jarjestysTapa;
-    private Boolean jarjestysOrder;
-
-    public void setTila(ProjektiTila tila) {
-        this.tila = new HashSet<>();
-        this.tila.add(tila);
-    }
-
-    public void setTila(Set<ProjektiTila> tila) {
-        this.tila = tila;
-    }
+@JsonIgnoreProperties(ignoreUnknown=true)
+public class OpasLuontiDto extends OpasDto {
 }

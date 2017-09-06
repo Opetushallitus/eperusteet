@@ -99,7 +99,7 @@ mixin kvliite()
   .col-md-12
     .action-buttons
       button.floater.btn.btn-default(ng-if='voiMuokata()', ng-hide='editEnabled', ng-click='muokkaa()', icon-role='edit', kaanna="'muokkaa'", oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'muokkaus' }")
-    h1(kaanna='') projekti-peruste
+    h1(kaanna="$$kaannokset['projekti-peruste']") 
     .clearfix
     form.form-horizontal(name='perusteForm', role='form', novalidate='', ng-submit='void(0)')
       div(ng-form='projektinPerusteForm')
@@ -109,7 +109,7 @@ mixin kvliite()
           .panel-body
             input.form-control(ng-show='editEnabled', ng-model='editablePeruste.nimi', slocalized='')
             p(ng-hide='editEnabled') {{ peruste.nimi | kaanna }}
-        .panel.panel-default.panel-clean
+        .panel.panel-default.panel-clean(ng-show="!isOpas")
           .panel-heading
             h3.panel-title(kaanna="'maarayksen-diaarinumero'")
           .panel-body
@@ -117,12 +117,18 @@ mixin kvliite()
             p(ng-hide='editEnabled') {{ peruste.diaarinumero | kaanna }}
         .panel.panel-default.panel-clean
           .panel-heading
-            h3.panel-title(kaanna='') voimaantulo-pvm
+            h3.panel-title(kaanna='') voimassaolo
           .panel-body
             div(ng-if='editEnabled')
               formfield(model='editablePeruste', model-var='voimassaoloAlkaa', label='voimaantulo-pvm', type='date', placeholder='anna-voimaantulo-pvm')
-            div(ng-show='!editEnabled')
-              span(model='', pvm='peruste.voimassaoloAlkaa')
+              formfield(model='editablePeruste', model-var='voimassaoloLoppuu', label='voimassaolo-paattymispvm', type='date', placeholder='anna-voimaantulo-loppu-pvm')
+            table.aligned(ng-show='!editEnabled')
+              tr
+                th(kaanna='') voimassaolo-alkamispvm
+                td(pvm='peruste.voimassaoloAlkaa')
+              tr
+                th(kaanna='') voimassaolo-paattymispvm
+                td(pvm='peruste.voimassaoloLoppuu')
         ul.nav.nav-tabs.nav-justified(ng-show='isAmmatillinen')
           li(ng-class='{ active: !$$showingKvliite }', ng-click='$$showingKvliite = !$$showingKvliite')
             a.action-link(ng-bind="'tiedot' | kaanna")
@@ -131,7 +137,7 @@ mixin kvliite()
         br
         +kvliite()
         div(ng-show='!$$showingKvliite')
-          .panel.panel-default.panel-clean
+          .panel.panel-default.panel-clean(ng-show="!isOpas")
             .panel-heading
               h3.panel-title(kaanna="'korvattavat-perusteet'")
             .panel-body
@@ -158,7 +164,7 @@ mixin kvliite()
                       button.btn.btn-default.btn-sm(ng-disabled='!uusiKorvattavaDiaari', type='button', ng-click='lisaaKorvattavaDiaari(uusiKorvattavaDiaari)', icon-role='add') {{'ok'| kaanna}}
           .panel.panel-default.panel-clean
             .panel-heading
-              h3.panel-title(kaanna="'perusteen-kielet'")
+              h3.panel-title(kaanna="$$kaannokset['perusteen-kielet']")
             .panel-body
               span.inline-alert(ng-show='editEnabled && editablePeruste.kielet.length === 0', kaanna="'lisaa-ainakin-yksi-kieli'")
               span.perusteen-kieli(ng-repeat='kieli in editablePeruste.kielet| orderBy:kieliOrder')
@@ -172,7 +178,7 @@ mixin kvliite()
                   ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1')
                     li(ng-if='kieli.available', ng-repeat='kieli in valittavatKielet', role='presentation')
                       a.action-link(ng-click='lisaaKieli(kieli.koodi)', role='menuitem', tabindex='-1', ng-bind='kieli.koodi | kaanna')
-          .panel.panel-default.panel-clean
+          .panel.panel-default.panel-clean(ng-show="!isOpas")
             .panel-heading
               h3.panel-title(kaanna="'peruste-koulutukset'")
             .panel-body
@@ -196,7 +202,7 @@ mixin kvliite()
                       td {{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}
               div
                 button.btn.btn-default(type='button', ng-if='editEnabled', icon-role='add', ng-click='avaaKoodistoModaali()', ng-disabled='hakemassa', kaanna='lisaa-koulutus')
-          .panel.panel-default.panel-clean
+          .panel.panel-default.panel-clean(ng-show="!isOpas")
             .panel-heading
               h3.panel-title(kaanna="'osaamisalat'")
             .panel-body
@@ -212,7 +218,7 @@ mixin kvliite()
                     button.btn.btn-danger(type='button', icon-role='remove', ng-click='Osaamisala.poista(oa)', kaanna="'poista'")
               |
               button.btn.btn-default(type='button', ng-show='editEnabled', icon-role='add', ng-click='Osaamisala.lisaa()', kaanna="'hae-koodistosta'")
-          .panel.panel-default.panel-clean(ng-if='$perusteellaTutkintonimikkeet')
+          .panel.panel-default.panel-clean(ng-if='$perusteellaTutkintonimikkeet' ng-show="!isOpas")
             .panel-heading
               h3.panel-title(kaanna='') tutkintonimikkeet
             .panel-body
@@ -236,17 +242,7 @@ mixin kvliite()
                 p(kaanna='et-ole-lisannyt-viela-tutkintonimikkeita')
               div(ng-show='editEnabled')
                 button.btn.btn-default(type='button', ng-disabled='!koodisto.$resolved', ng-click='lisaaNimike()', icon-role='add', kaanna='lisaa-nimike')
-          .panel.panel-default.panel-clean
-            .panel-heading
-              h3.panel-title(kaanna='') voimassaolo
-            .panel-body
-              div(ng-if='editEnabled')
-                formfield(model='editablePeruste', model-var='voimassaoloLoppuu', label='voimassaolo-paattymispvm', type='date', placeholder='anna-voimaantulo-loppu-pvm')
-              table.aligned(ng-show='!editEnabled')
-                tr
-                  th(kaanna='') voimassaolo-paattymispvm
-                  td(pvm='peruste.voimassaoloLoppuu')
-          .panel.panel-default.panel-clean(ng-show='editablePeruste.voimassaoloLoppuu')
+          .panel.panel-default.panel-clean(ng-show='editablePeruste.voimassaoloLoppuu && !isOpas')
             .panel-heading
               h3.panel-title(kaanna="'siirtyman-paattyminen'")
             .panel-body
@@ -261,7 +257,7 @@ mixin kvliite()
               div(ckeditor='', ng-if='editEnabled', slocalized='', ng-model='editablePeruste.kuvaus')
               span(ng-show='hasContent(peruste.kuvaus) && !editEnabled', ng-bind-html='peruste.kuvaus | kaanna | unsafe')
               p(ng-show='!hasContent(peruste.kuvaus) && !editEnabled', kaanna='ei-tiivistelmaa')
-          .panel.panel-default.panel-clean
+          .panel.panel-default.panel-clean(ng-show="!isOpas")
             .panel-heading
               h3.panel-title(kaanna='') maarayksen-paatospaivamaara
             .panel-body
@@ -271,7 +267,7 @@ mixin kvliite()
                 tr
                   th(kaanna='') p&auml;&auml;t&ouml;spvm-label
                   td(pvm='peruste.paatospvm')
-          .panel.panel-default.panel-clean
+          .panel.panel-default.panel-clean(ng-show="!isOpas")
             .panel-heading
               h3.panel-title(kaanna='') maarayskirje
             .panel-body
@@ -285,7 +281,7 @@ mixin kvliite()
                   td
                     a(ng-show='hasContent(peruste.maarayskirje.url)', ng-href='{{ peruste.maarayskirje.url | kaanna }}') {{ peruste.maarayskirje.url | kaanna }}
                     p(ng-show='!hasContent(peruste.maarayskirje.url)', kaanna='ei-asetettu')
-          .panel.panel-default.panel-clean
+          .panel.panel-default.panel-clean(ng-show="!isOpas")
             .panel-heading
               h3.panel-title(ng-bind="'koulutusvienti' | kaanna")
             .panel-body
@@ -297,7 +293,7 @@ mixin kvliite()
               .aligned(ng-show="!editEnabled")
                 span(ng-show="peruste.koulutusvienti" ng-bind="'kyllä' | kaanna")
                 span(ng-hide="peruste.koulutusvienti" ng-bind="'ei' | kaanna")
-          .panel.panel-default.panel-clean
+          .panel.panel-default.panel-clean(ng-show="!isOpas")
             .panel-heading
               h3.panel-title(kaanna='') muutosmaaraykset
             .panel-body

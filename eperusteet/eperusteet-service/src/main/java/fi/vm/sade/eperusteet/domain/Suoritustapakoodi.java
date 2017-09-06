@@ -29,6 +29,7 @@ public enum Suoritustapakoodi {
     PERUSOPETUS("perusopetus"),
     LISAOPETUS("lisaopetus"),
     VARHAISKASVATUS("varhaiskasvatus"),
+    OPAS("opas"),
     ESIOPETUS("esiopetus"),
     AIPE("aipe"),
     LUKIOKOULUTUS("lukiokoulutus");

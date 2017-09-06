@@ -95,12 +95,14 @@ angular.module("eperusteApp")
             setPerusteId(id) {
                 perusteId = id;
             },
-            openModal() {
+            openModal(isOpas, isAmmatillinen) {
                 $uibModal.open({
                     templateUrl: "views/modals/pdfcreation.html",
                     controller: "PdfCreationController",
                     resolve: {
                         perusteId: () => perusteId,
+                        isOpas: () => isOpas,
+                        isAmmatillinen: () => isAmmatillinen,
                         kielet: () => ({
                             lista: _.sortBy(YleinenData.kielet),
                             valittu: YleinenData.kieli
@@ -111,7 +113,9 @@ angular.module("eperusteApp")
         }
     })
     .controller("PdfCreationController", function($scope, $window, kielet, Pdf, perusteId,
-        $timeout, Notifikaatiot, Kaanna, PerusteProjektiService, $stateParams, YleinenData) {
+        $timeout, Notifikaatiot, Kaanna, PerusteProjektiService, $stateParams, YleinenData, isAmmatillinen, isOpas) {
+        $scope.isOpas = isOpas;
+        $scope.isAmmatillinen = isAmmatillinen;
         $scope.kielet = kielet;
         $scope.kvliitekielet = YleinenData.kvliitekielet;
         $scope.docs = {};

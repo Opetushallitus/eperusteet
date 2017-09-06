@@ -107,7 +107,7 @@ angular.module('eperusteApp')
     $scope.isLukiokoulutus = () => $scope.peruste && tyyppiIsLukio($scope.peruste.koulutustyyppi);
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'}];
-    if (!$scope.pohja()) {
+    if (!$scope.pohja() && !$scope.isOpas) {
       $scope.tabs.push({otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'});
     }
 

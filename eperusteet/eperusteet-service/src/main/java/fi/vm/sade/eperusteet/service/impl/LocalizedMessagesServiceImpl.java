@@ -16,9 +16,9 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.LokalisointiDto;
+import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
 import java.util.Locale;
 import org.slf4j.Logger;

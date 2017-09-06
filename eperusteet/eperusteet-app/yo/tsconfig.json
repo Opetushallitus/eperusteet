@@ -168,6 +168,7 @@
         "./app/scripts/controllers/modals/rakenneosamodal.ts",
         "./app/scripts/controllers/modals/aikakatko.ts",
         "./app/scripts/controllers/modals/tilanvaihtovirhe.ts",
+        "./app/scripts/states/opas/state.ts",
         "./app/scripts/states/perusteprojekti/suoritustapa/aipesisalto/state.ts",
         "./app/scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/state.ts",
         "./app/scripts/states/perusteprojekti/suoritustapa/aipeosaalue/state.ts",

@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -160,6 +161,13 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.OPS, null);
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
         perusteprojektiLuontiCommonSuoritustavat(pp, 2);
+    }
+
+    @Test(expected = BusinessRuleViolationException.class)
+    @Rollback(true)
+    public void testPerusteprojektiLuontiVirheellinenTyyppi() {
+        PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.OPAS, ryhmaId);
+        service.save(luontiDto);
     }
 
     @Test

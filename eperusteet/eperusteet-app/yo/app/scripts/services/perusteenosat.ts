@@ -124,6 +124,7 @@ angular.module('eperusteApp')
     };
 
   })
+
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {
     function validoi(tutkinnonOsa) {
       var virheet = [];

@@ -29,10 +29,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -138,23 +143,34 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         Expression<String> targetName = cb.lower(root.get(Perusteprojekti_.nimi));
         Expression<Diaarinumero> targetDiaari = root.get(Perusteprojekti_.diaarinumero);
         Expression<ProjektiTila> targetTila = root.get(Perusteprojekti_.tila);
+        Join<Perusteprojekti, Peruste> joined = root.join(Perusteprojekti_.peruste);
+        Path<PerusteTyyppi> tyyppi = joined.get(Peruste_.tyyppi);
+
+//        Expression<PerusteTila> targetTila = root.get(Perusteprojekti_.peruste);
 
         Expression<String> haku = cb.literal(RepositoryUtil.kuten(pq.getNimi()));
         Expression<Diaarinumero> diaarihaku = cb.literal(new Diaarinumero(pq.getNimi()));
 
         Predicate nimessa = cb.like(targetName, haku);
         Predicate diaarissa = cb.equal(targetDiaari, diaarihaku);
-        Predicate nimihaku = cb.or(nimessa, diaarissa);
+        Predicate result = cb.or(nimessa, diaarissa);
+
+        if (pq.getTyyppi() == null) {
+            result = cb.and(result, cb.notEqual(tyyppi, PerusteTyyppi.OPAS));
+        }
 
         if (!empty(pq.getKoulutustyyppi())) {
             Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
-            nimihaku = cb.and(nimihaku, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
+            result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
+        }
+        else {
+            result = cb.and(result, cb.equal(tyyppi, pq.getTyyppi()));
         }
 
         if (!empty(pq.getTila())) {
-            return cb.and(nimihaku, root.get(Perusteprojekti_.tila).in(pq.getTila()));
+            return cb.and(result, root.get(Perusteprojekti_.tila).in(pq.getTila()));
         } else {
-            return nimihaku;
+            return result;
         }
     }
 

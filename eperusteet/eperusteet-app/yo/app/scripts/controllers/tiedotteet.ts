@@ -197,7 +197,7 @@ angular.module('eperusteApp')
   })
 
   .controller('TiedoteViewController', function ($rootScope, $state, $scope, $stateParams, TiedotteetCRUD, Notifikaatiot, PerusteprojektiResource,
-                                                 PerusteProjektiService, Perusteet, YleinenData) {
+                                                 PerusteProjektiService, Perusteet, YleinenData, perusteprojektiBackLink) {
     if ($rootScope.lastState.state.name === 'root.admin.tiedotteet') {
       $scope.$backurl = $state.href($rootScope.lastState.state.name, $rootScope.lastState.params);
       $scope.$backurlHeader = 'takaisin-tiedotteiden-hallintaan';

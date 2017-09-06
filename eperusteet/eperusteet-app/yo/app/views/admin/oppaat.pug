@@ -1,0 +1,34 @@
+div
+  // admin/oppaat.pug
+  div.hallintapainikkeet
+    button.btn(ui-sref="root.oppaat.uusi" icon-role="plus" kaanna="'luo-opas'")
+  h2
+    span(kaanna="'oppaat'")
+    ohje(teksti="ohje-oppaat")
+
+  div.tilarajaus
+    div.tilarajaus-item
+      rajaus(callback="updateOpaslist" model="rajaus" placeholder="etsi-oppaista")
+
+  table.table.table-striped.admin-table
+    tr
+      th(width="50%")
+        a.action-link(ng-click="asetaJarjestys('nimi')")
+          span(ng-bind="'nimi' | kaanna")
+          span(ng-show="jarjestysTapa === 'nimi'")
+            span.glyphicon(ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'")
+      th
+        a.action-link(ng-click="asetaJarjestys('tila')")
+          span(kaanna="'tila'")
+          span(ng-show="jarjestysTapa === 'tila'")
+            span.glyphicon(ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'")
+      th(width="25%" ng-bind="'toiminto' | kaanna")
+    tr(ng-repeat="opas in oppaat")
+      td
+        a(ui-sref="root.perusteprojekti.suoritustapa.opassisalto({ perusteProjektiId: opas.id, suoritustapa: 'opas' })" ng-bind="opas.nimi")
+      td(ng-bind="'tila-' + opas.tila | kaanna")
+      td
+        button(type="button" class="btn btn-default rivinappi" ng-click="palauta(opas)"
+               icon-role="open" ng-if="pp.tila === 'poistettu'" kaanna="'palauta'")
+
+  ep-pagination(ng-model="nykyinen" ng-change="valitseSivu" total-items="kokonaismaara" items-per-page="itemsPerPage")

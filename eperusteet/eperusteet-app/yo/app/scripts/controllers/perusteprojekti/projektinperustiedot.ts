@@ -15,8 +15,9 @@
  */
 
 angular.module('eperusteApp')
-.controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService, YleinenData) {
+.controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService, YleinenData, $stateParams) {
     PerusteProjektiService.watcher($scope, 'projekti');
+    // $scope.isOpas = $stateParams.suoritustapa === "opas";
 
     if (typeof $scope.projekti.paatosPvm === 'number') {
         $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);

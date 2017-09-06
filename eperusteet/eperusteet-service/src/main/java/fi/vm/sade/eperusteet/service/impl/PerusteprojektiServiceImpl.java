@@ -289,6 +289,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti.setTila(LAADINTA);
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
+        if (tyyppi == PerusteTyyppi.OPAS) {
+            throw new BusinessRuleViolationException("Virheellinen perustetyyppi");
+        }
+
         if (tyyppi != PerusteTyyppi.POHJA) {
             if (koulutustyyppi == null) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla koulutustyyppi");

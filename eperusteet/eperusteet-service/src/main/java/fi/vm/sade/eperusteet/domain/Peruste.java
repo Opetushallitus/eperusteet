@@ -23,16 +23,15 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import java.io.Serializable;
+import java.util.*;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.*;
 
 /**
  *
@@ -171,8 +170,13 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private AIPEOpetuksenSisalto aipeOpetuksenPerusteenSisalto;
 
     @Getter
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private OpasSisalto oppaanSisalto;
+
+    @Getter
     @Enumerated(EnumType.STRING)
     @NotNull
+//    @Column(updatable = false, name = "tila")
     private PerusteTila tila = PerusteTila.LUONNOS;
 
     @Getter
@@ -262,46 +266,67 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     Palauttaa suoritustavan mukaisen sisällön.
     */
     public PerusteenOsaViite getSisalto(Suoritustapakoodi suoritustapakoodi) {
-        PerusteenOsaViite viite = null;
-        switch (suoritustapakoodi) {
-            case ESIOPETUS:
+        if (this.tyyppi == PerusteTyyppi.OPAS) {
+            return this.getOppaanSisalto().getSisalto();
+        }
+
+        KoulutusTyyppi kt = KoulutusTyyppi.of(this.koulutustyyppi);
+        switch (kt) {
+            // Yksinkertaiset perusteet
             case LISAOPETUS:
+            case ESIOPETUS:
             case VARHAISKASVATUS:
+            case PERUSOPETUSVALMISTAVA:
                 EsiopetuksenPerusteenSisalto esiopetusSisalto = this.getEsiopetuksenPerusteenSisalto();
                 if (esiopetusSisalto != null) {
-                    viite = esiopetusSisalto.getSisalto();
+                    return esiopetusSisalto.getSisalto();
                 }
                 break;
+
+            // Perusopetuksen rakenteella
             case PERUSOPETUS:
                 PerusopetuksenPerusteenSisalto poSisalto = this.getPerusopetuksenPerusteenSisalto();
                 if (poSisalto != null) {
-                    viite = poSisalto.getSisalto();
+                    return poSisalto.getSisalto();
                 }
                 break;
-            case AIPE:
+
+            // AIPE-rakenteella
+            case AIKUISTENPERUSOPETUS:
                 AIPEOpetuksenSisalto aipeSisalto = this.getAipeOpetuksenPerusteenSisalto();
                 if (aipeSisalto != null) {
-                    viite = aipeSisalto.getSisalto();
+                    return aipeSisalto.getSisalto();
                 }
                 break;
+
+            // Lukiorakenteella
             case LUKIOKOULUTUS:
+            case LUKIOVALMISTAVAKOULUTUS:
+            case AIKUISTENLUKIOKOULUTUS:
                 LukiokoulutuksenPerusteenSisalto lukioSisalto = this.getLukiokoulutuksenPerusteenSisalto();
                 if (lukioSisalto != null) {
-                    viite = lukioSisalto.getSisalto();
+                    return lukioSisalto.getSisalto();
                 }
                 break;
-            default:
+
+            // Ammatillisella rakenteella
+            case TELMA:
+            case VALMA:
+            case PERUSTUTKINTO:
+            case AMMATTITUTKINTO:
+            case ERIKOISAMMATTITUTKINTO:
                 // Ammatilliset
-                for(Suoritustapa suoritustapa : this.getSuoritustavat()) {
+                for (Suoritustapa suoritustapa : this.getSuoritustavat()) {
                     if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
-                        viite = suoritustapa.getSisalto();
+                        return suoritustapa.getSisalto();
                     }
-                }   break;
+                }
+                break;
         }
-        return viite;
+        return null;
     }
 
-    public void setPerusopetuksenPerusteenSisalto(PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto) {
+    public void setSisalto(PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto) {
         this.perusopetuksenPerusteenSisalto = perusopetuksenPerusteenSisalto;
         this.perusopetuksenPerusteenSisalto.setPeruste(this);
     }
@@ -311,12 +336,17 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         this.aipeOpetuksenPerusteenSisalto.setPeruste(this);
     }
 
-    public void setEsiopetuksenPerusteenSisalto(EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto) {
+    public void setSisalto(OpasSisalto sisalto) {
+        this.oppaanSisalto = sisalto;
+        this.oppaanSisalto.setPeruste(this);
+    }
+
+    public void setSisalto(EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto) {
         this.esiopetuksenPerusteenSisalto = esiopetuksenPerusteenSisalto;
         this.esiopetuksenPerusteenSisalto.setPeruste(this);
     }
 
-    public void setLukiokoulutuksenPerusteenSisalto(LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto) {
+    public void setSisalto(LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto) {
         this.lukiokoulutuksenPerusteenSisalto = lukiokoulutuksenPerusteenSisalto;
         if (lukiokoulutuksenPerusteenSisalto != null) {
             lukiokoulutuksenPerusteenSisalto.setPeruste(this);
@@ -347,6 +377,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         if  (lukiokoulutuksenPerusteenSisalto != null
                 && lukiokoulutuksenPerusteenSisalto.containsViite(viite)) {
             return lukiokoulutuksenPerusteenSisalto.containsViite(viite);
+        }
+
+        if  (this.oppaanSisalto != null
+                && this.oppaanSisalto.containsViite(viite)) {
+            return this.oppaanSisalto.containsViite(viite);
         }
 
         throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");

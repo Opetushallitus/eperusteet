@@ -269,6 +269,10 @@ angular.module('eperusteApp')
       return peruste.koulutustyyppi === 'koulutustyyppi_20';
     };
 
+    this.isOpas = function (peruste) {
+      return peruste.tyyppi === "opas";
+    };
+
     this.isEsiopetus = function (peruste) {
       return _.any(["koulutustyyppi_15", "koulutustyyppi_22"], (tyyppi) => tyyppi === peruste.koulutustyyppi);
     };
@@ -278,7 +282,7 @@ angular.module('eperusteApp')
     };
 
     this.isSimple = function (peruste) {
-      return this.isEsiopetus(peruste) || this.isLisaopetus(peruste) || this.isVarhaiskasvatus(peruste);
+      return this.isOpas(peruste) || this.isEsiopetus(peruste) || this.isLisaopetus(peruste) || this.isVarhaiskasvatus(peruste);
     };
 
     this.validSuoritustapa = function (peruste, suoritustapa) {

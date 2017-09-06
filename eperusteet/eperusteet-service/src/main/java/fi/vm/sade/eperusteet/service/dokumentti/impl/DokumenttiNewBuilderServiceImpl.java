@@ -20,19 +20,19 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiPeruste;
+import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -43,18 +43,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
-
-import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * @author isaul
@@ -122,11 +119,17 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.setPeruste(peruste);
         docBase.setDokumentti(dokumentti);
         docBase.setMapper(mapper);
+
         if (suoritustapakoodi.equals(Suoritustapakoodi.AIPE)) {
             AIPEOpetuksenSisalto aipeOpetuksenPerusteenSisalto = peruste.getAipeOpetuksenPerusteenSisalto();
             docBase.setAipeOpetuksenSisalto(aipeOpetuksenPerusteenSisalto);
             docBase.setSisalto(aipeOpetuksenPerusteenSisalto.getSisalto());
-        } else {
+        }
+        else if (peruste.getTyyppi() == PerusteTyyppi.OPAS) {
+            PerusteenOsaViite sisalto = peruste.getSisalto(null);
+            docBase.setSisalto(sisalto);
+        }
+        else {
             Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
             PerusteenOsaViite sisalto = suoritustapa.getSisalto();
             docBase.setSisalto(sisalto);
@@ -135,11 +138,11 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Kansilehti & Infosivu
         addMetaPages(docBase);
 
-
         if (suoritustapakoodi.equals(Suoritustapakoodi.AIPE)) {
             // AIPE-osat
             addAipeSisalto(docBase);
-        } else {
+        }
+        else if (peruste.getTyyppi() != PerusteTyyppi.OPAS) {
             // Tutkinnon muodostuminen
             addSisaltoelementit(docBase);
 
@@ -166,6 +169,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Nimi
         Element title = docBase.getDocument().createElement("title");
         String nimi = getTextString(docBase, docBase.getPeruste().getNimi());
+
+        // Oppaille ei lisätä perusteiden tietoja
+        if (docBase.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
+            return;
+        }
+
         if (nimi != null && nimi.length() != 0) {
             title.appendChild(docBase.getDocument().createTextNode(nimi));
             docBase.getHeadElement().appendChild(title);

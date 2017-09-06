@@ -19,7 +19,7 @@ angular.module('eperusteApp', [
     'ui.router',
     'ngResource',
     'restangular',
-    'ngAnimate',
+    // 'ngAnimate', Saattaa nopeuttaa puurakenteiden renderöintiä
     'pascalprecht.translate',
     'ui.bootstrap',
     'angular-cache',
@@ -46,7 +46,7 @@ angular.module('eperusteApp', [
 .constant('LUKITSIN_MAKSIMI', 20000)
 .constant('TEXT_HIERARCHY_MAX_DEPTH', 8)
 .constant('SHOW_VERSION_FOOTER', true)
-.constant('DEBUG_UI_ROUTER', false)
+.constant('DEBUG_UI_ROUTER', true)
 .config(($sceProvider, $urlRouterProvider, $translateProvider, $urlMatcherFactoryProvider, $locationProvider) => {
     const preferred = 'fi';
 

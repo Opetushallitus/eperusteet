@@ -1413,6 +1413,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     private void addInfoPage(Document doc, Peruste peruste, Kieli kieli) {
+        if (peruste.getTyyppi() == PerusteTyyppi.OPAS) {
+            return;
+        }
+
         Element rootElement = doc.getDocumentElement();
         Element info = doc.createElement("bookinfo");
         rootElement.appendChild(info);
