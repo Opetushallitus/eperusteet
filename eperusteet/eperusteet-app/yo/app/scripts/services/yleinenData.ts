@@ -36,7 +36,6 @@ angular
         const Diaariformaatit = [/^OPH-\d{1,5}-\d{4}$/, /^\d{1,3}\/\d{3}\/\d{4}$/];
 
         this.isDiaariValid = (diaarinumero: string) => {
-            console.log(diaarinumero);
             return (
                 !diaarinumero ||
                 (_.isString(diaarinumero) && _.some(Diaariformaatit, formaatti => diaarinumero.match(formaatti)))

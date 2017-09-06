@@ -77,7 +77,6 @@ angular.module("eperusteApp").service("TutkinnonOsaLeikelautaService", (localSto
                     item = ui.item;
 
                 if (sender && target && item) {
-                    console.log(sender.context.id, target.id, item.sortable.model.$osanTyyppi);
                     if (
                         sender.context.id === "leikelauta" &&
                         target.id !== item.sortable.model.$osanTyyppi &&
