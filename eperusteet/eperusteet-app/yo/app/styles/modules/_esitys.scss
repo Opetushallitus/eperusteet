@@ -1,111 +1,111 @@
 /* deprecated */
 
-$border-color: #0C566E;
+$border-color: #0c566e;
 
 .esitys-print-view {
-  .painikkeet {
-    display: none;
-  }
+    .painikkeet {
+        display: none;
+    }
 }
 
 .esitys {
-
-  .rakenne-sisalto {
-    margin: 5px 5px 20px 0px;
-  }
-
-  .sivunavi-sisalto {
-    hr {
-      margin-top: 0;
+    .rakenne-sisalto {
+        margin: 5px 5px 20px 0px;
     }
 
-    h1 {
-      margin: 0 0 10px 0;
-    }
+    .sivunavi-sisalto {
+        hr {
+            margin-top: 0;
+        }
 
-    h2 {
-      margin-top: 50px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #ccc;
-    }
+        h1 {
+            margin: 0 0 10px 0;
+        }
 
-    h3 {
-      margin-top: 30px;
-    }
+        h2 {
+            margin-top: 50px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+        }
 
-    h4 {
-      margin-top: 20px;
-    }
+        h3 {
+            margin-top: 30px;
+        }
 
-    .tiedot {
-      padding: 5px;
-    }
+        h4 {
+            margin-top: 20px;
+        }
 
-    .painikkeet {
-      padding-top: 8px;
-      font-size: small;
-      margin-bottom: 12px;
-    }
+        .tiedot {
+            padding: 5px;
+        }
 
-    .leipateksti {
-      padding-left: 30px;
-    }
+        .painikkeet {
+            padding-top: 8px;
+            font-size: small;
+            margin-bottom: 12px;
+        }
 
-    .left-space {
-      margin-left: 8px;
-    }
+        .leipateksti {
+            padding-left: 30px;
+        }
 
-    .sisalto {
-      clear: right;
-      -ms-hyphens: manual;
-      -moz-hyphens: manual;
-      -webkit-hyphens: manual;
-      hyphens: manual;
-      text-align: justify;
-    }
+        .left-space {
+            margin-left: 8px;
+        }
 
-    .arviointi {
-      margin: 5px;
-      margin-top: 20px;
-      border: 1px solid $border-color;
+        .sisalto {
+            clear: right;
+            -ms-hyphens: manual;
+            -moz-hyphens: manual;
+            -webkit-hyphens: manual;
+            hyphens: manual;
+            text-align: justify;
+        }
 
-      .arviointi-otsikko {
-	      background: $border-color;
-	      color: #fff;
-	      padding: 5px;
-      }
-      .arviointi-sisalto {
-	      padding: 10px;
-	      h4 {
-	        font-weight: bold;
-	      }
-      }
+        .arviointi {
+            margin: 5px;
+            margin-top: 20px;
+            border: 1px solid $border-color;
+
+            .arviointi-otsikko {
+                background: $border-color;
+                color: #fff;
+                padding: 5px;
+            }
+            .arviointi-sisalto {
+                padding: 10px;
+                h4 {
+                    font-weight: bold;
+                }
+            }
+        }
     }
-  }
 }
 
 .esitys-perusteen-tiedot {
-  font-size: 14px;
-  width: 100%;
-  th {
-    width: 25%;
-  }
-  th, td {
-    vertical-align: top;
-    padding: 7px 10px 5px 0;
-  }
-  .tutkintonimikkeet {
-    font-size: 13px;
-  }
-  .koulutukset {
-    font-size: 13px;
-  }
+    font-size: 14px;
+    width: 100%;
+    th {
+        width: 25%;
+    }
+    th,
+    td {
+        vertical-align: top;
+        padding: 7px 10px 5px 0;
+    }
+    .tutkintonimikkeet {
+        font-size: 13px;
+    }
+    .koulutukset {
+        font-size: 13px;
+    }
 }
 
 .esitys-header-links {
-  margin-top: 10px;
-  text-align: right;
-  a {
-    display: block;
-  }
+    margin-top: 10px;
+    text-align: right;
+    a {
+        display: block;
+    }
 }

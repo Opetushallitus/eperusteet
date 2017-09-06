@@ -15,302 +15,304 @@ European Union Public Licence for more details.
  */
 $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .project-header {
-  h2 {
-    margin-top: 0;
-    font-weight: 700;
-  }
-  .statusbadge {
-    float:left;
-    margin-right: 14px;
-  }
-  margin-bottom: 25px;
-  min-height: 102px;
-  position: relative;
-  background-color: rgba(20, 158, 203, 0.06);
-  border: $project-header-border;
-  .headernavi {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    ul {
-      float: right;
-      margin: 0;
-      padding: 0;
+    h2 {
+        margin-top: 0;
+        font-weight: 700;
     }
-    li {
-      list-style-type: none;
-      display: inline-block;
-      padding: 0;
-      margin: 0;
-      a {
-        display: block;
-        padding: 7px;
-      }
+    .statusbadge {
+        float: left;
+        margin-right: 14px;
     }
-  }
-  .headernavi-active {
-    cursor: default;
-    color: black;
-    background-color: white;
+    margin-bottom: 25px;
+    min-height: 102px;
+    position: relative;
+    background-color: rgba(20, 158, 203, 0.06);
     border: $project-header-border;
-    border-bottom: none;
-    &:hover {
-      color: black;
-      text-decoration: none;
-    }
-  }
-  .btn-header-pdf {
-      position: absolute;
-      right: 0px;
-      margin: 10px;
-  }
-  @media (max-width: 900px) {
     .headernavi {
-      position: relative;
-      margin-right: 20px;
-      margin-left: 20px;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        ul {
+            float: right;
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style-type: none;
+            display: inline-block;
+            padding: 0;
+            margin: 0;
+            a {
+                display: block;
+                padding: 7px;
+            }
+        }
     }
-  }
+    .headernavi-active {
+        cursor: default;
+        color: black;
+        background-color: white;
+        border: $project-header-border;
+        border-bottom: none;
+        &:hover {
+            color: black;
+            text-decoration: none;
+        }
+    }
+    .btn-header-pdf {
+        position: absolute;
+        right: 0px;
+        margin: 10px;
+    }
+    @media (max-width: 900px) {
+        .headernavi {
+            position: relative;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+    }
 }
 
 .project-otsikkotiedot {
-  margin: 10px 5px 3px 10px;
-  table {
-    color: $secondary-lighter;
-    th {
-      padding-right: 5px;
+    margin: 10px 5px 3px 10px;
+    table {
+        color: $secondary-lighter;
+        th {
+            padding-right: 5px;
+        }
     }
-  }
 }
 
 .uusi-projekti-header {
-  padding: 20px;
+    padding: 20px;
 }
 
 .main-content .row {
-  padding-left: 40px;
-  padding-right: 40px;
+    padding-left: 40px;
+    padding-right: 40px;
 }
 
 .avaa-sulje {
-  padding-top: 10px;
-  font-size: small
+    padding-top: 10px;
+    font-size: small;
 }
 
 .main-content .tutkinnonsisalto-list {
-  padding: 0;
-  list-style: none;
-  margin-bottom: 40px;
+    padding: 0;
+    list-style: none;
+    margin-bottom: 40px;
 
-  hr {
-    background: #ccc;
-  }
+    hr {
+        background: #ccc;
+    }
 }
 
 .ryhma-johto {
-  h2 {
-    border-bottom: $project-header-border;
-  }
+    h2 {
+        border-bottom: $project-header-border;
+    }
 }
 
 .form-group-wrapper {
-  margin-right: 30px;
-  margin-left: 30px;
+    margin-right: 30px;
+    margin-left: 30px;
 }
 
 .form-area {
-  border: 2px solid #ddd;
-  border-radius: 2px;
-  padding: 10px;
-  max-width: 1024px;
-  &.koulutukset {
-    margin-bottom: 10px;
-  }
-  &.viewmode {
-    border: none !important;
-  }
-  table.perustiedot {
-    width: 100%;
-    th {
-      width: 25%;
+    border: 2px solid #ddd;
+    border-radius: 2px;
+    padding: 10px;
+    max-width: 1024px;
+    &.koulutukset {
+        margin-bottom: 10px;
     }
-    td {
-      font-size: 14px;
+    &.viewmode {
+        border: none !important;
     }
-    th, td {
-      padding: 10px;
+    table.perustiedot {
+        width: 100%;
+        th {
+            width: 25%;
+        }
+        td {
+            font-size: 14px;
+        }
+        th,
+        td {
+            padding: 10px;
+        }
     }
-  }
 }
 
 form[name="perusteForm"] {
-  margin-bottom: 240px;
+    margin-bottom: 240px;
 }
 
 .projekti-form {
-  margin: 20px;
+    margin: 20px;
 }
 
 .uusi-projekti-header {
-  padding: 20px;
+    padding: 20px;
 }
 
-
 .uusi-projekti-content {
-  /* Tilaa päivämäärän valitsimelle ettei se piiloudu overflown alle. */
-  margin: 0 20px 240px 0;
+    /* Tilaa päivämäärän valitsimelle ettei se piiloudu overflown alle. */
+    margin: 0 20px 240px 0;
 }
 
 .projekti-form-buttons {
-  margin-top: 20px;
-  float: right;
+    margin-top: 20px;
+    float: right;
 }
 
 .tilanvaihto {
-  li {
-    cursor: pointer;
-    border: none;
-    .statusbadge {
-      float: left;
-      margin-right: 20px;
+    li {
+        cursor: pointer;
+        border: none;
+        .statusbadge {
+            float: left;
+            margin-right: 20px;
+        }
+        &.vanha {
+            background-color: #ccc;
+        }
+        &.uusi {
+            background-color: $valinta-vari;
+        }
     }
-    &.vanha {
-      background-color: #ccc;
+    .row > div {
+        text-align: center;
     }
-    &.uusi {
-      background-color: $valinta-vari;
+    .arrow {
+        height: $statusbadge-height;
+        .glyphicon {
+            opacity: 0.5;
+            font-size: 60px;
+            line-height: $statusbadge-height;
+        }
     }
-  }
-  .row>div {
-    text-align: center;
-  }
-  .arrow {
-    height: $statusbadge-height;
-    .glyphicon {
-      opacity: 0.5;
-      font-size: 60px;
-      line-height: $statusbadge-height;
+    .confirmation {
+        margin-top: 20px;
+        font-size: 125%;
     }
-  }
-  .confirmation {
-    margin-top: 20px;
-    font-size: 125%;
-  }
 }
 
 .panel-clean {
-  max-width: 900px;
-  table.aligned {
-    margin: 10px 0px;
-    th, td {
-      padding: 10px 0px;
+    max-width: 900px;
+    table.aligned {
+        margin: 10px 0px;
+        th,
+        td {
+            padding: 10px 0px;
+        }
+        th {
+            width: 160px;
+        }
     }
-    th {
-      width: 160px;
-    }
-  }
 }
-.panel-clean, .panel-clean .panel-heading {
-  background-color: transparent;
-  border: 0;
-  box-shadow: none;
-  .panel-heading {
-    padding-left: 0;
-    .panel-title {
-      font-size: 18px;
+.panel-clean,
+.panel-clean .panel-heading {
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+    .panel-heading {
+        padding-left: 0;
+        .panel-title {
+            font-size: 18px;
+        }
     }
-  }
 }
-
 
 .koulutukset {
-  .koulutus {
-    border: 1px solid #ddd;
-    max-width: 600px;
-    margin-bottom: 10px;
-    .poisto {
-      margin-top: 5px;
-      margin-right: 5px;
-      float: right;
+    .koulutus {
+        border: 1px solid #ddd;
+        max-width: 600px;
+        margin-bottom: 10px;
+        .poisto {
+            margin-top: 5px;
+            margin-right: 5px;
+            float: right;
+        }
+        table.aligned {
+            margin-left: 10px;
+            th,
+            td {
+                padding-left: 10px;
+            }
+        }
     }
-    table.aligned {
-      margin-left: 10px;
-      th, td {
-        padding-left: 10px;
-      }
-    }
-  }
 }
 
 .input-group-btn.textarea-selector {
-  vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 $napin-leveys: 250px;
 .pdf-lataus {
-  width: 100%;
-  text-align: center;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  button {
-    width: $napin-leveys;
-  }
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    button {
+        width: $napin-leveys;
+    }
 }
 
 .latauslinkki {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-left: -10px;
-  display: block;
-  text-align: center;
-  button {
-    width: $napin-leveys;
-  }
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: -10px;
+    display: block;
+    text-align: center;
+    button {
+        width: $napin-leveys;
+    }
 }
 
 .tyoryhma {
-  .ryhmapalkki {
-    font-size: medium;
-    margin-left: 20px;
-  }
+    .ryhmapalkki {
+        font-size: medium;
+        margin-left: 20px;
+    }
 }
 
 .tyoryhma-modal {
-  .talert {
-    margin-top: 5px;
-  }
-
-  .tjasenet {
-    margin-top: 20px;
-    min-height: 400px;
-
-    .painikkeet {
-      text-align: center;
-      margin-top: 120px;
-
-      button {
-        margin-top: 10px;
-        padding: 10px;
-      }
+    .talert {
+        margin-top: 5px;
     }
 
-    select {
-      height: 360px;
+    .tjasenet {
+        margin-top: 20px;
+        min-height: 400px;
+
+        .painikkeet {
+            text-align: center;
+            margin-top: 120px;
+
+            button {
+                margin-top: 10px;
+                padding: 10px;
+            }
+        }
+
+        select {
+            height: 360px;
+        }
     }
-  }
 }
 
 #projekti-sisalto-anchor {
-  position: relative;
+    position: relative;
 }
 
 .perusteen-kieli {
-  padding: 8px 8px 8px 8px;
-  margin-right: 5px;
-  background: #9FDBF0;
+    padding: 8px 8px 8px 8px;
+    margin-right: 5px;
+    background: #9fdbf0;
 
-  .perusteen-kieli-poisto {
-    padding: 0px;
-    margin-left: 4px;
-  }
+    .perusteen-kieli-poisto {
+        padding: 0px;
+        margin-left: 4px;
+    }
 }

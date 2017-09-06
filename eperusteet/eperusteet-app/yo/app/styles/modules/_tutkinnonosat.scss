@@ -1,127 +1,128 @@
 .tutkinnonosa-lista-toolbar {
-  padding: 0;
-  margin: 0px 0 20px 0;
-  border-bottom: 1px solid #ddd;
-  position: relative;
-  .toolbar-input {
-    height: 40px;
-    overflow: hidden;
-    .input-group {
-      float: left;
-      max-width: 26em;
+    padding: 0;
+    margin: 0px 0 20px 0;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    .toolbar-input {
+        height: 40px;
+        overflow: hidden;
+        .input-group {
+            float: left;
+            max-width: 26em;
+        }
     }
-  }
-  #osalistausextrafilter {
-    font-weight: normal;
-    & .form-control, & .form-control * {
-      font-weight: normal;
+    #osalistausextrafilter {
+        font-weight: normal;
+        & .form-control,
+        & .form-control * {
+            font-weight: normal;
+        }
+        line-height: 40px;
+        height: 40px;
+        margin-left: 25px;
+        label > select {
+            margin-left: 10px;
+        }
+        .form-control {
+            display: inline-block !important;
+            width: auto !important;
+        }
     }
-    line-height: 40px;
-    height: 40px;
-    margin-left: 25px;
-    label > select {
-      margin-left: 10px;
-    }
-    .form-control {
-      display: inline-block !important;
-      width: auto !important;
-    }
-  }
 }
 
 .tosat-sort-selector {
-  clear: both;
-  height: 32px;
-  .jarjestys-select {
-    float: left;
-    width: auto !important;
-    height: 30px;
-  }
-  .lista-linkit {
-    font-size: 130%;
-    float: left;
-    padding: 5px 0 0 5px;
-  }
+    clear: both;
+    height: 32px;
+    .jarjestys-select {
+        float: left;
+        width: auto !important;
+        height: 30px;
+    }
+    .lista-linkit {
+        font-size: 130%;
+        float: left;
+        padding: 5px 0 0 5px;
+    }
 }
 
 ul.tutkinnonosat {
-  padding: 0;
-  margin: 20px 0 0 0;
+    padding: 0;
+    margin: 20px 0 0 0;
 
-  .tutkinnonosa-laatikko {
-    float: left;
-    border-radius: 0 !important;
-    width: 460px;
-    height: 80px;
-    padding-top: 13px;
-    padding-left: 5px;
-    margin: 0 0 10px 0;
-    cursor: pointer;
-    // overflow: hidden;
-    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    .tutkinnonosa-laatikko {
+        float: left;
+        border-radius: 0 !important;
+        width: 460px;
+        height: 80px;
+        padding-top: 13px;
+        padding-left: 5px;
+        margin: 0 0 10px 0;
+        cursor: pointer;
+        // overflow: hidden;
+        -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 
-    &:nth-child(odd) {
-      margin-right: 10px;
-    }
+        &:nth-child(odd) {
+            margin-right: 10px;
+        }
 
-    & *:hover {
-      text-decoration: none;
-    }
+        & *:hover {
+            text-decoration: none;
+        }
 
-    &:hover {
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-      border: 1px solid #aaa;
-      text-decoration: none;
-      background: white;
+        &:hover {
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            border: 1px solid #aaa;
+            text-decoration: none;
+            background: white;
 
-      .muokkaus {
-        color: black;
-      }
+            .muokkaus {
+                color: black;
+            }
+        }
+        .numero-wrapper {
+            float: left;
+            width: 32px;
+            height: 60px;
+            &.narrow {
+                width: 10px;
+            }
+            .jarjestysnumero {
+                position: relative;
+                padding: 3px 5px;
+                top: -2px;
+                background: #f0f0f0;
+                color: #333;
+                border: 1px solid #ccc;
+            }
+        }
+        .otsikko {
+            &.otsikko-esitys {
+                margin-left: 10px;
+            }
+            float: left;
+            width: 80%;
+            h3 {
+                margin: 0px;
+                max-width: 420px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                color: rgb(51, 51, 51);
+            }
+            .pienet-tiedot {
+                color: #777;
+                padding-top: 4px;
+            }
+        }
+        .muokkaus {
+            font-size: 40px;
+            float: right;
+            color: $brand-primary;
+        }
     }
-    .numero-wrapper {
-      float: left;
-      width: 32px;
-      height: 60px;
-      &.narrow {
-        width: 10px;
-      }
-      .jarjestysnumero {
-        position: relative;
-        padding: 3px 5px;
-        top: -2px;
-        background: #f0f0f0;
-        color: #333;
-        border: 1px solid #ccc;
-      }
-    }
-    .otsikko {
-      &.otsikko-esitys {
-        margin-left: 10px;
-      }
-      float: left;
-      width: 80%;
-      h3 {
-        margin: 0px;
-        max-width: 420px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        color: rgb(51,51,51);
-      }
-      .pienet-tiedot {
-        color: #777;
-        padding-top: 4px;
-      }
-    }
-    .muokkaus {
-      font-size: 40px;
-      float: right;
-      color: $brand-primary;
-    }
-  }
 }
 
 .tuotutkinnonosat-table {
-  margin-top: 10px;
+    margin-top: 10px;
 }

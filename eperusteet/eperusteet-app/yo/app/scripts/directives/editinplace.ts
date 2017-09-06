@@ -14,50 +14,54 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
-angular.module('eperusteApp')
-  .directive('editInPlace', function($compile, $parse, Kaanna, $document) {
+angular.module("eperusteApp").directive("editInPlace", function($compile, $parse, Kaanna, $document) {
     return {
-      restrict: 'A',
-      scope: {
-        'editInPlace': '='
-      },
-      link: function (scope, element) {
-        scope.editing = false;
-        var readOnlyEl = angular.element('<span></span>');
-        readOnlyEl.attr('ng-show', '!editing')
-          .attr('ng-click', 'edit()')
-          .text('{{editInPlace || "nimetön" | kaanna }}');
-        var inputEl = angular.element('<input>');
-        inputEl.attr('ng-show', 'editing')
-          .attr('ng-model', 'editInPlace')
-          .attr('slocalized', '')
-          .css({
-            'font-size': element.css('font-size'),
-            'display': 'inline-block',
-            'height': parseInt(element.css('line-height'), 10) * 1.2
-          });
+        restrict: "A",
+        scope: {
+            editInPlace: "="
+        },
+        link: function(scope, element) {
+            scope.editing = false;
+            var readOnlyEl = angular.element("<span></span>");
+            readOnlyEl
+                .attr("ng-show", "!editing")
+                .attr("ng-click", "edit()")
+                .text('{{editInPlace || "nimetön" | kaanna }}');
+            var inputEl = angular.element("<input>");
+            inputEl
+                .attr("ng-show", "editing")
+                .attr("ng-model", "editInPlace")
+                .attr("slocalized", "")
+                .css({
+                    "font-size": element.css("font-size"),
+                    display: "inline-block",
+                    height: parseInt(element.css("line-height"), 10) * 1.2
+                });
 
-        element.append(readOnlyEl);
-        element.append(inputEl);
-        $compile(element.contents())(scope);
-        $document.on('click', function (event) {
-          if (element.find(event.target).length > 0) {
-            return;
-          }
-          scope.editing = false;
-          scope.$apply();
-        });
+            element.append(readOnlyEl);
+            element.append(inputEl);
+            $compile(element.contents())(scope);
+            $document.on("click", function(event) {
+                if (element.find(event.target).length > 0) {
+                    return;
+                }
+                scope.editing = false;
+                scope.$apply();
+            });
 
-        scope.edit = function () {
-          var fakeEl = angular.element('<div>').hide().text(readOnlyEl.text());
-          element.append(fakeEl);
-          var width = fakeEl.width();
-          fakeEl.remove();
-          inputEl.css('width', Math.min(Math.max(parseInt(width, 10) + 100, 400), 800));
-          scope.editing = true;
-        };
-      }
+            scope.edit = function() {
+                var fakeEl = angular
+                    .element("<div>")
+                    .hide()
+                    .text(readOnlyEl.text());
+                element.append(fakeEl);
+                var width = fakeEl.width();
+                fakeEl.remove();
+                inputEl.css("width", Math.min(Math.max(parseInt(width, 10) + 100, 400), 800));
+                scope.editing = true;
+            };
+        }
     };
-  });
+});

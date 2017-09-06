@@ -14,69 +14,74 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 /* global _ */
 
-angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('root', {
-        url: '/:lang',
-        template: '<div ui-view></div>',
-        abstract: true,
-        resolve: {
-          resolved: function(Profiili) {
-            return Profiili.resolvedPromise();
-          },
-          suosikit: function(Profiili) {
-            return Profiili;
-          },
-          casTiedot: function (Profiili) {
-            return Profiili.casTiedot();
-          }
-        },
-        onEnter: ['YleinenData', '$stateParams', function (YleinenData, $stateParams) {
-          YleinenData.vaihdaKieli($stateParams.lang);
-        }]
-      })
-      .state('root.aloitussivu', {
-        url: '',
-        templateUrl: 'views/aloitussivu.html',
-        controller: 'AloitusSivuController'
-      });
-  })
-  .controller('AloitusSivuController', function ($scope, $state, YleinenData) {
-    $scope.valinnat = [
-      {
-        koodi: 'koulutustyyppi_15',
-        helper: 'selaa-perustetta'
-      },
-      {
-        koodi: 'koulutustyyppi_16',
-        helper: 'selaa-perusteita'
-      },
-      {
-        koodi: 'koulutustyyppi_17',
-        helper: 'selaa-perustetta'
-      },
-      {
-        koodi: 'koulutustyyppi_2',
-        helper: 'selaa-perusteita'
-      },
-      {
-        label: 'ammatillinen-peruskoulutus',
-        koodi: 'koulutustyyppi_1',
-        helper: 'hae-perusteita'
-      },
-      {
-        label: 'ammatillinen-aikuiskoulutus',
-        koodi: 'koulutustyyppi_11',
-        helper: 'hae-perusteita'
-      },
-    ];
-    _.each($scope.valinnat, (item) => {
-      const info = YleinenData.koulutustyyppiInfo[item.koodi] || {};
-      item.label = item.label || info.nimi;
-      item.url = $state.href(info.hakuState);
+angular
+    .module("eperusteApp")
+    .config(function($stateProvider) {
+        $stateProvider
+            .state("root", {
+                url: "/:lang",
+                template: "<div ui-view></div>",
+                abstract: true,
+                resolve: {
+                    resolved: function(Profiili) {
+                        return Profiili.resolvedPromise();
+                    },
+                    suosikit: function(Profiili) {
+                        return Profiili;
+                    },
+                    casTiedot: function(Profiili) {
+                        return Profiili.casTiedot();
+                    }
+                },
+                onEnter: [
+                    "YleinenData",
+                    "$stateParams",
+                    function(YleinenData, $stateParams) {
+                        YleinenData.vaihdaKieli($stateParams.lang);
+                    }
+                ]
+            })
+            .state("root.aloitussivu", {
+                url: "",
+                templateUrl: "views/aloitussivu.html",
+                controller: "AloitusSivuController"
+            });
+    })
+    .controller("AloitusSivuController", function($scope, $state, YleinenData) {
+        $scope.valinnat = [
+            {
+                koodi: "koulutustyyppi_15",
+                helper: "selaa-perustetta"
+            },
+            {
+                koodi: "koulutustyyppi_16",
+                helper: "selaa-perusteita"
+            },
+            {
+                koodi: "koulutustyyppi_17",
+                helper: "selaa-perustetta"
+            },
+            {
+                koodi: "koulutustyyppi_2",
+                helper: "selaa-perusteita"
+            },
+            {
+                label: "ammatillinen-peruskoulutus",
+                koodi: "koulutustyyppi_1",
+                helper: "hae-perusteita"
+            },
+            {
+                label: "ammatillinen-aikuiskoulutus",
+                koodi: "koulutustyyppi_11",
+                helper: "hae-perusteita"
+            }
+        ];
+        _.each($scope.valinnat, item => {
+            const info = YleinenData.koulutustyyppiInfo[item.koodi] || {};
+            item.label = item.label || info.nimi;
+            item.url = $state.href(info.hakuState);
+        });
     });
-  });

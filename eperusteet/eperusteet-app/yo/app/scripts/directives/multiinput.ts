@@ -14,50 +14,49 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .directive('mlInput', function($translate, YleinenData, $timeout) {
+angular.module("eperusteApp").directive("mlInput", function($translate, YleinenData, $timeout) {
     return {
-      restrict: 'E',
-      scope: {
-        mlData: '=',
-        mlAdditionalLanguages: '=',
-        type: '@',
-        required: '='
-      },
-      templateUrl: 'views/multiinput.html',
-      replace: true,
-      transclude: true,
-      controller: function($scope) {
-        $scope.type = $scope.type || 'text';
-        $scope.langs = _(_.values(YleinenData.kielet)).union($scope.mlAdditionalLanguages || [])
-                                                     .sort()
-                                                     .value();
-        if ($scope.mlData) {
-          _.forEach($scope.langs, function (lang) {
-            $scope.mlData[lang] = $scope.mlData[lang] || '';
-          });
-        }
+        restrict: "E",
+        scope: {
+            mlData: "=",
+            mlAdditionalLanguages: "=",
+            type: "@",
+            required: "="
+        },
+        templateUrl: "views/multiinput.html",
+        replace: true,
+        transclude: true,
+        controller: function($scope) {
+            $scope.type = $scope.type || "text";
+            $scope.langs = _(_.values(YleinenData.kielet))
+                .union($scope.mlAdditionalLanguages || [])
+                .sort()
+                .value();
+            if ($scope.mlData) {
+                _.forEach($scope.langs, function(lang) {
+                    $scope.mlData[lang] = $scope.mlData[lang] || "";
+                });
+            }
 
-        $scope.activeLang = $translate.use() || $translate.preferredLanguage();
-        $scope.kielivalintaAuki = false;
+            $scope.activeLang = $translate.use() || $translate.preferredLanguage();
+            $scope.kielivalintaAuki = false;
 
-        $scope.vaihdaKieli = function(uusiKieli) {
-          $scope.kielivalintaAuki = false;
-          $scope.activeLang = uusiKieli;
-        };
-      },
-      link: function(scope: any, element: any) {
-        if (!scope.mlData) {
-          console.log('You must set ml-data for ml-input.');
+            $scope.vaihdaKieli = function(uusiKieli) {
+                $scope.kielivalintaAuki = false;
+                $scope.activeLang = uusiKieli;
+            };
+        },
+        link: function(scope: any, element: any) {
+            if (!scope.mlData) {
+                console.log("You must set ml-data for ml-input.");
+            } else if (!_.isObject(scope.mlData)) {
+                console.log("ml-data must be an object");
+            }
+            if (scope.$parent.inputElId) {
+                $timeout(function() {
+                    element.find("input, textarea").attr("id", scope.$parent.inputElId);
+                });
+            }
         }
-        else if (!_.isObject(scope.mlData)) {
-          console.log('ml-data must be an object');
-        }
-        if (scope.$parent.inputElId) {
-          $timeout(function () {
-            element.find('input, textarea').attr('id', scope.$parent.inputElId);
-          });
-        }
-      }
     };
-  });
+});

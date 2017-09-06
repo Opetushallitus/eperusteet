@@ -14,19 +14,28 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .factory('KoodistoHaku', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/koodisto/:koodistoUri', {
-      koodistoUri: '@koodistoUri'
-    }, {
-      get: {method: 'GET', isArray: true}
+angular
+    .module("eperusteApp")
+    .factory("KoodistoHaku", function($resource, SERVICE_LOC) {
+        return $resource(
+            SERVICE_LOC + "/koodisto/:koodistoUri",
+            {
+                koodistoUri: "@koodistoUri"
+            },
+            {
+                get: { method: "GET", isArray: true }
+            }
+        );
+    })
+    .factory("Organisaatioryhmat", function($resource, SERVICE_LOC) {
+        return $resource(
+            SERVICE_LOC + "/ulkopuoliset/organisaatioryhmat/",
+            {
+                oid: "@oid"
+            },
+            {
+                get: { method: "GET", isArray: true },
+                yksi: { method: "GET", isArray: false, url: SERVICE_LOC + "/ulkopuoliset/organisaatioryhmat/:oid" }
+            }
+        );
     });
-  })
-  .factory('Organisaatioryhmat', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/ulkopuoliset/organisaatioryhmat/', {
-      oid: '@oid'
-    }, {
-      get: {method: 'GET', isArray: true},
-      yksi: {method: 'GET', isArray: false, url: SERVICE_LOC + '/ulkopuoliset/organisaatioryhmat/:oid'}
-    });
-  });

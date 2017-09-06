@@ -1,22 +1,42 @@
 .ep-icon {
-  background-repeat: no-repeat;
-  background-position: left top;
-  display: inline-block;
-  width: 21px;
-  height: 16px;
-  padding-bottom: 3px;
-  margin-bottom: -3px;
-  top: 1px;
-  position: relative;
+    background-repeat: no-repeat;
+    background-position: left top;
+    display: inline-block;
+    width: 21px;
+    height: 16px;
+    padding-bottom: 3px;
+    margin-bottom: -3px;
+    top: 1px;
+    position: relative;
 }
 
-.ep-text { background-image: url("../images/tekstikappale-16x16.png"); }
-.ep-text-add { background-image: url("../images/tekstikappalelisaa-16x16.png"); }
-.ep-text-import { background-image: url("../images/tekstikappaletuo-16x16.png"); }
-.ep-text-clone { background-image: url("../images/tekstikappalekloonaa-16x16.png"); }
-.ep-parts { background-image: url("../images/tutkinnonosat-16x16.png"); }
-.ep-part { background-image: url("../images/tutkinnonosa.png"); }
-.ep-part-import { background-image: url("../images/tuotutkinnonosa-16x16.png"); }
-.ep-tree { background-image: url("../images/rakenne-16x16.png"); }
-.ep-open-close { background-image: url("../images/expander.png"); }
-.ep-group { background-image: url("../images/ryhma.png"); }
+.ep-text {
+    background-image: url("../images/tekstikappale-16x16.png");
+}
+.ep-text-add {
+    background-image: url("../images/tekstikappalelisaa-16x16.png");
+}
+.ep-text-import {
+    background-image: url("../images/tekstikappaletuo-16x16.png");
+}
+.ep-text-clone {
+    background-image: url("../images/tekstikappalekloonaa-16x16.png");
+}
+.ep-parts {
+    background-image: url("../images/tutkinnonosat-16x16.png");
+}
+.ep-part {
+    background-image: url("../images/tutkinnonosa.png");
+}
+.ep-part-import {
+    background-image: url("../images/tuotutkinnonosa-16x16.png");
+}
+.ep-tree {
+    background-image: url("../images/rakenne-16x16.png");
+}
+.ep-open-close {
+    background-image: url("../images/expander.png");
+}
+.ep-group {
+    background-image: url("../images/ryhma.png");
+}

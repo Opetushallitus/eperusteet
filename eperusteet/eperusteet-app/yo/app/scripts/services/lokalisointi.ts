@@ -14,43 +14,54 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-.factory('LokalisointiResource', (LOKALISOINTI_SERVICE_LOC, $resource) => {
-    return $resource('/lokalisointi/cxf/rest/v1/localisation?category=eperusteet', {}, {
-        get: {
-            method: 'GET',
-            isArray: true,
-            cache: true
-        }
-    });
-})
-.factory('LokalisointiLoader', ($q, $http, LokalisointiResource, $window) => {
-    const PREFIX = 'localisation/locale-',
-        SUFFIX = '.json',
-        BYPASS_REMOTE = $window.location.host.indexOf('localhost') === 0;
-    return options => {
-        const deferred = $q.defer();
-        const translations = {};
-        $http({
-            url: PREFIX + options.key + SUFFIX,
-            method: 'GET',
-            params: ''
-        }).then(res => {
-            _.extend(translations, res.data);
-            if (BYPASS_REMOTE) {
-                deferred.resolve(translations);
-            } else {
-                LokalisointiResource.get({locale: options.key}, res => {
-                    const remotes = _.zipObject(_.map(res, 'key'), _.map(res, 'value'));
-                    _.extend(translations, remotes);
-                    deferred.resolve(translations);
-                }, () => {
+angular
+    .module("eperusteApp")
+    .factory("LokalisointiResource", (LOKALISOINTI_SERVICE_LOC, $resource) => {
+        return $resource(
+            "/lokalisointi/cxf/rest/v1/localisation?category=eperusteet",
+            {},
+            {
+                get: {
+                    method: "GET",
+                    isArray: true,
+                    cache: true
+                }
+            }
+        );
+    })
+    .factory("LokalisointiLoader", ($q, $http, LokalisointiResource, $window) => {
+        const PREFIX = "localisation/locale-",
+            SUFFIX = ".json",
+            BYPASS_REMOTE = $window.location.host.indexOf("localhost") === 0;
+        return options => {
+            const deferred = $q.defer();
+            const translations = {};
+            $http({
+                url: PREFIX + options.key + SUFFIX,
+                method: "GET",
+                params: ""
+            })
+                .then(res => {
+                    _.extend(translations, res.data);
+                    if (BYPASS_REMOTE) {
+                        deferred.resolve(translations);
+                    } else {
+                        LokalisointiResource.get(
+                            { locale: options.key },
+                            res => {
+                                const remotes = _.zipObject(_.map(res, "key"), _.map(res, "value"));
+                                _.extend(translations, remotes);
+                                deferred.resolve(translations);
+                            },
+                            () => {
+                                deferred.reject(options.key);
+                            }
+                        );
+                    }
+                })
+                .catch(() => {
                     deferred.reject(options.key);
                 });
-            }
-        }).catch(() => {
-            deferred.reject(options.key);
-        });
-        return deferred.promise;
-    };
-});
+            return deferred.promise;
+        };
+    });

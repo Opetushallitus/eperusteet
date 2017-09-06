@@ -14,9 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .factory('Suosikit', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId', {}, {
-      update: {method: 'PUT'}
-    });
-  });
+angular.module("eperusteApp").factory("Suosikit", function($resource, SERVICE_LOC) {
+    return $resource(
+        SERVICE_LOC + "/kayttajaprofiili/suosikki/:suosikkiId",
+        {},
+        {
+            update: { method: "PUT" }
+        }
+    );
+});

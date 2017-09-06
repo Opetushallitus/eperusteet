@@ -14,8 +14,7 @@
 * European Union Public Licence for more details.
 */
 
-angular.module('eperusteApp')
-  .service('MuokkausUtils', function() {
+angular.module("eperusteApp").service("MuokkausUtils", function() {
     /**
      * Access nested object/array.
      * @param obj [Object]
@@ -26,90 +25,89 @@ angular.module('eperusteApp')
      *       instead of full overwrite of obj[path] (preserves object pointer)
      */
     function access(obj, path, action?, value?, replace?) {
-      var match = path.match(/(.+)\[(\d+)\]/);
-      if (match) {
-        var index = parseInt(match[2], 10);
-        var arr = obj[match[1]];
-        if (action === 'has') {
-          return _.isArray(arr) && arr.length > index;
-        } else if (action === 'set') {
-          arr[index] = value;
+        var match = path.match(/(.+)\[(\d+)\]/);
+        if (match) {
+            var index = parseInt(match[2], 10);
+            var arr = obj[match[1]];
+            if (action === "has") {
+                return _.isArray(arr) && arr.length > index;
+            } else if (action === "set") {
+                arr[index] = value;
+            }
+            return arr[index];
         }
-        return arr[index];
-      }
-      if (action === 'has') {
-        return _.has(obj, path);
-      } else if (action === 'set') {
-        if (replace) {
-          _.each(value, function (val, key) {
-            obj[path][key] = val;
-          });
-        } else {
-          obj[path] = value;
+        if (action === "has") {
+            return _.has(obj, path);
+        } else if (action === "set") {
+            if (replace) {
+                _.each(value, function(val, key) {
+                    obj[path][key] = val;
+                });
+            } else {
+                obj[path] = value;
+            }
         }
-      }
-      return obj[path];
+        return obj[path];
     }
 
     function has(obj, path) {
-      return access(obj, path, 'has');
+        return access(obj, path, "has");
     }
 
     function set(obj, path, value, replace?) {
-      return access(obj, path, 'set', value, replace);
+        return access(obj, path, "set", value, replace);
     }
 
     this.hasValue = function(obj, path) {
-      return this.nestedHas(obj, path, '.') && !_.isEmpty(this.nestedGet(obj, path, '.'));
+        return this.nestedHas(obj, path, ".") && !_.isEmpty(this.nestedGet(obj, path, "."));
     };
 
     this.nestedHas = function(obj, path, delimiter) {
-
-      function innerNestedHas(obj, names) {
-        if(has(obj, names[0])) {
-          return names.length > 1 ? innerNestedHas(access(obj, names[0]), names.splice(1, names.length)) : true;
-        } else {
-          return false;
+        function innerNestedHas(obj, names) {
+            if (has(obj, names[0])) {
+                return names.length > 1 ? innerNestedHas(access(obj, names[0]), names.splice(1, names.length)) : true;
+            } else {
+                return false;
+            }
         }
-      }
 
-      var propertyNames = path.split(delimiter);
+        var propertyNames = path.split(delimiter);
 
-      return innerNestedHas(obj, propertyNames);
+        return innerNestedHas(obj, propertyNames);
     };
 
     this.nestedGet = function(obj, path, delimiter) {
-      function innerNestedGet(obj, names) {
-        if(names.length > 1) {
-          return innerNestedGet(access(obj, names[0]), names.splice(1, names.length));
-        } else {
-          return access(obj, names[0]);
+        function innerNestedGet(obj, names) {
+            if (names.length > 1) {
+                return innerNestedGet(access(obj, names[0]), names.splice(1, names.length));
+            } else {
+                return access(obj, names[0]);
+            }
         }
-      }
 
-      if(!this.nestedHas(obj, path, delimiter)) {
-        return undefined;
-      }
-      var propertyNames = path.split(delimiter);
+        if (!this.nestedHas(obj, path, delimiter)) {
+            return undefined;
+        }
+        var propertyNames = path.split(delimiter);
 
-      return innerNestedGet(obj, propertyNames);
+        return innerNestedGet(obj, propertyNames);
     };
 
     this.nestedSet = function(obj, path, delimiter, value, replace) {
-      function innerNestedSet(obj, names, newValue) {
-        var dest = access(obj, names[0]);
-        if(names.length > 1) {
-          if(!has(obj, names[0]) || dest === null) {
-            dest = set(obj, names[0], {});
-          }
-          innerNestedSet(dest, names.splice(1, names.length), newValue);
-        } else {
-          set(obj, names[0], newValue, replace);
+        function innerNestedSet(obj, names, newValue) {
+            var dest = access(obj, names[0]);
+            if (names.length > 1) {
+                if (!has(obj, names[0]) || dest === null) {
+                    dest = set(obj, names[0], {});
+                }
+                innerNestedSet(dest, names.splice(1, names.length), newValue);
+            } else {
+                set(obj, names[0], newValue, replace);
+            }
         }
-      }
 
-      var propertyNames = path.split(delimiter);
+        var propertyNames = path.split(delimiter);
 
-      innerNestedSet(obj, propertyNames, value);
+        innerNestedSet(obj, propertyNames, value);
     };
-  });
+});

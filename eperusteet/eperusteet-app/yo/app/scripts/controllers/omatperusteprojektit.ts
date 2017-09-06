@@ -14,57 +14,61 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 /* global _ */
 
-angular.module('eperusteApp')
-  .controller('OmatperusteprojektitCtrl', function ($scope, $state, OmatPerusteprojektit, PerusteProjektiService) {
-    $scope.projektit = {};
-    $scope.naytto = {limit: 5, shown: 5};
+angular
+    .module("eperusteApp")
+    .controller("OmatperusteprojektitCtrl", function($scope, $state, OmatPerusteprojektit, PerusteProjektiService) {
+        $scope.projektit = {};
+        $scope.naytto = { limit: 5, shown: 5 };
 
-    function paivitaOmatProjektit() {
-      OmatPerusteprojektit.query({}, function(vastaus) {
-        $scope.projektit = _(vastaus)
-          .filter(function(pp) { return pp.diaarinumero; /*ei ole pohja*/ })
-          .map(function(pp) {
-            pp.url = PerusteProjektiService.getUrl(pp, pp.peruste);
-            return pp;
-          })
-          .reverse()
-          .value();
-      });
-    }
-
-    paivitaOmatProjektit();
-
-    $scope.$on('update:perusteprojekti', paivitaOmatProjektit);
-  })
-.directive('limitToggler', function () {
-  return {
-    restrict: 'AE',
-    template: '<div class="show-toggler" ng-show="isVisible">' +
-          '<a class="action-link" ng-click="toggle()">{{linktext| kaanna}}</a>' +
-          '</div>',
-    scope: {
-      'model': '=',
-      'limit': '=',
-      'limiter': '='
-    },
-    controller: function ($scope) {
-      $scope.isVisible = false;
-      $scope.linktext = 'sivupalkki-näytä-kaikki';
-      $scope.$watch('model', function () {
-        $scope.isVisible = $scope.model.length > $scope.limit;
-      });
-      $scope.toggle = function () {
-        if ($scope.limiter === $scope.limit) {
-          $scope.limiter = $scope.model.length;
-          $scope.linktext = 'sivupalkki-piilota';
-        } else {
-          $scope.limiter = $scope.limit;
-          $scope.linktext = 'sivupalkki-näytä-kaikki';
+        function paivitaOmatProjektit() {
+            OmatPerusteprojektit.query({}, function(vastaus) {
+                $scope.projektit = _(vastaus)
+                    .filter(function(pp) {
+                        return pp.diaarinumero; /*ei ole pohja*/
+                    })
+                    .map(function(pp) {
+                        pp.url = PerusteProjektiService.getUrl(pp, pp.peruste);
+                        return pp;
+                    })
+                    .reverse()
+                    .value();
+            });
         }
-      };
-    }
-  };
-});
+
+        paivitaOmatProjektit();
+
+        $scope.$on("update:perusteprojekti", paivitaOmatProjektit);
+    })
+    .directive("limitToggler", function() {
+        return {
+            restrict: "AE",
+            template:
+                '<div class="show-toggler" ng-show="isVisible">' +
+                '<a class="action-link" ng-click="toggle()">{{linktext| kaanna}}</a>' +
+                "</div>",
+            scope: {
+                model: "=",
+                limit: "=",
+                limiter: "="
+            },
+            controller: function($scope) {
+                $scope.isVisible = false;
+                $scope.linktext = "sivupalkki-näytä-kaikki";
+                $scope.$watch("model", function() {
+                    $scope.isVisible = $scope.model.length > $scope.limit;
+                });
+                $scope.toggle = function() {
+                    if ($scope.limiter === $scope.limit) {
+                        $scope.limiter = $scope.model.length;
+                        $scope.linktext = "sivupalkki-piilota";
+                    } else {
+                        $scope.limiter = $scope.limit;
+                        $scope.linktext = "sivupalkki-näytä-kaikki";
+                    }
+                };
+            }
+        };
+    });

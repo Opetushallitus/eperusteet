@@ -1,38 +1,37 @@
 .info-box {
-  background: #fcfcfc;
-  margin-top: 10px;
-  padding: 20px;
-  border: 1px dashed #ccc;
-  color: #666;
+    background: #fcfcfc;
+    margin-top: 10px;
+    padding: 20px;
+    border: 1px dashed #ccc;
+    color: #666;
 }
 
 .main-container {
-  min-width: 800px;
+    min-width: 800px;
 }
 
 .top-action {
-  margin-left: 15px;
-  margin-top: 8px;
-  .dropdown-menu {
-    li:not(.active) {
-      cursor: pointer;
+    margin-left: 15px;
+    margin-top: 8px;
+    .dropdown-menu {
+        li:not(.active) {
+            cursor: pointer;
+        }
     }
-  }
 }
 
 .kieli-dropdown {
-  position: relative;
-  margin-right: 10px;
+    position: relative;
+    margin-right: 10px;
 
-  .not-used {
-      color: #a1a1a1;
-  }
+    .not-used {
+        color: #a1a1a1;
+    }
 }
 
-
 .has-checkbox {
-  width: 16px;
-  padding-left: 16px;
+    width: 16px;
+    padding-left: 16px;
 }
 
 body {
@@ -42,10 +41,10 @@ body {
 }
 
 tr .koodi {
-  width: 48px;
+    width: 48px;
 }
 
-.ellipsis-no-wrap{
+.ellipsis-no-wrap {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -62,70 +61,70 @@ tr .koodi {
 }
 
 .ei-raitaa .panel-footer {
-  background-color: #fff;
+    background-color: #fff;
 }
 
 .osatutkintoid {
-  width: 140px;
-  height: 26px;
+    width: 140px;
+    height: 26px;
 }
 
 .glyphtila {
-  width: 32px;
+    width: 32px;
 }
 
 .has-placeholder.cke_editable,
 .has-placeholder span.tekstikentta {
-  font-style: italic;
-  color: #aaa;
+    font-style: italic;
+    color: #aaa;
 }
 
 .list-group.muokkaus .list-group-item-heading {
-  color: #777;
+    color: #777;
 }
 
 .clickable {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .clickable.badge:hover {
-  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
-  -ms-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
-  -o-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
-  -webkit-transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  -moz-transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  -ms-transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  -o-transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  background-color: #555;
+    -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+    -ms-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+    -webkit-transition: background-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    -moz-transition: background-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    -ms-transition: background-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    -o-transition: background-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: background-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    background-color: #555;
 }
 
 .edit-mode {
-  background: white;
-  padding: 4px 12px;
-  @include borderradius(4px);
-  border: 1px solid #ccc;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    background: white;
+    padding: 4px 12px;
+    @include borderradius(4px);
+    border: 1px solid #ccc;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
 
 .edit-mode:focus {
-  border-color: #66AFE9;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
-  outline: 0 none;
+    border-color: #66afe9;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
+    outline: 0 none;
 }
 .panel.kriteeri {
-  border: 0;
-  -webkit-box-shadow: 0 0 0 0;
-  -moz-box-shadow: 0 0 0 0;
-  -ms-box-shadow: 0 0 0 0;
-  -o-box-shadow: 0 0 0 0;
-  box-shadow: 0 0 0 0;
-  @include borderradius(0);
+    border: 0;
+    -webkit-box-shadow: 0 0 0 0;
+    -moz-box-shadow: 0 0 0 0;
+    -ms-box-shadow: 0 0 0 0;
+    -o-box-shadow: 0 0 0 0;
+    box-shadow: 0 0 0 0;
+    @include borderradius(0);
 }
 
 .form-control {

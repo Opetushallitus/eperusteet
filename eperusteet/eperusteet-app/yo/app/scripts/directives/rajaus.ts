@@ -21,41 +21,40 @@
  * size: 'small' or default
  * placeholder: optional, string or {{expression}}
  */
-angular.module('eperusteApp')
-  .directive('rajaus', function () {
+angular.module("eperusteApp").directive("rajaus", function() {
     return {
-      templateUrl: 'views/partials/rajaus.html',
-      restrict: 'EA',
-      scope: {
-        model: '=',
-        placeholder: '@',
-        callback: '&',
-        classes: '@?',
-        size: '@?'
-      },
-      controller: function ($scope) {
-        $scope.changed = function () {
-          $scope.callback({value: $scope.model});
-        };
-        $scope.applyClasses = function () {
-          let classes = 'input-group rajauslaatikko';
-          if ($scope.classes) {
-            classes += (' ' + $scope.classes);
-          }
-          return classes;
-        };
-        $scope.clear = function ($event) {
-          if ($event) {
-            $event.preventDefault();
-          }
-          $scope.model = '';
-          $scope.changed();
-        };
-      },
-      link: function (scope: any, element, attrs) {
-        attrs.$observe('placeholder', function (value) {
-          scope.placeholderstring = value;
-        });
-      }
+        templateUrl: "views/partials/rajaus.html",
+        restrict: "EA",
+        scope: {
+            model: "=",
+            placeholder: "@",
+            callback: "&",
+            classes: "@?",
+            size: "@?"
+        },
+        controller: function($scope) {
+            $scope.changed = function() {
+                $scope.callback({ value: $scope.model });
+            };
+            $scope.applyClasses = function() {
+                let classes = "input-group rajauslaatikko";
+                if ($scope.classes) {
+                    classes += " " + $scope.classes;
+                }
+                return classes;
+            };
+            $scope.clear = function($event) {
+                if ($event) {
+                    $event.preventDefault();
+                }
+                $scope.model = "";
+                $scope.changed();
+            };
+        },
+        link: function(scope: any, element, attrs) {
+            attrs.$observe("placeholder", function(value) {
+                scope.placeholderstring = value;
+            });
+        }
     };
-  });
+});

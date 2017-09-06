@@ -14,13 +14,10 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
-angular.module('eperusteApp')
-  .filter('tutkintokoodiFilter', function() {
-
+angular.module("eperusteApp").filter("tutkintokoodiFilter", function() {
     return function(input, tutkintotyypit) {
-
-      return tutkintotyypit[input];
+        return tutkintotyypit[input];
     };
-  });
+});

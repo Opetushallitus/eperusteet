@@ -14,58 +14,63 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-
-  /**
+angular
+    .module("eperusteApp")
+    /**
    * Prepends a glyphicon to the element, see mapping in IconMapping.
    */
-  .directive('iconRole', function (IconMapping) {
-    return {
-      restrict: 'A',
-      compile: function() {
-        return function postLink(scope, element, attrs: any) {
-          if (attrs.kaanna) {
-            return;
-          }
-          IconMapping.addIcon(attrs.iconRole, element);
+    .directive("iconRole", function(IconMapping) {
+        return {
+            restrict: "A",
+            compile: function() {
+                return function postLink(scope, element, attrs: any) {
+                    if (attrs.kaanna) {
+                        return;
+                    }
+                    IconMapping.addIcon(attrs.iconRole, element);
+                };
+            }
         };
-      }
-    };
-  })
-  .service('IconMapping', function () {
-    this.addIcon = function (key, el) {
-      var iconEl = this.getIconEl(key);
-      if (el.text()) {
-        el.addClass('iconlink');
-      }
-      el.prepend(iconEl);
-    };
-    this.getIconEl = function (key) {
-      if (key.substr(0, 3) === 'ep-') {
-        return angular.element('<span>').addClass('ep-icon').addClass(key);
-      } else {
-        var suffix = this.icons[key] || key;
-        return angular.element('<span>')
-              .addClass('glyphicon').addClass('glyphicon-' + suffix);
-      }
-    };
-    this.icons = {
-      add: 'plus',
-      back: 'chevron-left',
-      download: 'download-alt',
-      drag: 'resize-vertical',
-      edit: 'pencil',
-      first: 'fast-backward',
-      forward: 'chevron-right',
-      import: 'cloud-download',
-      info: 'info-sign',
-      last: 'fast-forward',
-      minus: 'minus',
-      next: 'forward',
-      previous: 'backward',
-      remove: 'remove',
-      save: 'save',
-      search: 'search',
-      settings: 'cog'
-    };
-  });
+    })
+    .service("IconMapping", function() {
+        this.addIcon = function(key, el) {
+            var iconEl = this.getIconEl(key);
+            if (el.text()) {
+                el.addClass("iconlink");
+            }
+            el.prepend(iconEl);
+        };
+        this.getIconEl = function(key) {
+            if (key.substr(0, 3) === "ep-") {
+                return angular
+                    .element("<span>")
+                    .addClass("ep-icon")
+                    .addClass(key);
+            } else {
+                var suffix = this.icons[key] || key;
+                return angular
+                    .element("<span>")
+                    .addClass("glyphicon")
+                    .addClass("glyphicon-" + suffix);
+            }
+        };
+        this.icons = {
+            add: "plus",
+            back: "chevron-left",
+            download: "download-alt",
+            drag: "resize-vertical",
+            edit: "pencil",
+            first: "fast-backward",
+            forward: "chevron-right",
+            import: "cloud-download",
+            info: "info-sign",
+            last: "fast-forward",
+            minus: "minus",
+            next: "forward",
+            previous: "backward",
+            remove: "remove",
+            save: "save",
+            search: "search",
+            settings: "cog"
+        };
+    });

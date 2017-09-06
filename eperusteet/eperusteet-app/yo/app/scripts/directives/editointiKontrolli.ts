@@ -14,56 +14,54 @@
 * European Union Public Licence for more details.
 */
 
-angular.module('eperusteApp')
-  .directive('editointiKontrolli', function($rootScope, Editointikontrollit) {
+angular.module("eperusteApp").directive("editointiKontrolli", function($rootScope, Editointikontrollit) {
     return {
-      restrict: 'A',
-      link: function(scope, element: any, attrs: any) {
-        Editointikontrollit.getEditModePromise().then(function(editMode) {
-          if(!editMode) {
-            hideOrDisableElement();
-          }
-        });
+        restrict: "A",
+        link: function(scope, element: any, attrs: any) {
+            Editointikontrollit.getEditModePromise().then(function(editMode) {
+                if (!editMode) {
+                    hideOrDisableElement();
+                }
+            });
 
-        scope.$on('enableEditing', function() {
-          showOrEnableElement();
-        });
-        scope.$on('disableEditing', function() {
-          hideOrDisableElement();
-        });
+            scope.$on("enableEditing", function() {
+                showOrEnableElement();
+            });
+            scope.$on("disableEditing", function() {
+                hideOrDisableElement();
+            });
 
-        function hideOrDisableElement() {
-          if(element.is('input, textarea, button')) {
-            element.attr('disabled', 'disabled');
-          } else {
-            if(attrs.ngShow || attrs.ngHide) {
-              element.addClass('ng-hide');
-            } else {
-              element.hide();
+            function hideOrDisableElement() {
+                if (element.is("input, textarea, button")) {
+                    element.attr("disabled", "disabled");
+                } else {
+                    if (attrs.ngShow || attrs.ngHide) {
+                        element.addClass("ng-hide");
+                    } else {
+                        element.hide();
+                    }
+                }
             }
-          }
-        }
 
-        function shouldBeShown() {
-          return (!attrs.ngShow || scope.$eval(attrs.ngShow)) &&
-                 (!attrs.ngHide || !scope.$eval(attrs.ngHide));
-        }
+            function shouldBeShown() {
+                return (!attrs.ngShow || scope.$eval(attrs.ngShow)) && (!attrs.ngHide || !scope.$eval(attrs.ngHide));
+            }
 
-        function showOrEnableElement() {
-          if(element.is('input, textarea, button')) {
-            if(!attrs.ngDisabled || !scope.$eval(attrs.ngDisabled)) {
-              element.removeAttr('disabled');
+            function showOrEnableElement() {
+                if (element.is("input, textarea, button")) {
+                    if (!attrs.ngDisabled || !scope.$eval(attrs.ngDisabled)) {
+                        element.removeAttr("disabled");
+                    }
+                } else {
+                    if (shouldBeShown()) {
+                        if (attrs.ngShow || attrs.ngHide) {
+                            element.removeClass("ng-hide");
+                        } else {
+                            element.show();
+                        }
+                    }
+                }
             }
-          } else {
-            if (shouldBeShown()) {
-              if(attrs.ngShow || attrs.ngHide) {
-                element.removeClass('ng-hide');
-              } else {
-                element.show();
-              }
-            }
-          }
         }
-      }
     };
-  });
+});

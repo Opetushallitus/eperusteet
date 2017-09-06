@@ -14,51 +14,68 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .controller('EsiopetusController', function ($scope, $state, Algoritmit, sisalto, Notifikaatiot, PerusteenOsat, YleinenData) {
-    $scope.peruste = sisalto[0];
-    $scope.otsikko = YleinenData.isEsiopetus($scope.peruste) ? 'esiopetus' : 'lisaopetus';
-    var tekstisisalto = sisalto[1];
+angular
+    .module("eperusteApp")
+    .controller("EsiopetusController", function(
+        $scope,
+        $state,
+        Algoritmit,
+        sisalto,
+        Notifikaatiot,
+        PerusteenOsat,
+        YleinenData
+    ) {
+        $scope.peruste = sisalto[0];
+        $scope.otsikko = YleinenData.isEsiopetus($scope.peruste) ? "esiopetus" : "lisaopetus";
+        var tekstisisalto = sisalto[1];
 
-    function valitseTekstisisalto(item, section) {
-      $scope.valittuTekstisisalto = item.$osa;
-      PerusteenOsat.get({ osanId: item.$osa._perusteenOsa }, function(res) {
-        if (section) {
-          _.each(section.items, function(osa) { osa.$selected = false; });
+        function valitseTekstisisalto(item, section) {
+            $scope.valittuTekstisisalto = item.$osa;
+            PerusteenOsat.get(
+                { osanId: item.$osa._perusteenOsa },
+                function(res) {
+                    if (section) {
+                        _.each(section.items, function(osa) {
+                            osa.$selected = false;
+                        });
+                    }
+                    item.$selected = true;
+                    $scope.valittuTekstisisalto.teksti = res.teksti;
+                },
+                Notifikaatiot.serverCb
+            );
         }
-        item.$selected = true;
-        $scope.valittuTekstisisalto.teksti = res.teksti;
-      }, Notifikaatiot.serverCb);
-    }
 
-    function rakennaTekstisisalto() {
-      var sisalto = [];
-      Algoritmit.kaikilleLapsisolmuille(tekstisisalto, 'lapset', function(osa, depth) {
-        if (depth >= 0) {
-          sisalto.push({
-            $osa: osa,
-            label: osa.perusteenOsa.nimi,
-            depth: depth,
-          });
+        function rakennaTekstisisalto() {
+            var sisalto = [];
+            Algoritmit.kaikilleLapsisolmuille(tekstisisalto, "lapset", function(osa, depth) {
+                if (depth >= 0) {
+                    sisalto.push({
+                        $osa: osa,
+                        label: osa.perusteenOsa.nimi,
+                        depth: depth
+                    });
+                }
+            });
+            if (!_.isEmpty(sisalto)) {
+                _.first(sisalto).$selected = true;
+                valitseTekstisisalto(_.first(sisalto), undefined);
+            }
+            return sisalto;
         }
-      });
-      if (!_.isEmpty(sisalto)) {
-        _.first(sisalto).$selected = true;
-        valitseTekstisisalto(_.first(sisalto), undefined);
-      }
-      return sisalto;
-    }
 
-    $scope.navi = {
-      header: 'perusteen-sisalto',
-      showOne: true,
-      sections: [{
-        $open: true,
-        id: 'suunnitelma',
-        include: 'views/partials/perusopetustekstisisalto.html',
-        items: rakennaTekstisisalto(),
-        title: 'tekstisisalto',
-        update: valitseTekstisisalto
-      }]
-    };
-  });
+        $scope.navi = {
+            header: "perusteen-sisalto",
+            showOne: true,
+            sections: [
+                {
+                    $open: true,
+                    id: "suunnitelma",
+                    include: "views/partials/perusopetustekstisisalto.html",
+                    items: rakennaTekstisisalto(),
+                    title: "tekstisisalto",
+                    update: valitseTekstisisalto
+                }
+            ]
+        };
+    });

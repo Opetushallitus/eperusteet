@@ -14,90 +14,96 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .directive('eperusteNavi', function() {
-    return {
-      templateUrl: 'views/partials/navi.html',
-      restrict: 'AE',
-      controller: 'NaviCtrl'
-    };
-  })
+angular
+    .module("eperusteApp")
+    .directive("eperusteNavi", function() {
+        return {
+            templateUrl: "views/partials/navi.html",
+            restrict: "AE",
+            controller: "NaviCtrl"
+        };
+    })
+    .controller("NaviCtrl", function(
+        $scope,
+        Navigaatiopolku,
+        Kaanna,
+        $state,
+        PerusteProjektiService,
+        $location,
+        $stateParams
+    ) {
+        var PREFIX = "root.perusteprojekti.";
+        var SUBSTATES = {
+            termisto: "perusteen-termisto",
+            tiedot: "projektin-tiedot",
+            peruste: "projekti-peruste",
+            projektiryhma: "projekti-projektiryhma"
+        };
+        $scope.navigaatiopolku = [];
+        var inProject = null;
 
-  .controller('NaviCtrl', function($scope, Navigaatiopolku, Kaanna, $state, PerusteProjektiService,
-              $location, $stateParams) {
-    var PREFIX = 'root.perusteprojekti.';
-    var SUBSTATES = {
-      'termisto': 'perusteen-termisto',
-      'tiedot': 'projektin-tiedot',
-      'peruste': 'projekti-peruste',
-      'projektiryhma': 'projekti-projektiryhma'
-    };
-    $scope.navigaatiopolku = [];
-    var inProject = null;
-
-    function setNavi(state, params?) {
-      $scope.navigaatiopolku = [];
-      inProject = null;
-      var index = state.name.indexOf(PREFIX);
-      if (index === 0) {
-        inProject = Navigaatiopolku.getProject();
-        if (!inProject) {
-          return;
+        function setNavi(state, params?) {
+            $scope.navigaatiopolku = [];
+            inProject = null;
+            var index = state.name.indexOf(PREFIX);
+            if (index === 0) {
+                inProject = Navigaatiopolku.getProject();
+                if (!inProject) {
+                    return;
+                }
+                var url = PerusteProjektiService.getUrl(inProject, Navigaatiopolku.getPeruste());
+                $scope.navigaatiopolku.push({
+                    url: url.replace(/#/g, "") === $location.path() ? "" : url,
+                    label: inProject.nimi
+                });
+                var substate = SUBSTATES[state.name.substring(PREFIX.length)];
+                if (substate) {
+                    $scope.navigaatiopolku.push({
+                        label: substate
+                    });
+                }
+            }
         }
-        var url = PerusteProjektiService.getUrl(inProject, Navigaatiopolku.getPeruste());
-        $scope.navigaatiopolku.push({
-          url: url.replace(/#/g, '') === $location.path() ? '' : url,
-          label: inProject.nimi
-        });
-        var substate = SUBSTATES[state.name.substring(PREFIX.length)];
-        if (substate) {
-          $scope.navigaatiopolku.push({
-            label: substate
-          });
+
+        function updateTitle() {
+            var isEtusivu = $state.is("root.aloitussivu");
+            var prefix = Kaanna.kaanna("ePerusteet") + ": ";
+            var title = "";
+            if (inProject) {
+                title = Kaanna.kaanna(inProject.nimi);
+            } else if (isEtusivu) {
+                title = Kaanna.kaanna("Etusivu");
+            }
+            if ($scope.navigaatiopolku.length > 1) {
+                title += !title ? "" : ": " + Kaanna.kaanna(_.last($scope.navigaatiopolku).label);
+            }
+            if (!title) {
+                title = Kaanna.kaanna(_.last($state.current.name.split(".")));
+            }
+            angular.element("head > title").html(prefix + title);
         }
-      }
-    }
 
-    function updateTitle() {
-      var isEtusivu = $state.is('root.aloitussivu');
-      var prefix = Kaanna.kaanna('ePerusteet') + ': ';
-      var title = '';
-      if (inProject) {
-        title = Kaanna.kaanna(inProject.nimi);
-      } else if (isEtusivu) {
-        title = Kaanna.kaanna('Etusivu');
-      }
-      if ($scope.navigaatiopolku.length > 1) {
-        title += (!title ? '' : ': ' + Kaanna.kaanna(_.last($scope.navigaatiopolku).label));
-      }
-      if (!title) {
-        title = Kaanna.kaanna(_.last($state.current.name.split('.')));
-      }
-      angular.element('head > title').html(prefix + title);
-    }
+        function refresh(event, toState, toParams) {
+            setNavi(toState || $state.current, toParams || $stateParams);
+            updateTitle();
+        }
 
-    function refresh(event, toState, toParams) {
-      setNavi(toState || $state.current, toParams || $stateParams);
-      updateTitle();
-    }
+        $scope.$on("$stateChangeSuccess", refresh);
+        $scope.$on("update:navipolku", refresh);
+    })
+    .service("Navigaatiopolku", function($rootScope) {
+        var projekti = null;
+        var peruste = null;
 
-    $scope.$on('$stateChangeSuccess', refresh);
-    $scope.$on('update:navipolku', refresh);
-  })
-
-  .service('Navigaatiopolku', function($rootScope) {
-    var projekti = null;
-    var peruste = null;
-
-    this.setProject = function (project, projectperuste) {
-      projekti = project;
-      peruste = projectperuste;
-      $rootScope.$broadcast('update:navipolku');
-    };
-    this.getProject = function () {
-      return projekti;
-    };
-    this.getPeruste = function () {
-      return peruste;
-    };
-  });
+        this.setProject = function(project, projectperuste) {
+            projekti = project;
+            peruste = projectperuste;
+            $rootScope.$broadcast("update:navipolku");
+        };
+        this.getProject = function() {
+            return projekti;
+        };
+        this.getPeruste = function() {
+            return peruste;
+        };
+    });

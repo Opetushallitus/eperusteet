@@ -14,8 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-.service('Algoritmit', Kaanna => {
+angular.module("eperusteApp").service("Algoritmit", Kaanna => {
     function rajausVertailu(input, kentta) {
         kentta = arguments.length > 2 ? kentta[arguments[2]] : kentta;
         for (var i = 3; i < arguments.length; ++i) {
@@ -28,7 +27,7 @@ angular.module('eperusteApp')
     }
 
     function mapLapsisolmut(objekti, lapsienAvain, cb) {
-        return _.map(_.isArray(objekti) ? objekti : objekti[lapsienAvain], function (solmu) {
+        return _.map(_.isArray(objekti) ? objekti : objekti[lapsienAvain], function(solmu) {
             solmu = _.clone(solmu);
             solmu[lapsienAvain] = mapLapsisolmut(solmu, lapsienAvain, cb);
             return cb(solmu);
@@ -38,7 +37,7 @@ angular.module('eperusteApp')
     function kaikilleLapsisolmuille(objekti, lapsienAvain, cb, depth) {
         depth = depth || 0;
         if (!_.isEmpty(objekti)) {
-            _.forEach(objekti[lapsienAvain], function (solmu) {
+            _.forEach(objekti[lapsienAvain], function(solmu) {
                 if (!cb(solmu, depth)) {
                     kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
                 }
@@ -53,13 +52,13 @@ angular.module('eperusteApp')
             done();
             return;
         }
-        cb(_.first(list), function () {
+        cb(_.first(list), function() {
             asyncTraverse(_.rest(list), cb, done);
         });
     }
 
     function match(input, to, kaanna = true) {
-        var vertailu = kaanna ? (Kaanna.kaanna(to) || '') : to;
+        var vertailu = kaanna ? Kaanna.kaanna(to) || "" : to;
         return _.isString(vertailu) && _.isString(input) && vertailu.toLowerCase().indexOf(input.toLowerCase()) !== -1;
     }
 
@@ -73,15 +72,15 @@ angular.module('eperusteApp')
     }
 
     function perusteenSuoritustavanYksikko(peruste, suoritustapa) {
-        var foundSt = _.find(peruste.suoritustavat, function (st) {
+        var foundSt = _.find(peruste.suoritustavat, function(st) {
             return st.suoritustapakoodi === suoritustapa;
         });
-        return foundSt ? foundSt.laajuusYksikko : 'OPINTOPISTE';
+        return foundSt ? foundSt.laajuusYksikko : "OPINTOPISTE";
     }
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
         var lapsellaOn = false;
-        _.forEach(juuri.lapset, function (osa) {
+        _.forEach(juuri.lapset, function(osa) {
             lapsellaOn = kaikilleTutkintokohtaisilleOsille(osa, cb) || lapsellaOn;
         });
         return cb(juuri, lapsellaOn) || lapsellaOn;
@@ -89,27 +88,25 @@ angular.module('eperusteApp')
 
     function normalizeTeksti(teksti) {
         function poistaTurhat(t) {
-            t = t || '';
-            var txt = document.createElement('textarea');
+            t = t || "";
+            var txt = document.createElement("textarea");
             txt.innerHTML = t;
             t = txt.value;
-            t = t.replace(/[\u00A0|\u0000-\u001F]/g, ' ');
+            t = t.replace(/[\u00A0|\u0000-\u001F]/g, " ");
 
             var last;
             do {
                 last = t;
-                t = last.replace(/  /g, ' ');
+                t = last.replace(/  /g, " ");
             } while (_.size(last) !== _.size(t));
             return t.trim();
         }
 
         if (_.isString(teksti)) {
             return poistaTurhat(teksti);
-        }
-        else if (_.isPlainObject(teksti)) {
+        } else if (_.isPlainObject(teksti)) {
             return _.zipObject(_.keys(teksti), _.map(_.values(teksti), poistaTurhat));
-        }
-        else {
+        } else {
             return teksti;
         }
     }

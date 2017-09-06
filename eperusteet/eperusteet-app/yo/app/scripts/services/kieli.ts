@@ -14,94 +14,95 @@
  * European Union Public Licence for more details.
  */
 
-    angular.module('eperusteApp')
-    .value('UiKieli', { kielikoodi: 'fi' })
-    .service('KielipreferenssiUpdater', function ($rootScope, Profiili) {
-        $rootScope.$on('changed:sisaltokieli', function (event, value) {
-            Profiili.setPreferenssi('sisaltokieli', value);
+angular
+    .module("eperusteApp")
+    .value("UiKieli", { kielikoodi: "fi" })
+    .service("KielipreferenssiUpdater", function($rootScope, Profiili) {
+        $rootScope.$on("changed:sisaltokieli", function(event, value) {
+            Profiili.setPreferenssi("sisaltokieli", value);
         });
         this.noop = angular.noop;
     })
-    .service('Kieli', function ($rootScope, $state, $stateParams, UiKieli) {
-        var sisaltokieli = 'fi';
+    .service("Kieli", function($rootScope, $state, $stateParams, UiKieli) {
+        var sisaltokieli = "fi";
 
-        var SISALTOKIELET = [
-            'fi',
-            'sv',
-            'se',
-            'ru',
-            'en'
-        ];
+        var SISALTOKIELET = ["fi", "sv", "se", "ru", "en"];
 
-        this.kieliOrder = function (kielikoodi) {
+        this.kieliOrder = function(kielikoodi) {
             return _.indexOf(SISALTOKIELET, kielikoodi);
         };
 
         this.availableSisaltokielet = _.clone(SISALTOKIELET);
 
-        var isValidKielikoodi = function (kielikoodi) {
+        var isValidKielikoodi = function(kielikoodi) {
             return _.indexOf(SISALTOKIELET, kielikoodi) > -1;
         };
 
-        this.setAvailableSisaltokielet = function (kielet) {
+        this.setAvailableSisaltokielet = function(kielet) {
             if (_.isArray(kielet) && !_.isEmpty(kielet)) {
                 var isValid = _.all(_.map(kielet, isValidKielikoodi));
                 if (isValid) {
                     this.availableSisaltokielet = kielet;
-                    $rootScope.$broadcast('update:sisaltokielet', kielet);
+                    $rootScope.$broadcast("update:sisaltokielet", kielet);
                 }
             }
         };
 
-        this.resetSisaltokielet = function () {
+        this.resetSisaltokielet = function() {
             this.availableSisaltokielet = SISALTOKIELET;
-            $rootScope.$broadcast('update:sisaltokielet', SISALTOKIELET);
+            $rootScope.$broadcast("update:sisaltokielet", SISALTOKIELET);
         };
 
-        this.setSisaltokieli = function (kielikoodi) {
+        this.setSisaltokieli = function(kielikoodi) {
             if (_.indexOf(this.SISALTOKIELET, kielikoodi) > -1) {
                 var old = sisaltokieli;
                 sisaltokieli = kielikoodi;
                 if (old !== kielikoodi) {
-                    $rootScope.$broadcast('changed:sisaltokieli', kielikoodi);
+                    $rootScope.$broadcast("changed:sisaltokieli", kielikoodi);
                 }
             }
         };
 
-        this.getSisaltokieli = function () {
+        this.getSisaltokieli = function() {
             return sisaltokieli;
         };
 
-        this.setUiKieli = function (kielikoodi) {
+        this.setUiKieli = function(kielikoodi) {
             if (isValidKielikoodi(kielikoodi)) {
                 UiKieli.kielikoodi = kielikoodi;
-                $state.go($state.current.name, _.merge($stateParams, {lang: kielikoodi}), {reload: true});
+                $state.go($state.current.name, _.merge($stateParams, { lang: kielikoodi }), { reload: true });
             }
         };
 
-        this.getUiKieli = function () {
+        this.getUiKieli = function() {
             return UiKieli.kielikoodi;
         };
 
         this.isValidKielikoodi = isValidKielikoodi;
         this.SISALTOKIELET = SISALTOKIELET;
     })
-
-    .directive('kielenvaihto', function () {
+    .directive("kielenvaihto", function() {
         return {
-            restrict: 'AE',
+            restrict: "AE",
             scope: {
-                modal: '@modal'
+                modal: "@modal"
             },
-            controller: 'KieliCtrl',
-            templateUrl: 'views/directives/kielenvaihto.html'
+            controller: "KieliCtrl",
+            templateUrl: "views/directives/kielenvaihto.html"
         };
     })
-
-    .controller('KieliCtrl', function($scope, $stateParams, YleinenData, $state, Kieli, Profiili, $q,
-        KielipreferenssiUpdater) {
+    .controller("KieliCtrl", function(
+        $scope,
+        $stateParams,
+        YleinenData,
+        $state,
+        Kieli,
+        Profiili,
+        $q,
+        KielipreferenssiUpdater
+    ) {
         KielipreferenssiUpdater.noop();
-        $scope.isModal = $scope.modal === 'true';
+        $scope.isModal = $scope.modal === "true";
         $scope.sisaltokielet = [];
         $scope.sisaltokieli = Kieli.getSisaltokieli();
         $scope.kieliOrder = Kieli.kieliOrder;
@@ -114,15 +115,15 @@
             casFetched.resolve();
         }
 
-        $scope.$on('$stateChangeSuccess', function () {
+        $scope.$on("$stateChangeSuccess", function() {
             stateInit.resolve();
         });
 
-        $scope.$on('fetched:casTiedot', function () {
+        $scope.$on("fetched:casTiedot", function() {
             casFetched.resolve();
         });
 
-        $q.all([stateInit.promise, casFetched.promise]).then(function () {
+        $q.all([stateInit.promise, casFetched.promise]).then(function() {
             var lang = Profiili.lang();
             // Disable ui language change if language preference found in CAS
             if (Kieli.isValidKielikoodi(lang)) {
@@ -135,37 +136,36 @@
             }
         });
 
-        const updateSisaltokielet = (value) => {
+        const updateSisaltokielet = value => {
             $scope.sisaltokielet = _.map(Kieli.SISALTOKIELET, kieli => {
                 return {
                     kieli,
                     inUse: _.includes(value, kieli)
-                }
+                };
             });
             if (_.indexOf($scope.sisaltokielet, $scope.sisaltokieli) === -1) {
                 $scope.setSisaltokieli(_.first($scope.sisaltokielet));
             }
         };
 
-
-        $scope.$on('update:sisaltokielet', function (event, value) {
+        $scope.$on("update:sisaltokielet", function(event, value) {
             updateSisaltokielet(value);
         });
 
-        $scope.$on('changed:sisaltokieli', function (event, value) {
+        $scope.$on("changed:sisaltokieli", function(event, value) {
             $scope.sisaltokieli = value;
         });
 
-        $scope.setSisaltokieli = function (kieli) {
+        $scope.setSisaltokieli = function(kieli) {
             Kieli.setSisaltokieli(kieli.kieli);
         };
 
-        $scope.koodit = _.map(_.pairs(YleinenData.kielet), function (item) {
-            return {koodi: item[1], nimi: item[0]};
+        $scope.koodit = _.map(_.pairs(YleinenData.kielet), function(item) {
+            return { koodi: item[1], nimi: item[0] };
         });
         $scope.kieli = YleinenData.kieli;
 
-        $scope.$on('notifyCKEditor', function () {
+        $scope.$on("notifyCKEditor", function() {
             $scope.kieli = YleinenData.kieli;
         });
 

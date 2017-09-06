@@ -1,45 +1,45 @@
 .statusbadge {
-  padding: 10px 7px 10px 7px;
-  color: #fff;
-  font-weight: bold;
-  display: table;
-  text-align: center;
-  background-color: $brand-primary;
-  &>div {
-    overflow: hidden;
-    height: $statusbadge-height - 20px - 10px;
-    width: $statusbadge-width;
-  }
-  p {
-    margin: 0;
-    font-size: 13px;
-    letter-spacing: 1px;
-  }
-  .glyphicon {
-    font-size: 28px;
-    margin-top: 4px;
-    margin-bottom: 7px;
-  }
-  &.editable {
-    cursor: pointer;
-  }
+    padding: 10px 7px 10px 7px;
+    color: #fff;
+    font-weight: bold;
+    display: table;
+    text-align: center;
+    background-color: $brand-primary;
+    & > div {
+        overflow: hidden;
+        height: $statusbadge-height - 20px - 10px;
+        width: $statusbadge-width;
+    }
+    p {
+        margin: 0;
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+    .glyphicon {
+        font-size: 28px;
+        margin-top: 4px;
+        margin-bottom: 7px;
+    }
+    &.editable {
+        cursor: pointer;
+    }
 
-  &.laadinta {
-    background-color: #fbb03b;
-  }
-  &.kommentointi {
-    background-color: #3a8fbe;
-  }
-  &.valmis {
-    background-color: green;
-  }
-  &.viimeistely {
-    background-color: purple;
-  }
-  &.julkaistu {
-    background-color: green;
-  }
-  &.poistettu {
-    background-color: #c44;
-  }
+    &.laadinta {
+        background-color: #fbb03b;
+    }
+    &.kommentointi {
+        background-color: #3a8fbe;
+    }
+    &.valmis {
+        background-color: green;
+    }
+    &.viimeistely {
+        background-color: purple;
+    }
+    &.julkaistu {
+        background-color: green;
+    }
+    &.poistettu {
+        background-color: #c44;
+    }
 }

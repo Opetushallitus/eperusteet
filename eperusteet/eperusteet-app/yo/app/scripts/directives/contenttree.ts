@@ -14,20 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .directive('contentTree', function (TEXT_HIERARCHY_MAX_DEPTH) {
+angular.module("eperusteApp").directive("contentTree", function(TEXT_HIERARCHY_MAX_DEPTH) {
     return {
-      restrict: 'A',
-      templateUrl: 'views/directives/contenttree.html',
-      scope: {
-        model: '=contentTree',
-        rajaus: '=filterBy',
-        noContentPlaceholder: '@?',
-        badges: '=?',
-        editMode: '='
-      },
-      controller: function ($scope) {
-        $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
-      }
+        restrict: "A",
+        templateUrl: "views/directives/contenttree.html",
+        scope: {
+            model: "=contentTree",
+            rajaus: "=filterBy",
+            noContentPlaceholder: "@?",
+            badges: "=?",
+            editMode: "="
+        },
+        controller: function($scope) {
+            $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
+        }
     };
-  });
+});

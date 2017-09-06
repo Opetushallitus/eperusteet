@@ -17,23 +17,28 @@
 /**
  * Override pagination template to get glyphs as first/last icons.
  */
-angular.module('template/pagination/pagination.html', []).run(['$templateCache', function($templateCache) {
-  $templateCache.put('template/pagination/pagination.html',
-    '<ul class=\"pagination\">\n' +
-    '  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noPrevious()}\"><a href ng-click=\"selectPage(1)\" icon-role=\"first\">{{getText(\'first\')}}</a></li>\n' +
-    '  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noPrevious()}\"><a href ng-click=\"selectPage(page - 1)\" icon-role=\"previous\">{{getText(\'previous\')}}</a></li>\n' +
-    '  <li ng-repeat=\"page in pages track by $index\" ng-class=\"{active: page.active}\"><a href ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n' +
-    '  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noNext()}\"><a href ng-click=\"selectPage(page + 1)\" icon-role=\"next\">{{getText(\'next\')}}</a></li>\n' +
-    '  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noNext()}\"><a href ng-click=\"selectPage(totalPages)\" icon-role=\"last\">{{getText(\'last\')}}</a></li>\n' +
-    '</ul>');
-}]);
+angular.module("template/pagination/pagination.html", []).run([
+    "$templateCache",
+    function($templateCache) {
+        $templateCache.put(
+            "template/pagination/pagination.html",
+            '<ul class="pagination">\n' +
+                '  <li ng-if="boundaryLinks" ng-class="{disabled: noPrevious()}"><a href ng-click="selectPage(1)" icon-role="first">{{getText(\'first\')}}</a></li>\n' +
+                '  <li ng-if="directionLinks" ng-class="{disabled: noPrevious()}"><a href ng-click="selectPage(page - 1)" icon-role="previous">{{getText(\'previous\')}}</a></li>\n' +
+                '  <li ng-repeat="page in pages track by $index" ng-class="{active: page.active}"><a href ng-click="selectPage(page.number)">{{page.text}}</a></li>\n' +
+                '  <li ng-if="directionLinks" ng-class="{disabled: noNext()}"><a href ng-click="selectPage(page + 1)" icon-role="next">{{getText(\'next\')}}</a></li>\n' +
+                '  <li ng-if="boundaryLinks" ng-class="{disabled: noNext()}"><a href ng-click="selectPage(totalPages)" icon-role="last">{{getText(\'last\')}}</a></li>\n' +
+                "</ul>"
+        );
+    }
+]);
 
 // startFrom filter for easy pagination
-angular.module('eperusteApp').filter('startFrom', function() {
-  return function(input, start) {
-    if (!input) {
-      return input;
-    }
-    return input.slice(start);
-  };
+angular.module("eperusteApp").filter("startFrom", function() {
+    return function(input, start) {
+        if (!input) {
+            return input;
+        }
+        return input.slice(start);
+    };
 });

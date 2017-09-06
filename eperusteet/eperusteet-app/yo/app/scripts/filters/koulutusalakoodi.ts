@@ -14,12 +14,10 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
-angular.module('eperusteApp')
-  .filter('koulutusalakoodiFilter', function() {
+angular.module("eperusteApp").filter("koulutusalakoodiFilter", function() {
     return function(input, koulutusalakoodit) {
-
-      return koulutusalakoodit[input];
+        return koulutusalakoodit[input];
     };
-  });
+});

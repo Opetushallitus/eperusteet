@@ -19,39 +19,38 @@
  * Jos ikkunan koko on pienempi kuin DISABLE_WIDTH, seuraus disabloidaan.
  * Alkuperäinen sijainti tarkastetaan parent-elementistä.
  */
-angular.module('eperusteApp')
-  .directive('followScroll', function ($window) {
+angular.module("eperusteApp").directive("followScroll", function($window) {
     var TOPMARGIN = 5;
     var DISABLE_WIDTH = 992;
     return {
-      restrict: 'A',
-      link: function (scope: any, element: any) {
-        var window = angular.element($window),
-             parent = element.parent();
+        restrict: "A",
+        link: function(scope: any, element: any) {
+            var window = angular.element($window),
+                parent = element.parent();
 
-        scope.updatePosition = function () {
-          if (window.innerWidth() <= DISABLE_WIDTH) {
-            return;
-          }
-          var parentTop = parent.offset().top;
-          var windowTop = window.scrollTop();
-          if (windowTop > parentTop) {
-            element.css({
-              position: 'relative',
-              top: windowTop - parentTop + TOPMARGIN
+            scope.updatePosition = function() {
+                if (window.innerWidth() <= DISABLE_WIDTH) {
+                    return;
+                }
+                var parentTop = parent.offset().top;
+                var windowTop = window.scrollTop();
+                if (windowTop > parentTop) {
+                    element.css({
+                        position: "relative",
+                        top: windowTop - parentTop + TOPMARGIN
+                    });
+                } else {
+                    element.css("top", 0);
+                }
+            };
+
+            var updatepos = function() {
+                scope.updatePosition();
+            };
+            window.on("scroll resize", updatepos);
+            scope.$on("$destroy", function() {
+                window.off("scroll resize", updatepos);
             });
-          } else {
-            element.css('top', 0);
-          }
-        };
-
-        var updatepos = function() {
-          scope.updatePosition();
-        };
-        window.on('scroll resize', updatepos);
-        scope.$on('$destroy', function() {
-          window.off('scroll resize', updatepos);
-        });
-      }
+        }
     };
-  });
+});

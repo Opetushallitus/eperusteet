@@ -14,64 +14,66 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
-angular.module('eperusteApp')
-  .service('SpinnerService', function(SPINNER_WAIT, $rootScope, $timeout) {
-    var pyynnot = 0;
+angular
+    .module("eperusteApp")
+    .service("SpinnerService", function(SPINNER_WAIT, $rootScope, $timeout) {
+        var pyynnot = 0;
 
-    function enableSpinner() {
-      ++pyynnot;
-      $timeout(function() {
-        if (pyynnot > 0) {
-          $rootScope.$emit('event:spinner_on');
+        function enableSpinner() {
+            ++pyynnot;
+            $timeout(function() {
+                if (pyynnot > 0) {
+                    $rootScope.$emit("event:spinner_on");
+                }
+            }, SPINNER_WAIT);
         }
-      }, SPINNER_WAIT);
-    }
 
-    function disableSpinner() {
-      --pyynnot;
-      if (pyynnot === 0) {
-        $rootScope.$emit('event:spinner_off');
-      }
-    }
+        function disableSpinner() {
+            --pyynnot;
+            if (pyynnot === 0) {
+                $rootScope.$emit("event:spinner_off");
+            }
+        }
 
-    return {
-      enable: enableSpinner,
-      disable: disableSpinner,
-      isSpinning: function() {
-        return pyynnot > 0;
-      }
-    };
-  })
-  .directive('spinner', function() {
-    return {
-      template: '<div id="global-spinner" ng-show="isSpinning">' +
+        return {
+            enable: enableSpinner,
+            disable: disableSpinner,
+            isSpinning: function() {
+                return pyynnot > 0;
+            }
+        };
+    })
+    .directive("spinner", function() {
+        return {
+            template:
+                '<div id="global-spinner" ng-show="isSpinning">' +
                 '<span class="glyphicon glyphicon-refresh spin"></span>' +
-                '</div>',
-      restrict: 'E',
-      link: function($scope) {
-        $scope.isSpinning = false;
+                "</div>",
+            restrict: "E",
+            link: function($scope) {
+                $scope.isSpinning = false;
 
-        function spin(state) {
-          $scope.isSpinning = state;
-        }
+                function spin(state) {
+                    $scope.isSpinning = state;
+                }
 
-        $scope.$on('event:spinner_on', function() {
-          spin(true);
-        });
+                $scope.$on("event:spinner_on", function() {
+                    spin(true);
+                });
 
-        $scope.$on('event:spinner_off', function() {
-          spin(false);
-        });
-      }
-    };
-  })
-  .directive('smallSpinner', function () {
-    return {
-      restrict: 'EA',
-      link: function(scope, element) {
-        element.prepend('<img class="small-spinner" src="images/spinner-small.gif" alt="">');
-      }
-    };
-  });
+                $scope.$on("event:spinner_off", function() {
+                    spin(false);
+                });
+            }
+        };
+    })
+    .directive("smallSpinner", function() {
+        return {
+            restrict: "EA",
+            link: function(scope, element) {
+                element.prepend('<img class="small-spinner" src="images/spinner-small.gif" alt="">');
+            }
+        };
+    });

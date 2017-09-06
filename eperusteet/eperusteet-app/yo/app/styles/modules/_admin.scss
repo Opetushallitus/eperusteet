@@ -1,56 +1,57 @@
 .admin {
-  h2 {
-    margin-bottom: 20px;
-  }
-  .hallintapainikkeet {
-    a {
-      padding: 10px;
+    h2 {
+        margin-bottom: 20px;
     }
-    float: right;
-  }
-
-  .tilarajaus {
-    display: table-row;
-    .tilarajaus-item, .tilarajaus-divider {
-      display: table-cell;
-      vertical-align: bottom;
-      padding-right: 20px;
+    .hallintapainikkeet {
+        a {
+            padding: 10px;
+        }
+        float: right;
     }
-    padding-bottom: 10px;
-  }
 
-  .rajauslaatikko {
-    width: 30em;
-  }
+    .tilarajaus {
+        display: table-row;
+        .tilarajaus-item,
+        .tilarajaus-divider {
+            display: table-cell;
+            vertical-align: bottom;
+            padding-right: 20px;
+        }
+        padding-bottom: 10px;
+    }
+
+    .rajauslaatikko {
+        width: 30em;
+    }
 }
 
 .admin-table {
-  margin-top: 20px;
-  tr:hover {
-    background-color: #eee;
-  }
+    margin-top: 20px;
+    tr:hover {
+        background-color: #eee;
+    }
 }
 
 .excel-alkuun {
-  padding: 10px 0px;
+    padding: 10px 0px;
 }
 
 .rivinappi {
-  padding: 2px 5px;
-  margin-top: -3px;
+    padding: 2px 5px;
+    margin-top: -3px;
 }
 
 .tiedote-view {
-  h2 {
-    margin-top: 40px;
-  }
-  .tiedote-tiedot {
-    color: #777;
-  }
-  .tiedote-leipateksti {
-    margin-top: 20px;
-    padding-left: 40px;
-    max-width: 900px;
-    margin-bottom: 100px;
-  }
+    h2 {
+        margin-top: 40px;
+    }
+    .tiedote-tiedot {
+        color: #777;
+    }
+    .tiedote-leipateksti {
+        margin-top: 20px;
+        padding-left: 40px;
+        max-width: 900px;
+        margin-bottom: 100px;
+    }
 }

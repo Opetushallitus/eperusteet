@@ -14,27 +14,26 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .service('ColorCalculator', function() {
+angular.module("eperusteApp").service("ColorCalculator", function() {
     var PATTERN = /^(\w{2})(\w{2})(\w{2})$/;
 
     /**
      * Calculates a readable text color for given background color
      * @param {string} bgColor Background color in hex format 'rrggbb'
      */
-    this.readableTextColorForBg = function (bgColor) {
-      var match = PATTERN.exec(bgColor);
-      if (match) {
-        var r = parseInt(match[1], 16),
-            g = parseInt(match[2], 16),
-            b = parseInt(match[3], 16);
-        // W3C proposal formula for color brightness
-        // ((Red value X 299) + (Green value X 587) + (Blue value X 114)) / 1000
-        var brightness = (r * 299 + g * 587 + b * 114) / 1000;
-        if (brightness < 135) {
-          return 'white';
+    this.readableTextColorForBg = function(bgColor) {
+        var match = PATTERN.exec(bgColor);
+        if (match) {
+            var r = parseInt(match[1], 16),
+                g = parseInt(match[2], 16),
+                b = parseInt(match[3], 16);
+            // W3C proposal formula for color brightness
+            // ((Red value X 299) + (Green value X 587) + (Blue value X 114)) / 1000
+            var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            if (brightness < 135) {
+                return "white";
+            }
         }
-      }
-      return 'black';
+        return "black";
     };
-  });
+});

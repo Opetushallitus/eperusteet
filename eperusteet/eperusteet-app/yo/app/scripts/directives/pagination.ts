@@ -14,24 +14,24 @@
  * European Union Public Licence for more details.
  */
 
-angular.module("eperusteApp")
-.directive("epPagination", () => {
+angular.module("eperusteApp").directive("epPagination", () => {
     return {
-        template: '<ul uib-pagination ng-model="ngModel" boundary-links="boundaryLinks" ng-change="valitseSivu(ngModel)" total-items="totalItems" items-per-page="itemsPerPage" previous-text="«" next-text="»"></ul>',
+        template:
+            '<ul uib-pagination ng-model="ngModel" boundary-links="boundaryLinks" ng-change="valitseSivu(ngModel)" total-items="totalItems" items-per-page="itemsPerPage" previous-text="«" next-text="»"></ul>',
         restrict: "E",
         scope: {
             totalItems: "=",
             itemsPerPage: "=",
             boundaryLinks: "=",
             ngModel: "=",
-            ngChange: "=",
+            ngChange: "="
         },
         controller($scope) {
-            $scope.valitseSivu = (sivu) => {
+            $scope.valitseSivu = sivu => {
                 if (_.isFunction($scope.ngChange)) {
                     $scope.ngChange(sivu);
                 }
             };
         }
-    }
+    };
 });

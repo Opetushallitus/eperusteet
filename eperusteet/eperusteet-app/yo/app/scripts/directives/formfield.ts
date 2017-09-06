@@ -30,109 +30,118 @@
  * @param {String} placeholder Placeholder for input or select, will be translated
  * @param {String/Expression} required 'required'|'true'|parent scope expression
  */
-angular.module('eperusteApp')
-  .directive('formfield', function ($parse, Kaanna, $timeout, YleinenData) {
+angular.module("eperusteApp").directive("formfield", function($parse, Kaanna, $timeout, YleinenData) {
     var uniqueId = 0;
-    var checkInputType = function (scope) {
-      scope.isObject = _.isObject(scope.input.model);
-        scope.isNumber = !scope.options && !scope.isObject &&
-          (scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
-        scope.isDate = !scope.options && scope.type === 'date';
-        scope.isText = !scope.options && !scope.isObject &&
-          !(scope.type === 'number' || scope.type === 'float' || scope.type === 'integer' || scope.type === 'label');
-        scope.isMultiText = !scope.options && scope.isObject && scope.type !== 'label';
+    var checkInputType = function(scope) {
+        scope.isObject = _.isObject(scope.input.model);
+        scope.isNumber =
+            !scope.options &&
+            !scope.isObject &&
+            (scope.type === "number" || scope.type === "float" || scope.type === "integer");
+        scope.isDate = !scope.options && scope.type === "date";
+        scope.isText =
+            !scope.options &&
+            !scope.isObject &&
+            !(scope.type === "number" || scope.type === "float" || scope.type === "integer" || scope.type === "label");
+        scope.isMultiText = !scope.options && scope.isObject && scope.type !== "label";
         scope.datePicker = {
-          options: YleinenData.dateOptions,
-          format: YleinenData.dateFormatDatepicker,
-          state: false,
-          open: function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            scope.datePicker.state = !scope.datePicker.state;
-          }
+            options: YleinenData.dateOptions,
+            format: YleinenData.dateFormatDatepicker,
+            state: false,
+            open: function($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                scope.datePicker.state = !scope.datePicker.state;
+            }
         };
-        scope.isLabel = scope.type === 'label';
+        scope.isLabel = scope.type === "label";
     };
     return {
-      templateUrl: 'views/partials/formfield.html',
-      transclude: true,
-      restrict: 'E',
-      scope: {
-        model: '=',
-        label: '@',
-        type: '@?',
-        options: '=?',
-        modelVar: '@',
-        form: '=',
-        min: '@?',
-        max: '@?',
-        name: '@',
-        placeholder: '@',
-        step: '@?',
-        ngRequired: '@?'
-      },
-      link: function (scope: any, element: any, attrs: any) {
-        scope.postfix = scope.ngRequired ? '*' : '';
-        scope.type = scope.type || 'text';
-        scope.flatOptions = _.isArray(scope.options) &&
-                scope.options.length > 0 && !_.isObject(scope.options[0]);
+        templateUrl: "views/partials/formfield.html",
+        transclude: true,
+        restrict: "E",
+        scope: {
+            model: "=",
+            label: "@",
+            type: "@?",
+            options: "=?",
+            modelVar: "@",
+            form: "=",
+            min: "@?",
+            max: "@?",
+            name: "@",
+            placeholder: "@",
+            step: "@?",
+            ngRequired: "@?"
+        },
+        link: function(scope: any, element: any, attrs: any) {
+            scope.postfix = scope.ngRequired ? "*" : "";
+            scope.type = scope.type || "text";
+            scope.flatOptions = _.isArray(scope.options) && scope.options.length > 0 && !_.isObject(scope.options[0]);
 
-        if (!scope.flatOptions) {
-          _.forEach(scope.options, function(opt) {
-            opt.label = Kaanna.kaanna(opt.label);
-          });
+            if (!scope.flatOptions) {
+                _.forEach(scope.options, function(opt) {
+                    opt.label = Kaanna.kaanna(opt.label);
+                });
+            }
+
+            scope.kaanna = function(val) {
+                return Kaanna.kaanna(val);
+            };
+
+            scope.inputClasses = function() {
+                var classes = [];
+                if (scope.type !== "checkbox") {
+                    classes.push("form-control");
+                }
+                return classes;
+            };
+
+            function bindLabel() {
+                if (scope.label) {
+                    scope.inputElId = scope.label.replace(/ /g, "-") + "-" + uniqueId++;
+                    element.find("label").attr("for", scope.inputElId);
+                }
+            }
+
+            if ((scope.type === "text" || scope.type === "diaari") && attrs.max) {
+                $timeout(function() {
+                    element.find("input").attr("maxlength", attrs.max);
+                });
+            }
+
+            bindLabel();
+
+            // Two-way binding with deep object hierarchies needs some tricks
+            var getter = $parse(scope.modelVar);
+            var setter = getter.assign;
+            scope.input = {};
+            scope.input.model = getter(scope.model);
+            // inner => outside
+
+            scope.$watch(
+                "input.model",
+                function() {
+                    checkInputType(scope);
+                    if (scope.input && !_.isUndefined(scope.input.model)) {
+                        setter(scope.model, scope.input.model);
+                    }
+                },
+                true
+            );
+
+            // outside => inner
+            scope.$watch(
+                function() {
+                    return getter(scope.model);
+                },
+                function(value) {
+                    checkInputType(scope);
+                    scope.input.model = value;
+                }
+            );
+
+            checkInputType(scope);
         }
-
-        scope.kaanna = function (val) {
-          return Kaanna.kaanna(val);
-        };
-
-        scope.inputClasses = function () {
-          var classes = [];
-          if (scope.type !== 'checkbox') {
-            classes.push('form-control');
-          }
-          return classes;
-        };
-
-        function bindLabel() {
-          if (scope.label) {
-            scope.inputElId = scope.label.replace(/ /g, '-') + '-' + uniqueId++;
-            element.find('label').attr('for', scope.inputElId);
-          }
-        }
-
-        if ((scope.type === 'text' || scope.type === 'diaari') && attrs.max) {
-          $timeout(function () {
-            element.find('input').attr('maxlength', attrs.max);
-          });
-        }
-
-        bindLabel();
-
-        // Two-way binding with deep object hierarchies needs some tricks
-        var getter = $parse(scope.modelVar);
-        var setter = getter.assign;
-        scope.input = {};
-        scope.input.model = getter(scope.model);
-        // inner => outside
-
-        scope.$watch('input.model', function () {
-          checkInputType(scope);
-          if (scope.input && !_.isUndefined(scope.input.model)) {
-            setter(scope.model, scope.input.model);
-          }
-        }, true);
-
-        // outside => inner
-        scope.$watch(function () {
-          return getter(scope.model);
-        }, function (value) {
-          checkInputType(scope);
-          scope.input.model = value;
-        });
-
-        checkInputType(scope);
-      }
     };
-  });
+});

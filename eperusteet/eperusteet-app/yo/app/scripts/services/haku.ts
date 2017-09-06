@@ -14,54 +14,53 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 /*global _*/
 
-angular.module('eperusteApp')
-  .service('Haku', function Haku(YleinenData) {
+angular.module("eperusteApp").service("Haku", function Haku(YleinenData) {
     var DEFAULTS = {
-      'root.selaus.ammatillinenperuskoulutus': {
-        nimi: '',
-        koulutusala: '',
-        tyyppi: 'koulutustyyppi_1',
-        kieli: YleinenData.kieli,
-        opintoala: '',
-        siirtyma: false,
-        sivu: 0,
-        sivukoko: 20,
-        suoritustapa: 'ops',
-        perusteTyyppi: 'normaali',
-        // FIXME Ota pois kommenteista
-        // tila: 'valmis'
-      },
-      'root.selaus.ammatillinenaikuiskoulutus': {
-        nimi: '',
-        koulutusala: '',
-        tyyppi: '',
-        kieli: YleinenData.kieli,
-        opintoala: '',
-        siirtyma: false,
-        sivu: 0,
-        sivukoko: 20,
-        suoritustapa: 'naytto',
-        perusteTyyppi: 'normaali',
-        // FIXME Ota pois kommenteista
-        // tila: 'valmis'
-      }
+        "root.selaus.ammatillinenperuskoulutus": {
+            nimi: "",
+            koulutusala: "",
+            tyyppi: "koulutustyyppi_1",
+            kieli: YleinenData.kieli,
+            opintoala: "",
+            siirtyma: false,
+            sivu: 0,
+            sivukoko: 20,
+            suoritustapa: "ops",
+            perusteTyyppi: "normaali"
+            // FIXME Ota pois kommenteista
+            // tila: 'valmis'
+        },
+        "root.selaus.ammatillinenaikuiskoulutus": {
+            nimi: "",
+            koulutusala: "",
+            tyyppi: "",
+            kieli: YleinenData.kieli,
+            opintoala: "",
+            siirtyma: false,
+            sivu: 0,
+            sivukoko: 20,
+            suoritustapa: "naytto",
+            perusteTyyppi: "normaali"
+            // FIXME Ota pois kommenteista
+            // tila: 'valmis'
+        }
     };
 
     this.hakuparametrit = _.clone(DEFAULTS);
 
-    this.getHakuparametrit = function (stateName) {
-      return _.clone(this.hakuparametrit[stateName]);
+    this.getHakuparametrit = function(stateName) {
+        return _.clone(this.hakuparametrit[stateName]);
     };
 
-    this.setHakuparametrit = function (stateName, hakuparametrit) {
-      this.hakuparametrit[stateName] = _.merge(hakuparametrit);
+    this.setHakuparametrit = function(stateName, hakuparametrit) {
+        this.hakuparametrit[stateName] = _.merge(hakuparametrit);
     };
 
-    this.resetHakuparametrit = function (stateName) {
-      this.hakuparametrit[stateName] = _.clone(DEFAULTS[stateName]);
-      return this.hakuparametrit[stateName];
+    this.resetHakuparametrit = function(stateName) {
+        this.hakuparametrit[stateName] = _.clone(DEFAULTS[stateName]);
+        return this.hakuparametrit[stateName];
     };
-  });
+});

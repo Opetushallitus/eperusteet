@@ -14,40 +14,38 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .directive('dateComparisonValidator', function() {
+angular.module("eperusteApp").directive("dateComparisonValidator", function() {
     return {
-      restrict: 'A',
-      require: 'ngModel',
-      link: function(scope, element, attrs: any, ctrl: any) {
+        restrict: "A",
+        require: "ngModel",
+        link: function(scope, element, attrs: any, ctrl: any) {
+            var vertailtavaKenttaNimi = attrs.dateComparisonName;
+            var aikaisempiAjankohta = attrs.dateComparisonEarlier;
 
-        var vertailtavaKenttaNimi = attrs.dateComparisonName;
-        var aikaisempiAjankohta = attrs.dateComparisonEarlier;
+            ctrl.$parsers.push(function(viewValue) {
+                var form = element.inheritedData("$formController");
+                var vertailtavaKentta = form[vertailtavaKenttaNimi].$modelValue;
 
-        ctrl.$parsers.push(function(viewValue) {
-          var form = element.inheritedData('$formController');
-          var vertailtavaKentta = form[vertailtavaKenttaNimi].$modelValue;
-
-          if (aikaisempiAjankohta === 'true') {
-            if (moment(vertailtavaKentta).isAfter(viewValue, 'day') || !vertailtavaKentta ||  !viewValue) {
-              ctrl.$setValidity('dateComparisonValidator', true);
-              form[vertailtavaKenttaNimi].$setValidity('dateComparisonValidator', true);
-              return viewValue;
-            } else {
-              ctrl.$setValidity('dateComparisonValidator', false);
-              return viewValue;
-            }
-          } else {
-            if (moment(viewValue).isAfter(vertailtavaKentta, 'day') || !vertailtavaKentta ||  !viewValue) {
-              ctrl.$setValidity('dateComparisonValidator', true);
-              form[vertailtavaKenttaNimi].$setValidity('dateComparisonValidator', true);
-              return viewValue;
-            } else {
-              ctrl.$setValidity('dateComparisonValidator', false);
-              return viewValue;
-            }
-          }
-        });
-      }
+                if (aikaisempiAjankohta === "true") {
+                    if (moment(vertailtavaKentta).isAfter(viewValue, "day") || !vertailtavaKentta || !viewValue) {
+                        ctrl.$setValidity("dateComparisonValidator", true);
+                        form[vertailtavaKenttaNimi].$setValidity("dateComparisonValidator", true);
+                        return viewValue;
+                    } else {
+                        ctrl.$setValidity("dateComparisonValidator", false);
+                        return viewValue;
+                    }
+                } else {
+                    if (moment(viewValue).isAfter(vertailtavaKentta, "day") || !vertailtavaKentta || !viewValue) {
+                        ctrl.$setValidity("dateComparisonValidator", true);
+                        form[vertailtavaKenttaNimi].$setValidity("dateComparisonValidator", true);
+                        return viewValue;
+                    } else {
+                        ctrl.$setValidity("dateComparisonValidator", false);
+                        return viewValue;
+                    }
+                }
+            });
+        }
     };
-  });
+});

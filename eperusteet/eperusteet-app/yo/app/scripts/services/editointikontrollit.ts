@@ -21,8 +21,7 @@ interface EditointiKontrollitCallbacks {
  * - canCancel Called before cancel, must return a promise.
  *             If promise is resolved, canceling continues.
  */
-angular.module('eperusteApp')
-.factory('Editointikontrollit', ($rootScope, $q, Utils, Notifikaatiot) => {
+angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Utils, Notifikaatiot) => {
     let scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -50,21 +49,20 @@ angular.module('eperusteApp')
             try {
                 await scope.editingCallback.edit();
                 setEditMode(true);
-                $rootScope.$broadcast('enableEditing');
+                $rootScope.$broadcast("enableEditing");
                 $rootScope.$$ekEditing = true;
-            }
-            catch (ex) {
+            } catch (ex) {
                 $rootScope.$$ekEditing = false;
             }
         },
         async saveEditing(kommentti) {
-            $rootScope.$broadcast('editointikontrollit:preSave');
-            $rootScope.$broadcast('notifyCKEditor');
+            $rootScope.$broadcast("editointikontrollit:preSave");
+            $rootScope.$broadcast("notifyCKEditor");
             let err;
 
             function mandatoryFieldValidator(fields, target) {
                 err = undefined;
-                const fieldsf = _.filter(fields || [], function (field) {
+                const fieldsf = _.filter(fields || [], function(field) {
                     return field.mandatory;
                 });
 
@@ -72,27 +70,24 @@ angular.module('eperusteApp')
 
                 if (!target) {
                     return false;
-                }
-                else if (_.isString(target)) {
+                } else if (_.isString(target)) {
                     return !_.isEmpty(target);
-                }
-                else if (_.isObject(target) && !_.isEmpty(target) && !_.isEmpty(fieldsf)) {
-                    return _.all(fieldsf, function (field) {
+                } else if (_.isObject(target) && !_.isEmpty(target) && !_.isEmpty(fieldsf)) {
+                    return _.all(fieldsf, function(field) {
                         var valid = Utils.hasLocalizedText(target[field.path]);
                         if (!valid) {
                             err = field.mandatoryMessage;
                         }
                         return valid;
                     });
-                }
-                else {
+                } else {
                     return true;
                 }
             }
 
             async function afterSave() {
                 setEditMode(false);
-                $rootScope.$broadcast('disableEditing');
+                $rootScope.$broadcast("disableEditing");
                 $rootScope.$$ekEditing = false;
             }
 
@@ -100,38 +95,39 @@ angular.module('eperusteApp')
                 if (scope.editingCallback.validate(mandatoryFieldValidator)) {
                     if (scope.editingCallback.asyncSave) {
                         scope.editingCallback.asyncSave(kommentti, afterSave);
-                    }
-                    else {
+                    } else {
                         afterSave();
                         scope.editingCallback.save(kommentti);
                     }
-                }
-                else {
-                    Notifikaatiot.varoitus(err || 'mandatory-odottamaton-virhe');
+                } else {
+                    Notifikaatiot.varoitus(err || "mandatory-odottamaton-virhe");
                 }
             }
 
             if (scope.editingCallback) {
                 if (_.isFunction(scope.editingCallback.asyncValidate)) {
                     scope.editingCallback.asyncValidate(after);
-                }
-                else {
+                } else {
                     after();
                 }
             }
         },
         async cancelEditing() {
             setEditMode(false);
-            $rootScope.$broadcast('disableEditing');
-            $rootScope.$broadcast('notifyCKEditor');
+            $rootScope.$broadcast("disableEditing");
+            $rootScope.$broadcast("notifyCKEditor");
             await scope.editingCallback.cancel();
             $rootScope.$$ekEditing = false;
         },
-        registerCallback: function (callback) {
-            if (!callback || !_.isFunction(callback.edit) ||
-                (!_.isFunction(callback.save) && !_.isFunction(callback.asyncSave)) || !_.isFunction(callback.cancel)) {
-                console.error('callback-function invalid');
-                throw 'editCallback-function invalid';
+        registerCallback: function(callback) {
+            if (
+                !callback ||
+                !_.isFunction(callback.edit) ||
+                (!_.isFunction(callback.save) && !_.isFunction(callback.asyncSave)) ||
+                !_.isFunction(callback.cancel)
+            ) {
+                console.error("callback-function invalid");
+                throw "editCallback-function invalid";
             }
 
             callback.validate = callback.validate || _.constant(true);
@@ -149,23 +145,23 @@ angular.module('eperusteApp')
             scope.editModeDefer.resolve(scope.editMode);
             cbListener();
         },
-        unregisterCallback: function () {
+        unregisterCallback: function() {
             scope.editingCallback = null;
             setEditMode(false);
         },
-        editingEnabled: function () {
+        editingEnabled: function() {
             return !!scope.editingCallback;
         },
-        registerCallbackListener: function (callbackListener) {
+        registerCallbackListener: function(callbackListener) {
             cbListener = callbackListener;
         },
-        registerEditModeListener: function (listener) {
+        registerEditModeListener: function(listener) {
             editmodeListener = listener;
         },
-        getEditModePromise: function () {
+        getEditModePromise: function() {
             return scope.editModeDefer.promise;
         },
-        getEditMode: function () {
+        getEditMode: function() {
             return scope.editMode;
         }
     };

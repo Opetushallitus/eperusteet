@@ -13,71 +13,72 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-'use strict';
+"use strict";
 /* global _ */
 
-angular.module('eperusteApp')
-  .directive('pikamenu', function ($document, $window) {
-    return {
-      restrict: 'EA',
-      transclude: true,
-      templateUrl: 'views/partials/perusteprojekti/pikamenu.html',
-      link: function (scope, element) {
-        // Pop the button next to the header after transclusion
-        var header = element.find('#pikamenu-header');
-        var button = element.find('#tutkinnonosat-pikamenu-button');
-        button.detach().appendTo(header);
+angular
+    .module("eperusteApp")
+    .directive("pikamenu", function($document, $window) {
+        return {
+            restrict: "EA",
+            transclude: true,
+            templateUrl: "views/partials/perusteprojekti/pikamenu.html",
+            link: function(scope, element) {
+                // Pop the button next to the header after transclusion
+                var header = element.find("#pikamenu-header");
+                var button = element.find("#tutkinnonosat-pikamenu-button");
+                button.detach().appendTo(header);
 
-        // Clicking outside of menu closes it
-        $document.on('click', function (event) {
-          if (element.find(event.target).length > 0) {
-            return;
-          }
-          scope.pikamenu.opened = false;
-          scope.$apply();
-        });
-        scope.$on('$destroy', function () {
-          $document.off('click');
-        });
+                // Clicking outside of menu closes it
+                $document.on("click", function(event) {
+                    if (element.find(event.target).length > 0) {
+                        return;
+                    }
+                    scope.pikamenu.opened = false;
+                    scope.$apply();
+                });
+                scope.$on("$destroy", function() {
+                    $document.off("click");
+                });
 
-        function updatePosition () {
-          var header = element.find('#pikamenu-header');
-          var button = element.find('#tutkinnonosat-pikamenu-button');
-          var menu = element.find('#tutkinnonosat-pikamenu').filter(':visible');
-          if (menu.length === 0) {
-            return;
-          }
-          menu.css('top', 0);
-          var buttonOffset = button.offset();
-          var relButtonOffset = buttonOffset.left - header.offset().left;
-          var menuWidth = menu.width();
-          menu.css('left', relButtonOffset + button.width() - menuWidth + 1);
-          if (menu.offset().left < header.offset().left) {
-            menu.css('left', 0);
-          }
-          menu.css('top', buttonOffset.top - menu.offset().top + button.height() + 2);
-        }
+                function updatePosition() {
+                    var header = element.find("#pikamenu-header");
+                    var button = element.find("#tutkinnonosat-pikamenu-button");
+                    var menu = element.find("#tutkinnonosat-pikamenu").filter(":visible");
+                    if (menu.length === 0) {
+                        return;
+                    }
+                    menu.css("top", 0);
+                    var buttonOffset = button.offset();
+                    var relButtonOffset = buttonOffset.left - header.offset().left;
+                    var menuWidth = menu.width();
+                    menu.css("left", relButtonOffset + button.width() - menuWidth + 1);
+                    if (menu.offset().left < header.offset().left) {
+                        menu.css("left", 0);
+                    }
+                    menu.css("top", buttonOffset.top - menu.offset().top + button.height() + 2);
+                }
 
-        // update position on 1. header text change 2. when opened 3. resize viewport
-        scope.$watch(function () {
-          return element.find('#pikamenu-header').text();
-        }, updatePosition);
-        scope.$watch('pikamenu.opened', function (value) {
-          if (value) {
-            updatePosition();
-          }
-        });
-        angular.element($window).on('resize', updatePosition);
-      },
-      controller: 'TutkinnonOsatPikamenu'
-    };
-  })
-  .controller('TutkinnonOsatPikamenu', function($scope, Kaanna) {
-    $scope.pikamenu = {
-      opened: false,
-      orderFn: function (key) {
-        return Kaanna.kaanna($scope.rakenne.tutkinnonOsat[key].nimi).toLowerCase();
-      }
-    };
-    $scope.keys = _.keys;
-  });
+                // update position on 1. header text change 2. when opened 3. resize viewport
+                scope.$watch(function() {
+                    return element.find("#pikamenu-header").text();
+                }, updatePosition);
+                scope.$watch("pikamenu.opened", function(value) {
+                    if (value) {
+                        updatePosition();
+                    }
+                });
+                angular.element($window).on("resize", updatePosition);
+            },
+            controller: "TutkinnonOsatPikamenu"
+        };
+    })
+    .controller("TutkinnonOsatPikamenu", function($scope, Kaanna) {
+        $scope.pikamenu = {
+            opened: false,
+            orderFn: function(key) {
+                return Kaanna.kaanna($scope.rakenne.tutkinnonOsat[key].nimi).toLowerCase();
+            }
+        };
+        $scope.keys = _.keys;
+    });

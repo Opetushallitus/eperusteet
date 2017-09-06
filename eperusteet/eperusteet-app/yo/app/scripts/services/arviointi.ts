@@ -14,13 +14,16 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
-angular.module('eperusteApp')
-  .factory('Arviointiasteikot', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/arviointiasteikot/:asteikkoId', {
-      asteikkoId: '@id'
-    }, {
-      list: {method: 'GET', isArray: true, cache: true},
-    });
-  });
+angular.module("eperusteApp").factory("Arviointiasteikot", function($resource, SERVICE_LOC) {
+    return $resource(
+        SERVICE_LOC + "/arviointiasteikot/:asteikkoId",
+        {
+            asteikkoId: "@id"
+        },
+        {
+            list: { method: "GET", isArray: true, cache: true }
+        }
+    );
+});

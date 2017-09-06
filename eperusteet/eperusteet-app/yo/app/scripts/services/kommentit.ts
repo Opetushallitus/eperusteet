@@ -14,149 +14,195 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .factory('KommentitByParent', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/kommentit/parent/:id', { id: '@id' }, {
-      get: { method: 'GET', isArray: true }
-    });
-  })
-  .factory('KommentitByYlin', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/kommentit/ylin/:id', { id: '@id' }, {
-      get: { method: 'GET', isArray: true }
-    });
-  })
-  .factory('KommentitByPerusteenOsa', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/kommentit/perusteprojekti/:id/perusteenosa/:perusteenOsaId', {
-      id: '@id',
-      perusteenOsaId: '@perusteenOsaId'
-    }, {
-      get: { method: 'GET', isArray: true }
-    });
-  })
-  .factory('KommentitBySuoritustapa', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/kommentit/perusteprojekti/:id/suoritustapa/:suoritustapa', {
-      id: '@id',
-      suoritustapa: '@suoritustapa'
-    }, {
-      get: { method: 'GET', isArray: true }
-    });
-  })
-  .factory('KommentitByPerusteprojekti', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/kommentit/perusteprojekti/:id', { id: '@id' }, {
-      get: { method: 'GET', isArray: true }
-    });
-  })
-  .factory('KommentitCRUD', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/kommentit/:id', { id: '@id' }, {
-      get: { method: 'GET', isArray: true },
-      update: { method: 'PUT' }
-    });
-  })
-  .service('KommenttiSivuCache', function() {
-    this.perusteProjektiId = null;
-  })
-  .service('Kommentit', function($stateParams, $location, $timeout, $rootScope, Notifikaatiot, KommenttiSivuCache, KommentitCRUD) {
-    var nykyinen = {};
-    var nykyinenParams = {};
-    var stored = {};
+angular
+    .module("eperusteApp")
+    .factory("KommentitByParent", function(SERVICE_LOC, $resource) {
+        return $resource(
+            SERVICE_LOC + "/kommentit/parent/:id",
+            { id: "@id" },
+            {
+                get: { method: "GET", isArray: true }
+            }
+        );
+    })
+    .factory("KommentitByYlin", function(SERVICE_LOC, $resource) {
+        return $resource(
+            SERVICE_LOC + "/kommentit/ylin/:id",
+            { id: "@id" },
+            {
+                get: { method: "GET", isArray: true }
+            }
+        );
+    })
+    .factory("KommentitByPerusteenOsa", function(SERVICE_LOC, $resource) {
+        return $resource(
+            SERVICE_LOC + "/kommentit/perusteprojekti/:id/perusteenosa/:perusteenOsaId",
+            {
+                id: "@id",
+                perusteenOsaId: "@perusteenOsaId"
+            },
+            {
+                get: { method: "GET", isArray: true }
+            }
+        );
+    })
+    .factory("KommentitBySuoritustapa", function(SERVICE_LOC, $resource) {
+        return $resource(
+            SERVICE_LOC + "/kommentit/perusteprojekti/:id/suoritustapa/:suoritustapa",
+            {
+                id: "@id",
+                suoritustapa: "@suoritustapa"
+            },
+            {
+                get: { method: "GET", isArray: true }
+            }
+        );
+    })
+    .factory("KommentitByPerusteprojekti", function(SERVICE_LOC, $resource) {
+        return $resource(
+            SERVICE_LOC + "/kommentit/perusteprojekti/:id",
+            { id: "@id" },
+            {
+                get: { method: "GET", isArray: true }
+            }
+        );
+    })
+    .factory("KommentitCRUD", function(SERVICE_LOC, $resource) {
+        return $resource(
+            SERVICE_LOC + "/kommentit/:id",
+            { id: "@id" },
+            {
+                get: { method: "GET", isArray: true },
+                update: { method: "PUT" }
+            }
+        );
+    })
+    .service("KommenttiSivuCache", function() {
+        this.perusteProjektiId = null;
+    })
+    .service("Kommentit", function(
+        $stateParams,
+        $location,
+        $timeout,
+        $rootScope,
+        Notifikaatiot,
+        KommenttiSivuCache,
+        KommentitCRUD
+    ) {
+        var nykyinen = {};
+        var nykyinenParams = {};
+        var stored = {};
 
-    function rakennaKommenttiPuu(viestit) {
-      viestit = _(viestit).map(function(viesti) {
-                             viesti.muokattu = viesti.luotu === viesti.muokattu ? null : viesti.muokattu;
-                             viesti.viestit = [];
-                             return viesti;
-                           })
-                           .sortBy('luotu')
-                           .value();
+        function rakennaKommenttiPuu(viestit) {
+            viestit = _(viestit)
+                .map(function(viesti) {
+                    viesti.muokattu = viesti.luotu === viesti.muokattu ? null : viesti.muokattu;
+                    viesti.viestit = [];
+                    return viesti;
+                })
+                .sortBy("luotu")
+                .value();
 
-      var viestiMap = _.zipObject(_.map(viestit, 'id'), viestit);
+            var viestiMap = _.zipObject(_.map(viestit, "id"), viestit);
 
-      _.forEach(viestit, function(viesti) {
-        if (viesti.parentId && viestiMap[viesti.parentId]) {
-          viestiMap[viesti.parentId].viestit.unshift(viesti);
+            _.forEach(viestit, function(viesti) {
+                if (viesti.parentId && viestiMap[viesti.parentId]) {
+                    viestiMap[viesti.parentId].viestit.unshift(viesti);
+                }
+            });
+
+            var sisaltoObject = {
+                $resolved: true,
+                $yhteensa: _.size(viestit),
+                seuraajat: [],
+                viestit: _(viestiMap)
+                    .values()
+                    .reject(function(viesti) {
+                        return viesti.parentId !== null;
+                    })
+                    .sortBy("luotu")
+                    .reverse()
+                    .value()
+            };
+            return sisaltoObject;
         }
-      });
 
-      var sisaltoObject = {
-        $resolved: true,
-        $yhteensa: _.size(viestit),
-        seuraajat: [],
-        viestit: _(viestiMap).values()
-                             .reject(function(viesti) { return viesti.parentId !== null; })
-                             .sortBy('luotu')
-                             .reverse()
-                             .value()
-      };
-      return sisaltoObject;
-    }
+        function haeKommentit(Resource, params) {
+            nykyinenParams = params;
+            var url = $location.url();
+            var lataaja = function(cb) {
+                Resource.get(
+                    params,
+                    function(res) {
+                        nykyinen = rakennaKommenttiPuu(res);
+                        cb(nykyinen);
+                    },
+                    Notifikaatiot.serverCb
+                );
+            };
+            stored = { url: url, lataaja: lataaja };
+            $timeout(function() {
+                $rootScope.$broadcast("update:kommentit", url, lataaja);
+            }, 100);
+        }
 
-    function haeKommentit(Resource, params) {
-      nykyinenParams = params;
-      var url = $location.url();
-      var lataaja = function(cb) {
-        Resource.get(params, function(res) {
-          nykyinen = rakennaKommenttiPuu(res);
-          cb(nykyinen);
-        },
-        Notifikaatiot.serverCb);
-      };
-      stored = {url: url, lataaja: lataaja};
-      $timeout(function() {
-        $rootScope.$broadcast('update:kommentit', url, lataaja);
-      }, 100);
-    }
+        function lisaaKommentti(parent, viesti, success) {
+            success = success || angular.noop;
+            const payload = _.merge(_.clone(nykyinenParams), {
+                parentId: parent && parent.id ? parent.id : null,
+                sisalto: viesti,
+                perusteprojektiId: $stateParams.perusteProjektiId ? $stateParams.perusteProjektiId : null
+            });
+            delete payload.id;
+            payload.suoritustapa = payload.suoritustapa || $stateParams.suoritustapa;
 
-    function lisaaKommentti(parent, viesti, success) {
-      success = success || angular.noop;
-      const payload = _.merge(_.clone(nykyinenParams), {
-        parentId: parent && parent.id ? parent.id : null,
-        sisalto: viesti,
-        perusteprojektiId: $stateParams.perusteProjektiId ? $stateParams.perusteProjektiId : null
-      });
-      delete payload.id;
-      payload.suoritustapa = payload.suoritustapa || $stateParams.suoritustapa;
+            KommentitCRUD.save(payload, function(res) {
+                res.muokattu = null;
+                res.viestit = [];
+                parent.viestit.unshift(res);
+                success();
+            });
+        }
 
-      KommentitCRUD.save(payload, function(res) {
-        res.muokattu = null;
-        res.viestit = [];
-        parent.viestit.unshift(res);
-        success();
-      });
-    }
+        function poistaKommentti(viesti) {
+            KommentitCRUD.remove(
+                { id: viesti.id },
+                function() {
+                    viesti.sisalto = "";
+                    viesti.muokattu = new Date().getTime();
+                    viesti.poistettu = true;
+                    viesti.muokkaaja = null;
+                    viesti.lahettaja = null;
+                    Notifikaatiot.onnistui("kommentti-poistettu");
+                },
+                Notifikaatiot.serverCb
+            );
+        }
 
-    function poistaKommentti(viesti) {
-      KommentitCRUD.remove({ id: viesti.id }, function() {
-        viesti.sisalto = '';
-        viesti.muokattu = (new Date()).getTime();
-        viesti.poistettu = true;
-        viesti.muokkaaja = null;
-        viesti.lahettaja = null;
-        Notifikaatiot.onnistui('kommentti-poistettu');
-      },
-      Notifikaatiot.serverCb);
-    }
+        function muokkaaKommenttia(viesti, uusiviesti, cb) {
+            KommentitCRUD.update(
+                {
+                    id: viesti.id
+                },
+                { sisalto: uusiviesti },
+                function(res) {
+                    viesti.sisalto = res.sisalto;
+                    viesti.muokattu = res.muokattu;
+                    (cb || angular.noop)(res);
+                },
+                Notifikaatiot.serverCb
+            );
+        }
 
-    function muokkaaKommenttia(viesti, uusiviesti, cb) {
-      KommentitCRUD.update({
-        id: viesti.id
-      }, { sisalto: uusiviesti },
-      function(res) {
-        viesti.sisalto = res.sisalto;
-        viesti.muokattu = res.muokattu;
-        (cb || angular.noop)(res);
-      },
-      Notifikaatiot.serverCb);
-    }
-
-    return {
-      haeKommentit: haeKommentit,
-      lisaaKommentti: lisaaKommentti,
-      poistaKommentti: poistaKommentti,
-      muokkaaKommenttia: muokkaaKommenttia,
-      stored: function () {
-        var ret = _.clone(stored);
-        stored = {};
-        return ret;
-      }
-    };
-  });
+        return {
+            haeKommentit: haeKommentit,
+            lisaaKommentti: lisaaKommentti,
+            poistaKommentti: poistaKommentti,
+            muokkaaKommenttia: muokkaaKommenttia,
+            stored: function() {
+                var ret = _.clone(stored);
+                stored = {};
+                return ret;
+            }
+        };
+    });

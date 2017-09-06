@@ -4,17 +4,18 @@
 $fluid-container-width: 1400px;
 
 .container-fluid {
-  max-width: $fluid-container-width;
+    max-width: $fluid-container-width;
 }
 
 .breadcrumb {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
-.input-group .btn, .input-group input {
-  border-radius: 0;
+.input-group .btn,
+.input-group input {
+    border-radius: 0;
 }
 
 .form-control {
-  border-radius: 0 !important;
+    border-radius: 0 !important;
 }

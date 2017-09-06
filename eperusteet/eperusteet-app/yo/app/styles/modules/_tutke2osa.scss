@@ -1,67 +1,73 @@
 .tutke2 {
-  .osa-alue-navi {
-    margin-bottom: 15px;
-    ul {
-      list-style-type: none;
-      display: inline;
-      padding-left: 1em;
-      li {
-        display: inline-block;
-        margin-right: 0.4em;
-        &:not(:first-child):before {
-          content: "|";
-          margin-right: 0.4em;
+    .osa-alue-navi {
+        margin-bottom: 15px;
+        ul {
+            list-style-type: none;
+            display: inline;
+            padding-left: 1em;
+            li {
+                display: inline-block;
+                margin-right: 0.4em;
+                &:not(:first-child):before {
+                    content: "|";
+                    margin-right: 0.4em;
+                }
+            }
         }
-      }
     }
-  }
-  .osa-alue {
-    .osa-alue-sisalto {
+    .osa-alue {
+        .osa-alue-sisalto {
+        }
+
+        .panel-title {
+            line-height: 1.75em;
+            input {
+                font-size: 20px;
+                height: 34px;
+            }
+        }
+        .muokkaus-napit {
+            padding-top: 4px;
+        }
+    }
+    .panel-heading {
+        .glyphicon,
+        .otsikko {
+            cursor: pointer;
+        }
+        .otsikko {
+            font-size: 120%;
+        }
+        select {
+            margin-left: 10px;
+        }
+        a {
+            &:hover,
+            &:focus,
+            &:active,
+            & *:hover,
+            & *:focus,
+            & *:active {
+                text-decoration: none;
+            }
+        }
+    }
+    .kohde-edit {
+        padding: 10px;
+    }
+    .lead {
+        font-size: 110%;
+        font-style: italic;
     }
 
-    .panel-title {
-      line-height: 1.75em;
-      input {
-        font-size: 20px;
-        height: 34px;
-      }
+    .osaamistavoitteet-table td {
+        padding-right: 5px;
+        padding-bottom: 6px;
     }
-    .muokkaus-napit {
-      padding-top: 4px;
-    }
-  }
-  .panel-heading {
-    .glyphicon, .otsikko {
-      cursor: pointer;
-    }
-    .otsikko {
-      font-size: 120%;
-    }
-    select {
-      margin-left: 10px;
-    }
-    a {
-      &:hover, &:focus, &:active, & *:hover, & *:focus, & *:active {
-        text-decoration: none;
-      }
-    }
-  }
-  .kohde-edit {
-    padding: 10px;
-  }
-  .lead {
-    font-size: 110%;
-    font-style: italic;
-  }
 
-  .osaamistavoitteet-table td {
-      padding-right: 5px;
-      padding-bottom: 6px;
-  }
-
-  input.osa-alue-nimi {
-      width:90%
-  }
+    input.osa-alue-nimi {
+        width: 90%;
+    }
 }
 
 .osa-alue-tabs {
@@ -73,7 +79,7 @@
         margin-bottom: 22px;
     }
 
-    .nav-tabs>li>a {
+    .nav-tabs > li > a {
         cursor: pointer;
         padding: 10px;
         background: none;
@@ -84,8 +90,10 @@
         }
     }
 
-    .nav-tabs>li.active {
-        &>a, &>a:hover, &>a:focus {
+    .nav-tabs > li.active {
+        & > a,
+        & > a:hover,
+        & > a:focus {
             padding: 10px;
             background: #fff;
         }
@@ -94,9 +102,9 @@
 
 hr.mujuviiva {
     border: 0px none;
-    color: #DDD;
+    color: #ddd;
     height: 1px;
-    background: none repeat scroll 0% 0% #DDD;
+    background: none repeat scroll 0% 0% #ddd;
 }
 
 .osaamistavoite-box {

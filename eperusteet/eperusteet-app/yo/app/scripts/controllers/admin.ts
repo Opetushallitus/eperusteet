@@ -23,67 +23,66 @@ enum ProjektiTila {
     JULKAISTU = "julkaistu"
 }
 
-angular.module('eperusteApp')
+angular
+    .module("eperusteApp")
     .config($stateProvider => {
         $stateProvider
-            .state('root.admin', {
-                url: '/admin',
-                templateUrl: 'views/admin/base.html',
-                controller: 'AdminBaseController',
+            .state("root.admin", {
+                url: "/admin",
+                templateUrl: "views/admin/base.html",
+                controller: "AdminBaseController"
             })
-            .state('root.admin.perusteprojektit', {
-                url: '/perusteprojektit',
-                templateUrl: 'views/admin/perusteprojektit.html',
-                controller: 'AdminPerusteprojektitController'
+            .state("root.admin.perusteprojektit", {
+                url: "/perusteprojektit",
+                templateUrl: "views/admin/perusteprojektit.html",
+                controller: "AdminPerusteprojektitController"
             })
-            .state('root.admin.tiedotteet', {
-                url: '/tiedotteet',
-                templateUrl: 'views/admin/tiedotteet.html',
-                controller: 'TiedotteidenHallintaController'
+            .state("root.admin.tiedotteet", {
+                url: "/tiedotteet",
+                templateUrl: "views/admin/tiedotteet.html",
+                controller: "TiedotteidenHallintaController"
             })
-            .state('root.admin.oppaat', {
-                url: '/oppaat',
-                templateUrl: 'views/admin/oppaat.html',
-                controller: 'OpasHallintaController'
+            .state("root.admin.oppaat", {
+                url: "/oppaat",
+                templateUrl: "views/admin/oppaat.html",
+                controller: "OpasHallintaController"
             });
     })
+    .controller("OpasHallintaController", ($scope, $state, Api) => {
+        const projektitEp = Api.one("oppaat").one("projektit");
 
-    .controller('OpasHallintaController', ($scope, $state, Api) => {
-      const projektitEp = Api.one("oppaat").one("projektit");
+        $scope.rajaus = "";
+        $scope.nykyinen = 0;
+        $scope.kokonaismaara = 0;
+        $scope.itemsPerPage = 20;
+        $scope.oppaat = [];
 
-      $scope.rajaus = "";
-      $scope.nykyinen = 0;
-      $scope.kokonaismaara = 0;
-      $scope.itemsPerPage = 20;
-      $scope.oppaat = [];
+        $scope.updateOpaslist = async () => {
+            const result = await projektitEp.get({
+                nimi: $scope.rajaus,
+                sivukoko: $scope.itemsPerPage,
+                sivu: $scope.nykyinen
+            });
 
-      $scope.updateOpaslist = async () => {
-        const result = await projektitEp.get({
-          nimi: $scope.rajaus,
-          sivukoko: $scope.itemsPerPage,
-          sivu: $scope.nykyinen
-        });
+            $scope.oppaat = result.data;
+        };
 
-        $scope.oppaat = result.data;
-      };
+        $scope.valitseSivu = sivu => {
+            $scope.nykyinen = sivu;
+            $scope.updateOpaslist();
+        };
 
-      $scope.valitseSivu = (sivu) => {
-        $scope.nykyinen = sivu;
+        $scope.luoUusi = () => {
+            $state.go("root.oppaat.uusi");
+        };
+
         $scope.updateOpaslist();
-      };
-
-      $scope.luoUusi = () => {
-        $state.go("root.oppaat.uusi");
-      };
-
-      $scope.updateOpaslist();
     })
-
-    .controller('AdminBaseController', ($scope, $state) => {
+    .controller("AdminBaseController", ($scope, $state) => {
         $scope.tabs = [
-            {label: 'perusteprojektit', state: 'root.admin.perusteprojektit'},
-            {label: 'tiedotteet', state: 'root.admin.tiedotteet'},
-            {label: 'oppaat', state: 'root.admin.oppaat'}
+            { label: "perusteprojektit", state: "root.admin.perusteprojektit" },
+            { label: "tiedotteet", state: "root.admin.tiedotteet" },
+            { label: "oppaat", state: "root.admin.oppaat" }
         ];
 
         $scope.chooseTab = $index => {
@@ -96,7 +95,7 @@ angular.module('eperusteApp')
             }
         };
 
-        if ($state.current.name === 'root.admin') {
+        if ($state.current.name === "root.admin") {
             $scope.chooseTab(0);
         } else {
             _.each($scope.tabs, item => {
@@ -104,98 +103,113 @@ angular.module('eperusteApp')
             });
         }
     })
+    .controller(
+        "AdminPerusteprojektitController",
+        (
+            $rootScope,
+            $scope,
+            Api,
+            Algoritmit,
+            PerusteprojektiTila,
+            Notifikaatiot,
+            Kaanna,
+            YleinenData,
+            Varmistusdialogi,
+            PerusteProjektiService
+        ) => {
+            $scope.jarjestysTapa = "nimi";
+            $scope.jarjestysOrder = false;
+            $scope.tilaRajain = null;
+            $scope.koulutustyyppiRajain = null;
+            $scope.itemsPerPage = 10;
+            $scope.nykyinen = 1;
+            $scope.rajaus = "";
+            $scope.tilat = _.keys(ProjektiTila).map(t => ProjektiTila[t]);
+            $scope.koulutustyypit = YleinenData.koulutustyypit;
 
-    .controller('AdminPerusteprojektitController', ($rootScope, $scope, Api, Algoritmit, PerusteprojektiTila,
-                                                    Notifikaatiot, Kaanna, YleinenData, Varmistusdialogi,
-                                                    PerusteProjektiService) => {
-        $scope.jarjestysTapa = 'nimi';
-        $scope.jarjestysOrder = false;
-        $scope.tilaRajain = null;
-        $scope.koulutustyyppiRajain = null;
-        $scope.itemsPerPage = 10;
-        $scope.nykyinen = 1;
-        $scope.rajaus = "";
-        $scope.tilat = _.keys(ProjektiTila).map(t => ProjektiTila[t]);
-        $scope.koulutustyypit = YleinenData.koulutustyypit;
-
-        async function updateSearch() {
-            let tila;
-            if ($scope.tilaRajain) {
-                tila = $scope.tilaRajain.toUpperCase();
-            } else {
-                tila = _($scope.tilat)
-                    .filter(tila => tila !== "poistettu")
-                    .map(tila => tila.toUpperCase())
-                    .value();
-            }
-            const perusteprojektit = await Api.one("perusteprojektit/perusteHaku").get({
-                nimi: $scope.rajaus,
-                tila: tila,
-                koulutustyyppi: $scope.koulutustyyppiRajain,
-                sivu: $scope.nykyinen - 1,
-                sivukoko: $scope.itemsPerPage,
-                jarjestysTapa: $scope.jarjestysTapa,
-                jarjestysOrder: $scope.jarjestysOrder
-            });
-            $scope.$apply(() => {
-                $scope.perusteprojektit = _.map(perusteprojektit.data, (pp) => {
-                    return {
-                        ...pp,
-                        suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(pp.koulutustyyppi),
-                        $$url: PerusteProjektiService.getUrl(pp),
-                    };
+            async function updateSearch() {
+                let tila;
+                if ($scope.tilaRajain) {
+                    tila = $scope.tilaRajain.toUpperCase();
+                } else {
+                    tila = _($scope.tilat)
+                        .filter(tila => tila !== "poistettu")
+                        .map(tila => tila.toUpperCase())
+                        .value();
+                }
+                const perusteprojektit = await Api.one("perusteprojektit/perusteHaku").get({
+                    nimi: $scope.rajaus,
+                    tila: tila,
+                    koulutustyyppi: $scope.koulutustyyppiRajain,
+                    sivu: $scope.nykyinen - 1,
+                    sivukoko: $scope.itemsPerPage,
+                    jarjestysTapa: $scope.jarjestysTapa,
+                    jarjestysOrder: $scope.jarjestysOrder
                 });
-                $scope.nykyinen = perusteprojektit.sivu + 1;
-                $scope.kokonaismaara = perusteprojektit.kokonaismäärä;
-                console.log($scope.nykyinen, $scope.kokonaismaara);
-            });
-        }
-
-        updateSearch();
-
-        const debounceUpdateSearch = _.debounce(updateSearch, 300);
-
-        $scope.updateTila = () => {
-            updateSearch();
-        };
-
-        $scope.updateRajaus = (rajaus) => {
-            $scope.rajaus = rajaus;
-            debounceUpdateSearch();
-        };
-
-        $scope.valitseSivu = (sivu) => {
-            $scope.nykyinen = sivu;
-            updateSearch();
-        };
-
-        $scope.asetaJarjestys = (tyyppi) => {
-            if ($scope.jarjestysTapa === tyyppi) {
-                $scope.jarjestysOrder = !$scope.jarjestysOrder;
-            } else {
-                $scope.jarjestysOrder = false;
-                $scope.jarjestysTapa = tyyppi;
+                $scope.$apply(() => {
+                    $scope.perusteprojektit = _.map(perusteprojektit.data, pp => {
+                        return {
+                            ...pp,
+                            suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(pp.koulutustyyppi),
+                            $$url: PerusteProjektiService.getUrl(pp)
+                        };
+                    });
+                    $scope.nykyinen = perusteprojektit.sivu + 1;
+                    $scope.kokonaismaara = perusteprojektit.kokonaismäärä;
+                    console.log($scope.nykyinen, $scope.kokonaismaara);
+                });
             }
-            updateSearch();
-        };
 
-        $scope.palauta = (pp) => {
-            const uusiTila = 'laadinta';
-            Varmistusdialogi.dialogi({
-                otsikko: Kaanna.kaanna('vahvista-palautus'),
-                teksti: Kaanna.kaanna('vahvista-palautus-sisältö', {
-                    nimi: pp.nimi,
-                    tila: Kaanna.kaanna('tila-' + uusiTila)
-                })
-            })(() => {
-                PerusteprojektiTila.save({id: pp.id, tila: uusiTila}, {}, (vastaus) => {
-                    if (vastaus.vaihtoOk) {
-                        pp.tila = uusiTila;
-                    }
-                    else {
-                        Notifikaatiot.varoitus('tilan-vaihto-epaonnistui');
-                    }
-                }, Notifikaatiot.serverCb);
-            });
-        };
-    });
+            updateSearch();
+
+            const debounceUpdateSearch = _.debounce(updateSearch, 300);
+
+            $scope.updateTila = () => {
+                updateSearch();
+            };
+
+            $scope.updateRajaus = rajaus => {
+                $scope.rajaus = rajaus;
+                debounceUpdateSearch();
+            };
+
+            $scope.valitseSivu = sivu => {
+                $scope.nykyinen = sivu;
+                updateSearch();
+            };
+
+            $scope.asetaJarjestys = tyyppi => {
+                if ($scope.jarjestysTapa === tyyppi) {
+                    $scope.jarjestysOrder = !$scope.jarjestysOrder;
+                } else {
+                    $scope.jarjestysOrder = false;
+                    $scope.jarjestysTapa = tyyppi;
+                }
+                updateSearch();
+            };
+
+            $scope.palauta = pp => {
+                const uusiTila = "laadinta";
+                Varmistusdialogi.dialogi({
+                    otsikko: Kaanna.kaanna("vahvista-palautus"),
+                    teksti: Kaanna.kaanna("vahvista-palautus-sisältö", {
+                        nimi: pp.nimi,
+                        tila: Kaanna.kaanna("tila-" + uusiTila)
+                    })
+                })(() => {
+                    PerusteprojektiTila.save(
+                        { id: pp.id, tila: uusiTila },
+                        {},
+                        vastaus => {
+                            if (vastaus.vaihtoOk) {
+                                pp.tila = uusiTila;
+                            } else {
+                                Notifikaatiot.varoitus("tilan-vaihto-epaonnistui");
+                            }
+                        },
+                        Notifikaatiot.serverCb
+                    );
+                });
+            };
+        }
+    );

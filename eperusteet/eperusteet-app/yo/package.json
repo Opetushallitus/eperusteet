@@ -43,6 +43,7 @@
     "karma-phantomjs-launcher": "0.1.4",
     "load-grunt-tasks": "0.6.0",
     "node-sass": "3.8.0",
+    "prettier": "^1.6.1",
     "typescript": "2.4.2"
   },
   "engines": {
@@ -50,6 +51,6 @@
   },
   "scripts": {
     "test": "grunt test",
-    "prettier": "prettier --config .prettierrc --write app/scripts/**/*.ts app/styles/**/*.{scss,css}"
+    "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write app/scripts/**/*.ts app/styles/**/*.{scss,css}"
   }
 }

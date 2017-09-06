@@ -14,8 +14,7 @@
 * European Union Public Licence for more details.
 */
 
-angular.module("eperusteApp")
-.service("TutkinnonOsaLeikelautaService", (localStorageService, Algoritmit, $timeout) => {
+angular.module("eperusteApp").service("TutkinnonOsaLeikelautaService", (localStorageService, Algoritmit, $timeout) => {
     let leikelauta = [];
 
     function kopioiLeikelautaan() {
@@ -28,8 +27,7 @@ angular.module("eperusteApp")
 
     function addEvents() {
         return {
-            start(event, ui) {
-            },
+            start(event, ui) {},
             update(event, ui) {
                 const sortable = ui.item.sortable;
 
@@ -40,16 +38,14 @@ angular.module("eperusteApp")
                     }
                     sortable.cancel();
 
-
                     // Kopioidaan alkuperäinen ja poistetaan siitä _id ja _tunniste kentät rekursiivisesti
                     const sourceModelClone = _.cloneDeep(sortable.model);
-                    Algoritmit.removeFieldsRecursiveFromObject(sourceModelClone,
-                        new RegExp(/^_id|id|_tunniste|\$\$/i));
+                    Algoritmit.removeFieldsRecursiveFromObject(sourceModelClone, new RegExp(/^_id|id|_tunniste|\$\$/i));
 
                     // Asetetaan kopiolle tyyppi ja nimi
                     sourceModelClone.$osanTyyppi = event.target.id;
                     switch (event.target.id) {
-                        case 'vapaatTekstit':
+                        case "vapaatTekstit":
                             sourceModelClone.$osanNimi = sourceModelClone.nimi;
                             break;
                         default:
@@ -58,7 +54,10 @@ angular.module("eperusteApp")
                     }
 
                     // Perutaan kopiointi jos tyyppi on väärä
-                    if (sortable.model.$osanTyyppi && ui.item.sortable.droptarget[0].id !== sortable.model.$osanTyyppi) {
+                    if (
+                        sortable.model.$osanTyyppi &&
+                        ui.item.sortable.droptarget[0].id !== sortable.model.$osanTyyppi
+                    ) {
                         if (sortable.isCanceled()) {
                             return;
                         }
@@ -73,26 +72,26 @@ angular.module("eperusteApp")
                 kopioiLeikelautaan();
             },
             over(event, ui) {
-                const
-                    sender = ui.sender,
+                const sender = ui.sender,
                     target = event.target,
                     item = ui.item;
 
                 if (sender && target && item) {
-
                     console.log(sender.context.id, target.id, item.sortable.model.$osanTyyppi);
-                    if (sender.context.id === 'leikelauta'
-                        && target.id !== item.sortable.model.$osanTyyppi
-                        && target.id !== 'leikelauta') {
-                        ui.placeholder.css({backgroundColor: 'red'});
+                    if (
+                        sender.context.id === "leikelauta" &&
+                        target.id !== item.sortable.model.$osanTyyppi &&
+                        target.id !== "leikelauta"
+                    ) {
+                        ui.placeholder.css({ backgroundColor: "red" });
                         //ui.placeholder.css({display: "none"});
                     } else {
-                        ui.placeholder.css({backgroundColor: '#f8f8f8'});
+                        ui.placeholder.css({ backgroundColor: "#f8f8f8" });
                         //ui.placeholder.css({display: "block"});
                     }
                 }
             }
-        }
+        };
     }
 
     return {
@@ -111,7 +110,7 @@ angular.module("eperusteApp")
                 ...defaults,
                 ...options,
                 ...addEvents()
-            }
+            };
         },
         createLeikelautaSortable($scope, options = {}) {
             return {
@@ -121,7 +120,7 @@ angular.module("eperusteApp")
         },
         initLeikelauta() {
             if (localStorageService.isSupported) {
-                leikelauta = localStorageService.get("leikelauta")
+                leikelauta = localStorageService.get("leikelauta");
             }
             return leikelauta;
         },
@@ -131,5 +130,5 @@ angular.module("eperusteApp")
                 localStorageService.set("leikelauta", leikelauta);
             }
         }
-    }
+    };
 });

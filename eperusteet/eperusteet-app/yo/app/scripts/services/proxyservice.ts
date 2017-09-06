@@ -14,14 +14,17 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
 // Älä käytä tätä ellei ole kiire
-angular.module('eperusteApp')
-  .service('ProxyService', function() {
+angular.module("eperusteApp").service("ProxyService", function() {
     var obj = {};
     return {
-      set: function(k, v) { obj[k] = v; },
-      get: function(k) { return obj[k]; }
+        set: function(k, v) {
+            obj[k] = v;
+        },
+        get: function(k) {
+            return obj[k];
+        }
     };
-  });
+});

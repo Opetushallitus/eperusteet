@@ -14,10 +14,9 @@
  * European Union Public Licence for more details.
  */
 
-
-angular.module("eperusteApp")
+angular
+    .module("eperusteApp")
     .factory("Dokumentti", function($resource, SERVICE_LOC) {
-
         // api:
         //
         // Generointi:
@@ -27,23 +26,30 @@ angular.module("eperusteApp")
         // GET /dokumentit/:token
 
         const baseUrl = SERVICE_LOC + "/dokumentit/:id";
-        return $resource(baseUrl, {
-            id: "@id"
-        }, {
-            tila: {
-                method: "GET",
-                url: baseUrl + "/tila"
+        return $resource(
+            baseUrl,
+            {
+                id: "@id"
+            },
+            {
+                tila: {
+                    method: "GET",
+                    url: baseUrl + "/tila"
+                }
             }
-        });
+        );
     })
-    .service("Pdf", function (Dokumentti, SERVICE_LOC) {
+    .service("Pdf", function(Dokumentti, SERVICE_LOC) {
         function generoiPdf(perusteId, kieli, suoritustapa, version) {
-            return Dokumentti.save({
-                perusteId: perusteId,
-                kieli: kieli,
-                suoritustapakoodi: suoritustapa,
-                version: version
-            }, null).$promise;
+            return Dokumentti.save(
+                {
+                    perusteId: perusteId,
+                    kieli: kieli,
+                    suoritustapakoodi: suoritustapa,
+                    version: version
+                },
+                null
+            ).$promise;
         }
 
         function haeTila(tokenId) {
@@ -88,7 +94,6 @@ angular.module("eperusteApp")
             hae
         };
     })
-
     .factory("PdfCreation", function($uibModal, YleinenData) {
         let perusteId = null;
         return {
@@ -110,10 +115,23 @@ angular.module("eperusteApp")
                     }
                 });
             }
-        }
+        };
     })
-    .controller("PdfCreationController", function($scope, $window, kielet, Pdf, perusteId,
-        $timeout, Notifikaatiot, Kaanna, PerusteProjektiService, $stateParams, YleinenData, isAmmatillinen, isOpas) {
+    .controller("PdfCreationController", function(
+        $scope,
+        $window,
+        kielet,
+        Pdf,
+        perusteId,
+        $timeout,
+        Notifikaatiot,
+        Kaanna,
+        PerusteProjektiService,
+        $stateParams,
+        YleinenData,
+        isAmmatillinen,
+        isOpas
+    ) {
         $scope.isOpas = isOpas;
         $scope.isAmmatillinen = isAmmatillinen;
         $scope.kielet = kielet;
@@ -121,10 +139,7 @@ angular.module("eperusteApp")
         $scope.docs = {};
         $scope.kvliitteet = {};
         $scope.versiot = {
-            lista: [
-                "uusi",
-                "vanha",
-            ],
+            lista: ["uusi", "vanha"],
             valittu: "uusi"
         };
 
@@ -137,7 +152,9 @@ angular.module("eperusteApp")
         };
 
         async function fetchLatest() {
-            const docs: any = await Promise.all(_.map(kielet.lista, kieli => Pdf.haeUusin(perusteId, kieli, suoritustapa)));
+            const docs: any = await Promise.all(
+                _.map(kielet.lista, kieli => Pdf.haeUusin(perusteId, kieli, suoritustapa))
+            );
             for (const doc of docs) {
                 if (doc.id !== null) {
                     doc.url = Pdf.haeLinkki(doc.id);
@@ -145,7 +162,9 @@ angular.module("eperusteApp")
                 $scope.docs[doc.kieli] = doc;
             }
 
-            const kvliitteet: any = await Promise.all(_.map(YleinenData.kvliitekielet, kieli => Pdf.hae(perusteId, kieli, "kvliite", suoritustapa)));
+            const kvliitteet: any = await Promise.all(
+                _.map(YleinenData.kvliitekielet, kieli => Pdf.hae(perusteId, kieli, "kvliite", suoritustapa))
+            );
             for (const kvliite of kvliitteet) {
                 if (kvliite.id !== null) {
                     kvliite.url = Pdf.haeLinkki(kvliite.id);
@@ -157,8 +176,7 @@ angular.module("eperusteApp")
         $scope.download = (kieli, version) => {
             if (version === "kvliite") {
                 $window.open($scope.kvliitteet[kieli].url, "_blank");
-            }
-            else {
+            } else {
                 $window.open($scope.docs[kieli].url, "_blank");
             }
         };
@@ -181,15 +199,16 @@ angular.module("eperusteApp")
                     res.url = Pdf.haeLinkki(res.id);
                     if (res.generatorVersion === "kvliite") {
                         $scope.kvliitteet[res.kieli] = res;
-                    }
-                    else {
+                    } else {
                         $scope.docs[res.kieli] = res;
                     }
                     enableActions(true);
                     break;
-                default: // "epaonnistui" + others(?)
-                    Notifikaatiot.fataali(Kaanna.kaanna("dokumentin-luonti-epaonnistui") +
-                        ": " + res.virhekoodi || res.tila);
+                default:
+                    // "epaonnistui" + others(?)
+                    Notifikaatiot.fataali(
+                        Kaanna.kaanna("dokumentin-luonti-epaonnistui") + ": " + res.virhekoodi || res.tila
+                    );
                     enableActions(true);
                     break;
             }
@@ -205,7 +224,7 @@ angular.module("eperusteApp")
             $timeout.cancel($scope.poller);
         });
 
-        $scope.generate = async function (kieli, versio = $scope.versiot.valittu) {
+        $scope.generate = async function(kieli, versio = $scope.versiot.valittu) {
             enableActions(false);
             $scope.tila = "jonossa";
             try {
@@ -214,8 +233,7 @@ angular.module("eperusteApp")
                     pdfToken = res.id;
                     startPolling(res.id);
                 }
-            }
-            catch (ex) {
+            } catch (ex) {
                 enableActions(true);
                 $scope.tila = "ei_ole";
             }

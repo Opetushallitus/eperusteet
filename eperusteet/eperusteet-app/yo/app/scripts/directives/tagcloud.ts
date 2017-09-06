@@ -14,64 +14,72 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .directive('tagCloud', function () {
-    return {
-      templateUrl: 'views/directives/tagcloud.html',
-      restrict: 'A',
-      scope: {
-        model: '=tagCloud',
-        openable: '@',
-        editMode: '=',
-        addLabel: '@',
-        lisaaUusiVaihtoehto: '=?'
-      },
-      controller: 'TagCloudController'
-    };
-  })
-  .controller('TagCloudController', function ($scope, $uibModal, Utils) {
-    $scope.notHidden = function (item) {
-      return !item.$hidden;
-    };
+angular
+    .module("eperusteApp")
+    .directive("tagCloud", function() {
+        return {
+            templateUrl: "views/directives/tagcloud.html",
+            restrict: "A",
+            scope: {
+                model: "=tagCloud",
+                openable: "@",
+                editMode: "=",
+                addLabel: "@",
+                lisaaUusiVaihtoehto: "=?"
+            },
+            controller: "TagCloudController"
+        };
+    })
+    .controller("TagCloudController", function($scope, $uibModal, Utils) {
+        $scope.notHidden = function(item) {
+            return !item.$hidden;
+        };
 
-    $scope.remove = function (tag) {
-      tag.$hidden = true;
-    };
+        $scope.remove = function(tag) {
+            tag.$hidden = true;
+        };
 
-    $scope.orderFn = Utils.nameSort;
+        $scope.orderFn = Utils.nameSort;
 
-    $scope.openDialog = function () {
-      $uibModal.open({
-        templateUrl: 'views/modals/tagcloudmodal.html',
-        controller: 'TagCloudModalController',
-        resolve: {
-          model: _.constant($scope.model),
-          addLabel: _.constant($scope.addLabel),
-          lisaaUusiVaihtoehto: _.constant($scope.lisaaUusiVaihtoehto),
-        }
-      }).result.then(angular.noop);
-    };
+        $scope.openDialog = function() {
+            $uibModal
+                .open({
+                    templateUrl: "views/modals/tagcloudmodal.html",
+                    controller: "TagCloudModalController",
+                    resolve: {
+                        model: _.constant($scope.model),
+                        addLabel: _.constant($scope.addLabel),
+                        lisaaUusiVaihtoehto: _.constant($scope.lisaaUusiVaihtoehto)
+                    }
+                })
+                .result.then(angular.noop);
+        };
 
-    $scope.showEmptyPlaceholder = function () {
-      return !$scope.editMode && (!$scope.model || $scope.model.length === 0  ||
-        !_.some($scope.model, function (item) { return !item.$hidden; }));
-    };
-  })
+        $scope.showEmptyPlaceholder = function() {
+            return (
+                !$scope.editMode &&
+                (!$scope.model ||
+                    $scope.model.length === 0 ||
+                    !_.some($scope.model, function(item) {
+                        return !item.$hidden;
+                    }))
+            );
+        };
+    })
+    .controller("TagCloudModalController", function($scope, model, addLabel, Utils, lisaaUusiVaihtoehto) {
+        $scope.model = model;
+        $scope.addLabel = addLabel;
+        $scope.orderFn = Utils.nameSort;
+        $scope.hasLisaaUusi = !!lisaaUusiVaihtoehto;
+        $scope.lisaaUusiVaihtoehto = function() {
+            lisaaUusiVaihtoehto(function(res) {
+                $scope.model.push(res);
+            });
+        };
 
-  .controller('TagCloudModalController', function ($scope, model, addLabel, Utils, lisaaUusiVaihtoehto) {
-    $scope.model = model;
-    $scope.addLabel = addLabel;
-    $scope.orderFn = Utils.nameSort;
-    $scope.hasLisaaUusi = !!lisaaUusiVaihtoehto;
-    $scope.lisaaUusiVaihtoehto = function() {
-      lisaaUusiVaihtoehto(function(res) {
-        $scope.model.push(res);
-      });
-    };
-
-    $scope.toggle = function (tag, $event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      tag.$hidden = !tag.$hidden;
-    };
-  });
+        $scope.toggle = function(tag, $event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            tag.$hidden = !tag.$hidden;
+        };
+    });

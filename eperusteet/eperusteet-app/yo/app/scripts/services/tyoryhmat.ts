@@ -14,35 +14,43 @@
 * European Union Public Licence for more details.
 */
 
-angular.module('eperusteApp')
-  .service('Tyoryhmat', function($uibModal) {
-    return {
-      valitse: function(valittavat, valitut, successCb) {
-        $uibModal.open({
-          templateUrl: 'views/modals/tyoryhmavalitsin.html',
-          controller: 'valitseTyoryhmatModalCtrl',
-          resolve: {
-            valittavat: function() { return valittavat; },
-            valitut: function() { return valitut; }
-          }
-        })
-        .result.then(successCb);
-      }
-    };
-  })
-  .controller('valitseTyoryhmatModalCtrl', function($scope, $uibModalInstance, valittavat, valitut) {
-    $scope.valitut = valitut;
-    $scope.valittavat = _.difference(valittavat, valitut);
-    $scope.uudet = {};
+angular
+    .module("eperusteApp")
+    .service("Tyoryhmat", function($uibModal) {
+        return {
+            valitse: function(valittavat, valitut, successCb) {
+                $uibModal
+                    .open({
+                        templateUrl: "views/modals/tyoryhmavalitsin.html",
+                        controller: "valitseTyoryhmatModalCtrl",
+                        resolve: {
+                            valittavat: function() {
+                                return valittavat;
+                            },
+                            valitut: function() {
+                                return valitut;
+                            }
+                        }
+                    })
+                    .result.then(successCb);
+            }
+        };
+    })
+    .controller("valitseTyoryhmatModalCtrl", function($scope, $uibModalInstance, valittavat, valitut) {
+        $scope.valitut = valitut;
+        $scope.valittavat = _.difference(valittavat, valitut);
+        $scope.uudet = {};
 
-    $scope.valitse = function(tyoryhma) {
-      $scope.uudet[tyoryhma] = !$scope.uudet[tyoryhma];
-    };
+        $scope.valitse = function(tyoryhma) {
+            $scope.uudet[tyoryhma] = !$scope.uudet[tyoryhma];
+        };
 
-    $scope.ok = function() {
-      $uibModalInstance.close(_.filter(_.keys($scope.uudet), function(k) {
-        return $scope.uudet[k];
-      }));
-    };
-    $scope.peruuta = $uibModalInstance.dismiss;
-  });
+        $scope.ok = function() {
+            $uibModalInstance.close(
+                _.filter(_.keys($scope.uudet), function(k) {
+                    return $scope.uudet[k];
+                })
+            );
+        };
+        $scope.peruuta = $uibModalInstance.dismiss;
+    });

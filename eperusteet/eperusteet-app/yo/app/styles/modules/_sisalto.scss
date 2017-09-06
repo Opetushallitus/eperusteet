@@ -1,104 +1,106 @@
 $sisalto-hover-bg: #eee;
 .suoritustapa-valinta {
-  margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 .main-content {
-  .li:hover {
-    background: $sisalto-hover-bg;
-  }
-  .angular-ui-tree-nodes .angular-ui-tree-nodes {
-    padding-left: 40px;
-  }
-  .angular-ui-tree-node {
-    min-height: 0px;
-  }
+    .li:hover {
+        background: $sisalto-hover-bg;
+    }
+    .angular-ui-tree-nodes .angular-ui-tree-nodes {
+        padding-left: 40px;
+    }
+    .angular-ui-tree-node {
+        min-height: 0px;
+    }
 }
 
 .tutkinto-sisalto {
-  margin: -30px auto 100px auto;
+    margin: -30px auto 100px auto;
 
-  .esityksen-tarkastelu {
-    margin-bottom: 10px;
-    .url {
-      font-size: large
-    }
-  }
-
-  .tiivistelma {
-    margin-bottom: 40px;
-  }
-
-  .selite {
-    font-size: 18px;
-    text-align: center;
-    margin: 40px;
-  }
-
-  .suoritustapa {
-    font-size: 16px;
-  }
-
-  .actions {
-    height: 50px;
-  }
-
-  .tutkinto {
-    .usericon {
-      position: relative;
-      top: 5px;
+    .esityksen-tarkastelu {
+        margin-bottom: 10px;
+        .url {
+            font-size: large;
+        }
     }
 
-    .toolbar-input {
-      margin-bottom: 5px;
-      max-width: 24em;
+    .tiivistelma {
+        margin-bottom: 40px;
     }
-    .open-close {
-      margin: 0 10px;
-    }
-    h2 {
-      padding-bottom: 7px;
-      margin-bottom: 20px;
-    }
-  }
-  .rakenteen-muokkaus {
-    h2 {
-      border-bottom: none;
-      margin-bottom: 5px;
-    }
-    margin-bottom: 20px;
-  }
 
-  .nav {
-    margin-bottom: 22px;
-  }
-
-  .nav-tabs>li>a {
-    cursor: pointer;
-    padding: 20px;
-    background: none;
-    filter: none;
-    background: #fafafa;
-    &:hover {
-      background: #fff;
+    .selite {
+        font-size: 18px;
+        text-align: center;
+        margin: 40px;
     }
-  }
 
-  .nav-tabs>li.active {
-    &>a, &>a:hover, &>a:focus {
-      padding: 20px;
-      background: #fff;
+    .suoritustapa {
+        font-size: 16px;
     }
-  }
+
+    .actions {
+        height: 50px;
+    }
+
+    .tutkinto {
+        .usericon {
+            position: relative;
+            top: 5px;
+        }
+
+        .toolbar-input {
+            margin-bottom: 5px;
+            max-width: 24em;
+        }
+        .open-close {
+            margin: 0 10px;
+        }
+        h2 {
+            padding-bottom: 7px;
+            margin-bottom: 20px;
+        }
+    }
+    .rakenteen-muokkaus {
+        h2 {
+            border-bottom: none;
+            margin-bottom: 5px;
+        }
+        margin-bottom: 20px;
+    }
+
+    .nav {
+        margin-bottom: 22px;
+    }
+
+    .nav-tabs > li > a {
+        cursor: pointer;
+        padding: 20px;
+        background: none;
+        filter: none;
+        background: #fafafa;
+        &:hover {
+            background: #fff;
+        }
+    }
+
+    .nav-tabs > li.active {
+        & > a,
+        & > a:hover,
+        & > a:focus {
+            padding: 20px;
+            background: #fff;
+        }
+    }
 }
 
 .modal-body {
-  .tuo-nykyisesta-perusteesta {
-    margin-bottom: 10px;
-  }
-
-  .tekstikappale-tuonti-tabs {
-    ul.nav-tabs {
-      margin-bottom: 16px;
+    .tuo-nykyisesta-perusteesta {
+        margin-bottom: 10px;
     }
-  }
+
+    .tekstikappale-tuonti-tabs {
+        ul.nav-tabs {
+            margin-bottom: 16px;
+        }
+    }
 }

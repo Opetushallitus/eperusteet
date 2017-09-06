@@ -14,48 +14,51 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
-angular.module('eperusteApp')
-  .service('EpFooterData', function ($http, $window, $q) {
-    var data = null;
-    var fetched = false;
-    var pattern = /([^=]+)=([^=]+)(?:\n|$)/gi;
-    this.fetch = function () {
-      var deferred = $q.defer();
-      if (fetched) {
-        deferred.resolve(data);
-      } else {
-        fetched = true;
-        $http.get($window.location.pathname + 'buildversion.txt').then(res => {
-          var result;
-          data = {};
-          while ((result = pattern.exec(res.data)) !== null) {
-            data[result[1]] = result[1] === 'vcsRevision' ? result[2].substr(0, 8) :
-              result[2].replace(/\s\s*$/, '');
-          }
-          deferred.resolve(data);
-        }).catch(() => {
-          data = null;
-          deferred.resolve(data);
-        });
-      }
-      return deferred.promise;
-    };
-  })
-
-  .directive('epFooter', function (SHOW_VERSION_FOOTER, EpFooterData) {
-    return {
-      restrict: 'AE',
-      templateUrl: 'views/epfooter.html',
-      scope: {},
-      controller: function($scope) {
-        $scope.active = SHOW_VERSION_FOOTER;
-        if ($scope.active) {
-          EpFooterData.fetch().then(function (data) {
-            $scope.data = data;
-          });
-        }
-      }
-    };
-  });
+angular
+    .module("eperusteApp")
+    .service("EpFooterData", function($http, $window, $q) {
+        var data = null;
+        var fetched = false;
+        var pattern = /([^=]+)=([^=]+)(?:\n|$)/gi;
+        this.fetch = function() {
+            var deferred = $q.defer();
+            if (fetched) {
+                deferred.resolve(data);
+            } else {
+                fetched = true;
+                $http
+                    .get($window.location.pathname + "buildversion.txt")
+                    .then(res => {
+                        var result;
+                        data = {};
+                        while ((result = pattern.exec(res.data)) !== null) {
+                            data[result[1]] =
+                                result[1] === "vcsRevision" ? result[2].substr(0, 8) : result[2].replace(/\s\s*$/, "");
+                        }
+                        deferred.resolve(data);
+                    })
+                    .catch(() => {
+                        data = null;
+                        deferred.resolve(data);
+                    });
+            }
+            return deferred.promise;
+        };
+    })
+    .directive("epFooter", function(SHOW_VERSION_FOOTER, EpFooterData) {
+        return {
+            restrict: "AE",
+            templateUrl: "views/epfooter.html",
+            scope: {},
+            controller: function($scope) {
+                $scope.active = SHOW_VERSION_FOOTER;
+                if ($scope.active) {
+                    EpFooterData.fetch().then(function(data) {
+                        $scope.data = data;
+                    });
+                }
+            }
+        };
+    });

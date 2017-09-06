@@ -14,35 +14,39 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 /* global _ */
 
-angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('root.virhe', {
-        url: '/virhe',
-        templateUrl: 'views/virhe.html',
-        controller: 'virheCtrl'
-      });
-  })
-  .controller('virheCtrl', function ($scope, virheService) {
-    $scope.$watch(virheService.getData, function (value) {
-      $scope.data = value;
+angular
+    .module("eperusteApp")
+    .config(function($stateProvider) {
+        $stateProvider.state("root.virhe", {
+            url: "/virhe",
+            templateUrl: "views/virhe.html",
+            controller: "virheCtrl"
+        });
+    })
+    .controller("virheCtrl", function($scope, virheService) {
+        $scope.$watch(virheService.getData, function(value) {
+            $scope.data = value;
+        });
+    })
+    .service("virheService", function($state) {
+        var data = {};
+
+        this.setData = function(d) {
+            data = d;
+        };
+        this.getData = function() {
+            return data;
+        };
+
+        this.virhe = function(virhe) {
+            if (_.isObject(virhe)) {
+                data = virhe;
+            } else {
+                data = { muu: virhe };
+            }
+            $state.go("root.virhe");
+        };
     });
-  })
-  .service('virheService', function ($state) {
-    var data = {};
-
-    this.setData = function(d) { data = d; };
-    this.getData = function() { return data; };
-
-    this.virhe = function(virhe) {
-      if (_.isObject(virhe)) {
-        data = virhe;
-      } else {
-        data = { muu: virhe };
-      }
-      $state.go('root.virhe');
-    };
-  });

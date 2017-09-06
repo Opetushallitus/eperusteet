@@ -14,20 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .directive('readmore', function ($compile, $timeout) {
+angular.module("eperusteApp").directive("readmore", function($compile, $timeout) {
     return {
-      restrict: 'AE',
-      scope: {
-        maxheight: '@'
-      },
-      controller: function ($scope) {
-        $scope.collapsed = true;
-        $scope.needsCollapser = false;
-      },
-      link: function (scope, element) {
-        // Todo: Korjaa direktiivi, sillä nämä watcherit aiheuttavat infinite digestin
-        /*
+        restrict: "AE",
+        scope: {
+            maxheight: "@"
+        },
+        controller: function($scope) {
+            $scope.collapsed = true;
+            $scope.needsCollapser = false;
+        },
+        link: function(scope, element) {
+            // Todo: Korjaa direktiivi, sillä nämä watcherit aiheuttavat infinite digestin
+            /*
         var maxheight = parseInt(scope.maxheight, 10) || 100;
         var togglerEl = angular.element(
           '<a class="action-link readmore-toggler" ng-show="needsCollapser" ng-click="collapsed = !collapsed">' +
@@ -67,6 +66,6 @@ angular.module('eperusteApp')
           scope.elHeight = element.height();
         });
         */
-      }
+        }
     };
-  });
+});

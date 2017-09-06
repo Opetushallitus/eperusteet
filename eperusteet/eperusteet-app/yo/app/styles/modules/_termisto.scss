@@ -1,171 +1,171 @@
 dl.termisto {
-  dt {
-    font-size: 110%;
-    padding: 7px 4px;
-    &:hover {
-      background-color: #eaeaea;
+    dt {
+        font-size: 110%;
+        padding: 7px 4px;
+        &:hover {
+            background-color: #eaeaea;
+        }
     }
-  }
-  .actions {
-    margin-left: 5px;
-  }
-  margin-top: 20px;
-  dd {
-    margin-left: 40px;
-    margin-bottom: 20px;
-  }
+    .actions {
+        margin-left: 5px;
+    }
+    margin-top: 20px;
+    dd {
+        margin-left: 40px;
+        margin-bottom: 20px;
+    }
 }
 
 .termisto-rajaus {
-  max-width: 30em;
-  margin-bottom: 30px;
+    max-width: 30em;
+    margin-bottom: 30px;
 }
 
 .spacer {
-  margin-bottom: 80px;
+    margin-bottom: 80px;
 }
 
 .termisto-maara {
-  margin-top: 30px;
-  margin-bottom: 0;
+    margin-top: 30px;
+    margin-bottom: 0;
 }
 
 .termi-muokkaus {
-  .input-group {
-    margin-bottom: 15px;
-  }
-  .navbar-fixed-top {
-    position: relative;
-  }
-
-  table {
-    tr {
-      td {
-        vertical-align: top;
-        padding: 3px;
-        label {
-          margin-top: 2px;
-        }
-      }
+    .input-group {
+        margin-bottom: 15px;
     }
-  }
+    .navbar-fixed-top {
+        position: relative;
+    }
+
+    table {
+        tr {
+            td {
+                vertical-align: top;
+                padding: 3px;
+                label {
+                    margin-top: 2px;
+                }
+            }
+        }
+    }
 }
 
 .termisto-wrapper {
-  max-width: 800px;
+    max-width: 800px;
 }
 
 .readmore-collapsable {
-  overflow-y: hidden;
-  display: block;
-  transition: height 0.2s;
+    overflow-y: hidden;
+    display: block;
+    transition: height 0.2s;
 }
 
 .readmore-toggler {
-  width: 100%;
-  display: block;
-  border-top: 1px solid #ddd;
-  margin-top: 5px;
-  text-align: center;
+    width: 100%;
+    display: block;
+    border-top: 1px solid #ddd;
+    margin-top: 5px;
+    text-align: center;
 }
 
 // restore styles that are reset by ckeditor
 .ckeplugin-ui-select {
-
-  box-sizing: border-box !important;
-  & * {
     box-sizing: border-box !important;
-  }
-  .ui-select-bootstrap {
-    .ui-select-toggle {
-      &.btn-block {
-        display: block;
-        padding-left: 10px;
-        padding-right: 10px;
-        width: 100%;
-      }
-      &.btn-group {
-        display: inline-block;
-        position: relative;
-        vertical-align: middle;
-      }
-      .btn {
-        text-align: center;
-        vertical-align: middle;
-        &.col-md-11 {
-          width: 91.6667%;
+    & * {
+        box-sizing: border-box !important;
+    }
+    .ui-select-bootstrap {
+        .ui-select-toggle {
+            &.btn-block {
+                display: block;
+                padding-left: 10px;
+                padding-right: 10px;
+                width: 100%;
+            }
+            &.btn-group {
+                display: inline-block;
+                position: relative;
+                vertical-align: middle;
+            }
+            .btn {
+                text-align: center;
+                vertical-align: middle;
+                &.col-md-11 {
+                    width: 91.6667%;
+                }
+                &.col-md-1 {
+                    width: 8.33333%;
+                }
+            }
         }
-        &.col-md-1 {
-          width: 8.33333%;
+        .caret {
+            position: static;
+            vertical-align: middle;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid;
         }
-      }
+        &.dropdown {
+            position: relative;
+        }
+        .ui-select-choices-row.active > a * {
+            color: #fff;
+        }
+        .dropdown-menu {
+            position: absolute;
+            float: left;
+            background-clip: padding-box;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+        }
+        .ui-select-highlight {
+            font-weight: 700;
+        }
     }
-    .caret {
-      position: static;
-      vertical-align: middle;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 4px solid;
+    .empty-termit {
+        font-weight: 700;
+        padding: 10px;
+        background-color: #f2f2f2;
     }
-    &.dropdown {
-      position: relative;
-    }
-    .ui-select-choices-row.active > a * {
-      color: #fff;
-    }
-    .dropdown-menu {
-      position: absolute;
-      float: left;
-      background-clip: padding-box;
-      background-color: #fff;
-      border: 1px solid rgba(0, 0, 0, 0.15)
-    }
-    .ui-select-highlight {
-      font-weight: 700;
-    }
-  }
-  .empty-termit {
-    font-weight: 700;
-    padding: 10px;
-    background-color: #f2f2f2;
-  }
 }
 
 .termi-plugin-add {
-  margin-top: 20px !important;
-  a {
-    color: $brand-primary;
-    cursor: pointer;
-  }
-  .success-message {
-    padding: 5px;
-    background-color: #e3f4e5;
-    color: #4b8947;
-  }
+    margin-top: 20px !important;
+    a {
+        color: $brand-primary;
+        cursor: pointer;
+    }
+    .success-message {
+        padding: 5px;
+        background-color: #e3f4e5;
+        color: #4b8947;
+    }
 }
 
-.termi-plugin-add, .ckeplugin-ui-select {
-  .form-control {
-    border: 1px solid rgb(146, 204, 224);
-    width: 100%;
-    height: 34px;
-    padding: 6px 12px;
-  }
-  .btn {
-    padding: 6.5px;
-    font-size: 13px;
-    color: #333333;
-  }
-  .btn-primary {
-    background-color: #feba00;
-    border: 1px solid #dea300;
-  }
-  .btn-default {
-    background-color: #d2ecf5;
-    border: 1px solid #92cce0;
-  }
+.termi-plugin-add,
+.ckeplugin-ui-select {
+    .form-control {
+        border: 1px solid rgb(146, 204, 224);
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+    }
+    .btn {
+        padding: 6.5px;
+        font-size: 13px;
+        color: #333333;
+    }
+    .btn-primary {
+        background-color: #feba00;
+        border: 1px solid #dea300;
+    }
+    .btn-default {
+        background-color: #d2ecf5;
+        border: 1px solid #92cce0;
+    }
 }
 
 abbr[title] {
-  text-decoration: none;
+    text-decoration: none;
 }

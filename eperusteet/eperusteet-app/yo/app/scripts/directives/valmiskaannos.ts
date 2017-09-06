@@ -14,23 +14,21 @@
  * European Union Public Licence for more details.
  */
 
-
 /**
  * Valmiin ja käännöksen esittäminen
  *
  *
  */
-angular.module('eperusteApp')
-.directive('valmiskaannos', ($timeout, $compile, $document) => {
+angular.module("eperusteApp").directive("valmiskaannos", ($timeout, $compile, $document) => {
     return {
-        templateUrl: 'views/partials/valmiskaannos.html',
-        restrict: 'E',
-        require: 'ngModel',
+        templateUrl: "views/partials/valmiskaannos.html",
+        restrict: "E",
+        require: "ngModel",
         scope: {
-            isEditing: '=?',
-            ngModel: '='
+            isEditing: "=?",
+            ngModel: "="
         },
-        controller: ($scope) => {
+        controller: $scope => {
             $scope.editing = _.isUndefined($scope.isEditing) ? false : $scope.isEditing;
         }
     };

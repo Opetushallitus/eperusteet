@@ -9,92 +9,96 @@ $edit-control-height: 60px;
 
 /* changed in code */
 .editointi-wrapper {
-  margin-top: 20px;
-  margin-bottom: 50px;
+    margin-top: 20px;
+    margin-bottom: 50px;
 }
 
 .edit-controls {
-  background: transparentize($valinta-vari, 0.3);
-  height: $edit-control-height;
-  position: relative;
-  float: left;
-  border: 2px solid black;
-  z-index: 1040;
-
-  &.floating {
-    position: fixed;
-    border-bottom-color: transparentize($valinta-vari, 0.3);
-    bottom: 0px;
-    &.ng-hide-add {
-      transition: bottom 0.1s;
-    }
-    &.ng-hide-remove {
-      transition: bottom 0.4s;
-    }
-    &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
-      bottom: -$edit-control-height;
-    }
-    &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
-      bottom: 0px;
-    }
-  }
-  &.static {
-    &.ng-hide-add {
-      transition: none;
-    }
-    &.ng-hide-remove {
-      transition: opacity 0.4s;
-    }
-    &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
-      opacity: 0;
-    }
-    &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
-      opacity: 1;
-    }
-  }
-
-  .edit-control-content {
-    max-width: $fluid-container-width;
-    height: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .edit-control-header {
+    background: transparentize($valinta-vari, 0.3);
+    height: $edit-control-height;
+    position: relative;
     float: left;
-    padding-left: 10px;
-    width: $edit-control-header-width;
-    font-size: 20px;
-    .glyphicon {
-      margin-right: 10px;
-      border: 2px solid #333;
-      @include borderradius(10px);
-      padding: 5px;
+    border: 2px solid black;
+    z-index: 1040;
+
+    &.floating {
+        position: fixed;
+        border-bottom-color: transparentize($valinta-vari, 0.3);
+        bottom: 0px;
+        &.ng-hide-add {
+            transition: bottom 0.1s;
+        }
+        &.ng-hide-remove {
+            transition: bottom 0.4s;
+        }
+        &.ng-hide-add.ng-hide-add-active,
+        &.ng-hide-remove {
+            bottom: -$edit-control-height;
+        }
+        &.ng-hide-add,
+        &.ng-hide-remove.ng-hide-remove-active {
+            bottom: 0px;
+        }
     }
-  }
-  .edit-control-buttons {
-    float: right;
-    padding-right: 10px;
-    text-align: right;
-    width: $edit-control-buttons-width;
-  }
-  .edit-control-comment {
-    float: right;
-    width: 400px;
-  }
-  @media (max-width: 850px) {
+    &.static {
+        &.ng-hide-add {
+            transition: none;
+        }
+        &.ng-hide-remove {
+            transition: opacity 0.4s;
+        }
+        &.ng-hide-add.ng-hide-add-active,
+        &.ng-hide-remove {
+            opacity: 0;
+        }
+        &.ng-hide-add,
+        &.ng-hide-remove.ng-hide-remove-active {
+            opacity: 1;
+        }
+    }
+
+    .edit-control-content {
+        max-width: $fluid-container-width;
+        height: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .edit-control-header {
+        float: left;
+        padding-left: 10px;
+        width: $edit-control-header-width;
+        font-size: 20px;
+        .glyphicon {
+            margin-right: 10px;
+            border: 2px solid #333;
+            @include borderradius(10px);
+            padding: 5px;
+        }
+    }
+    .edit-control-buttons {
+        float: right;
+        padding-right: 10px;
+        text-align: right;
+        width: $edit-control-buttons-width;
+    }
     .edit-control-comment {
-      float: none;
-      margin-left: $edit-control-header-width;
-      margin-right: $edit-control-buttons-width;
-      width: auto;
+        float: right;
+        width: 400px;
     }
-  }
+    @media (max-width: 850px) {
+        .edit-control-comment {
+            float: none;
+            margin-left: $edit-control-header-width;
+            margin-right: $edit-control-buttons-width;
+            width: auto;
+        }
+    }
 }
 
 .osanmuokkaus-kohdealueet {
-  .rivi {
-    margin-bottom: 5px;
-  }
+    .rivi {
+        margin-bottom: 5px;
+    }
 }

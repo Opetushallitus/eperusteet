@@ -14,8 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-angular.module("eperusteApp")
-.directive("sortableTable", () => {
+angular.module("eperusteApp").directive("sortableTable", () => {
     return {
         templateUrl: "scripts/directives/sortabletable.html",
         restrict: "E",
@@ -35,10 +34,10 @@ angular.module("eperusteApp")
 
             $scope.sortableOptions = {
                 cursor: "move",
-                cursorAt: { top : 2, left: 2 },
+                cursorAt: { top: 2, left: 2 },
                 handle: ".handle",
                 delay: 100,
-                tolerance: "pointer",
+                tolerance: "pointer"
             };
 
             // let backup = Api.copy($scope.ngModel);
@@ -69,7 +68,6 @@ angular.module("eperusteApp")
                 });
                 Editointikontrollit.startEditing();
             };
-
         }
-    }
+    };
 });

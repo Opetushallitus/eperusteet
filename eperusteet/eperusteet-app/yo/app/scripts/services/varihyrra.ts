@@ -14,28 +14,39 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
-angular.module('eperusteApp')
-  .service('VariHyrra', function() {
+angular.module("eperusteApp").service("VariHyrra", function() {
     this.current = 0;
     this.colors = [
-      'fbb03b', 'ffd400', '3a8fbe', '89bcd8',
-      '800080', 'b366b3', '0c566e', '6d9aa8',
-      '008000', '8cc63f', '2e3192', '8283be',
-      '663300', 'a38566', '666600', 'a3a366'
+        "fbb03b",
+        "ffd400",
+        "3a8fbe",
+        "89bcd8",
+        "800080",
+        "b366b3",
+        "0c566e",
+        "6d9aa8",
+        "008000",
+        "8cc63f",
+        "2e3192",
+        "8283be",
+        "663300",
+        "a38566",
+        "666600",
+        "a3a366"
     ];
     /**
      * Cycles through predefined set of colors.
      */
-    this.next = function () {
-      var ret = this.colors[this.current];
-      if (++this.current >= this.colors.length) {
+    this.next = function() {
+        var ret = this.colors[this.current];
+        if (++this.current >= this.colors.length) {
+            this.current = 0;
+        }
+        return ret;
+    };
+    this.reset = function() {
         this.current = 0;
-      }
-      return ret;
     };
-    this.reset = function () {
-      this.current = 0;
-    };
-  });
+});

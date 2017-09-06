@@ -1,251 +1,272 @@
 /* normalisoi ie10+:n scrollbar */
 html {
-  -ms-overflow-style: scrollbar;
+    -ms-overflow-style: scrollbar;
 }
 
 .max-sm-leveys {
-  @media (min-width: $screen-sm-min) {
-    max-width: $screen-sm-min;
-  }
+    @media (min-width: $screen-sm-min) {
+        max-width: $screen-sm-min;
+    }
 }
 
 h1 {
-  margin-bottom: 30px;
+    margin-bottom: 30px;
 }
-h1, h2, h3, h4 {
-  .btn {
-    margin-left: 10px;
-  }
+h1,
+h2,
+h3,
+h4 {
+    .btn {
+        margin-left: 10px;
+    }
 }
 
 .modal-body {
-  .form-horizontal {
-    margin-left: 10px;
-    margin-right: 20px;
-  }
+    .form-horizontal {
+        margin-left: 10px;
+        margin-right: 20px;
+    }
 }
 
 button {
-  .glyphicon {
-    margin-right: 5px;
-  }
-  img {
-    margin-right: 5px;
-  }
+    .glyphicon {
+        margin-right: 5px;
+    }
+    img {
+        margin-right: 5px;
+    }
 }
 
 a {
-  img, .glyphicon {
-    margin-right: 5px;
-  }
+    img,
+    .glyphicon {
+        margin-right: 5px;
+    }
 }
 
 /* ikoni + linkkiteksti */
 .iconlink > .glyphicon {
-  margin-right: 5px;
+    margin-right: 5px;
 }
 
-label input[type=radio] {
-  margin-right: 5px;
-  top: 0px;
+label input[type="radio"] {
+    margin-right: 5px;
+    top: 0px;
 }
 
 .ep-label-input {
-  input {
-    top: 0px;
-  }
+    input {
+        top: 0px;
+    }
 }
 
 .modal-body .modal-data {
-  margin-top: 15px;
-  margin-left: 15px;
+    margin-top: 15px;
+    margin-left: 15px;
 }
 
 /* animointia varten */
-.ng-hide-add, .ng-hide-remove {
-  display: block !important;
+.ng-hide-add,
+.ng-hide-remove {
+    display: block !important;
 }
 
 .stack {
-  clear: both;
-  margin-bottom: 15px;
-  & > label {
-    width: 200px;
-  }
-  & > * {
-    margin-right: 10px;
-  }
-  & > *:not(:first-child) {
-    float: left;
-  }
+    clear: both;
+    margin-bottom: 15px;
+    & > label {
+        width: 200px;
+    }
+    & > * {
+        margin-right: 10px;
+    }
+    & > *:not(:first-child) {
+        float: left;
+    }
 }
 
 .action-buttons {
-  position: absolute;
-  right: 15px;
+    position: absolute;
+    right: 15px;
 }
 
-.btn.floater, div.floater {
-  margin-left: 5px;
-  position: relative;
-  float: right;
+.btn.floater,
+div.floater {
+    margin-left: 5px;
+    position: relative;
+    float: right;
 }
 
 .link-floater {
-  margin-left: 5px;
-  position: relative;
-  float: right;
-  top: -23px;
+    margin-left: 5px;
+    position: relative;
+    float: right;
+    top: -23px;
 }
 
 .action-link {
-  outline: 0;
-  cursor: pointer;
-  &:hover {
     outline: 0;
-  }
-  &:active, &:focus {
-    outline: 0;
-    text-decoration: none;
-    color: $brand-primary;
-  }
+    cursor: pointer;
+    &:hover {
+        outline: 0;
+    }
+    &:active,
+    &:focus {
+        outline: 0;
+        text-decoration: none;
+        color: $brand-primary;
+    }
 }
 
 $lukko-width: 2em;
 $lukko-inner: 1.4em;
 .lukko {
-  display: inline-block;
-  width: $lukko-width;
-  height: $lukko-width*1.3;
-  margin-left: 5px;
-  margin-right: 5px;
-  .inner1 {
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    width: $lukko-inner;
-    height: $lukko-inner*1.2;
-    border: $lukko-inner*0.3 solid black;
-    border-radius: $lukko-inner/2;
-  }
-  .inner2 {
-    position: relative;
-    top: -$lukko-inner*1.2/2;
-    background-color: black;
-    height: $lukko-width;
+    display: inline-block;
     width: $lukko-width;
-  }
+    height: $lukko-width*1.3;
+    margin-left: 5px;
+    margin-right: 5px;
+    .inner1 {
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        width: $lukko-inner;
+        height: $lukko-inner*1.2;
+        border: $lukko-inner*0.3 solid black;
+        border-radius: $lukko-inner/2;
+    }
+    .inner2 {
+        position: relative;
+        top: -$lukko-inner*1.2/2;
+        background-color: black;
+        height: $lukko-width;
+        width: $lukko-width;
+    }
 }
 
 .kielenvaihto {
-  margin-right: 5px;
-  list-style-type: none;
-  li {
-    display: inline;
-  }
+    margin-right: 5px;
+    list-style-type: none;
+    li {
+        display: inline;
+    }
 }
 
 .modalkielenvaihto {
-  font-size: 110%;
-  float: right;
-  margin-top: 10px;
-  margin-right: 10px;
+    font-size: 110%;
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
 }
 
 .versiohistoria {
-  .navigoitava {
-    cursor: pointer;
-  }
-  .versio { width: 10%; }
-  .kommentti { width: 50%; }
-  .muokattu { width: 20%; }
+    .navigoitava {
+        cursor: pointer;
+    }
+    .versio {
+        width: 10%;
+    }
+    .kommentti {
+        width: 50%;
+    }
+    .muokattu {
+        width: 20%;
+    }
 }
 
 $backtotop-size: 48px;
 #backtotop {
-  &.ng-hide-add, &.ng-hide-remove {
-    transition: 0.2s linear all;
-  }
-  &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
-    opacity: 0;
-  }
-  &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
-    opacity: 1;
-  }
-  position: fixed;
-  bottom: 5px;
-  right: 5px;
-  background-color: rgba(255, 255, 255, 0.5);
-  a {
-    .glyphicon {
-      margin-right: 2px;
+    &.ng-hide-add,
+    &.ng-hide-remove {
+        transition: 0.2s linear all;
     }
-    display: block;
-    text-align: center;
-    border: 2px solid rgba(0,0,0,0.8);
-    border-radius: 5px;
-    font-size: $backtotop-size*0.6;
-    line-height: $backtotop-size;
-    width: $backtotop-size;
-    height: $backtotop-size;
-    &:hover, &:focus, &:active, & *:hover, & *:focus, & *:active {
-      text-decoration: none;
+    &.ng-hide-add.ng-hide-add-active,
+    &.ng-hide-remove {
+        opacity: 0;
     }
-  }
+    &.ng-hide-add,
+    &.ng-hide-remove.ng-hide-remove-active {
+        opacity: 1;
+    }
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    a {
+        .glyphicon {
+            margin-right: 2px;
+        }
+        display: block;
+        text-align: center;
+        border: 2px solid rgba(0, 0, 0, 0.8);
+        border-radius: 5px;
+        font-size: $backtotop-size*0.6;
+        line-height: $backtotop-size;
+        width: $backtotop-size;
+        height: $backtotop-size;
+        &:hover,
+        &:focus,
+        &:active,
+        & *:hover,
+        & *:focus,
+        & *:active {
+            text-decoration: none;
+        }
+    }
 }
 
 *[contenteditable="false"].cke_focus {
-  outline: none;
+    outline: none;
 }
 
 .rajaus-clear {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 input.form-control::-ms-clear {
-  display: none;
+    display: none;
 }
 
 .ep-sisalto-inner {
-  padding-bottom: 100px;
+    padding-bottom: 100px;
 }
 
 .nav-tabs li a {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 button.icon-only {
-  .glyphicon {
-    margin: 0;
-  }
+    .glyphicon {
+        margin: 0;
+    }
 }
 
 abbr[data-viite] {
-  border-bottom: 1px dotted #999;
+    border-bottom: 1px dotted #999;
 }
 
 abbr[title] {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 strong.ep-match {
-  color: lighten($brand-primary, 15%);
+    color: lighten($brand-primary, 15%);
 }
 
 .ep-footer {
-  margin-top: 40px;
-  .version-info {
-    color: #999;
-    font-size: 10px;
-    text-align: center;
-  }
+    margin-top: 40px;
+    .version-info {
+        color: #999;
+        font-size: 10px;
+        text-align: center;
+    }
 }
 
 .space-magic {
-  margin-top: 10px;
-  margin-bottom: 2px;
+    margin-top: 10px;
+    margin-bottom: 2px;
 }
 
 .cke_button_icon:hover {
-  text-decoration: none;
+    text-decoration: none;
 }
