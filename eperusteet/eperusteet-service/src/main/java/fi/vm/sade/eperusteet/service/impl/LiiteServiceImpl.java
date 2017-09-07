@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -60,14 +59,15 @@ public class LiiteServiceImpl implements LiiteService {
     @IgnorePerusteUpdateCheck
     public void export(Long perusteId, UUID id, OutputStream os) {
         Liite liite = liitteet.findOne(id);
-        if ( liite == null ) {
-            throw new NotExistsException("ei ole");
+        if (liite == null) {
+            throw new NotExistsException();
         }
-        try ( InputStream is = liite.getData().getBinaryStream() ) {
+
+        try (InputStream is = liite.getData().getBinaryStream()) {
             IOUtils.copy(is, os);
         } catch (SQLException | IOException ex) {
             // FIXME
-//            throw new ServiceException("Liiteen lataaminen ei onnistu", ex);
+            // throw new ServiceException("Liiteen lataaminen ei onnistu", ex);
         }
     }
 
@@ -75,10 +75,13 @@ public class LiiteServiceImpl implements LiiteService {
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public LiiteDto get(Long perusteId, UUID id) {
+        Peruste peruste = perusteet.findOne(perusteId);
         Liite liite = liitteet.findOne(id);
-        if (!liite.getPerusteet().stream().anyMatch(p -> p.getTila() == PerusteTila.VALMIS)) {
+
+        if (!liite.getPerusteet().contains(peruste)) {
             throw new BusinessRuleViolationException("kuva-ei-kuulu-julkaistuun-perusteeseen");
         }
+
         return mapper.map(liite, LiiteDto.class);
     }
 
@@ -103,7 +106,7 @@ public class LiiteServiceImpl implements LiiteService {
     public void delete(Long perusteId, UUID id) {
         Liite liite = liitteet.findOne(perusteId, id);
         if ( liite == null ) {
-            throw new NotExistsException("Liitettä ei ole");
+            throw new NotExistsException();
         }
         perusteet.findOne(perusteId).removeLiite(liite);
     }
