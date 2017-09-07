@@ -19,6 +19,7 @@ angular
     .config($stateProvider =>
         $stateProvider
             .state("root.perusteprojekti", {
+                abstract: true,
                 url: "/perusteprojekti/:perusteProjektiId",
                 templateUrl: "views/perusteprojekti.html",
                 controller: "PerusteprojektiCtrl",

@@ -131,9 +131,10 @@ public class PerusteprojektiController {
             @PathVariable("id") final long id,
             @PathVariable("tila") final String tila,
             final Long siirtymaPaattyy) {
-        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, TILAMUUTOS).add("perusteprojektiId", id), (Void) -> {
-            return service.updateTila(id, ProjektiTila.of(tila), siirtymaPaattyy != null ? new Date(siirtymaPaattyy) : null);
-        });
+        return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, TILAMUUTOS).add("perusteprojektiId", id),
+                Void -> service.updateTila(id, ProjektiTila.of(tila), siirtymaPaattyy != null
+                        ? new Date(siirtymaPaattyy)
+                        : null));
     }
 
     @RequestMapping(method = POST)
@@ -141,7 +142,8 @@ public class PerusteprojektiController {
     @ResponseBody
     public ResponseEntity<PerusteprojektiDto> add(
             @RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto,
-            UriComponentsBuilder ucb) {
+            UriComponentsBuilder ucb
+    ) {
         return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, LUONTI), (Void) -> {
             PerusteprojektiDto perusteprojektiDto = service.save(perusteprojektiLuontiDto);
             return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
