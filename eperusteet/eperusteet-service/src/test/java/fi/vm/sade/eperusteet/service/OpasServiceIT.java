@@ -114,7 +114,6 @@ public class OpasServiceIT {
     @Test
     @Rollback(true)
     public void testPerustprojektiluonti12() {
-        luoProjektit();
     }
 
     @Test
