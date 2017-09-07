@@ -14,27 +14,27 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-.directive('leikelauta', (TutkinnonOsaLeikelautaService) => {
+angular.module("eperusteApp").directive("leikelauta", TutkinnonOsaLeikelautaService => {
     return {
-        templateUrl: 'views/partials/muokkaus/leikelauta.html',
-        restrict: 'E',
+        templateUrl: "views/partials/muokkaus/leikelauta.html",
+        restrict: "E",
         transclude: true,
         scope: {
-            isOpen: '='
+            isOpen: "="
         },
-        link: function (scope, element, attrs) {
+        link: function(scope, element, attrs) {
             scope.leikelautaSortableOptions = TutkinnonOsaLeikelautaService.createLeikelautaSortable(scope, {
-                handle: '.handle',
-                connectWith: '.container-items, .container-items-arviointi, .container-items-kohteet,' +
-                ' .container-items-leikelauta, .container-items-ammattitaito, .container-items-vaatimuksenKohteet',
-                cursor: 'move',
+                handle: ".handle",
+                connectWith:
+                    ".container-items, .container-items-arviointi, .container-items-kohteet," +
+                    " .container-items-leikelauta, .container-items-ammattitaito, .container-items-vaatimuksenKohteet",
+                cursor: "move",
                 cursorAt: { top: 10, left: 10 },
-                tolerance: 'pointer',
+                tolerance: "pointer",
                 forceHelperSize: true,
                 placeholder: "sortable-placeholder",
                 forcePlaceholderSize: true,
-                opacity: '.7'
+                opacity: ".7"
             });
             scope.poistaLeikelaudasta = TutkinnonOsaLeikelautaService.poistaLeikelaudasta;
             scope.leikelauta = TutkinnonOsaLeikelautaService.initLeikelauta();

@@ -51,6 +51,6 @@
   },
   "scripts": {
     "test": "grunt test",
-    "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write app/scripts/**/*.ts app/styles/**/*.{scss,css}"
+    "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write \"app/scripts/**/*.ts\" \"app/styles/**/*.{scss,css}\""
   }
 }

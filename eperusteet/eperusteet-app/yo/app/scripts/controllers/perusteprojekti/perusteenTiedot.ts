@@ -14,18 +14,21 @@
  * European Union Public Licence for more details.
  */
 
-
-angular.module("eperusteApp")
+angular
+    .module("eperusteApp")
     .service("PerusteenTutkintonimikkeet", function(PerusteTutkintonimikekoodit, YleinenData) {
         this.perusteellaTutkintonimikkeet = function(peruste) {
             if (_.isObject(peruste)) {
                 peruste = peruste.koulutustyyppi;
             }
-            return _.isString(peruste) &&
-                YleinenData.koulutustyyppiInfo[peruste] && YleinenData.koulutustyyppiInfo[peruste].hasTutkintonimikkeet;
+            return (
+                _.isString(peruste) &&
+                YleinenData.koulutustyyppiInfo[peruste] &&
+                YleinenData.koulutustyyppiInfo[peruste].hasTutkintonimikkeet
+            );
         };
 
-        this.get = function (perusteId, object) {
+        this.get = function(perusteId, object) {
             PerusteTutkintonimikekoodit.get({ perusteId: perusteId }, function(res) {
                 object.koodisto = _.map(res, function(osa) {
                     function parsiNimi(kentta) {
@@ -45,18 +48,33 @@ angular.module("eperusteApp")
             });
         };
     })
-
-    .controller("PerusteenTiedotCtrl", function($scope, $stateParams, $state,
-        Koodisto, Perusteet, YleinenData, PerusteProjektiService,
-        perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
-        Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $uibModal,
-        PerusteenTutkintonimikkeet, valittavatKielet, Kieli, Arviointiasteikot) {
-
+    .controller("PerusteenTiedotCtrl", function(
+        $scope,
+        $stateParams,
+        $state,
+        Koodisto,
+        Perusteet,
+        YleinenData,
+        PerusteProjektiService,
+        perusteprojektiTiedot,
+        Notifikaatiot,
+        Editointikontrollit,
+        Kaanna,
+        Varmistusdialogi,
+        $timeout,
+        $rootScope,
+        PerusteTutkintonimikekoodit,
+        $uibModal,
+        PerusteenTutkintonimikkeet,
+        valittavatKielet,
+        Kieli,
+        Arviointiasteikot
+    ) {
         $scope.kvliiteReadonly = true;
 
         (async function lataaKvliite() {
             const arviointiasteikotP = Arviointiasteikot.list().$promise;
-            const kvliite = await Perusteet.kvliite({perusteId: $scope.peruste.id}).$promise;
+            const kvliite = await Perusteet.kvliite({ perusteId: $scope.peruste.id }).$promise;
             const arviointiasteikot = await arviointiasteikotP;
             kvliite.tasot = _.filter(kvliite.tasot, taso => taso.nimi);
             $scope.arviointiasteikot = arviointiasteikot;
@@ -67,13 +85,13 @@ angular.module("eperusteApp")
             $scope.editablePeruste.kvliite = kvliite;
         })();
 
-        const AmmatillisetKoulutustyypit = [ "koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12" ];
-        const isAmmatillinen = (koulutustyyppi) => _.includes(AmmatillisetKoulutustyypit, koulutustyyppi);
+        const AmmatillisetKoulutustyypit = ["koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"];
+        const isAmmatillinen = koulutustyyppi => _.includes(AmmatillisetKoulutustyypit, koulutustyyppi);
         $scope.isAmmatillinen = isAmmatillinen($scope.peruste.koulutustyyppi);
 
         $scope.editEnabled = false;
         let editingCallbacks = {
-            edit: function () {
+            edit: function() {
                 fixTimefield("siirtymaPaattyy");
                 fixTimefield("paatospvm");
                 fixTimefield("voimassaoloAlkaa");
@@ -83,31 +101,31 @@ angular.module("eperusteApp")
                     $scope.editablePeruste.kvliite = {};
                 }
             },
-            save: function () {
+            save: function() {
                 $scope.tallennaPeruste();
             },
-            validate: function () {
+            validate: function() {
                 return $scope.projektinPerusteForm.$valid && !_.isEmpty($scope.editablePeruste.kielet);
             },
-            cancel: function () {
+            cancel: function() {
                 $scope.editablePeruste = $scope.peruste;
             },
-            notify: function (mode) {
+            notify: function(mode) {
                 $scope.editEnabled = mode;
                 // Fix msd-elastic issue of setting incorrect initial height
-                $timeout(function () {
+                $timeout(function() {
                     $rootScope.$broadcast("elastic:adjust");
                 });
             }
         };
         Editointikontrollit.registerCallback(editingCallbacks);
 
-        $scope.voiMuokata = function () {
+        $scope.voiMuokata = function() {
             // TODO Vain omistaja/sihteeri voi muokata
             return true;
         };
 
-        $scope.muokkaa = function () {
+        $scope.muokkaa = function() {
             Editointikontrollit.startEditing();
         };
 
@@ -121,24 +139,25 @@ angular.module("eperusteApp")
         }
 
         function noudaDiaarilleNimi(diaari) {
-            Perusteet.diaari({diaarinumero: diaari}, function(vastaus) {
-                $scope.korvattavaDiaariNimiMap[diaari] = vastaus.nimi;
-            }, function () {
-                $scope.korvattavaDiaariNimiMap[diaari] = "korvattavaa-ei-loydy-jarjestelmasta";
-            });
+            Perusteet.diaari(
+                { diaarinumero: diaari },
+                function(vastaus) {
+                    $scope.korvattavaDiaariNimiMap[diaari] = vastaus.nimi;
+                },
+                function() {
+                    $scope.korvattavaDiaariNimiMap[diaari] = "korvattavaa-ei-loydy-jarjestelmasta";
+                }
+            );
         }
 
         $scope.lisaaKorvattavaDiaari = function(uusiKorvattavaDiaari) {
             if (_.indexOf($scope.editablePeruste.korvattavatDiaarinumerot, uusiKorvattavaDiaari) !== -1) {
                 Notifikaatiot.varoitus("diaari-jo-listalla");
-            }
-            else if (!YleinenData.isDiaariValid(uusiKorvattavaDiaari)) {
+            } else if (!YleinenData.isDiaariValid(uusiKorvattavaDiaari)) {
                 Notifikaatiot.varoitus("diaarinumero-ei-validi");
-            }
-            else if (uusiKorvattavaDiaari === $scope.editablePeruste.diaarinumero) {
+            } else if (uusiKorvattavaDiaari === $scope.editablePeruste.diaarinumero) {
                 Notifikaatiot.varoitus("oma-diaarinumero");
-            }
-            else {
+            } else {
                 $scope.editablePeruste.korvattavatDiaarinumerot.push(uusiKorvattavaDiaari);
                 noudaDiaarilleNimi(uusiKorvattavaDiaari);
                 $scope.uusiKorvattavaDiaari = "";
@@ -177,25 +196,37 @@ angular.module("eperusteApp")
                 _.remove($scope.editablePeruste.osaamisalat, oa);
             },
             lisaa: function() {
-                Koodisto.modaali(function(koodi) {
-                    $scope.editablePeruste.osaamisalat.push({
-                        nimi: koodi.nimi,
-                        arvo: koodi.koodiArvo,
-                        uri: koodi.koodiUri,
-                        koodisto: koodi.koodisto.koodistoUri
-                    });
-                }, {
-                    tyyppi: function() { return "osaamisala"; },
-                    ylarelaatioTyyppi: function() { return ""; }
-                }, angular.noop, null)();
+                Koodisto.modaali(
+                    function(koodi) {
+                        $scope.editablePeruste.osaamisalat.push({
+                            nimi: koodi.nimi,
+                            arvo: koodi.koodiArvo,
+                            uri: koodi.koodiUri,
+                            koodisto: koodi.koodisto.koodistoUri
+                        });
+                    },
+                    {
+                        tyyppi: function() {
+                            return "osaamisala";
+                        },
+                        ylarelaatioTyyppi: function() {
+                            return "";
+                        }
+                    },
+                    angular.noop,
+                    null
+                )();
             }
         };
 
         function valitseValittavatKielet(kielet = undefined) {
-            let current = (kielet || $scope.editablePeruste.kielet);
-            $scope.valittavatKielet = _(valittavatKielet).sortBy($scope.kieliOrder).map(function (kielikoodi) {
-                return {available: _.indexOf(current, kielikoodi) === -1, koodi: kielikoodi};
-            }).value();
+            let current = kielet || $scope.editablePeruste.kielet;
+            $scope.valittavatKielet = _(valittavatKielet)
+                .sortBy($scope.kieliOrder)
+                .map(function(kielikoodi) {
+                    return { available: _.indexOf(current, kielikoodi) === -1, koodi: kielikoodi };
+                })
+                .value();
         }
         valitseValittavatKielet($scope.peruste.kielet);
 
@@ -206,7 +237,9 @@ angular.module("eperusteApp")
         };
 
         $scope.poistaKieli = function(kieli) {
-            _.remove($scope.editablePeruste.kielet, function(v) { return v === kieli; });
+            _.remove($scope.editablePeruste.kielet, function(v) {
+                return v === kieli;
+            });
             valitseValittavatKielet();
         };
 
@@ -215,24 +248,25 @@ angular.module("eperusteApp")
         };
 
         $scope.lisaaNimike = function() {
-            $uibModal.open({
-                templateUrl: "views/modals/lisaaTutkintonimike.html",
-                controller: function($q, $scope, $uibModalInstance) {
-                    $scope.koodit = {};
-                    $scope.valmisCb = function(res) {
-                        $scope.koodit[res.koodisto.koodistoUri] = res;
-                    };
+            $uibModal
+                .open({
+                    templateUrl: "views/modals/lisaaTutkintonimike.html",
+                    controller: function($q, $scope, $uibModalInstance) {
+                        $scope.koodit = {};
+                        $scope.valmisCb = function(res) {
+                            $scope.koodit[res.koodisto.koodistoUri] = res;
+                        };
 
-                    $scope.ok = $uibModalInstance.close;
-                    $scope.peru = $uibModalInstance.dismiss;
-                }
-            })
+                        $scope.ok = $uibModalInstance.close;
+                        $scope.peru = $uibModalInstance.dismiss;
+                    }
+                })
                 .result.then(function(uusi) {
                     let obj: any = {
                         peruste: $scope.peruste.id,
                         tutkintonimikeUri: uusi.tutkintonimikkeet.koodiUri,
                         tutkintonimikeArvo: uusi.tutkintonimikkeet.koodiArvo,
-                        $tutkintonimikeNimi: uusi.tutkintonimikkeet.nimi,
+                        $tutkintonimikeNimi: uusi.tutkintonimikkeet.nimi
                     };
 
                     if (uusi.osaamisala) {
@@ -248,31 +282,41 @@ angular.module("eperusteApp")
                     }
 
                     $scope.koodisto.push(obj);
-                    PerusteTutkintonimikekoodit.save({ perusteId: $scope.peruste.id }, obj, function(res) {
-                        obj.id = res.id;
-                        Notifikaatiot.onnistui("tutkintonimikkeen-lisays-onnistui");
-                    }, function() {
-                        _.remove($scope.koodisto, obj);
-                        Notifikaatiot.varoitus("tutkintonimikkeen-lisays-epaonnistui");
-                    });
+                    PerusteTutkintonimikekoodit.save(
+                        { perusteId: $scope.peruste.id },
+                        obj,
+                        function(res) {
+                            obj.id = res.id;
+                            Notifikaatiot.onnistui("tutkintonimikkeen-lisays-onnistui");
+                        },
+                        function() {
+                            _.remove($scope.koodisto, obj);
+                            Notifikaatiot.varoitus("tutkintonimikkeen-lisays-epaonnistui");
+                        }
+                    );
                 });
         };
 
-        $scope.lisaaMuutosmaarays = () => $scope.editablePeruste.muutosmaaraykset.push({
-            url: {}
-        });
-        $scope.poistaMuutosmaarays = (muutosmaarays) => _.remove($scope.editablePeruste.muutosmaaraykset, muutosmaarays);
+        $scope.lisaaMuutosmaarays = () =>
+            $scope.editablePeruste.muutosmaaraykset.push({
+                url: {}
+            });
+        $scope.poistaMuutosmaarays = muutosmaarays => _.remove($scope.editablePeruste.muutosmaaraykset, muutosmaarays);
 
         PerusteenTutkintonimikkeet.get($scope.peruste.id, $scope);
 
         $scope.poistaTutkintonimike = function(nimike) {
-            PerusteTutkintonimikekoodit.remove({
-                perusteId: $scope.peruste.id,
-                nimikeId: nimike.id
-            }, function() {
-                _.remove($scope.koodisto, nimike);
-                Notifikaatiot.onnistui("tutkintonimike-poistettu-onnistuneesti");
-            }, Notifikaatiot.serverCb);
+            PerusteTutkintonimikekoodit.remove(
+                {
+                    perusteId: $scope.peruste.id,
+                    nimikeId: nimike.id
+                },
+                function() {
+                    _.remove($scope.koodisto, nimike);
+                    Notifikaatiot.onnistui("tutkintonimike-poistettu-onnistuneesti");
+                },
+                Notifikaatiot.serverCb
+            );
         };
 
         function fixTimefield(field) {
@@ -283,10 +327,12 @@ angular.module("eperusteApp")
 
         let currentTime = new Date().getTime();
 
-        $scope.voimassaOleva = !!(!$scope.peruste.voimassaoloLoppuu
-            || $scope.peruste.voimassaoloAlkaa
-            && currentTime > $scope.peruste.voimassaoloAlkaa
-            && currentTime < $scope.peruste.voimassaoloLoppuu);
+        $scope.voimassaOleva = !!(
+            !$scope.peruste.voimassaoloLoppuu ||
+            ($scope.peruste.voimassaoloAlkaa &&
+                currentTime > $scope.peruste.voimassaoloAlkaa &&
+                currentTime < $scope.peruste.voimassaoloLoppuu)
+        );
 
         fixTimefield("siirtymaPaattyy");
         fixTimefield("voimassaoloAlkaa");
@@ -296,7 +342,7 @@ angular.module("eperusteApp")
             return koodi.koodi.indexOf("_3") !== -1;
         };
 
-        $scope.hasContent = function (value) {
+        $scope.hasContent = function(value) {
             if (_.isEmpty(value)) {
                 return false;
             }
@@ -307,10 +353,14 @@ angular.module("eperusteApp")
         };
 
         $scope.koodistoHaku = function(koodisto) {
-            let added: any = {nimi: koodisto.nimi, koulutuskoodiArvo: koodisto.koodiArvo, koulutuskoodiUri: koodisto.koodiUri};
+            let added: any = {
+                nimi: koodisto.nimi,
+                koulutuskoodiArvo: koodisto.koodiArvo,
+                koulutuskoodiUri: koodisto.koodiUri
+            };
             // Kun ensimmäinen koodi lisätään, perusteen nimi kopioidaan koodistosta
             if ($scope.editablePeruste.koulutukset.length === 0) {
-                _.each(_.values(YleinenData.kielet), function (kieli) {
+                _.each(_.values(YleinenData.kielet), function(kieli) {
                     $scope.editablePeruste.nimi[kieli] = koodisto.nimi[kieli];
                 });
             }
@@ -318,46 +368,62 @@ angular.module("eperusteApp")
 
             // $scope.open[koodisto.koodi] = true;
 
-            Koodisto.haeAlarelaatiot(koodisto.koodiUri, function(relaatiot) {
-                _.forEach(relaatiot, function(rel) {
-                    switch (rel.koodisto.koodistoUri) {
-                        case "koulutusalaoph2002":
-                            added.koulutusalakoodi = rel.koodiUri;
-                            break;
-                        case "opintoalaoph2002":
-                            added.opintoalakoodi = rel.koodiUri;
-                            break;
-                    }
-                });
-            }, Notifikaatiot.fataali);
+            Koodisto.haeAlarelaatiot(
+                koodisto.koodiUri,
+                function(relaatiot) {
+                    _.forEach(relaatiot, function(rel) {
+                        switch (rel.koodisto.koodistoUri) {
+                            case "koulutusalaoph2002":
+                                added.koulutusalakoodi = rel.koodiUri;
+                                break;
+                            case "opintoalaoph2002":
+                                added.opintoalakoodi = rel.koodiUri;
+                                break;
+                        }
+                    });
+                },
+                Notifikaatiot.fataali
+            );
         };
 
         $scope.tallennaPeruste = function() {
             if (!$scope.editablePeruste.voimassaoloLoppuu) {
                 delete $scope.editablePeruste.siirtymaPaattyy;
             }
-            Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, res => {
-                $scope.peruste = res;
-                PerusteProjektiService.update();
-                Notifikaatiot.onnistui("tallennettu");
-            }, err => {
-                Notifikaatiot.serverCb(err);
-            });
+            Perusteet.save(
+                { perusteId: $scope.peruste.id },
+                $scope.editablePeruste,
+                res => {
+                    $scope.peruste = res;
+                    PerusteProjektiService.update();
+                    Notifikaatiot.onnistui("tallennettu");
+                },
+                err => {
+                    Notifikaatiot.serverCb(err);
+                }
+            );
         };
 
-        $scope.avaaKoodistoModaali = Koodisto.modaali($scope.koodistoHaku, {
-            tyyppi: _.constant("koulutus"),
-            // ylarelaatioTyyppi: () => $scope.editablePeruste.koulutustyyppi
-            ylarelaatioTyyppi: () => "" // Koodistohaun ehto on outo
-        }, _.noop, null);
+        $scope.avaaKoodistoModaali = Koodisto.modaali(
+            $scope.koodistoHaku,
+            {
+                tyyppi: _.constant("koulutus"),
+                // ylarelaatioTyyppi: () => $scope.editablePeruste.koulutustyyppi
+                ylarelaatioTyyppi: () => "" // Koodistohaun ehto on outo
+            },
+            _.noop,
+            null
+        );
 
-        $scope.poistaKoulutus = function (koulutuskoodiArvo) {
+        $scope.poistaKoulutus = function(koulutuskoodiArvo) {
             Varmistusdialogi.dialogi({
                 otsikko: "vahvista-poisto",
                 teksti: "poistetaanko-koulutus",
                 primaryBtn: "poista",
-                successCb: function () {
-                    $scope.editablePeruste.koulutukset = _.remove($scope.editablePeruste.koulutukset, function(koulutus) {
+                successCb: function() {
+                    $scope.editablePeruste.koulutukset = _.remove($scope.editablePeruste.koulutukset, function(
+                        koulutus
+                    ) {
                         return koulutus.koulutuskoodiArvo !== koulutuskoodiArvo;
                     });
                 }
@@ -380,12 +446,11 @@ angular.module("eperusteApp")
             $scope.hakemassa = false;
         });
     })
-
-    .directive("datepickerPopup", function (uibDatepickerPopupConfig, dateFilter) {
+    .directive("datepickerPopup", function(uibDatepickerPopupConfig, dateFilter) {
         return {
-            "restrict": "A",
-            "require": "^ngModel",
-            "link": function ($scope, element, attrs, ngModel: any) {
+            restrict: "A",
+            require: "^ngModel",
+            link: function($scope, element, attrs, ngModel: any) {
                 let dateFormat;
 
                 // FIXME Temp fix for Angular 1.3 support [#2659](https://github.com/angular-ui/bootstrap/issues/2659)
@@ -394,7 +459,7 @@ angular.module("eperusteApp")
                     ngModel.$render();
                 });
 
-                ngModel.$formatters.push(function (value) {
+                ngModel.$formatters.push(function(value) {
                     return ngModel.$isEmpty(value) ? value : dateFilter(value, dateFormat);
                 });
             }

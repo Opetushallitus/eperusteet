@@ -14,368 +14,378 @@
 * European Union Public Licence for more details.
 */
 
-angular.module('eperusteApp')
-.directive('kenttalistaus', ($q, MuokkausUtils, $timeout, FieldSplitter) => {
-    return {
-        templateUrl: 'views/partials/muokkaus/kenttalistaus.html',
-        restrict: 'E',
-        transclude: true,
-        scope: {
-            fields: '=',
-            objectPromise: '=',
-            editEnabled: '=',
-            mode: '@?',
-            hideEmptyPlaceholder: '@?',
-            emptyplaceholder: '@',
-            emptyplaceholderedit: '@',
-        },
-        link: function (scope, element) {
-            scope.updateContentTip = function () {
-                $timeout(function () {
-                    scope.noContent = element.find('ul.muokkaus').children().length === 0;
+angular
+    .module("eperusteApp")
+    .directive("kenttalistaus", ($q, MuokkausUtils, $timeout, FieldSplitter) => {
+        return {
+            templateUrl: "views/partials/muokkaus/kenttalistaus.html",
+            restrict: "E",
+            transclude: true,
+            scope: {
+                fields: "=",
+                objectPromise: "=",
+                editEnabled: "=",
+                mode: "@?",
+                hideEmptyPlaceholder: "@?",
+                emptyplaceholder: "@",
+                emptyplaceholderedit: "@"
+            },
+            link: function(scope, element) {
+                scope.updateContentTip = function() {
+                    $timeout(function() {
+                        scope.noContent = element.find("ul.muokkaus").children().length === 0;
+                    });
+                };
+                scope.updateContentTip();
+                scope.$watch("editEnabled", function() {
+                    scope.updateContentTip();
                 });
-            };
-            scope.updateContentTip();
-            scope.$watch('editEnabled', function () {
-                scope.updateContentTip();
-            });
-            scope.$watch('fields', function () {
-                scope.updateContentTip();
-            }, true);
-        },
-        controller: function ($scope) {
-            let model;
-            $scope.noContent = false;
-            $scope.expandedFields = $scope.fields;
+                scope.$watch(
+                    "fields",
+                    function() {
+                        scope.updateContentTip();
+                    },
+                    true
+                );
+            },
+            controller: function($scope) {
+                let model;
+                $scope.noContent = false;
+                $scope.expandedFields = $scope.fields;
 
-            $scope.removeField = function (fieldToRemove) {
-                const splitfield = FieldSplitter.process(fieldToRemove);
-                if (splitfield.isMulti()) {
-                    splitfield.remove(model);
-                } else {
-                    if (_.isFunction(fieldToRemove.remove)) {
-                        fieldToRemove.remove();
+                $scope.removeField = function(fieldToRemove) {
+                    const splitfield = FieldSplitter.process(fieldToRemove);
+                    if (splitfield.isMulti()) {
+                        splitfield.remove(model);
                     } else {
-                        MuokkausUtils.nestedSet(model, fieldToRemove.path, '.', null);
+                        if (_.isFunction(fieldToRemove.remove)) {
+                            fieldToRemove.remove();
+                        } else {
+                            MuokkausUtils.nestedSet(model, fieldToRemove.path, ".", null);
+                        }
+                        fieldToRemove.visible = false;
+                        fieldToRemove.$added = false;
                     }
-                    fieldToRemove.visible = false;
-                    fieldToRemove.$added = false;
+                    setInnerObjectPromise();
+                };
+
+                $scope.getClass = FieldSplitter.getClass;
+
+                $scope.hasEditableTitle = function(field) {
+                    return _.has(field, "titleplaceholder");
+                };
+
+                function setInnerObjectPromise() {
+                    if ($scope.objectPromise) {
+                        $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
+                            splitFields(object);
+                            model = object;
+                            return object;
+                        });
+                    }
                 }
-                setInnerObjectPromise();
-            };
 
-            $scope.getClass = FieldSplitter.getClass;
+                $scope.$watch("objectPromise", setInnerObjectPromise);
+                $scope.$on("osafield:update", setInnerObjectPromise);
 
-            $scope.hasEditableTitle = function (field) {
-                return _.has(field, 'titleplaceholder');
-            };
-
-            function setInnerObjectPromise() {
                 if ($scope.objectPromise) {
-                    $scope.innerObjectPromise = $scope.objectPromise.then(function (object) {
-                        splitFields(object);
-                        model = object;
-                        return object;
+                    $scope.innerObjectPromise = $scope.objectPromise.then(function() {
+                        setInnerObjectPromise();
                     });
                 }
-            }
 
-            $scope.$watch('objectPromise', setInnerObjectPromise);
-            $scope.$on('osafield:update', setInnerObjectPromise);
-
-            if ($scope.objectPromise) {
-                $scope.innerObjectPromise = $scope.objectPromise.then(function () {
-                    setInnerObjectPromise();
-                });
-            }
-
-            function splitFields(object) {
-                $scope.expandedFields = [];
-                _.each($scope.fields, function (field) {
-                    const splitfield = FieldSplitter.process(field);
-                    if (splitfield.isMulti() && splitfield.needsSplit()) {
-                        // Expand array to individual fields
-                        splitfield.each(object, function (item, index) {
-                            if (!item) {
-                                return;
-                            }
-                            const newfield = angular.copy(field);
-                            newfield.path = splitfield.getPath(index);
-                            newfield.localeKey = item[field.localeKey];
-                            newfield.originalLocaleKey = field.localeKey;
-                            newfield.visible = MuokkausUtils.hasValue(object, newfield.path);
-                            if (field.isolateEdit && index === field.$setEditable) {
-                                newfield.$editing = true;
-                                delete field.$setEditable;
-                            }
-                            $scope.expandedFields.push(newfield);
-                        });
-                    } else {
-                        field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
-                        if (field.visibleFn) {
-                            field.visible = field.visibleFn();
+                function splitFields(object) {
+                    $scope.expandedFields = [];
+                    _.each($scope.fields, function(field) {
+                        const splitfield = FieldSplitter.process(field);
+                        if (splitfield.isMulti() && splitfield.needsSplit()) {
+                            // Expand array to individual fields
+                            splitfield.each(object, function(item, index) {
+                                if (!item) {
+                                    return;
+                                }
+                                const newfield = angular.copy(field);
+                                newfield.path = splitfield.getPath(index);
+                                newfield.localeKey = item[field.localeKey];
+                                newfield.originalLocaleKey = field.localeKey;
+                                newfield.visible = MuokkausUtils.hasValue(object, newfield.path);
+                                if (field.isolateEdit && index === field.$setEditable) {
+                                    newfield.$editing = true;
+                                    delete field.$setEditable;
+                                }
+                                $scope.expandedFields.push(newfield);
+                            });
                         } else {
-                            field.visible = field.divider ? false :
-                                (field.$added || field.mandatory || MuokkausUtils.hasValue(object, field.path));
+                            field.inMenu = field.path !== "nimi" && field.path !== "koodiUri";
+                            if (field.visibleFn) {
+                                field.visible = field.visibleFn();
+                            } else {
+                                field.visible = field.divider
+                                    ? false
+                                    : field.$added || field.mandatory || MuokkausUtils.hasValue(object, field.path);
+                            }
+                            $scope.expandedFields.push(field);
                         }
-                        $scope.expandedFields.push(field);
-                    }
-                });
-                $scope.updateContentTip();
+                    });
+                    $scope.updateContentTip();
+                }
             }
+        };
+    })
+    .service("FieldSplitter", function() {
+        function getCssClass(path) {
+            return path
+                .replace(/\[/g, "")
+                .replace(/]/g, "")
+                .replace(/\./g, "");
         }
-    };
-})
-.service('FieldSplitter', function () {
-    function getCssClass(path) {
-        return path.replace(/\[/g, '').replace(/]/g, '').replace(/\./g, '');
-    }
 
-    function SplitField(data) {
-        this.original = data;
-        this.parts = [];
-    }
-
-    SplitField.prototype.split = function () {
-        if (!this.original.path) {
-            return;
+        function SplitField(data) {
+            this.original = data;
+            this.parts = [];
         }
-        this.parts = this.original.path.split('[');
-        const index = this.original.path.match(/\[(\d+)]/);
-        this.index = index ? index[1] : null;
-    };
 
-    SplitField.prototype.isMulti = function () {
-        return this.parts.length === 2;
-    };
+        SplitField.prototype.split = function() {
+            if (!this.original.path) {
+                return;
+            }
+            this.parts = this.original.path.split("[");
+            const index = this.original.path.match(/\[(\d+)]/);
+            this.index = index ? index[1] : null;
+        };
 
-    SplitField.prototype.needsSplit = function () {
-        return this.index === null;
-    };
+        SplitField.prototype.isMulti = function() {
+            return this.parts.length === 2;
+        };
 
-    SplitField.prototype.each = function (obj, cb) {
-        return _.each(this.getObject(obj), cb);
-    };
+        SplitField.prototype.needsSplit = function() {
+            return this.index === null;
+        };
 
-    SplitField.prototype.getPath = function (index) {
-        return this.parts[0] + '[' + index + this.parts[1];
-    };
+        SplitField.prototype.each = function(obj, cb) {
+            return _.each(this.getObject(obj), cb);
+        };
 
-    SplitField.prototype.getObject = function (obj, create) {
-        if (create && !obj[this.parts[0]]) {
-            obj[this.parts[0]] = [];
-        }
-        return !obj ? null : obj[this.parts[0]];
-    };
+        SplitField.prototype.getPath = function(index) {
+            return this.parts[0] + "[" + index + this.parts[1];
+        };
 
-    SplitField.prototype.addArrayItem = function (obj) {
-        const newItem = _.isFunction(this.original.empty) ? this.original.empty() :
-            {otsikko: {fi: ''}, teksti: {fi: ''}};
-        const object = this.getObject(obj, true);
-        object.push(newItem);
-        return object.length - 1;
-    };
+        SplitField.prototype.getObject = function(obj, create) {
+            if (create && !obj[this.parts[0]]) {
+                obj[this.parts[0]] = [];
+            }
+            return !obj ? null : obj[this.parts[0]];
+        };
 
-    SplitField.prototype.remove = function (obj) {
-        const index = parseInt(this.parts[1], 10);
-        obj[this.parts[0]].splice(index, 1);
-    };
+        SplitField.prototype.addArrayItem = function(obj) {
+            const newItem = _.isFunction(this.original.empty)
+                ? this.original.empty()
+                : { otsikko: { fi: "" }, teksti: { fi: "" } };
+            const object = this.getObject(obj, true);
+            object.push(newItem);
+            return object.length - 1;
+        };
 
-    SplitField.prototype.getClass = function (index) {
-        return getCssClass(this.getPath(index));
-    };
+        SplitField.prototype.remove = function(obj) {
+            const index = parseInt(this.parts[1], 10);
+            obj[this.parts[0]].splice(index, 1);
+        };
 
-    this.process = function (field) {
-        const obj = new SplitField(field);
-        obj.split();
-        return obj;
-    };
+        SplitField.prototype.getClass = function(index) {
+            return getCssClass(this.getPath(index));
+        };
 
-    this.getClass = function (field) {
-        return getCssClass(field.path);
-    };
-})
-.factory('ArviointiHelper', function () {
-    const remove = function (arr, str) {
-        const index = _.findIndex(arr, {path: str});
-        if (index >= 0) {
-            arr.splice(index, 1);
-        }
-    };
+        this.process = function(field) {
+            const obj = new SplitField(field);
+            obj.split();
+            return obj;
+        };
 
-    /**
+        this.getClass = function(field) {
+            return getCssClass(field.path);
+        };
+    })
+    .factory("ArviointiHelper", function() {
+        const remove = function(arr, str) {
+            const index = _.findIndex(arr, { path: str });
+            if (index >= 0) {
+                arr.splice(index, 1);
+            }
+        };
+
+        /**
      * Arviointi voi olla tekstinä tai taulukkona (mutta ei kumpanakin).
      * createArviointi hanskaa mitä näytetään kenttälistauksessa ja "lisää osio"-menussa
      */
-    function createArviointi() {
-        const TAULUKKO_PATH = 'arviointi.arvioinninKohdealueet';
-        const TEKSTI_PATH = 'arviointi.lisatiedot';
-        const self: any = {};
-        self.obj = {};
+        function createArviointi() {
+            const TAULUKKO_PATH = "arviointi.arvioinninKohdealueet";
+            const TEKSTI_PATH = "arviointi.lisatiedot";
+            const self: any = {};
+            self.obj = {};
 
-        self.hasTeksti = function () {
-            return self.obj.teksti && self.obj.teksti.visible;
-        };
-
-        self.hasTaulukko = function () {
-            return self.obj.taulukko && self.obj.taulukko.visible;
-        };
-
-        self.initFromFields = function (fields) {
-            const obj = {
-                teksti: null,
-                taulukko: null
+            self.hasTeksti = function() {
+                return self.obj.teksti && self.obj.teksti.visible;
             };
 
-            _.each(fields, function (field) {
-                if (field.path === TAULUKKO_PATH) {
-                    obj.taulukko = field;
-                } else if (field.path === TEKSTI_PATH) {
-                    obj.teksti = field;
-                }
-            });
-
-            if (self.hasTeksti()) {
-                obj.taulukko.visible = false;
-            }
-
-            self.obj = obj;
-            return self.obj;
-        };
-
-        self.setMenu = function (menu) {
-            if (self.exists()) {
-                remove(menu, TAULUKKO_PATH);
-                remove(menu, TEKSTI_PATH);
-            }
-        };
-
-        self.exists = function () {
-            return self.hasTeksti() || self.hasTaulukko();
-        };
-
-        return self;
-    }
-
-    return {
-        create: createArviointi
-    };
-})
-.factory('AmmattitaitoHelper', function () {
-    const remove = function (arr, str) {
-        const index = _.findIndex(arr, {path: str});
-        if (index >= 0) {
-            arr.splice(index, 1);
-        }
-    };
-
-    function createAmmattitaito() {
-        const TAULUKKO_PATH = 'ammattitaito.ammattitaidonKohdealueet';
-        const TEKSTI_PATH = 'ammattitaito.lisatiedot';
-        const self: any = {};
-        self.obj = {};
-
-        self.hasTeksti = function () {
-            return self.obj.teksti && self.obj.teksti.visible;
-        };
-
-        self.hasTaulukko = function () {
-            return self.obj.taulukko && self.obj.taulukko.visible;
-        };
-
-        self.initFromFields = function (fields) {
-            const obj = {teksti: null, taulukko: null};
-            _.each(fields, function (field) {
-                if (field.path === TAULUKKO_PATH) {
-                    obj.taulukko = field;
-                } else if (field.path === TEKSTI_PATH) {
-                    obj.teksti = field;
-                }
-            });
-            if (self.hasTeksti()) {
-                obj.taulukko.visible = false;
-            }
-            self.obj = obj;
-            return self.obj;
-        };
-
-        self.setMenu = function (menu) {
-            if (self.exists()) {
-                remove(menu, TAULUKKO_PATH);
-                remove(menu, TEKSTI_PATH);
-            }
-        };
-
-        self.exists = function () {
-            return self.hasTeksti() || self.hasTaulukko();
-        };
-
-        return self;
-    }
-
-    return {
-        create: createAmmattitaito
-    };
-})
-.factory('ValmaarviointiHelper', function () {
-    const remove = function (arr, str) {
-        const index = _.findIndex(arr, {path: str});
-        if (index >= 0) {
-            arr.splice(index, 1);
-        }
-    };
-
-    function createValmaarviointi() {
-        const TAULUKKO_PATH = 'valmaarviointi.ammattitaidonKohdealueet';
-        const TEKSTI_PATH = 'valmaarviointi.lisatiedot';
-        const self: any = {};
-        self.obj = {};
-
-        self.hasTeksti = function () {
-            return self.obj.teksti && self.obj.teksti.visible;
-        };
-
-        self.hasTaulukko = function () {
-            return self.obj.taulukko && self.obj.taulukko.visible;
-        };
-
-        self.initFromFields = function (fields) {
-            const obj = {
-                teksti: null,
-                taulukko: null
+            self.hasTaulukko = function() {
+                return self.obj.taulukko && self.obj.taulukko.visible;
             };
 
-            _.each(fields, function (field) {
-                if (field.path === TAULUKKO_PATH) {
-                    obj.taulukko = field;
-                } else if (field.path === TEKSTI_PATH) {
-                    obj.teksti = field;
+            self.initFromFields = function(fields) {
+                const obj = {
+                    teksti: null,
+                    taulukko: null
+                };
+
+                _.each(fields, function(field) {
+                    if (field.path === TAULUKKO_PATH) {
+                        obj.taulukko = field;
+                    } else if (field.path === TEKSTI_PATH) {
+                        obj.teksti = field;
+                    }
+                });
+
+                if (self.hasTeksti()) {
+                    obj.taulukko.visible = false;
                 }
-            });
 
-            if (self.hasTeksti()) {
-                obj.taulukko.visible = false;
+                self.obj = obj;
+                return self.obj;
+            };
+
+            self.setMenu = function(menu) {
+                if (self.exists()) {
+                    remove(menu, TAULUKKO_PATH);
+                    remove(menu, TEKSTI_PATH);
+                }
+            };
+
+            self.exists = function() {
+                return self.hasTeksti() || self.hasTaulukko();
+            };
+
+            return self;
+        }
+
+        return {
+            create: createArviointi
+        };
+    })
+    .factory("AmmattitaitoHelper", function() {
+        const remove = function(arr, str) {
+            const index = _.findIndex(arr, { path: str });
+            if (index >= 0) {
+                arr.splice(index, 1);
             }
-            self.obj = obj;
-
-            return self.obj;
         };
 
-        self.setMenu = function (menu) {
-            if (self.exists()) {
-                remove(menu, TAULUKKO_PATH);
-                remove(menu, TEKSTI_PATH);
+        function createAmmattitaito() {
+            const TAULUKKO_PATH = "ammattitaito.ammattitaidonKohdealueet";
+            const TEKSTI_PATH = "ammattitaito.lisatiedot";
+            const self: any = {};
+            self.obj = {};
+
+            self.hasTeksti = function() {
+                return self.obj.teksti && self.obj.teksti.visible;
+            };
+
+            self.hasTaulukko = function() {
+                return self.obj.taulukko && self.obj.taulukko.visible;
+            };
+
+            self.initFromFields = function(fields) {
+                const obj = { teksti: null, taulukko: null };
+                _.each(fields, function(field) {
+                    if (field.path === TAULUKKO_PATH) {
+                        obj.taulukko = field;
+                    } else if (field.path === TEKSTI_PATH) {
+                        obj.teksti = field;
+                    }
+                });
+                if (self.hasTeksti()) {
+                    obj.taulukko.visible = false;
+                }
+                self.obj = obj;
+                return self.obj;
+            };
+
+            self.setMenu = function(menu) {
+                if (self.exists()) {
+                    remove(menu, TAULUKKO_PATH);
+                    remove(menu, TEKSTI_PATH);
+                }
+            };
+
+            self.exists = function() {
+                return self.hasTeksti() || self.hasTaulukko();
+            };
+
+            return self;
+        }
+
+        return {
+            create: createAmmattitaito
+        };
+    })
+    .factory("ValmaarviointiHelper", function() {
+        const remove = function(arr, str) {
+            const index = _.findIndex(arr, { path: str });
+            if (index >= 0) {
+                arr.splice(index, 1);
             }
         };
 
-        self.exists = function () {
-            return self.hasTeksti() || self.hasTaulukko();
+        function createValmaarviointi() {
+            const TAULUKKO_PATH = "valmaarviointi.ammattitaidonKohdealueet";
+            const TEKSTI_PATH = "valmaarviointi.lisatiedot";
+            const self: any = {};
+            self.obj = {};
+
+            self.hasTeksti = function() {
+                return self.obj.teksti && self.obj.teksti.visible;
+            };
+
+            self.hasTaulukko = function() {
+                return self.obj.taulukko && self.obj.taulukko.visible;
+            };
+
+            self.initFromFields = function(fields) {
+                const obj = {
+                    teksti: null,
+                    taulukko: null
+                };
+
+                _.each(fields, function(field) {
+                    if (field.path === TAULUKKO_PATH) {
+                        obj.taulukko = field;
+                    } else if (field.path === TEKSTI_PATH) {
+                        obj.teksti = field;
+                    }
+                });
+
+                if (self.hasTeksti()) {
+                    obj.taulukko.visible = false;
+                }
+                self.obj = obj;
+
+                return self.obj;
+            };
+
+            self.setMenu = function(menu) {
+                if (self.exists()) {
+                    remove(menu, TAULUKKO_PATH);
+                    remove(menu, TEKSTI_PATH);
+                }
+            };
+
+            self.exists = function() {
+                return self.hasTeksti() || self.hasTaulukko();
+            };
+
+            return self;
+        }
+
+        return {
+            create: createValmaarviointi
         };
-
-        return self;
-    }
-
-    return {
-        create: createValmaarviointi
-    };
-});
+    });

@@ -32,25 +32,26 @@ interface Kohdealue {
     opetuksenTavoitteet: Array<any>;
 }
 
-angular.module('eperusteApp')
-.directive('aipeTavoitteet', () => {
+angular.module("eperusteApp").directive("aipeTavoitteet", () => {
     return {
-        templateUrl: 'scripts/components/tavoitteet/tavoitteet.html',
-        restrict: 'E',
+        templateUrl: "scripts/components/tavoitteet/tavoitteet.html",
+        restrict: "E",
         scope: {
-            model: '=',
-            laajaalaiset: '=',
-            vaihe: '=',
-            editing: '='
+            model: "=",
+            laajaalaiset: "=",
+            vaihe: "=",
+            editing: "="
         },
-        controller: function ($scope, Kaanna) {
+        controller: function($scope, Kaanna) {
             _.each($scope.model, tavoite => {
                 tavoite.$accordionOpen = true;
 
                 // Alustetaan valitut kohdealueet
                 if (tavoite.kohdealueet && tavoite.kohdealueet.length > 0) {
-                    tavoite.$valittuKohdealue = _.find($scope.vaihe.opetuksenKohdealueet,
-                        ka => ka.id.toString() === tavoite.kohdealueet[0]);
+                    tavoite.$valittuKohdealue = _.find(
+                        $scope.vaihe.opetuksenKohdealueet,
+                        ka => ka.id.toString() === tavoite.kohdealueet[0]
+                    );
                 }
 
                 // Alustetaan laaja-alaiset
@@ -68,9 +69,9 @@ angular.module('eperusteApp')
             }
 
             $scope.toggleAll = () => {
-                _.each($scope.model, (tavoite) => {
+                _.each($scope.model, tavoite => {
                     tavoite.$accordionOpen = !tavoite.$accordionOpen;
-                })
+                });
             };
 
             $scope.treeOptions = {};
@@ -87,26 +88,26 @@ angular.module('eperusteApp')
                 });
             };
 
-            $scope.poistaTavoite = (tavoite) => {
+            $scope.poistaTavoite = tavoite => {
                 _.remove($scope.model, tavoite);
             };
 
-            $scope.asetaKohdealue = (tavoite) => {
+            $scope.asetaKohdealue = tavoite => {
                 const valittu = tavoite.$valittuKohdealue ? [tavoite.$valittuKohdealue] : [];
                 tavoite.kohdealueet = _(valittu)
                     .map(item => item.id)
                     .value();
             };
 
-            $scope.kaannaKohdealue = (ka) => {
+            $scope.kaannaKohdealue = ka => {
                 return Kaanna.kaanna(ka.nimi);
             };
 
-            $scope.poistaValittuKohdealue = (tavoite) => {
+            $scope.poistaValittuKohdealue = tavoite => {
                 tavoite.$valittuKohdealue = undefined;
             };
 
-            $scope.addArvioinninKohde = (tavoite) => {
+            $scope.addArvioinninKohde = tavoite => {
                 tavoite.arvioinninkohteet.push({});
             };
 

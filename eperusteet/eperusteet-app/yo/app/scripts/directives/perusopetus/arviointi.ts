@@ -14,24 +14,25 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .directive('perusopetuksenArviointi', function() {
-    return {
-      templateUrl: 'views/directives/perusopetus/arviointi.html',
-      restrict: 'A',
-      scope: {
-        model: '=perusopetuksenArviointi',
-        editMode: '=',
-        atavoite: '=atavoite'
-      },
-      controller: 'PerusopetuksenArviointiController'
-    };
-  })
-  .controller('PerusopetuksenArviointiController', function($scope) {
-    $scope.addKohde = function () {
-      $scope.model.push({});
-    };
-    $scope.removeKohde = function (kohde) {
-      $scope.model.splice(kohde, 1);
-    };
-  });
+angular
+    .module("eperusteApp")
+    .directive("perusopetuksenArviointi", function() {
+        return {
+            templateUrl: "views/directives/perusopetus/arviointi.html",
+            restrict: "A",
+            scope: {
+                model: "=perusopetuksenArviointi",
+                editMode: "=",
+                atavoite: "=atavoite"
+            },
+            controller: "PerusopetuksenArviointiController"
+        };
+    })
+    .controller("PerusopetuksenArviointiController", function($scope) {
+        $scope.addKohde = function() {
+            $scope.model.push({});
+        };
+        $scope.removeKohde = function(kohde) {
+            $scope.model.splice(kohde, 1);
+        };
+    });

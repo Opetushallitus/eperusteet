@@ -30,7 +30,7 @@ namespace Types {
 namespace Logic {
     let _state;
 
-    export const init = ($state) => {
+    export const init = $state => {
         _state = $state;
     };
 
@@ -49,9 +49,8 @@ namespace Logic {
                         tutkinnonOsaViiteId: kommentti.perusteenOsaId
                     });
                 });
-        }
-        else {
-            _state.go("root.perusteprojekti.suoritustapa.muodostumissaannot", { suoritustapa: kommentti.suoritustapa })
+        } else {
+            _state.go("root.perusteprojekti.suoritustapa.muodostumissaannot", { suoritustapa: kommentti.suoritustapa });
         }
     };
 
@@ -59,22 +58,19 @@ namespace Logic {
         if (kayttaja) {
             kayttaja.$$esitysnimi = kayttaja.kutsumanimi + " " + kayttaja.sukunimi;
             return kayttaja;
-        }
-        else {
+        } else {
             return {
                 $$esitysnimi: "-"
-            }
+            };
         }
-    }
-
-
+    };
 }
 
 // TODO: Keksi parempi nimi ja paikka
 namespace Endpoints {
     let _Api;
 
-    export const init = (Api) => {
+    export const init = Api => {
         _Api = Api;
     };
 
@@ -87,11 +83,12 @@ namespace Endpoints {
         return kayttajaCache[oid];
     };
 
-    export const getPerusteenOsaViite = (id) => {
+    export const getPerusteenOsaViite = id => {
         return _Api.one("perusteenosat/viite", id).get();
     };
 }
 
-angular.module('eperusteApp')
-.run($injector => $injector.invoke(Endpoints.init))
-.run($injector => $injector.invoke(Logic.init));
+angular
+    .module("eperusteApp")
+    .run($injector => $injector.invoke(Endpoints.init))
+    .run($injector => $injector.invoke(Logic.init));

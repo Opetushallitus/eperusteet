@@ -14,8 +14,9 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .controller('TilanvaihtovirheCtrl', function ($scope, $uibModalInstance, infot){
+angular.module("eperusteApp").controller("TilanvaihtovirheCtrl", function($scope, $uibModalInstance, infot) {
     $scope.infot = infot;
-    $scope.ok = function() { $uibModalInstance.close(); };
-  });
+    $scope.ok = function() {
+        $uibModalInstance.close();
+    };
+});

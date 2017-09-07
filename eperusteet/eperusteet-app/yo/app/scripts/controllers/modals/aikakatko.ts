@@ -14,8 +14,11 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-  .controller('AikakatkoDialogiCtrl', function($scope, $uibModalInstance) {
-    $scope.ok = function() { $uibModalInstance.close(); };
-    $scope.peruuta = function() { $uibModalInstance.dismiss(); };
-  });
+angular.module("eperusteApp").controller("AikakatkoDialogiCtrl", function($scope, $uibModalInstance) {
+    $scope.ok = function() {
+        $uibModalInstance.close();
+    };
+    $scope.peruuta = function() {
+        $uibModalInstance.dismiss();
+    };
+});

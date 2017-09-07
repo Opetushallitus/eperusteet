@@ -14,29 +14,24 @@
  * European Union Public Licence for more details.
  */
 
-angular.module('eperusteApp')
-.controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService, YleinenData, $stateParams) {
-    PerusteProjektiService.watcher($scope, 'projekti');
-    // $scope.isOpas = $stateParams.suoritustapa === "opas";
+angular
+    .module("eperusteApp")
+    .controller("ProjektinperustiedotCtrl", function($scope, PerusteProjektiService, YleinenData, $stateParams) {
+        PerusteProjektiService.watcher($scope, "projekti");
+        // $scope.isOpas = $stateParams.suoritustapa === "opas";
 
-    if (typeof $scope.projekti.paatosPvm === 'number') {
-        $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
-    }
+        if (typeof $scope.projekti.paatosPvm === "number") {
+            $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
+        }
 
-    $scope.yksikot = YleinenData.yksikot;
+        $scope.yksikot = YleinenData.yksikot;
 
-    $scope.tehtavaluokat = [
-        'Tehtäväluokka-1',
-        'Tehtäväluokka-2',
-        'Tehtäväluokka-3',
-        'Tehtäväluokka-4'
-    ];
+        $scope.tehtavaluokat = ["Tehtäväluokka-1", "Tehtäväluokka-2", "Tehtäväluokka-3", "Tehtäväluokka-4"];
 
-    $scope.koulutustyypit = YleinenData.koulutustyypit;
+        $scope.koulutustyypit = YleinenData.koulutustyypit;
 
-    $scope.reforminMukainen = YleinenData.isReformoitava;
+        $scope.reforminMukainen = YleinenData.isReformoitava;
 
-    $scope.tarvitseeLaajuuden = (koulutustyyppi) => koulutustyyppi
-        && _.indexOf(YleinenData.laajuudellisetKoulutustyypit, koulutustyyppi) !== -1;
-});
-
+        $scope.tarvitseeLaajuuden = koulutustyyppi =>
+            koulutustyyppi && _.indexOf(YleinenData.laajuudellisetKoulutustyypit, koulutustyyppi) !== -1;
+    });

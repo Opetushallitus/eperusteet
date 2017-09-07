@@ -14,91 +14,100 @@
  * European Union Public Licence for more details.
  */
 
-angular.module("eperusteApp")
-.config($stateProvider => {
-$stateProvider
-.state("root.perusteprojekti.suoritustapa.aipeosalistaus", {
-    url: "/aipeosat/:osanTyyppi",
-    templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/view.html",
-    resolve: {
-        perusteprojektit: (Api) => Api.all("perusteprojektit"),
-        perusteprojekti: (perusteprojektit, $stateParams) => perusteprojektit.one($stateParams.perusteProjektiId).get(),
-        perusteet: (Api) => Api.all("perusteet"),
-        peruste: (perusteprojekti, perusteet) => perusteet.get(perusteprojekti._peruste),
-        aipeopetus: (peruste, $stateParams) => peruste.one("aipeopetus"),
-        vaiheet: (aipeopetus) => aipeopetus.all("vaiheet").getList(),
-        laajaalaiset: (aipeopetus) => aipeopetus.all("laajaalaiset").getList()
-    },
-    controller: ($scope, $state, $stateParams, AIPEService, Editointikontrollit, virheService, laajaalaiset, vaiheet, Notifikaatiot) => {
-        const createUrl = value => $state.href("root.perusteprojekti.suoritustapa.aipeosaalue", {
-            suoritustapa: $stateParams.suoritustapa,
-            osanTyyppi: $stateParams.osanTyyppi,
-            osanId: value.id,
-            tabId: 0
-        });
+angular.module("eperusteApp").config($stateProvider => {
+    $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosalistaus", {
+        url: "/aipeosat/:osanTyyppi",
+        templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/view.html",
+        resolve: {
+            perusteprojektit: Api => Api.all("perusteprojektit"),
+            perusteprojekti: (perusteprojektit, $stateParams) =>
+                perusteprojektit.one($stateParams.perusteProjektiId).get(),
+            perusteet: Api => Api.all("perusteet"),
+            peruste: (perusteprojekti, perusteet) => perusteet.get(perusteprojekti._peruste),
+            aipeopetus: (peruste, $stateParams) => peruste.one("aipeopetus"),
+            vaiheet: aipeopetus => aipeopetus.all("vaiheet").getList(),
+            laajaalaiset: aipeopetus => aipeopetus.all("laajaalaiset").getList()
+        },
+        controller: (
+            $scope,
+            $state,
+            $stateParams,
+            AIPEService,
+            Editointikontrollit,
+            virheService,
+            laajaalaiset,
+            vaiheet,
+            Notifikaatiot
+        ) => {
+            const createUrl = value =>
+                $state.href("root.perusteprojekti.suoritustapa.aipeosaalue", {
+                    suoritustapa: $stateParams.suoritustapa,
+                    osanTyyppi: $stateParams.osanTyyppi,
+                    osanId: value.id,
+                    tabId: 0
+                });
 
-        $scope.isSorting = false;
-        $scope.canSort = _.includes(["osaaminen", "vaiheet"], $stateParams.osanTyyppi);
+            $scope.isSorting = false;
+            $scope.canSort = _.includes(["osaaminen", "vaiheet"], $stateParams.osanTyyppi);
 
-        let backup = laajaalaiset.clone();
+            let backup = laajaalaiset.clone();
 
-        $scope.sisaltoState = _.find(AIPEService.sisallot, {
-            tyyppi: $stateParams.osanTyyppi
-        });
-
-        if (!$scope.sisaltoState) {
-            virheService.virhe("virhe-sivua-ei-löytynyt");
-        }
-
-        const osaAlueet = $stateParams.osanTyyppi === AIPEService.OSAAMINEN ? laajaalaiset : vaiheet;
-        for (const oa of osaAlueet) {
-            oa.$$url = createUrl(oa);
-        }
-        $scope.osaAlueet = osaAlueet;
-
-        $scope.hasMuokattu = !_.isEmpty($scope.osaAlueet) && !!_.first($scope.osaAlueet).muokattu;
-
-        $scope.options = {
-            extrafilter: null
-        };
-
-        $scope.sort = () => {
-            Editointikontrollit.registerCallback({
-                async edit() {
-                    $scope.isSorting = true;
-                },
-                async save() {
-                    $scope.isSorting = false;
-                    await $scope.osaAlueet.customPUT();
-                    Notifikaatiot.onnistui("tallennus-onnistui");
-                },
-                cancel() {
-                    $scope.isSorting = false;
-                    $scope.osaAlueet = backup.clone();
-                }
+            $scope.sisaltoState = _.find(AIPEService.sisallot, {
+                tyyppi: $stateParams.osanTyyppi
             });
-            Editointikontrollit.startEditing();
-        };
 
+            if (!$scope.sisaltoState) {
+                virheService.virhe("virhe-sivua-ei-löytynyt");
+            }
 
-        $scope.sortableOptions = {
-            cursor: "move",
-            cursorAt: { top : 2, left: 2 },
-            handle: ".handle",
-            delay: 100,
-            tolerance: "pointer",
-        };
+            const osaAlueet = $stateParams.osanTyyppi === AIPEService.OSAAMINEN ? laajaalaiset : vaiheet;
+            for (const oa of osaAlueet) {
+                oa.$$url = createUrl(oa);
+            }
+            $scope.osaAlueet = osaAlueet;
 
-        $scope.add = async () => {
-            $state.go("root.perusteprojekti.suoritustapa.aipeosaalue", {
-                suoritustapa: $stateParams.suoritustapa,
-                osanTyyppi: $stateParams.osanTyyppi,
-                osanId: "uusi"
-            });
-        };
-    },
-    onEnter: PerusteProjektiSivunavi => {
-        PerusteProjektiSivunavi.setVisible();
-    }
-})
+            $scope.hasMuokattu = !_.isEmpty($scope.osaAlueet) && !!_.first($scope.osaAlueet).muokattu;
+
+            $scope.options = {
+                extrafilter: null
+            };
+
+            $scope.sort = () => {
+                Editointikontrollit.registerCallback({
+                    async edit() {
+                        $scope.isSorting = true;
+                    },
+                    async save() {
+                        $scope.isSorting = false;
+                        await $scope.osaAlueet.customPUT();
+                        Notifikaatiot.onnistui("tallennus-onnistui");
+                    },
+                    cancel() {
+                        $scope.isSorting = false;
+                        $scope.osaAlueet = backup.clone();
+                    }
+                });
+                Editointikontrollit.startEditing();
+            };
+
+            $scope.sortableOptions = {
+                cursor: "move",
+                cursorAt: { top: 2, left: 2 },
+                handle: ".handle",
+                delay: 100,
+                tolerance: "pointer"
+            };
+
+            $scope.add = async () => {
+                $state.go("root.perusteprojekti.suoritustapa.aipeosaalue", {
+                    suoritustapa: $stateParams.suoritustapa,
+                    osanTyyppi: $stateParams.osanTyyppi,
+                    osanId: "uusi"
+                });
+            };
+        },
+        onEnter: PerusteProjektiSivunavi => {
+            PerusteProjektiSivunavi.setVisible();
+        }
+    });
 });

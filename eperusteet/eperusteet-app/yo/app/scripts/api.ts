@@ -1,5 +1,4 @@
-angular.module("eperusteApp")
-.factory("Api", (Restangular, Notifikaatiot, Kaanna) => {
+angular.module("eperusteApp").factory("Api", (Restangular, Notifikaatiot, Kaanna) => {
     return Restangular.withConfig(config => {
         config.setBaseUrl("/eperusteet-service/api");
         config.addResponseInterceptor((data, operation, what, url, response, deferred) => {
@@ -11,12 +10,10 @@ angular.module("eperusteApp")
                     //     // TODO Ota käyttöön myöhemmin
                     //     // $state.go("root.virhe");
                     // });
-                }
-                else if (response.data && response.data.syy) {
+                } else if (response.data && response.data.syy) {
                     let syy = response.data.syy;
                     Notifikaatiot.varoitus(_.isArray(syy) ? syy[0] : syy);
-                }
-                else {
+                } else {
                     Notifikaatiot.varoitus(Kaanna.kaanna("odottamaton-virhe"));
                 }
             }

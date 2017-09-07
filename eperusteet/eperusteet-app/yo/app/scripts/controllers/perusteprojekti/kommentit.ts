@@ -30,32 +30,33 @@ namespace Controllers {
         // Ei onnistu vielä koska ei tarpeeksi tietoa tilasta
         $scope.goToKommenttiLocation = Logic.getKommenttiUrl;
 
-        $q.all(_.map(uniqueOids, oid => Endpoints.getKayttajaByOid(oid)))
-            .then(users => {
-                const oids = {};
-                _.each(users, (user, idx) => {
-                    oids[uniqueOids[idx]] = Logic.getKayttajaNimi(user);
-                });
-                $scope.kayttajat = oids;
+        $q.all(_.map(uniqueOids, oid => Endpoints.getKayttajaByOid(oid))).then(users => {
+            const oids = {};
+            _.each(users, (user, idx) => {
+                oids[uniqueOids[idx]] = Logic.getKayttajaNimi(user);
             });
+            $scope.kayttajat = oids;
+        });
     };
 }
 
-angular.module('eperusteApp')
-.config($stateProvider => $stateProvider
-.state('root.perusteprojekti.kommentit', {
-    url: '/kommentit',
-    templateUrl: 'views/partials/perusteprojekti/kommentit.html',
-    controller: Controllers.kaikkiKommentit,
-    resolve: {
-        kommentit: ($stateParams, Api) => {
-            return Api
-                .all("kommentit")
-                .one("perusteprojekti", $stateParams.perusteProjektiId)
-                .getList();
-        }
-    },
-    onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-        PerusteProjektiSivunavi.setVisible(false);
-    }]
-}));
+angular.module("eperusteApp").config($stateProvider =>
+    $stateProvider.state("root.perusteprojekti.kommentit", {
+        url: "/kommentit",
+        templateUrl: "views/partials/perusteprojekti/kommentit.html",
+        controller: Controllers.kaikkiKommentit,
+        resolve: {
+            kommentit: ($stateParams, Api) => {
+                return Api.all("kommentit")
+                    .one("perusteprojekti", $stateParams.perusteProjektiId)
+                    .getList();
+            }
+        },
+        onEnter: [
+            "PerusteProjektiSivunavi",
+            function(PerusteProjektiSivunavi) {
+                PerusteProjektiSivunavi.setVisible(false);
+            }
+        ]
+    })
+);

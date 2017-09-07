@@ -14,20 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
-angular.module('eperusteApp')
-  .directive('versiotiedot', function(VersionHelper) {
+angular.module("eperusteApp").directive("versiotiedot", function(VersionHelper) {
     return {
-      templateUrl: 'views/partials/muokkaus/versiotiedot.html',
-      restrict: 'E',
-      controller: function ($scope) {
-        $scope.lastModified = function () {
-          return VersionHelper.lastModified($scope.versiot);
-        };
-        $scope.history = function () {
-          VersionHelper.historyView($scope.versiot);
-        };
-      }
+        templateUrl: "views/partials/muokkaus/versiotiedot.html",
+        restrict: "E",
+        controller: function($scope) {
+            $scope.lastModified = function() {
+                return VersionHelper.lastModified($scope.versiot);
+            };
+            $scope.history = function() {
+                VersionHelper.historyView($scope.versiot);
+            };
+        }
     };
-  });
+});

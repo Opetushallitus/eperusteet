@@ -14,15 +14,15 @@
  * European Union Public Licence for more details.
  */
 
-'use strict';
+"use strict";
 
-angular.module('eperusteApp')
-  .directive('lukko', function() {
+angular.module("eperusteApp").directive("lukko", function() {
     return {
-      template: '<div class="lukko" ng-attr-title="{{tip}}"><div class="inner1"></div><div class="inner2"></div></div>',
-      restrict: 'AE',
-      scope: {
-        tip: '='
-      }
+        template:
+            '<div class="lukko" ng-attr-title="{{tip}}"><div class="inner1"></div><div class="inner2"></div></div>',
+        restrict: "AE",
+        scope: {
+            tip: "="
+        }
     };
-  });
+});

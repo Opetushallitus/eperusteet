@@ -14,8 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-angular.module("eperusteApp")
-.directive("muokkausVaihe", () => {
+angular.module("eperusteApp").directive("muokkausVaihe", () => {
     return {
         templateUrl: "views/directives/vaihe.html",
         restrict: "E",
@@ -23,8 +22,22 @@ angular.module("eperusteApp")
             model: "=",
             versiot: "="
         },
-        controller: ($scope, YleinenData, $stateParams, Api, Editointikontrollit, Notifikaatiot, $state,
-                     PerusteProjektiSivunavi, Varmistusdialogi, AIPEService, Utils, $rootScope, Kieli, Kaanna) => {
+        controller: (
+            $scope,
+            YleinenData,
+            $stateParams,
+            Api,
+            Editointikontrollit,
+            Notifikaatiot,
+            $state,
+            PerusteProjektiSivunavi,
+            Varmistusdialogi,
+            AIPEService,
+            Utils,
+            $rootScope,
+            Kieli,
+            Kaanna
+        ) => {
             $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
             $scope.isNew = $stateParams.osanId === "uusi";
             $scope.editableModel = Api.copy($scope.model);
@@ -39,17 +52,21 @@ angular.module("eperusteApp")
                         Editointikontrollit.cancelEditing();
                         await $scope.editableModel.remove();
                         AIPEService.clearCache();
-                        $state.go("root.perusteprojekti.suoritustapa.aipeosalistaus", {
-                            suoritustapa: $stateParams.suoritustapa,
-                            osanTyyppi: AIPEService.VAIHEET
-                        }, {
-                            reload: true
-                        });
+                        $state.go(
+                            "root.perusteprojekti.suoritustapa.aipeosalistaus",
+                            {
+                                suoritustapa: $stateParams.suoritustapa,
+                                osanTyyppi: AIPEService.VAIHEET
+                            },
+                            {
+                                reload: true
+                            }
+                        );
                     }
                 })();
             };
 
-            const createOppiaineUrl = (oppiaine) => $state.href(".oppiaine", { oppiaineId: oppiaine.id });
+            const createOppiaineUrl = oppiaine => $state.href(".oppiaine", { oppiaineId: oppiaine.id });
 
             if ($scope.editableModel && _.isArray($scope.editableModel.oppiaineet)) {
                 for (const oa of $scope.editableModel.oppiaineet) {
@@ -71,7 +88,7 @@ angular.module("eperusteApp")
             $scope.lisaaKohdealue = () => {
                 $scope.editableModel.opetuksenKohdealueet.push({
                     nimi: {
-                        fi: 'Uusi tavoitealue'
+                        fi: "Uusi tavoitealue"
                     }
                 });
             };
@@ -100,7 +117,7 @@ angular.module("eperusteApp")
             ];
 
             $scope.fieldOps = {
-                hasContent: (field) => {
+                hasContent: field => {
                     const model = $scope.editableModel[field.path];
                     if (_.isEmpty(model)) {
                         return false;
@@ -168,7 +185,7 @@ angular.module("eperusteApp")
             };
 
             function mapModel() {
-                _.each($scope.fields, (field) => {
+                _.each($scope.fields, field => {
                     field.visible = $scope.fieldOps.hasContent(field);
                 });
             }
@@ -180,8 +197,7 @@ angular.module("eperusteApp")
             $scope.isSorting = false;
 
             Editointikontrollit.registerCallback({
-                async edit() {
-                },
+                async edit() {},
                 async save() {
                     if ($scope.isNew) {
                         $scope.editableModel = await $scope.editableModel.post();
@@ -191,13 +207,17 @@ angular.module("eperusteApp")
 
                     Notifikaatiot.onnistui("tallennus-onnistui");
                     AIPEService.clearCache();
-                    $state.go($state.current, {
-                        suoritustapa: $stateParams.suoritustapa,
-                        osanTyyppi: $stateParams.osanTyyppi,
-                        osanId: $scope.editableModel.id
-                    }, {
-                        reload: true
-                    });
+                    $state.go(
+                        $state.current,
+                        {
+                            suoritustapa: $stateParams.suoritustapa,
+                            osanTyyppi: $stateParams.osanTyyppi,
+                            osanId: $scope.editableModel.id
+                        },
+                        {
+                            reload: true
+                        }
+                    );
                 },
                 cancel() {
                     if ($scope.isNew && $scope.data) {
@@ -216,7 +236,7 @@ angular.module("eperusteApp")
                     return true;
                 }
             });
-            Editointikontrollit.registerEditModeListener((mode) => {
+            Editointikontrollit.registerEditModeListener(mode => {
                 $scope.editEnabled = mode;
             });
 
