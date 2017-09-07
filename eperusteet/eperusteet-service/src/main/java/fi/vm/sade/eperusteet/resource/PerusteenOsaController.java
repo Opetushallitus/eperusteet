@@ -164,9 +164,7 @@ public class PerusteenOsaController {
             @PathVariable("id") final Long id,
             @RequestBody PerusteenOsaUpdateDto dto) {
         return audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, MUOKKAUS)
-                .add("tutkinnonosaId", id), (Void) -> {
-            return service.update(dto);
-        });
+                .add("tutkinnonosaId", id), (Void) -> service.update(dto));
     }
 
     /**

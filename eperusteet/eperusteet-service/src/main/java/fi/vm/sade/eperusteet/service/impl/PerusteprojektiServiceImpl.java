@@ -1012,12 +1012,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
         }
 
+        if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
+            setSisaltoTila(peruste, peruste.getEsiopetuksenPerusteenSisalto().getSisalto(), tila);
+        }
+
         if (peruste.getPerusopetuksenPerusteenSisalto() != null) {
             setSisaltoTila(peruste, peruste.getPerusopetuksenPerusteenSisalto().getSisalto(), tila);
         }
 
-        if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
-            setSisaltoTila(peruste, peruste.getEsiopetuksenPerusteenSisalto().getSisalto(), tila);
+        if (peruste.getAipeOpetuksenPerusteenSisalto() != null) {
+            setSisaltoTila(peruste, peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(), tila);
+        }
+
+        if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
+            setSisaltoTila(peruste, peruste.getLukiokoulutuksenPerusteenSisalto().getSisalto(), tila);
         }
 
         if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
@@ -1078,14 +1086,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     // FIXME: Miksi nämä iteroidaan kahteen kertaan?
     private PerusteenOsaViite setSisaltoTila(Peruste peruste, PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
         if (sisaltoRoot.getPerusteenOsa() != null) {
-//            sisaltoRoot.getPerusteenOsa().asetaTila(tila);
+            PerusteenOsa perusteenOsa = sisaltoRoot.getPerusteenOsa();
             if (tila == PerusteTila.LUONNOS) {
                 // TODO: Tarkista onko muita käyttäjiä
-                sisaltoRoot.getPerusteenOsa().palautaLuonnokseksi();
-                palautaJulkaistu(peruste, sisaltoRoot.getPerusteenOsa());
+                perusteenOsa.palautaLuonnokseksi();
+                palautaJulkaistu(peruste, perusteenOsa);
             }
             else {
-                sisaltoRoot.getPerusteenOsa().asetaTila(tila);
+                perusteenOsa.asetaTila(tila);
             }
         }
         if (sisaltoRoot.getLapset() != null) {
@@ -1098,12 +1106,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private TutkinnonOsaViite setOsatTila(Peruste peruste, TutkinnonOsaViite osa, PerusteTila tila) {
         if (osa.getTutkinnonOsa() != null) {
+            TutkinnonOsa tutkinnonOsa = osa.getTutkinnonOsa();
             if (tila == PerusteTila.LUONNOS) {
                 // TODO: Tarkista onko muita käyttäjiä
-                palautaJulkaistu(peruste, osa.getTutkinnonOsa());
+                tutkinnonOsa.palautaLuonnokseksi();
+                palautaJulkaistu(peruste, tutkinnonOsa);
             }
             else {
-                osa.getTutkinnonOsa().asetaTila(tila);
+                tutkinnonOsa.asetaTila(tila);
             }
         }
         return osa;

@@ -294,7 +294,7 @@ public class PermissionManager {
             LOG.trace(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
         }
 
-        if (Target.TIEDOTE == targetType) {
+        if (Target.TIEDOTE.equals(targetType)) {
             return hasAnyRole(authentication, getAllowedRoles(targetType, permission));
         }
 
