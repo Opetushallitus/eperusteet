@@ -139,15 +139,20 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
     }
 
+    @Transactional(readOnly = false)
+    private void tarkistaVoikoMuokata(PerusteenOsa osa) {
+        if (osa != null && osa.getTila() == PerusteTila.POISTETTU) {
+            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+        }
+    }
+
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto.Laaja> T update(T perusteenOsaDto) {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
-        if (current != null && current.getTila() == PerusteTila.POISTETTU) {
-            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
-        }
+        tarkistaVoikoMuokata(current);
 
         perusteenOsaDto.setTila(current.getTila());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
