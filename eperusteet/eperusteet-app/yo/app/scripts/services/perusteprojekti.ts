@@ -128,18 +128,19 @@ angular
                 suoritustapa = "reformi";
             }
             else if (info) {
+                debugger;
                 suoritustapa = info.oletusSuoritustapa;
                 sisaltoTunniste = info.sisaltoTunniste;
             }
 
             // Tilanteesta riippuen suoritustapatieto voi tulla projektin mukana (listausnäkymät)
             // Yritetään ensisijaisesti käyttää perusteen tietoa
-            if (peruste && _.isArray(peruste.suoritustavat)) {
+            if (peruste && _.isArray(peruste.suoritustavat) && !_.isEmpty(peruste.suoritustavat)) {
                 const suoritustapakoodit = _.map(peruste.suoritustavat, "suoritustapakoodi");
                 if (!_.includes(suoritustapakoodit, suoritustapa)) {
                     suoritustapa = _.first(suoritustapakoodit);
                 }
-            } else if (projekti && _.isArray(projekti.suoritustavat)) {
+            } else if (projekti && _.isArray(projekti.suoritustavat) && !_.isEmpty(projekti.suoritustavat)) {
                 if (!_.includes(projekti.suoritustavat, suoritustapa)) {
                     suoritustapa = _.first(projekti.suoritustavat);
                 }
@@ -148,7 +149,7 @@ angular
             const result = $state.href("root.perusteprojekti.suoritustapa." + sisaltoTunniste, {
                 lang: $stateParams.lang || "fi",
                 perusteProjektiId: projekti.id,
-                suoritustapa: suoritustapa
+                suoritustapa
             });
 
             return result;

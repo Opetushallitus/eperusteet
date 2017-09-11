@@ -35,6 +35,7 @@ public enum KoulutusTyyppi {
     AIKUISTENPERUSOPETUS("koulutustyyppi_17"),
     LUKIOVALMISTAVAKOULUTUS("koulutustyyppi_23"),
     AIKUISTENLUKIOKOULUTUS("koulutustyyppi_14"),
+    TPO("koulutustyyppi_xyz"), // FIXME
     PERUSOPETUSVALMISTAVA("koulutustyyppi_22");
 
     private final String tyyppi;

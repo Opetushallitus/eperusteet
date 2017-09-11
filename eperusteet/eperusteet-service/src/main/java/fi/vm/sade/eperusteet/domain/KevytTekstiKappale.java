@@ -16,13 +16,12 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import java.io.Serializable;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  *
@@ -67,4 +66,12 @@ public class KevytTekstiKappale extends AbstractAuditedEntity implements Seriali
         this.setTeksti(other.getTeksti());
     }
 
+    public static KevytTekstiKappale getCopy(KevytTekstiKappale other) {
+        if (other == null) {
+            return null;
+        }
+        else {
+            return new KevytTekstiKappale(other);
+        }
+    }
 }

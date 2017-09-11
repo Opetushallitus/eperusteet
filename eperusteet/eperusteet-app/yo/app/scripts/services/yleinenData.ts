@@ -88,6 +88,15 @@ angular
                 sisaltoTunniste: "sisalto",
                 hasPdfCreation: true
             },
+            koulutustyyppi_xyz: {
+                nimi: "tpo",
+                oletusSuoritustapa: "tposisalto",
+                hasTutkintonimikkeet: false,
+                hasLaajuus: false,
+                hakuState: "root.selaus.ammatillinenaikuiskoulutus",
+                sisaltoTunniste: "tposisalto",
+                hasPdfCreation: true
+            },
             koulutustyyppi_11: {
                 nimi: "ammattitutkinto",
                 oletusSuoritustapa: "naytto",
@@ -128,7 +137,7 @@ angular
                 nimi: "esiopetus",
                 oletusSuoritustapa: "esiopetus",
                 hasTutkintonimikkeet: false,
-                hakuState: "root.selaus.esiopetuslista",
+                hakuState: "root.selaus.tpolista",
                 sisaltoTunniste: "eosisalto",
                 hasPdfCreation: false
             },
