@@ -47,7 +47,7 @@ angular
     .constant("LUKITSIN_MAKSIMI", 20000)
     .constant("TEXT_HIERARCHY_MAX_DEPTH", 8)
     .constant("SHOW_VERSION_FOOTER", true)
-    .constant("DEBUG_UI_ROUTER", true)
+    .constant("DEBUG_UI_ROUTER", false)
     .config(($sceProvider, $urlRouterProvider, $translateProvider, $urlMatcherFactoryProvider, $locationProvider) => {
         const preferred = "fi";
 
