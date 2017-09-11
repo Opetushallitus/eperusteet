@@ -48,7 +48,7 @@ angular
                 controller: "OpasHallintaController"
             });
     })
-    .controller("OpasHallintaController", ($scope, $state, Api) => {
+    .controller("OpasHallintaController", ($location, $scope, $state, Api) => {
         const projektitEp = Api.one("oppaat").one("projektit");
 
         $scope.rajaus = "";

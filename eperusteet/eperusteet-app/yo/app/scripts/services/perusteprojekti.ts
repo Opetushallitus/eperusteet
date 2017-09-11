@@ -55,7 +55,7 @@ angular
             perusteHaku: perusteHaku
         };
     })
-    .service("PerusteProjektiService", function($rootScope, $state, $stateParams, $q, $uibModal, YleinenData) {
+    .service("PerusteProjektiService", function($rootScope, $location, $state, $stateParams, $q, $timeout, $uibModal, YleinenData) {
         var pp = {};
         var suoritustapa = "";
 
@@ -115,15 +115,19 @@ angular
      * Luo oikea url perusteprojektille
      * @param peruste optional
      */
-        function urlFn(method, projekti, peruste) {
+        function urlFn(projekti, peruste) {
             let suoritustapa;
             let sisaltoTunniste = "sisalto";
+
             const info =
                 YleinenData.koulutustyyppiInfo[
                     (_.isObject(projekti) && projekti.koulutustyyppi) || (_.isObject(peruste) && peruste.koulutustyyppi)
                 ];
 
-            if (info) {
+            if (peruste && peruste.reforminMukainen) {
+                suoritustapa = "reformi";
+            }
+            else if (info) {
                 suoritustapa = info.oletusSuoritustapa;
                 sisaltoTunniste = info.sisaltoTunniste;
             }
@@ -141,7 +145,7 @@ angular
                 }
             }
 
-            const result = $state[method]("root.perusteprojekti.suoritustapa." + sisaltoTunniste, {
+            const result = $state.href("root.perusteprojekti.suoritustapa." + sisaltoTunniste, {
                 lang: $stateParams.lang || "fi",
                 perusteProjektiId: projekti.id,
                 suoritustapa: suoritustapa
@@ -179,6 +183,13 @@ angular
             return deferred.promise;
         }
 
+        function goToProjektiState(projekti, peruste) {
+            const url = urlFn(projekti, peruste);
+            $timeout(() => {
+                $location.url(url.slice(1));
+            });
+        }
+
         return {
             mergeProjekti: mergeProjekti,
             save: save,
@@ -189,8 +200,8 @@ angular
             getSuoritustapa: getSuoritustapa,
             setSuoritustapa: setSuoritustapa,
             cleanSuoritustapa: cleanSuoritustapa,
-            getUrl: _.partial(urlFn, "href"),
-            goToProjektiState: _.partial(urlFn, "go"),
+            getUrl: urlFn,
+            goToProjektiState,
             isPdfEnabled: function(peruste) {
                 if (peruste.tyyppi === "opas") {
                     return true;
