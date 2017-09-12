@@ -419,7 +419,7 @@ angular
             };
 
             $scope.luoPdf = () => {
-                PdfCreation.setPerusteId($scope.projekti._peruste);
+                PdfCreation.setPeruste($scope.peruste);
                 PdfCreation.openModal($scope.isOpas, $scope.isAmmatillinen);
             };
 
