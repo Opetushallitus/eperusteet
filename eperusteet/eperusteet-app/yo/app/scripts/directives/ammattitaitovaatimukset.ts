@@ -29,11 +29,11 @@ angular
                     $scope.ammattitaito = [];
                 }
 
-                var kohdealue = {
+                const kohdealue = {
                     otsikko: {},
                     $accordionOpen: true
                 };
-                kohdealue.otsikko[YleinenData.kieli] = $scope.uudenKohdealueenNimi;
+                kohdealue.otsikko = $scope.uudenKohdealueenNimi;
 
                 $scope.ammattitaito.push(kohdealue);
 
@@ -85,7 +85,7 @@ angular
                     kohdealue.vaatimuksenKohteet = [];
                 }
 
-                var kohde = {
+                const kohde = {
                     otsikko: {},
                     vaatimukset: [{}],
                     $accordionOpen: true
@@ -142,9 +142,9 @@ angular
                 kriteeri.vaatimukset.push({ jarjestys: kriteeri.vaatimukset.length });
 
                 // Set focus to newly added field
-                var parent = angular.element(event.currentTarget).closest("table");
+                const parent = angular.element(event.currentTarget).closest("table");
                 $timeout(function() {
-                    var found = parent.find(".form-control");
+                    const found = parent.find(".form-control");
                     if (found.length > 0) {
                         found[found.length - 1].focus();
                     }
@@ -153,7 +153,9 @@ angular
         };
 
         if ($scope.eiKohdealueita && (angular.isUndefined($scope.ammattitaito) || $scope.ammattitaito === null)) {
-            $scope.uudenKohdealueenNimi = "automaattinen";
+            $scope.uudenKohdealueenNimi = {
+                fi: "Nimetön"
+            };
             $scope.kohdealue.uusi();
         }
     })
@@ -225,12 +227,10 @@ angular
                     }
                 };
 
-                /**
-         * is-open attribuutti on annettava modelina accordionille, jotta
-         * ui-sortable voidaan disabloida lukutilassa.
-         */
+                // is-open attribuutti on annettava modelina accordionille,
+                // jotta ui-sortable voidaan disabloida lukutilassa.
                 function setAccordion(mode) {
-                    var obj = scope.ammattitaito;
+                    const obj = scope.ammattitaito;
                     _.each(obj, function(kohdealue) {
                         kohdealue.$accordionOpen = mode;
                         _.each(kohdealue.vaatimuksenKohteet, function(kohde) {
@@ -240,7 +240,7 @@ angular
                 }
 
                 function accordionState() {
-                    var obj = _.first(scope.ammattitaito);
+                    const obj = _.first(scope.ammattitaito);
                     return obj && obj.$accordionOpen;
                 }
 
