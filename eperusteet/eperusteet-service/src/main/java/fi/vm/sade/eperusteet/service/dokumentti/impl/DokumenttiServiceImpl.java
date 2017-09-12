@@ -37,10 +37,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -152,17 +152,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
         List<Dokumentti> documents;
         if (version != null) {
-            documents = dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndGeneratorVersion(
-                            id, kieli, DokumenttiTila.VALMIS, version, sort).stream()
-                    .filter(doc -> doc.getGeneratorVersion() == GeneratorVersion.KVLIITE)
-                    .collect(Collectors.toList());
+            documents = new ArrayList<>(dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndGeneratorVersion(
+                    id, kieli, DokumenttiTila.VALMIS, version, sort));
         }
         else {
-            documents = dokumenttiRepository
-                    .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(
-                            id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort).stream()
-                    .filter(doc -> doc.getGeneratorVersion() != GeneratorVersion.KVLIITE)
-                    .collect(Collectors.toList());
+            documents = new ArrayList<>(dokumenttiRepository
+                    .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(
+                            id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, GeneratorVersion.UUSI, sort));
         }
         if (documents.size() > 0) {
             return mapper.map(documents.get(0), DokumenttiDto.class);
@@ -229,7 +225,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional
     @IgnorePerusteUpdateCheck
-    public Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
+    public Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion generatorVersion) {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
 
         Peruste peruste = perusteRepository.findOne(perusteId);
@@ -237,12 +233,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         List<Dokumentti> documents;
         if (suoritustavat.isEmpty()) {
             documents = dokumenttiRepository
-                    .findByPerusteIdAndKieliAndTila(
-                            perusteId, kieli, DokumenttiTila.VALMIS, sort);
+                    .findByPerusteIdAndKieliAndTilaAndGeneratorVersion(
+                            perusteId, kieli, DokumenttiTila.VALMIS, generatorVersion, sort);
         } else {
             documents = dokumenttiRepository
-                    .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(
-                            perusteId, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort);
+                    .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(
+                            perusteId, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, generatorVersion, sort);
         }
 
         if (!documents.isEmpty()) {
