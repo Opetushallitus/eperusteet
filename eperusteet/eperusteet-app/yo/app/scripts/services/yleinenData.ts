@@ -61,8 +61,6 @@ angular
 
         this.kommenttiMaxLength = 1024;
 
-        this.kontekstit = ["ammatillinenperuskoulutus", "ammatillinenaikuiskoulutus"];
-
         this.rakenneRyhmaRoolit = ["määritelty", "määrittelemätön", "vieras"];
 
         this.osaamisalaRooli = "osaamisala";
@@ -199,7 +197,13 @@ angular
         };
 
         this.koulutustyypit = _.keys(this.koulutustyyppiInfo);
-        this.ammatillisetkoulutustyypit = ["koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"];
+        this.ammatillisetkoulutustyypit = [
+            "koulutustyyppi_1",
+            "koulutustyyppi_5",
+            "koulutustyyppi_11",
+            "koulutustyyppi_12",
+            "koulutustyyppi_18"
+        ];
         var me = this;
         this.laajuudellisetKoulutustyypit = _(this.koulutustyyppiInfo)
             .keys()

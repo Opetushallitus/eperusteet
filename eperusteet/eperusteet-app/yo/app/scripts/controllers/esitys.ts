@@ -14,9 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _,$ */
-
 angular
     .module("eperusteApp")
     .config(function($stateProvider) {
@@ -117,12 +114,9 @@ angular
         TermistoService
     ) {
         $scope.$prestate = $stateParams.prestate;
-
-        const AmmatillisetKoulutustyypit = ["koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"];
-        $scope.isAmmatillinen = _.includes(AmmatillisetKoulutustyypit, peruste.koulutustyyppi);
-
         TermistoService.setPeruste(peruste);
         $scope.isOpas = peruste.tyyppi === "opas";
+        $scope.isAmmatillinen = _.includes(YleinenData.ammatillisetkoulutustyypit, peruste.koulutustyyppi);
         $scope.Koulutusalat = koulutusalaService;
         $scope.Opintoalat = opintoalaService;
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
