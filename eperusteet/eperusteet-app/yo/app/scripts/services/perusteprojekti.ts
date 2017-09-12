@@ -55,7 +55,16 @@ angular
             perusteHaku: perusteHaku
         };
     })
-    .service("PerusteProjektiService", function($rootScope, $location, $state, $stateParams, $q, $timeout, $uibModal, YleinenData) {
+    .service("PerusteProjektiService", function(
+        $rootScope,
+        $location,
+        $state,
+        $stateParams,
+        $q,
+        $timeout,
+        $uibModal,
+        YleinenData
+    ) {
         var pp = {};
         var suoritustapa = "";
 
@@ -111,10 +120,7 @@ angular
             return hasSuoritustapa(peruste, getSuoritustapa()) ? getSuoritustapa() : projekti.suoritustapa;
         }
 
-        /**
-     * Luo oikea url perusteprojektille
-     * @param peruste optional
-     */
+        // Luo oikea url perusteprojektille
         function urlFn(projekti, peruste) {
             let suoritustapa;
             let sisaltoTunniste = "sisalto";
@@ -126,8 +132,7 @@ angular
 
             if (peruste && peruste.reforminMukainen) {
                 suoritustapa = "reformi";
-            }
-            else if (info) {
+            } else if (info) {
                 suoritustapa = info.oletusSuoritustapa;
                 sisaltoTunniste = info.sisaltoTunniste;
             }

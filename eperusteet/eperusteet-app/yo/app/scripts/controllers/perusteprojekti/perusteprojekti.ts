@@ -394,11 +394,23 @@ angular
             TermistoService,
             Kieli,
             perusteprojektiBackLink,
-            isOpas
+            isOpas,
+            YleinenData
         ) => {
+            function init() {
+                $scope.projekti = perusteprojektiTiedot.getProjekti();
+                $scope.peruste = perusteprojektiTiedot.getPeruste();
+                Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
+                $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
+                TermistoService.setPeruste($scope.peruste);
+                ProxyService.set("perusteId", $scope.peruste.id);
+            }
+            init();
+
             $scope.isOpas = isOpas; // Käytetään alinäkymissä
+            const isAmmatillinen = koulutustyyppi => _.includes(YleinenData.ammatillisetkoulutustyypit, koulutustyyppi);
+            $scope.isAmmatillinen = isAmmatillinen($scope.peruste.koulutustyyppi);
             $scope.muokkausEnabled = false;
-            $scope.pdfEnabled = false;
             $scope.backLink = perusteprojektiBackLink;
             $scope.$$kaannokset = perusteprojektiTiedot.getPerusteprojektiKaannokset($scope.isOpas && "opas");
 
@@ -410,17 +422,6 @@ angular
                 PdfCreation.setPerusteId($scope.projekti._peruste);
                 PdfCreation.openModal($scope.isOpas, $scope.isAmmatillinen);
             };
-
-            function init() {
-                $scope.projekti = perusteprojektiTiedot.getProjekti();
-                $scope.peruste = perusteprojektiTiedot.getPeruste();
-                Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
-                $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
-                TermistoService.setPeruste($scope.peruste);
-                ProxyService.set("perusteId", $scope.peruste.id);
-            }
-
-            init();
 
             $scope.$on("update:perusteprojekti", () => ($scope.projekti = perusteprojektiTiedot.getProjekti()));
 

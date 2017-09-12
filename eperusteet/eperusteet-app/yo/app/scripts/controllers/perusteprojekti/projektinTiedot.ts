@@ -193,7 +193,7 @@ angular
             } else {
                 projekti.id = null;
                 if (projekti.isReforminMukainen) {
-                    projekti.suoritustavat = ["reformi"]
+                    projekti.suoritustavat = ["reformi"];
                 }
             }
 
