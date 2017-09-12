@@ -55,7 +55,9 @@ angular
         };
 
         if ($scope.eiKohdealueita && (angular.isUndefined($scope.valmaarviointi) || $scope.valmaarviointi === null)) {
-            $scope.uudenKohdealueenNimi = "automaattinen";
+            $scope.uudenKohdealueenNimi = {
+                fi: "Nimetön"
+            };
             $scope.kohdealue.uusi();
         }
     })
