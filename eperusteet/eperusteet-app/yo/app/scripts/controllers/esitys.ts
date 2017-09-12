@@ -209,7 +209,7 @@ angular
         };
 
         $scope.luoPdf = function() {
-            PdfCreation.setPerusteId($scope.peruste.id);
+            PdfCreation.setPeruste($scope.peruste);
             PdfCreation.openModal($scope.isOpas, $scope.isAmmatillinen);
         };
     })
