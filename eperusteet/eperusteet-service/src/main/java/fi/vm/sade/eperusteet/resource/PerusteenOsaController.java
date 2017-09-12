@@ -214,9 +214,8 @@ public class PerusteenOsaController {
             @PathVariable("viiteId") final Long viiteId,
             @PathVariable("osaAlueId") final Long osaAlueId,
             @RequestBody OsaAlueKokonaanDto osaAlue) {
-        return audit.withAudit(LogMessage.builder(null, OSAALUE, MUOKKAUS).add("tutkinnonosaId", viiteId), (Void) -> {
-            return new ResponseEntity<>(service.updateTutkinnonOsaOsaAlue(viiteId, osaAlueId, osaAlue), HttpStatus.OK);
-        });
+        return audit.withAudit(LogMessage.builder(null, OSAALUE, MUOKKAUS).add("tutkinnonosaId", viiteId),
+                (Void) -> new ResponseEntity<>(service.updateTutkinnonOsaOsaAlue(viiteId, osaAlueId, osaAlue), HttpStatus.OK));
     }
 
     @RequestMapping(value = "/{id}/osaalueet", method = GET)
