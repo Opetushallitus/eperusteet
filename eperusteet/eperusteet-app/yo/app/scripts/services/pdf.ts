@@ -110,7 +110,7 @@ angular
                         isOpas: () => isOpas,
                         isAmmatillinen: () => isAmmatillinen,
                         kielet: () => ({
-                            lista: _.sortBy(YleinenData.kielet),
+                            lista: YleinenData.kielet,
                             valittu: YleinenData.kieli
                         })
                     }
