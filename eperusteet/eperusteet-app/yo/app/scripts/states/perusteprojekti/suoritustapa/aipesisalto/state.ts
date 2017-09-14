@@ -28,7 +28,9 @@ angular.module("eperusteApp").config($stateProvider =>
             laajaalaiset: aipeopetus => aipeopetus.all("laajaalaiset").getList(),
             sisallot: (peruste, $stateParams) => peruste.all("suoritustavat/" + $stateParams.suoritustapa + "/sisalto"),
             sisalto: (peruste, $stateParams) =>
-                peruste.one("suoritustavat/" + $stateParams.suoritustapa + "/sisalto").get()
+                peruste.one("suoritustavat/" + $stateParams.suoritustapa + "/sisalto").get(),
+            jotain: () => {
+            }
         },
         templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipesisalto/view.html",
         controller: (

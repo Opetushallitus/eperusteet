@@ -2,8 +2,6 @@ div
   .uusi-projekti-content
     h1(ng-bind="'luo-uusi-opas' | kaanna")
     // p(kaanna="'tahdella-pakolliset'")
-    .action-buttons
-      button.floater.btn.btn-default(ng-click='muokkaa()', icon-role='edit', kaanna="'muokkaa'", oikeustarkastelu="{ target: 'perusteprojekti', permission: 'muokkaus' }")
     div.form-horizontal.projekti-form(ng-form="opasprojektiForm")
       .form-area
         .form-group-wrapper(ng-form='perustiedotForm', name='perustiedotForm')

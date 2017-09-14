@@ -137,11 +137,11 @@ angular
                 navigaationimi: "navi-perusteprojekti",
                 resolve: {
                     perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
-                    projektinTiedotAlustettu: async perusteprojektiTiedot => {
+                    projektinTiedotAlustettu: async (perusteprojektiTiedot, $log) => {
                         const result = await perusteprojektiTiedot.projektinTiedotAlustettu();
                         return result;
                     },
-                    perusteenSisaltoAlustus: async (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => {
+                    perusteenSisaltoAlustus: async (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams, $log) => {
                         const result = await perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
                         return result;
                     }

@@ -134,12 +134,12 @@ angular
 
             // Tilanteesta riippuen suoritustapatieto voi tulla projektin mukana (listausnäkymät)
             // Yritetään ensisijaisesti käyttää perusteen tietoa
-            if (peruste && _.isArray(peruste.suoritustavat)) {
+            if (peruste && !_.isEmpty(peruste.suoritustavat)) {
                 const suoritustapakoodit = _.map(peruste.suoritustavat, "suoritustapakoodi");
                 if (!_.includes(suoritustapakoodit, suoritustapa)) {
                     suoritustapa = _.first(suoritustapakoodit);
                 }
-            } else if (projekti && _.isArray(projekti.suoritustavat)) {
+            } else if (projekti && !_.isEmpty(projekti.suoritustavat)) {
                 if (!_.includes(projekti.suoritustavat, suoritustapa)) {
                     suoritustapa = _.first(projekti.suoritustavat);
                 }
@@ -271,6 +271,7 @@ angular
 
         const PerusteContextMapping = {
             "projekti-peruste": { opas: "projekti-opas" },
+            "perusteen-tiedot": { opas: "oppaan-tiedot" },
             "projekti-projektiryhma": { opas: "projekti-opastyoryhma" },
             "perusteen-kielet": { opas: "oppaan-kielet" },
             "luo-pdf-dokumentti-perusteesta": { opas: "luo-pdf-dokumentti-oppaasta" }
@@ -389,6 +390,7 @@ angular
                     await getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider);
                     sisalto = ylTiedot.sisalto;
                     deferred.resolve(ylTiedot.sisalto);
+                    resolve(ylTiedot.sisalto);
                 }
             });
         };
