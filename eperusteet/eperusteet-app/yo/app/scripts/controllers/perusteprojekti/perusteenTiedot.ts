@@ -70,7 +70,6 @@ angular
         Kieli,
         Arviointiasteikot
     ) {
-        console.log("peruste tiedot");
         $scope.kvliiteReadonly = true;
 
         (async function lataaKvliite() {
@@ -172,7 +171,6 @@ angular
         $scope.korvattavaDiaariNimiMap = {};
         $scope.hakemassa = false;
         $scope.peruste = perusteprojektiTiedot.getPeruste();
-        console.log(_.cloneDeep($scope.peruste));
 
         noudaKorvattavienDiaarienNimet($scope.peruste.korvattavatDiaarinumerot);
         $scope.editablePeruste = $scope.peruste;
