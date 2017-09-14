@@ -364,9 +364,7 @@ angular
                     if (localizedModelValue === null) {
                         localizedModelValue = {};
                     }
-                    if (viewValue !== "") {
-                        localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
-                    }
+                    localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
                     return localizedModelValue;
                 });
 
