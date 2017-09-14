@@ -38,7 +38,6 @@ angular
                     },
                     peruste: async perusteprojektiTiedot => {
                         await perusteprojektiTiedot.projektinTiedotAlustettu();
-                        console.log("peruste haeuttu");
                         return perusteprojektiTiedot.getPeruste();
                     },
                     isOpas: async peruste => {
