@@ -214,7 +214,8 @@ angular
 
         this.kielet = {
             suomi: "fi",
-            ruotsi: "sv"
+            ruotsi: "sv",
+            englanti: "en"
         };
 
         this.kieli = "fi";
