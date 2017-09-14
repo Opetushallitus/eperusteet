@@ -42,11 +42,11 @@
                 </li>
                 <li>
                     <a ui-sref="root.perusteprojekti.tiedot({ perusteProjektiId: projekti.id })"
-                       ui-sref-active="headernavi-active" icon-role="info" kaanna="'projektin-tiedot'"></a>
+                       ui-sref-active="headernavi-active" icon-role="info" kaanna="$$kaannokset['projekti-peruste']"></a>
                 </li>
                 <li>
                     <a ui-sref="root.perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
-                       ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="$$kaannokset['projekti-peruste']"
+                       ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="$$kaannokset['perusteen-tiedot']"
                        oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'luku' }"></a>
                 </li>
                 <li>

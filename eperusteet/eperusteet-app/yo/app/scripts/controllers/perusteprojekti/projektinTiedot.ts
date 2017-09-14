@@ -192,6 +192,9 @@ angular
                 delete projekti.laajuusYksikko;
             } else {
                 projekti.id = null;
+                if (projekti.isReforminMukainen) {
+                    projekti.suoritustavat = ["reformi"]
+                }
             }
 
             if ($scope.pohja()) {

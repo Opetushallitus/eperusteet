@@ -39,6 +39,7 @@ angular
                 },
                 controller: (
                     $scope,
+                    $state,
                     $uibModal,
                     $stateParams,
                     $timeout,
@@ -88,7 +89,12 @@ angular
                     $scope.tallennaOpas = async opas => {
                         try {
                             const response = await oppaat.customPOST(opas);
-                        } catch (ex) {
+                            $state.go("root.perusteprojekti.suoritustapa.opassisalto", {
+                                perusteProjektiId: response.id,
+                                suoritustapa: 'opas'
+                            });
+                        }
+                        catch (ex) {
                             Notifikaatiot.varoitus(ex);
                         }
                     };
@@ -115,14 +121,6 @@ angular
         TekstikappaleOperations.setPeruste($scope.peruste);
         $scope.rajaus = "";
         $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
-        // $scope.$esitysurl = $state.href(
-        //   "root.selaus." +
-        //     (YleinenData.isEsiopetus($scope.peruste) ? "esiopetus" : "lisaopetus"),
-        //   {
-        //     perusteId: $scope.peruste.id,
-        //     suoritustapa: $stateParams.suoritustapa
-        //   }
-        // );
 
         $scope.$watch(
             "peruste.sisalto",

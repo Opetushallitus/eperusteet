@@ -2,19 +2,19 @@ div
   .uusi-projekti-content
     h1(ng-bind="'luo-uusi-opas' | kaanna")
     // p(kaanna="'tahdella-pakolliset'")
-    .action-buttons
-      button.floater.btn.btn-default(ng-click='muokkaa()', icon-role='edit', kaanna="'muokkaa'", oikeustarkastelu="{ target: 'perusteprojekti', permission: 'muokkaus' }")
     div.form-horizontal.projekti-form(ng-form="opasprojektiForm")
       .form-area
         .form-group-wrapper(ng-form='perustiedotForm', name='perustiedotForm')
           formfield(label='oppaan-nimi-label', model='opas', model-var='nimi', form='form', name='oppaanNimi', required, placeholder='anna-oppaan-nimi-placeholder', max='255')
             ohje(teksti='luonti-opas-nimi-ohje')
           .form-group
-            label.col-sm-3.control-label(ng-bind="'oppaan-oid-label' | kaanna")
+            label.col-sm-3.control-label
+              span(ng-bind="'oppaan-oid-label' | kaanna")
+              span *
             .col-sm-9
               .input-group
-                input.form-control(ng-show='$$ryhmaNimi', ng-model='$$ryhmaNimi', disabled)
-                input.form-control(ng-hide='$$ryhmaNimi', ng-model='opas.ryhmaOid', disabled)
+                input.form-control(ng-show='$$ryhmaNimi', ng-model='$$ryhmaNimi', disabled required)
+                input.form-control(ng-hide='$$ryhmaNimi', ng-model='opas.ryhmaOid', disabled required)
                 span.input-group-btn
                   button.btn.btn-default(ng-click='haeRyhma()', kaanna="'hae-ryhma'")
           // formfield(label='diaarinumero-label', model='opas', model-var='diaarinumero', form='perustiedotForm', name='diaarinumero', required, placeholder='anna-diaarinumero-placeholder', max='255', type='diaari')

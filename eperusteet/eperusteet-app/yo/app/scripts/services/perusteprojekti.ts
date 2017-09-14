@@ -55,7 +55,7 @@ angular
             perusteHaku: perusteHaku
         };
     })
-    .service("PerusteProjektiService", function($rootScope, $state, $stateParams, $q, $uibModal, YleinenData) {
+    .service("PerusteProjektiService", function($rootScope, $location, $state, $stateParams, $q, $timeout, $uibModal, YleinenData) {
         var pp = {};
         var suoritustapa = "";
 
@@ -115,33 +115,37 @@ angular
      * Luo oikea url perusteprojektille
      * @param peruste optional
      */
-        function urlFn(method, projekti, peruste) {
+        function urlFn(projekti, peruste) {
             let suoritustapa;
             let sisaltoTunniste = "sisalto";
+
             const info =
                 YleinenData.koulutustyyppiInfo[
                     (_.isObject(projekti) && projekti.koulutustyyppi) || (_.isObject(peruste) && peruste.koulutustyyppi)
                 ];
 
-            if (info) {
+            if (peruste && peruste.reforminMukainen) {
+                suoritustapa = "reformi";
+            }
+            else if (info) {
                 suoritustapa = info.oletusSuoritustapa;
                 sisaltoTunniste = info.sisaltoTunniste;
             }
 
             // Tilanteesta riippuen suoritustapatieto voi tulla projektin mukana (listausnäkymät)
             // Yritetään ensisijaisesti käyttää perusteen tietoa
-            if (peruste && _.isArray(peruste.suoritustavat)) {
+            if (peruste && !_.isEmpty(peruste.suoritustavat)) {
                 const suoritustapakoodit = _.map(peruste.suoritustavat, "suoritustapakoodi");
                 if (!_.includes(suoritustapakoodit, suoritustapa)) {
                     suoritustapa = _.first(suoritustapakoodit);
                 }
-            } else if (projekti && _.isArray(projekti.suoritustavat)) {
+            } else if (projekti && !_.isEmpty(projekti.suoritustavat)) {
                 if (!_.includes(projekti.suoritustavat, suoritustapa)) {
                     suoritustapa = _.first(projekti.suoritustavat);
                 }
             }
 
-            const result = $state[method]("root.perusteprojekti.suoritustapa." + sisaltoTunniste, {
+            const result = $state.href("root.perusteprojekti.suoritustapa." + sisaltoTunniste, {
                 lang: $stateParams.lang || "fi",
                 perusteProjektiId: projekti.id,
                 suoritustapa: suoritustapa
@@ -179,6 +183,13 @@ angular
             return deferred.promise;
         }
 
+        function goToProjektiState(projekti, peruste) {
+            const url = urlFn(projekti, peruste);
+            $timeout(() => {
+                $location.url(url.slice(1));
+            });
+        }
+
         return {
             mergeProjekti: mergeProjekti,
             save: save,
@@ -189,8 +200,8 @@ angular
             getSuoritustapa: getSuoritustapa,
             setSuoritustapa: setSuoritustapa,
             cleanSuoritustapa: cleanSuoritustapa,
-            getUrl: _.partial(urlFn, "href"),
-            goToProjektiState: _.partial(urlFn, "go"),
+            getUrl: urlFn,
+            goToProjektiState,
             isPdfEnabled: function(peruste) {
                 if (peruste.tyyppi === "opas") {
                     return true;
@@ -260,6 +271,7 @@ angular
 
         const PerusteContextMapping = {
             "projekti-peruste": { opas: "projekti-opas" },
+            "perusteen-tiedot": { opas: "oppaan-tiedot" },
             "projekti-projektiryhma": { opas: "projekti-opastyoryhma" },
             "perusteen-kielet": { opas: "oppaan-kielet" },
             "luo-pdf-dokumentti-perusteesta": { opas: "luo-pdf-dokumentti-oppaasta" }
@@ -378,6 +390,7 @@ angular
                     await getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider);
                     sisalto = ylTiedot.sisalto;
                     deferred.resolve(ylTiedot.sisalto);
+                    resolve(ylTiedot.sisalto);
                 }
             });
         };

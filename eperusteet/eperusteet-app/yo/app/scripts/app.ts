@@ -47,7 +47,7 @@ angular
     .constant("LUKITSIN_MAKSIMI", 20000)
     .constant("TEXT_HIERARCHY_MAX_DEPTH", 8)
     .constant("SHOW_VERSION_FOOTER", true)
-    .constant("DEBUG_UI_ROUTER", true)
+    .constant("DEBUG_UI_ROUTER", false)
     .config(($sceProvider, $urlRouterProvider, $translateProvider, $urlMatcherFactoryProvider, $locationProvider) => {
         const preferred = "fi";
 
@@ -354,7 +354,8 @@ angular
                 virheService.virhe({ state: toState.name });
             });
 
-            $rootScope.$on("$stateNotFound", function(event, toState) {
+            $rootScope.$on("$stateNotFound", function(event, toState, toParams, fromState, fromParams, error) {
+                $log.error(error);
                 virheService.virhe({ state: toState.to });
             });
 
