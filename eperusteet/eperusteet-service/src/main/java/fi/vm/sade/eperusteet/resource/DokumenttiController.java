@@ -113,7 +113,19 @@ public class DokumenttiController {
             @RequestParam(value = "suoritustapa", defaultValue = "naytto") final String suoritustapa
     ) {
         Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
-        Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli), s);
+        Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli), s, GeneratorVersion.UUSI);
+        return ResponseEntity.ok(dokumenttiId);
+    }
+
+    @RequestMapping(value = "/kvliite", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Long> getKVLiiteDokumenttiId(
+            @RequestParam final Long perusteId,
+            @RequestParam(defaultValue = "fi") final String kieli,
+            @RequestParam(value = "suoritustapa", defaultValue = "naytto") final String suoritustapa
+    ) {
+        Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
+        Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli), s, GeneratorVersion.KVLIITE);
         return ResponseEntity.ok(dokumenttiId);
     }
 

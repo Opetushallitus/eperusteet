@@ -45,7 +45,7 @@ angular
                     otsikko: {},
                     $accordionOpen: true
                 };
-                kohdealue.otsikko[YleinenData.kieli] = $scope.uudenKohdealueenNimi;
+                kohdealue.otsikko = $scope.uudenKohdealueenNimi;
 
                 $scope.arviointi.push(kohdealue);
 
@@ -226,7 +226,9 @@ angular
         };
 
         if ($scope.eiKohdealueita && (angular.isUndefined($scope.arviointi) || $scope.arviointi === null)) {
-            $scope.uudenKohdealueenNimi = "automaattinen";
+            $scope.uudenKohdealueenNimi = {
+                fi: "Nimetön"
+            };
             $scope.kohdealue.uusi();
         }
     })

@@ -47,7 +47,7 @@ public interface DokumenttiService {
     byte[] get(Long id);
 
     @PreAuthorize("permitAll()")
-    Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
+    Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion generatorVersion);
 
     @PreAuthorize("permitAll()")
     DokumenttiDto query(Long id);

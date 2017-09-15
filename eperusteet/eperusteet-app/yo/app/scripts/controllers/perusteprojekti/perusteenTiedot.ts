@@ -85,10 +85,6 @@ angular
             $scope.editablePeruste.kvliite = kvliite;
         })();
 
-        const AmmatillisetKoulutustyypit = ["koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"];
-        const isAmmatillinen = koulutustyyppi => _.includes(AmmatillisetKoulutustyypit, koulutustyyppi);
-        $scope.isAmmatillinen = isAmmatillinen($scope.peruste.koulutustyyppi);
-
         $scope.editEnabled = false;
         let editingCallbacks = {
             edit: function() {

@@ -394,23 +394,9 @@ angular
             TermistoService,
             Kieli,
             perusteprojektiBackLink,
-            isOpas
+            isOpas,
+            YleinenData
         ) => {
-            $scope.isOpas = isOpas; // Käytetään alinäkymissä
-            $scope.muokkausEnabled = false;
-            $scope.pdfEnabled = false;
-            $scope.backLink = perusteprojektiBackLink;
-            $scope.$$kaannokset = perusteprojektiTiedot.getPerusteprojektiKaannokset($scope.isOpas && "opas");
-
-            $scope.lisaaTiedote = () => {
-                TiedoteService.lisaaTiedote(null, $stateParams.perusteProjektiId);
-            };
-
-            $scope.luoPdf = () => {
-                PdfCreation.setPerusteId($scope.projekti._peruste);
-                PdfCreation.openModal($scope.isOpas, $scope.isAmmatillinen);
-            };
-
             function init() {
                 $scope.projekti = perusteprojektiTiedot.getProjekti();
                 $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -419,8 +405,23 @@ angular
                 TermistoService.setPeruste($scope.peruste);
                 ProxyService.set("perusteId", $scope.peruste.id);
             }
-
             init();
+
+            $scope.isOpas = isOpas; // Käytetään alinäkymissä
+            const isAmmatillinen = koulutustyyppi => _.includes(YleinenData.ammatillisetkoulutustyypit, koulutustyyppi);
+            $scope.isAmmatillinen = isAmmatillinen($scope.peruste.koulutustyyppi);
+            $scope.muokkausEnabled = false;
+            $scope.backLink = perusteprojektiBackLink;
+            $scope.$$kaannokset = perusteprojektiTiedot.getPerusteprojektiKaannokset($scope.isOpas && "opas");
+
+            $scope.lisaaTiedote = () => {
+                TiedoteService.lisaaTiedote(null, $stateParams.perusteProjektiId);
+            };
+
+            $scope.luoPdf = () => {
+                PdfCreation.setPeruste($scope.peruste);
+                PdfCreation.openModal($scope.isOpas, $scope.isAmmatillinen);
+            };
 
             // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
             if (_.size($scope.peruste.suoritustavat) > 1) {
