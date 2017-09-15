@@ -422,10 +422,7 @@ angular
 
             init();
 
-            $scope.$on("update:perusteprojekti", () => ($scope.projekti = perusteprojektiTiedot.getProjekti()));
-
             // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
-
             if (_.size($scope.peruste.suoritustavat) > 1) {
                 $scope.$watch(
                     () => PerusteProjektiService.getSuoritustapa(),
@@ -498,12 +495,13 @@ angular
                 );
             $scope.isNaviVisible = () => PerusteProjektiSivunavi.isVisible();
 
-            $scope.$on("update:perusteprojekti", () =>
+            $scope.$on("update:perusteprojekti", () => {
+                $scope.projekti = perusteprojektiTiedot.getProjekti();
                 perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(() => {
                     init();
                     PerusteProjektiSivunavi.refresh(true);
-                })
-            );
+                });
+            });
 
             $scope.lisaaTekstikappale = () => {
                 function lisaaSisalto(method, sisalto, cb) {

@@ -111,10 +111,7 @@ angular
             return hasSuoritustapa(peruste, getSuoritustapa()) ? getSuoritustapa() : projekti.suoritustapa;
         }
 
-        /**
-     * Luo oikea url perusteprojektille
-     * @param peruste optional
-     */
+        // Luo oikea url perusteprojektille
         function urlFn(projekti, peruste) {
             let suoritustapa;
             let sisaltoTunniste = "sisalto";
