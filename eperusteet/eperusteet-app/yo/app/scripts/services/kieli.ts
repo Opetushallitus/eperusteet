@@ -143,9 +143,6 @@ angular
                     inUse: _.includes(value, kieli)
                 };
             });
-            if (_.indexOf($scope.sisaltokielet, $scope.sisaltokieli) === -1) {
-                $scope.setSisaltokieli(_.first($scope.sisaltokielet));
-            }
         };
 
         $scope.$on("update:sisaltokielet", function(event, value) {
