@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektinPerusteenosaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
@@ -31,6 +32,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
@@ -41,6 +43,7 @@ import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -94,6 +97,12 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Autowired
     private ValmaTelmaSisaltoRepository valmaTelmaSisaltoRepository;
 
+    @Autowired
+    private PerusteprojektiPermissionRepository perusteprojektiPermissionRepository;
+
+    @Autowired
+    private PerusteprojektiRepository perusteprojektiRepository;
+
     @Override
     @Transactional(readOnly = true)
     public List<PerusteenOsaDto.Suppea> getAll() {
@@ -139,15 +148,20 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
     }
 
+    @Transactional(readOnly = false)
+    private void tarkistaVoikoMuokata(PerusteenOsa osa) {
+        if (osa != null && osa.getTila() == PerusteTila.POISTETTU) {
+            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+        }
+    }
+
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto.Laaja> T update(T perusteenOsaDto) {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
-        if (current != null && current.getTila() == PerusteTila.POISTETTU) {
-            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
-        }
+        tarkistaVoikoMuokata(current);
 
         perusteenOsaDto.setTila(current.getTila());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
@@ -609,6 +623,16 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             viite.setMuokattu(new Date());
             tutkinnonOsaViiteRepository.save(viite);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<PerusteprojektinPerusteenosaDto> getOwningProjektit(Long id) {
+        return perusteprojektiPermissionRepository.findAllByPerusteenosa(id).stream()
+                .map(pp -> pp.getPerusteProjektiId())
+                .map(perusteProjektiId -> perusteprojektiRepository.findOne(perusteProjektiId))
+                .map(pp -> mapper.map(pp, PerusteprojektinPerusteenosaDto.class))
+                .collect(Collectors.toSet());
     }
 
 }

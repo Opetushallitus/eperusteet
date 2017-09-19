@@ -1,0 +1,30 @@
+<!-- modals/varmistusdialogi.html -->
+<div class="modal-header">
+    <h3>{{"perusteenosa-kaytossa-muissa-osissa" | kaanna}}</h3>
+</div>
+<div class="modal-body">
+    <div class="pull-right">
+        <input ng-model="comment.text" ng-if="comment.enabled" placeholder="{{comment.placeholder | kaanna}}">
+        <button class="btn" ng-click="peruuta()">{{'peruuta' | kaanna}}</button>
+        <button class="btn btn-primary" ng-click="ok()">{{'ok' | kaanna}}</button>
+    </div>
+    <p>{{"perusteenosa-kaytossa-muissa-osissa-ohje" | kaanna}}</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th ng-bind="'nimi' | kaanna"></th>
+                <th ng-bind="'projektin-diaarinumero' | kaanna"></th>
+                <th ng-bind="'maarayksen-diaarinumero' | kaanna"></th>
+                <th ng-bind="'luotu' | kaanna"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="projekti in projektit">
+                <td ng-bind="projekti.nimi"></td>
+                <td ng-bind="projekti.diaarinumero"></td>
+                <td ng-bind="projekti.perusteendiaarinumero || '-'"></td>
+                <td ng-bind="projekti.luotu | aikaleima:'date'"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

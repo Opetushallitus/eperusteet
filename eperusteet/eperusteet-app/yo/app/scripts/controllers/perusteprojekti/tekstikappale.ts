@@ -186,6 +186,7 @@ angular
         TekstikappaleOperations,
         virheService,
         ProjektinMurupolkuService,
+        MuutProjektitService,
         $state
     ) {
         $scope.tekstikappale = {};
@@ -205,10 +206,17 @@ angular
         };
 
         $scope.kopioiMuokattavaksi = function() {
-            TekstikappaleOperations.clone($scope.viitteet[$scope.tekstikappale.id].viite);
+            Varmistusdialogi.dialogi({
+                otsikko: "kopioidaanko-tekstikappale",
+                primaryBtn: "kopioi",
+                successCb: () => {
+                    TekstikappaleOperations.clone($scope.viitteet[$scope.tekstikappale.id].viite);
+                }
+            })();
         };
 
         $scope.muokkaa = async () => {
+            await MuutProjektitService.varmistusdialogi($scope.tekstikappale.id);
             Editointikontrollit.startEditing(await lukitse());
         };
 
@@ -322,7 +330,7 @@ angular
             })();
         };
 
-        function successCb(re) {
+        async function successCb(re) {
             $scope.tekstikappale = re;
             setupTekstikappale($scope.tekstikappale);
             tekstikappaleDefer.resolve($scope.tekstikappale);
@@ -330,6 +338,7 @@ angular
                 $scope.isNew = true;
                 $scope.muokkaa();
             }
+            $scope.kaytossaMonessaProjektissa = _.size(await MuutProjektitService.projektitJoissaKaytossa(re.id)) > 1;
         }
 
         function errorCb() {

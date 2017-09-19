@@ -19,6 +19,7 @@ import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektinPerusteenosaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
@@ -46,6 +47,7 @@ import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import io.swagger.annotations.Api;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -87,6 +89,13 @@ public class PerusteenOsaController {
                 return service.get(id);
             }
         });
+    }
+
+    @RequestMapping(value = "/{id}/projektit", method = GET)
+    @ResponseBody
+    public ResponseEntity<Set<PerusteprojektinPerusteenosaDto>> getOwningProjektit(@PathVariable("id") final Long id) {
+        Set<PerusteprojektinPerusteenosaDto> owningProjektit = service.getOwningProjektit(id);
+        return new ResponseEntity<>(owningProjektit, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/viite/{viiteId}", method = GET)
