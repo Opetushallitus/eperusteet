@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.permissions.PerusteenosanProjekti;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import java.util.List;
+import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -38,7 +39,7 @@ public interface PerusteprojektiPermissionRepository extends JpaRepository<Perus
     List<Pair<String, ProjektiTila>> findById(Long perusteProjektiId);
 
     @Query("SELECT DISTINCT pp FROM PerusteenosanProjekti pp WHERE pp.id = ?1")
-    PerusteenosanProjekti findByPerusteenosa(Long perusteenOsaId);
+    Set<PerusteenosanProjekti> findAllByPerusteenosa(Long perusteenOsaId);
 
     /**
      * Etsii perusteprojektit joihin annettu perusteen osa kuuluu ja palauttaa niiden tilan.

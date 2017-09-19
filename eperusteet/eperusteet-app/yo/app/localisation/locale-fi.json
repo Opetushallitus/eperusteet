@@ -226,6 +226,7 @@
     "tilanvaihdos-julkaistu-laadinta": "Kuvaus tilasiirtymälle julkaistu-laadinta.",
 
 
+    "projektin-diaarinumero": "Projektin diaarinumero",
     "suoritustavalle-ei-ole-viela-sisaltoa": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
     "peruste-ei-sisaltoa": "Perusteeseen ei ole vielä luotu sisältöä.",
     "rajauksellasi-ei-löytynyt-vaihtoehtoa": "Rajaus ei tuottanut tuloksia",
@@ -302,7 +303,10 @@
     "tuo-koulutuksenosa": "Tuo koulutuksenosa",
 
     "otsikko": "Otsikko",
+    "kopioi": "Kopioi",
     "kopioi-muokattavaksi": "Kopioi muokattavaksi",
+    "kopioidaanko-tekstikappale": "Haluatko varmasti kopioida sisällön?",
+    "kopioidaanko-tutkinnonosa": "Haluatko varmasti kopioida sisällön?",
     "myos-luonnokset": "Myös luonnokset",
     "tutkinnonosa-kopioitu-onnistuneesti": "Tutkinnon osa kopioitu onnistuneesti",
     "tekstikappale-kopioitu-onnistuneesti": "Tekstikappale kopioitu onnistuneesti",
@@ -1147,7 +1151,10 @@
     "kurssi-osa-arviointi": "Arviointi",
     "ohje-tutkinnon-osan-tuonti": "Vain julkaistuista ja esikatselussa olevista perusteista voi tuoda tutkinnon osia.",
 
+    "perusteen-osa-kaytossa-myos-seuraavissa": "Perusteen osa käytössä myös seuraavissa projekteissa",
     "projekti-opas": "Projektin tiedot",
+    "perusteenosa-kaytossa-muissa-osissa": "Perusteen osa on käytössä myös muissa projekteissa",
+    "perusteenosa-kaytossa-muissa-osissa-ohje": "Muutokset tulevat voimaan useaan perusteeseen. Voit halutessasi kopioida osan \"Kopioi muokattavaksi\"-painikkeella.",
     "oppaan-tiedot": "Oppaan tiedot",
     "projekti-opastyoryhma": "Opastyöryhmä",
     "oppaan-kielet": "Oppaan kielet",

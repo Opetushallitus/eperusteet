@@ -126,6 +126,7 @@
         "./app/scripts/directives/rajaus.ts",
         "./app/scripts/directives/formfield.ts",
         "./app/scripts/directives/muokkaus/vaihe.ts",
+        "./app/scripts/directives/perustetoisetprojektit.ts",
         "./app/scripts/filters/customfilters.ts",
         "./app/scripts/filters/kaanna.ts",
         "./app/scripts/filters/tutkintokoodi.ts",

@@ -18,7 +18,7 @@ angular
     .module("eperusteApp")
     .service("Varmistusdialogi", function($uibModal) {
         function dialogi(options) {
-            return function(success, failure) {
+            return async function(success, failure) {
                 var resolve = {
                     opts: function() {
                         return {
@@ -45,7 +45,7 @@ angular
                 var successCb = success || options.successCb || angular.noop;
                 var failureCb = failure || options.failureCb || angular.noop;
 
-                $uibModal
+                return $uibModal
                     .open({
                         templateUrl: "views/modals/varmistusdialogi.html",
                         controller: "VarmistusDialogiCtrl",

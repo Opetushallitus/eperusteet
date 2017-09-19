@@ -126,7 +126,8 @@ angular
             virheService,
             ProjektinMurupolkuService,
             localStorageService,
-            TutkinnonOsaLeikelautaService
+            TutkinnonOsaLeikelautaService,
+            MuutProjektitService
         ) => {
             Utils.scrollTo("#ylasivuankkuri");
 
@@ -163,9 +164,10 @@ angular
             let tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
 
-            function successCb(re) {
+            async function successCb(re) {
                 setupTutkinnonOsaViite(re);
                 tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
+                $scope.kaytossaMonessaProjektissa = _.size(await MuutProjektitService.projektitJoissaKaytossa($scope.editableTutkinnonOsaViite.tutkinnonOsa.id)) > 1;
             }
 
             function errorCb() {
@@ -343,26 +345,32 @@ angular
                 $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo = null;
             };
 
-            $scope.kopioiMuokattavaksi = () => {
-                PerusteenOsaViitteet.kloonaaTutkinnonOsa(
-                    {
-                        viiteId: $scope.tutkinnonOsaViite.id
-                    },
-                    tk => {
-                        TutkinnonOsaEditMode.setMode(true);
-                        Notifikaatiot.onnistui("tutkinnonosa-kopioitu-onnistuneesti");
-                        $state.go(
-                            "root.perusteprojekti.suoritustapa.tutkinnonosa",
+            $scope.kopioiMuokattavaksi = async () => {
+                Varmistusdialogi.dialogi({
+                    otsikko: "kopioidaanko-tekstikappale",
+                    primaryBtn: "kopioi",
+                    successCb: () => {
+                        PerusteenOsaViitteet.kloonaaTutkinnonOsa(
                             {
-                                perusteenOsaViiteId: tk.id,
-                                versio: ""
+                                viiteId: $scope.tutkinnonOsaViite.id
                             },
-                            {
-                                reload: true
+                            tk => {
+                                TutkinnonOsaEditMode.setMode(true);
+                                Notifikaatiot.onnistui("tutkinnonosa-kopioitu-onnistuneesti");
+                                $state.go(
+                                    "root.perusteprojekti.suoritustapa.tutkinnonosa",
+                                    {
+                                        perusteenOsaViiteId: tk.id,
+                                        versio: ""
+                                    },
+                                    {
+                                        reload: true
+                                    }
+                                );
                             }
                         );
                     }
-                );
+                })();
             };
 
             function refreshPromise() {
@@ -538,7 +546,8 @@ angular
                 }
             };
 
-            $scope.muokkaa = () => {
+            $scope.muokkaa = async () => {
+                await MuutProjektitService.varmistusdialogi($scope.editableTutkinnonOsaViite.tutkinnonOsa.id);
                 Editointikontrollit.registerCallback(normalCallbacks);
                 lukitse(() => {
                     fetch(() => {
