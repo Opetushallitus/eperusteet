@@ -15,14 +15,13 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.*;
-
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -62,5 +61,18 @@ public class ValmaTelmaSisalto implements Serializable {
     @Setter
     @OrderColumn(name = "jarjestys")
     private List<OsaamisenTavoite> osaamistavoite = new ArrayList<>();
+
+    public ValmaTelmaSisalto() {
+    }
+
+    public ValmaTelmaSisalto(ValmaTelmaSisalto other) {
+        this.osaamisenarviointiTekstina = other.getOsaamisenarviointiTekstina();
+        this.osaamisenarviointi = new OsaamisenArviointi(other.getOsaamisenarviointi());
+        if (other.getOsaamistavoite() != null) {
+            this.osaamistavoite = other.getOsaamistavoite().stream()
+                    .map(ot -> new OsaamisenTavoite(ot))
+                    .collect(Collectors.toList());
+        }
+    }
 
 }
