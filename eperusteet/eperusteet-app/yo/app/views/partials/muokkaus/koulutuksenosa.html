@@ -130,6 +130,12 @@
         <div>
           <label class="header" kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')"></label>:<span> {{ tutkinnonOsaViite.tutkinnonOsa.koodiArvo || '-' }}</span>
         </div>
+        <div>
+          <label class="header" kaanna="'tutkinnonosa-laajuus'"></label>:
+          <span> {{ tutkinnonOsaViite.laajuus || '0' }} </span>
+          <span ng-show="tutkinnonOsaViite.laajuusMaksimi"> - {{ tutkinnonOsaViite.laajuusMaksimi }}</span>
+          <span ng-if="tutkinnonOsaViite.laajuus" kaanna="projekti.laajuusYksikko || 'OSAAMISPISTE'"></span>
+        </div>
       </div>
 
       <div class="non-collapsibles" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2' || isVaTe">
