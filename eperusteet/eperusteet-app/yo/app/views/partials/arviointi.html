@@ -14,7 +14,7 @@
         <div class="panel-body">
             <uib-accordion close-others="false">
                 <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
-                    <div uib-accordion-group class="arvioinnin-kohdealue" template-url="views/partials/accordiongroup.html" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi" is-open="kohdealue.$accordionOpen">
+                    <div uib-accordion-group class="arvioinnin-kohdealue" template-url="views/partials/accordiongroup.html" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi" is-open="kohdealue.$$accordionOpen">
                         <uib-accordion-heading>
                             <h3 class="panel-title" ng-hide="eiKohdealueita">
                                 <arvioinnin-tekstikentta sisalto="kohdealue"
@@ -28,7 +28,7 @@
 
                         <uib-accordion close-others="false">
                             <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.arvioinninKohteet">
-                                <div class="arvioinnin-kohde" uib-accordion-group ng-class="{'kohde-edit': arvioinninkohde === originalKohde}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet" is-open="arvioinninkohde.$accordionOpen" is-disabled="editableKohde">
+                                <div class="arvioinnin-kohde" uib-accordion-group ng-class="{'kohde-edit': arvioinninkohde === originalKohde}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet" is-open="arvioinninkohde.$$accordionOpen" is-disabled="editableKohde">
 
                                     <uib-accordion-heading>
                                         <span ng-show="arvioinninkohde !== originalKohde">
@@ -122,11 +122,11 @@
                         <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled">
                             <div class="panel-body">
                                 <div ng-show="kohde.isAdding(kohdealue)">
-                                    <input focus-me="kohdealue.$newkohde.showInputArea" class="form-control" type="text" ng-model="kohdealue.$newkohde.nimi" placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}" />
+                                    <input focus-me="kohdealue.$$newkohde.showInputArea" class="form-control" type="text" ng-model="kohdealue.$$newkohde.nimi" placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}" />
                                     <br/>
                                     <h4 kaanna>arviointi-asteikon-valinta</h4>
                                     <label ng-repeat="arviointiasteikko in arviointiasteikot">
-                                        <input type="radio" ng-model="kohdealue.$newkohde.arviointiasteikko" ng-value="arviointiasteikko" name="asteikonvalinta" ng-change="arviointiasteikkoChanged(kohdealue)">
+                                        <input type="radio" ng-model="kohdealue.$$newkohde.arviointiasteikko" ng-value="arviointiasteikko" name="asteikonvalinta" ng-change="arviointiasteikkoChanged(kohdealue)">
                                         <span ng-repeat="osaamistaso in arviointiasteikko.osaamistasot">
                                             {{osaamistaso.otsikko | kaanna}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? '&nbsp;/&nbsp;': ''}}
                                         </span>
@@ -134,7 +134,7 @@
                                     <div class="muokkaus-napit">
                                         <button class="btn btn-default btn-xs" ng-click="kohde.cancel(kohdealue)" kaanna>peru
                                         </button>
-                                        <button class="btn btn-primary btn-xs" ng-disabled="!kohdealue.$newkohde.arviointiasteikko" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" ng-click="kohde.uusi(kohdealue)" kaanna>lisaa
+                                        <button class="btn btn-primary btn-xs" ng-disabled="!kohdealue.$$newkohde.arviointiasteikko" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" ng-click="kohde.uusi(kohdealue)" kaanna>lisaa
                                         </button>
                                     </div>
                                 </div>

@@ -127,7 +127,7 @@ angular
         $scope.mapModel = function(update) {
             _.each($scope.model.tavoitteet, function(tavoite) {
                 if (!update) {
-                    tavoite.$accordionOpen = true;
+                    tavoite.$$accordionOpen = true;
                 }
 
                 var kohdealueId = !_.isEmpty(tavoite.kohdealueet) ? _.first(tavoite.kohdealueet) : null;
@@ -162,13 +162,13 @@ angular
         function setAccordion(mode) {
             var obj = $scope.model.tavoitteet;
             _.each(obj, function(tavoite) {
-                tavoite.$accordionOpen = mode;
+                tavoite.$$accordionOpen = mode;
             });
         }
 
         function accordionState() {
             var obj = _.first($scope.model.tavoitteet);
-            return obj && obj.$accordionOpen;
+            return obj && obj.$$accordionOpen;
         }
 
         $scope.toggleAll = function() {
@@ -194,7 +194,7 @@ angular
         $scope.tavoiteFn = {
             edit: function(tavoite) {
                 tavoite.$editing = true;
-                tavoite.$accordionOpen = true;
+                tavoite.$$accordionOpen = true;
                 $scope.currentEditable = tavoite;
                 cloner.clone(tavoite);
             },
@@ -233,13 +233,13 @@ angular
                 $scope.currentEditable = null;
             },
             add: function() {
-                var newTavoite = { $editing: true, tavoite: {}, $new: true, $accordionOpen: true };
+                var newTavoite = { $editing: true, tavoite: {}, $new: true, $$accordionOpen: true };
                 $scope.currentEditable = newTavoite;
                 $scope.model.tavoitteet.push(newTavoite);
                 $scope.mapModel(true);
             },
             toggle: function(tavoite) {
-                tavoite.$accordionOpen = !tavoite.$accordionOpen;
+                tavoite.$$accordionOpen = !tavoite.$$accordionOpen;
             }
         };
     });
