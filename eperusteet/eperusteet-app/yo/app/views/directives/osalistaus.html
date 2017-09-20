@@ -46,11 +46,10 @@
                     {{ v.jarjestys || '-' }}
                 </td>
                 <td>
-                    <a ng-href="{{urlGenerator({value: v})}}">{{ v.nimi || vateConverter('uusi-tutkinnonosa') | kaanna
-                        }}</a>
+                    <a ng-href="{{urlGenerator({value: v})}}">{{ v.nimi || vateConverter('uusi-tutkinnonosa') | kaanna }}</a>
                 </td>
                 <td ng-if="hasLaajuus">
-                    <span ng-if="v.laajuus">
+                    <span ng-if="isNumber(v.laajuus)">
                         {{ v.laajuus }}
                         <span ng-show="v.laajuusMaksimi && v.laajuus < v.laajuusMaksimi"> - {{ v.laajuusMaksimi }}</span>
                         {{ unit || '' | kaanna }}
