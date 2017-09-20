@@ -20,10 +20,11 @@ angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, 
         return (
             _(rakenneOsat || [])
                 .map(function(osa) {
+                    console.log(osa.$laajuus, osa.$laajuusMaksimi);
                     return osa
                         ? osa.$vaadittuLaajuus && osa.$laajuus > osa.$vaadittuLaajuus
                           ? osa.$vaadittuLaajuus
-                          : osa.$laajuus
+                          : Math.max(osa.$laajuus || 0, osa.$laajuusMaksimi || 0)
                         : 0;
                 })
                 .reduce(function(sum, newval) {
@@ -182,6 +183,7 @@ angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, 
         // Osa
         if (rakenne._tutkinnonOsaViite) {
             rakenne.$laajuus = viitteet[rakenne._tutkinnonOsaViite].laajuus;
+            rakenne.$laajuusMaksimi = viitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi;
         } else if (rakenne.osat) {
             // Ryhmä
             if (rakenne.muodostumisSaanto) {
