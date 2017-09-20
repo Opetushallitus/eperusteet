@@ -24,7 +24,7 @@
                             <div class="pull-left sorter-handle" ui-tree-handle>
                                 <div ng-show="editMode && !currentEditable" class="icon" icon-role="drag"></div>
                             </div>
-                            <div class="tavoite-sisalto" ng-class="{collapsed: !tavoite.$accordionOpen}">
+                            <div class="tavoite-sisalto" ng-class="{collapsed: !tavoite.$$accordionOpen}">
                                 <h4 ng-show="tavoite.$editing" kaanna="nimi"></h4>
                                 <h4 class="tavoite-otsikko action-link" ng-show="!tavoite.$editing"
                                     ng-click="tavoiteFn.toggle(tavoite)"
@@ -51,10 +51,10 @@
                                     </div>
                                 </div>
 
-                                <div class="tavoite-collapser action-link" ng-show="!tavoite.$accordionOpen"
-                                     ng-click="tavoite.$accordionOpen = true">…
+                                <div class="tavoite-collapser action-link" ng-show="!tavoite.$$accordionOpen"
+                                     ng-click="tavoite.$$accordionOpen = true">…
                                 </div>
-                                <div class="collapsible" uib-collapse="!tavoite.$accordionOpen">
+                                <div class="collapsible" uib-collapse="!tavoite.$$accordionOpen">
                                     <div ng-if="tavoite.$editing || tavoite.laajattavoitteet">
                                         <h4 kaanna="laaja-alainen-osaaminen"></h4>
                                         <div tag-cloud="tavoite.$osaaminen" openable="true" edit-mode="tavoite.$editing"

@@ -135,16 +135,16 @@ angular
                 function setAccordion(mode) {
                     var obj = scope.valmaarviointi;
                     //_.each(obj, function (kohdealue) {
-                    //  kohdealue.$accordionOpen = mode;
+                    //  kohdealue.$$accordionOpen = mode;
                     //  _.each(kohdealue.vaatimuksenKohteet, function (kohde) {
-                    //    kohde.$accordionOpen = mode;
+                    //    kohde.$$accordionOpen = mode;
                     //  });
                     //});
                 }
 
                 function accordionState() {
                     var obj = _.first(scope.valmaarviointi);
-                    return obj && obj.$accordionOpen;
+                    return obj && obj.$$accordionOpen;
                 }
 
                 scope.toggleAll = function() {
