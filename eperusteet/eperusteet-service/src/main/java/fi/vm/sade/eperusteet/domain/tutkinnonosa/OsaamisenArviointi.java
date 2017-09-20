@@ -17,16 +17,16 @@ package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -66,5 +66,14 @@ public class OsaamisenArviointi implements Serializable {
     @Getter
     @Setter
     private List<TekstiPalanen> tavoitteet = new ArrayList<>();
+
+    public OsaamisenArviointi() {
+    }
+
+    public OsaamisenArviointi(OsaamisenArviointi other) {
+        this.kohde = other.getKohde();
+        this.selite = other.getSelite();
+        this.tavoitteet = other.getTavoitteet().stream().collect(Collectors.toList());
+    }
 
 }
