@@ -397,6 +397,16 @@ angular
             isOpas,
             YleinenData
         ) => {
+            function init() {
+                $scope.projekti = perusteprojektiTiedot.getProjekti();
+                $scope.peruste = perusteprojektiTiedot.getPeruste();
+                Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
+                $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
+                TermistoService.setPeruste($scope.peruste);
+                ProxyService.set("perusteId", $scope.peruste.id);
+            }
+            init();
+            
             $scope.isOpas = isOpas; // Käytetään alinäkymissä
             const isAmmatillinen = koulutustyyppi => _.includes(YleinenData.ammatillisetkoulutustyypit, koulutustyyppi);
             $scope.isAmmatillinen = isAmmatillinen($scope.peruste.koulutustyyppi);
@@ -412,16 +422,6 @@ angular
                 PdfCreation.setPeruste($scope.peruste);
                 PdfCreation.openModal($scope.isOpas, $scope.isAmmatillinen);
             };
-
-            function init() {
-                $scope.projekti = perusteprojektiTiedot.getProjekti();
-                $scope.peruste = perusteprojektiTiedot.getPeruste();
-                Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
-                $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
-                TermistoService.setPeruste($scope.peruste);
-                ProxyService.set("perusteId", $scope.peruste.id);
-            }
-            init();
 
             // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
             if (_.size($scope.peruste.suoritustavat) > 1) {
