@@ -766,12 +766,14 @@ angular
             _.each(oppiaineet, function(oppiaine) {
                 oppiaine.dtype = "oppiaine";
                 oppiaine.lapset = [];
+                oppiaine.$$href = $scope.nodeHref(oppiaine);
             });
             _.each(kurssit, function(kurssi) {
                 kurssi.$$hide = false;
                 kurssi.$$collapsed = $scope.treehelpers.defaultCollapsed;
                 kurssi.dtype = "kurssi";
                 kurssi.lapset = [];
+                kurssi.$$href = $scope.nodeHref(kurssi);
             });
             $scope.treeRoot.lapset = _.union($scope.treeRoot.oppimaarat, $scope.treeRoot.kurssit);
             traverse($scope.treeRoot, _.property("lapset"), function(node) {
@@ -834,8 +836,7 @@ angular
             var name =
                 "<span ng-bind=\"(node.nimi | kaanna) + ((node.lokalisoituKoodi | kaanna) ? ' ('+(node.lokalisoituKoodi | kaanna)+')' : '')\" title=\"{{node.nimi | kaanna}} {{(node.lokalisoituKoodi | kaanna) ? '('+(node.lokalisoituKoodi | kaanna)+')' : ''}}\"></span>";
             if (!$scope.treehelpers.editMode) {
-                // name = '<a ng-href="{{createHref(node)}}">'+name+'</a>';
-                name = "<a>" + name + "</a>";
+                name = '<a ng-href="{{node.$$href}}">'+name+'</a>';
             }
             return name;
         }
@@ -892,6 +893,7 @@ angular
                                 ? '   <span class="remove" icon-role="remove" ng-click="removeKurssiFromOppiaine(node)"></span>'
                                 : "",
                             name = kurssiName();
+                        console.log(n);
                         return templateAround(
                             '<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">' +
                                 handle +
@@ -906,8 +908,7 @@ angular
                     } else {
                         var name = "{{ node.nimi | kaanna }}";
                         if (!$scope.treehelpers.editMode) {
-                            // name = '<a ng-href="{{createHref(node)}}" title="'+name+'">'+name+'</a>';
-                            name = '<a title="' + name + '">' + name + "</a>";
+                            name = '<a ng-href="{{node.$$href}}" title="' + name + '">' + name + "</a>";
                         }
                         return templateAround(
                             '<div class="puu-node oppiaine-node">' +
@@ -929,9 +930,6 @@ angular
                     scope.removeKurssiFromOppiaine = function(node) {
                         return removeKurssiFromOppiaine(node);
                     };
-                    // scope.createHref = function(node) {
-                    //   return $scope.nodeHref(node);
-                    // };
                     scope.goto = function(node) {
                         $scope.gotoNode(node);
                     };
@@ -962,6 +960,7 @@ angular
                             );
                             _.each($scope.liittamattomatKurssit, function(kurssi) {
                                 kurssi.dtype = "kurssi";
+                                kurssi.$$href = $scope.nodeHref(kurssi);
                             });
                             resolveRoot({
                                 lapset: $scope.liittamattomatKurssit
@@ -988,9 +987,6 @@ angular
                     return !$scope.treehelpers.editMode;
                 },
                 extension: function(node, scope) {
-                    scope.createHref = function(node) {
-                        return $scope.nodeHref(node);
-                    };
                     scope.goto = function(node) {
                         $scope.gotoNode(node);
                     };
@@ -1018,6 +1014,7 @@ angular
                             );
                             _.each($scope.liitetytKurssit, function(kurssi) {
                                 kurssi.dtype = "kurssi";
+                                kurssi.$$href = $scope.nodeHref(kurssi);
                             });
                             resolveRoot({
                                 lapset: $scope.liitetytKurssit
@@ -1046,9 +1043,6 @@ angular
                 extension: function(node, scope) {
                     scope.goto = function(node) {
                         $scope.gotoNode(node);
-                    };
-                    scope.createHref = function(node) {
-                        return $scope.nodeHref(node);
                     };
                 }
             });
