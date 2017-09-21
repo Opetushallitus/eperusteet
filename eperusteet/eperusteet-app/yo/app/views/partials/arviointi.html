@@ -149,7 +149,7 @@
             <!-- Kohdealueen lisäys -->
             <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled && !eiKohdealueita">
                 <div class="panel-body">
-                    <input class="form-control" ng-show="$parent.showNewKohdealueInput" type="text" ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.kohdealue.uusi()" on-esc="$parent.cancelNewKohdealue()" focus-me="$parent.showNewKohdealueInput" placeholder="{{'arviointi-uusi-kohdealue-placeholder' | kaanna}}" />
+                    <input class="form-control" ng-show="$parent.showNewKohdealueInput" type="text" slocalized ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.kohdealue.uusi()" on-esc="$parent.cancelNewKohdealue()" focus-me="$parent.showNewKohdealueInput" placeholder="{{'arviointi-uusi-kohdealue-placeholder' | kaanna}}" />
                     <div class="muokkaus-napit" ng-show="$parent.showNewKohdealueInput">
                         <button class="btn btn-default btn-xs" ng-click="$parent.kohdealue.cancel()" kaanna="'peru'"></button>
                         <button class="btn btn-primary btn-xs" ng-disabled="!$parent.uudenKohdealueenNimi" ng-click="$parent.kohdealue.uusi()" kaanna="'lisaa'"></button>
