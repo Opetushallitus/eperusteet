@@ -49,9 +49,10 @@ mixin kvliite()
       .panel-heading
         h4
           span(ng-bind="'tutkinnon-muodostuminen' | kaanna")
-          |  (
-          span(ng-bind='st | kaanna')
-          | )
+          span(ng-if="useampiSuoritustapa")
+            |  (
+            span(ng-bind='st | kaanna')
+            | )
       .panel-body
         p(ng-bind-html='sisalto | kaanna | unsafe ')
     +kvliiteKentta('suorittaneen-osaaminen', 'suorittaneenOsaaminen', 'true')
@@ -99,7 +100,7 @@ mixin kvliite()
   .col-md-12
     .action-buttons
       button.floater.btn.btn-default(ng-if='voiMuokata()', ng-hide='editEnabled', ng-click='muokkaa()', icon-role='edit', kaanna="'muokkaa'", oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'muokkaus' }")
-    h1(kaanna="$$kaannokset['projekti-peruste']") 
+    h1(kaanna="$$kaannokset['projekti-peruste']")
     .clearfix
     form.form-horizontal(name='perusteForm', role='form', novalidate='', ng-submit='void(0)')
       div(ng-form='projektinPerusteForm')
