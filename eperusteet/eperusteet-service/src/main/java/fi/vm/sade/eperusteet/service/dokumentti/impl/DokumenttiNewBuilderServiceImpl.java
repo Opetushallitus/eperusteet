@@ -896,7 +896,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     String otsikkoAvain = tavoite.isPakollinen() ? "docgen.tutke2.pakolliset_osaamistavoitteet.title"
                             : "docgen.tutke2.valinnaiset_osaamistavoitteet.title";
                     String otsikko = messages.translate(otsikkoAvain, docBase.getKieli())
-                            + getLaajuusSuffiksi(tavoite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli());
+                            + getLaajuusSuffiksi(tavoite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli());
                     addTeksti(docBase, otsikko, "h6");
 
                     String tavoitteet = getTextString(docBase, tavoite.getTavoitteet());
@@ -1190,7 +1190,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         StringBuilder otsikkoBuilder = new StringBuilder();
         otsikkoBuilder.append(getTextString(docBase, osa.getNimi()));
 
-        otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, docBase.getKieli()));
+
+        otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli()));
 
         String koodi = osa.getKoodiArvo();
         if (koodi != null) {
