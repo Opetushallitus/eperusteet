@@ -393,7 +393,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 td.appendChild(newItalicElement(docBase.getDocument(), kuvaus));
             }
 
-            if (rakenneOsa.getPakollinen()) {
+            if (rakenneOsa.getPakollinen() != null && rakenneOsa.getPakollinen()) {
                 String glyph = messages.translate("docgen.rakenneosa.pakollinen.glyph", docBase.getKieli());
                 nimiBuilder.append(", ");
                 p.appendChild(docBase.getDocument().createTextNode(", "));
