@@ -83,7 +83,7 @@ angular
             $scope.kvliitePeriytynyt = !kvliite || kvliite.periytynyt;
             $scope.peruste.kvliite = kvliite;
             $scope.editablePeruste.kvliite = kvliite;
-            $scope.useampiSuoritustapa = _.keys(kvliite.muodostumisenKuvaus).length > 1;
+            $scope.useampiSuoritustapa = _.size(kvliite.muodostumisenKuvaus) > 1;
 
         })();
 
