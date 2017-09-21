@@ -359,11 +359,15 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             RakenneOsa rakenneOsa = (RakenneOsa) osa;
 
             BigDecimal laajuus = rakenneOsa.getTutkinnonOsaViite().getLaajuus();
+            BigDecimal laajuusMaksimi = rakenneOsa.getTutkinnonOsaViite().getLaajuusMaksimi();
             LaajuusYksikko laajuusYksikko = rakenneOsa.getTutkinnonOsaViite().getSuoritustapa().getLaajuusYksikko();
             String laajuusStr = "";
             String yks = "";
             if (laajuus != null && laajuus.compareTo(BigDecimal.ZERO) > 0) {
                 laajuusStr = laajuus.stripTrailingZeros().toPlainString();
+                if (laajuusMaksimi != null && laajuusMaksimi.compareTo(BigDecimal.ZERO) > 0) {
+                    laajuusStr += "-" + laajuusMaksimi.stripTrailingZeros().toPlainString();
+                }
                 if (laajuusYksikko == LaajuusYksikko.OSAAMISPISTE) {
                     yks = messages.translate("docgen.laajuus.osp", docBase.getKieli());
                 } else {
@@ -1185,13 +1189,42 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         return laajuusBuilder.toString();
     }
 
+    private String getLaajuusSuffiksi(final BigDecimal laajuus, final BigDecimal laajuusMaksimi, final LaajuusYksikko yksikko, final Kieli kieli) {
+        StringBuilder laajuusBuilder = new StringBuilder("");
+        if (laajuus != null) {
+            laajuusBuilder.append(", ");
+            laajuusBuilder.append(laajuus.stripTrailingZeros().toPlainString());
+            laajuusBuilder.append("-");
+            laajuusBuilder.append(laajuusMaksimi.stripTrailingZeros().toPlainString());
+            laajuusBuilder.append(" ");
+            String yksikkoAvain;
+            switch (yksikko) {
+                case OPINTOVIIKKO:
+                    yksikkoAvain = "docgen.laajuus.ov";
+                    break;
+                case OSAAMISPISTE:
+                    yksikkoAvain = "docgen.laajuus.osp";
+                    break;
+                default:
+                    throw new NotImplementedException("Tuntematon laajuusyksikko: " + yksikko);
+            }
+            laajuusBuilder.append(messages.translate(yksikkoAvain, kieli));
+        }
+        return laajuusBuilder.toString();
+    }
+
     private String getOtsikko(DokumenttiPeruste docBase, TutkinnonOsaViite viite) {
         TutkinnonOsa osa = viite.getTutkinnonOsa();
         StringBuilder otsikkoBuilder = new StringBuilder();
         otsikkoBuilder.append(getTextString(docBase, osa.getNimi()));
 
-
-        otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli()));
+        BigDecimal laajuusMaksimi = viite.getLaajuusMaksimi();
+        if (laajuusMaksimi != null) {
+            otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), laajuusMaksimi,
+                    docBase.getLaajuusYksikko(), docBase.getKieli()));
+        } else {
+            otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli()));
+        }
 
         String koodi = osa.getKoodiArvo();
         if (koodi != null) {
