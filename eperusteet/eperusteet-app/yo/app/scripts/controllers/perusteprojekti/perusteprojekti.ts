@@ -406,7 +406,7 @@ angular
                 ProxyService.set("perusteId", $scope.peruste.id);
             }
             init();
-
+            
             $scope.isOpas = isOpas; // Käytetään alinäkymissä
             const isAmmatillinen = koulutustyyppi => _.includes(YleinenData.ammatillisetkoulutustyypit, koulutustyyppi);
             $scope.isAmmatillinen = isAmmatillinen($scope.peruste.koulutustyyppi);
@@ -501,7 +501,7 @@ angular
                 perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(() => {
                     init();
                     PerusteProjektiSivunavi.refresh(true);
-                })
+                });
             });
 
             $scope.lisaaTekstikappale = () => {
