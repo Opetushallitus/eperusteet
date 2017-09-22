@@ -1,6 +1,6 @@
 <!-- arviointi.html -->
 <div class="arviointi">
-    <div ng-class="{'panel panel-default panel-small arviointi-kohdealueet': !eiKohdealueita, 'arviointi-ei-kohdealueita': eiKohdealueita}">
+    <div ng-class="panel panel-default">
         <span class="toggler" ng-show="arviointi.length && !eiKohdealueita">
             <a class="action-link"
                kaanna="'avaa-sulje-kaikki'"
@@ -11,36 +11,44 @@
                kaanna="'avaa-sulje-kaikki'"
                ng-click="toggleAll()"></a>
         </span>
-        <div class="panel-body">
-            <uib-accordion close-others="false">
-                <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
-                    <div uib-accordion-group class="arvioinnin-kohdealue" template-url="views/partials/accordiongroup.html" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi" is-open="kohdealue.$$accordionOpen">
-                        <uib-accordion-heading>
-                            <h3 class="panel-title" ng-hide="eiKohdealueita">
-                                <arvioinnin-tekstikentta sisalto="kohdealue"
-                                                         sisaltoalue="arviointi"
-                                                         sisaltoteksti="kohdealue.otsikko"
-                                                         sisaltoalue="$parent.arviointi.arvioinninKohdealueet"
-                                                         edit-allowed="editAllowed"
-                                                         editmode="editEnabled"></arvioinnin-tekstikentta>
-                            </h3>
-                        </uib-accordion-heading>
+        <div>
+            <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
+                <div class="panel arvioinnin-kohdealue" ng-repeat="kohdealue in arviointi">
+                    <div class="panel-heading">
+                        <h3 class="panel-title arvioinnin-kohdealue-otsikko" ng-click="kohdealue.$$accordionOpen = !kohdealue.$$accordionOpen" ng-hide="eiKohdealueita">
+                            <arvioinnin-tekstikentta sisalto="kohdealue"
+                                sisaltoalue="arviointi"
+                                sisaltoteksti="kohdealue.otsikko"
+                                sisaltoalue="$parent.arviointi.arvioinninKohdealueet"
+                                edit-allowed="editAllowed"
+                                editmode="editEnabled"></arvioinnin-tekstikentta>
+                        </h3>
+                    </div>
 
-                        <uib-accordion close-others="false">
-                            <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.arvioinninKohteet">
-                                <div class="arvioinnin-kohde" uib-accordion-group ng-class="{'kohde-edit': arvioinninkohde === originalKohde}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet" is-open="arvioinninkohde.$$accordionOpen" is-disabled="editableKohde">
+                    <div class="panel-body" ng-show="kohdealue.$$accordionOpen">
+                        <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.arvioinninKohteet">
+                            <div class="panel arvioinnin-kohde"
+                                ng-class="{'kohde-edit': arvioinninkohde === originalKohde}"
+                                ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet"
+                                is-disabled="editableKohde">
 
-                                    <uib-accordion-heading>
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
                                         <span ng-show="arvioinninkohde !== originalKohde">
                                             {{arvioinninkohde.otsikko | kaanna}}
-                                            <a ng-show="editEnabled" ng-click="kohde.poista(kohdealue.arvioinninKohteet, arvioinninkohde, $event)"
-                                               class="action-link muokkausnappi" icon-role="remove"
+                                            <a ng-show="editEnabled"
+                                               ng-click="kohde.poista(kohdealue.arvioinninKohteet, arvioinninkohde, $event)"
+                                               class="action-link muokkausnappi"
+                                               icon-role="remove"
                                                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
-                                            <a ng-show="editEnabled" ng-click="kohde.muokkaa(arvioinninkohde, $event)"
+                                            <a ng-show="editEnabled"
+                                               ng-click="kohde.muokkaa(arvioinninkohde, $event)"
                                                class="muokkausnappi action-link" icon-role="edit"></a>
                                         </span>
-                                    </uib-accordion-heading>
+                                    </h4>
+                                </div>
 
+                                <div class="panel-body">
                                     <div ng-show="arvioinninkohde === originalKohde">
                                         <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" slocalized placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}">
                                         <div class="muokkaus-napit pull-right" style="margin-top: -4px;">
@@ -112,12 +120,10 @@
                                             </button>
                                         </div>
                                     </div>
-
                                 </div>
-                                <!-- uib-accordion-group-->
-                            </div>
-                        </uib-accordion>
 
+                            </div>
+                        </div>
                         <!-- Kohteen lisäys -->
                         <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled">
                             <div class="panel-body">
@@ -143,8 +149,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- sortableKohdealueet -->
-            </uib-accordion>
+            </div>
 
             <!-- Kohdealueen lisäys -->
             <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled && !eiKohdealueita">

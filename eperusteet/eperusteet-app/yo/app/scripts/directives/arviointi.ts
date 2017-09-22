@@ -199,7 +199,9 @@ angular
                 $timeout(function() {
                     $scope.editableKohde = null;
                     delete $scope.originalKohde.$editointi;
-                    $scope.originalKohde._arviointiAsteikko = $scope.originalKohde.$vanhaArviointiAsteikko;
+                    if ($scope.originalKohde.$vanhaArviointiAsteikko) {
+                        $scope.originalKohde._arviointiAsteikko = $scope.originalKohde.$vanhaArviointiAsteikko;
+                    }
                     $scope.originalKohde = null;
                 });
             }
@@ -298,7 +300,7 @@ angular
                     _.each(obj, function(kohdealue) {
                         kohdealue.$$accordionOpen = mode;
                         _.each(kohdealue.arvioinninKohteet, function(kohde) {
-                            kohde.$accordionOpen = mode;
+                            kohde.$$accordionOpen = mode;
                         });
                     });
                 }
