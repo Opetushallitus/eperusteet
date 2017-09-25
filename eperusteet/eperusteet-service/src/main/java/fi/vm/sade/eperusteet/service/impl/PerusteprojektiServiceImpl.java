@@ -65,7 +65,6 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import org.apache.commons.io.IOUtils;
@@ -338,6 +337,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, tyyppi, perusteprojektiDto.isReforminMukainen());
         } else {
             Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
+            if (pohjaPeruste == null) {
+                throw new BusinessRuleViolationException("perustetta-ei-olemassa");
+            }
             perusteprojektiDto.setKoulutustyyppi(pohjaPeruste.getKoulutustyyppi());
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
         }

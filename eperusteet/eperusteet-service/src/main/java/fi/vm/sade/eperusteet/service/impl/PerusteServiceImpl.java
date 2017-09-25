@@ -325,9 +325,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste p = perusteet.findOne(id);
         PerusteDto dto = mapper.map(p, PerusteDto.class);
         if (dto != null) {
-            dto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
-            if (dto.getSuoritustavat() != null && !dto.getSuoritustavat().isEmpty()) {
-                dto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
+            Revision latestRevision = perusteet.getLatestRevisionId(id);
+            if (latestRevision != null) {
+                dto.setRevision(latestRevision.getNumero());
+                if (dto.getSuoritustavat() != null && !dto.getSuoritustavat().isEmpty()) {
+                    dto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
+                }
             }
         }
 
@@ -624,15 +627,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             KVLiiteDto kvliiteDto = perusteDto.getKvliite();
 
             if (current.getKvliite() == null) {
-                if (current.getTyyppi() == PerusteTyyppi.POHJA) {
-                    liite = mapper.map(kvliiteDto, KVLiite.class);
-                    kvliiteRepository.save(liite);
-                }
+                liite = mapper.map(kvliiteDto, KVLiite.class);
+                liite.setPeruste(current);
+                liite = kvliiteRepository.save(liite);
+                current.setKvliite(liite);
             }
-            else if (kvliiteDto != null) {
-                if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
-                    throw new BusinessRuleViolationException("virheellinen-liite");
-                }
+            else if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
+                throw new BusinessRuleViolationException("virheellinen-liite");
+            }
+            else {
                 kvliiteDto.setId(liite.getId());
                 mapper.map(kvliiteDto, liite);
             }
@@ -1450,38 +1453,40 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
 
         Set<String> tasokoodiFilter = new HashSet<>();
-        kvliiteDto.setTasot(peruste.getKoulutukset().stream()
-                .map(Koulutus::getKoulutuskoodiUri)
-                .map(koulutusKoodiUri -> koodistoService.getLatest(koulutusKoodiUri))
-                .map(latest -> koodistoService.getAllByVersio(latest.getKoodiUri(), latest.getVersio()))
-                .map(all -> Arrays.stream(all.getIncludesCodeElements()))
-                .flatMap(x -> x)
-                .filter(el -> isTasoKoodi(el.getCodeElementUri()))
-                .filter(el -> tasokoodiFilter.add(el.getCodeElementUri()))
-                .map(el -> {
-                    KVLiiteTasoDto result = new KVLiiteTasoDto();
-                    result.setCodeUri(el.getCodeElementUri());
-                    result.setCodeValue(el.getCodeElementValue());
+        if (peruste.getKoulutukset() != null) {
+            kvliiteDto.setTasot(peruste.getKoulutukset().stream()
+                    .map(Koulutus::getKoulutuskoodiUri)
+                    .map(koulutusKoodiUri -> koodistoService.getLatest(koulutusKoodiUri))
+                    .map(latest -> koodistoService.getAllByVersio(latest.getKoodiUri(), latest.getVersio()))
+                    .map(all -> Arrays.stream(all.getIncludesCodeElements()))
+                    .flatMap(x -> x)
+                    .filter(el -> isTasoKoodi(el.getCodeElementUri()))
+                    .filter(el -> tasokoodiFilter.add(el.getCodeElementUri()))
+                    .map(el -> {
+                        KVLiiteTasoDto result = new KVLiiteTasoDto();
+                        result.setCodeUri(el.getCodeElementUri());
+                        result.setCodeValue(el.getCodeElementValue());
 
-                    if (el.getCodeElementUri().startsWith("nqf_") || el.getCodeElementUri().startsWith("eqf_")) {
-                        result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
-                            .collect(Collectors.toMap(
-                                    lokaali -> lokaali.getKieli().toLowerCase(),
-                                    lokaali -> lokaali.getKuvaus() + " " + el.getCodeElementValue()))));
-                    }
-                    else if (el.getCodeElementUri().startsWith("isced2011")) { // ISCED
-                        result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
-                            .collect(Collectors.toMap(
-                                    lokaali -> lokaali.getKieli().toLowerCase(),
-                                    lokaali -> "ISCED " + el.getCodeElementValue()))));
-                    }
-                    else {
-                        result.setNimi(null);
-                    }
-                    return result;
-                })
-                .sorted((a, b) -> Integer.compare(a.getJarjestys(), b.getJarjestys()))
-                .collect(Collectors.toList()));
+                        if (el.getCodeElementUri().startsWith("nqf_") || el.getCodeElementUri().startsWith("eqf_")) {
+                            result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
+                                .collect(Collectors.toMap(
+                                        lokaali -> lokaali.getKieli().toLowerCase(),
+                                        lokaali -> lokaali.getKuvaus() + " " + el.getCodeElementValue()))));
+                        }
+                        else if (el.getCodeElementUri().startsWith("isced2011")) { // ISCED
+                            result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
+                                .collect(Collectors.toMap(
+                                        lokaali -> lokaali.getKieli().toLowerCase(),
+                                        lokaali -> "ISCED " + el.getCodeElementValue()))));
+                        }
+                        else {
+                            result.setNimi(null);
+                        }
+                        return result;
+                    })
+                    .sorted((a, b) -> Integer.compare(a.getJarjestys(), b.getJarjestys()))
+                    .collect(Collectors.toList()));
+        }
         return kvliiteDto;
     }
 
