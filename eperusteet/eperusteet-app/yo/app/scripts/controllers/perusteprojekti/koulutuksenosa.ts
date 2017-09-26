@@ -159,7 +159,8 @@ angular
         Varmistusdialogi,
         Koodisto,
         MuokkausUtils,
-        PerusteenOsaViitteet
+        PerusteenOsaViitteet,
+        YleinenData
     ) {
         Utils.scrollTo("#ylasivuankkuri");
 
@@ -421,7 +422,7 @@ angular
         }
 
         function mergeOsaAlueet(tutkinnonOsa) {
-            if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === "tutke2") {
+            if (_.includes(YleinenData.yhteisetTutkinnonOsat, $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi)) {
                 tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function(osaAlue) {
                     var item: any = { nimi: osaAlue.nimi };
                     if (osaAlue.id) {
@@ -540,10 +541,6 @@ angular
             },
             validate: function() {
                 return true;
-                // if (!Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi)) {
-                //   $scope.nimiValidationError = true;
-                // }
-                // return $scope.tutkinnonOsaHeaderForm.$valid && Tutke2Service.validate($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi);
             }
         };
 
@@ -580,14 +577,18 @@ angular
 
         var tutke2 = {
             fetch: function() {
-                if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === "tutke2") {
+                if (
+                    _.includes(YleinenData.yhteisetTutkinnonOsat, $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi)
+                ) {
                     if (Tutke2OsaData.get()) {
                         Tutke2OsaData.get().fetch();
                     }
                 }
             },
             mergeOsaAlueet: function(tutkinnonOsa) {
-                if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === "tutke2") {
+                if (
+                    _.includes(YleinenData.yhteisetTutkinnonOsat, $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi)
+                ) {
                     tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function(osaAlue) {
                         var item: any = { nimi: osaAlue.nimi };
                         if (osaAlue.id) {
@@ -598,7 +599,9 @@ angular
                 }
             },
             validate: function() {
-                if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === "tutke2") {
+                if (
+                    _.includes(YleinenData.yhteisetTutkinnonOsat, $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi)
+                ) {
                     return _.all(
                         _.map(Tutke2OsaData.get().$editing, function(item) {
                             return Utils.hasLocalizedText(item.nimi);

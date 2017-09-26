@@ -19,7 +19,7 @@ angular
     .factory("TutkinnonOsanKoodiUniqueResource", ($resource, SERVICE_LOC) => {
         return $resource(SERVICE_LOC + "/tutkinnonosat/koodi/uniikki/:tutkinnonosakoodi");
     })
-    .service("TutkinnonosanTiedotService", (PerusteenOsat, $q, TutkinnonOsanOsaAlue, Osaamistavoite) => {
+    .service("TutkinnonosanTiedotService", (PerusteenOsat, $q, TutkinnonOsanOsaAlue, Osaamistavoite, YleinenData) => {
         const FIELD_ORDER = {
             tavoitteet: 3,
             ammattitaitovaatimukset: 4,
@@ -37,7 +37,7 @@ angular
 
             PerusteenOsat.get({ osanId: stateParams.perusteenOsaId }, function(vastaus) {
                 tutkinnonOsa = vastaus;
-                if (vastaus.tyyppi === "tutke2") {
+                if (_.includes(YleinenData.yhteisetTutkinnonOsat, vastaus.tyyppi)) {
                     TutkinnonOsanOsaAlue.list({ osanId: stateParams.perusteenOsaId }, function(osaAlueet) {
                         tutkinnonOsa.osaAlueet = osaAlueet;
 
@@ -127,7 +127,8 @@ angular
             ProjektinMurupolkuService,
             localStorageService,
             TutkinnonOsaLeikelautaService,
-            MuutProjektitService
+            MuutProjektitService,
+            YleinenData
         ) => {
             Utils.scrollTo("#ylasivuankkuri");
 
@@ -148,6 +149,7 @@ angular
             $scope.editointikontrollit = Editointikontrollit;
             $scope.nimiValidationError = false;
 
+
             $scope.isLeikelautaOpen = false;
             if (localStorageService.isSupported) {
                 $scope.isLeikelautaOpen = localStorageService.get("leikeautaOpen");
@@ -161,13 +163,22 @@ angular
                 }
             };
 
+            $scope.isTutke2 = YleinenData.isTutke2;
+            $scope.isReformi = _.find($scope.peruste.suoritustavat, st => st.suoritustapakoodi === "reformi") != null;
+            console.log("isReformi", $scope.isReformi);
+
             let tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
 
             async function successCb(re) {
                 setupTutkinnonOsaViite(re);
                 tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
-                $scope.kaytossaMonessaProjektissa = _.size(await MuutProjektitService.projektitJoissaKaytossa($scope.editableTutkinnonOsaViite.tutkinnonOsa.id)) > 1;
+                $scope.kaytossaMonessaProjektissa =
+                    _.size(
+                        await MuutProjektitService.projektitJoissaKaytossa(
+                            $scope.editableTutkinnonOsaViite.tutkinnonOsa.id
+                        )
+                    ) > 1;
             }
 
             function errorCb() {
@@ -406,14 +417,24 @@ angular
 
             const tutke2 = {
                 fetch: () => {
-                    if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === "tutke2") {
+                    if (
+                        _.includes(
+                            YleinenData.yhteisetTutkinnonOsat,
+                            $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi
+                        )
+                    ) {
                         if (Tutke2OsaData.get()) {
                             Tutke2OsaData.get().fetch();
                         }
                     }
                 },
                 mergeOsaAlueet: tutkinnonOsa => {
-                    if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === "tutke2") {
+                    if (
+                        _.includes(
+                            YleinenData.yhteisetTutkinnonOsat,
+                            $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi
+                        )
+                    ) {
                         tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, osaAlue => {
                             const item: any = { nimi: osaAlue.nimi };
                             if (osaAlue.id) {
@@ -424,7 +445,12 @@ angular
                     }
                 },
                 validate: () => {
-                    if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === "tutke2") {
+                    if (
+                        _.includes(
+                            YleinenData.yhteisetTutkinnonOsat,
+                            $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi
+                        )
+                    ) {
                         return _.all(
                             _.map(Tutke2OsaData.get().$editing, item => {
                                 return Utils.hasLocalizedText(item.nimi);
@@ -596,9 +622,7 @@ angular
                 });
             };
 
-            /**
-     * Palauttaa true jos kaikki mahdolliset osiot on jo lisätty
-     */
+            // Palauttaa true jos kaikki mahdolliset osiot on jo lisätty
             $scope.allVisible = () => {
                 const lisatty = _.all($scope.fields, field => {
                     return _.contains(field.path, "arviointi.") || !field.inMenu || (field.inMenu && field.visible);
