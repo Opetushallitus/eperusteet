@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
@@ -828,7 +829,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addKoodi(DokumenttiPeruste docBase, TutkinnonOsa osa) {
-        String koodiArvo = osa.getKoodiArvo();
+        TutkinnonOsaDto osaDto = mapper.map(osa, TutkinnonOsaDto.class);
+        String koodiArvo = osaDto.getKoodiArvo();
         if (StringUtils.isEmpty(koodiArvo)) {
             return;
         }
@@ -1226,7 +1228,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli()));
         }
 
-        String koodi = osa.getKoodiArvo();
+        TutkinnonOsaDto osaDto = mapper.map(osa, TutkinnonOsaDto.class);
+        String koodi = osaDto.getKoodiArvo();
         if (koodi != null) {
             otsikkoBuilder
                     .append(" (")

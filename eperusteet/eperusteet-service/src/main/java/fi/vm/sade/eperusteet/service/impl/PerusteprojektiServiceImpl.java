@@ -40,6 +40,8 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
@@ -805,8 +807,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         TutkinnonOsa tosa = tov.getTutkinnonOsa();
                         if (tosa.getTyyppi() == TutkinnonOsaTyyppi.TUTKE2) {
                             for (OsaAlue oa : tosa.getOsaAlueet()) {
-                                if (oa.getKoodiArvo() == null || oa.getKoodiArvo().isEmpty() ||
-                                        oa.getKoodiUri() == null || oa.getKoodiUri().isEmpty()) {
+                                OsaAlueDto alueDto = mapper.map(oa, OsaAlueDto.class);
+                                if (alueDto.getKoodiArvo() == null || alueDto.getKoodiArvo().isEmpty() ||
+                                        alueDto.getKoodiUri() == null || alueDto.getKoodiUri().isEmpty()) {
                                     koodittomatOsaalueet.add(new LokalisoituTekstiDto(tosa.getId(),
                                             tosa.getNimi().getTeksti()));
                                     break;
@@ -827,8 +830,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     Set<String> uniikitKoodit = new HashSet<>();
                     for (TutkinnonOsaViite tov : getViitteet(suoritustapa)) {
                         TutkinnonOsa tosa = tov.getTutkinnonOsa();
-                        String uri = tosa.getKoodiUri();
-                        String arvo = tosa.getKoodiArvo();
+                        TutkinnonOsaDto osaDto = mapper.map(tosa, TutkinnonOsaDto.class);
+                        String uri = osaDto.getKoodiUri();
+                        String arvo = osaDto.getKoodiArvo();
 
                         // Tarkistetaan onko sama koodi useammassa tutkinnon osassa
                         if (uniikitKoodit.contains(uri)) {
@@ -852,7 +856,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                 LOG.error(e.getMessage(), e);
                             }
                             if (koodi != null && koodi.getKoodiUri().equals(uri)) {
-                                tutkinnonOsienKoodit.add(tov.getTutkinnonOsa().getKoodiArvo());
+                                tutkinnonOsienKoodit.add(osaDto.getKoodiArvo());
                             } else {
                                 virheellisetKoodistonimet.add(new LokalisoituTekstiDto(tosa.getNimi().getId(),
                                         tosa.getNimi().getTeksti()));
@@ -1149,8 +1153,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (suoritustapa.getTutkinnonOsat() != null) {
             for (TutkinnonOsaViite viite : getViitteet(suoritustapa)) {
-                if (viite.getTutkinnonOsa().getKoodiArvo() == null || viite.getTutkinnonOsa()
-                        .getKoodiArvo().trim().equals("")) {
+                TutkinnonOsaDto osaDto = mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class);
+                if (osaDto.getKoodiArvo() == null || osaDto.getKoodiArvo().trim().equals("")) {
                     koodittomatTutkinnonOsat.add(viite.getTutkinnonOsa());
                 }
             }
