@@ -66,6 +66,7 @@ angular
         }
 
         $scope.valitseAlarelaatio = function(ar) {
+            $scope.osaAlue.koodi = ar ? ar.koodi : undefined;
             $scope.osaAlue.koodiUri = ar ? ar.koodiUri : undefined;
             $scope.osaAlue.koodiArvo = ar ? ar.koodiArvo : undefined;
         };

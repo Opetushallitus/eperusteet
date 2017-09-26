@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,10 +33,29 @@ public class OsaAlueDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto kuvaus;
+    private KoodiDto koodi;
     private String koodiUri;
     private String koodiArvo;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Kieli kieli;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
+
+    public String getKoodiUri() {
+        KoodiDto koodi = this.getKoodi();
+        if (koodi != null) {
+            return koodi.getUri();
+        } else {
+            return koodiUri;
+        }
+    }
+
+    public String getKoodiArvo() {
+        KoodiDto koodi = this.getKoodi();
+        if (koodi != null) {
+            return koodi.getArvo();
+        } else {
+            return koodiArvo;
+        }
+    }
 }
