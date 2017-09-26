@@ -834,6 +834,8 @@
 
     "diaarinumero-kaytossa": "Diaarinumero on jo käytössä",
     "tutkinnon-osan-koodi-kaytossa": "Valittu tutkinnon osan koodi on jo käytössä",
+    "tutkinnon-osalla-ei-ole-koodia": "Valitun tutkinnon osalla ei ole koodia",
+    "koodi-ei-loydy": "Yhtään valittavaa koodia ei löytynyt",
 
     "osaamisalat": "Osaamisalat",
 

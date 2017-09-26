@@ -231,6 +231,17 @@ angular
         this.dateFormatDatepicker = "d.M.yyyy";
         this.dateFormatMomentJS = "D.M.YYYY";
 
+        this.yhteisetTutkinnonOsat = ["tutke2", "reformi_tutke2"];
+
+        this.isTutke2 = (viite) => {
+            if (viite == null || viite.tutkinnonOsa == null || viite.tutkinnonOsa.tyyppi == null) {
+                return false;
+            }
+
+            return _.includes(this.yhteisetTutkinnonOsat,
+                viite.tutkinnonOsa.tyyppi);
+        };
+
         this.isReformoitava = koulutustyyppi =>
             _.includes(["koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"], koulutustyyppi);
 

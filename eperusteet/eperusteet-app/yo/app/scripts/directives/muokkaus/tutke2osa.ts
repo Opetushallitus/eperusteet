@@ -67,6 +67,7 @@ angular
             $scope.tutke2osa.fetch().then(function() {
                 tutke2osaDefer.resolve();
             });
+            console.log("set Tutke2OsaData", $scope.tutke2osa);
             Tutke2OsaData.set($scope.tutke2osa);
             editModeCallback($scope.mainLevelEditing);
         });

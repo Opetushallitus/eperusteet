@@ -29,8 +29,7 @@ angular.module("eperusteApp").config($stateProvider =>
             sisallot: (peruste, $stateParams) => peruste.all("suoritustavat/" + $stateParams.suoritustapa + "/sisalto"),
             sisalto: (peruste, $stateParams) =>
                 peruste.one("suoritustavat/" + $stateParams.suoritustapa + "/sisalto").get(),
-            jotain: () => {
-            }
+            jotain: () => {}
         },
         templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipesisalto/view.html",
         controller: (

@@ -29,7 +29,6 @@ angular
                     $scope.ammattitaito = [];
                 }
 
-
                 const kohdealue = {
                     otsikko: {},
                     $$accordionOpen: true

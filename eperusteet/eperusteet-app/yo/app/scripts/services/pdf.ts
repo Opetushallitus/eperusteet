@@ -146,10 +146,13 @@ angular
         };
 
         let pdfToken = null;
-        let suoritustapa = $stateParams.suoritustapa
-            || PerusteProjektiService.getSuoritustapa()
-            || YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi,
-                _.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" }));
+        let suoritustapa =
+            $stateParams.suoritustapa ||
+            PerusteProjektiService.getSuoritustapa() ||
+            YleinenData.valitseSuoritustapaKoulutustyypille(
+                peruste.koulutustyyppi,
+                _.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" })
+            );
         console.log(_.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" }));
         console.log("$stateParams.suoritustapa", $stateParams.suoritustapa);
         console.log("PerusteProjektiService.getSuoritustapa()", PerusteProjektiService.getSuoritustapa());
