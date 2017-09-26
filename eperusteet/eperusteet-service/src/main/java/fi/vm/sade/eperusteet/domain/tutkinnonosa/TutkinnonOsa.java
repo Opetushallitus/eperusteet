@@ -176,18 +176,22 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.kuvaus = kuvaus;
     }
 
+    @Deprecated
     public String getKoodiUri() {
         return koodiUri;
     }
 
+    @Deprecated
     public void setKoodiUri(String koodiUri) {
         this.koodiUri = koodiUri;
     }
 
+    @Deprecated
     public String getKoodiArvo() {
         return koodiArvo;
     }
 
+    @Deprecated
     public void setKoodiArvo(String koodiArvo) {
         this.koodiArvo = koodiArvo;
     }
@@ -216,6 +220,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             result = super.structureEquals(that);
             result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
             result &= Objects.equals(getTyyppi(), that.getTyyppi());
+            result &= Objects.equals(getKoodi(), that.getKoodi());
             result &= Objects.equals(getKoodiArvo(), that.getKoodiArvo());
             result &= Objects.equals(getKoodiUri(), that.getKoodiUri());
             result &= refXnor(getTavoitteet(), that.getTavoitteet());
@@ -275,6 +280,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
                 .collect(Collectors.toList());
         this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
         this.tavoitteet = other.getTavoitteet();
+        this.koodi = other.getKoodi();
         this.koodiUri = other.getKoodiUri();
         this.koodiArvo = other.getKoodiArvo();
         this.tyyppi = other.getTyyppi();
