@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
@@ -25,10 +26,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -67,9 +65,23 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    private Koodi koodi;
+
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
+    @Deprecated
     @Column(name = "koodi_uri")
     private String koodiUri;
 
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
+    @Deprecated
     @Column(name = "koodi_arvo")
     private String koodiArvo;
 
@@ -237,8 +249,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setAmmattitaitovaatimuksetLista(connectAmmattitaitovaatimusListToTutkinnonOsa(other));
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
             this.setTavoitteet(other.getTavoitteet());
-            this.setKoodiUri(other.getKoodiUri());
-            this.setKoodiArvo(other.getKoodiArvo());
+            this.setKoodi(other.getKoodi());
             this.setTyyppi(other.getTyyppi());
             this.setKuvaus(other.getKuvaus());
             this.setValmaTelmaSisalto(other.getValmaTelmaSisalto());
