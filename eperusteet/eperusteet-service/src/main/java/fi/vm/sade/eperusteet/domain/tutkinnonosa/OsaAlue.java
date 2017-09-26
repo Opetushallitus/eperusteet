@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
@@ -77,7 +78,6 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
 
     // Ei käytössä Valma/Telma perusteissa
     @Getter
-    //@Setter
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_osaalue_osaamistavoite",
                joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"),
@@ -100,22 +100,36 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     @OneToOne(cascade = {CascadeType.ALL})
     private ValmaTelmaSisalto valmaTelmaSisalto;
 
-    @Getter
-    @Setter
-    @Enumerated(EnumType.STRING)
     /**
      * Jos osa-alueesta on vain yksi kieliversio, määritellään se tässä.
      */
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
     private Kieli kieli;
 
-    @Column(name = "koodi_uri")
     @Getter
     @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    private Koodi koodi;
+
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
+    @Getter
+    @Setter
+    @Deprecated
+    @Column(name = "koodi_uri")
     private String koodiUri;
 
-    @Column(name = "koodi_arvo")
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
     @Getter
     @Setter
+    @Deprecated
+    @Column(name = "koodi_arvo")
     private String koodiArvo;
 
     public OsaAlue() {
@@ -126,8 +140,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         this.kuvaus = o.kuvaus;
         this.osaamistavoitteet = new ArrayList<>();
         this.valmaTelmaSisalto = null;
-        this.koodiArvo = o.koodiArvo;
-        this.koodiUri = o.koodiUri;
+        this.koodi = o.koodi;
         this.kieli = o.kieli;
 
         IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
@@ -157,8 +170,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         if (updated != null) {
             this.setNimi(updated.getNimi());
             this.setKuvaus(updated.getKuvaus());
-            this.setKoodiArvo(updated.getKoodiArvo());
-            this.setKoodiUri(updated.getKoodiUri());
+            this.koodi = updated.getKoodi();
 
             if (updated.getOsaamistavoitteet() != null) {
                 this.setOsaamistavoitteet(mergeOsaamistavoitteet(this.getOsaamistavoitteet(), updated.getOsaamistavoitteet()));
