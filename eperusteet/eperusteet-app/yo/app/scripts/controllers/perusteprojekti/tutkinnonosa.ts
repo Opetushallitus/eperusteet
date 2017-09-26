@@ -316,18 +316,14 @@ angular
 
             $scope.koodistoClick = Koodisto.modaali(
                 koodisto => {
-                    MuokkausUtils.nestedSet(
-                        $scope.editableTutkinnonOsaViite.tutkinnonOsa,
-                        "koodiUri",
-                        ",",
-                        koodisto.koodiUri
-                    );
-                    MuokkausUtils.nestedSet(
-                        $scope.editableTutkinnonOsaViite.tutkinnonOsa,
-                        "koodiArvo",
-                        ",",
-                        koodisto.koodiArvo
-                    );
+                    if (koodisto != null && koodisto.koodisto != null) {
+                        $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodi = {
+                            uri: koodisto.koodiUri,
+                            arvo: koodisto.koodiArvo,
+                            versio: koodisto.versio,
+                            koodisto: koodisto.koodisto.koodistoUri
+                        };
+                    }
                 },
                 {
                     tyyppi: () => {
@@ -341,6 +337,7 @@ angular
             );
 
             $scope.cleanKoodi = () => {
+                $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodi = null;
                 $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodiUri = null;
                 $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo = null;
             };
