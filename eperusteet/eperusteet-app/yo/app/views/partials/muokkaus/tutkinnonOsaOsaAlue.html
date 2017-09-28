@@ -41,14 +41,14 @@
 
             <h3 ng-show="tavoite.pakollinen === true">
                 {{('pakolliset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
-                <span>
+                <span ng-hide="tutkinnonOsaViite.tutkinnonOsa.tyyppi == 'reformi_tutke2'">
                     <button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)"
                               kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
                 </span>
             </h3>
             <h3 ng-show="tavoite.pakollinen === false">
                 {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
-                <span>
+                <span ng-hide="tutkinnonOsaViite.tutkinnonOsa.tyyppi == 'reformi_tutke2'">
                     <button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)"
                               kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
                 </span>
@@ -90,9 +90,11 @@
             <div ng-show="tavoite.lapsi && tavoite.lapsi.$poistettu === false">
                 <h3>
                     {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.lapsi.laajuus}} {{'osp'| kaanna}}
-                    <span><button class="btn btn-default pull-right" icon-role="remove"
+                    <span ng-hide="tutkinnonOsaViite.tutkinnonOsa.tyyppi === 'reformi_tutke2'">
+                        <button class="btn btn-default pull-right" icon-role="remove"
                                   ng-click="poistaTavoite(tavoite.lapsi)" kaanna="poista"
-                                  oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
+                                  oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                    </span>
                 </h3>
                 <div class="non-collapsibles">
                     <label kaanna>laajuus</label>
@@ -122,10 +124,16 @@
                     <div ng-model="tavoite.lapsi.tunnustaminen" slocalized ckeditor editing-enabled="true"
                          editor-placeholder="Kirjoita tunnustaminen"></div>
 
-                    <h4 kaanna>ammattitaitovaatimukset</h4>
+                    <h4 kaanna="'ammattitaitovaatimukset'"></h4>
                     <ammattitaito ammattitaito="tavoite.lapsi.ammattitaitovaatimuksetLista" edit-enabled="true"
                                   editointi-sallittu="true" ei-kohdealueita="true">
                     </ammattitaito>
+
+                    <!--<pre>{{tavoite.lapsi.ammattitaitovaatimuksetLista}}</pre>
+                    <pre>{{tavoite.lapsi.ammattitaitovaatimuksetLista.length}}</pre>
+                    <span ng-show="tutkinnonOsaViite.tutkinnonOsa.tyyppi === 'reformi_tutke2' && tavoite.lapsi.ammattitaitovaatimuksetLista.length === 0">
+                        <button class="btn btn-default" ng-click="" kaanna="'palauta'"></button>
+                    </span>-->
 
                 </div>
             </div>
@@ -135,7 +143,8 @@
 
     <button class="btn btn-default"
             icon-role="add"
-            ng-click="lisaaOsaamistavoite()"
             kaanna="lisaa-osaamistavoite"
+            ng-click="lisaaOsaamistavoite()"
+            ng-hide="tutkinnonOsaViite.tutkinnonOsa.tyyppi === 'reformi_tutke2'"
             oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 </div>

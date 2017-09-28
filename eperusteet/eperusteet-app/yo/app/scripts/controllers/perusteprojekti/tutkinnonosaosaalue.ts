@@ -45,13 +45,6 @@ angular
         // TODO: Tee parempi korjaus ilman watchia
         $scope.$watch("tutkinnonOsaViite", () => {
             if ($scope.tutkinnonOsaViite.tutkinnonOsa) {
-                // Alustetaan tutkinnon osaan liittyvät asiat
-                console.log($scope.tutkinnonOsaViite.tutkinnonOsa);
-                if ($scope.tutkinnonOsaViite.tutkinnonOsa.tyyppi === "reformi_tutke2") {
-                    if ($scope.osaamistavoitepuu.length == 0) {
-                        $scope.lisaaOsaamistavoite();
-                    }
-                }
 
                 // Haetaan alarelaatio koodi osa-alueelle
                 const koodiUri = $scope.tutkinnonOsaViite.tutkinnonOsa.koodiUri;
@@ -97,6 +90,13 @@ angular
                         o.$poistettu = false;
                     })
                     .value();
+
+                // Alustetaan tutkinnon osaan liittyvät asiat
+                if ($scope.tutkinnonOsaViite.tutkinnonOsa.tyyppi === "reformi_tutke2") {
+                    if ($scope.osaamistavoitepuu.length == 0) {
+                        $scope.lisaaOsaamistavoite();
+                    }
+                }
 
                 _($scope.osaAlue.osaamistavoitteet)
                     .filter({ pakollinen: false })

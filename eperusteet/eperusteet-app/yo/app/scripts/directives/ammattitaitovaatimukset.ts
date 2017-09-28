@@ -154,7 +154,7 @@ angular
 
         if ($scope.eiKohdealueita && (angular.isUndefined($scope.ammattitaito) || $scope.ammattitaito === null)) {
             $scope.uudenKohdealueenNimi = {
-                fi: "Nimetön"
+                fi: "Nimetön ammattitaitovaatimus"
             };
             $scope.kohdealue.uusi();
         }
