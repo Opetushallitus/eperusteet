@@ -831,6 +831,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     for (TutkinnonOsaViite tov : getViitteet(suoritustapa)) {
                         TutkinnonOsa tosa = tov.getTutkinnonOsa();
                         TutkinnonOsaDto osaDto = mapper.map(tosa, TutkinnonOsaDto.class);
+
                         String uri = osaDto.getKoodiUri();
                         String arvo = osaDto.getKoodiArvo();
 
@@ -847,14 +848,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                             tosa.setKoodiUri(uri);
                         }
 
-                        if (tosa.getNimi() != null && (uri != null && arvo != null && !uri.isEmpty()
-                                && !arvo.isEmpty())) {
+                        if (tosa.getNimi() != null
+                                && (uri != null && !uri.isEmpty()
+                                && arvo != null && !arvo.isEmpty())) {
                             KoodistoKoodiDto koodi = null;
                             try {
                                 koodi = koodistoService.get("tutkinnonosat", uri);
                             } catch (Exception e) {
                                 LOG.error(e.getMessage(), e);
                             }
+
                             if (koodi != null && koodi.getKoodiUri().equals(uri)) {
                                 tutkinnonOsienKoodit.add(osaDto.getKoodiArvo());
                             } else {

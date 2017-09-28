@@ -178,12 +178,23 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @Deprecated
     public String getKoodiUri() {
-        return koodiUri;
+        if (koodi != null) {
+            return koodi.getUri();
+        } else {
+            return koodiUri;
+        }
     }
 
     @Deprecated
     public void setKoodiUri(String koodiUri) {
         this.koodiUri = koodiUri;
+        if (koodi != null) {
+            koodi.setUri(koodiUri);
+        } else {
+            koodi = new Koodi();
+            koodi.setUri(koodiUri);
+            koodi.setKoodisto("tutkinnonosat");
+        }
     }
 
     @Deprecated

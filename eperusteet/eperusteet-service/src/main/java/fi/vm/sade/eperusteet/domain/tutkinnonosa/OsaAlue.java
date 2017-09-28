@@ -117,8 +117,6 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     /**
      * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
      */
-    @Getter
-    @Setter
     @Deprecated
     @Column(name = "koodi_uri")
     private String koodiUri;
@@ -131,6 +129,27 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     @Deprecated
     @Column(name = "koodi_arvo")
     private String koodiArvo;
+
+    @Deprecated
+    public String getKoodiUri() {
+        if (koodi != null) {
+            return koodi.getUri();
+        } else {
+            return koodiUri;
+        }
+    }
+
+    @Deprecated
+    public void setKoodiUri(String koodiUri) {
+        this.koodiUri = koodiUri;
+        if (koodi != null) {
+            koodi.setUri(koodiUri);
+        } else {
+            koodi = new Koodi();
+            koodi.setUri(koodiUri);
+            koodi.setKoodisto("oppiaineetyleissivistava2");
+        }
+    }
 
     public OsaAlue() {
     }
