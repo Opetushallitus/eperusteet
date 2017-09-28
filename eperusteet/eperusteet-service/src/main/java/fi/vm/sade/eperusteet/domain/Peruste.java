@@ -176,7 +176,6 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Enumerated(EnumType.STRING)
     @NotNull
-//    @Column(updatable = false, name = "tila")
     private PerusteTila tila = PerusteTila.LUONNOS;
 
     @Getter
