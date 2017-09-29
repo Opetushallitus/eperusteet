@@ -83,6 +83,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -1157,7 +1158,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (suoritustapa.getTutkinnonOsat() != null) {
             for (TutkinnonOsaViite viite : getViitteet(suoritustapa)) {
                 TutkinnonOsaDto osaDto = mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class);
-                if (osaDto.getKoodiArvo() == null || osaDto.getKoodiArvo().trim().equals("")) {
+                if (StringUtils.isEmpty(osaDto.getKoodiUri())) {
                     koodittomatTutkinnonOsat.add(viite.getTutkinnonOsa());
                 }
             }

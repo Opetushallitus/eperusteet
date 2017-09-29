@@ -190,7 +190,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.koodiUri = koodiUri;
         if (koodi != null) {
             koodi.setUri(koodiUri);
-        } else {
+        } else if (koodiUri != null) {
             koodi = new Koodi();
             koodi.setUri(koodiUri);
             koodi.setKoodisto("tutkinnonosat");

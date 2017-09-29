@@ -62,6 +62,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.client.RestClientException;
 
 /**
  *
@@ -222,7 +224,20 @@ public class DtoMapperConfig {
                 .customize(new CustomMapper<Koodi, KoodiDto>() {
                     @Override
                     public void mapAtoB(Koodi a, KoodiDto b, MappingContext context) {
-                        koodistoClient.addNimiAndUri(b);
+                        try {
+                            koodistoClient.addNimiAndUri(b);
+                        } catch (RestClientException | AccessDeniedException ex) {
+                            StringBuilder builder = new StringBuilder();
+                            builder.append("(koodisto:");
+                            builder.append(a.getKoodisto());
+                            builder.append(", uri:");
+                            builder.append(a.getUri());
+                            builder.append(", versio:");
+                            builder.append(a.getVersio());
+                            builder.append(") koodia ei voitu ladata:");
+                            builder.append(ex.getLocalizedMessage());
+                            logger.error(builder.toString());
+                        }
                     }
                 })
                 .register();
@@ -233,9 +248,24 @@ public class DtoMapperConfig {
             .customize(new CustomMapper<Koodi, OsaamisalaDto>() {
                 @Override
                 public void mapAtoB(Koodi a, OsaamisalaDto b, MappingContext context) {
-                    KoodiDto koodi = koodistoClient.getKoodi(a.getKoodisto(), a.getUri(), a.getVersio());
-                    b.setNimi(koodi.getNimi());
-                    b.setOsaamisalakoodiArvo(koodi.getArvo());
+                    try {
+                        KoodiDto koodi = koodistoClient.getKoodi(a.getKoodisto(), a.getUri(), a.getVersio());
+                        if (koodi != null) {
+                            b.setNimi(koodi.getNimi());
+                            b.setOsaamisalakoodiArvo(koodi.getArvo());
+                        }
+                    } catch (RestClientException | AccessDeniedException ex) {
+                        StringBuilder builder = new StringBuilder();
+                        builder.append("(koodisto:");
+                        builder.append(a.getKoodisto());
+                        builder.append(", uri:");
+                        builder.append(a.getUri());
+                        builder.append(", versio:");
+                        builder.append(a.getVersio());
+                        builder.append(") koodia ei voitu ladata:");
+                        builder.append(ex.getLocalizedMessage());
+                        logger.error(builder.toString());
+                    }
                 }
             })
             .register();

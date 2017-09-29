@@ -903,8 +903,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
+
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
         suoritustapaRepository.lock(suoritustapa);
+
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
 
         if (viite.getTutkinnonOsa() == null && osa.getTutkinnonOsaDto() != null) {
