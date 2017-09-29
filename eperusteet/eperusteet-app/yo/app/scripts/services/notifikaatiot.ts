@@ -14,6 +14,8 @@
  * European Union Public Licence for more details.
  */
 
+import * as _ from "lodash";
+
 interface NotifikaatiotI {
     normaali: (msg: string | Object, ilmanKuvaa?: boolean) => void;
     onnistui: (msg: string | Object, ilmanKuvaa?: boolean) => void;

@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as _ from "lodash";
+import * as angular from "angular";
+
 angular.module("eperusteApp").service("Algoritmit", Kaanna => {
     function rajausVertailu(input, kentta) {
         kentta = arguments.length > 2 ? kentta[arguments[2]] : kentta;
@@ -72,7 +75,7 @@ angular.module("eperusteApp").service("Algoritmit", Kaanna => {
     }
 
     function perusteenSuoritustavanYksikko(peruste, suoritustapa) {
-        var foundSt = _.find(peruste.suoritustavat, function(st) {
+        var foundSt = _.find(peruste.suoritustavat, function(st: any) {
             return st.suoritustapakoodi === suoritustapa;
         });
         return foundSt ? foundSt.laajuusYksikko : "OPINTOPISTE";
@@ -124,15 +127,15 @@ angular.module("eperusteApp").service("Algoritmit", Kaanna => {
     }
 
     return {
-        normalizeTeksti: normalizeTeksti,
-        rajausVertailu: rajausVertailu,
-        mapLapsisolmut: mapLapsisolmut,
-        kaikilleLapsisolmuille: kaikilleLapsisolmuille,
-        asyncTraverse: asyncTraverse,
-        match: match,
-        access: access,
-        perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko,
-        kaikilleTutkintokohtaisilleOsille: kaikilleTutkintokohtaisilleOsille,
-        removeFieldsRecursiveFromObject: removeFieldsRecursiveFromObject
+        normalizeTeksti,
+        rajausVertailu,
+        mapLapsisolmut,
+        kaikilleLapsisolmuille,
+        asyncTraverse,
+        match,
+        access,
+        perusteenSuoritustavanYksikko,
+        kaikilleTutkintokohtaisilleOsille,
+        removeFieldsRecursiveFromObject
     };
 });

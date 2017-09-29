@@ -14,6 +14,10 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
+
 angular
     .module("eperusteApp")
     .factory("PerusteprojektiTila", function($resource, SERVICE_LOC) {
@@ -101,7 +105,7 @@ angular
         function hasSuoritustapa(peruste, suoritustapakoodi) {
             return (
                 peruste &&
-                _.find(peruste.suoritustavat, function(st) {
+                _.find(peruste.suoritustavat, function(st: any) {
                     return st.suoritustapakoodi === suoritustapakoodi;
                 })
             );
@@ -124,25 +128,30 @@ angular
                     (_.isObject(projekti) && projekti.koulutustyyppi) || (_.isObject(peruste) && peruste.koulutustyyppi)
                 ];
 
-            if (peruste && peruste.reforminMukainen) {
-                suoritustapa = "reformi";
+            if (peruste && peruste.tyyppi === "opas") {
+                suoritustapa = "opas";
+                sisaltoTunniste = "opassisalto";
             }
-            else if (info) {
-                debugger;
-                suoritustapa = info.oletusSuoritustapa;
-                sisaltoTunniste = info.sisaltoTunniste;
-            }
-
-            // Tilanteesta riippuen suoritustapatieto voi tulla projektin mukana (listausnäkymät)
-            // Yritetään ensisijaisesti käyttää perusteen tietoa
-            if (peruste && _.isArray(peruste.suoritustavat) && !_.isEmpty(peruste.suoritustavat)) {
-                const suoritustapakoodit = _.map(peruste.suoritustavat, "suoritustapakoodi");
-                if (!_.includes(suoritustapakoodit, suoritustapa)) {
-                    suoritustapa = _.first(suoritustapakoodit);
+            else {
+                if (peruste && peruste.reforminMukainen) {
+                    suoritustapa = "reformi";
                 }
-            } else if (projekti && _.isArray(projekti.suoritustavat) && !_.isEmpty(projekti.suoritustavat)) {
-                if (!_.includes(projekti.suoritustavat, suoritustapa)) {
-                    suoritustapa = _.first(projekti.suoritustavat);
+                else if (info) {
+                    suoritustapa = info.oletusSuoritustapa;
+                    sisaltoTunniste = info.sisaltoTunniste;
+                }
+
+                // Tilanteesta riippuen suoritustapatieto voi tulla projektin mukana (listausnäkymät)
+                // Yritetään ensisijaisesti käyttää perusteen tietoa
+                if (peruste && _.isArray(peruste.suoritustavat) && !_.isEmpty(peruste.suoritustavat)) {
+                    const suoritustapakoodit = _.map(peruste.suoritustavat, "suoritustapakoodi");
+                    if (!_.includes(suoritustapakoodit, suoritustapa)) {
+                        suoritustapa = _.first(suoritustapakoodit);
+                    }
+                } else if (projekti && _.isArray(projekti.suoritustavat) && !_.isEmpty(projekti.suoritustavat)) {
+                    if (!_.includes(projekti.suoritustavat, suoritustapa)) {
+                        suoritustapa = _.first(projekti.suoritustavat);
+                    }
                 }
             }
 

@@ -85,7 +85,7 @@ angular
             nakymatyyli: "palikka"
         };
 
-        $scope.jarjestysTapa = _.first(OrderHelper.get(null, $scope.koulutustyyppi)).value;
+        $scope.jarjestysTapa = (<any>(_.first(OrderHelper.get(null, $scope.koulutustyyppi)))).value;
         $scope.jarjestysOrder = false;
         $scope.preferenssit = Profiili.profiili().resolved
             ? _.merge(defaultPreferences, Profiili.profiili().preferenssit)

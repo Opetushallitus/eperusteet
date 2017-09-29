@@ -14,7 +14,9 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
+
+import * as angular from "angular";
+import * as _ from "lodash";
 
 // FIXME
 angular
@@ -80,14 +82,14 @@ angular
         var setDeferred = null;
 
         function setChosenValue(value) {
-            var found = _.find($scope.images, function(image) {
+            var found = _.find($scope.images, function(image: any) {
                 return image.id === value;
             });
             $scope.model.chosen = found || null;
         }
 
         function doSort(items) {
-            return _.sortBy(items, function(item) {
+            return _.sortBy(items, function(item: any) {
                 return Kaanna.kaanna(item.nimi).toLowerCase();
             });
         }
@@ -108,7 +110,7 @@ angular
         };
 
         $scope.filterImages = function(value) {
-            $scope.filtered = _.filter(doSort($scope.images), function(item) {
+            $scope.filtered = _.filter(doSort($scope.images), function(item: any) {
                 return Algoritmit.match(value, item.nimi);
             });
         };

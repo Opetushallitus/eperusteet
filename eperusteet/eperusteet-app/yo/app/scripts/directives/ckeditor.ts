@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+declare var CKEDITOR: any;
+
+
 angular
     .module("eperusteApp")
     .run(function() {
@@ -59,14 +62,14 @@ angular
         let setDeferred = null;
 
         function setChosenValue(value) {
-            const found = _.find($scope.termit, function(termi) {
+            const found = _.find($scope.termit, function(termi: any) {
                 return termi.avain === value;
             });
             $scope.model.chosen = found || null;
         }
 
         function doSort(items) {
-            return _.sortBy(items, function(item) {
+            return _.sortBy(items, function(item: any) {
                 return Kaanna.kaanna(item.termi).toLowerCase();
             });
         }

@@ -60,7 +60,7 @@ angular
                 !$scope.editMode &&
                 (!$scope.model ||
                     $scope.model.length === 0 ||
-                    !_.some($scope.model, function(item) {
+                    !_.some($scope.model, function(item: any) {
                         return !item.$hidden;
                     }))
             );

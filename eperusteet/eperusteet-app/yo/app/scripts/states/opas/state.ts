@@ -33,7 +33,7 @@ angular
             })
             .state("root.oppaat.uusi", {
                 url: "/uusi",
-                templateUrl: "scripts/states/opas/view.html",
+                template: require("scripts/states/opas/view.pug"),
                 resolve: {
                     oppaat: Api => Api.all("oppaat")
                 },

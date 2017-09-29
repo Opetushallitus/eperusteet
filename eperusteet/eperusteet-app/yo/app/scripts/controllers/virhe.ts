@@ -14,8 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _ */
+import * as _ from "lodash";
+import * as angular from "angular";
 
 angular
     .module("eperusteApp")
@@ -34,19 +34,22 @@ angular
     .service("virheService", function($state) {
         var data = {};
 
-        this.setData = function(d) {
-            data = d;
-        };
-        this.getData = function() {
-            return data;
-        };
+        return {
+            setData(d) {
+                data = d;
+            },
 
-        this.virhe = function(virhe) {
-            if (_.isObject(virhe)) {
-                data = virhe;
-            } else {
-                data = { muu: virhe };
+            getData() {
+                return data;
+            },
+
+            virhe(virhe) {
+                if (_.isObject(virhe)) {
+                    data = virhe;
+                } else {
+                    data = { muu: virhe };
+                }
+                $state.go("root.virhe");
             }
-            $state.go("root.virhe");
         };
     });

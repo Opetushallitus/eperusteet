@@ -14,6 +14,8 @@
  * European Union Public Licence for more details.
  */
 
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("PerusopetusService", function(

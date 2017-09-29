@@ -138,7 +138,7 @@ angular
                     });
                 });
             } else if (path) {
-                var payload = _.pick(model, ["id", path]);
+                var payload: any = _.pick(model, ["id", path]);
                 if ($stateParams.suoritustapa === "lukiokoulutus") {
                     payload.partial = true;
                 }
@@ -183,7 +183,7 @@ angular
 
         function getOppiaineenVuosiluokkakokonaisuus() {
             if (oppiaine && vuosiluokka) {
-                return _.find(oppiaine.vuosiluokkakokonaisuudet, function(ovlk) {
+                return _.find(oppiaine.vuosiluokkakokonaisuudet, function(ovlk: any) {
                     return vuosiluokka.id === _.parseInt(ovlk._vuosiluokkaKokonaisuus);
                 });
             }
@@ -403,7 +403,7 @@ angular
                             controller: function($scope, $uibModalInstance, Oppiaineet, OsanMuokkausHelper) {
                                 $scope.kohdealueet = _.map(
                                     _.clone(OsanMuokkausHelper.getOppiaine().kohdealueet) || [],
-                                    function(ka) {
+                                    function(ka: any) {
                                         ka.$vanhaNimi = _.clone(ka.nimi);
                                         return ka;
                                     }

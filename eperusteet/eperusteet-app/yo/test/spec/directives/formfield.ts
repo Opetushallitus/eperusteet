@@ -1,5 +1,5 @@
 'use strict';
-/* global _ */
+import * as _ from "lodash";
 
 describe('Directive: formfield', function () {
 

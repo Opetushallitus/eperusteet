@@ -375,7 +375,7 @@ angular
         $scope.orderFn = Utils.nameSort;
 
         function getModel(object, item) {
-            var model = _.find(object, function(obj) {
+            var model = _.find(object, function(obj: any) {
                 return parseInt(obj._laajaalainenOsaaminen, 10) === item.id;
             });
             if (!model) {

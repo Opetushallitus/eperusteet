@@ -33,7 +33,7 @@ angular
         $scope.leikelauta = leikelauta;
         $scope.suoritustapa = suoritustapa;
         $scope.osaamisalat = [{}].concat(
-            _.map(_.clone(peruste.osaamisalat), function(oa) {
+            _.map(_.clone(peruste.osaamisalat), function(oa: any) {
                 return {
                     osaamisalakoodiArvo: oa.arvo,
                     osaamisalakoodiUri: oa.uri,

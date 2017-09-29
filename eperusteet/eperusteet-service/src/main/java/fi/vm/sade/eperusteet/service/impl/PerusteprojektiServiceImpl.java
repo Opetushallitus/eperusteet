@@ -275,7 +275,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 }
             }
         } catch (IOException ex) {
-            throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
+            // throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
         }
         return kayttajat;
     }

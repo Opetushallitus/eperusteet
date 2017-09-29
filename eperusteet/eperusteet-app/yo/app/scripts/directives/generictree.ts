@@ -17,7 +17,7 @@
 // TODO: removeme, working local "fork" of the generictree to avoid height: 900px container div
 
 "use strict";
-/* global _, angular */
+import * as _ from "lodash";
 
 angular
     .module("eGenericTree", [])
@@ -50,7 +50,7 @@ angular
                     return $scope.treeProvider.hidden(node);
                 };
             },
-            link: function(scope, element) {
+            link: function(scope: any, element) {
                 $animate.enabled(false, element);
                 var node = scope.node;
                 const children = scope.treeProvider.children(node);

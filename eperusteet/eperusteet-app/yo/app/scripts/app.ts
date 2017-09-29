@@ -14,25 +14,30 @@
  * European Union Public Licence for more details.
  */
 
-angular
-    .module("eperusteApp", [
+import * as angular from "angular";
+import * as _ from "lodash";
+import * as moment from "moment";
+
+import yleinenData from "./services/yleinenData";
+
+angular.module("eperusteApp", [
         "ngSanitize",
         "ui.router",
         "ngResource",
         "restangular",
-        // 'ngAnimate', Saattaa nopeuttaa puurakenteiden renderöintiä
+        // // 'ngAnimate', Saattaa nopeuttaa puurakenteiden renderöintiä
         "pascalprecht.translate",
         "ui.bootstrap",
         "angular-cache",
-        "ui.utils",
+        // "ui.utils",
         "ui.sortable",
         "monospaced.elastic",
         "ui.tree",
         "ui.select",
-        "eperusteet.esitys",
+        // "eperusteet.esitys",
         "ngFileUpload",
         "eGenericTree",
-        "eMathDisplay",
+        // "eMathDisplay",
         "LocalStorageModule"
     ])
     .constant("SERVICE_LOC", "/eperusteet-service/api")
@@ -47,7 +52,7 @@ angular
     .constant("LUKITSIN_MAKSIMI", 20000)
     .constant("TEXT_HIERARCHY_MAX_DEPTH", 8)
     .constant("SHOW_VERSION_FOOTER", true)
-    .constant("DEBUG_UI_ROUTER", true)
+    .constant("DEVELOPMENT", (global as any).DEVELOPMENT || false)
     .config(($sceProvider, $urlRouterProvider, $translateProvider, $urlMatcherFactoryProvider, $locationProvider) => {
         const preferred = "fi";
 
@@ -71,10 +76,10 @@ angular
 
         moment.locale(preferred);
     })
-    .config(epEsitysSettingsProvider => {
-        epEsitysSettingsProvider.setValue("perusopetusState", "root.selaus.perusopetus");
-        epEsitysSettingsProvider.setValue("showPreviewNote", true);
-    })
+    // .config(epEsitysSettingsProvider => {
+    //     epEsitysSettingsProvider.setValue("perusopetusState", "root.selaus.perusopetus");
+    //     epEsitysSettingsProvider.setValue("showPreviewNote", true);
+    // })
     .config($rootScopeProvider => {
         $rootScopeProvider.digestTtl(20);
     })
@@ -119,11 +124,11 @@ angular
             }
         ]);
     })
-    .config($httpProvider => {
+    .config(($httpProvider: angular.IHttpProvider) => {
         $httpProvider.interceptors.push([
             "$rootScope",
             "$q",
-            ($rootScope, $q) => {
+            ($rootScope: angular.IScope, $q: angular.IQService) => {
                 return {
                     response: response => {
                         const uudelleenohjausStatuskoodit = [401, 412, 500];
@@ -188,7 +193,7 @@ angular
             }
         });
         _.mixin({
-            flattenTree: function(obj, extractChildren) {
+            flattenTree: function flattenTree(obj, extractChildren) {
                 if (!_.isArray(obj) && obj) {
                     obj = [obj];
                 }
@@ -199,7 +204,7 @@ angular
                     obj,
                     _(obj)
                         .map(function(o) {
-                            return _.flattenTree(extractChildren(o), extractChildren);
+                            return flattenTree(extractChildren(o), extractChildren);
                         })
                         .flatten()
                         .value()
@@ -224,7 +229,9 @@ angular
             }
         });
     })
-    .run($rootScope => {
+    .run((
+      $rootScope: angular.IScope,
+      $window: angular.IWindowService) => {
         const f = _.debounce(
             function() {
                 $rootScope.$broadcast("poll:mousemove");
@@ -235,7 +242,8 @@ angular
                 maxWait: 60000
             }
         );
-        angular.element(window).on("mousemove", f);
+
+        angular.element($window).on("mousemove", f);
     })
     .run(
         (
@@ -369,8 +377,8 @@ angular
             });
         }
     )
-    .run(($rootScope, DEBUG_UI_ROUTER) => {
-        if (DEBUG_UI_ROUTER) {
+    .run(($rootScope, DEVELOPMENT) => {
+        if (DEVELOPMENT) {
             $rootScope.$on("$stateChangeSuccess", (event, state, params) => {
                 console.info(
                     "%c" + state.name,
@@ -380,4 +388,6 @@ angular
                 );
             });
         }
-    });
+    })
+    .service("YleinenData", yleinenData)
+;

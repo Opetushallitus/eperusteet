@@ -32,7 +32,7 @@ angular
             },
             controller: "OsallinenOsaController",
             link: function(scope: any, element: any) {
-                if (_.has(scope.config.fieldRenderer)) {
+                if (_.isObject(scope.config) && scope.config.fieldRenderer) {
                     element
                         .find(".tutkinnonosa-sisalto")
                         .empty()

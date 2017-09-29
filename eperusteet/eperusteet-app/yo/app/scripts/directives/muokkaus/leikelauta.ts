@@ -23,7 +23,7 @@ angular.module("eperusteApp").directive("leikelauta", TutkinnonOsaLeikelautaServ
             isOpen: "="
         },
         link: function(scope, element, attrs) {
-            scope.leikelautaSortableOptions = TutkinnonOsaLeikelautaService.createLeikelautaSortable(scope, {
+            scope["leikelautaSortableOptions"] = TutkinnonOsaLeikelautaService.createLeikelautaSortable(scope, {
                 handle: ".handle",
                 connectWith:
                     ".container-items, .container-items-arviointi, .container-items-kohteet," +
@@ -36,8 +36,8 @@ angular.module("eperusteApp").directive("leikelauta", TutkinnonOsaLeikelautaServ
                 forcePlaceholderSize: true,
                 opacity: ".7"
             });
-            scope.poistaLeikelaudasta = TutkinnonOsaLeikelautaService.poistaLeikelaudasta;
-            scope.leikelauta = TutkinnonOsaLeikelautaService.initLeikelauta();
+            scope["poistaLeikelaudasta"] = TutkinnonOsaLeikelautaService.poistaLeikelaudasta;
+            scope["leikelauta"] = TutkinnonOsaLeikelautaService.initLeikelauta();
         }
     };
 });

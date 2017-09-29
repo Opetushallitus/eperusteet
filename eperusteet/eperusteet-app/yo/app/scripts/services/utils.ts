@@ -15,7 +15,7 @@
  */
 
 "use strict";
-/* global _ */
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -50,7 +50,7 @@ angular
             }
             var hasContent = false;
             var langs = _.values(YleinenData.kielet);
-            _.each(langs, function(key) {
+            _.each(langs, function(key: any) {
                 if (!_.isEmpty(field[key])) {
                     hasContent = true;
                 }

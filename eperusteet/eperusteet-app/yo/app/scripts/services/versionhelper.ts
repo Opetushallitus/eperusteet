@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("VersionHelper", function(
@@ -34,15 +37,15 @@ angular
         Kayttajatiedot,
         $q
     ) {
-        const rakennaNimet = list => {
+        const rakennaNimet = (list: any) => {
             let reqs = [];
-            _.forEach(_.uniq(list, "muokkaajaOid"), i =>
-                reqs.push(Kayttajatiedot.get({ oid: i.muokkaajaOid }).$promise)
-            );
+            _.forEach(_.uniq(list, "muokkaajaOid"), (i: any) => {
+                reqs.push(Kayttajatiedot.get({ oid: i.muokkaajaOid }).$promise);
+            });
 
             $q.all(reqs).then(function(values) {
-                _.forEach(list, name => {
-                    const henkilo = _.find(values, i => i.oidHenkilo === name.muokkaajaOid);
+                _.forEach(list, (name: any) => {
+                    const henkilo = _.find(values, (i: any) => i.oidHenkilo === name.muokkaajaOid);
                     const nimi = _.isEmpty(henkilo)
                         ? " "
                         : (henkilo.kutsumanimi || "") + " " + (henkilo.sukunimi || "");
@@ -326,7 +329,7 @@ angular
                 return;
             }
 
-            data.latest = data.chosen.index === latest(data.list).index;
+            data.latest = data.chosen.index === (latest(data.list) as any).index;
             var versionlessUrl = $state
                 .href($state.current.name, { versio: null }, { inherit: true })
                 .replace(/#/g, "");

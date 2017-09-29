@@ -143,7 +143,7 @@ angular
         PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true).then(function(data) {
             $scope.oppiaineet = data;
             $scope.oppiaineMap = _.zipObject(
-                _.map(data, function(oppiaine) {
+                _.map(data, function(oppiaine: any) {
                     oppiaine.$url = $scope.generateLink(oppiaine);
                     return ["" + oppiaine.id, oppiaine];
                 })
@@ -475,7 +475,7 @@ angular
         };
 
         $scope.getVuosiluokkakokonaisuus = function(oppiaineenVuosiluokkakokonaisuus) {
-            return _.find($scope.vuosiluokkakokonaisuudet, function(item) {
+            return _.find($scope.vuosiluokkakokonaisuudet, function(item: any) {
                 return item.id === parseInt(oppiaineenVuosiluokkakokonaisuus._vuosiluokkaKokonaisuus, 10);
             });
         };
@@ -515,7 +515,7 @@ angular
         $scope.getTitle = getTitle;
 
         function updateChosen() {
-            $scope.chosenVuosiluokat = _.map($scope.editableModel.vuosiluokkakokonaisuudet, function(item) {
+            $scope.chosenVuosiluokat = _.map($scope.editableModel.vuosiluokkakokonaisuudet, function(item: any) {
                 return parseInt(item._vuosiluokkaKokonaisuus, 10);
             });
         }
@@ -561,7 +561,7 @@ angular
                         return _.indexOf($scope.chosenVuosiluokat, item.id) > -1;
                     },
                     remove: function() {
-                        var index = _.findIndex($scope.editableModel.vuosiluokkakokonaisuudet, function(vlk) {
+                        var index = _.findIndex($scope.editableModel.vuosiluokkakokonaisuudet, function(vlk: any) {
                             return parseInt(vlk._vuosiluokkaKokonaisuus, 10) === item.id;
                         });
                         $scope.editableModel.vuosiluokkakokonaisuudet.splice(index, 1);
@@ -625,7 +625,7 @@ angular
         }
 
         function getVlkField(vlk) {
-            return _.find($scope.fields, function(field) {
+            return _.find($scope.fields, function(field: any) {
                 return field.id === vlk.id;
             });
         }
@@ -652,14 +652,14 @@ angular
         $scope.vlkOrderFn = VlkUtils.orderFn;
 
         function getField(value) {
-            return _.find($scope.fields, function(field) {
+            return _.find($scope.fields, function(field: any) {
                 return field.path === value;
             });
         }
 
         function setOsio(key) {
             if (MuokkausUtils.hasValue($scope.model, key)) {
-                var field = getField(key);
+                var field: any = getField(key);
                 if (field) {
                     $scope.activeOsiot.push({ model: $scope.model[key], field: field });
                     field.visible = true;
@@ -798,7 +798,7 @@ angular
         LukiokoulutusService.getOsat(LukiokoulutusService.OPPIAINEET_OPPIMAARAT, true).then(function(data) {
             $scope.oppiaineet = data;
             $scope.oppiaineMap = _.zipObject(
-                _.map(data, function(oppiaine) {
+                _.map(data, function(oppiaine: any) {
                     oppiaine.$url = $scope.generateLink(oppiaine);
                     return ["" + oppiaine.id, oppiaine];
                 })
@@ -1162,14 +1162,14 @@ angular
         $scope.vlkOrderFn = VlkUtils.orderFn;
 
         function getField(value) {
-            return _.find($scope.fields, function(field) {
+            return _.find($scope.fields, function(field: any) {
                 return field.path === value;
             });
         }
 
         function setOsio(key) {
             if (MuokkausUtils.hasValue($scope.model, key)) {
-                var field = getField(key);
+                var field: any = getField(key);
                 if (field) {
                     $scope.activeOsiot.push({ model: $scope.model[key], field: field });
                     field.visible = true;

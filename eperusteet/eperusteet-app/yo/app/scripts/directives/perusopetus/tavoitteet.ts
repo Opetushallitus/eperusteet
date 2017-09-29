@@ -102,7 +102,7 @@ angular
 
         function generateArraySetter(findFrom, manipulator = _.noop) {
             return function(item) {
-                var found = _.find(findFrom, function(findItem) {
+                var found = _.find(findFrom, function(findItem: any) {
                     return parseInt(findItem, 10) === item.id;
                 });
                 item = _.clone(item);
@@ -130,9 +130,9 @@ angular
                     tavoite.$accordionOpen = true;
                 }
 
-                var kohdealueId = !_.isEmpty(tavoite.kohdealueet) ? _.first(tavoite.kohdealueet) : null;
+                var kohdealueId: any = !_.isEmpty(tavoite.kohdealueet) ? _.first(tavoite.kohdealueet) : null;
                 if (kohdealueId) {
-                    tavoite.$valittuKohdealue = _.find($scope.kohdealueet, function(ka) {
+                    tavoite.$valittuKohdealue = _.find($scope.kohdealueet, function(ka: any) {
                         return ka.id === parseInt(kohdealueId, 10);
                     });
                 }
@@ -141,7 +141,7 @@ angular
                 tavoite.$osaaminen = _.map(
                     $scope.osaamiset,
                     generateArraySetter(tavoite.laajattavoitteet, function(osaaminen) {
-                        var vuosiluokkakuvaus = _.find($scope.vuosiluokka.laajaalaisetOsaamiset, function(item) {
+                        var vuosiluokkakuvaus = _.find($scope.vuosiluokka.laajaalaisetOsaamiset, function(item: any) {
                             return "" + item._laajaalainenOsaaminen === "" + osaaminen.id;
                         });
                         osaaminen.teksti = vuosiluokkakuvaus ? vuosiluokkakuvaus.kuvaus : "ei-kuvausta";
@@ -167,7 +167,7 @@ angular
         }
 
         function accordionState() {
-            var obj = _.first($scope.model.tavoitteet);
+            var obj: any = _.first($scope.model.tavoitteet);
             return obj && obj.$accordionOpen;
         }
 

@@ -14,9 +14,10 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
+import * as angular from "angular";
 
-angular.module("eperusteApp").service("KeyboardListener", function($window, Editointikontrollit) {
+angular.module("eperusteApp")
+    .service("KeyboardListener", function($window, Editointikontrollit) {
     this.init = angular.noop;
 
     function clickRoleButton(role) {

@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .value("UiKieli", { kielikoodi: "fi" })
@@ -88,7 +91,7 @@ angular
                 modal: "@modal"
             },
             controller: "KieliCtrl",
-            templateUrl: "views/directives/kielenvaihto.html"
+            template: require("views/directives/kielenvaihto.pug")
         };
     })
     .controller("KieliCtrl", function(

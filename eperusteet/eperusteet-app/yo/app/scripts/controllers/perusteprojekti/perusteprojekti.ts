@@ -299,7 +299,7 @@ angular
             })
             .state("root.perusteprojekti.peruste", {
                 url: "/peruste",
-                templateUrl: "views/partials/perusteprojekti/peruste.html",
+                template: require("views/partials/perusteprojekti/peruste.pug"),
                 controller: "PerusteenTiedotCtrl",
                 onEnter: PerusteProjektiSivunavi => {
                     PerusteProjektiSivunavi.setVisible(false);

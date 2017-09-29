@@ -15,7 +15,7 @@
  */
 
 "use strict";
-/* global _ */
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -136,7 +136,7 @@ angular
         };
 
         $scope.tallennaTekstikappaleet = function(tekstikentat) {
-            var filtered = _.reject(tekstikentat, function(tk) {
+            var filtered = _.reject(tekstikentat, function(tk: any) {
                 return tk.$ladattu === true;
             });
             var doneSuccess = _.after(_.size(filtered), function() {
@@ -144,7 +144,7 @@ angular
                 $scope.uploadSuccessTekstikappaleet = true;
             });
 
-            _.forEach(filtered, function(tk) {
+            _.forEach(filtered, function(tk: any) {
                 tk.tila = "luonnos";
                 tk.osanTyyppi = "tekstikappale";
                 var viite = { perusteenOsa: tk };
@@ -171,7 +171,7 @@ angular
         };
 
         $scope.tallennaOsatutkinnot = function() {
-            var filtered = _.filter($scope.osatutkinnot, function(ot) {
+            var filtered = _.filter($scope.osatutkinnot, function(ot: any) {
                 return ot.$ladattu !== 0;
             });
             var doneSuccess = _.after(_.size(filtered), function() {
@@ -179,10 +179,10 @@ angular
                 Notifikaatiot.onnistui("tallennus-onnistui");
             });
 
-            _.forEach(filtered, function(ot) {
+            _.forEach(filtered, function(ot: any) {
                 ot.koodiUri = ot.koodiUri || null;
                 ot.koodiArvo = ot.koodiUri || null;
-                var koodiUriKaytossa = _.any($scope.osatutkinnot, function(toinen) {
+                var koodiUriKaytossa = _.any($scope.osatutkinnot, function(toinen: any) {
                     return ot !== toinen && ot.koodiUri && toinen.koodiUri === ot.koodiUri;
                 });
                 if (koodiUriKaytossa) {

@@ -290,7 +290,7 @@ angular
                 $scope.lista = _(res.data)
                     .sortBy("voimassaoloLoppuu")
                     .reverse()
-                    .each(function(eo) {
+                    .each(function(eo: any) {
                         eo.$url = $state.href("root.selaus.esiopetus", { perusteId: eo.id });
                     })
                     .value();
@@ -362,7 +362,7 @@ angular
                 $scope.lista = _(res.data)
                     .sortBy("voimassaoloLoppuu")
                     .reverse()
-                    .each(function(eo) {
+                    .each(function(eo: any) {
                         // "Kovakoodatut" Hostit haetaan yleiselta datalta
                         eo.$url = YleinenData.getPerusteEsikatseluHost() + "/lukio/" + eo.id;
                     })
@@ -475,9 +475,9 @@ angular
         $scope.koulutusalaMuuttui = function() {
             $scope.hakuparametrit.opintoala = "";
             if ($scope.hakuparametrit.koulutusala !== "") {
-                $scope.opintoalat = _.findWhere($scope.koulutusalat, {
+                $scope.opintoalat = (_.findWhere($scope.koulutusalat, {
                     koodi: $scope.hakuparametrit.koulutusala
-                }).opintoalat;
+                }) as any).opintoalat;
             } else {
                 $scope.opintoalat = [];
             }

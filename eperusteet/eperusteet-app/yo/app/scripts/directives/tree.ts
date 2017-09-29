@@ -450,8 +450,6 @@ angular
         return {
             restrict: "AE",
             transclude: true,
-            terminal: true,
-            templateUrl: "views/partials/tree.html",
             scope: {
                 rakenne: "=",
                 voiLiikuttaa: "=",
@@ -459,6 +457,7 @@ angular
                 muokkaus: "=",
                 esitys: "=?"
             },
+            templateUrl: "views/partials/tree.html",
             controller: "TreeWrapperController"
         };
     })

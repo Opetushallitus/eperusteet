@@ -15,7 +15,7 @@
  */
 
 "use strict";
-/*global _*/
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")

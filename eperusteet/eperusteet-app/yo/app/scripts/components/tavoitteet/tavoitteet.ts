@@ -34,7 +34,7 @@ interface Kohdealue {
 
 angular.module("eperusteApp").directive("aipeTavoitteet", () => {
     return {
-        templateUrl: "scripts/components/tavoitteet/tavoitteet.html",
+        templateUrl: require("scripts/components/tavoitteet/tavoitteet.pug"),
         restrict: "E",
         scope: {
             model: "=",

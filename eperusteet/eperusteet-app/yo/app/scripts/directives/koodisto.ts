@@ -14,8 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _, $ */
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")

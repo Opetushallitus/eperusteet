@@ -14,7 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
+
+declare var XLSX: any;
 
 angular
     .module("eperusteApp")
@@ -409,7 +410,7 @@ angular
                                     kriteerit: []
                                 });
                             }
-                            _.last(okt).kriteerit.push({
+                            _.last(okt)["kriteerit"].push({
                                 fi: suodataTekstipala(kriteeri.v)
                             });
                         }
@@ -457,10 +458,10 @@ angular
                 }
             }
 
-            _.forEach(anchors, function(anchor, index) {
+            _.forEach(anchors, function(anchor, index: any) {
                 var osa: any = {};
 
-                _.forEach(_.pick(osatutkintoMap.parsittavatKentat, osatutkintoMap.info), function(value, key) {
+                _.forEach(_.pick(osatutkintoMap.parsittavatKentat, osatutkintoMap.info), function(value: any, key) {
                     var solu = kentat[key] + anchor;
                     var arvo = "";
                     if (data[solu]) {
@@ -491,7 +492,7 @@ angular
                 osa.arviointi.lisatiedot.fi = "";
                 osa.arviointi.arvioinninKohdealueet = [];
 
-                var nextAnchor = index < anchors.length - 1 ? anchors[index + 1] : height;
+                var nextAnchor = (index < anchors.length - 1) ? anchors[index + 1] : height;
                 var arvioinninKohdealue: any = {};
                 var sizeRange = _.range(anchor, nextAnchor + 1);
 

@@ -17,7 +17,7 @@
 angular.module("eperusteApp").config($stateProvider => {
     $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosalistaus", {
         url: "/aipeosat/:osanTyyppi",
-        templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/view.html",
+        template: require("scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/view.pug"),
         resolve: {
             perusteprojektit: Api => Api.all("perusteprojektit"),
             perusteprojekti: (perusteprojektit, $stateParams) =>

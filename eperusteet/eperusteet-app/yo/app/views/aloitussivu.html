@@ -8,4 +8,67 @@
         </div>
     </a>
 </div>
-<div class="col-md-4" ng-include="'views/partials/sivupalkki.html'"></div>
+<div class="col-md-4">
+    <div class="row">
+        <div class="col-xs-12 sidebar">
+            <div ng-controller="SuosikitCtrl">
+                <div class="panel panel-default">
+                    <div class="panel-heading">{{'suosikit-otsikko' | kaanna}}
+                        <button class="btn btn-default btn-sm suosikit-muokkaus"
+                                ng-show="suosikit.length > 0"
+                                ng-click="edit()"
+                                icon-role="edit"
+                                kaanna="'muokkaa'"></button>
+                    </div>
+                    <div class="panel-body">
+                        <p ng-show="suosikit.length === 0" kaanna="ei-suosikkeja"></p>
+                        <ul class="list-unstyled">
+                            <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit|limitTo:naytto.shown">
+                                <a ng-href="{{ suosikki.$url }}" ng-attr-title="{{ suosikki.nimi || 'nimetön' | kaanna }}">
+                                    {{ suosikki.nimi || 'nimetön' | kaanna }}
+                                </a>
+                            </li>
+                        </ul>
+                        <limit-toggler limit="naytto.limit" model="suosikit" limiter="naytto.shown"></limit-toggler>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-controller="OmatperusteprojektitCtrl">
+                <div class="panel panel-default" ng-if="projektit.length > 0">
+                    <div class="panel-heading" kaanna="perusteprojektit-otsikko"></div>
+                    <div class="panel-body">
+                        <p ng-show="projektit.length === 0" kaanna="ei-projekteja"></p>
+                        <ul class="list-unstyled projektit">
+                            <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit | limitTo:naytto.shown">
+                                <a ng-show="projekti.diaarinumero" title="{{projekti.nimi}}" href="{{ projekti.url}}">
+                                    {{projekti.diaarinumero }}: {{projekti.nimi}}</a>
+                                <a ng-hide="projekti.diaarinumero" title="{{projekti.nimi}}" href="{{ projekti.url}}">
+                                    <b>{{'perustepohja' | kaanna }}</b>: {{projekti.nimi}}
+                                </a>
+                            </li>
+                        </ul>
+                        <limit-toggler limit="naytto.limit" model="projektit" limiter="naytto.shown"></limit-toggler>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default" ng-controller="SivupalkkiTiedotteetController">
+                <div class="panel-heading" kaanna="'tiedotteet'"></div>
+                <div class="panel-body">
+                    <p ng-show="tiedotteet.length === 0" kaanna="ei-tiedotteita"></p>
+                    <ul class="list-unstyled etusivu-tiedotteet">
+                        <li class="etusivu-tiedote"
+                            ng-repeat="tiedote in tiedotteet | orderBy:'luotu':true | limitTo:naytto.shown">
+                            <a ui-sref="root.tiedote({tiedoteId: tiedote.id})">
+                                {{tiedote.luotu | aikaleima:'time':'date'}}: {{tiedote.otsikko | kaanna}}
+                            </a>
+                            <span class="badge pull-right" ng-if="tiedote.julkinen">{{'tiedote-julkinen' | kaanna}}</span>
+                        </li>
+                    </ul>
+                    <limit-toggler limit="naytto.limit" model="tiedotteet" limiter="naytto.shown"></limit-toggler>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

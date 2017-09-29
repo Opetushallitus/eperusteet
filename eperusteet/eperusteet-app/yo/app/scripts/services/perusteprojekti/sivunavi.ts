@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-import Lokalisoitu = Lokalisointi.Lokalisoitu;
-
 angular
     .module("eperusteApp")
     .service("PerusteProjektiSivunavi", function(
@@ -205,7 +203,7 @@ angular
 
         function ylMapper(targetItems, osa, key, level, link?, parent?) {
             level = level || 0;
-            let nimi: Lokalisoitu = _.has(osa, "nimi") ? osa.nimi : osa.perusteenOsa.nimi;
+            let nimi = _.has(osa, "nimi") ? osa.nimi : osa.perusteenOsa.nimi;
             if (
                 perusteenTyyppi === "LU" &&
                 key === "oppiaineet_oppimaarat" &&

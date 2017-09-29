@@ -15,7 +15,7 @@
  */
 
 "use strict";
-/*global _*/
+import * as _ from "lodash";
 
 angular.module("eperusteApp").service("Opintoalat", function Opintoalat($resource, SERVICE_LOC) {
     var opintoalatResource = $resource(

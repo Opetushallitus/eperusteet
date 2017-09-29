@@ -52,7 +52,7 @@ angular
                 '<span class="glyphicon glyphicon-refresh spin"></span>' +
                 "</div>",
             restrict: "E",
-            link: function($scope) {
+            link: function($scope: any) {
                 $scope.isSpinning = false;
 
                 function spin(state) {
@@ -73,7 +73,10 @@ angular
         return {
             restrict: "EA",
             link: function(scope, element) {
-                element.prepend('<img class="small-spinner" src="images/spinner-small.gif" alt="">');
+                const img = document.createElement("img");
+                img.className = "small-spinner";
+                img.src = require("images/spinner-small.gif");
+                element.prepend(img);
             }
         };
     });

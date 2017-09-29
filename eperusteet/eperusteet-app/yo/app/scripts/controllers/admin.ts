@@ -44,7 +44,7 @@ angular
             })
             .state("root.admin.oppaat", {
                 url: "/oppaat",
-                templateUrl: "views/admin/oppaat.html",
+                template: require("views/admin/oppaat.pug"),
                 controller: "OpasHallintaController"
             });
     })

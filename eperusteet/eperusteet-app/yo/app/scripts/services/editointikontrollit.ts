@@ -1,3 +1,6 @@
+import * as _ from "lodash";
+import * as angular from "angular";
+
 interface EditointiKontrollitCallbacks {
     edit: any;
     save: any;
@@ -21,14 +24,14 @@ interface EditointiKontrollitCallbacks {
  * - canCancel Called before cancel, must return a promise.
  *             If promise is resolved, canceling continues.
  */
-angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Utils, Notifikaatiot) => {
+angular.module("eperusteApp")
+    .factory("Editointikontrollit", ($rootScope, $q, Utils, Notifikaatiot) => {
     let scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
 
     scope.editModeDefer = $q.defer();
 
-    this.lastModified = null;
     let cbListener = _.noop;
     let editmodeListener = null;
 
@@ -45,6 +48,7 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
     }
 
     return {
+        lastModified: null,
         async startEditing() {
             try {
                 await scope.editingCallback.edit();

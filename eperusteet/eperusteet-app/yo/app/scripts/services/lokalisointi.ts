@@ -14,6 +14,16 @@
  * European Union Public Licence for more details.
  */
 
+const fi = require("../../localisation/locale-fi.json");
+const sv = require("../../localisation/locale-fi.json");
+const en = require("../../localisation/locale-fi.json");
+
+const Locales = {
+  fi,
+  sv,
+  en,
+};
+
 angular
     .module("eperusteApp")
     .factory("LokalisointiResource", (LOKALISOINTI_SERVICE_LOC, $resource) => {
@@ -33,35 +43,31 @@ angular
         const PREFIX = "localisation/locale-",
             SUFFIX = ".json",
             BYPASS_REMOTE = $window.location.host.indexOf("localhost") === 0;
-        return options => {
-            const deferred = $q.defer();
+        return async (options) => new Promise((resolve, reject) => {
             const translations = {};
-            $http({
-                url: PREFIX + options.key + SUFFIX,
-                method: "GET",
-                params: ""
-            })
-                .then(res => {
-                    _.extend(translations, res.data);
-                    if (BYPASS_REMOTE) {
-                        deferred.resolve(translations);
-                    } else {
-                        LokalisointiResource.get(
-                            { locale: options.key },
-                            res => {
-                                const remotes = _.zipObject(_.map(res, "key"), _.map(res, "value"));
-                                _.extend(translations, remotes);
-                                deferred.resolve(translations);
-                            },
-                            () => {
-                                deferred.reject(options.key);
-                            }
-                        );
-                    }
-                })
-                .catch(() => {
-                    deferred.reject(options.key);
-                });
-            return deferred.promise;
-        };
+            const langs = Locales[options.key];
+
+            try {
+                _.extend(translations, langs);
+                if (BYPASS_REMOTE) {
+                    return resolve(translations);
+                }
+                else {
+                    LokalisointiResource.get(
+                        { locale: options.key },
+                        (res: any) => {
+                            const remotes = _.zipObject(_.map(res, "key"), _.map(res, "value"));
+                            _.extend(translations, remotes);
+                            resolve(translations);
+                        },
+                        () => {
+                            reject(options.key);
+                        }
+                    );
+                }
+            }
+            catch (err) {
+                throw options.key;
+            }
+        });
     });

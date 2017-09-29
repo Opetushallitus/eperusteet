@@ -14,8 +14,10 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _, moment */
+
+import * as angular from "angular";
+import * as _ from "lodash";
+import * as moment from "moment";
 
 angular
     .module("eperusteApp")

@@ -16,7 +16,7 @@
 
 angular.module("eperusteApp").directive("sortableTable", () => {
     return {
-        templateUrl: "scripts/directives/sortabletable.html",
+        template: require("scripts/directives/sortabletable.pug"),
         restrict: "E",
         scope: {
             ngModel: "=",

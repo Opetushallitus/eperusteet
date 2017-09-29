@@ -50,7 +50,7 @@ angular
         return {
             templateUrl: "views/partials/fileselect.html",
             restrict: "E",
-            link: function($scope, el, attrs) {
+            link: function($scope: any, el, attrs) {
                 $scope.flabel = attrs.flabel || "selaa";
                 function loadFile(file) {
                     if (!file) {
@@ -95,7 +95,7 @@ angular
                     }
                 });
 
-                el.bind("change", function(e) {
+                el.bind("change", function(e: any) {
                     loadFile(e.target.files[0]);
                 });
             }
