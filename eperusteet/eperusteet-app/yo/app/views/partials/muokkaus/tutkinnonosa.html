@@ -182,7 +182,12 @@
                     </div>
 
                     <div class="tutkinnonosa-sisalto" ng-if="isTutke2(editableTutkinnonOsaViite)">
-                        <tutke2kentat edit-enabled="editEnabled" tutkinnonosa-viite="tutkinnonOsaPromise" kontrollit="editointikontrollit" yksikko="yksikko"></tutke2kentat>
+                        <tutke2kentat id="muokattavat-kentat"
+                                      edit-enabled="editEnabled"
+                                      tutkinnonosa-viite="tutkinnonOsaPromise"
+                                      kontrollit="editointikontrollit"
+                                      yksikko="yksikko">
+                        </tutke2kentat>
                     </div>
                 </div>
 

@@ -38,6 +38,11 @@ public enum TutkinnonOsaTyyppi {
         return tyyppi;
     }
 
+    public static boolean isTutke(TutkinnonOsaTyyppi tyyppi) {
+        return tyyppi.equals(TutkinnonOsaTyyppi.TUTKE2)
+                || tyyppi.equals(TutkinnonOsaTyyppi.REFORMI_TUTKE2);
+    }
+
     @JsonCreator
     public static TutkinnonOsaTyyppi of(String tyyppi) {
         for (TutkinnonOsaTyyppi s : values()) {

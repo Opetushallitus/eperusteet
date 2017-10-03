@@ -153,9 +153,6 @@ angular
                 peruste.koulutustyyppi,
                 _.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" })
             );
-        console.log(_.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" }));
-        console.log("$stateParams.suoritustapa", $stateParams.suoritustapa);
-        console.log("PerusteProjektiService.getSuoritustapa()", PerusteProjektiService.getSuoritustapa());
 
         $scope.hasPdf = (kieli: string, version: string = $scope.versiot.valittu) => {
             const doc = version === "kvliite" ? $scope.kvliitteet[kieli] : $scope.docs[kieli];

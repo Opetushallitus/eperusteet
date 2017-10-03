@@ -806,7 +806,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     List<LokalisoituTekstiDto> koodittomatOsaalueet = new ArrayList<>();
                     for (TutkinnonOsaViite tov : suoritustapa.getTutkinnonOsat()) {
                         TutkinnonOsa tosa = tov.getTutkinnonOsa();
-                        if (tosa.getTyyppi() == TutkinnonOsaTyyppi.TUTKE2) {
+                        if (TutkinnonOsaTyyppi.isTutke(tosa.getTyyppi())) {
                             for (OsaAlue oa : tosa.getOsaAlueet()) {
                                 OsaAlueDto alueDto = mapper.map(oa, OsaAlueDto.class);
                                 if (alueDto.getKoodiArvo() == null || alueDto.getKoodiArvo().isEmpty() ||

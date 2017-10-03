@@ -2,7 +2,8 @@
 <h1 kaanna="'muokkaa-osa-aluetta'"></h1>
 <p kaanna="tahdella-pakolliset"></p>
 <hr class="versioraja">
-<div class="non-collapsibles">
+<div id="muokattavat-kentat"
+     class="non-collapsibles">
     <label class="header" kaanna="'tutkinnonosa'"></label>
     <p ng-bind="tutkinnonOsaViite.tutkinnonOsa.nimi | kaanna"></p>
     <label class="header">{{'nimi'| kaanna}}*</label>
@@ -26,18 +27,22 @@
 
     <hr class="mujuviiva">
 
-    <div ng-repeat="tavoite in osaamistavoitepuu | filter:{$poistettu: false}" class="panel-clean osa-alue">
-        <div style="cursor: pointer">
+    <div ng-repeat="tavoite in osaamistavoitepuu | filter:{$poistettu: false}"
+         class="panel-clean osa-alue">
+        <div ng-hide="tutkinnonOsaViite.tutkinnonOsa.tyyppi == 'reformi_tutke2'"
+             style="cursor: pointer">
             <h2 ng-click="tavoite.$open = !tavoite.$open">
                 <span class="glyphicon"
                       ng-class="tavoite.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
-                {{ tavoite.nimi | kaanna }}
+                <span kaanna="tavoite.nimi"></span>
             </h2>
         </div>
 
-        <div ng-if="tavoite.$open" class="osa-alue-sisalto">
-            <label>{{'nimi'| kaanna}}*</label>
-            <input class="form-control" slocalized ng-model="tavoite.nimi" type="text">
+        <div ng-if="tutkinnonOsaViite.tutkinnonOsa.tyyppi == 'reformi_tutke2' || tavoite.$open" class="osa-alue-sisalto">
+            <div ng-hide="tutkinnonOsaViite.tutkinnonOsa.tyyppi == 'reformi_tutke2'">
+                <label>{{'nimi'| kaanna}}*</label>
+                <input class="form-control" slocalized ng-model="tavoite.nimi" type="text">
+            </div>
 
             <h3 ng-show="tavoite.pakollinen === true">
                 {{('pakolliset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
