@@ -165,7 +165,6 @@ angular
 
             $scope.isTutke2 = YleinenData.isTutke2;
             $scope.isReformi = _.find($scope.peruste.suoritustavat, st => st.suoritustapakoodi === "reformi") != null;
-            console.log("isReformi", $scope.isReformi);
 
             let tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
