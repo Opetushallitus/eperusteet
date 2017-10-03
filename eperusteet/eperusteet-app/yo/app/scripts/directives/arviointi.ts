@@ -298,7 +298,7 @@ angular
                     _.each(obj, function(kohdealue) {
                         kohdealue.$$accordionOpen = mode;
                         _.each(kohdealue.arvioinninKohteet, function(kohde) {
-                            kohde.$accordionOpen = mode;
+                            kohde.$$accordionOpen = mode;
                         });
                     });
                 }
