@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
     "build": "./node_modules/webpack/bin/webpack.js -p --config webpack.prod.js",
-    "unit": "jest --no-cache --verbose",
+    "unit": "./node_modules/jest/bin/jest.js --no-cache --verbose",
     "ci": "yarn unit && yarn build",
-    "unit:watch": "jest --verbose --watch",
-    "coverage": "jest --verbose --coverage",
+    "unit:watch": "./node_modules/jest/bin/jest.js --verbose --watch",
+    "coverage": "./node_modules/jest/bin/jest.js --verbose --coverage",
     "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write \"app/scripts/**/*.ts\" \"app/styles/**/*.{scss,css}\""
   },
   "dependencies": {

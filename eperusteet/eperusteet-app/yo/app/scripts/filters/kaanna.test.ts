@@ -69,6 +69,7 @@ describe("Kaanna", () => {
         Kieli.setUiKieli("sv");
         expect(Kieli.getUiKieli()).toEqual("sv");
         expect($stateParams.lang).toEqual("sv");
+        expect(Kaanna.kaanna(obj)).toEqual("fi foobar");
 
         Kieli.setUiKieli("fi");
         expect(Kieli.getUiKieli()).toEqual("fi");

@@ -1,5 +1,3 @@
-// FIXME: https://github.com/react-community/create-react-native-app/issues/51
-
 import { getComponent, inject, getOfType, testModule, mockApp } from "app/testutils";
 import * as _ from "lodash";
 

@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import { createPerusteprojekti, createPeruste, getComponent, inject, getOfType, testModule, mockApp } from "app/testutils";
 import * as T from "scripts/types.ts";
 
+
 describe("PerusteProjektiService", () => {
     let PerusteProjektiService: any;
 
