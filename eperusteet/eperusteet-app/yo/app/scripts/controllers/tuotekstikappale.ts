@@ -19,7 +19,7 @@ import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
-    .controller("TuoTekstikappale", function(
+    .controller("TuoTekstikappaleController", function(
         $q,
         $scope,
         $uibModalInstance,

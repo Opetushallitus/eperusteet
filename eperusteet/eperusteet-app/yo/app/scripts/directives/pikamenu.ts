@@ -70,10 +70,10 @@ angular
                 });
                 angular.element($window).on("resize", updatePosition);
             },
-            controller: "TutkinnonOsatPikamenu"
+            controller: "TutkinnonOsatPikamenuController"
         };
     })
-    .controller("TutkinnonOsatPikamenu", function($scope, Kaanna) {
+    .controller("TutkinnonOsatPikamenuController", function($scope, Kaanna) {
         $scope.pikamenu = {
             opened: false,
             orderFn: function(key) {

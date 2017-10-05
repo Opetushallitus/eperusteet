@@ -6,9 +6,10 @@
     "dev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
     "build": "./node_modules/webpack/bin/webpack.js -p --config webpack.prod.js",
     "unit": "./node_modules/jest/bin/jest.js --no-cache --verbose",
-    "ci": "yarn unit && yarn build",
-    "unit:watch": "./node_modules/jest/bin/jest.js --verbose --watch",
+    "unit:watch": "./node_modules/jest/bin/jest.js --watch",
+    "unit:debug": "node --inspect --debug-brk ./node_modules/jest/bin/jest.js --runInBand --verbose",
     "coverage": "./node_modules/jest/bin/jest.js --verbose --coverage",
+    "ci": "yarn unit && yarn build",
     "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write \"app/scripts/**/*.ts\" \"app/styles/**/*.{scss,css}\""
   },
   "dependencies": {
@@ -46,6 +47,7 @@
     "lodash": "3.10.1",
     "moment": "2.17.1",
     "ng-file-upload": "^12.2.13",
+    "node-inspector": "^1.1.1",
     "restangular": "^1.6.1",
     "webpack-node-externals": "^1.6.0"
   },

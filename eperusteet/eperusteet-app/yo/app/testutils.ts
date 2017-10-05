@@ -75,7 +75,6 @@ import "scripts/controllers/tiedotteet";
 import "scripts/directives/spinner";
 import "scripts/controllers/modals/uudelleenohjaus";
 import "scripts/controllers/modals/muodostumisryhma";
-// import "scripts/directives/ckeditor";
 import "scripts/directives/fileselect";
 import "scripts/directives/formfield";
 import "scripts/directives/followscroll";
@@ -161,6 +160,7 @@ import "scripts/directives/oikeustarkastelu"
 import "scripts/controllers/modals/rakenneosamodal"
 import "scripts/controllers/perusteprojekti/tutkinnonosaosaalue"
 import "scripts/controllers/perusteprojekti/esiopetus"
+import "scripts/controllers/perusteprojekti/tpoopetus"
 import "scripts/directives/hallintalinkki"
 import "scripts/directives/muokkaus/aihekokonaisuudet"
 import "scripts/directives/muokkaus/lukiokoulutusyleisettavoitteet"
@@ -183,12 +183,12 @@ export const testModule = (name: string) => {
     }]);
 };
 
-export const getOfType = (type: "service" | "factory" | "filter" | "directive" | "state" | "register") => {
+export const getOfType = (type: "service" | "factory" | "filter" | "directive" | "state" | "controller") => {
     return _.chain(angular.module("eperusteApp")._invokeQueue)
-        .filter(val => val[1] === type)
+        .filter(val => type === "controller" ? val[0] === "$controllerProvider" : val[1] === type)
         .map(val => val[2][0])
         .value();
-}
+};
 
 export const mockApp = () => angular.mock.module("eperusteApp");
 
@@ -281,3 +281,34 @@ export function createPeruste(koulutustyyppi: Koulutustyyppi, config?: Object) {
         ...config
     }
 }
+
+expect.extend({
+    toHaveMemberMatching(received: Object, field: string, matcher: Function) {
+        if (!_.isObject(received)) {
+            return {
+                message() {
+                    return `expected an object`;
+                },
+                pass: false
+            }
+        }
+        else if (!received.hasOwnProperty(field)) {
+            return {
+                message() {
+                    return `expected object to contain field "${field}"`;
+                },
+                pass: false
+            }
+        }
+        else {
+            const pass = matcher(received[field]);
+            return {
+                message() {
+                    return `expected object field "${field}" value "${received[field]}" to match criteria`;
+                },
+                pass
+            }
+        }
+    }
+});
+

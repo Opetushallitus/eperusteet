@@ -155,7 +155,8 @@ angular
                 }
             }
 
-            const result = $state.href("root.perusteprojekti.suoritustapa." + sisaltoTunniste, {
+            const stateName = "root.perusteprojekti.suoritustapa." + sisaltoTunniste;
+            const result = $state.href(stateName, {
                 lang: $stateParams.lang || "fi",
                 perusteProjektiId: projekti.id,
                 suoritustapa

@@ -19,17 +19,17 @@ import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
-    .controller("EsiopetusSisaltoController", function(
+    .controller("TpoSisaltoController", function(
         $scope,
+        $state,
+        $stateParams,
         perusteprojektiTiedot,
         Algoritmit,
-        $state,
         SuoritustavanSisalto,
         TekstikappaleOperations,
         SuoritustapaSisalto,
         TutkinnonOsaEditMode,
         Notifikaatiot,
-        $stateParams,
         Editointikontrollit,
         YleinenData
     ) {

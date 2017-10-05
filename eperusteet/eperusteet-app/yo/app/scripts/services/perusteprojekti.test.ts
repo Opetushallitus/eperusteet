@@ -35,7 +35,7 @@ describe("PerusteProjektiService", () => {
         assertUrl("#/fi/perusteprojekti/2/lukiokoulutus/lukiosisalto", T.Lukiovalmistavakoulutus);
         assertUrl("#/fi/perusteprojekti/2/lukiokoulutus/lukiosisalto", T.Aikuistenlukiokoulutus);
         assertUrl("#/fi/perusteprojekti/2/esiopetus/eosisalto", T.Perusopetusvalmistava);
-        // assertUrl("#/fi/perusteprojekti/2/tpo/tposisalto", T.Tpo);
+        assertUrl("#/fi/perusteprojekti/2/tpo/tposisalto", T.Tpo, { suoritustavat: [] });
 
         // Oppaalla ei koulutustyyppia
         assertUrl("#/fi/perusteprojekti/2/opas/opassisalto", T.Perustutkinto, { tyyppi: "opas", koulutustyyppi: undefined });

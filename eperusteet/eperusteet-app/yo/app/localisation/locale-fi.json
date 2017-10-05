@@ -1154,13 +1154,13 @@
     "luo-pdf-dokumentti-oppaasta": "Luo dokumentti oppaasta",
     "oppaat": "Oppaat",
     "uusi-opas": "Uusi opas",
-    "ohje-oppaat": "",
+    "ohje-oppaat": "Oppaat",
     "luo-uusi-opas": "Luo uusi opas",
     "etsi-oppaista": "Etsi oppaista",
     "luo-opas": "Luo opas",
     "oppaan-nimi-label": "Oppaan nimi",
     "anna-oppaan-nimi-placeholder": "Anna oppaan nimi",
     "oppaan-oid-label": "Opastyöryhmä",
-    "luonti-opas-nimi-ohje": "",
+    "luonti-opas-nimi-ohje": "Oppaan nimi",
     "luo-opas-nappi": "Luo opas"
 }

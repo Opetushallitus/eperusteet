@@ -160,7 +160,7 @@ angular
                     $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
                     const hasCurrentSuoritustapa = _.any(
                         $scope.peruste.suoritustavat,
-                        st => st.suoritustapakoodi === $stateParams.suoritustapa
+                        (st: any) => st.suoritustapakoodi === $stateParams.suoritustapa
                     );
                     if (!hasCurrentSuoritustapa && !_.isEmpty($scope.peruste.suoritustavat)) {
                         $state.go(
@@ -269,6 +269,14 @@ angular
                 url: "/losisalto",
                 templateUrl: "views/partials/perusteprojekti/esiopetus.html",
                 controller: "EsiopetusSisaltoController",
+                onEnter: PerusteProjektiSivunavi => {
+                    PerusteProjektiSivunavi.setVisible(false);
+                }
+            })
+            .state("root.perusteprojekti.suoritustapa.tposisalto", {
+                url: "/tposisalto",
+                templateUrl: "views/partials/perusteprojekti/tpoopetus.html",
+                controller: "TpoSisaltoController",
                 onEnter: PerusteProjektiSivunavi => {
                     PerusteProjektiSivunavi.setVisible(false);
                 }

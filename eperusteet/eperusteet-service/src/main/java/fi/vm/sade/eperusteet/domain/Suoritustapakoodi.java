@@ -32,6 +32,7 @@ public enum Suoritustapakoodi {
     OPAS("opas"),
     ESIOPETUS("esiopetus"),
     AIPE("aipe"),
+    TPO("tpo"),
     LUKIOKOULUTUS("lukiokoulutus");
 
     private final String koodi;

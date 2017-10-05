@@ -66,7 +66,7 @@ export const koulutustyyppiInfo = {
     },
     koulutustyyppi_xyz: {
         nimi: "tpo",
-        oletusSuoritustapa: "tposisalto",
+        oletusSuoritustapa: "tpo",
         hasTutkintonimikkeet: false,
         hasLaajuus: false,
         hakuState: "root.selaus.ammatillinenaikuiskoulutus",

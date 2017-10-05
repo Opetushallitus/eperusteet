@@ -415,7 +415,7 @@ angular
                 $uibModal
                     .open({
                         templateUrl: "views/modals/tuotekstikappale.html",
-                        controller: "TuoTekstikappale",
+                        controller: "TuoTekstikappaleController",
                         size: "lg",
                         resolve: {
                             peruste: function() {

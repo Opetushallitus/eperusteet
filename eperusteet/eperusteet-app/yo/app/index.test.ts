@@ -20,6 +20,13 @@ describe("app", () => {
         getOfType("state").forEach(testModule);
     });
 
+    test("Komponentit on nimetty oikein", async () => {
+        getOfType("controller")
+            .forEach(comp => {
+                expect(comp).toEqual(expect.stringMatching(/^.+(Controller|Ctrl)$/));
+            })
+    })
+
     test("Modules can be injected with getComponent", async () => {
         const $rootScope = await getComponent("$rootScope");
         expect($rootScope).toBeTruthy();
@@ -29,4 +36,37 @@ describe("app", () => {
         inject($rootScope => expect($rootScope).toBeTruthy());
     });
 
+});
+
+
+describe("locale-x", () => {
+    const locales = [
+        ["fi", require("app/localisation/locale-fi.json")],
+        ["sv", require("app/localisation/locale-sv.json")],
+        ["en", require("app/localisation/locale-en.json")],
+    ];
+
+    test("Ei tyhjiä käännöksiä", () => {
+        for (const locale of _.map(locales, l => l[1])) {
+            for (const key of _.keys(locale)) {
+                expect(locale).toHaveMemberMatching(key, (value) => _.isString(value) && !_.isEmpty(value));
+            }
+        }
+    });
+
+    test.skip("Käännökset lisätty kaikilla kielillä", () => {
+        const fails = [];
+        for (const key of _.keys(locales[0][1])) {
+            for (const locale of _.tail(locales)) {
+                console.log(locale[1][key]);
+                if (!_.isString(locale[1][key]) || _.isEmpty(locale[1][key])) {
+                    fails.push({
+                        kieli: locale[0],
+                        avain: key,
+                    });
+                }
+            }
+        }
+        expect(fails.length).toEqual(0);
+    });
 });
