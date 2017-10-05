@@ -22,7 +22,7 @@ angular
     .config(function($stateProvider) {
         $stateProvider.state("root.virhe", {
             url: "/virhe",
-            templateUrl: "views/virhe.html",
+            template: require("views/virhe.html"),
             controller: "virheCtrl"
         });
     })

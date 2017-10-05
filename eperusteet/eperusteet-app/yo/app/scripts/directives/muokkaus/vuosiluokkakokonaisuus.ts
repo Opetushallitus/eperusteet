@@ -18,7 +18,7 @@ angular
     .module("eperusteApp")
     .directive("muokkausVuosiluokka", function() {
         return {
-            templateUrl: "views/directives/perusopetus/vuosiluokkakokonaisuus.html",
+            template: require("views/directives/perusopetus/vuosiluokkakokonaisuus.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -357,7 +357,7 @@ angular
     })
     .directive("vuosiluokkakokonaisuudenOsaaminen", function() {
         return {
-            templateUrl: "views/directives/perusopetus/vuosiluokkakokonaisuudenosaaminen.html",
+            template: require("views/directives/perusopetus/vuosiluokkakokonaisuudenosaaminen.html"),
             restrict: "A",
             scope: {
                 object: "=vuosiluokkakokonaisuudenOsaaminen",

@@ -61,7 +61,7 @@ angular
     })
     .directive("valmaarviointi", function(YleinenData, $timeout) {
         return {
-            templateUrl: "views/partials/valmaarviointi.html",
+            template: require("views/partials/valmaarviointi.html"),
             restrict: "E",
             scope: {
                 valmaarviointi: "=",

@@ -57,7 +57,7 @@ angular.module("eperusteApp").directive("formfield", function($parse, Kaanna, $t
         scope.isLabel = scope.type === "label";
     };
     return {
-        templateUrl: "views/partials/formfield.html",
+        template: require("views/partials/formfield.html"),
         transclude: true,
         restrict: "E",
         scope: {

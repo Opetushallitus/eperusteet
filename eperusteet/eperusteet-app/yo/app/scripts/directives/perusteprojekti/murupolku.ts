@@ -88,7 +88,7 @@ angular
     })
     .directive("projektinMurupolku", function() {
         return {
-            templateUrl: "views/directives/perusteprojekti/murupolku.html",
+            template: require("views/directives/perusteprojekti/murupolku.html"),
             restrict: "AE",
             scope: {},
             controller: "ProjektinMurupolkuController"

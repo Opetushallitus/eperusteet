@@ -102,7 +102,7 @@ angular
             },
             openModal(isOpas, isAmmatillinen) {
                 $uibModal.open({
-                    templateUrl: "views/modals/pdfcreation.html",
+                    template: require("views/modals/pdfcreation.html"),
                     controller: "PdfCreationController",
                     resolve: {
                         perusteId: () => perusteId,

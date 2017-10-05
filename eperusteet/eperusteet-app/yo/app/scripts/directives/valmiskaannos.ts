@@ -21,7 +21,7 @@
  */
 angular.module("eperusteApp").directive("valmiskaannos", ($timeout, $compile, $document) => {
     return {
-        templateUrl: "views/partials/valmiskaannos.html",
+        template: require("views/partials/valmiskaannos.html"),
         restrict: "E",
         require: "ngModel",
         scope: {

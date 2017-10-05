@@ -16,7 +16,7 @@
 
 angular.module("eperusteApp").directive("muokkausOsaaminen", () => {
     return {
-        templateUrl: "views/directives/osaaminen.html",
+        template: require("views/directives/osaaminen.html"),
         restrict: "E",
         scope: {
             model: "=",

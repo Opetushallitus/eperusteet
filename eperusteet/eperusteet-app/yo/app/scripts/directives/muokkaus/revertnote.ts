@@ -18,7 +18,7 @@
 
 angular.module("eperusteApp").directive("revertNote", function() {
     return {
-        templateUrl: "views/partials/muokkaus/revertnote.html",
+        template: require("views/partials/muokkaus/revertnote.html"),
         restrict: "AE",
         replace: true,
         scope: {

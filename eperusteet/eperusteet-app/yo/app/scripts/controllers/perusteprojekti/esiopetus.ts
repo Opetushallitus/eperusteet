@@ -23,6 +23,7 @@ angular
         $scope,
         perusteprojektiTiedot,
         Algoritmit,
+        Api,
         $state,
         SuoritustavanSisalto,
         TekstikappaleOperations,

@@ -351,7 +351,7 @@ angular
         this.historyView = function(data) {
             $uibModal
                 .open({
-                    templateUrl: "views/partials/muokkaus/versiohelper.html",
+                    template: require("views/partials/muokkaus/versiohelper.html"),
                     controller: "HistoryViewCtrl",
                     resolve: {
                         versions: function() {

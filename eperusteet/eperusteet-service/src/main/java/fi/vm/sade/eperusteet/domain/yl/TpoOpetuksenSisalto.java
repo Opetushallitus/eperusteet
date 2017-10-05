@@ -38,7 +38,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @Table(name = "tpo_perusteen_sisalto")
-public class TPOOpetuksenSisalto extends AbstractAuditedReferenceableEntity {
+public class TpoOpetuksenSisalto extends AbstractAuditedReferenceableEntity {
 
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -54,8 +54,8 @@ public class TPOOpetuksenSisalto extends AbstractAuditedReferenceableEntity {
     @JoinColumn
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
-    public TPOOpetuksenSisalto kloonaa(Peruste peruste) {
-        TPOOpetuksenSisalto tpoSisalto = new TPOOpetuksenSisalto();
+    public TpoOpetuksenSisalto kloonaa(Peruste peruste) {
+        TpoOpetuksenSisalto tpoSisalto = new TpoOpetuksenSisalto();
         tpoSisalto.setPeruste(peruste);
         tpoSisalto.setSisalto(sisalto.kloonaa());
         return tpoSisalto;

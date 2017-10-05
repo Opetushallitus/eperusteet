@@ -39,7 +39,7 @@ angular
     })
     .directive("osalistaus", function(OrderHelper, $compile, $stateParams) {
         return {
-            templateUrl: "views/directives/osalistaus.html",
+            template: require("views/directives/osalistaus.html"),
             restrict: "A",
             scope: {
                 model: "=osalistaus",

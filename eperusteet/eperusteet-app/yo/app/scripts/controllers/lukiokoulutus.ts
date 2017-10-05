@@ -292,7 +292,7 @@ angular
     })
     .directive("lukioOppiaineet", function() {
         return {
-            templateUrl: "views/directives/lukiokoulutus/oppiaineet.html",
+            template: require("views/directives/lukiokoulutus/oppiaineet.html"),
             restrict: "E",
             scope: {},
             controller: "LukioOppiaineKurssiPuuController"

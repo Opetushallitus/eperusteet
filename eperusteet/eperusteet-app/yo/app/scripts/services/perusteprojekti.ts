@@ -169,7 +169,7 @@ angular
             var deferred = $q.defer();
             $uibModal
                 .open({
-                    templateUrl: "views/modals/projektiSisaltoTuonti.html",
+                    template: require("views/modals/projektiSisaltoTuonti.html"),
                     controller: "ProjektiTiedotSisaltoModalCtrl",
                     resolve: {
                         pohja: function() {
@@ -345,25 +345,8 @@ angular
                             deferred.reject(virhe);
                         }
                     );
-                } else if (
-                    !YleinenData.isPerusopetus(peruste) &&
-                    !YleinenData.isAipe(peruste) &&
-                    !YleinenData.isLukiokoulutus(peruste)
-                ) {
-                    SuoritustapaSisalto.get(
-                        {
-                            perusteId: perusteId,
-                            suoritustapa: suoritustapa
-                        },
-                        function(vastaus) {
-                            resolve(vastaus);
-                            sisalto = vastaus;
-                        },
-                        function(virhe) {
-                            deferred.reject(virhe);
-                        }
-                    );
-                } else {
+                }
+                else if (YleinenData.isPerusopetus(peruste) || YleinenData.isAipe(peruste) || YleinenData.isLukiokoulutus(peruste)) {
                     var labels,
                         osatProvider,
                         sisaltoProvider,
@@ -400,6 +383,21 @@ angular
                     await getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider);
                     sisalto = ylTiedot.sisalto;
                     deferred.resolve(ylTiedot.sisalto);
+                }
+                else {
+                    SuoritustapaSisalto.get(
+                        {
+                            perusteId: perusteId,
+                            suoritustapa: suoritustapa
+                        },
+                        function(vastaus) {
+                            resolve(vastaus);
+                            sisalto = vastaus;
+                        },
+                        function(virhe) {
+                            deferred.reject(virhe);
+                        }
+                    );
                 }
             });
         };

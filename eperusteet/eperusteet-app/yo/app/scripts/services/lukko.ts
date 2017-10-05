@@ -318,7 +318,7 @@ angular
                         if (editointiCheck && etag && headers().etag !== etag && Editointikontrollit.getEditMode()) {
                             $uibModal
                                 .open({
-                                    templateUrl: "views/modals/sisaltoMuuttunut.html",
+                                    template: require("views/modals/sisaltoMuuttunut.html"),
                                     controller: "LukittuSisaltoMuuttunutModalCtrl"
                                 })
                                 .result.then(function() {

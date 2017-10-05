@@ -27,7 +27,7 @@ angular
             })
             .state("root.esitys.peruste", {
                 url: "/:perusteId/:suoritustapa?prestate&projekti",
-                templateUrl: "views/esitys.html",
+                template: require("views/esitys.html"),
                 controller: "EsitysCtrl",
                 resolve: {
                     peruste: function($stateParams, Perusteet) {
@@ -54,7 +54,7 @@ angular
             })
             .state("root.esitys.peruste.rakenne", {
                 url: "/rakenne",
-                templateUrl: "eperusteet-esitys/views/rakenne.html",
+                template: require("eperusteet-esitys/views/rakenne.html"),
                 controller: "epEsitysRakenneController",
                 resolve: {
                     // FIXME: ui-router bug or some '$on'-callback manipulating $stateParams?
@@ -68,17 +68,17 @@ angular
             })
             .state("root.esitys.peruste.tutkinnonosat", {
                 url: "/tutkinnonosat",
-                templateUrl: "eperusteet-esitys/views/tutkinnonosat.html",
+                template: require("eperusteet-esitys/views/tutkinnonosat.html"),
                 controller: "epEsitysTutkinnonOsatController"
             })
             .state("root.esitys.peruste.tutkinnonosa", {
                 url: "/tutkinnonosat/:id",
-                templateUrl: "eperusteet-esitys/views/tutkinnonosa.html",
+                template: require("eperusteet-esitys/views/tutkinnonosa.html"),
                 controller: "epEsitysTutkinnonOsaController"
             })
             .state("root.esitys.peruste.tekstikappale", {
                 url: "/sisalto/:osanId",
-                templateUrl: "eperusteet-esitys/views/tekstikappale.html",
+                template: require("eperusteet-esitys/views/tekstikappale.html"),
                 controller: "epEsitysSisaltoController",
                 resolve: {
                     tekstikappaleId: function($stateParams) {
@@ -94,7 +94,7 @@ angular
             })
             .state("root.esitys.peruste.tiedot", {
                 url: "/tiedot",
-                templateUrl: "eperusteet-esitys/views/tiedot.html",
+                template: require("eperusteet-esitys/views/tiedot.html"),
                 controller: "epEsitysTiedotController"
             });
     })

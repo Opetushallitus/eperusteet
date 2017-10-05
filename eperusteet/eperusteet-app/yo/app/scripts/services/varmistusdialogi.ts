@@ -47,7 +47,7 @@ angular
 
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/varmistusdialogi.html",
+                        template: require("views/modals/varmistusdialogi.html"),
                         controller: "VarmistusDialogiCtrl",
                         resolve: resolve
                     })

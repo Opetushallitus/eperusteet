@@ -22,7 +22,7 @@ angular.module("eperusteApp").config($stateProvider => {
         },
         views: {
             "aipeosaalue@root.perusteprojekti.suoritustapa.aipeosaalue": {
-                templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/kurssi/view.html",
+                template: require("scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/kurssi/view.html"),
                 controller: (
                     $scope,
                     $state,

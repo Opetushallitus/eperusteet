@@ -18,7 +18,7 @@ angular
     .module("eperusteApp")
     .directive("muokattavaOsio", function() {
         return {
-            templateUrl: "views/directives/muokattavaosio.html",
+            template: require("views/directives/muokattavaosio.html"),
             restrict: "A",
             scope: {
                 model: "=muokattavaOsio",

@@ -251,6 +251,10 @@ export const isLisaopetus = function(peruste) {
     return peruste.koulutustyyppi === "koulutustyyppi_6";
 };
 
+export const isTpo = function(peruste) {
+    return peruste.koulutustyyppi === "koulutustyyppi_xyz";
+};
+
 export const isVarhaiskasvatus = function(peruste) {
     return peruste.koulutustyyppi === "koulutustyyppi_20";
 };
@@ -271,7 +275,7 @@ export const isLukiokoulutus = function(peruste) {
 };
 
 export const isSimple = function(peruste) {
-    return isOpas(peruste) || isEsiopetus(peruste) || isLisaopetus(peruste) || isVarhaiskasvatus(peruste);
+    return isOpas(peruste) || isEsiopetus(peruste) || isLisaopetus(peruste) || isVarhaiskasvatus(peruste) || isTpo(peruste);
 };
 
 export const validSuoritustapa = function(peruste, suoritustapa) {

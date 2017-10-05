@@ -301,7 +301,7 @@ angular
     })
     .directive("osanmuokkausTekstikappale", function() {
         return {
-            templateUrl: "views/directives/perusopetus/osanmuokkaustekstikappale.html",
+            template: require("views/directives/perusopetus/osanmuokkaustekstikappale.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -346,7 +346,7 @@ angular
     })
     .directive("osanmuokkausKohdealueet", function() {
         return {
-            templateUrl: "views/directives/perusopetus/osanmuokkauskohdealueet.html",
+            template: require("views/directives/perusopetus/osanmuokkauskohdealueet.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -363,7 +363,7 @@ angular
     })
     .directive("osanmuokkausTavoitteet", function() {
         return {
-            templateUrl: "views/directives/perusopetus/osanmuokkaustavoitteet.html",
+            template: require("views/directives/perusopetus/osanmuokkaustavoitteet.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -399,7 +399,7 @@ angular
                 $scope.muokkaaKohdealueita = function() {
                     $uibModal
                         .open({
-                            templateUrl: "views/directives/perusopetus/osanmuokkauskohdealueet.html",
+                            template: require("views/directives/perusopetus/osanmuokkauskohdealueet.html"),
                             controller: function($scope, $uibModalInstance, Oppiaineet, OsanMuokkausHelper) {
                                 $scope.kohdealueet = _.map(
                                     _.clone(OsanMuokkausHelper.getOppiaine().kohdealueet) || [],
@@ -470,7 +470,7 @@ angular
     })
     .directive("perusopetusMuokkausInfo", function(OsanMuokkausHelper) {
         return {
-            templateUrl: "views/directives/perusopetus/muokkausinfo.html",
+            template: require("views/directives/perusopetus/muokkausinfo.html"),
             restrict: "AE",
             link: function(scope: any, element, attrs: any) {
                 scope.muokkausinfoOsa = attrs.osa || "";

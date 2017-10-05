@@ -1150,7 +1150,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else if (koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko);
         } else if (koulutustyyppi == KoulutusTyyppi.TPO) {
-            peruste.setSisalto(new TPOOpetuksenSisalto());
+            peruste.setSisalto(new TpoOpetuksenSisalto());
         } else if (koulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
             peruste.setSisalto(new PerusopetuksenPerusteenSisalto());
         } else if (koulutustyyppi == KoulutusTyyppi.ESIOPETUS

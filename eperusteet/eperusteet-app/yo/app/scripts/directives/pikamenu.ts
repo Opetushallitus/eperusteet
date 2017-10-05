@@ -22,7 +22,7 @@ angular
         return {
             restrict: "EA",
             transclude: true,
-            templateUrl: "views/partials/perusteprojekti/pikamenu.html",
+            template: require("views/partials/perusteprojekti/pikamenu.html"),
             link: function(scope, element) {
                 // Pop the button next to the header after transclusion
                 var header = element.find("#pikamenu-header");

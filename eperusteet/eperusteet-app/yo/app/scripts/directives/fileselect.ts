@@ -48,7 +48,7 @@ angular
     })
     .directive("fileSelect", function(fileReader) {
         return {
-            templateUrl: "views/partials/fileselect.html",
+            template: require("views/partials/fileselect.html"),
             restrict: "E",
             link: function($scope: any, el, attrs) {
                 $scope.flabel = attrs.flabel || "selaa";

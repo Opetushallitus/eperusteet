@@ -30,7 +30,7 @@
  */
 angular.module("eperusteApp").directive("ohje", function($timeout, $compile, $document) {
     return {
-        templateUrl: "views/partials/ohje.html",
+        template: require("views/partials/ohje.html"),
         restrict: "EA",
         transclude: true,
         scope: {

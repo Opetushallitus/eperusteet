@@ -18,7 +18,7 @@ angular
     .module("eperusteApp")
     .directive("osallinenOsa", $compile => {
         return {
-            templateUrl: "views/directives/osallinenosa.html",
+            template: require("views/directives/osallinenosa.html"),
             restrict: "AE",
             transclude: true,
             scope: {

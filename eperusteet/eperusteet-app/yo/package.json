@@ -7,8 +7,9 @@
     "build": "./node_modules/webpack/bin/webpack.js -p --config webpack.prod.js",
     "unit": "./node_modules/jest/bin/jest.js --no-cache --verbose",
     "unit:watch": "./node_modules/jest/bin/jest.js --watch",
+    "huoh": "watchman --help",
     "unit:debug": "node --inspect --debug-brk ./node_modules/jest/bin/jest.js --runInBand --verbose",
-    "coverage": "./node_modules/jest/bin/jest.js --verbose --coverage",
+    "coverage": "./node_modules/jest/bin/jest.js --verbose --no-cache --coverage",
     "ci": "yarn unit && yarn build",
     "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write \"app/scripts/**/*.ts\" \"app/styles/**/*.{scss,css}\""
   },
@@ -66,16 +67,37 @@
       "json"
     ],
     "mapCoverage": true,
+    "coverageReporters": [
+      "json",
+      "text"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/e2e",
+      "/dist/",
+      "/etc/",
+      "/node/",
+      "/typings/",
+      "/test/",
+      "/coverage/",
+      "/ckeditor-plugins/"
+    ],
     "setupFiles": [
       "<rootDir>/app/testsetup.ts"
     ],
     "moduleNameMapper": {
       "^app/(.*)": "<rootDir>/app/$1",
       "^scripts/(.*)": "<rootDir>/app/scripts/$1",
-      "^views/(.*)": "<rootDir>/app/views/$1"
+      "^views/(.*)": "<rootDir>/app/views/$1",
+      "^eperusteet-esitys/(.*)": "<rootDir>/app/eperusteet-esitys/$1",
+      "^styles/(.*)": "<rootDir>/app/styles/$1",
+      "^images/(.*)": "<rootDir>/app/images/$1"
     },
     "testPathIgnorePatterns": [
-      "node_modules"
+      "/node_modules/"
+    ],
+    "watchPathIgnorePatterns": [
+      "/node_modules/"
     ],
     "testMatch": [
       "<rootDir>/app/**/__tests__/**/*.ts?(x)",
@@ -103,6 +125,7 @@
     "clean-webpack-plugin": "^0.1.17",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.7",
+    "fb-watchman": "^2.0.0",
     "file-loader": "^0.11.2",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-loader": "^0.5.1",

@@ -25,7 +25,7 @@ angular
     .module("eperusteApp")
     .directive("numberinput", function($timeout, $compile) {
         return {
-            templateUrl: "views/partials/numberinput.html",
+            template: require("views/partials/numberinput.html"),
             restrict: "E",
             scope: {
                 model: "=",

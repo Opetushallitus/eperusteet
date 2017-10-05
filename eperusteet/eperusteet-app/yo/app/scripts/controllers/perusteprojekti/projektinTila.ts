@@ -25,7 +25,7 @@ angular
             }
             $uibModal
                 .open({
-                    templateUrl: "views/modals/perusteprojektinTila.html",
+                    template: require("views/modals/perusteprojektinTila.html"),
                     controller: "PerusteprojektinTilaModalController",
                     resolve: {
                         data: function() {
@@ -54,7 +54,7 @@ angular
         $scope.valitse = function() {
             $uibModalInstance.close();
             $uibModal.open({
-                templateUrl: "views/modals/perusteprojektinTilaVarmistus.html",
+                template: require("views/modals/perusteprojektinTilaVarmistus.html"),
                 controller: "PerusteprojektinTilaVarmistusModalController",
                 resolve: {
                     data: function() {

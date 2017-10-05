@@ -19,7 +19,7 @@ angular
     .directive("tutke2kentat", function() {
         return {
             restrict: "AE",
-            templateUrl: "views/partials/muokkaus/tutke2kentat.html",
+            template: require("views/partials/muokkaus/tutke2kentat.html"),
             scope: {
                 mainLevelEditing: "=editEnabled",
                 tutkinnonosaViite: "=",

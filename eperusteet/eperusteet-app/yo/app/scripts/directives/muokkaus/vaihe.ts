@@ -16,7 +16,7 @@
 
 angular.module("eperusteApp").directive("muokkausVaihe", () => {
     return {
-        templateUrl: "views/directives/vaihe.html",
+        template: require("views/directives/vaihe.html"),
         restrict: "E",
         scope: {
             model: "=",

@@ -23,7 +23,7 @@
  */
 angular.module("eperusteApp").directive("rajaus", function() {
     return {
-        templateUrl: "views/partials/rajaus.html",
+        template: require("views/partials/rajaus.html"),
         restrict: "EA",
         scope: {
             model: "=",

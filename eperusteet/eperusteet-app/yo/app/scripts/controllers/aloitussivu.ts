@@ -46,7 +46,7 @@ angular
             })
             .state("root.aloitussivu", {
                 url: "",
-                templateUrl: "views/aloitussivu.html",
+                template: require("views/aloitussivu.html"),
                 controller: "AloitusSivuController"
             });
     })

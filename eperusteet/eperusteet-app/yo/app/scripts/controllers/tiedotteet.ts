@@ -165,7 +165,7 @@ angular
 
             $uibModal
                 .open({
-                    templateUrl: "views/modals/tiedotteenmuokkaus.html",
+                    template: require("views/modals/tiedotteenmuokkaus.html"),
                     controller: "TiedotteenMuokkausController",
                     size: "lg",
                     resolve: {
@@ -229,7 +229,7 @@ angular
     .config(function($stateProvider) {
         $stateProvider.state("root.tiedote", {
             url: "/tiedote/:tiedoteId",
-            templateUrl: "views/tiedote.html",
+            template: require("views/tiedote.html"),
             controller: "TiedoteViewController"
         });
     })

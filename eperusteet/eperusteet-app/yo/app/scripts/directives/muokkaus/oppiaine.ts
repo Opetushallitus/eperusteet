@@ -76,7 +76,7 @@ angular
     })
     .directive("muokkausOppiaine", function() {
         return {
-            templateUrl: "views/directives/perusopetus/oppiaine.html",
+            template: require("views/directives/perusopetus/oppiaine.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -596,7 +596,7 @@ angular
                 vuosiluokkakokonaisuudet: "="
             },
             controller: "OppiaineenOsiotController",
-            templateUrl: "views/directives/perusopetus/oppiaineenosiot.html"
+            template: require("views/directives/perusopetus/oppiaineenosiot.html")
         };
     })
     .directive("lukioOppiaineenOsiot", function() {
@@ -608,7 +608,7 @@ angular
                 vuosiluokkakokonaisuudet: "="
             },
             controller: "LukioOppiaineenOsiotController",
-            templateUrl: "views/directives/lukiokoulutus/oppiaineenosiot.html"
+            template: require("views/directives/lukiokoulutus/oppiaineenosiot.html")
         };
     })
     .controller("OppiaineenOsiotController", function($scope, MuokkausUtils, Varmistusdialogi, VlkUtils) {
@@ -708,7 +708,7 @@ angular
 
     .directive("lukioMuokkausOppiaine", function() {
         return {
-            templateUrl: "views/directives/lukiokoulutus/oppiaine.html",
+            template: require("views/directives/lukiokoulutus/oppiaine.html"),
             restrict: "E",
             scope: {
                 model: "=",

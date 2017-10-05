@@ -25,39 +25,39 @@ angular
             })
             .state("root.selaus.ammatillinenperuskoulutus", {
                 url: "/ammatillinenperuskoulutus" + paramList,
-                templateUrl: "views/haku.html",
+                template: require("views/haku.html"),
                 controller: "HakuCtrl",
                 resolve: { koulutusalaService: "Koulutusalat" }
             })
             .state("root.selaus.ammatillinenaikuiskoulutus", {
                 url: "/ammatillinenaikuiskoulutus" + paramList,
-                templateUrl: "views/haku.html",
+                template: require("views/haku.html"),
                 controller: "HakuCtrl",
                 resolve: { koulutusalaService: "Koulutusalat" }
             })
             .state("root.selaus.esiopetuslista", {
                 url: "/esiopetus",
-                templateUrl: "views/perusopetuslistaus.html",
+                template: require("views/perusopetuslistaus.html"),
                 controller: "EsiopetusListaController"
             })
             .state("root.selaus.aikuisperusopetuslista", {
                 url: "/aikuisperusopetus",
-                templateUrl: "views/aikuisperusopetuslistaus.html",
+                template: require("views/aikuisperusopetuslistaus.html"),
                 controller: "AikuisperusopetusListaController"
             })
             .state("root.selaus.perusopetuslista", {
                 url: "/perusopetus",
-                templateUrl: "views/perusopetuslistaus.html",
+                template: require("views/perusopetuslistaus.html"),
                 controller: "PerusopetusListaController"
             })
             .state("root.selaus.lukiokoulutuslista", {
                 url: "/lukiokoulutuslistaus",
-                templateUrl: "views/lukiokoulutuslistaus.html",
+                template: require("views/lukiokoulutuslistaus.html"),
                 controller: "LukiokoulutusListaController"
             })
             .state("root.selaus.lisaopetus", {
                 url: "/lisaopetus/:perusteId",
-                templateUrl: "eperusteet-esitys/views/yksinkertainen.html",
+                template: require("eperusteet-esitys/views/yksinkertainen.html"),
                 controller: "epYksinkertainenPerusteController",
                 resolve: {
                     sisalto: function($stateParams, $q, Perusteet, SuoritustapaSisalto) {
@@ -74,7 +74,7 @@ angular
             })
             .state("root.selaus.lisaopetus.tekstikappale", {
                 url: "/tekstikappale/:tekstikappaleId",
-                templateUrl: "eperusteet-esitys/views/tekstikappale.html",
+                template: require("eperusteet-esitys/views/tekstikappale.html"),
                 controller: "epEsitysSisaltoController",
                 resolve: {
                     tekstikappaleId: function($stateParams) {
@@ -90,12 +90,12 @@ angular
             })
             .state("root.selaus.lisaopetus.tiedot", {
                 url: "/tiedot",
-                templateUrl: "eperusteet-esitys/views/tiedot.html",
+                template: require("eperusteet-esitys/views/tiedot.html"),
                 controller: "epEsitysTiedotController"
             })
             .state("root.selaus.esiopetus", {
                 url: "/esiopetus/:perusteId",
-                templateUrl: "eperusteet-esitys/views/yksinkertainen.html",
+                template: require("eperusteet-esitys/views/yksinkertainen.html"),
                 controller: "epYksinkertainenPerusteController",
                 resolve: {
                     sisalto: function($stateParams, $q, Perusteet, SuoritustapaSisalto) {
@@ -112,7 +112,7 @@ angular
             })
             .state("root.selaus.esiopetus.tekstikappale", {
                 url: "/tekstikappale/:tekstikappaleId",
-                templateUrl: "eperusteet-esitys/views/tekstikappale.html",
+                template: require("eperusteet-esitys/views/tekstikappale.html"),
                 controller: "epEsitysSisaltoController",
                 resolve: {
                     tekstikappaleId: function($stateParams) {
@@ -128,12 +128,12 @@ angular
             })
             .state("root.selaus.esiopetus.tiedot", {
                 url: "/tiedot",
-                templateUrl: "eperusteet-esitys/views/tiedot.html",
+                template: require("eperusteet-esitys/views/tiedot.html"),
                 controller: "epEsitysTiedotController"
             })
             .state("root.selaus.perusopetus", {
                 url: "/perusopetus/:perusteId",
-                templateUrl: "eperusteet-esitys/views/perusopetus.html",
+                template: require("eperusteet-esitys/views/perusopetus.html"),
                 controller: "epPerusopetusController",
                 resolve: {
                     perusteId: function($stateParams) {
@@ -166,17 +166,17 @@ angular
             })
             .state("root.selaus.perusopetus.vuosiluokkakokonaisuus", {
                 url: "/vuosiluokkakokonaisuus/:vlkId",
-                templateUrl: "eperusteet-esitys/views/vuosiluokkakokonaisuus.html",
+                template: require("eperusteet-esitys/views/vuosiluokkakokonaisuus.html"),
                 controller: "epPerusopetusVlkController"
             })
             .state("root.selaus.perusopetus.laajaalaiset", {
                 url: "/laajaalaisetosaamiset",
-                templateUrl: "eperusteet-esitys/views/laajaalaiset.html",
+                template: require("eperusteet-esitys/views/laajaalaiset.html"),
                 controller: "epLaajaalaisetOsaamisetController"
             })
             .state("root.selaus.perusopetus.vlkoppiaine", {
                 url: "/vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId",
-                templateUrl: "eperusteet-esitys/views/vlkoppiaine.html",
+                template: require("eperusteet-esitys/views/vlkoppiaine.html"),
                 controller: "epPerusopetusVlkOppiaineController",
                 resolve: {
                     oppiaineId: function($stateParams) {
@@ -189,7 +189,7 @@ angular
             })
             .state("root.selaus.perusopetus.sisallot", {
                 url: "/sisallot/:oppiaineId?vlk&sisalto&osaaminen&valittu",
-                templateUrl: "eperusteet-esitys/views/vlkoppiaine.html",
+                template: require("eperusteet-esitys/views/vlkoppiaine.html"),
                 controller: "epPerusopetusSisallotController",
                 resolve: {
                     oppiaineId: function($stateParams) {
@@ -204,7 +204,7 @@ angular
             })
             .state("root.selaus.lukiokoulutus", {
                 url: "/lukiokoulutus/:perusteId",
-                templateUrl: "eperusteet-esitys/views/lukiokoulutus.html",
+                template: require("eperusteet-esitys/views/lukiokoulutus.html"),
                 controller: "epLukiokoulutusController",
                 resolve: {
                     perusteId: function($stateParams) {
@@ -231,7 +231,7 @@ angular
             })
             .state("root.selaus.lukiokoulutus.sisallot", {
                 url: "/sisallot/:oppiaineId?vlk&sisalto&osaaminen&valittu",
-                templateUrl: "eperusteet-esitys/views/vlkoppiaine.html",
+                template: require("eperusteet-esitys/views/vlkoppiaine.html"),
                 controller: "epLukiokoulutusSisallotController",
                 resolve: {
                     oppiaineId: function($stateParams) {
@@ -246,7 +246,7 @@ angular
             })
             .state("root.selaus.perusopetus.tekstikappale", {
                 url: "/tekstikappale/:tekstikappaleId",
-                templateUrl: "eperusteet-esitys/views/tekstikappale.html",
+                template: require("eperusteet-esitys/views/tekstikappale.html"),
                 controller: "epPerusopetusTekstikappaleController",
                 resolve: {
                     tekstikappaleId: function($stateParams) {
@@ -262,7 +262,7 @@ angular
             })
             .state("root.selaus.lukiokoulutus.tekstikappale", {
                 url: "/tekstikappale/:tekstikappaleId",
-                templateUrl: "eperusteet-esitys/views/tekstikappale.html",
+                template: require("eperusteet-esitys/views/tekstikappale.html"),
                 controller: "epLukiokoulutusTekstikappaleController",
                 resolve: {
                     tekstikappaleId: function($stateParams) {

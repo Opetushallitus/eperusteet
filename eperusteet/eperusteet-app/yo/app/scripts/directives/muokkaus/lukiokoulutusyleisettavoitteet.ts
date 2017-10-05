@@ -19,7 +19,7 @@ angular
     //LUKIO Opetuksen yleiset tavoitteet
     .directive("lukioMuokkausTavoitteet", function() {
         return {
-            templateUrl: "views/directives/lukiokoulutus/tavoitteet.html",
+            template: require("views/directives/lukiokoulutus/tavoitteet.html"),
             restrict: "E",
             controller: "LukioTavoitteetController"
         };

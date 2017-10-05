@@ -29,17 +29,17 @@ angular
         $stateProvider
             .state("root.admin", {
                 url: "/admin",
-                templateUrl: "views/admin/base.html",
+                template: require("views/admin/base.html"),
                 controller: "AdminBaseController"
             })
             .state("root.admin.perusteprojektit", {
                 url: "/perusteprojektit",
-                templateUrl: "views/admin/perusteprojektit.html",
+                template: require("views/admin/perusteprojektit.html"),
                 controller: "AdminPerusteprojektitController"
             })
             .state("root.admin.tiedotteet", {
                 url: "/tiedotteet",
-                templateUrl: "views/admin/tiedotteet.html",
+                template: require("views/admin/tiedotteet.html"),
                 controller: "TiedotteidenHallintaController"
             })
             .state("root.admin.oppaat", {

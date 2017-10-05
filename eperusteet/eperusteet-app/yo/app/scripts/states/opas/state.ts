@@ -25,7 +25,7 @@ angular
             })
             .state("root.perusteprojekti.suoritustapa.opassisalto", {
                 url: "/opassisalto",
-                templateUrl: "views/partials/perusteprojekti/opas.html",
+                template: require("views/partials/perusteprojekti/opas.html"),
                 controller: "OpasSisaltoController",
                 onEnter: PerusteProjektiSivunavi => {
                     PerusteProjektiSivunavi.setVisible(false);
@@ -78,7 +78,7 @@ angular
 
                     $scope.haeRyhma = async () => {
                         const ryhma = await $uibModal.open({
-                            templateUrl: "views/modals/tuotyoryhma.html",
+                            template: require("views/modals/tuotyoryhma.html"),
                             controller: "TyoryhmanTuontiModalCtrl"
                         }).result;
                         $scope.$$ryhmaNimi = ryhma.nimi && ryhma.nimi[lang];

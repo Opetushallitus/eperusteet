@@ -115,7 +115,7 @@ angular
                 failureCb = failureCb || angular.noop;
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/koodistoModal.html",
+                        template: require("views/modals/koodistoModal.html"),
                         controller: "KoodistoModalCtrl",
                         resolve: resolve
                     })

@@ -17,7 +17,7 @@
 angular.module("eperusteApp").directive("contentTree", function(TEXT_HIERARCHY_MAX_DEPTH) {
     return {
         restrict: "A",
-        templateUrl: "views/directives/contenttree.html",
+        template: require("views/directives/contenttree.html"),
         scope: {
             model: "=contentTree",
             rajaus: "=filterBy",

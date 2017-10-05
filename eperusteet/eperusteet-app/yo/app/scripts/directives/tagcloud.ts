@@ -18,7 +18,7 @@ angular
     .module("eperusteApp")
     .directive("tagCloud", function() {
         return {
-            templateUrl: "views/directives/tagcloud.html",
+            template: require("views/directives/tagcloud.html"),
             restrict: "A",
             scope: {
                 model: "=tagCloud",
@@ -44,7 +44,7 @@ angular
         $scope.openDialog = function() {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/tagcloudmodal.html",
+                    template: require("views/modals/tagcloudmodal.html"),
                     controller: "TagCloudModalController",
                     resolve: {
                         model: _.constant($scope.model),

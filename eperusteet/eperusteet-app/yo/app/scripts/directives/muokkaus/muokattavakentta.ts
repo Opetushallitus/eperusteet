@@ -18,7 +18,7 @@ angular
     .module("eperusteApp")
     .directive("muokkauskenttaRaamit", Utils => {
         return {
-            templateUrl: "views/partials/muokkaus/muokattavaKentta.html",
+            template: require("views/partials/muokkaus/muokattavaKentta.html"),
             restrict: "A",
             transclude: true,
             scope: {
@@ -274,7 +274,7 @@ angular
     })
     .directive("vaihtoehtoisenKentanRaami", () => {
         return {
-            templateUrl: "views/directives/vaihtoehtoisenkentanraami.html",
+            template: require("views/directives/vaihtoehtoisenkentanraami.html"),
             restrict: "E",
             transclude: true,
             link: (scope, element) => {

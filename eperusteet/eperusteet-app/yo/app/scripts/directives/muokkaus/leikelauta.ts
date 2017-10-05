@@ -16,7 +16,7 @@
 
 angular.module("eperusteApp").directive("leikelauta", TutkinnonOsaLeikelautaService => {
     return {
-        templateUrl: "views/partials/muokkaus/leikelauta.html",
+        template: require("views/partials/muokkaus/leikelauta.html"),
         restrict: "E",
         transclude: true,
         scope: {

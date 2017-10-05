@@ -84,7 +84,7 @@ angular
             cb = _.isFunction(cb) ? cb : angular.noop;
             $uibModal
                 .open({
-                    templateUrl: "views/modals/jarjestelmavirhe.html",
+                    template: require("views/modals/jarjestelmavirhe.html"),
                     controller: "JarjestelmaVirheModalCtrl",
                     resolve: {
                         viesti: function() {

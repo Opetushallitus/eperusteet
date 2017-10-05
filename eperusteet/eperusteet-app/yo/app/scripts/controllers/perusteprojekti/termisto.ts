@@ -189,7 +189,7 @@ angular
         $scope.edit = function(item) {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/termisto.html",
+                    template: require("views/modals/termisto.html"),
                     controller: "TermistoMuokkausController",
                     size: "lg",
                     resolve: {

@@ -159,7 +159,7 @@ angular
     })
     .directive("ammattitaito", function(YleinenData, $timeout, TutkinnonOsaLeikelautaService) {
         return {
-            templateUrl: "views/partials/ammattitaito.html",
+            template: require("views/partials/ammattitaito.html"),
             restrict: "E",
             scope: {
                 ammattitaito: "=",

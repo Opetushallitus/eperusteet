@@ -22,7 +22,7 @@ angular
             return function() {
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/tuotutkinnonosasta.html",
+                        template: require("views/modals/tuotutkinnonosasta.html"),
                         controller: "TuoTutkinnonOsaSuoritustavastaaCtrl",
                         resolve: {
                             peruste: function() {
@@ -42,7 +42,7 @@ angular
             return function() {
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/haetutkinnonosa.html",
+                        template: require("views/modals/haetutkinnonosa.html"),
                         controller: "TuoTutkinnonOsaCtrl",
                         resolve: {
                             tyyppi: () => {

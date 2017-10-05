@@ -30,7 +30,7 @@ angular
 
         $scope.edit = function() {
             $uibModal.open({
-                templateUrl: "views/modals/suosikkienMuokkaus.html",
+                template: require("views/modals/suosikkienMuokkaus.html"),
                 controller: "SuosikkienMuokkausController",
                 size: "lg"
             });

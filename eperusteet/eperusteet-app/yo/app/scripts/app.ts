@@ -299,7 +299,7 @@ angular.module("eperusteApp", [
                 }
 
                 const uudelleenohjausModaali = $uibModal.open({
-                    templateUrl: "views/modals/uudelleenohjaus.html",
+                    template: require("views/modals/uudelleenohjaus.html"),
                     controller: "UudelleenohjausModalCtrl",
                     resolve: {
                         status: function() {

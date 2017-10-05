@@ -457,7 +457,7 @@ angular
                 muokkaus: "=",
                 esitys: "=?"
             },
-            templateUrl: "views/partials/tree.html",
+            template: require("views/partials/tree.html"),
             controller: "TreeWrapperController"
         };
     })

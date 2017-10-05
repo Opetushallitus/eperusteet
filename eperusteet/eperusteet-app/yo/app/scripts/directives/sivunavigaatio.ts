@@ -28,7 +28,7 @@ angular
     .module("eperusteApp")
     .directive("sivunavigaatio", function($compile) {
         return {
-            templateUrl: "views/partials/sivunavi2.html",
+            template: require("views/partials/sivunavi2.html"),
             restrict: "AE",
             scope: {
                 items: "=",

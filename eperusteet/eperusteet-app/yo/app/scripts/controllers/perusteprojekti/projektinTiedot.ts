@@ -170,7 +170,7 @@ angular
         $scope.haeRyhma = function() {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/tuotyoryhma.html",
+                    template: require("views/modals/tuotyoryhma.html"),
                     controller: "TyoryhmanTuontiModalCtrl"
                 })
                 .result.then(function(ryhma) {

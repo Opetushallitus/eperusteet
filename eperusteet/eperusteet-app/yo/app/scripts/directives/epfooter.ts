@@ -50,7 +50,7 @@ angular
     .directive("epFooter", function(SHOW_VERSION_FOOTER, EpFooterData) {
         return {
             restrict: "AE",
-            templateUrl: "views/epfooter.html",
+            template: require("views/epfooter.html"),
             scope: {},
             controller: function($scope) {
                 $scope.active = SHOW_VERSION_FOOTER;

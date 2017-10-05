@@ -43,7 +43,7 @@ namespace Controllers {
 angular.module("eperusteApp").config($stateProvider =>
     $stateProvider.state("root.perusteprojekti.kommentit", {
         url: "/kommentit",
-        templateUrl: "views/partials/perusteprojekti/kommentit.html",
+        template: require("views/partials/perusteprojekti/kommentit.html"),
         controller: Controllers.kaikkiKommentit,
         resolve: {
             kommentit: ($stateParams, Api) => {

@@ -250,7 +250,7 @@ angular
         $scope.lisaaNimike = function() {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/lisaaTutkintonimike.html",
+                    template: require("views/modals/lisaaTutkintonimike.html"),
                     controller: function($q, $scope, $uibModalInstance) {
                         $scope.koodit = {};
                         $scope.valmisCb = function(res) {

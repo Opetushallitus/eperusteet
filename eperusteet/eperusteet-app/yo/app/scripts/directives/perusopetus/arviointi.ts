@@ -18,7 +18,7 @@ angular
     .module("eperusteApp")
     .directive("perusopetuksenArviointi", function() {
         return {
-            templateUrl: "views/directives/perusopetus/arviointi.html",
+            template: require("views/directives/perusopetus/arviointi.html"),
             restrict: "A",
             scope: {
                 model: "=perusopetuksenArviointi",

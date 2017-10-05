@@ -21,7 +21,7 @@ angular
     .module("eperusteApp")
     .directive("editointikontrollit", function($window) {
         return {
-            templateUrl: "views/partials/editointikontrollit.html",
+            template: require("views/partials/editointikontrollit.html"),
             restrict: "E",
             link: function(scope: any) {
                 var window = angular.element($window),

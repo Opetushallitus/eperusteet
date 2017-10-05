@@ -19,7 +19,7 @@ angular
     .directive("kommentit", function(Kommentit, $timeout, $location, kayttajaToiminnot, Varmistusdialogi, YleinenData) {
         return {
             restrict: "AE",
-            templateUrl: "views/kommentit.html",
+            template: require("views/kommentit.html"),
             scope: {},
             controller: function($scope) {
                 $scope.nayta = false;

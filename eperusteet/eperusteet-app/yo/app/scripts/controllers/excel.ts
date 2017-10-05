@@ -22,7 +22,7 @@ angular
     .config(function($stateProvider) {
         $stateProvider.state("root.excel", {
             url: "/excel",
-            templateUrl: "views/excel.html",
+            template: require("views/excel.html"),
             controller: "ExcelCtrl"
         });
     })
@@ -222,7 +222,7 @@ angular
         $scope.haeRyhma = function() {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/tuotyoryhma.html",
+                    template: require("views/modals/tuotyoryhma.html"),
                     controller: "TyoryhmanTuontiModalCtrl"
                 })
                 .result.then(function(ryhma) {

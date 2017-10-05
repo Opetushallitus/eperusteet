@@ -21,7 +21,7 @@ angular
             valitse: function(valittavat, valitut, successCb) {
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/tyoryhmavalitsin.html",
+                        template: require("views/modals/tyoryhmavalitsin.html"),
                         controller: "valitseTyoryhmatModalCtrl",
                         resolve: {
                             valittavat: function() {

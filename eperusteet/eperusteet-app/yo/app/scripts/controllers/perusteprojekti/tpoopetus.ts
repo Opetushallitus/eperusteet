@@ -23,6 +23,7 @@ angular
         $scope,
         $state,
         $stateParams,
+        Api,
         perusteprojektiTiedot,
         Algoritmit,
         SuoritustavanSisalto,
@@ -81,6 +82,16 @@ angular
             Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, "lapset", function(lapsi) {
                 lapsi.$opened = _.isUndefined(value) ? !open : value;
             });
+        };
+
+        $scope.addTaiteenala = async () => {
+            console.log("Trying to add taiteenala");
+            const newTaiteenala = await Api.one("perusteet", $scope.projekti._peruste)
+                .all("tpoopetus")
+                .all("taiteenalat").customPOST({
+                    perusteId: $scope.projekti._peruste,
+                    suoritustapa: $stateParams.suoritustapa
+                });
         };
 
         $scope.addTekstikappale = function() {

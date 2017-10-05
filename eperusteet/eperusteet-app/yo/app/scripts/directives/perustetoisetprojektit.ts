@@ -29,7 +29,7 @@ angular
                     return $uibModal
                         .open({
                             size: "lg",
-                            templateUrl: "views/modals/perusteenosaprojektidialogi.html",
+                            template: require("views/modals/perusteenosaprojektidialogi.html"),
                             controller: ($scope, $uibModalInstance, projektit) => {
                                 $scope.projektit = projektit;
                                 $scope.ok = () => $uibModalInstance.close();
@@ -56,7 +56,7 @@ angular
     })
     .directive("muutProjektit", function($timeout, $compile, $document, MuutProjektitService) {
         return {
-            templateUrl: "views/partials/muutperusteenosat.html",
+            template: require("views/partials/muutperusteenosat.html"),
             restrict: "E",
             transclude: true,
             scope: {
