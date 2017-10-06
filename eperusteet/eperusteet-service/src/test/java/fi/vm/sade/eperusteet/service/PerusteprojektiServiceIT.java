@@ -220,8 +220,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         kvliite.setTutkinnonVirallinenAsema(TestUtils.lt(prefix + "7"));
         kvliite.setTutkintotodistuksenSaaminen(TestUtils.lt(prefix + "8"));
         kvliite.setTyotehtavatJoissaVoiToimia(TestUtils.lt(prefix + "9"));
-        kvliite.setTutkinnostaPaattavaViranomainen(prefix + "10");
-        kvliite.setTutkintotodistuksenAntaja(prefix + "11");
+        kvliite.setTutkinnostaPaattavaViranomainen(TestUtils.lt(prefix + "10"));
+        kvliite.setTutkintotodistuksenAntaja(TestUtils.lt(prefix + "11"));
     }
 
     KVLiiteDto testKvliite(KVLiiteDto kvliite, String prefix) {
@@ -234,8 +234,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals(kvliite.getTutkinnonVirallinenAsema().get(Kieli.FI), prefix + "7");
         Assert.assertEquals(kvliite.getTutkintotodistuksenSaaminen().get(Kieli.FI), prefix + "8");
         Assert.assertEquals(kvliite.getTyotehtavatJoissaVoiToimia().get(Kieli.FI), prefix + "9");
-        Assert.assertEquals(kvliite.getTutkinnostaPaattavaViranomainen(), prefix + "10");
-        Assert.assertEquals(kvliite.getTutkintotodistuksenAntaja(), prefix + "11");
+        Assert.assertEquals(kvliite.getTutkinnostaPaattavaViranomainen().get(Kieli.FI), prefix + "10");
+        Assert.assertEquals(kvliite.getTutkintotodistuksenAntaja().get(Kieli.FI), prefix + "11");
         return kvliite;
     }
 
@@ -286,8 +286,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals("a7", julkinenKVLiite.getTutkinnonVirallinenAsema().get(Kieli.FI));
         Assert.assertEquals("b8", julkinenKVLiite.getTutkintotodistuksenSaaminen().get(Kieli.FI));
         Assert.assertEquals("b9", julkinenKVLiite.getTyotehtavatJoissaVoiToimia().get(Kieli.FI));
-        Assert.assertEquals("b10", julkinenKVLiite.getTutkinnostaPaattavaViranomainen());
-        Assert.assertEquals("a11", julkinenKVLiite.getTutkintotodistuksenAntaja());
+        Assert.assertEquals("b10", julkinenKVLiite.getTutkinnostaPaattavaViranomainen().get(Kieli.FI));
+        Assert.assertEquals("a11", julkinenKVLiite.getTutkintotodistuksenAntaja().get(Kieli.FI));
     }
 
     private void lazyAssertTyoryhma(TyoryhmaHenkiloDto trh, String ryhma, String henkilo) {

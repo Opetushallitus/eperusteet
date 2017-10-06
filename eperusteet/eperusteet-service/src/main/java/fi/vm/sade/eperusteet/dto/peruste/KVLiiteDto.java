@@ -33,7 +33,7 @@ public class KVLiiteDto {
     private LokalisoituTekstiDto suorittaneenOsaaminen;
     private LokalisoituTekstiDto tyotehtavatJoissaVoiToimia;
     private LokalisoituTekstiDto tutkinnonVirallinenAsema;
-    private String tutkintotodistuksenAntaja;
+    private LokalisoituTekstiDto tutkintotodistuksenAntaja;
     private EntityReference arvosanaAsteikko;
     private LokalisoituTekstiDto jatkoopintoKelpoisuus;
     private LokalisoituTekstiDto kansainvalisetSopimukset;
@@ -42,5 +42,5 @@ public class KVLiiteDto {
     private LokalisoituTekstiDto lisatietoja;
     private LokalisoituTekstiDto tutkintotodistuksenSaaminen;
     private KoodiDto tutkinnonTaso;
-    private String tutkinnostaPaattavaViranomainen;
+    private LokalisoituTekstiDto tutkinnostaPaattavaViranomainen;
 }

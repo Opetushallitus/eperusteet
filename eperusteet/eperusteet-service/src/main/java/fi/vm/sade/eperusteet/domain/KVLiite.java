@@ -20,16 +20,10 @@ import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import java.util.HashMap;
+import java.util.Map;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -96,17 +90,32 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen tutkinnonVirallinenAsema;
 
-    // Tyypeittäin toistuvat:
-
-    // Tutkinnon virallinen asema
-    // Tutkintotodistuksen antajan nimi ja asema
     @Getter
     @Setter
-    private String tutkintotodistuksenAntaja;
+    @Deprecated
+    @Column(name = "tutkintotodistuksenAntaja")
+    private String tutkintotodistuksenAntajaVanha;
+
+
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen tutkintotodistuksenAntaja;
 
     @Getter
     @Setter
-    private String tutkinnostaPaattavaViranomainen;
+    @Deprecated
+    @Column(name = "tutkinnostaPaattavaViranomainen")
+    private String tutkinnostaPaattavaViranomainenVanha;
+
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen tutkinnostaPaattavaViranomainen;
 
     @ManyToOne
     @Getter
@@ -155,4 +164,28 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen lisatietoja;
+
+    public TekstiPalanen getTutkintotodistuksenAntaja() {
+        if (tutkintotodistuksenAntaja == null) {
+            Map<Kieli, String> tekstit = new HashMap<>();
+            for (Kieli kieli : Kieli.values()) {
+                tekstit.put(kieli, getTutkintotodistuksenAntajaVanha());
+            }
+            return TekstiPalanen.of(tekstit);
+        } else {
+            return tutkintotodistuksenAntaja;
+        }
+    }
+
+    public TekstiPalanen getTutkinnostaPaattavaViranomainen() {
+        if (tutkinnostaPaattavaViranomainen == null) {
+            Map<Kieli, String> tekstit = new HashMap<>();
+            for (Kieli kieli : Kieli.values()) {
+                tekstit.put(kieli, getTutkinnostaPaattavaViranomainenVanha());
+            }
+            return TekstiPalanen.of(tekstit);
+        } else {
+            return tutkinnostaPaattavaViranomainen;
+        }
+    }
 }
