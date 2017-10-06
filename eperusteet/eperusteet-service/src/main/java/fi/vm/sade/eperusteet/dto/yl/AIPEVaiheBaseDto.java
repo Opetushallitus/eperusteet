@@ -17,13 +17,14 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import fi.vm.sade.eperusteet.domain.yl.AIPEHasId;
+
 import java.util.Date;
 import java.util.UUID;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter

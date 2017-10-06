@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author jhyoty
  */
 
@@ -48,7 +47,7 @@ public abstract class AbstractLockService<T> implements LockService<T> {
     @Override
     @Transactional
     public LukkoDto lock(T ctx) {
-        return lock(ctx,null);
+        return lock(ctx, null);
     }
 
     @Override
@@ -56,7 +55,7 @@ public abstract class AbstractLockService<T> implements LockService<T> {
     public LukkoDto lock(T ctx, Integer ifMatchRevision) {
         Long key = validateCtx(ctx, false);
         final int latestRevision = latestRevision(ctx);
-        if ( ifMatchRevision == null || latestRevision == ifMatchRevision ) {
+        if (ifMatchRevision == null || latestRevision == ifMatchRevision) {
             return LukkoDto.of(manager.lock(key), latestRevision);
         }
         return null;
@@ -72,7 +71,7 @@ public abstract class AbstractLockService<T> implements LockService<T> {
     }
 
     protected void checkPermissionToPeruste(PerusteAware ctx, boolean readOnly) {
-        if ( readOnly ) {
+        if (readOnly) {
             permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
         } else {
             permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);
@@ -104,6 +103,7 @@ public abstract class AbstractLockService<T> implements LockService<T> {
 
     /**
      * Varmistaa että lukituskonteksti on validi
+     *
      * @param ctx
      * @return kontekstia vastaavan lukittavan entiteetin
      */

@@ -17,8 +17,10 @@
 package fi.vm.sade.eperusteet.service.revision.impl;
 
 import fi.vm.sade.eperusteet.service.revision.RevisionMetaService;
+
 import java.util.Date;
 import javax.persistence.EntityManager;
+
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author nkala
  */
 @Service

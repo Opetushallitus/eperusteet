@@ -28,17 +28,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * Kantaluokka service-tason integraatiotesteille joita ajetaan "oikeaa" tietokantaa vasten.
  * Vaatii paikallisen asennuksen sovelluksen tietokannasta. Tämän takia testit ovat ehdollisia.
+ *
  * @author jhyoty
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/it-db-test-context.xml")
-@IfProfileValue(name="db-it-tests", values="true")
+@IfProfileValue(name = "db-it-tests", values = "true")
 public class AbstractDbIntegrationTest {
 
     @Before
     public void setUpSecurityContext() {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-        ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test","test"));
+        ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test", "test"));
         SecurityContextHolder.setContext(ctx);
     }
 

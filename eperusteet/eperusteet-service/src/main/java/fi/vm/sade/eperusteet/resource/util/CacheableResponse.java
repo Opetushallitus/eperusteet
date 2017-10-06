@@ -18,7 +18,9 @@ package fi.vm.sade.eperusteet.resource.util;
 import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.Date;
 
 /**
- *
  * @author jhyoty
  */
 public class CacheableResponse {

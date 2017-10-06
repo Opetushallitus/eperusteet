@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.dto;
 
 /**
- *
  * @author jhyoty
  */
 public interface ReferenceableDto {

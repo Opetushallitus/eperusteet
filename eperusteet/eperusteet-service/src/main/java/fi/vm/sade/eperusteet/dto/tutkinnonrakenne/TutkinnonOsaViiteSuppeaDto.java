@@ -18,7 +18,9 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 

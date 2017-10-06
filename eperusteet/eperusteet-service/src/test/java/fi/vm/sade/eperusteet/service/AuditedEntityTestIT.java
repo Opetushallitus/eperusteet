@@ -50,13 +50,12 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author jhyoty
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AuditedEntityTestIT.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuditedEntityTestIT.class);
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
@@ -93,12 +92,12 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         teksti2.asetaTila(teksti.getTila());
 
         teksti2 = perusteenOsaRepository.save(teksti2);
-        teksti2 = (TekstiKappale)perusteenOsaRepository.findOne(teksti.getId());
+        teksti2 = (TekstiKappale) perusteenOsaRepository.findOne(teksti.getId());
 
         assertEquals(user1, teksti2.getLuoja());
         assertEquals(user2, teksti2.getMuokkaaja());
         assertEquals(luotu, teksti2.getLuotu());
-        assertTrue(teksti2.getMuokattu().compareTo(luotu)>=0);
+        assertTrue(teksti2.getMuokattu().compareTo(luotu) >= 0);
     }
 
     @Test
@@ -114,48 +113,48 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
         List<Revision> revisions = perusteenOsaService.getVersiot(teksti.getId());
 
-    	assertNotNull(revisions);
+        assertNotNull(revisions);
         assertEquals(1, revisions.size());
 
     }
 
     @Test
     public void testTutkinnonOsaRevisions() {
-    	TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
-    	tutkinnonOsa.setNimi(TekstiPalanen.of(Kieli.FI,"Nimi"));
+        TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
+        tutkinnonOsa.setNimi(TekstiPalanen.of(Kieli.FI, "Nimi"));
         tutkinnonOsa.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
-    	tutkinnonOsa = perusteenOsaRepository.save(tutkinnonOsa);
+        tutkinnonOsa = perusteenOsaRepository.save(tutkinnonOsa);
 
-        TutkinnonOsaDto tutkinnonOsaDto = (TutkinnonOsaDto)perusteenOsaService.get(tutkinnonOsa.getId());
+        TutkinnonOsaDto tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.get(tutkinnonOsa.getId());
         perusteenOsaService.lock(tutkinnonOsa.getId());
 
-    	tutkinnonOsaDto.setArviointi(new ArviointiDto());
-    	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot")));
+        tutkinnonOsaDto.setArviointi(new ArviointiDto());
+        tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot")));
         tutkinnonOsaDto.getArviointi().setArvioinninKohdealueet(new ArrayList<ArvioinninKohdealueDto>());
         ArvioinninKohdealueDto ke = new ArvioinninKohdealueDto();
         ke.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "kohdealue")));
         tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().add(ke);
-    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
+        tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
 
-    	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot, muokattu")));
+        tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot, muokattu")));
         tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().get(0).setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "kohdealue, muokattu")));
-    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
+        tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
 
 
-        tutkinnonOsaDto.setAmmattitaitovaatimukset( new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimukset"))) );
+        tutkinnonOsaDto.setAmmattitaitovaatimukset(new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimukset"))));
 
         List<AmmattitaitovaatimusKohdealueetDto> ammattitaitovaatimusLista = new ArrayList<>();
         AmmattitaitovaatimusKohdealueetDto ammattitaitovaatimusKohdealueetDto = new AmmattitaitovaatimusKohdealueetDto();
-        ammattitaitovaatimusKohdealueetDto.setOtsikko( new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimuskohdealue"))));
+        ammattitaitovaatimusKohdealueetDto.setOtsikko(new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimuskohdealue"))));
 
         List<AmmattitaitovaatimusKohdeDto> ammattitaitovaatimusKohteet = new ArrayList<>();
         AmmattitaitovaatimusKohdeDto ammattitaitovaatimusKohdeDto = new AmmattitaitovaatimusKohdeDto();
-        ammattitaitovaatimusKohdeDto.setOtsikko( new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimuskohde"))) );
-        ammattitaitovaatimusKohdeDto.setSelite( new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimuskohde selite"))) );
+        ammattitaitovaatimusKohdeDto.setOtsikko(new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimuskohde"))));
+        ammattitaitovaatimusKohdeDto.setSelite(new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimuskohde selite"))));
 
         List<AmmattitaitovaatimusDto> ammattitaitovaatimukset = new ArrayList<>();
         AmmattitaitovaatimusDto ammattitaitovaatimusDto = new AmmattitaitovaatimusDto();
-        ammattitaitovaatimusDto.setSelite( new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimus selite"))) );
+        ammattitaitovaatimusDto.setSelite(new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimus selite"))));
         ammattitaitovaatimusDto.setAmmattitaitovaatimusKoodi("vaatimuskoodi");
         ammattitaitovaatimusDto.setJarjestys(0);
 
@@ -165,14 +164,14 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         ammattitaitovaatimusKohteet.add(ammattitaitovaatimusKohdeDto);
         ammattitaitovaatimusKohdealueetDto.setVaatimuksenKohteet(ammattitaitovaatimusKohteet);
 
-        ammattitaitovaatimusLista.add( ammattitaitovaatimusKohdealueetDto );
-        tutkinnonOsaDto.setAmmattitaitovaatimuksetLista( ammattitaitovaatimusLista );
+        ammattitaitovaatimusLista.add(ammattitaitovaatimusKohdealueetDto);
+        tutkinnonOsaDto.setAmmattitaitovaatimuksetLista(ammattitaitovaatimusLista);
 
         tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
 
-    	List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getVersiot(tutkinnonOsaDto.getId());
+        List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getVersiot(tutkinnonOsaDto.getId());
 
-    	assertNotNull(tutkinnonOsaRevisions);
+        assertNotNull(tutkinnonOsaRevisions);
         assertEquals(4, tutkinnonOsaRevisions.size());
         assertEquals(1, tutkinnonOsaDto.getAmmattitaitovaatimuksetLista().size());
 
@@ -203,7 +202,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
     private void setUpSecurityContext(String username) {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-        ctx.setAuthentication(new UsernamePasswordAuthenticationToken(username,"test"));
+        ctx.setAuthentication(new UsernamePasswordAuthenticationToken(username, "test"));
         SecurityContextHolder.setContext(ctx);
     }
 }

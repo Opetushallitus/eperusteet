@@ -19,16 +19,17 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author nkala
  */
 @Entity
@@ -84,10 +85,10 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
     @Audited
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "aipevaihe_aipeoppiaine",
-               joinColumns = {
-                   @JoinColumn(name = "vaihe_id")},
-               inverseJoinColumns = {
-                   @JoinColumn(name = "oppiaine_id")})
+            joinColumns = {
+                    @JoinColumn(name = "vaihe_id")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "oppiaine_id")})
     @OrderBy("jarjestys, id")
     private List<AIPEOppiaine> oppiaineet = new ArrayList<>(0);
 
@@ -98,10 +99,10 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
 
         if (!result.isPresent()) {
             result = oppiaineet.stream()
-                .map(AIPEOppiaine::getOppimaarat)
-                .flatMap(Collection::stream)
-                .filter(oppiaine -> Objects.equals(oppiaine.getId(), oppiaineId))
-                .findFirst();
+                    .map(AIPEOppiaine::getOppimaarat)
+                    .flatMap(Collection::stream)
+                    .filter(oppiaine -> Objects.equals(oppiaine.getId(), oppiaineId))
+                    .findFirst();
         }
 
         return result.orElse(null);

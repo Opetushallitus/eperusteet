@@ -45,7 +45,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 /**
- *
  * @author jhyoty
  */
 @Configuration
@@ -90,13 +89,13 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
             @Override
             public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
-                String defaultName) {
+                                              String defaultName) {
                 return getName(config, method.getGenericReturnType(), defaultName);
             }
 
             @Override
             public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
-                String defaultName) {
+                                              String defaultName) {
                 return getName(config, method.getParameter(0).getGenericType(), defaultName);
             }
 
@@ -116,8 +115,8 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         converter.getObjectMapper().registerModule(new GuavaModule());
         EPerusteetMappingModule module = new EPerusteetMappingModule();
         module
-            .addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer())
-            .addDeserializer(PerusteenOsaUpdateDto.class, new PerusteenOsaUpdateDtoDeserializer());
+                .addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer())
+                .addDeserializer(PerusteenOsaUpdateDto.class, new PerusteenOsaUpdateDtoDeserializer());
         converter.getObjectMapper().registerModule(module);
         return converter;
     }

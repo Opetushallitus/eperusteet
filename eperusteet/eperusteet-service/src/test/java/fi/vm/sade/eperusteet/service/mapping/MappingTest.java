@@ -25,8 +25,10 @@ import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
+
 import java.util.Collections;
 import java.util.List;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,7 +44,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- *
  * @author jhyoty
  */
 public class MappingTest {
@@ -51,7 +52,7 @@ public class MappingTest {
     public void testOptionalMapping() {
 
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
-            .build();
+                .build();
         factory.registerMapper(new ReferenceableCollectionMergeMapper());
         factory.getConverterFactory().registerConverter(new TekstiPalanenConverter());
         OptionalSupport.register(factory);
@@ -92,7 +93,7 @@ public class MappingTest {
     public void testOptionalImmutableMapping() {
 
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
-            .build();
+                .build();
         OptionalSupport.register(factory);
         MapperFacade mapper = factory.getMapperFacade();
         B b = mapper.map(new A(), B.class);

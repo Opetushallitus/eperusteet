@@ -20,14 +20,15 @@ import fi.vm.sade.auditlog.ApplicationType;
 import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.eperusteet.service.audit.LogMessage.LogMessageBuilder;
 import fi.vm.sade.eperusteet.service.revision.RevisionMetaService;
+
 import java.util.function.Function;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author nkala
  */
 @Component

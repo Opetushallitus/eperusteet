@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- *
  * @author jhyoty
  */
 public interface LiiteService {

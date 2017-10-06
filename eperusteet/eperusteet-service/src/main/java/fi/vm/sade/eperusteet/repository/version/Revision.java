@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.repository.version;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 

@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.service.audit;
 
 /**
- *
  * @author nkala
  */
 public enum EperusteetMessageFields {

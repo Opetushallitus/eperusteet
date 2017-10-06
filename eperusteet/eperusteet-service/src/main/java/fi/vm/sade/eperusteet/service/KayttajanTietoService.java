@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- *
  * @author nkala
  */
 public interface KayttajanTietoService {

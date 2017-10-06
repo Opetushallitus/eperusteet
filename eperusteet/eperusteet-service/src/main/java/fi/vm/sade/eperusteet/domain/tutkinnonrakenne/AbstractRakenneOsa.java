@@ -19,14 +19,17 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
@@ -81,6 +84,6 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
             return true;
         }
 
-        return excludeText || Objects.equals(this.kuvaus,other.getKuvaus());
+        return excludeText || Objects.equals(this.kuvaus, other.getKuvaus());
     }
 }

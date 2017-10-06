@@ -32,7 +32,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @JsonIgnoreProperties
-public class PerusteprojektiListausDto implements Serializable  {
+public class PerusteprojektiListausDto implements Serializable {
     private Long id;
     private String nimi;
     private ProjektiTila tila;

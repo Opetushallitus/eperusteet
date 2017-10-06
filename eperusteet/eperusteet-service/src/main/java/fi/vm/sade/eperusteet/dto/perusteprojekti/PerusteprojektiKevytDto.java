@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -31,7 +32,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties
-public class PerusteprojektiKevytDto implements Serializable  {
+public class PerusteprojektiKevytDto implements Serializable {
     private Long id;
     private String nimi;
     private ProjektiTila tila;

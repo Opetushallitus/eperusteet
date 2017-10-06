@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- *
  * @author jhyoty
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)

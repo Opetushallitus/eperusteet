@@ -21,8 +21,10 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
+
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -31,6 +33,7 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -39,7 +42,6 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
@@ -53,6 +55,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
         arviointi(Oppiaine::getArviointi);
 
         private Function<Oppiaine, TekstiOsa> getter;
+
         private OsaTyyppi(Function<Oppiaine, TekstiOsa> getter) {
             this.getter = getter;
         }
@@ -66,6 +69,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
         return inLukioPerusteDirect(perusteId).or(oa -> oa.getOppiaine() != null
                 && inLukioPeruste(perusteId).test(oa.getOppiaine()));
     }
+
     private static Predicate<Oppiaine> inLukioPerusteDirect(long perusteId) {
         return oa -> oa.getLukioRakenteet().stream().anyMatch(
                 LukioOpetussuunnitelmaRakenne.inPeruste(perusteId));
@@ -199,8 +203,8 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     /**
      * Palauttaa oppimäärät
      *
-     * @see #koosteinen
      * @return oppimäärät (joukkoa ei voi muokata) tai null jos oppiaine ei ole koosteinen
+     * @see #koosteinen
      */
     public Set<Oppiaine> getOppimaarat() {
         if (koosteinen == false) {
@@ -310,8 +314,8 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     public boolean equals(Object other) {
         return this == other || (
                 other instanceof Oppiaine
-                && this.tunniste != null
-                && this.tunniste.equals(((Oppiaine) other).tunniste)
+                        && this.tunniste != null
+                        && this.tunniste.equals(((Oppiaine) other).tunniste)
         );
     }
 

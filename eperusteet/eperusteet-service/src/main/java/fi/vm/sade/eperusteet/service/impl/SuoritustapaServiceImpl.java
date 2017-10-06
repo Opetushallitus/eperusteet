@@ -34,17 +34,18 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author harrik
  */
 @Service
@@ -138,10 +139,9 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         if (osat != null) {
             for (AbstractRakenneOsa aro : vanhatOsat) {
                 if (aro instanceof RakenneModuuli) {
-                    osat.add(kopioiRakenne((RakenneModuuli)aro, viitemap));
-                }
-                else if (aro instanceof RakenneOsa) {
-                    osat.add(kopioiRakenneOsa((RakenneOsa)aro, viitemap));
+                    osat.add(kopioiRakenne((RakenneModuuli) aro, viitemap));
+                } else if (aro instanceof RakenneOsa) {
+                    osat.add(kopioiRakenneOsa((RakenneOsa) aro, viitemap));
                 }
             }
         }

@@ -19,11 +19,12 @@ package fi.vm.sade.eperusteet.service.exception;
 import org.springframework.core.NestedRuntimeException;
 
 /**
- *  Kantaluokka palvelukerroksen poikkeuksille
+ * Kantaluokka palvelukerroksen poikkeuksille
+ *
  * @author jhyoty
  */
 public abstract class ServiceException extends NestedRuntimeException {
-    
+
     public ServiceException(String message) {
         super(message);
     }

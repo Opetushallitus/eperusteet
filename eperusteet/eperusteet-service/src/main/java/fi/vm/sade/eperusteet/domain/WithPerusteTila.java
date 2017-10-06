@@ -17,10 +17,10 @@
 package fi.vm.sade.eperusteet.domain;
 
 /**
- *
  * @author jhyoty
  */
 public interface WithPerusteTila {
     PerusteTila getTila();
+
     void asetaTila(PerusteTila tila);
 }

@@ -33,7 +33,6 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 
 /**
- *
  * @author harrik
  */
 public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
@@ -66,7 +65,7 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         }
 
         public TilaUpdateStatusBuilderForSuoritustapa addErrorStatusForAll(String viesti,
-                               Supplier<Stream<LokalisoituTekstiDto>> all) {
+                                                                           Supplier<Stream<LokalisoituTekstiDto>> all) {
             if (isUsed()) {
                 LokalisoituTekstiDto[] tekstit = all.get().toArray(LokalisoituTekstiDto[]::new);
                 if (tekstit.length > 0) {
@@ -97,7 +96,7 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         private Set<ProjektiTila> tilat = new HashSet<>();
 
         public TilallinenTilaUpdateStatusBuilderForSuoritustapa(TilaUpdateStatusBuilder builder, Suoritustapakoodi suoritustapa,
-                                                      ProjektiTila targetTila) {
+                                                                ProjektiTila targetTila) {
             super(builder, suoritustapa);
             this.targetTila = targetTila;
         }
@@ -107,13 +106,13 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
             return tilat.isEmpty() || tilat.contains(targetTila);
         }
 
-        public TilallinenTilaUpdateStatusBuilderForSuoritustapa forTilat(ProjektiTila ...tilat) {
+        public TilallinenTilaUpdateStatusBuilderForSuoritustapa forTilat(ProjektiTila... tilat) {
             this.tilat = new HashSet<>(asList(tilat));
             return this;
         }
 
         public TilallinenTilaUpdateStatusBuilderForSuoritustapa check(
-                        Consumer<TilallinenTilaUpdateStatusBuilderForSuoritustapa> status) {
+                Consumer<TilallinenTilaUpdateStatusBuilderForSuoritustapa> status) {
             if (isUsed()) {
                 status.accept(this);
             }
@@ -125,12 +124,14 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
             super.addErrorStatus(viesti, tekstit);
             return this;
         }
+
         @Override
         public TilallinenTilaUpdateStatusBuilderForSuoritustapa addErrorStatusForAll(String viesti,
-                                                             Supplier<Stream<LokalisoituTekstiDto>> all) {
+                                                                                     Supplier<Stream<LokalisoituTekstiDto>> all) {
             super.addErrorStatusForAll(viesti, all);
             return this;
         }
+
         @Override
         public TilallinenTilaUpdateStatusBuilderForSuoritustapa addErrorGiven(String viesti, boolean given) {
             super.addErrorGiven(viesti, given);
@@ -157,7 +158,7 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         Validointi validointi;
         List<LokalisoituTekstiDto> nimet;
         Suoritustapakoodi suoritustapa;
-        
+
         public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet) {
             this.viesti = viesti;
             this.validointi = validointi;

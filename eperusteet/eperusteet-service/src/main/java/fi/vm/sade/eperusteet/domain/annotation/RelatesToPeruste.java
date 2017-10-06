@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * owning Peruste. Relation can be direct or via a Collection.
  *
  * @see fi.vm.sade.eperusteet.domain.Peruste
- *
+ * <p>
  * User: tommiratamaa
  * Date: 12.11.2015
  * Time: 15.07
@@ -45,7 +45,7 @@ public @interface RelatesToPeruste {
         /**
          * @return dot chained property paths (or properties leading another entity that RelatesToPeruste)
          * (standard Java bean property names for getter/field properties)
-         *
+         * <p>
          * E.g. "peruste" or {"liittyva.peruste", "toisenKautta.liittyva.peruste"}
          */
         String[] value();
@@ -53,8 +53,9 @@ public @interface RelatesToPeruste {
 
     /**
      * Marker annotation for entity class that is Identifiable and is related to many locations
-     * @see Identifiable
      *
+     * @see Identifiable
+     * <p>
      * Will be looked up if no relation to Peruste is found by other means.
      */
     @Retention(RetentionPolicy.RUNTIME)

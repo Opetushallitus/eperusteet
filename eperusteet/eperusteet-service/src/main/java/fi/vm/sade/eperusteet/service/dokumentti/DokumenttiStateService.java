@@ -22,7 +22,6 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- *
  * @author iSaul
  */
 public interface DokumenttiStateService {

@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepositoryCustom;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -37,6 +38,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -44,7 +46,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.util.StringUtils;
 
 /**
- *
  * @author nkala
  */
 @Slf4j
@@ -136,9 +137,9 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
     }
 
     private Predicate buildPredicate(
-        Root<Perusteprojekti> root,
-        CriteriaBuilder cb,
-        PerusteprojektiQueryDto pq
+            Root<Perusteprojekti> root,
+            CriteriaBuilder cb,
+            PerusteprojektiQueryDto pq
     ) {
         Expression<String> targetName = cb.lower(root.get(Perusteprojekti_.nimi));
         Expression<Diaarinumero> targetDiaari = root.get(Perusteprojekti_.diaarinumero);
@@ -161,8 +162,7 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
                 Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
                 result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
             }
-        }
-        else {
+        } else {
             result = cb.and(result, cb.equal(tyyppi, pq.getTyyppi()));
         }
 

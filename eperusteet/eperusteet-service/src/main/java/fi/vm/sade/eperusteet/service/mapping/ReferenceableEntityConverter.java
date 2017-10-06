@@ -17,15 +17,16 @@ package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.PersistenceContext;
+
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author teele1
  */
 @Component
@@ -37,7 +38,7 @@ public class ReferenceableEntityConverter extends BidirectionalConverter<Referen
     @Override
     public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {
         return (this.sourceType.isAssignableFrom(sourceType) && this.destinationType.isAssignableFrom(destinationType))
-            || (this.sourceType.isAssignableFrom(destinationType) && this.destinationType.isAssignableFrom(sourceType));
+                || (this.sourceType.isAssignableFrom(destinationType) && this.destinationType.isAssignableFrom(sourceType));
     }
 
     @Override
@@ -53,8 +54,8 @@ public class ReferenceableEntityConverter extends BidirectionalConverter<Referen
             (viitteen luokka on perintähierarkian isäluokka eikä "oikea" luokka)
              */
             ReferenceableEntity e = em.find(type.getRawType(), Long.valueOf(reference.getId()));
-            if ( e == null ) {
-                throw new IllegalArgumentException("Virheellinen viite " + reference );
+            if (e == null) {
+                throw new IllegalArgumentException("Virheellinen viite " + reference);
             }
         }
         return em.getReference(type.getRawType(), Long.valueOf(reference.getId()));

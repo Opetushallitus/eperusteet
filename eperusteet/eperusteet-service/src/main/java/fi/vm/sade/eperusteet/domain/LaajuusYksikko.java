@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.domain;
 
 /**
- *
  * @author jhyoty
  */
 public enum LaajuusYksikko {

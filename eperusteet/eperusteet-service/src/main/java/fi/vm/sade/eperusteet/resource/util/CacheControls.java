@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.resource.util;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 
 /**
- *
  * @author jhyoty
  */
 final class CacheControls {

@@ -46,7 +46,6 @@ import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
- *
  * @author jhyoty
  */
 @Configuration
@@ -76,7 +75,8 @@ public class SwaggerConfig {
                 .directModelSubstitute(JsonNode.class, Object.class)
                 .alternateTypeRules(
                         AlternateTypeRules.newRule(
-                                typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {}),
+                                typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {
+                                }),
                                 typeResolver.resolve(Object.class)
                         )
                 );
@@ -95,7 +95,8 @@ public class SwaggerConfig {
                 .directModelSubstitute(JsonNode.class, Object.class)
                 .alternateTypeRules(
                         AlternateTypeRules.newRule(
-                                typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {}),
+                                typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {
+                                }),
                                 typeResolver.resolve(Object.class)
                         )
                 )
@@ -109,13 +110,13 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         Contact contact = null;
         return new ApiInfo(
-            "Oppijan verkkopalvelukokonaisuus / ePerusteet julkinen rajapinta",
-            "",
-            "Spring MVC API based on the swagger 2.0 and 1.2 spec",
-            "https://confluence.csc.fi/display/oppija/Rajapinnat+toisen+asteen+ja+perusasteen+toimijoille",
-            contact,
-            "EUPL 1.1",
-            "http://ec.europa.eu/idabc/eupl"
+                "Oppijan verkkopalvelukokonaisuus / ePerusteet julkinen rajapinta",
+                "",
+                "Spring MVC API based on the swagger 2.0 and 1.2 spec",
+                "https://confluence.csc.fi/display/oppija/Rajapinnat+toisen+asteen+ja+perusasteen+toimijoille",
+                contact,
+                "EUPL 1.1",
+                "http://ec.europa.eu/idabc/eupl"
         );
     }
 

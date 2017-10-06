@@ -20,12 +20,13 @@ import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.yl.AIPEHasId;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+
 import java.util.UUID;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter

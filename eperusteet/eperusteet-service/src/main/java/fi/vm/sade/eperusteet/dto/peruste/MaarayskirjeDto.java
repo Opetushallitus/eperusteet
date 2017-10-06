@@ -16,12 +16,13 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+
 import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author ohel
  */
 @Getter

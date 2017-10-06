@@ -20,8 +20,10 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
+
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.DOKUMENTTI;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.GENEROI;
+
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
@@ -35,7 +37,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- *
  * @author jussini
  */
 @RestController

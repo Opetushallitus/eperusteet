@@ -70,7 +70,7 @@ public class Aihekokonaisuudet extends PerusteenOsa {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @Getter
     @Setter
-    @JoinColumn(name="viite_id", nullable = false)
+    @JoinColumn(name = "viite_id", nullable = false)
     private PerusteenOsaViite viite = new PerusteenOsaViite();
 
     @Getter
@@ -83,8 +83,8 @@ public class Aihekokonaisuudet extends PerusteenOsa {
         klooni.setYleiskuvaus(this.getYleiskuvaus());
         klooni.setOtsikko(this.getOtsikko());
 
-        for( Aihekokonaisuus aihekokonaisuus : this.aihekokonaisuudet ) {
-            klooni.aihekokonaisuudet.add( aihekokonaisuus.kloonaa() );
+        for (Aihekokonaisuus aihekokonaisuus : this.aihekokonaisuudet) {
+            klooni.aihekokonaisuudet.add(aihekokonaisuus.kloonaa());
         }
 
         return klooni;

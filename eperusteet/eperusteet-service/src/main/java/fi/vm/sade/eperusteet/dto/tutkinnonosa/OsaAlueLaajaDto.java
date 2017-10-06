@@ -17,11 +17,11 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author harrik
  */
 @Getter

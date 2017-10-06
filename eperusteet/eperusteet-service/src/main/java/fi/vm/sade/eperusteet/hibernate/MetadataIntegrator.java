@@ -44,7 +44,7 @@ public class MetadataIntegrator implements Integrator {
                 mapping -> Property.mapForClass(mapping.getMappedClass())
                         .values().stream().filter(p -> p.getContainedTypeOrType()
                                 .isAnnotationPresent(RelatesToPeruste.FromAnywhereReferenced.class)
-                            && !p.isAnnotationPresent(Transient.class))
+                                && !p.isAnnotationPresent(Transient.class))
                         .forEach(p -> classPropertyList(p.getContainedTypeOrType()).add(p)));
     }
 

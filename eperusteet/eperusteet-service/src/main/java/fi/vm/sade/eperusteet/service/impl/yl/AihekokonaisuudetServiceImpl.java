@@ -147,7 +147,7 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     @Override
     @Transactional
     public void muokkaaAihekokonaisuutta(long perusteId, LukioAihekokonaisuusMuokkausDto lukioAihekokonaisuusMuokkausDto)
-                    throws NotExistsException {
+            throws NotExistsException {
         Aihekokonaisuus aihekokonaisuus = found(lukioAihekokonaisuusRepository
                 .findOne(lukioAihekokonaisuusMuokkausDto.getId()), inPeruste(perusteId));
         lukioAihekokonaisuusRepository.lock(aihekokonaisuus, false);

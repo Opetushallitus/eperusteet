@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import org.springframework.data.jpa.repository.Query;
 
 /**
- *
  * @author jhyoty
  */
 public interface LaajaalainenOsaaminenRepository extends JpaWithVersioningRepository<LaajaalainenOsaaminen, Long> {

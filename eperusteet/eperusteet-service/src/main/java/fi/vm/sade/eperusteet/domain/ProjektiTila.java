@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Stream;

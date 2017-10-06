@@ -24,7 +24,6 @@ import lombok.Setter;
 import org.joda.time.DateTime;
 
 /**
- *
  * @author jhyoty
  */
 @Getter

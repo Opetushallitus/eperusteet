@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import java.io.Serializable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,7 +24,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 /**
- *
  * @author jhyoty
  */
 @MappedSuperclass

@@ -25,7 +25,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- *
  * @author nkala
  */
 @Entity
@@ -60,7 +59,9 @@ public class KevytTekstiKappale extends AbstractAuditedEntity implements Seriali
         copyState(other);
     }
 
-    public KevytTekstiKappale copy() { return new KevytTekstiKappale(this); }
+    public KevytTekstiKappale copy() {
+        return new KevytTekstiKappale(this);
+    }
 
     private void copyState(KevytTekstiKappale other) {
         this.setNimi(other.getNimi());

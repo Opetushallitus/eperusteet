@@ -19,11 +19,11 @@ import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- *
  * @author teele1
  */
 public class ValidArvioinninKohdeValidator implements ConstraintValidator<ValidArvioinninKohde, ArvioinninKohde> {
@@ -40,7 +40,7 @@ public class ValidArvioinninKohdeValidator implements ConstraintValidator<ValidA
         }
 
         if (arvioinninKohde.getArviointiAsteikko() == null
-            || arvioinninKohde.getArviointiAsteikko().getOsaamistasot().size() != arvioinninKohde.getOsaamistasonKriteerit().size()) {
+                || arvioinninKohde.getArviointiAsteikko().getOsaamistasot().size() != arvioinninKohde.getOsaamistasonKriteerit().size()) {
             return false;
         }
 

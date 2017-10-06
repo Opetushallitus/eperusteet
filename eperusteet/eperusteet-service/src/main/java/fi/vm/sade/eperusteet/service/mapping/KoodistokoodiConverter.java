@@ -23,14 +23,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author harrik
  */
 @Component
 public class KoodistokoodiConverter extends BidirectionalConverter<Koodistokoodi, String> {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(KoodistokoodiConverter.class);
- 
+
     @Override
     public String convertTo(Koodistokoodi s, Type<String> type) {
         LOG.info("KoodistokoodiConverter convertTo kutsuttu luokalla: " + type.getRawType());

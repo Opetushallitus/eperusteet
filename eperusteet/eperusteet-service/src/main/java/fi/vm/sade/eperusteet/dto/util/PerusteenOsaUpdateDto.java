@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.dto.util;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 
 /**
- *
  * @author jhyoty
  */
 public class PerusteenOsaUpdateDto extends UpdateDto<PerusteenOsaDto.Laaja> {

@@ -41,6 +41,7 @@ import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,6 @@ import java.util.Set;
 import static org.junit.Assert.assertTrue;
 
 /**
- *
  * @author teele1
  */
 public abstract class TestUtils {
@@ -124,7 +124,7 @@ public abstract class TestUtils {
         RakenneModuuli rakenne = new RakenneModuuli();
 
         MuodostumisSaanto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1
-            ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
+                ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
         MuodostumisSaanto.Koko msk = kokoMinimi != null && kokoMinimi != -1 ? new MuodostumisSaanto.Koko(kokoMinimi, kokoMaksimi) : null;
         MuodostumisSaanto ms = (msl != null || msk != null) ? new MuodostumisSaanto(msl, msk) : null;
 
@@ -140,7 +140,7 @@ public abstract class TestUtils {
         RakenneModuuli rakenne = new RakenneModuuli();
 
         MuodostumisSaanto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1
-            ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
+                ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
         MuodostumisSaanto.Koko msk = kokoMinimi != null && kokoMinimi != -1 ? new MuodostumisSaanto.Koko(kokoMinimi, kokoMaksimi) : null;
         MuodostumisSaanto ms = (msl != null || msk != null) ? new MuodostumisSaanto(msl, msk) : null;
 

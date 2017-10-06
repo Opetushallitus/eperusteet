@@ -28,5 +28,6 @@ import java.io.IOException;
  */
 public interface PdfService {
     byte[] xhtml2pdf(Document document, GeneratorVersion version) throws IOException, TransformerException, SAXException;
+
     byte[] xhtml2pdf(Document document) throws IOException, TransformerException, SAXException;
 }

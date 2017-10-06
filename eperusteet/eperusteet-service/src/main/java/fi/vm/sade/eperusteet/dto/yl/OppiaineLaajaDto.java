@@ -23,7 +23,6 @@ import lombok.Setter;
 import java.util.Set;
 
 /**
- *
  * @author mikkom
  */
 @Getter

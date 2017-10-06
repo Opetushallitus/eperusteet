@@ -18,15 +18,16 @@ package fi.vm.sade.eperusteet.service.util;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author jhyoty
  */
 @Service

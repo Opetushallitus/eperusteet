@@ -18,11 +18,11 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+
 import java.util.List;
 import java.util.stream.Stream;
 
 /**
- *
  * @author nkala
  */
 public interface KoodistoClient {

@@ -34,15 +34,16 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
+
 import java.util.HashSet;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author jhyoty
  */
 @Service
@@ -149,8 +150,8 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         lockService.assertLock(VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId()));
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(dto.getId());
-        if ( sisalto.getPeruste().getTila() == PerusteTila.VALMIS ) {
-            if ( !vk.getVuosiluokat().equals(dto.getVuosiluokat()) ) {
+        if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
+            if (!vk.getVuosiluokat().equals(dto.getVuosiluokat())) {
                 throw new BusinessRuleViolationException("Vain korjaukset sallittu");
             }
         }

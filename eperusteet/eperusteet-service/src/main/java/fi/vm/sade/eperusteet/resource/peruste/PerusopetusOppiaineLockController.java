@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author jhyoty
  */
 @RestController
@@ -35,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
         PerusopetusOppiaineLockController.BASE + "/lukko",
         PerusopetusOppiaineLockController.BASE + "/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko"
 })
-public class PerusopetusOppiaineLockController extends AbstractLockController<OppiaineLockContext>{
+public class PerusopetusOppiaineLockController extends AbstractLockController<OppiaineLockContext> {
     static final String BASE = "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}";
     @Autowired
     @LockCtx(OppiaineLockContext.class)

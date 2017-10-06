@@ -22,18 +22,19 @@ import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author teele1
  */
 @Service
 @Transactional(readOnly = true)
-public class ArviointiServiceImpl implements ArviointiService{
+public class ArviointiServiceImpl implements ArviointiService {
 
     @Autowired
     private ArviointiRepository arviointiRepository;

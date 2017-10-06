@@ -26,10 +26,14 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.OppiainePerusteenSisaltoService;
+
 import java.util.*;
+
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
+
 import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Time: 15.37
  */
 public abstract class AbstractOppiaineOpetuksenSisaltoService<EntityType extends AbstractOppiaineOpetuksenSisalto>
-            implements OppiainePerusteenSisaltoService {
+        implements OppiainePerusteenSisaltoService {
 
     @Autowired
     protected PerusteenOsaViiteService viiteService;
@@ -85,9 +89,9 @@ public abstract class AbstractOppiaineOpetuksenSisaltoService<EntityType extends
         return listOppiaineet(getByPerusteId(perusteId).getOppiaineet().stream(), view);
     }
 
-    protected  <T extends OppiaineBaseDto> List<T> listOppiaineet(Stream<Oppiaine> oppiaineetStream, Class<T> view) {
+    protected <T extends OppiaineBaseDto> List<T> listOppiaineet(Stream<Oppiaine> oppiaineetStream, Class<T> view) {
         List<Oppiaine> oppiaineet = oppiaineetStream.filter(oa -> oa.getOppiaine() == null)
-                .sorted(comparing(Oppiaine::getJnro, (a,b) -> {
+                .sorted(comparing(Oppiaine::getJnro, (a, b) -> {
                     if (a == null) {
                         return 1;
                     }

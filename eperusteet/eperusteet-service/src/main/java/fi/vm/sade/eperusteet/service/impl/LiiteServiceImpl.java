@@ -26,19 +26,20 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author jhyoty
  */
 @Service
@@ -105,7 +106,7 @@ public class LiiteServiceImpl implements LiiteService {
     @Transactional
     public void delete(Long perusteId, UUID id) {
         Liite liite = liitteet.findOne(perusteId, id);
-        if ( liite == null ) {
+        if (liite == null) {
             throw new NotExistsException();
         }
         perusteet.findOne(perusteId).removeLiite(liite);

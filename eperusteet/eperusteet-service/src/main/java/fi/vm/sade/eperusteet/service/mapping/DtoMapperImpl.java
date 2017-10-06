@@ -17,10 +17,10 @@ package fi.vm.sade.eperusteet.service.mapping;
 
 import java.util.Collection;
 import java.util.List;
+
 import ma.glasnost.orika.MapperFacade;
 
 /**
- *
  * @author harrik
  */
 public class DtoMapperImpl implements DtoMapper {

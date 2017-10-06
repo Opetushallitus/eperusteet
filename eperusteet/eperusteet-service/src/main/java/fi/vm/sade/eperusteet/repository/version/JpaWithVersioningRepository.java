@@ -63,7 +63,7 @@ public interface JpaWithVersioningRepository<T, ID extends Serializable> extends
 
     /**
      * Asettaa revisiokohtaisen kommentin.
-     *
+     * <p>
      * Jos revisioon on jo asetettu kommentti, uusi kommentti korvaa aikaisemman. Kommentti on globaali koko revisiolle; jos samassa muutoksessa muokataan
      * useita entiteettejä, kommentti koskee niitä kaikkia.
      *

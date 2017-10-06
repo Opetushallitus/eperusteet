@@ -21,15 +21,16 @@ import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
- *
  * @author nkala
  */
 @Entity
@@ -63,8 +64,8 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto {
     @Audited
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "aipe_opetuksensisalto_vaihe",
-               joinColumns = @JoinColumn(name = "opetus_id"),
-               inverseJoinColumns = @JoinColumn(name = "vaihe_id"))
+            joinColumns = @JoinColumn(name = "opetus_id"),
+            inverseJoinColumns = @JoinColumn(name = "vaihe_id"))
     @OrderBy("jarjestys, id")
     private List<AIPEVaihe> vaiheet = new ArrayList<>();
 

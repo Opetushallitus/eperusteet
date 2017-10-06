@@ -3,10 +3,12 @@ package fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -18,7 +20,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "ammattitaitovaatimuksenkohde")
 @Audited
-public class AmmattitaitovaatimuksenKohde implements Serializable{
+public class AmmattitaitovaatimuksenKohde implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -49,7 +51,7 @@ public class AmmattitaitovaatimuksenKohde implements Serializable{
     @OneToMany(mappedBy = "ammattitaitovaatimuksenkohde", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     @Setter
-    @OrderColumn (name="jarjestys")
+    @OrderColumn(name = "jarjestys")
     private List<Ammattitaitovaatimus> vaatimukset = new ArrayList<>();
 
     public AmmattitaitovaatimuksenKohde() {

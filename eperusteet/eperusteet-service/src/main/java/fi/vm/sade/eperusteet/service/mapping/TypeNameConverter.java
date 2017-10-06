@@ -22,9 +22,10 @@ import ma.glasnost.orika.metadata.Type;
 
 /**
  * Muutaa luokan nimen tyyppitiedoksi. Oletuksena tyyppi
+ *
  * @author jhyoty
  */
-class TypeNameConverter extends CustomConverter<Class<?>, String>{
+class TypeNameConverter extends CustomConverter<Class<?>, String> {
 
     @Override
     public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {
@@ -33,7 +34,7 @@ class TypeNameConverter extends CustomConverter<Class<?>, String>{
 
     @Override
     public String convert(Class<?> source, Type<? extends String> destinationType) {
-        if ( source.isAnnotationPresent(JsonTypeName.class) ) {
+        if (source.isAnnotationPresent(JsonTypeName.class)) {
             return source.getAnnotation(JsonTypeName.class).value();
         }
         return source.getSimpleName().toLowerCase();

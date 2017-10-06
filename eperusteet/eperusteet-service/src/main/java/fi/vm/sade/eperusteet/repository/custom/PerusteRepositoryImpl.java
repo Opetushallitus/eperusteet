@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite_;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
@@ -32,12 +33,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 /**
- *
  * @author jhyoty
  */
 public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
@@ -53,10 +54,9 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     /**
      * Etsi Peruste määritellyillä hakuehdoilla (sivutettu kysely)
      *
-     * @param page sivumääritys
-     * @param pquery hakuparametrit
+     * @param page              sivumääritys
+     * @param pquery            hakuparametrit
      * @param koodistostaHaetut
-     *
      * @return Yhden hakusivun verran vastauksia
      */
     @Override
@@ -103,11 +103,11 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     }
 
     private Predicate buildPredicate(
-        Root<Peruste> root,
-        Join<TekstiPalanen, LokalisoituTeksti> teksti,
-        CriteriaBuilder cb,
-        PerusteQuery pq,
-        Set<Long> koodistostaHaetut
+            Root<Peruste> root,
+            Join<TekstiPalanen, LokalisoituTeksti> teksti,
+            CriteriaBuilder cb,
+            PerusteQuery pq,
+            Set<Long> koodistostaHaetut
     ) {
         final Expression<Date> voimassaoloAlkaa = root.get(Peruste_.voimassaoloAlkaa);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
@@ -152,8 +152,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         if (pq.isKoulutusvienti()) {
             pred = cb.and(pred, cb.isTrue(root.get(Peruste_.koulutusvienti)));
-        }
-        else {
+        } else {
             pred = cb.and(pred, cb.isFalse(root.get(Peruste_.koulutusvienti)));
         }
 
@@ -256,7 +255,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             Join<Peruste, Perusteprojekti> perusteprojekti = root.join(Peruste_.perusteprojekti);
 
             // Jos peruste on esikatseltavissa tai/ja julkaistu
-            Predicate esikatseltavissaTaiJulkaistu= cb.disjunction();
+            Predicate esikatseltavissaTaiJulkaistu = cb.disjunction();
             esikatseltavissaTaiJulkaistu = cb.or(esikatseltavissaTaiJulkaistu,
                     cb.isTrue(perusteprojekti.get(Perusteprojekti_.esikatseltavissa)));
             esikatseltavissaTaiJulkaistu = cb.or(esikatseltavissaTaiJulkaistu,

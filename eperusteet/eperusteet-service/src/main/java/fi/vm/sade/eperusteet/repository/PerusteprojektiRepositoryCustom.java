@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.NoRepositoryBean;
 
 /**
- *
  * @author nkala
  */
 @NoRepositoryBean

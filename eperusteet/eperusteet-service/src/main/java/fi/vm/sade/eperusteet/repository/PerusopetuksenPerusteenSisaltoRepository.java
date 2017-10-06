@@ -19,9 +19,8 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**
- *
  * @author jhyoty
  */
-public interface PerusopetuksenPerusteenSisaltoRepository extends JpaWithVersioningRepository<PerusopetuksenPerusteenSisalto,Long>,
+public interface PerusopetuksenPerusteenSisaltoRepository extends JpaWithVersioningRepository<PerusopetuksenPerusteenSisalto, Long>,
         OppiaineSisaltoRepository<PerusopetuksenPerusteenSisalto> {
 }

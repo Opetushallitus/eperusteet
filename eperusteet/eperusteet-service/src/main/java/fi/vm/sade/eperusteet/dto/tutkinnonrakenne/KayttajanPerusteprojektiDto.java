@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 /**
- *
  * @author nkala
  */
 public class KayttajanPerusteprojektiDto {

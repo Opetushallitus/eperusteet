@@ -23,14 +23,15 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
+
 import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
 /**
- *
  * @author jhyoty
  */
 @Getter

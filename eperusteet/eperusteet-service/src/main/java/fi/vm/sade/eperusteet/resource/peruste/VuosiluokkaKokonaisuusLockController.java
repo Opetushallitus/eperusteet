@@ -26,13 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- *
  * @author jhyoty
  */
 @RestController
 @InternalApi
 @RequestMapping(value = "/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko")
-public class VuosiluokkaKokonaisuusLockController extends AbstractLockController<VuosiluokkaKokonaisuusContext>{
+public class VuosiluokkaKokonaisuusLockController extends AbstractLockController<VuosiluokkaKokonaisuusContext> {
     @Autowired
     @LockCtx(VuosiluokkaKokonaisuusContext.class)
     private LockService<VuosiluokkaKokonaisuusContext> service;

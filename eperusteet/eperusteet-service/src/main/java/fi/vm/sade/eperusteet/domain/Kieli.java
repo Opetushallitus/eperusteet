@@ -16,11 +16,11 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author jhyoty
  */
 public enum Kieli {

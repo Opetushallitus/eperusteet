@@ -17,11 +17,11 @@
 package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
 import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter

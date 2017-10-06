@@ -18,11 +18,11 @@ package fi.vm.sade.eperusteet.dto.kayttaja;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author harrik
  */
 @Getter

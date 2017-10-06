@@ -22,11 +22,13 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,7 +37,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
- *
  * @author nkala
  */
 @Service
@@ -87,7 +88,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     public Stream<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
         return getAll(koodisto).stream()
                 .filter(koodi -> koodi.getKoodiArvo().contains(haku) || Arrays.stream(koodi.getMetadata())
-                            .anyMatch(meta -> meta.getNimi().toLowerCase().contains(haku.toLowerCase())));
+                        .anyMatch(meta -> meta.getNimi().toLowerCase().contains(haku.toLowerCase())));
     }
 
     private Map<String, String> metadataToLocalized(KoodistoKoodiDto koodistoKoodi) {
@@ -96,7 +97,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
-    @Cacheable(value = "koodistot", key="'alarelaatio:'+#p0")
+    @Cacheable(value = "koodistot", key = "'alarelaatio:'+#p0")
     public List<KoodistoKoodiDto> getAlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + ALARELAATIO + koodi;
@@ -122,7 +123,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
-    @Cacheable(value = "koodistot", key="'ylarelaatio:'+#p0")
+    @Cacheable(value = "koodistot", key = "'ylarelaatio:'+#p0")
     public List<KoodistoKoodiDto> getYlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + YLARELAATIO + koodi;

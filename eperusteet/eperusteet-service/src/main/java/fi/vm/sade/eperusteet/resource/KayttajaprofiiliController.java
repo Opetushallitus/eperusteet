@@ -22,11 +22,13 @@ import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.SuosikkiService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PREFERENSSI;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.SUOSIKKI;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,16 +36,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author harrik
  */
 @RestController
@@ -70,7 +73,7 @@ public class KayttajaprofiiliController {
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/suosikki", method = POST, consumes="application/json")
+    @RequestMapping(value = "/suosikki", method = POST, consumes = "application/json")
     @ResponseBody
     public ResponseEntity<KayttajaProfiiliDto> addSuosikki(
             @RequestBody SuosikkiDto suosikkiDto) {
@@ -80,7 +83,7 @@ public class KayttajaprofiiliController {
         });
     }
 
-    @RequestMapping(value = "/preferenssi", method = POST, consumes="application/json")
+    @RequestMapping(value = "/preferenssi", method = POST, consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public void setPreferenssi(
             @RequestBody KayttajaprofiiliPreferenssiDto preferenssiDto) {

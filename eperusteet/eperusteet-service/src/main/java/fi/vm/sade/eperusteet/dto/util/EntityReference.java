@@ -17,10 +17,10 @@ package fi.vm.sade.eperusteet.dto.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.Objects;
 
 /**
- *
  * @author teele1
  */
 public class EntityReference {

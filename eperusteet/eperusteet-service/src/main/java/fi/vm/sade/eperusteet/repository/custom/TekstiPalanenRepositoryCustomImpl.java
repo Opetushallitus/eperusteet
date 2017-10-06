@@ -60,16 +60,16 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
         // Just to make sure that https://hibernate.atlassian.net/browse/HHH-1123 won't affect us:
         List<List<Long>> idChunks = Lists.partition(tekstiPalanenIds, 1000);
         int i = 0;
-        Map<String,List<Long>> params = new HashMap<>(idChunks.size());
+        Map<String, List<Long>> params = new HashMap<>(idChunks.size());
         for (List<Long> ids : idChunks) {
             if (or.length() > 0) {
                 or.append(" OR ");
             }
             or.append("t.tekstipalanen_id IN (:ids_").append(i).append(") ");
-            params.put("ids_"+i, ids);
+            params.put("ids_" + i, ids);
             ++i;
         }
-        Query q =session.createSQLQuery("SELECT " +
+        Query q = session.createSQLQuery("SELECT " +
                 "   t.tekstipalanen_id as id, " +
                 "   t.kieli as kieli, " +
                 "   t.teksti as teksti " +
@@ -79,18 +79,18 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
                 .addScalar("kieli", enumType(session, Kieli.class))
                 .addScalar("teksti", StringType.INSTANCE)
                 .setResultTransformer(new AliasToBeanResultTransformer(LokalisoituTekstiHakuDto.class));
-        for (Map.Entry<String,List<Long>> p : params.entrySet()) {
+        for (Map.Entry<String, List<Long>> p : params.entrySet()) {
             q.setParameterList(p.getKey(), p.getValue());
         }
         return list(q);
     }
 
     @SuppressWarnings("unchecked")
-    protected<T> List<T> list(Query q) {
+    protected <T> List<T> list(Query q) {
         return q.list();
     }
 
-    protected<E extends Enum<E>> Type enumType(Session session, Class<E> e) {
+    protected <E extends Enum<E>> Type enumType(Session session, Class<E> e) {
         Properties params = new Properties();
         params.put("enumClass", e.getCanonicalName());
         params.put("type", "12");/*type 12 instructs to use the String representation of enum value*/

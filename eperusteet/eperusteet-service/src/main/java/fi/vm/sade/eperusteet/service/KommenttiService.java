@@ -22,7 +22,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 /**
- *
  * @author nkala
  */
 public interface KommenttiService {

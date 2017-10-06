@@ -51,6 +51,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -60,6 +61,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +74,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author jhyoty
  */
 @Service
@@ -86,12 +87,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
 
     private static final List<String> ERIKOISTAPAUKSET = new ArrayList<>(Arrays.asList(new String[]{"koulutus_357802",
-        "koulutus_327110", "koulutus_354803", "koulutus_324111", "koulutus_354710",
-        "koulutus_324125", "koulutus_357709", "koulutus_327124", "koulutus_355904", "koulutus_324129", "koulutus_358903",
-        "koulutus_327127",
-        "koulutus_355412", "koulutus_324126", "koulutus_355413", "koulutus_324127", "koulutus_358412", "koulutus_327126",
-        "koulutus_354708",
-        "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
+            "koulutus_327110", "koulutus_354803", "koulutus_324111", "koulutus_354710",
+            "koulutus_324125", "koulutus_357709", "koulutus_327124", "koulutus_355904", "koulutus_324129", "koulutus_358903",
+            "koulutus_327127",
+            "koulutus_355412", "koulutus_324126", "koulutus_355413", "koulutus_324127", "koulutus_358412", "koulutus_327126",
+            "koulutus_354708",
+            "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
 
     @Autowired
     private PerusteRepository perusteet;
@@ -232,7 +233,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         // Ladataan koodistosta osaamisala ja tutkintonimikehakua vastaavat koodit
         if (pquery.getNimi() != null && "".equals(pquery.getNimi()) && pquery.isOsaamisalat()) {
             Stream<KoodistoKoodiDto> urit = koodistoService.filterBy("osaamisala", pquery.getNimi());
-            Stream <Peruste> osaamisalat = getPerusteetByUris(urit.map(KoodistoKoodiDto::getKoodiUri),
+            Stream<Peruste> osaamisalat = getPerusteetByUris(urit.map(KoodistoKoodiDto::getKoodiUri),
                     perusteet::findAllByOsaamisala);
             koodistostaHaetut = Stream.concat(koodistostaHaetut, osaamisalat);
         }
@@ -243,7 +244,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     koodistoService.filterBy(
                             "tutkintonimikkeet",
                             pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri),
-                            tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
+                    tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
         }
 
         // Lisätään mahdolliset perusteet hakujoukkoon
@@ -574,8 +575,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setMuutosmaaraykset(null);
 
             perusteet.save(current);
-        }
-        else {
+        } else {
             if (!isDiaariValid(perusteDto.getDiaarinumero())) {
                 throw new BusinessRuleViolationException("diaarinumero-ei-validi");
             }
@@ -631,11 +631,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 liite.setPeruste(current);
                 liite = kvliiteRepository.save(liite);
                 current.setKvliite(liite);
-            }
-            else if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
+            } else if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
                 throw new BusinessRuleViolationException("virheellinen-liite");
-            }
-            else {
+            } else {
                 kvliiteDto.setId(liite.getId());
                 mapper.map(kvliiteDto, liite);
             }
@@ -1119,10 +1117,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     /**
      * Luo uuden perusteen perusrakenteella.
      *
-     * @param koulutustyyppi Koulutustyyppi
-     * @param yksikko Yksikkö
+     * @param koulutustyyppi     Koulutustyyppi
+     * @param yksikko            Yksikkö
      * @param isReforminMukainen Reformin mukainen
-     * @param tyyppi Tyyppi
+     * @param tyyppi             Tyyppi
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
@@ -1168,8 +1166,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             initLukioOpetuksenYleisetTavoitteet(sisalto);
             aihekokonaisuudetService.initAihekokonaisuudet(sisalto);
             initLukioOpetussuunitelmaRakenne(peruste, sisalto);
-        }
-        else if (koulutustyyppi == KoulutusTyyppi.AIKUISTENPERUSOPETUS) {
+        } else if (koulutustyyppi == KoulutusTyyppi.AIKUISTENPERUSOPETUS) {
             AIPEOpetuksenSisalto sisalto = new AIPEOpetuksenSisalto();
             peruste.setSisalto(sisalto);
         }
@@ -1428,8 +1425,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             if (pohjaLiite == null) {
                 pohjaLiite = kvliite;
-            }
-            else {
+            } else {
                 kvliiteDto.setPeriytynyt(true);
             }
 
@@ -1471,17 +1467,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
                         if (el.getCodeElementUri().startsWith("nqf_") || el.getCodeElementUri().startsWith("eqf_")) {
                             result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
-                                .collect(Collectors.toMap(
-                                        lokaali -> lokaali.getKieli().toLowerCase(),
-                                        lokaali -> lokaali.getKuvaus() + " " + el.getCodeElementValue()))));
-                        }
-                        else if (el.getCodeElementUri().startsWith("isced2011")) { // ISCED
+                                    .collect(Collectors.toMap(
+                                            lokaali -> lokaali.getKieli().toLowerCase(),
+                                            lokaali -> lokaali.getKuvaus() + " " + el.getCodeElementValue()))));
+                        } else if (el.getCodeElementUri().startsWith("isced2011")) { // ISCED
                             result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
-                                .collect(Collectors.toMap(
-                                        lokaali -> lokaali.getKieli().toLowerCase(),
-                                        lokaali -> "ISCED " + el.getCodeElementValue()))));
-                        }
-                        else {
+                                    .collect(Collectors.toMap(
+                                            lokaali -> lokaali.getKieli().toLowerCase(),
+                                            lokaali -> "ISCED " + el.getCodeElementValue()))));
+                        } else {
                             result.setNimi(null);
                         }
                         return result;

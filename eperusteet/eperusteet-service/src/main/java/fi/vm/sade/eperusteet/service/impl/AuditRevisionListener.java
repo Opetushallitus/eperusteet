@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author jhyoty
  */
 public class AuditRevisionListener implements org.hibernate.envers.RevisionListener {
@@ -30,8 +29,8 @@ public class AuditRevisionListener implements org.hibernate.envers.RevisionListe
 
     @Override
     public void newRevision(Object revisionEntity) {
-        if ( revisionEntity instanceof RevisionInfo ) {
-            RevisionInfo ri = (RevisionInfo)revisionEntity;
+        if (revisionEntity instanceof RevisionInfo) {
+            RevisionInfo ri = (RevisionInfo) revisionEntity;
             ri.setMuokkaajaOid(SecurityUtil.getAuthenticatedPrincipal().getName());
         }
     }

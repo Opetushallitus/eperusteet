@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service.yl;
  */
 
 /**
- *
  * @author nkala
  */
 public interface AIPEOpetuksenSisaltoService extends OppiainePerusteenSisaltoService {

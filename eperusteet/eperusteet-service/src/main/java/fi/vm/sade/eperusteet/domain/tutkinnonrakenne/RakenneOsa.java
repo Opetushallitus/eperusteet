@@ -16,16 +16,17 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import com.google.common.base.Objects;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
- *
  * @author jhyoty
  */
 @Getter
@@ -51,8 +52,8 @@ public class RakenneOsa extends AbstractRakenneOsa {
         if (other instanceof RakenneOsa) {
             final RakenneOsa ro = (RakenneOsa) other;
             return this.getPakollinen() == ro.getPakollinen()
-                && Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite())
-                && (erikoisuus == null ? ro.getErikoisuus() == null : erikoisuus.equals(ro.getErikoisuus()));
+                    && Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite())
+                    && (erikoisuus == null ? ro.getErikoisuus() == null : erikoisuus.equals(ro.getErikoisuus()));
         }
 
         return false;

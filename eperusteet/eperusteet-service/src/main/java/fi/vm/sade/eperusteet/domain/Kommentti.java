@@ -22,11 +22,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Entity
@@ -40,41 +40,41 @@ public class Kommentti extends AbstractAuditedEntity {
 
     @Getter
     @Setter
-    @Column(name="poistettu")
+    @Column(name = "poistettu")
     private Boolean poistettu;
 
     @Getter
     @Setter
-    @Column(name="nimi")
+    @Column(name = "nimi")
     private String nimi;
 
     @Getter
     @Setter
-    @Column(name="ylin_id")
+    @Column(name = "ylin_id")
     private Long ylinId;
 
     @Getter
     @Setter
-    @Column(name="parent_id")
+    @Column(name = "parent_id")
     private Long parentId;
 
     @Getter
     @Setter
-    @Column(name="perusteprojekti_id")
+    @Column(name = "perusteprojekti_id")
     private Long perusteprojektiId;
 
     @Getter
     @Setter
-    @Column(name="sisalto")
+    @Column(name = "sisalto")
     private String sisalto;
 
     @Getter
     @Setter
-    @Column(name="viite_suoritustapa")
+    @Column(name = "viite_suoritustapa")
     private String suoritustapa;
 
     @Getter
     @Setter
-    @Column(name="viite_perusteenosa_id")
+    @Column(name = "viite_perusteenosa_id")
     private Long perusteenOsaId;
 }

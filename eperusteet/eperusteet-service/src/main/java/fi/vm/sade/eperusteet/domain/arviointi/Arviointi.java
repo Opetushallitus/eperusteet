@@ -21,13 +21,16 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -35,7 +38,6 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author teele1
  */
 @Entity
@@ -57,8 +59,8 @@ public class Arviointi implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "arviointi_arvioinninkohdealue",
-               joinColumns = @JoinColumn(name = "arviointi_id"),
-               inverseJoinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
+            joinColumns = @JoinColumn(name = "arviointi_id"),
+            inverseJoinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
     @OrderColumn
     @Getter
     private List<ArvioinninKohdealue> arvioinninKohdealueet = new ArrayList<>();

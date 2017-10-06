@@ -17,15 +17,16 @@ package fi.vm.sade.eperusteet.repository.liite.impl;
 
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepositoryCustom;
+
 import java.io.InputStream;
 import java.sql.Blob;
 import javax.persistence.EntityManager;
+
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- *
  * @author jhyoty
  */
 public class LiiteRepositoryImpl implements LiiteRepositoryCustom {

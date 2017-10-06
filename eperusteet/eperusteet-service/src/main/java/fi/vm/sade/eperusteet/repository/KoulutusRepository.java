@@ -21,10 +21,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author harrik
  */
 @Repository
-public interface KoulutusRepository extends JpaRepository<Koulutus, Long>{
+public interface KoulutusRepository extends JpaRepository<Koulutus, Long> {
     Koulutus findOneByKoulutuskoodiArvo(String koodi);
 }

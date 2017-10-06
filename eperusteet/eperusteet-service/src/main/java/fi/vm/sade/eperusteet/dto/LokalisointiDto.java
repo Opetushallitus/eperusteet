@@ -20,7 +20,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author jussi
  */
 @Getter
@@ -29,7 +28,7 @@ import lombok.Setter;
 public class LokalisointiDto {
     String value;
     String key;
-    Long   id;
+    Long id;
     String locale;
     String description;
     String category;

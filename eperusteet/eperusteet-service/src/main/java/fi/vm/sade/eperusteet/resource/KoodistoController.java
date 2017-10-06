@@ -19,20 +19,23 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author nkala
  */
 @RestController
@@ -45,8 +48,8 @@ public class KoodistoController {
 
     @RequestMapping(value = "/{koodisto}", method = GET)
     public ResponseEntity<List<KoodistoKoodiDto>> kaikki(
-        @PathVariable("koodisto") final String koodisto,
-        @RequestParam(value = "haku", required = false) final String haku) {
+            @PathVariable("koodisto") final String koodisto,
+            @RequestParam(value = "haku", required = false) final String haku) {
         return new ResponseEntity<>(haku == null || haku.isEmpty()
                 ? service.getAll(koodisto)
                 : service.filterBy(koodisto, haku).collect(Collectors.toList()), HttpStatus.OK);
@@ -54,20 +57,20 @@ public class KoodistoController {
 
     @RequestMapping(value = "/{koodisto}/{koodi}", method = GET)
     public ResponseEntity<KoodistoKoodiDto> yksi(
-        @PathVariable("koodisto") final String koodisto,
-        @PathVariable("koodi") final String koodi) {
+            @PathVariable("koodisto") final String koodisto,
+            @PathVariable("koodi") final String koodi) {
         return new ResponseEntity<>(service.get(koodisto, koodi), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/relaatio/sisaltyy-alakoodit/{koodi}", method = GET)
     public ResponseEntity<List<KoodistoKoodiDto>> alarelaatio(
-        @PathVariable("koodi") final String koodi) {
+            @PathVariable("koodi") final String koodi) {
         return new ResponseEntity<>(service.getAlarelaatio(koodi), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/relaatio/sisaltyy-ylakoodit/{koodi}", method = GET)
     public ResponseEntity<List<KoodistoKoodiDto>> ylarelaatio(
-        @PathVariable("koodi") final String koodi) {
+            @PathVariable("koodi") final String koodi) {
         return new ResponseEntity<>(service.getYlarelaatio(koodi), HttpStatus.OK);
     }
 }

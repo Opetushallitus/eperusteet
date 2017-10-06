@@ -20,14 +20,15 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajaProfiiliDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajaprofiiliPreferenssiDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.SuosikkiDto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+
 import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
 /**
- *
  * @author nkala
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)

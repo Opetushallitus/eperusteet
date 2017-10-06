@@ -19,12 +19,13 @@ package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+
 import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author harrik
  */
 @Getter

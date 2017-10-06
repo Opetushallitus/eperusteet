@@ -21,7 +21,6 @@ import fi.vm.sade.eperusteet.domain.KayttajaprofiiliPreferenssi;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- *
  * @author nkala
  */
 public interface KayttajaprofiiliPreferenssiRepository extends JpaRepository<KayttajaprofiiliPreferenssi, Long> {

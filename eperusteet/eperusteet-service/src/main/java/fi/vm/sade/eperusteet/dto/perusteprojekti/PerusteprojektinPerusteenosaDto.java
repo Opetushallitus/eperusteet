@@ -18,18 +18,19 @@ package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter
 @Setter
-public class PerusteprojektinPerusteenosaDto implements Serializable  {
+public class PerusteprojektinPerusteenosaDto implements Serializable {
     private Long id;
     private String nimi;
     private ProjektiTila tila;

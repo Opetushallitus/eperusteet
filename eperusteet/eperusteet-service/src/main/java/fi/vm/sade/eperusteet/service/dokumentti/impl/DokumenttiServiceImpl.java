@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.service.internal.PdfService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,6 +55,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -72,7 +74,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- *
  * @author jussini
  */
 @Service
@@ -154,8 +155,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         if (version != null) {
             documents = new ArrayList<>(dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndGeneratorVersion(
                     id, kieli, DokumenttiTila.VALMIS, version, sort));
-        }
-        else {
+        } else {
             documents = new ArrayList<>(dokumenttiRepository
                     .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(
                             id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, GeneratorVersion.UUSI, sort));
@@ -274,7 +274,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     private byte[] generateFor(DokumenttiDto dto)
-            throws IOException,TransformerException, ParserConfigurationException, Docbook4JException, SAXException {
+            throws IOException, TransformerException, ParserConfigurationException, Docbook4JException, SAXException {
 
         Peruste peruste = perusteRepository.findOne(dto.getPerusteId());
         Kieli kieli = dto.getKieli();
@@ -358,8 +358,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
       fixMetadata korjaa tämän syötteenä saadusta pdf-dokumentista.
     */
     private InputStream fixMetadata(InputStream pdf) throws IOException, ParserConfigurationException,
-            SAXException, TransformerException
-    {
+            SAXException, TransformerException {
         try (InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/fopdate.xsl")) {
 
             try (PDDocument document = PDDocument.load(pdf)) {

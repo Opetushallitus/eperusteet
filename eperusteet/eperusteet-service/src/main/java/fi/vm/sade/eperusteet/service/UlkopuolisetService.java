@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- *
  * @author nkala
  */
 public interface UlkopuolisetService {

@@ -48,7 +48,7 @@ public class ResolverUtilImpl implements ResolverUtil {
             List owners = em.createQuery("select t from "
                     + referencingProperty.getDirectDeclaringClass().getSimpleName()
                     + " t where t." + referencingProperty.getName() + ".id = :id")
-                .setParameter("id", resolvable.getId()).getResultList();
+                    .setParameter("id", resolvable.getId()).getResultList();
             for (Object entity : owners) {
                 // most likely none
                 HibernateInterceptor.findRelatedPeruste(entity, ids::add);

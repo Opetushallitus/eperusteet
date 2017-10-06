@@ -57,24 +57,24 @@ public class DokumenttiTaulukko {
         builder.append("<div>");
 
         // Tyhjää taulukkoa on turha antaa
-            if (otsikko != null) {
-                builder.append("<strong>");
-                builder.append(otsikko);
-                builder.append("</strong>");
-            }
+        if (otsikko != null) {
+            builder.append("<strong>");
+            builder.append(otsikko);
+            builder.append("</strong>");
+        }
 
-            builder.append("<table border=\"1\">");
+        builder.append("<table border=\"1\">");
 
-            // Otsikko rivi
-            if (otsikkoSarakkeet.size() > 0) {
-                builder.append("<tr bgcolor=\"#d4e3f4\">");
-                otsikkoSarakkeet.forEach((sarake) -> {
-                    builder.append("<th>");
-                    builder.append(sarake);
-                    builder.append("</th>");
-                });
-                builder.append("</tr>");
-            }
+        // Otsikko rivi
+        if (otsikkoSarakkeet.size() > 0) {
+            builder.append("<tr bgcolor=\"#d4e3f4\">");
+            otsikkoSarakkeet.forEach((sarake) -> {
+                builder.append("<th>");
+                builder.append(sarake);
+                builder.append("</th>");
+            });
+            builder.append("</tr>");
+        }
 
         rivit.forEach((rivi) -> {
             builder.append("<tr>");

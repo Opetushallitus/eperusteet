@@ -35,11 +35,12 @@ public class OptionalUtil {
     }
 
     public static final Supplier<NotExistsException> NOT_EXISTS = NotExistsException::new;
-    private static<T> Predicate<T> truePredicate() {
+
+    private static <T> Predicate<T> truePredicate() {
         return any -> true;
     }
 
-    public static <T,Ex extends Exception> T found(Optional<T> opt, Predicate<? super T> predicate, Supplier<Ex> exception) throws Ex {
+    public static <T, Ex extends Exception> T found(Optional<T> opt, Predicate<? super T> predicate, Supplier<Ex> exception) throws Ex {
         if (!opt.isPresent()) {
             throw exception.get();
         }
@@ -53,7 +54,7 @@ public class OptionalUtil {
         return value;
     }
 
-    public static <T,Ex extends Exception> T found(Optional<T> opt, Supplier<Ex> exception) throws Ex {
+    public static <T, Ex extends Exception> T found(Optional<T> opt, Supplier<Ex> exception) throws Ex {
         return found(opt, OptionalUtil.<T>truePredicate(), exception);
     }
 
@@ -65,18 +66,18 @@ public class OptionalUtil {
         return found(opt, OptionalUtil.<T>truePredicate(), NOT_EXISTS);
     }
 
-    public static <T,Ex extends Exception> T found(com.google.common.base.Optional<T> opt, Predicate<? super T> predicate, Supplier<Ex> exception) throws Ex{
+    public static <T, Ex extends Exception> T found(com.google.common.base.Optional<T> opt, Predicate<? super T> predicate, Supplier<Ex> exception) throws Ex {
         if (!opt.isPresent()) {
             throw exception.get();
         }
         return tested(predicate, exception, opt.get());
     }
 
-    public static <T,Ex extends Exception> T found(com.google.common.base.Optional<T> opt, Predicate<? super T> predicate) throws Ex{
+    public static <T, Ex extends Exception> T found(com.google.common.base.Optional<T> opt, Predicate<? super T> predicate) throws Ex {
         return found(opt, predicate, NOT_EXISTS);
     }
 
-    public static <T,Ex extends Exception> T found(com.google.common.base.Optional<T> opt, Supplier<Ex> exception) throws Ex {
+    public static <T, Ex extends Exception> T found(com.google.common.base.Optional<T> opt, Supplier<Ex> exception) throws Ex {
         return found(opt, OptionalUtil.<T>truePredicate(), exception);
     }
 
@@ -88,15 +89,15 @@ public class OptionalUtil {
         return found(opt, NOT_EXISTS);
     }
 
-    public static <T,Ex extends Exception> T found(T opt, Supplier<Ex> exception) throws Ex {
+    public static <T, Ex extends Exception> T found(T opt, Supplier<Ex> exception) throws Ex {
         return found(ofNullable(opt), exception);
     }
 
-    public static <T> T found(T opt, Predicate<T> predicate)  {
+    public static <T> T found(T opt, Predicate<T> predicate) {
         return found(ofNullable(opt), predicate, NOT_EXISTS);
     }
 
-    public static <T,Ex extends Exception> T found(T opt, Predicate<T> predicate, Supplier<Ex> exception) throws Ex {
+    public static <T, Ex extends Exception> T found(T opt, Predicate<T> predicate, Supplier<Ex> exception) throws Ex {
         return found(ofNullable(opt), predicate, exception);
     }
 }

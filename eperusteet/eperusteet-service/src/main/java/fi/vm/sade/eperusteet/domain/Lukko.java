@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,11 +25,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
 import lombok.Getter;
 import org.joda.time.DateTime;
 
 /**
- *
  * @author jhyoty
  */
 @Entity

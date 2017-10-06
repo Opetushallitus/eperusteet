@@ -41,7 +41,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author nkala
  */
 @Transactional
@@ -180,10 +179,8 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
             try {
                 AIPEKurssiDto poistettuKurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId1, kurssi.getId());
                 fail("Kurssi ei pitäisi olla olemassa");
-            }
-            catch (BusinessRuleViolationException ex) {
-            }
-            finally {
+            } catch (BusinessRuleViolationException ex) {
+            } finally {
             }
         }
     }

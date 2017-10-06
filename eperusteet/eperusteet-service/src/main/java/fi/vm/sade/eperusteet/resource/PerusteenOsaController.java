@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.OSAALUE;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.OSAAMISTAVOITE;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSA;
@@ -43,17 +44,21 @@ import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LUKITUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.PALAUTUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import io.swagger.annotations.Api;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Controller
@@ -180,6 +185,7 @@ public class PerusteenOsaController {
 
     /**
      * Luo ja liittää uuden osa-alueen tutkinnon osaan.
+     *
      * @param id
      * @param osaAlueDto
      * @return
@@ -198,6 +204,7 @@ public class PerusteenOsaController {
 
     /**
      * Hakee tutkinnon osan osa-alueen.
+     *
      * @param viiteId
      * @param osaAlueId
      * @return
@@ -212,6 +219,7 @@ public class PerusteenOsaController {
 
     /**
      * Päivittää tutkinnon osan osa-alueen tietoja.
+     *
      * @param viiteId
      * @param osaAlueId
      * @param osaAlue
@@ -247,14 +255,15 @@ public class PerusteenOsaController {
 
     /**
      * Poistaa tutkinnon osan osa-alueen
+     *
      * @param id
      * @param osaAlueId
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeOsaAlue(
-        @PathVariable("id") final Long id,
-        @PathVariable("osaAlueId") final Long osaAlueId) {
+            @PathVariable("id") final Long id,
+            @PathVariable("osaAlueId") final Long osaAlueId) {
         audit.withAudit(LogMessage.builder(null, TUTKINNONOSA, POISTO).add("tutkinnonosaId", id), (Void) -> {
             service.removeOsaAlue(id, osaAlueId);
             return null;
@@ -263,6 +272,7 @@ public class PerusteenOsaController {
 
     /**
      * Luo ja liittää uuden osaamistavoitteen tutkinnon osa osa-alueeseen.
+     *
      * @param id
      * @param osaAlueId
      * @param osaamistavoiteDto
@@ -282,6 +292,7 @@ public class PerusteenOsaController {
 
     /**
      * Päivittää osaamistavoitteen tutkinnon osa osa-alueeseen.
+     *
      * @param id
      * @param osaAlueId
      * @param osaamistavoiteId
@@ -303,6 +314,7 @@ public class PerusteenOsaController {
 
     /**
      * Listaa tutkinnon osa osa-alueen osaamistavoitteet
+     *
      * @param id
      * @param osaAlueId
      * @return
@@ -317,6 +329,7 @@ public class PerusteenOsaController {
 
     /**
      * Poistaa tutkinnon osan osa-alueen osaamistavoitteen
+     *
      * @param id
      * @param osaAlueId
      * @param osaamistavoiteId
@@ -336,8 +349,8 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/lukko", method = GET)
     @ResponseBody
     public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id,
-        @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
-        HttpServletResponse response) {
+                                              @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+                                              HttpServletResponse response) {
         LukkoDto lock = service.getLock(id);
         response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
         return new ResponseEntity<>(lock, lock == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);

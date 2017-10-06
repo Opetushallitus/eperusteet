@@ -20,9 +20,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
 

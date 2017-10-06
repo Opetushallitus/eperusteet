@@ -24,7 +24,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author jhyoty
  */
 @Getter
@@ -47,7 +46,7 @@ public class UpdateDto<T> {
     }
 
     public UpdateDto() {
-        this(null,null);
+        this(null, null);
     }
 
     public UpdateDto(T dto) {

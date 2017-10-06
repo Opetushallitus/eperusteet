@@ -22,13 +22,19 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.NimettyKoodillinen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
+
 import static java.util.stream.Collectors.toList;
+
 import java.util.stream.Stream;
+
 import static java.util.stream.Stream.concat;
+
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -49,7 +55,7 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @Getter
     @Setter
-    @JoinColumn(name="viite_id", nullable = false)
+    @JoinColumn(name = "viite_id", nullable = false)
     private PerusteenOsaViite viite = new PerusteenOsaViite();
 
     @RelatesToPeruste
@@ -94,12 +100,15 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     public Stream<Lukiokurssi> kurssit() {
         return getKurssit().stream();
     }
+
     public Stream<Oppiaine> oppiaineet() {
         return getOppiaineet().stream();
     }
+
     public Stream<Oppiaine> oppiaineetMaarineen() {
         return oppiaineet().flatMap(Oppiaine::maarineen);
     }
+
     public Stream<NimettyKoodillinen> koodilliset() {
         return concat(oppiaineetMaarineen(), kurssit());
     }

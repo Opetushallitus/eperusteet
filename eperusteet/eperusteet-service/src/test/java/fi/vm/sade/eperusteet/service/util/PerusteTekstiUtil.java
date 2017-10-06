@@ -83,18 +83,18 @@ public class PerusteTekstiUtil {
         return new Matala(kappale);
     }
 
-    public static Matala perusteOsa(KieliTeksti ... tekstit) {
+    public static Matala perusteOsa(KieliTeksti... tekstit) {
         return matalaViite(kappale(teksti(tekstit)));
     }
 
-    public static Laaja puu(TekstiKappaleDto nimi, Laaja ... osat) {
+    public static Laaja puu(TekstiKappaleDto nimi, Laaja... osat) {
         Laaja laaja = new Laaja();
         laaja.setPerusteenOsa(nimi);
         laaja.setLapset(asList(osat));
         return laaja;
     }
 
-    public static LokalisoituTekstiDto teksti(KieliTeksti ... tekstit) {
+    public static LokalisoituTekstiDto teksti(KieliTeksti... tekstit) {
         return new LokalisoituTekstiDto(null, asList(tekstit).stream().collect(toMap(KieliTeksti::getKieli, KieliTeksti::getTeksti)));
     }
 }

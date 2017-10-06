@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 /**
- *
  * @author jhyoty
  */
 public enum Vuosiluokka {

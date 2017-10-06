@@ -31,14 +31,15 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionChecker;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author nkala
  */
 @Service
@@ -127,8 +128,7 @@ public class KommenttiServiceImpl implements KommenttiService {
         if (kommentti != null) {
             int length = kommentti.length();
             return kommentti.substring(0, length < 1024 ? length : 1024);
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -146,8 +146,7 @@ public class KommenttiServiceImpl implements KommenttiService {
             PerusteenOsaViite pov = povRepository.findOne(kommentti.getPerusteenOsaId());
             if (pov != null) {
 //                kommentti.setSuoritustapa(pov.getSuoritustapa().getSuoritustapakoodi().name());
-            }
-            else {
+            } else {
                 TutkinnonOsaViite tov = tovRepository.findOne(kommentti.getPerusteenOsaId());
                 if (tov != null) {
                     kommentti.setSuoritustapa(tov.getSuoritustapa().getSuoritustapakoodi().name());
@@ -180,7 +179,7 @@ public class KommenttiServiceImpl implements KommenttiService {
     public void delete(Long kommenttiId) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
-        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(),PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.LUKU);
+        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(), PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.LUKU);
         kommentti.setSisalto(null);
         kommentti.setPoistettu(true);
     }

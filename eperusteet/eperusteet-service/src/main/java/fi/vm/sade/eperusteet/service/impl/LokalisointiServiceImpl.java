@@ -38,7 +38,6 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.groupingBy;
 
 /**
- *
  * @author jussi
  */
 @Service
@@ -86,7 +85,7 @@ public class LokalisointiServiceImpl implements LokalisointiService {
     }
 
     protected void lokalisoi(Stream<LokalisoituTekstiDto> lokalisoitava) {
-        Map<Long,List<LokalisoituTekstiDto>> byId = lokalisoitava
+        Map<Long, List<LokalisoituTekstiDto>> byId = lokalisoitava
                 .filter(v -> v != null && v.getId() != null).collect(groupingBy(LokalisoituTekstiDto::getId));
         if (!byId.isEmpty()) {
             tekstiPalanenRepository.findLokalisoitavatTekstit(byId.keySet())

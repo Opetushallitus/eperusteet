@@ -22,7 +22,9 @@ import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.CascadeType;
@@ -41,6 +43,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -48,7 +51,6 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author harrik
  */
 @Entity
@@ -80,8 +82,8 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     @Getter
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_osaalue_osaamistavoite",
-               joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"),
-               inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
+            joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"),
+            inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
     @OrderColumn
     private List<Osaamistavoite> osaamistavoitteet;
 
@@ -163,8 +165,8 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         this.kieli = o.kieli;
 
         IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
-        for ( Osaamistavoite ot : o.getOsaamistavoitteet() ) {
-            if ( identityMap.containsKey(ot) ) {
+        for (Osaamistavoite ot : o.getOsaamistavoitteet()) {
+            if (identityMap.containsKey(ot)) {
                 this.osaamistavoitteet.add(identityMap.get(ot));
             } else {
                 Osaamistavoite t = new Osaamistavoite(ot, identityMap);
@@ -208,7 +210,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     public boolean structureEquals(OsaAlue other) {
         boolean result = refXnor(getNimi(), other.getNimi());
         result &= refXnor(getKuvaus(), other.getKuvaus());
-        if ( result && getOsaamistavoitteet() != null && other.getOsaamistavoitteet() != null ) {
+        if (result && getOsaamistavoitteet() != null && other.getOsaamistavoitteet() != null) {
             Iterator<Osaamistavoite> i = getOsaamistavoitteet().iterator();
             Iterator<Osaamistavoite> j = other.getOsaamistavoitteet().iterator();
             while (result && i.hasNext() && j.hasNext()) {

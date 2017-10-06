@@ -21,10 +21,9 @@ import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author harrik
  */
 @Repository
 public interface OsaAlueRepository extends JpaWithVersioningRepository<OsaAlue, Long> {
-    
+
 }

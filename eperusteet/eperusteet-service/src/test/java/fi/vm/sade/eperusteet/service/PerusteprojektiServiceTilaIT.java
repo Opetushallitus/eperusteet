@@ -46,6 +46,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Ongelma;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,7 +67,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
- *
  * @author harrik
  */
 @DirtiesContext
@@ -145,15 +145,15 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         transactionTemplate.execute(transactionStatus -> {
-                Perusteprojekti pp = repo.findOne(projektiDto.getId());
-                assertTrue(status.isVaihtoOk());
-                assertNull(status.getInfot());
-                assertTrue(pp.getTila().equals(ProjektiTila.KOMMENTOINTI));
-                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
-                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
-                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
-                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
-                }
+            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            assertTrue(status.isVaihtoOk());
+            assertNull(status.getInfot());
+            assertTrue(pp.getTila().equals(ProjektiTila.KOMMENTOINTI));
+            assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
+            for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
+                commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
+            }
             return null;
         });
     }
@@ -598,7 +598,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         RakenneModuuliDto rakenne = new RakenneModuuliDto();
 
         MuodostumisSaantoDto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1
-            ? new MuodostumisSaantoDto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
+                ? new MuodostumisSaantoDto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
         MuodostumisSaantoDto.Koko msk = kokoMinimi != null && kokoMinimi != -1 ? new MuodostumisSaantoDto.Koko(kokoMinimi, kokoMaksimi) : null;
         MuodostumisSaantoDto ms = (msl != null || msk != null) ? new MuodostumisSaantoDto(msl, msk) : null;
 
@@ -612,13 +612,13 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
     private RakenneModuuliDto luoValidiRakenne(Long id, Suoritustapakoodi suoritustapa, PerusteTila tila) {
         RakenneModuuliDto rakenne = teeRyhma(
-            10, 20, 1, 1,
-            teeRakenneOsaDto(id, suoritustapa, tila, 10),
-            teeRyhma(
-                10, 10, 1, 1,
+                10, 20, 1, 1,
                 teeRakenneOsaDto(id, suoritustapa, tila, 10),
-                teeRakenneOsaDto(id, suoritustapa, tila, 20)
-            )
+                teeRyhma(
+                        10, 10, 1, 1,
+                        teeRakenneOsaDto(id, suoritustapa, tila, 10),
+                        teeRakenneOsaDto(id, suoritustapa, tila, 20)
+                )
         );
 
         return rakenne;
@@ -626,13 +626,13 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
     private RakenneModuuliDto luoEpaValidiRakenne(Long id, Suoritustapakoodi suoritustapa, PerusteTila tila) {
         RakenneModuuliDto rakenne = teeRyhma(
-            10, 2000, 1, 1,
-            teeRakenneOsaDto(id, suoritustapa, tila, 10),
-            teeRyhma(
-                10, 10, 1, 1,
+                10, 2000, 1, 1,
                 teeRakenneOsaDto(id, suoritustapa, tila, 10),
-                teeRakenneOsaDto(id, suoritustapa, tila, 20)
-            )
+                teeRyhma(
+                        10, 10, 1, 1,
+                        teeRakenneOsaDto(id, suoritustapa, tila, 10),
+                        teeRakenneOsaDto(id, suoritustapa, tila, 20)
+                )
         );
 
         return rakenne;

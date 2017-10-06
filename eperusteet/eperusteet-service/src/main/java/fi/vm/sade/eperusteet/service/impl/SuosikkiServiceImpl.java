@@ -25,16 +25,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author harrik
  */
 @Service
 public class SuosikkiServiceImpl implements SuosikkiService {
-    
+
     @Autowired
     @Dto
     private DtoMapper mapper;
-    
+
     @Autowired
     SuosikkiRepository suosikki;
 
@@ -42,5 +41,5 @@ public class SuosikkiServiceImpl implements SuosikkiService {
     public SuosikkiDto get(Long suosikkiId) {
         return mapper.map(suosikki.findOne(suosikkiId), SuosikkiDto.class);
     }
-    
+
 }

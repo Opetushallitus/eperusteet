@@ -18,7 +18,9 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
+
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
+
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -44,7 +46,9 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
+
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -60,8 +64,11 @@ import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
+
 import static fi.vm.sade.eperusteet.service.util.Util.*;
+
 import fi.vm.sade.generic.rest.CachingRestClient;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -69,6 +76,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
@@ -86,7 +94,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 /**
- *
  * @author harrik
  */
 @Service
@@ -271,8 +278,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                 if (kayttaja != null && kayttajanProjektitiedot != null) {
                     CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto> combined = new CombinedDto<>(
-                        kayttaja,
-                        kayttajanProjektitiedot
+                            kayttaja,
+                            kayttajanProjektitiedot
                     );
                     kayttajat.add(combined);
                 }
@@ -448,10 +455,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (!pakollinen) {
             for (Kieli kieli : pakolliset) {
                 String osa = palanen.getTeksti().get(kieli);
-                    if (osa != null && !osa.isEmpty()) {
-                        onJollainVaditullaKielella = true;
-                        break;
-                    }
+                if (osa != null && !osa.isEmpty()) {
+                    onJollainVaditullaKielella = true;
+                    break;
+                }
             }
         }
 
@@ -500,7 +507,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Transactional(readOnly = true)
     private void tarkistaPerusopetuksenOppiaine(Oppiaine oa, TilaUpdateStatus status,
-                                final Set<Kieli> vaaditutKielet, Map<String, String> virheellisetKielet) {
+                                                final Set<Kieli> vaaditutKielet, Map<String, String> virheellisetKielet) {
         tarkistaTekstipalanen("peruste-validointi-oppiaine-nimi", oa.getNimi(), vaaditutKielet, virheellisetKielet);
 
         if (oa.getTehtava() != null) {
@@ -932,29 +939,28 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
             Optional.of(peruste)
                     .ifPresent(p -> p.getSuoritustavat()
-                    .forEach(suoritustapa -> p.getKielet()
-                            .forEach(kieli -> {
-                                try {
-                                    DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
-                                            p.getId(),
-                                            kieli,
-                                            suoritustapa.getSuoritustapakoodi(),
-                                            GeneratorVersion.UUSI
-                                    );
-                                    dokumenttiService.setStarted(createDtoFor);
-                                    dokumenttiService.generateWithDto(createDtoFor);
-                                } catch (DokumenttiException e) {
-                                    LOG.error(e.getLocalizedMessage(), e.getCause());
-                                }
-            })));
+                            .forEach(suoritustapa -> p.getKielet()
+                                    .forEach(kieli -> {
+                                        try {
+                                            DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
+                                                    p.getId(),
+                                                    kieli,
+                                                    suoritustapa.getSuoritustapakoodi(),
+                                                    GeneratorVersion.UUSI
+                                            );
+                                            dokumenttiService.setStarted(createDtoFor);
+                                            dokumenttiService.generateWithDto(createDtoFor);
+                                        } catch (DokumenttiException e) {
+                                            LOG.error(e.getLocalizedMessage(), e.getCause());
+                                        }
+                                    })));
         }
 
         if (tila == ProjektiTila.POISTETTU) {
             if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
                 projekti.setTila(ProjektiTila.POISTETTU);
                 projekti.getPeruste().asetaTila(PerusteTila.POISTETTU);
-            }
-            else {
+            } else {
                 setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
             }
         }
@@ -963,8 +969,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
                 projekti.setTila(ProjektiTila.LAADINTA);
                 projekti.getPeruste().asetaTila(PerusteTila.LUONNOS);
-            }
-            else {
+            } else {
                 setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
             }
         }
@@ -984,17 +989,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();
         LukioOpetussuunnitelmaRakenne rakenne = sisalto.getOpetussuunnitelma();
         updateStatus.forSuoritustapa(Suoritustapakoodi.LUKIOKOULUTUS).toTila(tila)
-            .forTilat(jalkeen(LAADINTA))
+                .forTilat(jalkeen(LAADINTA))
                 .addErrorGiven("peruste-lukio-ei-oppiaineita", rakenne.getOppiaineet().isEmpty())
                 .addErrorGiven("peruste-lukio-ei-aihekokonaisuuksia", KoulutusTyyppi.of(peruste.getKoulutustyyppi()) != KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS
                         && (sisalto.getAihekokonaisuudet() == null || sisalto.getAihekokonaisuudet().getAihekokonaisuudet().isEmpty()))
                 .addErrorGiven("peruste-lukio-ei-opetuksen-yleisia-tavoitteita",
                         sisalto.getOpetuksenYleisetTavoitteet() == null)
-            .forTilat(jalkeen(KOMMENTOINTI))
+                .forTilat(jalkeen(KOMMENTOINTI))
                 .addErrorStatusForAll("peruste-lukio-liittamaton-kurssi", () ->
-                    rakenne.kurssit()
-                        .filter(empty(Lukiokurssi::getOppiaineet))
-                        .map(localized(Nimetty::getNimi)))
+                        rakenne.kurssit()
+                                .filter(empty(Lukiokurssi::getOppiaineet))
+                                .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () -> {
                     // EP-1143
                     if (peruste.getKoulutustyyppi().equals(KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS.toString())) {
@@ -1010,24 +1015,24 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     }
                 })
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
-                    rakenne.oppiaineet()
-                        .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))
-                        .map(localized(Nimetty::getNimi)))
+                        rakenne.oppiaineet()
+                                .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))
+                                .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-kooodi-puuttuu", () ->
-                    rakenne.koodilliset()
-                        .filter(emptyString(Koodillinen::getKoodiArvo).or(emptyString(Koodillinen::getKoodiUri)))
-                        .map(localized(Nimetty::getNimi)))
+                        rakenne.koodilliset()
+                                .filter(emptyString(Koodillinen::getKoodiArvo).or(emptyString(Koodillinen::getKoodiUri)))
+                                .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-sama-koodi", () -> {
                     List<LokalisoituTekstiDto> duplikaatit = new ArrayList<>();
                     rakenne.koodilliset()
-                        .filter(emptyString(Koodillinen::getKoodiArvo).negate())
-                        .collect(toMap(Koodillinen::getKoodiArvo, k -> k, (a, b) -> {
-                            duplikaatit.add(localized(a.getNimi())
-                                .concat(" - ")
-                                .concat(localized(b.getNimi()))
-                                .concat(" ("+a.getKoodiArvo()+")"));
-                            return a;
-                        }));
+                            .filter(emptyString(Koodillinen::getKoodiArvo).negate())
+                            .collect(toMap(Koodillinen::getKoodiArvo, k -> k, (a, b) -> {
+                                duplikaatit.add(localized(a.getNimi())
+                                        .concat(" - ")
+                                        .concat(localized(b.getNimi()))
+                                        .concat(" (" + a.getKoodiArvo() + ")"));
+                                return a;
+                            }));
                     return duplikaatit.stream();
                 });
     }
@@ -1065,13 +1070,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private void palautaJulkaistuImpl(Peruste peruste, PerusteenOsa po, Long povId) {
         // Tarkistetaan omistaako palautettava peruste, jos on palautetaan se luonnokseksi
         peruste.getSuoritustavat()
-            .forEach(st -> st.getTutkinnonOsat().stream()
-                .map(TutkinnonOsaViite::getId)
-                .filter(id -> id.equals(povId))
-                .findFirst()
-                .ifPresent(x -> {
-                    po.palautaLuonnokseksi();
-                }));
+                .forEach(st -> st.getTutkinnonOsat().stream()
+                        .map(TutkinnonOsaViite::getId)
+                        .filter(id -> id.equals(povId))
+                        .findFirst()
+                        .ifPresent(x -> {
+                            po.palautaLuonnokseksi();
+                        }));
     }
 
     @Transactional
@@ -1090,13 +1095,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         // FIXME: Refactor
         if (po instanceof TutkinnonOsa) {
-            tutkinnonOsaViiteRepository.findAllByTutkinnonOsa((TutkinnonOsa)po).stream()
+            tutkinnonOsaViiteRepository.findAllByTutkinnonOsa((TutkinnonOsa) po).stream()
                     .map(TutkinnonOsaViite::getId)
                     .sorted()
                     .findFirst()
                     .ifPresent(id -> palautaJulkaistuImpl(peruste, po, id));
-        }
-        else {
+        } else {
             perusteenOsaViiteRepository.findAllByPerusteenOsa(po).stream()
                     .map(PerusteenOsaViite::getId)
                     .sorted()
@@ -1113,8 +1117,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 // TODO: Tarkista onko muita käyttäjiä
                 sisaltoRoot.getPerusteenOsa().palautaLuonnokseksi();
                 palautaJulkaistu(peruste, sisaltoRoot.getPerusteenOsa());
-            }
-            else {
+            } else {
                 sisaltoRoot.getPerusteenOsa().asetaTila(tila);
             }
         }
@@ -1131,8 +1134,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (tila == PerusteTila.LUONNOS) {
                 // TODO: Tarkista onko muita käyttäjiä
                 palautaJulkaistu(peruste, osa.getTutkinnonOsa());
-            }
-            else {
+            } else {
                 osa.getTutkinnonOsa().asetaTila(tila);
             }
         }

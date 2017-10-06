@@ -52,9 +52,11 @@ public class MarkPerusteUpdatedAspect {
             " && ( within(@org.springframework.transaction.annotation.Transactional *) " +
             "       || @annotation(org.springframework.transaction.annotation.Transactional) )" +
             " && !@annotation(fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck)")
-    public void transactionalSeerviceMethods() {}
+    public void transactionalSeerviceMethods() {
+    }
 
-    @Order(150) // must have higher than the one specified for tx:annotation-driven to perform within transaction (just to be sure)
+    @Order(150)
+    // must have higher than the one specified for tx:annotation-driven to perform within transaction (just to be sure)
     @Around("transactionalSeerviceMethods()")
     public Object aroundServiceMethods(ProceedingJoinPoint pjp) throws Throwable {
         perusteUpdateStore.enter();

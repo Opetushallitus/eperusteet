@@ -28,6 +28,7 @@ import java.util.Date;
 
 /**
  * Kantaluokka entiteeteille joista ylläpidetään luotu/muokattu -tietoja.
+ *
  * @author jhyoty
  */
 @MappedSuperclass

@@ -22,12 +22,12 @@ import ma.glasnost.orika.metadata.Type;
 
 /**
  * For conveniance if you want to convert different DTOs to others in test etc.
- *
+ * <p>
  * User: tommiratamaa
  * Date: 6.10.15
  * Time: 13.54
  */
-public class LokalisoituTekstiDtoCopyConverter extends BidirectionalConverter<LokalisoituTekstiDto,LokalisoituTekstiDto> {
+public class LokalisoituTekstiDtoCopyConverter extends BidirectionalConverter<LokalisoituTekstiDto, LokalisoituTekstiDto> {
     @Override
     public LokalisoituTekstiDto convertTo(LokalisoituTekstiDto source, Type<LokalisoituTekstiDto> destinationType) {
         return convertFrom(source, destinationType);

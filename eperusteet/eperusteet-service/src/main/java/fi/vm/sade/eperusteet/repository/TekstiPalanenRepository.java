@@ -21,9 +21,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author hyoty
  */
 @Repository
-public interface TekstiPalanenRepository extends JpaRepository<TekstiPalanen, Long>{
+public interface TekstiPalanenRepository extends JpaRepository<TekstiPalanen, Long> {
 }

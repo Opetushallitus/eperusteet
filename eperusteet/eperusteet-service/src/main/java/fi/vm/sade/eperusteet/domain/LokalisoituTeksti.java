@@ -24,7 +24,6 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
 /**
- *
  * @author jhyoty
  */
 @Embeddable

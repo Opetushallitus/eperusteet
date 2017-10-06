@@ -30,7 +30,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author jhyoty
  */
 @Service
@@ -76,7 +75,7 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
     @Override
     protected final int latestRevision(OppiaineLockContext ctx) {
         //olettaa että lockcontext on validi (ei tarkisteta erikseen)
-        if ( ctx.getKokonaisuusId() != null ) {
+        if (ctx.getKokonaisuusId() != null) {
             return vuosiluokkakokonaisuusRepository.getLatestRevisionId(ctx.getKokonaisuusId()).getNumero();
         }
 
