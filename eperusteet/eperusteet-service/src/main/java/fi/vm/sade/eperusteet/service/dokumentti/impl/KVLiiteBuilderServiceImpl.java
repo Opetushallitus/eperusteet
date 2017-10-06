@@ -431,11 +431,13 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
             leftTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
                     messages.translate("docgen.kvliite.antajan-nimi-ja-asema", docBase.getKieli())));
-            DokumenttiUtils.addTeksti(docBase, kvLiiteJulkinenDto.getTutkintotodistuksenAntaja(), "div", leftTd);
+            DokumenttiUtils.addTeksti(docBase, kvLiiteJulkinenDto.getTutkintotodistuksenAntaja()
+                    .get(docBase.getKieli()), "div", leftTd);
 
             rightTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
                     messages.translate("docgen.kvliite.paattavan-nimi", docBase.getKieli())));
-            DokumenttiUtils.addTeksti(docBase, kvLiiteJulkinenDto.getTutkinnostaPaattavaViranomainen(), "div", rightTd);
+            DokumenttiUtils.addTeksti(docBase, kvLiiteJulkinenDto.getTutkinnostaPaattavaViranomainen()
+                    .get(docBase.getKieli()), "div", rightTd);
         }
 
         {
