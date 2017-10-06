@@ -20,16 +20,18 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author nkala
  */
 @Service

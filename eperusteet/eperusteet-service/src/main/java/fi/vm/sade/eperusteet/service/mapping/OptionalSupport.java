@@ -19,7 +19,9 @@ import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import java.util.Collection;
+
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -30,15 +32,16 @@ import ma.glasnost.orika.metadata.Type;
 
 /**
  * Tuki Guavan Optional-luokalle Orika mapperin yhteydessä.
- *
+ * <p>
  * Tarkoitettu Dto->Entiteetti->Dto mappaukseen.
- *
+ * <p>
  * Mahdollistaa mappauksen siten, että DTO-luokissa voi määritellä attribuuttela Optional<Attr> a ja mappaus entiteetteihin toimii seuraavasti:
  * null: pidetään kohdearvo
  * Present: mapätään rekursiivisesti kohdearvoon
  * Absent: asetetaan kohdearvo NULL-arvoksi
- *
+ * <p>
  * TODO: Kohdearvo ei voi olla itse Optional (ainakaan kaikissa tapauksissa).
+ *
  * @author jhyoty
  */
 public final class OptionalSupport {
@@ -157,11 +160,11 @@ public final class OptionalSupport {
 
         private static boolean isImmutable(Type<?> type) {
             return
-                TekstiPalanen.class.isAssignableFrom(type.getRawType())
-                || type.isPrimitiveWrapper()
-                || type.isEnum()
-                || type.isPrimitive()
-                || type.isString();
+                    TekstiPalanen.class.isAssignableFrom(type.getRawType())
+                            || type.isPrimitiveWrapper()
+                            || type.isEnum()
+                            || type.isPrimitive()
+                            || type.isString();
         }
 
     }

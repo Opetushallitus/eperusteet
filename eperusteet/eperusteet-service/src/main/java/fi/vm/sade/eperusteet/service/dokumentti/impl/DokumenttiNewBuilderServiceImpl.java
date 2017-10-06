@@ -21,10 +21,13 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiPeruste;
+
 import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
+
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -44,6 +47,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.*;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -87,7 +91,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     @Override
     public Document generateXML(Peruste peruste, Dokumentti dokumentti, Kieli kieli,
-            Suoritustapakoodi suoritustapakoodi)
+                                Suoritustapakoodi suoritustapakoodi)
             throws ParserConfigurationException, IOException, TransformerException {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -125,12 +129,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             AIPEOpetuksenSisalto aipeOpetuksenPerusteenSisalto = peruste.getAipeOpetuksenPerusteenSisalto();
             docBase.setAipeOpetuksenSisalto(aipeOpetuksenPerusteenSisalto);
             docBase.setSisalto(aipeOpetuksenPerusteenSisalto.getSisalto());
-        }
-        else if (peruste.getTyyppi() == PerusteTyyppi.OPAS) {
+        } else if (peruste.getTyyppi() == PerusteTyyppi.OPAS) {
             PerusteenOsaViite sisalto = peruste.getSisalto(null);
             docBase.setSisalto(sisalto);
-        }
-        else {
+        } else {
             Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
             PerusteenOsaViite sisalto = suoritustapa.getSisalto();
             docBase.setSisalto(sisalto);
@@ -142,8 +144,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         if (suoritustapakoodi.equals(Suoritustapakoodi.AIPE)) {
             // AIPE-osat
             addAipeSisalto(docBase);
-        }
-        else if (peruste.getTyyppi() != PerusteTyyppi.OPAS) {
+        } else if (peruste.getTyyppi() != PerusteTyyppi.OPAS) {
             // Tutkinnon muodostuminen
             addSisaltoelementit(docBase);
 
@@ -517,7 +518,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         suoritustavat.stream()
                 .filter(suoritustapa -> suoritustapa.getSuoritustapakoodi()
-                .equals(docBase.getSisalto().getSuoritustapa().getSuoritustapakoodi()))
+                        .equals(docBase.getSisalto().getSuoritustapa().getSuoritustapakoodi()))
                 .forEach(suoritustapa -> osat.addAll(suoritustapa.getTutkinnonOsat()));
 
         addHeader(docBase, messages.translate("docgen.tutkinnon_osat.title", docBase.getKieli()));
@@ -599,8 +600,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addAmmattitaitovaatimukset(DokumenttiPeruste docBase,
-            List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista,
-            TekstiPalanen ammattitaitovaatimukset) {
+                                            List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista,
+                                            TekstiPalanen ammattitaitovaatimukset) {
         String ammattitaitovaatimuksetText = getTextString(docBase, ammattitaitovaatimukset);
         if (StringUtils.isEmpty(ammattitaitovaatimuksetText) && ammattitaitovaatimuksetLista.isEmpty()) {
             return;

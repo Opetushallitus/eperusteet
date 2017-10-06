@@ -19,15 +19,14 @@ package fi.vm.sade.eperusteet.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
- *
  * @author harrik
  */
 public enum PerusteTila {
-    
+
     LUONNOS("luonnos"),
     VALMIS("valmis"),
     POISTETTU("poistettu");
-            
+
     private final String tila;
 
     private PerusteTila(String tila) {

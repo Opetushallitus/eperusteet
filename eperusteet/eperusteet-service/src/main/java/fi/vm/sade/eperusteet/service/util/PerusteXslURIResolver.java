@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.util;
 
 import com.google.code.docbook4j.FileObjectUtils;
 import com.google.code.docbook4j.XslURIResolver;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.io.InputStream;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
@@ -32,15 +34,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author jussi
  */
-public class PerusteXslURIResolver extends XslURIResolver{
+public class PerusteXslURIResolver extends XslURIResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteXslURIResolver.class);
-    
+
     private String docbookXslBase;
-    
+
     @Override
     public Source resolve(String href, String base) throws TransformerException {
 
@@ -75,9 +76,9 @@ public class PerusteXslURIResolver extends XslURIResolver{
             if (!urlFileObject.exists())
                 throw new FileSystemException("File object not found: "
                         + urlFileObject);
-                                    
+
             return new StreamSource(
-                    fileObjectToInputStream(urlFileObject), 
+                    fileObjectToInputStream(urlFileObject),
                     urlFileObject.getURL().toExternalForm());
 
         } catch (FileSystemException e) {
@@ -104,17 +105,16 @@ public class PerusteXslURIResolver extends XslURIResolver{
     }
 
     /**
-    * Helper method to avoid leaking file handles. For some reason document 
-    * parsing leaves behind insane amount of open file descriptors. Reading 
-    * the file contents into buffer and returning stream into that seems to 
-    * help. 
-    * 
-    * By gods this is ugly but at least we're not running into 
-    * too many open file -issues.
-    **/
-    private InputStream fileObjectToInputStream(FileObject urlFileObject) 
-            throws FileSystemException 
-    {
+     * Helper method to avoid leaking file handles. For some reason document
+     * parsing leaves behind insane amount of open file descriptors. Reading
+     * the file contents into buffer and returning stream into that seems to
+     * help.
+     * <p>
+     * By gods this is ugly but at least we're not running into
+     * too many open file -issues.
+     **/
+    private InputStream fileObjectToInputStream(FileObject urlFileObject)
+            throws FileSystemException {
         InputStream is = urlFileObject.getContent().getInputStream();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -126,5 +126,5 @@ public class PerusteXslURIResolver extends XslURIResolver{
 
         return new ByteArrayInputStream(baos.toByteArray());
     }
-    
+
 }

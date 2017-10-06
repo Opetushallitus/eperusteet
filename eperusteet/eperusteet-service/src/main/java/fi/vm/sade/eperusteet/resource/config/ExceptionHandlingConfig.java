@@ -62,7 +62,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author teele1
  */
 @ControllerAdvice
@@ -77,7 +76,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleTransactionExceptions(TransactionSystemException e, WebRequest request) {
         if (e.getRootCause() != null && e.getRootCause() instanceof ConstraintViolationException) {
             return handleExceptionInternal((ConstraintViolationException) e.getRootCause(), null, new HttpHeaders(),
-                                           HttpStatus.BAD_REQUEST, request);
+                    HttpStatus.BAD_REQUEST, request);
         } else {
             return handleExceptionInternal(e, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
         }
@@ -85,7 +84,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status,
-        WebRequest request) {
+                                                                  WebRequest request) {
         if (ex.getRootCause() != null && ex.getRootCause() instanceof UnrecognizedPropertyException) {
             return handleExceptionInternal((UnrecognizedPropertyException) ex.getRootCause(), null, headers, status, request);
         } else {
@@ -154,7 +153,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             describe(map, "datan-käsittelyssä-odottamaton-virhe", "Datan käsittelyssä tapahtui odottamaton virhe.");
         } else if (ex instanceof UnrecognizedPropertyException) {
             describe(map, "datassa-tuntematon-kenttä", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \"" +
-                     ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
+                    ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
         } else if (ex instanceof ConstraintViolationException) {
             suppresstrace = true;
             List<String> reasons = new ArrayList<>();

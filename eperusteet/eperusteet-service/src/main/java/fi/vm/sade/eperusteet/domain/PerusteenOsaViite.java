@@ -20,10 +20,12 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -31,27 +33,25 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 /**
- *
  * @author jhyoty
- *
  */
 @Entity
 @Audited
 @Table(name = "perusteenosaviite")
 @NamedNativeQuery(
-    name = "PerusteenOsaViite.findRootsByPerusteenOsaId",
-    resultSetMapping = "PerusteenOsaViite.rootId",
-    query
-    = "with recursive vanhemmat(id,vanhempi_id,perusteenosa_id) as "
-    + "(select pv.id, pv.vanhempi_id, pv.perusteenosa_id from perusteenosaviite pv "
-    + "where pv.perusteenosa_id = ?1  "
-    + "union all "
-    + "select pv.id, pv.vanhempi_id, v.perusteenosa_id "
-    + "from perusteenosaviite pv, vanhemmat v where pv.id = v.vanhempi_id) "
-    + "select id from vanhemmat where vanhempi_id is null")
+        name = "PerusteenOsaViite.findRootsByPerusteenOsaId",
+        resultSetMapping = "PerusteenOsaViite.rootId",
+        query
+                = "with recursive vanhemmat(id,vanhempi_id,perusteenosa_id) as "
+                + "(select pv.id, pv.vanhempi_id, pv.perusteenosa_id from perusteenosaviite pv "
+                + "where pv.perusteenosa_id = ?1  "
+                + "union all "
+                + "select pv.id, pv.vanhempi_id, v.perusteenosa_id "
+                + "from perusteenosaviite pv, vanhemmat v where pv.id = v.vanhempi_id) "
+                + "select id from vanhemmat where vanhempi_id is null")
 @SqlResultSetMapping(
-    name = "PerusteenOsaViite.rootId",
-    columns = {@ColumnResult(name="id", type=Long.class)}
+        name = "PerusteenOsaViite.rootId",
+        columns = {@ColumnResult(name = "id", type = Long.class)}
 )
 public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
 
@@ -126,7 +126,7 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     }
 
     public PerusteenOsaViite(Suoritustapa suoritustapa) {
-        this.suoritustapa= suoritustapa;
+        this.suoritustapa = suoritustapa;
     }
 
     public PerusteenOsaViite(PerusopetuksenPerusteenSisalto sisalto) {

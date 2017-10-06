@@ -28,13 +28,14 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenContext;
 import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenService;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author jhyoty
  */
 @Service

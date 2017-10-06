@@ -3,15 +3,16 @@ package fi.vm.sade.eperusteet.repository;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author jhyoty
  */
 @Repository
@@ -36,7 +37,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero IN (?1)")
     Set<Peruste> findAllByDiaarinumerot(Set<Diaarinumero> diaarinumero);
 
-//    @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and ?1 = diaari")
+    //    @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and ?1 = diaari")
     @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and diaari.diaarinumero = ?1")
     Set<Peruste> findAllKorvaavatByDiaarinumero(String diaarinumero);
 
@@ -48,11 +49,11 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     Stream<Peruste> findAllByOsaamisala(String osaamisalaUri);
 
     @Query("SELECT DISTINCT p.id FROM Peruste p " +
-        "LEFT JOIN p.suoritustavat s " +
-        "LEFT JOIN p.perusopetuksenPerusteenSisalto ps " +
-        "LEFT JOIN p.lukiokoulutuksenPerusteenSisalto ls " +
-        "LEFT JOIN p.esiopetuksenPerusteenSisalto eps " +
-        "WHERE p.tila = ?2 AND (s.sisalto.id IN (?1) OR ps.sisalto.id IN (?1) OR eps.sisalto.id IN (?1) OR ls.id IN (?1) )")
+            "LEFT JOIN p.suoritustavat s " +
+            "LEFT JOIN p.perusopetuksenPerusteenSisalto ps " +
+            "LEFT JOIN p.lukiokoulutuksenPerusteenSisalto ls " +
+            "LEFT JOIN p.esiopetuksenPerusteenSisalto eps " +
+            "WHERE p.tila = ?2 AND (s.sisalto.id IN (?1) OR ps.sisalto.id IN (?1) OR eps.sisalto.id IN (?1) OR ls.id IN (?1) )")
     Set<Long> findBySisaltoRoots(Iterable<? extends Number> rootIds, PerusteTila tila);
 
     @Query("SELECT DISTINCT p.id FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat to WHERE p.tila = ?2 AND to.tutkinnonOsa.id = ?1")

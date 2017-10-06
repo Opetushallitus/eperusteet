@@ -41,6 +41,7 @@ public class OpetuksenYleisetTavoitteetLaajaDto extends PerusteenOsaDto.Laaja {
 
     public OpetuksenYleisetTavoitteetLaajaDto() {
     }
+
     public OpetuksenYleisetTavoitteetLaajaDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
     }

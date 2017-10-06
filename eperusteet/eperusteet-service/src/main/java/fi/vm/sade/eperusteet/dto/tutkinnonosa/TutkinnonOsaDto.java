@@ -32,7 +32,6 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- *
  * @author jhyoty
  */
 @Getter
@@ -55,7 +54,8 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
 
     public TutkinnonOsaDto() {
     }
-    public TutkinnonOsaDto (LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
+
+    public TutkinnonOsaDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
     }
 

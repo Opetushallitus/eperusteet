@@ -20,19 +20,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
+
 import lombok.Getter;
 
 /**
- *
  * @author jhyoty
  */
 public class LokalisoituTekstiDto {
-    private static final Map<Kieli,String> emptyMap = new EnumMap<>(Kieli.class);
+    private static final Map<Kieli, String> emptyMap = new EnumMap<>(Kieli.class);
 
     @Getter
     private final Long id;
@@ -62,11 +63,9 @@ public class LokalisoituTekstiDto {
             for (Map.Entry<String, String> entry : values.entrySet()) {
                 if ("_id".equals(entry.getKey())) {
                     tmpId = Long.valueOf(entry.getValue());
-                }
-                else if ("_tunniste".equals(entry.getKey())) {
+                } else if ("_tunniste".equals(entry.getKey())) {
                     this.tunniste = UUID.fromString(entry.getValue());
-                }
-                else {
+                } else {
                     Kieli k = Kieli.of(entry.getKey());
                     tmpValues.put(k, entry.getValue());
                 }
@@ -92,9 +91,9 @@ public class LokalisoituTekstiDto {
         return map;
     }
 
-    public LokalisoituTekstiDto concat(Function<Kieli,String> str) {
-        Map<Kieli,String> transformed = new HashMap<>();
-        for (Map.Entry<Kieli,String> kv : tekstit.entrySet()) {
+    public LokalisoituTekstiDto concat(Function<Kieli, String> str) {
+        Map<Kieli, String> transformed = new HashMap<>();
+        for (Map.Entry<Kieli, String> kv : tekstit.entrySet()) {
             transformed.put(kv.getKey(), kv.getValue() + str.apply(kv.getKey()));
         }
         return new LokalisoituTekstiDto(id, null, transformed);
@@ -122,17 +121,18 @@ public class LokalisoituTekstiDto {
         return palanen == null ? null : new LokalisoituTekstiDto(palanen.getId(), palanen.getTunniste(), palanen.getTeksti());
     }
 
-    public interface LocalizedFunction<F> extends Function<F,LokalisoituTekstiDto> {
+    public interface LocalizedFunction<F> extends Function<F, LokalisoituTekstiDto> {
         default LocalizedFunction<F> concat(String constant) {
             return from -> this.apply(from).concat(anyKieli -> constant);
         }
+
         default LocalizedFunction<F> concat(LokalisoituTekstiDto dto) {
             return from -> this.apply(from).concat(dto::get);
         }
     }
 
     @SuppressWarnings("DtoClassesNotContainEntities")
-    public static<T> LocalizedFunction<T> localized(Function<T,TekstiPalanen> s) {
+    public static <T> LocalizedFunction<T> localized(Function<T, TekstiPalanen> s) {
         return from -> localized(s.apply(from));
     }
 }

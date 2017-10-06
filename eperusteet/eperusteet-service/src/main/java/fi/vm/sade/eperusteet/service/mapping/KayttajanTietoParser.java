@@ -17,11 +17,11 @@ package fi.vm.sade.eperusteet.service.mapping;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author jhyoty
  */
 public class KayttajanTietoParser {

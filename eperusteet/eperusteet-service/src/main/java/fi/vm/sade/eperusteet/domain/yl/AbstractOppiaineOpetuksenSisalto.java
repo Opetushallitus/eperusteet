@@ -62,13 +62,13 @@ public abstract class AbstractOppiaineOpetuksenSisalto extends AbstractAuditedRe
             return containsOppiaine(aine.getOppiaine());
         }
 
-        if (getOppiaineet().contains(aine) ) {
+        if (getOppiaineet().contains(aine)) {
             return true;
         }
 
         //revisioissa ei voi verrata object-identityn perusteella vaan täytyy käyttää pääavainta
         for (Oppiaine o : getOppiaineet()) {
-            if (o.getId() != null && o.getId().equals(aine.getId()) ) {
+            if (o.getId() != null && o.getId().equals(aine.getId())) {
                 return true;
             }
         }

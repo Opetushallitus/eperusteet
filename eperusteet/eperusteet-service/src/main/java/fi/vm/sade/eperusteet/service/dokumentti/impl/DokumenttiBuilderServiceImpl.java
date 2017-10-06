@@ -35,6 +35,7 @@ import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
+
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -49,6 +50,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -59,7 +61,6 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.*;
 
 /**
- *
  * @author jussi
  */
 @Service
@@ -67,8 +68,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiBuilderServiceImpl.class);
 
-    private static final String KT_ALWAYS="keep-together=\"always\"";
-    private static final String KT_AUTO="keep-together=\"auto\"";
+    private static final String KT_ALWAYS = "keep-together=\"always\"";
+    private static final String KT_AUTO = "keep-together=\"auto\"";
 
     @Autowired
     private LocalizedMessagesService messages;
@@ -152,7 +153,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     /**
      * Copies content from all the children of Jsoup Node on under W3C DOM Node on given W3C document.
-     *
      */
     private void jsoupIntoDOMNode(Document rootDoc, Node parentNode, org.jsoup.nodes.Node jsoupNode) {
         for (org.jsoup.nodes.Node child : jsoupNode.childNodes()) {
@@ -164,7 +164,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
      * The helper that copies content from the specified Jsoup Node into a W3C Node.
      *
      * @param node The Jsoup node containing the content to copy to the specified W3C Node.
-     * @param out The W3C Node that receives the DOM content.
+     * @param out  The W3C Node that receives the DOM content.
      */
     private void createDOM(org.jsoup.nodes.Node node, Node out, Document doc, Map<String, String> ns) {
 
@@ -257,23 +257,23 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         // ew, dodgy trycatching
         try {
             parentElement.appendChild(
-                getTutkinnonMuodostuminenGeneric(
-                    doc,
-                    peruste,
-                    // TODO: jostain muualta???
-                    messages.translate("docgen.tutkinnon_muodostuminen.title", kieli),
-                    depth,
-                    tapa.getSuoritustapakoodi(),
-                    kieli));
+                    getTutkinnonMuodostuminenGeneric(
+                            doc,
+                            peruste,
+                            // TODO: jostain muualta???
+                            messages.translate("docgen.tutkinnon_muodostuminen.title", kieli),
+                            depth,
+                            tapa.getSuoritustapakoodi(),
+                            kieli));
         } catch (Exception ex) {
             LOG.warn("adding getTutkinnonMuodostuminenGeneric failed miserably:", ex);
         }
     }
 
     private Element getTutkinnonMuodostuminenGeneric(
-        Document doc, Peruste peruste, String title, int depth,
-        Suoritustapakoodi suoritustapakoodi,
-        Kieli kieli) {
+            Document doc, Peruste peruste, String title, int depth,
+            Suoritustapakoodi suoritustapakoodi,
+            Kieli kieli) {
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         RakenneModuuli rakenne = suoritustapa.getRakenne();
 
@@ -301,7 +301,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     private void addRakenneOsaRec(Element parent,
-        AbstractRakenneOsa osa, Suoritustapa suoritustapa, Document doc, Kieli kieli, int depth) {
+                                  AbstractRakenneOsa osa, Suoritustapa suoritustapa, Document doc, Kieli kieli, int depth) {
 
         if (osa instanceof RakenneModuuli) {
             RakenneModuuli rakenneModuuli = (RakenneModuuli) osa;
@@ -639,7 +639,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     private String getOtsikko(final TutkinnonOsaViite viite, final Kieli kieli) {
         TutkinnonOsa osa = viite.getTutkinnonOsa();
         return getTextString(osa.getNimi(), kieli) +
-            getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, kieli);
+                getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, kieli);
     }
 
     private void addTutkinnonosat(Document doc, Peruste peruste, final Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
@@ -648,39 +648,39 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         // tree setistä saadaan tutkinnonosaviitteet ulos halutussa,
         // comparatorin avulla järkättävässä järjestyksessä
         Set<TutkinnonOsaViite> osat = new TreeSet<>(
-            new java.util.Comparator<TutkinnonOsaViite>() {
-                @Override
-                public int compare(TutkinnonOsaViite o1, TutkinnonOsaViite o2) {
-                    String nimi1 = getTextString(o1.getTutkinnonOsa().getNimi(), kieli);
-                    String nimi2 = getTextString(o2.getTutkinnonOsa().getNimi(), kieli);
+                new java.util.Comparator<TutkinnonOsaViite>() {
+                    @Override
+                    public int compare(TutkinnonOsaViite o1, TutkinnonOsaViite o2) {
+                        String nimi1 = getTextString(o1.getTutkinnonOsa().getNimi(), kieli);
+                        String nimi2 = getTextString(o2.getTutkinnonOsa().getNimi(), kieli);
 
-                    // ensisijaisesti järjestysnumeron mukaan
-                    int o1i = o1.getJarjestys() != null ? o1.getJarjestys() : Integer.MAX_VALUE;
-                    int o2i = o2.getJarjestys() != null ? o2.getJarjestys() : Integer.MAX_VALUE;
-                    if (o1i < o2i) {
-                        return -1;
-                    } else if (o1i > o2i) {
-                        return 1;
+                        // ensisijaisesti järjestysnumeron mukaan
+                        int o1i = o1.getJarjestys() != null ? o1.getJarjestys() : Integer.MAX_VALUE;
+                        int o2i = o2.getJarjestys() != null ? o2.getJarjestys() : Integer.MAX_VALUE;
+                        if (o1i < o2i) {
+                            return -1;
+                        } else if (o1i > o2i) {
+                            return 1;
+                        }
+
+                        // toissijaisesti aakkosjärjestyksessä
+                        if (!nimi1.equals(nimi2)) {
+                            return nimi1.compareTo(nimi2);
+                        }
+
+                        // viimekädessä kanta-avaimen mukaan
+                        Long id1 = o1.getTutkinnonOsa().getId();
+                        Long id2 = o2.getTutkinnonOsa().getId();
+                        if (id1 < id2) {
+                            return -1;
+                        } else if (id1 > id2) {
+                            return 1;
+                        }
+
+                        // On ne sitten samat
+                        return 0;
                     }
-
-                    // toissijaisesti aakkosjärjestyksessä
-                    if (!nimi1.equals(nimi2)) {
-                        return nimi1.compareTo(nimi2);
-                    }
-
-                    // viimekädessä kanta-avaimen mukaan
-                    Long id1 = o1.getTutkinnonOsa().getId();
-                    Long id2 = o2.getTutkinnonOsa().getId();
-                    if (id1 < id2) {
-                        return -1;
-                    } else if (id1 > id2) {
-                        return 1;
-                    }
-
-                    // On ne sitten samat
-                    return 0;
-                }
-            });
+                });
 
         for (Suoritustapa suoritustapa : suoritustavat) {
             if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
@@ -725,7 +725,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 addTavoitteet(doc, element, osa, kieli);
 
                 String ammattitaitovaatimuksetText = getTextString(osa.getAmmattitaitovaatimukset(), kieli);
-                if( !StringUtils.isEmpty(ammattitaitovaatimuksetText) || !osa.getAmmattitaitovaatimuksetLista().isEmpty()) {
+                if (!StringUtils.isEmpty(ammattitaitovaatimuksetText) || !osa.getAmmattitaitovaatimuksetLista().isEmpty()) {
                     addTekstiSectionGeneric(doc, element, ammattitaitovaatimuksetText,
                             messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
                     addAmmattitaitovaatimukset(doc, element, osa.getAmmattitaitovaatimuksetLista(), kieli);
@@ -752,7 +752,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private void addValmatelmaSisalto(Document doc, Element element, ValmaTelmaSisalto valmaTelmaSisalto, Kieli kieli) {
 
-        if(valmaTelmaSisalto == null){
+        if (valmaTelmaSisalto == null) {
             return;
         }
 
@@ -761,55 +761,55 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     private void addValmaArviointi(Document doc, Element element, ValmaTelmaSisalto valmaTelmaSisalto, Kieli kieli) {
-        if( valmaTelmaSisalto.getOsaamisenarviointi() != null || valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null) {
+        if (valmaTelmaSisalto.getOsaamisenarviointi() != null || valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null) {
             addTekstiSectionGeneric(doc, element, "", messages.translate("docgen.valma.osaamisenarviointi.title", kieli));
 
-            if(valmaTelmaSisalto.getOsaamisenarviointi() != null){
+            if (valmaTelmaSisalto.getOsaamisenarviointi() != null) {
                 if (valmaTelmaSisalto.getOsaamisenarviointi().getKohde() != null) {
                     addMarkupToElement(doc, element, valmaTelmaSisalto.getOsaamisenarviointi().getKohde().getTeksti().get(kieli));
                 }
                 addValmaTavoiteList(doc, element, kieli, valmaTelmaSisalto.getOsaamisenarviointi().getTavoitteet());
             }
 
-            if(valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null){
+            if (valmaTelmaSisalto.getOsaamisenarviointiTekstina() != null) {
                 addMarkupToElement(doc, element, valmaTelmaSisalto.getOsaamisenarviointiTekstina().getTeksti().get(kieli));
             }
         }
     }
 
     private void addValmaOsaamistavoitteet(Document doc, Element element, ValmaTelmaSisalto valmaTelmaSisalto, Kieli kieli) {
-        if( valmaTelmaSisalto.getOsaamistavoite().size() > 0 ){
+        if (valmaTelmaSisalto.getOsaamistavoite().size() > 0) {
             addTekstiSectionGeneric(doc, element, "", messages.translate("docgen.valma.osaamistavoitteet.title", kieli));
         }
 
         for (OsaamisenTavoite osaamisenTavoite : valmaTelmaSisalto.getOsaamistavoite()) {
-            if( osaamisenTavoite.getNimi() != null){
+            if (osaamisenTavoite.getNimi() != null) {
                 addTekstiSectionGeneric(doc, element, "", osaamisenTavoite.getNimi().getTeksti().get(kieli));
             }
 
-            if( osaamisenTavoite.getKohde() != null){
+            if (osaamisenTavoite.getKohde() != null) {
                 addMarkupToElement(doc, element, osaamisenTavoite.getKohde().getTeksti().get(kieli));
             }
 
             addValmaTavoiteList(doc, element, kieli, osaamisenTavoite.getTavoitteet());
 
-            if( osaamisenTavoite.getSelite() != null){
+            if (osaamisenTavoite.getSelite() != null) {
                 addMarkupToElement(doc, element, osaamisenTavoite.getSelite().getTeksti().get(kieli));
             }
         }
     }
 
     private void addValmaTavoiteList(Document doc, Element element, Kieli kieli, List<TekstiPalanen> tavoitteet) {
-        if(tavoitteet != null && tavoitteet.size() > 0) {
+        if (tavoitteet != null && tavoitteet.size() > 0) {
             Element list = doc.createElement("itemizedlist");
             list.setAttribute("spacing", "compact");
 
             for (TekstiPalanen tavoite : tavoitteet) {
                 Element item = doc.createElement("listitem");
-                item.appendChild( doc.createTextNode( tavoite.getTeksti().get(kieli) ) );
+                item.appendChild(doc.createTextNode(tavoite.getTeksti().get(kieli)));
                 list.appendChild(item);
             }
-            element.appendChild( list );
+            element.appendChild(list);
         }
     }
 
@@ -822,10 +822,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
         addTekstiSectionGeneric(
-            doc,
-            parent,
-            TavoitteetText,
-            messages.translate("docgen.tavoitteet.title", kieli));
+                doc,
+                parent,
+                TavoitteetText,
+                messages.translate("docgen.tavoitteet.title", kieli));
     }
 
     private void addVapaatTekstikappaleet(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
@@ -844,10 +844,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             }
 
             addTekstiSectionGeneric(
-                doc,
-                parent,
-                body,
-                otsikko);
+                    doc,
+                    parent,
+                    body,
+                    otsikko);
         }
     }
 
@@ -875,7 +875,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             // Jokaiselle kohdealueelle oma taulukkonsa, ja annetaan docbookin
             // yrittää kovasti, että se pysyy kokonaisena.
             List<AmmattitaitovaatimuksenKohde> vaatimuksenKohteet = ka.getVaatimuksenKohteet();
-            boolean eka=true;
+            boolean eka = true;
             for (AmmattitaitovaatimuksenKohde kohde : vaatimuksenKohteet) {
                 String kohdeTeksti = getTextString(kohde.getOtsikko(), kieli);
 
@@ -909,8 +909,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 List<String> vaatimusList = new ArrayList<>();
                 for (Ammattitaitovaatimus vaatimus : kohde.getVaatimukset()) {
-                    String ktaso = getTextString( vaatimus.getSelite(), kieli);
-                    if( vaatimus.getAmmattitaitovaatimusKoodi() != null && !vaatimus.getAmmattitaitovaatimusKoodi().isEmpty() ){
+                    String ktaso = getTextString(vaatimus.getSelite(), kieli);
+                    if (vaatimus.getAmmattitaitovaatimusKoodi() != null && !vaatimus.getAmmattitaitovaatimusKoodi().isEmpty()) {
                         ktaso += " (" + vaatimus.getAmmattitaitovaatimusKoodi() + ")";
                     }
                     vaatimusList.add(ktaso);
@@ -934,10 +934,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
         addTekstiSectionGeneric(
-            doc,
-            parent,
-            ammattitaidonOsoittamistavatText,
-            messages.translate("docgen.ammattitaidon_osoittamistavat.title", kieli));
+                doc,
+                parent,
+                ammattitaidonOsoittamistavatText,
+                messages.translate("docgen.ammattitaidon_osoittamistavat.title", kieli));
     }
 
     private void addTekstiSectionGeneric(Document doc, Element parent, String teksti, String title) {
@@ -961,7 +961,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         Element arviointiSection = doc.createElement("section");
         Element arviointiSectionTitle = doc.createElement("title");
         arviointiSectionTitle.appendChild(doc.createTextNode(
-            messages.translate("docgen.arviointi.title", kieli)));
+                messages.translate("docgen.arviointi.title", kieli)));
         arviointiSection.appendChild(arviointiSectionTitle);
         parent.appendChild(arviointiSection);
 
@@ -987,7 +987,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             }
 
             String otsikkoTeksti = tyyppi == TutkinnonOsaTyyppi.NORMAALI ? getTextString(ka.getOtsikko(), kieli) : messages
-                .translate("docgen.tutke2.arvioinnin_kohteet.title", kieli);
+                    .translate("docgen.tutke2.arvioinnin_kohteet.title", kieli);
 
             Element kaTitlePara = addSubHeader(doc, arviointiSection, doc.createTextNode(otsikkoTeksti.toUpperCase()));
 
@@ -995,7 +995,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             // Jokaiselle kohdealueelle oma taulukkonsa, ja annetaan docbookin
             // yrittää kovasti, että se pysyy kokonaisena.
             List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
-            boolean eka=true;
+            boolean eka = true;
             for (ArvioinninKohde kohde : arvioinninKohteet) {
                 String kohdeTeksti = getTextString(kohde.getOtsikko(), kieli);
 
@@ -1049,7 +1049,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     // otsikko vain tason otsikko vain jos on useampi kuin yksi
                     // taso
                     //if (kriteerilista.size() > 1) {
-                        addTableCell(doc, bodyRowElement, ktaso);
+                    addTableCell(doc, bodyRowElement, ktaso);
                     //}
 
                     // jos kriteerit on tyhjä, vältetään tyhjä itemizedlist
@@ -1181,8 +1181,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private String getTextString(TekstiPalanen teksti, Kieli kieli) {
         if (teksti == null ||
-            teksti.getTeksti() == null ||
-            teksti.getTeksti().get(kieli) == null) {
+                teksti.getTeksti() == null ||
+                teksti.getTeksti().get(kieli) == null) {
             return "";
         }
         return teksti.getTeksti().get(kieli);
@@ -1208,7 +1208,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             List<Osaamistavoite> osaamistavoitteet = osaAlue.getOsaamistavoitteet();
             ValmaTelmaSisalto valmatelma = osaAlue.getValmaTelmaSisalto();
 
-            addValmatelmaSisalto( doc, element, valmatelma, kieli );
+            addValmatelmaSisalto(doc, element, valmatelma, kieli);
 
             // Parita pakollinen ja valinnainen osaamistavoite
             Map<Long, Pair<Osaamistavoite, Osaamistavoite>> tavoiteParit = new LinkedHashMap<>();
@@ -1221,7 +1221,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     tavoiteParit.put(key, pari);
                 } else {
                     Pair<Osaamistavoite, Osaamistavoite> pari = tavoite.isPakollinen() ? Pair.of(tavoite, (Osaamistavoite) null) : Pair
-                        .of((Osaamistavoite) null, tavoite);
+                            .of((Osaamistavoite) null, tavoite);
                     tavoiteParit.put(key, pari);
                 }
             }
@@ -1253,11 +1253,11 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     }
 
                     String otsikkoAvain = tavoite.isPakollinen() ? "docgen.tutke2.pakolliset_osaamistavoitteet.title"
-                        : "docgen.tutke2.valinnaiset_osaamistavoitteet.title";
+                            : "docgen.tutke2.valinnaiset_osaamistavoitteet.title";
                     Element aliTavoiteSectionElement = doc.createElement("section");
                     Element aliTavoiteTitleElement = doc.createElement("title");
                     String otsikko = messages.translate(otsikkoAvain, kieli) +
-                        getLaajuusSuffiksi(tavoite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, kieli);
+                            getLaajuusSuffiksi(tavoite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, kieli);
                     aliTavoiteTitleElement.appendChild(doc.createTextNode(otsikko));
                     aliTavoiteSectionElement.appendChild(aliTavoiteTitleElement);
                     tavoiteSectionElement.appendChild(aliTavoiteSectionElement);
@@ -1271,21 +1271,21 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     TekstiPalanen tunnustaminen = tavoite.getTunnustaminen();
                     if (tunnustaminen != null) {
                         addTekstiSectionGeneric(
-                            doc,
-                            aliTavoiteSectionElement,
-                            getTextString(tunnustaminen, kieli),
-                            messages.translate("docgen.tutke2.tunnustaminen.title", kieli));
+                                doc,
+                                aliTavoiteSectionElement,
+                                getTextString(tunnustaminen, kieli),
+                                messages.translate("docgen.tutke2.tunnustaminen.title", kieli));
                     }
 
                     List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimukset = tavoite.getAmmattitaitovaatimuksetLista();
-                    if( !ammattitaitovaatimukset.isEmpty() ){
+                    if (!ammattitaitovaatimukset.isEmpty()) {
                         addTekstiSectionGeneric(doc, aliTavoiteSectionElement, "",
                                 messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
 
 //                        addTekstiSectionGeneric(doc, element, "",
 //                                messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
 //                        addAmmattitaitovaatimukset(doc, element, osa.gsdfetAmmattitaitovaatimuksetLista(), kieli);
-                        addAmmattitaitovaatimukset( doc, aliTavoiteSectionElement, ammattitaitovaatimukset, kieli);
+                        addAmmattitaitovaatimukset(doc, aliTavoiteSectionElement, ammattitaitovaatimukset, kieli);
                     }
 
                 }
@@ -1470,8 +1470,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
         Element itrow8 = addTableRow(doc, tbody);
         addTableCell(doc, itrow8, newBoldElement(doc, messages.translate("docgen.info.korvaa-perusteet", kieli)));
-        if (peruste.getKorvattavatDiaarinumerot() != null && !peruste.getKorvattavatDiaarinumerot().isEmpty())
-        {
+        if (peruste.getKorvattavatDiaarinumerot() != null && !peruste.getKorvattavatDiaarinumerot().isEmpty()) {
             Set<String> numeroStringit = new HashSet<>();
             for (Diaarinumero nro : peruste.getKorvattavatDiaarinumerot()) {
                 numeroStringit.add(nro.getDiaarinumero());
@@ -1532,7 +1531,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     member.appendChild(doc.createTextNode(meta.getNimi() + " (" + tnkoodi.getTutkintonimikeArvo() + ")"));
                     nimikelist.appendChild(member);
                 } else {
-                    LOG.debug("{} was no match", meta.getKieli() );
+                    LOG.debug("{} was no match", meta.getKieli());
                 }
             }
         }

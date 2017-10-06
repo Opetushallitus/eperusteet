@@ -16,8 +16,10 @@
 package fi.vm.sade.eperusteet.repository.version;
 
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository.DomainClassNotAuditedException;
+
 import java.io.Serializable;
 import javax.persistence.EntityManager;
+
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
@@ -62,7 +64,7 @@ public class JpaWithVersioningRepositoryFactoryBean<R extends JpaRepository<T, I
         @Override
         protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
             return JpaWithVersioningRepository.class.isAssignableFrom(metadata.getRepositoryInterface())
-                ? JpaWithVersioningRepository.class : super.getRepositoryBaseClass(metadata);
+                    ? JpaWithVersioningRepository.class : super.getRepositoryBaseClass(metadata);
         }
     }
 }

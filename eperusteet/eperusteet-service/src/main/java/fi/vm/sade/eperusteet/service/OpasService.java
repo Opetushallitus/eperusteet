@@ -28,7 +28,6 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- *
  * @author nkala
  */
 public interface OpasService {

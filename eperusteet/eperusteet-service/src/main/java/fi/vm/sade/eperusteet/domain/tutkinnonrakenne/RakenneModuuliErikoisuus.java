@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
- *
  * @author nkala
  */
 public enum RakenneModuuliErikoisuus {

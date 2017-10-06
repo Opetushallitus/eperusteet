@@ -22,10 +22,9 @@ import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**
- *
  * @author teele1
  */
 @Repository
 public interface ArviointiRepository extends JpaWithVersioningRepository<Arviointi, Long> {
-    
+
 }

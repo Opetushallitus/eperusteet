@@ -24,11 +24,11 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**
- *
  * @author nkala
  */
 @Repository
 public interface TutkinnonOsaRepository extends JpaWithVersioningRepository<TutkinnonOsa, Long> {
     List<TutkinnonOsa> findByKoodiUri(String koodiUri);
+
     List<TutkinnonOsa> findByNimiTekstiTekstiContainingIgnoreCase(String teksti);
 }

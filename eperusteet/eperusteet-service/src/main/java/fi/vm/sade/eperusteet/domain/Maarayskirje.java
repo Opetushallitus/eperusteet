@@ -18,12 +18,12 @@ package fi.vm.sade.eperusteet.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
- *
  * @author ohel
  */
 @Entity

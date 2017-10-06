@@ -24,10 +24,10 @@ import java.util.Date;
 
 /**
  * Global ersion for peruste related changes.
- *
+ * <p>
  * Not audited nor versioned in purpose. Seperate from Peruste: won't affect it or it's muokattu timestamp
  * nor cause locking issues.
- *
+ * <p>
  * User: tommiratamaa
  * Date: 12.11.2015
  * Time: 15.22

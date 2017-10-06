@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+
 import java.io.IOException;
 
 public class PerusteenOsaUpdateDtoDeserializer extends StdDeserializer<PerusteenOsaUpdateDto> {
@@ -35,14 +36,14 @@ public class PerusteenOsaUpdateDtoDeserializer extends StdDeserializer<Perusteen
 
     @Override
     public PerusteenOsaUpdateDto deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
-        JsonProcessingException {
+            JsonProcessingException {
         final TreeNode tree = jp.readValueAsTree();
         final ObjectCodec codec = jp.getCodec();
         PerusteenOsaUpdateDto dto = new PerusteenOsaUpdateDto();
         if (tree.get("metadata") != null) {
             dto.setMetadata(codec.treeToValue(tree.get("metadata"), UpdateDto.MetaData.class));
         }
-        dto.setDto(codec.treeToValue(((ObjectNode)tree).without("metadata"), PerusteenOsaDto.Laaja.class));
+        dto.setDto(codec.treeToValue(((ObjectNode) tree).without("metadata"), PerusteenOsaDto.Laaja.class));
         return dto;
     }
 

@@ -20,10 +20,12 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -31,7 +33,6 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author nkala
  */
 @Entity
@@ -72,8 +73,8 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
     @ManyToOne
     @NotAudited
     @JoinTable(name = "aipeoppiaine_aipekurssi",
-            joinColumns = { @JoinColumn(name = "kurssi_id", insertable = false, updatable = false)},
-            inverseJoinColumns = { @JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
+            joinColumns = {@JoinColumn(name = "kurssi_id", insertable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
     private AIPEOppiaine oppiaine;
 
     @ManyToMany

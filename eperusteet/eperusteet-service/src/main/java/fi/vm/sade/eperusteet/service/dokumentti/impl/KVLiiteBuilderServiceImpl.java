@@ -343,13 +343,13 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
                 LokalisoituTekstiDto suorittaneenOsaaminen = kvLiiteJulkinenDto.getSuorittaneenOsaaminen();
                 if (suorittaneenOsaaminen != null && suorittaneenOsaaminen.getTekstit().containsKey(docBase.getKieli())) {
 
-                Element p = docBase.getDocument().createElement("p");
-                td.appendChild(p);
-                p.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
-                        messages.translate("docgen.kvliite.tutkinnon-suorittaneen-osaaminen", docBase.getKieli())));
+                    Element p = docBase.getDocument().createElement("p");
+                    td.appendChild(p);
+                    p.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
+                            messages.translate("docgen.kvliite.tutkinnon-suorittaneen-osaaminen", docBase.getKieli())));
 
-                DokumenttiUtils.addTeksti(docBase,
-                        DokumenttiUtils.getTextString(docBase, suorittaneenOsaaminen), "div", td);
+                    DokumenttiUtils.addTeksti(docBase,
+                            DokumenttiUtils.getTextString(docBase, suorittaneenOsaaminen), "div", td);
                 }
             }
         }

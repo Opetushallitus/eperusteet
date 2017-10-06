@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.service.internal.ArviointiService;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,7 +56,6 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 /**
- *
  * @author teele1
  */
 @Transactional
@@ -77,20 +77,18 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
 
             @Override
             public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
-            String defaultName)
-            {
+                                              String defaultName) {
                 return tryToconvertFromMethodName(method, defaultName);
             }
 
             @Override
             public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
-            String defaultName)
-            {
+                                              String defaultName) {
                 return tryToconvertFromMethodName(method, defaultName);
             }
 
             private String tryToconvertFromMethodName(AnnotatedMethod annotatedMethod, String defaultName) {
-                if((annotatedMethod.getParameterCount() == 1 && EntityReference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
+                if ((annotatedMethod.getParameterCount() == 1 && EntityReference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
                         || EntityReference.class.isAssignableFrom(annotatedMethod.getRawReturnType())) {
                     defaultName = '_' + defaultName;
                 }

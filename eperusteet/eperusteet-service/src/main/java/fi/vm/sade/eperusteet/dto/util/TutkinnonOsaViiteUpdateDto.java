@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.dto.util;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 
 /**
- *
  * @author harrik
  */
 public class TutkinnonOsaViiteUpdateDto extends UpdateDto<TutkinnonOsaViiteDto> {

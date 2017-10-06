@@ -25,7 +25,6 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 
 /**
- *
  * @author jussi
  */
 public interface DokumenttiBuilderService {

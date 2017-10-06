@@ -23,18 +23,19 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
@@ -97,8 +98,8 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "peruste_koulutus",
-               joinColumns = @JoinColumn(name = "peruste_id"),
-               inverseJoinColumns = @JoinColumn(name = "koulutus_id"))
+            joinColumns = @JoinColumn(name = "peruste_id"),
+            inverseJoinColumns = @JoinColumn(name = "koulutus_id"))
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -115,8 +116,8 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(name = "peruste_osaamisala",
-               joinColumns = @JoinColumn(name = "peruste_id"),
-               inverseJoinColumns = @JoinColumn(name = "osaamisala_id"))
+            joinColumns = @JoinColumn(name = "peruste_id"),
+            inverseJoinColumns = @JoinColumn(name = "osaamisala_id"))
     @Column(name = "osaamisala_id")
     private Set<Koodi> osaamisalat = new HashSet<>();
 
@@ -147,8 +148,8 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapKey(name = "suoritustapakoodi")
     @JoinTable(name = "peruste_suoritustapa",
-               joinColumns = @JoinColumn(name = "peruste_id"),
-               inverseJoinColumns = @JoinColumn(name = "suoritustapa_id"))
+            joinColumns = @JoinColumn(name = "peruste_id"),
+            inverseJoinColumns = @JoinColumn(name = "suoritustapa_id"))
     @Getter
     @Setter
     private Set<Suoritustapa> suoritustavat = new HashSet<>();
@@ -185,7 +186,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
 
     @Getter
-    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private KVLiite kvliite;
 
     public void setKvliite(KVLiite liite) {
@@ -208,7 +209,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private Set<Kieli> kielet = EnumSet.of(Kieli.FI, Kieli.SV);
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "peruste_liite", inverseJoinColumns = {@JoinColumn(name="liite_id")}, joinColumns = {@JoinColumn(name="peruste_id")})
+    @JoinTable(name = "peruste_liite", inverseJoinColumns = {@JoinColumn(name = "liite_id")}, joinColumns = {@JoinColumn(name = "peruste_id")})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Set<Liite> liitteet = new HashSet<>();
 
@@ -373,12 +374,12 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             return esiopetuksenPerusteenSisalto.containsViite(viite);
         }
 
-        if  (lukiokoulutuksenPerusteenSisalto != null
+        if (lukiokoulutuksenPerusteenSisalto != null
                 && lukiokoulutuksenPerusteenSisalto.containsViite(viite)) {
             return lukiokoulutuksenPerusteenSisalto.containsViite(viite);
         }
 
-        if  (this.oppaanSisalto != null
+        if (this.oppaanSisalto != null
                 && this.oppaanSisalto.containsViite(viite)) {
             return this.oppaanSisalto.containsViite(viite);
         }
@@ -386,5 +387,6 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");
     }
 
-    public interface Valmis {}
+    public interface Valmis {
+    }
 }

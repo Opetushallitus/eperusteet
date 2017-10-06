@@ -30,12 +30,11 @@ import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
 @Audited
-@Table(name="yl_kohdealue")
+@Table(name = "yl_kohdealue")
 public class OpetuksenKohdealue extends AbstractReferenceableEntity {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})

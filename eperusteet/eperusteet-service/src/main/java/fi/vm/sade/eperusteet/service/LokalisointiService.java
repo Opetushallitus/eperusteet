@@ -14,6 +14,7 @@
  * European Union Public Licence for more details.
  */
 package fi.vm.sade.eperusteet.service;
+
 import fi.vm.sade.eperusteet.dto.LokalisointiDto;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Collection;
 
 /**
- *
  * @author jussi
  */
 public interface LokalisointiService {

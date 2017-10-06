@@ -21,12 +21,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import ma.glasnost.orika.Converter;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 
 /**
- *
  * @author harrik
  */
 class KoodistoConverter {

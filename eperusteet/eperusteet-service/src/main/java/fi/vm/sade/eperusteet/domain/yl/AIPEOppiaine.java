@@ -21,10 +21,12 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -32,7 +34,6 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author nkala
  */
 @Entity
@@ -127,8 +128,8 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @Audited
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "aipeoppiaine_aipekurssi",
-               joinColumns = { @JoinColumn(name = "oppiaine_id") },
-               inverseJoinColumns = { @JoinColumn(name = "kurssi_id") })
+            joinColumns = {@JoinColumn(name = "oppiaine_id")},
+            inverseJoinColumns = {@JoinColumn(name = "kurssi_id")})
     @OrderBy("jarjestys, id")
     private List<AIPEKurssi> kurssit = new ArrayList<>();
 
@@ -144,8 +145,8 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @Audited
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinTable(name = "aipeoppiaine_aipeoppiaine",
-               joinColumns = {@JoinColumn(name = "oppiaine_id")},
-               inverseJoinColumns = {@JoinColumn(name = "oppimaara_id")})
+            joinColumns = {@JoinColumn(name = "oppiaine_id")},
+            inverseJoinColumns = {@JoinColumn(name = "oppimaara_id")})
     @OrderBy("jarjestys, id")
     private List<AIPEOppiaine> oppimaarat = new ArrayList<>();
 
@@ -160,8 +161,8 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "aipeoppiaine_aipeoppiaine",
-               joinColumns = {@JoinColumn(name = "oppimaara_id", insertable = false, updatable = false)},
-               inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
+            joinColumns = {@JoinColumn(name = "oppimaara_id", insertable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
     private AIPEOppiaine oppiaine;
 
     @Override

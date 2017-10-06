@@ -31,12 +31,11 @@ import java.util.List;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
- *
  * @author jhyoty
  */
 @Controller
 @RequestMapping("/arviointiasteikot")
-@Api(value="Arviointiasteikot")
+@Api(value = "Arviointiasteikot")
 public class ArviointiAsteikkoController {
 
     @Autowired

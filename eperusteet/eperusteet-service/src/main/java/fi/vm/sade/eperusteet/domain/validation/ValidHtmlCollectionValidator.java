@@ -23,7 +23,7 @@ import javax.validation.ConstraintValidatorContext;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 
 public class ValidHtmlCollectionValidator extends ValidHtmlValidatorBase implements
-    ConstraintValidator<ValidHtml, Collection<TekstiPalanen>> {
+        ConstraintValidator<ValidHtml, Collection<TekstiPalanen>> {
 
     @Override
     public void initialize(ValidHtml constraintAnnotation) {

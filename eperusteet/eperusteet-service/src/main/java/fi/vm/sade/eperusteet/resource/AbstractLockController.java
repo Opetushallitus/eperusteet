@@ -17,22 +17,24 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
+
 import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
 import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
+
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
- *
- * @author jhyoty
  * @param <T>
+ * @author jhyoty
  */
 @InternalApi
 public abstract class AbstractLockController<T> {
@@ -50,7 +52,7 @@ public abstract class AbstractLockController<T> {
 
     @RequestMapping(method = POST)
     public ResponseEntity<LukkoDto> lock(@RequestBody T ctx,
-            @RequestHeader(value = "If-Match", required = false) String eTag) {
+                                         @RequestHeader(value = "If-Match", required = false) String eTag) {
         handleContext(ctx);
         LukkoDto lock = service().lock(ctx, revisionOf(eTag));
         if (lock == null) {

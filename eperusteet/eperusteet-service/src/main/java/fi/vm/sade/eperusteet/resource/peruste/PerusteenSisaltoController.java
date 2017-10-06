@@ -36,7 +36,6 @@ import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
- *
  * @author jhyoty
  */
 @RestController
@@ -56,17 +55,17 @@ public class PerusteenSisaltoController {
     /**
      * Luo perusteeseen suoritustavan alle uuden perusteenosan
      *
-     * @param perusteId perusteId
+     * @param perusteId    perusteId
      * @param suoritustapa suoritustapa
-     * @param dto perusteenosaviite (valinnainen, luodaan tyhjänä jos puuttuu)
+     * @param dto          perusteenosaviite (valinnainen, luodaan tyhjänä jos puuttuu)
      * @return Luodun perusteenOsaViite entityReferencen
      */
     @RequestMapping(value = "/sisalto", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public PerusteenOsaViiteDto.Matala addSisaltoUUSI(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa,
-        @RequestBody(required = false) final PerusteenOsaViiteDto.Matala dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa,
+            @RequestBody(required = false) final PerusteenOsaViiteDto.Matala dto) {
         return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, LISAYS),
                 (Void) -> service.addSisaltoUUSI(perusteId, Suoritustapakoodi.of(suoritustapa), dto)
         );
@@ -75,9 +74,9 @@ public class PerusteenSisaltoController {
     @RequestMapping(value = "/sisalto", method = PUT)
     @ResponseStatus(HttpStatus.CREATED)
     public PerusteenOsaViiteDto.Matala addSisaltoViiteUUSI(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa,
-        @RequestBody final PerusteenOsaViiteDto.Matala dto
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa,
+            @RequestBody final PerusteenOsaViiteDto.Matala dto
     ) {
         return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, MUOKKAUS),
                 (Void) -> service.addSisaltoUUSI(perusteId, Suoritustapakoodi.of(suoritustapa), dto));
@@ -85,9 +84,9 @@ public class PerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
     public ResponseEntity<PerusteenOsaViiteDto.Matala> addSisaltoLapsi(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa,
-        @PathVariable("perusteenosaViiteId") final Long perusteenosaViiteId) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa,
+            @PathVariable("perusteenosaViiteId") final Long perusteenosaViiteId) {
         return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, LIITOS),
                 (Void) -> new ResponseEntity<>(service.addSisaltoLapsi(perusteId, perusteenosaViiteId, null), HttpStatus.CREATED));
     }
@@ -95,10 +94,10 @@ public class PerusteenSisaltoController {
     @RequestMapping(value = "/sisalto/{parentId}/lapsi/{childId}", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public PerusteenOsaViiteDto.Matala addSisaltoLapsi(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa,
-        @PathVariable("parentId") final Long parentId,
-        @PathVariable("childId") final Long childId) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa,
+            @PathVariable("parentId") final Long parentId,
+            @PathVariable("childId") final Long childId) {
         return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, LIITOS), (Void) -> {
             PerusteenOsaViiteDto.Matala viite = new PerusteenOsaViiteDto.Matala();
             viite.setPerusteenOsaRef(new EntityReference(childId));
@@ -108,19 +107,19 @@ public class PerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto", method = GET)
     public ResponseEntity<PerusteenOsaViiteDto<?>> getSuoritustapaSisaltoUUSI(
-        @RequestParam(value = "muoto", required = false, defaultValue = "suppea") final String view,
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi
-        ) {
+            @RequestParam(value = "muoto", required = false, defaultValue = "suppea") final String view,
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi
+    ) {
         return CacheableResponse.create(service.getPerusteVersion(perusteId), 1, new Supplier<PerusteenOsaViiteDto<?>>() {
             @Override
             public PerusteenOsaViiteDto<?> get() {
                 Class<? extends Puu> puuClz = "suppea".equals(view) ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class;
                 return service
-                    .getSuoritustapaSisalto(
-                            perusteId,
-                            suoritustapakoodi,
-                            puuClz);
+                        .getSuoritustapaSisalto(
+                                perusteId,
+                                suoritustapakoodi,
+                                puuClz);
             }
         });
     }
@@ -128,8 +127,8 @@ public class PerusteenSisaltoController {
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeSisaltoViite(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, POISTO), (Void) -> {
             viiteService.removeSisalto(perusteId, id);
             return null;
@@ -140,9 +139,9 @@ public class PerusteenSisaltoController {
     @RequestMapping(value = "/sisalto/{id}", method = {POST, PUT})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSisaltoViite(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja pov) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja pov) {
         audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, MUOKKAUS), (Void) -> {
             viiteService.reorderSubTree(perusteId, id, pov);
             return null;
@@ -151,8 +150,8 @@ public class PerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, KLOONAUS),
                 (Void) -> viiteService.kloonaaTekstiKappale(perusteId, id)
         );

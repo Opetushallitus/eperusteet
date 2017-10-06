@@ -24,19 +24,21 @@ import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimuk
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
@@ -101,8 +103,8 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Setter
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_tutkinnonosa_kevyttekstikappale",
-               joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
-               inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
+            joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
+            inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
     @OrderColumn(name = "kevyttekstikappaleet_order")
     private List<KevytTekstiKappale> vapaatTekstit;
 
@@ -110,8 +112,8 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Setter
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_tutkinnonosa_osaalue",
-               joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
-               inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
+            joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
+            inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
     @OrderColumn
     // TUTKE2:n mukainen osa-alue
     private List<OsaAlue> osaAlueet;
@@ -212,10 +214,10 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     public void setArviointi(Arviointi arviointi) {
-        if ( Objects.equals(this.arviointi, arviointi) ) {
+        if (Objects.equals(this.arviointi, arviointi)) {
             return;
         }
-        if ( arviointi == null || this.arviointi == null ) {
+        if (arviointi == null || this.arviointi == null) {
             this.arviointi = arviointi;
         } else {
             this.arviointi.mergeState(arviointi);

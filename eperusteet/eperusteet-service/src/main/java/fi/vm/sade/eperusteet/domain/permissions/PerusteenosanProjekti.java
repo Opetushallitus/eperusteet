@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain.permissions;
 
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
@@ -31,6 +33,7 @@ import org.hibernate.annotations.Immutable;
 /**
  * Perusteenosaan liittyvät projektit
  * Taulu esittää todellisuudessa näkymää
+ *
  * @author jhyoty
  */
 @Entity

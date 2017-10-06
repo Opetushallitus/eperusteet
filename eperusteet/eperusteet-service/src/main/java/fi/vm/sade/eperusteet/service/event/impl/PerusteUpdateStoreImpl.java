@@ -27,13 +27,13 @@ import java.util.Set;
 
 /**
  * Not thread-safe and do not have to be (since request-scoped).
- *
+ * <p>
  * User: tommiratamaa
  * Date: 27.11.2015
  * Time: 13.42
  */
 @Component
-@Scope(value="request", proxyMode = ScopedProxyMode.INTERFACES)
+@Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
 public class PerusteUpdateStoreImpl implements PerusteUpdateStore {
     private Set<Long> perusteIds = new HashSet<>();
     private int stackDept = 0;

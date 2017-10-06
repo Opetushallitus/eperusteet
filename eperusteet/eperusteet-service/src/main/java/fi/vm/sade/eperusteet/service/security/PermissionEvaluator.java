@@ -54,7 +54,7 @@ public class PermissionEvaluator implements org.springframework.security.access.
             Object[] perms = (Object[]) permission;
             for (Object p : perms) {
                 final boolean result
-                    = manager.hasPermission(
+                        = manager.hasPermission(
                         authentication,
                         targetId,
                         Target.valueOf(targetType.toUpperCase()), Permission.valueOf(p.toString().toUpperCase()));
@@ -66,10 +66,10 @@ public class PermissionEvaluator implements org.springframework.security.access.
         }
 
         if (targetId instanceof String) {
-            targetId = Long.valueOf((String)targetId);
+            targetId = Long.valueOf((String) targetId);
         }
 
         return manager
-            .hasPermission(authentication, targetId, Target.valueOf(targetType.toUpperCase()), Permission.valueOf(permission.toString().toUpperCase()));
+                .hasPermission(authentication, targetId, Target.valueOf(targetType.toUpperCase()), Permission.valueOf(permission.toString().toUpperCase()));
     }
 }

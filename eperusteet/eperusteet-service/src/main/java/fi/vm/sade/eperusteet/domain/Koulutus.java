@@ -26,12 +26,11 @@ import java.io.Serializable;
 import java.util.Set;
 
 /**
- *
  * @author harrik
  */
 @Entity
 @Table(name = "koulutus")
-public class Koulutus implements Serializable, Mergeable<Koulutus>{
+public class Koulutus implements Serializable, Mergeable<Koulutus> {
 
     public Koulutus() {
     }

@@ -19,7 +19,6 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- *
  * @author jussi
  */
 public interface LocalizedMessagesService {

@@ -17,11 +17,11 @@
 package fi.vm.sade.eperusteet.domain;
 
 /**
- *
  * @author harrik
  */
 public interface Koodistokoodi {
-        
+
     public String getKoodi();
+
     public void setKoodi(String koodi);
 }

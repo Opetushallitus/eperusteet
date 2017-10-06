@@ -17,12 +17,13 @@
 package fi.vm.sade.eperusteet.dto.arviointi;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author jhyoty
  */
 @Getter

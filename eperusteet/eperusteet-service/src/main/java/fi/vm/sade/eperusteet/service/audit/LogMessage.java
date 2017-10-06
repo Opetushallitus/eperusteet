@@ -18,10 +18,10 @@ package fi.vm.sade.eperusteet.service.audit;
 
 import fi.vm.sade.auditlog.AbstractLogMessage;
 import fi.vm.sade.auditlog.SimpleLogMessageBuilder;
+
 import java.util.Map;
 
 /**
- *
  * @author nkala
  */
 public class LogMessage extends AbstractLogMessage {
@@ -48,7 +48,7 @@ public class LogMessage extends AbstractLogMessage {
 
     public static <T extends AuditLoggableDto> LogMessageBuilder builder(Long perusteId, EperusteetMessageFields target, EperusteetOperation op, T dto) {
         return builder(perusteId, target, op)
-            .addDto(dto);
+                .addDto(dto);
     }
 
     public static class LogMessageBuilder extends SimpleLogMessageBuilder<LogMessageBuilder> {
@@ -69,7 +69,7 @@ public class LogMessage extends AbstractLogMessage {
 
         public LogMessageBuilder palautus(Long id, Long version) {
             return safePut("osaId", id.toString())
-                .safePut("versio", id.toString());
+                    .safePut("versio", id.toString());
         }
 
         public LogMessageBuilder setOperation(EperusteetOperation op) {
@@ -84,8 +84,7 @@ public class LogMessage extends AbstractLogMessage {
         public LogMessageBuilder afterRevision(Number rev) {
             if (beforeRev != null) {
                 return add("rev", rev.toString(), beforeRev.toString());
-            }
-            else {
+            } else {
                 return add("rev", rev.toString());
             }
         }

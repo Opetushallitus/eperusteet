@@ -18,12 +18,15 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -31,7 +34,6 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
@@ -39,8 +41,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 @Table(name = "perusteenosa")
 public abstract class PerusteenOsa
-    extends AbstractAuditedEntity
-    implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity {
+        extends AbstractAuditedEntity
+        implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -27,14 +27,19 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
+
 import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
 import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
+
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.SUORITUSTAVANRAKENNE;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSA;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSAVIITE;
@@ -44,17 +49,20 @@ import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.PALAUTUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
- *
  * @author jhyoty
  */
 @RestController
@@ -77,9 +85,9 @@ public class TutkinnonRakenneController {
     /**
      * Luo ja liittää uuden tutkinnon osa perusteeseen.
      *
-     * @param perusteId tutkinnon id
+     * @param perusteId         tutkinnon id
      * @param suoritustapakoodi suoritustapa
-     * @param osa viitteen tiedot
+     * @param osa               viitteen tiedot
      * @return Viite uuten tutkinnon osaan
      */
     @RequestMapping(value = "/tutkinnonosat", method = POST)
@@ -101,9 +109,9 @@ public class TutkinnonRakenneController {
     /**
      * Liitää olemassa olevan tutkinnon osan perusteeseen
      *
-     * @param perusteId tutkinnon id
+     * @param perusteId         tutkinnon id
      * @param suoritustapakoodi suoritustapa (naytto,ops)
-     * @param osa liitettävä tutkinnon osa
+     * @param osa               liitettävä tutkinnon osa
      * @return tutkinnonosat
      */
     @RequestMapping(value = "/tutkinnonosat", method = PUT)
@@ -162,8 +170,8 @@ public class TutkinnonRakenneController {
     @RequestMapping(value = "/tutkinnonosat", method = GET)
     @ResponseBody
     public ResponseEntity<List<TutkinnonOsaViiteDto>> getTutkinnonOsat(
-        @PathVariable("perusteId") final Long id,
-        @PathVariable final Suoritustapakoodi suoritustapakoodi
+            @PathVariable("perusteId") final Long id,
+            @PathVariable final Suoritustapakoodi suoritustapakoodi
     ) {
         return CacheableResponse.create(perusteService.getPerusteVersion(id), 1, () -> perusteService.getTutkinnonOsat(id, suoritustapakoodi));
     }
@@ -171,7 +179,7 @@ public class TutkinnonRakenneController {
     /**
      * Käytetään laadinnassa tutkinnon osien listauksen yhteydessä
      *
-     * @param id perusteen id
+     * @param id                perusteen id
      * @param suoritustapakoodi suoritustapa
      * @return Tutkinnon osa lista
      */

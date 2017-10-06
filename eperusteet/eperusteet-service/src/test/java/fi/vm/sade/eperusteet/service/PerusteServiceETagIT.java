@@ -27,9 +27,11 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,7 +42,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import static org.junit.Assert.assertNotNull;
 
 /**
- *
  * @author harrik
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)

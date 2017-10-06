@@ -35,6 +35,7 @@ import lombok.Setter;
 public class LukioOpetussuunnitelmaRakenneLaajaDto extends PerusteenOsaDto.Laaja {
     public LukioOpetussuunnitelmaRakenneLaajaDto() {
     }
+
     public LukioOpetussuunnitelmaRakenneLaajaDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
     }

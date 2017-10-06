@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -35,13 +36,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 
 /**
- *
  * @author jhyoty
  */
 @Entity

@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
@@ -46,7 +45,7 @@ public class Liite implements Serializable {
     @NotNull
     @Basic(optional = false)
     private String tyyppi;
-    
+
     @Getter
     @Size(max = 1024)
     private String nimi;
@@ -63,8 +62,8 @@ public class Liite implements Serializable {
     @RelatesToPeruste
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "peruste_liite",
-            joinColumns = @JoinColumn(name="liite_id"),
-            inverseJoinColumns = @JoinColumn(name="peruste_id"))
+            joinColumns = @JoinColumn(name = "liite_id"),
+            inverseJoinColumns = @JoinColumn(name = "peruste_id"))
     @Getter
     @Setter
     private Set<Peruste> perusteet;

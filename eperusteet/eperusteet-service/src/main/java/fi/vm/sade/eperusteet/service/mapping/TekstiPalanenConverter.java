@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author jhyoty
  */
 @Component
@@ -55,7 +54,7 @@ public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen
             TekstiPalanen current = repository.findOne(dto.getId());
             if (current != null) {
                 TekstiPalanen tekstiPalanen = TekstiPalanen.of(dto.getTekstit(), current.getTunniste());
-                if ( current.equals(tekstiPalanen) ) {
+                if (current.equals(tekstiPalanen)) {
                     return current;
                 }
                 return tekstiPalanen;

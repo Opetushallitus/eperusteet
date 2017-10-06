@@ -26,7 +26,9 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenContext;
 import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
+
 import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +39,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 /**
- *
  * @author jhyoty
  */
 @DirtiesContext
@@ -54,6 +55,7 @@ public class PerusopetuksenSisaltoServiceIT extends AbstractIntegrationTest {
     private LockService<LaajaalainenOsaaminenContext> lockService;
 
     private Long perusteId;
+
     @Before
     public void setup() {
         Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSOPETUS, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);

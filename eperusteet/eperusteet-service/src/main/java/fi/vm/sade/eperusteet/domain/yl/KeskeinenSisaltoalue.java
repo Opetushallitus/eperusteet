@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -32,12 +33,11 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
 @Audited
-@Table(name="yl_keskeinen_sisaltoalue")
+@Table(name = "yl_keskeinen_sisaltoalue")
 public class KeskeinenSisaltoalue extends AbstractReferenceableEntity {
 
     @NotNull

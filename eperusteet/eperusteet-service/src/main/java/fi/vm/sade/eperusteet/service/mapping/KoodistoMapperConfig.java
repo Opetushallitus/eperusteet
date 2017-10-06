@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
  * @author harrik
  */
 @Configuration
@@ -41,7 +40,7 @@ public class KoodistoMapperConfig {
     @Koodisto
     public DtoMapper koodistoMapper() {
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
-            .build();
+                .build();
         factory.getConverterFactory().registerConverter("metadataConverter", KoodistoMetadataConverter.TO_MAP);
         factory.getConverterFactory().registerConverter("metadataToTekstipalanenConverter", KoodistoMetadataConverter.TO_TEKSTIPALANEN);
         factory.getConverterFactory().registerConverter("koodistoPaivaysConverter", KoodistoConverter.TO_DATE);

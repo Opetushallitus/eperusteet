@@ -17,10 +17,11 @@ package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
 import javax.persistence.Embeddable;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+
 /**
- *
  * @author harrik
  */
 @Embeddable
@@ -28,7 +29,7 @@ import lombok.Getter;
 public class Diaarinumero implements Serializable {
 
     public Diaarinumero() {
-        
+
     }
 
     public Diaarinumero(String diaarinumero) {

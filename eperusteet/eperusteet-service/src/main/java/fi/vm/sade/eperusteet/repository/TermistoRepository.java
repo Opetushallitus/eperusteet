@@ -17,12 +17,12 @@
 package fi.vm.sade.eperusteet.repository;
 
 import java.util.List;
+
 import fi.vm.sade.eperusteet.domain.Termi;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author apvilkko
  */
 @Repository

@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource.util;
 
 import java.util.Date;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Lisää ResponseEntityyn Cache-Control ja Expires -headerit jos niitä ei ole erikseen lisätty.
+ *
  * @author jhyoty
  */
 @Aspect
@@ -37,7 +39,8 @@ public class CacheHeadersAspect {
     private static final Logger LOG = LoggerFactory.getLogger(CacheHeadersAspect.class);
 
     @Pointcut("execution(org.springframework.http.ResponseEntity fi.vm.sade.eperusteet.resource..*Controller.*(..))")
-    public void controller() {}
+    public void controller() {
+    }
 
     @Around("controller() && !@annotation(fi.vm.sade.eperusteet.resource.util.CacheControl)")
     public Object aroundResponse(ProceedingJoinPoint jp) throws Throwable {
@@ -63,7 +66,7 @@ public class CacheHeadersAspect {
         if (responseEntity.getHeaders().getCacheControl() == null) {
             HttpHeaders headers = new HttpHeaders();
             headers.putAll(responseEntity.getHeaders());
-            if ( age < 0 ) {
+            if (age < 0) {
                 headers.setExpires(0);
             } else {
                 headers.setExpires((new Date().getTime()) + age * 1000);

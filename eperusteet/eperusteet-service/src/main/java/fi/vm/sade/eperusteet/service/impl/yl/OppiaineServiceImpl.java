@@ -16,11 +16,15 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import com.google.common.base.Optional;
+
 import static com.google.common.base.Optional.of;
+
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine.OsaTyyppi;
+
 import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
+
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
@@ -35,16 +39,23 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
+
 import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
+
 import static fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS;
+
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
+
 import java.util.*;
+
 import static java.util.Comparator.*;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +65,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author jhyoty
  */
 @Service
@@ -124,7 +134,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     @Transactional(readOnly = false)
     public OppiaineenVuosiluokkaKokonaisuusDto addOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId,
                                                                                    OppiaineenVuosiluokkaKokonaisuusDto dto) {
-        PerusopetuksenPerusteenSisalto sisalto =  perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
+        PerusopetuksenPerusteenSisalto sisalto = perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
         Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
         if (sisalto.containsOppiaine(aine)) {
             oppiaineRepository.lock(aine);
@@ -285,7 +295,7 @@ public class OppiaineServiceImpl implements OppiaineService {
                                                                                    Long vuosiluokkaKokonaisuusId) {
         PerusopetuksenPerusteenSisalto sisalto = perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
         OppiaineenVuosiluokkaKokonaisuus vk = sisalto == null ? null
-            : vuosiluokkakokonaisuusRepository.findByIdAndOppiaineId(vuosiluokkaKokonaisuusId, oppiaineId);
+                : vuosiluokkakokonaisuusRepository.findByIdAndOppiaineId(vuosiluokkaKokonaisuusId, oppiaineId);
         if (sisalto != null && vk != null && sisalto.containsOppiaine(vk.getOppiaine())) {
             return mapper.map(vk, OppiaineenVuosiluokkaKokonaisuusDto.class);
         } else {
@@ -377,17 +387,17 @@ public class OppiaineServiceImpl implements OppiaineService {
     @Override
     @Transactional(readOnly = false)
     public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkaKokonaisuus(Long perusteId,
-                              Long oppiaineId, UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> updateDto) {
+                                                                                      Long oppiaineId, UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> updateDto) {
         PerusopetuksenPerusteenSisalto sisalto = perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
         OppiaineenVuosiluokkaKokonaisuusDto tmp
-            = mapper.map(doUpdateOppiaineenVuosiluokkaKokonaisuus(sisalto, oppiaineId,
+                = mapper.map(doUpdateOppiaineenVuosiluokkaKokonaisuus(sisalto, oppiaineId,
                 updateDto.getDto(), true), OppiaineenVuosiluokkaKokonaisuusDto.class);
         vuosiluokkakokonaisuusRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         return tmp;
     }
 
     private OppiaineenVuosiluokkaKokonaisuus doUpdateOppiaineenVuosiluokkaKokonaisuus(
-            PerusopetuksenPerusteenSisalto sisalto,  Long oppiaineId, OppiaineenVuosiluokkaKokonaisuusDto dto,
+            PerusopetuksenPerusteenSisalto sisalto, Long oppiaineId, OppiaineenVuosiluokkaKokonaisuusDto dto,
             boolean lock) {
         OppiaineenVuosiluokkaKokonaisuus ovk = vuosiluokkakokonaisuusRepository.findByIdAndOppiaineId(dto.getId(), oppiaineId);
         if (ovk == null) {
@@ -399,10 +409,10 @@ public class OppiaineServiceImpl implements OppiaineService {
             oppiaineRepository.lock(ovk.getOppiaine());
         }
         mapper.map(dto, ovk);
-        if ( sisalto.getPeruste().getTila() == PerusteTila.VALMIS ) {
+        if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
             Revision rev = vuosiluokkakokonaisuusRepository.getLatestRevisionId(ovk.getId());
             OppiaineenVuosiluokkaKokonaisuus latest = vuosiluokkakokonaisuusRepository.findRevision(ovk.getId(), rev.getNumero());
-            if ( !latest.structureEquals(ovk) ) {
+            if (!latest.structureEquals(ovk)) {
                 throw new BusinessRuleViolationException(VAIN_KORJAUKSET_SALLITTU);
             }
         }
@@ -471,9 +481,9 @@ public class OppiaineServiceImpl implements OppiaineService {
             oa.setJnro(dto.getJarjestys());
             if (!oa.isKoosteinen() && dto.getOppiaineId() != null) {
                 oa.setOppiaineForce(found(lookupOrRestoreOppiaine(perusteId, dto.getOppiaineId(),
-                                tryRestoreFromRevision, byId, sisalto), Oppiaine::isKoosteinen,
+                        tryRestoreFromRevision, byId, sisalto), Oppiaine::isKoosteinen,
                         () -> new NotExistsException("No koosteinen Oppiaine found as parent in peruste "
-                                + " by id="+dto.getOppiaineId())));
+                                + " by id=" + dto.getOppiaineId())));
             } else {
                 oa.setOppiaine(null);
             }
@@ -481,13 +491,13 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     private Oppiaine lookupOrRestoreOppiaine(long perusteId, Long id, Integer tryRestoreFromRevision,
-                                   Map<Long, Oppiaine> byId,
-                                   LukiokoulutuksenPerusteenSisalto sisalto) {
+                                             Map<Long, Oppiaine> byId,
+                                             LukiokoulutuksenPerusteenSisalto sisalto) {
         if (tryRestoreFromRevision != null && byId.get(id) == null) {
             Oppiaine oldOppiaine = found(oppiaineRepository.findRevision(id,
                     tryRestoreFromRevision), inLukioPeruste(perusteId),
-                    () -> new NotExistsException("No Oppiaine for id "+id
-                            +" to restore from Lukioperuste at revision="+tryRestoreFromRevision));
+                    () -> new NotExistsException("No Oppiaine for id " + id
+                            + " to restore from Lukioperuste at revision=" + tryRestoreFromRevision));
             LukioOppiaineUpdateDto lukioOppiaine = mapper.map(oldOppiaine, new LukioOppiaineUpdateDto());
             if (oldOppiaine.getOppiaine() != null) {
                 lukioOppiaine.setOppiaine(of(new EntityReference(
@@ -508,7 +518,7 @@ public class OppiaineServiceImpl implements OppiaineService {
             return newOppinaine;
         }
         return found(byId.get(id), inLukioPeruste(perusteId),
-                () -> new NotExistsException("No Oppiaine found in lukioperuste by id="+id));
+                () -> new NotExistsException("No Oppiaine found in lukioperuste by id=" + id));
     }
 
     private static final String OPPIAINETTA_EI_OLE = "Pyydettyä oppiainetta ei ole";

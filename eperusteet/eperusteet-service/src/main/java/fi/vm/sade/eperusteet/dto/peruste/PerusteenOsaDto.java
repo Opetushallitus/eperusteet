@@ -27,12 +27,13 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
+
 import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author jhyoty
  */
 @Getter
@@ -54,7 +55,7 @@ public abstract class PerusteenOsaDto {
     public PerusteenOsaDto() {
     }
 
-    public PerusteenOsaDto( LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
+    public PerusteenOsaDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         this.nimi = nimi;
         this.tila = tila;
         this.tunniste = tunniste;
@@ -62,16 +63,17 @@ public abstract class PerusteenOsaDto {
 
     @JsonTypeInfo(use = Id.NAME, include = As.EXISTING_PROPERTY, property = "osanTyyppi")
     @JsonSubTypes(value = {
-        @JsonSubTypes.Type(value = TekstiKappaleDto.class),
-        @JsonSubTypes.Type(value = TutkinnonOsaDto.class),
-        @JsonSubTypes.Type(value = AihekokonaisuudetLaajaDto.class),
-        @JsonSubTypes.Type(value = OpetuksenYleisetTavoitteetLaajaDto.class),
-        @JsonSubTypes.Type(value = LukioOpetussuunnitelmaRakenneLaajaDto.class)
+            @JsonSubTypes.Type(value = TekstiKappaleDto.class),
+            @JsonSubTypes.Type(value = TutkinnonOsaDto.class),
+            @JsonSubTypes.Type(value = AihekokonaisuudetLaajaDto.class),
+            @JsonSubTypes.Type(value = OpetuksenYleisetTavoitteetLaajaDto.class),
+            @JsonSubTypes.Type(value = LukioOpetussuunnitelmaRakenneLaajaDto.class)
     })
     public static abstract class Laaja extends PerusteenOsaDto {
 
         public Laaja() {
         }
+
         public Laaja(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
             super(nimi, tila, tunniste);
         }
@@ -81,8 +83,10 @@ public abstract class PerusteenOsaDto {
     @Setter
     public static class Suppea extends PerusteenOsaDto {
         private String osanTyyppi;
+
         public Suppea() {
         }
+
         public Suppea(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
             super(nimi, tila, tunniste);
         }

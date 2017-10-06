@@ -17,12 +17,13 @@
 package fi.vm.sade.eperusteet.service.yl;
 
 import fi.vm.sade.eperusteet.dto.yl.*;
+
 import java.util.List;
+
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- *
  * @author nkala
  */
 public interface AIPEOpetuksenPerusteenSisaltoService {

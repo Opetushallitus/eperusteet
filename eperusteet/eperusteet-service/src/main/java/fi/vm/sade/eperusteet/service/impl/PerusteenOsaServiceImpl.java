@@ -42,16 +42,17 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author jhyoty
  */
 @Service
@@ -169,7 +170,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             TutkinnonOsa tutkinnonOsa = (TutkinnonOsa) updated;
             tutkinnonOsa.setOsaAlueet(createOsaAlueIfNotExist(tutkinnonOsa.getOsaAlueet()));
-            tutkinnonOsa.setValmaTelmaSisalto( createValmatelmaIfNotExist( tutkinnonOsa.getValmaTelmaSisalto() ) );
+            tutkinnonOsa.setValmaTelmaSisalto(createValmatelmaIfNotExist(tutkinnonOsa.getValmaTelmaSisalto()));
         }
 
         if (current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
@@ -194,7 +195,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
             if (valmaTelmaSisalto.getId() == null) {
                 tmp = valmaTelmaSisaltoRepository.save(valmaTelmaSisalto);
-            }else{
+            } else {
                 tmp = valmaTelmaSisalto;
             }
         }
@@ -208,7 +209,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         tutkinnonOsa.getAmmattitaitovaatimuksetLista().removeAll(updatedTutkinnonOsa.getAmmattitaitovaatimuksetLista());
         for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : tutkinnonOsa.getAmmattitaitovaatimuksetLista()) {
-            ammattitaidonvaatimusRepository.delete( ammattitaitovaatimuksenKohdealue.getId() );
+            ammattitaidonvaatimusRepository.delete(ammattitaitovaatimuksenKohdealue.getId());
         }
 
     }
@@ -310,7 +311,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         OsaAlue osaAlueTmp = mapper.map(osaAlue, OsaAlue.class);
         osaAlueEntity.mergeState(osaAlueTmp);
         osaAlueEntity.getOsaamistavoitteet().addAll(uudetTavoitteet);
-        osaAlueEntity.setValmaTelmaSisalto( createValmatelmaIfNotExist( osaAlueTmp.getValmaTelmaSisalto() ));
+        osaAlueEntity.setValmaTelmaSisalto(createValmatelmaIfNotExist(osaAlueTmp.getValmaTelmaSisalto()));
         osaAlueRepository.save(osaAlueEntity);
 
         aiheutaUusiTutkinnonOsaViiteRevisio(viiteId);
@@ -319,10 +320,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     private void notifyUpdate(PerusteenOsa osa) {
-         // Varmistetaan että tutkinnon osan muokkaus muuttaa valmiiden perusteiden viimeksi muokattu -päivämäärää (ja aiheuttaa uuden version).
+        // Varmistetaan että tutkinnon osan muokkaus muuttaa valmiiden perusteiden viimeksi muokattu -päivämäärää (ja aiheuttaa uuden version).
         if (osa.getTila() == PerusteTila.VALMIS) {
             Set<Long> perusteIds;
-            if ( osa instanceof TutkinnonOsa ) {
+            if (osa instanceof TutkinnonOsa) {
                 perusteIds = perusteet.findByTutkinnonosaId(osa.getId(), PerusteTila.VALMIS);
             } else {
                 final List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
@@ -336,7 +337,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     private List<AmmattitaitovaatimuksenKohdealue> connectAmmattitaitovaatimusListToOsaamistavoite(Osaamistavoite tavoite) {
         for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : tavoite.getAmmattitaitovaatimuksetLista()) {
-            ammattitaitovaatimuksenKohdealue.connectAmmattitaitovaatimuksetToKohdealue( ammattitaitovaatimuksenKohdealue );
+            ammattitaitovaatimuksenKohdealue.connectAmmattitaitovaatimuksetToKohdealue(ammattitaitovaatimuksenKohdealue);
         }
         return tavoite.getAmmattitaitovaatimuksetLista();
     }
@@ -357,7 +358,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
                 osaamistavoiteDto.setId(null);
                 tallennettuPakollinenTavoite = mapper.map(osaamistavoiteDto, Osaamistavoite.class);
                 connectAmmattitaitovaatimusListToOsaamistavoite(tallennettuPakollinenTavoite);
-                tallennettuPakollinenTavoite = osaamistavoiteRepository.save( tallennettuPakollinenTavoite );
+                tallennettuPakollinenTavoite = osaamistavoiteRepository.save(tallennettuPakollinenTavoite);
                 uudet.add(tallennettuPakollinenTavoite);
 
                 // käydään läpi valinnaiset ja asetetaan esitieto id kohdalleen.
@@ -382,7 +383,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
                 tallennettuPakollinenTavoite = mapper.map(osaamistavoiteDto, Osaamistavoite.class);
                 connectAmmattitaitovaatimusListToOsaamistavoite(tallennettuPakollinenTavoite);
-                tallennettuPakollinenTavoite = osaamistavoiteRepository.save( tallennettuPakollinenTavoite );
+                tallennettuPakollinenTavoite = osaamistavoiteRepository.save(tallennettuPakollinenTavoite);
                 uudet.add(tallennettuPakollinenTavoite);
                 osaamistavoiteDtoItr.remove();
             }
@@ -535,7 +536,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional(readOnly = true)
     public List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea> getAllWithName(String name) {
         return mapper
-            .mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea.class);
+                .mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea.class);
     }
 
     @Override

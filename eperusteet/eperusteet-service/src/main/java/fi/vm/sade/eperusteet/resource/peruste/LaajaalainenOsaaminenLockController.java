@@ -26,13 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- *
  * @author jhyoty
  */
 @RestController
 @InternalApi
 @RequestMapping("/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{osaaminenId}/lukko")
-public class LaajaalainenOsaaminenLockController extends AbstractLockController<LaajaalainenOsaaminenContext>{
+public class LaajaalainenOsaaminenLockController extends AbstractLockController<LaajaalainenOsaaminenContext> {
     @Autowired
     @LockCtx(LaajaalainenOsaaminenContext.class)
     private LockService<LaajaalainenOsaaminenContext> service;

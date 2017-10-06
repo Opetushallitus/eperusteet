@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidateDateRange;
+
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,16 +32,17 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+
 /**
- *
  * @author harrik
  */
 @Entity
 @Table(name = "perusteprojekti")
-@ValidateDateRange(start="toimikausiAlku", end="toimikausiLoppu")
+@ValidateDateRange(start = "toimikausiAlku", end = "toimikausiLoppu")
 @Audited
 public class Perusteprojekti extends AbstractAuditedEntity {
     @Id
@@ -51,10 +53,10 @@ public class Perusteprojekti extends AbstractAuditedEntity {
 
     @Getter
     @Setter
-    @NotNull(message="Nimi ei voi olla tyhjä")
+    @NotNull(message = "Nimi ei voi olla tyhjä")
     private String nimi;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade={CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
     private Peruste peruste;
@@ -72,13 +74,13 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
-    @Column(name="toimikausi_alku")
+    @Column(name = "toimikausi_alku")
     private Date toimikausiAlku;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
-    @Column(name="toimikausi_loppu")
+    @Column(name = "toimikausi_loppu")
     private Date toimikausiLoppu;
 
     @Getter

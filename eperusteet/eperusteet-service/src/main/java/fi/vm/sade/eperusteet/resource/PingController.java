@@ -27,7 +27,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- *
  * @author nkala
  */
 @Controller

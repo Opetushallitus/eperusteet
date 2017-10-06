@@ -22,7 +22,6 @@ import fi.vm.sade.eperusteet.dto.kayttaja.SuosikkiDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- *
  * @author harrik
  */
 public interface KayttajaprofiiliService {

@@ -18,12 +18,12 @@ package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
 /**
- *
  * @author jhyoty
  */
 public class OsaAlueTest {

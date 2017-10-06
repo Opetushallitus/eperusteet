@@ -22,7 +22,6 @@ import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import org.springframework.data.jpa.repository.Query;
 
 /**
- *
  * @author jhyoty
  */
 public interface SuoritustapaRepository extends JpaWithVersioningRepository<Suoritustapa, Long> {

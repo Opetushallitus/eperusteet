@@ -24,12 +24,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author harrik
  */
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private String koulutustyyppi;
     private LaajuusYksikko laajuusYksikko;

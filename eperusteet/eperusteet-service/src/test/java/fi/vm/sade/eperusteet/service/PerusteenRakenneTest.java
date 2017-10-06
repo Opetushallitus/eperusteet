@@ -21,14 +21,15 @@ import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import org.junit.After;
 import org.junit.AfterClass;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
  * @author nkala
  */
 public class PerusteenRakenneTest {
@@ -55,10 +56,10 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiRyhmaMaksimiPelastus() {
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, TestUtils.teeRyhma(
-            100, 120, -1, -1,
-            TestUtils.teeRakenneOsa(1, 10, 70),
-            TestUtils.teeRakenneOsa(2, 20),
-            TestUtils.teeRakenneOsa(3, 30)
+                100, 120, -1, -1,
+                TestUtils.teeRakenneOsa(1, 10, 70),
+                TestUtils.teeRakenneOsa(2, 20),
+                TestUtils.teeRakenneOsa(3, 30)
         ), true);
         assertTrue(validoitu.ongelmat.isEmpty());
     }
@@ -68,10 +69,10 @@ public class PerusteenRakenneTest {
 
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, TestUtils.teeRyhma(
-            100, 100, -1, -1,
-            TestUtils.teeRakenneOsa(1, 10),
-            TestUtils.teeRakenneOsa(2, 20),
-            TestUtils.teeRakenneOsa(3, 30)
+                100, 100, -1, -1,
+                TestUtils.teeRakenneOsa(1, 10),
+                TestUtils.teeRakenneOsa(2, 20),
+                TestUtils.teeRakenneOsa(3, 30)
         ));
         assertFalse(validoitu.ongelmat.isEmpty());
     }
@@ -79,22 +80,22 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiRyhmaValidi() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            120, 190, -1, -1,
-            TestUtils.teeRakenneOsa(1, 10),
-            TestUtils.teeRakenneOsa(2, 20),
-            TestUtils.teeRakenneOsa(3, 30),
-            TestUtils.teeRakenneOsa(4, 40),
-            TestUtils.teeRyhma(
-                90, 90, -1, -1,
+                120, 190, -1, -1,
                 TestUtils.teeRakenneOsa(1, 10),
                 TestUtils.teeRakenneOsa(2, 20),
+                TestUtils.teeRakenneOsa(3, 30),
+                TestUtils.teeRakenneOsa(4, 40),
                 TestUtils.teeRyhma(
-                    30, 60, -1, -1,
-                    TestUtils.teeRakenneOsa(1, 10),
-                    TestUtils.teeRakenneOsa(2, 20),
-                    TestUtils.teeRakenneOsa(3, 30)
+                        90, 90, -1, -1,
+                        TestUtils.teeRakenneOsa(1, 10),
+                        TestUtils.teeRakenneOsa(2, 20),
+                        TestUtils.teeRyhma(
+                                30, 60, -1, -1,
+                                TestUtils.teeRakenneOsa(1, 10),
+                                TestUtils.teeRakenneOsa(2, 20),
+                                TestUtils.teeRakenneOsa(3, 30)
+                        )
                 )
-            )
         );
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
@@ -104,22 +105,22 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiRyhmaIlmanJuurenMuodostumissaantoa() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            -1, -1, -1, -1,
-            TestUtils.teeRakenneOsa(1, 10),
-            TestUtils.teeRakenneOsa(2, 20),
-            TestUtils.teeRakenneOsa(3, 30),
-            TestUtils.teeRakenneOsa(4, 40),
-            TestUtils.teeRyhma(
-                180, 180, -1, -1,
+                -1, -1, -1, -1,
                 TestUtils.teeRakenneOsa(1, 10),
                 TestUtils.teeRakenneOsa(2, 20),
+                TestUtils.teeRakenneOsa(3, 30),
+                TestUtils.teeRakenneOsa(4, 40),
                 TestUtils.teeRyhma(
-                    180, 180, -1, -1,
-                    TestUtils.teeRakenneOsa(1, 10),
-                    TestUtils.teeRakenneOsa(2, 20),
-                    TestUtils.teeRakenneOsa(3, 30)
+                        180, 180, -1, -1,
+                        TestUtils.teeRakenneOsa(1, 10),
+                        TestUtils.teeRakenneOsa(2, 20),
+                        TestUtils.teeRyhma(
+                                180, 180, -1, -1,
+                                TestUtils.teeRakenneOsa(1, 10),
+                                TestUtils.teeRakenneOsa(2, 20),
+                                TestUtils.teeRakenneOsa(3, 30)
+                        )
                 )
-            )
         );
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
@@ -137,16 +138,16 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiRyhmaUniikit() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            0, 130, -1, -1,
-            TestUtils.teeRakenneOsa(1, 10),
-            TestUtils.teeRakenneOsa(1, 20),
-            TestUtils.teeRakenneOsa(3, 30),
-            TestUtils.teeRakenneOsa(4, 40),
-            TestUtils.teeRyhma(
-                0, 30, -1, -1,
+                0, 130, -1, -1,
                 TestUtils.teeRakenneOsa(1, 10),
-                TestUtils.teeRakenneOsa(1, 20)
-            )
+                TestUtils.teeRakenneOsa(1, 20),
+                TestUtils.teeRakenneOsa(3, 30),
+                TestUtils.teeRakenneOsa(4, 40),
+                TestUtils.teeRyhma(
+                        0, 30, -1, -1,
+                        TestUtils.teeRakenneOsa(1, 10),
+                        TestUtils.teeRakenneOsa(1, 20)
+                )
         );
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.size() == 2);
@@ -155,16 +156,16 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiNullMuodostuminen() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            -1, -1, -1, -1,
-            TestUtils.teeRakenneOsa(1, 10),
-            TestUtils.teeRakenneOsa(1, 20),
-            TestUtils.teeRakenneOsa(3, 30),
-            TestUtils.teeRakenneOsa(4, 40),
-            TestUtils.teeRyhma(
                 -1, -1, -1, -1,
                 TestUtils.teeRakenneOsa(1, 10),
-                TestUtils.teeRakenneOsa(1, 20)
-            )
+                TestUtils.teeRakenneOsa(1, 20),
+                TestUtils.teeRakenneOsa(3, 30),
+                TestUtils.teeRakenneOsa(4, 40),
+                TestUtils.teeRyhma(
+                        -1, -1, -1, -1,
+                        TestUtils.teeRakenneOsa(1, 10),
+                        TestUtils.teeRakenneOsa(1, 20)
+                )
         );
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.size() == 2);
@@ -173,16 +174,16 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiNullKokoTaiLaajuus() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            0, 130, null, null,
-            TestUtils.teeRakenneOsa(1, 10),
-            TestUtils.teeRakenneOsa(5, 20),
-            TestUtils.teeRakenneOsa(3, 30),
-            TestUtils.teeRakenneOsa(4, 40),
-            TestUtils.teeRyhma(
-                null, null, 0, 2,
+                0, 130, null, null,
                 TestUtils.teeRakenneOsa(1, 10),
-                TestUtils.teeRakenneOsa(2, 20)
-            )
+                TestUtils.teeRakenneOsa(5, 20),
+                TestUtils.teeRakenneOsa(3, 30),
+                TestUtils.teeRakenneOsa(4, 40),
+                TestUtils.teeRyhma(
+                        null, null, 0, 2,
+                        TestUtils.teeRakenneOsa(1, 10),
+                        TestUtils.teeRakenneOsa(2, 20)
+                )
         );
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.isEmpty());
@@ -191,17 +192,17 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiRyhmaKoko() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            120, 120, -1, -1,
-            TestUtils.teeRyhma(
-                60, 90, -1, -1,
-                TestUtils.teeRakenneOsa(3, 10),
-                TestUtils.teeRakenneOsa(4, 20),
+                120, 120, -1, -1,
                 TestUtils.teeRyhma(
-                    30, 30, -1, -1,
-                    TestUtils.teeRakenneOsa(5, 20),
-                    TestUtils.teeRakenneOsa(6, 20)
+                        60, 90, -1, -1,
+                        TestUtils.teeRakenneOsa(3, 10),
+                        TestUtils.teeRakenneOsa(4, 20),
+                        TestUtils.teeRyhma(
+                                30, 30, -1, -1,
+                                TestUtils.teeRakenneOsa(5, 20),
+                                TestUtils.teeRakenneOsa(6, 20)
+                        )
                 )
-            )
         );
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.size() == 2);
@@ -210,16 +211,16 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiSisakkaisetOsaamisalaRyhmat() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            -1, -1, -1, -1,
-            TestUtils.teeRakenneOsa(4, 40),
-            TestUtils.teeOsaamisalaRyhma(
-                180, 180, -1, -1,
+                -1, -1, -1, -1,
+                TestUtils.teeRakenneOsa(4, 40),
                 TestUtils.teeOsaamisalaRyhma(
-                    -1, -1, -1, -1
-                )
-            ),
-            TestUtils.teeOsaamisalaRyhma(-1, -1, -1, -1),
-            TestUtils.teeRyhma(-1, -1, -1, -1)
+                        180, 180, -1, -1,
+                        TestUtils.teeOsaamisalaRyhma(
+                                -1, -1, -1, -1
+                        )
+                ),
+                TestUtils.teeOsaamisalaRyhma(-1, -1, -1, -1),
+                TestUtils.teeRyhma(-1, -1, -1, -1)
         );
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);

@@ -44,6 +44,7 @@ public class AihekokonaisuudetLaajaDto extends Laaja {
 
     public AihekokonaisuudetLaajaDto() {
     }
+
     public AihekokonaisuudetLaajaDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
     }

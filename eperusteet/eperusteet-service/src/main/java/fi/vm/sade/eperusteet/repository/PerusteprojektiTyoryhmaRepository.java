@@ -18,11 +18,12 @@ package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.PerusteprojektiTyoryhma;
+
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- *
  * @author nkala
  */
 public interface PerusteprojektiTyoryhmaRepository extends JpaRepository<PerusteprojektiTyoryhma, Long> {

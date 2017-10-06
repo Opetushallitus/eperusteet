@@ -31,7 +31,6 @@ import java.util.List;
 
 /**
  * User: jsikio
- *
  */
 public interface AihekokonaisuudetService {
 

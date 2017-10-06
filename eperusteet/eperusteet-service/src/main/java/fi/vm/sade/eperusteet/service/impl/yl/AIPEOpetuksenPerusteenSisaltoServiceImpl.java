@@ -25,18 +25,19 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author nkala
  */
 @Service
@@ -342,19 +343,21 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     public boolean onKieliKoodi(String koodiArvo) {
         return koodiArvo.startsWith("A")
-            || koodiArvo.startsWith("B")
-            || koodiArvo.startsWith("C")
-            || koodiArvo.startsWith("ENA")
-            || koodiArvo.startsWith("ENA")
-            || koodiArvo.startsWith("LA")
-            || koodiArvo.startsWith("LK")
-            || koodiArvo.startsWith("MK")
-            || koodiArvo.startsWith("RU")
-            || koodiArvo.startsWith("SK")
-            || koodiArvo.startsWith("TK")
-            || koodiArvo.startsWith("TK")
-            || koodiArvo.startsWith("VK");
-    };
+                || koodiArvo.startsWith("B")
+                || koodiArvo.startsWith("C")
+                || koodiArvo.startsWith("ENA")
+                || koodiArvo.startsWith("ENA")
+                || koodiArvo.startsWith("LA")
+                || koodiArvo.startsWith("LK")
+                || koodiArvo.startsWith("MK")
+                || koodiArvo.startsWith("RU")
+                || koodiArvo.startsWith("SK")
+                || koodiArvo.startsWith("TK")
+                || koodiArvo.startsWith("TK")
+                || koodiArvo.startsWith("VK");
+    }
+
+    ;
 
 
     @Override

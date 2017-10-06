@@ -18,13 +18,15 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.VersionedDto;
+
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RakenneModuuliDto extends AbstractRakenneOsaDto implements VersionedDto{
+public class RakenneModuuliDto extends AbstractRakenneOsaDto implements VersionedDto {
 
     private LokalisoituTekstiDto nimi;
     private RakenneModuuliRooli rooli;

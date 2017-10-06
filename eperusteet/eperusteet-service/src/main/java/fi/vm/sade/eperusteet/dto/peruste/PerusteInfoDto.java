@@ -18,13 +18,14 @@ package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+
 import java.util.Date;
 import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter

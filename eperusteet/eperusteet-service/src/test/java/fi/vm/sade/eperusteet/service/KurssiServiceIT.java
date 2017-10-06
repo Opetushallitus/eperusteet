@@ -88,8 +88,8 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
                 fi("Äidinkieli ja kirjallisuus"),
                 sv("Finska")
         )).maara(oppiaine(teksti(fi("Suomi"))).as(suomiRef))
-            .maara(oppiaine(teksti(fi("Saame"))).as(saameRef))
-        .luo(oppiaineService, perusteId, LUKIOKOULUTUS);
+                .maara(oppiaine(teksti(fi("Saame"))).as(saameRef))
+                .luo(oppiaineService, perusteId, LUKIOKOULUTUS);
     }
 
 

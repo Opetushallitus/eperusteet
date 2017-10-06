@@ -31,16 +31,21 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import org.junit.After;
 import org.junit.Assert;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -88,7 +93,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         TransactionStatus transaction = manager.getTransaction(new DefaultTransactionDefinition());
 
-        Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri","koulutusalakoodi","opintoalakoodi");
+        Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI, "Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri", "koulutusalakoodi", "opintoalakoodi");
         koulutus = koulutusRepository.save(koulutus);
 
         Peruste p = TestUtils.teePeruste();

@@ -35,6 +35,7 @@ import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.AIHEKOKONAISUUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.KURSSI;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.OPPIAINE;
@@ -48,19 +49,25 @@ import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.PALAUTUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.yl.*;
+
 import java.util.List;
 import java.util.Set;
+
 import static java.util.stream.Collectors.toList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 import org.springframework.web.servlet.view.RedirectView;
 
 /**

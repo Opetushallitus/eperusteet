@@ -21,10 +21,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
- * @author nkala
  * @param <A> First dto to be combined
  * @param <B> Second dto
+ * @author nkala
  */
 @Getter
 @Setter

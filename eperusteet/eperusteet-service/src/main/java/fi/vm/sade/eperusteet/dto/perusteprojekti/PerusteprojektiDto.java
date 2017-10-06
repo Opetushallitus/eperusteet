@@ -19,13 +19,14 @@ package fi.vm.sade.eperusteet.dto.perusteprojekti;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author harrik
  */
 @Getter

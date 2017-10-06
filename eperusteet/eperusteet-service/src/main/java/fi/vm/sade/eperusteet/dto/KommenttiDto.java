@@ -17,12 +17,13 @@
 package fi.vm.sade.eperusteet.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter

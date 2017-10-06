@@ -17,11 +17,11 @@
 package fi.vm.sade.eperusteet.dto.kayttaja;
 
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author jhyoty
  */
 @Getter

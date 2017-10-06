@@ -31,8 +31,10 @@ import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
+
 import java.io.IOException;
 import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 /**
- *
  * @author jhyoty
  */
 @DirtiesContext
@@ -80,10 +81,10 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
 
         VuosiluokkaKokonaisuusDto dto = new VuosiluokkaKokonaisuusDto();
         dto.setNimi(olt("Nimi"));
-        dto.setTehtava(oto("Otsikko","Nimi"));
-        dto.setSiirtymaEdellisesta(oto("Otsikko","Nimi"));
-        dto.setSiirtymaSeuraavaan(oto("Otsikko","Nimi"));
-        dto.setLaajaalainenOsaaminen(oto("Otsikko","Nimi"));
+        dto.setTehtava(oto("Otsikko", "Nimi"));
+        dto.setSiirtymaEdellisesta(oto("Otsikko", "Nimi"));
+        dto.setSiirtymaSeuraavaan(oto("Otsikko", "Nimi"));
+        dto.setLaajaalainenOsaaminen(oto("Otsikko", "Nimi"));
         VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto vlo = new VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto();
         vlo.setKuvaus(olt("KUVAAUS"));
         vlo.setLaajaalainenOsaaminen(Optional.of(osaaminen));

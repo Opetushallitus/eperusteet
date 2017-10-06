@@ -27,14 +27,15 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+
 import java.util.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author harrik
  */
 @Service
@@ -81,7 +82,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
     public LukkoDto lockPerusteenOsa(Long viiteId) {
         assertExists(viiteId);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
-        if (viite == null || viite.getTutkinnonOsa() == null ) {
+        if (viite == null || viite.getTutkinnonOsa() == null) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
         return LukkoDto.of(lockManager.lock(viite.getTutkinnonOsa().getId()));
@@ -91,7 +92,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
     public void unlockPerusteenOsa(Long viiteId) {
         assertExists(viiteId);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
-        if (viite == null || viite.getTutkinnonOsa() == null ) {
+        if (viite == null || viite.getTutkinnonOsa() == null) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
         lockManager.unlock(viite.getTutkinnonOsa().getId());
@@ -101,7 +102,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
     public LukkoDto getPerusteenOsaLock(Long viiteId) {
         assertExists(viiteId);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
-        if (viite == null || viite.getTutkinnonOsa() == null ) {
+        if (viite == null || viite.getTutkinnonOsa() == null) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
         return LukkoDto.of(lockManager.getLock(viite.getTutkinnonOsa().getId()));
@@ -123,7 +124,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         assertExists(viiteDto.getId());
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteDto.getId());
 
-        if (viite == null || viite.getTutkinnonOsa() == null ) {
+        if (viite == null || viite.getTutkinnonOsa() == null) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
 
@@ -145,7 +146,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         viite = tutkinnonOsaViiteRepository.save(viite);
         TutkinnonOsaViiteDto uusiViiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
 
-        if(viiteDto.getTutkinnonOsaDto() != null) {
+        if (viiteDto.getTutkinnonOsaDto() != null) {
             uusiViiteDto.setTutkinnonOsaDto(perusteenOsaService.update(viiteDto.getTutkinnonOsaDto()));
         }
 

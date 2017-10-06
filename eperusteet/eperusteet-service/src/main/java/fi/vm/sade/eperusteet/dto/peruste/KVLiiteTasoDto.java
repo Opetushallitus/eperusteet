@@ -21,7 +21,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter
@@ -34,11 +33,9 @@ public class KVLiiteTasoDto {
     public int getJarjestys() {
         if (codeUri.startsWith("nqf")) {
             return 0;
-        }
-        else if (codeUri.startsWith("eqf")) {
+        } else if (codeUri.startsWith("eqf")) {
             return 1;
-        }
-        else if (codeUri.startsWith("isced")) {
+        } else if (codeUri.startsWith("isced")) {
             return 2;
         }
         return 99;

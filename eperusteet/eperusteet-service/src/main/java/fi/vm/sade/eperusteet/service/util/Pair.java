@@ -21,11 +21,12 @@ import lombok.Getter;
 
 /**
  * Yksinkertainen "pari"
+ *
  * @author jhyoty
  */
 @Getter
 @EqualsAndHashCode
-public final class Pair<F,S> {
+public final class Pair<F, S> {
     private final F first;
     private final S second;
 
@@ -34,7 +35,7 @@ public final class Pair<F,S> {
         this.second = second;
     }
 
-    public static <F,S> Pair<F,S> of(F f, S s) {
-        return new Pair<>(f,s);
+    public static <F, S> Pair<F, S> of(F f, S s) {
+        return new Pair<>(f, s);
     }
 }

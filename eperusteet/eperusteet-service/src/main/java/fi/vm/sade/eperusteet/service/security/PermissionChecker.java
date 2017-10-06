@@ -16,12 +16,14 @@
 package fi.vm.sade.eperusteet.service.security;
 
 import java.io.Serializable;
+
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 /**
  * Apuluokka oikeuksien ohjelmalliseen tarkisteluun tilanteissa joissa annotaatiot eivät riitä.
+ *
  * @author jhyoty
  */
 @Service

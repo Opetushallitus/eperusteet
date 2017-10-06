@@ -3,9 +3,11 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+
 import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- *
  * @author mikkom
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -29,8 +30,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
     TiedoteService tiedoteService;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         TiedoteDto tiedoteDto;
         tiedoteDto = new TiedoteDto();
         tiedoteDto.setOtsikko(lt("otsikko"));

@@ -17,13 +17,18 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import static com.google.common.base.Optional.fromNullable;
+
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+
 import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
+
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
+
 import static fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi.inPeruste;
+
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
 import fi.vm.sade.eperusteet.repository.LukioOpetussuunnitelmaRakenneRepository;
@@ -38,17 +43,23 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
+
 import fi.vm.sade.eperusteet.service.yl.KurssiLockContext;
 import fi.vm.sade.eperusteet.service.yl.KurssiService;
 import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
+
 import static java.util.Comparator.comparing;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import static java.util.stream.Collectors.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -278,8 +289,8 @@ public class KurssiServiceImpl implements KurssiService {
         rakenneRepository.lock(rakenne);
         oppiaineService.reArrangeLukioOppiaineet(perusteId, structure.getOppiaineet(), tryRestoreFromRevision);
         Map<Long, Lukiokurssi> kurssitById = lukiokurssiRepository.findAll(structure.getKurssit().stream()
-                    .map(LukiokurssiOppaineMuokkausDto::getId)
-                    .collect(toSet())).stream()
+                .map(LukiokurssiOppaineMuokkausDto::getId)
+                .collect(toSet())).stream()
                 .collect(toMap(Lukiokurssi::getId, k -> k));
         structure.getKurssit().forEach(kurssiDto -> {
             if (tryRestoreFromRevision != null && kurssitById.get(kurssiDto.getId()) == null) {

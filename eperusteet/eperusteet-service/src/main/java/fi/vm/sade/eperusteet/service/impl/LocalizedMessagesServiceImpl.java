@@ -20,7 +20,9 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.LokalisointiDto;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
+
 import java.util.Locale;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,6 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author jussi
  */
 @Service

@@ -19,12 +19,13 @@ package fi.vm.sade.eperusteet.dto.perusteprojekti;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+
 import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter

@@ -20,7 +20,6 @@ import java.util.AbstractList;
 import java.util.List;
 
 /**
- *
  * @author jhyoty
  */
 public class WrappedList<T> extends AbstractList<T> {

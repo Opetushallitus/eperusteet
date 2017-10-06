@@ -18,16 +18,19 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
@@ -63,10 +66,10 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinTable(name = "rakennemoduuli_rakenneosa",
-               joinColumns = {
-                   @JoinColumn(name = "rakennemoduuli_id")},
-               inverseJoinColumns = {
-                   @JoinColumn(name = "rakenneosa_id")})
+            joinColumns = {
+                    @JoinColumn(name = "rakennemoduuli_id")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "rakenneosa_id")})
     @OrderColumn(name = "osat_order")
     @Getter
     @BatchSize(size = 25)

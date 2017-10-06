@@ -23,7 +23,6 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- *
  * @author harrik
  */
 public interface PerusteenOsaViiteService {
@@ -32,10 +31,10 @@ public interface PerusteenOsaViiteService {
     PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(@P("perusteId") Long perusteId, Long id);
 
     @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
-    TutkinnonOsaViiteDto kloonaaTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi tapa,Long id);
+    TutkinnonOsaViiteDto kloonaaTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi tapa, Long id);
 
     @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
-    void reorderSubTree(@P("perusteId") Long perusteId, Long rootViiteId, PerusteenOsaViiteDto.Puu<?,?> uusi);
+    void reorderSubTree(@P("perusteId") Long perusteId, Long rootViiteId, PerusteenOsaViiteDto.Puu<?, ?> uusi);
 
     @PreAuthorize("hasPermission(#perusteId,'peruste','LUKU')")
     <T extends PerusteenOsaViiteDto<?>> T getSisalto(@P("perusteId") Long perusteId, Long viiteId, Class<T> view);

@@ -13,15 +13,16 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+
 import java.util.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author mikkom
  */
 @Service
@@ -57,8 +58,7 @@ public class TiedoteServiceImpl implements TiedoteService {
         List<Tiedote> tiedotteet = null;
         if (perusteId == null) {
             tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen));
-        }
-        else {
+        } else {
             Peruste peruste = perusteRepository.findOne(perusteId);
             Perusteprojekti perusteprojekti = peruste.getPerusteprojekti();
             tiedotteet = repository.findAllByPerusteprojekti(vainJulkiset, new Date(alkaen), perusteprojekti);

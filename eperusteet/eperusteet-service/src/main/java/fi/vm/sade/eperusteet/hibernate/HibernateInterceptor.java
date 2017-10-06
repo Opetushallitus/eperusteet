@@ -17,21 +17,29 @@
 package fi.vm.sade.eperusteet.hibernate;
 
 import com.google.common.base.Optional;
+
 import static com.google.common.base.Optional.fromNullable;
+
 import fi.ratamaa.dtoconverter.reflection.Property;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdateStore;
+
 import java.io.Serializable;
 import java.util.Collection;
+
 import static java.util.Collections.singletonList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
 import static java.util.stream.Collectors.toList;
+
 import java.util.stream.Stream;
+
 import lombok.Getter;
 import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
@@ -45,17 +53,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Peruste related entity changes.
  *
  * @see RelatesToPeruste to mark the relation in entity classes.
- *
+ * <p>
  * Breaks the general rule of Hibernate Intercetpr not to reference Session or
  * lazy collections within * interceptor methods. However, works in this case.
- *
+ * <p>
  * Will possibly cause additional extra lazy queries when saving or updating
  * a Peruste related entity. However, this is a tradeoff to circumvent the
  * need to remember to implement this in every change causing service method and
  * to deep copy the entity under possible change operation with all of its
  * related entities (and thereby cause lazy queries) and check (and impl the check)
  * if anything changed within.
- *
+ * <p>
  * User: tommiratamaa
  * Date: 12.11.2015
  * Time: 14.57
@@ -142,13 +150,13 @@ public class HibernateInterceptor extends EmptyInterceptor {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(target -> {
-            if (target instanceof Collection) {
-                Collection<?> collection = (Collection<?>) target;
-                collection.stream().forEach(o -> proceed(o, callback));
-            } else {
-                proceed(target, callback);
-            }
-        });
+                    if (target instanceof Collection) {
+                        Collection<?> collection = (Collection<?>) target;
+                        collection.stream().forEach(o -> proceed(o, callback));
+                    } else {
+                        proceed(target, callback);
+                    }
+                });
     }
 
     private static void proceed(Object target, Callback callback) {

@@ -44,10 +44,14 @@ public abstract class OppiaineBaseUpdateDto extends OppiaineBaseDto {
 
     public TekstiOsaDto getOsa(Oppiaine.OsaTyyppi tyyppi) {
         switch (tyyppi) {
-            case arviointi: return arviointi;
-            case tavoitteet: return tavoitteet;
-            case tehtava: return tehtava;
-            default: return null;
+            case arviointi:
+                return arviointi;
+            case tavoitteet:
+                return tavoitteet;
+            case tehtava:
+                return tehtava;
+            default:
+                return null;
         }
     }
 }

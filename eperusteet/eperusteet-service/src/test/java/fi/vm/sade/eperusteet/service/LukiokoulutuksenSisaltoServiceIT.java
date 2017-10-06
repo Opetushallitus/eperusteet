@@ -111,8 +111,8 @@ public class LukiokoulutuksenSisaltoServiceIT extends AbstractIntegrationTest {
                 fi("Äidinkieli ja kirjallisuus"),
                 sv("Finska")
         )).maara(oppiaine(teksti(fi("Suomi"))))
-            .maara(oppiaine(teksti(fi("Saame"))))
-            .luo(oppiaineService, perusteId, LUKIOKOULUTUS);
+                .maara(oppiaine(teksti(fi("Saame"))))
+                .luo(oppiaineService, perusteId, LUKIOKOULUTUS);
         assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
 
         List<OppiaineDto> aineet = lukiokoulutuksenPerusteenSisaltoService.getOppiaineet(perusteId, OppiaineDto.class);

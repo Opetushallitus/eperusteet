@@ -19,24 +19,25 @@ import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
 @Audited
-@Table(name="yl_vlkok_laaja_osaaminen")
+@Table(name = "yl_vlkok_laaja_osaaminen")
 public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminen extends AbstractReferenceableEntity {
 
     @Getter
@@ -61,7 +62,7 @@ public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminen extends AbstractRefer
     private TekstiPalanen kuvaus;
 
     public void setVuosiluokkaKokonaisuus(VuosiluokkaKokonaisuus vuosiluokkaKokonaisuus) {
-        if ( this.vuosiluokkaKokonaisuus == null || this.vuosiluokkaKokonaisuus.equals(vuosiluokkaKokonaisuus) ) {
+        if (this.vuosiluokkaKokonaisuus == null || this.vuosiluokkaKokonaisuus.equals(vuosiluokkaKokonaisuus)) {
             this.vuosiluokkaKokonaisuus = vuosiluokkaKokonaisuus;
         } else {
             throw new IllegalStateException("Vuosiluokkakokonaisuuteen kuulumista ei voi muuttaa");

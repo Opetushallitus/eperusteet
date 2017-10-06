@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- *
  * @author jhyoty
  */
 @Service

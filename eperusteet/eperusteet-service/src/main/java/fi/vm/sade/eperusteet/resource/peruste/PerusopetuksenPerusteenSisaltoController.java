@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
- *
  * @author jhyoty
  */
 @RestController
@@ -84,7 +84,7 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet", method = GET)
     public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(
-        @PathVariable("perusteId") final Long perusteId) {
+            @PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, new Supplier<List<OppiaineSuppeaDto>>() {
             @Override
             public List<OppiaineSuppeaDto> get() {
@@ -96,15 +96,15 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/oppiaineet", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public OppiaineDto addOppiaine(
-        @PathVariable("perusteId") final Long perusteId,
-        @RequestBody OppiaineDto dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody OppiaineDto dto) {
         return oppiaineet.addOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = GET)
     public ResponseEntity<OppiaineDto> getOppiaine(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
 
         return handleGet(perusteId, new Supplier<OppiaineDto>() {
             @Override
@@ -117,16 +117,16 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/oppiaineet/{id}/versiot/{revisio}", method = GET)
     @CacheControl(age = CacheControl.ONE_YEAR)
     public OppiaineDto getOppiaine(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @PathVariable("revisio") final Integer revisio) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @PathVariable("revisio") final Integer revisio) {
         return oppiaineet.getOppiaine(perusteId, id, revisio, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/oppimaarat", method = GET)
     public ResponseEntity<List<OppiaineSuppeaDto>> getOppimaarat(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
 
         return handleGet(perusteId, new Supplier<List<OppiaineSuppeaDto>>() {
             @Override
@@ -139,9 +139,9 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet/{id}", method = POST)
     public OppiaineDto updateOppiaine(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @RequestBody UpdateDto<OppiaineDto> dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @RequestBody UpdateDto<OppiaineDto> dto) {
         dto.getDto().setId(id);
         return oppiaineet.updateOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
     }
@@ -149,39 +149,39 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/oppiaineet/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOppiaine(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         oppiaineet.deleteOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = GET)
     public Set<OpetuksenKohdealueDto> getKohdealueet(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         return oppiaineet.getOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS).getKohdealueet();
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = POST)
     public OpetuksenKohdealueDto addOppiaineenKohdealue(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @RequestBody OpetuksenKohdealueDto kohdealue) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @RequestBody OpetuksenKohdealueDto kohdealue) {
         return oppiaineet.addKohdealue(perusteId, id, kohdealue);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet/{kohdealueId}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOppiaineenKohdealue(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @PathVariable("kohdealueId") final Long kohdealueId) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @PathVariable("kohdealueId") final Long kohdealueId) {
         oppiaineet.deleteKohdealue(perusteId, id, kohdealueId);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/vuosiluokkakokonaisuudet", method = GET)
     public ResponseEntity<Collection<OppiaineenVuosiluokkaKokonaisuusDto>> getOppiaineenVuosiluokkaKokonaisuudet(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long oppiaineId) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long oppiaineId) {
         return handleGet(perusteId, new Supplier<Collection<OppiaineenVuosiluokkaKokonaisuusDto>>() {
             @Override
             public Collection<OppiaineenVuosiluokkaKokonaisuusDto> get() {
@@ -193,17 +193,17 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/oppiaineet/{id}/vuosiluokkakokonaisuudet", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public OppiaineenVuosiluokkaKokonaisuusDto addOppiaineenVuosiluokkakokonaisuus(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long oppiaineId,
-        @RequestBody OppiaineenVuosiluokkaKokonaisuusDto dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long oppiaineId,
+            @RequestBody OppiaineenVuosiluokkaKokonaisuusDto dto) {
         return oppiaineet.addOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
     }
 
     @RequestMapping(value = "/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}", method = GET)
     public ResponseEntity<OppiaineenVuosiluokkaKokonaisuusDto> getOppiaineenVuosiluokkakokonaisuus(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("oppiaineId") final Long oppiaineId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("oppiaineId") final Long oppiaineId,
+            @PathVariable("id") final Long id) {
         return handleGet(perusteId, new Supplier<OppiaineenVuosiluokkaKokonaisuusDto>() {
 
             @Override
@@ -215,10 +215,10 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}", method = POST)
     public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkakokonaisuus(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("oppiaineId") final Long oppiaineId,
-        @PathVariable("id") final Long id,
-        @RequestBody UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("oppiaineId") final Long oppiaineId,
+            @PathVariable("id") final Long id,
+            @RequestBody UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> dto) {
         dto.getDto().setId(id);
         return oppiaineet.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
     }
@@ -226,15 +226,15 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOppiaineenVuosiluokkakokonaisuus(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("oppiaineId") final Long oppiaineId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("oppiaineId") final Long oppiaineId,
+            @PathVariable("id") final Long id) {
         oppiaineet.deleteOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, id);
     }
 
     @RequestMapping(value = "/vuosiluokkakokonaisuudet", method = GET)
     public ResponseEntity<List<VuosiluokkaKokonaisuusDto>> getVuosiluokkaKokonaisuudet(
-        @PathVariable("perusteId") final Long perusteId) {
+            @PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, new Supplier<List<VuosiluokkaKokonaisuusDto>>() {
 
             @Override
@@ -248,15 +248,15 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/vuosiluokkakokonaisuudet", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public VuosiluokkaKokonaisuusDto addVuosiluokkaKokonaisuus(
-        @PathVariable("perusteId") final Long perusteId,
-        @RequestBody VuosiluokkaKokonaisuusDto dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody VuosiluokkaKokonaisuusDto dto) {
         return kokonaisuudet.addVuosiluokkaKokonaisuus(perusteId, dto);
     }
 
     @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}", method = GET)
     public ResponseEntity<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuus(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         return handleGet(perusteId, new Supplier<VuosiluokkaKokonaisuusDto>() {
 
             @Override
@@ -268,8 +268,8 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}/oppiaineet", method = GET)
     public ResponseEntity<List<OppiaineSuppeaDto>> getVuosiluokkaKokonaisuudenOppiaineet(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         return handleGet(perusteId, new Supplier<List<OppiaineSuppeaDto>>() {
             @Override
             public List<OppiaineSuppeaDto> get() {
@@ -280,9 +280,9 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}", method = POST)
     public VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @RequestBody UpdateDto<VuosiluokkaKokonaisuusDto> dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @RequestBody UpdateDto<VuosiluokkaKokonaisuusDto> dto) {
         dto.getDto().setId(id);
         return kokonaisuudet.updateVuosiluokkaKokonaisuus(perusteId, dto);
     }
@@ -290,14 +290,14 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteVuosiluokkaKokonaisuus(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         kokonaisuudet.deleteVuosiluokkaKokonaisuus(perusteId, id);
     }
 
     @RequestMapping(value = "/laajaalaisetosaamiset", method = GET)
     public ResponseEntity<List<LaajaalainenOsaaminenDto>> getOsaamiset(
-        @PathVariable("perusteId") final Long perusteId) {
+            @PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, new Supplier<List<LaajaalainenOsaaminenDto>>() {
             @Override
             public List<LaajaalainenOsaaminenDto> get() {
@@ -309,25 +309,25 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/laajaalaisetosaamiset", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public LaajaalainenOsaaminenDto addOsaaminen(
-        @PathVariable("perusteId") final Long perusteId,
-        @RequestBody LaajaalainenOsaaminenDto dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody LaajaalainenOsaaminenDto dto) {
         dto.setId(null);
         return osaamiset.addLaajaalainenOsaaminen(perusteId, dto);
     }
 
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = POST)
     public LaajaalainenOsaaminenDto updateOsaaminen(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @RequestBody LaajaalainenOsaaminenDto dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @RequestBody LaajaalainenOsaaminenDto dto) {
         dto.setId(id);
         return osaamiset.updateLaajaalainenOsaaminen(perusteId, dto);
     }
 
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = GET)
     public ResponseEntity<LaajaalainenOsaaminenDto> getOsaaminen(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         return handleGet(perusteId, new Supplier<LaajaalainenOsaaminenDto>() {
             @Override
             public LaajaalainenOsaaminenDto get() {
@@ -339,16 +339,16 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}/versiot/{versioId}", method = GET)
     @CacheControl(age = CacheControl.ONE_YEAR)
     public LaajaalainenOsaaminenDto getOsaaminen(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @PathVariable("versioId") final int versioId) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @PathVariable("versioId") final int versioId) {
         return osaamiset.getLaajaalainenOsaaminen(perusteId, id, versioId);
     }
 
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}/versiot/", method = GET)
     public List<CombinedDto<Revision, HenkiloTietoDto>> getOsaaminenVersiot(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         List<Revision> versiot = osaamiset.getLaajaalainenOsaaminenVersiot(perusteId, id);
         List<CombinedDto<Revision, HenkiloTietoDto>> laajennetut = new ArrayList<>();
         for (Revision r : versiot) {
@@ -360,24 +360,24 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOsaaminen(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         osaamiset.deleteLaajaalainenOsaaminen(perusteId, id);
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSisalto(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         sisallot.removeSisalto(perusteId, id);
     }
 
     @RequestMapping(value = "/sisalto", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public PerusteenOsaViiteDto.Matala addSisalto(
-        @PathVariable("perusteId") final Long perusteId,
-        @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
         if (dto == null || (dto.getPerusteenOsa() == null && dto.getPerusteenOsaRef() == null)) {
             return sisallot.addSisalto(perusteId, null, null);
         } else {
@@ -387,9 +387,9 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto/{id}/lapset", method = POST)
     public PerusteenOsaViiteDto.Matala addSisalto(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
         PerusteenOsaViiteDto.Matala uusiSisalto = sisallot.addSisalto(perusteId, id, dto);
         return uusiSisalto;
     }
@@ -397,16 +397,16 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/sisalto/{id}", method = POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSisaltoViite(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Suppea pov) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Suppea pov) {
         viittet.reorderSubTree(perusteId, id, pov);
     }
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id) {
         return viittet.kloonaaTekstiKappale(perusteId, id);
     }
 

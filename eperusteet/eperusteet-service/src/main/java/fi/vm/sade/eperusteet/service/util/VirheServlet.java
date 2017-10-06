@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.util;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -24,11 +25,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Ylimmän tason virhekäsittelijä
+ *
  * @author jhyoty
  */
 public class VirheServlet extends HttpServlet {
@@ -37,8 +40,8 @@ public class VirheServlet extends HttpServlet {
     private static final Logger LOG = LoggerFactory.getLogger(VirheServlet.class);
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        if ( response.isCommitted() ) {
+            throws ServletException, IOException {
+        if (response.isCommitted()) {
             return;
         }
         response.resetBuffer();
@@ -50,14 +53,14 @@ public class VirheServlet extends HttpServlet {
             json.writeStringField("syy", getErrorMessage(request));
             json.writeEndObject();
             json.flush();
-        } catch ( IllegalStateException e ) {
+        } catch (IllegalStateException e) {
             //NOP
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 

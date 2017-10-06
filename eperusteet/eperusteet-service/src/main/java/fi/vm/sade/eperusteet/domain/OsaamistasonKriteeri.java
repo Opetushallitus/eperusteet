@@ -44,7 +44,6 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author teele1
  */
 @Entity
@@ -68,8 +67,8 @@ public class OsaamistasonKriteeri implements Serializable {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @OrderColumn
     @JoinTable(name = "osaamistasonkriteeri_tekstipalanen",
-               joinColumns = @JoinColumn(name = "osaamistasonkriteeri_id"),
-               inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
+            joinColumns = @JoinColumn(name = "osaamistasonkriteeri_id"),
+            inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @BatchSize(size = 25)
     private List<TekstiPalanen> kriteerit = new ArrayList<>();
@@ -79,8 +78,8 @@ public class OsaamistasonKriteeri implements Serializable {
     @RelatesToPeruste
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "arvioinninkohde_osaamistasonkriteeri",
-        joinColumns = @JoinColumn(name = "osaamistasonkriteerit_id", updatable = false, nullable = false),
-        inverseJoinColumns = @JoinColumn(name = "arvioinninkohde_id", nullable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "osaamistasonkriteerit_id", updatable = false, nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "arvioinninkohde_id", nullable = false, updatable = false))
     private Set<ArvioinninKohde> arvioinninKohteet = new HashSet<>();
 
     public OsaamistasonKriteeri() {

@@ -20,16 +20,17 @@ import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukioOppiaineOppimaaraNodeDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+
 import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author jhyoty
  */
 @Repository
-public interface OppiaineRepository extends JpaWithVersioningRepository<Oppiaine, Long>{
+public interface OppiaineRepository extends JpaWithVersioningRepository<Oppiaine, Long> {
     @Query("SELECT ot FROM OpetuksenTavoite ot WHERE ?1 MEMBER OF ot.kohdealueet")
     List<OpetuksenTavoite> findAllTavoitteetByKohdealue(OpetuksenKohdealue kohdealue);
 

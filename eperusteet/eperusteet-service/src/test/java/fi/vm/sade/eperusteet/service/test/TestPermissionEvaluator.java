@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.test;
 
 import java.io.Serializable;
+
 import org.springframework.security.core.Authentication;
 
 /**

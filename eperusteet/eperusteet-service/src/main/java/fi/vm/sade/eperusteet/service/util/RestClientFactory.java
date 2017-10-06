@@ -17,13 +17,14 @@
 package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.generic.rest.CachingRestClient;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author nkala
  */
 @Component
@@ -44,8 +45,7 @@ public class RestClientFactory {
     public CachingRestClient get(String service) {
         if (cache.containsKey(service)) {
             return cache.get(service);
-        }
-        else {
+        } else {
             CachingRestClient crc = new CachingRestClient(TIMEOUT);
             crc.setUsername(username);
             crc.setPassword(password);

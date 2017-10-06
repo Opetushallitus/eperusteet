@@ -28,6 +28,7 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTEPROJEKTI;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TYORYHMA;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
@@ -35,10 +36,13 @@ import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LUONTI;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.TILAMUUTOS;
+
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -47,7 +51,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**

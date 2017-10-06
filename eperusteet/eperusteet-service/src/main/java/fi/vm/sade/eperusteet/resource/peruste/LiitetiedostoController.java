@@ -19,10 +19,13 @@ import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.LiiteService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
+
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.KUVA;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
@@ -34,6 +37,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +59,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- *
  * @author jhyoty
  */
 @RestController
@@ -82,12 +85,12 @@ public class LiitetiedostoController {
     @RequestMapping(method = RequestMethod.POST)
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     public ResponseEntity<String> upload(
-        @PathVariable("perusteId")
-        @P("perusteId") Long perusteId,
-        @RequestParam("nimi") String nimi,
-        @RequestParam("file") Part file,
-        UriComponentsBuilder ucb)
-        throws IOException, HttpMediaTypeNotSupportedException {
+            @PathVariable("perusteId")
+            @P("perusteId") Long perusteId,
+            @RequestParam("nimi") String nimi,
+            @RequestParam("file") Part file,
+            UriComponentsBuilder ucb)
+            throws IOException, HttpMediaTypeNotSupportedException {
         final long koko = file.getSize();
         try (PushbackInputStream pis = new PushbackInputStream(file.getInputStream(), BUFSIZE)) {
             byte[] buf = new byte[koko < BUFSIZE ? (int) koko : BUFSIZE];
@@ -111,10 +114,10 @@ public class LiitetiedostoController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @CacheControl(age = CacheControl.ONE_YEAR)
     public void get(
-        @PathVariable("perusteId") Long perusteId,
-        @PathVariable("id") UUID id,
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
-        HttpServletResponse response) throws IOException {
+            @PathVariable("perusteId") Long perusteId,
+            @PathVariable("id") UUID id,
+            @RequestHeader(value = "If-None-Match", required = false) String etag,
+            HttpServletResponse response) throws IOException {
 
         LiiteDto dto = liitteet.get(perusteId, id);
         if (dto != null) {
@@ -136,8 +139,8 @@ public class LiitetiedostoController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-        @PathVariable("perusteId") Long perusteId,
-        @PathVariable("id") UUID id) {
+            @PathVariable("perusteId") Long perusteId,
+            @PathVariable("id") UUID id) {
         audit.withAudit(LogMessage.builder(perusteId, KUVA, POISTO), (Void) -> {
             liitteet.delete(perusteId, id);
             return null;

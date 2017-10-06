@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 /**
- *
  * @author nkala
  */
 public interface AIPEHasId {

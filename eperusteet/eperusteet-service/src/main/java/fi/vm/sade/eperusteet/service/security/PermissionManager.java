@@ -401,9 +401,9 @@ public class PermissionManager {
 
     /**
      * @param authentication authentication
-     * @param targetId targetId
-     * @param targetType targetType
-     * @param tila tila
+     * @param targetId       targetId
+     * @param targetType     targetType
+     * @param tila           tila
      * @return oikeussetti
      */
     // TODO: tila parametrin voisi varmaan karsia pois

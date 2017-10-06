@@ -22,8 +22,10 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+
 import java.math.BigDecimal;
 import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,7 +51,7 @@ public class TutkinnonOsaViiteDto {
 
     }
 
-    public TutkinnonOsaViiteDto (BigDecimal laajuus, Integer jarjestys, LokalisoituTekstiDto nimi, TutkinnonOsaTyyppi tyyppi) {
+    public TutkinnonOsaViiteDto(BigDecimal laajuus, Integer jarjestys, LokalisoituTekstiDto nimi, TutkinnonOsaTyyppi tyyppi) {
         this.laajuus = laajuus;
         this.jarjestys = jarjestys;
         this.nimi = nimi;

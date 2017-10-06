@@ -61,7 +61,7 @@ public class OpetuksenYleisetTavoitteet extends PerusteenOsa {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @Getter
     @Setter
-    @JoinColumn(name="viite_id", nullable = false)
+    @JoinColumn(name = "viite_id", nullable = false)
     private PerusteenOsaViite viite = new PerusteenOsaViite();
 
     @RelatesToPeruste

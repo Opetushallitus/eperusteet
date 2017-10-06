@@ -37,8 +37,9 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Yksinkertainen integraatiotesti käyttäen "oikeaa" tietokantaa.
- * @see AbstractDbIntegrationTest
+ *
  * @author jhyoty
+ * @see AbstractDbIntegrationTest
  */
 @Transactional
 public class PerusteServiceDbIT extends AbstractDbIntegrationTest {
@@ -50,7 +51,7 @@ public class PerusteServiceDbIT extends AbstractDbIntegrationTest {
     @PersistenceContext
     private EntityManager em;
 
-        
+
     @Before
     public void setUp() {
         Peruste p = new Peruste();

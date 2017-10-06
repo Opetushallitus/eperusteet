@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,7 +33,6 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
- *
  * @author harrik
  */
 @Entity

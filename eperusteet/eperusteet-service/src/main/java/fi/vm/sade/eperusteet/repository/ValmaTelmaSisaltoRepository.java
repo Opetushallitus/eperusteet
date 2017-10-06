@@ -19,7 +19,6 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.ValmaTelmaSisalto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**
- *
  * @author nkala
  */
 public interface ValmaTelmaSisaltoRepository extends JpaWithVersioningRepository<ValmaTelmaSisalto, Long> {

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource.util;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- *
  * @author jhyoty
  */
 public class CacheHeaderInterceptor implements HandlerInterceptor {
@@ -58,19 +58,19 @@ public class CacheHeaderInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws
-        Exception {
+            Exception {
         //Posthandlessa ei voi enää muokata vastausta
         //@see CacheHeadersAspect
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws
-        Exception {
+            Exception {
     }
 
     private static boolean returnsResponseEntity(HandlerMethod handlerMethod) {
         return !handlerMethod.isVoid()
-            && ResponseEntity.class.isAssignableFrom(handlerMethod.getReturnType().getParameterType());
+                && ResponseEntity.class.isAssignableFrom(handlerMethod.getReturnType().getParameterType());
     }
 
 }

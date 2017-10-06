@@ -19,7 +19,6 @@ import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 /**
- *
  * @author jhyoty
  */
 public class PerusteUpdatedEvent extends ApplicationEvent {

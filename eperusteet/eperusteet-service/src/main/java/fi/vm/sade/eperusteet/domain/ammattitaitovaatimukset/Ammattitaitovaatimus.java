@@ -3,8 +3,10 @@ package fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+
 import java.io.Serializable;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -16,7 +18,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "ammattitaitovaatimus")
 @Audited
-public class Ammattitaitovaatimus implements Serializable{
+public class Ammattitaitovaatimus implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

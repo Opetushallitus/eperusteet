@@ -34,7 +34,7 @@ import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
 @Service
 @LockCtx(LukioAihekokonaisuudetLockContext.class)
 public class AihekokonaisuudetLockService extends AbstractLockService<LukioAihekokonaisuudetLockContext>
-            implements LockService<LukioAihekokonaisuudetLockContext> {
+        implements LockService<LukioAihekokonaisuudetLockContext> {
     @Autowired
     private LukiokoulutuksenPerusteenSisaltoRepository lukiokoulutuksenPerusteenSisaltoRepository;
 

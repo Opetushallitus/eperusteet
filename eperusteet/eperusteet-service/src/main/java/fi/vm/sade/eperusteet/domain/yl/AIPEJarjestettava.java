@@ -17,10 +17,10 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 /**
- *
  * @author nkala
  */
 public interface AIPEJarjestettava extends AIPEHasId {
     Integer getJarjestys();
+
     void setJarjestys(Integer value);
 }

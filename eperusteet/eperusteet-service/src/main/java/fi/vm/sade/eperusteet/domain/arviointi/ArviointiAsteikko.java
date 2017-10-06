@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.domain.arviointi;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Cacheable;
@@ -28,12 +29,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
 
 /**
- *
  * @author teele1
  */
 @Entity

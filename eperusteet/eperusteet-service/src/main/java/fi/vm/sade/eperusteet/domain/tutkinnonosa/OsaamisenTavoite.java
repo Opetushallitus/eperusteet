@@ -17,11 +17,13 @@ package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -29,7 +31,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author nkala
  */
 @Entity
@@ -67,8 +68,8 @@ public class OsaamisenTavoite implements Serializable {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @OrderColumn
     @JoinTable(name = "valmatelmatavoite_tekstipalanen",
-               joinColumns = @JoinColumn(name = "valmatelma_osaamisentavoite_id"),
-               inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
+            joinColumns = @JoinColumn(name = "valmatelma_osaamisentavoite_id"),
+            inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @BatchSize(size = 25)
     @Getter

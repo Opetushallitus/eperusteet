@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.service.revision;
 
 /**
- *
  * @author nkala
  */
 public interface RevisionMetaService {

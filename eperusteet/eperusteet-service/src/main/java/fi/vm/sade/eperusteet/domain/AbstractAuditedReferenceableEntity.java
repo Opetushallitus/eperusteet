@@ -16,16 +16,17 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 /**
- *
  * @author jhyoty
  */
 @MappedSuperclass

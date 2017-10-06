@@ -39,11 +39,11 @@ public interface LukiokoulutuksenPerusteenSisaltoService extends OppiainePeruste
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     <OppiaineType extends OppiaineBaseDto> LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineType>
-            getLukioRakenneByRevision(long perusteId, int revision, Class<OppiaineType> oppiaineClz);
+    getLukioRakenneByRevision(long perusteId, int revision, Class<OppiaineType> oppiaineClz);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     <OppiaineType extends OppiaineBaseDto> LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineType>
-            getLukioRakenne(long perusteId, Class<OppiaineType> oppiaineClz);
+    getLukioRakenne(long perusteId, Class<OppiaineType> oppiaineClz);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     <T extends OppiaineBaseDto> List<T> getOppiaineetByRakenneRevision(long perusteId, int revision, Class<T> view);

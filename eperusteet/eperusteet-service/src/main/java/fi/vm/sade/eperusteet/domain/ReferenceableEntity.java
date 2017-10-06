@@ -19,11 +19,11 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 
 /**
- *
  * @author teele1
  */
 public interface ReferenceableEntity {
 
     EntityReference getReference();
+
     Long getId();
 }

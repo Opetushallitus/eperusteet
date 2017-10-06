@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Alustaa tyhjän tietokannan integraatiotestejä varten.
+ *
  * @author jhyoty
  */
 public class DbInitializer {
