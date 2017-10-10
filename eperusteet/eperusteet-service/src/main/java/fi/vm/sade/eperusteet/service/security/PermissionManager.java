@@ -92,6 +92,7 @@ public class PermissionManager {
 
     public enum Target {
 
+        ARVIOINTIASTEIKKO("arviointiasteikko"),
         PERUSTEPROJEKTI("perusteprojekti"),
         PERUSTE("peruste"),
         PERUSTEENMETATIEDOT("perusteenmetatiedot"),
@@ -257,6 +258,16 @@ public class PermissionManager {
             tmp.put(null, perm);
             allowedRolesTmp.put(Target.TIEDOTE, tmp);
         }
+        {
+            Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
+            Map<Permission, Set<String>> perm = Maps.newHashMap();
+            perm.put(LUONTI, r0);
+            perm.put(LUKU, r5);
+            perm.put(MUOKKAUS, r0);
+            perm.put(POISTO, r0);
+            tmp.put(null, perm);
+            allowedRolesTmp.put(Target.ARVIOINTIASTEIKKO, tmp);
+        }
 
         if (LOG.isTraceEnabled()) {
             assert (allowedRolesTmp.keySet().containsAll(EnumSet.allOf(Target.class)));
@@ -294,7 +305,7 @@ public class PermissionManager {
             LOG.trace(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
         }
 
-        if (Target.TIEDOTE == targetType) {
+        if (Target.TIEDOTE.equals(targetType) || Target.ARVIOINTIASTEIKKO.equals(targetType)) {
             return hasAnyRole(authentication, getAllowedRoles(targetType, permission));
         }
 

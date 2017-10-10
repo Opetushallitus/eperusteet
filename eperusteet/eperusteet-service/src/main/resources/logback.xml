@@ -25,8 +25,9 @@
             <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSX} %-5p {%X{user}} [%thread] %-5level %logger: %msg%n</pattern>
         </encoder>
     </appender>
-    
+
     <logger name="org.apache.fop" level="off"/>
+    <!--<logger name="org.hibernate.SQL" level="trace"/>-->
     <logger name="org.hibernate" level="error"/>
     <logger name="org.hibernate.tool.hbm2ddl" level="off"/>
     <logger name="org.springframework" level="warn"/>

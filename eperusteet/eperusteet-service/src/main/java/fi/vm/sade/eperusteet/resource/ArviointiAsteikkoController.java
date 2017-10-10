@@ -19,22 +19,20 @@ import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 /**
  *
  * @author jhyoty
  */
-@Controller
+@RestController
 @RequestMapping("/arviointiasteikot")
 @Api(value="Arviointiasteikot")
 public class ArviointiAsteikkoController {
@@ -44,14 +42,22 @@ public class ArviointiAsteikkoController {
 
 
     @RequestMapping(method = GET)
-    @ResponseBody
     public List<ArviointiAsteikkoDto> getAll() {
         return service.getAll();
     }
 
     @RequestMapping(value = "/{id}", method = GET)
-    @ResponseBody
     public ResponseEntity<ArviointiAsteikkoDto> get(@PathVariable("id") final Long id) {
-        return new ResponseEntity<>(service.get(id), HttpStatus.OK);
+        return ResponseEntity.ok(service.get(id));
+    }
+
+    @RequestMapping(method = PUT)
+    public ResponseEntity<List<ArviointiAsteikkoDto>> updateArviointiasteikot(
+            @RequestBody List<ArviointiAsteikkoDto> arviointiasteikotDtos
+    ) {
+        List<ArviointiAsteikkoDto> arviointiasteikot = new ArrayList<>();
+        arviointiasteikotDtos.forEach(arviointiAsteikkoDto
+                -> arviointiasteikot.add(service.update(arviointiAsteikkoDto)));
+        return ResponseEntity.ok(arviointiasteikot);
     }
 }
