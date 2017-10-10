@@ -44,7 +44,7 @@ mixin asteikonNimi(asteikko)
 
 mixin kvliite()
   div(ng-show='isAmmatillinen && $$showingKvliite')
-    h3(ng-bind="'tutkinnon-suorittaneen-ammatillinen-osaaminen' | kaanna")
+    h3(kaanna="'tutkinnon-suorittaneen-ammatillinen-osaaminen'")
     .panel.panel-default.panel-clean(ng-repeat='(st, sisalto) in kvliite.muodostumisenKuvaus')
       .panel-heading
         h4
@@ -58,13 +58,13 @@ mixin kvliite()
     +kvliiteKentta('suorittaneen-osaaminen', 'suorittaneenOsaaminen', 'true')
     +kvliiteKentta('tyotehtavat-joissa-voi-toimia', 'tyotehtavatJoissaVoiToimia', 'true')
 
-    h3(ng-bind="'tutkinnon-virallinen-asema' | kaanna")
+    h3(kaanna="'tutkinnon-virallinen-asema'")
     +kvliiteKenttaString('tutkintotodistuksen-antaja', 'tutkintotodistuksenAntaja')
     +kvliiteKenttaString('tutkinnosta-paattava-viranomainen', 'tutkinnostaPaattavaViranomainen')
 
     .panel.panel-default.panel-clean
       .panel-heading
-        h4(ng-bind="'tutkinnon-taso' | kaanna")
+        h4(kaanna="'tutkinnon-taso'")
       .panel-body
         ul
           li(ng-repeat="taso in kvliite.tasot" ng-bind="taso.nimi | kaanna")
@@ -90,7 +90,7 @@ mixin kvliite()
     +kvliiteKentta('kansainvaliset-sopimukset', 'kansainvalisetSopimukset')
     +kvliiteKentta('saadosperusta', 'saadosPerusta')
 
-    h3(ng-bind="'tutkintotodistuksen-saaminen' | kaanna")
+    h3(kaanna="'tutkintotodistuksen-saaminen'")
     +kvliiteKentta('tutkintotodistuksen-saaminen', 'tutkintotodistuksenSaaminen')
     +kvliiteKentta('pohjakoulutusvaatimukset', 'pohjakoulutusvaatimukset')
     +kvliiteKentta('lisatietoja', 'lisatietoja')
