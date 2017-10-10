@@ -23,7 +23,8 @@ angular.module("eperusteApp").factory("Arviointiasteikot", function($resource, S
             asteikkoId: "@id"
         },
         {
-            list: { method: "GET", isArray: true, cache: true }
+            list: { method: "GET", isArray: true, cache: true },
+            save: { method: "PUT", isArray: true }
         }
     );
 });

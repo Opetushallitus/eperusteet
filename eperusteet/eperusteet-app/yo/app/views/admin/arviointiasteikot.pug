@@ -1,0 +1,30 @@
+div
+  // admin/arviointiasteikot.pug
+  div.hallintapainikkeet
+    button.btn(icon-role="edit" kaanna="'muokkaa'" ng-click="edit()" ng-hide="editEnabled")
+  h2
+    span(kaanna="'arviointiasteikot'")
+    ohje(teksti="arviointiasteikot-ohje")
+
+  div(ng-repeat="arviointiasteikko in arviointiasteikot")
+    h3
+      span(kaanna="'arviointiasteikko'")
+      span=" "
+      span {{arviointiasteikko.id}}
+    div(ng-hide="editEnabled")
+      span(ng-repeat='osaamistaso in arviointiasteikko.osaamistasot')
+        | {{osaamistaso.otsikko | kaanna}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? ' / ': ''}}
+
+    div(ng-show="editEnabled" ui-sortable="sortableOptions" ng-model="arviointiasteikko.osaamistasot")
+      div(ng-repeat='osaamistaso in arviointiasteikko.osaamistasot')
+        div.form-group
+          span.pull-right.handle(icon-role='drag')
+          label(for="osaamistaso-{{osaamistaso.id}}")
+            span(kaanna="'osaamistaso'")
+            span=" "
+            span {{osaamistaso.__fakeId}}
+            span=" "
+            span="("
+            span(kaanna="'osaamistaso-' + osaamistaso.id")
+            span=")"
+          input.form-control(id="osaamistaso-{{osaamistaso.id}}" ng-model='osaamistaso.otsikko' slocalized)

@@ -30,4 +30,13 @@ public interface ArviointiAsteikkoService {
 
     @PreAuthorize("permitAll()")
     ArviointiAsteikkoDto get(Long id);
+
+    @PreAuthorize("hasPermission(null, 'arviointiasteikko', 'LUONTI')")
+    ArviointiAsteikkoDto add(ArviointiAsteikkoDto arviointiAsteikkoDto);
+
+    @PreAuthorize("hasPermission(null, 'arviointiasteikko', 'MUOKKAUS')")
+    ArviointiAsteikkoDto update(ArviointiAsteikkoDto arviointiAsteikkoDto);
+
+    @PreAuthorize("hasPermission(null, 'arviointiasteikko', 'POISTO')")
+    void remove(Long id);
 }
