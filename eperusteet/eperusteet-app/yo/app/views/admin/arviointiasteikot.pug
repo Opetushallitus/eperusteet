@@ -8,9 +8,7 @@ div
 
   div(ng-repeat="arviointiasteikko in arviointiasteikot")
     h3
-      span(kaanna="'arviointiasteikko'")
-      span=" "
-      span {{arviointiasteikko.id}}
+      span {{'arviointiasteikko' | kaanna}} {{arviointiasteikko.id}}
     div(ng-hide="editEnabled")
       span(ng-repeat='osaamistaso in arviointiasteikko.osaamistasot')
         | {{osaamistaso.otsikko | kaanna}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? ' / ': ''}}
@@ -20,11 +18,5 @@ div
         div.form-group
           span.pull-right.handle(icon-role='drag')
           label(for="osaamistaso-{{osaamistaso.id}}")
-            span(kaanna="'osaamistaso'")
-            span=" "
-            span {{osaamistaso.__fakeId}}
-            span=" "
-            span="("
-            span(kaanna="'osaamistaso-' + osaamistaso.id")
-            span=")"
+            | {{'osaamistaso' | kaanna}} {{osaamistaso.__fakeId}} ({{'osaamistaso-' + osaamistaso.id | kaanna}})
           input.form-control(id="osaamistaso-{{osaamistaso.id}}" ng-model='osaamistaso.otsikko' slocalized)
