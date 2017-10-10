@@ -1,5 +1,5 @@
-<!-- partials/perusteprojekti/esiopetus.html -->
 <div class="main-content" id="main">
+    <!-- partials/perusteprojekti/tpoopetus.html -->
     <div class="row tutkinto-sisalto">
         <div class="tutkinto">
             <div class="esityksen-tarkastelu">
@@ -17,15 +17,15 @@
             <div class="clearfix"></div>
 
             <h2 ng-hide="editing">
-                {{ 'sisalto' | kaanna }} ({{ peruste.sisalto.lapset.length }})
+                {{ 'sisalto' | kaanna }} ({{ peruste.sisalto.lapset.length || 0}})
                 <div class="pull-right buttons">
                     <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto(projekti, peruste)"
                             ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-import"
                             kaanna="tuo-tutkintokohtainen-osa"
                             oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="addTekstikappale()"
+                    <button type="button" class="btn btn-default btn-sm" ng-click="addSisalto('tekstikappale')"
                             icon-role="ep-text-add" kaanna="lisaa-tutkintokohtainen-osa"></button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="addTaiteenala()"
+                    <button type="button" class="btn btn-default btn-sm" ng-click="addSisalto('taiteenala')"
                             icon-role="ep-text-add" kaanna="'lisaa-taiteenala'"></button>
                     <button class="btn btn-default btn-sm" ng-click="edit()" icon-role="edit"
                             kaanna="muokkaa-rakennetta">

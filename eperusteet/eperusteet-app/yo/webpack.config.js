@@ -8,7 +8,7 @@ const basePath = __dirname;
 module.exports = merge(require("./webpack.common.js"), {
     plugins: [
         new webpack.DefinePlugin({
-          DEVELOPMENT: JSON.stringify("true")
+          "process.env.NODE_ENV": JSON.stringify("development")
         }),
         new FriendlyErrorsWebpackPlugin(),
         new webpack.HotModuleReplacementPlugin()

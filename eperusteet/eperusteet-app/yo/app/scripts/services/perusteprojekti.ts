@@ -148,7 +148,8 @@ angular
                     if (!_.includes(suoritustapakoodit, suoritustapa)) {
                         suoritustapa = _.first(suoritustapakoodit);
                     }
-                } else if (projekti && _.isArray(projekti.suoritustavat) && !_.isEmpty(projekti.suoritustavat)) {
+                }
+                else if (projekti && _.isArray(projekti.suoritustavat) && !_.isEmpty(projekti.suoritustavat)) {
                     if (!_.includes(projekti.suoritustavat, suoritustapa)) {
                         suoritustapa = _.first(projekti.suoritustavat);
                     }

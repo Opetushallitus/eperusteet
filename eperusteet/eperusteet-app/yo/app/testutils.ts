@@ -190,7 +190,10 @@ export const getOfType = (type: "service" | "factory" | "filter" | "directive" |
         .value();
 };
 
-export const mockApp = () => angular.mock.module("eperusteApp");
+export const mockApp = () => {
+    angular.mock.module("eperusteApp");
+    return angular.module("eperusteApp");
+};
 
 // Get injected component
 export async function getComponent(name: string) {
@@ -211,7 +214,7 @@ export function testDirective(fn: Function) {
     inject(($compile, $rootScope) => fn($compile, $rootScope.$new()));
 }
 
-function genId() {
+export function genId() {
     return _.parseInt(_.uniqueId());
 }
 

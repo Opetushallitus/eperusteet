@@ -1,8 +1,18 @@
 import * as yd from "./yleinenData";
 import * as _ from "lodash";
+import { getComponent, inject, getOfType, testDirective, testModule, mockApp } from "app/testutils";
 
 
-describe("yleinenData", async () => {
+describe("YleinenData", async () => {
+    let YleinenData: any;
+
+    beforeEach(async () => {
+        mockApp();
+        YleinenData = await getComponent("YleinenData");
+    });
+
+    test("Can be injected", () => expect(YleinenData).toBeTruthy());
+
     test("dateOptions", async () => {
         yd.dateOptions["year-format"] === "yy";
     });

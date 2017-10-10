@@ -53,7 +53,8 @@ angular
             "peruste.sisalto",
             function() {
                 Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, "lapset", function(lapsi) {
-                    lapsi.$url = $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
+                    const sisaltotyyppi = (lapsi && lapsi.perusteenOsa && lapsi.perusteenOsa.osanTyyppi) || "tekstikappale";
+                    lapsi.$url = $state.href("root.perusteprojekti.suoritustapa." + sisaltotyyppi, {
                         suoritustapa: $stateParams.suoritustapa,
                         perusteenOsaViiteId: lapsi.id,
                         versio: ""
@@ -84,35 +85,26 @@ angular
             });
         };
 
-        $scope.addTaiteenala = async () => {
-            console.log("Trying to add taiteenala");
-            const newTaiteenala = await Api.one("perusteet", $scope.projekti._peruste)
-                .all("tpoopetus")
-                .all("taiteenalat").customPOST({
-                    perusteId: $scope.projekti._peruste,
-                    suoritustapa: $stateParams.suoritustapa
-                });
-        };
-
-        $scope.addTekstikappale = function() {
+        $scope.addSisalto = (tyyppi: "tekstikappale" | "taiteenala") => {
             SuoritustapaSisalto.save(
                 {
                     perusteId: $scope.projekti._peruste,
-                    suoritustapa: $stateParams.suoritustapa
+                    suoritustapa: $stateParams.suoritustapa,
                 },
-                {},
+                {
+                    perusteenOsa: {
+                        osanTyyppi: "taiteenala",
+                    }
+                },
                 function(response) {
                     TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
                     $state.go(
-                        "root.perusteprojekti.suoritustapa.tekstikappale",
-                        {
+                        "root.perusteprojekti.suoritustapa." + tyyppi, {
                             perusteenOsaViiteId: response.id,
-                            versio: ""
-                        },
-                        {
+                            versio: "",
+                        }, {
                             reload: true
-                        }
-                    );
+                        });
                 },
                 Notifikaatiot.serverCb
             );

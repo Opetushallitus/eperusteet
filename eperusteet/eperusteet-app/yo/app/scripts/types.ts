@@ -11,7 +11,7 @@ export const Lukiokoulutus = "koulutustyyppi_2";
 export const Aikuistenperusopetus = "koulutustyyppi_17";
 export const Lukiovalmistavakoulutus = "koulutustyyppi_23";
 export const Aikuistenlukiokoulutus = "koulutustyyppi_14";
-export const Tpo = "koulutustyyppi_xyz";
+export const Tpo = "koulutustyyppi_999907";
 export const Perusopetusvalmistava = "koulutustyyppi_22";
 
 export const Koulutustyypit = () => [
@@ -44,5 +44,6 @@ export type Koulutustyyppi = "koulutustyyppi_1"
     | "koulutustyyppi_17"
     | "koulutustyyppi_23"
     | "koulutustyyppi_14"
-    | "koulutustyyppi_xyz"
+    | "koulutustyyppi_999907"
     | "koulutustyyppi_22";
+

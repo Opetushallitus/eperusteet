@@ -1,5 +1,6 @@
 create table taiteenala (
     id int8 not null,
+    teksti_id int8 references tekstipalanen(id),
     aikuistenOpetus_id int8 references kevyttekstikappale(id),
     kasvatus_id int8 references kevyttekstikappale(id),
     koodi_id int8 references kevyttekstikappale(id),
@@ -13,6 +14,7 @@ create table taiteenala (
 create table taiteenala_AUD (
     id int8 not null,
     REV int4 not null,
+    teksti_id int8,
     aikuistenOpetus_id int8,
     kasvatus_id int8,
     koodi_id int8,

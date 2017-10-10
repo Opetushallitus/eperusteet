@@ -64,7 +64,7 @@ export const koulutustyyppiInfo = {
         sisaltoTunniste: "sisalto",
         hasPdfCreation: true
     },
-    koulutustyyppi_xyz: {
+    koulutustyyppi_999907: {
         nimi: "tpo",
         oletusSuoritustapa: "tpo",
         hasTutkintonimikkeet: false,
@@ -252,7 +252,7 @@ export const isLisaopetus = function(peruste) {
 };
 
 export const isTpo = function(peruste) {
-    return peruste.koulutustyyppi === "koulutustyyppi_xyz";
+    return peruste.koulutustyyppi === "koulutustyyppi_999907";
 };
 
 export const isVarhaiskasvatus = function(peruste) {

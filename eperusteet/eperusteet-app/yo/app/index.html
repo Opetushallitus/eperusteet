@@ -36,7 +36,7 @@
                ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }"
                ng-repeat="viesti in viestit">
             <div class="notification-body">
-              <span class="close">×</span>
+              <span class="close" ng-bind="'x'"></span>
               <span class="notification-message" kaanna="viesti.viesti"></span>
             </div>
           </div>

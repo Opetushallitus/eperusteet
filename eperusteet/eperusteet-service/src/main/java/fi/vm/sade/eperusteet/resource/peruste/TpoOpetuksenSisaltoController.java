@@ -1,7 +1,5 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import fi.vm.sade.eperusteet.dto.yl.AIPEtaiteenalaDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEtaiteenalaSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;

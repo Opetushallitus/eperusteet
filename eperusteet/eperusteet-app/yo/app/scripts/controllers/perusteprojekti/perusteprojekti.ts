@@ -217,6 +217,14 @@ angular
                     PerusteProjektiSivunavi.setVisible();
                 }
             })
+            .state("root.perusteprojekti.suoritustapa.taiteenala", {
+                url: "/taiteenala/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}",
+                template: require("views/partials/muokkaus/taiteenala.html"),
+                controller: "taiteenalaCtrl",
+                onEnter: PerusteProjektiSivunavi => {
+                    PerusteProjektiSivunavi.setVisible();
+                }
+            })
             .state("root.perusteprojekti.suoritustapa.tekstikappale", {
                 url: "/tekstikappale/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}",
                 template: require("views/partials/muokkaus/tekstikappale.html"),

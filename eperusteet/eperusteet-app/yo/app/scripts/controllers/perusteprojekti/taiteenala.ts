@@ -1,195 +1,33 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
-
-angular
-    .module("eperusteApp")
-    .service("TekstikappaleOperations", function(
-        YleinenData,
-        PerusteenOsaViitteet,
-        Editointikontrollit,
-        Notifikaatiot,
-        $state,
-        SuoritustapaSisalto,
-        TutkinnonOsaEditMode,
-        PerusopetusService,
-        $stateParams,
-        LukiokoulutusService
-    ) {
-        var peruste = null;
-        var deleteDone = false;
-
-        this.setPeruste = function(value) {
-            peruste = value;
-        };
-
-        function goToView(response, id = response.id) {
-            var params = {
-                perusteenOsaViiteId: id,
-                versio: ""
-            };
-            $state.go("root.perusteprojekti.suoritustapa.tekstikappale", params, { reload: true });
-        }
-
-        this.add = function() {
-            if (YleinenData.isPerusopetus(peruste)) {
-                PerusopetusService.saveOsa(
-                    {},
-                    {
-                        osanTyyppi: "tekstikappale"
-                    },
-                    response => {
-                        TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-                        goToView(response);
-                    }
-                );
-            } else if (YleinenData.isLukiokoulutus(peruste)) {
-                LukiokoulutusService.saveOsa(
-                    {},
-                    {
-                        osanTyyppi: "tekstikappale"
-                    },
-                    response => {
-                        TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-                        goToView(response);
-                    }
-                );
-            }
-        };
-
-        this.wasDeleted = function() {
-            var ret = deleteDone;
-            deleteDone = false;
-            return ret;
-        };
-        this.noDeleteWasDoneYet = function() {
-            deleteDone = false;
-        };
-
-        this.delete = function(viiteId, isNew, then?) {
-            function commonCb(tyyppi) {
-                deleteDone = true;
-                if (isNew !== true) {
-                    Editointikontrollit.cancelEditing();
-                    Notifikaatiot.onnistui("poisto-onnistui");
-                }
-                $state.go("root.perusteprojekti.suoritustapa." + tyyppi, {}, { reload: true });
-            }
-
-            var successCb = _.partial(commonCb, YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].sisaltoTunniste);
-            if (YleinenData.isPerusopetus(peruste)) {
-                PerusopetusService.deleteOsa({ $url: "dummy", id: viiteId }, successCb, Notifikaatiot.serverCb);
-            } else if (YleinenData.isLukiokoulutus(peruste)) {
-                LukiokoulutusService.deleteOsa({ $url: "dummy", id: viiteId }, successCb, Notifikaatiot.serverCb);
-            } else {
-                PerusteenOsaViitteet.delete({ viiteId: viiteId }, {}, successCb, Notifikaatiot.serverCb);
-            }
-        };
-
-        this.addChild = function(viiteId, suoritustapa) {
-            SuoritustapaSisalto.addChild(
-                {
-                    perusteId: peruste.id,
-                    suoritustapa: suoritustapa,
-                    perusteenosaViiteId: viiteId
-                },
-                {},
-                function(response) {
-                    TutkinnonOsaEditMode.setMode(true);
-                    goToView(response);
-                },
-                Notifikaatiot.varoitus
-            );
-        };
-
-        this.clone = function(viiteId) {
-            if (YleinenData.isPerusopetus(peruste) || YleinenData.isLukiokoulutus(peruste)) {
-            } else {
-                PerusteenOsaViitteet.kloonaaTekstikappale(
-                    {
-                        perusteId: peruste.id,
-                        suoritustapa: $stateParams.suoritustapa,
-                        viiteId: viiteId
-                    },
-                    function(tk) {
-                        TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-                        Notifikaatiot.onnistui("tekstikappale-kopioitu-onnistuneesti");
-                        goToView(tk, tk.id);
-                    }
-                );
-            }
-        };
-
-        function mapSisalto(root) {
-            return {
-                id: root.id,
-                perusteenOsa: null,
-                lapset: _.map(root.lapset, mapSisalto)
-            };
-        }
-
-        this.updateViitteet = function(sisalto, successCb) {
-            var success = successCb || angular.noop;
-            var mapped = mapSisalto(sisalto);
-
-            if (YleinenData.isPerusopetus(peruste)) {
-                PerusopetusService.updateSisaltoViitteet(sisalto, mapped, successCb);
-            } else if (YleinenData.isLukiokoulutus(peruste)) {
-                LukiokoulutusService.updateSisaltoViitteet(sisalto, mapped, successCb);
-            } else {
-                PerusteenOsaViitteet.update(
-                    {
-                        viiteId: sisalto.id
-                    },
-                    mapped,
-                    success,
-                    Notifikaatiot.serverCb
-                );
-            }
-        };
-    })
-    .controller("muokkausTekstikappaleCtrl", async function(
-        $location,
-        $q,
-        $rootScope,
-        $scope,
-        $state,
-        $stateParams,
-        perusteprojektiBackLink,
-        Editointikontrollit,
-        Kaanna,
-        Kommentit,
-        KommentitByPerusteenOsa,
-        Lukitus,
-        Notifikaatiot,
-        PerusteProjektiSivunavi,
-        PerusteenOsanTyoryhmat,
-        PerusteenOsat,
-        PerusteprojektiTiedotService,
-        PerusteprojektiTyoryhmat,
-        ProjektinMurupolkuService,
-        TEXT_HIERARCHY_MAX_DEPTH,
-        TekstikappaleOperations,
-        TutkinnonOsaEditMode,
-        Tyoryhmat,
-        Utils,
-        Varmistusdialogi,
-        VersionHelper,
-        YleinenData,
-        virheService,
-    ) {
+export function taiteenalaCtrl(
+    $q,
+    $rootScope,
+    $scope,
+    $state,
+    $stateParams,
+    $location,
+    Editointikontrollit,
+    Kaanna,
+    Kommentit,
+    KommentitByPerusteenOsa,
+    Lukitus,
+    Notifikaatiot,
+    PerusteProjektiSivunavi,
+    PerusteenOsanTyoryhmat,
+    PerusteenOsat,
+    PerusteprojektiTiedotService,
+    PerusteprojektiTyoryhmat,
+    ProjektinMurupolkuService,
+    TEXT_HIERARCHY_MAX_DEPTH,
+    TekstikappaleOperations,
+    TutkinnonOsaEditMode,
+    Tyoryhmat,
+    Utils,
+    Varmistusdialogi,
+    VersionHelper,
+    YleinenData,
+    virheService,
+) {
+    async function init() {
         $scope.tekstikappale = {};
         $scope.versiot = {};
         const pts = await PerusteprojektiTiedotService;
@@ -288,12 +126,12 @@ angular
                         items.push({
                             label: $scope.viitteet[id].nimi,
                             url:
-                                $scope.tekstikappale.id === id
-                                    ? null
-                                    : $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
-                                          perusteenOsaViiteId: $scope.viitteet[id].viite,
-                                          versio: ""
-                                      })
+                            $scope.tekstikappale.id === id
+                            ? null
+                            : $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
+                                perusteenOsaViiteId: $scope.viitteet[id].viite,
+                                versio: ""
+                            })
                         });
                         id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
                     } while (id);
@@ -325,7 +163,7 @@ angular
         };
 
         function successCb(re) {
-            if (re.osanTyyppi !== "tekstikappale") {
+            if (re.osanTyyppi !== "taiteenala") {
                 $location.path(perusteprojektiBackLink.substring(1));
             }
 
@@ -568,4 +406,6 @@ angular
                 $rootScope.$broadcast("editointikontrollitRefresh");
             }
         });
-    });
+    }
+    init();
+};

@@ -1,6 +1,7 @@
 import { getComponent, inject, getOfType, testModule, mockApp } from "app/testutils";
 import * as _ from "lodash";
 
+
 describe("app", () => {
     beforeEach(mockApp);
 
@@ -36,7 +37,9 @@ describe("app", () => {
 
     test("Modules can be injected with getComponent", async () => {
         const $rootScope = await getComponent("$rootScope");
+        const $timeout = await getComponent("$timeout");
         expect($rootScope).toBeTruthy();
+        $timeout.flush();
     });
 
     test("All modules can be injected with inject", () => {
@@ -65,7 +68,6 @@ describe("locale-x", () => {
         const fails = [];
         for (const key of _.keys(locales[0][1])) {
             for (const locale of _.tail(locales)) {
-                console.log(locale[1][key]);
                 if (!_.isString(locale[1][key]) || _.isEmpty(locale[1][key])) {
                     fails.push({
                         kieli: locale[0],

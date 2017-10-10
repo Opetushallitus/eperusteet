@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine_;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.Taiteenala;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
@@ -38,10 +39,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.OsaamisalaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.yl.LukioOppiaineUpdateDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
+import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
@@ -148,7 +146,7 @@ public class DtoMapperConfig {
             .byDefault()
             .register();
         factory.classMap(PerusopetuksenPerusteenSisalto.class, PerusopetuksenPerusteenSisaltoDto.class)
-                .fieldAToB("oppiaineetCopy", "oppiaineet")
+            .fieldAToB("oppiaineetCopy", "oppiaineet")
             .byDefault()
             .register();
         factory.classMap(AihekokonaisuudetLaajaDto.class, Aihekokonaisuudet.class)
@@ -173,6 +171,10 @@ public class DtoMapperConfig {
             .register();
         factory.classMap(LukioOpetussuunnitelmaRakenneSuppeaDto.class, LukioOpetussuunnitelmaRakenne.class)
             .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(TaiteenalaDto.class, Taiteenala.class)
+            .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
             .byDefault()
             .register();
         factory.classMap(TekstiKappaleDto.class, TekstiKappale.class)

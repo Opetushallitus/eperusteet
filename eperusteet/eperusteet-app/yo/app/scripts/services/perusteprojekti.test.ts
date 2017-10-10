@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { createPerusteprojekti, createPeruste, getComponent, inject, getOfType, testModule, mockApp } from "app/testutils";
-import * as T from "scripts/types.ts";
+import * as T from "scripts/types";
 
 
 describe("PerusteProjektiService", () => {
@@ -13,6 +13,13 @@ describe("PerusteProjektiService", () => {
     });
 
     test("Can be injected", () => expect(PerusteProjektiService).toBeTruthy());
+
+    test("Reformin urlin generointi", () => {
+        const peruste = createPeruste(T.Ammattitutkinto, { id: 1, reforminMukainen: true });
+        const projekti = createPerusteprojekti(peruste.id, { id: 2 });
+        expect(PerusteProjektiService.getUrl(projekti, peruste))
+            .toEqual("#/fi/perusteprojekti/2/reformi/sisalto");
+    });
 
     test("urlFn", () => {
         const assertUrl = (expectedUrl: string, koulutustyyppi: T.Koulutustyyppi, perusteCfg = {}, projektiCfg = {}) => {
@@ -36,6 +43,36 @@ describe("PerusteProjektiService", () => {
         assertUrl("#/fi/perusteprojekti/2/lukiokoulutus/lukiosisalto", T.Aikuistenlukiokoulutus);
         assertUrl("#/fi/perusteprojekti/2/esiopetus/eosisalto", T.Perusopetusvalmistava);
         assertUrl("#/fi/perusteprojekti/2/tpo/tposisalto", T.Tpo, { suoritustavat: [] });
+
+        // Perusteen suoritustavalla päättely
+        assertUrl("#/fi/perusteprojekti/2/reformi/sisalto", T.Perustutkinto, {
+            suoritustavat: [{
+                suoritustapakoodi: "reformi"
+            }]
+        });
+
+        // Perusteprojektin suoritustavalla päättely
+        assertUrl("#/fi/perusteprojekti/2/reformi/sisalto", T.Perustutkinto, {}, {
+            suoritustavat: ["reformi"]
+        });
+
+        // Perusteella ja perusteprojektilla suoritustapakoodit (valitaan peruste)
+        assertUrl("#/fi/perusteprojekti/2/reformi/sisalto", T.Perustutkinto, {
+            suoritustavat: [{
+                suoritustapakoodi: "reformi"
+            }]
+        }, {
+            suoritustavat: ["ops"]
+        });
+
+        // Perusteella ja perusteprojektilla suoritustapakoodit (valitaan peruste)
+        assertUrl("#/fi/perusteprojekti/2/reformi/sisalto", T.Perustutkinto, {
+            suoritustavat: [{
+                suoritustapakoodi: "reformi"
+            }]
+        }, {
+            suoritustavat: ["ops"]
+        });
 
         // Oppaalla ei koulutustyyppia
         assertUrl("#/fi/perusteprojekti/2/opas/opassisalto", T.Perustutkinto, { tyyppi: "opas", koulutustyyppi: undefined });
