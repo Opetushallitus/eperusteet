@@ -46,7 +46,7 @@ public class ArviointiAsteikko implements Serializable, ReferenceableEntity {
     @Getter
     @Setter
     @OrderColumn(name = "osaamistasot_order")
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "arviointiasteikko_osaamistaso",
             joinColumns = @JoinColumn(name = "arviointiasteikko_id"),
