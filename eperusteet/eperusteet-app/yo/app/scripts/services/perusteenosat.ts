@@ -131,17 +131,19 @@ angular
             }
         );
     })
-    .service("Tutke2Service", function(Tutke2OsaData, Utils) {
+    .service("Tutke2Service", function(Tutke2OsaData, Utils, YleinenData) {
         return {
             fetch: function(tyyppi) {
-                if (tyyppi === "tutke2") {
+                if (_.includes(YleinenData.yhteisetTutkinnonOsat, tyyppi)) {
+                    //if (tyyppi === "tutke2") {
                     if (Tutke2OsaData.get()) {
                         Tutke2OsaData.get().fetch();
                     }
                 }
             },
             mergeOsaAlueet: function(tutkinnonOsa) {
-                if (tutkinnonOsa.tyyppi === "tutke2") {
+                if (_.includes(YleinenData.yhteisetTutkinnonOsat, tutkinnonOsa.tyyppi)) {
+                    //if (tutkinnonOsa.tyyppi === "tutke2") {
                     tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function(osaAlue) {
                         var item = { nimi: osaAlue.nimi, id: null };
                         if (osaAlue.id) {
@@ -152,7 +154,8 @@ angular
                 }
             },
             validate: function(tyyppi) {
-                if (tyyppi === "tutke2") {
+                if (_.includes(YleinenData.yhteisetTutkinnonOsat, tyyppi)) {
+                    //if (tyyppi === "tutke2") {
                     return _.all(
                         _.map(Tutke2OsaData.get().$editing, function(item) {
                             return Utils.hasLocalizedText(item.nimi);

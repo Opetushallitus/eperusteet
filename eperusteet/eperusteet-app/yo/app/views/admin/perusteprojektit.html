@@ -17,7 +17,16 @@
         <ohje teksti="'ohje-perusteprojekti'"></ohje>
     </h2>
 
-    <div class="tilarajaus">
+    <div class="tilarajaus pull-left">
+        <div class="tilarajaus-item">
+            <rajaus model="rajaus"
+                    placeholder="etsi-perusteprojekteista"
+                    callback="updateRajaus(value)">
+            </rajaus>
+        </div>
+    </div>
+
+    <div class="tilarajaus pull-right">
         <div class="tilarajaus-item">
             <label kaanna="'rajaa'"></label>
         </div>
@@ -40,13 +49,6 @@
                     ng-change="updateTila()">
                 <option value="">{{'koulutustyyppi-label' | kaanna}}</option>
             </select>
-        </div>
-        <div class="tilarajaus-divider"></div>
-        <div class="tilarajaus-item">
-            <rajaus model="rajaus"
-                    placeholder="etsi-perusteprojekteista"
-                    callback="updateRajaus(value)">
-            </rajaus>
         </div>
     </div>
 

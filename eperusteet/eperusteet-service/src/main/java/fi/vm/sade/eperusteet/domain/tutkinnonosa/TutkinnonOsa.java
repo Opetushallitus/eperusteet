@@ -299,7 +299,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         if (other.getValmaTelmaSisalto() != null) {
             this.valmaTelmaSisalto = new ValmaTelmaSisalto(other.getValmaTelmaSisalto());
         }
-        if (this.tyyppi == TutkinnonOsaTyyppi.TUTKE2 && other.getOsaAlueet() != null) {
+        if (TutkinnonOsaTyyppi.isTutke(this.tyyppi) && other.getOsaAlueet() != null) {
             this.osaAlueet = new ArrayList<>();
             for (OsaAlue o : other.getOsaAlueet()) {
                 this.osaAlueet.add(new OsaAlue(o));

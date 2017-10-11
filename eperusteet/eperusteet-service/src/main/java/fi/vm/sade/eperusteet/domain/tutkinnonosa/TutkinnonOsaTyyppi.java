@@ -24,7 +24,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum TutkinnonOsaTyyppi {
     NORMAALI("normaali"),
-    TUTKE2("tutke2");
+    TUTKE2("tutke2"),
+    REFORMI_TUTKE2("reformi_tutke2");
             
     private final String tyyppi;
 
@@ -35,6 +36,11 @@ public enum TutkinnonOsaTyyppi {
     @Override
     public String toString() {
         return tyyppi;
+    }
+
+    public static boolean isTutke(TutkinnonOsaTyyppi tyyppi) {
+        return tyyppi.equals(TutkinnonOsaTyyppi.TUTKE2)
+                || tyyppi.equals(TutkinnonOsaTyyppi.REFORMI_TUTKE2);
     }
 
     @JsonCreator

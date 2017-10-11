@@ -141,7 +141,12 @@ angular
                         const result = await perusteprojektiTiedot.projektinTiedotAlustettu();
                         return result;
                     },
-                    perusteenSisaltoAlustus: async (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams, $log) => {
+                    perusteenSisaltoAlustus: async (
+                        perusteprojektiTiedot,
+                        projektinTiedotAlustettu,
+                        $stateParams,
+                        $log
+                    ) => {
                         const result = await perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
                         return result;
                     }

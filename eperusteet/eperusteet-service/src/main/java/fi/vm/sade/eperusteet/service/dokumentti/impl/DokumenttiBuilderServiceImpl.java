@@ -734,7 +734,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 addValmatelmaSisalto(doc, element, osa.getValmaTelmaSisalto(), kieli);
                 addAmmattitaidonOsoittamistavat(doc, element, osa, kieli);
                 addArviointi(doc, element, osa.getArviointi(), tyyppi, kieli);
-            } else if (tyyppi == TutkinnonOsaTyyppi.TUTKE2) {
+            } else if (TutkinnonOsaTyyppi.isTutke(tyyppi)) {
                 addTutke2Osat(doc, element, osa, kieli);
             }
 
@@ -1198,10 +1198,22 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         List<OsaAlue> osaAlueet = osa.getOsaAlueet();
 
         for (OsaAlue osaAlue : osaAlueet) {
-            String nimi = getTextString(osaAlue.getNimi(), kieli);
+            StringBuilder nimiBuilder = new StringBuilder();
+            nimiBuilder.append(getTextString(osaAlue.getNimi(), kieli));
+
+            Koodi koodi = osaAlue.getKoodi();
+            if (koodi != null) {
+                KoodiDto dto = mapper.map(koodi, KoodiDto.class);
+                if (dto.getArvo() != null) {
+                    nimiBuilder.append(" (");
+                    nimiBuilder.append(dto.getArvo());
+                    nimiBuilder.append(")");
+                }
+            }
+
             Element sectionElement = doc.createElement("section");
             Element titleElement = doc.createElement("title");
-            titleElement.appendChild(doc.createTextNode(nimi));
+            titleElement.appendChild(doc.createTextNode(nimiBuilder.toString()));
             sectionElement.appendChild(titleElement);
             element.appendChild(sectionElement);
 
