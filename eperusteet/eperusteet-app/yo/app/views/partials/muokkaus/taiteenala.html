@@ -78,7 +78,6 @@
                     <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
                 </div>
                 <div class="taiteenala-sisalto">
-                    <pre ng-bind="editableTekstikappale.aikuistenOpetus | json"></pre>
                     <div ng-repeat="field in taiteenalaFields">
                         <div ng-if="editEnabled" class="taiteenala-kentta">
                             <div class="row tovp-header">
@@ -112,7 +111,6 @@
                         </div>
                     </div>
                 </div>
-                <pre ng-bind="editableTekstikappale | json"></pre>
                 <valmiskaannos ng-if="editEnabled" is-editing="editEnabled" ng-model="editableTekstikappale"></valmiskaannos>
             </div>
             <kommentit></kommentit>

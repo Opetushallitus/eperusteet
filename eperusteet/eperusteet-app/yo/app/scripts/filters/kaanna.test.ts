@@ -190,6 +190,24 @@ describe("kaanna", () => {
             expect(el.text()).toEqual("Kieli");
         });
 
+        test("Postfix muu", async () => {
+            const [el, $scope] = await compiled(`<span kaanna-postfix="kylpy" kaanna="'kieli'"></div>`);
+            $scope.$digest();
+            expect(el.text()).toEqual("Kieli kylpy");
+        });
+
+        test("Postfix vaaditaan", async () => {
+            const [el, $scope] = await compiled(`<span vaaditaan kaanna="'kieli'"></div>`);
+            $scope.$digest();
+            expect(el.text()).toEqual("Kieli*");
+        });
+
+        test("Ikonien lisäys", async () => {
+            const [el, $scope] = await compiled(`<span icon-role="remove" kaanna="'kieli'"></div>`);
+            $scope.$digest();
+            expect(el.text()).toEqual("Kieli");
+        });
+
     });
 
 });

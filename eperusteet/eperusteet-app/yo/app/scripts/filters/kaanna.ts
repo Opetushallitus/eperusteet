@@ -68,7 +68,7 @@ angular
                 postfix = " " + postfix;
             }
             if (!postfix && attrs.vaaditaan !== undefined) {
-                postfix = " *";
+                postfix = "*";
             }
             return postfix;
         }
