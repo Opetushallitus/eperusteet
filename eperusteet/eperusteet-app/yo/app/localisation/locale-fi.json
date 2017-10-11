@@ -12,8 +12,7 @@
     "siirry": "Siirry",
     "sisalto": "Sisältö",
     "kaannettava-ohje": "Perusteen osa on valmis käännettäväksi",
-    "suorittaneen-osaaminen": "Tutkinnon suorittaneen osaaminen",
-    "tyotehtavat-joissa-voi-toimia": "Työtehtäviä, joissa tutkinnon suorittanut voi toimia",
+    "suorittaneen-osaaminen": "Tutkinnon suorittaneen osaaminen", "tyotehtavat-joissa-voi-toimia": "Työtehtäviä, joissa tutkinnon suorittanut voi toimia",
     "arvosana-asteikko": "Arvosana-asteikko/hyväksymisvaatimukset",
     "jatkoopinto-kelpoisuus": "Jatko-opintokelpoisuus",
     "tutkintotodistuksen-antaja": "Tutkintotodistuksen antaja",
@@ -1164,5 +1163,12 @@
     "luonti-opas-nimi-ohje": "Oppaan nimi",
     "luo-opas-nappi": "Luo opas",
 
-    "lisaa-taiteenala": "Lisää taiteenala"
+    "lisaa-taiteenala": "Lisää taiteenala",
+    "tpo": "Taiteen perusopetus",
+    "taiteenala-aikuisten-opetus": "Aikuisten opetus",
+    "taiteenala-kasvatus": "Kasvatus",
+    "taiteenala-oppimisen-arvionti": "Oppimisen arviointi opetuksessa",
+    "taiteenala-teemaopinnot": "Teemaopinnot",
+    "taiteenala-tyotavat": "Työtavat opetuksessa",
+    "taiteenala-yhteisetOpinnot": "Yhteiset opinnot"
 }

@@ -17,10 +17,7 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
@@ -30,6 +27,9 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -93,14 +93,30 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
         return new EntityReference(getId());
     }
 
+    @Override
+    public void mergeState(PerusteenOsa perusteenOsa) {
+        super.mergeState(perusteenOsa);
+        if (perusteenOsa instanceof Taiteenala) {
+            copyState((Taiteenala) perusteenOsa);
+        }
+    }
+
+    @Override
+    public boolean structureEquals(PerusteenOsa other) {
+        return false;
+    }
+
     private void copyState(Taiteenala other) {
         if (other == null) {
             return;
         }
+
+        setKoodi(other.getKoodi());
+        setTeksti(other.getTeksti());
         setAikuistenOpetus(KevytTekstiKappale.getCopy(other.getAikuistenOpetus()));
         setYhteisetOpinnot(KevytTekstiKappale.getCopy(other.getYhteisetOpinnot()));
         setTeemaopinnot(KevytTekstiKappale.getCopy(other.getTeemaopinnot()));
-        setAikuistenOpetus(KevytTekstiKappale.getCopy(other.getAikuistenOpetus()));
+        setKasvatus(KevytTekstiKappale.getCopy(other.getKasvatus()));
         setTyotavatOpetuksessa(KevytTekstiKappale.getCopy(other.getTyotavatOpetuksessa()));
         setOppimisenArviointiOpetuksessa(KevytTekstiKappale.getCopy(other.getOppimisenArviointiOpetuksessa()));
     }

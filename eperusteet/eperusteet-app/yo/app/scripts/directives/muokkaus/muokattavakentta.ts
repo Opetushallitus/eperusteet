@@ -14,6 +14,9 @@
 * European Union Public Licence for more details.
 */
 
+import * as _ from "lodash";
+import * as angular from "angular";
+
 angular
     .module("eperusteApp")
     .directive("muokkauskenttaRaamit", Utils => {
@@ -352,7 +355,8 @@ angular
                     if (modelValue === null) {
                         return;
                     }
-                    return modelValue[Kieli.getSisaltokieli()];
+                    const result = modelValue[Kieli.getSisaltokieli()];
+                    return result;
                 });
 
                 ngModelCtrl.$parsers.push(function(viewValue) {
@@ -364,7 +368,7 @@ angular
                     if (localizedModelValue === null) {
                         localizedModelValue = {};
                     }
-                    if (viewValue !== "") {
+                    if (_.isString(viewValue)) {
                         localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
                     }
                     return localizedModelValue;

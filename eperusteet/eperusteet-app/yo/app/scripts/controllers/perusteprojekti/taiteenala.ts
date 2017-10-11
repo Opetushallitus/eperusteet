@@ -68,27 +68,44 @@ export function taiteenalaCtrl(
             PerusteProjektiSivunavi.setVisible(!editEnabled);
         });
 
-        $scope.fields = [
-            {
-                path: "nimi",
-                hideHeader: false,
-                localeKey: "teksikappaleen-nimi",
-                type: "editor-header",
-                localized: true,
-                mandatory: true,
-                mandatoryMessage: "mandatory-otsikkoa-ei-asetettu",
-                order: 1
-            },
-            {
-                path: "teksti",
-                hideHeader: false,
-                localeKey: "tekstikappaleen-teksti",
-                type: "editor-area",
-                localized: true,
-                mandatory: false,
-                order: 2
-            }
-        ];
+        $scope.fields = [{
+            path: "nimi",
+            hideHeader: false,
+            localeKey: "teksikappaleen-nimi",
+            type: "editor-header",
+            localized: true,
+            mandatory: true,
+            mandatoryMessage: "mandatory-otsikkoa-ei-asetettu",
+            order: 1
+        }, {
+            path: "teksti",
+            hideHeader: false,
+            localeKey: "tekstikappaleen-teksti",
+            type: "editor-area",
+            localized: true,
+            mandatory: false,
+            order: 2
+        }];
+
+        $scope.taiteenalaFields = [{
+            path: "aikuistenOpetus",
+            localeKey: "taiteenala-aikuisten-opetus",
+        }, {
+            path: "kasvatus",
+            localeKey: "taiteenala-kasvatus",
+        }, {
+            path: "oppimisenArviointiOpetuksessa",
+            localeKey: "taiteenala-oppimisen-arvionti",
+        }, {
+            path: "teemaopinnot",
+            localeKey: "taiteenala-teemaopinnot",
+        }, {
+            path: "tyotavatOpetuksessa",
+            localeKey: "taiteenala-tyotavat",
+        }, {
+            path: "yhteisetOpinnot",
+            localeKey: "taiteenala-yhteisetOpinnot",
+        }];
 
         $scope.poistaTyoryhma = function(tr) {
             Varmistusdialogi.dialogi({

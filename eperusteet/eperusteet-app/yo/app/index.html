@@ -8,7 +8,9 @@
     <title>ePerusteet</title>
     <script type="text/javascript" src="/virkailija-raamit/apply-raamit.js"></script>
   </head>
-  <body ng-app="eperusteApp" style="height:100%; background-color: white">
+  <body ng-app="eperusteApp"
+    ng-model-options="{ allowInvalid: true }"
+    style="height:100%; background-color: white">
     <script>
       var CKEDITOR_BASEPATH = window.location.origin + window.location.pathname + "bower_components/ckeditor/";
     </script>

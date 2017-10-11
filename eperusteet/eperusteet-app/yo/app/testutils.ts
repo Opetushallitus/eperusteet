@@ -204,6 +204,20 @@ export async function getComponent(name: string) {
     });
 }
 
+export function setInput(el: JQuery, text: string) {
+    el.text(text).val(text).trigger("input");
+    return el;
+}
+
+export async function compiled(template): Promise<[JQuery, angular.IScope]> {
+    const $rootScope = await getComponent("$rootScope");
+    const scope = $rootScope.$new();
+    const $compile = await getComponent("$compile");
+    const el = $compile(angular.element(template))(scope);
+    scope.$digest();
+    return [el, scope];
+}
+
 /// Inject angular modules into function parameters
 export function inject(fn: Function) {
     return angular.mock.inject(fn);
