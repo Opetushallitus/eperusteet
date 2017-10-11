@@ -209,13 +209,13 @@ export function setInput(el: JQuery, text: string) {
     return el;
 }
 
-export async function compiled(template): Promise<[JQuery, angular.IScope]> {
+export async function compiled(template, scope?: angular.IScope): Promise<[JQuery, angular.IScope]> {
     const $rootScope = await getComponent("$rootScope");
-    const scope = $rootScope.$new();
+    const $scope = scope || ($rootScope as any).$new();
     const $compile = await getComponent("$compile");
-    const el = $compile(angular.element(template))(scope);
-    scope.$digest();
-    return [el, scope];
+    const el = $compile(angular.element(template))($scope);
+    $scope.$digest();
+    return [el, $scope];
 }
 
 /// Inject angular modules into function parameters

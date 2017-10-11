@@ -37,6 +37,11 @@ export function taiteenalaCtrl(
         $scope.viitteet = {};
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
+        $scope.morjens = {
+            fi: "hei",
+            sv: "moi"
+        };
+
         var tekstikappaleDefer = $q.defer();
         $scope.tekstikappalePromise = tekstikappaleDefer.promise;
 

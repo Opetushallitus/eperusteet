@@ -50,7 +50,8 @@ angular
                 if (_.isObject(input)) {
                     return kaannaSisalto(input) || "";
                 } else if (_.isString(input)) {
-                    return $translate.instant(input, config);
+                    const result = $translate.instant(input, config);
+                    return result;
                 }
                 else if (input === 0 || input) {
                     return "" + input;
@@ -123,5 +124,7 @@ angular
         };
     })
     .filter("kaanna", function(Kaanna) {
-        return Kaanna.kaanna;
+        return (input, config) => {
+            return Kaanna.kaanna(input, config);
+        };
     });

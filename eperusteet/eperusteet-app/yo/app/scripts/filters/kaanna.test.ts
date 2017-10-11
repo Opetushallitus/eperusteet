@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { getComponent, inject, getOfType, testDirective, testModule, mockApp } from "app/testutils";
+import { setInput, compiled, getComponent, inject, getOfType, testDirective, testModule, mockApp } from "../../testutils";
 
 describe("Kaanna", () => {
     let Kaanna: any;
@@ -113,6 +113,83 @@ describe("Kieli", () => {
             const el = $compile("<kielenvaihto></kielenvaihto>")($scope);
             expect(el).toBeTruthy();
         });
+    });
+
+});
+
+describe("kaanna", () => {
+    let Kieli: any;
+    let $rootScope: any;
+    let $timeout: any;
+
+    beforeEach(async () => {
+        mockApp();
+        Kieli = await getComponent("Kieli");
+        $rootScope = await getComponent("$rootScope");
+        $timeout = await getComponent("$timeout");
+        await getComponent("LokalisointiLoader");
+    });
+
+    describe("filter", () => {
+        test("Tuntemattomalla tekstillä", async () => {
+            const [el, $scope] = await compiled(`<span ng-bind="'taysintuntematonteksti' | kaanna"></div>`);
+            $scope.$digest();
+            expect(el.html()).toEqual("taysintuntematonteksti");
+        });
+
+        test("Lokalisoidulla oliolla", async () => {
+            const $scope = $rootScope.$new();
+            $scope.olio = {
+                fi: "hello",
+                en: "world"
+            };
+            const [el] = await compiled(`<span ng-bind="olio | kaanna"></div>`, $scope);
+            $scope.$digest();
+            expect(el.text()).toEqual("hello");
+            Kieli.setSisaltokieli("en");
+            $scope.$digest();
+            expect(el.text()).toEqual("world");
+            Kieli.setSisaltokieli("sv");
+            $scope.$digest();
+            expect(el.text()).toEqual("[hello]");
+        });
+
+        test("Lokalisoitu teksti", async () => {
+            const [el, $scope] = await compiled(`<span ng-bind="'kieli' | kaanna"></div>`);
+            $scope.$digest();
+            $timeout.flush();
+            expect(el.text()).toEqual("Kieli");
+        });
+
+    });
+
+    describe("direktiivi", () => {
+        test("Lokalisoidulla oliolla", async () => {
+            const $scope = $rootScope.$new();
+            $scope.olio = {
+                fi: "hello",
+                en: "world"
+            };
+            const [el] = await compiled(`<span kaanna="olio"></div>`, $scope);
+            expect(el.text()).toEqual("hello");
+            Kieli.setSisaltokieli("en");
+            expect(el.text()).toEqual("world");
+            Kieli.setSisaltokieli("sv");
+            expect(el.text()).toEqual("[hello]");
+        });
+
+        test("Tuntemattomalla tekstillä", async () => {
+            const [el, $scope] = await compiled(`<span kaanna="'taysintuntematonteksti'"></div>`);
+            $scope.$digest();
+            expect(el.text()).toEqual("taysintuntematonteksti");
+        });
+
+        test("Lokalisoitu teksti", async () => {
+            const [el, $scope] = await compiled(`<span kaanna="'kieli'"></div>`);
+            $scope.$digest();
+            expect(el.text()).toEqual("Kieli");
+        });
+
     });
 
 });

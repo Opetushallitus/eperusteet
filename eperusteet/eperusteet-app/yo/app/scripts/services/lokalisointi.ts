@@ -14,14 +14,17 @@
  * European Union Public Licence for more details.
  */
 
+import * as _ from "lodash";
+import * as angular from "angular";
+
 const fi = require("../../localisation/locale-fi.json");
 const sv = require("../../localisation/locale-fi.json");
 const en = require("../../localisation/locale-fi.json");
 
 const Locales = {
-  fi,
-  sv,
-  en,
+    fi,
+    sv,
+    en,
 };
 
 angular
@@ -42,7 +45,8 @@ angular
     .factory("LokalisointiLoader", ($q, $http, LokalisointiResource, $window) => {
         const PREFIX = "localisation/locale-",
             SUFFIX = ".json",
-            BYPASS_REMOTE = $window.location.host.indexOf("localhost") === 0;
+            BYPASS_REMOTE = !$window.location.host || $window.location.host.indexOf("localhost") === 0;
+
         return async (options) => new Promise((resolve, reject) => {
             const translations = {};
             const langs = Locales[options.key];
@@ -67,7 +71,8 @@ angular
                 }
             }
             catch (err) {
-                throw options.key;
+                console.error(err);
+                throw "Käännösten haku epäonnistui: " + options.key;
             }
         });
     });

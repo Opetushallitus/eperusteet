@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import { setInput, compiled, getComponent, inject, getOfType, testDirective, testModule, mockApp } from "../../../testutils";
 
+
 describe("slocalized", () => {
     let Kieli: any;
 
