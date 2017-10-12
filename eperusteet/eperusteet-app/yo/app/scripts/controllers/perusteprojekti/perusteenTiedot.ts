@@ -362,7 +362,9 @@ angular
             // Kun ensimmäinen koodi lisätään, perusteen nimi kopioidaan koodistosta
             if ($scope.editablePeruste.koulutukset.length === 0) {
                 _.each(_.values(YleinenData.kielet), function(kieli) {
-                    $scope.editablePeruste.nimi[kieli] = koodisto.nimi[kieli];
+                    if (koodisto.nimi.hasOwnProperty(kieli)) {
+                        $scope.editablePeruste.nimi[kieli] = koodisto.nimi[kieli];
+                    }
                 });
             }
             $scope.editablePeruste.koulutukset.push(added);

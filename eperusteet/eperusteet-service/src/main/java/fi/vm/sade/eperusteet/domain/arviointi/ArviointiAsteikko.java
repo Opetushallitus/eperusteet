@@ -21,51 +21,38 @@ import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Immutable;
 
 /**
  *
  * @author teele1
  */
-@Entity
+@Entity(name = "ArviointiAsteikko")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-@Immutable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "arviointiasteikko")
 public class ArviointiAsteikko implements Serializable, ReferenceableEntity {
 
     @Id
+    @Getter
+    @Setter
     private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @OrderColumn
-    @Immutable
+    @Getter
+    @Setter
+    @OrderColumn(name = "osaamistasot_order")
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(
+            name = "arviointiasteikko_osaamistaso",
+            joinColumns = @JoinColumn(name = "arviointiasteikko_id"),
+            inverseJoinColumns = @JoinColumn(name = "osaamistasot_id")
+    )
     private List<Osaamistaso> osaamistasot;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<Osaamistaso> getOsaamistasot() {
-        return osaamistasot;
-    }
-
-    public void setOsaamistasot(List<Osaamistaso> osaamistasot) {
-        this.osaamistasot = osaamistasot;
-    }
 
     @Override
     public EntityReference getReference() {

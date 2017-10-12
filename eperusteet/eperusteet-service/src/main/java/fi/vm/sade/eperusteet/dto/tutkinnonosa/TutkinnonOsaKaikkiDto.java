@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.List;
 import lombok.Getter;
@@ -43,8 +44,27 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
     private LokalisoituTekstiDto kuvaus;
     private Long opintoluokitus;
+    private KoodiDto koodi;
     private String koodiUri;
     private String koodiArvo;
     private List<OsaAlueKokonaanDto> osaAlueet;
     private TutkinnonOsaTyyppi tyyppi;
+
+    public String getKoodiUri() {
+        KoodiDto koodi = this.getKoodi();
+        if (koodi != null) {
+            return koodi.getUri();
+        } else {
+            return koodiUri;
+        }
+    }
+
+    public String getKoodiArvo() {
+        KoodiDto koodi = this.getKoodi();
+        if (koodi != null) {
+            return koodi.getArvo();
+        } else {
+            return koodiArvo;
+        }
+    }
 }

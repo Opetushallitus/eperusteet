@@ -148,7 +148,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     private void tarkistaVoikoMuokata(PerusteenOsa osa) {
         if (osa != null && osa.getTila() == PerusteTila.POISTETTU) {
             throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
@@ -156,7 +156,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public <T extends PerusteenOsaDto.Laaja> T update(T perusteenOsaDto) {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());

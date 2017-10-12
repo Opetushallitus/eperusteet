@@ -38,18 +38,30 @@ angular
 
         $scope.isVaTe = YleinenData.isValmaTelma($scope.peruste);
         $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
+        $scope.alarelaatiotLadattu = false;
 
         $scope.osaAlue = {
             nimi: {},
             kuvaus: {}
         };
 
-        if ($scope.tutkinnonOsaViite.tutkinnonOsa) {
-            Koodisto.haeAlarelaatiot($scope.tutkinnonOsaViite.tutkinnonOsa.koodiUri, function(alarelaatiot) {
-                alarelaatiot.unshift({});
-                $scope.$alarelaatiot = alarelaatiot;
-            });
-        }
+        // TODO: Tee parempi korjaus ilman watchia
+        $scope.$watch("tutkinnonOsaViite", () => {
+            if ($scope.tutkinnonOsaViite.tutkinnonOsa) {
+
+                // Haetaan alarelaatio koodi osa-alueelle
+                const koodiUri = $scope.tutkinnonOsaViite.tutkinnonOsa.koodiUri;
+                if (koodiUri !== null || koodiUri === "") {
+                    Koodisto.haeAlarelaatiot(koodiUri, (alarelaatiot) => {
+                        alarelaatiot.unshift({});
+                        $scope.alarelaatiot = alarelaatiot;
+                        $scope.alarelaatiotLadattu = true;
+                    });
+                } else {
+                    $scope.alarelaatiotLadattu = true;
+                }
+            }
+        });
 
         if ($scope.isVaTe) {
             $scope.$$osaamistavoiteOpen = true;
@@ -69,6 +81,7 @@ angular
         }
 
         $scope.valitseAlarelaatio = function(ar) {
+            $scope.osaAlue.koodi = ar ? ar.koodi : undefined;
             $scope.osaAlue.koodiUri = ar ? ar.koodiUri : undefined;
             $scope.osaAlue.koodiArvo = ar ? ar.koodiArvo : undefined;
         };
@@ -81,6 +94,13 @@ angular
                         o.$poistettu = false;
                     })
                     .value();
+
+                // Alustetaan tutkinnon osaan liittyvät asiat
+                if ($scope.tutkinnonOsaViite.tutkinnonOsa.tyyppi === "reformi_tutke2") {
+                    if ($scope.osaamistavoitepuu.length == 0) {
+                        $scope.lisaaOsaamistavoite();
+                    }
+                }
 
                 _($scope.osaAlue.osaamistavoitteet)
                     .filter({ pakollinen: false })
@@ -105,14 +125,14 @@ angular
         }
 
         $scope.lisaaOsaamistavoite = function() {
-            var osaamistavoitePakollinen: any = {
+            const osaamistavoitePakollinen: any = {
                 pakollinen: true,
                 nimi: {},
                 koodi: { koodiArvo: "", koodiUri: {} },
                 $open: true,
                 $poistettu: false
             };
-            var osaamistavoiteValinnainen = {
+            const osaamistavoiteValinnainen = {
                 pakollinen: false,
                 koodi: { koodiArvo: "", koodiUri: {} },
                 $poistettu: false
@@ -166,7 +186,6 @@ angular
         };
 
         function setKoodisto() {
-            $scope.isKoodiVisible = $scope.tutkinnonOsaViite.tutkinnonOsa.koodiArvo === "101053";
             _.each($scope.osaAlue.osaamistavoitteet, function(tavoite) {
                 if (tavoite.koodiArvo && tavoite.koodiUri)
                     tavoite.koodi = {

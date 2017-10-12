@@ -49,7 +49,76 @@ angular
                 url: "/oppaat",
                 template: require("views/admin/oppaat.pug"),
                 controller: "OpasHallintaController"
+            })
+            .state("root.admin.arviointiasteikot", {
+                url: "/arviointiasteikot",
+                templateUrl: "views/admin/arviointiasteikot.html",
+                controller: "ArviointiasteikotHallintaController",
+                resolve: {
+                    arviointiasteikot: function($stateParams, Arviointiasteikot) {
+                        return Arviointiasteikot.list({}).$promise;
+                    }
+                }
             });
+    })
+    .controller("ArviointiasteikotHallintaController", ($scope, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot) => {
+        // Lasketaan osaamistasoille arviointiasteikkojen mukaiset id:eet
+        function calculateFakeIds() {
+            _.each(arviointiasteikot, arviointiasteikko => {
+                const minOsaamistasoId = _.min(_.map(arviointiasteikko.osaamistasot, osaamistaso => osaamistaso.id));
+                _.each(arviointiasteikko.osaamistasot, osaamistaso => {
+                    osaamistaso.__fakeId = osaamistaso.id - minOsaamistasoId + 1;
+                });
+            });
+        }
+        calculateFakeIds();
+        $scope.arviointiasteikot = angular.copy(arviointiasteikot);
+        $scope.edit = () => {
+            Editointikontrollit.startEditing();
+        };
+        $scope.sortableOptions = {
+            handle: ".handle",
+            cursor: "move",
+            cursorAt: { top: 10, left: 10 },
+            forceHelperSize: true,
+            placeholder: "sortable-placeholder",
+            forcePlaceholderSize: true,
+            opacity: ".7",
+            delay: 100,
+            axis: "y",
+            tolerance: "pointer"
+        };
+
+        Editointikontrollit.registerCallback({
+            edit: () => {
+            },
+            save: () => {
+                Arviointiasteikot.save(
+                    {},
+                    $scope.arviointiasteikot,
+                    res => {
+                        arviointiasteikot = res;
+                        calculateFakeIds();
+                        $scope.arviointiasteikot = angular.copy(arviointiasteikot);
+                        Notifikaatiot.onnistui("arviointiasteikkojen-päivitys-onnistui");
+                    },
+                    virhe => {
+                        Notifikaatiot.serverCb(virhe);
+                    }
+                );
+            },
+            cancel: () => {
+                $scope.arviointiasteikot = angular.copy(arviointiasteikot);
+            },
+            validate: () => {
+                return true;
+            },
+            notify: value => {
+            }
+        });
+        Editointikontrollit.registerEditModeListener(mode => {
+            $scope.editEnabled = mode;
+        });
     })
     .controller("OpasHallintaController", ($location, $scope, $state, Api) => {
         const projektitEp = Api.one("oppaat").one("projektit");
@@ -85,7 +154,8 @@ angular
         $scope.tabs = [
             { label: "perusteprojektit", state: "root.admin.perusteprojektit" },
             { label: "tiedotteet", state: "root.admin.tiedotteet" },
-            { label: "oppaat", state: "root.admin.oppaat" }
+            { label: "oppaat", state: "root.admin.oppaat" },
+            { label: "arviointiasteikot", state: "root.admin.arviointiasteikot" }
         ];
 
         $scope.chooseTab = $index => {

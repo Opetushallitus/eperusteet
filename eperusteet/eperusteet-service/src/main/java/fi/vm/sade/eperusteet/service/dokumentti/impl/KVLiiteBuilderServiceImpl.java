@@ -15,10 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
-import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -68,7 +66,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
     private ArviointiAsteikkoService arviointiAsteikkoService;
 
     @Override
-    public Document generateXML(Peruste peruste, Dokumentti dto, Kieli kieli) throws ParserConfigurationException, IOException, TransformerException {
+    public Document generateXML(Peruste peruste, Kieli kieli) throws ParserConfigurationException, IOException, TransformerException {
         // Luodaan uusi dokumentti
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -326,7 +324,9 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
                     if (kvLiiteJulkinenDto.getMuodostumisenKuvaus().size() > 1) {
                         otsikkoBuilder.append(" (");
-                        otsikkoBuilder.append(suoritustapakoodi.toString());
+                        otsikkoBuilder.append(
+                                messages.translate("docgen.tutkinnon_muodostuminen.title.suoritustapa."
+                                        + suoritustapakoodi.toString(), docBase.getKieli()));
                         otsikkoBuilder.append(")");
                     }
                     Element p = docBase.getDocument().createElement("p");
@@ -429,13 +429,26 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             Element rightTd = docBase.getDocument().createElement("td");
             tr.appendChild(rightTd);
 
-            leftTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
-                    messages.translate("docgen.kvliite.antajan-nimi-ja-asema", docBase.getKieli())));
-            DokumenttiUtils.addTeksti(docBase, kvLiiteJulkinenDto.getTutkintotodistuksenAntaja(), "div", leftTd);
+            LokalisoituTekstiDto tutkintotodistuksenAntaja = kvLiiteJulkinenDto.getTutkintotodistuksenAntaja();
+            if (tutkintotodistuksenAntaja != null) {
 
-            rightTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
-                    messages.translate("docgen.kvliite.paattavan-nimi", docBase.getKieli())));
-            DokumenttiUtils.addTeksti(docBase, kvLiiteJulkinenDto.getTutkinnostaPaattavaViranomainen(), "div", rightTd);
+                leftTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
+                        messages.translate("docgen.kvliite.antajan-nimi-ja-asema", docBase.getKieli())));
+
+                DokumenttiUtils.addTeksti(docBase,
+                        DokumenttiUtils.getTextString(docBase,tutkintotodistuksenAntaja), "div", leftTd);
+            }
+
+            LokalisoituTekstiDto tutkinnostaPaattavaViranomainen= kvLiiteJulkinenDto
+                    .getTutkinnostaPaattavaViranomainen();
+            if (tutkinnostaPaattavaViranomainen != null) {
+
+                rightTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
+                        messages.translate("docgen.kvliite.paattavan-nimi", docBase.getKieli())));
+
+                DokumenttiUtils.addTeksti(docBase,
+                        DokumenttiUtils.getTextString(docBase, tutkinnostaPaattavaViranomainen), "div", rightTd);
+            }
         }
 
         {

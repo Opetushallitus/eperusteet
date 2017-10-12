@@ -80,7 +80,8 @@
                                 </label>
                                 <div class="btn-group">
                                     <label class="btn btn-default" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi" uib-btn-radio="'normaali'">{{'tyyppi-tutkintokohtainen' | kaanna}}</label>
-                                    <label class="btn btn-default" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi" uib-btn-radio="'tutke2'">{{'tyyppi-yhteinen' | kaanna}}</label>
+                                    <label class="btn btn-default" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi" uib-btn-radio="'tutke2'" ng-show="!isReformi">{{'tyyppi-yhteinen' | kaanna}}</label>
+                                    <label class="btn btn-default" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi" uib-btn-radio="'reformi_tutke2'" ng-show="isReformi">{{'tyyppi-yhteinen' | kaanna}}</label>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
@@ -118,9 +119,9 @@
                             </div>
                             <label for="koodi-input" class="header" kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')"></label>
                             <div class="form-inline">
-                                <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo" editointi-kontrolli disabled="disabled">
-                                <button class="btn btn-default" ng-click="koodistoClick()" kaanna>hae-koodistosta</button>
-                                <button ng-show="editableTutkinnonOsaViite.tutkinnonOsa.koodiUri && editableTutkinnonOsaViite.tutkinnonOsa.tila === 'luonnos'" class="btn btn-danger" ng-click="cleanKoodi()" kaanna>tyhjenna-koodin-arvo</button>
+                                <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo" editointi-kontrolli disabled="disabled">
+                                <button class="btn btn-default" ng-click="koodistoClick()" kaanna="'hae-koodistosta'"></button>
+                                <button ng-show="editableTutkinnonOsaViite.tutkinnonOsa.koodiUri && editableTutkinnonOsaViite.tutkinnonOsa.tila === 'luonnos'" class="btn btn-danger" ng-click="cleanKoodi()" kaanna="'tyhjenna-koodin-arvo'"></button>
                             </div>
                         </div>
                     </form>
@@ -159,7 +160,7 @@
                                         <div class="col-xs-10">
                                             <div class="input-group">
                                                 <span class="input-group-addon handle" icon-role="drag"></span>
-                                                <input class="form-control" slocalized ng-model="vt.nimi" placeholder="{{ 'otsikko' | kaanna }}"></input>
+                                                <input class="form-control" slocalized ng-model="vt.nimi" placeholder="{{ 'otsikko' | kaanna }}">
                                             </div>
                                         </div>
                                         <div class="col-xs-2">
@@ -174,14 +175,19 @@
                         </div>
                     </div>
 
-                    <div class="non-collapsibles" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
+                    <div class="non-collapsibles" ng-if="isTutke2(editableTutkinnonOsaViite)">
                         <label class="header" for="tutke2-kuvaus" kaanna>kuvaus</label>
                         <textarea id="tutke2-kuvaus" class="form-control msd-elastic" ng-show="editEnabled" slocalized ng-model="editableTutkinnonOsaViite.tutkinnonOsa.kuvaus"></textarea>
                         <p ng-show="!editEnabled">{{tutkinnonOsaViite.tutkinnonOsa.kuvaus| kaanna}}</p>
                     </div>
 
-                    <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
-                        <tutke2kentat edit-enabled="editEnabled" tutkinnonosa-viite="tutkinnonOsaPromise" kontrollit="editointikontrollit" yksikko="yksikko"></tutke2kentat>
+                    <div class="tutkinnonosa-sisalto" ng-if="isTutke2(editableTutkinnonOsaViite)">
+                        <tutke2kentat id="muokattavat-kentat"
+                                      edit-enabled="editEnabled"
+                                      tutkinnonosa-viite="tutkinnonOsaPromise"
+                                      kontrollit="editointikontrollit"
+                                      yksikko="yksikko">
+                        </tutke2kentat>
                     </div>
                 </div>
 

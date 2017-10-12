@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,6 +45,7 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto ammattitaitovaatimukset;
     private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
     private LokalisoituTekstiDto kuvaus;
+    private KoodiDto koodi;
     private String koodiUri;
     private String koodiArvo;
     private List<OsaAlueDto> osaAlueet;
@@ -61,4 +63,21 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
         return "tutkinnonosa";
     }
 
+    public String getKoodiUri() {
+        KoodiDto koodi = this.getKoodi();
+        if (koodi != null) {
+            return koodi.getUri();
+        } else {
+            return koodiUri;
+        }
+    }
+
+    public String getKoodiArvo() {
+        KoodiDto koodi = this.getKoodi();
+        if (koodi != null) {
+            return koodi.getArvo();
+        } else {
+            return koodiArvo;
+        }
+    }
 }

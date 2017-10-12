@@ -198,9 +198,8 @@ public class TutkinnonRakenneController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("osanId") final Long id) {
-        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, KLOONAUS), (Void) -> {
-            return perusteenOsaViiteService.kloonaaTutkinnonOsa(perusteId, suoritustapakoodi, id);
-        });
+        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, KLOONAUS),
+                (Void) -> perusteenOsaViiteService.kloonaaTutkinnonOsa(perusteId, suoritustapakoodi, id));
     }
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}", method = DELETE)
@@ -238,9 +237,8 @@ public class TutkinnonRakenneController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @RequestBody UpdateDto<RakenneModuuliDto> rakenne) {
-        return audit.withAudit(LogMessage.builder(perusteId, SUORITUSTAVANRAKENNE, MUOKKAUS), (Void) -> {
-            return perusteService.updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne);
-        });
+        return audit.withAudit(LogMessage.builder(perusteId, SUORITUSTAVANRAKENNE, MUOKKAUS),
+                (Void) -> perusteService.updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne));
     }
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}", method = POST)
@@ -250,9 +248,8 @@ public class TutkinnonRakenneController {
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("osanId") final Long osanId,
             @RequestBody TutkinnonOsaViiteUpdateDto osa) {
-        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSA, LISAYS), (Void) -> {
-            return perusteService.updateTutkinnonOsa(perusteId, suoritustapakoodi, osa);
-        });
+        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSA, LISAYS),
+                (Void) -> perusteService.updateTutkinnonOsa(perusteId, suoritustapakoodi, osa));
     }
 
     @RequestMapping(value = "/tutkinnonosat/{viiteId}", method = GET)

@@ -1,4 +1,20 @@
 {
     "haku-otsikko": "Topic search",
-    "kielen-vaihto": "Change language"
+    "kielen-vaihto": "Change language",
+
+    "tutkinnon-suorittaneen-ammatillinen-osaaminen": "Profile of skills and competences",
+    "tutkinnon-muodostuminen": "Composition of the qualification",
+    "suorittaneen-osaaminen": "Vocational skills and competences required for completion of the qualification",
+    "tyotehtavat-joissa-voi-toimia": "Range of occupations accessible to the holder of the certificate",
+    "tutkinnon-virallinen-asema": "Official basis of the certificate",
+    "tutkintotodistuksen-antaja": "Name and status of the body awarding the certificate",
+    "tutkinnosta-paattava-viranomainen": "Name and status of the national/regional authority providing accreditation/recognition of the certificate",
+    "tutkinnon-taso": "Level of the certificate (national or international)",
+    "arvosana-asteikko": "Grading scale/Pass requirements",
+    "jatkoopinto-kelpoisuus": "Access to the next level of education/training",
+    "kansainvaliset-sopimukset": "International agreements",
+    "saadosperusta": "Legal basis",
+    "tutkintotodistuksen-saaminen": "Officially recognised ways of obtaining the certificate",
+    "pohjakoulutusvaatimukset": "Entry requirements",
+    "lisatietoja": "Additional information"
 }

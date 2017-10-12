@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -38,7 +39,9 @@ public class KoodistoServiceMock implements KoodistoClient {
     @Override
     public KoodistoKoodiDto get(String koodisto, String koodi) {
         KoodistoKoodiDto result = new KoodistoKoodiDto();
-        result.setKoodiUri(koodisto);
+        KoodistoDto koodistoDto = new KoodistoDto();
+        koodistoDto.setKoodistoUri(koodisto);
+        result.setKoodisto(koodistoDto);
         result.setKoodiUri(koodi);
         return result;
     }

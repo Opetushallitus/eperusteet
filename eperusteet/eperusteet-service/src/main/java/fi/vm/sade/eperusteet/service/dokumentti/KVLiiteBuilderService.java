@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.dokumentti;
 
-import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import org.w3c.dom.Document;
@@ -28,6 +27,6 @@ import java.io.IOException;
  * @author isaul
  */
 public interface KVLiiteBuilderService {
-    Document generateXML(Peruste peruste, Dokumentti dto, Kieli kieli)
+    Document generateXML(Peruste peruste, Kieli kieli)
             throws ParserConfigurationException, IOException, TransformerException;
 }

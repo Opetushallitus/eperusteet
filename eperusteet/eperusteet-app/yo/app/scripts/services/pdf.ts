@@ -149,13 +149,13 @@ angular
         };
 
         let pdfToken = null;
-        let suoritustapa = $stateParams.suoritustapa
-            || PerusteProjektiService.getSuoritustapa()
-            || YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi,
-                _.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" }));
-        console.log(_.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" }));
-        console.log("$stateParams.suoritustapa", $stateParams.suoritustapa);
-        console.log("PerusteProjektiService.getSuoritustapa()", PerusteProjektiService.getSuoritustapa());
+        let suoritustapa =
+            $stateParams.suoritustapa ||
+            PerusteProjektiService.getSuoritustapa() ||
+            YleinenData.valitseSuoritustapaKoulutustyypille(
+                peruste.koulutustyyppi,
+                _.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" })
+            );
 
         $scope.hasPdf = (kieli: string, version: string = $scope.versiot.valittu) => {
             const doc = version === "kvliite" ? $scope.kvliitteet[kieli] : $scope.docs[kieli];

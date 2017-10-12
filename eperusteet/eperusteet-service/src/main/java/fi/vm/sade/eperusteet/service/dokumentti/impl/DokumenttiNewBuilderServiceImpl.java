@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
@@ -85,8 +86,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     private PerusteService perusteService;
 
     @Override
-    public Document generateXML(Peruste peruste, Dokumentti dokumentti, Kieli kieli,
-            Suoritustapakoodi suoritustapakoodi)
+    public Document generateXML(Peruste peruste, Dokumentti dokumentti)
             throws ParserConfigurationException, IOException, TransformerException {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -95,7 +95,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         // Luodaan XHTML pohja
         Element rootElement = doc.createElement("html");
-        rootElement.setAttribute("lang", kieli.toString());
+        rootElement.setAttribute("lang", dokumentti.getKieli().toString());
         doc.appendChild(rootElement);
 
         Element headElement = doc.createElement("head");
@@ -115,12 +115,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.setHeadElement(headElement);
         docBase.setBodyElement(bodyElement);
         docBase.setGenerator(new CharapterNumberGenerator());
-        docBase.setKieli(kieli);
+        docBase.setKieli(dokumentti.getKieli());
         docBase.setPeruste(peruste);
         docBase.setDokumentti(dokumentti);
         docBase.setMapper(mapper);
 
-        if (suoritustapakoodi.equals(Suoritustapakoodi.AIPE)) {
+        if (dokumentti.getSuoritustapakoodi().equals(Suoritustapakoodi.AIPE)) {
             AIPEOpetuksenSisalto aipeOpetuksenPerusteenSisalto = peruste.getAipeOpetuksenPerusteenSisalto();
             docBase.setAipeOpetuksenSisalto(aipeOpetuksenPerusteenSisalto);
             docBase.setSisalto(aipeOpetuksenPerusteenSisalto.getSisalto());
@@ -130,8 +130,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             docBase.setSisalto(sisalto);
         }
         else {
-            // FIXME Tässä haetaan vääriä sisältöjä (pitäisi käyttää suoritustapasisältöä)
-            Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+            Suoritustapa suoritustapa = peruste.getSuoritustapa(dokumentti.getSuoritustapakoodi());
             PerusteenOsaViite sisalto = suoritustapa.getSisalto();
             docBase.setSisalto(sisalto);
         }
@@ -139,7 +138,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Kansilehti & Infosivu
         addMetaPages(docBase);
 
-        if (suoritustapakoodi.equals(Suoritustapakoodi.AIPE)) {
+        if (dokumentti.getSuoritustapakoodi().equals(Suoritustapakoodi.AIPE)) {
             // AIPE-osat
             addAipeSisalto(docBase);
         }
@@ -311,7 +310,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addSisaltoelementit(DokumenttiPeruste docBase) {
-        for (PerusteenOsaViite lapsi : docBase.getSisalto().getLapset()) {
+        PerusteenOsaViite sisalto = docBase.getSisalto();
+        for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
             PerusteenOsa po = lapsi.getPerusteenOsa();
             if (po == null) {
                 continue;
@@ -543,7 +543,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());
                 addArviointi(docBase, osa.getArviointi(), tyyppi);
                 addAmmattitaidonOsoittamistavat(docBase, osa);
-            } else if (tyyppi == TutkinnonOsaTyyppi.TUTKE2) {
+            } else if (TutkinnonOsaTyyppi.isTutke(tyyppi)) {
                 addTutke2Osat(docBase, osa);
             }
 
@@ -563,7 +563,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             TekstiKappale tk = (TekstiKappale) po;
 
             PerusteenOsaTunniste tunniste = po.getTunniste();
-            if (tunniste != PerusteenOsaTunniste.NORMAALI && tunniste != PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN) {
+            if (tunniste != PerusteenOsaTunniste.NORMAALI
+                    && tunniste != PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN
+                    && po.getTunniste() != PerusteenOsaTunniste.RAKENNE) {
                 String nimi = getTextString(docBase, tk.getNimi());
                 addHeader(docBase, nimi);
 
@@ -829,7 +831,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addKoodi(DokumenttiPeruste docBase, TutkinnonOsa osa) {
-        String koodiArvo = osa.getKoodiArvo();
+        TutkinnonOsaDto osaDto = mapper.map(osa, TutkinnonOsaDto.class);
+        String koodiArvo = osaDto.getKoodiArvo();
         if (StringUtils.isEmpty(koodiArvo)) {
             return;
         }
@@ -889,8 +892,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     continue;
                 }
 
-                String tavoitteenNimi = getTextString(docBase, otsikkoTavoite.getNimi());
-                addTeksti(docBase, tavoitteenNimi, "h6");
+                if (osa.getTyyppi().equals(TutkinnonOsaTyyppi.TUTKE2)) {
+                    String tavoitteenNimi = getTextString(docBase, otsikkoTavoite.getNimi());
+                    addTeksti(docBase, tavoitteenNimi, "h6");
+                }
 
                 Osaamistavoite[] tavoiteLista = new Osaamistavoite[]{pakollinen, valinnainen};
                 for (Osaamistavoite tavoite : tavoiteLista) {
@@ -902,7 +907,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                             : "docgen.tutke2.valinnaiset_osaamistavoitteet.title";
                     String otsikko = messages.translate(otsikkoAvain, docBase.getKieli())
                             + getLaajuusSuffiksi(tavoite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli());
-                    addTeksti(docBase, otsikko, "h6");
+                    addTeksti(docBase, otsikko, "h5");
 
                     String tavoitteet = getTextString(docBase, tavoite.getTavoitteet());
                     if (StringUtils.isNotEmpty(tavoitteet)) {
@@ -1227,7 +1232,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli()));
         }
 
-        String koodi = osa.getKoodiArvo();
+        TutkinnonOsaDto osaDto = mapper.map(osa, TutkinnonOsaDto.class);
+        String koodi = osaDto.getKoodiArvo();
         if (koodi != null) {
             otsikkoBuilder
                     .append(" (")

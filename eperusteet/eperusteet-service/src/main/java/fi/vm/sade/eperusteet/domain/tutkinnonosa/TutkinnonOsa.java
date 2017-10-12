@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
@@ -25,10 +26,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -67,9 +65,23 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    private Koodi koodi;
+
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
+    @Deprecated
     @Column(name = "koodi_uri")
     private String koodiUri;
 
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
+    @Deprecated
     @Column(name = "koodi_arvo")
     private String koodiArvo;
 
@@ -164,18 +176,33 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.kuvaus = kuvaus;
     }
 
+    @Deprecated
     public String getKoodiUri() {
-        return koodiUri;
+        if (koodi != null) {
+            return koodi.getUri();
+        } else {
+            return koodiUri;
+        }
     }
 
+    @Deprecated
     public void setKoodiUri(String koodiUri) {
         this.koodiUri = koodiUri;
+        if (koodi != null) {
+            koodi.setUri(koodiUri);
+        } else if (koodiUri != null) {
+            koodi = new Koodi();
+            koodi.setUri(koodiUri);
+            koodi.setKoodisto("tutkinnonosat");
+        }
     }
 
+    @Deprecated
     public String getKoodiArvo() {
         return koodiArvo;
     }
 
+    @Deprecated
     public void setKoodiArvo(String koodiArvo) {
         this.koodiArvo = koodiArvo;
     }
@@ -204,6 +231,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             result = super.structureEquals(that);
             result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
             result &= Objects.equals(getTyyppi(), that.getTyyppi());
+            result &= Objects.equals(getKoodi(), that.getKoodi());
             result &= Objects.equals(getKoodiArvo(), that.getKoodiArvo());
             result &= Objects.equals(getKoodiUri(), that.getKoodiUri());
             result &= refXnor(getTavoitteet(), that.getTavoitteet());
@@ -237,8 +265,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setAmmattitaitovaatimuksetLista(connectAmmattitaitovaatimusListToTutkinnonOsa(other));
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
             this.setTavoitteet(other.getTavoitteet());
-            this.setKoodiUri(other.getKoodiUri());
-            this.setKoodiArvo(other.getKoodiArvo());
+            this.setKoodi(other.getKoodi());
             this.setTyyppi(other.getTyyppi());
             this.setKuvaus(other.getKuvaus());
             this.setValmaTelmaSisalto(other.getValmaTelmaSisalto());
@@ -264,6 +291,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
                 .collect(Collectors.toList());
         this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
         this.tavoitteet = other.getTavoitteet();
+        this.koodi = other.getKoodi();
         this.koodiUri = other.getKoodiUri();
         this.koodiArvo = other.getKoodiArvo();
         this.tyyppi = other.getTyyppi();
@@ -271,7 +299,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         if (other.getValmaTelmaSisalto() != null) {
             this.valmaTelmaSisalto = new ValmaTelmaSisalto(other.getValmaTelmaSisalto());
         }
-        if (this.tyyppi == TutkinnonOsaTyyppi.TUTKE2 && other.getOsaAlueet() != null) {
+        if (TutkinnonOsaTyyppi.isTutke(this.tyyppi) && other.getOsaAlueet() != null) {
             this.osaAlueet = new ArrayList<>();
             for (OsaAlue o : other.getOsaAlueet()) {
                 this.osaAlueet.add(new OsaAlue(o));

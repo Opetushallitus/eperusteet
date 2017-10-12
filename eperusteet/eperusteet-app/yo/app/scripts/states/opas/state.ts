@@ -94,10 +94,9 @@ angular
                             const response = await oppaat.customPOST(opas);
                             $state.go("root.perusteprojekti.suoritustapa.opassisalto", {
                                 perusteProjektiId: response.id,
-                                suoritustapa: 'opas'
+                                suoritustapa: "opas"
                             });
-                        }
-                        catch (ex) {
+                        } catch (ex) {
                             Notifikaatiot.varoitus(ex);
                         }
                     };

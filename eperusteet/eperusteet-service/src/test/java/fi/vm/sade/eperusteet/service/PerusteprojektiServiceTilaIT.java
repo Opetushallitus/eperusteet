@@ -37,11 +37,7 @@ import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.MuodostumisSaantoDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -567,6 +563,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         TutkinnonOsaViiteDto dto = new TutkinnonOsaViiteDto(BigDecimal.ONE, 1, TestUtils.lt(TestUtils.uniikkiString()), TutkinnonOsaTyyppi.NORMAALI);
         TutkinnonOsaDto tosa = new TutkinnonOsaDto();
         tosa.setNimi(dto.getNimi());
+
         dto.setTutkinnonOsaDto(tosa);
         TutkinnonOsaViiteDto lisatty = perusteService.addTutkinnonOsa(id, suoritustapakoodi, dto);
         return lisatty;
@@ -575,6 +572,12 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     private RakenneOsaDto teeRakenneOsaDto(long id, Suoritustapakoodi suoritustapa, PerusteTila tila, Integer laajuus) {
         TutkinnonOsaDto to = new TutkinnonOsaDto();
         to.setTila(tila);
+
+        KoodiDto koodiDto = new KoodiDto();
+        koodiDto.setUri(TestUtils.uniikkiString());
+        koodiDto.setArvo(TestUtils.uniikkiString());
+        koodiDto.setKoodisto("tutkinnonosat");
+        to.setKoodi(koodiDto);
         to.setKoodiArvo(TestUtils.uniikkiString());
         to.setKoodiUri(TestUtils.uniikkiString());
 

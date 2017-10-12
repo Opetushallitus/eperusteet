@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +32,7 @@ import lombok.Setter;
 @Table(name = "koodi")
 @EqualsAndHashCode(of = {"uri", "versio"})
 public class Koodi implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
@@ -38,10 +41,12 @@ public class Koodi implements Serializable {
 
     @Getter
     @Setter
+    @NotNull
     private String uri; // Uniikki koodistosta minkä sisällöstä ei voi päätellä mitään
 
     @Getter
     @Setter
+    @NotNull
     private String koodisto;
 
     @Getter

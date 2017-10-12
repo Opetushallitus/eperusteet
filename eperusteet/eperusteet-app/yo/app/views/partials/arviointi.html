@@ -1,6 +1,6 @@
 <!-- arviointi.html -->
 <div class="arviointi">
-    <div ng-class="panel panel-default">
+    <div class="panel panel-default">
         <span class="toggler" ng-show="arviointi.length && !eiKohdealueita">
             <a class="action-link"
                kaanna="'avaa-sulje-kaikki'"
@@ -151,8 +151,8 @@
                 </div>
             </div>
 
-            <!-- Kohdealueen lisäys -->
-            <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled && !eiKohdealueita">
+            <!-- Arvioinnin lisäys -->
+            <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled && (!eiKohdealueita || arviointi.length === 0)">
                 <div class="panel-body">
                     <input class="form-control" ng-show="$parent.showNewKohdealueInput" type="text" slocalized ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.kohdealue.uusi()" on-esc="$parent.cancelNewKohdealue()" focus-me="$parent.showNewKohdealueInput" placeholder="{{'arviointi-uusi-kohdealue-placeholder' | kaanna}}" />
                     <div class="muokkaus-napit" ng-show="$parent.showNewKohdealueInput">

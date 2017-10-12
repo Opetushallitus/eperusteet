@@ -17,48 +17,32 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Immutable;
 
 /**
  *
  * @author teele1
  */
-@Entity
+@Entity(name = "Osaamistaso")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-@Immutable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "osaamistaso")
 public class Osaamistaso implements Serializable, ReferenceableEntity {
 
     @Id
+    @Getter
+    @Setter
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @Getter
+    @Setter
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private TekstiPalanen otsikko;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public TekstiPalanen getOtsikko() {
-        return otsikko;
-    }
-
-    public void setOtsikko(TekstiPalanen otsikko) {
-        this.otsikko = otsikko;
-    }
 
     @Override
     public String toString() {
