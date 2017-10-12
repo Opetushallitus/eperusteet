@@ -27,7 +27,7 @@ angular.module("eperusteApp").config($stateProvider => {
         },
         views: {
             "aipeosaalue@root.perusteprojekti.suoritustapa.aipeosaalue": {
-                template: require("scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/view.html"),
+                template: require("scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/view.pug"),
                 controller: (
                     $scope,
                     oppiaine,
