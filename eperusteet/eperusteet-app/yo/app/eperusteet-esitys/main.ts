@@ -20,8 +20,14 @@
  * Käyttää joko omia ep-alkuisia komponentteja tai yleisiä komponentteja, jotka täytyy
  * määritellä moduulin ulkopuolella.
  */
+
+import * as angular from "angular";
+import * as _ from "lodash";
+import moment from "moment";
+
 angular.module('eperusteet.esitys', [])
 .provider('epEsitysSettings', [function epEsitysSettings() {
+    console.log("Getting esitys");
     let settings = {
         'perusopetusState': 'root.perusopetus',
         'lukiokoulutusState': 'root.lukiokoulutus'

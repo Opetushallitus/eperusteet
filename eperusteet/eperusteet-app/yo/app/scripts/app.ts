@@ -40,7 +40,7 @@ angular
         "eperusteet.esitys",
         "ngFileUpload",
         "eGenericTree",
-        // "eMathDisplay",
+        "eMathDisplay",
         "LocalStorageModule"
     ])
     .constant("SERVICE_LOC", "/eperusteet-service/api")

@@ -112,6 +112,11 @@ module.exports = {
         new CopyWebpackPlugin(
             [
                 {
+                    context: path.resolve(__dirname, "./node_modules/mathjax/"),
+                    from: "**/*",
+                    to: "bower_components/MathJax"
+                },
+                {
                     context: path.resolve(__dirname, "./node_modules/ckeditor/"),
                     from: "**/*",
                     to: "bower_components/ckeditor"
