@@ -21,6 +21,10 @@
  * 'integer' => only integers accepted
  * 'float' => integers and floats accepted (dot or comma separated)
  */
+
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("numberinput", function($timeout, $compile) {

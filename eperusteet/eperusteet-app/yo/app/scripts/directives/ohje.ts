@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 /**
  * Ohje
  * Ikoni tooltipille ja siihen liittyvä kelluva ohjeteksti.

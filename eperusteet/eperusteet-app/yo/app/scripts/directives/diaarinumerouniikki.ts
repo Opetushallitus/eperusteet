@@ -1,4 +1,4 @@
-"use strict";
+import * as angular from "angular";
 import * as _ from "lodash";
 
 angular.module("eperusteApp").directive("diaarinumerouniikki", function(DiaarinumeroUniqueResource) {

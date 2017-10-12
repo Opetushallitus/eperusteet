@@ -14,9 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-
-/// <refernce path="../../ts_packages/tsd.d.ts" />
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")

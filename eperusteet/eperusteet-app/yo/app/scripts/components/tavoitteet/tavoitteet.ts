@@ -32,6 +32,9 @@ interface Kohdealue {
     opetuksenTavoitteet: Array<any>;
 }
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").directive("aipeTavoitteet", () => {
     return {
         templateUrl: require("scripts/components/tavoitteet/tavoitteet.pug"),

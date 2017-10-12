@@ -23,6 +23,9 @@ enum ProjektiTila {
     JULKAISTU = "julkaistu"
 }
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .config($stateProvider => {

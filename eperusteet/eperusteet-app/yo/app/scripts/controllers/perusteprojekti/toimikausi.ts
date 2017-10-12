@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").controller("PerusteprojektiToimikausiCtrl", function($scope, YleinenData) {
     if (typeof $scope.projekti.toimikausiAlku === "number") {
         $scope.projekti.toimikausiAlku = new Date($scope.projekti.toimikausiAlku);

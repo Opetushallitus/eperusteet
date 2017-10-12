@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 /**
  * Form field with label and input field.
  * @param {Object} model Model base object for input, e.g. a.b.c => a is model

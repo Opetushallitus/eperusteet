@@ -22,6 +22,9 @@ interface PaginationDetails {
     changePage: (to: number) => void;
 }
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("LukiokoulutussisaltoController", function(

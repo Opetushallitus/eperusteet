@@ -1,6 +1,6 @@
 import * as _ from "lodash";
-import { createPerusteprojekti, createPeruste, getComponent, inject, getOfType, testModule, mockApp } from "app/testutils";
-import * as T from "scripts/types";
+import { createPerusteprojekti, createPeruste, getComponent, inject, getOfType, testModule, mockApp } from "../../testutils";
+import * as T from "../types";
 
 
 describe("PerusteProjektiService", () => {

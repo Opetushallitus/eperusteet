@@ -13,6 +13,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
+import * as angular from "angular";
+import * as _ from "lodash";
+
 namespace Controllers {
     export const kaikkiKommentit = ($q, $scope, $location, kommentit) => {
         $scope.kommentit = _(kommentit)

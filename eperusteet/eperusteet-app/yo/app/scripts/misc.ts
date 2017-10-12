@@ -88,6 +88,9 @@ namespace Endpoints {
     };
 }
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .run($injector => $injector.invoke(Endpoints.init))

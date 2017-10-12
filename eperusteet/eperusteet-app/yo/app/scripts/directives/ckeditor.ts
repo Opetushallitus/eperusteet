@@ -17,6 +17,9 @@
 declare var CKEDITOR: any;
 
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .run(function() {

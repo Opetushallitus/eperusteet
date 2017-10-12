@@ -1,3 +1,6 @@
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").factory("Api", (Restangular, Notifikaatiot, Kaanna) => {
     return Restangular.withConfig(config => {
         config.setBaseUrl("/eperusteet-service/api");

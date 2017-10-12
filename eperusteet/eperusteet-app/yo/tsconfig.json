@@ -11,6 +11,7 @@
             "ES2015",
             "ES5"
         ],
+        "rootDir": ".",
         "baseUrl": ".",
         "paths": {
             "app/*": ["./app/*"],

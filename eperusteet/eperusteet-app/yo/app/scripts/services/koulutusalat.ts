@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").service("Koulutusalat", function Koulutusalat($resource, SERVICE_LOC) {
     var koulutusalatResource = $resource(
         SERVICE_LOC + "/koulutusalat/:koulutusalaId",

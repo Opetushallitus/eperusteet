@@ -16,7 +16,7 @@
 
 // TODO: removeme, working local "fork" of the generictree to avoid height: 900px container div
 
-"use strict";
+import * as angular from "angular";
 import * as _ from "lodash";
 
 angular

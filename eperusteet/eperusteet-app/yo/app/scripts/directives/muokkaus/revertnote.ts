@@ -14,7 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular.module("eperusteApp").directive("revertNote", function() {
     return {

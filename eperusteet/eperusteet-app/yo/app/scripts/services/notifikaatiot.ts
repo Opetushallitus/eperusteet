@@ -14,8 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-import * as _ from "lodash";
-
 interface NotifikaatiotI {
     normaali: (msg: string | Object, ilmanKuvaa?: boolean) => void;
     onnistui: (msg: string | Object, ilmanKuvaa?: boolean) => void;
@@ -27,6 +25,9 @@ interface NotifikaatiotI {
     paivita: () => void;
     poista: (i: string | Object) => void;
 }
+
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")

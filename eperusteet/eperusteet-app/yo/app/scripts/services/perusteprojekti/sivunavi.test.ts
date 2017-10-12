@@ -1,6 +1,6 @@
 import * as _ from "lodash";
-import { genId, createPerusteprojekti, createPeruste, getComponent, inject, getOfType, testDirective, testModule, mockApp } from "app/testutils";
-import * as T from "scripts/types";
+import { genId, createPerusteprojekti, createPeruste, getComponent, inject, getOfType, testDirective, testModule, mockApp } from "../../../testutils";
+import * as T from "../../types";
 
 
 describe("PerusteProjektiSivunavi", () => {
@@ -47,7 +47,7 @@ describe("PerusteProjektiSivunavi", () => {
     beforeEach(async () => {
         PerusteProjektiSivunavi = await getComponent("PerusteProjektiSivunavi");
         PerusteprojektiTiedotService = await getComponent("PerusteprojektiTiedotService");
-        const $httpBackend = await getComponent("$httpBackend");
+        const $httpBackend: any = await getComponent("$httpBackend");
         $timeout = await getComponent("$timeout");
         $httpBackend.when('GET', /cas\/me/).respond({});
         $httpBackend.when('GET', /views.+/).respond({});

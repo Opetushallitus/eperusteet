@@ -17,6 +17,9 @@
 
 declare var XLSX: any;
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("ExcelSheetService", function() {
