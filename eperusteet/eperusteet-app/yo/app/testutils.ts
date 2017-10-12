@@ -20,6 +20,21 @@ import "ng-file-upload";
 import "es6-promise";
 import "angular-mocks";
 
+import "eperusteet-frontend-utils/mathdisplay";
+
+import "moment/locale/fi.js";
+import "moment/locale/sv.js";
+
+import "eperusteet-esitys/main";
+import "eperusteet-esitys/views/sisallot";
+import "eperusteet-esitys/views/yksinkertainen";
+import "eperusteet-esitys/views/perusopetus";
+import "eperusteet-esitys/views/lukiokoulutus";
+import "eperusteet-esitys/scripts/services/menubuilder";
+import "eperusteet-esitys/scripts/services/tekstikappaleutils";
+import "eperusteet-esitys/scripts/services/sivunavigaatio";
+import "eperusteet-esitys/scripts/services/stateservice";
+
 import "scripts/app";
 import "scripts/api";
 import "scripts/misc";

@@ -27,7 +27,6 @@ import moment from "moment";
 
 angular.module('eperusteet.esitys', [])
 .provider('epEsitysSettings', [function epEsitysSettings() {
-    console.log("Getting esitys");
     let settings = {
         'perusopetusState': 'root.perusopetus',
         'lukiokoulutusState': 'root.lukiokoulutus'
