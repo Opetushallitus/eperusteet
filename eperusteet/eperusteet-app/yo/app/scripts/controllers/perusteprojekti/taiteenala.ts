@@ -28,7 +28,7 @@ export function taiteenalaCtrl(
     Varmistusdialogi,
     VersionHelper,
     YleinenData,
-    virheService,
+    virheService
 ) {
     async function init() {
         $scope.taiteenala = {};
@@ -47,7 +47,8 @@ export function taiteenalaCtrl(
                     uri: koodiUri,
                     koodisto: koodistoUri
                 };
-            }, {
+            },
+            {
                 tyyppi: () => {
                     return "tutkinnonosat";
                 },
@@ -93,53 +94,61 @@ export function taiteenalaCtrl(
             PerusteProjektiSivunavi.setVisible(!editEnabled);
         });
 
-        $scope.fields = [{
-            path: "nimi",
-            hideHeader: false,
-            localeKey: "teksikappaleen-nimi",
-            type: "editor-header",
-            localized: true,
-            mandatory: true,
-            mandatoryMessage: "mandatory-otsikkoa-ei-asetettu",
-            order: 1
-        }, {
-            path: "teksti",
-            hideHeader: false,
-            localeKey: "tekstikappaleen-teksti",
-            type: "editor-area",
-            localized: true,
-            mandatory: false,
-            order: 2
-        }];
+        $scope.fields = [
+            {
+                path: "nimi",
+                hideHeader: false,
+                localeKey: "teksikappaleen-nimi",
+                type: "editor-header",
+                localized: true,
+                mandatory: true,
+                mandatoryMessage: "mandatory-otsikkoa-ei-asetettu",
+                order: 1
+            },
+            {
+                path: "teksti",
+                hideHeader: false,
+                localeKey: "tekstikappaleen-teksti",
+                type: "editor-area",
+                localized: true,
+                mandatory: false,
+                order: 2
+            }
+        ];
 
-        $scope.taiteenalaFields = [{
-            path: "aikuistenOpetus",
-            localeKey: "taiteenala-aikuisten-opetus",
-        }, {
-            path: "kasvatus",
-            localeKey: "taiteenala-kasvatus",
-        }, {
-            path: "oppimisenArviointiOpetuksessa",
-            localeKey: "taiteenala-oppimisen-arvionti",
-        }, {
-            path: "teemaopinnot",
-            localeKey: "taiteenala-teemaopinnot",
-        }, {
-            path: "tyotavatOpetuksessa",
-            localeKey: "taiteenala-tyotavat",
-        }, {
-            path: "yhteisetOpinnot",
-            localeKey: "taiteenala-yhteisetOpinnot",
-        }];
+        $scope.taiteenalaFields = [
+            {
+                path: "aikuistenOpetus",
+                localeKey: "taiteenala-aikuisten-opetus"
+            },
+            {
+                path: "kasvatus",
+                localeKey: "taiteenala-kasvatus"
+            },
+            {
+                path: "oppimisenArviointiOpetuksessa",
+                localeKey: "taiteenala-oppimisen-arvionti"
+            },
+            {
+                path: "teemaopinnot",
+                localeKey: "taiteenala-teemaopinnot"
+            },
+            {
+                path: "tyotavatOpetuksessa",
+                localeKey: "taiteenala-tyotavat"
+            },
+            {
+                path: "yhteisetOpinnot",
+                localeKey: "taiteenala-yhteisetOpinnot"
+            }
+        ];
 
         const sisaltoCache = {};
-        $scope.lisaaTaiteenalasisalto = (path) => {
-            $scope.editableTaiteenala[path] = sisaltoCache[path]
-                ? sisaltoCache[path]
-                : {};
+        $scope.lisaaTaiteenalasisalto = path => {
+            $scope.editableTaiteenala[path] = sisaltoCache[path] ? sisaltoCache[path] : {};
         };
 
-        $scope.removeTaiteenalasisalto = (path) => {
+        $scope.removeTaiteenalasisalto = path => {
             sisaltoCache[path] = $scope.editableTaiteenala[path];
             $scope.editableTaiteenala[path] = null;
         };
@@ -180,12 +189,12 @@ export function taiteenalaCtrl(
                         items.push({
                             label: $scope.viitteet[id].nimi,
                             url:
-                            $scope.taiteenala.id === id
-                            ? null
-                            : $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
-                                perusteenOsaViiteId: $scope.viitteet[id].viite,
-                                versio: ""
-                            })
+                                $scope.taiteenala.id === id
+                                    ? null
+                                    : $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
+                                          perusteenOsaViiteId: $scope.viitteet[id].viite,
+                                          versio: ""
+                                      })
                         });
                         id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
                     } while (id);
@@ -462,4 +471,4 @@ export function taiteenalaCtrl(
         });
     }
     init();
-};
+}

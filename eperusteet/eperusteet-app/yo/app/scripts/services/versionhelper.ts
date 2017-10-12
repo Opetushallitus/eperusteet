@@ -330,7 +330,7 @@ angular
 
             $state.go($state.current.name, {
                 ...$stateParams,
-                versio: currentIdx === latestIdx ? undefined : currentIdx;
+                versio: currentIdx === latestIdx ? undefined : currentIdx
             });
         };
 

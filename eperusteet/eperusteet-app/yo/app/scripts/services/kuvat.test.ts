@@ -1,5 +1,14 @@
 import * as _ from "lodash";
-import { setInput, compiled, getComponent, inject, getOfType, testDirective, testModule, mockApp } from "../../testutils";
+import {
+    setInput,
+    compiled,
+    getComponent,
+    inject,
+    getOfType,
+    testDirective,
+    testModule,
+    mockApp
+} from "../../testutils";
 
 describe("Kuvat", () => {
     let EpImageService: any;
@@ -12,7 +21,6 @@ describe("Kuvat", () => {
     test("Can be injected", () => expect(EpImageService).toBeTruthy());
 
     describe("kuvalinkit", () => {
-
         test("No undefined", async () => {
             let [el, $scope] = await compiled(`<span>{{ '' | kuvalinkit }}</span>`);
             expect(el.text()).toEqual("");
@@ -21,7 +29,5 @@ describe("Kuvat", () => {
             [el, $scope] = await compiled(`<span>{{ null | kuvalinkit }}</span>`);
             expect(el.text()).toEqual("");
         });
-
     });
-
 });

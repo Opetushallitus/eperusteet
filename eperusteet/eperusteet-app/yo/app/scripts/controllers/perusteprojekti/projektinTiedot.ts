@@ -153,10 +153,12 @@ angular
             _.any(["koulutustyyppi_2", "koulutustyyppi_23", "koulutustyyppi_14"], i => i === tyyppi);
         $scope.isLukiokoulutus = () => $scope.peruste && tyyppiIsLukio($scope.peruste.koulutustyyppi);
 
-        $scope.tabs = [{
-            otsikko: "projekti-perustiedot",
-            url: "views/partials/perusteprojekti/perustiedot.html"
-        }];
+        $scope.tabs = [
+            {
+                otsikko: "projekti-perustiedot",
+                url: "views/partials/perusteprojekti/perustiedot.html"
+            }
+        ];
         if (!$scope.pohja() && !$scope.isOpas) {
             $scope.tabs.push({
                 otsikko: "projekti-toimikausi",
@@ -202,7 +204,7 @@ angular
             } else {
                 projekti.id = null;
                 if (projekti.isReforminMukainen) {
-                    projekti.suoritustavat = ["reformi"]
+                    projekti.suoritustavat = ["reformi"];
                 }
             }
 

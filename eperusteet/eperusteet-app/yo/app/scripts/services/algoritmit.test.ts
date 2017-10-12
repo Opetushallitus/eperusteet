@@ -7,7 +7,7 @@ describe("Algoritmit", () => {
     beforeEach(mockApp);
 
     beforeEach(async () => {
-        Algoritmit = await getComponent("Algoritmit")
+        Algoritmit = await getComponent("Algoritmit");
     });
 
     test("Can be injected", () => expect(Algoritmit).toBeTruthy());

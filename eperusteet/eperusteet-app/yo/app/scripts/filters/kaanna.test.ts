@@ -1,5 +1,14 @@
 import * as _ from "lodash";
-import { setInput, compiled, getComponent, inject, getOfType, testDirective, testModule, mockApp } from "../../testutils";
+import {
+    setInput,
+    compiled,
+    getComponent,
+    inject,
+    getOfType,
+    testDirective,
+    testModule,
+    mockApp
+} from "../../testutils";
 
 describe("Kaanna", () => {
     let Kaanna: any;
@@ -20,7 +29,7 @@ describe("Kaanna", () => {
     const genLocale = (str: string) => ({
         fi: "fi " + str,
         sv: "sv " + str,
-        en: "en " + str,
+        en: "en " + str
     });
 
     test("Can be injected", () => expect(Kaanna).toBeTruthy());
@@ -50,25 +59,27 @@ describe("Kaanna", () => {
         expect(Kaanna.kaanna(1)).toEqual("1");
         expect(Kaanna.kaanna([])).toEqual("");
 
-        expect(Kaanna.kaanna({
-            en: "moro"
-        })).toEqual("");
+        expect(
+            Kaanna.kaanna({
+                en: "moro"
+            })
+        ).toEqual("");
 
         Kieli.setSisaltokieli("sv");
-        expect(Kaanna.kaanna({
-            fi: "moro"
-        })).toEqual("[moro]");
+        expect(
+            Kaanna.kaanna({
+                fi: "moro"
+            })
+        ).toEqual("[moro]");
     });
 
     describe("kaannaSisalto", () => {
-
         test("No undefined", () => {
             expect(Kaanna.kaannaSisalto(undefined)).toEqual("");
             expect(Kaanna.kaannaSisalto(null)).toEqual("");
             expect(Kaanna.kaannaSisalto("")).toEqual("");
             expect(Kaanna.kaannaSisalto({})).toEqual("");
         });
-
     });
 
     test("Ui-kielen vaihto", () => {
@@ -90,7 +101,6 @@ describe("Kaanna", () => {
         expect(obj).toEqual(genLocale("foobar"));
         $stateGoMock.mockReset();
     });
-
 });
 
 describe("Kieli", () => {
@@ -125,7 +135,6 @@ describe("Kieli", () => {
             expect(el).toBeTruthy();
         });
     });
-
 });
 
 describe("kaanna", () => {
@@ -171,7 +180,6 @@ describe("kaanna", () => {
             $timeout.flush();
             expect(el.text()).toEqual("Kieli");
         });
-
     });
 
     describe("direktiivi", () => {
@@ -218,7 +226,5 @@ describe("kaanna", () => {
             $scope.$digest();
             expect(el.text()).toEqual("Kieli");
         });
-
     });
-
 });

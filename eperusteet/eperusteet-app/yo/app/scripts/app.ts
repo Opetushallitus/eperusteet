@@ -22,7 +22,8 @@ if (process.env.NODE_ENV === "development") {
     console.log("Running in development mode");
 }
 
-angular.module("eperusteApp", [
+angular
+    .module("eperusteApp", [
         "ngSanitize",
         "ui.router",
         "ngResource",
@@ -234,9 +235,7 @@ angular.module("eperusteApp", [
             }
         });
     })
-    .run((
-      $rootScope: angular.IScope,
-      $window: angular.IWindowService) => {
+    .run(($rootScope: angular.IScope, $window: angular.IWindowService) => {
         const f = _.debounce(
             function() {
                 $rootScope.$broadcast("poll:mousemove");
@@ -250,136 +249,138 @@ angular.module("eperusteApp", [
 
         angular.element($window).on("mousemove", f);
     })
-    .run((
-        $rootScope,
-        $uibModal,
-        $location,
-        $window,
-        $state,
-        $http,
-        uibPaginationConfig,
-        Editointikontrollit,
-        Varmistusdialogi,
-        Kaanna,
-        virheService,
-        $log
-    ) => {
-        uibPaginationConfig.firstText = "";
-        uibPaginationConfig.previousText = "";
-        uibPaginationConfig.nextText = "";
-        uibPaginationConfig.lastText = "";
-        uibPaginationConfig.maxSize = 5;
-        uibPaginationConfig.rotate = false;
+    .run(
+        (
+            $rootScope,
+            $uibModal,
+            $location,
+            $window,
+            $state,
+            $http,
+            uibPaginationConfig,
+            Editointikontrollit,
+            Varmistusdialogi,
+            Kaanna,
+            virheService,
+            $log
+        ) => {
+            uibPaginationConfig.firstText = "";
+            uibPaginationConfig.previousText = "";
+            uibPaginationConfig.nextText = "";
+            uibPaginationConfig.lastText = "";
+            uibPaginationConfig.maxSize = 5;
+            uibPaginationConfig.rotate = false;
 
-        let onAvattuna = false;
+            let onAvattuna = false;
 
-        $rootScope.$on("event:uudelleenohjattava", (event, status) => {
-            if (onAvattuna) {
-                return;
-            }
-            onAvattuna = true;
+            $rootScope.$on("event:uudelleenohjattava", (event, status) => {
+                if (onAvattuna) {
+                    return;
+                }
+                onAvattuna = true;
 
-            function getCasURL() {
-                const host = $location.host();
-                const port = $location.port();
-                const protocol = $location.protocol();
-                const cas = "/cas/login";
-                const redirectURL = encodeURIComponent($location.absUrl());
-                let url = protocol + "://" + host;
+                function getCasURL() {
+                    const host = $location.host();
+                    const port = $location.port();
+                    const protocol = $location.protocol();
+                    const cas = "/cas/login";
+                    const redirectURL = encodeURIComponent($location.absUrl());
+                    let url = protocol + "://" + host;
 
-                if (port !== 443 && port !== 80) {
-                    url += ":" + port;
+                    if (port !== 443 && port !== 80) {
+                        url += ":" + port;
+                    }
+
+                    url += cas + "?service=" + redirectURL;
+                    return url;
                 }
 
-                url += cas + "?service=" + redirectURL;
-                return url;
-            }
+                const casurl = getCasURL();
 
-            const casurl = getCasURL();
+                if (status === 401) {
+                    $window.location.href = casurl;
+                    return;
+                }
 
-            if (status === 401) {
-                $window.location.href = casurl;
-                return;
-            }
-
-            const uudelleenohjausModaali = $uibModal.open({
-                template: require("views/modals/uudelleenohjaus.html"),
-                controller: "UudelleenohjausModalCtrl",
-                resolve: {
-                    status: function() {
-                        return status;
-                    },
-                    redirect: function() {
-                        return casurl;
+                const uudelleenohjausModaali = $uibModal.open({
+                    template: require("views/modals/uudelleenohjaus.html"),
+                    controller: "UudelleenohjausModalCtrl",
+                    resolve: {
+                        status: function() {
+                            return status;
+                        },
+                        redirect: function() {
+                            return casurl;
+                        }
                     }
+                });
+
+                uudelleenohjausModaali.result
+                    .then(angular.noop)
+                    .catch(angular.noop)
+                    .finally(function() {
+                        onAvattuna = false;
+                        switch (status) {
+                            case 500:
+                                $location.path("/");
+                                break;
+                            case 412:
+                                $window.location.href = casurl;
+                                break;
+                        }
+                    });
+            });
+
+            $rootScope.$on("$stateChangeStart", (event, toState, toParams, fromState, fromParams) => {
+                $rootScope.lastState = {
+                    state: _.clone(fromState),
+                    params: _.clone(fromParams)
+                };
+
+                // Todo: Why exclude some states?
+                if (
+                    Editointikontrollit.getEditMode() &&
+                    fromState.name !== "root.perusteprojekti.suoritustapa.tutkinnonosat" &&
+                    fromState.name !== "root.perusteprojekti.suoritustapa.koulutuksenosa"
+                ) {
+                    event.preventDefault();
+
+                    Varmistusdialogi.dialogi({
+                        successCb: data => {
+                            $state.go(data.toState, data.toParams);
+                        },
+                        data: {
+                            toState: toState,
+                            toParams: toParams
+                        },
+                        otsikko: "vahvista-liikkuminen",
+                        teksti: "tallentamattomia-muutoksia",
+                        lisaTeksti: "haluatko-jatkaa",
+                        primaryBtn: "poistu-sivulta"
+                    })();
                 }
             });
 
-            uudelleenohjausModaali.result
-                .then(angular.noop)
-                .catch(angular.noop)
-                .finally(function() {
-                    onAvattuna = false;
-                    switch (status) {
-                        case 500:
-                            $location.path("/");
-                            break;
-                        case 412:
-                            $window.location.href = casurl;
-                            break;
-                    }
-                });
-        });
+            $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
+                $log.error(error);
+                virheService.virhe({ state: toState.name });
+            });
 
-        $rootScope.$on("$stateChangeStart", (event, toState, toParams, fromState, fromParams) => {
-            $rootScope.lastState = {
-                state: _.clone(fromState),
-                params: _.clone(fromParams)
-            };
+            $rootScope.$on("$stateNotFound", function(event, toState) {
+                virheService.virhe({ state: toState.to });
+            });
 
-            // Todo: Why exclude some states?
-            if (
-                Editointikontrollit.getEditMode() &&
-                fromState.name !== "root.perusteprojekti.suoritustapa.tutkinnonosat" &&
-                fromState.name !== "root.perusteprojekti.suoritustapa.koulutuksenosa"
-            ) {
-                event.preventDefault();
-
-                Varmistusdialogi.dialogi({
-                    successCb: data => {
-                        $state.go(data.toState, data.toParams);
-                    },
-                    data: {
-                        toState: toState,
-                        toParams: toParams
-                    },
-                    otsikko: "vahvista-liikkuminen",
-                    teksti: "tallentamattomia-muutoksia",
-                    lisaTeksti: "haluatko-jatkaa",
-                    primaryBtn: "poistu-sivulta"
-                })();
-            }
-        });
-
-        $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
-            $log.error(error);
-            virheService.virhe({ state: toState.name });
-        });
-
-        $rootScope.$on("$stateNotFound", function(event, toState) {
-            virheService.virhe({ state: toState.to });
-        });
-
-        // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (reload, iltalehti...),
-        // niin varoitetaan, että hän menettää muutoksensa jos jatkaa.
-        $window.addEventListener("beforeunload", function(event) {
-            if (Editointikontrollit.getEditMode()) {
-                const confirmationMessage = Kaanna.kaanna("tallentamattomia-muutoksia");
-                (event || window.event).returnValue = confirmationMessage;
-                return confirmationMessage;
-            }
-        });
-    })
+            // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (reload, iltalehti...),
+            // niin varoitetaan, että hän menettää muutoksensa jos jatkaa.
+            $window.addEventListener("beforeunload", function(event) {
+                if (Editointikontrollit.getEditMode()) {
+                    const confirmationMessage = Kaanna.kaanna("tallentamattomia-muutoksia");
+                    (event || window.event).returnValue = confirmationMessage;
+                    return confirmationMessage;
+                }
+            });
+        }
+    )
     .run(($rootScope, DEVELOPMENT) => {
         if (DEVELOPMENT) {
             $rootScope.$on("$stateChangeSuccess", (event, state, params) => {
@@ -399,10 +400,10 @@ angular.module("eperusteApp", [
         }
     });
 
-
 import yleinenData from "./services/yleinenData";
 import { taiteenalaCtrl } from "./controllers/perusteprojekti/taiteenala";
 
-angular.module("eperusteApp")
+angular
+    .module("eperusteApp")
     .service("YleinenData", yleinenData)
     .controller("taiteenalaCtrl", taiteenalaCtrl);

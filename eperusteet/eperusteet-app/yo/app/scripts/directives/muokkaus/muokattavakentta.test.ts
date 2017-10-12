@@ -1,6 +1,14 @@
 import * as _ from "lodash";
-import { setInput, compiled, getComponent, inject, getOfType, testDirective, testModule, mockApp } from "../../../testutils";
-
+import {
+    setInput,
+    compiled,
+    getComponent,
+    inject,
+    getOfType,
+    testDirective,
+    testModule,
+    mockApp
+} from "../../../testutils";
 
 describe("slocalized", () => {
     let Kieli: any;
@@ -41,5 +49,4 @@ describe("slocalized", () => {
         setInput(el, null);
         expect($scope.kentta).toEqual({ fi: "moro", en: "hello", sv: "" });
     });
-
 });

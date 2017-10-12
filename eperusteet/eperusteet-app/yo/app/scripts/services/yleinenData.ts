@@ -247,8 +247,7 @@ export const isValmaTelma = function(koulutustyyppiTaiPeruste) {
     return false;
 };
 
-export const isAmmatillinen = (koulutustyyppi) =>
-    isReformoitava(koulutustyyppi) || isValmaTelma(koulutustyyppi);
+export const isAmmatillinen = koulutustyyppi => isReformoitava(koulutustyyppi) || isValmaTelma(koulutustyyppi);
 
 export const isLisaopetus = function(peruste) {
     return peruste.koulutustyyppi === "koulutustyyppi_6";
@@ -278,7 +277,9 @@ export const isLukiokoulutus = function(peruste) {
 };
 
 export const isSimple = function(peruste) {
-    return isOpas(peruste) || isEsiopetus(peruste) || isLisaopetus(peruste) || isVarhaiskasvatus(peruste) || isTpo(peruste);
+    return (
+        isOpas(peruste) || isEsiopetus(peruste) || isLisaopetus(peruste) || isVarhaiskasvatus(peruste) || isTpo(peruste)
+    );
 };
 
 export const validSuoritustapa = function(peruste, suoritustapa) {

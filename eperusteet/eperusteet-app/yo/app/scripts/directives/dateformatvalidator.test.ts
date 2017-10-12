@@ -1,5 +1,14 @@
 import * as _ from "lodash";
-import { setInput, compiled, getComponent, inject, getOfType, testDirective, testModule, mockApp } from "../../testutils";
+import {
+    setInput,
+    compiled,
+    getComponent,
+    inject,
+    getOfType,
+    testDirective,
+    testModule,
+    mockApp
+} from "../../testutils";
 
 describe("dateformatvalidator", () => {
     beforeEach(async () => {
@@ -10,5 +19,4 @@ describe("dateformatvalidator", () => {
         let [el, $scope] = await compiled(`<span dateformatvalidator ng-model="myDate"></span>`);
         $scope.$digest();
     });
-
 });

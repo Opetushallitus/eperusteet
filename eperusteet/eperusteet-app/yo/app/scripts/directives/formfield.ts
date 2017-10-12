@@ -76,10 +76,10 @@ angular.module("eperusteApp").directive("formfield", function($parse, Kaanna, $t
             placeholder: "@",
             step: "@?",
             ngRequired: "@?",
-            required: "@?",
+            required: "@?"
         },
         link: function(scope: any, element: any, attrs: any) {
-            scope.postfix = (scope.ngRequired || scope.required) ? "*" : "";
+            scope.postfix = scope.ngRequired || scope.required ? "*" : "";
             scope.type = scope.type || "text";
             scope.flatOptions = _.isArray(scope.options) && scope.options.length > 0 && !_.isObject(scope.options[0]);
 

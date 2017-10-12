@@ -191,7 +191,7 @@ angular
         Varmistusdialogi,
         VersionHelper,
         YleinenData,
-        virheService,
+        virheService
     ) {
         $scope.tekstikappale = {};
         $scope.versiot = {};

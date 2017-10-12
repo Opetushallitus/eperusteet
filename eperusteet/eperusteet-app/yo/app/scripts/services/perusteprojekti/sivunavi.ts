@@ -118,8 +118,7 @@ angular
                         osanTyyppi: "osaaminen"
                     }
                 ];
-            }
-            else {
+            } else {
                 switch (lapsi.perusteenOsa.osanTyyppi) {
                     case "taiteenala":
                         return [STATE_TAITEENALA, params];
@@ -351,8 +350,7 @@ angular
 
             try {
                 processNode(data.projekti.peruste.sisalto);
-            }
-            catch (err) {
+            } catch (err) {
                 console.error(err);
             }
             $timeout(function() {
@@ -363,17 +361,13 @@ angular
         function getPerusteenTyyppi(data) {
             if (YleinenData.isPerusopetus(data.projekti.peruste)) {
                 return "YL";
-            }
-            else if (YleinenData.isAipe(data.projekti.peruste)) {
+            } else if (YleinenData.isAipe(data.projekti.peruste)) {
                 return "AIPE";
-            }
-            else if (YleinenData.isLukiokoulutus(data.projekti.peruste)) {
+            } else if (YleinenData.isLukiokoulutus(data.projekti.peruste)) {
                 return "LU";
-            }
-            else if (YleinenData.isSimple(data.projekti.peruste)) {
+            } else if (YleinenData.isSimple(data.projekti.peruste)) {
                 return "ESI";
-            }
-            else {
+            } else {
                 return "AM";
             }
         }
@@ -387,12 +381,11 @@ angular
             var constIsVaTe = false;
             try {
                 constIsVaTe = YleinenData.isValmaTelma(data.projekti.peruste);
-            } catch (e) {
-            }
+            } catch (e) {}
 
             callbacks.typeChanged(perusteenTyyppi);
             await buildTree(constIsVaTe, Kielimapper.mapTutkinnonosatKoulutuksenosat(constIsVaTe));
-        };
+        }
 
         this.register = function(key, cb) {
             callbacks[key] = cb;
@@ -403,8 +396,7 @@ angular
                 try {
                     service = await PerusteprojektiTiedotService;
                     await load();
-                }
-                catch (err) {
+                } catch (err) {
                     console.error(err);
                 }
             } else {
@@ -414,8 +406,7 @@ angular
                     try {
                         await service.alustaPerusteenSisalto($stateParams, true);
                         await load();
-                    }
-                    catch (err) {
+                    } catch (err) {
                         console.error(err);
                     }
                 }

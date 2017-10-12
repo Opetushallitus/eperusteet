@@ -1,7 +1,6 @@
 import * as _ from "lodash";
 import { getComponent, inject, getOfType, testDirective, testModule, mockApp } from "app/testutils";
 
-
 describe("PerusteenRakenne", () => {
     let PerusteenRakenne: any;
 
@@ -11,9 +10,7 @@ describe("PerusteenRakenne", () => {
     });
 
     test("Can be injected", () => expect(PerusteenRakenne).toBeTruthy());
-
 });
-
 
 describe("SuoritustavanSisalto", () => {
     let SuoritustavanSisalto: any;
@@ -24,5 +21,4 @@ describe("SuoritustavanSisalto", () => {
     });
 
     test("Can be injected", () => expect(SuoritustavanSisalto).toBeTruthy());
-
 });

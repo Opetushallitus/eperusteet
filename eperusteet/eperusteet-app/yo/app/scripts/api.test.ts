@@ -10,5 +10,4 @@ describe("Api", () => {
     });
 
     test("Can be injected", () => expect(Api).toBeTruthy());
-
 });

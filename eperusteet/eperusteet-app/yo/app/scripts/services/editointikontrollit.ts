@@ -24,8 +24,7 @@ interface EditointiKontrollitCallbacks {
  * - canCancel Called before cancel, must return a promise.
  *             If promise is resolved, canceling continues.
  */
-angular.module("eperusteApp")
-    .factory("Editointikontrollit", ($rootScope, $q, Utils, Notifikaatiot) => {
+angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Utils, Notifikaatiot) => {
     let scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;

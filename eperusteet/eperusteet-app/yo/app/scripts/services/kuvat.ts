@@ -14,7 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-
 import * as angular from "angular";
 import * as _ from "lodash";
 
@@ -160,7 +159,6 @@ angular
             );
         };
     })
-
     // FIXME miksi näitä on kaksi?
     .filter("kuvalinkit", function(EpImageService) {
         return function(text) {

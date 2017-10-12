@@ -17,7 +17,6 @@
 import * as angular from "angular";
 import * as _ from "lodash";
 
-
 angular
     .module("eperusteApp")
     .factory("PerusteprojektiTila", function($resource, SERVICE_LOC) {
@@ -59,7 +58,16 @@ angular
             perusteHaku: perusteHaku
         };
     })
-    .service("PerusteProjektiService", function($rootScope, $location, $state, $stateParams, $q, $timeout, $uibModal, YleinenData) {
+    .service("PerusteProjektiService", function(
+        $rootScope,
+        $location,
+        $state,
+        $stateParams,
+        $q,
+        $timeout,
+        $uibModal,
+        YleinenData
+    ) {
         var pp = {};
         var suoritustapa = "";
 
@@ -131,12 +139,10 @@ angular
             if (peruste && peruste.tyyppi === "opas") {
                 suoritustapa = "opas";
                 sisaltoTunniste = "opassisalto";
-            }
-            else {
+            } else {
                 if (peruste && peruste.reforminMukainen) {
                     suoritustapa = "reformi";
-                }
-                else if (info) {
+                } else if (info) {
                     suoritustapa = info.oletusSuoritustapa;
                     sisaltoTunniste = info.sisaltoTunniste;
                 }
@@ -148,8 +154,7 @@ angular
                     if (!_.includes(suoritustapakoodit, suoritustapa)) {
                         suoritustapa = _.first(suoritustapakoodit);
                     }
-                }
-                else if (projekti && _.isArray(projekti.suoritustavat) && !_.isEmpty(projekti.suoritustavat)) {
+                } else if (projekti && _.isArray(projekti.suoritustavat) && !_.isEmpty(projekti.suoritustavat)) {
                     if (!_.includes(projekti.suoritustavat, suoritustapa)) {
                         suoritustapa = _.first(projekti.suoritustavat);
                     }
@@ -346,8 +351,11 @@ angular
                             deferred.reject(virhe);
                         }
                     );
-                }
-                else if (YleinenData.isPerusopetus(peruste) || YleinenData.isAipe(peruste) || YleinenData.isLukiokoulutus(peruste)) {
+                } else if (
+                    YleinenData.isPerusopetus(peruste) ||
+                    YleinenData.isAipe(peruste) ||
+                    YleinenData.isLukiokoulutus(peruste)
+                ) {
                     var labels,
                         osatProvider,
                         sisaltoProvider,
@@ -384,8 +392,7 @@ angular
                     await getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider);
                     sisalto = ylTiedot.sisalto;
                     deferred.resolve(ylTiedot.sisalto);
-                }
-                else {
+                } else {
                     SuoritustapaSisalto.get(
                         {
                             perusteId: perusteId,

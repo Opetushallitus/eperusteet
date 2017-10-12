@@ -17,8 +17,7 @@
 import * as angular from "angular";
 import * as _ from "lodash";
 
-angular.module("eperusteApp")
-    .service("KeyboardListener", function($window, Editointikontrollit) {
+angular.module("eperusteApp").service("KeyboardListener", function($window, Editointikontrollit) {
     this.init = angular.noop;
 
     function clickRoleButton(role) {

@@ -14,7 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-
 import * as _ from "lodash";
 import * as angular from "angular";
 
@@ -52,8 +51,7 @@ angular
                 } else if (_.isString(input)) {
                     const result = $translate.instant(input, config);
                     return result;
-                }
-                else if (input === 0 || input) {
+                } else if (input === 0 || input) {
                     return "" + input;
                 }
                 return "";

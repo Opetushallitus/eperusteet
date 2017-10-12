@@ -58,7 +58,7 @@ angular
 
                 if (!_.isEmpty(j.yhteystiedot)) {
                     // Yhteystietotyyppit
-                    _.forEach((<any>(_.first(j.yhteystiedot))).yhteystiedot, function(yt) {
+                    _.forEach((<any>_.first(j.yhteystiedot)).yhteystiedot, function(yt) {
                         if (yt.yhteystietoTyyppi === "YHTEYSTIETO_SAHKOPOSTI") {
                             j.$sahkoposti = yt.yhteystietoArvo;
                         } else if (

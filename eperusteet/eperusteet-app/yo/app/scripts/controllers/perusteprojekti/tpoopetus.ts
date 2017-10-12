@@ -53,7 +53,8 @@ angular
             "peruste.sisalto",
             function() {
                 Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, "lapset", function(lapsi) {
-                    const sisaltotyyppi = (lapsi && lapsi.perusteenOsa && lapsi.perusteenOsa.osanTyyppi) || "tekstikappale";
+                    const sisaltotyyppi =
+                        (lapsi && lapsi.perusteenOsa && lapsi.perusteenOsa.osanTyyppi) || "tekstikappale";
                     lapsi.$url = $state.href("root.perusteprojekti.suoritustapa." + sisaltotyyppi, {
                         suoritustapa: $stateParams.suoritustapa,
                         perusteenOsaViiteId: lapsi.id,
@@ -89,22 +90,25 @@ angular
             SuoritustapaSisalto.save(
                 {
                     perusteId: $scope.projekti._peruste,
-                    suoritustapa: $stateParams.suoritustapa,
+                    suoritustapa: $stateParams.suoritustapa
                 },
                 {
                     perusteenOsa: {
-                        osanTyyppi: tyyppi,
+                        osanTyyppi: tyyppi
                     }
                 },
                 function(response) {
                     TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
                     $state.go(
-                        "root.perusteprojekti.suoritustapa." + tyyppi, {
+                        "root.perusteprojekti.suoritustapa." + tyyppi,
+                        {
                             perusteenOsaViiteId: response.id,
-                            versio: "",
-                        }, {
+                            versio: ""
+                        },
+                        {
                             reload: true
-                        });
+                        }
+                    );
                 },
                 Notifikaatiot.serverCb
             );

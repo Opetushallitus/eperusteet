@@ -24,7 +24,7 @@ const en = require("../../localisation/locale-fi.json");
 const Locales = {
     fi,
     sv,
-    en,
+    en
 };
 
 angular
@@ -47,32 +47,31 @@ angular
             SUFFIX = ".json",
             BYPASS_REMOTE = !$window.location.host || $window.location.host.indexOf("localhost") === 0;
 
-        return async (options) => new Promise((resolve, reject) => {
-            const translations = {};
-            const langs = Locales[options.key];
+        return async options =>
+            new Promise((resolve, reject) => {
+                const translations = {};
+                const langs = Locales[options.key];
 
-            try {
-                _.extend(translations, langs);
-                if (BYPASS_REMOTE) {
-                    return resolve(translations);
+                try {
+                    _.extend(translations, langs);
+                    if (BYPASS_REMOTE) {
+                        return resolve(translations);
+                    } else {
+                        LokalisointiResource.get(
+                            { locale: options.key },
+                            (res: any) => {
+                                const remotes = _.zipObject(_.map(res, "key"), _.map(res, "value"));
+                                _.extend(translations, remotes);
+                                resolve(translations);
+                            },
+                            () => {
+                                reject(options.key);
+                            }
+                        );
+                    }
+                } catch (err) {
+                    console.error(err);
+                    throw "Käännösten haku epäonnistui: " + options.key;
                 }
-                else {
-                    LokalisointiResource.get(
-                        { locale: options.key },
-                        (res: any) => {
-                            const remotes = _.zipObject(_.map(res, "key"), _.map(res, "value"));
-                            _.extend(translations, remotes);
-                            resolve(translations);
-                        },
-                        () => {
-                            reject(options.key);
-                        }
-                    );
-                }
-            }
-            catch (err) {
-                console.error(err);
-                throw "Käännösten haku epäonnistui: " + options.key;
-            }
-        });
+            });
     });

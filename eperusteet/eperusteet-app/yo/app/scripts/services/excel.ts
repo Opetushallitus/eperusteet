@@ -14,7 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-
 declare var XLSX: any;
 
 import * as angular from "angular";
@@ -495,7 +494,7 @@ angular
                 osa.arviointi.lisatiedot.fi = "";
                 osa.arviointi.arvioinninKohdealueet = [];
 
-                var nextAnchor = (index < anchors.length - 1) ? anchors[index + 1] : height;
+                var nextAnchor = index < anchors.length - 1 ? anchors[index + 1] : height;
                 var arvioinninKohdealue: any = {};
                 var sizeRange = _.range(anchor, nextAnchor + 1);
 

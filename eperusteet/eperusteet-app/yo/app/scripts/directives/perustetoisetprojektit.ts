@@ -11,14 +11,15 @@ angular
             if (!osa || !osa.id || !perusteId === osa) {
                 if (!awaiter) {
                     awaiter = new Promise(async (resolve, reject) => {
-                        const result = await (Api.one("perusteenosat", "" + perusteId).all("projektit").getList());
+                        const result = await Api.one("perusteenosat", "" + perusteId)
+                            .all("projektit")
+                            .getList();
                         osa = result.plain();
                         resolve(_.clone(osa));
                     });
                     await awaiter;
                     awaiter = undefined;
-                }
-                else {
+                } else {
                     await awaiter;
                 }
             }
@@ -45,17 +46,16 @@ angular
                             }
                         })
                         .result.then(resolve, reject);
-                }
-                else {
+                } else {
                     resolve();
                 }
             });
-        };
+        }
 
         return {
             projektitJoissaKaytossa,
             varmistusdialogi
-        }
+        };
     })
     .directive("muutProjektit", function($timeout, $compile, $document, MuutProjektitService) {
         return {
@@ -63,7 +63,7 @@ angular
             restrict: "E",
             transclude: true,
             scope: {
-                perusteid: "=",
+                perusteid: "="
             },
             controller($scope, $stateParams) {
                 $scope.kaytetyt = [];
