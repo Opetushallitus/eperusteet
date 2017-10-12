@@ -94,27 +94,20 @@
                 </div>
                 <div class="taiteenala-sisalto">
                     <div>
-                        <div class="taiteenala-kentta form-inline" ng-if="editEnabled">
-                            <input
-                                id="koodi-input"
-                                class="form-control"
-                                type="text"
-                                ng-model="editableTaiteenala.koodi.arvo"
-                                editointi-kontrolli
-                                disabled="disabled">
-                            <button
-                                class="btn btn-default"
-                                ng-click="koodistoClick()"
-                                kaanna>hae-koodistosta</button>
-                            <button
-                                ng-show="editableTaiteenala.koodi && editableTaiteenala.koodi.uri && editableTaiteenala.tila === 'luonnos'"
-                                class="btn btn-danger"
-                                ng-click="cleanKoodi()"
-                                kaanna>tyhjenna-koodin-arvo</button>
-                        </div>
-                        <div class="form-inline" ng-if="!editEnabled">
+                        <div class="form-inline" ng-class="{ 'taiteenala-kentta': editEnabled }">
                             <h4 kaanna="'taiteenala-koodi'"></h4>
-                            <div ng-bind="(editableTaiteenala.koodi && editableTaiteenala.koodi.arvo) || '-'"></div>
+                            <div ng-bind="(editableTaiteenala.koodi && (editableTaiteenala.koodi.nimi | kaanna) || editableTaiteenala.koodi.arvo) || '-'"></div>
+                            <div class="taiteenala-kentta form-inline" ng-if="editEnabled">
+                                <button
+                                    class="btn btn-default"
+                                    ng-click="koodistoClick()"
+                                    kaanna>hae-koodistosta</button>
+                                <button
+                                    ng-show="editableTaiteenala.koodi && editableTaiteenala.koodi.uri && editableTaiteenala.tila === 'luonnos'"
+                                    class="btn btn-danger"
+                                    ng-click="cleanKoodi()"
+                                    kaanna>tyhjenna-koodin-arvo</button>
+                            </div>
                         </div>
                     </div>
 
@@ -148,7 +141,6 @@
                         <div ng-if="!editEnabled && taiteenala[field.path]">
                             <h4 class="otsikko" ng-bind-html="(taiteenala[field.path].nimi | kaanna) || (field.localeKey | kaanna)"></h4>
                             <div ng-bind-html="taiteenala[field.path].teksti | kaanna | kuvalinkit | unsafe"
-                                math-display
                                 termisto-viitteet="taiteenala.teksti"></div>
                         </div>
                     </div>

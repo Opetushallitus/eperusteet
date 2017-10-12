@@ -41,8 +41,9 @@ export function taiteenalaCtrl(
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
         $scope.koodistoClick = Koodisto.modaali(
-            ({ koodiArvo, koodiUri, koodisto: { koodistoUri } }) => {
+            ({ nimi, koodiArvo, koodiUri, koodisto: { koodistoUri } }) => {
                 $scope.editableTaiteenala.koodi = {
+                    nimi,
                     arvo: koodiArvo,
                     uri: koodiUri,
                     koodisto: koodistoUri
@@ -453,9 +454,9 @@ export function taiteenalaCtrl(
             return VersionHelper.getPerusteenosaVersions($scope.versiot, { id: $scope.taiteenala.id }, force);
         }
 
-        function responseFn(response) {
+        async function responseFn(response) {
             $scope.taiteenala = response;
-            setupTekstikappale(response);
+            await setupTekstikappale(response);
             taiteenalaDefer = $q.defer();
             $scope.taiteenalaPromise = taiteenalaDefer.promise;
             taiteenalaDefer.resolve($scope.editableTaiteenala);
