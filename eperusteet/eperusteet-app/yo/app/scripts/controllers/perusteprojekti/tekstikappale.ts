@@ -335,7 +335,6 @@ angular
             })();
         };
 
-        function successCb(re) {
         async function successCb(re) {
             if (re.osanTyyppi !== "tekstikappale") {
                 $location.path(perusteprojektiBackLink.substring(1));
