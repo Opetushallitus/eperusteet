@@ -43,7 +43,7 @@ angular
         function generoiOtsikko() {
             var tosa =
                 "{{ tutkinnonOsaSolmunNimi(rakenne) | kaanna }}" +
-                '<span ng-if="!rakenne.erikoisuus && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">,' +
+                '<span ng-if="!rakenne.erikoisuus && isNumber(tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus)">,' +
                 "  <strong>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}" +
                 '    <span ng-if="tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi"> - {{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi }}</span>' +
                 "  </strong>" +
@@ -490,6 +490,7 @@ angular
         };
         $scope.isVaTe = YleinenData.isValmaTelma($scope.rakenne.$peruste);
         $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
+        $scope.isNumber = _.isNumber;
 
         $scope.tutkinnonOsat = {
             perSivu: 8,

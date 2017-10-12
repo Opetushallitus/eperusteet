@@ -140,11 +140,11 @@ angular
                 navigaationimi: "navi-perusteprojekti",
                 resolve: {
                     perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
-                    projektinTiedotAlustettu: async perusteprojektiTiedot => {
+                    projektinTiedotAlustettu: async (perusteprojektiTiedot, $log) => {
                         const result = await perusteprojektiTiedot.projektinTiedotAlustettu();
                         return result;
                     },
-                    perusteenSisaltoAlustus: async (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) => {
+                    perusteenSisaltoAlustus: async (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams, $log) => {
                         const result = await perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
                         return result;
                     }
@@ -397,28 +397,39 @@ angular
             $scope,
             $state,
             $stateParams,
+            Kieli,
+            Navigaatiopolku,
+            Notifikaatiot,
+            PdfCreation,
+            PerusteProjektiService,
+            PerusteProjektiSivunavi,
+            ProxyService,
+            SuoritustapaSisalto,
+            TermistoService,
+            TiedoteService,
+            TutkinnonOsaEditMode,
+            YleinenData,
+            isOpas,
             koulutusalaService,
             opintoalaService,
-            Navigaatiopolku,
-            ProxyService,
-            TiedoteService,
-            PerusteProjektiService,
-            perusteprojektiTiedot,
-            PerusteProjektiSivunavi,
-            PdfCreation,
-            SuoritustapaSisalto,
-            Notifikaatiot,
-            TutkinnonOsaEditMode,
-            perusteprojektiOikeudet,
-            TermistoService,
-            Kieli,
-            YleinenData,
             perusteprojektiBackLink,
-            isOpas
+            perusteprojektiOikeudet,
+            perusteprojektiTiedot,
         ) => {
+            function init() {
+                $scope.projekti = perusteprojektiTiedot.getProjekti();
+                $scope.peruste = perusteprojektiTiedot.getPeruste();
+                Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
+                $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
+                TermistoService.setPeruste($scope.peruste);
+                ProxyService.set("perusteId", $scope.peruste.id);
+            }
+            init();
+
             $scope.isOpas = isOpas; // Käytetään alinäkymissä
+            const isAmmatillinen = koulutustyyppi => _.includes(YleinenData.ammatillisetkoulutustyypit, koulutustyyppi);
+            $scope.isAmmatillinen = isAmmatillinen($scope.peruste.koulutustyyppi);
             $scope.muokkausEnabled = false;
-            $scope.pdfEnabled = false;
             $scope.backLink = perusteprojektiBackLink;
             $scope.$$kaannokset = perusteprojektiTiedot.getPerusteprojektiKaannokset($scope.isOpas && "opas");
 
@@ -427,26 +438,11 @@ angular
             };
 
             $scope.luoPdf = () => {
-                PdfCreation.setPerusteId($scope.projekti._peruste);
+                PdfCreation.setPeruste($scope.peruste);
                 PdfCreation.openModal($scope.isOpas, $scope.isAmmatillinen);
             };
 
-            function init() {
-                $scope.projekti = perusteprojektiTiedot.getProjekti();
-                $scope.peruste = perusteprojektiTiedot.getPeruste();
-                $scope.isAmmatillinen = YleinenData.isAmmatillinen($scope.peruste);
-                Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
-                $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
-                TermistoService.setPeruste($scope.peruste);
-                ProxyService.set("perusteId", $scope.peruste.id);
-            }
-
-            init();
-
-            $scope.$on("update:perusteprojekti", () => ($scope.projekti = perusteprojektiTiedot.getProjekti()));
-
             // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
-
             if (_.size($scope.peruste.suoritustavat) > 1) {
                 $scope.$watch(
                     () => PerusteProjektiService.getSuoritustapa(),
@@ -520,12 +516,13 @@ angular
                 );
             $scope.isNaviVisible = () => PerusteProjektiSivunavi.isVisible();
 
-            $scope.$on("update:perusteprojekti", () =>
+            $scope.$on("update:perusteprojekti", () => {
+                $scope.projekti = perusteprojektiTiedot.getProjekti();
                 perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(() => {
                     init();
                     PerusteProjektiSivunavi.refresh(true);
-                })
-            );
+                });
+            });
 
             $scope.lisaaTekstikappale = () => {
                 function lisaaSisalto(method, sisalto, cb) {

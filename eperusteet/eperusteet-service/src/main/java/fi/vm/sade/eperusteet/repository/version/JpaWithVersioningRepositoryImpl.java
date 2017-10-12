@@ -85,7 +85,10 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
             .add(AuditEntity.id().eq(id))
             .getSingleResult();
 
-        assert (result instanceof Number );
+        if (result == null) {
+            return null;
+        }
+        assert (result instanceof Number);
         RevisionInfo rev = auditReader.findRevision(RevisionInfo.class, ((Number) result));
         return new Revision(rev.getId(), rev.getTimestamp(), rev.getMuokkaajaOid(), rev.getKommentti());
     }

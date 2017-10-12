@@ -32,11 +32,12 @@ angular
                     $scope.ammattitaito = [];
                 }
 
-                var kohdealue = {
+
+                const kohdealue = {
                     otsikko: {},
-                    $accordionOpen: true
+                    $$accordionOpen: true
                 };
-                kohdealue.otsikko[YleinenData.kieli] = $scope.uudenKohdealueenNimi;
+                kohdealue.otsikko = $scope.uudenKohdealueenNimi;
 
                 $scope.ammattitaito.push(kohdealue);
 
@@ -76,33 +77,33 @@ angular
                 })();
             },
             uusiWizard: function(kohdealue) {
-                kohdealue.$newkohde = {
+                kohdealue.$$newkohde = {
                     showInputArea: true
                 };
             },
             isAdding: function(kohdealue) {
-                return !_.isEmpty(kohdealue.$newkohde);
+                return !_.isEmpty(kohdealue.$$newkohde);
             },
             uusi: function(kohdealue) {
                 if (angular.isUndefined(kohdealue.vaatimuksenKohteet) || kohdealue.vaatimuksenKohteet === null) {
                     kohdealue.vaatimuksenKohteet = [];
                 }
 
-                var kohde = {
+                const kohde = {
                     otsikko: {},
                     vaatimukset: [{}],
-                    $accordionOpen: true
+                    $$accordionOpen: true
                 };
 
-                kohde.otsikko[YleinenData.kieli] = kohdealue.$newkohde.nimi;
+                kohde.otsikko[YleinenData.kieli] = kohdealue.$$newkohde.nimi;
                 kohdealue.vaatimuksenKohteet.push(kohde);
-                kohdealue.$newkohde = {};
+                kohdealue.$$newkohde = {};
                 $timeout(function() {
                     $scope.kohde.muokkaa(kohde);
                 });
             },
             cancel: function(kohdealue) {
-                kohdealue.$newkohde = null;
+                kohdealue.$$newkohde = null;
             },
             poistuMuokkauksesta: function(list, index) {
                 $scope.editableKohde.$editointi = false;
@@ -145,9 +146,9 @@ angular
                 kriteeri.vaatimukset.push({ jarjestys: kriteeri.vaatimukset.length });
 
                 // Set focus to newly added field
-                var parent = angular.element(event.currentTarget).closest("table");
+                const parent = angular.element(event.currentTarget).closest("table");
                 $timeout(function() {
-                    var found = parent.find(".form-control");
+                    const found = parent.find(".form-control");
                     if (found.length > 0) {
                         found[found.length - 1].focus();
                     }
@@ -156,7 +157,9 @@ angular
         };
 
         if ($scope.eiKohdealueita && (angular.isUndefined($scope.ammattitaito) || $scope.ammattitaito === null)) {
-            $scope.uudenKohdealueenNimi = "automaattinen";
+            $scope.uudenKohdealueenNimi = {
+                fi: "Nimetön"
+            };
             $scope.kohdealue.uusi();
         }
     })
@@ -228,23 +231,21 @@ angular
                     }
                 };
 
-                /**
-         * is-open attribuutti on annettava modelina accordionille, jotta
-         * ui-sortable voidaan disabloida lukutilassa.
-         */
+                // is-open attribuutti on annettava modelina accordionille,
+                // jotta ui-sortable voidaan disabloida lukutilassa.
                 function setAccordion(mode) {
-                    var obj = scope.ammattitaito;
+                    const obj = scope.ammattitaito;
                     _.each(obj, function(kohdealue) {
-                        kohdealue.$accordionOpen = mode;
+                        kohdealue.$$accordionOpen = mode;
                         _.each(kohdealue.vaatimuksenKohteet, function(kohde) {
-                            kohde.$accordionOpen = mode;
+                            kohde.$$accordionOpen = mode;
                         });
                     });
                 }
 
                 function accordionState() {
-                    var obj = _.first(scope.ammattitaito);
-                    return obj && obj.$accordionOpen;
+                    const obj = _.first(scope.ammattitaito);
+                    return obj && obj.$$accordionOpen;
                 }
 
                 scope.toggleAll = function() {

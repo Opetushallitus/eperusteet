@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -243,5 +244,12 @@ public class PerusteprojektiController {
     public ResponseEntity<Map<PermissionManager.Target, Set<PermissionManager.Permission>>> getOikeudet(
             @PathVariable("id") final Long id) {
         return new ResponseEntity<>(permission.getProjectPermissions(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/oikeudet/{perusteenOsaId}", method = GET)
+    public ResponseEntity<OmistajaDto> omistaaOsan(
+            @PathVariable("id") final Long id,
+            @PathVariable("perusteenOsaId") final Long perusteenOsaId) {
+        return new ResponseEntity<>(service.isOwner(id, perusteenOsaId), HttpStatus.OK);
     }
 }

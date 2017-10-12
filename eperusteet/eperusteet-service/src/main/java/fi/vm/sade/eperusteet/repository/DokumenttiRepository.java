@@ -39,6 +39,6 @@ public interface DokumenttiRepository extends JpaRepository<Dokumentti, Long> {
     List<Long> findLatest(Long perusteId, Kieli kieli, DokumenttiTila tila);
 
     List<Dokumentti> findByPerusteIdAndKieliAndTila(Long perusteId, Kieli kieli, DokumenttiTila tila, Sort sort);
-    List<Dokumentti> findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(Long perusteId, Kieli kieli, DokumenttiTila tila, Suoritustapakoodi suoritustapakoodi, Sort sort);
+    List<Dokumentti> findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(Long perusteId, Kieli kieli, DokumenttiTila tila, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version, Sort sort);
     List<Dokumentti> findByPerusteIdAndKieliAndTilaAndGeneratorVersion(Long perusteId, Kieli kieli, DokumenttiTila tila, GeneratorVersion version, Sort sort);
 }

@@ -18,16 +18,17 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektinPerusteenosaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import java.util.List;
+import java.util.Set;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.List;
 
 /**
  *
@@ -120,12 +121,15 @@ public interface PerusteenOsaService {
     void removeOsaAlue(@P("id") final Long id, final Long osaAlueId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosaviite', 'LUKU')")
-    List<Revision> getVersiotByViite(final Long id);
+    List<Revision> getVersiotByViite(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosaviite', 'LUKU')")
-    PerusteenOsaDto getVersioByViite(Long id, Integer versioId);
+    PerusteenOsaDto getVersioByViite(@P("id") Long id, Integer versioId);
 
     @PreAuthorize("permitAll()")
     Revision getLastModifiedRevision(final Long id);
+
+    @PreAuthorize("isAuthenticated()")
+    Set<PerusteprojektinPerusteenosaDto> getOwningProjektit(@P("id") Long id);
 
 }

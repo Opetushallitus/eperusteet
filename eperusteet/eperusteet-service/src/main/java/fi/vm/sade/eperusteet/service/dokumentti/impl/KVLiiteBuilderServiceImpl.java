@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.dokumentti.impl;
 import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -317,14 +318,21 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
             // Muodostuminen
             if (kvLiiteJulkinenDto.getMuodostumisenKuvaus() != null) {
-                Element p = docBase.getDocument().createElement("p");
-                td.appendChild(p);
-                p.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
-                        messages.translate("docgen.tutkinnon_muodostuminen.title", docBase.getKieli())));
 
                 kvLiiteJulkinenDto.getMuodostumisenKuvaus().forEach((suoritustapakoodi, lokalisoituTekstiDto) -> {
-                    td.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
-                            suoritustapakoodi.toString()));
+                    StringBuilder otsikkoBuilder = new StringBuilder();
+                    otsikkoBuilder.append(messages.translate("docgen.tutkinnon_muodostuminen.title",
+                            docBase.getKieli()));
+
+                    if (kvLiiteJulkinenDto.getMuodostumisenKuvaus().size() > 1) {
+                        otsikkoBuilder.append(" (");
+                        otsikkoBuilder.append(suoritustapakoodi.toString());
+                        otsikkoBuilder.append(")");
+                    }
+                    Element p = docBase.getDocument().createElement("p");
+                    td.appendChild(p);
+                    p.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(), otsikkoBuilder.toString()));
+
                     DokumenttiUtils.addTeksti(docBase,
                             DokumenttiUtils.getTextString(docBase, lokalisoituTekstiDto), "div", td);
                 });

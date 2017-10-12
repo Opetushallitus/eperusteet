@@ -117,12 +117,9 @@ angular
         TermistoService
     ) {
         $scope.$prestate = $stateParams.prestate;
-
-        const AmmatillisetKoulutustyypit = ["koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"];
-        $scope.isAmmatillinen = _.includes(AmmatillisetKoulutustyypit, peruste.koulutustyyppi);
-
         TermistoService.setPeruste(peruste);
         $scope.isOpas = peruste.tyyppi === "opas";
+        $scope.isAmmatillinen = _.includes(YleinenData.ammatillisetkoulutustyypit, peruste.koulutustyyppi);
         $scope.Koulutusalat = koulutusalaService;
         $scope.Opintoalat = opintoalaService;
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
@@ -215,7 +212,7 @@ angular
         };
 
         $scope.luoPdf = function() {
-            PdfCreation.setPerusteId($scope.peruste.id);
+            PdfCreation.setPeruste($scope.peruste);
             PdfCreation.openModal($scope.isOpas, $scope.isAmmatillinen);
         };
     })

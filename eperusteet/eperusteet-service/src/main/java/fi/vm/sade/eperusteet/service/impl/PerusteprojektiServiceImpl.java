@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -56,6 +57,19 @@ import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.generic.rest.CachingRestClient;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toMap;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
@@ -291,6 +305,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti.setTila(LAADINTA);
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
+        perusteprojektiDto.setReforminMukainen(
+                perusteprojektiDto.isReforminMukainen()
+                        && KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi()).isAmmatillinen());
+
         if (tyyppi == PerusteTyyppi.OPAS) {
             throw new BusinessRuleViolationException("Virheellinen perustetyyppi");
         }
@@ -333,6 +351,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, tyyppi, perusteprojektiDto.isReforminMukainen());
         } else {
             Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
+            if (pohjaPeruste == null) {
+                throw new BusinessRuleViolationException("perustetta-ei-olemassa");
+            }
             perusteprojektiDto.setKoulutustyyppi(pohjaPeruste.getKoulutustyyppi());
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
         }
@@ -481,6 +502,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 tarkistaRakenne(lapsi, pakolliset, virheellisetKielet);
             }
         }
+    }
+
+    @Override
+    public OmistajaDto isOwner(Long id, Long perusteenOsaId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Transactional(readOnly = true)
@@ -982,12 +1008,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     rakenne.kurssit()
                         .filter(empty(Lukiokurssi::getOppiaineet))
                         .map(localized(Nimetty::getNimi)))
-                .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () ->
-                    rakenne.oppiaineetMaarineen()
-                        .filter(not(Oppiaine::isKoosteinen)
-                        .and(not(Oppiaine::isAbstraktiBool))
-                        .and(empty(Oppiaine::getLukiokurssit)))
-                        .map(localized(Nimetty::getNimi)))
+                .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () -> {
+                    // EP-1143
+                    if (peruste.getKoulutustyyppi().equals(KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS.toString())) {
+                        return rakenne.oppiaineetMaarineen()
+                                .filter(not(Oppiaine::isKoosteinen)
+                                        .and(not(Oppiaine::isAbstraktiBool))
+                                        .and(empty(Oppiaine::getLukiokurssit)))
+                                .map(localized(Nimetty::getNimi));
+                    } else {
+                        return rakenne.oppiaineetMaarineen()
+                                .filter(not(Oppiaine::isKoosteinen).and(not(Oppiaine::isAbstraktiBool)))
+                                .map(localized(Nimetty::getNimi));
+                    }
+                })
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
                     rakenne.oppiaineet()
                         .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))

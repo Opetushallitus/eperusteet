@@ -265,6 +265,16 @@ export const isOpas = function(peruste) {
     return peruste.tyyppi === "opas";
 };
 
+export const yhteisetTutkinnonOsat = ["tutke2", "reformi_tutke2"];
+
+export const isTutke2 = (viite) => {
+    if (viite == null || viite.tutkinnonOsa == null || viite.tutkinnonOsa.tyyppi == null) {
+        return false;
+    }
+
+    return _.includes(yhteisetTutkinnonOsat, viite.tutkinnonOsa.tyyppi);
+};
+
 export const isEsiopetus = function(peruste) {
     return _.any(["koulutustyyppi_15", "koulutustyyppi_22"], tyyppi => tyyppi === peruste.koulutustyyppi);
 };
@@ -337,6 +347,7 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
         isEsiopetus,
         isLukiokoulutus,
         isSimple,
+        isTutke2,
         validSuoritustapa,
         valitseSuoritustapaKoulutustyypille,
         showKoulutukset,

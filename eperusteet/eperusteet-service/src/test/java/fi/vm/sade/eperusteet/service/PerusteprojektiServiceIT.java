@@ -18,6 +18,9 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
@@ -192,6 +195,99 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals(LaajuusYksikko.OPINTOVIIKKO, uusi.getPeruste().getSuoritustapa(Suoritustapakoodi.OPS).getLaajuusYksikko());
         Assert.assertEquals(2, uusi.getPeruste().getSuoritustavat().size());
         perusteprojektiLuontiCommonSuoritustavat(uusi, 3);
+    }
+
+    @Test
+    @Rollback(true)
+    public void testKvLiiteLuonti() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        PerusteprojektiDto projekti = service.get(ppdto.getId());
+        repository.flush();
+        perusteRepository.flush();
+        PerusteDto peruste = perusteService.get(projekti.getPeruste().getIdLong());
+        Assert.assertNotNull(peruste.getKvliite());
+        KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(peruste.getId());
+        Assert.assertNotNull(julkinenKVLiite);
+    }
+
+    void setKvliiteValues(KVLiiteDto kvliite, String prefix) {
+        kvliite.setJatkoopintoKelpoisuus(TestUtils.lt(prefix + "1"));
+        kvliite.setKansainvalisetSopimukset(TestUtils.lt(prefix + "2"));
+        kvliite.setLisatietoja(TestUtils.lt(prefix + "3"));
+        kvliite.setPohjakoulutusvaatimukset(TestUtils.lt(prefix + "4"));
+        kvliite.setSaadosPerusta(TestUtils.lt(prefix + "5"));
+        kvliite.setSuorittaneenOsaaminen(TestUtils.lt(prefix + "6"));
+        kvliite.setTutkinnonVirallinenAsema(TestUtils.lt(prefix + "7"));
+        kvliite.setTutkintotodistuksenSaaminen(TestUtils.lt(prefix + "8"));
+        kvliite.setTyotehtavatJoissaVoiToimia(TestUtils.lt(prefix + "9"));
+        kvliite.setTutkinnostaPaattavaViranomainen(prefix + "10");
+        kvliite.setTutkintotodistuksenAntaja(prefix + "11");
+    }
+
+    KVLiiteDto testKvliite(KVLiiteDto kvliite, String prefix) {
+        Assert.assertEquals(kvliite.getJatkoopintoKelpoisuus().get(Kieli.FI), prefix + "1");
+        Assert.assertEquals(kvliite.getKansainvalisetSopimukset().get(Kieli.FI), prefix + "2");
+        Assert.assertEquals(kvliite.getLisatietoja().get(Kieli.FI), prefix + "3");
+        Assert.assertEquals(kvliite.getPohjakoulutusvaatimukset().get(Kieli.FI), prefix + "4");
+        Assert.assertEquals(kvliite.getSaadosPerusta().get(Kieli.FI), prefix + "5");
+        Assert.assertEquals(kvliite.getSuorittaneenOsaaminen().get(Kieli.FI), prefix + "6");
+        Assert.assertEquals(kvliite.getTutkinnonVirallinenAsema().get(Kieli.FI), prefix + "7");
+        Assert.assertEquals(kvliite.getTutkintotodistuksenSaaminen().get(Kieli.FI), prefix + "8");
+        Assert.assertEquals(kvliite.getTyotehtavatJoissaVoiToimia().get(Kieli.FI), prefix + "9");
+        Assert.assertEquals(kvliite.getTutkinnostaPaattavaViranomainen(), prefix + "10");
+        Assert.assertEquals(kvliite.getTutkintotodistuksenAntaja(), prefix + "11");
+        return kvliite;
+    }
+
+    @Test
+    @Rollback(true)
+    public void testKvLiiteMuokkaus() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        PerusteprojektiDto projekti = service.get(ppdto.getId());
+        PerusteDto peruste = perusteService.get(projekti.getPeruste().getIdLong());
+        Assert.assertNotNull(peruste.getKvliite());
+        KVLiiteDto kvliite = peruste.getKvliite();
+        setKvliiteValues(kvliite, "a");
+        peruste.setKvliite(kvliite);
+        peruste = perusteService.updateFull(peruste.getId(), peruste);
+        kvliite = peruste.getKvliite();
+        testKvliite(kvliite, "a");
+    }
+
+    @Test
+    @Rollback(true)
+    public void testKvLiitePohjasta() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        PerusteDto pohjaDto = perusteService.get(service.get(ppdto.getId()).getPeruste().getIdLong());
+        KVLiiteDto pohjaLiite = pohjaDto.getKvliite();
+        setKvliiteValues(pohjaLiite, "a");
+        pohjaDto.setKvliite(pohjaLiite);
+        pohjaDto = perusteService.updateFull(pohjaDto.getId(), pohjaDto);
+
+        PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.NORMAALI, ryhmaId);
+        luontiDto.setPerusteId(pohjaDto.getId());
+        luontiDto.setDiaarinumero(TestUtils.uniikkiString());
+        luontiDto.setNimi(TestUtils.uniikkiString());
+        PerusteprojektiDto pp = service.save(luontiDto);
+        PerusteDto perusteDto = perusteService.get(pp.getPeruste().getIdLong());
+        KVLiiteDto kvliite = perusteDto.getKvliite();
+        setKvliiteValues(kvliite, "b");
+        perusteDto.setKvliite(kvliite);
+        perusteDto = perusteService.updateFull(perusteDto.getId(), perusteDto);
+        testKvliite(perusteDto.getKvliite(), "b");
+
+        KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(perusteDto.getId());
+        Assert.assertEquals("a1", julkinenKVLiite.getJatkoopintoKelpoisuus().get(Kieli.FI));
+        Assert.assertEquals("a2", julkinenKVLiite.getKansainvalisetSopimukset().get(Kieli.FI));
+        Assert.assertEquals("a3", julkinenKVLiite.getLisatietoja().get(Kieli.FI));
+        Assert.assertEquals("a4", julkinenKVLiite.getPohjakoulutusvaatimukset().get(Kieli.FI));
+        Assert.assertEquals("a5", julkinenKVLiite.getSaadosPerusta().get(Kieli.FI));
+        Assert.assertEquals("b6", julkinenKVLiite.getSuorittaneenOsaaminen().get(Kieli.FI));
+        Assert.assertEquals("a7", julkinenKVLiite.getTutkinnonVirallinenAsema().get(Kieli.FI));
+        Assert.assertEquals("b8", julkinenKVLiite.getTutkintotodistuksenSaaminen().get(Kieli.FI));
+        Assert.assertEquals("b9", julkinenKVLiite.getTyotehtavatJoissaVoiToimia().get(Kieli.FI));
+        Assert.assertEquals("b10", julkinenKVLiite.getTutkinnostaPaattavaViranomainen());
+        Assert.assertEquals("a11", julkinenKVLiite.getTutkintotodistuksenAntaja());
     }
 
     private void lazyAssertTyoryhma(TyoryhmaHenkiloDto trh, String ryhma, String henkilo) {

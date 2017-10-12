@@ -366,7 +366,8 @@ angular
                 virheService.virhe({ state: toState.name });
             });
 
-            $rootScope.$on("$stateNotFound", function(event, toState) {
+            $rootScope.$on("$stateNotFound", function(event, toState, toParams, fromState, fromParams, error) {
+                $log.error(error);
                 virheService.virhe({ state: toState.to });
             });
 

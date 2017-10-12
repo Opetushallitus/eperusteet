@@ -8,8 +8,8 @@
   <h4 kaanna="'osaamisen-arviointi'"></h4>
   <div ng-repeat="kohdealue in tavoite.arviointi.arvioinninKohdealueet">
       <div class="arviointi">
-          <div class="arviointi-otsikko" ng-hide="kohdealue.otsikko.fi === 'automaattinen'">
-              <h4>{{ kohdealue.otsikko | kaanna }}</h4>
+          <div class="arviointi-otsikko">
+              <h4>{{ kohdealue.otsikko || 'nimeton' | kaanna }}</h4>
           </div>
           <div class="arviointi-sisalto">
               <div ng-repeat="kohde in kohdealue.arvioinninKohteet">

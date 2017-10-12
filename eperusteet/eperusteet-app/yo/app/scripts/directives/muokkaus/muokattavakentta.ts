@@ -341,7 +341,7 @@ angular
             }
         };
     })
-    .directive("slocalized", function($parse, $rootScope, YleinenData, Kieli) {
+    .directive("slocalized", function($timeout, $parse, $rootScope, YleinenData, Kieli) {
         return {
             priority: 5,
             restrict: "A",
@@ -349,11 +349,8 @@ angular
             scope: false,
             link: function(scope, element, attrs, ngModelCtrl: any) {
                 ngModelCtrl.$formatters.push(function(modelValue) {
-                    if (angular.isUndefined(modelValue)) {
-                        return;
-                    }
-                    if (modelValue === null) {
-                        return;
+                    if (angular.isUndefined(modelValue) || modelValue === null) {
+                        return "";
                     }
                     const result = modelValue[Kieli.getSisaltokieli()];
                     return result;
@@ -362,29 +359,33 @@ angular
                 ngModelCtrl.$parsers.push(function(viewValue) {
                     let localizedModelValue = ngModelCtrl.$modelValue;
 
-                    if (angular.isUndefined(localizedModelValue)) {
+                    if (localizedModelValue === null || _.isUndefined(localizedModelValue)) {
                         localizedModelValue = {};
                     }
+
                     if (localizedModelValue === null) {
                         localizedModelValue = {};
                     }
                     if (_.isString(viewValue)) {
                         localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
                     }
+
                     return localizedModelValue;
                 });
 
                 scope.$on("changed:sisaltokieli", function(event, sisaltokieli) {
-                    if (
-                        ngModelCtrl.$modelValue !== null &&
-                        !angular.isUndefined(ngModelCtrl.$modelValue) &&
-                        !_.isEmpty(ngModelCtrl.$modelValue[sisaltokieli])
-                    ) {
-                        ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[sisaltokieli]);
-                    } else {
-                        ngModelCtrl.$setViewValue("");
-                    }
-                    ngModelCtrl.$render();
+                    $timeout(() => {
+                        if (
+                            ngModelCtrl.$modelValue !== null &&
+                            !angular.isUndefined(ngModelCtrl.$modelValue) &&
+                            !_.isEmpty(ngModelCtrl.$modelValue[sisaltokieli])
+                        ) {
+                            ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[sisaltokieli]);
+                        } else {
+                            ngModelCtrl.$setViewValue("");
+                        }
+                        ngModelCtrl.$render();
+                    });
                 });
             }
         };

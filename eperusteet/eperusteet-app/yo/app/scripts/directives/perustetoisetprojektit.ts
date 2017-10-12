@@ -69,7 +69,7 @@ angular
                 $scope.kaytetyt = [];
                 async function update(perusteId: number) {
                     const result = await MuutProjektitService.projektitJoissaKaytossa(perusteId);
-                    $scope.kaytetyt = _.filter(result, pp => pp.id + "" !== $stateParams.perusteProjektiId);
+                    $scope.kaytetyt = _.filter(result, (pp: any) => pp.id + "" !== $stateParams.perusteProjektiId);
                 }
 
                 $scope.$watch("perusteid", (o, v) => {

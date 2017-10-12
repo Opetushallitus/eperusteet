@@ -31,7 +31,7 @@ angular
         $scope.showNewKohdealueInput = false;
 
         $scope.arviointiasteikkoChanged = function(kohdealue) {
-            ArviointiPreferences.setting("asteikko", kohdealue.$newkohde.arviointiasteikko);
+            ArviointiPreferences.setting("asteikko", kohdealue.$$newkohde.arviointiasteikko);
         };
 
         $scope.kohdealue = {
@@ -46,9 +46,9 @@ angular
 
                 var kohdealue = {
                     otsikko: {},
-                    $accordionOpen: true
+                    $$accordionOpen: true
                 };
-                kohdealue.otsikko[YleinenData.kieli] = $scope.uudenKohdealueenNimi;
+                kohdealue.otsikko = $scope.uudenKohdealueenNimi;
 
                 $scope.arviointi.push(kohdealue);
 
@@ -97,13 +97,13 @@ angular
                 })();
             },
             uusiWizard: function(kohdealue) {
-                kohdealue.$newkohde = {
+                kohdealue.$$newkohde = {
                     showInputArea: true,
                     arviointiasteikko: ArviointiPreferences.setting("asteikko")
                 };
             },
             isAdding: function(kohdealue) {
-                return !_.isEmpty(kohdealue.$newkohde);
+                return !_.isEmpty(kohdealue.$$newkohde);
             },
             editArviointiasteikko: arvioinninkohde => {
                 $scope.editableKohde.$editArviointiasteikko = true;
@@ -170,23 +170,23 @@ angular
                         fi: "Opiskelija",
                         sv: "Den studerande"
                     },
-                    _arviointiAsteikko: kohdealue.$newkohde.arviointiasteikko.id,
+                    _arviointiAsteikko: kohdealue.$$newkohde.arviointiasteikko.id,
                     osaamistasonKriteerit: [],
-                    $accordionOpen: true
+                    $$accordionOpen: true
                 };
 
-                kohde.otsikko[YleinenData.kieli] = kohdealue.$newkohde.nimi;
+                kohde.otsikko[YleinenData.kieli] = kohdealue.$$newkohde.nimi;
 
-                valmisteleKriteerit(kohde.osaamistasonKriteerit, kohdealue.$newkohde.arviointiasteikko.osaamistasot);
+                valmisteleKriteerit(kohde.osaamistasonKriteerit, kohdealue.$$newkohde.arviointiasteikko.osaamistasot);
 
                 kohdealue.arvioinninKohteet.push(kohde);
-                kohdealue.$newkohde = {};
+                kohdealue.$$newkohde = {};
                 $timeout(function() {
                     $scope.kohde.muokkaa(kohde);
                 });
             },
             cancel: function(kohdealue) {
-                kohdealue.$newkohde = null;
+                kohdealue.$$newkohde = null;
             },
             poistuMuokkauksesta: function(list, index) {
                 $scope.editableKohde.$editointi = false;
@@ -202,7 +202,9 @@ angular
                 $timeout(function() {
                     $scope.editableKohde = null;
                     delete $scope.originalKohde.$editointi;
-                    $scope.originalKohde._arviointiAsteikko = $scope.originalKohde.$vanhaArviointiAsteikko;
+                    if ($scope.originalKohde.$vanhaArviointiAsteikko) {
+                        $scope.originalKohde._arviointiAsteikko = $scope.originalKohde.$vanhaArviointiAsteikko;
+                    }
                     $scope.originalKohde = null;
                 });
             }
@@ -229,7 +231,9 @@ angular
         };
 
         if ($scope.eiKohdealueita && (angular.isUndefined($scope.arviointi) || $scope.arviointi === null)) {
-            $scope.uudenKohdealueenNimi = "automaattinen";
+            $scope.uudenKohdealueenNimi = {
+                fi: "Nimetön"
+            };
             $scope.kohdealue.uusi();
         }
     })
@@ -297,16 +301,16 @@ angular
                 function setAccordion(mode) {
                     let obj = scope.arviointi;
                     _.each(obj, function(kohdealue) {
-                        kohdealue.$accordionOpen = mode;
+                        kohdealue.$$accordionOpen = mode;
                         _.each(kohdealue.arvioinninKohteet, function(kohde) {
-                            kohde.$accordionOpen = mode;
+                            kohde.$$accordionOpen = mode;
                         });
                     });
                 }
 
                 function accordionState() {
                     let obj = _.first(scope.arviointi);
-                    return obj && obj.$accordionOpen;
+                    return obj && obj.$$accordionOpen;
                 }
 
                 scope.toggleAll = function() {

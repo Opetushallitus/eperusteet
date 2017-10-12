@@ -170,12 +170,12 @@ angular
         $scope,
         $state,
         $stateParams,
-        perusteprojektiBackLink,
         Editointikontrollit,
         Kaanna,
         Kommentit,
         KommentitByPerusteenOsa,
         Lukitus,
+        MuutProjektitService,
         Notifikaatiot,
         PerusteProjektiSivunavi,
         PerusteenOsanTyoryhmat,
@@ -191,7 +191,8 @@ angular
         Varmistusdialogi,
         VersionHelper,
         YleinenData,
-        virheService
+        perusteprojektiBackLink,
+        virheService,
     ) {
         $scope.tekstikappale = {};
         $scope.versiot = {};
@@ -210,10 +211,17 @@ angular
         };
 
         $scope.kopioiMuokattavaksi = function() {
-            TekstikappaleOperations.clone($scope.viitteet[$scope.tekstikappale.id].viite);
+            Varmistusdialogi.dialogi({
+                otsikko: "kopioidaanko-tekstikappale",
+                primaryBtn: "kopioi",
+                successCb: () => {
+                    TekstikappaleOperations.clone($scope.viitteet[$scope.tekstikappale.id].viite);
+                }
+            })();
         };
 
         $scope.muokkaa = async () => {
+            await MuutProjektitService.varmistusdialogi($scope.tekstikappale.id);
             Editointikontrollit.startEditing(await lukitse());
         };
 
@@ -284,7 +292,7 @@ angular
                 updateViitteet();
             },
             get: function() {
-                var items = [];
+                var items: any = [];
                 var id = $scope.tekstikappale.id;
                 if ($scope.viitteet[id]) {
                     do {
@@ -328,6 +336,7 @@ angular
         };
 
         function successCb(re) {
+        async function successCb(re) {
             if (re.osanTyyppi !== "tekstikappale") {
                 $location.path(perusteprojektiBackLink.substring(1));
             }
@@ -339,6 +348,7 @@ angular
                 $scope.isNew = true;
                 $scope.muokkaa();
             }
+            $scope.kaytossaMonessaProjektissa = _.size(await MuutProjektitService.projektitJoissaKaytossa(re.id)) > 1;
         }
 
         function errorCb() {

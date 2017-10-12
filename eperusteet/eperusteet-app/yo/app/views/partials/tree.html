@@ -103,7 +103,7 @@
                 </div>
                 <div class="sp-name ellipsis-no-wrap" title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true}}">
                   {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}
-                  <span ng-if="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">
+                  <span ng-if="isNumber(rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus)">
                     , {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}
                     <span ng-if="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuusMaksimi">
                       - {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuusMaksimi }}

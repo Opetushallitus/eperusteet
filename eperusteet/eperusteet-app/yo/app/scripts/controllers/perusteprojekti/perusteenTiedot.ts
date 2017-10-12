@@ -86,11 +86,9 @@ angular
             $scope.kvliitePeriytynyt = !kvliite || kvliite.periytynyt;
             $scope.peruste.kvliite = kvliite;
             $scope.editablePeruste.kvliite = kvliite;
-        })();
+            $scope.useampiSuoritustapa = _.size(kvliite.muodostumisenKuvaus) > 1;
 
-        const AmmatillisetKoulutustyypit = ["koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"];
-        const isAmmatillinen = koulutustyyppi => _.includes(AmmatillisetKoulutustyypit, koulutustyyppi);
-        $scope.isAmmatillinen = isAmmatillinen($scope.peruste.koulutustyyppi);
+        })();
 
         $scope.editEnabled = false;
         let editingCallbacks = {

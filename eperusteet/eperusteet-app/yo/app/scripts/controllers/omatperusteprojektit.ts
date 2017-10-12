@@ -29,7 +29,7 @@ angular
                     .filter(function(pp) {
                         return pp.diaarinumero; /*ei ole pohja*/
                     })
-                    .map(function(pp) {
+                    .map(function(pp: any) {
                         pp.url = PerusteProjektiService.getUrl(pp, pp.peruste);
                         return pp;
                     })

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -42,6 +43,9 @@ public interface PerusteprojektiService {
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<KayttajanTietoDto> getJasenet(@P("id") Long id);
+
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
+    OmistajaDto isOwner(@P("id") Long id, Long perusteenOsaId);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(@P("id") Long id);

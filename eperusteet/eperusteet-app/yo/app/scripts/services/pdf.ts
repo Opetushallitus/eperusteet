@@ -98,21 +98,22 @@ angular
         };
     })
     .factory("PdfCreation", function($uibModal, YleinenData) {
-        let perusteId = null;
+        let peruste = null;
         return {
-            setPerusteId(id) {
-                perusteId = id;
+            setPeruste(p) {
+                peruste = p;
             },
             openModal(isOpas, isAmmatillinen) {
                 $uibModal.open({
                     template: require("views/modals/pdfcreation.html"),
                     controller: "PdfCreationController",
                     resolve: {
-                        perusteId: () => perusteId,
+                        peruste: () => peruste,
+                        perusteId: () => peruste.id,
                         isOpas: () => isOpas,
                         isAmmatillinen: () => isAmmatillinen,
                         kielet: () => ({
-                            lista: _.sortBy(YleinenData.kielet),
+                            lista: YleinenData.kielet,
                             valittu: YleinenData.kieli
                         })
                     }
@@ -125,6 +126,7 @@ angular
         $window,
         kielet,
         Pdf,
+        peruste,
         perusteId,
         $timeout,
         Notifikaatiot,
@@ -147,7 +149,13 @@ angular
         };
 
         let pdfToken = null;
-        let suoritustapa = $stateParams.suoritustapa || PerusteProjektiService.getSuoritustapa();
+        let suoritustapa = $stateParams.suoritustapa
+            || PerusteProjektiService.getSuoritustapa()
+            || YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi,
+                _.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" }));
+        console.log(_.find(peruste.suoritustavat, { suoritustapakoodi: "reformi" }));
+        console.log("$stateParams.suoritustapa", $stateParams.suoritustapa);
+        console.log("PerusteProjektiService.getSuoritustapa()", PerusteProjektiService.getSuoritustapa());
 
         $scope.hasPdf = (kieli: string, version: string = $scope.versiot.valittu) => {
             const doc = version === "kvliite" ? $scope.kvliitteet[kieli] : $scope.docs[kieli];

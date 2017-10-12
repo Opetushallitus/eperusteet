@@ -209,6 +209,7 @@ $pikamenu-size: 22px;
 }
 
 .muokkaus-napit {
+    top: -4px;
     padding-top: 6px;
     &:hover {
         text-decoration: none;
@@ -249,6 +250,12 @@ $pikamenu-size: 22px;
     h4 {
         font-size: 14px;
         font-weight: bolder;
+    }
+    .arvioinnin-kohdealue-otsikko {
+        cursor: pointer;
+    }
+    .arvioinnin-kohdealue-otsikko {
+        cursor: pointer;
     }
 }
 
