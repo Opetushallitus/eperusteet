@@ -50,7 +50,7 @@ export function taiteenalaCtrl(
             },
             {
                 tyyppi: () => {
-                    return "tutkinnonosat";
+                    return "oppiaineetyleissivistava2";
                 },
                 ylarelaatioTyyppi: () => {
                     return "";
