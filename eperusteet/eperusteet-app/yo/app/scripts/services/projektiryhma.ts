@@ -14,9 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-
-/// <refernce path="../../ts_packages/tsd.d.ts" />
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -59,7 +58,7 @@ angular
 
                 if (!_.isEmpty(j.yhteystiedot)) {
                     // Yhteystietotyyppit
-                    _.forEach(_.first(j.yhteystiedot).yhteystiedot, function(yt) {
+                    _.forEach((<any>_.first(j.yhteystiedot)).yhteystiedot, function(yt) {
                         if (yt.yhteystietoTyyppi === "YHTEYSTIETO_SAHKOPOSTI") {
                             j.$sahkoposti = yt.yhteystietoArvo;
                         } else if (

@@ -14,6 +14,9 @@
 * European Union Public Licence for more details.
 */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("PerusteprojektinTilanvaihto", function($uibModal) {
@@ -25,8 +28,8 @@ angular
             }
             $uibModal
                 .open({
-                    templateUrl: "views/modals/perusteprojektinTila.html",
-                    controller: "PerusteprojektinTilaModal",
+                    template: require("views/modals/perusteprojektinTila.html"),
+                    controller: "PerusteprojektinTilaModalController",
                     resolve: {
                         data: function() {
                             return {
@@ -46,7 +49,7 @@ angular
             that.setFn(status, siirtymaPaattyy, successCb);
         };
     })
-    .controller("PerusteprojektinTilaModal", function($scope, $uibModal, $uibModalInstance, $state, data) {
+    .controller("PerusteprojektinTilaModalController", function($scope, $uibModal, $uibModalInstance, $state, data) {
         $scope.data = data;
         $scope.data.selected = null;
         $scope.data.editable = false;
@@ -54,8 +57,8 @@ angular
         $scope.valitse = function() {
             $uibModalInstance.close();
             $uibModal.open({
-                templateUrl: "views/modals/perusteprojektinTilaVarmistus.html",
-                controller: "PerusteprojektinTilaVarmistusModal",
+                template: require("views/modals/perusteprojektinTilaVarmistus.html"),
+                controller: "PerusteprojektinTilaVarmistusModalController",
                 resolve: {
                     data: function() {
                         return $scope.data;
@@ -68,7 +71,7 @@ angular
             $uibModalInstance.dismiss();
         };
     })
-    .controller("PerusteprojektinTilaVarmistusModal", function(
+    .controller("PerusteprojektinTilaVarmistusModalController", function(
         $scope,
         $uibModalInstance,
         data,

@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 /**
  * Statusbadge:
  * <statusbadge status="luonnos|..." editable="true|false"></statusbadge>
@@ -25,7 +28,7 @@ angular
     .directive("statusbadge", function() {
         var OFFSET = 4;
         return {
-            templateUrl: "views/partials/statusbadge.html",
+            template: require("views/partials/statusbadge.html"),
             restrict: "EA",
             replace: true,
             scope: {
@@ -107,7 +110,7 @@ angular
                                     } else {
                                         $uibModal
                                             .open({
-                                                templateUrl: "views/modals/tilanVaihtoVirhe.html",
+                                                template: require("views/modals/tilanVaihtoVirhe.html"),
                                                 controller: "TilanvaihtovirheCtrl",
                                                 size: "lg",
                                                 resolve: {

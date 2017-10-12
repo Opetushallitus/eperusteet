@@ -1,5 +1,8 @@
+import * as angular from "angular";
+import * as _ from "lodash";
+
 // TODO: Keksi parempi nimi ja paikka
-namespace Types {
+export namespace Types {
     export interface Kommentti {
         nimi: string;
         muokkaaja: string;
@@ -27,7 +30,7 @@ namespace Types {
 }
 
 // TODO: Keksi parempi nimi ja paikka
-namespace Logic {
+export namespace Logic {
     let _state;
 
     export const init = $state => {
@@ -67,7 +70,7 @@ namespace Logic {
 }
 
 // TODO: Keksi parempi nimi ja paikka
-namespace Endpoints {
+export namespace Endpoints {
     let _Api;
 
     export const init = Api => {

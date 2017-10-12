@@ -14,6 +14,9 @@
 * European Union Public Licence for more details.
 */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("valmaarviointiCtrl", function($scope, YleinenData, $timeout, Utils, Varmistusdialogi) {
@@ -63,7 +66,7 @@ angular
     })
     .directive("valmaarviointi", function(YleinenData, $timeout) {
         return {
-            templateUrl: "views/partials/valmaarviointi.html",
+            template: require("views/partials/valmaarviointi.html"),
             restrict: "E",
             scope: {
                 valmaarviointi: "=",

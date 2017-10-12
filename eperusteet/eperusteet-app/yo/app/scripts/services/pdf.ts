@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .factory("Dokumentti", function($resource, SERVICE_LOC) {
@@ -102,7 +105,7 @@ angular
             },
             openModal(isOpas, isAmmatillinen) {
                 $uibModal.open({
-                    templateUrl: "views/modals/pdfcreation.html",
+                    template: require("views/modals/pdfcreation.html"),
                     controller: "PdfCreationController",
                     resolve: {
                         peruste: () => peruste,

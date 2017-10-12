@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -171,6 +172,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @Getter
     @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private TpoOpetuksenSisalto tpoOpetuksenSisalto;
+
+    @Getter
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private OpasSisalto oppaanSisalto;
 
     @Getter
@@ -308,6 +313,13 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
                 }
                 break;
 
+            case TPO:
+                TpoOpetuksenSisalto sisalto = this.getTpoOpetuksenSisalto();
+                if (sisalto != null) {
+                    return sisalto.getSisalto();
+                }
+                break;
+
             // Ammatillisella rakenteella
             case TELMA:
             case VALMA:
@@ -345,6 +357,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         this.esiopetuksenPerusteenSisalto.setPeruste(this);
     }
 
+    public void setSisalto(TpoOpetuksenSisalto sisalto) {
+        this.tpoOpetuksenSisalto = sisalto;
+        this.tpoOpetuksenSisalto.setPeruste(this);
+    }
+
     public void setSisalto(LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto) {
         this.lukiokoulutuksenPerusteenSisalto = lukiokoulutuksenPerusteenSisalto;
         if (lukiokoulutuksenPerusteenSisalto != null) {
@@ -369,6 +386,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             return aipeOpetuksenPerusteenSisalto.containsViite(viite);
         }
 
+        if (tpoOpetuksenSisalto != null) {
+            return tpoOpetuksenSisalto.containsViite(viite);
+        }
+
         if (esiopetuksenPerusteenSisalto != null) {
             return esiopetuksenPerusteenSisalto.containsViite(viite);
         }
@@ -382,6 +403,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
                 && this.oppaanSisalto.containsViite(viite)) {
             return this.oppaanSisalto.containsViite(viite);
         }
+
 
         throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");
     }

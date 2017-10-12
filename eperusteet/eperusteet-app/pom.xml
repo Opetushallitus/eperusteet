@@ -18,46 +18,37 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.0</version>
+                <version>1.6</version>
                 <configuration>
                     <workingDirectory>yo</workingDirectory>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install node and npm</id>
+                        <id>install node and yarn</id>
                         <goals>
-                            <goal>install-node-and-npm</goal>
+                            <goal>install-node-and-yarn</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v6.3.1</nodeVersion>
-                            <npmVersion>3.10.3</npmVersion>
+                            <nodeVersion>v6.11.2</nodeVersion>
+                            <yarnVersion>v1.0.2</yarnVersion>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>npm install</id>
+                        <id>yarn install</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>yarn</goal>
                         </goals>
                         <configuration>
                             <arguments>install</arguments>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>bower install</id>
+                        <id>yarn ci</id>
                         <goals>
-                            <goal>bower</goal>
+                            <goal>yarn</goal>
                         </goals>
                         <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>grunt build</id>
-                        <goals>
-                            <goal>grunt</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>build --no-color</arguments>
+                            <arguments>ci</arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -86,9 +77,6 @@
                         </fileset>
                         <fileset>
                             <directory>yo/.tmp</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>yo/app/bower_components</directory>
                         </fileset>
                     </filesets>
                 </configuration>

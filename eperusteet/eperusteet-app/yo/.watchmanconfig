@@ -1,0 +1,14 @@
+{
+  "root_files": [
+    ".watchmanconfig"
+  ],
+  "ignore_dirs": [
+    "node_modules",
+    "dist",
+    "test",
+    "e2e",
+    "node",
+    "typings",
+    "coverage"
+  ]
+}

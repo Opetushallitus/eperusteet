@@ -13,6 +13,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
+import * as angular from "angular";
+import * as _ from "lodash";
+import { Endpoints, Logic } from "scripts/misc";
+
+
 namespace Controllers {
     export const kaikkiKommentit = ($q, $scope, $location, kommentit) => {
         $scope.kommentit = _(kommentit)
@@ -43,7 +49,7 @@ namespace Controllers {
 angular.module("eperusteApp").config($stateProvider =>
     $stateProvider.state("root.perusteprojekti.kommentit", {
         url: "/kommentit",
-        templateUrl: "views/partials/perusteprojekti/kommentit.html",
+        template: require("views/partials/perusteprojekti/kommentit.html"),
         controller: Controllers.kaikkiKommentit,
         resolve: {
             kommentit: ($stateParams, Api) => {

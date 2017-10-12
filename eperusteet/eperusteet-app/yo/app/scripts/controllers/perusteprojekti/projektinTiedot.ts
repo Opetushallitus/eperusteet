@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("ProjektiTiedotSisaltoModalCtrl", function(
@@ -150,9 +153,17 @@ angular
             _.any(["koulutustyyppi_2", "koulutustyyppi_23", "koulutustyyppi_14"], i => i === tyyppi);
         $scope.isLukiokoulutus = () => $scope.peruste && tyyppiIsLukio($scope.peruste.koulutustyyppi);
 
-        $scope.tabs = [{ otsikko: "projekti-perustiedot", url: "views/partials/perusteprojekti/perustiedot.html" }];
+        $scope.tabs = [
+            {
+                otsikko: "projekti-perustiedot",
+                url: "views/partials/perusteprojekti/perustiedot.html"
+            }
+        ];
         if (!$scope.pohja() && !$scope.isOpas) {
-            $scope.tabs.push({ otsikko: "projekti-toimikausi", url: "views/partials/perusteprojekti/toimikausi.html" });
+            $scope.tabs.push({
+                otsikko: "projekti-toimikausi",
+                url: "views/partials/perusteprojekti/toimikausi.html"
+            });
         }
 
         if ($scope.projekti.ryhmaOid) {
@@ -164,7 +175,7 @@ angular
         $scope.haeRyhma = function() {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/tuotyoryhma.html",
+                    template: require("views/modals/tuotyoryhma.html"),
                     controller: "TyoryhmanTuontiModalCtrl"
                 })
                 .result.then(function(ryhma) {

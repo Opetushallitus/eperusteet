@@ -14,11 +14,14 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("muokkausVuosiluokka", function() {
         return {
-            templateUrl: "views/directives/perusopetus/vuosiluokkakokonaisuus.html",
+            template: require("views/directives/perusopetus/vuosiluokkakokonaisuus.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -357,7 +360,7 @@ angular
     })
     .directive("vuosiluokkakokonaisuudenOsaaminen", function() {
         return {
-            templateUrl: "views/directives/perusopetus/vuosiluokkakokonaisuudenosaaminen.html",
+            template: require("views/directives/perusopetus/vuosiluokkakokonaisuudenosaaminen.html"),
             restrict: "A",
             scope: {
                 object: "=vuosiluokkakokonaisuudenOsaaminen",
@@ -375,7 +378,7 @@ angular
         $scope.orderFn = Utils.nameSort;
 
         function getModel(object, item) {
-            var model = _.find(object, function(obj) {
+            var model = _.find(object, function(obj: any) {
                 return parseInt(obj._laajaalainenOsaaminen, 10) === item.id;
             });
             if (!model) {

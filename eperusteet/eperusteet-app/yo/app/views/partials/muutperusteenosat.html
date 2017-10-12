@@ -1,0 +1,6 @@
+<div ng-show="kaytetyt.length > 0" style="margin-bottom: 6px">
+    <span ng-bind="'perusteen-osa-kaytossa-myos-seuraavissa' | kaanna"></span>:
+    <span ng-repeat="projekti in kaytetyt">
+        {{ projekti.nimi }}<span ng-show="!$last">, </span>
+    </span>
+</div>

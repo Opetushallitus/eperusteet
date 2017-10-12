@@ -1,3 +1,6 @@
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("MuutProjektitService", (Api, Varmistusdialogi, $uibModal) => {
@@ -30,7 +33,7 @@ angular
                     return $uibModal
                         .open({
                             size: "lg",
-                            templateUrl: "views/modals/perusteenosaprojektidialogi.html",
+                            template: require("views/modals/perusteenosaprojektidialogi.html"),
                             controller: ($scope, $uibModalInstance, projektit) => {
                                 $scope.projektit = projektit;
                                 $scope.ok = () => $uibModalInstance.close();
@@ -56,7 +59,7 @@ angular
     })
     .directive("muutProjektit", function($timeout, $compile, $document, MuutProjektitService) {
         return {
-            templateUrl: "views/partials/muutperusteenosat.html",
+            template: require("views/partials/muutperusteenosat.html"),
             restrict: "E",
             transclude: true,
             scope: {
@@ -66,7 +69,7 @@ angular
                 $scope.kaytetyt = [];
                 async function update(perusteId: number) {
                     const result = await MuutProjektitService.projektitJoissaKaytossa(perusteId);
-                    $scope.kaytetyt = _.filter(result, pp => pp.id + "" !== $stateParams.perusteProjektiId);
+                    $scope.kaytetyt = _.filter(result, (pp: any) => pp.id + "" !== $stateParams.perusteProjektiId);
                 }
 
                 $scope.$watch("perusteid", (o, v) => {

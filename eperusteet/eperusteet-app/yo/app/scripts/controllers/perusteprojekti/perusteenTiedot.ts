@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("PerusteenTutkintonimikkeet", function(PerusteTutkintonimikekoodit, YleinenData) {
@@ -248,7 +251,7 @@ angular
         $scope.lisaaNimike = function() {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/lisaaTutkintonimike.html",
+                    template: require("views/modals/lisaaTutkintonimike.html"),
                     controller: function($q, $scope, $uibModalInstance) {
                         $scope.koodit = {};
                         $scope.valmisCb = function(res) {

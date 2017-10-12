@@ -26,6 +26,9 @@ interface NotifikaatiotI {
     poista: (i: string | Object) => void;
 }
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("JarjestelmaVirheModalCtrl", function($scope, $uibModalInstance, $state, viesti) {
@@ -82,7 +85,7 @@ angular
             cb = _.isFunction(cb) ? cb : angular.noop;
             $uibModal
                 .open({
-                    templateUrl: "views/modals/jarjestelmavirhe.html",
+                    template: require("views/modals/jarjestelmavirhe.html"),
                     controller: "JarjestelmaVirheModalCtrl",
                     resolve: {
                         viesti: function() {

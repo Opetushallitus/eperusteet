@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .factory("LukkoRakenne", function(SERVICE_LOC, $resource) {
@@ -316,7 +319,7 @@ angular
                         if (editointiCheck && etag && headers().etag !== etag && Editointikontrollit.getEditMode()) {
                             $uibModal
                                 .open({
-                                    templateUrl: "views/modals/sisaltoMuuttunut.html",
+                                    template: require("views/modals/sisaltoMuuttunut.html"),
                                     controller: "LukittuSisaltoMuuttunutModalCtrl"
                                 })
                                 .result.then(function() {

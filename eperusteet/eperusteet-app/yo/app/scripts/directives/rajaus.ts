@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 /**
  * Rajaus
  * callback: optional, called on change
@@ -23,7 +26,7 @@
  */
 angular.module("eperusteApp").directive("rajaus", function() {
     return {
-        templateUrl: "views/partials/rajaus.html",
+        template: require("views/partials/rajaus.html"),
         restrict: "EA",
         scope: {
             model: "=",

@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("Varmistusdialogi", function($uibModal) {
@@ -47,7 +50,7 @@ angular
 
                 return $uibModal
                     .open({
-                        templateUrl: "views/modals/varmistusdialogi.html",
+                        template: require("views/modals/varmistusdialogi.html"),
                         controller: "VarmistusDialogiCtrl",
                         resolve: resolve
                     })

@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("OrderHelper", function() {
@@ -39,7 +42,7 @@ angular
     })
     .directive("osalistaus", function(OrderHelper, $compile, $stateParams) {
         return {
-            templateUrl: "views/directives/osalistaus.html",
+            template: require("views/directives/osalistaus.html"),
             restrict: "A",
             scope: {
                 model: "=osalistaus",
@@ -86,7 +89,7 @@ angular
         };
 
         $scope.isNumber = _.isNumber;
-        $scope.jarjestysTapa = _.first(OrderHelper.get(null, $scope.koulutustyyppi)).value;
+        $scope.jarjestysTapa = (<any>_.first(OrderHelper.get(null, $scope.koulutustyyppi))).value;
         $scope.jarjestysOrder = false;
         $scope.preferenssit = Profiili.profiili().resolved
             ? _.merge(defaultPreferences, Profiili.profiili().preferenssit)

@@ -439,6 +439,7 @@
     "koulutustyyppi_23": "Valmistava lukiokoulutus",
     "koulutustyyppi_22": "Valmistava perusopetus",
     "koulutustyyppi_14": "Aikuisten lukiokoulutus",
+    "koulutustyyppi_999907": "Taiteen perusopetus",
 
     "solu": "Solu",
     "annettu-arvo": "Annettu arvo",
@@ -1168,7 +1169,7 @@
     "luo-pdf-dokumentti-oppaasta": "Luo dokumentti oppaasta",
     "oppaat": "Oppaat",
     "uusi-opas": "Uusi opas",
-    "ohje-oppaat": "",
+    "ohje-oppaat": "Oppaat",
     "arviointiasteikko": "Arviointiasteikko",
     "arviointiasteikot": "Arviointiasteikot",
     "arviointiasteikot-ohje": "Täältä voi muuta arviointiasteikkojen osaamisalojen tekstejä ja järjestyksiä.",
@@ -1189,6 +1190,16 @@
     "oppaan-nimi-label": "Oppaan nimi",
     "anna-oppaan-nimi-placeholder": "Anna oppaan nimi",
     "oppaan-oid-label": "Opastyöryhmä",
-    "luonti-opas-nimi-ohje": "",
-    "luo-opas-nappi": "Luo opas"
+    "luonti-opas-nimi-ohje": "Oppaan nimi",
+    "luo-opas-nappi": "Luo opas",
+
+    "lisaa-taiteenala": "Lisää taiteenala",
+    "tpo": "Taiteen perusopetus",
+    "taiteenala-aikuisten-opetus": "Aikuisten opetus",
+    "taiteenala-kasvatus": "Kasvatus",
+    "taiteenala-oppimisen-arvionti": "Oppimisen arviointi opetuksessa",
+    "taiteenala-teemaopinnot": "Teemaopinnot",
+    "taiteenala-tyotavat": "Työtavat opetuksessa",
+    "taiteenala-yhteisetOpinnot": "Yhteiset opinnot",
+    "taiteenala-koodi": "Taiteenala koodi"
 }

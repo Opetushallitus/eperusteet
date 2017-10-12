@@ -36,7 +36,6 @@ describe('Service: PerusteProjektiSivunavi', function() {
     module(function ($provide) {
         $provide.value('PerusteprojektiTiedotService', loader);
         $provide.value('YleinenData', yleinenMock);
-
     });
 
   });

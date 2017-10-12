@@ -14,9 +14,12 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").directive("sortableTable", () => {
     return {
-        templateUrl: "scripts/directives/sortabletable.html",
+        template: require("scripts/directives/sortabletable.pug"),
         restrict: "E",
         scope: {
             ngModel: "=",

@@ -17,7 +17,7 @@
                         <td>{{peruste.koulutustyyppi|| 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}
                         <td>
                     </tr>
-                    <tr>
+                    <tr ng-show="isAmmatillinen">
                         <th>{{'projekti-header-koulutusala'| kaanna}}:</th>
                         <td>{{koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}
                         </td>

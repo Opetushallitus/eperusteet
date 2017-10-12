@@ -14,8 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/*global _*/
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -144,7 +144,7 @@ angular
             mergeOsaAlueet: function(tutkinnonOsa) {
                 if (_.includes(YleinenData.yhteisetTutkinnonOsat, tutkinnonOsa.tyyppi)) {
                     //if (tutkinnonOsa.tyyppi === "tutke2") {
-                    tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function(osaAlue) {
+                    tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function(osaAlue: any) {
                         var item = { nimi: osaAlue.nimi, id: null };
                         if (osaAlue.id) {
                             item.id = osaAlue.id;
@@ -155,9 +155,8 @@ angular
             },
             validate: function(tyyppi) {
                 if (_.includes(YleinenData.yhteisetTutkinnonOsat, tyyppi)) {
-                    //if (tyyppi === "tutke2") {
                     return _.all(
-                        _.map(Tutke2OsaData.get().$editing, function(item) {
+                        _.map(Tutke2OsaData.get().$editing, function(item: any) {
                             return Utils.hasLocalizedText(item.nimi);
                         })
                     );

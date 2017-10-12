@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("VersionHelper", function(
@@ -34,15 +37,15 @@ angular
         Kayttajatiedot,
         $q
     ) {
-        const rakennaNimet = list => {
+        const rakennaNimet = (list: any) => {
             let reqs = [];
-            _.forEach(_.uniq(list, "muokkaajaOid"), i =>
-                reqs.push(Kayttajatiedot.get({ oid: i.muokkaajaOid }).$promise)
-            );
+            _.forEach(_.uniq(list, "muokkaajaOid"), (i: any) => {
+                reqs.push(Kayttajatiedot.get({ oid: i.muokkaajaOid }).$promise);
+            });
 
             $q.all(reqs).then(function(values) {
-                _.forEach(list, name => {
-                    const henkilo = _.find(values, i => i.oidHenkilo === name.muokkaajaOid);
+                _.forEach(list, (name: any) => {
+                    const henkilo = _.find(values, (i: any) => i.oidHenkilo === name.muokkaajaOid);
                     const nimi = _.isEmpty(henkilo)
                         ? " "
                         : (henkilo.kutsumanimi || "") + " " + (henkilo.sukunimi || "");
@@ -318,37 +321,23 @@ angular
         };
 
         this.setUrl = function(data) {
-            // Tricks for ui-router 0.2.*
-            // We want to update the url only when user changes the version.
-            // If we enter with versionless url don't rewrite it.
-            // This function will currently navigate to a new state if version has changed.
             if (_.isEmpty(data)) {
                 return;
             }
 
-            data.latest = data.chosen.index === latest(data.list).index;
-            var versionlessUrl = $state
-                .href($state.current.name, { versio: null }, { inherit: true })
-                .replace(/#/g, "");
-            var currentVersion = this.currentIndex(data);
-            var isValid = _.isNumber(currentVersion);
-            var urlHasVersion = $location.url() !== versionlessUrl;
-            if ((urlHasVersion || data.hasChanged) && isValid && !data.latest) {
-                data.hasChanged = false;
-                var versionUrl = $state
-                    .href($state.current.name, { versio: "/" + currentVersion }, { inherit: true })
-                    .replace(/#/g, "")
-                    .replace(/%252F/, "/");
-                $location.url(versionUrl);
-            } else {
-                $location.url(versionlessUrl);
-            }
+            const currentIdx = this.currentIndex(data);
+            const latestIdx = this.latestIndex(data);
+
+            $state.go($state.current.name, {
+                ...$stateParams,
+                versio: currentIdx === latestIdx ? undefined : currentIdx
+            });
         };
 
         this.historyView = function(data) {
             $uibModal
                 .open({
-                    templateUrl: "views/partials/muokkaus/versiohelper.html",
+                    template: require("views/partials/muokkaus/versiohelper.html"),
                     controller: "HistoryViewCtrl",
                     resolve: {
                         versions: function() {

@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, $q) {
     var skratchpadHasContent = false;
     function osienLaajuudenSumma(rakenneOsat) {
@@ -201,7 +204,7 @@ angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, 
         return function(suoritustapa, ryhma, vanhempi, leikelauta) {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/ryhmaModal.html",
+                    template: require("views/modals/ryhmaModal.html"),
                     controller: "MuodostumisryhmaModalCtrl",
                     resolve: {
                         ryhma: _.constant(ryhma),
@@ -221,7 +224,7 @@ angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, 
         return function(rakenneosa) {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/rakenneosaModal.html",
+                    template: require("views/modals/rakenneosaModal.html"),
                     controller: "RakenneosaModalCtrl",
                     resolve: {
                         rakenneosa: function() {

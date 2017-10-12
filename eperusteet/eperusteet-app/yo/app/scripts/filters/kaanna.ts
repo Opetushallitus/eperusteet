@@ -14,8 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _ */
+import * as _ from "lodash";
+import * as angular from "angular";
 
 angular
     .module("eperusteApp")
@@ -47,9 +47,12 @@ angular
         return {
             kaanna: function(input, config) {
                 if (_.isObject(input)) {
-                    return kaannaSisalto(input);
+                    return kaannaSisalto(input) || "";
                 } else if (_.isString(input)) {
-                    return $translate.instant(input, config);
+                    const result = $translate.instant(input, config);
+                    return result;
+                } else if (input === 0 || input) {
+                    return "" + input;
                 }
                 return "";
             },
@@ -63,7 +66,7 @@ angular
                 postfix = " " + postfix;
             }
             if (!postfix && attrs.vaaditaan !== undefined) {
-                postfix = " *";
+                postfix = "*";
             }
             return postfix;
         }
@@ -119,5 +122,7 @@ angular
         };
     })
     .filter("kaanna", function(Kaanna) {
-        return Kaanna.kaanna;
+        return (input, config) => {
+            return Kaanna.kaanna(input, config);
+        };
     });

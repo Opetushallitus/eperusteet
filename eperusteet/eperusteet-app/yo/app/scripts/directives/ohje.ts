@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 /**
  * Ohje
  * Ikoni tooltipille ja siihen liittyvä kelluva ohjeteksti.
@@ -30,7 +33,7 @@
  */
 angular.module("eperusteApp").directive("ohje", function($timeout, $compile, $document) {
     return {
-        templateUrl: "views/partials/ohje.html",
+        template: require("views/partials/ohje.html"),
         restrict: "EA",
         transclude: true,
         scope: {

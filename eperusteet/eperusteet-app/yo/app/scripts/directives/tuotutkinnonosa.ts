@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("TutkinnonOsanTuonti", function($uibModal) {
@@ -22,7 +25,7 @@ angular
             return function() {
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/tuotutkinnonosasta.html",
+                        template: require("views/modals/tuotutkinnonosasta.html"),
                         controller: "TuoTutkinnonOsaSuoritustavastaaCtrl",
                         resolve: {
                             peruste: function() {
@@ -42,7 +45,7 @@ angular
             return function() {
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/haetutkinnonosa.html",
+                        template: require("views/modals/haetutkinnonosa.html"),
                         controller: "TuoTutkinnonOsaCtrl",
                         resolve: {
                             tyyppi: () => {

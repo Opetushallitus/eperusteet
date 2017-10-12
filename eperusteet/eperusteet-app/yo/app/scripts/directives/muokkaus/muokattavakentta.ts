@@ -14,11 +14,14 @@
 * European Union Public Licence for more details.
 */
 
+import * as _ from "lodash";
+import * as angular from "angular";
+
 angular
     .module("eperusteApp")
     .directive("muokkauskenttaRaamit", Utils => {
         return {
-            templateUrl: "views/partials/muokkaus/muokattavaKentta.html",
+            template: require("views/partials/muokkaus/muokattavaKentta.html"),
             restrict: "A",
             transclude: true,
             scope: {
@@ -274,7 +277,7 @@ angular
     })
     .directive("vaihtoehtoisenKentanRaami", () => {
         return {
-            templateUrl: "views/directives/vaihtoehtoisenkentanraami.html",
+            template: require("views/directives/vaihtoehtoisenkentanraami.html"),
             restrict: "E",
             transclude: true,
             link: (scope, element) => {
@@ -349,7 +352,8 @@ angular
                     if (angular.isUndefined(modelValue) || modelValue === null) {
                         return "";
                     }
-                    return modelValue[Kieli.getSisaltokieli()];
+                    const result = modelValue[Kieli.getSisaltokieli()];
+                    return result;
                 });
 
                 ngModelCtrl.$parsers.push(function(viewValue) {
@@ -359,7 +363,13 @@ angular
                         localizedModelValue = {};
                     }
 
-                    localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
+                    if (localizedModelValue === null) {
+                        localizedModelValue = {};
+                    }
+                    if (_.isString(viewValue)) {
+                        localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
+                    }
+
                     return localizedModelValue;
                 });
 

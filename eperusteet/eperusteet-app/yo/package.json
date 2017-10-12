@@ -1,56 +1,160 @@
 {
-  "name": "yo",
   "version": "0.0.0",
+  "name": "yo",
   "private": true,
+  "scripts": {
+    "dev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+    "build": "./node_modules/webpack/bin/webpack.js -p --config webpack.prod.js",
+    "unit": "./node_modules/jest/bin/jest.js --runInBand --no-cache --verbose",
+    "unit:watch": "./node_modules/jest/bin/jest.js --watch --notify",
+    "unit:debug": "node --inspect --debug-brk ./node_modules/jest/bin/jest.js --runInBand --verbose",
+    "dbnuke": "docker-compose rm app_db",
+    "dbinspect": "docker-compose exec app_db psql -U app",
+    "coverage": "./node_modules/jest/bin/jest.js --runInBand --verbose --no-cache --coverage",
+    "ci": "tsc --version && yarn unit && yarn build",
+    "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write \"app/scripts/**/*.ts\" \"app/styles/**/*.{scss,css}\""
+  },
   "dependencies": {
-    "xlsx": "~0.5.0"
+    "@types/es6-shim": "^0.31.35",
+    "angular": "1.6.6",
+    "angular-animate": "1.6.6",
+    "angular-cache": "4.4.2",
+    "angular-cookies": "1.6.6",
+    "angular-elastic": "^2.5.1",
+    "angular-file-upload": "2.2.0",
+    "angular-i18n": "^1.6.6",
+    "angular-loading-bar": "0.8.0",
+    "angular-local-storage": "^0.7.1",
+    "angular-moment": "1.0.0-beta.3",
+    "angular-resource": "1.6.6",
+    "angular-route": "1.6.6",
+    "angular-sanitize": "1.6.6",
+    "angular-spinner": "0.8.0",
+    "angular-translate": "2.8.1",
+    "angular-translate-loader-static-files": "2.15.2",
+    "angular-ui-bootstrap": "^2.5.0",
+    "angular-ui-router": "0.4.2",
+    "angular-ui-select": "^0.12.100",
+    "angular-ui-sortable": "https://github.com/nkala/ui-sortable.git#v0.13.4x",
+    "angular-ui-tree": "^2.22.6",
+    "angular-ui-utils": "^0.1.1",
+    "angularjs-slider": "5.8.7",
+    "ckeditor": "4.7.0",
+    "eperusteet-frontend-utils": "Opetushallitus/eperusteet-frontend-utils#master",
+    "es6-promise": "^4.1.1",
+    "es6-shim": "^0.35.3",
+    "jquery": "1.11.0",
+    "jquery-ui": "1.12.1",
+    "js-xlsx": "SheetJS/js-xlsx#0.7.11",
+    "lodash": "3.10.1",
+    "mathjax": "^2.7.2",
+    "moment": "2.17.1",
+    "ng-file-upload": "^12.2.13",
+    "node-inspector": "^1.1.1",
+    "restangular": "^1.6.1",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "useBabelrc": false
+      },
+      "__TRANSFORM_HTML__": true
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ],
+    "mapCoverage": true,
+    "coverageReporters": [
+      "json",
+      "text"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/e2e",
+      "/dist/",
+      "/etc/",
+      "/node/",
+      "/typings/",
+      "/test/",
+      "/coverage/",
+      "/ckeditor-plugins/"
+    ],
+    "setupFiles": [
+      "<rootDir>/app/testsetup.ts"
+    ],
+    "moduleNameMapper": {
+      "^app/(.*)": "<rootDir>/app/$1",
+      "^scripts/(.*)": "<rootDir>/app/scripts/$1",
+      "^views/(.*)": "<rootDir>/app/views/$1",
+      "^eperusteet-esitys/(.*)": "<rootDir>/app/eperusteet-esitys/$1",
+      "^styles/(.*)": "<rootDir>/app/styles/$1",
+      "^images/(.*)": "<rootDir>/app/images/$1"
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "watchPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testMatch": [
+      "<rootDir>/app/**/__tests__/**/*.ts?(x)",
+      "<rootDir>/app/**/?(*.)(spec|test).ts?(x)"
+    ],
+    "transform": {
+      "^.+\\.(js|ts|html)$": "<rootDir>/node_modules/ts-jest/preprocessor.js",
+      "^.+\\.(jade|pug)$": "<rootDir>/node_modules/pug-jest"
+    }
   },
   "devDependencies": {
-    "bower": "1.8.0",
-    "connect-livereload": "0.4.0",
-    "grunt": "0.4.1",
-    "grunt-angular-templates": "0.5.5",
-    "grunt-autoprefixer": "1.0.0",
-    "grunt-cli": "0.1.13",
-    "grunt-concurrent": "0.5.0",
-    "grunt-connect-proxy": "0.2.0",
-    "grunt-contrib-clean": "0.6.0",
-    "grunt-contrib-concat": "0.5.0",
-    "grunt-contrib-connect": "0.8.0",
-    "grunt-contrib-copy": "0.5.0",
-    "grunt-contrib-cssmin": "0.10.0",
-    "grunt-contrib-htmlmin": "0.3.0",
-    "grunt-contrib-imagemin": "1.0.0",
-    "grunt-contrib-jshint": "0.10.0",
-    "grunt-contrib-pug": "1.0.0",
-    "grunt-contrib-uglify": "0.5.0",
-    "grunt-contrib-watch": "0.6.1",
-    "grunt-focus": "0.1.1",
-    "grunt-karma": "0.12.0",
-    "grunt-open": "0.2.0",
-    "grunt-regex-check": "0.1.5",
-    "grunt-rev": "0.1.0",
-    "grunt-sass": "1.2.1",
-    "grunt-svgmin": "0.4.0",
-    "grunt-ts": "6.0.0-beta.14",
-    "grunt-typings": "0.1.5",
-    "grunt-usemin": "3.0.0",
-    "jasmine-core": "2.5.2",
-    "karma": "0.13.21",
-    "karma-jasmine": "1.0.2",
-    "karma-ng-html2js-preprocessor": "0.1.0",
-    "karma-ng-scenario": "0.1.0",
-    "karma-phantomjs-launcher": "0.1.4",
-    "load-grunt-tasks": "0.6.0",
-    "node-sass": "3.8.0",
-    "prettier": "1.6.1",
-    "typescript": "2.4.2"
+    "@types/angular": "1.6.6",
+    "@types/angular-ui-router": "^1.1.39",
+    "@types/jest": "^21.1.1",
+    "@types/jquery": "^1.0.0",
+    "@types/jqueryui": "^1.11.37",
+    "@types/lodash": "^3.10.1",
+    "@types/moment": "^2.13.0",
+    "@types/node": "^8.0.31",
+    "angular-mocks": "^1.6.6",
+    "awesome-typescript-loader": "^3.2.3",
+    "bootstrap": "^3.3.7",
+    "bootstrap-sass": "^3.3.7",
+    "chai": "^4.1.2",
+    "clean-webpack-plugin": "^0.1.17",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.7",
+    "fb-watchman": "^2.0.0",
+    "file-loader": "^0.11.2",
+    "friendly-errors-webpack-plugin": "^1.6.1",
+    "html-loader": "^0.5.1",
+    "html-webpack-plugin": "^2.30.1",
+    "image-webpack-loader": "^3.4.2",
+    "imports-loader": "^0.7.1",
+    "jest": "^21.2.1",
+    "jsdom": "^11.3.0",
+    "jsdom-global": "^3.0.2",
+    "node-sass": "^4.5.3",
+    "nodemon": "^1.12.1",
+    "prettier": "^1.6.1",
+    "pug": "^2.0.0-rc.4",
+    "pug-jest": "^1.0.1",
+    "pug-loader": "^2.3.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "ts-jest": "^21.0.1",
+    "typescript": "2.5.0",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.1",
+    "webpack-manifest-plugin": "^1.3.2",
+    "webpack-merge": "^4.1.0"
   },
   "engines": {
-    "node": "6.3.1"
-  },
-  "scripts": {
-    "test": "grunt test",
-    "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write \"app/scripts/**/*.ts\" \"app/styles/**/*.{scss,css}\""
+    "node": "6.11.2"
   }
 }

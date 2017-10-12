@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("OsanMuokkausHelper", ($q, $stateParams, PerusopetusService, LukiokoulutusService, $state, Lukitus) => {
@@ -138,7 +141,7 @@ angular
                     });
                 });
             } else if (path) {
-                var payload = _.pick(model, ["id", path]);
+                var payload: any = _.pick(model, ["id", path]);
                 if ($stateParams.suoritustapa === "lukiokoulutus") {
                     payload.partial = true;
                 }
@@ -183,7 +186,7 @@ angular
 
         function getOppiaineenVuosiluokkakokonaisuus() {
             if (oppiaine && vuosiluokka) {
-                return _.find(oppiaine.vuosiluokkakokonaisuudet, function(ovlk) {
+                return _.find(oppiaine.vuosiluokkakokonaisuudet, function(ovlk: any) {
                     return vuosiluokka.id === _.parseInt(ovlk._vuosiluokkaKokonaisuus);
                 });
             }
@@ -301,7 +304,7 @@ angular
     })
     .directive("osanmuokkausTekstikappale", function() {
         return {
-            templateUrl: "views/directives/perusopetus/osanmuokkaustekstikappale.html",
+            template: require("views/directives/perusopetus/osanmuokkaustekstikappale.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -346,7 +349,7 @@ angular
     })
     .directive("osanmuokkausKohdealueet", function() {
         return {
-            templateUrl: "views/directives/perusopetus/osanmuokkauskohdealueet.html",
+            template: require("views/directives/perusopetus/osanmuokkauskohdealueet.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -363,7 +366,7 @@ angular
     })
     .directive("osanmuokkausTavoitteet", function() {
         return {
-            templateUrl: "views/directives/perusopetus/osanmuokkaustavoitteet.html",
+            template: require("views/directives/perusopetus/osanmuokkaustavoitteet.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -399,11 +402,11 @@ angular
                 $scope.muokkaaKohdealueita = function() {
                     $uibModal
                         .open({
-                            templateUrl: "views/directives/perusopetus/osanmuokkauskohdealueet.html",
+                            template: require("views/directives/perusopetus/osanmuokkauskohdealueet.html"),
                             controller: function($scope, $uibModalInstance, Oppiaineet, OsanMuokkausHelper) {
                                 $scope.kohdealueet = _.map(
                                     _.clone(OsanMuokkausHelper.getOppiaine().kohdealueet) || [],
-                                    function(ka) {
+                                    function(ka: any) {
                                         ka.$vanhaNimi = _.clone(ka.nimi);
                                         return ka;
                                     }
@@ -470,7 +473,7 @@ angular
     })
     .directive("perusopetusMuokkausInfo", function(OsanMuokkausHelper) {
         return {
-            templateUrl: "views/directives/perusopetus/muokkausinfo.html",
+            template: require("views/directives/perusopetus/muokkausinfo.html"),
             restrict: "AE",
             link: function(scope: any, element, attrs: any) {
                 scope.muokkausinfoOsa = attrs.osa || "";

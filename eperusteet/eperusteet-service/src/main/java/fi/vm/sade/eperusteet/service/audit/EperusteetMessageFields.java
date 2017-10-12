@@ -42,6 +42,7 @@ public enum EperusteetMessageFields {
     RAKENNE,
     SUORITUSTAVANRAKENNE,
     SUOSIKKI,
+    TAITEENALA,
     TIEDOTE,
     TEKSTIKAPPALE,
     TERMI,

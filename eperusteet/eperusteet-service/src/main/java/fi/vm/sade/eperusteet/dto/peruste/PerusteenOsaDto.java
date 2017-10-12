@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
@@ -64,6 +65,7 @@ public abstract class PerusteenOsaDto {
     @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = TekstiKappaleDto.class),
         @JsonSubTypes.Type(value = TutkinnonOsaDto.class),
+        @JsonSubTypes.Type(value = TaiteenalaDto.class),
         @JsonSubTypes.Type(value = AihekokonaisuudetLaajaDto.class),
         @JsonSubTypes.Type(value = OpetuksenYleisetTavoitteetLaajaDto.class),
         @JsonSubTypes.Type(value = LukioOpetussuunnitelmaRakenneLaajaDto.class)

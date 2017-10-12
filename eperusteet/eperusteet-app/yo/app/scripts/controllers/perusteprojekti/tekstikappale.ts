@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("TekstikappaleOperations", function(
@@ -161,33 +164,35 @@ angular
         };
     })
     .controller("muokkausTekstikappaleCtrl", async function(
-        $scope,
+        $location,
         $q,
-        Editointikontrollit,
-        PerusteenOsat,
-        Notifikaatiot,
-        VersionHelper,
-        Lukitus,
-        TutkinnonOsaEditMode,
-        Varmistusdialogi,
-        Kaanna,
-        PerusteprojektiTiedotService,
-        $stateParams,
-        Utils,
-        PerusteProjektiSivunavi,
-        YleinenData,
         $rootScope,
+        $scope,
+        $state,
+        $stateParams,
+        Editointikontrollit,
+        Kaanna,
         Kommentit,
         KommentitByPerusteenOsa,
+        Lukitus,
+        MuutProjektitService,
+        Notifikaatiot,
+        PerusteProjektiSivunavi,
         PerusteenOsanTyoryhmat,
-        Tyoryhmat,
+        PerusteenOsat,
+        PerusteprojektiTiedotService,
         PerusteprojektiTyoryhmat,
+        ProjektinMurupolkuService,
         TEXT_HIERARCHY_MAX_DEPTH,
         TekstikappaleOperations,
+        TutkinnonOsaEditMode,
+        Tyoryhmat,
+        Utils,
+        Varmistusdialogi,
+        VersionHelper,
+        YleinenData,
+        perusteprojektiBackLink,
         virheService,
-        ProjektinMurupolkuService,
-        MuutProjektitService,
-        $state
     ) {
         $scope.tekstikappale = {};
         $scope.versiot = {};
@@ -287,7 +292,7 @@ angular
                 updateViitteet();
             },
             get: function() {
-                var items = [];
+                var items: any = [];
                 var id = $scope.tekstikappale.id;
                 if ($scope.viitteet[id]) {
                     do {
@@ -331,6 +336,10 @@ angular
         };
 
         async function successCb(re) {
+            if (re.osanTyyppi !== "tekstikappale") {
+                $location.path(perusteprojektiBackLink.substring(1));
+            }
+
             $scope.tekstikappale = re;
             setupTekstikappale($scope.tekstikappale);
             tekstikappaleDefer.resolve($scope.tekstikappale);

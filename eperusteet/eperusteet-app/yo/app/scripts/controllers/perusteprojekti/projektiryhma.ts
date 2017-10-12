@@ -14,11 +14,14 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("projektiryhmaHenkilot", function() {
         return {
-            templateUrl: "views/partials/projektiTyoryhmanKayttajat.html",
+            template: require("views/partials/projektiTyoryhmanKayttajat.html"),
             restrict: "E",
             scope: {
                 tyyppi: "=",
@@ -94,7 +97,7 @@ angular
         $scope.muokkaaTyoryhmaa = function(ryhma) {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/lisaaTyoryhma.html",
+                    template: require("views/modals/lisaaTyoryhma.html"),
                     controller: "LuoTyoryhmaModalCtrl",
                     resolve: {
                         ryhmat: function() {

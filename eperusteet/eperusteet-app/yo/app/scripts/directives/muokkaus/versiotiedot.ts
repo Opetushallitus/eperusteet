@@ -14,11 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular.module("eperusteApp").directive("versiotiedot", function(VersionHelper) {
     return {
-        templateUrl: "views/partials/muokkaus/versiotiedot.html",
+        template: require("views/partials/muokkaus/versiotiedot.html"),
         restrict: "E",
         controller: function($scope) {
             $scope.lastModified = function() {

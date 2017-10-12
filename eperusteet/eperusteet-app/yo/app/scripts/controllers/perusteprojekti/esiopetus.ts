@@ -14,12 +14,16 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("EsiopetusSisaltoController", function(
         $scope,
         perusteprojektiTiedot,
         Algoritmit,
+        Api,
         $state,
         SuoritustavanSisalto,
         TekstikappaleOperations,

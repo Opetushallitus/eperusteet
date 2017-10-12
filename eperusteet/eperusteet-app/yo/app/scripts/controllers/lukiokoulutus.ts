@@ -22,6 +22,9 @@ interface PaginationDetails {
     changePage: (to: number) => void;
 }
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("LukiokoulutussisaltoController", function(
@@ -292,7 +295,7 @@ angular
     })
     .directive("lukioOppiaineet", function() {
         return {
-            templateUrl: "views/directives/lukiokoulutus/oppiaineet.html",
+            template: require("views/directives/lukiokoulutus/oppiaineet.html"),
             restrict: "E",
             scope: {},
             controller: "LukioOppiaineKurssiPuuController"

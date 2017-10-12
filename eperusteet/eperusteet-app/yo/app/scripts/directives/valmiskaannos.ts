@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 /**
  * Valmiin ja käännöksen esittäminen
  *
@@ -21,7 +24,7 @@
  */
 angular.module("eperusteApp").directive("valmiskaannos", ($timeout, $compile, $document) => {
     return {
-        templateUrl: "views/partials/valmiskaannos.html",
+        template: require("views/partials/valmiskaannos.html"),
         restrict: "E",
         require: "ngModel",
         scope: {

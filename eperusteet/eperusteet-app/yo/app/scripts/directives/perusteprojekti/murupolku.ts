@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("ProjektinMurupolkuService", function($rootScope, $state) {
@@ -88,7 +91,7 @@ angular
     })
     .directive("projektinMurupolku", function() {
         return {
-            templateUrl: "views/directives/perusteprojekti/murupolku.html",
+            template: require("views/directives/perusteprojekti/murupolku.html"),
             restrict: "AE",
             scope: {},
             controller: "ProjektinMurupolkuController"

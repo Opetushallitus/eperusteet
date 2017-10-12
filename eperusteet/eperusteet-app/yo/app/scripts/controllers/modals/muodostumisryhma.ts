@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("MuodostumisryhmaModalCtrl", function(
@@ -33,7 +36,7 @@ angular
         $scope.leikelauta = leikelauta;
         $scope.suoritustapa = suoritustapa;
         $scope.osaamisalat = [{}].concat(
-            _.map(_.clone(peruste.osaamisalat), function(oa) {
+            _.map(_.clone(peruste.osaamisalat), function(oa: any) {
                 return {
                     osaamisalakoodiArvo: oa.arvo,
                     osaamisalakoodiUri: oa.uri,

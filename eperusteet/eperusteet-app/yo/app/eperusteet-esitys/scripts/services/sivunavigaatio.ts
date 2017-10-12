@@ -27,7 +27,7 @@
  angular.module('eperusteet.esitys')
   .directive('epSivunavigaatio', function ($window, $document, $timeout, $compile) {
     return {
-      templateUrl: 'eperusteet-esitys/views/directives/sivunavi.html',
+      template: require("eperusteet-esitys/views/directives/sivunavi.html"),
       restrict: 'AE',
       scope: {
         items: '=',

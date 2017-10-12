@@ -14,11 +14,14 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("tagCloud", function() {
         return {
-            templateUrl: "views/directives/tagcloud.html",
+            template: require("views/directives/tagcloud.html"),
             restrict: "A",
             scope: {
                 model: "=tagCloud",
@@ -44,7 +47,7 @@ angular
         $scope.openDialog = function() {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/tagcloudmodal.html",
+                    template: require("views/modals/tagcloudmodal.html"),
                     controller: "TagCloudModalController",
                     resolve: {
                         model: _.constant($scope.model),
@@ -60,7 +63,7 @@ angular
                 !$scope.editMode &&
                 (!$scope.model ||
                     $scope.model.length === 0 ||
-                    !_.some($scope.model, function(item) {
+                    !_.some($scope.model, function(item: any) {
                         return !item.$hidden;
                     }))
             );

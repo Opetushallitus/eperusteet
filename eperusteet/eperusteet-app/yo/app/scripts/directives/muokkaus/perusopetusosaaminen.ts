@@ -14,11 +14,14 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("perusopetusMuokkausOsaaminen", function() {
         return {
-            templateUrl: "views/directives/perusopetus/osaaminen.html",
+            template: require("views/directives/perusopetus/osaaminen.html"),
             restrict: "E",
             scope: {
                 model: "=",

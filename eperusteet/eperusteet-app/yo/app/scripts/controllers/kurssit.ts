@@ -14,8 +14,6 @@
  *  European Union Public Licence for more details.
  */
 
-"use strict";
-
 namespace LukioHelper {
     export const kurssinOsat = koulutustyyppi => {
         const osat = ["tavoitteet", "keskeinenSisalto", "tavoitteetJaKeskeinenSisalto"];
@@ -27,6 +25,9 @@ namespace LukioHelper {
         return osat;
     };
 }
+
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")

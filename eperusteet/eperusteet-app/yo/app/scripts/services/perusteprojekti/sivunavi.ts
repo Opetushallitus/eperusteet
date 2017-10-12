@@ -14,7 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-import Lokalisoitu = Lokalisointi.Lokalisoitu;
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -38,6 +39,7 @@ angular
         var STATE_OSAT = "root.perusteprojekti.suoritustapa.tutkinnonosat";
         var STATE_TUTKINNON_OSA = "root.perusteprojekti.suoritustapa.tutkinnonosa";
         var STATE_TEKSTIKAPPALE = "root.perusteprojekti.suoritustapa.tekstikappale";
+        var STATE_TAITEENALA = "root.perusteprojekti.suoritustapa.taiteenala";
         var STATE_OSALISTAUS = "root.perusteprojekti.suoritustapa.osalistaus";
         var STATE_AIPE_OSALISTAUS = "root.perusteprojekti.suoritustapa.aipeosalistaus";
         var STATE_LUKIOOSALISTAUS = "root.perusteprojekti.suoritustapa.lukioosat";
@@ -117,7 +119,12 @@ angular
                     }
                 ];
             } else {
-                return [STATE_TEKSTIKAPPALE, params];
+                switch (lapsi.perusteenOsa.osanTyyppi) {
+                    case "taiteenala":
+                        return [STATE_TAITEENALA, params];
+                    default:
+                        return [STATE_TEKSTIKAPPALE, params];
+                }
             }
         }
 
@@ -205,7 +212,7 @@ angular
 
         function ylMapper(targetItems, osa, key, level, link?, parent?) {
             level = level || 0;
-            let nimi: Lokalisoitu = _.has(osa, "nimi") ? osa.nimi : osa.perusteenOsa.nimi;
+            let nimi = _.has(osa, "nimi") ? osa.nimi : osa.perusteenOsa.nimi;
             if (
                 perusteenTyyppi === "LU" &&
                 key === "oppiaineet_oppimaarat" &&
@@ -273,6 +280,7 @@ angular
                 })
                 .value();
         }
+
         function lukioOsanTyyppi(key) {
             switch (key) {
                 case LukiokoulutusService.OPPIAINEET_OPPIMAARAT:
@@ -286,7 +294,7 @@ angular
             }
         }
 
-        function buildTree(isVaTe, vateConverter) {
+        async function buildTree(isVaTe, vateConverter) {
             items = [];
             switch (perusteenTyyppi) {
                 case "YL": {
@@ -339,49 +347,68 @@ angular
                 default:
                     break;
             }
-            processNode(data.projekti.peruste.sisalto);
+
+            try {
+                processNode(data.projekti.peruste.sisalto);
+            } catch (err) {
+                console.error(err);
+            }
             $timeout(function() {
                 callbacks.itemsChanged(items);
             });
         }
 
-        var load = function() {
+        function getPerusteenTyyppi(data) {
+            if (YleinenData.isPerusopetus(data.projekti.peruste)) {
+                return "YL";
+            } else if (YleinenData.isAipe(data.projekti.peruste)) {
+                return "AIPE";
+            } else if (YleinenData.isLukiokoulutus(data.projekti.peruste)) {
+                return "LU";
+            } else if (YleinenData.isSimple(data.projekti.peruste)) {
+                return "ESI";
+            } else {
+                return "AM";
+            }
+        }
+
+        async function load() {
             data.projekti = service.getProjekti();
             data.projekti.peruste = service.getPeruste();
             data.projekti.peruste.sisalto = service.getSisalto();
-            perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste)
-                ? "YL"
-                : YleinenData.isAipe(data.projekti.peruste)
-                  ? "AIPE"
-                  : YleinenData.isLukiokoulutus(data.projekti.peruste)
-                    ? "LU"
-                    : YleinenData.isSimple(data.projekti.peruste) ? "ESI" : "AM";
+            perusteenTyyppi = getPerusteenTyyppi(data);
+
             var constIsVaTe = false;
             try {
                 constIsVaTe = YleinenData.isValmaTelma(data.projekti.peruste);
             } catch (e) {}
 
             callbacks.typeChanged(perusteenTyyppi);
-            buildTree(constIsVaTe, Kielimapper.mapTutkinnonosatKoulutuksenosat(constIsVaTe));
-        };
+            await buildTree(constIsVaTe, Kielimapper.mapTutkinnonosatKoulutuksenosat(constIsVaTe));
+        }
 
         this.register = function(key, cb) {
             callbacks[key] = cb;
         };
 
-        this.refresh = function(light) {
+        this.refresh = async function(light) {
             if (!service) {
-                PerusteprojektiTiedotService.then(function(res) {
-                    service = res;
-                    load();
-                });
+                try {
+                    service = await PerusteprojektiTiedotService;
+                    await load();
+                } catch (err) {
+                    console.error(err);
+                }
             } else {
                 if (light) {
-                    load();
+                    await load();
                 } else {
-                    service.alustaPerusteenSisalto($stateParams, true).then(function() {
-                        load();
-                    });
+                    try {
+                        await service.alustaPerusteenSisalto($stateParams, true);
+                        await load();
+                    } catch (err) {
+                        console.error(err);
+                    }
                 }
             }
         };

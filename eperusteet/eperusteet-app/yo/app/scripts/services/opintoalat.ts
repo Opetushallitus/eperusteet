@@ -14,8 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/*global _*/
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular.module("eperusteApp").service("Opintoalat", function Opintoalat($resource, SERVICE_LOC) {
     var opintoalatResource = $resource(

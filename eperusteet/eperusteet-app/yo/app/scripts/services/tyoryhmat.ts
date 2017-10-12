@@ -14,6 +14,9 @@
 * European Union Public Licence for more details.
 */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("Tyoryhmat", function($uibModal) {
@@ -21,7 +24,7 @@ angular
             valitse: function(valittavat, valitut, successCb) {
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/tyoryhmavalitsin.html",
+                        template: require("views/modals/tyoryhmavalitsin.html"),
                         controller: "valitseTyoryhmatModalCtrl",
                         resolve: {
                             valittavat: function() {

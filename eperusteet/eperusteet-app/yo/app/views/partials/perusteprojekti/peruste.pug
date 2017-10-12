@@ -203,7 +203,7 @@ mixin kvliite()
                       td {{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}
               div
                 button.btn.btn-default(type='button', ng-if='editEnabled', icon-role='add', ng-click='avaaKoodistoModaali()', ng-disabled='hakemassa', kaanna='lisaa-koulutus')
-          .panel.panel-default.panel-clean(ng-show="!isOpas")
+          .panel.panel-default.panel-clean(ng-show="!isOpas && isAmmatillinen")
             .panel-heading
               h3.panel-title(kaanna="'osaamisalat'")
             .panel-body
@@ -282,7 +282,7 @@ mixin kvliite()
                   td
                     a(ng-show='hasContent(peruste.maarayskirje.url)', ng-href='{{ peruste.maarayskirje.url | kaanna }}') {{ peruste.maarayskirje.url | kaanna }}
                     p(ng-show='!hasContent(peruste.maarayskirje.url)', kaanna='ei-asetettu')
-          .panel.panel-default.panel-clean(ng-show="!isOpas")
+          .panel.panel-default.panel-clean(ng-show="!isOpas && isAmmatillinen")
             .panel-heading
               h3.panel-title(ng-bind="'koulutusvienti' | kaanna")
             .panel-body

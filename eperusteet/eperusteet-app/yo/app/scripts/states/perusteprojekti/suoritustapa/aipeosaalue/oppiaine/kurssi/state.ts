@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").config($stateProvider => {
     $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine.kurssi", {
         url: "/kurssit/:kurssiId",
@@ -22,7 +25,7 @@ angular.module("eperusteApp").config($stateProvider => {
         },
         views: {
             "aipeosaalue@root.perusteprojekti.suoritustapa.aipeosaalue": {
-                templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/kurssi/view.html",
+                template: require("scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/kurssi/view.html"),
                 controller: (
                     $scope,
                     $state,

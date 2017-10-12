@@ -14,11 +14,14 @@
 * European Union Public Licence for more details.
 */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("kenttalistaus", ($q, MuokkausUtils, $timeout, FieldSplitter) => {
         return {
-            templateUrl: "views/partials/muokkaus/kenttalistaus.html",
+            template: require("views/partials/muokkaus/kenttalistaus.html"),
             restrict: "E",
             transclude: true,
             scope: {

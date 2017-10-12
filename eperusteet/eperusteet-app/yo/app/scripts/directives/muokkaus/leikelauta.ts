@@ -14,16 +14,19 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").directive("leikelauta", TutkinnonOsaLeikelautaService => {
     return {
-        templateUrl: "views/partials/muokkaus/leikelauta.html",
+        template: require("views/partials/muokkaus/leikelauta.html"),
         restrict: "E",
         transclude: true,
         scope: {
             isOpen: "="
         },
         link: function(scope, element, attrs) {
-            scope.leikelautaSortableOptions = TutkinnonOsaLeikelautaService.createLeikelautaSortable(scope, {
+            scope["leikelautaSortableOptions"] = TutkinnonOsaLeikelautaService.createLeikelautaSortable(scope, {
                 handle: ".handle",
                 connectWith:
                     ".container-items, .container-items-arviointi, .container-items-kohteet," +
@@ -36,8 +39,8 @@ angular.module("eperusteApp").directive("leikelauta", TutkinnonOsaLeikelautaServ
                 forcePlaceholderSize: true,
                 opacity: ".7"
             });
-            scope.poistaLeikelaudasta = TutkinnonOsaLeikelautaService.poistaLeikelaudasta;
-            scope.leikelauta = TutkinnonOsaLeikelautaService.initLeikelauta();
+            scope["poistaLeikelaudasta"] = TutkinnonOsaLeikelautaService.poistaLeikelaudasta;
+            scope["leikelauta"] = TutkinnonOsaLeikelautaService.initLeikelauta();
         }
     };
 });

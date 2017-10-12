@@ -14,8 +14,9 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _, moment */
+import * as angular from "angular";
+import * as _ from "lodash";
+import moment from "moment";
 
 angular
     .module("eperusteApp")
@@ -42,11 +43,14 @@ angular
     .service("AikaleimaCache", function($rootScope, CacheFactory) {
         var cache = null;
         this.create = function() {
-            cache = CacheFactory.createCache("momentCache", {
-                capacity: 1024,
-                maxAge: 60000,
-                deleteOnExpire: "aggressive"
-            });
+            cache = CacheFactory.get("momentCache");
+            if (!cache) {
+                cache = CacheFactory.createCache("momentCache", {
+                    capacity: 1024,
+                    maxAge: 60000,
+                    deleteOnExpire: "aggressive"
+                });
+            }
         };
         this.get = function(key) {
             return cache.get(key);

@@ -1,12 +1,15 @@
 @import "modules/variables";
-@import "../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap";
-@import "../bower_components/angular-ui-tree/dist/angular-ui-tree.min.css";
-@import "../bower_components/angular-ui-select/dist/select.min.css";
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+@import "~angular-ui-tree/dist/angular-ui-tree.css";
+@import "~angular-ui-select/select.css";
+@import "modules/esitys";
 @import "modules/bootstrap-overrides";
 @import "vendor/virkailija";
 
 @import "mixins/utils";
 
+@import "modules/taiteenala";
 @import "modules/yleiset";
 @import "modules/projektinmurupolku";
 @import "modules/icons";
@@ -28,7 +31,6 @@
 @import "modules/koodisto";
 @import "modules/editointikontrollit";
 @import "modules/kommentit";
-//@import "modules/esitys";
 @import "modules/perusopetus";
 @import "modules/lukio";
 @import "modules/tutke2osa";

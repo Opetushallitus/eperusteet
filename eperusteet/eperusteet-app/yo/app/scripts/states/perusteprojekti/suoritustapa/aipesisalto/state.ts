@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").config($stateProvider =>
     $stateProvider.state("root.perusteprojekti.suoritustapa.aipesisalto", {
         url: "/aipesisalto",
@@ -31,7 +34,7 @@ angular.module("eperusteApp").config($stateProvider =>
                 peruste.one("suoritustavat/" + $stateParams.suoritustapa + "/sisalto").get(),
             jotain: () => {}
         },
-        templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipesisalto/view.html",
+        template: require("scripts/states/perusteprojekti/suoritustapa/aipesisalto/view.html"),
         controller: (
             $scope,
             $state,

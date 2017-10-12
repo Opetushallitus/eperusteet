@@ -14,9 +14,12 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").directive("muokkausVaihe", () => {
     return {
-        templateUrl: "views/directives/vaihe.html",
+        template: require("views/directives/vaihe.html"),
         restrict: "E",
         scope: {
             model: "=",

@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .factory("TermistoCRUD", function($resource, SERVICE_LOC) {
@@ -189,7 +192,7 @@ angular
         $scope.edit = function(item) {
             $uibModal
                 .open({
-                    templateUrl: "views/modals/termisto.html",
+                    template: require("views/modals/termisto.html"),
                     controller: "TermistoMuokkausController",
                     size: "lg",
                     resolve: {

@@ -14,7 +14,8 @@
 * European Union Public Licence for more details.
 */
 
-"use strict";
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -24,7 +25,7 @@ angular
 
     .directive("lukioMuokkausAihekokonaisuudet", function() {
         return {
-            templateUrl: "views/directives/lukiokoulutus/aihekokonaisuudet.html",
+            template: require("views/directives/lukiokoulutus/aihekokonaisuudet.html"),
             restrict: "E",
             scope: {
                 model: "=aihekokonaisuudet"
@@ -179,7 +180,7 @@ angular
     })
     .directive("lukioMuokkausAihekokonaisuus", function() {
         return {
-            templateUrl: "views/directives/lukiokoulutus/aihekokonaisuus.html",
+            template: require("views/directives/lukiokoulutus/aihekokonaisuus.html"),
             restrict: "E",
             controller: "LukioAihekokonaisuusController"
         };

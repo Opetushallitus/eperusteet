@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as _ from "lodash";
+import * as angular from "angular";
+
 /**
  * Sivunavigaatioelementti
  * @param items lista menuelementtejä, objekti jolla avaimet:
@@ -28,7 +31,7 @@ angular
     .module("eperusteApp")
     .directive("sivunavigaatio", function($compile) {
         return {
-            templateUrl: "views/partials/sivunavi2.html",
+            template: require("views/partials/sivunavi2.html"),
             restrict: "AE",
             scope: {
                 items: "=",

@@ -14,11 +14,14 @@
 * European Union Public Licence for more details.
 */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("osallinenOsa", $compile => {
         return {
-            templateUrl: "views/directives/osallinenosa.html",
+            template: require("views/directives/osallinenosa.html"),
             restrict: "AE",
             transclude: true,
             scope: {
@@ -32,7 +35,7 @@ angular
             },
             controller: "OsallinenOsaController",
             link: function(scope: any, element: any) {
-                if (_.has(scope.config.fieldRenderer)) {
+                if (_.isObject(scope.config) && scope.config.fieldRenderer) {
                     element
                         .find(".tutkinnonosa-sisalto")
                         .empty()

@@ -14,11 +14,14 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("osanmuokkausSisaltoalueet", function() {
         return {
-            templateUrl: "views/directives/perusopetus/osanmuokkaussisaltoalueet.html",
+            template: require("views/directives/perusopetus/osanmuokkaussisaltoalueet.html"),
             restrict: "E",
             scope: {
                 model: "=",
@@ -88,7 +91,7 @@ angular
     })
     .directive("kohdealueet", function() {
         return {
-            templateUrl: "views/directives/perusopetus/sisaltoalueet.html",
+            template: require("views/directives/perusopetus/sisaltoalueet.html"),
             restrict: "A",
             scope: {
                 model: "=kohdealueet"
@@ -98,7 +101,7 @@ angular
     })
     .directive("sisaltoalueet", function() {
         return {
-            templateUrl: "views/directives/perusopetus/sisaltoalueet.html",
+            template: require("views/directives/perusopetus/sisaltoalueet.html"),
             restrict: "A",
             scope: {
                 model: "=sisaltoalueet"

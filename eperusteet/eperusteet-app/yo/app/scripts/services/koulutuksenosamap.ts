@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").service("Kielimapper", function() {
     var constKoulutuksenosat = {
         "et-ole-viela-tallentanut-tutkinnonosia": "et-ole-vielä-tallentanut-koulutuksenosia",

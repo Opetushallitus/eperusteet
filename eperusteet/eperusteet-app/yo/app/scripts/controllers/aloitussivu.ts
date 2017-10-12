@@ -14,8 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _ */
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -46,7 +46,7 @@ angular
             })
             .state("root.aloitussivu", {
                 url: "",
-                templateUrl: "views/aloitussivu.html",
+                template: require("views/aloitussivu.html"),
                 controller: "AloitusSivuController"
             });
     })

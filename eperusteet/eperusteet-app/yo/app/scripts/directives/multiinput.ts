@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").directive("mlInput", function($translate, YleinenData, $timeout) {
     return {
         restrict: "E",
@@ -23,7 +26,7 @@ angular.module("eperusteApp").directive("mlInput", function($translate, YleinenD
             type: "@",
             required: "="
         },
-        templateUrl: "views/multiinput.html",
+        template: require("views/multiinput.html"),
         replace: true,
         transclude: true,
         controller: function($scope) {

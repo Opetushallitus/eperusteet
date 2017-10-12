@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("OmatperusteprojektitCtrl", function($scope, $state, OmatPerusteprojektit, PerusteProjektiService) {
@@ -26,7 +29,7 @@ angular
                     .filter(function(pp) {
                         return pp.diaarinumero; /*ei ole pohja*/
                     })
-                    .map(function(pp) {
+                    .map(function(pp: any) {
                         pp.url = PerusteProjektiService.getUrl(pp, pp.peruste);
                         return pp;
                     })

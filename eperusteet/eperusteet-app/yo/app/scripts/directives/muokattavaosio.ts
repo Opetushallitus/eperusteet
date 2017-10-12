@@ -14,11 +14,14 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("muokattavaOsio", function() {
         return {
-            templateUrl: "views/directives/muokattavaosio.html",
+            template: require("views/directives/muokattavaosio.html"),
             restrict: "A",
             scope: {
                 model: "=muokattavaOsio",

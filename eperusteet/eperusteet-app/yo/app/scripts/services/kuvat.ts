@@ -14,7 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
+import * as angular from "angular";
+import * as _ from "lodash";
 
 // FIXME
 angular
@@ -80,14 +81,14 @@ angular
         var setDeferred = null;
 
         function setChosenValue(value) {
-            var found = _.find($scope.images, function(image) {
+            var found = _.find($scope.images, function(image: any) {
                 return image.id === value;
             });
             $scope.model.chosen = found || null;
         }
 
         function doSort(items) {
-            return _.sortBy(items, function(item) {
+            return _.sortBy(items, function(item: any) {
                 return Kaanna.kaanna(item.nimi).toLowerCase();
             });
         }
@@ -108,7 +109,7 @@ angular
         };
 
         $scope.filterImages = function(value) {
-            $scope.filtered = _.filter(doSort($scope.images), function(item) {
+            $scope.filtered = _.filter(doSort($scope.images), function(item: any) {
                 return Algoritmit.match(value, item.nimi);
             });
         };
@@ -158,6 +159,7 @@ angular
             );
         };
     })
+    // FIXME miksi näitä on kaksi?
     .filter("kuvalinkit", function(EpImageService) {
         return function(text) {
             let modified = false;
@@ -178,6 +180,10 @@ angular
     })
     .filter("kuvalinkit", () => {
         return text => {
+            if (_.isUndefined(text) || _.isNull(text)) {
+                return "";
+            }
+
             const tmp = angular.element("<div>" + text + "</div>");
             tmp.find("img").each(function() {
                 let el = angular.element(this);

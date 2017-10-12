@@ -13,8 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-"use strict";
-/* global _ */
+
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -22,7 +23,7 @@ angular
         return {
             restrict: "EA",
             transclude: true,
-            templateUrl: "views/partials/perusteprojekti/pikamenu.html",
+            template: require("views/partials/perusteprojekti/pikamenu.html"),
             link: function(scope, element) {
                 // Pop the button next to the header after transclusion
                 var header = element.find("#pikamenu-header");
@@ -70,10 +71,10 @@ angular
                 });
                 angular.element($window).on("resize", updatePosition);
             },
-            controller: "TutkinnonOsatPikamenu"
+            controller: "TutkinnonOsatPikamenuController"
         };
     })
-    .controller("TutkinnonOsatPikamenu", function($scope, Kaanna) {
+    .controller("TutkinnonOsatPikamenuController", function($scope, Kaanna) {
         $scope.pikamenu = {
             opened: false,
             orderFn: function(key) {

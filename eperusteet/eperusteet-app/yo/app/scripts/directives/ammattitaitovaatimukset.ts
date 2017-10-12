@@ -14,6 +14,9 @@
 * European Union Public Licence for more details.
 */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("ammattitaitoCtrl", function($scope, YleinenData, $timeout, Utils, Varmistusdialogi) {
@@ -161,7 +164,7 @@ angular
     })
     .directive("ammattitaito", function(YleinenData, $timeout, TutkinnonOsaLeikelautaService) {
         return {
-            templateUrl: "views/partials/ammattitaito.html",
+            template: require("views/partials/ammattitaito.html"),
             restrict: "E",
             scope: {
                 ammattitaito: "=",

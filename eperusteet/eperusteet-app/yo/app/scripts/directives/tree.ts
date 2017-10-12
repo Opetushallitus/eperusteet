@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("treeTemplate", function() {
@@ -450,8 +453,6 @@ angular
         return {
             restrict: "AE",
             transclude: true,
-            terminal: true,
-            templateUrl: "views/partials/tree.html",
             scope: {
                 rakenne: "=",
                 voiLiikuttaa: "=",
@@ -459,6 +460,7 @@ angular
                 muokkaus: "=",
                 esitys: "=?"
             },
+            template: require("views/partials/tree.html"),
             controller: "TreeWrapperController"
         };
     })

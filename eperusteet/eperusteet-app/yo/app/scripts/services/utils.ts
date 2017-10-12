@@ -14,8 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _ */
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -50,7 +50,7 @@ angular
             }
             var hasContent = false;
             var langs = _.values(YleinenData.kielet);
-            _.each(langs, function(key) {
+            _.each(langs, function(key: any) {
                 if (!_.isEmpty(field[key])) {
                     hasContent = true;
                 }
@@ -139,7 +139,7 @@ angular
         };
     });
 
-namespace Lokalisointi {
+export namespace Lokalisointi {
     export interface Lokalisoitu {
         fi?: string;
         sv?: string;

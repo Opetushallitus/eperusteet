@@ -14,17 +14,25 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+import moment from "moment";
+
+if (process.env.NODE_ENV === "development") {
+    console.log("Running in development mode");
+}
+
 angular
     .module("eperusteApp", [
         "ngSanitize",
         "ui.router",
         "ngResource",
         "restangular",
-        // 'ngAnimate', Saattaa nopeuttaa puurakenteiden renderöintiä
+        // // 'ngAnimate', Saattaa nopeuttaa puurakenteiden renderöintiä
         "pascalprecht.translate",
         "ui.bootstrap",
         "angular-cache",
-        "ui.utils",
+        // "ui.utils",
         "ui.sortable",
         "monospaced.elastic",
         "ui.tree",
@@ -47,7 +55,7 @@ angular
     .constant("LUKITSIN_MAKSIMI", 20000)
     .constant("TEXT_HIERARCHY_MAX_DEPTH", 8)
     .constant("SHOW_VERSION_FOOTER", true)
-    .constant("DEBUG_UI_ROUTER", false)
+    .constant("DEVELOPMENT", process.env.NODE_ENV === "development")
     .config(($sceProvider, $urlRouterProvider, $translateProvider, $urlMatcherFactoryProvider, $locationProvider) => {
         const preferred = "fi";
 
@@ -71,9 +79,12 @@ angular
 
         moment.locale(preferred);
     })
-    .config(epEsitysSettingsProvider => {
-        epEsitysSettingsProvider.setValue("perusopetusState", "root.selaus.perusopetus");
-        epEsitysSettingsProvider.setValue("showPreviewNote", true);
+    // .config(epEsitysSettingsProvider => {
+    //     epEsitysSettingsProvider.setValue("perusopetusState", "root.selaus.perusopetus");
+    //     epEsitysSettingsProvider.setValue("showPreviewNote", true);
+    // })
+    .config($qProvider => {
+        $qProvider.errorOnUnhandledRejections(false);
     })
     .config($rootScopeProvider => {
         $rootScopeProvider.digestTtl(20);
@@ -119,11 +130,11 @@ angular
             }
         ]);
     })
-    .config($httpProvider => {
+    .config(($httpProvider: angular.IHttpProvider) => {
         $httpProvider.interceptors.push([
             "$rootScope",
             "$q",
-            ($rootScope, $q) => {
+            ($rootScope: angular.IScope, $q: angular.IQService) => {
                 return {
                     response: response => {
                         const uudelleenohjausStatuskoodit = [401, 412, 500];
@@ -188,7 +199,7 @@ angular
             }
         });
         _.mixin({
-            flattenTree: function(obj, extractChildren) {
+            flattenTree: function flattenTree(obj, extractChildren) {
                 if (!_.isArray(obj) && obj) {
                     obj = [obj];
                 }
@@ -199,7 +210,7 @@ angular
                     obj,
                     _(obj)
                         .map(function(o) {
-                            return _.flattenTree(extractChildren(o), extractChildren);
+                            return flattenTree(extractChildren(o), extractChildren);
                         })
                         .flatten()
                         .value()
@@ -224,7 +235,7 @@ angular
             }
         });
     })
-    .run($rootScope => {
+    .run(($rootScope: angular.IScope, $window: angular.IWindowService) => {
         const f = _.debounce(
             function() {
                 $rootScope.$broadcast("poll:mousemove");
@@ -235,7 +246,8 @@ angular
                 maxWait: 60000
             }
         );
-        angular.element(window).on("mousemove", f);
+
+        angular.element($window).on("mousemove", f);
     })
     .run(
         (
@@ -291,7 +303,7 @@ angular
                 }
 
                 const uudelleenohjausModaali = $uibModal.open({
-                    templateUrl: "views/modals/uudelleenohjaus.html",
+                    template: require("views/modals/uudelleenohjaus.html"),
                     controller: "UudelleenohjausModalCtrl",
                     resolve: {
                         status: function() {
@@ -370,15 +382,27 @@ angular
             });
         }
     )
-    .run(($rootScope, DEBUG_UI_ROUTER) => {
-        if (DEBUG_UI_ROUTER) {
+    .run(($rootScope, DEVELOPMENT) => {
+        if (DEVELOPMENT) {
             $rootScope.$on("$stateChangeSuccess", (event, state, params) => {
                 console.info(
-                    "%c" + state.name,
-                    "color: #ffb05b; background: #333; font-weight: bold",
-                    "(" + state.url + (state.templateUrl && " | " + state.templateUrl + ")"),
-                    params
+                    "%c» " + state.name + " «", "color: #ffb05b; background: #333; font-weight: bold",
+                    "" + state.url + " ", params
                 );
             });
+            // $rootScope.$on("$stateChangeStart", (event, state, params) => {
+            //     console.info("Starting state change");
+            // });
+            // $rootScope.$on("$stateChangeError", (event, a, b, c, d, e) => {
+            //     console.info("Failed state change", a, b, c, d, e);
+            // });
         }
     });
+
+import yleinenData from "./services/yleinenData";
+import { taiteenalaCtrl } from "./controllers/perusteprojekti/taiteenala";
+
+angular
+    .module("eperusteApp")
+    .service("YleinenData", yleinenData)
+    .controller("taiteenalaCtrl", taiteenalaCtrl);

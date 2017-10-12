@@ -14,11 +14,14 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .directive("eperusteNavi", function() {
         return {
-            templateUrl: "views/partials/navi.html",
+            template: require("views/partials/navi.html"),
             restrict: "AE",
             controller: "NaviCtrl"
         };

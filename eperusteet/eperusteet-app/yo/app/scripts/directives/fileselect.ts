@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .service("fileReader", function($q) {
@@ -48,9 +51,9 @@ angular
     })
     .directive("fileSelect", function(fileReader) {
         return {
-            templateUrl: "views/partials/fileselect.html",
+            template: require("views/partials/fileselect.html"),
             restrict: "E",
-            link: function($scope, el, attrs) {
+            link: function($scope: any, el, attrs) {
                 $scope.flabel = attrs.flabel || "selaa";
                 function loadFile(file) {
                     if (!file) {
@@ -95,7 +98,7 @@ angular
                     }
                 });
 
-                el.bind("change", function(e) {
+                el.bind("change", function(e: any) {
                     loadFile(e.target.files[0]);
                 });
             }

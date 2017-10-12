@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .factory("PerusteTutkinnonosa", function($resource, SERVICE_LOC) {
@@ -393,7 +396,7 @@ angular
                         return;
                     }
 
-                    const lapsi = _.first(lapset);
+                    const lapsi: any = _.first(lapset);
                     SuoritustapaSisalto.addChild(
                         {
                             perusteId: peruste.id,
@@ -414,8 +417,8 @@ angular
 
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/tuotekstikappale.html",
-                        controller: "TuoTekstikappale",
+                        template: require("views/modals/tuotekstikappale.html"),
+                        controller: "TuoTekstikappaleController",
                         size: "lg",
                         resolve: {
                             peruste: function() {
@@ -590,7 +593,7 @@ angular
         function tallennaTutkinnonosat(rakenne, id, suoritustapa, success) {
             success = success || function() {};
             const after = _.after(_.size(rakenne.tutkinnonOsat), success);
-            _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
+            _.forEach(_.values(rakenne.tutkinnonOsat), function(osa: any) {
                 PerusteTutkinnonosa.save(
                     {
                         perusteId: id,

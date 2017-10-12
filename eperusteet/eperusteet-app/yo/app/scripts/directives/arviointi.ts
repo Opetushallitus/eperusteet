@@ -13,6 +13,9 @@
 * European Union Public Licence for more details.
 */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("arviointiCtrl", function(
@@ -236,7 +239,7 @@ angular
     })
     .directive("arviointi", function(YleinenData, $timeout, TutkinnonOsaLeikelautaService) {
         return {
-            templateUrl: "views/partials/arviointi.html",
+            template: require("views/partials/arviointi.html"),
             restrict: "E",
             scope: {
                 arviointi: "=",
@@ -400,7 +403,7 @@ angular
     })
     .directive("arvioinninTekstikentta", function() {
         return {
-            templateUrl: "views/partials/arvioinninTekstikentta.html",
+            template: require("views/partials/arvioinninTekstikentta.html"),
             restrict: "E",
             scope: {
                 sisalto: "=",

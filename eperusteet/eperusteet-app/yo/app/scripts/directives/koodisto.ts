@@ -14,8 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _, $ */
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -116,7 +116,7 @@ angular
                 failureCb = failureCb || angular.noop;
                 $uibModal
                     .open({
-                        templateUrl: "views/modals/koodistoModal.html",
+                        template: require("views/modals/koodistoModal.html"),
                         controller: "KoodistoModalCtrl",
                         resolve: resolve
                     })

@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .controller("SuosikitCtrl", function($scope, Profiili, $uibModal) {
@@ -30,7 +33,7 @@ angular
 
         $scope.edit = function() {
             $uibModal.open({
-                templateUrl: "views/modals/suosikkienMuokkaus.html",
+                template: require("views/modals/suosikkienMuokkaus.html"),
                 controller: "SuosikkienMuokkausController",
                 size: "lg"
             });

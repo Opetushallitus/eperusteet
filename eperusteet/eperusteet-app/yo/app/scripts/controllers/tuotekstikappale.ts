@@ -14,12 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-"use strict";
-/* global _ */
+import * as angular from "angular";
+import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
-    .controller("TuoTekstikappale", function(
+    .controller("TuoTekstikappaleController", function(
         $q,
         $scope,
         $uibModalInstance,

@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 /**
  * Elementti seuraa vieritystä jos ohitetaan yläreuna.
  * Jos ikkunan koko on pienempi kuin DISABLE_WIDTH, seuraus disabloidaan.

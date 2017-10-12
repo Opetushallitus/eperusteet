@@ -1,3 +1,6 @@
+import * as _ from "lodash";
+import * as angular from "angular";
+
 interface EditointiKontrollitCallbacks {
     edit: any;
     save: any;
@@ -28,7 +31,6 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
 
     scope.editModeDefer = $q.defer();
 
-    this.lastModified = null;
     let cbListener = _.noop;
     let editmodeListener = null;
 
@@ -45,6 +47,7 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
     }
 
     return {
+        lastModified: null,
         async startEditing() {
             try {
                 await scope.editingCallback.edit();

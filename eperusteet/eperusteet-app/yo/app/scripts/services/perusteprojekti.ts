@@ -14,6 +14,9 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular
     .module("eperusteApp")
     .factory("PerusteprojektiTila", function($resource, SERVICE_LOC) {
@@ -110,7 +113,7 @@ angular
         function hasSuoritustapa(peruste, suoritustapakoodi) {
             return (
                 peruste &&
-                _.find(peruste.suoritustavat, function(st) {
+                _.find(peruste.suoritustavat, function(st: any) {
                     return st.suoritustapakoodi === suoritustapakoodi;
                 })
             );
@@ -120,7 +123,10 @@ angular
             return hasSuoritustapa(peruste, getSuoritustapa()) ? getSuoritustapa() : projekti.suoritustapa;
         }
 
-        // Luo oikea url perusteprojektille
+        /**
+     * Luo oikea url perusteprojektille
+     * @param peruste optional
+     */
         function urlFn(projekti, peruste) {
             let suoritustapa;
             let sisaltoTunniste = "sisalto";
@@ -130,30 +136,36 @@ angular
                     (_.isObject(projekti) && projekti.koulutustyyppi) || (_.isObject(peruste) && peruste.koulutustyyppi)
                 ];
 
-            if (peruste && peruste.reforminMukainen) {
-                suoritustapa = "reformi";
-            } else if (info) {
-                suoritustapa = info.oletusSuoritustapa;
-                sisaltoTunniste = info.sisaltoTunniste;
+            if (peruste && peruste.tyyppi === "opas") {
+                suoritustapa = "opas";
+                sisaltoTunniste = "opassisalto";
+            } else {
+                if (peruste && peruste.reforminMukainen) {
+                    suoritustapa = "reformi";
+                } else if (info) {
+                    suoritustapa = info.oletusSuoritustapa;
+                    sisaltoTunniste = info.sisaltoTunniste;
+                }
+
+                // Tilanteesta riippuen suoritustapatieto voi tulla projektin mukana (listausnäkymät)
+                // Yritetään ensisijaisesti käyttää perusteen tietoa
+                if (peruste && _.isArray(peruste.suoritustavat) && !_.isEmpty(peruste.suoritustavat)) {
+                    const suoritustapakoodit = _.map(peruste.suoritustavat, "suoritustapakoodi");
+                    if (!_.includes(suoritustapakoodit, suoritustapa)) {
+                        suoritustapa = _.first(suoritustapakoodit);
+                    }
+                } else if (projekti && _.isArray(projekti.suoritustavat) && !_.isEmpty(projekti.suoritustavat)) {
+                    if (!_.includes(projekti.suoritustavat, suoritustapa)) {
+                        suoritustapa = _.first(projekti.suoritustavat);
+                    }
+                }
             }
 
-            // Tilanteesta riippuen suoritustapatieto voi tulla projektin mukana (listausnäkymät)
-            // Yritetään ensisijaisesti käyttää perusteen tietoa
-            if (peruste && !_.isEmpty(peruste.suoritustavat)) {
-                const suoritustapakoodit = _.map(peruste.suoritustavat, "suoritustapakoodi");
-                if (!_.includes(suoritustapakoodit, suoritustapa)) {
-                    suoritustapa = _.first(suoritustapakoodit);
-                }
-            } else if (projekti && !_.isEmpty(projekti.suoritustavat)) {
-                if (!_.includes(projekti.suoritustavat, suoritustapa)) {
-                    suoritustapa = _.first(projekti.suoritustavat);
-                }
-            }
-
-            const result = $state.href("root.perusteprojekti.suoritustapa." + sisaltoTunniste, {
+            const stateName = "root.perusteprojekti.suoritustapa." + sisaltoTunniste;
+            const result = $state.href(stateName, {
                 lang: $stateParams.lang || "fi",
                 perusteProjektiId: projekti.id,
-                suoritustapa: suoritustapa
+                suoritustapa
             });
 
             return result;
@@ -163,7 +175,7 @@ angular
             var deferred = $q.defer();
             $uibModal
                 .open({
-                    templateUrl: "views/modals/projektiSisaltoTuonti.html",
+                    template: require("views/modals/projektiSisaltoTuonti.html"),
                     controller: "ProjektiTiedotSisaltoModalCtrl",
                     resolve: {
                         pohja: function() {
@@ -276,7 +288,6 @@ angular
 
         const PerusteContextMapping = {
             "projekti-peruste": { opas: "projekti-opas" },
-            "perusteen-tiedot": { opas: "oppaan-tiedot" },
             "projekti-projektiryhma": { opas: "projekti-opastyoryhma" },
             "perusteen-kielet": { opas: "oppaan-kielet" },
             "luo-pdf-dokumentti-perusteesta": { opas: "luo-pdf-dokumentti-oppaasta" }
@@ -341,24 +352,10 @@ angular
                         }
                     );
                 } else if (
-                    !YleinenData.isPerusopetus(peruste) &&
-                    !YleinenData.isAipe(peruste) &&
-                    !YleinenData.isLukiokoulutus(peruste)
+                    YleinenData.isPerusopetus(peruste) ||
+                    YleinenData.isAipe(peruste) ||
+                    YleinenData.isLukiokoulutus(peruste)
                 ) {
-                    SuoritustapaSisalto.get(
-                        {
-                            perusteId: perusteId,
-                            suoritustapa: suoritustapa
-                        },
-                        function(vastaus) {
-                            resolve(vastaus);
-                            sisalto = vastaus;
-                        },
-                        function(virhe) {
-                            deferred.reject(virhe);
-                        }
-                    );
-                } else {
                     var labels,
                         osatProvider,
                         sisaltoProvider,
@@ -395,7 +392,20 @@ angular
                     await getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider);
                     sisalto = ylTiedot.sisalto;
                     deferred.resolve(ylTiedot.sisalto);
-                    resolve(ylTiedot.sisalto);
+                } else {
+                    SuoritustapaSisalto.get(
+                        {
+                            perusteId: perusteId,
+                            suoritustapa: suoritustapa
+                        },
+                        function(vastaus) {
+                            resolve(vastaus);
+                            sisalto = vastaus;
+                        },
+                        function(virhe) {
+                            deferred.reject(virhe);
+                        }
+                    );
                 }
             });
         };

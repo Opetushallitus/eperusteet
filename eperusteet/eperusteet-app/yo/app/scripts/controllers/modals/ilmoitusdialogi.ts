@@ -14,6 +14,9 @@
 * European Union Public Licence for more details.
 */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").controller("IlmoitusdialogiCtrl", function($scope, $uibModalInstance, sisalto) {
     $scope.sisalto = sisalto;
     $scope.ok = $uibModalInstance.close;

@@ -14,10 +14,13 @@
  * European Union Public Licence for more details.
  */
 
+import * as angular from "angular";
+import * as _ from "lodash";
+
 angular.module("eperusteApp").config($stateProvider => {
     $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosalistaus", {
         url: "/aipeosat/:osanTyyppi",
-        templateUrl: "scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/view.html",
+        template: require("scripts/states/perusteprojekti/suoritustapa/aipeosalistaus/view.pug"),
         resolve: {
             perusteprojektit: Api => Api.all("perusteprojektit"),
             perusteprojekti: (perusteprojektit, $stateParams) =>
