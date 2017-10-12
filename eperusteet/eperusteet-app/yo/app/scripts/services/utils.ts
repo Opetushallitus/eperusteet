@@ -139,7 +139,7 @@ angular
         };
     });
 
-namespace Lokalisointi {
+export namespace Lokalisointi {
     export interface Lokalisoitu {
         fi?: string;
         sv?: string;

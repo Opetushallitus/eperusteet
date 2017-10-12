@@ -38,7 +38,7 @@ angular
                     maara: YleinenData.kommenttiMaxLength
                 };
 
-                function lataaKommentit(url) {
+                const lataaKommentit = _.debounce((url) => {
                     var lataaja = $scope.urlit[url];
                     if (lataaja) {
                         lataaja(function(kommentit) {
@@ -46,7 +46,11 @@ angular
                             $scope.nayta = true;
                         });
                     }
-                }
+                }, 300);
+
+                function naytaKommentit() {
+                    lataaKommentit($location.url());
+                };
 
                 $scope.$on("$stateChangeStart", function() {
                     $scope.nayta = false;
@@ -58,6 +62,7 @@ angular
                         $scope.onLataaja = true;
                         $scope.urlit[url] = lataaja;
                     }
+                    naytaKommentit();
                 }
 
                 var stored = Kommentit.stored();
@@ -69,12 +74,10 @@ angular
                     lataajaCb(url, lataaja);
                 });
 
-                $scope.naytaKommentit = function() {
-                    lataaKommentit($location.url());
-                };
                 $scope.muokkaaKommenttia = function(kommentti, uusikommentti, cb) {
                     Kommentit.muokkaaKommenttia(kommentti, uusikommentti, cb);
                 };
+
                 $scope.poistaKommentti = function(kommentti) {
                     Varmistusdialogi.dialogi({
                         otsikko: "vahvista-poisto",
@@ -98,8 +101,9 @@ angular
                 $scope.$on("disableEditing", function() {
                     $scope.editointi = false;
                 });
+
                 $timeout(function() {
-                    $scope.naytaKommentit();
+                    naytaKommentit();
                 });
             }
         };

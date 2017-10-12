@@ -37,7 +37,7 @@ angular
         "monospaced.elastic",
         "ui.tree",
         "ui.select",
-        // "eperusteet.esitys",
+        "eperusteet.esitys",
         "ngFileUpload",
         "eGenericTree",
         // "eMathDisplay",
@@ -385,10 +385,8 @@ angular
         if (DEVELOPMENT) {
             $rootScope.$on("$stateChangeSuccess", (event, state, params) => {
                 console.info(
-                    "%c" + state.name,
-                    "color: #ffb05b; background: #333; font-weight: bold",
-                    "(" + state.url + (state.templateUrl && " | " + state.templateUrl + ")"),
-                    params
+                    "%c» " + state.name + " «", "color: #ffb05b; background: #333; font-weight: bold",
+                    "" + state.url + " ", params
                 );
             });
             // $rootScope.$on("$stateChangeStart", (event, state, params) => {
