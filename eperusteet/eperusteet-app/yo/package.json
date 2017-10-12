@@ -5,12 +5,12 @@
   "scripts": {
     "dev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
     "build": "./node_modules/webpack/bin/webpack.js -p --config webpack.prod.js",
-    "unit": "./node_modules/jest/bin/jest.js --no-cache --verbose",
+    "unit": "./node_modules/jest/bin/jest.js --runInBand --no-cache --verbose",
     "unit:watch": "./node_modules/jest/bin/jest.js --watch --notify",
     "unit:debug": "node --inspect --debug-brk ./node_modules/jest/bin/jest.js --runInBand --verbose",
     "dbnuke": "docker-compose rm app_db",
     "dbinspect": "docker-compose exec app_db psql -U app",
-    "coverage": "./node_modules/jest/bin/jest.js --verbose --no-cache --coverage",
+    "coverage": "./node_modules/jest/bin/jest.js --runInBand --verbose --no-cache --coverage",
     "ci": "yarn unit && yarn build",
     "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write \"app/scripts/**/*.ts\" \"app/styles/**/*.{scss,css}\""
   },

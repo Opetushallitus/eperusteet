@@ -68,7 +68,7 @@ angular
                 }
             })
             .state("root.perusteprojekti.suoritustapa.lukioosat", {
-                url: "/lukioosat/:osanTyyppi{versio:(?:/[^/]+)?}",
+                url: "/lukioosat/:osanTyyppi?{versio?:int}",
                 template: require("views/partials/lukio/osat/osalistaus.html"),
                 controller: "LukioOsalistausController",
                 resolve: {
@@ -82,7 +82,7 @@ angular
                 }
             })
             .state("root.perusteprojekti.suoritustapa.lukioosaalue", {
-                url: "/lukioosat/:osanTyyppi/:osanId/:tabId/:editEnabled{versio:(?:/[^/]+)?}",
+                url: "/lukioosat/:osanTyyppi/:osanId/:tabId/:editEnabled?{versio?:int}",
                 template: require("views/partials/lukio/osat/osaalue.html"),
                 controller: "LukioOsaAlueController",
                 resolve: {
@@ -174,7 +174,7 @@ angular
                 abstract: true
             })
             .state("root.perusteprojekti.suoritustapa.muodostumissaannot", {
-                url: "/rakenne{versio:(?:/[^/]+)?}",
+                url: "/rakenne?{versio?:int}",
                 template: require("views/partials/perusteprojekti/muodostumissaannot.html"),
                 controller: "PerusteprojektiMuodostumissaannotCtrl",
                 onEnter: PerusteProjektiSivunavi => {
@@ -190,7 +190,7 @@ angular
                 }
             })
             .state("root.perusteprojekti.suoritustapa.koulutuksenosa", {
-                url: "/koulutuksenosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}",
+                url: "/koulutuksenosa/{tutkinnonOsaViiteId}?{versio?:int}",
                 template: require("views/partials/muokkaus/koulutuksenosa.html"),
                 controller: "muokkausKoulutuksenosaCtrl",
                 onEnter: PerusteProjektiSivunavi => {
@@ -210,7 +210,7 @@ angular
                 }
             })
             .state("root.perusteprojekti.suoritustapa.tutkinnonosa", {
-                url: "/tutkinnonosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}",
+                url: "/tutkinnonosa/{tutkinnonOsaViiteId}?{versio?:int}",
                 template: require("views/partials/muokkaus/tutkinnonosa.html"),
                 controller: "muokkausTutkinnonosaCtrl",
                 onEnter: PerusteProjektiSivunavi => {
@@ -218,7 +218,7 @@ angular
                 }
             })
             .state("root.perusteprojekti.suoritustapa.taiteenala", {
-                url: "/taiteenala/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}",
+                url: "/taiteenala/{perusteenOsaViiteId}?{versio?:int}",
                 template: require("views/partials/muokkaus/taiteenala.html"),
                 controller: "taiteenalaCtrl",
                 onEnter: PerusteProjektiSivunavi => {
@@ -226,7 +226,7 @@ angular
                 }
             })
             .state("root.perusteprojekti.suoritustapa.tekstikappale", {
-                url: "/tekstikappale/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}",
+                url: "/tekstikappale/{perusteenOsaViiteId}?{versio?:int}",
                 template: require("views/partials/muokkaus/tekstikappale.html"),
                 controller: "muokkausTekstikappaleCtrl",
                 onEnter: PerusteProjektiSivunavi => {
@@ -409,6 +409,7 @@ angular
             perusteprojektiOikeudet,
             TermistoService,
             Kieli,
+            YleinenData,
             perusteprojektiBackLink,
             isOpas
         ) => {
@@ -430,6 +431,7 @@ angular
             function init() {
                 $scope.projekti = perusteprojektiTiedot.getProjekti();
                 $scope.peruste = perusteprojektiTiedot.getPeruste();
+                $scope.isAmmatillinen = YleinenData.isAmmatillinen($scope.peruste);
                 Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
                 $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
                 TermistoService.setPeruste($scope.peruste);

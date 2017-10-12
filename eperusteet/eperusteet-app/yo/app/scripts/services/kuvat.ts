@@ -160,6 +160,8 @@ angular
             );
         };
     })
+
+    // FIXME miksi näitä on kaksi?
     .filter("kuvalinkit", function(EpImageService) {
         return function(text) {
             let modified = false;
@@ -180,6 +182,10 @@ angular
     })
     .filter("kuvalinkit", () => {
         return text => {
+            if (_.isUndefined(text) || _.isNull(text)) {
+                return "";
+            }
+
             const tmp = angular.element("<div>" + text + "</div>");
             tmp.find("img").each(function() {
                 let el = angular.element(this);

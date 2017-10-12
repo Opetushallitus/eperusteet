@@ -3,7 +3,7 @@ create table taiteenala (
     teksti_id int8 references tekstipalanen(id),
     aikuistenOpetus_id int8 references kevyttekstikappale(id),
     kasvatus_id int8 references kevyttekstikappale(id),
-    koodi_id int8 references kevyttekstikappale(id),
+    koodi_id int8 references koodi(id),
     oppimisenArviointiOpetuksessa_id int8 references kevyttekstikappale(id),
     teemaopinnot_id int8 references kevyttekstikappale(id),
     tyotavatOpetuksessa_id int8 references kevyttekstikappale(id),

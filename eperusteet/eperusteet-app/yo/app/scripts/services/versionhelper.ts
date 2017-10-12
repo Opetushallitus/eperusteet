@@ -321,31 +321,17 @@ angular
         };
 
         this.setUrl = function(data) {
-            // Tricks for ui-router 0.2.*
-            // We want to update the url only when user changes the version.
-            // If we enter with versionless url don't rewrite it.
-            // This function will currently navigate to a new state if version has changed.
             if (_.isEmpty(data)) {
                 return;
             }
 
-            data.latest = data.chosen.index === (latest(data.list) as any).index;
-            var versionlessUrl = $state
-                .href($state.current.name, { versio: null }, { inherit: true })
-                .replace(/#/g, "");
-            var currentVersion = this.currentIndex(data);
-            var isValid = _.isNumber(currentVersion);
-            var urlHasVersion = $location.url() !== versionlessUrl;
-            if ((urlHasVersion || data.hasChanged) && isValid && !data.latest) {
-                data.hasChanged = false;
-                var versionUrl = $state
-                    .href($state.current.name, { versio: "/" + currentVersion }, { inherit: true })
-                    .replace(/#/g, "")
-                    .replace(/%252F/, "/");
-                $location.url(versionUrl);
-            } else {
-                $location.url(versionlessUrl);
-            }
+            const currentIdx = this.currentIndex(data);
+            const latestIdx = this.latestIndex(data);
+
+            $state.go($state.current.name, {
+                ...$stateParams,
+                versio: currentIdx === latestIdx ? undefined : currentIdx;
+            });
         };
 
         this.historyView = function(data) {

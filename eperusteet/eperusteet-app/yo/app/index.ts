@@ -18,6 +18,7 @@
 import * as $ from "jquery";
 import "jquery-ui";
 import "angular";
+import * as _ from "lodash";
 
 import "bootstrap";
 import "angular-ui-router";

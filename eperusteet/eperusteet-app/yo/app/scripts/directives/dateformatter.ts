@@ -14,6 +14,10 @@
  * European Union Public Licence for more details.
  */
 
+import * as _ from "lodash";
+import * as angular from "angular";
+import moment from "moment";
+
 angular
     .module("eperusteApp")
     .directive("dateformatter", function(YleinenData) {

@@ -93,7 +93,7 @@ angular
                 },
                 {
                     perusteenOsa: {
-                        osanTyyppi: "taiteenala",
+                        osanTyyppi: tyyppi,
                     }
                 },
                 function(response) {

@@ -22,13 +22,14 @@ export function taiteenalaCtrl(
     TutkinnonOsaEditMode,
     Tyoryhmat,
     Utils,
+    Koodisto,
     Varmistusdialogi,
     VersionHelper,
     YleinenData,
     virheService,
 ) {
     async function init() {
-        $scope.tekstikappale = {};
+        $scope.taiteenala = {};
         $scope.versiot = {};
         const pts = await PerusteprojektiTiedotService;
         $scope.peruste = pts.getPeruste();
@@ -37,20 +38,37 @@ export function taiteenalaCtrl(
         $scope.viitteet = {};
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
-        $scope.morjens = {
-            fi: "hei",
-            sv: "moi"
+        $scope.koodistoClick = Koodisto.modaali(
+            ({ koodiArvo, koodiUri, koodisto: { koodistoUri } }) => {
+                $scope.editableTaiteenala.koodi = {
+                    arvo: koodiArvo,
+                    uri: koodiUri,
+                    koodisto: koodistoUri
+                };
+            }, {
+                tyyppi: () => {
+                    return "tutkinnonosat";
+                },
+                ylarelaatioTyyppi: () => {
+                    return "";
+                },
+                tarkista: _.constant(true)
+            }
+        );
+
+        $scope.cleanKoodi = () => {
+            $scope.editableTaiteenala.koodi = null;
         };
 
-        var tekstikappaleDefer = $q.defer();
-        $scope.tekstikappalePromise = tekstikappaleDefer.promise;
+        var taiteenalaDefer = $q.defer();
+        $scope.taiteenalaPromise = taiteenalaDefer.promise;
 
         $scope.valitseOsaamisala = function(oa) {
-            $scope.editableTekstikappale.osaamisala = oa;
+            $scope.editableTaiteenala.osaamisala = oa;
         };
 
         $scope.kopioiMuokattavaksi = function() {
-            TekstikappaleOperations.clone($scope.viitteet[$scope.tekstikappale.id].viite);
+            taiteenalaOperations.clone($scope.viitteet[$scope.taiteenala.id].viite);
         };
 
         $scope.muokkaa = async () => {
@@ -59,9 +77,9 @@ export function taiteenalaCtrl(
 
         $scope.canAddLapsi = function() {
             return (
-                $scope.tekstikappale.id &&
-                $scope.viitteet[$scope.tekstikappale.id] &&
-                $scope.viitteet[$scope.tekstikappale.id].level < TEXT_HIERARCHY_MAX_DEPTH - 1
+                $scope.taiteenala.id &&
+                $scope.viitteet[$scope.taiteenala.id] &&
+                $scope.viitteet[$scope.taiteenala.id].level < TEXT_HIERARCHY_MAX_DEPTH - 1
             );
         };
 
@@ -112,6 +130,18 @@ export function taiteenalaCtrl(
             localeKey: "taiteenala-yhteisetOpinnot",
         }];
 
+        const sisaltoCache = {};
+        $scope.lisaaTaiteenalasisalto = (path) => {
+            $scope.editableTaiteenala[path] = sisaltoCache[path]
+                ? sisaltoCache[path]
+                : {};
+        };
+
+        $scope.removeTaiteenalasisalto = (path) => {
+            sisaltoCache[path] = $scope.editableTaiteenala[path];
+            $scope.editableTaiteenala[path] = null;
+        };
+
         $scope.poistaTyoryhma = function(tr) {
             Varmistusdialogi.dialogi({
                 successCb: function() {
@@ -142,13 +172,13 @@ export function taiteenalaCtrl(
             },
             get: function() {
                 var items = [];
-                var id = $scope.tekstikappale.id;
+                var id = $scope.taiteenala.id;
                 if ($scope.viitteet[id]) {
                     do {
                         items.push({
                             label: $scope.viitteet[id].nimi,
                             url:
-                            $scope.tekstikappale.id === id
+                            $scope.taiteenala.id === id
                             ? null
                             : $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
                                 perusteenOsaViiteId: $scope.viitteet[id].viite,
@@ -163,10 +193,10 @@ export function taiteenalaCtrl(
             }
         };
 
-        $scope.vaihdaVersio = function() {
+        $scope.vaihdaVersio = function(versio) {
             $scope.versiot.hasChanged = true;
             VersionHelper.setUrl($scope.versiot);
-            //VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, responseFn);
+            //VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.taiteenala.id}, responseFn);
         };
 
         $scope.revertCb = function(response) {
@@ -175,7 +205,7 @@ export function taiteenalaCtrl(
         };
 
         $scope.poista = function() {
-            var nimi = Kaanna.kaanna($scope.tekstikappale.nimi);
+            var nimi = Kaanna.kaanna($scope.taiteenala.nimi);
 
             Varmistusdialogi.dialogi({
                 successCb: doDelete,
@@ -189,9 +219,9 @@ export function taiteenalaCtrl(
                 $location.path(perusteprojektiBackLink.substring(1));
             }
 
-            $scope.tekstikappale = re;
-            setupTekstikappale($scope.tekstikappale);
-            tekstikappaleDefer.resolve($scope.tekstikappale);
+            $scope.taiteenala = re;
+            setupTekstikappale($scope.taiteenala);
+            taiteenalaDefer.resolve($scope.taiteenala);
             if (TutkinnonOsaEditMode.getMode()) {
                 $scope.isNew = true;
                 $scope.muokkaa();
@@ -202,7 +232,7 @@ export function taiteenalaCtrl(
             virheService.virhe("virhe-tekstikappaletta-ei-löytynyt");
         }
 
-        var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, "") : null;
+        var versio = $stateParams.versio;
         if (versio) {
             VersionHelper.getPerusteenOsaVersionsByViite(
                 $scope.versiot,
@@ -235,7 +265,7 @@ export function taiteenalaCtrl(
             PerusteenOsanTyoryhmat.save(
                 {
                     projektiId: $stateParams.perusteProjektiId,
-                    osaId: $scope.tekstikappale.id
+                    osaId: $scope.taiteenala.id
                 },
                 uudet,
                 cb,
@@ -270,12 +300,12 @@ export function taiteenalaCtrl(
 
         function lukitse() {
             return $q(resolve => {
-                Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, resolve);
+                Lukitus.lukitsePerusteenosa($scope.taiteenala.id, resolve);
             });
         }
 
         function fetch(cb) {
-            PerusteenOsat.get({ osanId: $scope.tekstikappale.id }, _.setWithCallback($scope, "tekstikappale", cb));
+            PerusteenOsat.get({ osanId: $scope.taiteenala.id }, _.setWithCallback($scope, "tekstikappale", cb));
         }
 
         async function setNavigation() {
@@ -285,7 +315,7 @@ export function taiteenalaCtrl(
         }
 
         $scope.viiteId = function() {
-            return $scope.viitteet[$scope.tekstikappale.id] ? $scope.viitteet[$scope.tekstikappale.id].viite : null;
+            return $scope.viitteet[$scope.taiteenala.id] ? $scope.viitteet[$scope.taiteenala.id].viite : null;
         };
 
         async function storeTree(sisalto, level = 0) {
@@ -312,10 +342,10 @@ export function taiteenalaCtrl(
         }
 
         function refreshPromise() {
-            $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
-            tekstikappaleDefer = $q.defer();
-            $scope.tekstikappalePromise = tekstikappaleDefer.promise;
-            tekstikappaleDefer.resolve($scope.editableTekstikappale);
+            $scope.editableTaiteenala = angular.copy($scope.taiteenala);
+            taiteenalaDefer = $q.defer();
+            $scope.taiteenalaPromise = taiteenalaDefer.promise;
+            taiteenalaDefer.resolve($scope.editableTaiteenala);
         }
 
         async function saveCb(res) {
@@ -337,7 +367,7 @@ export function taiteenalaCtrl(
                 const data = await $q.all([
                     PerusteenOsanTyoryhmat.get({
                         projektiId: $stateParams.perusteProjektiId,
-                        osaId: $scope.tekstikappale.id
+                        osaId: $scope.taiteenala.id
                     }).$promise,
                     PerusteprojektiTyoryhmat.get({ id: $stateParams.perusteProjektiId }).$promise
                 ]);
@@ -347,7 +377,7 @@ export function taiteenalaCtrl(
                 Notifikaatiot.serverCb(error);
             }
 
-            $scope.editableTekstikappale = angular.copy(kappale);
+            $scope.editableTaiteenala = angular.copy(kappale);
 
             Editointikontrollit.registerCallback({
                 edit: () => {
@@ -363,15 +393,15 @@ export function taiteenalaCtrl(
                 },
                 save: kommentti => {
                     return $q((resolve, reject) => {
-                        $scope.editableTekstikappale.metadata = { kommentti: kommentti };
+                        $scope.editableTaiteenala.metadata = { kommentti: kommentti };
                         PerusteenOsat.saveTekstikappale(
                             {
-                                osanId: $scope.editableTekstikappale.id
+                                osanId: $scope.editableTaiteenala.id
                             },
-                            $scope.editableTekstikappale,
+                            $scope.editableTaiteenala,
                             function(res) {
                                 saveCb(res);
-                                $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
+                                $scope.taiteenala = angular.copy($scope.editableTaiteenala);
                                 $scope.isNew = false;
                                 resolve();
                             },
@@ -382,7 +412,7 @@ export function taiteenalaCtrl(
                 cancel: () => {
                     return $q((resolve, reject) => {
                         if (!TekstikappaleOperations.wasDeleted()) {
-                            Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function() {
+                            Lukitus.vapautaPerusteenosa($scope.taiteenala.id, function() {
                                 if ($scope.isNew) {
                                     doDelete(true);
                                 } else {
@@ -400,24 +430,24 @@ export function taiteenalaCtrl(
                     $scope.editEnabled = mode;
                 },
                 validate: mandatoryValidator => {
-                    return mandatoryValidator($scope.fields, $scope.editableTekstikappale);
+                    return mandatoryValidator($scope.fields, $scope.editableTaiteenala);
                 }
             });
 
             await haeVersiot();
             await setNavigation();
-            Lukitus.tarkista($scope.tekstikappale.id, $scope);
+            Lukitus.tarkista($scope.taiteenala.id, $scope);
         }
         async function haeVersiot(force?) {
-            return VersionHelper.getPerusteenosaVersions($scope.versiot, { id: $scope.tekstikappale.id }, force);
+            return VersionHelper.getPerusteenosaVersions($scope.versiot, { id: $scope.taiteenala.id }, force);
         }
 
         function responseFn(response) {
-            $scope.tekstikappale = response;
+            $scope.taiteenala = response;
             setupTekstikappale(response);
-            tekstikappaleDefer = $q.defer();
-            $scope.tekstikappalePromise = tekstikappaleDefer.promise;
-            tekstikappaleDefer.resolve($scope.editableTekstikappale);
+            taiteenalaDefer = $q.defer();
+            $scope.taiteenalaPromise = taiteenalaDefer.promise;
+            taiteenalaDefer.resolve($scope.editableTaiteenala);
             VersionHelper.setUrl($scope.versiot);
         }
 

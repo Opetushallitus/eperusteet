@@ -4,32 +4,51 @@
     <div id="ck-toolbar-bottom"></div>
 </div>
 <div class="row">
-    <pre ng-bind="morjens | json"></pre>
     <div localized type="text" ng-model="morjens"></div>
     <div class="col-md-12 ep-sisalto-inner">
         <div>
-            <revert-note object="tekstikappale" revert-cb="revertCb(response)" versions="versiot"
+            <revert-note object="taiteenala" revert-cb="revertCb(response)" versions="versiot"
                          change-version="vaihdaVersio()"></revert-note>
 
             <div class="part-header-wrapper">
                 <div class="action-buttons">
                     <div class="floater" ng-attr-title="{{lockNotification}}">
                         <button ng-disabled="isLocked"
-                                ng-hide="tekstikappale.tila !== 'valmis' || editEnabled || !versiot.latest"
+                                ng-hide="taiteenala.tila !== 'valmis' || editEnabled || !versiot.latest"
                                 ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
                                 oikeustarkastelu="[{target:'peruste',permission:'korjaus'}]"></button>
                         <button ng-disabled="isLocked"
-                                ng-hide="tekstikappale.tila === 'valmis' || editEnabled || !versiot.latest"
+                                ng-hide="taiteenala.tila === 'valmis' || editEnabled || !versiot.latest"
                                 ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
                                 oikeustarkastelu="[{target:'peruste',permission:'muokkaus'}]"></button>
                     </div>
-                    <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
+                    <button ng-show="!editEnabled && taiteenala.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
                             class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="kopioi-muokattavaksi"
                             oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 
-                    <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)"
+                    <button ng-if="taiteenala.tila === 'valmis' || (editEnabled && !isNew)"
                             class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'"
                             oikeustarkastelu="{target:'peruste',permission:'muokkaus'}"></button>
+
+                    <div ng-show="editEnabled" class="btn-group" uib-dropdown>
+                        <button
+                            editointi-kontrolli
+                            class="btn btn-default btn-sm dropdown-toggle pull-right"
+                            ng-disabled="allVisible()"
+                            icon-role="add"
+                            kaanna="'muokkaus-lisaa-sisalto'"
+                            uib-dropdown-toggle></button>
+                        <ul class="pull-right dropdown-menu">
+                            <li ng-repeat="field in taiteenalaFields">
+                                <a href="" ng-hide="editableTaiteenala[field.path]"
+                                    ng-click="lisaaTaiteenalasisalto(field.path)">
+                                    {{ field.localeKey | kaanna}}
+                                </a>
+                                <a ng-show="editableTaiteenala[field.path]" class="disabled-link" disabled>{{ field.localeKey | kaanna}}</a>
+                            </li>
+                        </ul>
+                    </div>
+
                     <div class="floater" ng-if="!editEnabled && isLocked">
                         <lukko tip="lockNotification"></lukko>
                     </div>
@@ -42,14 +61,10 @@
                     <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
                 </h1>
                 <h1 ng-if="!editEnabled">
-                    <span style="margin-right: 4px" ng-bind-html="tekstikappale.nimi | kaanna"></span>
+                    <span style="margin-right: 4px" ng-bind-html="taiteenala.nimi | kaanna"></span>
                     <valmiskaannos style="font-size: 20px" is-editing="editEnabled"
-                                   ng-model="editableTekstikappale"></valmiskaannos>
+                                   ng-model="editableTaiteenala"></valmiskaannos>
                 </h1>
-                <h5 ng-if="!editEnabled && tekstikappale.osaamisala">
-                    <b>{{ 'osaamisalan-kuvaus' | kaanna }}</b>:
-                    {{ tekstikappale.osaamisala.nimi | kaanna }} ({{ tekstikappale.osaamisala.arvo }})
-                </h5>
             </div>
 
             <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled}">
@@ -69,49 +84,76 @@
                                 kaanna="lisaa-tyoryhma"></button>
                     </div>
 
-                    <div math-display ng-bind-html="valitseKieli(tekstikappale.teksti) | kuvalinkit | unsafe"
-                         termisto-viitteet="tekstikappale.teksti"></div>
+                    <div math-display ng-bind-html="valitseKieli(taiteenala.teksti) | kuvalinkit | unsafe"
+                         termisto-viitteet="taiteenala.teksti"></div>
                 </div>
                 <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" model="field.localeKey"
                     kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}"
                                                                 muokkauskentta-raamit>
-                    <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
+                    <muokattava-kentta field-info="field" object-promise="taiteenalaPromise"></muokattava-kentta>
                 </div>
                 <div class="taiteenala-sisalto">
+                    <div>
+                        <div class="taiteenala-kentta form-inline" ng-if="editEnabled">
+                            <input
+                                id="koodi-input"
+                                class="form-control"
+                                type="text"
+                                ng-model="editableTaiteenala.koodi.arvo"
+                                editointi-kontrolli
+                                disabled="disabled">
+                            <button
+                                class="btn btn-default"
+                                ng-click="koodistoClick()"
+                                kaanna>hae-koodistosta</button>
+                            <button
+                                ng-show="editableTaiteenala.koodi && editableTaiteenala.koodi.uri && editableTaiteenala.tila === 'luonnos'"
+                                class="btn btn-danger"
+                                ng-click="cleanKoodi()"
+                                kaanna>tyhjenna-koodin-arvo</button>
+                        </div>
+                        <div class="form-inline" ng-if="!editEnabled">
+                            <h4 kaanna="'taiteenala-koodi'"></h4>
+                            <div ng-bind="(editableTaiteenala.koodi && editableTaiteenala.koodi.arvo) || '-'"></div>
+                        </div>
+                    </div>
+
                     <div ng-repeat="field in taiteenalaFields">
                         <div ng-if="editEnabled" class="taiteenala-kentta">
-                            <div class="row tovp-header">
-                                <div class="col-xs-10">
-                                    <input
+                            <div ng-if="editableTaiteenala[field.path]">
+                                <div class="row tovp-header">
+                                    <div class="col-xs-10">
+                                        <input
                                         ng-model-options="{ allowInvalid: true }"
-                                        ng-model="editableTekstikappale[field.path].nimi"
+                                        ng-model="editableTaiteenala[field.path].nimi"
                                         class="form-control"
                                         slocalized
                                         placeholder="{{ field.localeKey | kaanna }}"></input>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <a class="remove-icon" href="" ng-click="removeTaiteenalasisalto(field.path)" class="pull-right">
+                                            <span icon-role="remove"></span>
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="col-xs-2">
-                                    <a class="remove-icon" href="" ng-click="removeTaiteenalasisalto(field.path)" class="pull-right">
-                                        <span icon-role="remove"></span>
-                                    </a>
+                                <div
+                                    ng-model="editableTaiteenala[field.path].teksti"
+                                    class="tovp-body"
+                                    ckeditor
+                                    slocalized
+                                    layout="normal">
                                 </div>
-                            </div>
-                            <div
-                                ng-model="editableTekstikappale[field.path].teksti"
-                                class="tovp-body"
-                                ckeditor
-                                slocalized
-                                layout="normal">
                             </div>
                         </div>
-                        <div ng-if="!editEnabled && tekstikappale[field.path]">
-                            <h4 class="otsikko" ng-bind-html="(tekstikappale[field.path].nimi | kaanna) || (field.localeKey | kaanna)"></h4>
-                            <div ng-bind-html="tekstikappale[field.path].teksti | kaanna | kuvalinkit | unsafe"
+                        <div ng-if="!editEnabled && taiteenala[field.path]">
+                            <h4 class="otsikko" ng-bind-html="(taiteenala[field.path].nimi | kaanna) || (field.localeKey | kaanna)"></h4>
+                            <div ng-bind-html="taiteenala[field.path].teksti | kaanna | kuvalinkit | unsafe"
                                 math-display
-                                termisto-viitteet="tekstikappale.teksti"></div>
+                                termisto-viitteet="taiteenala.teksti"></div>
                         </div>
                     </div>
                 </div>
-                <valmiskaannos ng-if="editEnabled" is-editing="editEnabled" ng-model="editableTekstikappale"></valmiskaannos>
+                <valmiskaannos ng-if="editEnabled" is-editing="editEnabled" ng-model="editableTaiteenala"></valmiskaannos>
             </div>
             <kommentit></kommentit>
         </div>

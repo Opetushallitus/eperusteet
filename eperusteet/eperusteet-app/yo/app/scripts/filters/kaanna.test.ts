@@ -60,6 +60,17 @@ describe("Kaanna", () => {
         })).toEqual("[moro]");
     });
 
+    describe("kaannaSisalto", () => {
+
+        test("No undefined", () => {
+            expect(Kaanna.kaannaSisalto(undefined)).toEqual("");
+            expect(Kaanna.kaannaSisalto(null)).toEqual("");
+            expect(Kaanna.kaannaSisalto("")).toEqual("");
+            expect(Kaanna.kaannaSisalto({})).toEqual("");
+        });
+
+    });
+
     test("Ui-kielen vaihto", () => {
         const obj = genLocale("foobar");
         expect(Kaanna.kaanna(obj)).toEqual("fi foobar");

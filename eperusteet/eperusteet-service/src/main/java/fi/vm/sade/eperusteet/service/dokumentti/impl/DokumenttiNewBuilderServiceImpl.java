@@ -130,6 +130,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             docBase.setSisalto(sisalto);
         }
         else {
+            // FIXME Tässä haetaan vääriä sisältöjä (pitäisi käyttää suoritustapasisältöä)
             Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
             PerusteenOsaViite sisalto = suoritustapa.getSisalto();
             docBase.setSisalto(sisalto);

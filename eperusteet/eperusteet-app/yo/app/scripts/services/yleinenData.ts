@@ -16,7 +16,7 @@
 
 import * as angular from "angular";
 import * as _ from "lodash";
-import * as moment from "moment";
+import moment from "moment";
 
 export const Diaariformaatit = [/^OPH-\d{1,5}-\d{4}$/, /^\d{1,3}\/\d{3}\/\d{4}$/];
 
@@ -247,6 +247,9 @@ export const isValmaTelma = function(koulutustyyppiTaiPeruste) {
     return false;
 };
 
+export const isAmmatillinen = (koulutustyyppi) =>
+    isReformoitava(koulutustyyppi) || isValmaTelma(koulutustyyppi);
+
 export const isLisaopetus = function(peruste) {
     return peruste.koulutustyyppi === "koulutustyyppi_6";
 };
@@ -327,6 +330,7 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
         isAipe,
         isValmaTelma,
         isLisaopetus,
+        isAmmatillinen,
         isVarhaiskasvatus,
         isOpas,
         isEsiopetus,
