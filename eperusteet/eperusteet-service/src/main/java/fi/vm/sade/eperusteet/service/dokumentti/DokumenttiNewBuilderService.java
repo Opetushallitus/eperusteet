@@ -29,6 +29,6 @@ import java.io.IOException;
  * @author isaul
  */
 public interface DokumenttiNewBuilderService {
-    Document generateXML(Peruste peruste, Dokumentti dto, Kieli kieli, Suoritustapakoodi suoritustapakoodi)
+    Document generateXML(Peruste peruste, Dokumentti dokumentti)
             throws ParserConfigurationException, IOException, TransformerException;
 }

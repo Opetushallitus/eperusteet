@@ -86,8 +86,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     private PerusteService perusteService;
 
     @Override
-    public Document generateXML(Peruste peruste, Dokumentti dokumentti, Kieli kieli,
-            Suoritustapakoodi suoritustapakoodi)
+    public Document generateXML(Peruste peruste, Dokumentti dokumentti)
             throws ParserConfigurationException, IOException, TransformerException {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -96,7 +95,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         // Luodaan XHTML pohja
         Element rootElement = doc.createElement("html");
-        rootElement.setAttribute("lang", kieli.toString());
+        rootElement.setAttribute("lang", dokumentti.getKieli().toString());
         doc.appendChild(rootElement);
 
         Element headElement = doc.createElement("head");
@@ -116,12 +115,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.setHeadElement(headElement);
         docBase.setBodyElement(bodyElement);
         docBase.setGenerator(new CharapterNumberGenerator());
-        docBase.setKieli(kieli);
+        docBase.setKieli(dokumentti.getKieli());
         docBase.setPeruste(peruste);
         docBase.setDokumentti(dokumentti);
         docBase.setMapper(mapper);
 
-        if (suoritustapakoodi.equals(Suoritustapakoodi.AIPE)) {
+        if (dokumentti.getSuoritustapakoodi().equals(Suoritustapakoodi.AIPE)) {
             AIPEOpetuksenSisalto aipeOpetuksenPerusteenSisalto = peruste.getAipeOpetuksenPerusteenSisalto();
             docBase.setAipeOpetuksenSisalto(aipeOpetuksenPerusteenSisalto);
             docBase.setSisalto(aipeOpetuksenPerusteenSisalto.getSisalto());
@@ -131,7 +130,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             docBase.setSisalto(sisalto);
         }
         else {
-            Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+            Suoritustapa suoritustapa = peruste.getSuoritustapa(dokumentti.getSuoritustapakoodi());
             PerusteenOsaViite sisalto = suoritustapa.getSisalto();
             docBase.setSisalto(sisalto);
         }
@@ -139,7 +138,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Kansilehti & Infosivu
         addMetaPages(docBase);
 
-        if (suoritustapakoodi.equals(Suoritustapakoodi.AIPE)) {
+        if (dokumentti.getSuoritustapakoodi().equals(Suoritustapakoodi.AIPE)) {
             // AIPE-osat
             addAipeSisalto(docBase);
         }
@@ -311,7 +310,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addSisaltoelementit(DokumenttiPeruste docBase) {
-        for (PerusteenOsaViite lapsi : docBase.getSisalto().getLapset()) {
+        PerusteenOsaViite sisalto = docBase.getSisalto();
+        for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
             PerusteenOsa po = lapsi.getPerusteenOsa();
             if (po == null) {
                 continue;

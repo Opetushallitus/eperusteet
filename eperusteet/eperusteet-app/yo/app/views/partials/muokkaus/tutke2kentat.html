@@ -19,7 +19,7 @@
             <div class="sisalto" ui-tree data-drag-enabled="mainLevelEditing"
                  data-empty-place-holder-enabled="false" data-max-depth="1">
                 <div ui-tree-nodes class="sisalto-group" ng-model="tutke2osa.$editing">
-                    <li ng-repeat="alue in tutke2osa.$editing" ui-tree-node>
+                    <div ng-repeat="alue in tutke2osa.$editing" ui-tree-node>
                         <div class="input-group">
                             <span class="input-group-addon">
                                 <div icon-role="resize-vertical" class="draghandle"
@@ -31,7 +31,7 @@
                                         kaanna="'poista'" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
                             </span>
                         </div>
-                    </li>
+                    </div>
                 </div>
             </div>
         </div>

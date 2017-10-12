@@ -315,7 +315,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
                 break;
             case UUSI:
-                Document doc = newBuilder.generateXML(peruste, dokumentti, kieli, suoritustapakoodi);
+                Document doc = newBuilder.generateXML(peruste, dokumentti);
                 toReturn = pdfService.xhtml2pdf(doc);
 
                 // Validoidaan dokumnetti
@@ -330,7 +330,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
                 break;
             case KVLIITE:
-                doc = kvLiiteBuilderService.generateXML(peruste, dokumentti, kieli);
+                doc = kvLiiteBuilderService.generateXML(peruste, kieli);
                 toReturn = pdfService.xhtml2pdf(doc, version);
 
                 // Validoi kvliite
