@@ -290,6 +290,7 @@ angular
             "projekti-peruste": { opas: "projekti-opas" },
             "projekti-projektiryhma": { opas: "projekti-opastyoryhma" },
             "perusteen-kielet": { opas: "oppaan-kielet" },
+            "perusteen-tiedot": { opas: "oppaan-tiedot" },
             "luo-pdf-dokumentti-perusteesta": { opas: "luo-pdf-dokumentti-oppaasta" }
         };
 
