@@ -167,7 +167,7 @@ angular
             };
 
             $scope.isTutke2 = YleinenData.isTutke2;
-            $scope.isReformi = _.find($scope.peruste.suoritustavat, st => st.suoritustapakoodi === "reformi") != null;
+            $scope.isReformi = _.find($scope.peruste.suoritustavat, (st: any) => st.suoritustapakoodi === "reformi") != null;
 
             let tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
@@ -437,7 +437,7 @@ angular
                             $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi
                         )
                     ) {
-                        tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, osaAlue => {
+                        tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, (osaAlue: any) => {
                             const item: any = { nimi: osaAlue.nimi };
                             if (osaAlue.id) {
                                 item.id = osaAlue.id;
@@ -454,7 +454,7 @@ angular
                         )
                     ) {
                         return _.all(
-                            _.map(Tutke2OsaData.get().$editing, item => {
+                            _.map(Tutke2OsaData.get().$editing, (item: any) => {
                                 return Utils.hasLocalizedText(item.nimi);
                             })
                         );
@@ -474,6 +474,7 @@ angular
                     });
                 },
                 save: kommentti => {
+                    console.log(tutke2);
                     tutke2.mergeOsaAlueet($scope.editableTutkinnonOsaViite.tutkinnonOsa);
                     $scope.editableTutkinnonOsaViite.metadata = { kommentti: kommentti };
                     if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.id) {
@@ -626,7 +627,7 @@ angular
 
             // Palauttaa true jos kaikki mahdolliset osiot on jo lisätty
             $scope.allVisible = () => {
-                const lisatty = _.all($scope.fields, field => {
+                const lisatty = _.all($scope.fields, (field: any) => {
                     return _.contains(field.path, "arviointi.") || !field.inMenu || (field.inMenu && field.visible);
                 });
                 return lisatty && $scope.arviointiHelper.exists();

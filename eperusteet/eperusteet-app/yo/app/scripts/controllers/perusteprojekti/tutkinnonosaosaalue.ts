@@ -174,7 +174,7 @@ angular
                 },
                 {
                     tyyppi: function() {
-                        return "oppiaineetyleissivistava2";
+                        return "ammatillisenoppiaineet";
                     },
                     ylarelaatioTyyppi: function() {
                         return "";

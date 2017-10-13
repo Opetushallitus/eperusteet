@@ -336,6 +336,7 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
         defaultItemsInModal,
         dateFormatDatepicker,
         dateFormatMomentJS,
+        yhteisetTutkinnonOsat,
         isReformoitava,
         isPerusopetus,
         isAipe,
