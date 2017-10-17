@@ -2,16 +2,17 @@ import * as angular from "angular";
 import * as _ from "lodash";
 
 export function taiteenalaCtrl(
+    $location,
     $q,
     $rootScope,
     $scope,
     $state,
     $stateParams,
-    $location,
     Editointikontrollit,
     Kaanna,
     Kommentit,
     KommentitByPerusteenOsa,
+    Koodisto,
     Lukitus,
     Notifikaatiot,
     PerusteProjektiSivunavi,
@@ -25,11 +26,11 @@ export function taiteenalaCtrl(
     TutkinnonOsaEditMode,
     Tyoryhmat,
     Utils,
-    Koodisto,
     Varmistusdialogi,
     VersionHelper,
     YleinenData,
-    virheService
+    perusteprojektiBackLink,
+    virheService,
 ) {
     async function init() {
         $scope.taiteenala = {};
@@ -184,7 +185,7 @@ export function taiteenalaCtrl(
                 updateViitteet();
             },
             get: function() {
-                var items = [];
+                var items: any[] = [];
                 var id = $scope.taiteenala.id;
                 if ($scope.viitteet[id]) {
                     do {
