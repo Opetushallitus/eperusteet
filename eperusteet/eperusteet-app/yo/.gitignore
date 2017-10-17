@@ -9,3 +9,4 @@ app/bower_components
 *~
 
 app/**/*.map
+bundle_stats.html

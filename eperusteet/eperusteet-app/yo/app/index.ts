@@ -37,7 +37,7 @@ import "angular-ui-select/select.js";
 import "angular-ui-bootstrap";
 import "restangular";
 import "ng-file-upload";
-import "es6-promise";
+// import "es6-promise";
 
 import "eperusteet-frontend-utils/mathdisplay";
 

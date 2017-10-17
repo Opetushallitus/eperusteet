@@ -2,6 +2,7 @@ const merge = require("webpack-merge");
 const path = require("path");
 const webpack = require("webpack");
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 const basePath = __dirname;
 
@@ -10,10 +11,15 @@ module.exports = merge(require("./webpack.common.js"), {
         new webpack.DefinePlugin({
           "process.env.NODE_ENV": JSON.stringify("development")
         }),
-        new FriendlyErrorsWebpackPlugin(),
+        new ForkTsCheckerWebpackPlugin(),
+        // new FriendlyErrorsWebpackPlugin(),
         new webpack.HotModuleReplacementPlugin()
     ],
-    devtool: "inline-source-map",
+    output: {
+        path: path.join(__dirname, "dist"),
+        filename: "[name].js",
+    },
+    devtool: "eval-source-map",
     devServer: {
         host: "127.0.0.1",
         port: 9000,

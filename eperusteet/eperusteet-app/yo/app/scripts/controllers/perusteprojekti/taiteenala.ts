@@ -1,3 +1,4 @@
+import * as angular from "angular";
 import * as _ from "lodash";
 
 export function taiteenalaCtrl(
@@ -72,7 +73,7 @@ export function taiteenalaCtrl(
         };
 
         $scope.kopioiMuokattavaksi = function() {
-            taiteenalaOperations.clone($scope.viitteet[$scope.taiteenala.id].viite);
+            TekstikappaleOperations.clone($scope.viitteet[$scope.taiteenala.id].viite);
         };
 
         $scope.muokkaa = async () => {

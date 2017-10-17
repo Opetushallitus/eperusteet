@@ -5,6 +5,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+// FIX https://github.com/webpack-contrib/copy-webpack-plugin/issues/59
+// Fails on linux too
+const fs = require('fs');
+const gracefulFs = require('graceful-fs');
+gracefulFs.gracefulify(fs);
+
 // FIXME: import-loader
 // https://github.com/angular-ui/ui-sortable/issues/518
 
@@ -28,11 +34,6 @@ module.exports = {
         //   "jquery-ui",
         // ]
     },
-    output: {
-        path: path.join(__dirname, "dist"),
-        filename: "[name].js",
-        publicPath: "/"
-    },
     module: {
         rules: [
             {
@@ -41,10 +42,9 @@ module.exports = {
                 use: [
                     "imports-loader?$UI=jquery-ui/ui/widgets/sortable",
                     {
-                        loader: "awesome-typescript-loader",
+                        loader: "ts-loader",
                         options: {
-                            useCache: true,
-                            transpileOnly: true
+                            transpileOnly: true,
                         }
                     }
                 ]
@@ -106,7 +106,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: "index.html",
             template: "app/index.html",
-            hash: true
         }),
 
         new CopyWebpackPlugin(
@@ -139,8 +138,6 @@ module.exports = {
             ],
             {}
         ),
-
         new ManifestPlugin()
     ]
-    // devtool: "inline-source-map"
 };
