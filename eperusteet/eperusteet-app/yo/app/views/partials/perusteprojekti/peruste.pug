@@ -100,7 +100,7 @@ mixin kvliite()
   .col-md-12
     .action-buttons
       button.floater.btn.btn-default(ng-if='voiMuokata()', ng-hide='editEnabled', ng-click='muokkaa()', icon-role='edit', kaanna="'muokkaa'", oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'muokkaus' }")
-    h1(kaanna="$$kaannokset['projekti-peruste']")
+    h1(kaanna="$$kaannokset['projektin-tiedot']")
     .clearfix
     form.form-horizontal(name='perusteForm', role='form', novalidate='', ng-submit='void(0)')
       div(ng-form='projektinPerusteForm')

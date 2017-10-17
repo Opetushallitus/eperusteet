@@ -34,6 +34,7 @@ angular
                         return Perusteet.get({ perusteId: $stateParams.perusteId }).$promise;
                     },
                     sisalto: function($stateParams, SuoritustapaSisalto) {
+                        debugger;
                         return SuoritustapaSisalto.get({
                             perusteId: $stateParams.perusteId,
                             suoritustapa: $stateParams.suoritustapa

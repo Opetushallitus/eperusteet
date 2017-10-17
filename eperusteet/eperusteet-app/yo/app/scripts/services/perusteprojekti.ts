@@ -287,7 +287,7 @@ angular
         };
 
         const PerusteContextMapping = {
-            "projekti-peruste": { opas: "projekti-opas" },
+            "projektin-tiedot": { opas: "projekti-opas" },
             "projekti-projektiryhma": { opas: "projekti-opastyoryhma" },
             "perusteen-kielet": { opas: "oppaan-kielet" },
             "perusteen-tiedot": { opas: "oppaan-tiedot" },

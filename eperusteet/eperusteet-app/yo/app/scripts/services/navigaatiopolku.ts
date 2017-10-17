@@ -39,7 +39,7 @@ angular
         var SUBSTATES = {
             termisto: "perusteen-termisto",
             tiedot: "projektin-tiedot",
-            peruste: "projekti-peruste",
+            peruste: "projektin-tiedot",
             projektiryhma: "projekti-projektiryhma"
         };
         $scope.navigaatiopolku = [];

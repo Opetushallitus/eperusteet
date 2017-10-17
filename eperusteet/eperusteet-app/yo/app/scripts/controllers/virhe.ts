@@ -49,7 +49,9 @@ angular
                 } else {
                     data = { muu: virhe };
                 }
-                $state.go("root.virhe");
+                $state.go("root.virhe", {
+                    location: "replace"
+                });
             }
         };
     });
