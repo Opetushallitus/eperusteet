@@ -16,24 +16,25 @@
 
 import * as angular from "angular";
 import * as _ from "lodash";
+// import { Lokalisointi } from "../utils";
 
 angular
     .module("eperusteApp")
     .service("PerusteProjektiSivunavi", function(
-        PerusteprojektiTiedotService,
-        $stateParams,
-        $q,
-        LukiokoulutusService,
-        $state,
         $location,
-        YleinenData,
-        PerusopetusService,
-        Kaanna,
+        $q,
+        $state,
+        $stateParams,
         $timeout,
-        Utils,
+        AIPEService,
+        Kaanna,
         Kielimapper,
         LukioKurssiService,
-        AIPEService
+        LukiokoulutusService,
+        PerusopetusService,
+        PerusteprojektiTiedotService,
+        Utils,
+        YleinenData,
     ) {
         var STATE_OSAT_ALKU = "root.perusteprojekti.suoritustapa.";
         var STATE_OSAT = "root.perusteprojekti.suoritustapa.tutkinnonosat";

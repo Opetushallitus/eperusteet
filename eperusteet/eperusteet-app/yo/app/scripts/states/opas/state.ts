@@ -16,6 +16,7 @@
 
 import * as angular from "angular";
 import * as _ from "lodash";
+import { INotifikaatiot } from "../../services/notifikaatiot";
 
 angular
     .module("eperusteApp")
@@ -50,7 +51,7 @@ angular
                     Varmistusdialogi,
                     Kaanna,
                     PerusteprojektiTila,
-                    Notifikaatiot: NotifikaatiotI
+                    Notifikaatiot: INotifikaatiot
                 ) => {
                     const { lang } = $stateParams;
 

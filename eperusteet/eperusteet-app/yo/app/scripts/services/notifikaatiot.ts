@@ -14,7 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-interface NotifikaatiotI {
+export interface INotifikaatiot {
     normaali: (msg: string | Object, ilmanKuvaa?: boolean) => void;
     onnistui: (msg: string | Object, ilmanKuvaa?: boolean) => void;
     varoitus: (msg: string | Object, ilmanKuvaa?: boolean) => void;

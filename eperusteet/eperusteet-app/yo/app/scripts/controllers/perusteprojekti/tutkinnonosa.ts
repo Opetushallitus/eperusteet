@@ -474,7 +474,6 @@ angular
                     });
                 },
                 save: kommentti => {
-                    console.log(tutke2);
                     tutke2.mergeOsaAlueet($scope.editableTutkinnonOsaViite.tutkinnonOsa);
                     $scope.editableTutkinnonOsaViite.metadata = { kommentti: kommentti };
                     if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.id) {
