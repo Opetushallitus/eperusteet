@@ -90,7 +90,7 @@ angular
             if ($scope.osaAlue && $scope.osaAlue.osaamistavoitteet) {
                 $scope.osaamistavoitepuu = _($scope.osaAlue.osaamistavoitteet)
                     .filter("pakollinen")
-                    .each(function(o) {
+                    .each(function(o: any) {
                         o.$poistettu = false;
                     })
                     .value();
@@ -104,7 +104,7 @@ angular
 
                 _($scope.osaAlue.osaamistavoitteet)
                     .filter({ pakollinen: false })
-                    .each(function(r) {
+                    .each(function(r: any) {
                         r.$poistettu = false;
                         if (r._esitieto) {
                             lisaaOsaamistavoitteelleLapsi(r);
@@ -218,6 +218,7 @@ angular
                 goBack();
             },
             save: function() {
+                console.log("save");
                 $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
 
                 TutkinnonOsanOsaAlue.save(
@@ -240,9 +241,11 @@ angular
                 if (!Utils.hasLocalizedText($scope.osaAlue.nimi)) {
                     return false;
                 } else {
+                    console.log($scope.isVaTe);
                     return (
-                        $scope.isVaTe ||
-                        _.all($scope.osaamistavoitepuu, function(osaamistavoite) {
+                        $scope.isVaTe
+                        || _.includes(YleinenData.yhteisetTutkinnonOsat, $scope.tutkinnonOsaViite.tutkinnonOsa.tyyppi)
+                        || _.all($scope.osaamistavoitepuu, function(osaamistavoite: any) {
                             return Utils.hasLocalizedText(osaamistavoite.nimi);
                         })
                     );

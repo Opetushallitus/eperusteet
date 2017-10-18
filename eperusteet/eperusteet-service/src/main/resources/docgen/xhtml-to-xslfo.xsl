@@ -90,7 +90,7 @@
             <!-- Head page -->
             <fo:page-sequence master-reference="blank">
                 <fo:flow flow-name="xsl-region-body">
-                    <xsl:apply-templates select="head"/>
+                        <xsl:apply-templates select="head"/>
                 </fo:flow>
             </fo:page-sequence>
 
@@ -154,106 +154,109 @@
             <xsl:apply-templates select="description"/>
         </fo:block>
 
-        <fo:table table-layout="fixed" width="100%" font-size="10pt"
-                  border-collapse="separate" border-separation="4pt">
-            <fo:table-column column-width="proportional-column-width(1)"/>
-            <fo:table-column column-width="proportional-column-width(2)"/>
-            <fo:table-body>
+        <xsl:if test="/html/head/peruste">
 
-                <!-- nimi -->
-                <fo:table-row>
-                    <fo:table-cell>
-                        <fo:block font-weight="bold">
-                            <xsl:if test="//html/@lang='fi'">
-                                <xsl:text>Perusteen nimi</xsl:text>
-                            </xsl:if>
-                            <xsl:if test="//html/@lang='sv'">
-                                <xsl:text>Namn på grunderna</xsl:text>
-                            </xsl:if>
-                        </fo:block>
-                    </fo:table-cell>
-                    <fo:table-cell>
-                        <fo:block>
-                            <xsl:value-of select="title"/>
-                        </fo:block>
-                    </fo:table-cell>
-                </fo:table-row>
+            <fo:table table-layout="fixed" width="100%" font-size="10pt"
+                      border-collapse="separate" border-separation="4pt">
+                <fo:table-column column-width="proportional-column-width(1)"/>
+                <fo:table-column column-width="proportional-column-width(2)"/>
+                <fo:table-body>
 
-                <!-- Diaarinumero -->
-                <xsl:if test="boolean(/html/head/meta[@name='diary'])">
+                    <!-- nimi -->
                     <fo:table-row>
                         <fo:table-cell>
                             <fo:block font-weight="bold">
-                                <xsl:if test="//html/@lang='fi'">
-                                    <xsl:text>Määräyksen diaarinumero</xsl:text>
+                                <xsl:if test="/html/@lang='fi'">
+                                    <xsl:text>Perusteen nimi</xsl:text>
                                 </xsl:if>
-                                <xsl:if test="//html/@lang='sv'">
-                                    <xsl:text>Föreskriftens diarienummer</xsl:text>
+                                <xsl:if test="/html/@lang='sv'">
+                                    <xsl:text>Namn på grunderna</xsl:text>
                                 </xsl:if>
                             </fo:block>
                         </fo:table-cell>
                         <fo:table-cell>
                             <fo:block>
-                                <xsl:apply-templates select="/html/head/meta[@name='diary']/@content"/>
+                                <xsl:value-of select="peruste"/>
                             </fo:block>
                         </fo:table-cell>
                     </fo:table-row>
-                </xsl:if>
 
-                <xsl:apply-templates select="muutosmaaraykset"/>
+                    <!-- Diaarinumero -->
+                    <xsl:if test="boolean(/html/head/meta[@name='diary'])">
+                        <fo:table-row>
+                            <fo:table-cell>
+                                <fo:block font-weight="bold">
+                                    <xsl:if test="/html/@lang='fi'">
+                                        <xsl:text>Määräyksen diaarinumero</xsl:text>
+                                    </xsl:if>
+                                    <xsl:if test="/html/@lang='sv'">
+                                        <xsl:text>Föreskriftens diarienummer</xsl:text>
+                                    </xsl:if>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell>
+                                <fo:block>
+                                    <xsl:apply-templates select="/html/head/meta[@name='diary']/@content"/>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </xsl:if>
 
-                <xsl:apply-templates select="korvaavat"/>
+                    <xsl:apply-templates select="muutosmaaraykset"/>
 
-                <xsl:apply-templates select="koulutukset"/>
+                    <xsl:apply-templates select="korvaavat"/>
 
-                <xsl:apply-templates select="osaamisalat"/>
+                    <xsl:apply-templates select="koulutukset"/>
 
-                <xsl:apply-templates select="tutkintonimikkeet"/>
+                    <xsl:apply-templates select="osaamisalat"/>
 
-                <!-- Voimaantulo -->
-                <xsl:if test="boolean(/html/head/meta[@name='voimaantulo'])">
-                    <fo:table-row>
-                        <fo:table-cell>
-                            <fo:block font-weight="bold">
-                                <xsl:if test="//html/@lang='fi'">
-                                    <xsl:text>Voimaantulo</xsl:text>
-                                </xsl:if>
-                                <xsl:if test="//html/@lang='sv'">
-                                    <xsl:text>Träder i kraft</xsl:text>
-                                </xsl:if>
-                            </fo:block>
-                        </fo:table-cell>
-                        <fo:table-cell>
-                            <fo:block>
-                                <xsl:apply-templates select="/html/head/meta[@name='voimaantulo']/@content"/>
-                            </fo:block>
-                        </fo:table-cell>
-                    </fo:table-row>
-                </xsl:if>
+                    <xsl:apply-templates select="tutkintonimikkeet"/>
 
-                <!-- Voimassaolo päättyy -->
-                <xsl:if test="boolean(/html/head/meta[@name='voimassaolo-paattyminen'])">
-                    <fo:table-row>
-                        <fo:table-cell>
-                            <fo:block font-weight="bold">
-                                <xsl:if test="//html/@lang='fi'">
-                                    <xsl:text>Voimassaolon päättyminen</xsl:text>
-                                </xsl:if>
-                                <xsl:if test="//html/@lang='sv'">
-                                    <xsl:text>Giltigheten upphör</xsl:text>
-                                </xsl:if>
-                            </fo:block>
-                        </fo:table-cell>
-                        <fo:table-cell>
-                            <fo:block>
-                                <xsl:apply-templates select="/html/head/meta[@name='voimassaolo-paattyminen']/@content"/>
-                            </fo:block>
-                        </fo:table-cell>
-                    </fo:table-row>
-                </xsl:if>
+                    <!-- Voimaantulo -->
+                    <xsl:if test="boolean(/html/head/meta[@name='voimaantulo'])">
+                        <fo:table-row>
+                            <fo:table-cell>
+                                <fo:block font-weight="bold">
+                                    <xsl:if test="/html/@lang='fi'">
+                                        <xsl:text>Voimaantulo</xsl:text>
+                                    </xsl:if>
+                                    <xsl:if test="/html/@lang='sv'">
+                                        <xsl:text>Träder i kraft</xsl:text>
+                                    </xsl:if>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell>
+                                <fo:block>
+                                    <xsl:apply-templates select="/html/head/meta[@name='voimaantulo']/@content"/>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </xsl:if>
 
-            </fo:table-body>
-        </fo:table>
+                    <!-- Voimassaolo päättyy -->
+                    <xsl:if test="boolean(/html/head/meta[@name='voimassaolo-paattyminen'])">
+                        <fo:table-row>
+                            <fo:table-cell>
+                                <fo:block font-weight="bold">
+                                    <xsl:if test="/html/@lang='fi'">
+                                        <xsl:text>Voimassaolon päättyminen</xsl:text>
+                                    </xsl:if>
+                                    <xsl:if test="/html/@lang='sv'">
+                                        <xsl:text>Giltigheten upphör</xsl:text>
+                                    </xsl:if>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell>
+                                <fo:block>
+                                    <xsl:apply-templates select="/html/head/meta[@name='voimassaolo-paattyminen']/@content"/>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </xsl:if>
+
+                </fo:table-body>
+            </fo:table>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="body">
@@ -967,10 +970,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang='fi'">
+                            <xsl:if test="/html/@lang='fi'">
                                 <xsl:text>Korvattavat määräykset</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang='sv'">
+                            <xsl:if test="/html/@lang='sv'">
                                 <xsl:text>Korvattavat määräykset</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -991,10 +994,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang='fi'">
+                            <xsl:if test="/html/@lang='fi'">
                                 <xsl:text>Muutosmääräykset</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang='sv'">
+                            <xsl:if test="/html/@lang='sv'">
                                 <xsl:text>[sv Muutosmääräykset]</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -1015,10 +1018,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang='fi'">
+                            <xsl:if test="/html/@lang='fi'">
                                 <xsl:text>Koulutuskoodit</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang='sv'">
+                            <xsl:if test="/html/@lang='sv'">
                                 <xsl:text>Koulutuskoodit</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -1039,10 +1042,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang='fi'">
+                            <xsl:if test="/html/@lang='fi'">
                                 <xsl:text>Osaamisalat</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang='sv'">
+                            <xsl:if test="/html/@lang='sv'">
                                 <xsl:text>Osaamisalat</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -1063,10 +1066,10 @@
                 <fo:table-cell>
                     <fo:block font-weight="bold">
                         <xsl:if test="position()=1">
-                            <xsl:if test="//html/@lang='fi'">
+                            <xsl:if test="/html/@lang='fi'">
                                 <xsl:text>Tutkintonimikkeet</xsl:text>
                             </xsl:if>
-                            <xsl:if test="//html/@lang='sv'">
+                            <xsl:if test="/html/@lang='sv'">
                                 <xsl:text>Tutkintonimikkeet</xsl:text>
                             </xsl:if>
                         </xsl:if>
@@ -1100,10 +1103,10 @@
     <xsl:template name="toc">
         <fo:block break-before="page" space-after="20pt" id="TableOfContents" color="#007EC5" font-weight="bold"
                   line-height="20pt" font-size="18pt" text-align="start">
-            <xsl:if test="//html/@lang='fi'">
+            <xsl:if test="/html/@lang='fi'">
                 <xsl:text>SISÄLTÖ</xsl:text>
             </xsl:if>
-            <xsl:if test="//html/@lang='sv'">
+            <xsl:if test="/html/@lang='sv'">
                 <xsl:text>Innehållsförteckning</xsl:text>
             </xsl:if>
         </fo:block>
