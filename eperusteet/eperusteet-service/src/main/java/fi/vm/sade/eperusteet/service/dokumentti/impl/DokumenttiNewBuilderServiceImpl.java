@@ -160,20 +160,13 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         Element title = docBase.getDocument().createElement("title");
         String nimi = getTextString(docBase, docBase.getPeruste().getNimi());
 
-
-        Element peruste = docBase.getDocument().createElement("peruste");
-
         if (nimi != null && nimi.length() != 0) {
             title.appendChild(docBase.getDocument().createTextNode(nimi));
             docBase.getHeadElement().appendChild(title);
             if (docBase.getPeruste().getTyyppi() != PerusteTyyppi.OPAS) {
+                Element peruste = docBase.getDocument().createElement("peruste");
                 docBase.getHeadElement().appendChild(peruste);
             }
-        }
-
-        // Oppaille ei lisätä perusteiden tietoja
-        if (docBase.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
-            return;
         }
 
         // Kuvaus
@@ -182,6 +175,11 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             Element description = docBase.getDocument().createElement("description");
             addTeksti(docBase, kuvaus, "div", description);
             docBase.getHeadElement().appendChild(description);
+        }
+
+        // Oppaille ei lisätä perusteiden tietoja
+        if (docBase.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
+            return;
         }
 
         // Diaarinumero
