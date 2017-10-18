@@ -155,7 +155,6 @@
         </fo:block>
 
         <xsl:if test="/html/head/peruste">
-
             <fo:table table-layout="fixed" width="100%" font-size="10pt"
                       border-collapse="separate" border-separation="4pt">
                 <fo:table-column column-width="proportional-column-width(1)"/>

@@ -165,6 +165,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             docBase.getHeadElement().appendChild(title);
             if (docBase.getPeruste().getTyyppi() != PerusteTyyppi.OPAS) {
                 Element peruste = docBase.getDocument().createElement("peruste");
+                peruste.setTextContent(nimi);
                 docBase.getHeadElement().appendChild(peruste);
             }
         }
@@ -560,45 +561,112 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         for (PerusteenOsaViite lapsi : parent.getLapset()) {
             PerusteenOsa po = lapsi.getPerusteenOsa();
-            if (po == null || !(po instanceof TekstiKappale)) {
+            if (po == null) {
                 continue;
             }
-            TekstiKappale tk = (TekstiKappale) po;
+            if (po instanceof Taiteenala) {
+                Taiteenala taiteenala = (Taiteenala) po;
+                addTaiteenala(docBase, taiteenala, po, lapsi);
+            } else if (po instanceof TekstiKappale) {
+                TekstiKappale tk = (TekstiKappale) po;
+                addTekstikappale(docBase, tk, po, lapsi);
+            }
+        }
+    }
 
-            PerusteenOsaTunniste tunniste = po.getTunniste();
-            if (tunniste != PerusteenOsaTunniste.NORMAALI
-                    && tunniste != PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN
-                    && po.getTunniste() != PerusteenOsaTunniste.RAKENNE) {
-                String nimi = getTextString(docBase, tk.getNimi());
-                addHeader(docBase, nimi);
+    private void addTekstikappale(DokumenttiPeruste docBase, TekstiKappale tk, PerusteenOsa po,
+                                  PerusteenOsaViite lapsi) {
+        PerusteenOsaTunniste tunniste = po.getTunniste();
+        if (tunniste != PerusteenOsaTunniste.NORMAALI
+                && tunniste != PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN
+                && tunniste!= PerusteenOsaTunniste.RAKENNE) {
+            String nimi = getTextString(docBase, tk.getNimi());
+            addHeader(docBase, nimi);
 
-                String teksti = getTextString(docBase, tk.getTeksti());
-                addTeksti(docBase, teksti, "div");
+            String teksti = getTextString(docBase, tk.getTeksti());
+            addTeksti(docBase, teksti, "div");
 
-                docBase.getGenerator().increaseDepth();
+            docBase.getGenerator().increaseDepth();
 
-                // Rekursiivisesti
-                addTekstikappaleet(docBase, lapsi);
+            // Rekursiivisesti
+            addTekstikappaleet(docBase, lapsi);
 
-                docBase.getGenerator().decreaseDepth();
-                docBase.getGenerator().increaseNumber();
+            docBase.getGenerator().decreaseDepth();
+            docBase.getGenerator().increaseNumber();
 
-            } else if (tunniste == PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN
-                    && docBase.getAipeOpetuksenSisalto() != null) {
-                AIPEOpetuksenSisalto aipeOpetuksenSisalto = docBase.getAipeOpetuksenSisalto();
+        } else if (tunniste == PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN
+                && docBase.getAipeOpetuksenSisalto() != null) {
+            AIPEOpetuksenSisalto aipeOpetuksenSisalto = docBase.getAipeOpetuksenSisalto();
 
-                List<LaajaalainenOsaaminen> laajaalaisetosaamiset = aipeOpetuksenSisalto.getLaajaalaisetosaamiset();
-                if (laajaalaisetosaamiset.size() > 0) {
-                    addHeader(docBase, messages.translate("docgen.laaja_alaiset_osaamiset.title", docBase.getKieli()));
+            List<LaajaalainenOsaaminen> laajaalaisetosaamiset = aipeOpetuksenSisalto.getLaajaalaisetosaamiset();
+            if (laajaalaisetosaamiset.size() > 0) {
+                addHeader(docBase, messages.translate("docgen.laaja_alaiset_osaamiset.title", docBase.getKieli()));
 
-                    laajaalaisetosaamiset.forEach(laajaalainenOsaaminen -> {
-                        String nimi = getTextString(docBase, laajaalainenOsaaminen.getNimi());
-                        addTeksti(docBase, nimi, "h5");
+                laajaalaisetosaamiset.forEach(laajaalainenOsaaminen -> {
+                    String nimi = getTextString(docBase, laajaalainenOsaaminen.getNimi());
+                    addTeksti(docBase, nimi, "h5");
 
-                        String teksti = getTextString(docBase, laajaalainenOsaaminen.getKuvaus());
-                        addTeksti(docBase, teksti, "div");
-                    });
+                    String teksti = getTextString(docBase, laajaalainenOsaaminen.getKuvaus());
+                    addTeksti(docBase, teksti, "div");
+                });
+            }
+        }
+    }
+
+    private void addTaiteenala(DokumenttiPeruste docBase, Taiteenala taiteenala, PerusteenOsa po,
+                               PerusteenOsaViite lapsi) {
+
+        // Nimi
+        TekstiPalanen nimi = taiteenala.getNimi();
+        addHeader(docBase, getTextString(docBase, nimi));
+
+        // Kuvaus
+        String kuvaus = getTextString(docBase, taiteenala.getTeksti());
+        if (StringUtils.isNotEmpty(kuvaus)) {
+            addTeksti(docBase, kuvaus, "div");
+        }
+
+        // Koodi
+        Koodi koodi = taiteenala.getKoodi();
+        if (koodi != null) {
+            KoodiDto koodiDto = mapper.map(koodi, KoodiDto.class);
+            addTeksti(docBase, messages.translate("docgen.taiteenala.koodi", docBase.getKieli()), "h5");
+            addTeksti(docBase, koodiDto.getArvo(), "div");
+        }
+
+
+        // Aikuisten opetus
+        addTaiteenalaSisalto(docBase, taiteenala.getAikuistenOpetus(), "docgen.taiteenala.aikuisten-opetus");
+
+        // Kasvatus
+        addTaiteenalaSisalto(docBase, taiteenala.getKasvatus(), "docgen.taiteenala.kasvatus");
+
+        // Oppimisen arviointi
+        addTaiteenalaSisalto(docBase,
+                taiteenala.getOppimisenArviointiOpetuksessa(), "docgen.taiteenala.oppimisen-arvionti");
+
+        // Teemaopinnot
+        addTaiteenalaSisalto(docBase, taiteenala.getTeemaopinnot(), "docgen.taiteenala.teemaopinnot");
+
+        // Työtavat opetuksessa
+        addTaiteenalaSisalto(docBase, taiteenala.getTyotavatOpetuksessa(), "docgen.taiteenala.tyotavat");
+
+        // Yhteiset opinnot
+        addTaiteenalaSisalto(docBase, taiteenala.getYhteisetOpinnot(), "docgen.taiteenala.yhteiset-opinnot");
+    }
+
+    private void addTaiteenalaSisalto(DokumenttiPeruste docBase, KevytTekstiKappale tekstiKappale, String placeholder) {
+        if (tekstiKappale != null) {
+            String teksti = getTextString(docBase, tekstiKappale.getTeksti());
+            if (StringUtils.isNotEmpty(teksti)) {
+                String otsikko = getTextString(docBase, tekstiKappale.getNimi());
+                if (StringUtils.isNotEmpty(otsikko)) {
+                    addTeksti(docBase, otsikko, "h5");
+                } else {
+                    addTeksti(docBase,
+                            messages.translate(placeholder, docBase.getKieli()), "h5");
                 }
+                addTeksti(docBase, teksti, "div");
             }
         }
     }
