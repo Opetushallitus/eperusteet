@@ -111,6 +111,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         rootElement.appendChild(bodyElement);
 
         DokumenttiPeruste docBase = new DokumenttiPeruste();
+
         docBase.setDocument(doc);
         docBase.setHeadElement(headElement);
         docBase.setBodyElement(bodyElement);
@@ -119,50 +120,39 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.setPeruste(peruste);
         docBase.setDokumentti(dokumentti);
         docBase.setMapper(mapper);
+        docBase.setSisalto(peruste.getSisalto(dokumentti.getSuoritustapakoodi()));
+        docBase.setAipeOpetuksenSisalto(peruste.getAipeOpetuksenPerusteenSisalto());
 
-        if (dokumentti.getSuoritustapakoodi().equals(Suoritustapakoodi.AIPE)) {
-            AIPEOpetuksenSisalto aipeOpetuksenPerusteenSisalto = peruste.getAipeOpetuksenPerusteenSisalto();
-            docBase.setAipeOpetuksenSisalto(aipeOpetuksenPerusteenSisalto);
-            docBase.setSisalto(aipeOpetuksenPerusteenSisalto.getSisalto());
-        }
-        else if (peruste.getTyyppi() == PerusteTyyppi.OPAS) {
-            PerusteenOsaViite sisalto = peruste.getSisalto(null);
-            docBase.setSisalto(sisalto);
-        }
-        else {
-            Suoritustapa suoritustapa = peruste.getSuoritustapa(dokumentti.getSuoritustapakoodi());
-            PerusteenOsaViite sisalto = suoritustapa.getSisalto();
-            docBase.setSisalto(sisalto);
-        }
+        // Tästä aloitetaan varsinaisen dokumentin muodostus
+        addDokumentti(docBase);
 
+        // Tulostetaan dokumentti
+        LOG.debug(printDocument(docBase.getDocument()).toString());
+
+        return doc;
+    }
+
+    private void addDokumentti(DokumenttiPeruste docBase) {
         // Kansilehti & Infosivu
         addMetaPages(docBase);
 
-        if (dokumentti.getSuoritustapakoodi().equals(Suoritustapakoodi.AIPE)) {
-            // AIPE-osat
-            addAipeSisalto(docBase);
-        }
-        else if (peruste.getTyyppi() != PerusteTyyppi.OPAS) {
-            // Tutkinnon muodostuminen
-            addSisaltoelementit(docBase);
+        // Aipe sisältö
+        addAipeSisalto(docBase);
 
-            // Tutkinnonosat
-            addTutkinnonosat(docBase);
-        }
+        // Tutkinnon muodostuminen
+        addTutkinnonMuodostuminen(docBase);
 
+        // Tutkinnonosat
+        addTutkinnonosat(docBase);
 
         // Tekstikappaleet
-        addTekstikappaleet(docBase, docBase.getSisalto());
+        addTekstikappaleet(docBase);
 
         // Käsitteet
         addKasitteet(docBase);
 
         // Kuvat
         buildImages(docBase);
-
-        // Tulostetaan dokumentti konsoliin
-        LOG.debug(printDocument(docBase.getDocument()).toString());
-        return doc;
     }
 
     private void addMetaPages(DokumenttiPeruste docBase) {
@@ -170,14 +160,20 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         Element title = docBase.getDocument().createElement("title");
         String nimi = getTextString(docBase, docBase.getPeruste().getNimi());
 
-        // Oppaille ei lisätä perusteiden tietoja
-        if (docBase.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
-            return;
-        }
+
+        Element peruste = docBase.getDocument().createElement("peruste");
 
         if (nimi != null && nimi.length() != 0) {
             title.appendChild(docBase.getDocument().createTextNode(nimi));
             docBase.getHeadElement().appendChild(title);
+            if (docBase.getPeruste().getTyyppi() != PerusteTyyppi.OPAS) {
+                docBase.getHeadElement().appendChild(peruste);
+            }
+        }
+
+        // Oppaille ei lisätä perusteiden tietoja
+        if (docBase.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
+            return;
         }
 
         // Kuvaus
@@ -309,24 +305,16 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addSisaltoelementit(DokumenttiPeruste docBase) {
-        PerusteenOsaViite sisalto = docBase.getSisalto();
-        for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
-            PerusteenOsa po = lapsi.getPerusteenOsa();
-            if (po == null) {
-                continue;
-            }
-
-            if (po.getTunniste() == PerusteenOsaTunniste.RAKENNE) {
-                // poikkeustapauksena perusteen rakennepuun rendaus
-                addTutkinnonMuodostuminen(docBase);
-            }
-        }
-    }
-
     private void addTutkinnonMuodostuminen(DokumenttiPeruste docBase) {
-        addHeader(docBase, messages.translate("docgen.tutkinnon_muodostuminen.title", docBase.getKieli()));
+        if (!Optional.ofNullable(docBase.getSisalto())
+                .map(PerusteenOsaViite::getSuoritustapa)
+                .map(Suoritustapa::getRakenne).isPresent()) {
+            return;
+        }
+
         RakenneModuuli rakenne = docBase.getSisalto().getSuoritustapa().getRakenne();
+
+        addHeader(docBase, messages.translate("docgen.tutkinnon_muodostuminen.title", docBase.getKieli()));
 
         String kuvaus = getTextString(docBase, rakenne.getKuvaus());
         if (StringUtils.isNotEmpty(kuvaus)) {
@@ -484,6 +472,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     private void addTutkinnonosat(DokumenttiPeruste docBase) {
         Set<Suoritustapa> suoritustavat = docBase.getPeruste().getSuoritustavat();
+        if (suoritustavat.size() == 0) {
+            return;
+        }
+
         Set<TutkinnonOsaViite> osat = new TreeSet<>((o1, o2) -> {
             String nimi1 = getTextString(docBase, o1.getTutkinnonOsa().getNimi());
             String nimi2 = getTextString(docBase, o2.getTutkinnonOsa().getNimi());
@@ -554,7 +546,20 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.getGenerator().increaseNumber();
     }
 
+    private void addTekstikappaleet(DokumenttiPeruste docBase) {
+        PerusteenOsaViite sisalto = docBase.getSisalto();
+        if (sisalto == null) {
+            return;
+        }
+
+        addTekstikappaleet(docBase, sisalto);
+    }
+
     private void addTekstikappaleet(DokumenttiPeruste docBase, PerusteenOsaViite parent) {
+        if (parent == null) {
+            return;
+        }
+
         for (PerusteenOsaViite lapsi : parent.getLapset()) {
             PerusteenOsa po = lapsi.getPerusteenOsa();
             if (po == null || !(po instanceof TekstiKappale)) {
@@ -830,17 +835,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
-    private void addKoodi(DokumenttiPeruste docBase, TutkinnonOsa osa) {
-        TutkinnonOsaDto osaDto = mapper.map(osa, TutkinnonOsaDto.class);
-        String koodiArvo = osaDto.getKoodiArvo();
-        if (StringUtils.isEmpty(koodiArvo)) {
-            return;
-        }
-
-        addTeksti(docBase, messages.translate("docgen.koodi.title", docBase.getKieli()), "h5");
-        addTeksti(docBase, koodiArvo, "div");
-    }
-
     private void addTavoitteet(DokumenttiPeruste docBase, TutkinnonOsa osa) {
         String TavoitteetText = getTextString(docBase, osa.getTavoitteet());
         if (StringUtils.isEmpty(TavoitteetText)) {
@@ -937,12 +931,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     private void addAipeSisalto(DokumenttiPeruste docBase) {
         AIPEOpetuksenSisalto aipeSisalto = docBase.getAipeOpetuksenSisalto();
-        addVaiheet(docBase, aipeSisalto);
+        if (aipeSisalto != null) {
+            addVaiheet(docBase, aipeSisalto);
+        }
     }
 
     private void addVaiheet(DokumenttiPeruste docBase, AIPEOpetuksenSisalto aipeSisalto) {
-
-        // Vaiheet
         aipeSisalto.getVaiheet().forEach(aipeVaihe -> addVaihe(docBase, aipeVaihe));
     }
 

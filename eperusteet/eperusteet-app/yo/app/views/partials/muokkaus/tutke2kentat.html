@@ -51,10 +51,12 @@
                                   ng-class="alue.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
                             <span ng-show="!alue.$editing" class="otsikko">{{alue.nimi| kaanna}}</span>
                             <input ng-show="alue.$editing" class="osa-alue-nimi" ng-model="osaAlue.$editing.nimi"
-                                   slocalized ng-click="$event.stopPropagation()">
+                                   slocalized ng-click="$event.stopPropagation()" >
                             <span ng-hide="isEditingInProgress()">
                                 <select ng-if="alue.$groups.$size > 1"
-                                        ng-options="item.value as item.label|kaanna for item in alue.$groups.$options"
+                                        ng-options="item.value as item.label|kaanna
+                                        for
+                                        item in alue.$groups.$options"
                                         ng-model="alue.$chosen" ng-click="$event.stopPropagation()"></select>
                             </span>
                         </div>
