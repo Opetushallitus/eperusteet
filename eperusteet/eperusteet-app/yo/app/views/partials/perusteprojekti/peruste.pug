@@ -55,8 +55,6 @@ mixin kvliite()
             | )
       .panel-body
         p(ng-bind-html='sisalto | kaanna | unsafe ')
-    +kvliiteKentta('suorittaneen-osaaminen', 'suorittaneenOsaaminen', 'true')
-    +kvliiteKentta('tyotehtavat-joissa-voi-toimia', 'tyotehtavatJoissaVoiToimia', 'true')
 
     h3(kaanna="'tutkinnon-virallinen-asema'")
     +kvliiteKentta('tutkintotodistuksen-antaja', 'tutkintotodistuksenAntaja', 'true')
@@ -130,6 +128,8 @@ mixin kvliite()
               tr
                 th(kaanna='') voimassaolo-paattymispvm
                 td(pvm='peruste.voimassaoloLoppuu')
+        +kvliiteKentta('suorittaneen-osaaminen', 'suorittaneenOsaaminen', 'true')
+        +kvliiteKentta('tyotehtavat-joissa-voi-toimia', 'tyotehtavatJoissaVoiToimia', 'true')
         ul.nav.nav-tabs.nav-justified(ng-show='isAmmatillinen')
           li(ng-class='{ active: !$$showingKvliite }', ng-click='$$showingKvliite = !$$showingKvliite')
             a.action-link(ng-bind="'tiedot' | kaanna")
