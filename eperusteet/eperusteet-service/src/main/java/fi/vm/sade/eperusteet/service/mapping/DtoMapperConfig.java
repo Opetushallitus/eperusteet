@@ -39,6 +39,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.OsaamisalaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
@@ -219,6 +220,34 @@ public class DtoMapperConfig {
         factory.classMap(LukiokurssiMuokkausDto.class, Lukiokurssi.class)
                 .exclude("oppiaineet")
                 .byDefault()
+                .register();
+
+        factory.classMap(Peruste.class, PerusteBaseDto.class)
+                .byDefault()
+                .customize(new CustomMapper<Peruste, PerusteBaseDto>() {
+                    @Override
+                    public void mapAtoB(Peruste source, PerusteBaseDto target, MappingContext context) {
+                        try {
+                            KVLiite kvliite = source.getKvliite();
+                            if (kvliite != null) {
+                                KVLiite pohja = kvliite.getPohja();
+                                TekstiPalanen osaaminen = kvliite.getSuorittaneenOsaaminen();
+                                TekstiPalanen tyotehtavat = kvliite.getTyotehtavatJoissaVoiToimia();
+                                if (pohja != null) {
+                                    osaaminen = osaaminen != null ? osaaminen : pohja.getSuorittaneenOsaaminen();
+                                    tyotehtavat = tyotehtavat != null ? tyotehtavat : pohja.getTyotehtavatJoissaVoiToimia();
+                                }
+                                if (osaaminen != null) {
+                                    target.setSuorittaneenOsaaminen(new LokalisoituTekstiDto(osaaminen.getId(), osaaminen.getTeksti()));
+                                }
+                                if (tyotehtavat != null) {
+                                    target.setTyotehtavatJoissaVoiToimia(new LokalisoituTekstiDto(tyotehtavat.getId(), tyotehtavat.getTeksti()));
+                                }
+                            }
+                        } catch (RestClientException | AccessDeniedException ex) {
+                        }
+                    }
+                })
                 .register();
 
         factory.classMap(Koodi.class, KoodiDto.class)
