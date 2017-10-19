@@ -20,6 +20,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +31,8 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "koodi")
-@EqualsAndHashCode(of = {"uri", "versio"})
+@Immutable
+@EqualsAndHashCode(of = {"koodisto", "uri", "versio"})
 public class Koodi implements Serializable {
 
     @Id
