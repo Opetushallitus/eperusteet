@@ -216,46 +216,50 @@ angular
             "</div>";
 
         this.leaf = function() {
-            return "<div>" + kentta + "</div>";
+            return `<div>${kentta}</div>`;
         };
 
         this.leafChildren = function() {
-            return (
-                '<div ng-if="rakenne.rooli !== \'määrittelemätön\'" class="collapser" ng-show="!rakenne.$collapsed">' +
-                '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat" id="tree-sortable">' +
-                '    <li ng-repeat="osa in rakenne.osat track by trackingFunction(osa, $index)" class="tree-list-item">' +
-                '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" callbacks="callbacks"></tree>' +
-                "    </li>" +
-                "  </ul>" +
-                "</div>"
-            );
+            return `
+                <div ng-show="rakenne.rooli !== 'määrittelemätön'" class="collapser" ng-show="!rakenne.$collapsed">
+                  <ul ng-show="rakenne.osat !== undefined" ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat" id="tree-sortable">
+                    <li ng-repeat="osa in rakenne.osat track by trackingFunction(osa, $index)" class="tree-list-item">
+                      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" callbacks="callbacks"></tree>
+                    </li>
+                  </ul>
+                </div>
+            `;
         };
     })
     .directive("tree", function($compile, treeTemplate, $timeout, $animate) {
+        const leafT = treeTemplate.leafChildren();
+        const treeRootT = treeTemplate.root();
+
         return {
             restrict: "E",
             template: treeTemplate.leaf(),
             scope: {
-                rakenne: "=",
-                tutkinnonOsaViitteet: "=",
-                uusiTutkinnonOsa: "=",
-                vanhempi: "=",
-                apumuuttujat: "=",
-                muokkaus: "=",
-                callbacks: "="
+                rakenne: "<",
+                tutkinnonOsaViitteet: "<",
+                uusiTutkinnonOsa: "<",
+                vanhempi: "<",
+                apumuuttujat: "<",
+                muokkaus: "<",
+                callbacks: "<"
             },
             controller: "treeController",
             link: function(scope: any, el: any) {
                 $animate.enabled(false, el);
 
                 if (!scope.vanhempi) {
-                    var templateElement = angular.element(treeTemplate.root());
+                    var templateElement = angular.element(treeRootT);
                     $compile(templateElement)(scope);
+                    $animate.enabled(false, templateElement);
                     el.replaceWith(templateElement);
                 }
 
                 function renderChildren() {
-                    $compile(treeTemplate.leafChildren())(scope, function(cloned) {
+                    $compile(leafT)(scope, function(cloned) {
                         el.append(cloned);
                     });
                 }
@@ -263,9 +267,7 @@ angular
                 if (scope.muokkaus || (_.isArray(scope.rakenne.osat) && scope.rakenne.osat.length > 0)) {
                     // Give the browser a breather once in a while to retain responsiveness
                     if (_.random() > 0.8) {
-                        $timeout(function() {
-                            renderChildren();
-                        });
+                        $timeout(renderChildren);
                     } else {
                         renderChildren();
                     }
