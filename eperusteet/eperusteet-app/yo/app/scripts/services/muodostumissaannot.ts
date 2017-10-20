@@ -23,7 +23,6 @@ angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, 
         return (
             _(rakenneOsat || [])
                 .map(function(osa) {
-                    console.log(osa.$laajuus, osa.$laajuusMaksimi);
                     return osa
                         ? osa.$vaadittuLaajuus && osa.$laajuus > osa.$vaadittuLaajuus
                           ? osa.$vaadittuLaajuus
