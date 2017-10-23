@@ -17,8 +17,18 @@ describe("app", () => {
         getOfType("filter").forEach(testModule);
     });
 
-    test("Injecting states", () => {
-        getOfType("state").forEach(testModule);
+    test("All states use require as template", async () => {
+        const $state: any = await getComponent("$state");
+        _.each($state.get(), state => {
+            expect(state.templateUrl).toBeFalsy();
+            expect(!state.template && !state.abstract && _.isEmpty(state.views)).toBeFalsy();
+
+            if (!_.isEmpty(state.views)) {
+                _.each(state.views, view => {
+                    expect(_.isString(view.template)).toBeTruthy();
+                });
+            }
+        });
     });
 
     test.skip("Komponentit on nimetty oikein", async () => {

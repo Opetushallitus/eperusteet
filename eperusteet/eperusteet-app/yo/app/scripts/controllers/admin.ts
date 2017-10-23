@@ -24,7 +24,7 @@ enum ProjektiTila {
 }
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -52,7 +52,7 @@ angular
             })
             .state("root.admin.arviointiasteikot", {
                 url: "/arviointiasteikot",
-                templateUrl: "views/admin/arviointiasteikot.html",
+                template: require("views/admin/arviointiasteikot.pug"),
                 controller: "ArviointiasteikotHallintaController",
                 resolve: {
                     arviointiasteikot: function($stateParams, Arviointiasteikot) {
@@ -64,8 +64,8 @@ angular
     .controller("ArviointiasteikotHallintaController", ($scope, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot) => {
         // Lasketaan osaamistasoille arviointiasteikkojen mukaiset id:eet
         function calculateFakeIds() {
-            _.each(arviointiasteikot, arviointiasteikko => {
-                const minOsaamistasoId = _.min(_.map(arviointiasteikko.osaamistasot, osaamistaso => osaamistaso.id));
+            _.each(arviointiasteikot, (arviointiasteikko: any) => {
+                const minOsaamistasoId = _.min(_.map(arviointiasteikko.osaamistasot, (osaamistaso: any) => osaamistaso.id));
                 _.each(arviointiasteikko.osaamistasot, osaamistaso => {
                     osaamistaso.__fakeId = osaamistaso.id - minOsaamistasoId + 1;
                 });
