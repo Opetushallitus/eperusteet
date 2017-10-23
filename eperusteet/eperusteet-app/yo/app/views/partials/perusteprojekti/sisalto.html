@@ -6,8 +6,8 @@
             <p ng-bind-html="tiivistelma|kaanna|unsafe"></p>
         </div>
 
-        <div class="esityksen-tarkastelu">
-            <a icon-role="sunglasses" class="url" href="{{ $esitysurl }}" kaanna="'tarkastele-esitysta'"></a>
+        <div class="esityksen-tarkastelu clearfix">
+            <a icon-role="sunglasses" class="url" ng-href="{{$esitysurl}}" kaanna="'tarkastele-esitysta'" ng-show="$esitysurl"></a>
             <a icon-role="comment" class="url pull-right" ui-sref="root.perusteprojekti.kommentit"
                kaanna="'kaikki-kommentit'"></a>
         </div>

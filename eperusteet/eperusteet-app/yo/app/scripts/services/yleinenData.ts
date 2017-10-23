@@ -14,7 +14,6 @@
  * European Union Public Licence for more details.
  */
 
-import * as angular from "angular";
 import * as _ from "lodash";
 import moment from "moment";
 
@@ -64,23 +63,14 @@ export const koulutustyyppiInfo = {
         sisaltoTunniste: "sisalto",
         hasPdfCreation: true
     },
-    koulutustyyppi_999907: {
-        nimi: "tpo",
-        oletusSuoritustapa: "tpo",
+    koulutustyyppi_2: {
+        nimi: "lukiokoulutus",
+        oletusSuoritustapa: "lukiokoulutus",
         hasTutkintonimikkeet: false,
+        hakuState: "root.selaus.lukiokoulutuslista",
         hasLaajuus: false,
-        hakuState: "root.selaus.ammatillinenaikuiskoulutus",
-        sisaltoTunniste: "tposisalto",
-        hasPdfCreation: true
-    },
-    koulutustyyppi_11: {
-        nimi: "ammattitutkinto",
-        oletusSuoritustapa: "naytto",
-        hasTutkintonimikkeet: true,
-        hasLaajuus: true,
-        hakuState: "root.selaus.ammatillinenaikuiskoulutus",
-        sisaltoTunniste: "sisalto",
-        hasPdfCreation: true
+        sisaltoTunniste: "lukiosisalto",
+        hasPdfCreation: false
     },
     koulutustyyppi_5: {
         nimi: "telma",
@@ -91,11 +81,20 @@ export const koulutustyyppiInfo = {
         sisaltoTunniste: "sisalto",
         hasPdfCreation: true
     },
-    koulutustyyppi_18: {
-        nimi: "velma",
-        hasLaajuus: true,
-        oletusSuoritustapa: "ops",
+    koulutustyyppi_6: {
+        nimi: "lisaopetus",
+        oletusSuoritustapa: "lisaopetus",
+        hasTutkintonimikkeet: false,
+        hakuState: "root.selaus.perusopetuslista",
+        hasLaajuus: false,
+        sisaltoTunniste: "losisalto",
+        hasPdfCreation: true
+    },
+    koulutustyyppi_11: {
+        nimi: "ammattitutkinto",
+        oletusSuoritustapa: "naytto",
         hasTutkintonimikkeet: true,
+        hasLaajuus: true,
         hakuState: "root.selaus.ammatillinenaikuiskoulutus",
         sisaltoTunniste: "sisalto",
         hasPdfCreation: true
@@ -109,11 +108,20 @@ export const koulutustyyppiInfo = {
         sisaltoTunniste: "sisalto",
         hasPdfCreation: true
     },
+    koulutustyyppi_14: {
+        nimi: "aikuistenlukiokoulutus",
+        oletusSuoritustapa: "lukiokoulutus",
+        hasTutkintonimikkeet: false,
+        hakuState: "root.selaus.lukiokoulutuslista",
+        hasLaajuus: false,
+        sisaltoTunniste: "lukiosisalto",
+        hasPdfCreation: false
+    },
     koulutustyyppi_15: {
         nimi: "esiopetus",
         oletusSuoritustapa: "esiopetus",
         hasTutkintonimikkeet: false,
-        hakuState: "root.selaus.tpolista",
+        hakuState: "root.selaus.esiopetuslista",
         sisaltoTunniste: "eosisalto",
         hasLaajuus: false,
         hasPdfCreation: false
@@ -136,32 +144,14 @@ export const koulutustyyppiInfo = {
         hasLaajuus: false,
         hasPdfCreation: true
     },
-    koulutustyyppi_6: {
-        nimi: "lisaopetus",
-        oletusSuoritustapa: "lisaopetus",
-        hasTutkintonimikkeet: false,
-        hakuState: "root.selaus.lisaopetuslista",
-        hasLaajuus: false,
-        sisaltoTunniste: "losisalto",
+    koulutustyyppi_18: {
+        nimi: "velma",
+        hasLaajuus: true,
+        oletusSuoritustapa: "ops",
+        hasTutkintonimikkeet: true,
+        hakuState: "root.selaus.ammatillinenaikuiskoulutus",
+        sisaltoTunniste: "sisalto",
         hasPdfCreation: true
-    },
-    koulutustyyppi_2: {
-        nimi: "lukiokoulutus",
-        oletusSuoritustapa: "lukiokoulutus",
-        hasTutkintonimikkeet: false,
-        hakuState: "root.selaus.lukiokoulutuslista",
-        hasLaajuus: false,
-        sisaltoTunniste: "lukiosisalto",
-        hasPdfCreation: false
-    },
-    koulutustyyppi_23: {
-        nimi: "lukiokoulutus",
-        oletusSuoritustapa: "lukiokoulutus",
-        hasTutkintonimikkeet: false,
-        hakuState: "root.selaus.lukiokoulutuslista",
-        hasLaajuus: false,
-        sisaltoTunniste: "lukiosisalto",
-        hasPdfCreation: false
     },
     koulutustyyppi_20: {
         nimi: "varhaiskasvatus",
@@ -173,7 +163,7 @@ export const koulutustyyppiInfo = {
         hasPdfCreation: false
     },
     koulutustyyppi_22: {
-        nimi: "esiopetus",
+        nimi: "perusopetusvalmistava",
         oletusSuoritustapa: "esiopetus",
         hasTutkintonimikkeet: false,
         hakuState: "root.selaus.esiopetuslista",
@@ -181,18 +171,25 @@ export const koulutustyyppiInfo = {
         sisaltoTunniste: "eosisalto",
         hasPdfCreation: false
     },
-    koulutustyyppi_14: {
-        nimi: "lukiokoulutus",
+    koulutustyyppi_23: {
+        nimi: "lukiovalmistavakoulutus",
         oletusSuoritustapa: "lukiokoulutus",
         hasTutkintonimikkeet: false,
         hakuState: "root.selaus.lukiokoulutuslista",
         hasLaajuus: false,
         sisaltoTunniste: "lukiosisalto",
         hasPdfCreation: false
+    },
+    koulutustyyppi_999907: {
+        nimi: "tpo",
+        oletusSuoritustapa: "tpo",
+        hasTutkintonimikkeet: false,
+        hasLaajuus: false,
+        hakuState: "root.selaus.tpolista",
+        sisaltoTunniste: "tposisalto",
+        hasPdfCreation: true
     }
 };
-
-export const naviOmit = ["root", "editoi", "suoritustapa", "sisalto", "aloitussivu", "selaus", "esitys"];
 
 export const koulutustyypit = _.keys(koulutustyyppiInfo);
 
@@ -316,7 +313,6 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
     return {
         dateOptions,
         isDiaariValid,
-        naviOmit,
         kommenttiMaxLength,
         kontekstit,
         rakenneRyhmaRoolit,
@@ -354,23 +350,23 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
         showKoulutukset,
 
         getPerusteEsikatseluHost() {
-            var host = $location.host();
-            var kieli = Kieli.getSisaltokieli();
+            const host = $location.host();
+            const kieli = Kieli.getSisaltokieli();
             if (host.indexOf("localhost") > -1) {
                 //localhost - dev
-                return "http://localhost:9020/#" + kieli;
+                return "http://localhost:9020/#/" + kieli;
             } else if (host.indexOf("testi.virkailija.opintopolku.fi") > -1) {
                 // QA
-                return "https://testi-eperusteet.opintopolku.fi/#" + kieli;
+                return "https://testi-eperusteet.opintopolku.fi/#/" + kieli;
             } else {
                 // Tuotanto
-                return "https://eperusteet.opintopolku.fi/#" + kieli;
+                return "https://eperusteet.opintopolku.fi/#/" + kieli;
             }
         },
 
         haeArviointiasteikot() {
             if (this.arviointiasteikot === undefined) {
-                var self = this;
+                const self = this;
                 Arviointiasteikot.list(
                     {},
                     function(tulos) {
@@ -385,8 +381,8 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
         },
 
         vaihdaKieli(kielikoodi) {
-            var loytyi = false;
-            for (var avain in this.kielet) {
+            let loytyi = false;
+            for (const avain in this.kielet) {
                 if (this.kielet.hasOwnProperty(avain) && this.kielet[avain] === kielikoodi) {
                     loytyi = true;
                     break;

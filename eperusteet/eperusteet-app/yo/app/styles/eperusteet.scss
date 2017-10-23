@@ -3,7 +3,6 @@ $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 @import "~angular-ui-tree/dist/angular-ui-tree.css";
 @import "~angular-ui-select/select.css";
-@import "modules/esitys";
 @import "modules/bootstrap-overrides";
 @import "vendor/virkailija";
 
@@ -40,5 +39,3 @@ $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 @import "modules/ohje";
 @import "modules/termisto";
 @import "modules/ckeditor";
-
-@import "../eperusteet-esitys/styles/esitys";

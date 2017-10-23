@@ -52,7 +52,7 @@ angular
             })
             .state("root.admin.arviointiasteikot", {
                 url: "/arviointiasteikot",
-                templateUrl: "views/admin/arviointiasteikot.html",
+                template: require("views/admin/arviointiasteikot.html"),
                 controller: "ArviointiasteikotHallintaController",
                 resolve: {
                     arviointiasteikot: function($stateParams, Arviointiasteikot) {

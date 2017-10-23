@@ -37,7 +37,7 @@ angular
                 scope.popovers = [];
                 function destroy() {
                     element.find(TERMI_MATCHER).each(function() {
-                        var jqEl = angular.element(this);
+                        var jqEl: any = angular.element(this);
                         if (jqEl.popover) {
                             jqEl.popover("destroy");
                         }
@@ -46,7 +46,7 @@ angular
                 }
                 function setup() {
                     element.find(TERMI_MATCHER).each(function() {
-                        var jqEl = angular.element(this);
+                        var jqEl: any = angular.element(this);
                         var viiteId = jqEl.attr("data-viite");
                         if (viiteId) {
                             TermistoService.preload();

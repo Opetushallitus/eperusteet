@@ -23,11 +23,10 @@ angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, 
         return (
             _(rakenneOsat || [])
                 .map(function(osa) {
-                    console.log(osa.$laajuus, osa.$laajuusMaksimi);
                     return osa
                         ? osa.$vaadittuLaajuus && osa.$laajuus > osa.$vaadittuLaajuus
-                          ? osa.$vaadittuLaajuus
-                          : Math.max(osa.$laajuus || 0, osa.$laajuusMaksimi || 0)
+                            ? osa.$vaadittuLaajuus
+                            : Math.max(osa.$laajuus || 0, osa.$laajuusMaksimi || 0)
                         : 0;
                 })
                 .reduce(function(sum, newval) {

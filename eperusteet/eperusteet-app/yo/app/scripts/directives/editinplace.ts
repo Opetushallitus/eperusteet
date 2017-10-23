@@ -60,7 +60,7 @@ angular.module("eperusteApp").directive("editInPlace", function($compile, $parse
                 element.append(fakeEl);
                 var width = fakeEl.width();
                 fakeEl.remove();
-                inputEl.css("width", Math.min(Math.max(parseInt(width, 10) + 100, 400), 800));
+                inputEl.css("width", Math.min(Math.max(width + 100, 400), 800));
                 scope.editing = true;
             };
         }

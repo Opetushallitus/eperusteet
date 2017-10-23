@@ -19,11 +19,10 @@
       <h2 ng-if="muokkaus" kaanna="vateConverter('tutkinnon-rakenne')"></h2>
       <rajaus size="small" classes="puun-rajaus" model="apumuuttujat.haku" placeholder="{{ 'etsi-rakenteesta' || kaanna }}"></rajaus>
       <div ng-show="rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
-        <span ng-if="!esitys">
+        <span>
           <div ng-show="muokkaus" class="empty-bubble distance-editing" kaanna>aloita-raahaamalla-puuhun</div>
           <div ng-hide="muokkaus" class="empty-bubble distance" kaanna>rakennetta-ei-vielä-muodostettu</div>
         </span>
-        <div ng-show="esitys" class="empty-bubble distance" kaanna>rakennetta-ei-ole</div>
       </div>
       <tree id="editointiPuuJuuri" apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved"
             rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet"

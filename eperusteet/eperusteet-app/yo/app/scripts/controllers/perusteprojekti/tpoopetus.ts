@@ -39,13 +39,9 @@ angular
         TekstikappaleOperations.setPeruste($scope.peruste);
         $scope.rajaus = "";
         $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
-        $scope.$esitysurl = $state.href(
-            "root.selaus." + (YleinenData.isEsiopetus($scope.peruste) ? "esiopetus" : "lisaopetus"),
-            {
-                perusteId: $scope.peruste.id,
-                suoritustapa: $stateParams.suoritustapa
-            }
-        );
+        $scope.$esitysurl = YleinenData.getPerusteEsikatseluHost()
+            + "/esiopetus/" + $scope.peruste.id
+            + "/tiedot";
 
         $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 
@@ -69,7 +65,7 @@ angular
             if (_.isUndefined(value)) {
                 return;
             }
-            var sisaltoFilterer = function(osa, lapsellaOn) {
+            const sisaltoFilterer = function(osa, lapsellaOn) {
                 osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, "perusteenOsa", "nimi");
                 return osa.$filtered;
             };

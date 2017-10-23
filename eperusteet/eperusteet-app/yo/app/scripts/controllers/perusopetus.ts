@@ -31,7 +31,8 @@ angular
         $stateParams,
         Notifikaatiot,
         Utils,
-        VlkUtils
+        VlkUtils,
+        YleinenData
     ) {
         $scope.projekti = perusteprojektiTiedot.getProjekti();
         $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -39,9 +40,8 @@ angular
         $scope.rajaus = "";
 
         $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
-        $scope.$esitysurl = $state.href("root.selaus.perusopetus", {
-            perusteId: $scope.peruste.id
-        });
+        $scope.$esitysurl = YleinenData.getPerusteEsikatseluHost()
+            + "/perusopetus/" + $scope.peruste.id + "/tiedot";
 
         $scope.$watch(
             "peruste.sisalto",
