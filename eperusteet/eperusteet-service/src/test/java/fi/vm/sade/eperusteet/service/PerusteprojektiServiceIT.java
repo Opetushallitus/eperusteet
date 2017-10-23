@@ -288,6 +288,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals("b9", julkinenKVLiite.getTyotehtavatJoissaVoiToimia().get(Kieli.FI));
         Assert.assertEquals("b10", julkinenKVLiite.getTutkinnostaPaattavaViranomainen().get(Kieli.FI));
         Assert.assertEquals("a11", julkinenKVLiite.getTutkintotodistuksenAntaja().get(Kieli.FI));
+
+        Assert.assertEquals("b6", perusteDto.getSuorittaneenOsaaminen().get(Kieli.FI));
+        Assert.assertEquals("b9", perusteDto.getTyotehtavatJoissaVoiToimia().get(Kieli.FI));
     }
 
     private void lazyAssertTyoryhma(TyoryhmaHenkiloDto trh, String ryhma, String henkilo) {
