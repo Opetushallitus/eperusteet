@@ -8,9 +8,10 @@
     <title>ePerusteet</title>
     <script type="text/javascript" src="/virkailija-raamit/apply-raamit.js"></script>
   </head>
-  <body ng-app="eperusteApp"
-    ng-model-options="{ allowInvalid: true }"
-    style="height:100%; background-color: white">
+  <body ng-app="eperusteApp" ng-model-options="{ allowInvalid: true }" style="height:100%; background-color: white">
+    <div id="loading-bar-container" sticky>
+      <div></div>
+    </div>
     <script>
       var CKEDITOR_BASEPATH = window.location.origin + window.location.pathname + "bower_components/ckeditor/";
     </script>
@@ -31,7 +32,6 @@
         </div>
       </div>
       <ep-footer></ep-footer>
-      <spinner></spinner>
       <backtotop></backtotop>
       <div class="notification-wrapper" ng-cloak>
         <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">

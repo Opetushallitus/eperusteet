@@ -19,7 +19,7 @@ import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
-    .service("SpinnerService", function(SPINNER_WAIT, $rootScope, $timeout) {
+    .service("SpinnerService", function(SPINNER_WAIT, $rootScope, $timeout, cfpLoadingBar) {
         var pyynnot = 0;
 
         function enableSpinner() {
@@ -27,6 +27,7 @@ angular
             $timeout(function() {
                 if (pyynnot > 0) {
                     $rootScope.$emit("event:spinner_on");
+                    cfpLoadingBar.start();
                 }
             }, SPINNER_WAIT);
         }
@@ -34,6 +35,7 @@ angular
         function disableSpinner() {
             --pyynnot;
             if (pyynnot === 0) {
+                cfpLoadingBar.complete();
                 $rootScope.$emit("event:spinner_off");
             }
         }

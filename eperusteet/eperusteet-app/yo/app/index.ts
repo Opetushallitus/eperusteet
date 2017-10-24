@@ -16,6 +16,7 @@
 
 
 import * as $ from "jquery";
+import "jquery-sticky";
 import "jquery-ui";
 import "angular";
 import * as _ from "lodash";
@@ -35,6 +36,7 @@ import "angular-ui-tree";
 import "angular-elastic";
 import "angular-ui-select/select.js";
 import "angular-ui-bootstrap";
+import "angular-loading-bar";
 import "restangular";
 import "ng-file-upload";
 // import "es6-promise";
@@ -135,6 +137,7 @@ import "scripts/controllers/modals/aikakatko";
 import "scripts/directives/sivunavigaatio";
 import "scripts/services/notifikaatiot";
 import "scripts/directives/statusbadge";
+import "scripts/directives/sticky";
 import "scripts/services/suosikit";
 import "scripts/services/haku";
 import "scripts/services/kayttajaprofiilit";

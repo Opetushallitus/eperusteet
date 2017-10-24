@@ -41,7 +41,8 @@ angular
         "ngFileUpload",
         "eGenericTree",
         "eMathDisplay",
-        "LocalStorageModule"
+        "LocalStorageModule",
+        "angular-loading-bar"
     ])
     .constant("SERVICE_LOC", "/eperusteet-service/api")
     .constant("ORGANISATION_SERVICE_LOC", "/lokalisointi/cxf/rest/v1/localisation")
@@ -56,7 +57,8 @@ angular
     .constant("TEXT_HIERARCHY_MAX_DEPTH", 8)
     .constant("SHOW_VERSION_FOOTER", true)
     .constant("DEVELOPMENT", process.env.NODE_ENV === "development")
-    .config(($sceProvider, $urlRouterProvider, $translateProvider, $urlMatcherFactoryProvider, $locationProvider) => {
+    .config(($sceProvider, $urlRouterProvider, $translateProvider, $urlMatcherFactoryProvider, $locationProvider,
+             cfpLoadingBarProvider) => {
         const preferred = "fi";
 
         $sceProvider.enabled(true);
@@ -76,6 +78,10 @@ angular
         $translateProvider.useSanitizeValueStrategy("escaped");
 
         $locationProvider.hashPrefix("");
+
+        cfpLoadingBarProvider.parentSelector = "#loading-bar-container";
+        cfpLoadingBarProvider.includeSpinner = true;
+        cfpLoadingBarProvider.latencyThreshold = 100;
 
         moment.locale(preferred);
     })
