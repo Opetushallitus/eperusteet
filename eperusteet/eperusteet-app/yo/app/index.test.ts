@@ -43,11 +43,11 @@ describe("app", () => {
             .forEach(comp => {
                 expect(comp).toEqual(expect.stringMatching(/^.+(Controller|Ctrl)$/));
             })
-    })
+    });
 
     test("Modules can be injected with getComponent", async () => {
         const $rootScope = await getComponent("$rootScope");
-        const $timeout = await getComponent("$timeout");
+        const $timeout: any = await getComponent("$timeout");
         expect($rootScope).toBeTruthy();
         $timeout.flush();
     });

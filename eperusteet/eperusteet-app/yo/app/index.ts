@@ -50,16 +50,6 @@ import "moment/locale/sv.js";
 
 import "./lmixins";
 
-import "eperusteet-esitys/main";
-import "eperusteet-esitys/views/sisallot";
-import "eperusteet-esitys/views/yksinkertainen";
-import "eperusteet-esitys/views/perusopetus";
-import "eperusteet-esitys/views/lukiokoulutus";
-import "eperusteet-esitys/scripts/services/menubuilder";
-import "eperusteet-esitys/scripts/services/tekstikappaleutils";
-import "eperusteet-esitys/scripts/services/sivunavigaatio";
-import "eperusteet-esitys/scripts/services/stateservice";
-
 import "scripts/app";
 import "scripts/api";
 import "scripts/misc";
@@ -129,8 +119,6 @@ import "scripts/filters/kaanna";
 import "scripts/filters/tutkintokoodi";
 import "scripts/filters/koulutusalakoodi";
 import "scripts/filters/customfilters";
-import "scripts/controllers/esitys";
-import "scripts/directives/esitysOtsikko";
 import "scripts/directives/koodisto";
 import "scripts/directives/tree";
 import "scripts/controllers/modals/aikakatko";

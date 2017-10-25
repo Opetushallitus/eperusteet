@@ -130,7 +130,7 @@ public class PermissionManager {
         Set<String> r4 = Sets.newHashSet("ROLE_VIRKAILIJA", "ROLE_APP_EPERUSTEET");
         Set<String> r5 = Sets.newHashSet("ROLE_VIRKAILIJA", "ROLE_APP_EPERUSTEET", "ROLE_ANONYMOUS");
 
-        // Perusteenosa, peruste (näiden osalta oletetaan että peruste tai sen osa on tilassa LUONNOS
+        // Peruste
         {
             EnumMap<ProjektiTila, Map<Permission, Set<String>>> tmp = new EnumMap<>(ProjektiTila.class);
             Map<Permission, Set<String>> perm;
@@ -168,10 +168,8 @@ public class PermissionManager {
             tmp.put(ProjektiTila.POISTETTU, perm);
 
             allowedRolesTmp.put(Target.PERUSTE, tmp);
-            allowedRolesTmp.put(Target.PERUSTEENOSA, tmp);
-            allowedRolesTmp.put(Target.TUTKINNONOSAVIITE, tmp);
-            allowedRolesTmp.put(Target.PERUSTEENOSAVIITE, tmp);
         }
+        // Perusteprojekti
         {
             Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
             Map<Permission, Set<String>> perm = Maps.newHashMap();
@@ -217,6 +215,51 @@ public class PermissionManager {
 
             allowedRolesTmp.put(Target.PERUSTEPROJEKTI, tmp);
         }
+        // Perusteenosa, tutkinnon osa viite, perusteen osa viite
+        // EP-1174
+        {
+            EnumMap<ProjektiTila, Map<Permission, Set<String>>> tmp = new EnumMap<>(ProjektiTila.class);
+            Map<Permission, Set<String>> perm;
+
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r2);
+            perm.put(POISTO, r2);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.LAADINTA, perm);
+
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.KOMMENTOINTI, perm);
+
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            perm.put(KOMMENTOINTI, r2);
+            perm.put(MUOKKAUS, r1);
+            tmp.put(ProjektiTila.VIIMEISTELY, perm);
+
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            perm.put(KORJAUS, r1);
+            perm.put(TILANVAIHTO, r1);
+            tmp.put(ProjektiTila.VALMIS, perm);
+
+            perm = Maps.newHashMap();
+            perm.put(KORJAUS, r1);
+            perm.put(LUKU, r5);
+            tmp.put(ProjektiTila.JULKAISTU, perm);
+
+            perm = Maps.newHashMap();
+            perm.put(KORJAUS, r1);
+            perm.put(TILANVAIHTO, r1);
+            tmp.put(ProjektiTila.POISTETTU, perm);
+
+            allowedRolesTmp.put(Target.PERUSTEENOSA, tmp);
+            allowedRolesTmp.put(Target.TUTKINNONOSAVIITE, tmp);
+            allowedRolesTmp.put(Target.PERUSTEENOSAVIITE, tmp);
+        }
+        // Perusteen metatiedot
         {
             Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
             Map<Permission, Set<String>> perm = Maps.newHashMap();
@@ -248,6 +291,7 @@ public class PermissionManager {
             tmp.put(ProjektiTila.JULKAISTU, perm);
             allowedRolesTmp.put(Target.PERUSTEENMETATIEDOT, tmp);
         }
+        // Tiedote
         {
             Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
             Map<Permission, Set<String>> perm = Maps.newHashMap();
@@ -258,6 +302,7 @@ public class PermissionManager {
             tmp.put(null, perm);
             allowedRolesTmp.put(Target.TIEDOTE, tmp);
         }
+        // Arviointiasteikko
         {
             Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
             Map<Permission, Set<String>> perm = Maps.newHashMap();

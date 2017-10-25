@@ -97,7 +97,7 @@
         <tbody>
         <tr ng-repeat="peruste in perusteet.data">
             <td>
-                <a ui-sref="root.esitys.peruste({ perusteId: peruste.id, suoritustapa: hakuparametrit.suoritustapa })">
+                <a ng-href="{{perusteEsikatseluHost}}/esitys/{{peruste.id}}/{{hakuparametrit.suoritustapa}}/tiedot">
                     <span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span>
                 </a>
             </td>

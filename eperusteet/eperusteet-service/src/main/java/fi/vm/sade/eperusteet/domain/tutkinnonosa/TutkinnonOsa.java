@@ -231,7 +231,8 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             result = super.structureEquals(that);
             result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
             result &= Objects.equals(getTyyppi(), that.getTyyppi());
-            result &= Objects.equals(getKoodi(), that.getKoodi());
+            // Todo: ei toimi vanhojen kanssa
+            //result &= Objects.equals(getKoodi(), that.getKoodi());
             result &= Objects.equals(getKoodiArvo(), that.getKoodiArvo());
             result &= Objects.equals(getKoodiUri(), that.getKoodiUri());
             result &= refXnor(getTavoitteet(), that.getTavoitteet());

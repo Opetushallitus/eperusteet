@@ -28,16 +28,13 @@ angular
         "ui.router",
         "ngResource",
         "restangular",
-        // // 'ngAnimate', Saattaa nopeuttaa puurakenteiden renderöintiä
         "pascalprecht.translate",
         "ui.bootstrap",
         "angular-cache",
-        // "ui.utils",
         "ui.sortable",
         "monospaced.elastic",
         "ui.tree",
         "ui.select",
-        "eperusteet.esitys",
         "ngFileUpload",
         "eGenericTree",
         "eMathDisplay",
@@ -85,10 +82,6 @@ angular
 
         moment.locale(preferred);
     })
-    // .config(epEsitysSettingsProvider => {
-    //     epEsitysSettingsProvider.setValue("perusopetusState", "root.selaus.perusopetus");
-    //     epEsitysSettingsProvider.setValue("showPreviewNote", true);
-    // })
     .config($qProvider => {
         $qProvider.errorOnUnhandledRejections(false);
     })

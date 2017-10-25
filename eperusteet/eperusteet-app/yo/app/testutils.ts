@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 
-import "angular";
+import * as angular from "angular";
 import "angular-ui-router";
 import "angular-sanitize";
 import "angular-resource";
@@ -25,16 +25,6 @@ import "eperusteet-frontend-utils/mathdisplay";
 
 import "moment/locale/fi.js";
 import "moment/locale/sv.js";
-
-import "eperusteet-esitys/main";
-import "eperusteet-esitys/views/sisallot";
-import "eperusteet-esitys/views/yksinkertainen";
-import "eperusteet-esitys/views/perusopetus";
-import "eperusteet-esitys/views/lukiokoulutus";
-import "eperusteet-esitys/scripts/services/menubuilder";
-import "eperusteet-esitys/scripts/services/tekstikappaleutils";
-import "eperusteet-esitys/scripts/services/sivunavigaatio";
-import "eperusteet-esitys/scripts/services/stateservice";
 
 import "scripts/app";
 import "scripts/api";
@@ -105,8 +95,6 @@ import "scripts/filters/kaanna";
 import "scripts/filters/tutkintokoodi";
 import "scripts/filters/koulutusalakoodi";
 import "scripts/filters/customfilters";
-import "scripts/controllers/esitys";
-import "scripts/directives/esitysOtsikko";
 import "scripts/directives/koodisto";
 import "scripts/directives/tree";
 import "scripts/controllers/modals/aikakatko";
@@ -192,7 +180,7 @@ import "scripts/directives/muokkaus/vaihe"
 import "scripts/directives/perustetoisetprojektit"
 import "scripts/components/tavoitteet/tavoitteet"
 
-import { Koulutustyyppi } from "scripts/types.ts";
+import { Koulutustyyppi } from "scripts/types";
 
 export const testModule = (name: string) => {
     angular.mock.inject([name, (injected) => {
@@ -201,7 +189,7 @@ export const testModule = (name: string) => {
 };
 
 export const getOfType = (type: "service" | "factory" | "filter" | "directive" | "state" | "controller") => {
-    return _.chain(angular.module("eperusteApp")._invokeQueue)
+    return _.chain((angular.module("eperusteApp") as any)._invokeQueue)
         .filter(val => type === "controller" ? val[0] === "$controllerProvider" : val[1] === type)
         .map(val => val[2][0])
         .value();
@@ -229,7 +217,7 @@ export function setInput(el: JQuery, text: string) {
 export async function compiled(template, scope?: angular.IScope): Promise<[JQuery, angular.IScope]> {
     const $rootScope = await getComponent("$rootScope");
     const $scope = scope || ($rootScope as any).$new();
-    const $compile = await getComponent("$compile");
+    const $compile: any = await getComponent("$compile");
     const el = $compile(angular.element(template))($scope);
     $scope.$digest();
     return [el, $scope];

@@ -20,7 +20,7 @@ import * as _ from "lodash";
 angular
     .module("eperusteApp")
     .config(function($stateProvider) {
-        var paramList = "?nimi&koulutusala&tyyppi&opintoala";
+        const paramList = "?nimi&koulutusala&tyyppi&opintoala";
         $stateProvider
             .state("root.selaus", {
                 url: "/selaus",
@@ -58,229 +58,8 @@ angular
                 template: require("views/lukiokoulutuslistaus.html"),
                 controller: "LukiokoulutusListaController"
             })
-            .state("root.selaus.lisaopetus", {
-                url: "/lisaopetus/:perusteId",
-                template: require("eperusteet-esitys/views/yksinkertainen.html"),
-                controller: "epYksinkertainenPerusteController",
-                resolve: {
-                    sisalto: function($stateParams, $q, Perusteet, SuoritustapaSisalto) {
-                        // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
-                        return $q.all([
-                            Perusteet.get({ perusteId: $stateParams.perusteId }).$promise,
-                            SuoritustapaSisalto.get({ perusteId: $stateParams.perusteId, suoritustapa: "esiopetus" })
-                                .$promise
-                        ]);
-                    },
-                    koulutusalaService: "Koulutusalat",
-                    opintoalaService: "Opintoalat"
-                }
-            })
-            .state("root.selaus.lisaopetus.tekstikappale", {
-                url: "/tekstikappale/:tekstikappaleId",
-                template: require("eperusteet-esitys/views/tekstikappale.html"),
-                controller: "epEsitysSisaltoController",
-                resolve: {
-                    tekstikappaleId: function($stateParams) {
-                        return $stateParams.tekstikappaleId;
-                    },
-                    tekstikappale: function(tekstikappaleId, PerusteenOsat) {
-                        return PerusteenOsat.getByViite({ viiteId: tekstikappaleId }).$promise;
-                    },
-                    lapset: function(sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
-                        return epTekstikappaleChildResolver.get(sisalto[1], tekstikappaleId);
-                    }
-                }
-            })
-            .state("root.selaus.lisaopetus.tiedot", {
-                url: "/tiedot",
-                template: require("eperusteet-esitys/views/tiedot.html"),
-                controller: "epEsitysTiedotController"
-            })
-            .state("root.selaus.esiopetus", {
-                url: "/esiopetus/:perusteId",
-                template: require("eperusteet-esitys/views/yksinkertainen.html"),
-                controller: "epYksinkertainenPerusteController",
-                resolve: {
-                    sisalto: function($stateParams, $q, Perusteet, SuoritustapaSisalto) {
-                        // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
-                        return $q.all([
-                            Perusteet.get({ perusteId: $stateParams.perusteId }).$promise,
-                            SuoritustapaSisalto.get({ perusteId: $stateParams.perusteId, suoritustapa: "esiopetus" })
-                                .$promise
-                        ]);
-                    },
-                    koulutusalaService: "Koulutusalat",
-                    opintoalaService: "Opintoalat"
-                }
-            })
-            .state("root.selaus.esiopetus.tekstikappale", {
-                url: "/tekstikappale/:tekstikappaleId",
-                template: require("eperusteet-esitys/views/tekstikappale.html"),
-                controller: "epEsitysSisaltoController",
-                resolve: {
-                    tekstikappaleId: function($stateParams) {
-                        return $stateParams.tekstikappaleId;
-                    },
-                    tekstikappale: function(tekstikappaleId, PerusteenOsat) {
-                        return PerusteenOsat.getByViite({ viiteId: tekstikappaleId }).$promise;
-                    },
-                    lapset: function(sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
-                        return epTekstikappaleChildResolver.get(sisalto[1], tekstikappaleId);
-                    }
-                }
-            })
-            .state("root.selaus.esiopetus.tiedot", {
-                url: "/tiedot",
-                template: require("eperusteet-esitys/views/tiedot.html"),
-                controller: "epEsitysTiedotController"
-            })
-            .state("root.selaus.perusopetus", {
-                url: "/perusopetus/:perusteId",
-                template: require("eperusteet-esitys/views/perusopetus.html"),
-                controller: "epPerusopetusController",
-                resolve: {
-                    perusteId: function($stateParams) {
-                        return $stateParams.perusteId;
-                    },
-                    peruste: function(perusteId, Perusteet) {
-                        return Perusteet.get({ perusteId: perusteId }).$promise;
-                    },
-                    sisalto: function(
-                        peruste,
-                        $q,
-                        LaajaalaisetOsaamiset,
-                        Oppiaineet,
-                        Vuosiluokkakokonaisuudet,
-                        SuoritustapaSisalto
-                    ) {
-                        if (_.isArray(peruste.data)) {
-                            peruste = peruste.data[0];
-                        }
-                        var perusteId = peruste.id;
-                        return $q.all([
-                            peruste,
-                            LaajaalaisetOsaamiset.query({ perusteId: perusteId }).$promise,
-                            Oppiaineet.query({ perusteId: perusteId }).$promise,
-                            Vuosiluokkakokonaisuudet.query({ perusteId: perusteId }).$promise,
-                            SuoritustapaSisalto.get({ perusteId: perusteId, suoritustapa: "perusopetus" }).$promise
-                        ]);
-                    }
-                }
-            })
-            .state("root.selaus.perusopetus.vuosiluokkakokonaisuus", {
-                url: "/vuosiluokkakokonaisuus/:vlkId",
-                template: require("eperusteet-esitys/views/vuosiluokkakokonaisuus.html"),
-                controller: "epPerusopetusVlkController"
-            })
-            .state("root.selaus.perusopetus.laajaalaiset", {
-                url: "/laajaalaisetosaamiset",
-                template: require("eperusteet-esitys/views/laajaalaiset.html"),
-                controller: "epLaajaalaisetOsaamisetController"
-            })
-            .state("root.selaus.perusopetus.vlkoppiaine", {
-                url: "/vuosiluokkakokonaisuus/:vlkId/oppiaine/:oppiaineId",
-                template: require("eperusteet-esitys/views/vlkoppiaine.html"),
-                controller: "epPerusopetusVlkOppiaineController",
-                resolve: {
-                    oppiaineId: function($stateParams) {
-                        return $stateParams.oppiaineId;
-                    },
-                    oppiaine: function(perusteId, Oppiaineet, oppiaineId) {
-                        return Oppiaineet.get({ perusteId: perusteId, osanId: oppiaineId }).$promise;
-                    }
-                }
-            })
-            .state("root.selaus.perusopetus.sisallot", {
-                url: "/sisallot/:oppiaineId?vlk&sisalto&osaaminen&valittu",
-                template: require("eperusteet-esitys/views/vlkoppiaine.html"),
-                controller: "epPerusopetusSisallotController",
-                resolve: {
-                    oppiaineId: function($stateParams) {
-                        return $stateParams.oppiaineId;
-                    },
-                    oppiaine: function(perusteId, Oppiaineet, oppiaineId) {
-                        return oppiaineId
-                            ? Oppiaineet.get({ perusteId: perusteId, osanId: oppiaineId }).$promise
-                            : null;
-                    }
-                }
-            })
-            .state("root.selaus.lukiokoulutus", {
-                url: "/lukiokoulutus/:perusteId",
-                template: require("eperusteet-esitys/views/lukiokoulutus.html"),
-                controller: "epLukiokoulutusController",
-                resolve: {
-                    perusteId: function($stateParams) {
-                        return $stateParams.perusteId;
-                    },
-                    peruste: function(perusteId, Perusteet) {
-                        return Perusteet.get({ perusteId: perusteId }).$promise;
-                    },
-                    sisalto: function(peruste, $q, LukionOppiaineet, SuoritustapaSisalto) {
-                        //TODO
-                        return $q.when([]);
-                        /*
-            if (_.isArray(peruste.data)) {
-              peruste = peruste.data[0];
-            }
-            var perusteId = peruste.id;
-            return $q.all([
-              peruste,
-              LukionOppiaineet.query({perusteId: perusteId}).$promise,
-              SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: 'lukiokoulutus'}).$promise,
-            ]);*/
-                    }
-                }
-            })
-            .state("root.selaus.lukiokoulutus.sisallot", {
-                url: "/sisallot/:oppiaineId?vlk&sisalto&osaaminen&valittu",
-                template: require("eperusteet-esitys/views/vlkoppiaine.html"),
-                controller: "epLukiokoulutusSisallotController",
-                resolve: {
-                    oppiaineId: function($stateParams) {
-                        return $stateParams.oppiaineId;
-                    },
-                    oppiaine: function(perusteId, Oppiaineet, oppiaineId) {
-                        return oppiaineId
-                            ? Oppiaineet.get({ perusteId: perusteId, osanId: oppiaineId }).$promise
-                            : null;
-                    }
-                }
-            })
-            .state("root.selaus.perusopetus.tekstikappale", {
-                url: "/tekstikappale/:tekstikappaleId",
-                template: require("eperusteet-esitys/views/tekstikappale.html"),
-                controller: "epPerusopetusTekstikappaleController",
-                resolve: {
-                    tekstikappaleId: function($stateParams) {
-                        return $stateParams.tekstikappaleId;
-                    },
-                    tekstikappale: function(tekstikappaleId, PerusteenOsat) {
-                        return PerusteenOsat.getByViite({ viiteId: tekstikappaleId }).$promise;
-                    },
-                    lapset: function(sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
-                        return epTekstikappaleChildResolver.get(sisalto[4], tekstikappaleId);
-                    }
-                }
-            })
-            .state("root.selaus.lukiokoulutus.tekstikappale", {
-                url: "/tekstikappale/:tekstikappaleId",
-                template: require("eperusteet-esitys/views/tekstikappale.html"),
-                controller: "epLukiokoulutusTekstikappaleController",
-                resolve: {
-                    tekstikappaleId: function($stateParams) {
-                        return $stateParams.tekstikappaleId;
-                    },
-                    tekstikappale: function(tekstikappaleId, PerusteenOsat) {
-                        return PerusteenOsat.getByViite({ viiteId: tekstikappaleId }).$promise;
-                    },
-                    lapset: function(sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
-                        return epTekstikappaleChildResolver.get(sisalto[4], tekstikappaleId);
-                    }
-                }
-            });
     })
-    .controller("EsiopetusListaController", function($scope, $state, Perusteet, Notifikaatiot) {
+    .controller("EsiopetusListaController", function($scope, $state, Perusteet, Notifikaatiot, YleinenData) {
         $scope.lista = [];
         Perusteet.get(
             {
@@ -293,8 +72,9 @@ angular
                 $scope.lista = _(res.data)
                     .sortBy("voimassaoloLoppuu")
                     .reverse()
-                    .each(function(eo: any) {
-                        eo.$url = $state.href("root.selaus.esiopetus", { perusteId: eo.id });
+                    .each((eo: any) => {
+                        console.log(eo);
+                        eo.$url = YleinenData.getPerusteEsikatseluHost() + "/esiopetus/" + eo.id + "/tiedot";
                     })
                     .value();
             },
@@ -336,18 +116,15 @@ angular
                     console.warn("sivutusta ei ole toteutettu, tuloksia yli " + res.sivukoko);
                 }
 
-                var cresult = [].concat(res[0].data).concat(res[1].data);
+                const cresult = [].concat(res[0].data).concat(res[1].data);
 
                 $scope.lista = _(cresult)
                     .sortBy("voimassaoloLoppuu")
                     .reverse()
                     .each(function(peruste) {
-                        peruste.$url = $state.href(
-                            "root.selaus." + (YleinenData.isLisaopetus(peruste) ? "lisaopetus" : "perusopetus"),
-                            {
-                                perusteId: peruste.id
-                            }
-                        );
+                        peruste.$url = YleinenData.getPerusteEsikatseluHost()
+                            + "/" + (YleinenData.isLisaopetus(peruste) ? "lisaopetus" : "perusopetus")
+                            + "/" + peruste.id + "/tiedot";
                     })
                     .value();
             }, Notifikaatiot.serverCb);
@@ -387,18 +164,19 @@ angular
         Profiili,
         Notifikaatiot
     ) {
-        var pat: RegExp;
+        let pat: RegExp;
         // Viive, joka odotetaan, ennen kuin haku nimi muutoksesta lähtee serverille.
-        var hakuViive = 300; //ms
+        const hakuViive = 300; // ms
         // Huom! Sivu alkaa UI:lla ykkösestä, serverillä nollasta.
         $scope.nykyinenSivu = 1;
         $scope.sivuja = 1;
         $scope.kokonaismaara = 0;
         $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
         $scope.kirjanmerkinNimi = "";
+        $scope.perusteEsikatseluHost = YleinenData.getPerusteEsikatseluHost();
 
         $scope.updateUrl = function() {
-            var newParams = _.merge($stateParams, $scope.hakuparametrit);
+            const newParams = _.merge($stateParams, $scope.hakuparametrit);
             if (!_.isEmpty($scope.kirjanmerkinNimi)) {
                 Profiili.asetaSuosikki(
                     $state.current.name,
@@ -430,7 +208,7 @@ angular
             $scope.haePerusteet($scope.nykyinenSivu);
         };
 
-        var hakuVastaus = function(vastaus) {
+        const hakuVastaus = function(vastaus) {
             $scope.perusteet = vastaus;
             $scope.nykyinenSivu = $scope.perusteet.sivu + 1;
             $scope.hakuparametrit.sivukoko = $scope.perusteet.sivukoko;
@@ -445,9 +223,9 @@ angular
         };
 
         /**
-     * Hakee sivun serveriltä.
-     * @param {number} sivu UI:n sivunumero, alkaa ykkösestä.
-     */
+         * Hakee sivun serveriltä.
+         * @param {number} sivu UI:n sivunumero, alkaa ykkösestä.
+         */
         $scope.haePerusteet = function(sivu) {
             $scope.hakuparametrit.sivu = sivu - 1;
             Haku.setHakuparametrit($state.current.name, $scope.hakuparametrit);

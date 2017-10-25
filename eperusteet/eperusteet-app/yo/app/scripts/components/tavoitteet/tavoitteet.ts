@@ -37,7 +37,7 @@ import * as _ from "lodash";
 
 angular.module("eperusteApp").directive("aipeTavoitteet", () => {
     return {
-        templateUrl: require("scripts/components/tavoitteet/tavoitteet.pug"),
+        template: require("scripts/components/tavoitteet/tavoitteet.pug"),
         restrict: "E",
         scope: {
             model: "=",

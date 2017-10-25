@@ -2,9 +2,8 @@
 <div class="main-content" id="main">
     <div class="row tutkinto-sisalto">
         <div class="tutkinto">
-            <div class="esityksen-tarkastelu" ng-show="{{projekti.esikatseltavissa || peruste.tila === 'valmis'}}">
-                <a target="_blank" class="url" href="{{ $esitysurl }}" icon-role="sunglasses"
-                   kaanna="'tarkastele-esitysta'"></a>
+            <div class="esityksen-tarkastelu clearfix">
+                <a class="url" href="{{$esitysurl}}" icon-role="sunglasses" kaanna="'tarkastele-esitysta'" ng-show="$esitysurl"></a>
             </div>
 
             <div ng-hide="editing">
@@ -12,7 +11,8 @@
                     <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value)"></rajaus>
                 </div>
                 <a ng-click="avaaSuljeKaikki()" class="open-close action-link">
-                    <span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                    <span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span>
+                </a>
             </div>
 
             <div class="clearfix"></div>

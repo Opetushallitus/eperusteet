@@ -16,7 +16,7 @@
 
 import * as angular from "angular";
 import * as _ from "lodash";
-// import { Lokalisointi } from "../utils";
+import {Lokalisointi} from "scripts/services/utils";
 
 angular
     .module("eperusteApp")

@@ -105,8 +105,8 @@ describe("Kaanna", () => {
 
 describe("Kieli", () => {
     let Kieli: any;
-    let $compile: angular.ICompileService;
-    let $rootScope: angular.IRootScopeService;
+    let $compile: {}; // Todo tyypitykset
+    let $rootScope: {}; // Todo tyypitykset
 
     beforeEach(async () => {
         mockApp();

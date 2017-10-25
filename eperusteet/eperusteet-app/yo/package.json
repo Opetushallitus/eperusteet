@@ -55,7 +55,6 @@
       "^app/(.*)": "<rootDir>/app/$1",
       "^scripts/(.*)": "<rootDir>/app/scripts/$1",
       "^views/(.*)": "<rootDir>/app/views/$1",
-      "^eperusteet-esitys/(.*)": "<rootDir>/app/eperusteet-esitys/$1",
       "^styles/(.*)": "<rootDir>/app/styles/$1",
       "^images/(.*)": "<rootDir>/app/images/$1"
     },

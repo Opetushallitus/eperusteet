@@ -23,20 +23,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum KoulutusTyyppi {
     PERUSTUTKINTO("koulutustyyppi_1"),
+    LUKIOKOULUTUS("koulutustyyppi_2"),
+    TELMA("koulutustyyppi_5"),
+    LISAOPETUS("koulutustyyppi_6"),
     AMMATTITUTKINTO("koulutustyyppi_11"),
     ERIKOISAMMATTITUTKINTO("koulutustyyppi_12"),
-    LISAOPETUS("koulutustyyppi_6"),
+    AIKUISTENLUKIOKOULUTUS("koulutustyyppi_14"),
     ESIOPETUS("koulutustyyppi_15"),
-    TELMA("koulutustyyppi_5"),
+    PERUSOPETUS("koulutustyyppi_16"),
+    AIKUISTENPERUSOPETUS("koulutustyyppi_17"),
     VALMA("koulutustyyppi_18"),
     VARHAISKASVATUS("koulutustyyppi_20"),
-    PERUSOPETUS("koulutustyyppi_16"),
-    LUKIOKOULUTUS("koulutustyyppi_2"),
-    AIKUISTENPERUSOPETUS("koulutustyyppi_17"),
+    PERUSOPETUSVALMISTAVA("koulutustyyppi_22"),
     LUKIOVALMISTAVAKOULUTUS("koulutustyyppi_23"),
-    AIKUISTENLUKIOKOULUTUS("koulutustyyppi_14"),
-    TPO("koulutustyyppi_999907"), // FIXME
-    PERUSOPETUSVALMISTAVA("koulutustyyppi_22");
+    TPO("koulutustyyppi_999907");
 
     private final String tyyppi;
 

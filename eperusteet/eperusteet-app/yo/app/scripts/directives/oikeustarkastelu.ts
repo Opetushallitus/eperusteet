@@ -26,7 +26,7 @@ angular.module("eperusteApp").directive("oikeustarkastelu", function(Perusteproj
                 oikeudet = [oikeudet];
             }
             if (
-                !_.any(oikeudet, function(o) {
+                !_.any(oikeudet, function(o: any) {
                     return PerusteprojektiOikeudetService.onkoOikeudet(o.target, o.permission);
                 })
             ) {
