@@ -270,3 +270,21 @@ strong.ep-match {
 .cke_button_icon:hover {
     text-decoration: none;
 }
+
+
+#loading-bar-container {
+  position: relative;
+  z-index: 1001;
+}
+
+#loading-bar > .bar {
+  position: absolute;
+}
+
+#loading-bar-spinner {
+  position: absolute;
+}
+
+#raamit-header {
+  margin-bottom: 0 !important;
+}

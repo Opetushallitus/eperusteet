@@ -178,9 +178,9 @@ angular-i18n@^1.6.6:
   version "1.6.6"
   resolved "https://registry.yarnpkg.com/angular-i18n/-/angular-i18n-1.6.6.tgz#f21cbf9161a449be4b7140d8b153f6ca9b087d24"
 
-angular-loading-bar@0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/angular-loading-bar/-/angular-loading-bar-0.8.0.tgz#908cca4e224050b1301b11de4c3e082eb88bbf91"
+angular-loading-bar@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/angular-loading-bar/-/angular-loading-bar-0.9.0.tgz#37ef52c25f102c216e7b3cdfd2fc5a5df9628e45"
 
 angular-local-storage@^0.7.1:
   version "0.7.1"
@@ -4597,9 +4597,19 @@ jodid25519@^1.0.0:
   dependencies:
     jsbn "~0.1.0"
 
+jquery-sticky@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/jquery-sticky/-/jquery-sticky-1.0.4.tgz#2fe8d03dc904685340daa12cbdd1ca0c921b09ac"
+  dependencies:
+    jquery "*"
+
 jquery-ui@1.12.1:
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.12.1.tgz#bcb4045c8dd0539c134bc1488cdd3e768a7a9e51"
+
+jquery@*:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
 
 jquery@1.11.0:
   version "1.11.0"
