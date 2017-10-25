@@ -78,18 +78,12 @@ angular
 
         // Osoitetaan julkiselle puolelle
         $scope.$esitysurl = $scope.projekti.esikatseltavissa
-            ? YleinenData.getPerusteEsikatseluHost() +
-              "/esitys/" +
-              $scope.peruste.id +
-              "/" +
-              $stateParams.suoritustapa +
-              "/tiedot"
-            : $state.href("root.esitys.peruste", {
-                  perusteId: $scope.peruste.id,
-                  suoritustapa: $stateParams.suoritustapa
-              }) +
-              "?prestate=" +
-              $location.url();
+            ? YleinenData.getPerusteEsikatseluHost()
+                + "/esitys/" + $scope.peruste.id
+                + "/" + $stateParams.suoritustapa
+                + "/tiedot"
+            : null;
+
 
         $scope.onTyoryhmia = function() {
             return !_.isEmpty($scope.tyoryhmat);

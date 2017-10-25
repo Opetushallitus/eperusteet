@@ -29,9 +29,8 @@ angular.module("eperusteApp").service("Haku", function Haku(YleinenData) {
             sivu: 0,
             sivukoko: 20,
             suoritustapa: "ops",
-            perusteTyyppi: "normaali"
-            // FIXME Ota pois kommenteista
-            // tila: 'valmis'
+            perusteTyyppi: "normaali",
+            tila: "valmis"
         },
         "root.selaus.ammatillinenaikuiskoulutus": {
             nimi: "",
@@ -43,9 +42,8 @@ angular.module("eperusteApp").service("Haku", function Haku(YleinenData) {
             sivu: 0,
             sivukoko: 20,
             suoritustapa: "naytto",
-            perusteTyyppi: "normaali"
-            // FIXME Ota pois kommenteista
-            // tila: 'valmis'
+            perusteTyyppi: "normaali",
+            tila: "valmis"
         }
     };
 

@@ -2,8 +2,8 @@
     <!-- partials/perusteprojekti/tpoopetus.html -->
     <div class="row tutkinto-sisalto">
         <div class="tutkinto">
-            <div class="esityksen-tarkastelu">
-                <a class="url" href="{{ $esitysurl }}" icon-role="sunglasses" kaanna="'tarkastele-esitysta'"></a>
+            <div class="esityksen-tarkastelu clearfix">
+                <a class="url" href="{{$esitysurl}}" icon-role="sunglasses" kaanna="'tarkastele-esitysta'" ng-show="$esitysurl"></a>
             </div>
 
             <div ng-hide="editing">

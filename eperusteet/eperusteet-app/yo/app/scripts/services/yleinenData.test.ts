@@ -1,5 +1,6 @@
 import * as yd from "./yleinenData";
-import * as _ from "lodash";
+import _ from "lodash";
+
 import { getComponent, inject, getOfType, testDirective, testModule, mockApp } from "app/testutils";
 
 describe("YleinenData", async () => {
@@ -43,6 +44,16 @@ describe("YleinenData", async () => {
             expect(ki).toHaveProperty("hasPdfCreation");
             expect(_.isBoolean(ki.hasPdfCreation)).toEqual(true);
         });
+    });
+
+    test("koulutustyyppiInfo uniikit arvot", () => {
+        const uniikitNimet = _(yd.koulutustyyppiInfo)
+            .values()
+            .map("nimi")
+            .uniq()
+            .size();
+        expect(uniikitNimet).toEqual(_.size(yd.koulutustyyppiInfo));
+
     });
 
     test("default export is a function", () => {
