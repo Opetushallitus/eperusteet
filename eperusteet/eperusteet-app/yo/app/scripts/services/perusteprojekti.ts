@@ -343,7 +343,6 @@ angular
                         },
                         function(vastaus) {
                             deferred.resolve(vastaus);
-                            resolve(vastaus);
                             sisalto = vastaus;
                         },
                         function(virhe) {
@@ -400,14 +399,15 @@ angular
                             suoritustapa: suoritustapa
                         },
                         function(vastaus) {
-                            resolve(vastaus);
                             sisalto = vastaus;
+                            deferred.resolve(sisalto);
                         },
                         function(virhe) {
                             deferred.reject(virhe);
                         }
                     );
                 }
+                resolve(sisalto);
             });
         };
 
@@ -437,28 +437,33 @@ angular
             }
         };
 
-        this.alustaProjektinTiedot = async function(stateParams) {
+        this.alustaProjektinTiedot = function(stateParams) {
             LukiokoulutusService.setTiedot(this);
             PerusopetusService.setTiedot(this);
             AIPEService.setTiedot(this);
             projektinTiedotDeferred = $q.defer();
             try {
-                projekti = await PerusteprojektiResource.get({ id: stateParams.perusteProjektiId }).$promise;
-                peruste = await Perusteet.get({ perusteId: projekti._peruste }).$promise;
-                if (!_.isEmpty(peruste.suoritustavat)) {
-                    peruste.suoritustavat = _.sortBy(peruste.suoritustavat, "suoritustapakoodi");
-                }
-                projektinTiedotDeferred.resolve();
+                PerusteprojektiResource.get({ id: stateParams.perusteProjektiId }).$promise
+                    .then(projektiRes => {
+                        projekti = projektiRes;
+                        Perusteet.get({ perusteId: projekti._peruste }).$promise
+                            .then(perusteRes => {
+                                peruste = perusteRes;
+                                if (!_.isEmpty(peruste.suoritustavat)) {
+                                    peruste.suoritustavat = _.sortBy(peruste.suoritustavat, "suoritustapakoodi");
+                                }
+                                projektinTiedotDeferred.resolve();
+                            });
+                    });
             } catch (virhe) {
-                projektinTiedotDeferred.reject();
                 Notifikaatiot.serverCb(virhe);
+                projektinTiedotDeferred.reject(virhe);
             }
             return projektinTiedotDeferred.promise;
         };
 
         this.alustaPerusteenSisalto = async function(stateParams, forced) {
             PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
-
             if (
                 forced ||
                 stateParams.suoritustapa === "opas" ||

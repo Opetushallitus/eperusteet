@@ -8,6 +8,7 @@ app/bower_components
 .netbeans.xml
 *~
 .bundle_stats.html
+.log
 
 app/**/*.map
 bundle_stats.html

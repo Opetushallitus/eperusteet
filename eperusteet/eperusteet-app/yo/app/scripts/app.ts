@@ -389,12 +389,12 @@ angular
                     "" + state.url + " ", params
                 );
             });
-            // $rootScope.$on("$stateChangeStart", (event, state, params) => {
-            //     console.info("Starting state change");
-            // });
-            // $rootScope.$on("$stateChangeError", (event, a, b, c, d, e) => {
-            //     console.info("Failed state change", a, b, c, d, e);
-            // });
+            $rootScope.$on("$stateChangeStart", (event, state, params) => {
+                console.info("Starting state change to", state);
+            });
+            $rootScope.$on("$stateChangeError", (event, a, b, c, d, e) => {
+                console.info("Failed state change", e, a, b, c, d);
+            });
         }
     });
 

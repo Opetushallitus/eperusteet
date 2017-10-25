@@ -188,6 +188,13 @@ export const testModule = (name: string) => {
     }]);
 };
 
+export const getDirectives = () => {
+    return _.chain(angular.module("eperusteApp")._invokeQueue)
+        .filter(val => val[1] === "directive")
+        .map(val => val[2][1])
+        .value();
+};
+
 export const getOfType = (type: "service" | "factory" | "filter" | "directive" | "state" | "controller") => {
     return _.chain((angular.module("eperusteApp") as any)._invokeQueue)
         .filter(val => type === "controller" ? val[0] === "$controllerProvider" : val[1] === type)
@@ -203,8 +210,12 @@ export const mockApp = () => {
 // Get injected component
 export async function getComponent(name: string) {
     return new Promise((resolve, reject) => {
-        return angular.mock.inject([name, (injectedModule) => {
-            resolve(injectedModule);
+        return angular.mock.inject([name, async (injectedModule) => {
+            const realModule = injectedModule;
+            if (_.isObject(realModule) && realModule.$$state && realModule.$$state.value) {
+                resolve(realModule.$$state.value);
+            }
+            resolve(realModule);
         }]);
     });
 }

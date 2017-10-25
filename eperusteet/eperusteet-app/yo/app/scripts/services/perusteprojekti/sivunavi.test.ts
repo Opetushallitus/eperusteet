@@ -60,10 +60,10 @@ describe("PerusteProjektiSivunavi", () => {
         PerusteprojektiTiedotService = await getComponent("PerusteprojektiTiedotService");
         const $httpBackend: any = await getComponent("$httpBackend");
         $timeout = await getComponent("$timeout");
-        $httpBackend.when("GET", /cas\/me/).respond({});
-        $httpBackend.when("GET", /views.+/).respond({});
-        $httpBackend.when("GET", /localisation.+/).respond({});
-        $httpBackend.when("GET", /eperusteet-service\/api.+/).respond({});
+        // $httpBackend.when("GET", /cas\/me/).respond({});
+        // $httpBackend.when("GET", /views.+/).respond({});
+        // $httpBackend.when("GET", /localisation.+/).respond({});
+        // $httpBackend.when("GET", /eperusteet-service\/api.+/).respond({});
     });
 
     test("Can be injected", () => expect(PerusteProjektiSivunavi).toBeTruthy());

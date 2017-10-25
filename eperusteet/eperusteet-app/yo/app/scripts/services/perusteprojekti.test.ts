@@ -12,11 +12,112 @@ import * as T from "../types";
 
 describe("PerusteProjektiService", () => {
     let PerusteProjektiService: any;
+    let PerusteprojektiTiedotService: any;
+    let Api: any;
+    let $httpBackend: any;
 
     beforeEach(mockApp);
 
+    beforeEach(inject(async function($injector) {
+        $httpBackend = $injector.get("$httpBackend");
+        Api = $injector.get("Api");
+        $httpBackend.when("GET", "/eperusteet-service/api/kayttajaprofiili")
+            .respond({});
+        $httpBackend.when("GET", "/cas/me")
+            .respond({});
+        // $httpBackend.when("GET", "/eperusteet-service/api/perusteet")
+        //     .respond([]);
+        $httpBackend.when("GET", "/eperusteet-service/api/perusteet/2/suoritustavat/perusopetus/sisalto")
+            .respond({
+                "id" : 1180,
+                "lapset" : [ {
+                    "id" : 1181,
+                    "perusteenOsa" : {
+                        "id" : 1200,
+                        "luotu" : 1508758929376,
+                        "muokattu" : 1508758929376,
+                        "muokkaaja" : "test",
+                        "nimi" : {
+                            "_tunniste" : "ede4f580-1e06-458e-b297-af121da2f9c9",
+                            "fi" : "Laaja-alaiset osaamiset",
+                            "_id" : "1190"
+                        },
+                        "tila" : "luonnos",
+                        "tunniste" : "laajaalainenosaaminen",
+                        "valmis" : null,
+                        "kaannettava" : null,
+                        "osanTyyppi" : "tekstikappale"
+                    },
+                    "lapset" : [ ],
+                    "_perusteenOsa" : "1200"
+                } ]
+            });
+        $httpBackend.when("GET", "/eperusteet-service/api/perusteprojektit/1")
+            .respond({
+                "id" : 1,
+                "nimi" : "Perusopetus",
+                "_peruste" : "2",
+                "diaarinumero" : "x",
+                "paatosPvm" : null,
+                "toimikausiAlku" : null,
+                "toimikausiLoppu" : null,
+                "tehtavaluokka" : null,
+                "tehtava" : null,
+                "yhteistyotaho" : null,
+                "tila" : "laadinta",
+                "ryhmaOid" : "x.y.z",
+                "esikatseltavissa" : false
+            });
+
+        $httpBackend.when("GET", "/eperusteet-service/api/perusteet/2")
+            .respond({
+                "id" : 2,
+                "globalVersion" : {
+                    "aikaleima" : 1508758929851
+                },
+                "nimi" : null,
+                "koulutustyyppi" : "koulutustyyppi_16",
+                "koulutukset" : [ ],
+                "kielet" : [ "sv", "fi" ],
+                "kuvaus" : null,
+                "maarayskirje" : null,
+                "muutosmaaraykset" : [ ],
+                "diaarinumero" : null,
+                "voimassaoloAlkaa" : null,
+                "siirtymaPaattyy" : null,
+                "voimassaoloLoppuu" : null,
+                "paatospvm" : null,
+                "luotu" : 1508758929298,
+                "muokattu" : 1508758929298,
+                "tila" : "luonnos",
+                "tyyppi" : "normaali",
+                "koulutusvienti" : false,
+                "korvattavatDiaarinumerot" : [ ],
+                "osaamisalat" : [ ],
+                "tyotehtavatJoissaVoiToimia" : null,
+                "suorittaneenOsaaminen" : null,
+                "kvliite" : null
+            });
+
+        $httpBackend.when("GET", /.*/)
+            .respond((a, b) => {
+                console.log("UNHANDLED GET", a, b);
+            });
+
+    }));
+
+    afterEach(() => {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
     beforeEach(async () => {
         PerusteProjektiService = await getComponent("PerusteProjektiService");
+        PerusteprojektiTiedotService = await getComponent("PerusteprojektiTiedotService");
+        // $httpBackend.whenRoute("GET", /perusteprojektit/)
+        //     .respond(async (param) => {
+        //         console.log("Trying to get perusteprojekti", param);
+        //     });
     });
 
     test("Can be injected", () => expect(PerusteProjektiService).toBeTruthy());
@@ -115,4 +216,29 @@ describe("PerusteProjektiService", () => {
         assertUrl("#/fi/perusteprojekti/2/opas/opassisalto", T.Perusopetusvalmistava, { tyyppi: "opas" });
         assertUrl("#/fi/perusteprojekti/2/opas/opassisalto", T.Perustutkinto, { tyyppi: "opas" });
     });
+
+
+    function tilaHelper() {
+
+    }
+
+    test.only("Kaiken tyyppinen sisältö ladataan", async (next) => {
+        $httpBackend.flush();
+        const p = PerusteprojektiTiedotService.alustaProjektinTiedot({
+            lang: "fi",
+            perusteProjektiId: "1"
+        })
+        .then(res => {
+            PerusteprojektiTiedotService.haeSisalto(2, "perusopetus")
+                .then(sisalto => {
+                    expect(sisalto).toBeTruthy();
+                    next();
+                })
+            next();
+        })
+        $httpBackend.flush();
+
+        // console.log("Got sisalto", sisalto);
+    });
+
 });
