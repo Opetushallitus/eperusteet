@@ -20,14 +20,40 @@ describe("PerusteProjektiService", () => {
 
     beforeEach(inject(async function($injector) {
         $httpBackend = $injector.get("$httpBackend");
+
         Api = $injector.get("Api");
+
         $httpBackend.when("GET", "/eperusteet-service/api/kayttajaprofiili")
             .respond({});
+
         $httpBackend.when("GET", "/cas/me")
             .respond({});
-        // $httpBackend.when("GET", "/eperusteet-service/api/perusteet")
-        //     .respond([]);
-        $httpBackend.when("GET", "/eperusteet-service/api/perusteet/2/suoritustavat/perusopetus/sisalto")
+
+        $httpBackend.when("GET", /eperusteet-service\/api\/perusteet\/\d+\/perusopetus\/laajaalaisetosaamiset/)
+            .respond([]);
+
+        $httpBackend.when("GET", /eperusteet-service\/api\/perusteet\/\d+\/perusopetus\/oppiaineet/)
+            .respond([]);
+
+        $httpBackend.when("GET", /eperusteet-service\/api\/perusteet\/\d+\/perusopetus\/vuosiluokkakokonaisuudet/)
+            .respond([]);
+
+        $httpBackend.when("GET", /eperusteet-service\/api\/perusteet\/\d+\/.+\/aihekokonaisuudet/)
+            .respond([]);
+
+        $httpBackend.when("GET", /eperusteet-service\/api\/perusteet\/\d+\/.+\/oppiaineet/)
+            .respond([]);
+
+        $httpBackend.when("GET", /eperusteet-service\/api\/perusteet\/\d+\/.+\/kurssit/)
+            .respond([]);
+
+        $httpBackend.when("GET", /eperusteet-service\/api\/perusteet\/17\/.+\/laajaalaiset/)
+            .respond([]);
+
+        $httpBackend.when("GET", /eperusteet-service\/api\/perusteet\/17\/.+\/vaiheet/)
+            .respond([]);
+
+        $httpBackend.when("GET", /eperusteet-service\/api\/perusteet\/\d+\/suoritustavat\/.+\/sisalto/)
             .respond({
                 "id" : 1180,
                 "lapset" : [ {
@@ -52,64 +78,27 @@ describe("PerusteProjektiService", () => {
                     "_perusteenOsa" : "1200"
                 } ]
             });
-        $httpBackend.when("GET", "/eperusteet-service/api/perusteprojektit/1")
-            .respond({
-                "id" : 1,
-                "nimi" : "Perusopetus",
-                "_peruste" : "2",
-                "diaarinumero" : "x",
-                "paatosPvm" : null,
-                "toimikausiAlku" : null,
-                "toimikausiLoppu" : null,
-                "tehtavaluokka" : null,
-                "tehtava" : null,
-                "yhteistyotaho" : null,
-                "tila" : "laadinta",
-                "ryhmaOid" : "x.y.z",
-                "esikatseltavissa" : false
-            });
 
-        $httpBackend.when("GET", "/eperusteet-service/api/perusteet/2")
-            .respond({
-                "id" : 2,
-                "globalVersion" : {
-                    "aikaleima" : 1508758929851
-                },
-                "nimi" : null,
-                "koulutustyyppi" : "koulutustyyppi_16",
-                "koulutukset" : [ ],
-                "kielet" : [ "sv", "fi" ],
-                "kuvaus" : null,
-                "maarayskirje" : null,
-                "muutosmaaraykset" : [ ],
-                "diaarinumero" : null,
-                "voimassaoloAlkaa" : null,
-                "siirtymaPaattyy" : null,
-                "voimassaoloLoppuu" : null,
-                "paatospvm" : null,
-                "luotu" : 1508758929298,
-                "muokattu" : 1508758929298,
-                "tila" : "luonnos",
-                "tyyppi" : "normaali",
-                "koulutusvienti" : false,
-                "korvattavatDiaarinumerot" : [ ],
-                "osaamisalat" : [ ],
-                "tyotehtavatJoissaVoiToimia" : null,
-                "suorittaneenOsaaminen" : null,
-                "kvliite" : null
-            });
+        _.each(T.Koulutustyypit(), (kt) => {
+            const ktkoodi = _.parseInt(kt.split("_")[1]);
+            $httpBackend.when("GET", "/eperusteet-service/api/perusteprojektit/" + ktkoodi)
+                .respond(createPerusteprojekti(ktkoodi));
+            $httpBackend.when("GET", "/eperusteet-service/api/perusteet/" + ktkoodi)
+                .respond(createPeruste(("koulutustyyppi_" + ktkoodi) as T.Koulutustyyppi, {
+                    id: ktkoodi
+                }));
+        });
 
         $httpBackend.when("GET", /.*/)
             .respond((a, b) => {
-                console.log("UNHANDLED GET", a, b);
+                console.log("UNHANDLED", a, b);
             });
-
     }));
 
-    afterEach(() => {
-        $httpBackend.verifyNoOutstandingExpectation();
-        $httpBackend.verifyNoOutstandingRequest();
-    });
+    // afterEach(() => {
+    //     $httpBackend.verifyNoOutstandingExpectation();
+    //     $httpBackend.verifyNoOutstandingRequest();
+    // });
 
     beforeEach(async () => {
         PerusteProjektiService = await getComponent("PerusteProjektiService");
@@ -217,28 +206,46 @@ describe("PerusteProjektiService", () => {
         assertUrl("#/fi/perusteprojekti/2/opas/opassisalto", T.Perustutkinto, { tyyppi: "opas" });
     });
 
-
-    function tilaHelper() {
-
-    }
-
-    test.only("Kaiken tyyppinen sisältö ladataan", async (next) => {
+    function testPerusteprojektiTiedotByTyyppi(id: number, { suoritustapa }, next) {
         $httpBackend.flush();
         const p = PerusteprojektiTiedotService.alustaProjektinTiedot({
             lang: "fi",
-            perusteProjektiId: "1"
+            perusteProjektiId: "" + id,
+            suoritustapa
         })
         .then(res => {
-            PerusteprojektiTiedotService.haeSisalto(2, "perusopetus")
+            return PerusteprojektiTiedotService.haeSisalto(id, suoritustapa)
                 .then(sisalto => {
                     expect(sisalto).toBeTruthy();
                     next();
                 })
-            next();
         })
         $httpBackend.flush();
+        return p;
+    }
 
-        // console.log("Got sisalto", sisalto);
+    test("Perusteprojektin näkymä latautuu (esiopetus)", async (next) => {
+        testPerusteprojektiTiedotByTyyppi(15, { suoritustapa: "esiopetus" }, next);
+    });
+
+    test("Perusteprojektin näkymä latautuu (lisaopetus)", async (next) => {
+        testPerusteprojektiTiedotByTyyppi(6, { suoritustapa: "lisaopetus" }, next);
+    });
+
+    test("Perusteprojektin näkymä latautuu (naytto)", async (next) => {
+        testPerusteprojektiTiedotByTyyppi(1, { suoritustapa: "naytto" }, next);
+    });
+
+    test("Perusteprojektin näkymä latautuu (aipe)", async (next) => {
+        testPerusteprojektiTiedotByTyyppi(17, { suoritustapa: "aipe" }, next);
+    });
+
+    test("Perusteprojektin näkymä latautuu (lukio)", async (next) => {
+        testPerusteprojektiTiedotByTyyppi(2, { suoritustapa: "lukio" }, next);
+    });
+
+    test("Perusteprojektin näkymä latautuu (perusopetus)", async (next) => {
+        testPerusteprojektiTiedotByTyyppi(16, { suoritustapa: "perusopetus" }, next);
     });
 
 });

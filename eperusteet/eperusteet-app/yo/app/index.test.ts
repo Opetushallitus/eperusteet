@@ -6,6 +6,10 @@ describe("app", () => {
     beforeEach(mockApp);
 
     test("Injecting services", () => {
+        expect(true).toBeTruthy();
+    });
+
+    test("Injecting services", () => {
         getOfType("service").forEach(testModule);
     });
 
@@ -30,17 +34,6 @@ describe("app", () => {
             }
         });
     });
-
-    // test.skip("All directives have template", async () => {
-    //     // const $injector = angular.injector();
-    //     console.log(angular.mock);
-    //     const directives = getDirectives()
-    //     for (const dir of directives) {
-    //         angular.mock.inject(dir);
-    //         // console.log(_.isFunction(dir));
-    //         // console.log($injector.invoke(dir));
-    //     }
-    // });
 
     test.skip("Komponentit on nimetty oikein", async () => {
         getOfType("service")

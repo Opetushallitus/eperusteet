@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "ES2015",
-    "moduleResolution": "Node",
+    "target": "es3",
+    "module": "es2015",
+    "moduleResolution": "node",
     "sourceMap": true,
     "alwaysStrict": true,
     "allowSyntheticDefaultImports": true,
     "lib": [
-      "DOM",
-      "ES2015",
-      "ES2015.Promise",
-      "ES5"
+      "dom",
+      "es2015",
+      "es2015.promise",
+      "es5"
     ],
     "baseUrl": ".",
     "paths": {

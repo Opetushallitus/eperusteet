@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 
-import * as angular from "angular";
+import "angular";
 import "angular-ui-router";
 import "angular-sanitize";
 import "angular-resource";

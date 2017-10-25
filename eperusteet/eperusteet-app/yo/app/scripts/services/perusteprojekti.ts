@@ -330,7 +330,8 @@ angular
                 });
                 promises.push(kurssiPromise);
             }
-            return $q.all(promises);
+            const result = $q.all(promises);
+            return result;
         }
 
         this.haeSisalto = (perusteId, suoritustapa): Promise<any> => {
@@ -344,6 +345,7 @@ angular
                         function(vastaus) {
                             deferred.resolve(vastaus);
                             sisalto = vastaus;
+                            resolve(sisalto);
                         },
                         function(virhe) {
                             Notifikaatiot.virhe(virhe);
@@ -389,9 +391,12 @@ angular
                         };
                     }
 
-                    await getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider);
-                    sisalto = ylTiedot.sisalto;
-                    deferred.resolve(ylTiedot.sisalto);
+                    getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider)
+                        .then(sisalto => {
+                            sisalto = ylTiedot.sisalto;
+                            resolve(sisalto);
+                            deferred.resolve(ylTiedot.sisalto);
+                        });
                 } else {
                     SuoritustapaSisalto.get(
                         {
@@ -401,13 +406,13 @@ angular
                         function(vastaus) {
                             sisalto = vastaus;
                             deferred.resolve(sisalto);
+                            resolve(sisalto);
                         },
                         function(virhe) {
                             deferred.reject(virhe);
                         }
                     );
                 }
-                resolve(sisalto);
             });
         };
 
