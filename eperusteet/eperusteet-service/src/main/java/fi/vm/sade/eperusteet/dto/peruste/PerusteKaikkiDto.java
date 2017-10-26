@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.EsiopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokoulutuksenPerusteenSisaltoDto;
@@ -52,8 +53,7 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     @JsonProperty("esiopetus")
     private EsiopetuksenPerusteenSisaltoDto esiopetuksenPerusteenSisalto;
 
-    // TODO
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    @JsonProperty("esiopetus")
-//    private AIPEOpetuksenSisaltoDto aipeOpetuksenSisalto;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("aipe")
+    private AIPEOpetuksenSisaltoDto aipeOpetuksenSisalto;
 }

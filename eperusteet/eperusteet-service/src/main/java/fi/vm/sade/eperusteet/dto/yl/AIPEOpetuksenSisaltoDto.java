@@ -16,7 +16,8 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,12 +28,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AIPEVaiheDto extends AIPEVaiheSuppeaDto {
-    private Optional<TekstiOsaDto> siirtymaEdellisesta;
-    private Optional<TekstiOsaDto> tehtava;
-    private Optional<TekstiOsaDto> siirtymaSeuraavaan;
-    private Optional<TekstiOsaDto> laajaalainenOsaaminen;
-    private Optional<TekstiOsaDto> paikallisestiPaatettavatAsiat;
-    private List<OpetuksenKohdealueDto> opetuksenKohdealueet;
-    private List<AIPEOppiaineLaajaDto> oppiaineet;
+public class AIPEOpetuksenSisaltoDto {
+    private PerusteenOsaViiteDto.Laaja sisalto;
+    private List<LaajaalainenOsaaminenDto> laajaalaisetosaamiset = new ArrayList<>();
+    private List<AIPEVaiheDto> vaiheet = new ArrayList<>();
 }

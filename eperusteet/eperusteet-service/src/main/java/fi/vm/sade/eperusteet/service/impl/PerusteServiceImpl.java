@@ -51,6 +51,15 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,16 +70,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -459,7 +458,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
         perusteDto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
 
-        if (!perusteDto.getSuoritustavat().isEmpty()
+        if (perusteDto.getSuoritustavat() == null && !perusteDto.getSuoritustavat().isEmpty()
                 && perusteDto.getLukiokoulutuksenPerusteenSisalto() == null) {
             perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
 

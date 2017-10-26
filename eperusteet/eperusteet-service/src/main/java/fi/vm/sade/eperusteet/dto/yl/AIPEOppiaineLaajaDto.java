@@ -17,6 +17,8 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,12 +29,24 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AIPEVaiheDto extends AIPEVaiheSuppeaDto {
-    private Optional<TekstiOsaDto> siirtymaEdellisesta;
+public class AIPEOppiaineLaajaDto extends AIPEOppiaineSuppeaDto {
     private Optional<TekstiOsaDto> tehtava;
-    private Optional<TekstiOsaDto> siirtymaSeuraavaan;
-    private Optional<TekstiOsaDto> laajaalainenOsaaminen;
-    private Optional<TekstiOsaDto> paikallisestiPaatettavatAsiat;
-    private List<OpetuksenKohdealueDto> opetuksenKohdealueet;
-    private List<AIPEOppiaineLaajaDto> oppiaineet;
+    private Optional<TekstiOsaDto> arviointi;
+    private Optional<KoodiDto> koodi;
+    private Optional<TekstiOsaDto> tyotavat;
+    private Optional<TekstiOsaDto> ohjaus;
+    private Optional<TekstiOsaDto> sisaltoalueinfo;
+
+    private Optional<LokalisoituTekstiDto> pakollinenKurssiKuvaus;
+    private Optional<LokalisoituTekstiDto> syventavaKurssiKuvaus;
+    private Optional<LokalisoituTekstiDto> soveltavaKurssiKuvaus;
+
+    private Optional<LokalisoituTekstiDto> kielikasvatus;
+
+    private List<OpetuksenTavoiteDto> tavoitteet;
+
+    private Optional<List<KeskeinenSisaltoalueDto>> sisaltoalueet;
+
+    private Optional<List<AIPEKurssiDto>> kurssit;
+
 }
