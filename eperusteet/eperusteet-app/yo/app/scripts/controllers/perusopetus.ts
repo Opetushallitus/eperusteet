@@ -40,7 +40,7 @@ angular
         $scope.rajaus = "";
 
         $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
-        $scope.$esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti, $scope.peruste, "perusopetus");
+        $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti, $scope.peruste);
 
         $scope.$watch(
             "peruste.sisalto",

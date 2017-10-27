@@ -364,30 +364,45 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
             }
         },
 
-        getPerusteEsikatseluLink(projekti, peruste, tyyppi: string, suoritustapa?:string) {
+        getPerusteEsikatseluLink(projekti, peruste, suoritustapa?:string) {
             if (!projekti.esikatseltavissa && peruste.tila !== "valmis") {
                 return null;
             }
 
-            switch (tyyppi) {
-                case "ammatillinen":
-                    return this.getPerusteEsikatseluHost()
-                        + "/esitys/"
-                        + peruste.id
-                        + "/"
-                        + suoritustapa
-                        + "/tiedot";
-                case "esiopetus":
-                    return this.getPerusteEsikatseluHost()
-                        + "/" + (this.isEsiopetus(peruste) ? "esiopetus" : "lisaopetus")
-                        + "/" + peruste.id
-                        + "/tiedot";
-                case "perusopetus":
-                    return this.getPerusteEsikatseluHost() + "/perusopetus/" + peruste.id + "/tiedot";
-                case "lukio":
+            switch (peruste.koulutustyyppi) {
+                case "koulutustyyppi_1":
+                    return this.getPerusteEsikatseluHost() + "/esitys/" + peruste.id + "/" + suoritustapa + "/tiedot";
+                case "koulutustyyppi_2":
                     return this.getPerusteEsikatseluHost() + "/lukio/" + peruste.id + "/tiedot";
+                case "koulutustyyppi_5":
+                    return this.getPerusteEsikatseluHost() + "/esitys/" + peruste.id + "/" + suoritustapa + "/tiedot";
+                case "koulutustyyppi_6":
+                    return this.getPerusteEsikatseluHost() + "/lisaopetus/" + peruste.id + "/tiedot";
+                case "koulutustyyppi_11":
+                    return this.getPerusteEsikatseluHost() + "/esitys/" + peruste.id + "/" + suoritustapa + "/tiedot";
+                case "koulutustyyppi_12":
+                    return this.getPerusteEsikatseluHost() + "/esitys/" + peruste.id + "/" + suoritustapa + "/tiedot";
+                case "koulutustyyppi_14":
+                    return this.getPerusteEsikatseluHost() + "/lukio/" + peruste.id + "/tiedot";
+                case "koulutustyyppi_15":
+                    return this.getPerusteEsikatseluHost() + "/esiopetus/" + peruste.id + "/tiedot";
+                case "koulutustyyppi_16":
+                    return this.getPerusteEsikatseluHost() + "/perusopetus/" + peruste.id + "/tiedot";
+                case "koulutustyyppi_17":
+                    return this.getPerusteEsikatseluHost() + "/aipe/" + peruste.id + "/tiedot";
+                case "koulutustyyppi_18":
+                    return this.getPerusteEsikatseluHost() + "/esitys/" + peruste.id + "/" + suoritustapa + "/tiedot";
+                case "koulutustyyppi_20":
+                    return this.getPerusteEsikatseluHost() + "/varhaiskasvatus/" + peruste.id + "/tiedot";
+                case "koulutustyyppi_22":
+                    return this.getPerusteEsikatseluHost() + "/pvalmistava/" + peruste.id + "/tiedot";
+                case "koulutustyyppi_23":
+                    return this.getPerusteEsikatseluHost() + "/lukio/" + peruste.id + "/tiedot";
+                case "koulutustyyppi_999907":
+                    // Todo: ei ole vielä oikea
+                    return this.getPerusteEsikatseluHost() + "/esiopetus/" + peruste.id + "/tiedot";
                 default:
-                    console.warn("Perusteelle ei löytynyt esikatselun linkkiä.");
+                    console.warn("Koulutustyypille ei löytynyt esikatselua.");
                     return null;
             }
         },

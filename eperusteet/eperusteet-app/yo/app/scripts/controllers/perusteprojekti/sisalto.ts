@@ -75,8 +75,8 @@ angular
             tyyppi => tyyppi === $scope.peruste.koulutustyyppi
         );
         $scope.muodostumisKompensaattori = isEsiopetus ? 1 : 0;
-        $scope.$esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti,
-            $scope.peruste, "ammatillinen", $stateParams.suoritustapa);
+        $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti,
+            $scope.peruste, $stateParams.suoritustapa);
 
 
 
