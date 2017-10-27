@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import lombok.Setter;
 @Setter
 public class KVLiiteJulkinenDto extends KVLiiteDto {
     private LokalisoituTekstiDto nimi;
-    private String koulutustyyppi;
+    private KoulutusTyyppi koulutustyyppi;
     private LokalisoituTekstiDto kuvaus;
     private MaarayskirjeDto maarayskirje;
     private String diaarinumero;

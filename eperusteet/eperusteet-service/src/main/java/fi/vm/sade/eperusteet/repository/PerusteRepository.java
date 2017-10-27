@@ -26,7 +26,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT p FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
     Peruste findPerusteByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);
 
-    List<Peruste> findAllByKoulutustyyppi(String koulutustyyppi);
+    List<Peruste> findAllByKoulutustyyppi(KoulutusTyyppi koulutustyyppi);
 
     @Query("SELECT p from Peruste p WHERE p.paatospvm IS NOT NULL and p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' ORDER BY p.paatospvm DESC")
     List<Peruste> findAllUusimmat(Pageable pageable);
