@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import java.io.Serializable;
@@ -38,7 +37,7 @@ public class PerusteprojektiKevytDto implements Serializable  {
     private ProjektiTila tila;
     private String perusteendiaarinumero;
     private String diaarinumero;
-    private KoulutusTyyppi koulutustyyppi;
+    private String koulutustyyppi;
     private PerusteTyyppi tyyppi;
     private Set<String> suoritustavat;
     private Date luotu;
@@ -48,7 +47,7 @@ public class PerusteprojektiKevytDto implements Serializable  {
     }
 
     public PerusteprojektiKevytDto(Long id, String nimi, Diaarinumero perusteDiaari, Diaarinumero diaarinumero,
-                                   KoulutusTyyppi koulutustyyppi, PerusteTyyppi tyyppi, ProjektiTila tila) {
+                                   String koulutustyyppi, PerusteTyyppi tyyppi, ProjektiTila tila) {
         this.id = id;
         this.nimi = nimi;
         this.tila = tila;

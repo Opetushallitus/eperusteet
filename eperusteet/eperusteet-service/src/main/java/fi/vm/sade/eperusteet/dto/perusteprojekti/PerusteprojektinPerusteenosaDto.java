@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import java.io.Serializable;
@@ -36,7 +35,7 @@ public class PerusteprojektinPerusteenosaDto implements Serializable  {
     private ProjektiTila tila;
     private String perusteendiaarinumero;
     private String diaarinumero;
-    private KoulutusTyyppi koulutustyyppi;
+    private String koulutustyyppi;
     private PerusteTyyppi tyyppi;
     private Date luotu;
 

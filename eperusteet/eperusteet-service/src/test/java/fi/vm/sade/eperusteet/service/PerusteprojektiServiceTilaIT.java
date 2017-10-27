@@ -105,7 +105,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     private final String yhteistyotaho = TestUtils.uniikkiString();
     private final String tehtava = TestUtils.uniikkiString();
     private final PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
-    private final KoulutusTyyppi koulutustyyppi = KoulutusTyyppi.ERIKOISAMMATTITUTKINTO;
+    private final String koulutustyyppi = KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString();
 
     private TransactionTemplate transactionTemplate;
 
