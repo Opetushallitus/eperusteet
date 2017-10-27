@@ -419,7 +419,7 @@ angular
             opintoalaService,
             perusteprojektiBackLink,
             perusteprojektiOikeudet,
-            perusteprojektiTiedot,
+            perusteprojektiTiedot
         ) => {
             function init() {
                 $scope.projekti = perusteprojektiTiedot.getProjekti();

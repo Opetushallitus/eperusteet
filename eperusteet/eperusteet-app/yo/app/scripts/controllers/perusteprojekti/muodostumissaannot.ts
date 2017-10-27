@@ -19,7 +19,9 @@ import * as _ from "lodash";
 
 angular
     .module("eperusteApp")
-    .controller("PerusteprojektiMuodostumissaannotCtrl", (
+    .controller(
+        "PerusteprojektiMuodostumissaannotCtrl",
+        (
             $scope,
             $stateParams,
             $timeout,

@@ -61,65 +61,68 @@ angular
                 }
             });
     })
-    .controller("ArviointiasteikotHallintaController", ($scope, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot) => {
-        // Lasketaan osaamistasoille arviointiasteikkojen mukaiset id:eet
-        function calculateFakeIds() {
-            _.each(arviointiasteikot, (arviointiasteikko: any) => {
-                const minOsaamistasoId = _.min(_.map(arviointiasteikko.osaamistasot, (osaamistaso: any) => osaamistaso.id));
-                _.each(arviointiasteikko.osaamistasot, osaamistaso => {
-                    osaamistaso.__fakeId = osaamistaso.id - minOsaamistasoId + 1;
+    .controller(
+        "ArviointiasteikotHallintaController",
+        ($scope, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot) => {
+            // Lasketaan osaamistasoille arviointiasteikkojen mukaiset id:eet
+            function calculateFakeIds() {
+                _.each(arviointiasteikot, (arviointiasteikko: any) => {
+                    const minOsaamistasoId = _.min(
+                        _.map(arviointiasteikko.osaamistasot, (osaamistaso: any) => osaamistaso.id)
+                    );
+                    _.each(arviointiasteikko.osaamistasot, osaamistaso => {
+                        osaamistaso.__fakeId = osaamistaso.id - minOsaamistasoId + 1;
+                    });
                 });
+            }
+            calculateFakeIds();
+            $scope.arviointiasteikot = angular.copy(arviointiasteikot);
+            $scope.edit = () => {
+                Editointikontrollit.startEditing();
+            };
+            $scope.sortableOptions = {
+                handle: ".handle",
+                cursor: "move",
+                cursorAt: { top: 10, left: 10 },
+                forceHelperSize: true,
+                placeholder: "sortable-placeholder",
+                forcePlaceholderSize: true,
+                opacity: ".7",
+                delay: 100,
+                axis: "y",
+                tolerance: "pointer"
+            };
+
+            Editointikontrollit.registerCallback({
+                edit: () => {},
+                save: () => {
+                    Arviointiasteikot.save(
+                        {},
+                        $scope.arviointiasteikot,
+                        res => {
+                            arviointiasteikot = res;
+                            calculateFakeIds();
+                            $scope.arviointiasteikot = angular.copy(arviointiasteikot);
+                            Notifikaatiot.onnistui("arviointiasteikkojen-päivitys-onnistui");
+                        },
+                        virhe => {
+                            Notifikaatiot.serverCb(virhe);
+                        }
+                    );
+                },
+                cancel: () => {
+                    $scope.arviointiasteikot = angular.copy(arviointiasteikot);
+                },
+                validate: () => {
+                    return true;
+                },
+                notify: value => {}
+            });
+            Editointikontrollit.registerEditModeListener(mode => {
+                $scope.editEnabled = mode;
             });
         }
-        calculateFakeIds();
-        $scope.arviointiasteikot = angular.copy(arviointiasteikot);
-        $scope.edit = () => {
-            Editointikontrollit.startEditing();
-        };
-        $scope.sortableOptions = {
-            handle: ".handle",
-            cursor: "move",
-            cursorAt: { top: 10, left: 10 },
-            forceHelperSize: true,
-            placeholder: "sortable-placeholder",
-            forcePlaceholderSize: true,
-            opacity: ".7",
-            delay: 100,
-            axis: "y",
-            tolerance: "pointer"
-        };
-
-        Editointikontrollit.registerCallback({
-            edit: () => {
-            },
-            save: () => {
-                Arviointiasteikot.save(
-                    {},
-                    $scope.arviointiasteikot,
-                    res => {
-                        arviointiasteikot = res;
-                        calculateFakeIds();
-                        $scope.arviointiasteikot = angular.copy(arviointiasteikot);
-                        Notifikaatiot.onnistui("arviointiasteikkojen-päivitys-onnistui");
-                    },
-                    virhe => {
-                        Notifikaatiot.serverCb(virhe);
-                    }
-                );
-            },
-            cancel: () => {
-                $scope.arviointiasteikot = angular.copy(arviointiasteikot);
-            },
-            validate: () => {
-                return true;
-            },
-            notify: value => {
-            }
-        });
-        Editointikontrollit.registerEditModeListener(mode => {
-            $scope.editEnabled = mode;
-        });
-    })
+    )
     .controller("OpasHallintaController", ($location, $scope, $state, Api) => {
         const projektitEp = Api.one("oppaat").one("projektit");
 

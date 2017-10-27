@@ -38,7 +38,7 @@ angular
                     maara: YleinenData.kommenttiMaxLength
                 };
 
-                const lataaKommentit = _.debounce((url) => {
+                const lataaKommentit = _.debounce(url => {
                     var lataaja = $scope.urlit[url];
                     if (lataaja) {
                         lataaja(function(kommentit) {
@@ -50,7 +50,7 @@ angular
 
                 function naytaKommentit() {
                     lataaKommentit($location.url());
-                };
+                }
 
                 $scope.$on("$stateChangeStart", function() {
                     $scope.nayta = false;

@@ -135,7 +135,8 @@ angular
                     }
 
                     $scope.valittuSuoritustapa = (_.first(peruste.suoritustavat) as any).suoritustapakoodi;
-                    $q.all(
+                    $q
+                        .all(
                             _.map(peruste.suoritustavat, function(st) {
                                 return SuoritustapaSisalto.get({
                                     perusteId: valittuPeruste.id,

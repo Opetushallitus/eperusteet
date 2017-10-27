@@ -18,7 +18,6 @@ import * as angular from "angular";
 import * as _ from "lodash";
 import { Endpoints, Logic } from "scripts/misc";
 
-
 namespace Controllers {
     export const kaikkiKommentit = ($q, $scope, $location, kommentit) => {
         $scope.kommentit = _(kommentit)

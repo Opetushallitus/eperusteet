@@ -839,7 +839,7 @@ angular
             var name =
                 "<span ng-bind=\"(node.nimi | kaanna) + ((node.lokalisoituKoodi | kaanna) ? ' ('+(node.lokalisoituKoodi | kaanna)+')' : '')\" title=\"{{node.nimi | kaanna}} {{(node.lokalisoituKoodi | kaanna) ? '('+(node.lokalisoituKoodi | kaanna)+')' : ''}}\"></span>";
             if (!$scope.treehelpers.editMode) {
-                name = '<a ng-href="{{node.$$href}}">'+name+'</a>';
+                name = '<a ng-href="{{node.$$href}}">' + name + "</a>";
             }
             return name;
         }

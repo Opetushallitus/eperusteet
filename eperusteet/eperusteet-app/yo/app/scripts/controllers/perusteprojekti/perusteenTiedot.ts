@@ -87,7 +87,6 @@ angular
             $scope.peruste.kvliite = kvliite;
             $scope.editablePeruste.kvliite = kvliite;
             $scope.useampiSuoritustapa = _.size(kvliite.muodostumisenKuvaus) > 1;
-
         })();
 
         $scope.editEnabled = false;

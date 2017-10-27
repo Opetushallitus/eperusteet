@@ -16,7 +16,7 @@
 
 import * as angular from "angular";
 import _ from "lodash";
-import {Lokalisointi} from "scripts/services/utils";
+import { Lokalisointi } from "scripts/services/utils";
 
 angular
     .module("eperusteApp")
@@ -34,7 +34,7 @@ angular
         PerusopetusService,
         PerusteprojektiTiedotService,
         Utils,
-        YleinenData,
+        YleinenData
     ) {
         var STATE_OSAT_ALKU = "root.perusteprojekti.suoritustapa.";
         var STATE_OSAT = "root.perusteprojekti.suoritustapa.tutkinnonosat";

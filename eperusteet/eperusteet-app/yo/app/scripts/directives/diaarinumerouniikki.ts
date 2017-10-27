@@ -21,7 +21,10 @@ angular.module("eperusteApp").directive("diaarinumerouniikki", function(Diaarinu
                         diaarinumero: viewValue
                     },
                     function(vastaus) {
-                        (ngModel as any).$setValidity("diaarinumerouniikki", !vastaus.loytyi || vastaus.tila === "julkaistu");
+                        (ngModel as any).$setValidity(
+                            "diaarinumerouniikki",
+                            !vastaus.loytyi || vastaus.tila === "julkaistu"
+                        );
                         // ngModel.$setValidity('diaarinumerouniikki', vastaus.loytyi && vastaus.tila === 'julkaistu');
                     }
                 );

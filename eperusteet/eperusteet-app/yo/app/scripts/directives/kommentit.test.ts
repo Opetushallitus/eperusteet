@@ -1,6 +1,14 @@
 import * as _ from "lodash";
-import { setInput, compiled, getComponent, inject, getOfType, testDirective, testModule, mockApp } from "../../testutils";
-
+import {
+    setInput,
+    compiled,
+    getComponent,
+    inject,
+    getOfType,
+    testDirective,
+    testModule,
+    mockApp
+} from "../../testutils";
 
 describe("Kommentit", () => {
     let Kommentit: any;
@@ -11,5 +19,4 @@ describe("Kommentit", () => {
     });
 
     test("Can be injected", () => expect(Kommentit).toBeTruthy());
-
 });

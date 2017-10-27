@@ -57,7 +57,7 @@ angular
                 url: "/lukiokoulutuslistaus",
                 template: require("views/lukiokoulutuslistaus.html"),
                 controller: "LukiokoulutusListaController"
-            })
+            });
     })
     .controller("EsiopetusListaController", function($scope, $state, Perusteet, Notifikaatiot, YleinenData) {
         $scope.lista = [];
@@ -122,9 +122,13 @@ angular
                     .sortBy("voimassaoloLoppuu")
                     .reverse()
                     .each(function(peruste) {
-                        peruste.$url = YleinenData.getPerusteEsikatseluHost()
-                            + "/" + (YleinenData.isLisaopetus(peruste) ? "lisaopetus" : "perusopetus")
-                            + "/" + peruste.id + "/tiedot";
+                        peruste.$url =
+                            YleinenData.getPerusteEsikatseluHost() +
+                            "/" +
+                            (YleinenData.isLisaopetus(peruste) ? "lisaopetus" : "perusopetus") +
+                            "/" +
+                            peruste.id +
+                            "/tiedot";
                     })
                     .value();
             }, Notifikaatiot.serverCb);

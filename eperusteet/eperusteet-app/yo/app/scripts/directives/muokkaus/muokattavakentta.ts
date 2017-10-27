@@ -100,7 +100,11 @@ angular
 
                 function getTitlePath() {
                     // FIXME: ?
-                    return (_ as any).initial($scope.field.path.split("."), 1).join(".") + "." + $scope.field.originalLocaleKey;
+                    return (
+                        (_ as any).initial($scope.field.path.split("."), 1).join(".") +
+                        "." +
+                        $scope.field.originalLocaleKey
+                    );
                 }
 
                 $scope.editOsio = () => {

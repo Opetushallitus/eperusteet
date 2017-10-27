@@ -510,7 +510,7 @@ angular
                     // 2. Uncollapse parents of matched
                     const osa = $scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
                     if (osa && osa.$matched) {
-                        let  parent = item.$parent;
+                        let parent = item.$parent;
                         while (parent) {
                             if (parent.$parent) {
                                 parent.$collapsed = false;
@@ -602,7 +602,7 @@ angular
 
         function adjustIndex(arr, sorters, originalIndex, paginationOffset = 0) {
             const sortedList = $filter("orderBy")(arr, sorters);
-            return _.findIndex(arr, function (item) {
+            return _.findIndex(arr, function(item) {
                 return item === sortedList[originalIndex + paginationOffset];
             });
         }

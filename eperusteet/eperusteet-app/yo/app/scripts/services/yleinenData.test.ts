@@ -53,7 +53,6 @@ describe("YleinenData", async () => {
             .uniq()
             .size();
         expect(uniikitNimet).toEqual(_.size(yd.koulutustyyppiInfo));
-
     });
 
     test("default export is a function", () => {

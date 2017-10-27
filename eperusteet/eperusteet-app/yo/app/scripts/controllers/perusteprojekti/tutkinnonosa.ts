@@ -152,7 +152,6 @@ angular
             $scope.editointikontrollit = Editointikontrollit;
             $scope.nimiValidationError = false;
 
-
             $scope.isLeikelautaOpen = false;
             if (localStorageService.isSupported) {
                 $scope.isLeikelautaOpen = localStorageService.get("leikeautaOpen");
@@ -167,7 +166,8 @@ angular
             };
 
             $scope.isTutke2 = YleinenData.isTutke2;
-            $scope.isReformi = _.find($scope.peruste.suoritustavat, (st: any) => st.suoritustapakoodi === "reformi") != null;
+            $scope.isReformi =
+                _.find($scope.peruste.suoritustavat, (st: any) => st.suoritustapakoodi === "reformi") != null;
 
             let tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
