@@ -287,7 +287,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
 
-        KoulutusTyyppi koulutustyyppi = perusteprojektiDto.getKoulutustyyppi();
+        KoulutusTyyppi koulutustyyppi = KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi());
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
         PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
         perusteprojekti.setTila(LAADINTA);
@@ -295,7 +295,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         perusteprojektiDto.setReforminMukainen(
                 perusteprojektiDto.isReforminMukainen()
-                        && perusteprojektiDto.getKoulutustyyppi().isAmmatillinen());
+                        && KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi()).isAmmatillinen());
 
         if (tyyppi == PerusteTyyppi.OPAS) {
             throw new BusinessRuleViolationException("Virheellinen perustetyyppi");
@@ -346,7 +346,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
         }
 
-        if (peruste.getKoulutustyyppi().isAmmatillinen()) {
+        if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
             KVLiite kvliite = new KVLiite();
             if (perusteprojektiDto.getPerusteId() != null) {
                 Peruste pohja = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
@@ -771,7 +771,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     if (suoritustapa.getRakenne() != null) {
                         validointi = PerusteenRakenne.validoiRyhma(peruste.getOsaamisalat(),
                                 suoritustapa.getRakenne(),
-                                peruste.getKoulutustyyppi().isValmaTelma());
+                                KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                         if (!validointi.ongelmat.isEmpty()) {
                             updateStatus.addStatus("rakenteen-validointi-virhe",
                                     suoritustapa.getSuoritustapakoodi(),
@@ -992,7 +992,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         updateStatus.forSuoritustapa(Suoritustapakoodi.LUKIOKOULUTUS).toTila(tila)
             .forTilat(jalkeen(LAADINTA))
                 .addErrorGiven("peruste-lukio-ei-oppiaineita", rakenne.getOppiaineet().isEmpty())
-                .addErrorGiven("peruste-lukio-ei-aihekokonaisuuksia", !peruste.getKoulutustyyppi().equals(KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS)
+                .addErrorGiven("peruste-lukio-ei-aihekokonaisuuksia", KoulutusTyyppi.of(peruste.getKoulutustyyppi()) != KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS
                         && (sisalto.getAihekokonaisuudet() == null || sisalto.getAihekokonaisuudet().getAihekokonaisuudet().isEmpty()))
                 .addErrorGiven("peruste-lukio-ei-opetuksen-yleisia-tavoitteita",
                         sisalto.getOpetuksenYleisetTavoitteet() == null)
@@ -1003,7 +1003,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () -> {
                     // EP-1143
-                    if (peruste.getKoulutustyyppi().equals(KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS)) {
+                    if (peruste.getKoulutustyyppi().equals(KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS.toString())) {
                         return rakenne.oppiaineetMaarineen()
                                 .filter(not(Oppiaine::isKoosteinen)
                                         .and(not(Oppiaine::isAbstraktiBool))

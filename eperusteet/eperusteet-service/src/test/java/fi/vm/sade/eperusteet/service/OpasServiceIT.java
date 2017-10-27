@@ -75,7 +75,7 @@ public class OpasServiceIT {
     private final String yhteistyotaho = TestUtils.uniikkiString();
     private final String tehtava = TestUtils.uniikkiString();
 
-    private PerusteprojektiDto teePerusteprojekti(PerusteTyyppi tyyppi, KoulutusTyyppi koulutustyyppi) {
+    private PerusteprojektiDto teePerusteprojekti(PerusteTyyppi tyyppi, String koulutustyyppi) {
         PerusteprojektiLuontiDto ppldto = null;
         if (tyyppi == PerusteTyyppi.NORMAALI) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, null, null, tyyppi, ryhmaId);
@@ -102,7 +102,7 @@ public class OpasServiceIT {
     }
 
     private void luoProjektit() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ESIOPETUS);
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ESIOPETUS.toString());
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         Assert.assertNotNull(pp);
 

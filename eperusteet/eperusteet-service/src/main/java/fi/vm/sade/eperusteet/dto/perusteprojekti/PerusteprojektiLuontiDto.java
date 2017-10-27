@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
@@ -32,7 +31,7 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
-    private KoulutusTyyppi koulutustyyppi;
+    private String koulutustyyppi;
     private LaajuusYksikko laajuusYksikko;
     private Long perusteId;
     private ProjektiTila tila;
@@ -40,7 +39,7 @@ public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private String ryhmaOid;
     private boolean reforminMukainen = false;
 
-    public PerusteprojektiLuontiDto(KoulutusTyyppi koulutustyyppi, LaajuusYksikko laajuusYksikko, Long perusteId, ProjektiTila tila, PerusteTyyppi tyyppi, String ryhmaOid) {
+    public PerusteprojektiLuontiDto(String koulutustyyppi, LaajuusYksikko laajuusYksikko, Long perusteId, ProjektiTila tila, PerusteTyyppi tyyppi, String ryhmaOid) {
         this.koulutustyyppi = koulutustyyppi;
         this.laajuusYksikko = laajuusYksikko;
         this.perusteId = perusteId;

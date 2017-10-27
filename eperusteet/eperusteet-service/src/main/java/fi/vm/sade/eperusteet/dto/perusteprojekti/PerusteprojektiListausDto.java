@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import lombok.Getter;
@@ -40,5 +39,5 @@ public class PerusteprojektiListausDto implements Serializable  {
     private PerusteKevytDto peruste;
     private String diaarinumero;
     private String ryhmaOid;
-    private KoulutusTyyppi koulutustyyppi;
+    private String koulutustyyppi;
 }

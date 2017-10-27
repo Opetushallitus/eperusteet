@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -38,7 +37,7 @@ public class PerusteKevytDto {
     private LokalisoituTekstiDto nimi;
     private PerusteTila tila;
     private PerusteTyyppi tyyppi;
-    private KoulutusTyyppi koulutustyyppi;
+    private String koulutustyyppi;
     private boolean esikatseltavissa;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<SuoritustapaDto> suoritustavat;
