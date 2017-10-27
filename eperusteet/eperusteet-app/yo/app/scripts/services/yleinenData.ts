@@ -365,11 +365,6 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
         },
 
         getPerusteEsikatseluLink(projekti, peruste, tyyppi: string, suoritustapa?:string) {
-            console.log("projekti", projekti);
-            console.log("esikatseltavissa", projekti.esikatseltavissa);
-            console.log("peruste", peruste);
-            console.log("tyyppi", tyyppi);
-
             if (!projekti.esikatseltavissa && peruste.tila !== "valmis") {
                 return null;
             }
