@@ -11,7 +11,7 @@
     "dbnuke": "docker-compose rm app_db",
     "dbinspect": "docker-compose exec app_db psql -U app",
     "coverage": "./node_modules/jest/bin/jest.js --runInBand --verbose --no-cache --coverage",
-    "ci": "tsc --version && yarn unit && yarn build",
+    "ci": "tsc --version && tsc --noEmit && yarn unit && yarn build",
     "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write \"app/scripts/**/*.ts\" \"app/styles/**/*.{scss,css}\"",
     "analyze": "xdg-open .bundle_stats.html",
     "build:analyze": "npm run build && npm run analyze",
