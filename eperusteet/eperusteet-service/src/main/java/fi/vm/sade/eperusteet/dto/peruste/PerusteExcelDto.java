@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaExcelDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.List;
@@ -33,7 +34,7 @@ import lombok.Setter;
 public class PerusteExcelDto {
     private LokalisoituTekstiDto nimi;
     private String diaarinumero;
-    private String koulutustyyppi;
+    private KoulutusTyyppi koulutustyyppi;
     private Set<Kieli> kielet;
     List<TutkinnonOsaExcelDto> tutkinnonOsat;
 }

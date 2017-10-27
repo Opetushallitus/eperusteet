@@ -180,7 +180,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public List<PerusteExcelDto> getKooste() {
         return perusteet.findAll().stream()
                 .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
-                .filter(peruste -> KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen())
+                .filter(peruste -> peruste.getKoulutustyyppi().isAmmatillinen())
                 .map(peruste -> {
                     PerusteExcelDto result = mapper.map(peruste, PerusteExcelDto.class);
                     Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
@@ -211,7 +211,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     public List<PerusteInfoDto> getAllPerusopetusInfo() {
         List<Peruste> res = new ArrayList<>();
-        List<Peruste> perusopetus = perusteet.findAllByKoulutustyyppi(KoulutusTyyppi.PERUSOPETUS.toString());
+        List<Peruste> perusopetus = perusteet.findAllByKoulutustyyppi(KoulutusTyyppi.PERUSOPETUS);
         for (Peruste p : perusopetus) {
             if (p.getTila() == PerusteTila.VALMIS) {
                 res.add(p);
@@ -1138,7 +1138,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         Peruste peruste = new Peruste();
-        peruste.setKoulutustyyppi(koulutustyyppi.toString());
+        peruste.setKoulutustyyppi(koulutustyyppi);
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
         yksikko = yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE;
@@ -1257,10 +1257,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste.setKoulutukset(koulutukset);
         }
 
-        if (KoulutusTyyppi.ESIOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
-                || KoulutusTyyppi.LISAOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
-                || KoulutusTyyppi.PERUSOPETUSVALMISTAVA.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
-                || KoulutusTyyppi.VARHAISKASVATUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
+        if (KoulutusTyyppi.ESIOPETUS.equals(vanha.getKoulutustyyppi())
+                || KoulutusTyyppi.LISAOPETUS.equals(vanha.getKoulutustyyppi())
+                || KoulutusTyyppi.PERUSOPETUSVALMISTAVA.equals(vanha.getKoulutustyyppi())
+                || KoulutusTyyppi.VARHAISKASVATUS.equals(vanha.getKoulutustyyppi())) {
             EsiopetuksenPerusteenSisalto uusiSisalto = kloonaaEsiopetuksenSisalto(peruste, vanha.getEsiopetuksenPerusteenSisalto());
             uusiSisalto.setPeruste(peruste);
             peruste.setSisalto(uusiSisalto);
@@ -1284,7 +1284,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste = perusteet.save(peruste);
 
             peruste = perusteet.save(peruste);
-            if (KoulutusTyyppi.PERUSOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
+            if (KoulutusTyyppi.PERUSOPETUS.equals(vanha.getKoulutustyyppi())) {
                 peruste.setSisalto(kloonaaPerusopetuksenSisalto(peruste, vanha.getPerusopetuksenPerusteenSisalto()));
             } else {
                 lisaaTutkinnonMuodostuminen(peruste);

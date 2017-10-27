@@ -93,8 +93,9 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @Getter
     @Setter
+    @Enumerated(EnumType.STRING)
     @NotNull(groups = Valmis.class)
-    private String koulutustyyppi;
+    private KoulutusTyyppi koulutustyyppi;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "peruste_koulutus",
@@ -274,7 +275,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             return this.getOppaanSisalto().getSisalto();
         }
 
-        KoulutusTyyppi kt = KoulutusTyyppi.of(this.koulutustyyppi);
+        KoulutusTyyppi kt = this.koulutustyyppi;
         switch (kt) {
             // Yksinkertaiset perusteet
             case LISAOPETUS:
