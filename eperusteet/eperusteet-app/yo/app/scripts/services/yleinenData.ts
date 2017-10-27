@@ -364,6 +364,39 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
             }
         },
 
+        getPerusteEsikatseluLink(projekti, peruste, tyyppi: string, suoritustapa?:string) {
+            console.log("projekti", projekti);
+            console.log("esikatseltavissa", projekti.esikatseltavissa);
+            console.log("peruste", peruste);
+            console.log("tyyppi", tyyppi);
+
+            if (!projekti.esikatseltavissa && peruste.tila !== "valmis") {
+                return null;
+            }
+
+            switch (tyyppi) {
+                case "ammatillinen":
+                    return this.getPerusteEsikatseluHost()
+                        + "/esitys/"
+                        + peruste.id
+                        + "/"
+                        + suoritustapa
+                        + "/tiedot";
+                case "esiopetus":
+                    return this.getPerusteEsikatseluHost()
+                        + "/" + (this.isEsiopetus(peruste) ? "esiopetus" : "lisaopetus")
+                        + "/" + peruste.id
+                        + "/tiedot";
+                case "perusopetus":
+                    return this.getPerusteEsikatseluHost() + "/perusopetus/" + peruste.id + "/tiedot";
+                case "lukio":
+                    return this.getPerusteEsikatseluHost() + "/lukio/" + peruste.id + "/tiedot";
+                default:
+                    console.warn("Perusteelle ei löytynyt esikatselun linkkiä.");
+                    return null;
+            }
+        },
+
         haeArviointiasteikot() {
             if (this.arviointiasteikot === undefined) {
                 const self = this;

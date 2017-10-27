@@ -3,7 +3,12 @@
     <div class="row tutkinto-sisalto">
         <div class="tutkinto">
             <div class="esityksen-tarkastelu clearfix">
-                <a class="url" href="{{$esitysurl}}" icon-role="sunglasses" kaanna="'tarkastele-esitysta'" ng-show="$esitysurl"></a>
+                <a href="{{$esitysurl}}"
+                   ng-show="$esitysurl"
+                   kaanna="'tarkastele-esitysta'"
+                   icon-role="sunglasses"
+                   class="url">
+                </a>
             </div>
 
             <div ng-hide="editing">

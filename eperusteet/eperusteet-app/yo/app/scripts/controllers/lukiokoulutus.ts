@@ -48,7 +48,7 @@ angular
         $scope.rajaus = "";
 
         $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
-        $scope.$esitysurl = YleinenData.getPerusteEsikatseluHost() + "/lukio/" + $scope.peruste.id + "/tiedot";
+        $scope.$esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti, $scope.peruste, "lukio");
 
         // FIXME
         $scope.$watch(
