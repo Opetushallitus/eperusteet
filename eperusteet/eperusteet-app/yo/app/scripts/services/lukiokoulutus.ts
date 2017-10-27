@@ -16,6 +16,7 @@
 
 import * as angular from "angular";
 import * as _ from "lodash";
+import "../../lmixins";
 
 angular
     .module("eperusteApp")
@@ -41,8 +42,8 @@ angular
             "oppiaineet-oppimaarat": this.OPPIAINEET_OPPIMAARAT
         };
 
-        var tiedot = null;
-        var cached = {};
+        let tiedot = null;
+        let cached: any = {};
         this.setTiedot = function(value) {
             tiedot = value;
         };
@@ -359,9 +360,9 @@ angular
                 })
                 .map(_.cloneDeep)
                 .sortBy(function(kurssi) {
-                    return _(kurssi.oppiaineet)
+                    return (_(kurssi.oppiaineet)
                         .filter(oppiaineFilter)
-                        .first().jarjestys;
+                        .first() as any).jarjestys;
                 })
                 .value();
         };
@@ -387,7 +388,7 @@ angular
      */
         var updateOppiaineKurssiStructure = function(tree, liittamattomatKurssit, kommentti) {
             var d = $q.defer();
-            var chain = _(tree).flattenTree(function(node) {
+            var chain = (_.chain(tree) as any).flattenTree(function(node) {
                     var kurssiJarjestys = 1,
                         oppiaineJarjestys = 1;
                     return _(node.lapset)
@@ -425,7 +426,7 @@ angular
                         .value(),
                     kurssit: chain
                         .union(
-                            _.map(liittamattomatKurssit, function(liittamaton) {
+                            _.map(liittamattomatKurssit, function(liittamaton: any) {
                                 return {
                                     id: liittamaton.id,
                                     oppiaineet: []

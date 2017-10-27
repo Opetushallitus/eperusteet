@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.EsiopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
+import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokoulutuksenPerusteenSisaltoDto;
 import java.util.List;
 import java.util.Set;
@@ -56,4 +57,8 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("aipe")
     private AIPEOpetuksenSisaltoDto aipeOpetuksenSisalto;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("tpo")
+    private TPOOpetuksenSisaltoDto tpoOpetuksenSisalto;
 }

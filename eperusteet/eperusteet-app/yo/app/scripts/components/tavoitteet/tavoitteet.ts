@@ -63,7 +63,7 @@ angular.module("eperusteApp").directive("aipeTavoitteet", () => {
 
             function generateArraySetter(findFrom, manipulator = _.noop) {
                 return item => {
-                    const found = _.find(findFrom, findItem => parseInt(findItem, 10) === item.id);
+                    const found = _.find(findFrom, (findItem: string) => _.parseInt(findItem) === item.id);
                     item = _.clone(item);
                     item.$hidden = !found;
                     item.teksti = item.kuvaus;

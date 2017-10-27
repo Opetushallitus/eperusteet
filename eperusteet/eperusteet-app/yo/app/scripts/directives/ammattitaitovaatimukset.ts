@@ -110,7 +110,7 @@ angular
                 _.reduce(
                     $scope.editableKohde.vaatimukset,
                     (acc, vaatimus) => {
-                        vaatimus.jarjestys = acc;
+                        (vaatimus as any).jarjestys = acc;
                         return acc + 1;
                     },
                     0
@@ -244,7 +244,7 @@ angular
 
                 function accordionState() {
                     const obj = _.first(scope.ammattitaito);
-                    return obj && obj.$$accordionOpen;
+                    return obj && (obj as any).$$accordionOpen;
                 }
 
                 scope.toggleAll = function() {

@@ -17,5 +17,8 @@
       "app/*": ["app/*"],
       "scripts/*": ["app/scripts/*"]
     }
-  }
+  },
+  "files": [
+    "./app/index.ts"
+  ]
 }

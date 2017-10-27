@@ -33,7 +33,7 @@ angular.module("eperusteApp").directive("sortableTable", () => {
             $scope.showIdx = $scope.showIdx || true;
             $scope.isSorting = false;
             $scope.allowSorting = _.isFunction($scope.ngChange);
-            $scope.hasMuokattu = !_.isEmpty($scope.ngModel) && !!_.first($scope.ngModel).muokattu;
+            $scope.hasMuokattu = !_.isEmpty($scope.ngModel) && !!(_.first($scope.ngModel) as any).muokattu;
 
             $scope.sortableOptions = {
                 cursor: "move",

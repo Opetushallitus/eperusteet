@@ -65,14 +65,14 @@ angular
 
         function suodataTyypinMukaan(koodistodata, tyyppi) {
             return _.filter(koodistodata, function(data) {
-                return data.koodiUri.substr(0, tyyppi.length) === tyyppi;
+                return (data as any).koodiUri.substr(0, tyyppi.length) === tyyppi;
             });
         }
 
         function koodistoMapping(koodistoData) {
             return _(koodistoData)
                 .map(function(kd) {
-                    var nimi = {
+                    const nimi = {
                         fi: "",
                         sv: "",
                         en: ""
@@ -81,9 +81,9 @@ angular
                         nimi[obj.kieli.toLowerCase()] = obj.nimi;
                     });
 
-                    var haku = _.reduce(_.values(nimi), function(result, v) {
-                        return result + v;
-                    }).toLowerCase();
+                    const haku = _.reduce(_.values(nimi), function(result, v: string) {
+                        return (result + v).toLowerCase;
+                    });
                     return {
                         koodiUri: kd.koodiUri,
                         koodiArvo: kd.koodiArvo,

@@ -52,7 +52,7 @@ angular
             })
             .state("root.admin.arviointiasteikot", {
                 url: "/arviointiasteikot",
-                template: require("views/admin/arviointiasteikot.pug"),
+                templateUrl: require("views/admin/arviointiasteikot.pug"),
                 controller: "ArviointiasteikotHallintaController",
                 resolve: {
                     arviointiasteikot: function($stateParams, Arviointiasteikot) {
@@ -223,7 +223,7 @@ angular
                     $scope.perusteprojektit = _.map(perusteprojektit.data, pp => {
                         return {
                             ...pp,
-                            suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(pp.koulutustyyppi),
+                            suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille((pp as any).koulutustyyppi),
                             $$url: PerusteProjektiService.getUrl(pp)
                         };
                     });

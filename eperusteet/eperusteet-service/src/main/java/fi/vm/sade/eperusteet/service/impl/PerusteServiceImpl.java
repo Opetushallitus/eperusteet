@@ -36,6 +36,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.*;
+import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
@@ -453,12 +454,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         PerusteKaikkiDto perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
+
+        if (peruste.getTpoOpetuksenSisalto() != null) {
+            perusteDto.setTpoOpetuksenSisalto(mapper.map(peruste.getTpoOpetuksenSisalto(), TPOOpetuksenSisaltoDto.class));
+        }
+
         if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
             updateLukioKaikkiRakenne(perusteDto, peruste);
         }
         perusteDto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
 
-        if (perusteDto.getSuoritustavat() == null && !perusteDto.getSuoritustavat().isEmpty()
+        if (perusteDto.getSuoritustavat() != null && !perusteDto.getSuoritustavat().isEmpty()
                 && perusteDto.getLukiokoulutuksenPerusteenSisalto() == null) {
             perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
 

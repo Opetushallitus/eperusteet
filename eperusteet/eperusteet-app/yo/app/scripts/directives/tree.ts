@@ -531,7 +531,7 @@ angular
             input = input === undefined ? $scope.tosarajaus : input;
             $scope.tosarajaus = input;
             const filtered = !_.isEmpty(input);
-            $scope.uniikit = _.reject($scope.kaikkiUniikit, function(yksi) {
+            $scope.uniikit = _.reject($scope.kaikkiUniikit, function(yksi: any) {
                 const nimi = $scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite]
                     ? (Kaanna.kaanna($scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi) || "")
                           .toLowerCase()

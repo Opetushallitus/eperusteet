@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 import {Lokalisointi} from "scripts/services/utils";
 
 angular
@@ -264,7 +264,7 @@ angular
         }
 
         function mapYL(target, osat, key, parent, doSort = true) {
-            let chain = _(osat);
+            let chain: any = _.chain(osat);
             if (doSort) {
                 chain = chain.sortBy(
                     key === "oppiaineet" ||

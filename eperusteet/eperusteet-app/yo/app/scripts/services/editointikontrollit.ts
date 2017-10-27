@@ -66,7 +66,7 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
             function mandatoryFieldValidator(fields, target) {
                 err = undefined;
                 const fieldsf = _.filter(fields || [], function(field) {
-                    return field.mandatory;
+                    return (field as any).mandatory;
                 });
 
                 $rootScope.$$ekEditing = false;
@@ -76,7 +76,7 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
                 } else if (_.isString(target)) {
                     return !_.isEmpty(target);
                 } else if (_.isObject(target) && !_.isEmpty(target) && !_.isEmpty(fieldsf)) {
-                    return _.all(fieldsf, function(field) {
+                    return _.all(fieldsf, function(field: any) {
                         var valid = Utils.hasLocalizedText(target[field.path]);
                         if (!valid) {
                             err = field.mandatoryMessage;

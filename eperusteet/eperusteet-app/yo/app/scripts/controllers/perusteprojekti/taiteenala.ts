@@ -319,7 +319,7 @@ export function taiteenalaCtrl(
         }
 
         function fetch(cb) {
-            PerusteenOsat.get({ osanId: $scope.taiteenala.id }, _.setWithCallback($scope, "tekstikappale", cb));
+            PerusteenOsat.get({ osanId: $scope.taiteenala.id }, (_ as any).setWithCallback($scope, "tekstikappale", cb));
         }
 
         async function setNavigation() {

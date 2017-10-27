@@ -73,7 +73,7 @@ angular
                 $scope.osaAlue.valmaTelmaSisalto = angular.copy($scope.valma);
 
                 $scope.osaAlue.valmaTelmaSisalto = {
-                    osaamistavoite: _.map($scope.valma.valmatavoitteet, function(item) {
+                    osaamistavoite: _.map($scope.valma.valmatavoitteet, function(item: any) {
                         return {
                             tavoitteet: _.map(item.tavoitteet, function(tavoite) {
                                 return _.omit(tavoite, "jarjestys");
@@ -113,7 +113,7 @@ angular
                 } else {
                     return (
                         $scope.isVaTe ||
-                        _.all($scope.osaamistavoitepuu, function(osaamistavoite) {
+                        _.all($scope.osaamistavoitepuu, function(osaamistavoite: any) {
                             return Utils.hasLocalizedText(osaamistavoite.nimi);
                         })
                     );
@@ -225,7 +225,7 @@ angular
         );
 
         function isVisible(fieldPath) {
-            return _.find($scope.fields, { path: fieldPath }).visible;
+            return (_.find($scope.fields, { path: fieldPath }) as any).visible;
         }
 
         $scope.addFieldToVisible = function(field) {
@@ -426,7 +426,7 @@ angular
 
         function mergeOsaAlueet(tutkinnonOsa) {
             if (_.includes(YleinenData.yhteisetTutkinnonOsat, $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi)) {
-                tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function(osaAlue) {
+                tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function(osaAlue: any) {
                     var item: any = { nimi: osaAlue.nimi };
                     if (osaAlue.id) {
                         item.id = osaAlue.id;
@@ -592,7 +592,7 @@ angular
                 if (
                     _.includes(YleinenData.yhteisetTutkinnonOsat, $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi)
                 ) {
-                    tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function(osaAlue) {
+                    tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function(osaAlue: any) {
                         var item: any = { nimi: osaAlue.nimi };
                         if (osaAlue.id) {
                             item.id = osaAlue.id;
@@ -606,7 +606,7 @@ angular
                     _.includes(YleinenData.yhteisetTutkinnonOsat, $scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi)
                 ) {
                     return _.all(
-                        _.map(Tutke2OsaData.get().$editing, function(item) {
+                        _.map(Tutke2OsaData.get().$editing, function(item: any) {
                             return Utils.hasLocalizedText(item.nimi);
                         })
                     );
