@@ -114,7 +114,7 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
     @Test
     public void testPerusteenLuonti() {
         PerusteenOsaViiteDto.Laaja perusteenSisalto = perusteService.getSuoritustapaSisalto(peruste.getId(), Suoritustapakoodi.AIPE);
-        assertEquals(peruste.getKoulutustyyppi(), KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString());
+        assertEquals(peruste.getKoulutustyyppi(), KoulutusTyyppi.AIKUISTENPERUSOPETUS);
         assertNotNull(perusteenSisalto);
     }
 

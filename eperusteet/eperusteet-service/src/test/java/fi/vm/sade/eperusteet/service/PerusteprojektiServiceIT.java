@@ -135,7 +135,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO);
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteprojektiLuontiCommonAsserts(ppdto, pp);
-        Assert.assertEquals(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO, pp.getPeruste().getKoulutustyyppi());
         Assert.assertEquals(1, pp.getPeruste().getSuoritustavat().size());
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
@@ -148,7 +148,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSOPETUS);
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteprojektiLuontiCommonAsserts(ppdto, pp);
-        Assert.assertEquals(KoulutusTyyppi.PERUSOPETUS.toString(), pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals(KoulutusTyyppi.PERUSOPETUS, pp.getPeruste().getKoulutustyyppi());
         Assert.assertEquals(0, pp.getPeruste().getSuoritustavat().size());
         Assert.assertNotNull(pp.getPeruste().getPerusopetuksenPerusteenSisalto());
     }
@@ -159,7 +159,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.PERUSTUTKINTO);
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteprojektiLuontiCommonAsserts(ppdto, pp);
-        Assert.assertEquals(KoulutusTyyppi.PERUSTUTKINTO.toString(), pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals(KoulutusTyyppi.PERUSTUTKINTO, pp.getPeruste().getKoulutustyyppi());
         Assert.assertEquals(2, pp.getPeruste().getSuoritustavat().size());
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.OPS, null);
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
