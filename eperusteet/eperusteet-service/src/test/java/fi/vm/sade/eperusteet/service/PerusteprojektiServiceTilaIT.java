@@ -55,11 +55,8 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.junit.*;
-
 import static org.junit.Assert.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -349,6 +346,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
                 commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.VALMIS);
                 commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.VALMIS);
             }
+
             return null;
         });
         lockService.unlock(ctx);

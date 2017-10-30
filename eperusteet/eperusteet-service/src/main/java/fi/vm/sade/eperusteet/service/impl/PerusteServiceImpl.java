@@ -464,8 +464,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
         perusteDto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
 
-        if (perusteDto.getSuoritustavat() != null && !perusteDto.getSuoritustavat().isEmpty()
-                && perusteDto.getLukiokoulutuksenPerusteenSisalto() == null) {
+        if (peruste.getSuoritustavat() != null
+                && !peruste.getSuoritustavat().isEmpty()
+                && peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
             perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
 
             Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
