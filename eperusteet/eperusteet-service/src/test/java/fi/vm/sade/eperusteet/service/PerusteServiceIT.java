@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.*;
@@ -107,6 +108,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
         p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
+
 
         p = TestUtils.teePeruste();
         p.asetaTila(PerusteTila.VALMIS);
@@ -215,8 +217,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         PerusteKaikkiDto kokoSisalto = perusteService.getKokoSisalto(peruste.getId());
         assertNotNull(kokoSisalto.getTutkinnonOsat());
-        assertEquals(2, kokoSisalto.getTutkinnonOsat().size());
-        assertEquals(1, kokoSisalto.getSuoritustavat().size());
+        Assertions.assertThat(kokoSisalto.getSuoritustavat()).hasSize(1);
+        Assertions.assertThat(kokoSisalto.getTutkinnonOsat()).hasSize(2);
     }
 
     @Test
