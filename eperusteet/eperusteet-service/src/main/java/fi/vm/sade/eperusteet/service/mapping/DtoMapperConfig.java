@@ -224,6 +224,7 @@ public class DtoMapperConfig {
 
         factory.classMap(Peruste.class, PerusteBaseDto.class)
                 .byDefault()
+                .favorExtension(true)
                 .customize(new CustomMapper<Peruste, PerusteBaseDto>() {
                     @Override
                     public void mapAtoB(Peruste source, PerusteBaseDto target, MappingContext context) {

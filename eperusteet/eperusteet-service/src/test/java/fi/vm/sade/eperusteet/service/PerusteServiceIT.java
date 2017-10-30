@@ -216,6 +216,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteKaikkiDto kokoSisalto = perusteService.getKokoSisalto(peruste.getId());
         assertNotNull(kokoSisalto.getTutkinnonOsat());
         assertEquals(2, kokoSisalto.getTutkinnonOsat().size());
+        assertEquals(1, kokoSisalto.getSuoritustavat());
     }
 
     @Test
