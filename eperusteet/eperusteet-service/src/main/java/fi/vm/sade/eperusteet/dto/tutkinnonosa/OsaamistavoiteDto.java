@@ -40,4 +40,22 @@ public class OsaamistavoiteDto {
     private KoodiDto koodi;
     private String koodiUri;
     private String koodiArvo;
+
+    public String getKoodiUri() {
+        KoodiDto koodi = this.getKoodi();
+        if (koodi != null) {
+            return koodi.getUri();
+        } else {
+            return koodiUri;
+        }
+    }
+
+    public String getKoodiArvo() {
+        KoodiDto koodi = this.getKoodi();
+        if (koodi != null) {
+            return koodi.getArvo();
+        } else {
+            return koodiArvo;
+        }
+    }
 }
