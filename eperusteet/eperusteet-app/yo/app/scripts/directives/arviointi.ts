@@ -150,12 +150,12 @@ angular
                     const kohdeOsaamistasoId = osaamistasoVastaavuudet[osaamistasoId];
 
                     const kohdeOsaamistaso = _.find($scope.editableKohde.osaamistasonKriteerit, editableOaKriteeri => {
-                        return parseInt(editableOaKriteeri._osaamistaso) === kohdeOsaamistasoId;
+                        return parseInt((editableOaKriteeri as any)._osaamistaso) === kohdeOsaamistasoId;
                     });
 
                     // Kopioidaan kriteerit jos osaamistaso löytyy kohteesta
                     if (kohdeOsaamistaso) {
-                        kohdeOsaamistaso.kriteerit = osaamistasonKriteeri.kriteerit;
+                        (kohdeOsaamistaso as any).kriteerit = osaamistasonKriteeri.kriteerit;
                     }
                 });
             },
@@ -310,7 +310,7 @@ angular
 
                 function accordionState() {
                     let obj = _.first(scope.arviointi);
-                    return obj && obj.$$accordionOpen;
+                    return obj && (obj as any).$$accordionOpen;
                 }
 
                 scope.toggleAll = function() {

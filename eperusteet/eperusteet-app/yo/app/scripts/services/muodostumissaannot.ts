@@ -25,8 +25,8 @@ angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, 
                 .map(function(osa) {
                     return osa
                         ? osa.$vaadittuLaajuus && osa.$laajuus > osa.$vaadittuLaajuus
-                            ? osa.$vaadittuLaajuus
-                            : Math.max(osa.$laajuus || 0, osa.$laajuusMaksimi || 0)
+                          ? osa.$vaadittuLaajuus
+                          : Math.max(osa.$laajuus || 0, osa.$laajuusMaksimi || 0)
                         : 0;
                 })
                 .reduce(function(sum, newval) {

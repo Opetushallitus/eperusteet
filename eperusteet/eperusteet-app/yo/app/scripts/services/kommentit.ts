@@ -121,7 +121,7 @@ angular
                 viestit: _(viestiMap)
                     .values()
                     .reject(function(viesti) {
-                        return viesti.parentId !== null;
+                        return (viesti as any).parentId !== null;
                     })
                     .sortBy("luotu")
                     .reverse()
@@ -151,13 +151,14 @@ angular
 
         function lisaaKommentti(parent, viesti, success) {
             success = success || angular.noop;
-            const payload = _.merge(_.clone(nykyinenParams), {
+            const payload = {
+                ...nykyinenParams,
                 parentId: parent && parent.id ? parent.id : null,
                 sisalto: viesti,
                 perusteprojektiId: $stateParams.perusteProjektiId ? $stateParams.perusteProjektiId : null
-            });
-            delete payload.id;
-            payload.suoritustapa = payload.suoritustapa || $stateParams.suoritustapa;
+            };
+            delete (payload as any).id;
+            (payload as any).suoritustapa = (payload as any).suoritustapa || $stateParams.suoritustapa;
 
             KommentitCRUD.save(payload, function(res) {
                 res.muokattu = null;

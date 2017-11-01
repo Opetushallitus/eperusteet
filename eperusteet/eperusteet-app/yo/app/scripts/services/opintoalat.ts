@@ -42,7 +42,7 @@ angular.module("eperusteApp").service("Opintoalat", function Opintoalat($resourc
             _.pluck(vastaus, "koodi"),
             _.map(vastaus, function(e) {
                 return {
-                    nimi: e.nimi
+                    nimi: (e as any).nimi
                 };
             })
         );

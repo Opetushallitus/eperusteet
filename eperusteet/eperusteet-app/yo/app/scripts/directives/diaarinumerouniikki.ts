@@ -6,11 +6,11 @@ angular.module("eperusteApp").directive("diaarinumerouniikki", function(Diaarinu
         restrict: "A",
         require: "ngModel",
         link: function(scope, element, attrs, ngModel) {
-            ngModel.$parsers.push(function(viewValue) {
+            (ngModel as any).$parsers.push(function(viewValue) {
                 if (!_.isEmpty(viewValue)) {
                     validate(viewValue);
                 } else {
-                    ngModel.$setValidity("diaarinumerouniikki", true);
+                    (ngModel as any).$setValidity("diaarinumerouniikki", true);
                 }
                 return viewValue;
             });
@@ -21,7 +21,10 @@ angular.module("eperusteApp").directive("diaarinumerouniikki", function(Diaarinu
                         diaarinumero: viewValue
                     },
                     function(vastaus) {
-                        ngModel.$setValidity("diaarinumerouniikki", !vastaus.loytyi || vastaus.tila === "julkaistu");
+                        (ngModel as any).$setValidity(
+                            "diaarinumerouniikki",
+                            !vastaus.loytyi || vastaus.tila === "julkaistu"
+                        );
                         // ngModel.$setValidity('diaarinumerouniikki', vastaus.loytyi && vastaus.tila === 'julkaistu');
                     }
                 );

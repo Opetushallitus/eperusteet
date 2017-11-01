@@ -614,7 +614,7 @@ angular
                     jarjestys: index
                 });
                 if (from) {
-                    _.remove(node.oppiaineet, function(oa) {
+                    _.remove(node.oppiaineet, function(oa: any) {
                         return oa.oppiaineId === from.id;
                     });
                     _.remove(from.kurssit, node);
@@ -628,13 +628,13 @@ angular
         var removeKurssiFromOppiaine = function(node) {
             $rootScope.$broadcast("genericTree:beforeChange");
             var oppiaine = node.$$nodeParent;
-            node.oppiaineet = _.filter(node.oppiaineet, function(oa) {
+            node.oppiaineet = _.filter(node.oppiaineet, function(oa: any) {
                 return oa.oppiaineId !== oppiaine.id;
             });
             _.remove(oppiaine.kurssit, node);
             _.remove(oppiaine.lapset, node);
             var foundInTree = false,
-                inLiittamattomat = _.filter($scope.liittamattomatKurssit, function(liittamaton) {
+                inLiittamattomat = _.filter($scope.liittamattomatKurssit, function(liittamaton: any) {
                     return liittamaton.id == node.id;
                 });
             traverseTree(function(c) {
@@ -644,7 +644,7 @@ angular
             });
             if (!foundInTree && _.isEmpty(inLiittamattomat)) {
                 $scope.liittamattomatKurssit.push(node);
-                _.remove($scope.liitetytKurssit, function(liitetty) {
+                _.remove($scope.liitetytKurssit, function(liitetty: any) {
                     return liitetty.id == node.id;
                 });
             }
@@ -839,7 +839,7 @@ angular
             var name =
                 "<span ng-bind=\"(node.nimi | kaanna) + ((node.lokalisoituKoodi | kaanna) ? ' ('+(node.lokalisoituKoodi | kaanna)+')' : '')\" title=\"{{node.nimi | kaanna}} {{(node.lokalisoituKoodi | kaanna) ? '('+(node.lokalisoituKoodi | kaanna)+')' : ''}}\"></span>";
             if (!$scope.treehelpers.editMode) {
-                name = '<a ng-href="{{node.$$href}}">'+name+'</a>';
+                name = '<a ng-href="{{node.$$href}}">' + name + "</a>";
             }
             return name;
         }
@@ -957,7 +957,7 @@ angular
                     return $q(function(resolveRoot) {
                         kurssitProvider.then(function(kurssit) {
                             $scope.liittamattomatKurssit = _.cloneDeep(
-                                _.filter(kurssit, function(k) {
+                                _.filter(kurssit, function(k: any) {
                                     return k.oppiaineet.length === 0;
                                 })
                             );
@@ -1011,7 +1011,7 @@ angular
                     return $q(function(resolveRoot) {
                         kurssitProvider.then(function(kurssit) {
                             $scope.liitetytKurssit = _.cloneDeep(
-                                _.filter(kurssit, function(k) {
+                                _.filter(kurssit, function(k: any) {
                                     return k.oppiaineet.length != 0;
                                 })
                             );

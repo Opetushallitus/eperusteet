@@ -31,8 +31,15 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -45,14 +52,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
-import static org.junit.Assert.*;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -109,6 +108,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
         p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
+
 
         p = TestUtils.teePeruste();
         p.asetaTila(PerusteTila.VALMIS);
@@ -214,6 +214,11 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
         assertEquals(new EntityReference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
+
+        PerusteKaikkiDto kokoSisalto = perusteService.getKokoSisalto(peruste.getId());
+        assertNotNull(kokoSisalto.getTutkinnonOsat());
+        Assertions.assertThat(kokoSisalto.getSuoritustavat()).hasSize(1);
+        Assertions.assertThat(kokoSisalto.getTutkinnonOsat()).hasSize(2);
     }
 
     @Test

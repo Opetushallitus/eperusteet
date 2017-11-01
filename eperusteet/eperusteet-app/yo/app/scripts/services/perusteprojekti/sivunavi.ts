@@ -15,8 +15,8 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
-import {Lokalisointi} from "scripts/services/utils";
+import _ from "lodash";
+import { Lokalisointi } from "scripts/services/utils";
 
 angular
     .module("eperusteApp")
@@ -34,7 +34,7 @@ angular
         PerusopetusService,
         PerusteprojektiTiedotService,
         Utils,
-        YleinenData,
+        YleinenData
     ) {
         var STATE_OSAT_ALKU = "root.perusteprojekti.suoritustapa.";
         var STATE_OSAT = "root.perusteprojekti.suoritustapa.tutkinnonosat";
@@ -264,7 +264,7 @@ angular
         }
 
         function mapYL(target, osat, key, parent, doSort = true) {
-            let chain = _(osat);
+            let chain: any = _.chain(osat);
             if (doSort) {
                 chain = chain.sortBy(
                     key === "oppiaineet" ||

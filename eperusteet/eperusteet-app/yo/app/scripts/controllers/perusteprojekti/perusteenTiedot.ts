@@ -33,7 +33,7 @@ angular
 
         this.get = function(perusteId, object) {
             PerusteTutkintonimikekoodit.get({ perusteId: perusteId }, function(res) {
-                object.koodisto = _.map(res, function(osa) {
+                object.koodisto = _.map(res, function(osa: any) {
                     function parsiNimi(kentta) {
                         if (osa[kentta + "Arvo"]) {
                             let nimi = osa.b[osa[kentta + "Arvo"]].metadata;
@@ -79,7 +79,7 @@ angular
             const arviointiasteikotP = Arviointiasteikot.list().$promise;
             const kvliite = await Perusteet.kvliite({ perusteId: $scope.peruste.id }).$promise;
             const arviointiasteikot = await arviointiasteikotP;
-            kvliite.tasot = _.filter(kvliite.tasot, taso => taso.nimi);
+            kvliite.tasot = _.filter(kvliite.tasot, taso => (taso as any).nimi);
             $scope.arviointiasteikot = arviointiasteikot;
             $scope.arviointiasteikotMap = _.indexBy(arviointiasteikot, "id");
             $scope.kvliite = kvliite;
@@ -87,7 +87,6 @@ angular
             $scope.peruste.kvliite = kvliite;
             $scope.editablePeruste.kvliite = kvliite;
             $scope.useampiSuoritustapa = _.size(kvliite.muodostumisenKuvaus) > 1;
-
         })();
 
         $scope.editEnabled = false;
@@ -361,7 +360,7 @@ angular
             };
             // Kun ensimmäinen koodi lisätään, perusteen nimi kopioidaan koodistosta
             if ($scope.editablePeruste.koulutukset.length === 0) {
-                _.each(_.values(YleinenData.kielet), function(kieli) {
+                _.each(_.values(YleinenData.kielet), function(kieli: any) {
                     if (koodisto.nimi.hasOwnProperty(kieli)) {
                         $scope.editablePeruste.nimi[kieli] = koodisto.nimi[kieli];
                     }
@@ -427,7 +426,7 @@ angular
                     $scope.editablePeruste.koulutukset = _.remove($scope.editablePeruste.koulutukset, function(
                         koulutus
                     ) {
-                        return koulutus.koulutuskoodiArvo !== koulutuskoodiArvo;
+                        return (koulutus as any).koulutuskoodiArvo !== koulutuskoodiArvo;
                     });
                 }
             })();

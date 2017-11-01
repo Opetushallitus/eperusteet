@@ -74,7 +74,7 @@ angular
         }
 
         function transformSuosikit(uudetSuosikit) {
-            return _.map(uudetSuosikit, function(s) {
+            return _.map(uudetSuosikit, function(s: any) {
                 s.sisalto = JSON.parse(s.sisalto);
                 if (s.sisalto.tyyppi === "linkki") {
                     s.$url = $state.href(s.sisalto.tila, s.sisalto.parametrit);
@@ -221,7 +221,7 @@ angular
             },
             haeSuosikki: function(state) {
                 const stateParams = _.omit($stateParams, ["prestate", "projekti"]);
-                const haku = _.filter(info.suosikit, function(s) {
+                const haku = _.filter(info.suosikit, function(s: any) {
                     return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
                 });
                 return _.first(haku);

@@ -94,6 +94,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     @NotNull(groups = Valmis.class)
+    @Column(updatable = false, name = "koulutustyyppi")
     private String koulutustyyppi;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})

@@ -510,7 +510,7 @@ angular
                     // 2. Uncollapse parents of matched
                     const osa = $scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
                     if (osa && osa.$matched) {
-                        let  parent = item.$parent;
+                        let parent = item.$parent;
                         while (parent) {
                             if (parent.$parent) {
                                 parent.$collapsed = false;
@@ -531,7 +531,7 @@ angular
             input = input === undefined ? $scope.tosarajaus : input;
             $scope.tosarajaus = input;
             const filtered = !_.isEmpty(input);
-            $scope.uniikit = _.reject($scope.kaikkiUniikit, function(yksi) {
+            $scope.uniikit = _.reject($scope.kaikkiUniikit, function(yksi: any) {
                 const nimi = $scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite]
                     ? (Kaanna.kaanna($scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi) || "")
                           .toLowerCase()
@@ -602,7 +602,7 @@ angular
 
         function adjustIndex(arr, sorters, originalIndex, paginationOffset = 0) {
             const sortedList = $filter("orderBy")(arr, sorters);
-            return _.findIndex(arr, function (item) {
+            return _.findIndex(arr, function(item) {
                 return item === sortedList[originalIndex + paginationOffset];
             });
         }

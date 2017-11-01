@@ -264,7 +264,7 @@ export const isOpas = function(peruste) {
 
 export const yhteisetTutkinnonOsat = ["tutke2", "reformi_tutke2"];
 
-export const isTutke2 = (viite) => {
+export const isTutke2 = viite => {
     if (viite == null || viite.tutkinnonOsa == null || viite.tutkinnonOsa.tyyppi == null) {
         return false;
     }

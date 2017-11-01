@@ -192,7 +192,7 @@ angular
         VersionHelper,
         YleinenData,
         perusteprojektiBackLink,
-        virheService,
+        virheService
     ) {
         $scope.tekstikappale = {};
         $scope.versiot = {};
@@ -427,7 +427,10 @@ angular
         }
 
         function fetch(cb) {
-            PerusteenOsat.get({ osanId: $scope.tekstikappale.id }, _.setWithCallback($scope, "tekstikappale", cb));
+            PerusteenOsat.get(
+                { osanId: $scope.tekstikappale.id },
+                (_ as any).setWithCallback($scope, "tekstikappale", cb)
+            );
         }
 
         async function setNavigation() {
@@ -580,4 +583,4 @@ angular
                 $rootScope.$broadcast("editointikontrollitRefresh");
             }
         });
-    });
+    } as any);

@@ -391,12 +391,11 @@ angular
                         };
                     }
 
-                    getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider)
-                        .then(sisalto => {
-                            sisalto = ylTiedot.sisalto;
-                            resolve(sisalto);
-                            deferred.resolve(ylTiedot.sisalto);
-                        });
+                    getYlStructure(labels, osatProvider, sisaltoProvider, kurssitProvider).then(sisalto => {
+                        sisalto = ylTiedot.sisalto;
+                        resolve(sisalto);
+                        deferred.resolve(ylTiedot.sisalto);
+                    });
                 } else {
                     SuoritustapaSisalto.get(
                         {
@@ -448,18 +447,16 @@ angular
             AIPEService.setTiedot(this);
             projektinTiedotDeferred = $q.defer();
             try {
-                PerusteprojektiResource.get({ id: stateParams.perusteProjektiId }).$promise
-                    .then(projektiRes => {
-                        projekti = projektiRes;
-                        Perusteet.get({ perusteId: projekti._peruste }).$promise
-                            .then(perusteRes => {
-                                peruste = perusteRes;
-                                if (!_.isEmpty(peruste.suoritustavat)) {
-                                    peruste.suoritustavat = _.sortBy(peruste.suoritustavat, "suoritustapakoodi");
-                                }
-                                projektinTiedotDeferred.resolve();
-                            });
+                PerusteprojektiResource.get({ id: stateParams.perusteProjektiId }).$promise.then(projektiRes => {
+                    projekti = projektiRes;
+                    Perusteet.get({ perusteId: projekti._peruste }).$promise.then(perusteRes => {
+                        peruste = perusteRes;
+                        if (!_.isEmpty(peruste.suoritustavat)) {
+                            peruste.suoritustavat = _.sortBy(peruste.suoritustavat, "suoritustapakoodi");
+                        }
+                        projektinTiedotDeferred.resolve();
                     });
+                });
             } catch (virhe) {
                 Notifikaatiot.serverCb(virhe);
                 projektinTiedotDeferred.reject(virhe);

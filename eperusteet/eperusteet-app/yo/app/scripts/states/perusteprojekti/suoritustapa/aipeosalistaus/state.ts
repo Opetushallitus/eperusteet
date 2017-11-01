@@ -69,7 +69,7 @@ angular.module("eperusteApp").config($stateProvider => {
             }
             $scope.osaAlueet = osaAlueet;
 
-            $scope.hasMuokattu = !_.isEmpty($scope.osaAlueet) && !!_.first($scope.osaAlueet).muokattu;
+            $scope.hasMuokattu = !_.isEmpty($scope.osaAlueet) && !!(_.first($scope.osaAlueet) as any).muokattu;
 
             $scope.options = {
                 extrafilter: null

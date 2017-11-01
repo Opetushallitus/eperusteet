@@ -36,7 +36,7 @@ angular
                 id: null
             };
             if (termi) {
-                _.each(_.values(YleinenData.kielet), function(lang) {
+                _.each(_.values(YleinenData.kielet), function(lang: any) {
                     newtermi.termi[lang] = termi;
                 });
             }
@@ -70,7 +70,7 @@ angular
             ).$promise;
         };
         function makeKey(item) {
-            var termi = _.first(_.compact(_.values(item.termi))) || "";
+            var termi: string = _.first(_.compact(_.values(item.termi))) || "";
             return termi.replace(/[^a-zA-Z0-9]/g, "") + new Date().getTime();
         }
         this.save = function(item) {
@@ -91,7 +91,7 @@ angular
             peruste = value;
         };
         function findTermi(avain) {
-            return _.find(cached[peruste.id], function(item) {
+            return _.find(cached[peruste.id], function(item: any) {
                 return item.avain === avain;
             });
         }

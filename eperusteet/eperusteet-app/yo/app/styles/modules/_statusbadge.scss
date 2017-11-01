@@ -42,4 +42,7 @@
     &.poistettu {
         background-color: #c44;
     }
+    .status-name {
+        user-select: none;
+    }
 }

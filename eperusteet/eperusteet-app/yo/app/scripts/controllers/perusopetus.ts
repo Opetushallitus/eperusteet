@@ -375,11 +375,11 @@ angular
         }
 
         function rakennaVuosiluokkakokonaisuuksienSisalto() {
-            var sisalto = _.map($scope.vuosiluokkakokonaisuudet, function(vkl) {
+            var sisalto = _.map($scope.vuosiluokkakokonaisuudet, function(vkl: any) {
                 return {
                     $oppiaineet: _(oppiaineet)
                         .filter(function(oa) {
-                            return _.some(oa.vuosiluokkakokonaisuudet, function(oavkl) {
+                            return _.some(oa.vuosiluokkakokonaisuudet, function(oavkl: any) {
                                 return _.parseInt(oavkl._vuosiluokkaKokonaisuus) === vkl.id;
                             });
                         })
@@ -391,7 +391,7 @@ angular
             });
 
             if (!_.isEmpty(sisalto)) {
-                _.first(sisalto).$selected = true;
+                (_.first(sisalto) as any).$selected = true;
                 $scope.valittuVuosiluokkakokonaisuus = _.first(sisalto).$vkl;
             }
             return sisalto;
@@ -422,7 +422,7 @@ angular
                     if (filteritTyhjat || _.isEmpty(tavoite.laajattavoitteet)) {
                         tavoite.$rejected = false;
                     } else {
-                        tavoite.$rejected = _.all(tavoite.laajattavoitteet, function(lt) {
+                        tavoite.$rejected = _.all(tavoite.laajattavoitteet, function(lt: any) {
                             return $scope.filterOsaamiset[lt];
                         });
                     }
@@ -492,7 +492,7 @@ angular
                         sections: [
                             {
                                 $condensed: true,
-                                items: _.map($scope.vuosiluokkakokonaisuudet, function(kokonaisuus) {
+                                items: _.map($scope.vuosiluokkakokonaisuudet, function(kokonaisuus: any) {
                                     return { label: kokonaisuus.nimi, value: kokonaisuus.id, $selected: true };
                                 }),
                                 update: paivitaSivunavi
@@ -529,7 +529,7 @@ angular
                                 id: "osaamiset",
                                 title: "tavoitteiden-osaamiset",
                                 $all: true,
-                                items: _.map($scope.osaamiset, function(item) {
+                                items: _.map($scope.osaamiset, function(item: any) {
                                     return { label: item.nimi, value: item.id, depth: 0, $selected: true };
                                 }),
                                 update: function(item) {

@@ -101,7 +101,7 @@ angular.module("eperusteApp").config($stateProvider => {
                             _.each($scope.editableModel.tavoitteet, tavoiteId => {
                                 const tavoite = _.find($scope.oppiaine.tavoitteet, { id: parseInt(tavoiteId) });
                                 if (tavoite) {
-                                    tavoite.$valittu = true;
+                                    (tavoite as any).$valittu = true;
                                 }
                             });
                         },

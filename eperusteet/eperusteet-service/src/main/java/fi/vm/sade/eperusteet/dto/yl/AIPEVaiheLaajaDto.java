@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,12 +26,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AIPEVaiheDto extends AIPEVaiheSuppeaDto {
-    private Optional<TekstiOsaDto> siirtymaEdellisesta;
-    private Optional<TekstiOsaDto> tehtava;
-    private Optional<TekstiOsaDto> siirtymaSeuraavaan;
-    private Optional<TekstiOsaDto> laajaalainenOsaaminen;
-    private Optional<TekstiOsaDto> paikallisestiPaatettavatAsiat;
-    private List<OpetuksenKohdealueDto> opetuksenKohdealueet;
+public class AIPEVaiheLaajaDto extends AIPEVaiheDto {
     private List<AIPEOppiaineLaajaDto> oppiaineet;
 }

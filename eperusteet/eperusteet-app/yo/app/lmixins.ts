@@ -13,6 +13,7 @@ declare namespace _ {
         cset<O, P, V>(o: O, p: P): (v: V) => void;
         fromPairs(): any;
         flattenBy<T>(root: T, field: string): T[];
+        flattenTree(root: any, extractor: Function): any;
         zipBy<T>(root: T[], field: any): any[];
     }
 

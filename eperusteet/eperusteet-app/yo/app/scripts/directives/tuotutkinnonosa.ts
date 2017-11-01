@@ -156,7 +156,7 @@ angular
         $scope.ok = function() {
             $uibModalInstance.close(
                 _.filter($scope.tulokset, function(tulos) {
-                    return tulos.$$valitse;
+                    return (tulos as any).$$valitse;
                 })
             );
         };
@@ -226,8 +226,8 @@ angular
                                 id: tutkinnonOsaViite.id,
                                 laajuus: tutkinnonOsaViite.laajuus,
                                 suoritustapakoodi: suoritustapa.suoritustapakoodi,
-                                nimi: tutkinnonOsa.nimi,
-                                tyyppi: tutkinnonOsa.tyyppi,
+                                nimi: (tutkinnonOsa as any).nimi,
+                                tyyppi: (tutkinnonOsa as any).tyyppi,
                                 _tutkinnonOsa: tutkinnonOsaViite._tutkinnonOsa
                             });
                         });

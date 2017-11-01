@@ -146,7 +146,7 @@ angular
                 }
 
                 function accordionState() {
-                    var obj = _.first(scope.valmaarviointi);
+                    const obj: any = _.first(scope.valmaarviointi);
                     return obj && obj.$$accordionOpen;
                 }
 

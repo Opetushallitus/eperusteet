@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -121,7 +121,7 @@ angular
                             muokattu.jasenet,
                             function(lisatyt) {
                                 delete $scope.tyoryhmat[ryhma];
-                                $scope.tyyppi = _.first(lisatyt).nimi;
+                                $scope.tyyppi = (_.first(lisatyt) as any).nimi;
                                 $scope.tyoryhmat[$scope.tyyppi] = _.zipObject(_.map(lisatyt, "kayttajaOid"), lisatyt);
                             },
                             errorCb
@@ -146,7 +146,7 @@ angular
         $scope.uusi = ryhma ? false : true;
 
         $scope.ryhma = {
-            nimi: ryhma ? _.first(_.values(ryhma)).nimi : "",
+            nimi: ryhma ? (_.first(_.values(ryhma)) as any).nimi : "",
             jasenet: ryhma ? _.keys(ryhma) : []
         };
 
@@ -183,8 +183,8 @@ angular
         };
 
         $scope.siirraVasemmalle = function(to) {
-            $scope.ryhma.jasenet = _.remove($scope.ryhma.jasenet, function(j) {
-                var remove = !_.some(to, function(t) {
+            $scope.ryhma.jasenet = _.remove($scope.ryhma.jasenet, function(j: any) {
+                var remove = !_.some(to, function(t: any) {
                     return t === j;
                 });
                 if (!remove) {

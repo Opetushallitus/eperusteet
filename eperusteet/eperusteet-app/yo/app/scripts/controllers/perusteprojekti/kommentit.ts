@@ -18,7 +18,6 @@ import * as angular from "angular";
 import * as _ from "lodash";
 import { Endpoints, Logic } from "scripts/misc";
 
-
 namespace Controllers {
     export const kaikkiKommentit = ($q, $scope, $location, kommentit) => {
         $scope.kommentit = _(kommentit)
@@ -36,7 +35,7 @@ namespace Controllers {
         // Ei onnistu vielä koska ei tarpeeksi tietoa tilasta
         $scope.goToKommenttiLocation = Logic.getKommenttiUrl;
 
-        $q.all(_.map(uniqueOids, oid => Endpoints.getKayttajaByOid(oid))).then(users => {
+        $q.all(_.map(uniqueOids, (oid: any) => Endpoints.getKayttajaByOid(oid))).then(users => {
             const oids = {};
             _.each(users, (user, idx) => {
                 oids[uniqueOids[idx]] = Logic.getKayttajaNimi(user);

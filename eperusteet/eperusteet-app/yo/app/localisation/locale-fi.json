@@ -715,6 +715,8 @@
     "toimikausi-alku-label": "Toimikauden aloitus",
     "anna-toimikausi_alku": "Syötä toimikauden aloituspäivämäärä",
     "toimikausi-loppu-label": "Toimikauden päättyminen",
+    "koulutustyyppi-label": "Koulutustyyppi",
+    "kaikki-ilman-arkistoituja": "Kaikki",
     "anna-toimikausi_loppu": "Syötä toimikauden päättymispäivämäärä",
     "tahdella-pakolliset": "Tähdellä(*) merkityt kentät ovat pakollisia",
     "aloitus-ennen-lopetusta": "Toimikauden aloituspäivämäärän täytyy olla ennen päättymisajankohtaa.",

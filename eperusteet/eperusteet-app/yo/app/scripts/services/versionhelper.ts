@@ -108,7 +108,7 @@ angular
             data.chosen = latest(data.list);
             data.latest = true;
 
-            _.each(data.list, function(item, index) {
+            _.each(data.list, function(item, index: number) {
                 // reverse numbering for UI, oldest = 1
                 item.index = data.list.length - index;
             });
@@ -196,14 +196,14 @@ angular
 
         function changeResponseHandler(data, response, cb) {
             cb(response);
-            data.latest = data.chosen.numero === latest(data.list).numero;
+            data.latest = data.chosen.numero === (latest(data.list) as any).numero;
         }
 
         this.lastModified = function(data) {
             if (data && data.chosen) {
                 var found = _.find(data.list, { numero: data.chosen.numero });
                 if (found) {
-                    return found.pvm;
+                    return (found as any).pvm;
                 }
             }
         };
@@ -212,8 +212,8 @@ angular
             var found = _.find(data.list, { index: parseInt(index, 10) });
             if (found) {
                 data.chosen = found;
-                data.latest = data.chosen.numero === latest(data.list).numero;
-                return found.numero;
+                data.latest = data.chosen.numero === (latest(data.list) as any).numero;
+                return (found as any).numero;
             }
         };
 
@@ -226,7 +226,7 @@ angular
         this.latestIndex = function(data) {
             var latestItem = latest(data.list);
             if (latestItem) {
-                return latestItem.index;
+                return (latestItem as any).index;
             }
         };
 

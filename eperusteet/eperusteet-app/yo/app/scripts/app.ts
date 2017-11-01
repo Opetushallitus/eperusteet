@@ -54,34 +54,42 @@ angular
     .constant("TEXT_HIERARCHY_MAX_DEPTH", 8)
     .constant("SHOW_VERSION_FOOTER", true)
     .constant("DEVELOPMENT", process.env.NODE_ENV === "development")
-    .config(($sceProvider, $urlRouterProvider, $translateProvider, $urlMatcherFactoryProvider, $locationProvider,
-             cfpLoadingBarProvider) => {
-        const preferred = "fi";
+    .config(
+        (
+            $sceProvider,
+            $urlRouterProvider,
+            $translateProvider,
+            $urlMatcherFactoryProvider,
+            $locationProvider,
+            cfpLoadingBarProvider
+        ) => {
+            const preferred = "fi";
 
-        $sceProvider.enabled(true);
+            $sceProvider.enabled(true);
 
-        $urlRouterProvider.when("", "/" + preferred);
-        $urlRouterProvider.when("/", "/" + preferred);
-        $urlRouterProvider.otherwise(($injector, $location) => {
-            $injector.get("virheService").setData({ path: $location.path() });
-            $injector.get("$state").go("root.virhe");
-        });
+            $urlRouterProvider.when("", "/" + preferred);
+            $urlRouterProvider.when("/", "/" + preferred);
+            $urlRouterProvider.otherwise(($injector, $location) => {
+                $injector.get("virheService").setData({ path: $location.path() });
+                $injector.get("$state").go("root.virhe");
+            });
 
-        $urlMatcherFactoryProvider.caseInsensitive(true);
-        $urlMatcherFactoryProvider.strictMode(false);
+            $urlMatcherFactoryProvider.caseInsensitive(true);
+            $urlMatcherFactoryProvider.strictMode(false);
 
-        $translateProvider.useLoader("LokalisointiLoader");
-        $translateProvider.preferredLanguage(preferred);
-        $translateProvider.useSanitizeValueStrategy("escaped");
+            $translateProvider.useLoader("LokalisointiLoader");
+            $translateProvider.preferredLanguage(preferred);
+            $translateProvider.useSanitizeValueStrategy("escaped");
 
-        $locationProvider.hashPrefix("");
+            $locationProvider.hashPrefix("");
 
-        cfpLoadingBarProvider.parentSelector = "#loading-bar-container";
-        cfpLoadingBarProvider.includeSpinner = true;
-        cfpLoadingBarProvider.latencyThreshold = 100;
+            cfpLoadingBarProvider.parentSelector = "#loading-bar-container";
+            cfpLoadingBarProvider.includeSpinner = true;
+            cfpLoadingBarProvider.latencyThreshold = 100;
 
-        moment.locale(preferred);
-    })
+            moment.locale(preferred);
+        }
+    )
     .config($qProvider => {
         $qProvider.errorOnUnhandledRejections(false);
     })
@@ -385,8 +393,10 @@ angular
         if (DEVELOPMENT) {
             $rootScope.$on("$stateChangeSuccess", (event, state, params) => {
                 console.info(
-                    "%c» " + state.name + " «", "color: #ffb05b; background: #333; font-weight: bold",
-                    "" + state.url + " ", params
+                    "%c» " + state.name + " «",
+                    "color: #ffb05b; background: #333; font-weight: bold",
+                    "" + state.url + " ",
+                    params
                 );
             });
             $rootScope.$on("$stateChangeStart", (event, state, params) => {

@@ -78,22 +78,20 @@ angular
         $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti,
             $scope.peruste, $stateParams.suoritustapa);
 
-
-
         $scope.onTyoryhmia = function() {
             return !_.isEmpty($scope.tyoryhmat);
         };
 
         if (
             _.size($scope.peruste.suoritustavat) > 1 &&
-            _.first($scope.peruste.suoritustavat).suoritustapakoodi !== "ops"
+            (_.first($scope.peruste.suoritustavat) as any).suoritustapakoodi !== "ops"
         ) {
-            $scope.peruste.suoritustavat = _.arraySwap($scope.peruste.suoritustavat, 0, 1);
+            $scope.peruste.suoritustavat = (_ as any).arraySwap($scope.peruste.suoritustavat, 0, 1);
         }
 
         PerusteprojektiTyoryhmat.getAll({ id: $stateParams.perusteProjektiId }, function(res) {
             var tyoryhmaMap: any = {};
-            _.each(_.sortBy(res, "nimi"), function(tr) {
+            _.each(_.sortBy(res, "nimi"), function(tr: any) {
                 if (!_.isArray(tyoryhmaMap[tr._perusteenosa])) {
                     tyoryhmaMap[tr._perusteenosa] = [];
                 }

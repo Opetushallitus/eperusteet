@@ -40,7 +40,7 @@ angular.module("eperusteApp").service("Koulutusalat", function Koulutusalat($res
     return koulutusalaPromise.then(function(vastaus) {
         self.koulutusalatMap = _.zipObject(
             _.pluck(vastaus, "koodi"),
-            _.map(vastaus, function(e) {
+            _.map(vastaus, function(e: any) {
                 return {
                     nimi: e.nimi
                 };

@@ -78,7 +78,7 @@ angular
                 title = Kaanna.kaanna("Etusivu");
             }
             if ($scope.navigaatiopolku.length > 1) {
-                title += !title ? "" : ": " + Kaanna.kaanna(_.last($scope.navigaatiopolku).label);
+                title += !title ? "" : ": " + Kaanna.kaanna((_.last($scope.navigaatiopolku) as any).label);
             }
             if (!title) {
                 title = Kaanna.kaanna(_.last($state.current.name.split(".")));

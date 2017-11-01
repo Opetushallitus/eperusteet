@@ -65,8 +65,8 @@ angular
                     $scope.luonnosPerusteet = _(vastaus)
                         .filter(pp => pp.diaarinumero)
                         .map("peruste")
-                        .filter(p => p.nimi)
-                        .filter(p => p.id !== $scope.nykyinenPeruste.id)
+                        .filter(p => (p as any).nimi)
+                        .filter(p => (p as any).id !== $scope.nykyinenPeruste.id)
                         .value();
 
                     $scope.haku("");
@@ -134,21 +134,21 @@ angular
                         peruste.suoritustavat.push({ suoritustapakoodi: oletusSuoritustapa });
                     }
 
-                    $scope.valittuSuoritustapa = _.first(peruste.suoritustavat).suoritustapakoodi;
+                    $scope.valittuSuoritustapa = (_.first(peruste.suoritustavat) as any).suoritustapakoodi;
                     $q
                         .all(
                             _.map(peruste.suoritustavat, function(st) {
                                 return SuoritustapaSisalto.get({
                                     perusteId: valittuPeruste.id,
-                                    suoritustapa: st.suoritustapakoodi
+                                    suoritustapa: (st as any).suoritustapakoodi
                                 }).$promise;
                             })
                         )
                         .then(function(res) {
                             sisallot = _.zipObject(
                                 _.map(peruste.suoritustavat, "suoritustapakoodi"),
-                                _.map(res, function(hst) {
-                                    return _.reject(hst.lapset, function(lapsi) {
+                                _.map(res, function(hst: any) {
+                                    return _.reject(hst.lapset, function(lapsi: any) {
                                         return lapsi.perusteenOsa.tunniste === "rakenne";
                                     });
                                 })

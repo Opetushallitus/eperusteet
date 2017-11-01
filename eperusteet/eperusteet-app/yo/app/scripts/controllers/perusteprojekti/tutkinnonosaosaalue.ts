@@ -48,11 +48,10 @@ angular
         // TODO: Tee parempi korjaus ilman watchia
         $scope.$watch("tutkinnonOsaViite", () => {
             if ($scope.tutkinnonOsaViite.tutkinnonOsa) {
-
                 // Haetaan alarelaatio koodi osa-alueelle
                 const koodiUri = $scope.tutkinnonOsaViite.tutkinnonOsa.koodiUri;
                 if (koodiUri !== null || koodiUri === "") {
-                    Koodisto.haeAlarelaatiot(koodiUri, (alarelaatiot) => {
+                    Koodisto.haeAlarelaatiot(koodiUri, alarelaatiot => {
                         alarelaatiot.unshift({});
                         $scope.alarelaatiot = alarelaatiot;
                         $scope.alarelaatiotLadattu = true;
@@ -243,9 +242,9 @@ angular
                 } else {
                     console.log($scope.isVaTe);
                     return (
-                        $scope.isVaTe
-                        || _.includes(YleinenData.yhteisetTutkinnonOsat, $scope.tutkinnonOsaViite.tutkinnonOsa.tyyppi)
-                        || _.all($scope.osaamistavoitepuu, function(osaamistavoite: any) {
+                        $scope.isVaTe ||
+                        _.includes(YleinenData.yhteisetTutkinnonOsat, $scope.tutkinnonOsaViite.tutkinnonOsa.tyyppi) ||
+                        _.all($scope.osaamistavoitepuu, function(osaamistavoite: any) {
                             return Utils.hasLocalizedText(osaamistavoite.nimi);
                         })
                     );

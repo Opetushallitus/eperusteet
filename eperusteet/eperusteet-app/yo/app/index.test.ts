@@ -24,6 +24,9 @@ describe("app", () => {
     test("All states use require as template", async () => {
         const $state: any = await getComponent("$state");
         _.each($state.get(), state => {
+            if (state.templateUrl) {
+                console.error("You should use 'template: require(...)' with state:", state.name);
+            }
             expect(state.templateUrl).toBeFalsy();
             expect(!state.template && !state.abstract && _.isEmpty(state.views)).toBeFalsy();
 

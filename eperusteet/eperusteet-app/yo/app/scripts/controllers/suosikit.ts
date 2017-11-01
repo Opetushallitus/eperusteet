@@ -46,7 +46,7 @@ angular
                 if (_.isEmpty($scope.search.term)) {
                     $scope.suosikit = $scope.originals;
                 } else {
-                    $scope.suosikit = _.filter($scope.originals, function(item) {
+                    $scope.suosikit = _.filter($scope.originals, function(item: any) {
                         return item.nimi.toLowerCase().indexOf($scope.search.term.toLowerCase()) > -1;
                     });
                 }
