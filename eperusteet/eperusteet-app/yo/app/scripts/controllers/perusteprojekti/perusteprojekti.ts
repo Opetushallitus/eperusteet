@@ -516,6 +516,7 @@ angular
                     $state.is("root.perusteprojekti.suoritustapa.aipesisalto") ||
                     $state.is("root.perusteprojekti.suoritustapa.vksisalto") ||
                     $state.is("root.perusteprojekti.suoritustapa.eosisalto") ||
+                    $state.is("root.perusteprojekti.suoritustapa.losisalto") ||
                     $state.is("root.perusteprojekti.suoritustapa.tposisalto") ||
                     $state.is("root.perusteprojekti.suoritustapa.lukiosisalto")
                 );

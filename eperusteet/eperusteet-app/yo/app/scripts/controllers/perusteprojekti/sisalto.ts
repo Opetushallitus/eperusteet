@@ -75,16 +75,8 @@ angular
             tyyppi => tyyppi === $scope.peruste.koulutustyyppi
         );
         $scope.muodostumisKompensaattori = isEsiopetus ? 1 : 0;
-
-        // Osoitetaan julkiselle puolelle
-        $scope.$esitysurl = $scope.projekti.esikatseltavissa
-            ? YleinenData.getPerusteEsikatseluHost() +
-              "/esitys/" +
-              $scope.peruste.id +
-              "/" +
-              $stateParams.suoritustapa +
-              "/tiedot"
-            : null;
+        $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti,
+            $scope.peruste, $stateParams.suoritustapa);
 
         $scope.onTyoryhmia = function() {
             return !_.isEmpty($scope.tyoryhmat);

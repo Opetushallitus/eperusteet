@@ -50,7 +50,8 @@ angular.module("eperusteApp").config($stateProvider =>
             SuoritustavanSisalto,
             Algoritmit,
             Utils,
-            Api
+            Api,
+            YleinenData
         ) => {
             $scope.peruste = peruste;
             $scope.sisalto = sisalto;
@@ -70,9 +71,7 @@ angular.module("eperusteApp").config($stateProvider =>
                     }
                 ]
             };
-            $scope.esitysUrl = $state.href("root.selaus.aikuisperusopetuslista", {
-                perusteId: $scope.peruste.id
-            });
+            $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti, $scope.peruste);
             $scope.rajaus = "";
             $scope.editing = false;
 

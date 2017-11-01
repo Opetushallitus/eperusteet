@@ -175,7 +175,7 @@
 
             <!-- Kohdealueen lisäys -->
             <div class="panel panel-default muokkaus-lisays"
-                 ng-if="editAllowed && editEnabled && (!eiKohdealueita || ammattitaito.length === 0)">
+                 ng-if="editAllowed && editEnabled && (!eiKohdealueita || !ammattitaito || ammattitaito.length === 0)">
                 <div class="panel-body">
                     <input class="form-control" ng-show="$parent.showNewKohdealueInput" type="text" slocalized
                            ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.kohdealue.uusi()"

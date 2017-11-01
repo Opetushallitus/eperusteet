@@ -3,13 +3,21 @@
     <div class="row tutkinto-sisalto">
         <div ng-if="tiivistelma" class="tiivistelma">
             <h3 kaanna="perusteen-tiivistelma"></h3>
-            <p ng-bind-html="tiivistelma|kaanna|unsafe"></p>
+            <p ng-bind-html="tiivistelma | kaanna | unsafe"></p>
         </div>
 
         <div class="esityksen-tarkastelu clearfix">
-            <a icon-role="sunglasses" class="url" ng-href="{{$esitysurl}}" kaanna="'tarkastele-esitysta'" ng-show="$esitysurl"></a>
-            <a icon-role="comment" class="url pull-right" ui-sref="root.perusteprojekti.kommentit"
-               kaanna="'kaikki-kommentit'"></a>
+            <a href="{{esitysurl}}"
+               ng-show="esitysurl"
+               kaanna="'tarkastele-esitysta'"
+               icon-role="sunglasses"
+               class="url">
+            </a>
+            <a icon-role="comment"
+               class="url pull-right"
+               ui-sref="root.perusteprojekti.kommentit"
+               kaanna="'kaikki-kommentit'">
+            </a>
         </div>
 
         <div ng-show="peruste.suoritustavat.length > 1 && !muokkausTutkintokohtaisetOsat">

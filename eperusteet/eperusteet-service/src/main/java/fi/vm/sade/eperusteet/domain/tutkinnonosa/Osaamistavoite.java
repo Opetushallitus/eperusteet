@@ -16,10 +16,7 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.google.common.base.Objects;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.PartialMergeable;
-import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
@@ -122,14 +119,22 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
      */
     private Kieli kieli;
 
-    @Column(name = "koodi_uri")
     @Getter
     @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    private Koodi koodi;
+
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
+    @Column(name = "koodi_uri")
     private String koodiUri;
 
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
     @Column(name = "koodi_arvo")
-    @Getter
-    @Setter
     private String koodiArvo;
 
 
@@ -142,6 +147,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         this.laajuus = ot.getLaajuus();
         this.tunnustaminen = ot.getTunnustaminen();
         this.kieli = ot.kieli;
+        this.koodi = ot.koodi;
         this.koodiArvo = ot.koodiArvo;
         this.koodiUri = ot.koodiUri;
         this.arviointi = ot.getArviointi() == null ? null : new Arviointi(ot.getArviointi());
@@ -178,6 +184,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
             this.setTavoitteet(updated.getTavoitteet());
             this.setTunnustaminen(updated.getTunnustaminen());
             this.setArviointi(updated.getArviointi());
+            this.setKoodi(updated.getKoodi());
             connectAmmattitaitovaatimusListToTutkinnonOsa(updated);
             this.setAmmattitaitovaatimuksetLista(updated.getAmmattitaitovaatimuksetLista());
             this.setEsitieto(updated.getEsitieto());
@@ -211,6 +218,37 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
             throw new IllegalArgumentException("Osaamistavoite ei voi olla oma esitietonsa");
         }
         this.esitieto = esitieto;
+    }
+
+    @Deprecated
+    public String getKoodiUri() {
+        if (koodi != null) {
+            return koodi.getUri();
+        } else {
+            return koodiUri;
+        }
+    }
+
+    @Deprecated
+    public void setKoodiUri(String koodiUri) {
+        this.koodiUri = koodiUri;
+        if (koodi != null) {
+            koodi.setUri(koodiUri);
+        } else if (koodiUri != null) {
+            koodi = new Koodi();
+            koodi.setUri(koodiUri);
+            koodi.setKoodisto("tutkinnonosat");
+        }
+    }
+
+    @Deprecated
+    public String getKoodiArvo() {
+        return koodiArvo;
+    }
+
+    @Deprecated
+    public void setKoodiArvo(String koodiArvo) {
+        this.koodiArvo = koodiArvo;
     }
 
     public boolean structureEquals(Osaamistavoite other) {
