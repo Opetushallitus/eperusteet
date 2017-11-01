@@ -168,6 +168,12 @@ angular
             }
             var openDialog = Koodisto.modaali(
                 function(koodisto) {
+                    tavoite.koodi = {
+                        uri: koodisto.koodiUri,
+                        arvo: koodisto.koodiArvo,
+                        versio: koodisto.versio,
+                        koodisto: koodisto.koodisto.koodistoUri
+                    };
                     MuokkausUtils.nestedSet(tavoite.koodi, "koodiUri", ",", koodisto.koodiUri);
                     MuokkausUtils.nestedSet(tavoite.koodi, "koodiArvo", ",", koodisto.koodiArvo);
                 },
