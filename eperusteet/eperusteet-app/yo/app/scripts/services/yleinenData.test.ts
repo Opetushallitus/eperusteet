@@ -1,7 +1,13 @@
 import * as yd from "./yleinenData";
 import _ from "lodash";
 
-import { getComponent, inject, getOfType, testDirective, testModule, mockApp } from "app/testutils";
+import {
+    getComponent, inject, getOfType, testDirective, testModule, mockApp, createPeruste,
+    createPerusteprojekti
+} from "app/testutils";
+
+import * as T from "../types";
+import {koulutustyypit} from "./yleinenData";
 
 describe("YleinenData", async () => {
     let YleinenData: any;
@@ -58,4 +64,158 @@ describe("YleinenData", async () => {
     test("default export is a function", () => {
         expect(_.isFunction(yd.default)).toBeTruthy();
     });
+
+    test("Perusteiden esikatselulinkkien generoiminen", () => {
+        const assertSomeUrl = (
+            koulutustyyppi: T.Koulutustyyppi,
+            optionals: {
+                suoritustapa?: string,
+                perusteCfg?: {},
+                projektiCfg?: {}
+            } = {}
+        ) => {
+            const peruste = createPeruste(koulutustyyppi, { id: 1, ...optionals.perusteCfg });
+            const projekti = createPerusteprojekti(peruste.id, { id: 2, ...optionals.projektiCfg });
+            expect(YleinenData.getPerusteEsikatseluLink(projekti, peruste, optionals.suoritustapa)).toBeTruthy();
+        };
+
+        const assertUrl = (
+            expectedUrl: string,
+            koulutustyyppi: T.Koulutustyyppi,
+            optionals: {
+                suoritustapa?: string,
+                projektiCfg?: {},
+                perusteCfg?: {}
+            } = {}
+        ) => {
+            const peruste = createPeruste(koulutustyyppi, { id: 1, ...optionals.perusteCfg });
+            const projekti = createPerusteprojekti(peruste.id, { id: 2, ...optionals.projektiCfg });
+            expect(YleinenData.getPerusteEsikatseluLink(projekti, peruste, optionals.suoritustapa)).toEqual(expectedUrl);
+        };
+
+        // Ei esikatselussa
+        assertUrl(null, T.Perustutkinto);
+
+        // Valmiilla perusteella on esikatselulinkki
+        assertSomeUrl(T.Perustutkinto, {
+            suoritustapa: "reformi",
+            projektiCfg: {
+                esikatseltavissa: false
+            },
+            perusteCfg: {
+                tila: "valmis"
+            }
+        });
+
+        // Testataan, että jokaiselle koulutustyypille löytyy esikatselulinkki jos on esikatseltavissa
+        _.each(T.Koulutustyypit(), koulutustyyppi => {
+            assertSomeUrl(koulutustyyppi, {
+                suoritustapa: "reformi",
+                projektiCfg: {
+                    esikatseltavissa: true
+                }
+            });
+        });
+
+        // Testataan linkit koulututyypeille
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/esitys/1/reformi/tiedot", T.Perustutkinto, {
+            suoritustapa: "reformi",
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/lukio/1/tiedot", T.Lukiokoulutus, {
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/esitys/1/reformi/tiedot", T.Telma, {
+            suoritustapa: "reformi",
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/lisaopetus/1/tiedot", T.Lisaopetus, {
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/esitys/1/reformi/tiedot", T.Ammattitutkinto, {
+            suoritustapa: "reformi",
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/esitys/1/reformi/tiedot", T.Erikoisammattitutkinto, {
+            suoritustapa: "reformi",
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/lukio/1/tiedot", T.Aikuistenlukiokoulutus, {
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/esiopetus/1/tiedot", T.Esiopetus, {
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/perusopetus/1/tiedot", T.Perusopetus, {
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/aipe/1/tiedot", T.Aikuistenperusopetus, {
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/esitys/1/reformi/tiedot", T.Valma, {
+            suoritustapa: "reformi",
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/varhaiskasvatus/1/tiedot", T.Varhaiskasvatus, {
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/pvalmistava/1/tiedot", T.Perusopetusvalmistava, {
+            suoritustapa: "reformi",
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/lukio/1/tiedot", T.Lukiovalmistavakoulutus, {
+            suoritustapa: "reformi",
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+
+        // Todo: aipelle oma url
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/esiopetus/1/tiedot", T.Tpo, {
+            suoritustapa: "reformi",
+            projektiCfg: {
+                esikatseltavissa: true
+            }
+        });
+    })
 });

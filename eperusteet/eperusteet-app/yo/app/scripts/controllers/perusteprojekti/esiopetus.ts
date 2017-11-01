@@ -39,14 +39,7 @@ angular
         TekstikappaleOperations.setPeruste($scope.peruste);
         $scope.rajaus = "";
         $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
-        $scope.$esitysurl =
-            YleinenData.getPerusteEsikatseluHost() +
-            "/" +
-            (YleinenData.isEsiopetus($scope.peruste) ? "esiopetus" : "lisaopetus") +
-            "/" +
-            $scope.peruste.id +
-            "/tiedot";
-
+        $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti, $scope.peruste);
         $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 
         $scope.$watch(
