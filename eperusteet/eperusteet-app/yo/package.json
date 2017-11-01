@@ -157,7 +157,7 @@
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "ts-jest": "^21.0.1",
-    "typescript": "2.5.0",
+    "typescript": "2.6.1",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "url-loader": "^0.5.9",
     "webpack": "^3.8.1",

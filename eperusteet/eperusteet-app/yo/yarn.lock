@@ -18,10 +18,6 @@
   dependencies:
     "@types/jquery" "*"
 
-"@types/es6-promise@^0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@types/es6-promise/-/es6-promise-0.0.33.tgz#280a707e62b1b6bef1a86cc0861ec63cd06c7ff3"
-
 "@types/jest@^21.1.1":
   version "21.1.1"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-21.1.1.tgz#70008ecce439774a45c7d0b543d879ec58a1b332"
@@ -7962,9 +7958,9 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.5.0.tgz#60989e74cad93c28fe35f7f7b41fe9b205a25701"
+typescript@2.6.0:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.6.1.tgz#ef39cdea27abac0b500242d6726ab90e0c846631"
 
 ua-parser-js@^0.7.9:
   version "0.7.17"
