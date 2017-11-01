@@ -28,4 +28,5 @@ import lombok.Setter;
 public class KevytTekstiKappaleDto {
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto teksti;
+    private Integer jnro;
 }

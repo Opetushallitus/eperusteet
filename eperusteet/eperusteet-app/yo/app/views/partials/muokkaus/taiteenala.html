@@ -111,38 +111,45 @@
                         </div>
                     </div>
 
-                    <div ng-repeat="field in taiteenalaFields">
-                        <div ng-if="editEnabled" class="taiteenala-kentta">
-                            <div ng-if="editableTaiteenala[field.path]">
-                                <div class="row tovp-header">
-                                    <div class="col-xs-10">
-                                        <input
-                                        ng-model-options="{ allowInvalid: true }"
-                                        ng-model="editableTaiteenala[field.path].nimi"
-                                        class="form-control"
+                    <div ui-sortable="sortableOptions" ng-model="taiteenalaFields">
+                        <!-- <div ng&#45;repeat="field in taiteenalaFields track by editableTaiteenala[field.path].jnro || $id(editableTaiteenala[field.path])"> -->
+                        <div ng-repeat="field in taiteenalaFields">
+                            <div ng-if="editEnabled" class="taiteenala-kentta">
+                                <div ng-if="editableTaiteenala[field.path]">
+                                    <div class="row tovp-header">
+                                        <div class="col-xs-10">
+                                            <div class="input-group">
+                                                <span class="handle input-group-addon" icon-role="sort"></span>
+                                                <input
+                                                    ng-model-options="{ allowInvalid: true }"
+                                                    ng-model="editableTaiteenala[field.path].nimi"
+                                                    class="form-control"
+                                                    slocalized
+                                                    placeholder="{{ field.localeKey | kaanna }}"></input>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <a class="remove-icon" href="" ng-click="removeTaiteenalasisalto(field.path)" class="pull-right">
+                                                <span icon-role="remove"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div
+                                        ng-model="editableTaiteenala[field.path].teksti"
+                                        class="tovp-body"
+                                        ckeditor
                                         slocalized
-                                        placeholder="{{ field.localeKey | kaanna }}"></input>
+                                        layout="normal">
                                     </div>
-                                    <div class="col-xs-2">
-                                        <a class="remove-icon" href="" ng-click="removeTaiteenalasisalto(field.path)" class="pull-right">
-                                            <span icon-role="remove"></span>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div
-                                    ng-model="editableTaiteenala[field.path].teksti"
-                                    class="tovp-body"
-                                    ckeditor
-                                    slocalized
-                                    layout="normal">
                                 </div>
                             </div>
                         </div>
-                        <div ng-if="!editEnabled && taiteenala[field.path]">
-                            <h4 class="otsikko" ng-bind-html="(taiteenala[field.path].nimi | kaanna) || (field.localeKey | kaanna)"></h4>
-                            <div ng-bind-html="taiteenala[field.path].teksti | kaanna | kuvalinkit | unsafe"
-                                termisto-viitteet="taiteenala.teksti"></div>
-                        </div>
+                    </div>
+
+                    <div ng-repeat="field in sortedFields" ng-if="!editEnabled">
+                        <h4 class="otsikko" ng-bind-html="(field.nimi | kaanna) || (field.localeKey | kaanna)"></h4>
+                        <div ng-bind-html="field.teksti | kaanna | kuvalinkit | unsafe"
+                            termisto-viitteet="field.teksti"></div>
                     </div>
                 </div>
                 <valmiskaannos ng-if="editEnabled" is-editing="editEnabled" ng-model="editableTaiteenala"></valmiskaannos>

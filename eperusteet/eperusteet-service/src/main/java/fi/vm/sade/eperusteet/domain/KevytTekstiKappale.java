@@ -52,6 +52,10 @@ public class KevytTekstiKappale extends AbstractAuditedEntity implements Seriali
     @Setter
     private TekstiPalanen teksti;
 
+    @Getter
+    @Setter
+    private Integer jnro;
+
     public KevytTekstiKappale() {
     }
 
@@ -64,6 +68,7 @@ public class KevytTekstiKappale extends AbstractAuditedEntity implements Seriali
     private void copyState(KevytTekstiKappale other) {
         this.setNimi(other.getNimi());
         this.setTeksti(other.getTeksti());
+        this.setJnro(other.getJnro());
     }
 
     public static KevytTekstiKappale getCopy(KevytTekstiKappale other) {

@@ -48,7 +48,6 @@ public class DokumenttiController {
     @Autowired
     PerusteRepository perusteRepository;
 
-
     @Autowired
     DokumenttiService service;
 

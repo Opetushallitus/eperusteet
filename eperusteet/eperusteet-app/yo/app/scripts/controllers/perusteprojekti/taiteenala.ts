@@ -146,14 +146,50 @@ export function taiteenalaCtrl(
             }
         ];
 
+        function fieldCount(): number {
+            let result = 0;
+            for (const field of $scope.taiteenalaFields) {
+                if ($scope.editableTaiteenala[field.path]) {
+                    result += 1;
+                }
+            }
+            return result;
+        }
+
         const sisaltoCache = {};
         $scope.lisaaTaiteenalasisalto = path => {
             $scope.editableTaiteenala[path] = sisaltoCache[path] ? sisaltoCache[path] : {};
+            $scope.editableTaiteenala[path].jrno = fieldCount();
+        };
+
+        $scope.sortableOptions = {
+            cursor: "move",
+            cursorAt: { top: 2, left: 2 },
+            handle: ".handle",
+            delay: 100,
+            tolerance: "pointer"
         };
 
         $scope.removeTaiteenalasisalto = path => {
             sisaltoCache[path] = $scope.editableTaiteenala[path];
             $scope.editableTaiteenala[path] = null;
+        };
+
+        $scope.sortedFields = [];
+
+        const updateSortedFields = () => {
+            $scope.sortedFields = _($scope.taiteenalaFields)
+                .filter((val: any) => $scope.taiteenala[val.path])
+                .map((val: any) => ({
+                    ...$scope.taiteenala[val.path],
+                    localeKey: val.localeKey
+                }))
+                .sortBy("jnro")
+                .value();
+            $scope.taiteenalaFields = _.sortBy($scope.taiteenalaFields, (field: any) => {
+                return $scope.taiteenala[field.path] && $scope.taiteenala[field.path].jnro;
+            });
+            console.log($scope.sortedFields);
         };
 
         $scope.poistaTyoryhma = function(tr) {
@@ -236,6 +272,7 @@ export function taiteenalaCtrl(
             $scope.taiteenala = re;
             setupTekstikappale($scope.taiteenala);
             taiteenalaDefer.resolve($scope.taiteenala);
+            updateSortedFields();
             if (TutkinnonOsaEditMode.getMode()) {
                 $scope.isNew = true;
                 $scope.muokkaa();
@@ -373,6 +410,7 @@ export function taiteenalaCtrl(
             Lukitus.vapautaPerusteenosa(res.id);
             Notifikaatiot.onnistui("muokkaus-tekstikappale-tallennettu");
             await haeSisalto();
+            updateSortedFields();
         }
 
         function doDelete(isNew) {
@@ -410,6 +448,12 @@ export function taiteenalaCtrl(
                 },
                 save: kommentti => {
                     return $q((resolve, reject) => {
+                        let idx = 0;
+                        for (const field of $scope.taiteenalaFields) {
+                            if ($scope.editableTaiteenala[field.path]) {
+                                $scope.editableTaiteenala[field.path].jnro = idx++;
+                            }
+                        }
                         $scope.editableTaiteenala.metadata = { kommentti: kommentti };
                         PerusteenOsat.saveTekstikappale(
                             {
@@ -464,7 +508,7 @@ export function taiteenalaCtrl(
             await setupTekstikappale(response);
             taiteenalaDefer = $q.defer();
             $scope.taiteenalaPromise = taiteenalaDefer.promise;
-            taiteenalaDefer.resolve($scope.editableTaiteenala);
+            await taiteenalaDefer.resolve($scope.editableTaiteenala);
             VersionHelper.setUrl($scope.versiot);
         }
 
