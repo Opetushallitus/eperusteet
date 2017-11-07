@@ -731,6 +731,8 @@
 
     "perusteen-nimi": "Perusteen nimi",
     "koulutuksen-nimi": "Koulutuksen nimi",
+    "perusteella-ei-viela-koulutuksenosia": "Perusteella ei ole koulutuksen osia",
+    "vieraskoulutuksenosa": "Vieras koulutuksen osa",
     "vahvista-poisto": "Vahvista poisto",
     "poistetaanko-koulutus": "Poistetaanko koulutuskoodi?",
 
