@@ -15,12 +15,15 @@ describe("PerusteProjektiService", () => {
     let PerusteprojektiTiedotService: any;
     let Api: any;
     let $httpBackend: any;
+    let $state: any;
 
     beforeEach(mockApp);
 
     beforeEach(
         inject(async function($injector) {
             $httpBackend = $injector.get("$httpBackend");
+
+            $state = $injector.get("$state");
 
             Api = $injector.get("Api");
 
@@ -243,4 +246,17 @@ describe("PerusteProjektiService", () => {
     test("Perusteprojektin näkymä latautuu (perusopetus)", async next => {
         testPerusteprojektiTiedotByTyyppi(16, { suoritustapa: "perusopetus" }, next);
     });
+
+    // test.only("Etusivu lataa", (next) => {
+    //     $state.go("debug")
+    //         .then(x => {
+    //             console.log(x);
+    //             next();
+    //         })
+    //         .catch(err => {
+    //             console.log(err);
+    //             next();
+    //         });
+    // });
+
 });

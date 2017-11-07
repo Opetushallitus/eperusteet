@@ -53,6 +53,15 @@ angular
             return $state.is(STATE_OSAT) || $state.is(STATE_TUTKINNON_OSA);
         };
 
+        // const AM_ITEMS = [
+        //     {
+        //         label: "tutkinnonosat",
+        //         link: [STATE_OSAT, {}],
+        //         isActive: isTutkinnonosatActive,
+        //         $type: "ep-parts"
+        //     }
+        // ];
+
         function getAMItems(isVaTe, vateConverter) {
             return [
                 {
@@ -63,15 +72,6 @@ angular
                 }
             ];
         }
-
-        var AM_ITEMS = [
-            {
-                label: "tutkinnonosat",
-                link: [STATE_OSAT, {}],
-                isActive: isTutkinnonosatActive,
-                $type: "ep-parts"
-            }
-        ];
 
         var service = null;
         var _isVisible = false;
@@ -343,7 +343,7 @@ angular
                     break;
                 }
                 case "AM":
-                    items = _.clone(AM_ITEMS);
+                    items = getAMItems(isVaTe, vateConverter);
                     break;
                 default:
                     break;
