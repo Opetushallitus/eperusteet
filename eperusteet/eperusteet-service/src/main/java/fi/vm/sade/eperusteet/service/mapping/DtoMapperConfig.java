@@ -287,16 +287,15 @@ public class DtoMapperConfig {
                             b.setOsaamisalakoodiArvo(koodi.getArvo());
                         }
                     } catch (RestClientException | AccessDeniedException ex) {
-                        StringBuilder builder = new StringBuilder();
-                        builder.append("(koodisto:");
-                        builder.append(a.getKoodisto());
-                        builder.append(", uri:");
-                        builder.append(a.getUri());
-                        builder.append(", versio:");
-                        builder.append(a.getVersio());
-                        builder.append(") koodia ei voitu ladata:");
-                        builder.append(ex.getLocalizedMessage());
-                        logger.error(builder.toString());
+                        String builder = "(koodisto:" +
+                                a.getKoodisto() +
+                                ", uri:" +
+                                a.getUri() +
+                                ", versio:" +
+                                a.getVersio() +
+                                ") koodia ei voitu ladata: " +
+                                ex.getLocalizedMessage();
+                        logger.error(builder);
                     }
                 }
             })

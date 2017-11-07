@@ -627,12 +627,16 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
 
         // Koodi
-        Koodi koodi = taiteenala.getKoodi();
-        if (koodi != null) {
-            KoodiDto koodiDto = mapper.map(koodi, KoodiDto.class);
-            addTeksti(docBase, messages.translate("docgen.taiteenala.koodi", docBase.getKieli()), "h5");
-            addTeksti(docBase, koodiDto.getArvo(), "div");
-        }
+        Optional.ofNullable(taiteenala.getKoodi())
+                .map(koodi -> mapper.map(koodi, KoodiDto.class))
+                .ifPresent(dto -> {
+                    Map<String, String> koodiNimiMap = dto.getNimi();
+                    String koodiNimi = koodiNimiMap.get(docBase.getKieli().toString());
+                    if (koodiNimi != null) {
+                        addTeksti(docBase, messages.translate("docgen.taiteenala.koodi", docBase.getKieli()), "h5");
+                        addTeksti(docBase, koodiNimi, "div");
+                    }
+                });
 
 
         // Aikuisten opetus
