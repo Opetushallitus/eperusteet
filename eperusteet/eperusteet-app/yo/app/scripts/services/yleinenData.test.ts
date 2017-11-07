@@ -210,8 +210,7 @@ describe("YleinenData", async () => {
             }
         });
 
-        // Todo: aipelle oma url
-        assertUrl("https://eperusteet.opintopolku.fi/#/fi/esiopetus/1/tiedot", T.Tpo, {
+        assertUrl("https://eperusteet.opintopolku.fi/#/fi/tpo/1/tiedot", T.Tpo, {
             suoritustapa: "reformi",
             projektiCfg: {
                 esikatseltavissa: true

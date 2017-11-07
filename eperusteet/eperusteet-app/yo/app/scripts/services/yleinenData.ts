@@ -399,8 +399,7 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
                 case "koulutustyyppi_23":
                     return this.getPerusteEsikatseluHost() + "/lukio/" + peruste.id + "/tiedot";
                 case "koulutustyyppi_999907":
-                    // Todo: ei ole vielä oikea
-                    return this.getPerusteEsikatseluHost() + "/esiopetus/" + peruste.id + "/tiedot";
+                    return this.getPerusteEsikatseluHost() + "/tpo/" + peruste.id + "/tiedot";
                 default:
                     console.warn("Koulutustyypille ei löytynyt esikatselua.");
                     return null;
