@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,7 +38,7 @@ public class PerusteQuery {
     private String nimi;
     private List<String> koulutusala;
     private List<String> koulutustyyppi;
-    private String kieli = "fi";
+    private Set<String> kieli = new HashSet<>();
     private List<String> opintoala;
     private String suoritustapa;
     private Set<String> tila;

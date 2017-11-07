@@ -71,7 +71,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     }
 
     private TypedQuery<Tuple> getQuery(PerusteQuery pquery, Set<Long> koodistostaHaetut) {
-
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = cb.createTupleQuery();
         Root<Peruste> root = query.from(Peruste.class);
@@ -92,7 +91,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     }
 
     private TypedQuery<Long> getCountQuery(PerusteQuery pquery, Set<Long> koodistostaHaetut) {
-
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Peruste> root = query.from(Peruste.class);
@@ -112,11 +110,19 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         final Expression<Date> voimassaoloAlkaa = root.get(Peruste_.voimassaoloAlkaa);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
         final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
-        final Kieli kieli = Kieli.of(pq.getKieli());
-
         Expression<java.sql.Date> currentDate = cb.literal(new java.sql.Date(pq.getNykyinenAika()));
+        final Set<Kieli> kieli = pq.getKieli().stream()
+                .map(k -> Kieli.of(k))
+                .collect(Collectors.toSet());
+        if (kieli.isEmpty()) {
+            kieli.add(Kieli.SE);
+            kieli.add(Kieli.FI);
+            kieli.add(Kieli.RU);
+            kieli.add(Kieli.EN);
+            kieli.add(Kieli.SV);
+        }
 
-        Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
+        Predicate pred = cb.conjunction();
 
         if (pq.getNimi() != null) {
             Expression<String> nimiLit = cb.literal(RepositoryUtil.kuten(pq.getNimi()));
@@ -248,7 +254,18 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         if (pq.getKieli() != null) {
             //Hibernate bug (?), isMember ei toimi (bindaus ei mene enumina)
             SetJoin<Peruste, Kieli> kielet = root.join(Peruste_.kielet);
-            pred = cb.and(pred, cb.equal(kielet, kieli));
+            Predicate kieliPred = kieli.stream()
+                    .map((lang) -> {
+                        return cb.equal(kielet, lang);
+                    })
+                    .reduce((acc, next) -> {
+                        return cb.or(acc, next);
+                    })
+                    .get();
+
+            if (kieliPred != null) {
+                pred = cb.and(pred, kieliPred);
+            }
         }
 
         // Tutkinnon osien tuontia varten
