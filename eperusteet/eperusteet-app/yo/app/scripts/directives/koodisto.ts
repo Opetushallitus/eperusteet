@@ -81,15 +81,13 @@ angular
                         nimi[obj.kieli.toLowerCase()] = obj.nimi;
                     });
 
-                    const haku = _.reduce(_.values(nimi), function(result, v: string) {
-                        return (result + v).toLowerCase;
-                    });
+                    const haku = _.reduce(_.values(nimi), (result, v: string) => (result + v).toLowerCase());
                     return {
-                        koodiUri: kd.koodiUri,
+                        nimi,
+                        haku,
                         koodiArvo: kd.koodiArvo,
-                        nimi: nimi,
+                        koodiUri: kd.koodiUri,
                         koodisto: kd.koodisto,
-                        haku: haku
                     };
                 })
                 .value();
