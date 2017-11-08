@@ -85,22 +85,6 @@ angular.module("eperusteApp").directive("ohje", function($timeout, $compile, $do
                 }, popupDelay);
             };
 
-            var clickHandler = function(event) {
-                if (element.find(event.target).length > 0) {
-                    return;
-                }
-                scope.show(false);
-                scope.$apply();
-            };
-
-            if (clickAnywhere) {
-                // Click anywhere to close
-                $document.on("click", clickHandler);
-                scope.$on("$destroy", function() {
-                    $document.off("click", clickHandler);
-                });
-            }
-
             scope.$on("ohje:closeAll", function() {
                 scope.show(false);
             });
@@ -108,6 +92,7 @@ angular.module("eperusteApp").directive("ohje", function($timeout, $compile, $do
             scope.$watch("teksti", function() {
                 scope.textObject = scope.$parent.$eval(scope.teksti) || scope.teksti;
             });
+
             scope.$watch("otsikko", function() {
                 scope.title = scope.$parent.$eval(scope.otsikko) || scope.otsikko;
             });
