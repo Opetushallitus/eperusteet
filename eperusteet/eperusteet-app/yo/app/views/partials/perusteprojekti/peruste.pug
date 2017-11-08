@@ -169,7 +169,7 @@ mixin kvliite()
               h3.panel-title(kaanna="$$kaannokset['perusteen-kielet']")
             .panel-body
               span.inline-alert(ng-show='editEnabled && editablePeruste.kielet.length === 0', kaanna="'lisaa-ainakin-yksi-kieli'")
-              span.perusteen-kieli(ng-repeat='kieli in editablePeruste.kielet| orderBy:kieliOrder')
+              span.perusteen-kieli(ng-repeat='kieli in editablePeruste.kielet | orderBy:kieliOrder')
                 span(kaanna='kieli')
                 a.action-link.perusteen-kieli-poisto(ng-click='poistaKieli(kieli)', ng-if='editEnabled', icon-role='remove')
               span(ng-if='editEnabled && !kaikkiKieletValittu()')
