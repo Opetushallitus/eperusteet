@@ -123,6 +123,10 @@ angular.module("eperusteApp").service("TutkinnonOsaLeikelautaService", (localSto
         initLeikelauta() {
             if (localStorageService.isSupported) {
                 leikelauta = localStorageService.get("leikelauta");
+                if (leikelauta == null) {
+                    leikelauta = [];
+                    localStorageService.set("leikelauta", leikelauta);
+                }
             }
             return leikelauta;
         },
