@@ -715,7 +715,6 @@
     "toimikausi-alku-label": "Toimikauden aloitus",
     "anna-toimikausi_alku": "Syötä toimikauden aloituspäivämäärä",
     "toimikausi-loppu-label": "Toimikauden päättyminen",
-    "koulutustyyppi-label": "Koulutustyyppi",
     "kaikki-ilman-arkistoituja": "Kaikki",
     "anna-toimikausi_loppu": "Syötä toimikauden päättymispäivämäärä",
     "tahdella-pakolliset": "Tähdellä(*) merkityt kentät ovat pakollisia",
@@ -725,7 +724,7 @@
     "yhteistyotaho-label": "Sopimusosapuoli",
     "anna-yhteistyotaho-placeholder": "Syötä sopimusosapuoli",
     "valitse-koulutustyyppi": "Valitse koulutus/tutkintotyyppi",
-    "koulutustyyppi-label": "Koulutus/tutkintotyyppi",
+    "koulutustyyppi-label": "Koulutus- tai tutkintotyyppi",
     "perusteprojektin-pohjaksi-otetaan-peruste": "Perusteprojektin pohjaksi otetaan peruste",
     "lisaa-ainakin-yksi-kieli": "Perusteella on oltava vähintään yksi kieli.",
 
@@ -738,7 +737,6 @@
 
     "projekti-perustiedot": "Perustiedot",
     "projekti-projektiryhma": "Perustetyöryhmä",
-    "projektin-tiedot": "Perusteen tiedot",
     "projekti-toimikausi": "Toimikausi",
     "perusteen-koodi": "Tutkinnon koodi",
     "projektin-tiedot": "Projektin tiedot",
@@ -750,7 +748,6 @@
     "rajaa-tutkinnonosia": "Rajaa tutkinnon osia...",
 
     "kaikki": "Kaikki",
-    "kaikki-ilman-arkistoituja": "Kaikki ilman arkistoituja",
 
     "hallinta": "Hallinta",
     "hallintapaneeli": "Hallintapaneeli",

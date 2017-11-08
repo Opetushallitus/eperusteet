@@ -41,6 +41,8 @@ a {
     img,
     .glyphicon {
         margin-right: 5px;
+        text-decoration: none;
+        color: $brand-primary;
     }
 }
 
