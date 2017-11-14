@@ -1001,20 +1001,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     rakenne.kurssit()
                         .filter(empty(Lukiokurssi::getOppiaineet))
                         .map(localized(Nimetty::getNimi)))
+                /*
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () -> {
                     // EP-1143
-                    if (peruste.getKoulutustyyppi().equals(KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS.toString())) {
-                        return rakenne.oppiaineetMaarineen()
-                                .filter(not(Oppiaine::isKoosteinen)
-                                        .and(not(Oppiaine::isAbstraktiBool))
-                                        .and(empty(Oppiaine::getLukiokurssit)))
-                                .map(localized(Nimetty::getNimi));
-                    } else {
-                        return rakenne.oppiaineetMaarineen()
-                                .filter(not(Oppiaine::isKoosteinen).and(not(Oppiaine::isAbstraktiBool)))
-                                .map(localized(Nimetty::getNimi));
-                    }
+                    // EP-1183
+                    return rakenne.oppiaineetMaarineen()
+                            .filter(not(Oppiaine::isKoosteinen)
+                                    .and(not(Oppiaine::isAbstraktiBool))
+                                    .and(empty(Oppiaine::getLukiokurssit)))
+                            .map(localized(Nimetty::getNimi));
                 })
+                */
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
                     rakenne.oppiaineet()
                         .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))

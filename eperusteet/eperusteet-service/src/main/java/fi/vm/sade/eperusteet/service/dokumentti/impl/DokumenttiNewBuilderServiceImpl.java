@@ -506,10 +506,13 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             return 0;
         });
 
-        suoritustavat.stream()
-                .filter(suoritustapa -> suoritustapa.getSuoritustapakoodi()
-                .equals(docBase.getSisalto().getSuoritustapa().getSuoritustapakoodi()))
-                .forEach(suoritustapa -> osat.addAll(suoritustapa.getTutkinnonOsat()));
+        Optional.ofNullable(docBase.getSisalto())
+                .map(PerusteenOsaViite::getSuoritustapa)
+                .map(Suoritustapa::getSuoritustapakoodi)
+                .ifPresent(suoritustapakoodi-> suoritustavat.stream()
+                        .filter(suoritustapa -> suoritustapa.getSuoritustapakoodi()
+                                .equals(suoritustapakoodi))
+                        .forEach(suoritustapa -> osat.addAll(suoritustapa.getTutkinnonOsat())));
 
         addHeader(docBase, messages.translate("docgen.tutkinnon_osat.title", docBase.getKieli()));
 
