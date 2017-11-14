@@ -30,7 +30,7 @@
     <formfield ng-if="$parent.wizardissa() && !isOpas" label="koulutustyyppi-label" ng-hide="projekti.perusteId"
                model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit" placeholder="valitse-koulutustyyppi"></formfield>
     <formfield ng-model="projekti.reforminMukainen" label="reformin-mukainen" ng-if="reforminMukainen(projekti.koulutustyyppi) && !isOpas"
-               model="projekti" model-var="reforminMukainen" type="checkbox"></formfield>
+               model="projekti" model-var="reforminMukainen" type="checkbox" ng-init="projekti.reforminMukainen = true"></formfield>
     <span ng-if="!$parent.pohja() && !isOpas">
       <formfield ng-model="projekti.koulutustyyppi" label="laajuuden-yksikkö" ng-if="tarvitseeLaajuuden(projekti.koulutustyyppi)"
                  model="projekti" model-var="laajuusYksikko" options="yksikot"></formfield>
