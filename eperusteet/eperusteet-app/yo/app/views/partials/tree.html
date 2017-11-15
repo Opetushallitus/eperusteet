@@ -7,6 +7,7 @@
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <div ng-show="!muokkaus && !vanhempi && naytaKuvaus()">
       <div ng-bind-html="rakenne.rakenne.kuvaus | kaanna | unsafe"></div>
+      <lang-validator kentta="rakenne.rakenne.kuvaus"></lang-validator>
     </div>
     <div ng-show="muokkaus && !vanhempi">
       <h2 kaanna="nimi"></h2>

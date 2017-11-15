@@ -3,6 +3,7 @@
     <div id="ck-toolbar-top"></div>
     <div id="ck-toolbar-bottom"></div>
 </div>
+
 <div class="row">
     <div class="col-md-12 ep-sisalto-inner">
         <div>
@@ -74,6 +75,7 @@
                 </h1>
                 <h1 ng-if="!editEnabled">
                     <span style="margin-right: 4px" ng-bind-html="tekstikappale.nimi | kaanna"></span>
+                    <lang-validator kentta="tekstikappale.nimi"></lang-validator>
                     <valmiskaannos style="font-size: 20px" is-editing="editEnabled"
                                    ng-model="editableTekstikappale"></valmiskaannos>
                 </h1>
@@ -105,6 +107,7 @@
 
                     <div math-display ng-bind-html="valitseKieli(tekstikappale.teksti) | kuvalinkit | unsafe"
                          termisto-viitteet="tekstikappale.teksti"></div>
+                    <lang-validator kentta="tekstikappale.teksti"></lang-validator>
                 </div>
                 <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" model="field.localeKey"
                      kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}"

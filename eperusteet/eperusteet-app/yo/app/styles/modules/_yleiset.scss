@@ -287,3 +287,20 @@ strong.ep-match {
 #raamit-header {
     margin-bottom: 0 !important;
 }
+
+.puutteelliset-kielisisallot {
+    position: relative;
+    top: -1px;
+
+    span.puutteellinen-kielisisalto {
+        background: #FBB03B;
+        padding: 2px 4px 2px 4px;
+        font-weight: normal;
+        border-radius: 4px;
+        margin: -2px 2px 2px 2px;
+        color: black;
+        font-weight: bold;
+        font-size: small;
+        text-transform: uppercase;
+    }
+}

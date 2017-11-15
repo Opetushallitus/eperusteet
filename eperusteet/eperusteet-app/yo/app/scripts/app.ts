@@ -410,8 +410,13 @@ angular
 
 import yleinenData from "./services/yleinenData";
 import { taiteenalaCtrl } from "./controllers/perusteprojekti/taiteenala";
+import { LangValidator  } from "./directives/langvalidator";
+import { nakyvyyslinkki, nakyvyyslinkkiService } from "./directives/nakyvyyslinkki";
 
 angular
     .module("eperusteApp")
     .service("YleinenData", yleinenData)
-    .controller("taiteenalaCtrl", taiteenalaCtrl);
+    .controller("taiteenalaCtrl", taiteenalaCtrl)
+    .service("nakyvyyslinkkiService", nakyvyyslinkkiService)
+    .directive("nakyvyyslinkki", nakyvyyslinkki)
+    .directive("langValidator", LangValidator);
