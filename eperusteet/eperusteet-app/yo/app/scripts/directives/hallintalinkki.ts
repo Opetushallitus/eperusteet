@@ -23,7 +23,7 @@ angular.module("eperusteApp").directive("hallintalinkki", [
     function(Profiili, $window) {
         return {
             template:
-                '<a ng-cloak ui-sref="root.admin.perusteprojektit({lang: \'fi\'})" icon-role="settings" kaanna="hallinta"></a>',
+                '<a ng-cloak ui-sref="root.admin.perusteprojektit" icon-role="settings" kaanna="hallinta"></a>',
             restrict: "E",
             link: function postLink(scope: any, element: any) {
                 if ($window.location.host.indexOf("localhost") === 0) {

@@ -149,8 +149,10 @@
                                         <span ng-show="vt.$$closed" icon-role="chevron-right"></span>
                                         <span ng-hide="vt.$$closed" icon-role="chevron-down"></span>
                                         <span ng-bind-html="vt.nimi | kaanna"></span>
+                                        <lang-validator kentta="vt.nimi"></lang-validator>
                                     </h3>
                                     <div uib-collapse="vt.$$closed" ng-bind-html="vt.teksti | kaanna"></div>
+                                    <lang-validator kentta="vt.teksti"></lang-validator>
                                 </div>
                             </div>
 

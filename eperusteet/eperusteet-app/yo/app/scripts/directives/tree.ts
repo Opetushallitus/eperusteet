@@ -55,28 +55,29 @@ angular
                 '  <span ng-if="rakenne.pakollinen"><img src="images/tutkinnonosa_pakollinen.png" alt=""></span> ' +
                 "</div>";
             return (
-                "" +
+                '' +
                 '<span ng-if="onOsa(rakenne)">' +
                 editointiIkoni +
                 '  <span class="osa-nimi" ng-if="!muokkaus">' +
                 '    <a ng-if="rakenne._tutkinnonOsaViite && !isVaTe" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa })">' +
                 tosa +
-                "</a>" +
+                '</a>' +
                 '    <a ng-if="rakenne._tutkinnonOsaViite && isVaTe" ui-sref="root.perusteprojekti.suoritustapa.koulutuksenosa({ tutkinnonOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa })">' +
                 tosa +
-                "</a>" +
+                '</a>' +
                 '    <span ng-if="!rakenne._tutkinnonOsaViite">' +
                 tosa +
                 "</span>" +
-                "  </span>" +
+                '  </span>' +
                 '  <span class="solmu-osa-muokkaus osa-nimi" ng-if="muokkaus">' +
                 tosa +
-                "  </span>" +
-                "</span>" +
+                '  </span>' +
+                '</span>' +
                 '<span ng-if="!onOsa(rakenne) && rakenne.nimi">' +
                 '  <strong>{{ rakenne.nimi || "nimetön" | kaanna }}</strong>' +
                 '  <span ng-if="rakenne.pakollinen">({{"pakollinen" | kaanna}})</span>' +
-                "</span>"
+                '  <lang-validator kentta="[rakenne.nimi, rakenne.kuvaus]"></lang-validator>' +
+                '</span>'
             );
         }
 
@@ -154,15 +155,18 @@ angular
             );
         };
 
-        const optiot = `
-            <span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!onOsa(rakenne)" class="colorbox" varivalinta
-              <span ng-if="rakenne.rooli !== 'määrittelemätön'">
-                <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>
-                <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>
-              </span>
-            </span>
-            <div class="right">
-              <div ng-if="!onOsa(rakenne) && muokkaus" class="right-item valikko">` +
+        const optiot =
+            "" +
+            '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!onOsa(rakenne)" class="colorbox" ' +
+            varivalinta +
+            ">" +
+            "  <span ng-if=\"rakenne.rooli !== 'määrittelemätön'\">" +
+            '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+            '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
+            "  </span>" +
+            "</span>" +
+            '<div class="right">' +
+            '  <div ng-if="!onOsa(rakenne) && muokkaus" class="right-item valikko">' +
             toimintoValikko({
                 edit: "ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)",
                 remove: "removeWithConfirmation(rakenne)",
@@ -210,12 +214,12 @@ angular
             "</div>";
 
         this.leaf = function() {
-            return `<div>${kentta}</div>`;
+            return `<div>` + kentta + `</div>`;
         };
 
         this.leafChildren = function() {
             return `
-                <div ng-show="rakenne.rooli !== 'määrittelemätön'" class="collapser" ng-if="!rakenne.$collapsed">
+                <div ng-show="rakenne.rooli !== 'määrittelemätön'" class="collapser" ng-show="!rakenne.$collapsed">
                   <ul ng-show="rakenne.osat !== undefined" ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat" id="tree-sortable">
                     <li ng-repeat="osa in rakenne.osat track by trackingFunction(osa, $index)" class="tree-list-item">
                       <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" callbacks="callbacks"></tree>

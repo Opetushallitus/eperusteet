@@ -256,7 +256,7 @@ angular
         SuoritustapaSisalto,
         LukiokoulutusService,
         LukioKurssiService,
-        AIPEService
+        AIPEService,
     ) {
         var deferred = $q.defer();
         var projekti: any = {};
@@ -285,6 +285,10 @@ angular
         this.getYlTiedot = function() {
             return _.clone(ylTiedot);
         };
+
+        function setPeruste(uusiPeruste) {
+            peruste = uusiPeruste;
+        }
 
         const PerusteContextMapping = {
             "projektin-tiedot": { opas: "projekti-opas" },
@@ -421,8 +425,8 @@ angular
 
         this.oikeastiHaeProjekti = async function(id) {
             try {
-                const projekti = await PerusteprojektiResource.get({ id }).$promise;
-                const peruste = await Perusteet.get({ perusteId: projekti._peruste }).$promise;
+                projekti = await PerusteprojektiResource.get({ id }).$promise;
+                peruste = await Perusteet.get({ perusteId: projekti._peruste }).$promise;
                 if (!_.isEmpty(peruste.suoritustavat)) {
                     peruste.suoritustavat = _.sortBy(peruste.suoritustavat, "suoritustapakoodi");
                 }
@@ -450,10 +454,10 @@ angular
                 PerusteprojektiResource.get({ id: stateParams.perusteProjektiId }).$promise.then(projektiRes => {
                     projekti = projektiRes;
                     Perusteet.get({ perusteId: projekti._peruste }).$promise.then(perusteRes => {
-                        peruste = perusteRes;
-                        if (!_.isEmpty(peruste.suoritustavat)) {
-                            peruste.suoritustavat = _.sortBy(peruste.suoritustavat, "suoritustapakoodi");
+                        if (!_.isEmpty(perusteRes.suoritustavat)) {
+                            perusteRes.suoritustavat = _.sortBy(perusteRes.suoritustavat, "suoritustapakoodi");
                         }
+                        setPeruste(perusteRes);
                         projektinTiedotDeferred.resolve();
                     });
                 });
