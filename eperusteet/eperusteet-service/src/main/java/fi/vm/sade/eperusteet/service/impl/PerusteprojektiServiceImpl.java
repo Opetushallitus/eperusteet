@@ -1079,19 +1079,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Transactional
     private void palautaJulkaistu(Peruste peruste, PerusteenOsa po) {
-        // FIXME: Selvitä onko tämä tarkkaan haluttu toimintatapa
-        // Jos tutkinnonosaviitteitä tai perusteenosaviitteitä on yhteensä enemmän
-        // yksi pitää palauttaminen estää
-//        boolean onKaytossa = perusteenOsaViiteRepository.countByPerusteenOsaId(po.getId()) + tutkinnonOsaViiteRepository.countByTutkinnonOsaId(po.getId()) < 2;
-//        Long vanhinPoViite = perusteenOsaViiteRepository.findAllByPerusteenOsa(po).stream()
-//                .map(pov -> pov.getId())
-//                .sorted()
-//                .findFirst()
-//                .get();
-
-        // Etsitään vanhimman tutkintoviitteen id (vanhin tässä tapauksessa pienimmän id:n omaava)
-
-        // FIXME: Refactor
         if (po instanceof TutkinnonOsa) {
             tutkinnonOsaViiteRepository.findAllByTutkinnonOsa((TutkinnonOsa)po).stream()
                     .map(TutkinnonOsaViite::getId)
@@ -1131,8 +1118,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private TutkinnonOsaViite setOsatTila(Peruste peruste, TutkinnonOsaViite osa, PerusteTila tila) {
         if (osa.getTutkinnonOsa() != null) {
+            // Tutkinnon osan tilan voi alentaa ainoastaan jos kaikki kiinnitetyt
+            // perusteet ovat julkaisemattomia
+            if (PerusteTila.VALMIS.equals(osa.getTutkinnonOsa().getTila())) {
+                Set<Peruste> perusteetJoissaTosa = tutkinnonOsaViiteRepository.findAllByTutkinnonOsa(osa.getTutkinnonOsa()).stream()
+                        .map(tosa -> tosa.getSuoritustapa().getPerusteet())
+                        .flatMap(x -> x.stream())
+                        .filter(p -> PerusteTila.VALMIS.equals(p.getTila()))
+                        .collect(Collectors.toSet());
+                if (perusteetJoissaTosa.size() != 1 || !perusteetJoissaTosa.contains(peruste)) {
+                    return osa;
+                }
+            }
+
             if (tila == PerusteTila.LUONNOS) {
-                // TODO: Tarkista onko muita käyttäjiä
                 palautaJulkaistu(peruste, osa.getTutkinnonOsa());
             }
             else {
