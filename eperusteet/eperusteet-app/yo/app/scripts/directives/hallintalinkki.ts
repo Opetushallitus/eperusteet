@@ -20,10 +20,11 @@ import * as _ from "lodash";
 angular.module("eperusteApp").directive("hallintalinkki", [
     "Profiili",
     "$window",
-    function(Profiili, $window) {
+    "$stateParams",
+    function(Profiili, $window, $stateParams) {
         return {
             template:
-                '<a ng-cloak ui-sref="root.admin.perusteprojektit" icon-role="settings" kaanna="hallinta"></a>',
+                '<a ng-cloak ui-sref="root.admin.perusteprojektit(params)" icon-role="settings" kaanna="hallinta"></a>',
             restrict: "E",
             link: function postLink(scope: any, element: any) {
                 if ($window.location.host.indexOf("localhost") === 0) {
@@ -31,6 +32,8 @@ angular.module("eperusteApp").directive("hallintalinkki", [
                 } else {
                     element.hide();
                 }
+
+                scope.params = $stateParams;
 
                 scope.$on("fetched:casTiedot", function() {
                     if (_.contains(Profiili.groups(), "APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001")) {
