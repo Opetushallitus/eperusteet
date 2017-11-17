@@ -1120,7 +1120,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (osa.getTutkinnonOsa() != null) {
             // Tutkinnon osan tilan voi alentaa ainoastaan jos kaikki kiinnitetyt
             // perusteet ovat julkaisemattomia
-            if (PerusteTila.VALMIS.equals(osa.getTutkinnonOsa().getTila())) {
+            if (!PerusteTila.VALMIS.equals(tila) && PerusteTila.VALMIS.equals(osa.getTutkinnonOsa().getTila())) {
                 Set<Peruste> perusteetJoissaTosa = tutkinnonOsaViiteRepository.findAllByTutkinnonOsa(osa.getTutkinnonOsa()).stream()
                         .map(tosa -> tosa.getSuoritustapa().getPerusteet())
                         .flatMap(x -> x.stream())
