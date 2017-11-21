@@ -70,32 +70,7 @@
 
     <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
 
-    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-        <property name="poolName" value="springHikariCP" />
-        <property name="connectionTestQuery" value="SELECT 1" />
-        <property name="dataSourceClassName" value="org.postgresql.ds.PGSimpleDataSource" />
-<!--        <property name="maximumPoolSize" value="${eperusteet-service.postgresql.maxactive}" />
-        <property name="minimumIdle" value="${eperusteet-service.postgresql.minimumidle}" />
-        <property name="idleTimeout" value="${eperusteet-service.postgresql.idletimeoutmillis}" />
-        <property name="connectionTimeout" value="${eperusteet-service.postgresql.maxwait}" />
-        <property name="maxLifetime" value="${eperusteet-service.postgresql.maxlifetimemillis}"/>-->
-        <property name="dataSourceProperties">
-            <props>
-                <prop key="url">${eperusteet-service.postgresql.url}</prop>
-                <prop key="user">${eperusteet-service.postgresql.user}</prop>
-                <prop key="password">${eperusteet-service.postgresql.password}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="dbDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-        <constructor-arg ref="hikariConfig" />
-    </bean>
-
-    <!--<jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>-->
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
-        <property name="targetDataSource" ref="dbDataSource"></property>
-    </bean>
+    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
         <property name="persistenceUnitName" value="eperusteet-pu"/>
