@@ -1,6 +1,5 @@
 const path = require("path");
 const webpack = require("webpack");
-const { CheckerPlugin } = require("awesome-typescript-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -105,7 +104,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new CheckerPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
