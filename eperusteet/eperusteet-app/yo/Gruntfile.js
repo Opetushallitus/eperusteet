@@ -125,14 +125,14 @@ module.exports = function(grunt) {
       proxies: [{
         context: '/eperusteet-service',
         host: 'localhost',
-        port: 8081,
+        port: 8080,
         https: false,
         changeOrigin: false,
         xforward: false
       }, {
         context: '/virkailija-raamit',
         host: 'localhost',
-        port: 8081,
+        port: 8080,
         https: false,
         changeOrigin: false,
         xforward: false
