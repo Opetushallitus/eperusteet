@@ -119,7 +119,7 @@
                             </div>
                             <label for="koodi-input" class="header" kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')"></label>
                             <div class="form-inline">
-                                <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo" editointi-kontrolli disabled="disabled">
+                                <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo || editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo" editointi-kontrolli disabled="disabled">
                                 <button class="btn btn-default" ng-click="koodistoClick()" kaanna="'hae-koodistosta'"></button>
                                 <button ng-show="(editableTutkinnonOsaViite.tutkinnonOsa.koodi || editableTutkinnonOsaViite.tutkinnonOsa.koodiUri) && editableTutkinnonOsaViite.tutkinnonOsa.tila === 'luonnos'" class="btn btn-danger" ng-click="cleanKoodi()" kaanna="'tyhjenna-koodin-arvo'"></button>
                             </div>
