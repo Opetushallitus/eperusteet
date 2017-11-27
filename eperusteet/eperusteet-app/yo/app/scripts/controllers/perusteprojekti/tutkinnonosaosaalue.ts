@@ -127,13 +127,13 @@ angular
             const osaamistavoitePakollinen: any = {
                 pakollinen: true,
                 nimi: {},
-                koodi: { koodiArvo: "", koodiUri: {} },
+                koodi: null,
                 $open: true,
                 $poistettu: false
             };
             const osaamistavoiteValinnainen = {
                 pakollinen: false,
-                koodi: { koodiArvo: "", koodiUri: {} },
+                koodi: null,
                 $poistettu: false
             };
             osaamistavoitePakollinen.lapsi = osaamistavoiteValinnainen;
@@ -190,16 +190,6 @@ angular
             openDialog();
         };
 
-        function setKoodisto() {
-            _.each($scope.osaAlue.osaamistavoitteet, function(tavoite) {
-                if (tavoite.koodiArvo && tavoite.koodiUri)
-                    tavoite.koodi = {
-                        koodiArvo: tavoite.koodiArvo,
-                        koodiUri: tavoite.koodiUri
-                    };
-            });
-        }
-
         var osaAlueCallbacks = {
             edit: function() {
                 TutkinnonOsanOsaAlue.get(
@@ -210,7 +200,6 @@ angular
                     function(vastaus) {
                         $scope.osaAlue = vastaus;
                         luoOsaamistavoitepuu();
-                        setKoodisto();
                     },
                     function(virhe) {
                         Notifikaatiot.serverCb(virhe);
@@ -223,7 +212,6 @@ angular
                 goBack();
             },
             save: function() {
-                console.log("save");
                 $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
 
                 TutkinnonOsanOsaAlue.save(
@@ -246,7 +234,6 @@ angular
                 if (!Utils.hasLocalizedText($scope.osaAlue.nimi)) {
                     return false;
                 } else {
-                    console.log($scope.isVaTe);
                     return (
                         $scope.isVaTe ||
                         _.includes(YleinenData.yhteisetTutkinnonOsat, $scope.tutkinnonOsaViite.tutkinnonOsa.tyyppi) ||
