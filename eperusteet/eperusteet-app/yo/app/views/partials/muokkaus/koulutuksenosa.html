@@ -117,7 +117,8 @@
           </div>
           <label for="koodi-input" class="header" kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')"></label>
           <div class="fixed-group">
-            <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo || editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo" editointi-kontrolli disabled="disabled">
+            <input id="koodi-input" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo" class="form-control" type="text" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo" editointi-kontrolli disabled="disabled">
+            <input id="koodi-input" ng-if="!editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo" class="form-control" type="text" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo" editointi-kontrolli disabled="disabled">
             <div class="addon"><button class="btn btn-default" ng-click="koodistoClick()" kaanna>hae-koodistosta</button></div>
           </div>
         </div>
