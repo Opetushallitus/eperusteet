@@ -199,25 +199,21 @@ angular
         ];
 
         $scope.koodistoClick = Koodisto.modaali(
-            function(koodisto) {
-                MuokkausUtils.nestedSet(
-                    $scope.editableTutkinnonOsaViite.tutkinnonOsa,
-                    "koodiUri",
-                    ",",
-                    koodisto.koodiUri
-                );
-                MuokkausUtils.nestedSet(
-                    $scope.editableTutkinnonOsaViite.tutkinnonOsa,
-                    "koodiArvo",
-                    ",",
-                    koodisto.koodiArvo
-                );
+            koodisto => {
+                if (koodisto != null && koodisto.koodisto != null) {
+                    $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodi = {
+                        uri: koodisto.koodiUri,
+                        arvo: koodisto.koodiArvo,
+                        versio: koodisto.versio,
+                        koodisto: koodisto.koodisto.koodistoUri
+                    };
+                }
             },
             {
-                tyyppi: function() {
+                tyyppi: () => {
                     return "tutkinnonosat";
                 },
-                ylarelaatioTyyppi: function() {
+                ylarelaatioTyyppi: () => {
                     return "";
                 },
                 tarkista: _.constant(true)

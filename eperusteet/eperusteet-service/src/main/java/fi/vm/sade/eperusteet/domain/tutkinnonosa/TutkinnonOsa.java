@@ -187,14 +187,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @Deprecated
     public void setKoodiUri(String koodiUri) {
-        this.koodiUri = koodiUri;
-        if (koodi != null) {
-            koodi.setUri(koodiUri);
-        } else if (koodiUri != null) {
-            koodi = new Koodi();
-            koodi.setUri(koodiUri);
-            koodi.setKoodisto("tutkinnonosat");
-        }
+        // NOP
     }
 
     @Deprecated
@@ -204,7 +197,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @Deprecated
     public void setKoodiArvo(String koodiArvo) {
-        this.koodiArvo = koodiArvo;
+        // NOP
     }
 
     public Arviointi getArviointi() {
@@ -231,10 +224,10 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             result = super.structureEquals(that);
             result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
             result &= Objects.equals(getTyyppi(), that.getTyyppi());
+            result &= Objects.equals(getKoodi(), that.getKoodi());
             // Todo: ei toimi vanhojen kanssa
-            //result &= Objects.equals(getKoodi(), that.getKoodi());
-            result &= Objects.equals(getKoodiArvo(), that.getKoodiArvo());
-            result &= Objects.equals(getKoodiUri(), that.getKoodiUri());
+            //result &= Objects.equals(getKoodiArvo(), that.getKoodiArvo());
+            //result &= Objects.equals(getKoodiUri(), that.getKoodiUri());
             result &= refXnor(getTavoitteet(), that.getTavoitteet());
             result &= refXnor(getAmmattitaidonOsoittamistavat(), that.getAmmattitaidonOsoittamistavat());
             result &= refXnor(getAmmattitaitovaatimukset(), that.getAmmattitaitovaatimukset());
@@ -267,6 +260,8 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
             this.setTavoitteet(other.getTavoitteet());
             this.setKoodi(other.getKoodi());
+            this.setKoodiUri(other.getKoodiUri());
+            this.setKoodiArvo(other.getKoodiArvo());
             this.setTyyppi(other.getTyyppi());
             this.setKuvaus(other.getKuvaus());
             this.setValmaTelmaSisalto(other.getValmaTelmaSisalto());

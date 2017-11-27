@@ -124,8 +124,6 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     /**
      * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
      */
-    @Getter
-    @Setter
     @Deprecated
     @Column(name = "koodi_arvo")
     private String koodiArvo;
@@ -141,14 +139,17 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
 
     @Deprecated
     public void setKoodiUri(String koodiUri) {
-        this.koodiUri = koodiUri;
-        if (koodi != null) {
-            koodi.setUri(koodiUri);
-        } else if (koodiUri != null) {
-            koodi = new Koodi();
-            koodi.setUri(koodiUri);
-            koodi.setKoodisto("oppiaineetyleissivistava2");
-        }
+        // NOP
+    }
+
+    @Deprecated
+    public String getKoodiArvo() {
+        return koodiArvo;
+    }
+
+    @Deprecated
+    public void setKoodiArvo(String koodiArvo) {
+        // NOP
     }
 
     public OsaAlue() {
@@ -160,6 +161,8 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         this.osaamistavoitteet = new ArrayList<>();
         this.valmaTelmaSisalto = null;
         this.koodi = o.koodi;
+        this.koodiUri = o.koodiUri;
+        this.koodiArvo = o.koodiArvo;
         this.kieli = o.kieli;
 
         IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
@@ -190,6 +193,8 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
             this.setNimi(updated.getNimi());
             this.setKuvaus(updated.getKuvaus());
             this.koodi = updated.getKoodi();
+            this.koodiUri = updated.getKoodiUri();
+            this.koodiArvo = updated.getKoodiArvo();
 
             if (updated.getOsaamistavoitteet() != null) {
                 this.setOsaamistavoitteet(mergeOsaamistavoitteet(this.getOsaamistavoitteet(), updated.getOsaamistavoitteet()));
@@ -208,6 +213,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     public boolean structureEquals(OsaAlue other) {
         boolean result = refXnor(getNimi(), other.getNimi());
         result &= refXnor(getKuvaus(), other.getKuvaus());
+        result &= Objects.equals(getKoodi(), other.getKoodi());
         if ( result && getOsaamistavoitteet() != null && other.getOsaamistavoitteet() != null ) {
             Iterator<Osaamistavoite> i = getOsaamistavoitteet().iterator();
             Iterator<Osaamistavoite> j = other.getOsaamistavoitteet().iterator();
