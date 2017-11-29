@@ -297,6 +297,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
         vaiheDto.setId(vaiheId);
         vaihe = mapper.map(vaiheDto, vaihe);
+        vaihe = vaiheRepository.save(vaihe);
         return mapper.map(vaihe, AIPEVaiheDto.class);
     }
 

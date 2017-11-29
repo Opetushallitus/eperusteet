@@ -17,60 +17,62 @@
 import * as angular from "angular";
 import * as _ from "lodash";
 
-angular.module("eperusteApp").directive("sortableTable", () => {
-    return {
-        template: require("scripts/directives/sortabletable.pug"),
-        restrict: "E",
-        scope: {
-            ngModel: "=",
-            showIdx: "=?",
-            ngChange: "=", // Sallii muokkauksen jos määritelty
-            isSorting: "=",
-            nimeton: "="
-        },
-        controller($scope, Editointikontrollit, Notifikaatiot, $log) {
-            $scope.ngModel = $scope.ngModel || [];
-            $scope.showIdx = $scope.showIdx || true;
-            $scope.isSorting = false;
-            $scope.allowSorting = _.isFunction($scope.ngChange);
-            $scope.hasMuokattu = !_.isEmpty($scope.ngModel) && !!(_.first($scope.ngModel) as any).muokattu;
+angular
+    .module("eperusteApp")
+    .directive("sortableTable", () => {
+        return {
+            template: require("views/directives/sortabletable.pug"),
+            restrict: "E",
+            scope: {
+                ngModel: "=",
+                showIdx: "=?",
+                ngChange: "=", // Sallii muokkauksen jos määritelty
+                isSorting: "=",
+                nimeton: "="
+            },
+            controller($scope, Editointikontrollit, Notifikaatiot, $log) {
+                $scope.ngModel = $scope.ngModel || [];
+                $scope.showIdx = $scope.showIdx || true;
+                $scope.isSorting = false;
+                $scope.allowSorting = _.isFunction($scope.ngChange);
+                $scope.hasMuokattu = !_.isEmpty($scope.ngModel) && !!(_.first($scope.ngModel) as any).muokattu;
 
-            $scope.sortableOptions = {
-                cursor: "move",
-                cursorAt: { top: 2, left: 2 },
-                handle: ".handle",
-                delay: 100,
-                tolerance: "pointer"
-            };
+                $scope.sortableOptions = {
+                    cursor: "move",
+                    cursorAt: { top: 2, left: 2 },
+                    handle: ".handle",
+                    delay: 100,
+                    tolerance: "pointer"
+                };
 
-            // let backup = Api.copy($scope.ngModel);
+                // let backup = Api.copy($scope.ngModel);
 
-            $scope.sort = () => {
-                if (!$scope.allowSorting) {
-                    return;
-                }
-
-                Editointikontrollit.registerCallback({
-                    async edit() {
-                        // let backup = Api.copy($scope.ngModel);
-                        $scope.isSorting = true;
-                    },
-                    async save() {
-                        try {
-                            $scope.isSorting = false;
-                            await $scope.ngChange($scope.ngModel);
-                            Notifikaatiot.onnistui("tallennus-onnistui");
-                        } catch (err) {
-                            $log.error(err);
-                        }
-                    },
-                    cancel() {
-                        $scope.isSorting = false;
-                        // $scope.ngModel = Api.copy(backup);
+                $scope.sort = () => {
+                    if (!$scope.allowSorting) {
+                        return;
                     }
-                });
-                Editointikontrollit.startEditing();
-            };
-        }
-    };
-});
+
+                    Editointikontrollit.registerCallback({
+                        async edit() {
+                            // let backup = Api.copy($scope.ngModel);
+                            $scope.isSorting = true;
+                        },
+                        async save() {
+                            try {
+                                $scope.isSorting = false;
+                                await $scope.ngChange($scope.ngModel);
+                                Notifikaatiot.onnistui("tallennus-onnistui");
+                            } catch (err) {
+                                $log.error(err);
+                            }
+                        },
+                        cancel() {
+                            $scope.isSorting = false;
+                            // $scope.ngModel = Api.copy(backup);
+                        }
+                    });
+                    Editointikontrollit.startEditing();
+                };
+            }
+        };
+    });

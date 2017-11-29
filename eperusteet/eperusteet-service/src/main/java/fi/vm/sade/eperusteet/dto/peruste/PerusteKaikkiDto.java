@@ -56,7 +56,7 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("aipe")
-    private AIPEOpetuksenSisaltoDto aipeOpetuksenSisalto;
+    private AIPEOpetuksenSisaltoDto aipeOpetuksenPerusteenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("tpo")

@@ -173,7 +173,7 @@
             <div ng-show="editableModel.oppiaineet.length == 0">
                 <span kaanna="'tyhja-placeholder-oppiaineet'"></span>
             </div>
-            <sortable-table ng-show="editableModel.oppiaineet.length > 0" is-sorting="isSorting"
+            <sortable-table is-sorting="isSorting"
                 ng-change="updateOppiaineet" allow-sorting="true" ng-model="editableModel.oppiaineet"></sortable-table>
         </div>
 

@@ -89,7 +89,7 @@ div
         span.glyphicon(ng-class="editableModel.tavoitteet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
         span(ng-bind="'perusopetus-tavoitteet' | kaanna")
 
-    .panel-body(uib-collapse='editableModel.tavoitteet.$isCollapsed')
+    .panel-body
       div(ng-show='editableModel.tavoitteet.length == 0')
         span(kaanna="'tyhja-placeholder-opetuksen-yleiset-tavoitteet'")
       div(ng-show="editableModel.tavoitteet.length > 0")

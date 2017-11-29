@@ -1,8 +1,7 @@
 const merge = require("webpack-merge");
 const path = require("path");
 const webpack = require("webpack");
-const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+// const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 
 const basePath = __dirname;
 
@@ -11,7 +10,6 @@ module.exports = merge(require("./webpack.common.js"), {
         new webpack.DefinePlugin({
           "process.env.NODE_ENV": JSON.stringify("development")
         }),
-        new ForkTsCheckerWebpackPlugin(),
         // new FriendlyErrorsWebpackPlugin(),
         new webpack.HotModuleReplacementPlugin()
     ],

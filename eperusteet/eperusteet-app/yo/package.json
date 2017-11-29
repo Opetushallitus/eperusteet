@@ -128,7 +128,7 @@
     "@types/moment": "^2.13.0",
     "@types/node": "^8.0.31",
     "angular-mocks": "^1.6.6",
-    "awesome-typescript-loader": "^3.2.3",
+    "awesome-typescript-loader": "^3.4.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",

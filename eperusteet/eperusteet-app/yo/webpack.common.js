@@ -15,7 +15,7 @@ gracefulFs.gracefulify(fs);
 
 module.exports = {
     resolve: {
-        extensions: [".html", ".pug", ".ts", ".js", ".css"],
+        extensions: [".ts", ".js", ".css", ".html", ".pug"],
         alias: {
             views: path.resolve(__dirname, "./app/views/"),
             scripts: path.resolve(__dirname, "./app/scripts/"),
@@ -36,14 +36,6 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
-                use: [
-                    {
-                        loader: "babel-loader",
-                    }
-                ]
-            },
-            {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
                 use: [
@@ -53,6 +45,14 @@ module.exports = {
                         options: {
                             transpileOnly: true,
                         }
+                    }
+                ]
+            },
+            {
+                test: /\.js$/,
+                use: [
+                    {
+                        loader: "babel-loader",
                     }
                 ]
             },
