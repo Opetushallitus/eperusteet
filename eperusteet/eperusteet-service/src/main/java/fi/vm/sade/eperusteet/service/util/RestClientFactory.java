@@ -44,8 +44,7 @@ public class RestClientFactory {
     public CachingRestClient get(String service) {
         if (cache.containsKey(service)) {
             return cache.get(service);
-        }
-        else {
+        } else {
             CachingRestClient crc = new CachingRestClient(TIMEOUT);
             crc.setUsername(username);
             crc.setPassword(password);

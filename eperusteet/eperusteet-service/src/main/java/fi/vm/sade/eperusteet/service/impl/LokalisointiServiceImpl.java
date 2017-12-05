@@ -30,9 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -55,6 +53,18 @@ public class LokalisointiServiceImpl implements LokalisointiService {
     @Autowired
     private TekstiPalanenRepositoryCustom tekstiPalanenRepository;
 
+    @Override
+    public List<LokalisointiDto> getAllByCategoryAndLocale(String category, String locale) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = lokalisointiServiceUrl + "category=" + category + "&locale=" + locale;
+        try {
+            LokalisointiDto[] result = restTemplate.getForObject(url, LokalisointiDto[].class);
+            return Arrays.asList(result);
+        } catch (RestClientException e) {
+            LOG.error(e.getLocalizedMessage());
+            return new ArrayList<>();
+        }
+    }
 
     @Override
     @Cacheable("lokalisoinnit")

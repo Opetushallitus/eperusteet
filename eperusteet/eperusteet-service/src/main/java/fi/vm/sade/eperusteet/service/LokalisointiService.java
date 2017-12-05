@@ -19,12 +19,16 @@ import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  *
  * @author jussi
  */
 public interface LokalisointiService {
+
+    @PreAuthorize("permitAll()")
+    List<LokalisointiDto> getAllByCategoryAndLocale(String category, String locale);
 
     @PreAuthorize("permitAll()")
     LokalisointiDto get(String key, String locale);
