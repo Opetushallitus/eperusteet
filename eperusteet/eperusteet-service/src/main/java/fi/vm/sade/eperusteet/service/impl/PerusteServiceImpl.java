@@ -1452,10 +1452,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
 
             kvliiteDto.setTutkintotodistuksenAntaja(pohjaLiiteDto.getTutkintotodistuksenAntaja());
+            kvliiteDto.setTutkinnostaPaattavaViranomainen(pohjaLiiteDto.getTutkinnostaPaattavaViranomainen());
             kvliiteDto.setArvosanaAsteikko(pohjaLiiteDto.getArvosanaAsteikko());
             kvliiteDto.setJatkoopintoKelpoisuus(pohjaLiiteDto.getJatkoopintoKelpoisuus());
             kvliiteDto.setKansainvalisetSopimukset(pohjaLiiteDto.getKansainvalisetSopimukset());
             kvliiteDto.setSaadosPerusta(pohjaLiiteDto.getSaadosPerusta());
+            kvliiteDto.setTutkintotodistuksenSaaminen(pohjaLiiteDto.getTutkintotodistuksenSaaminen());
             kvliiteDto.setPohjakoulutusvaatimukset(pohjaLiiteDto.getPohjakoulutusvaatimukset());
             kvliiteDto.setLisatietoja(pohjaLiiteDto.getLisatietoja());
             kvliiteDto.setTutkinnonVirallinenAsema(pohjaLiiteDto.getTutkinnonVirallinenAsema());
