@@ -312,8 +312,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
 
         RakenneModuuli rakenne = docBase.getSisalto().getSuoritustapa().getRakenne();
-
-        addHeader(docBase, messages.translate("docgen.tutkinnon_muodostuminen.title", docBase.getKieli()));
+        if (KoulutusTyyppi.of(docBase.getPeruste().getKoulutustyyppi()).equals(KoulutusTyyppi.VALMA)
+                || KoulutusTyyppi.of(docBase.getPeruste().getKoulutustyyppi()).equals(KoulutusTyyppi.TELMA)) {
+            addHeader(docBase, messages.translate("docgen.koulutuksen_muodostuminen.title", docBase.getKieli()));
+        } else {
+            addHeader(docBase, messages.translate("docgen.tutkinnon_muodostuminen.title", docBase.getKieli()));
+        }
 
         String kuvaus = getTextString(docBase, rakenne.getKuvaus());
         if (StringUtils.isNotEmpty(kuvaus)) {
@@ -513,8 +517,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         .filter(suoritustapa -> suoritustapa.getSuoritustapakoodi()
                                 .equals(suoritustapakoodi))
                         .forEach(suoritustapa -> osat.addAll(suoritustapa.getTutkinnonOsat())));
-
-        addHeader(docBase, messages.translate("docgen.tutkinnon_osat.title", docBase.getKieli()));
+        if (KoulutusTyyppi.of(docBase.getPeruste().getKoulutustyyppi()).equals(KoulutusTyyppi.VALMA)
+                || KoulutusTyyppi.of(docBase.getPeruste().getKoulutustyyppi()).equals(KoulutusTyyppi.TELMA)) {
+            addHeader(docBase, messages.translate("docgen.koulutuksen_osat.title", docBase.getKieli()));
+        } else {
+            addHeader(docBase, messages.translate("docgen.tutkinnon_osat.title", docBase.getKieli()));
+        }
 
         docBase.getGenerator().increaseDepth();
 
