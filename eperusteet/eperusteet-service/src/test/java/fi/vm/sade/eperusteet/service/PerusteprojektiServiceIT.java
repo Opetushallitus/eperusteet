@@ -284,9 +284,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals("a5", julkinenKVLiite.getSaadosPerusta().get(Kieli.FI));
         Assert.assertEquals("b6", julkinenKVLiite.getSuorittaneenOsaaminen().get(Kieli.FI));
         Assert.assertEquals("a7", julkinenKVLiite.getTutkinnonVirallinenAsema().get(Kieli.FI));
-        Assert.assertEquals("b8", julkinenKVLiite.getTutkintotodistuksenSaaminen().get(Kieli.FI));
+        Assert.assertEquals("a8", julkinenKVLiite.getTutkintotodistuksenSaaminen().get(Kieli.FI));
         Assert.assertEquals("b9", julkinenKVLiite.getTyotehtavatJoissaVoiToimia().get(Kieli.FI));
-        Assert.assertEquals("b10", julkinenKVLiite.getTutkinnostaPaattavaViranomainen().get(Kieli.FI));
+        Assert.assertEquals("a10", julkinenKVLiite.getTutkinnostaPaattavaViranomainen().get(Kieli.FI));
         Assert.assertEquals("a11", julkinenKVLiite.getTutkintotodistuksenAntaja().get(Kieli.FI));
 
         Assert.assertEquals("b6", perusteDto.getSuorittaneenOsaaminen().get(Kieli.FI));
