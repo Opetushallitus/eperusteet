@@ -15,9 +15,6 @@
  */
 package fi.vm.sade.eperusteet.repository.custom;
 
-import com.google.common.base.Function;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa_;
@@ -35,6 +32,8 @@ import javax.persistence.criteria.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -55,7 +54,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
      *
      * @param page sivumääritys
      * @param pquery hakuparametrit
-     * @param koodistostaHaetut
+     * @param koodistostaHaetut koodistosta haetut
      *
      * @return Yhden hakusivun verran vastauksia
      */
@@ -67,7 +66,12 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             query.setFirstResult(page.getOffset());
             query.setMaxResults(page.getPageSize());
         }
-        return new PageImpl<>(Lists.transform(query.getResultList(), EXTRACT_PERUSTE), page, countQuery.getSingleResult());
+
+        List<Peruste> result = query.getResultList().stream()
+                .map(t -> t.get(0, Peruste.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(result, page, countQuery.getSingleResult());
     }
 
     private TypedQuery<Tuple> getQuery(PerusteQuery pquery, Set<Long> koodistostaHaetut) {
@@ -76,7 +80,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
         Predicate pred = buildPredicate(root, teksti, cb, pquery, koodistostaHaetut);
-        query.distinct(true);
         final Expression<String> n = cb.lower(teksti.get(LokalisoituTeksti_.teksti));
 
         final List<Order> order = new ArrayList<>();
@@ -85,7 +88,12 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
         order.add(cb.asc(n));
         order.add(cb.asc(root.get(Peruste_.id)));
-        query.multiselect(root, n).where(pred).orderBy(order);
+
+        query
+                .multiselect(root, n)
+                .where(pred)
+                .orderBy(order)
+                .distinct(true);
 
         return em.createQuery(query);
     }
@@ -96,7 +104,12 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
         Predicate pred = buildPredicate(root, teksti, cb, pquery, koodistostaHaetut);
-        query.select(cb.countDistinct(root)).where(pred);
+
+        query
+                .select(cb.countDistinct(root))
+                .where(pred)
+                .distinct(true);
+
         return em.createQuery(query);
     }
 
@@ -111,15 +124,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
         final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
         Expression<java.sql.Date> currentDate = cb.literal(new java.sql.Date(pq.getNykyinenAika()));
-        final Set<Kieli> kieli = pq.getKieli().stream()
-                .map(k -> Kieli.of(k))
-                .collect(Collectors.toSet());
-        if (kieli.isEmpty()) {
-            kieli.add(Kieli.SE);
-            kieli.add(Kieli.FI);
-            kieli.add(Kieli.RU);
-            kieli.add(Kieli.EN);
-            kieli.add(Kieli.SV);
+        final Set<Kieli> kieli;
+        if (ObjectUtils.isEmpty(pq.getKieli())) {
+            kieli = new HashSet<>();
+            kieli.addAll(Arrays.asList(Kieli.values()));
+        } else {
+            kieli = pq.getKieli().stream()
+                    .map(Kieli::of)
+                    .collect(Collectors.toSet());
         }
 
         Predicate pred = cb.conjunction();
@@ -149,11 +161,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
                 preds.add(cb.and(tutkinnonOsaJulkaistu, cb.or(tosanKoodiArvossa, tosanNimessa)));
             }
 
-            if (preds.size() < 2) {
-                pred = cb.and(pred, preds.get(0));
-            } else {
-                pred = cb.and(pred, cb.or(preds.toArray(new Predicate[preds.size()])));
-            }
+            pred = cb.and(pred, cb.or(preds.toArray(new Predicate[0])));
         }
 
         if (pq.isKoulutusvienti()) {
@@ -172,22 +180,22 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             Join<Peruste, Suoritustapa> suoritustapa = root.join(Peruste_.suoritustavat);
             pred = cb.and(pred, cb.equal(suoritustapa.get(Suoritustapa_.suoritustapakoodi), suoritustapakoodi));
         }
-        if (!empty(pq.getKoulutustyyppi())) {
+        if (!ObjectUtils.isEmpty(pq.getKoulutustyyppi())) {
             pred = cb.and(pred, root.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
         }
 
         Join<Peruste, Koulutus> koulutukset = null;
-        if (!empty(pq.getKoulutusala())) {
+        if (!ObjectUtils.isEmpty(pq.getKoulutusala())) {
             koulutukset = root.join(Peruste_.koulutukset);
             pred = cb.and(pred, koulutukset.get(Koulutus_.koulutusalakoodi).in(pq.getKoulutusala()));
         }
 
-        if (!empty(pq.getOpintoala())) {
+        if (!ObjectUtils.isEmpty(pq.getOpintoala())) {
             koulutukset = (koulutukset == null) ? root.join(Peruste_.koulutukset) : koulutukset;
             pred = cb.and(pred, koulutukset.get(Koulutus_.opintoalakoodi).in(pq.getOpintoala()));
         }
 
-        if (!Strings.isNullOrEmpty(pq.getKoulutuskoodi())) {
+        if (!StringUtils.isEmpty(pq.getKoulutuskoodi())) {
             koulutukset = (koulutukset == null) ? root.join(Peruste_.koulutukset) : koulutukset;
             pred = cb.and(pred, cb.or(cb.equal(koulutukset.get(Koulutus_.koulutuskoodiUri), pq.getKoulutuskoodi()),
                     cb.equal(koulutukset.get(Koulutus_.koulutuskoodiArvo), pq.getKoulutuskoodi())));
@@ -236,14 +244,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         pred = cb.and(pred, tilat);
 
-        if (!empty(pq.getTila())) {
+        if (!ObjectUtils.isEmpty(pq.getTila())) {
             Set<PerusteTila> perusteTilat = pq.getTila().stream()
                     .map(PerusteTila::of)
                     .collect(Collectors.toSet());
             pred = cb.and(pred, root.get(Peruste_.tila).in(perusteTilat));
         }
 
-        if (!Strings.isNullOrEmpty(pq.getPerusteTyyppi())) {
+        if (!StringUtils.isEmpty(pq.getPerusteTyyppi())) {
             pred = cb.and(pred, cb.equal(root.get(Peruste_.tyyppi), PerusteTyyppi.of(pq.getPerusteTyyppi())));
         }
 
@@ -251,29 +259,23 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, cb.greaterThan(root.get(Peruste_.muokattu), cb.literal(new Date(pq.getMuokattu()))));
         }
 
-        if (pq.getKieli() != null) {
-            //Hibernate bug (?), isMember ei toimi (bindaus ei mene enumina)
+        if (!ObjectUtils.isEmpty(pq.getKieli())) {
             SetJoin<Peruste, Kieli> kielet = root.join(Peruste_.kielet);
-            Predicate kieliPred = kieli.stream()
-                    .map((lang) -> {
-                        return cb.equal(kielet, lang);
-                    })
-                    .reduce((acc, next) -> {
-                        return cb.or(acc, next);
-                    })
-                    .get();
+            Optional<Predicate> kieliPred = kieli.stream()
+                    .map((lang) -> cb.equal(kielet, lang))
+                    .reduce(cb::or);
 
-            if (kieliPred != null) {
-                pred = cb.and(pred, kieliPred);
+            if (kieliPred.isPresent()) {
+                pred = cb.and(pred, kieliPred.get());
             }
         }
 
         // Tutkinnon osien tuontia varten
-        if (pq.getEsikatseltavissa() != null) {
+        if (pq.getEsikatseltavissa() != null && pq.getEsikatseltavissa()) {
             Join<Peruste, Perusteprojekti> perusteprojekti = root.join(Peruste_.perusteprojekti);
 
             // Jos peruste on esikatseltavissa tai/ja julkaistu
-            Predicate esikatseltavissaTaiJulkaistu= cb.disjunction();
+            Predicate esikatseltavissaTaiJulkaistu = cb.disjunction();
             esikatseltavissaTaiJulkaistu = cb.or(esikatseltavissaTaiJulkaistu,
                     cb.isTrue(perusteprojekti.get(Perusteprojekti_.esikatseltavissa)));
             esikatseltavissaTaiJulkaistu = cb.or(esikatseltavissaTaiJulkaistu,
@@ -284,11 +286,4 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         return pred;
     }
-
-    private static boolean empty(Collection<?> c) {
-        return c == null || c.isEmpty();
-    }
-
-    private static final Function<Tuple, Peruste> EXTRACT_PERUSTE = f -> f.get(0, Peruste.class);
-
 }

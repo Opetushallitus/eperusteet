@@ -38,7 +38,7 @@ public class PerusteQuery {
     private String nimi;
     private List<String> koulutusala;
     private List<String> koulutustyyppi;
-    private Set<String> kieli = new HashSet<>();
+    private Set<String> kieli;
     private List<String> opintoala;
     private String suoritustapa;
     private Set<String> tila;
