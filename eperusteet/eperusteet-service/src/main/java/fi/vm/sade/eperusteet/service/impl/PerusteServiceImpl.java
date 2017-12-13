@@ -171,6 +171,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private KoodistoClient koodistoService;
 
+    @Autowired
+    private LocalizedMessagesService messages;
+
     @Override
     public List<PerusteDto> getUusimmat() {
         return mapper.mapAsList(perusteet.findAllUusimmat(new PageRequest(0, 10)), PerusteDto.class);
@@ -944,7 +947,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         final Peruste peruste = perusteet.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
-        //if (peruste.getKoulutustyyppi().equals(KoulutusTyyppi.VALMA))
+
         // Workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa
         suoritustapaRepository.lock(suoritustapa, false);
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
@@ -1084,7 +1087,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             PerusteenOsaViite sisalto = peruste.getPerusopetuksenPerusteenSisalto().getSisalto();
             TekstiKappale tk = new TekstiKappale();
             HashMap<Kieli, String> hm = new HashMap<>();
-            hm.put(Kieli.FI, "Laaja-alaiset osaamiset");
+            hm.put(Kieli.FI, messages.translate("docgen.laaja_alaiset_osaamiset.title", Kieli.FI));
             tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
             tk.setTunniste(PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
             PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
@@ -1095,7 +1098,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             PerusteenOsaViite sisalto = peruste.getAipeOpetuksenPerusteenSisalto().getSisalto();
             TekstiKappale tk = new TekstiKappale();
             HashMap<Kieli, String> hm = new HashMap<>();
-            hm.put(Kieli.FI, "Laaja-alaiset osaamiset");
+            hm.put(Kieli.FI, messages.translate("docgen.laaja_alaiset_osaamiset.title", Kieli.FI));
             tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
             tk.setTunniste(PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
             PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
@@ -1108,7 +1111,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 List<PerusteenOsaViite> lapset = sisalto.getLapset();
                 TekstiKappale tk = new TekstiKappale();
                 HashMap<Kieli, String> hm = new HashMap<>();
-                hm.put(Kieli.FI, "Tutkinnon muodostuminen");
+                if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.VALMA)
+                        || KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.TELMA)) {
+                    hm.put(Kieli.FI, messages.translate("docgen.koulutuksen_muodostuminen.title", Kieli.FI));
+                } else {
+                    hm.put(Kieli.FI, messages.translate("docgen.tutkinnon_muodostuminen.title", Kieli.FI));
+                }
                 tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
                 tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
                 PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());

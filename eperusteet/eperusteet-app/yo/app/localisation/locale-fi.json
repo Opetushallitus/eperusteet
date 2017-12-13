@@ -190,7 +190,7 @@
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
     "tutkinnon-osia-ei-loytynyt": "Tutkinnon osia ei löytynyt.",
-    "aloita-raahaamalla-puuhun": "Tuo ryhmiä tai tutkinnon osia tähän.",
+    "aloita-raahaamalla-puuhun": "Tuo ryhmiä tai koulutuksen/tutkinnon osia tähän.",
     "rakennetta-ei-vielä-muodostettu": "Tutkinnon rakennetta ei ole vielä muodostettu tai se on tyhjä. Luo uusi rakenne muokkaamalla sivua.",
     "rakennetta-ei-ole": "Suoritustavalle ei ole määritetty rakennetta",
 
@@ -252,6 +252,7 @@
     "reformin-mukainen": "Reformin mukainen",
 
     "uusi-tutkinnonosa": "Uusi tutkinnon osa",
+    "uusi-koulutuksenosa": "Uusi koulutuksen osa",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
