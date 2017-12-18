@@ -16,15 +16,13 @@
 
 package fi.vm.sade.eperusteet.repository.custom;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepositoryCustom;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
@@ -41,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -52,8 +51,6 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
 
     @PersistenceContext
     private EntityManager em;
-
-    private static final Function<Tuple, Perusteprojekti> EXTRACT_PERUSTEPROJEKTI = f -> f.get(0, Perusteprojekti.class);
 
     @Override
     public Page<Perusteprojekti> findBy(PageRequest page, PerusteprojektiQueryDto pquery) {
@@ -67,10 +64,11 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         // SQL query
         //log.debug(query.unwrap(Query.class).getQueryString());
 
-        List<Tuple> resultList = query.getResultList();
-        Long singleResult = countQuery.getSingleResult();
+        List<Perusteprojekti> result = query.getResultList().stream()
+                .map(t -> t.get(0, Perusteprojekti.class))
+                .collect(Collectors.toList());
 
-        return new PageImpl<>(Lists.transform(resultList, EXTRACT_PERUSTEPROJEKTI), page, singleResult);
+        return new PageImpl<>(result, page, countQuery.getSingleResult());
     }
 
     private TypedQuery<Long> getCountQuery(PerusteprojektiQueryDto pquery) {
@@ -142,11 +140,8 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
     ) {
         Expression<String> targetName = cb.lower(root.get(Perusteprojekti_.nimi));
         Expression<Diaarinumero> targetDiaari = root.get(Perusteprojekti_.diaarinumero);
-        Expression<ProjektiTila> targetTila = root.get(Perusteprojekti_.tila);
         Join<Perusteprojekti, Peruste> joined = root.join(Perusteprojekti_.peruste);
         Path<PerusteTyyppi> tyyppi = joined.get(Peruste_.tyyppi);
-
-//        Expression<PerusteTila> targetTila = root.get(Perusteprojekti_.peruste);
 
         Expression<String> haku = cb.literal(RepositoryUtil.kuten(pq.getNimi()));
         Expression<Diaarinumero> diaarihaku = cb.literal(new Diaarinumero(pq.getNimi()));
@@ -157,7 +152,7 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
 
         if (pq.getTyyppi() == null) {
             result = cb.and(result, cb.notEqual(tyyppi, PerusteTyyppi.OPAS));
-            if (!empty(pq.getKoulutustyyppi())) {
+            if (!ObjectUtils.isEmpty(pq.getKoulutustyyppi())) {
                 Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
                 result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
             }
@@ -166,14 +161,10 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
             result = cb.and(result, cb.equal(tyyppi, pq.getTyyppi()));
         }
 
-        if (!empty(pq.getTila())) {
+        if (!ObjectUtils.isEmpty(pq.getTila())) {
             return cb.and(result, root.get(Perusteprojekti_.tila).in(pq.getTila()));
         } else {
             return result;
         }
-    }
-
-    private static boolean empty(Collection<?> c) {
-        return c == null || c.isEmpty();
     }
 }
