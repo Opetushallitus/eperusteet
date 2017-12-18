@@ -288,6 +288,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
 
         KoulutusTyyppi koulutustyyppi = KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi());
+        if (!koulutustyyppi.isAmmatillinen()) {
+            perusteprojektiDto.setReforminMukainen(false);
+        }
+
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
         PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
         perusteprojekti.setTila(LAADINTA);
