@@ -917,14 +917,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
 
             if (tila == ProjektiTila.JULKAISTU) {
-                if (projekti.getPeruste().getDiaarinumero() == null) {
-                    updateStatus.addStatus("peruste-ei-diaarinumeroa");
-                    updateStatus.setVaihtoOk(false);
-                }
+                if (!projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
+                    if (projekti.getPeruste().getDiaarinumero() == null) {
+                        updateStatus.addStatus("peruste-ei-diaarinumeroa");
+                        updateStatus.setVaihtoOk(false);
+                    }
 
-                if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
-                    updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
-                    updateStatus.setVaihtoOk(false);
+                    if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
+                        updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
+                        updateStatus.setVaihtoOk(false);
+                    }
                 }
             }
 
