@@ -483,14 +483,11 @@ $kuvausnappisize: 18px;
     }
     .bubble {
         clear: both;
-        display: inline-block;
-        height: 32px;
         .left {
-            padding-top: 8px;
-            padding-left: 0px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 0;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
         .right {
             float: right;
@@ -534,6 +531,7 @@ $kuvausnappisize: 18px;
             min-height: $tree-box-size;
             float: right;
             border-left: 1px solid #cccccc;
+            border-bottom: 1px solid #cccccc;
             padding: 6px 8px;
             &.valikko {
                 padding: 0;
@@ -615,11 +613,10 @@ $kuvausnappisize: 18px;
 }
 
 .tree-presentation {
-    margin: 0px;
+    margin: 0;
     margin-bottom: 10px;
     min-height: 400px;
-    min-width: 1100px;
-    padding: 0px;
+    padding: 0;
     .tooltip-inner {
         background-color: #fcf3d3;
         color: #4987b3;
