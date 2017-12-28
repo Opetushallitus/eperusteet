@@ -189,7 +189,6 @@ export function taiteenalaCtrl(
             $scope.taiteenalaFields = _.sortBy($scope.taiteenalaFields, (field: any) => {
                 return $scope.taiteenala[field.path] && $scope.taiteenala[field.path].jnro;
             });
-            console.log($scope.sortedFields);
         };
 
         $scope.poistaTyoryhma = function(tr) {

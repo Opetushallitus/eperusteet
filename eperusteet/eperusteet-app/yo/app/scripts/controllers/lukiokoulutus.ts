@@ -896,7 +896,6 @@ angular
                                 ? '   <span class="remove" icon-role="remove" ng-click="removeKurssiFromOppiaine(node)"></span>'
                                 : "",
                             name = kurssiName();
-                        console.log(n);
                         return templateAround(
                             '<div class="puu-node kurssi-node" ng-class="{\'liittamaton\': node.oppiaineet.length === 0}">' +
                                 handle +

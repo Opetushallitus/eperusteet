@@ -67,6 +67,8 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static java.util.stream.Collectors.toMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -447,18 +449,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         // Oispa lambdat
-        boolean onJollainVaditullaKielella = false;
+        boolean onJollainVaaditullaKielella = false;
         if (!pakollinen) {
             for (Kieli kieli : pakolliset) {
                 String osa = palanen.getTeksti().get(kieli);
                     if (osa != null && !osa.isEmpty()) {
-                        onJollainVaditullaKielella = true;
+                        onJollainVaaditullaKielella = true;
                         break;
                     }
             }
         }
 
-        if (pakollinen || onJollainVaditullaKielella) {
+        if (pakollinen || onJollainVaaditullaKielella) {
             for (Kieli kieli : pakolliset) {
                 Map<Kieli, String> teksti = palanen.getTeksti();
                 if (!teksti.containsKey(kieli) || teksti.get(kieli) == null || teksti.get(kieli).isEmpty()) {
@@ -940,6 +942,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return updateStatus;
         }
 
+        // Dokumentit generoidaan automaattisesti julkaisun yhteydessä
         if (tila == ProjektiTila.JULKAISTU && projekti.getTila() == ProjektiTila.VALMIS) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
             Optional.of(peruste)
@@ -1084,6 +1087,37 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Transactional
+    private Set<Peruste> perusteetJoissaJulkaistuna(PerusteenOsa osa) {
+        if (osa instanceof TutkinnonOsa) {
+            return tutkinnonOsaViiteRepository.findAllByTutkinnonOsa((TutkinnonOsa)osa).stream()
+                    .map(TutkinnonOsaViite::getSuoritustapa)
+                    .filter(Objects::nonNull)
+                    .map(Suoritustapa::getPerusteet)
+                    .flatMap(x -> x.stream())
+                    .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
+                    .distinct()
+                    .collect(Collectors.toSet());
+        }
+        else {
+            return perusteenOsaViiteRepository.findAllByPerusteenOsa(osa).stream()
+                    .map(pov -> {
+                        PerusteenOsaViite result = pov;
+                        while (result.getVanhempi() != null) {
+                            result = result.getVanhempi();
+                        }
+                        return result;
+                    })
+                    .map(PerusteenOsaViite::getSuoritustapa)
+                    .filter(Objects::nonNull)
+                    .map(Suoritustapa::getPerusteet)
+                    .flatMap(x -> x.stream())
+                    .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
+                    .distinct()
+                    .collect(Collectors.toSet());
+        }
+    }
+
+    @Transactional
     private void palautaJulkaistu(Peruste peruste, PerusteenOsa po) {
         if (po instanceof TutkinnonOsa) {
             tutkinnonOsaViiteRepository.findAllByTutkinnonOsa((TutkinnonOsa)po).stream()
@@ -1101,19 +1135,31 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
     }
 
-    // FIXME: Miksi nämä iteroidaan kahteen kertaan?
     private PerusteenOsaViite setSisaltoTila(Peruste peruste, PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
+        // Perusteen osan tilan poistaminen valmiista edellyttää ettei mikään muu perusteen osaa käyttävä peruste
+        // ole julkaistuna.
         if (sisaltoRoot.getPerusteenOsa() != null) {
-//            sisaltoRoot.getPerusteenOsa().asetaTila(tila);
-            if (tila == PerusteTila.LUONNOS) {
-                // TODO: Tarkista onko muita käyttäjiä
-                sisaltoRoot.getPerusteenOsa().palautaLuonnokseksi();
-                palautaJulkaistu(peruste, sisaltoRoot.getPerusteenOsa());
+            boolean salliTilamuutos = true;
+            if (sisaltoRoot.getPerusteenOsa().getTila() == PerusteTila.VALMIS) {
+                    Set<Peruste> perusteet = perusteetJoissaJulkaistuna(sisaltoRoot.getPerusteenOsa());
+                    boolean hasCurrentPeruste = perusteet.contains(peruste);
+                    if (hasCurrentPeruste) {
+                        perusteet.remove(peruste);
+                    }
+                    salliTilamuutos = hasCurrentPeruste && perusteet.isEmpty();
             }
-            else {
-                sisaltoRoot.getPerusteenOsa().asetaTila(tila);
+
+            if (salliTilamuutos) {
+                if (tila == PerusteTila.LUONNOS) {
+                    sisaltoRoot.getPerusteenOsa().palautaLuonnokseksi();
+                    palautaJulkaistu(peruste, sisaltoRoot.getPerusteenOsa());
+                }
+                else {
+                    sisaltoRoot.getPerusteenOsa().asetaTila(tila);
+                }
             }
         }
+
         if (sisaltoRoot.getLapset() != null) {
             for (PerusteenOsaViite lapsi : sisaltoRoot.getLapset()) {
                 setSisaltoTila(peruste, lapsi, tila);

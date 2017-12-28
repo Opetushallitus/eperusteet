@@ -14,13 +14,13 @@
                 <div class="action-buttons">
                     <div class="floater" ng-attr-title="{{lockNotification}}">
                         <button ng-disabled="isLocked"
-                                ng-hide="tekstikappale.tila !== 'valmis' || editEnabled || !versiot.latest"
+                                ng-hide="editEnabled || !versiot.latest"
                                 ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-                                oikeustarkastelu="[{target:'peruste',permission:'korjaus'}]"></button>
+                                oikeustarkastelu="{target:'peruste', permission:'tilanvaihto'}"></button>
                         <button ng-disabled="isLocked"
-                                ng-hide="tekstikappale.tila === 'valmis' || editEnabled || !versiot.latest"
+                                ng-hide="editEnabled || !versiot.latest"
                                 ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-                                oikeustarkastelu="[{target:'peruste',permission:'muokkaus'}]"></button>
+                                oikeustarkastelu="{target:'peruste', permission:'muokkaus'}"></button>
                     </div>
                     <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'"
                             ng-hide="editEnabled || !versiot.latest"

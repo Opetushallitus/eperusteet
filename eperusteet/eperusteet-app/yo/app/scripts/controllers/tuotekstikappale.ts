@@ -127,7 +127,6 @@ angular
                 { perusteId: valittuPeruste.id },
                 function(peruste) {
                     $scope.valittuPeruste = peruste;
-
                     var oletusSuoritustapa = YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].oletusSuoritustapa;
                     if (oletusSuoritustapa !== "ops" && oletusSuoritustapa !== "naytto") {
                         peruste.suoritustavat = peruste.suoritustavat || [];
@@ -137,13 +136,10 @@ angular
                     $scope.valittuSuoritustapa = (_.first(peruste.suoritustavat) as any).suoritustapakoodi;
                     $q
                         .all(
-                            _.map(peruste.suoritustavat, function(st) {
-                                return SuoritustapaSisalto.get({
+                            _.map(peruste.suoritustavat, st => SuoritustapaSisalto.get({
                                     perusteId: valittuPeruste.id,
                                     suoritustapa: (st as any).suoritustapakoodi
-                                }).$promise;
-                            })
-                        )
+                                }).$promise))
                         .then(function(res) {
                             sisallot = _.zipObject(
                                 _.map(peruste.suoritustavat, "suoritustapakoodi"),
@@ -153,8 +149,9 @@ angular
                                     });
                                 })
                             );
-                            if (_.indexOf(peruste.suoritustavat, suoritustapa) === -1) {
-                                suoritustapa = oletusSuoritustapa;
+
+                            if (_.indexOf(_.keys(sisallot), suoritustapa) === -1) {
+                                suoritustapa = _.first(_.keys(sisallot)) || oletusSuoritustapa;
                             }
                             $scope.valittuPeruste.$sisalto = sisallot[suoritustapa];
                         }, Notifikaatiot.serverCb);

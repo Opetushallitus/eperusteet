@@ -20,7 +20,7 @@ import * as _ from "lodash";
 angular.module("eperusteApp").directive("oikeustarkastelu", function(PerusteprojektiOikeudetService) {
     return {
         restrict: "A",
-        link: function postLink(scope, element: any, attrs: any) {
+        link(scope, element: any, attrs: any) {
             var oikeudet = scope.$eval(attrs.oikeustarkastelu);
             if (!angular.isArray(oikeudet)) {
                 oikeudet = [oikeudet];

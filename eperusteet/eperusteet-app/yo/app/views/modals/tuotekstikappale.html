@@ -46,6 +46,7 @@
                 placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>
         <h3>{{ valittuPeruste.nimi | kaanna }}</h3>
         <div class="alert alert-warning" ng-show="filtered.length === 0" kaanna="ei-tekstikappaleita"></div>
+
         <table ng-show="filtered.length > 0" class="table table-striped">
             <tr>
                 <th class="has-checkbox"><input class="form-control" ng-change="toggleKaikki(kaikkiValittu)"

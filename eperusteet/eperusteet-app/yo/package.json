@@ -74,6 +74,7 @@
     }
   },
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "angular": "1.6.6",
     "angular-animate": "1.6.6",
     "angular-cache": "4.4.2",
@@ -98,6 +99,7 @@
     "angular-ui-utils": "^0.1.1",
     "angularjs-slider": "5.8.7",
     "babel-plugin-angularjs-annotate": "^0.8.2",
+    "chakram": "^1.5.0",
     "ckeditor": "4.7.0",
     "eperusteet-frontend-utils": "Opetushallitus/eperusteet-frontend-utils#master",
     "es6-promise": "^4.1.1",
@@ -129,6 +131,7 @@
     "@types/node": "^8.0.31",
     "angular-mocks": "^1.6.6",
     "awesome-typescript-loader": "^3.4.0",
+    "axios": "^0.17.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",

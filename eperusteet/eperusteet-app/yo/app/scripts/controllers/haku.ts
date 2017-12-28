@@ -73,7 +73,6 @@ angular
                     .sortBy("voimassaoloLoppuu")
                     .reverse()
                     .each((eo: any) => {
-                        console.log(eo);
                         eo.$url = YleinenData.getPerusteEsikatseluHost() + "/esiopetus/" + eo.id + "/tiedot";
                     })
                     .value();

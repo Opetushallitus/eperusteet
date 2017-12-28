@@ -535,8 +535,8 @@ angular
         });
 
         return {
-            noudaOikeudet: noudaOikeudet,
-            getOikeudet: getOikeudet,
-            onkoOikeudet: onkoOikeudet
+            noudaOikeudet,
+            getOikeudet,
+            onkoOikeudet,
         };
     });

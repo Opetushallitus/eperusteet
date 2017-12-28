@@ -49,6 +49,7 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private String koodiArvo;
     private List<OsaAlueKokonaanDto> osaAlueet;
     private TutkinnonOsaTyyppi tyyppi;
+    private ValmaTelmaSisaltoDto valmaTelmaSisalto;
 
     public String getKoodiUri() {
         KoodiDto koodi = this.getKoodi();

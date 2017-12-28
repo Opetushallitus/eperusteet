@@ -35,7 +35,7 @@ angular
                     perusteprojektiOikeudet: PerusteprojektiOikeudetService => PerusteprojektiOikeudetService,
                     perusteprojektiOikeudetNouto: (perusteprojektiOikeudet, $stateParams) =>
                         perusteprojektiOikeudet.noudaOikeudet($stateParams),
-                    perusteprojekti: async perusteprojektiTiedot => {
+                    perusteprojekti: async (perusteprojektiOikeudetNouto, perusteprojektiTiedot) => {
                         await perusteprojektiTiedot.projektinTiedotAlustettu();
                         return perusteprojektiTiedot.getProjekti();
                     },
