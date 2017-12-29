@@ -383,8 +383,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             Optional<Peruste> op = loydetyt.stream()
                     .filter((p) -> p.getVoimassaoloAlkaa() != null)
                     .filter((p) -> p.getVoimassaoloAlkaa().before(new Date()))
-                    .sorted(Comparator.comparing(Peruste::getVoimassaoloAlkaa))
-                    .findFirst();
+                    .filter((p) -> p.getVoimassaoloLoppuu() == null || p.getVoimassaoloLoppuu().after(new Date()))
+                    .reduce((a, b) -> a.getVoimassaoloAlkaa().after(b.getVoimassaoloAlkaa()) ? a : b);
 
             if (op.isPresent()) {
                 peruste = op.get();

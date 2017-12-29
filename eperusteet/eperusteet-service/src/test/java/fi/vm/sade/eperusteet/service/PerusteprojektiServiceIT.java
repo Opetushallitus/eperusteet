@@ -16,16 +16,10 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import com.google.common.base.Function;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
@@ -34,11 +28,11 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.Assert;
@@ -89,6 +83,10 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     private final String tehtava = TestUtils.uniikkiString();
 
     private PerusteprojektiDto teePerusteprojekti(PerusteTyyppi tyyppi, String koulutustyyppi) {
+        return service.save(teePerusteprojektiLuontiDto(tyyppi, koulutustyyppi));
+    }
+
+    private PerusteprojektiLuontiDto teePerusteprojektiLuontiDto(PerusteTyyppi tyyppi, String koulutustyyppi) {
         PerusteprojektiLuontiDto ppldto = null;
         if (tyyppi == PerusteTyyppi.NORMAALI) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, null, null, tyyppi, ryhmaId);
@@ -104,7 +102,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertNotNull(ppldto);
 
         ppldto.setNimi(TestUtils.uniikkiString());
-        return service.save(ppldto);
+        return ppldto;
     }
 
     private void perusteprojektiLuontiCommonAsserts(PerusteprojektiDto ppdto, Perusteprojekti pp) {
@@ -538,5 +536,49 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
         status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA, null);
         Assert.assertFalse(status.isVaihtoOk());
+    }
+
+    @Test
+    @Rollback(true)
+    public void testDiaarinumerohaku() {
+        PerusteprojektiLuontiDto adto = teePerusteprojektiLuontiDto(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        PerusteprojektiLuontiDto bdto = teePerusteprojektiLuontiDto(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        final long now = (new Date()).getTime();
+
+        Function<PerusteprojektiLuontiDto, Perusteprojekti> luontiHelper = (PerusteprojektiLuontiDto luontiDto) -> {
+            luontiDto.setReforminMukainen(true);
+            PerusteprojektiDto projektiDto = service.save(luontiDto);
+            Perusteprojekti pp = repository.findOne(projektiDto.getId());
+            Peruste peruste = pp.getPeruste();
+            peruste.setDiaarinumero(new Diaarinumero("OPH-12345-1234"));
+            pp.getPeruste().setKielet(Stream.of(Kieli.FI).collect(Collectors.toSet()));
+            pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
+            pp.getPeruste().setVoimassaoloLoppuu(new Date(now + 100000));
+            return pp;
+        };
+
+        Consumer<Perusteprojekti> julkaise = (Perusteprojekti p) -> {
+            TilaUpdateStatus problems = service.updateTila(p.getId(), ProjektiTila.VIIMEISTELY, null);
+            Assert.assertTrue(problems.isVaihtoOk());
+            service.updateTila(p.getId(), ProjektiTila.VALMIS, null);
+            Assert.assertTrue(problems.isVaihtoOk());
+            problems = service.updateTila(p.getId(), ProjektiTila.JULKAISTU, null);
+            Assert.assertTrue(problems.isVaihtoOk());
+        };
+
+        Perusteprojekti a = luontiHelper.apply(adto);
+        a.getPeruste().setVoimassaoloAlkaa(new Date(now - 100));
+        Perusteprojekti b = luontiHelper.apply(bdto);
+        b.getPeruste().setVoimassaoloAlkaa(new Date(now - 200));
+        repository.save(a);
+        em.persist(a);
+        repository.save(b);
+        em.persist(b);
+        julkaise.accept(a);
+        julkaise.accept(b);
+
+        PerusteInfoDto diaari = perusteService.getByDiaari(new Diaarinumero("OPH-12345-1234"));
+        Assert.assertNotNull(diaari);
+        Assert.assertEquals(diaari.getId(), a.getPeruste().getId());
     }
 }

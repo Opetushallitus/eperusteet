@@ -673,8 +673,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         tarkistaTekstipalanen("peruste-validointi-kuvaus", peruste.getKuvaus(), vaaditutKielet, virheellisetKielet);
         tarkistaTekstipalanen("peruste-validointi-nimi", peruste.getNimi(), vaaditutKielet, virheellisetKielet);
 
-        for (Koulutus koulutus : peruste.getKoulutukset()) {
-            tarkistaTekstipalanen("peruste-validointi-koulutus-nimi", koulutus.getNimi(), vaaditutKielet, virheellisetKielet);
+        if (peruste.getKoulutukset() != null) {
+            for (Koulutus koulutus : peruste.getKoulutukset()) {
+                tarkistaTekstipalanen("peruste-validointi-koulutus-nimi", koulutus.getNimi(), vaaditutKielet, virheellisetKielet);
+            }
         }
 
         // Esiopetus
