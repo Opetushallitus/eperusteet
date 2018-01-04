@@ -22,6 +22,8 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiPeruste;
 import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
+import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.getTextString;
+
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
@@ -545,6 +547,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());
                 addArviointi(docBase, osa.getArviointi(), tyyppi);
                 addAmmattitaidonOsoittamistavat(docBase, osa);
+                addVapaatTekstit(docBase, osa);
             } else if (TutkinnonOsaTyyppi.isTutke(tyyppi)) {
                 addTutke2Osat(docBase, osa);
             }
@@ -815,6 +818,14 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         addTeksti(docBase, messages.translate("docgen.ammattitaidon_osoittamistavat.title", docBase.getKieli()), "h5");
         addTeksti(docBase, ammattitaidonOsoittamistavatText, "div");
+    }
+
+    private void addVapaatTekstit(DokumenttiPeruste docBase, TutkinnonOsa osa) {
+        List<KevytTekstiKappale> vapaatTekstit = osa.getVapaatTekstit();
+        vapaatTekstit.forEach(vapaaTeksti -> {
+            addTeksti(docBase, getTextString(docBase, vapaaTeksti.getNimi()), "h5");
+            addTeksti(docBase, getTextString(docBase, vapaaTeksti.getTeksti()), "div");
+        });
     }
 
     private void addArviointi(DokumenttiPeruste docBase, Arviointi arviointi, TutkinnonOsaTyyppi tyyppi) {
