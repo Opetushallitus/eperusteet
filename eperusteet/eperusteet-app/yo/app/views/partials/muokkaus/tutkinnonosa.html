@@ -149,8 +149,8 @@
 
                         <div class="to-vapaat-tekstit" ng-show="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit.length > 0">
                             <div ng-hide="editEnabled">
-                                <div ng-repeat="vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit">
-                                    <h3>
+                                <div ng-repeat="vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit" class="list-group-item">
+                                    <h3 ng-click="vt.$$closed = !vt.$$closed" class="osio-otsikko">
                                         <span ng-show="vt.$$closed" icon-role="chevron-right"></span>
                                         <span ng-hide="vt.$$closed" icon-role="chevron-down"></span>
                                         <span ng-bind-html="vt.nimi | kaanna"></span>
