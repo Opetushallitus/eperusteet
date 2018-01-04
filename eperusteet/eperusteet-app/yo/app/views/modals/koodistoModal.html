@@ -14,12 +14,14 @@
     <div class="results">
         <table class="table table-striped">
             <tr>
-                <th class="col-xs-3" kaanna>koodi</th>
-                <th class="col-xs-9" kaanna>nimi</th>
+                <th class="col-xs-3" kaanna="'koodi'"></th>
+                <th class="col-xs-6" kaanna="'nimi'"></th>
+                <th class="col-xs-3" kaanna="'voimaantulo-pvm'"></th>
             </tr>
             <tr ng-repeat="l in loydetyt | startFrom:itemsPerPage*(nykyinen-1) | limitTo:itemsPerPage">
-                <td class="col-xs-3"><a class="action-link" ng-click="ok(l)">{{ l.koodiArvo }}</a></td>
-                <td class="col-xs-9">{{ l.nimi | kaanna }}</td>
+                <td><a class="action-link" ng-click="ok(l)">{{ l.koodiArvo }}</a></td>
+                <td>{{l.nimi | kaanna }}</td>
+                <td>{{l.voimassaAlkuPvm | date:'dd.MM.yyyy'}}</td>
             </tr>
         </table>
     </div>
