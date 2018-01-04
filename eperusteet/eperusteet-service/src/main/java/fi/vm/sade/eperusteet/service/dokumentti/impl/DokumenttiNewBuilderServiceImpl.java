@@ -996,25 +996,30 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                             : "docgen.tutke2.valinnaiset_osaamistavoitteet.title";
                     String otsikko = messages.translate(otsikkoAvain, docBase.getKieli())
                             + getLaajuusSuffiksi(tavoite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli());
-                    addTeksti(docBase, otsikko, "h5");
-
                     String tavoitteet = getTextString(docBase, tavoite.getTavoitteet());
+                    Arviointi arviointi = tavoite.getArviointi();
+                    TekstiPalanen tunnustaminen = tavoite.getTunnustaminen();
+                    List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimukset
+                            = tavoite.getAmmattitaitovaatimuksetLista();
+
+                    if (StringUtils.isNotEmpty(tavoitteet) || tunnustaminen != null) {
+                        addTeksti(docBase, otsikko, "h5");
+                    } else {
+                        continue;
+                    }
+
                     if (StringUtils.isNotEmpty(tavoitteet)) {
                         addTeksti(docBase, tavoitteet, "div");
                     }
 
-                    Arviointi arviointi = tavoite.getArviointi();
                     addArviointi(docBase, arviointi, osa.getTyyppi());
 
-                    TekstiPalanen tunnustaminen = tavoite.getTunnustaminen();
                     if (tunnustaminen != null) {
                         addTeksti(docBase,
                                 messages.translate("docgen.tutke2.tunnustaminen.title", docBase.getKieli()), "h6");
                         addTeksti(docBase, getTextString(docBase, tunnustaminen), "div");
                     }
 
-                    List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimukset
-                            = tavoite.getAmmattitaitovaatimuksetLista();
                     if (!ammattitaitovaatimukset.isEmpty()) {
                         addAmmattitaitovaatimukset(docBase, ammattitaitovaatimukset, null);
                     }

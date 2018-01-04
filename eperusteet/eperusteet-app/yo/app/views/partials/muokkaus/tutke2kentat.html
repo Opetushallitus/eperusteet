@@ -104,7 +104,7 @@
                     <div class="panel panel-default panel-clean" ng-repeat="tavoite in getTavoitteet(alue, pakollisuus)"
                          ng-class="{'kohde-edit': tavoite.$editing}">
 
-                        <div ng-if="!tavoite.$editing">
+                        <div ng-if="!tavoite.$editing && (tavoite.tavoitteet._id  != null || tavoite.tunnustaminen._id != null)">
                             <div class="panel-heading">
                                 <h3>
                                     {{pakollisuus && 'pakolliset-osaamistavoitteet' || 'valinnaiset-osaamistavoitteet' | kaanna}}, {{tavoite.laajuus}} {{ yksikko | kaanna }}
