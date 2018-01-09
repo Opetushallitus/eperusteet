@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.*;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
@@ -827,6 +828,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, UpdateDto<RakenneModuuliDto> rakenne) {
         RakenneModuuliDto updated = updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne.getDto());
+        updateAllTutkinnonOsaJarjestys(updated);
         if (rakenne.getMetadata() != null) {
             perusteet.setRevisioKommentti(rakenne.getMetadata().getKommentti());
         }
@@ -862,6 +864,34 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         return mapper.map(moduuli, RakenneModuuliDto.class);
+    }
+
+    private Stream<AbstractRakenneOsaDto> haeUniikitTutkinnonOsaViitteet(AbstractRakenneOsaDto root) {
+        if (root instanceof RakenneModuuliDto) {
+            return Stream.concat(Stream.of(root), ((RakenneModuuliDto) root).getOsat().stream()
+                    .map(this::haeUniikitTutkinnonOsaViitteet)
+                    .flatMap(osa -> osa));
+        } else {
+            return Stream.of(root);
+        }
+    }
+
+    private void updateAllTutkinnonOsaJarjestys(RakenneModuuliDto updated) {
+        // Lista tutkinnon osista tutkinnon muodostumisen mukaan
+        List<TutkinnonOsaViite> viitteet = haeUniikitTutkinnonOsaViitteet(updated)
+                .filter(osa -> osa instanceof RakenneOsaDto)
+                .map(osa -> ((RakenneOsaDto) osa).getTutkinnonOsaViite())
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(osa -> mapper.map(osa, TutkinnonOsaViite.class))
+                .collect(Collectors.toList());
+
+        // Tallennetaan uudet järjestysluvut
+        Integer jnro = 1;
+        for (TutkinnonOsaViite osa : viitteet) {
+            osa.setJarjestys(jnro);
+            jnro++;
+        }
     }
 
     private RakenneModuuli checkIfOsaamisalatAlreadyExists(RakenneModuuli rakenneModuuli) {
