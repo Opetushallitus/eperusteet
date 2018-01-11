@@ -352,31 +352,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             // Tutkinnon osa
             RakenneOsa rakenneOsa = (RakenneOsa) osa;
 
-            BigDecimal laajuus = rakenneOsa.getTutkinnonOsaViite().getLaajuus();
-            BigDecimal laajuusMaksimi = rakenneOsa.getTutkinnonOsaViite().getLaajuusMaksimi();
-            LaajuusYksikko laajuusYksikko = rakenneOsa.getTutkinnonOsaViite().getSuoritustapa().getLaajuusYksikko();
-            String laajuusStr = "";
-            String yks = "";
-            if (laajuus != null && laajuus.compareTo(BigDecimal.ZERO) > 0) {
-                laajuusStr = laajuus.stripTrailingZeros().toPlainString();
-                if (laajuusMaksimi != null && laajuusMaksimi.compareTo(BigDecimal.ZERO) > 0) {
-                    laajuusStr += "-" + laajuusMaksimi.stripTrailingZeros().toPlainString();
-                }
-                if (laajuusYksikko == LaajuusYksikko.OSAAMISPISTE) {
-                    yks = messages.translate("docgen.laajuus.osp", docBase.getKieli());
-                } else {
-                    yks = messages.translate("docgen.laajuus.ov", docBase.getKieli());
-                }
-            }
-
-            String nimi = getTextString(docBase, rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getNimi());
+            String nimi = getOtsikko(docBase, rakenneOsa.getTutkinnonOsaViite(), false);
             String kuvaus = getTextString(docBase, rakenneOsa.getKuvaus());
-
-            StringBuilder nimiBuilder = new StringBuilder();
-            nimiBuilder.append(" ").append(nimi);
-            if (!laajuusStr.isEmpty()) {
-                nimiBuilder.append(", ").append(laajuusStr).append(" ").append(yks);
-            }
 
             Element tr = docBase.getDocument().createElement("tr");
             Element td = docBase.getDocument().createElement("td");
@@ -386,14 +363,13 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             tbody.appendChild(tr);
             tr.appendChild(td);
             td.appendChild(p);
-            p.setTextContent(nimiBuilder.toString());
+            p.setTextContent(nimi);
             if (StringUtils.isNotEmpty(kuvaus)) {
                 td.appendChild(newItalicElement(docBase.getDocument(), kuvaus));
             }
 
             if (rakenneOsa.getPakollinen() != null && rakenneOsa.getPakollinen()) {
                 String glyph = messages.translate("docgen.rakenneosa.pakollinen.glyph", docBase.getKieli());
-                nimiBuilder.append(", ");
                 p.appendChild(docBase.getDocument().createTextNode(", "));
                 p.appendChild(newBoldElement(docBase.getDocument(), glyph));
             }
@@ -1314,6 +1290,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private String getOtsikko(DokumenttiPeruste docBase, TutkinnonOsaViite viite) {
+        return getOtsikko(docBase, viite, true);
+    }
+
+    private String getOtsikko(DokumenttiPeruste docBase, TutkinnonOsaViite viite, boolean withKoodi) {
         TutkinnonOsa osa = viite.getTutkinnonOsa();
         StringBuilder otsikkoBuilder = new StringBuilder();
         otsikkoBuilder.append(getTextString(docBase, osa.getNimi()));
@@ -1326,13 +1306,15 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli()));
         }
 
-        TutkinnonOsaDto osaDto = mapper.map(osa, TutkinnonOsaDto.class);
-        String koodi = osaDto.getKoodiArvo();
-        if (koodi != null) {
-            otsikkoBuilder
-                    .append(" (")
-                    .append(koodi)
-                    .append(")");
+        if (withKoodi) {
+            TutkinnonOsaDto osaDto = mapper.map(osa, TutkinnonOsaDto.class);
+            String koodi = osaDto.getKoodiArvo();
+            if (koodi != null) {
+                otsikkoBuilder
+                        .append(" (")
+                        .append(koodi)
+                        .append(")");
+            }
         }
 
         return otsikkoBuilder.toString();

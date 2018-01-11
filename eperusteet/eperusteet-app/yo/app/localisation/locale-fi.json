@@ -508,6 +508,7 @@
     "valmaarviointi-uusi-kohde": "Kohde",
     "valmaarviointi-uusi-tavoite-placeholder": "Tavoite",
     "valmaarviointi-uusi-arviointi-placeholder": "Kriteeri",
+    "luonti-koulutuksen-osa": "Koulutuksen osan luonti",
     "muokkaus-koulutuksen-osa": "Koulutuksen osan muokkaus",
     "poista-koulutuksenosa": "Poista koulutuksen osa",
     "laajuus-maarita-alueella": "Määritä koulutuksen laajuus",
@@ -1200,6 +1201,7 @@
     "oppaan-oid-label": "Opastyöryhmä",
     "luonti-opas-nimi-ohje": "Oppaan nimi",
     "luo-opas-nappi": "Luo opas",
+    "laajuuden-maksimi-ei-voi-olla-pienempi-tai-sama-kuin-minimi": "Laajuuden maksimi ei voi olla pienempi tai sama kuin minimi",
 
     "lisaa-taiteenala": "Lisää taiteenala",
     "tpo": "Taiteen perusopetus",
