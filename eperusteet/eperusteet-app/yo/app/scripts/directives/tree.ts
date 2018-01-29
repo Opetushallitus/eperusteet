@@ -378,7 +378,13 @@ angular
 
         $scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
             if (!$scope.vanhempi) {
-                $scope.rakenne = uusiryhma;
+                // FIXME?
+                $scope.rakenne.kuvaus = uusiryhma.kuvaus;
+                $scope.rakenne.muodostumisSaanto = uusiryhma.muodostumisSaanto;
+                $scope.rakenne.nimi = uusiryhma.nimi;
+                $scope.rakenne.osaamisala = uusiryhma.osaamisala;
+                $scope.rakenne.pakollinen = uusiryhma.pakollinen;
+                $scope.rakenne.rooli = uusiryhma.rooli;
             } else {
                 const indeksi = $scope.vanhempi.osat.indexOf(ryhma);
                 if (!uusiryhma) {

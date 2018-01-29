@@ -21,7 +21,10 @@
                 </ul>
                 <ul ng-if="info.validointi" class="list-unstyled">
                     <li ng-repeat="ongelma in info.validointi.ongelmat">
-                        <b>{{ongelma.ryhma.teksti | kaanna}}</b>: {{ongelma.ongelma | kaanna}}
+                        <span ng-show="ongelma.ryhma.teksti">
+                            <b>{{ongelma.ryhma.teksti | kaanna}}</b>:
+                        </span>
+                        {{ongelma.ongelma | kaanna}}
                     </li>
                 </ul>
             </td>
