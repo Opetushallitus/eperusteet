@@ -280,6 +280,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         // Lisätään korvaavat ja korvattavat perusteet
         for (PerusteHakuDto haettu : resultDto) {
+            if (haettu.getKorvattavatDiaarinumerot() == null) {
+                continue;
+            }
             Set<Diaarinumero> korvattavatDiaarinumerot = haettu.getKorvattavatDiaarinumerot().stream()
                     .map(Diaarinumero::new)
                     .collect(Collectors.toSet());
