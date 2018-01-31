@@ -201,6 +201,10 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         Page<PerusteHakuDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
 
+        pquery.setKieli(Collections.singleton("FI"));
+        perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
+        assertEquals(1, perusteet.getTotalElements());
+
         pquery.setKieli(kielet.stream().map(k -> k.toString()).collect(Collectors.toSet()));
         perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
