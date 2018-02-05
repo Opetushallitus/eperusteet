@@ -932,6 +932,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         updateStatus.setVaihtoOk(false);
                     }
                 }
+
+                if (projekti.getPeruste().getDiaarinumero().getDiaarinumero() == "amosaa/yhteiset") {
+                    updateStatus.addStatus("amops-jaettua-pohjaa-ei-voi-julkaista");
+                    updateStatus.setVaihtoOk(false);
+                }
             }
 
             if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {

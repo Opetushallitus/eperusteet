@@ -354,10 +354,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             return getKokoSisalto(loydetyt.get(0).getId());
         } else {
             Optional<Peruste> op = loydetyt.stream()
-                    .filter((p) -> p.getVoimassaoloAlkaa() != null)
-                    .filter((p) -> p.getVoimassaoloAlkaa().before(new Date()))
-                    .sorted(Comparator.comparing(Peruste::getVoimassaoloAlkaa))
-                    .findFirst();
+                    .filter((p) -> p.getVoimassaoloAlkaa() != null && p.getVoimassaoloAlkaa().before(new Date()))
+                    .reduce((current, next) -> next.getVoimassaoloAlkaa().after(current.getVoimassaoloAlkaa()) ? next : current);
 
             if (op.isPresent()) {
                 return getKokoSisalto(op.get().getId());
@@ -557,6 +555,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public boolean isDiaariValid(String diaarinumero) {
         return diaarinumero == null
                 || "".equals(diaarinumero)
+                || "amosaa/yhteiset".equals(diaarinumero)
                 || Pattern.matches("^\\d{1,3}/\\d{3}/\\d{4}$", diaarinumero)
                 || Pattern.matches("^OPH-\\d{1,5}-\\d{4}$", diaarinumero);
     }
@@ -586,7 +585,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setKoulutukset(null);
             current.setMaarayskirje(null);
             current.setMuutosmaaraykset(null);
-
             perusteet.save(current);
         }
         else {
