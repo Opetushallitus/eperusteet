@@ -1,9 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -67,6 +64,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteprojektiDto projekti = ppTestUtils.createPeruste();
         PerusteDto perusteDto = ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("zäääää"));
+            peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         });
         ppTestUtils.julkaise(projekti.getId());
@@ -95,6 +93,11 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertThat(haku.getTotalElements()).isEqualTo(1);
         assertThat(haku.getContent().iterator().next().getId()).isEqualTo(perusteDto2.getId());
+
+        pquery.setNimi("å");
+        haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        assertThat(haku.getTotalElements()).isEqualTo(1);
+        assertThat(haku.getContent().iterator().next().getId()).isEqualTo(perusteDto.getId());
     }
 
     @Test
