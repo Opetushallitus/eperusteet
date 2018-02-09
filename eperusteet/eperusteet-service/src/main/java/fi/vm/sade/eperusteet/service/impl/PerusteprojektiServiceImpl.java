@@ -777,7 +777,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
                     // Rakenteiden validointi
                     if (suoritustapa.getRakenne() != null) {
-                        validointi = PerusteenRakenne.validoiRyhma(peruste.getOsaamisalat(),
+                        validointi = PerusteenRakenne.validoiRyhma(
+                                peruste.getOsaamisalat(),
                                 suoritustapa.getRakenne(),
                                 KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                         if (!validointi.ongelmat.isEmpty()) {

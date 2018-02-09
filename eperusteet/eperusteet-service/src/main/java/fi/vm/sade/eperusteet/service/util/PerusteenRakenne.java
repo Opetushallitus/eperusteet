@@ -68,6 +68,14 @@ public class PerusteenRakenne {
 
         Validointi validointi = new Validointi();
 
+        // Juurisolmulle pitää aina määrittää muodostumissääntö
+        if (syvyys == 0) {
+            MuodostumisSaanto rootms = rakenne.getMuodostumisSaanto();
+            if (rootms == null || rootms.laajuusMinimi() == null) {
+                validointi.ongelmat.add(new Ongelma("tutkinnolle-ei-maaritetty-kokonaislaajuutta", rakenne.getNimi(), 0));
+            }
+        }
+
         BigDecimal laajuusSummaMin = new BigDecimal(0);
         BigDecimal laajuusSummaMax = new BigDecimal(0);
         Integer ryhmienMäärä = 0;
