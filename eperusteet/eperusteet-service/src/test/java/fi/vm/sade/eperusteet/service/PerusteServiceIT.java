@@ -19,6 +19,8 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
@@ -30,12 +32,15 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Assert;
@@ -51,7 +56,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -63,12 +71,16 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
+
     @Autowired
     private PerusteRepository repo;
+
     @Autowired
     private PlatformTransactionManager manager;
+
     @Autowired
     private KoulutusRepository koulutusRepository;
+
     @Autowired
     @LockCtx(TutkinnonRakenneLockContext.class)
     private LockService<TutkinnonRakenneLockContext> lockService;
@@ -76,6 +88,9 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Autowired
     @Dto
     private DtoMapper mapper;
+
+    @Autowired
+    private PerusteprojektiTestUtils ppTestUtils;
 
     private Peruste peruste;
 
@@ -139,7 +154,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void testFindBy() {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setPoistunut(false);
-        Page<PerusteHakuDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
         assertEquals(3, perusteet.getTotalElements());
     }
 
@@ -148,7 +163,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
         pquery.setKoulutuskoodi("koulutuskoodiArvo");
-        Page<PerusteHakuDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
     }
 
@@ -183,6 +198,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         assertTrue(perusteService.isDiaariValid(""));
         assertTrue(perusteService.isDiaariValid(null));
         assertTrue(perusteService.isDiaariValid("234/567/8910"));
+        assertTrue(perusteService.isDiaariValid("amosaa/yhteiset"));
         assertTrue(perusteService.isDiaariValid("OPH-1-1111"));
         assertTrue(perusteService.isDiaariValid("OPH-12-1111"));
         assertTrue(perusteService.isDiaariValid("OPH-123-1111"));

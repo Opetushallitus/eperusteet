@@ -322,7 +322,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
                 pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());
             }
             PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-            Page<PerusteHakuDto> haku = perusteService.findBy(p, pquery);
+            Page<PerusteHakuDto> haku = perusteService.findJulkinenBy(p, pquery);
         }
     }
 

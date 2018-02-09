@@ -22,6 +22,8 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiPeruste;
 import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
+import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.getTextString;
+
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
@@ -350,31 +352,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             // Tutkinnon osa
             RakenneOsa rakenneOsa = (RakenneOsa) osa;
 
-            BigDecimal laajuus = rakenneOsa.getTutkinnonOsaViite().getLaajuus();
-            BigDecimal laajuusMaksimi = rakenneOsa.getTutkinnonOsaViite().getLaajuusMaksimi();
-            LaajuusYksikko laajuusYksikko = rakenneOsa.getTutkinnonOsaViite().getSuoritustapa().getLaajuusYksikko();
-            String laajuusStr = "";
-            String yks = "";
-            if (laajuus != null && laajuus.compareTo(BigDecimal.ZERO) > 0) {
-                laajuusStr = laajuus.stripTrailingZeros().toPlainString();
-                if (laajuusMaksimi != null && laajuusMaksimi.compareTo(BigDecimal.ZERO) > 0) {
-                    laajuusStr += "-" + laajuusMaksimi.stripTrailingZeros().toPlainString();
-                }
-                if (laajuusYksikko == LaajuusYksikko.OSAAMISPISTE) {
-                    yks = messages.translate("docgen.laajuus.osp", docBase.getKieli());
-                } else {
-                    yks = messages.translate("docgen.laajuus.ov", docBase.getKieli());
-                }
-            }
-
-            String nimi = getTextString(docBase, rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getNimi());
+            String nimi = getOtsikko(docBase, rakenneOsa.getTutkinnonOsaViite(), false);
             String kuvaus = getTextString(docBase, rakenneOsa.getKuvaus());
-
-            StringBuilder nimiBuilder = new StringBuilder();
-            nimiBuilder.append(" ").append(nimi);
-            if (!laajuusStr.isEmpty()) {
-                nimiBuilder.append(", ").append(laajuusStr).append(" ").append(yks);
-            }
 
             Element tr = docBase.getDocument().createElement("tr");
             Element td = docBase.getDocument().createElement("td");
@@ -384,14 +363,13 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             tbody.appendChild(tr);
             tr.appendChild(td);
             td.appendChild(p);
-            p.setTextContent(nimiBuilder.toString());
+            p.setTextContent(nimi);
             if (StringUtils.isNotEmpty(kuvaus)) {
                 td.appendChild(newItalicElement(docBase.getDocument(), kuvaus));
             }
 
             if (rakenneOsa.getPakollinen() != null && rakenneOsa.getPakollinen()) {
                 String glyph = messages.translate("docgen.rakenneosa.pakollinen.glyph", docBase.getKieli());
-                nimiBuilder.append(", ");
                 p.appendChild(docBase.getDocument().createTextNode(", "));
                 p.appendChild(newBoldElement(docBase.getDocument(), glyph));
             }
@@ -545,6 +523,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());
                 addArviointi(docBase, osa.getArviointi(), tyyppi);
                 addAmmattitaidonOsoittamistavat(docBase, osa);
+                addVapaatTekstit(docBase, osa);
             } else if (TutkinnonOsaTyyppi.isTutke(tyyppi)) {
                 addTutke2Osat(docBase, osa);
             }
@@ -817,6 +796,14 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         addTeksti(docBase, ammattitaidonOsoittamistavatText, "div");
     }
 
+    private void addVapaatTekstit(DokumenttiPeruste docBase, TutkinnonOsa osa) {
+        List<KevytTekstiKappale> vapaatTekstit = osa.getVapaatTekstit();
+        vapaatTekstit.forEach(vapaaTeksti -> {
+            addTeksti(docBase, getTextString(docBase, vapaaTeksti.getNimi()), "h5");
+            addTeksti(docBase, getTextString(docBase, vapaaTeksti.getTeksti()), "div");
+        });
+    }
+
     private void addArviointi(DokumenttiPeruste docBase, Arviointi arviointi, TutkinnonOsaTyyppi tyyppi) {
         if (arviointi == null) {
             return;
@@ -985,25 +972,30 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                             : "docgen.tutke2.valinnaiset_osaamistavoitteet.title";
                     String otsikko = messages.translate(otsikkoAvain, docBase.getKieli())
                             + getLaajuusSuffiksi(tavoite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli());
-                    addTeksti(docBase, otsikko, "h5");
-
                     String tavoitteet = getTextString(docBase, tavoite.getTavoitteet());
+                    Arviointi arviointi = tavoite.getArviointi();
+                    TekstiPalanen tunnustaminen = tavoite.getTunnustaminen();
+                    List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimukset
+                            = tavoite.getAmmattitaitovaatimuksetLista();
+
+                    if (StringUtils.isNotEmpty(tavoitteet) || tunnustaminen != null) {
+                        addTeksti(docBase, otsikko, "h5");
+                    } else {
+                        continue;
+                    }
+
                     if (StringUtils.isNotEmpty(tavoitteet)) {
                         addTeksti(docBase, tavoitteet, "div");
                     }
 
-                    Arviointi arviointi = tavoite.getArviointi();
                     addArviointi(docBase, arviointi, osa.getTyyppi());
 
-                    TekstiPalanen tunnustaminen = tavoite.getTunnustaminen();
                     if (tunnustaminen != null) {
                         addTeksti(docBase,
                                 messages.translate("docgen.tutke2.tunnustaminen.title", docBase.getKieli()), "h6");
                         addTeksti(docBase, getTextString(docBase, tunnustaminen), "div");
                     }
 
-                    List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimukset
-                            = tavoite.getAmmattitaitovaatimuksetLista();
                     if (!ammattitaitovaatimukset.isEmpty()) {
                         addAmmattitaitovaatimukset(docBase, ammattitaitovaatimukset, null);
                     }
@@ -1298,6 +1290,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private String getOtsikko(DokumenttiPeruste docBase, TutkinnonOsaViite viite) {
+        return getOtsikko(docBase, viite, true);
+    }
+
+    private String getOtsikko(DokumenttiPeruste docBase, TutkinnonOsaViite viite, boolean withKoodi) {
         TutkinnonOsa osa = viite.getTutkinnonOsa();
         StringBuilder otsikkoBuilder = new StringBuilder();
         otsikkoBuilder.append(getTextString(docBase, osa.getNimi()));
@@ -1310,13 +1306,15 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             otsikkoBuilder.append(getLaajuusSuffiksi(viite.getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli()));
         }
 
-        TutkinnonOsaDto osaDto = mapper.map(osa, TutkinnonOsaDto.class);
-        String koodi = osaDto.getKoodiArvo();
-        if (koodi != null) {
-            otsikkoBuilder
-                    .append(" (")
-                    .append(koodi)
-                    .append(")");
+        if (withKoodi) {
+            TutkinnonOsaDto osaDto = mapper.map(osa, TutkinnonOsaDto.class);
+            String koodi = osaDto.getKoodiArvo();
+            if (koodi != null) {
+                otsikkoBuilder
+                        .append(" (")
+                        .append(koodi)
+                        .append(")");
+            }
         }
 
         return otsikkoBuilder.toString();

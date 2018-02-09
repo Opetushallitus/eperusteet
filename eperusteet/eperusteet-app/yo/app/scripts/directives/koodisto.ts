@@ -88,6 +88,7 @@ angular
                         koodiArvo: kd.koodiArvo,
                         koodiUri: kd.koodiUri,
                         koodisto: kd.koodisto,
+                        voimassaAlkuPvm: kd.voimassaAlkuPvm
                     };
                 })
                 .value();

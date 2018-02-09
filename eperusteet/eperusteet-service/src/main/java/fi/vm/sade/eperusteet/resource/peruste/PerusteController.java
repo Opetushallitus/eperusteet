@@ -66,8 +66,6 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public Page<PerusteInfoDto> getAllInfo(PerusteQuery pquery) {
-        // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
-        pquery.setTila(PerusteTila.VALMIS.toString());
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findByInfo(p, pquery);
     }
@@ -125,14 +123,8 @@ public class PerusteController {
             @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä")
     })
     public Page<PerusteHakuDto> getAll(@ApiIgnore PerusteQuery pquery) {
-        // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
-        pquery.setTila(PerusteTila.VALMIS.toString());
-        // Oletuksena älä palauta pohjia
-        if (pquery.getPerusteTyyppi() == null) {
-            pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());
-        }
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-        return service.findBy(p, pquery);
+        return service.findJulkinenBy(p, pquery);
     }
 
     @RequestMapping(value = "/internal", method = GET)

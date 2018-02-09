@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.*;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
@@ -201,7 +202,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> getAll(PageRequest page, String kieli) {
-        return findBy(page, new PerusteQuery());
+        return findByInternal(page, new PerusteQuery());
     }
 
     @Override
@@ -228,9 +229,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return urit.map(perusteByUriFinder).flatMap(Function.identity());
     }
 
-    @Override
     @Transactional(readOnly = true)
-    public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
+    private Page<PerusteHakuDto> findByImpl(PageRequest page, PerusteQuery pquery) {
         Stream<Peruste> koodistostaHaetut = Stream.empty();
 
         // Ladataan koodistosta osaamisala ja tutkintonimikehakua vastaavat koodit
@@ -301,17 +301,32 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return resultDto;
     }
 
+    // Sisäisen haku (palauttaa myös keskeneräisiä)
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> findByInternal(PageRequest page, PerusteQuery pquery) {
         // Voidaan käyttää vain esikatseltaviin perusteprojektien perusteisiin
-        pquery.setEsikatseltavissa(true);
-        return findBy(page, pquery);
+//        pquery.setEsikatseltavissa(true);
+        return findByImpl(page, pquery);
     }
 
+    // Julkinen haku
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PerusteHakuDto> findJulkinenBy(PageRequest page, PerusteQuery pquery) {
+        pquery.setTila(PerusteTila.VALMIS.toString());
+        if (pquery.getPerusteTyyppi() == null) {
+            pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());
+        }
+        return findByImpl(page, pquery);
+    }
+
+    // Julkinen haku kevyemmällä paluuarvolla
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery) {
+        pquery.setTila(PerusteTila.VALMIS.toString());
+
         Page<Peruste> result = perusteet.findBy(page, pquery);
         return new PageDto<>(result, PerusteInfoDto.class, page, mapper);
     }
@@ -347,16 +362,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getAmosaaYhteinenPohja() {
-        List<Peruste> loydetyt = perusteet.findAllByDiaarinumero(new Diaarinumero("amosaa/yhteiset"));
+        List<Peruste> loydetyt = perusteet.findAllAmosaaYhteisetPohjat();
 
         if (loydetyt.size() == 1) {
             return getKokoSisalto(loydetyt.get(0).getId());
         } else {
             Optional<Peruste> op = loydetyt.stream()
-                    .filter((p) -> p.getVoimassaoloAlkaa() != null)
-                    .filter((p) -> p.getVoimassaoloAlkaa().before(new Date()))
-                    .sorted(Comparator.comparing(Peruste::getVoimassaoloAlkaa))
-                    .findFirst();
+                    .filter((p) -> p.getVoimassaoloAlkaa() != null && p.getVoimassaoloAlkaa().before(new Date()))
+                    .reduce((current, next) -> next.getVoimassaoloAlkaa().after(current.getVoimassaoloAlkaa()) ? next : current);
 
             if (op.isPresent()) {
                 return getKokoSisalto(op.get().getId());
@@ -468,7 +481,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
             updateLukioKaikkiRakenne(perusteDto, peruste);
         }
-        perusteDto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
+
+        Revision rev = perusteet.getLatestRevisionId(id);
+        if (rev != null) {
+            perusteDto.setRevision(rev.getNumero());
+        }
+        else {
+            perusteDto.setRevision(0);
+        }
 
         if (perusteDto.getSuoritustavat() != null
                 && !perusteDto.getSuoritustavat().isEmpty()
@@ -556,6 +576,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public boolean isDiaariValid(String diaarinumero) {
         return diaarinumero == null
                 || "".equals(diaarinumero)
+                || "amosaa/yhteiset".equals(diaarinumero)
                 || Pattern.matches("^\\d{1,3}/\\d{3}/\\d{4}$", diaarinumero)
                 || Pattern.matches("^OPH-\\d{1,5}-\\d{4}$", diaarinumero);
     }
@@ -585,7 +606,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setKoulutukset(null);
             current.setMaarayskirje(null);
             current.setMuutosmaaraykset(null);
-
             perusteet.save(current);
         }
         else {
@@ -830,6 +850,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, UpdateDto<RakenneModuuliDto> rakenne) {
         RakenneModuuliDto updated = updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne.getDto());
+        updateAllTutkinnonOsaJarjestys(updated);
         if (rakenne.getMetadata() != null) {
             perusteet.setRevisioKommentti(rakenne.getMetadata().getKommentti());
         }
@@ -865,6 +886,34 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         return mapper.map(moduuli, RakenneModuuliDto.class);
+    }
+
+    private Stream<AbstractRakenneOsaDto> haeUniikitTutkinnonOsaViitteet(AbstractRakenneOsaDto root) {
+        if (root instanceof RakenneModuuliDto) {
+            return Stream.concat(Stream.of(root), ((RakenneModuuliDto) root).getOsat().stream()
+                    .map(this::haeUniikitTutkinnonOsaViitteet)
+                    .flatMap(osa -> osa));
+        } else {
+            return Stream.of(root);
+        }
+    }
+
+    private void updateAllTutkinnonOsaJarjestys(RakenneModuuliDto updated) {
+        // Lista tutkinnon osista tutkinnon muodostumisen mukaan
+        List<TutkinnonOsaViite> viitteet = haeUniikitTutkinnonOsaViitteet(updated)
+                .filter(osa -> osa instanceof RakenneOsaDto)
+                .map(osa -> ((RakenneOsaDto) osa).getTutkinnonOsaViite())
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(osa -> mapper.map(osa, TutkinnonOsaViite.class))
+                .collect(Collectors.toList());
+
+        // Tallennetaan uudet järjestysluvut
+        Integer jnro = 1;
+        for (TutkinnonOsaViite osa : viitteet) {
+            osa.setJarjestys(jnro);
+            jnro++;
+        }
     }
 
     private RakenneModuuli checkIfOsaamisalatAlreadyExists(RakenneModuuli rakenneModuuli) {

@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
  *
  * @author harrik
@@ -33,4 +35,5 @@ public class KoodistoKoodiDto {
     private String versio;
     private KoodistoMetadataDto[] metadata;
     private KoodistoDto koodisto;
+    private Date voimassaAlkuPvm;
 }

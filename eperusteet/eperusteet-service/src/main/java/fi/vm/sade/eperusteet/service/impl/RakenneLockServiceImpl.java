@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.RakenneRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.TutkinnonRakenneLockContext;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -52,7 +53,8 @@ public class RakenneLockServiceImpl extends AbstractLockService<TutkinnonRakenne
     @Override
     protected int latestRevision(TutkinnonRakenneLockContext ctx) {
         final RakenneModuuli rakenne = perusteet.findOne(ctx.getPerusteId()).getSuoritustapa(ctx.getKoodi()).getRakenne();
-        return rakenteet.getLatestRevisionId(rakenne.getId()).getNumero();
+        Revision rev = rakenteet.getLatestRevisionId(rakenne.getId());
+        return rev != null ? rev.getNumero() : 0;
     }
 
     @Override

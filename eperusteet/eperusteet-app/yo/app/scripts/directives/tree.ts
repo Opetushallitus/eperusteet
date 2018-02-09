@@ -219,7 +219,7 @@ angular
 
         this.leafChildren = function() {
             return `
-                <div ng-show="rakenne.rooli !== 'määrittelemätön'" class="collapser" ng-show="!rakenne.$collapsed">
+                <div ng-show="rakenne.rooli !== 'määrittelemätön' && !rakenne.$collapsed" class="collapser">
                   <ul ng-show="rakenne.osat !== undefined" ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat" id="tree-sortable">
                     <li ng-repeat="osa in rakenne.osat track by trackingFunction(osa, $index)" class="tree-list-item">
                       <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" callbacks="callbacks"></tree>
