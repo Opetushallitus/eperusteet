@@ -1,67 +1,43 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.*;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import javax.persistence.EntityManager;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
  *
  * @author isaul
  */
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@DirtiesContext
-@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
 
     @Autowired
-    private PerusteRepository perusteRepository;
-
-    @Autowired
-    private PerusteprojektiService perusteprojektiService;
-
-    @Autowired
-    private PerusteprojektiRepository perusteprojektiRepository;
-
-    @Autowired
     private PerusteRepository repo;
 
     @Autowired
     private PlatformTransactionManager manager;
-
-    @Autowired
-    private EntityManager em;
 
     @Autowired
     private KoulutusRepository koulutusRepository;
@@ -82,13 +58,11 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     }
 
-    private GregorianCalendar gc;
-
     @Before
     public void setUp() {
         TransactionStatus transaction = manager.getTransaction(new DefaultTransactionDefinition());
 
-        gc = new GregorianCalendar(2017, 5, 4);
+        GregorianCalendar gc = new GregorianCalendar(2017, 5, 4);
         nykyinenAika = gc.getTime();
 
         // Tuleva
