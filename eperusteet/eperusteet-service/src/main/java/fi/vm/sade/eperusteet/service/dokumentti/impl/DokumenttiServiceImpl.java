@@ -195,7 +195,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             dto.setValmistumisaika(new Date());
             dokumenttiStateService.save(dto);
 
-            throw new DokumenttiException(ex.getMessage(), ex);
+//            if (ex != null) {
+//                throw new DokumenttiException(ex.getMessage(), ex);
+//            }
         }
     }
 

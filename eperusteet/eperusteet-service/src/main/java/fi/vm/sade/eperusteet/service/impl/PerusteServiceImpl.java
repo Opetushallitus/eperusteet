@@ -202,7 +202,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> getAll(PageRequest page, String kieli) {
-        return findBy(page, new PerusteQuery());
+        return findByInternal(page, new PerusteQuery());
     }
 
     @Override
@@ -229,9 +229,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return urit.map(perusteByUriFinder).flatMap(Function.identity());
     }
 
-    @Override
     @Transactional(readOnly = true)
-    public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
+    private Page<PerusteHakuDto> findByImpl(PageRequest page, PerusteQuery pquery) {
         Stream<Peruste> koodistostaHaetut = Stream.empty();
 
         // Ladataan koodistosta osaamisala ja tutkintonimikehakua vastaavat koodit
@@ -302,17 +301,32 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return resultDto;
     }
 
+    // Sisäisen haku (palauttaa myös keskeneräisiä)
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> findByInternal(PageRequest page, PerusteQuery pquery) {
         // Voidaan käyttää vain esikatseltaviin perusteprojektien perusteisiin
-        pquery.setEsikatseltavissa(true);
-        return findBy(page, pquery);
+//        pquery.setEsikatseltavissa(true);
+        return findByImpl(page, pquery);
     }
 
+    // Julkinen haku
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PerusteHakuDto> findJulkinenBy(PageRequest page, PerusteQuery pquery) {
+        pquery.setTila(PerusteTila.VALMIS.toString());
+        if (pquery.getPerusteTyyppi() == null) {
+            pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());
+        }
+        return findByImpl(page, pquery);
+    }
+
+    // Julkinen haku kevyemmällä paluuarvolla
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery) {
+        pquery.setTila(PerusteTila.VALMIS.toString());
+
         Page<Peruste> result = perusteet.findBy(page, pquery);
         return new PageDto<>(result, PerusteInfoDto.class, page, mapper);
     }
@@ -348,7 +362,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getAmosaaYhteinenPohja() {
-        List<Peruste> loydetyt = perusteet.findAllByDiaarinumero(new Diaarinumero("amosaa/yhteiset"));
+        List<Peruste> loydetyt = perusteet.findAllAmosaaYhteisetPohjat();
 
         if (loydetyt.size() == 1) {
             return getKokoSisalto(loydetyt.get(0).getId());
@@ -467,7 +481,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
             updateLukioKaikkiRakenne(perusteDto, peruste);
         }
-        perusteDto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
+
+        Revision rev = perusteet.getLatestRevisionId(id);
+        if (rev != null) {
+            perusteDto.setRevision(rev.getNumero());
+        }
+        else {
+            perusteDto.setRevision(0);
+        }
 
         if (perusteDto.getSuoritustavat() != null
                 && !perusteDto.getSuoritustavat().isEmpty()

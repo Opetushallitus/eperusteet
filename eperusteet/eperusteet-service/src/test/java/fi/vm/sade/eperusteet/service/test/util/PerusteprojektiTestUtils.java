@@ -28,6 +28,10 @@ public class PerusteprojektiTestUtils {
     @Autowired
     private PerusteService perusteService;
 
+    public PerusteprojektiDto createPeruste() {
+        return createPeruste((PerusteprojektiLuontiDto pp) -> {});
+    }
+
     public PerusteprojektiDto createPeruste(Consumer<PerusteprojektiLuontiDto> withPerusteprojekti) {
         PerusteprojektiLuontiDto result = new PerusteprojektiLuontiDto();
         result.setNimi(TestUtils.uniikkiString());
@@ -42,6 +46,10 @@ public class PerusteprojektiTestUtils {
         return pp;
     }
 
+    public PerusteDto editPeruste(Long perusteId) {
+        return editPeruste(perusteId, (p) -> {});
+    }
+
     public PerusteDto editPeruste(Long perusteId, Consumer<PerusteDto> perusteFn) {
         HashSet<Kieli> kielet = new HashSet<>();
         kielet.add(Kieli.FI);
@@ -51,8 +59,9 @@ public class PerusteprojektiTestUtils {
         p.setVoimassaoloAlkaa((new GregorianCalendar(2017, 5, 4)).getTime());
         p.setNimi(TestUtils.lt("x"));
         p.getNimi().getTekstit().put(Kieli.FI, "ap_fi");
+        p.getNimi().getTekstit().put(Kieli.SV, "ap_sv");
         p.setKielet(kielet);
-        p.setDiaarinumero("OPH-12345-1234");
+        p.setDiaarinumero("OPH-" + Long.toString(TestUtils.uniikkiId()) + "-1234");
         perusteFn.accept(p);
         return perusteService.update(p.getId(), p);
     }
