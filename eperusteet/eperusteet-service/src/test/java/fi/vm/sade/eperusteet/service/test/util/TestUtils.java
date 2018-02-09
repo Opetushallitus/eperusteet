@@ -42,11 +42,7 @@ import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertTrue;
 
@@ -157,7 +153,7 @@ public abstract class TestUtils {
         return pov;
     }
 
-    static Long uniikki = (long) 0;
+    static private Long uniikki = (long) 0;
 
     static public String uniikkiString() {
         return "uniikki" + (++uniikki).toString();
