@@ -159,6 +159,10 @@ public abstract class TestUtils {
         return "uniikki" + (++uniikki).toString();
     }
 
+    static public String uniikkiString(String prefix) {
+        return prefix + (++uniikki).toString();
+    }
+
     static public Long uniikkiId() {
         return ++uniikki;
     }
