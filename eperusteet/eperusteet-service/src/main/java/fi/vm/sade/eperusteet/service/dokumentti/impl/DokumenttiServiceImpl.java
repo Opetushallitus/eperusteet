@@ -109,7 +109,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     private Resource fopConfig;
 
     // FIXME: Tämä service pitää mockata
-    @Value("${spring.profiles.active}")
+    @Value("${spring.profiles.active:normal}")
     private String activeProfile;
 
     @Override

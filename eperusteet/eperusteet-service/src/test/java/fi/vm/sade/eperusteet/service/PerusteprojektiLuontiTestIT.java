@@ -16,6 +16,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
+import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,7 +61,41 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Autowired
     private PerusteprojektiTestUtils ppTestUtils;
 
-    private Peruste peruste;
+    @Test
+    @Rollback
+    public void testPerusteprojektiHakuNimella() {
+        PerusteprojektiDto projekti = ppTestUtils.createPeruste();
+        PerusteDto perusteDto = ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setNimi(TestUtils.lt("zäääää"));
+            peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
+        });
+        ppTestUtils.julkaise(projekti.getId());
+
+        PerusteprojektiDto projekti2 = ppTestUtils.createPeruste();
+        PerusteDto perusteDto2 = ppTestUtils.editPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setNimi(TestUtils.lt("xäöäöäöä"));
+            peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
+        });
+        ppTestUtils.julkaise(projekti2.getId());
+
+        PerusteQuery pquery = new PerusteQuery();
+        Page<PerusteHakuDto> haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        assertThat(haku.getTotalElements()).isEqualTo(2);
+
+        pquery.setNimi("x");
+        haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        assertThat(haku.getTotalElements()).isEqualTo(1);
+
+        pquery.setNimi("äää");
+        haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        assertThat(haku.getTotalElements()).isEqualTo(1);
+        assertThat(haku.getContent().iterator().next().getId()).isEqualTo(perusteDto.getId());
+
+        pquery.setNimi("ö");
+        haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        assertThat(haku.getTotalElements()).isEqualTo(1);
+        assertThat(haku.getContent().iterator().next().getId()).isEqualTo(perusteDto2.getId());
+    }
 
     @Test
     @Rollback

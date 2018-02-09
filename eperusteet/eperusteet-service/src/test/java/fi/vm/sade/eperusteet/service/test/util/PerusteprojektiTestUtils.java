@@ -71,4 +71,14 @@ public class PerusteprojektiTestUtils {
         TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, tila, siirtyma);
         assertThat(status.isVaihtoOk()).isTrue();
     }
+
+    public void julkaise(Long projektiId) {
+        Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, siirtyma);
+        assertThat(status.isVaihtoOk()).isTrue();
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, siirtyma);
+        assertThat(status.isVaihtoOk()).isTrue();
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, siirtyma);
+        assertThat(status.isVaihtoOk()).isTrue();
+    }
 }
