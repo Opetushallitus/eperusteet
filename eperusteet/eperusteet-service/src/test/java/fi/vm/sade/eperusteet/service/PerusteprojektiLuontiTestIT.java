@@ -159,6 +159,14 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         assertThat(amosaaYhteinen)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("id", perusteDto2.getId());
+
+        // Kaikki tulevat sisäiseen hakuun
+        pquery = new PerusteQuery();
+        perusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
+        assertThat(perusteet.getTotalElements())
+                .isEqualTo(2);
+        assertThat(perusteet.getContent().stream().map(PerusteHakuDto::getId))
+                .contains(perusteDto.getId(), perusteDto2.getId());
     }
 
 }
