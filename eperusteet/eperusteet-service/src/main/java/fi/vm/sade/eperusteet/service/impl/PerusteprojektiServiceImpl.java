@@ -775,32 +775,34 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                 // Rakenteiden validointi
                 for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
-                    // Rakenteiden validointi
-                    if (suoritustapa.getRakenne() != null) {
-                        validointi = PerusteenRakenne.validoiRyhma(
-                                peruste.getOsaamisalat(),
-                                suoritustapa.getRakenne(),
-                                KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
-                        if (!validointi.ongelmat.isEmpty()) {
-                            updateStatus.addStatus("rakenteen-validointi-virhe",
-                                    suoritustapa.getSuoritustapakoodi(),
-                                    validointi);
-                            updateStatus.setVaihtoOk(false);
-                        }
-                    }
-
-                    // Vapaiden tutkinnon osien tarkistus
-                    List<TutkinnonOsaViite> vapaatOsat = vapaatTutkinnonosat(suoritustapa);
-                    if (!vapaatOsat.isEmpty()) {
-                        List<LokalisoituTekstiDto> nimet = new ArrayList<>();
-                        for (TutkinnonOsaViite viite : vapaatOsat) {
-                            if (viite.getTutkinnonOsa().getNimi() != null) {
-                                nimet.add(new LokalisoituTekstiDto(viite.getTutkinnonOsa().getNimi().getId(),
-                                        viite.getTutkinnonOsa().getNimi().getTeksti()));
+                    // Amosaa jaetun rakennetta ei tarkisteta
+                    if (PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
+                        if (suoritustapa.getRakenne() != null && PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
+                            validointi = PerusteenRakenne.validoiRyhma(
+                                    peruste.getOsaamisalat(),
+                                    suoritustapa.getRakenne(),
+                                    KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
+                            if (!validointi.ongelmat.isEmpty()) {
+                                updateStatus.addStatus("rakenteen-validointi-virhe",
+                                        suoritustapa.getSuoritustapakoodi(),
+                                        validointi);
+                                updateStatus.setVaihtoOk(false);
                             }
                         }
-                        updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
-                        updateStatus.setVaihtoOk(false);
+
+                        // Vapaiden tutkinnon osien tarkistus
+                        List<TutkinnonOsaViite> vapaatOsat = vapaatTutkinnonosat(suoritustapa);
+                        if (!vapaatOsat.isEmpty()) {
+                            List<LokalisoituTekstiDto> nimet = new ArrayList<>();
+                            for (TutkinnonOsaViite viite : vapaatOsat) {
+                                if (viite.getTutkinnonOsa().getNimi() != null) {
+                                    nimet.add(new LokalisoituTekstiDto(viite.getTutkinnonOsa().getNimi().getId(),
+                                            viite.getTutkinnonOsa().getNimi().getTeksti()));
+                                }
+                            }
+                            updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
+                            updateStatus.setVaihtoOk(false);
+                        }
                     }
 
                     // Tarkistetaan koodittomat tutkinnon osat

@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -24,6 +25,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,6 +39,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
+
+    @Autowired
+    private PerusteprojektiService perusteprojektiService;
 
     @Autowired
     private PerusteRepository repo;
@@ -57,6 +62,26 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiTestUtils ppTestUtils;
+
+    @Test
+    @Rollback
+    public void testPerusteprojektiaEiVoiJulkaistaIlmanDiaaria() {
+        PerusteprojektiDto projekti = ppTestUtils.createPeruste();
+        ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setNimi(TestUtils.lt("zäääää"));
+            peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
+            peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
+            peruste.setDiaarinumero(null);
+        });
+        Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, siirtyma);
+        assertThat(status.isVaihtoOk()).isTrue();
+        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VALMIS, siirtyma);
+        assertThat(status.isVaihtoOk()).isTrue();
+        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, siirtyma);
+        assertThat(status.isVaihtoOk()).isFalse();
+        assertThat(status.getInfot().get(0)).hasFieldOrPropertyWithValue("viesti", "peruste-ei-diaarinumeroa");
+    }
 
     @Test
     @Rollback
@@ -117,7 +142,6 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
     }
-
 
     @Test
     @Rollback

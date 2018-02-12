@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -27,25 +29,36 @@ import java.util.stream.Stream;
  */
 public interface KoodistoClient {
 
+    @PreAuthorize("permitAll()")
     List<KoodistoKoodiDto> getAll(String koodisto);
 
+    @PreAuthorize("permitAll()")
     KoodistoKoodiDto get(String koodistoUri, String koodiUri);
 
+    @PreAuthorize("permitAll()")
     KoodistoKoodiDto get(String koodistoUri, String koodiUri, Long versio);
 
+    @PreAuthorize("permitAll()")
     Stream<KoodistoKoodiDto> filterBy(String koodisto, String haku);
 
+    @PreAuthorize("permitAll()")
     List<KoodistoKoodiDto> getAlarelaatio(String koodi);
 
+    @PreAuthorize("permitAll()")
     List<KoodistoKoodiDto> getYlarelaatio(String koodi);
 
+    @PreAuthorize("permitAll()")
     KoodistoKoodiLaajaDto getAllByVersio(String koodi, String versio);
 
+    @PreAuthorize("permitAll()")
     KoodistoKoodiDto getLatest(String koodi);
 
+    @PreAuthorize("permitAll()")
     KoodiDto getKoodi(String koodisto, String koodiUri);
 
+    @PreAuthorize("permitAll()")
     KoodiDto getKoodi(String koodisto, String koodiUri, Long versio);
 
+    @PreAuthorize("permitAll()")
     void addNimiAndUri(KoodiDto koodi);
 }

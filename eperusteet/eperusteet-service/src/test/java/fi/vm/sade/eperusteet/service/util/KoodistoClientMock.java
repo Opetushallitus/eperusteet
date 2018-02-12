@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Profile("test")
-public class KoodistoServiceMock implements KoodistoClient {
+public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public KoodistoKoodiDto get(String koodisto, String koodi) {
