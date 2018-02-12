@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service;
 
 import com.google.common.base.Function;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
@@ -27,6 +28,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 
 import java.util.*;
@@ -69,6 +71,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiService service;
+
+    @Autowired
+    private PerusteprojektiTestUtils ppTestUtils;
 
     @Autowired
     @Dto
@@ -527,6 +532,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         pp.getPeruste().setKielet(kielet);
         pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
 
+        ppTestUtils.asetaMuodostumiset(pp.getPeruste().getId());
+
         repository.save(pp);
         em.persist(pp);
 
@@ -554,6 +561,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
             pp.getPeruste().setKielet(Stream.of(Kieli.FI).collect(Collectors.toSet()));
             pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
             pp.getPeruste().setVoimassaoloLoppuu(new Date(now + 100000));
+            pp.getPeruste().getSuoritustavat().stream().forEach(st -> {
+                st.getRakenne().setMuodostumisSaanto(new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE), null));
+            });
             return pp;
         };
 

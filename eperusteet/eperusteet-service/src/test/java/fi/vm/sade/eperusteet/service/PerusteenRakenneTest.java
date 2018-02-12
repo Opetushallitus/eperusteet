@@ -123,7 +123,7 @@ public class PerusteenRakenneTest {
         );
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
-        assertTrue(validoitu.ongelmat.size() == 1);
+        assertTrue(validoitu.ongelmat.size() == 2);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class PerusteenRakenneTest {
             )
         );
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
-        assertTrue(validoitu.ongelmat.size() == 2);
+        assertTrue(validoitu.ongelmat.size() == 3);
     }
 
     @Test
@@ -223,6 +223,6 @@ public class PerusteenRakenneTest {
         );
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
-        assertTrue(validoitu.ongelmat.size() == 1);
+        assertTrue(validoitu.ongelmat.size() == 2);
     }
 }

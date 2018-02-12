@@ -1,10 +1,12 @@
 package fi.vm.sade.eperusteet.service.test.util;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class PerusteprojektiTestUtils {
 
     @Autowired
     private PerusteService perusteService;
+
+    @Autowired
+    private PerusteRepository perusteRepository;
 
     public PerusteprojektiDto createPeruste() {
         return createPeruste((PerusteprojektiLuontiDto pp) -> {});
@@ -80,5 +85,12 @@ public class PerusteprojektiTestUtils {
         assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, siirtyma);
         assertThat(status.isVaihtoOk()).isTrue();
+    }
+
+    public void asetaMuodostumiset(Long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        peruste.getSuoritustavat().stream().forEach(st -> {
+            st.getRakenne().setMuodostumisSaanto(new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE), null));
+        });
     }
 }
