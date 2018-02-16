@@ -850,7 +850,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, UpdateDto<RakenneModuuliDto> rakenne) {
         RakenneModuuliDto updated = updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne.getDto());
-        updateAllTutkinnonOsaJarjestys(updated);
         if (rakenne.getMetadata() != null) {
             perusteet.setRevisioKommentti(rakenne.getMetadata().getKommentti());
         }
@@ -885,9 +884,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
         }
 
-        return mapper.map(moduuli, RakenneModuuliDto.class);
-    }
+        RakenneModuuliDto updated = mapper.map(moduuli, RakenneModuuliDto.class);
+        updateAllTutkinnonOsaJarjestys(updated);
 
+        return updated;
+    }
+    
     private Stream<AbstractRakenneOsaDto> haeUniikitTutkinnonOsaViitteet(AbstractRakenneOsaDto root) {
         if (root instanceof RakenneModuuliDto) {
             return Stream.concat(Stream.of(root), ((RakenneModuuliDto) root).getOsat().stream()
@@ -898,9 +900,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
-    private void updateAllTutkinnonOsaJarjestys(RakenneModuuliDto updated) {
+    @Transactional
+    public void updateAllTutkinnonOsaJarjestys(RakenneModuuliDto rakenne) {
         // Lista tutkinnon osista tutkinnon muodostumisen mukaan
-        List<TutkinnonOsaViite> viitteet = haeUniikitTutkinnonOsaViitteet(updated)
+        List<TutkinnonOsaViite> viitteet = haeUniikitTutkinnonOsaViitteet(rakenne)
                 .filter(osa -> osa instanceof RakenneOsaDto)
                 .map(osa -> ((RakenneOsaDto) osa).getTutkinnonOsaViite())
                 .filter(Objects::nonNull)
