@@ -174,13 +174,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteprojektiKevytDto> findBy(PageRequest page, PerusteprojektiQueryDto query) {
-        if (query.getNimi() != null) {
-            String hex = query.getNimi().chars().boxed()
-                    .reduce("",
-                            (i, ch) -> String.format("%04x", (int)ch),
-                            (acc, next) -> acc + " " + next);
-            LOG.error("uriEncodingProblem: " + query.getNimi() + " |" + hex + "|");
-        }
         Page<PerusteprojektiKevytDto> result = repository.findBy(page, query).map(pp -> {
             PerusteprojektiKevytDto ppk = mapper.map(pp, PerusteprojektiKevytDto.class);
             Peruste peruste = pp.getPeruste();
