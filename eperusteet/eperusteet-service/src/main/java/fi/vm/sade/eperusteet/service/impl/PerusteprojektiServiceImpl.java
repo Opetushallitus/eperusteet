@@ -925,7 +925,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
             if (tila == ProjektiTila.JULKAISTU) {
                 if (!projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
-                    if (projekti.getPeruste().getDiaarinumero() == null) {
+                    Diaarinumero diaarinumero = projekti.getPeruste().getDiaarinumero();
+                    if (diaarinumero == null) {
                         updateStatus.addStatus("peruste-ei-diaarinumeroa");
                         updateStatus.setVaihtoOk(false);
                     }
@@ -934,12 +935,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
                         updateStatus.setVaihtoOk(false);
                     }
-                }
-
-                Diaarinumero diaarinumero = projekti.getPeruste().getDiaarinumero();
-                if (diaarinumero != null && diaarinumero.getDiaarinumero() == "amosaa/yhteiset") {
-                    updateStatus.addStatus("amops-jaettua-pohjaa-ei-voi-julkaista");
-                    updateStatus.setVaihtoOk(false);
                 }
             }
 
