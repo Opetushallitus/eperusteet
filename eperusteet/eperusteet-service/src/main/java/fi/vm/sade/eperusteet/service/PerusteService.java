@@ -129,6 +129,8 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     RakenneModuuliDto updateTutkinnonRakenne(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
 
+    void updateAllTutkinnonOsaJarjestys(RakenneModuuliDto rakenne);
+
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     RakenneModuuliDto revertRakenneVersio(@P("perusteId") Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId);
 

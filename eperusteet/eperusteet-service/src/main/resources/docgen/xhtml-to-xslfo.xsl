@@ -608,7 +608,7 @@
                 </fo:block>
             </fo:list-item-label>
             <fo:list-item-body start-indent="body-start()"> 
-                <fo:block>
+                <fo:block font-size="10pt">
                     <xsl:apply-templates select="*|text()"/>
                 </fo:block>
             </fo:list-item-body>

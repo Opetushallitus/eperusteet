@@ -42,6 +42,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
@@ -297,7 +298,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
 
         KoulutusTyyppi koulutustyyppi = KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi());
-        if (!koulutustyyppi.isAmmatillinen()) {
+        if (koulutustyyppi != null && !koulutustyyppi.isAmmatillinen()) {
             perusteprojektiDto.setReforminMukainen(false);
         }
 
@@ -511,8 +512,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Transactional(readOnly = true)
-    private void tarkistaPerusopetuksenOppiaine(Oppiaine oa, TilaUpdateStatus status,
-                                final Set<Kieli> vaaditutKielet, Map<String, String> virheellisetKielet) {
+    private void tarkistaPerusopetuksenOppiaine(
+            Oppiaine oa,
+            final Set<Kieli> vaaditutKielet,
+            Map<String, String> virheellisetKielet
+    ) {
         tarkistaTekstipalanen("peruste-validointi-oppiaine-nimi", oa.getNimi(), vaaditutKielet, virheellisetKielet);
 
         if (oa.getTehtava() != null) {
@@ -578,7 +582,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (oa.getOppimaarat() != null) {
             for (Oppiaine oppimaara : oa.getOppimaarat()) {
-                tarkistaPerusopetuksenOppiaine(oppimaara, status, vaaditutKielet, virheellisetKielet);
+                tarkistaPerusopetuksenOppiaine(oppimaara, vaaditutKielet, virheellisetKielet);
             }
         }
     }
@@ -659,7 +663,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         for (Oppiaine oa : oppiaineet) {
-            tarkistaPerusopetuksenOppiaine(oa, status, vaaditutKielet, virheellisetKielet);
+            tarkistaPerusopetuksenOppiaine(oa, vaaditutKielet, virheellisetKielet);
         }
 
         for (Entry<String, String> entry : virheellisetKielet.entrySet()) {
@@ -868,11 +872,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                             uniikitKoodit.add(uri);
                         }
 
-                        if (arvo != null && uri != null && uri.isEmpty()) {
-                            uri = "tutkinnonosa_" + arvo;
-                            tosa.setKoodiUri(uri);
-                        }
-
                         if (tosa.getNimi() != null
                                 && (uri != null && !uri.isEmpty()
                                 && arvo != null && !arvo.isEmpty())) {
@@ -918,6 +917,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.addStatus("tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta");
                     updateStatus.setVaihtoOk(false);
                 }
+
+                // Järjestetään tutkinnon osat muodostumisen mukaan
+                peruste.getSuoritustavat().forEach(suoritustapa -> {
+                    RakenneModuuli rakenne = suoritustapa.getRakenne();
+                    RakenneModuuliDto dto = mapper.map(rakenne, RakenneModuuliDto.class);
+                    perusteService.updateAllTutkinnonOsaJarjestys(dto);
+                });
             }
 
             if (tila == ProjektiTila.JULKAISTU || tila == ProjektiTila.VALMIS) {
@@ -1045,14 +1051,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 .addErrorStatusForAll("peruste-lukio-sama-koodi", () -> {
                     List<LokalisoituTekstiDto> duplikaatit = new ArrayList<>();
                     rakenne.koodilliset()
-                        .filter(emptyString(Koodillinen::getKoodiArvo).negate())
-                        .collect(toMap(Koodillinen::getKoodiArvo, k -> k, (a, b) -> {
-                            duplikaatit.add(localized(a.getNimi())
-                                .concat(" - ")
-                                .concat(localized(b.getNimi()))
-                                .concat(" ("+a.getKoodiArvo()+")"));
-                            return a;
-                        }));
+                            .filter(emptyString(Koodillinen::getKoodiArvo).negate())
+                            .collect(toMap(Koodillinen::getKoodiArvo, k -> k, (a, b) -> {
+                                duplikaatit.add(localized(a.getNimi())
+                                        .concat(" - ")
+                                        .concat(localized(b.getNimi()))
+                                        .concat(" (" + a.getKoodiArvo() + ")"));
+                                return a;
+                            }));
                     return duplikaatit.stream();
                 });
     }
@@ -1106,7 +1112,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     .map(TutkinnonOsaViite::getSuoritustapa)
                     .filter(Objects::nonNull)
                     .map(Suoritustapa::getPerusteet)
-                    .flatMap(x -> x.stream())
+                    .flatMap(Collection::stream)
                     .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
                     .distinct()
                     .collect(Collectors.toSet());
@@ -1123,7 +1129,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     .map(PerusteenOsaViite::getSuoritustapa)
                     .filter(Objects::nonNull)
                     .map(Suoritustapa::getPerusteet)
-                    .flatMap(x -> x.stream())
+                    .flatMap(Collection::stream)
                     .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
                     .distinct()
                     .collect(Collectors.toSet());
@@ -1188,7 +1194,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (!PerusteTila.VALMIS.equals(tila) && PerusteTila.VALMIS.equals(osa.getTutkinnonOsa().getTila())) {
                 Set<Peruste> perusteetJoissaTosa = tutkinnonOsaViiteRepository.findAllByTutkinnonOsa(osa.getTutkinnonOsa()).stream()
                         .map(tosa -> tosa.getSuoritustapa().getPerusteet())
-                        .flatMap(x -> x.stream())
+                        .flatMap(Collection::stream)
                         .filter(p -> PerusteTila.VALMIS.equals(p.getTila()))
                         .collect(Collectors.toSet());
                 if (perusteetJoissaTosa.size() != 1 || !perusteetJoissaTosa.contains(peruste)) {
