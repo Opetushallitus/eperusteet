@@ -91,7 +91,12 @@ angular
                 $state.go("root.perusteprojekti.suoritustapa." + tyyppi, {}, { reload: true });
             }
 
-            var successCb = _.partial(commonCb, YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].sisaltoTunniste);
+            let successCb;
+            if (peruste && peruste.tyyppi === "opas") {
+                successCb = _.partial(commonCb, "opassisalto");
+            } else {
+                successCb = _.partial(commonCb, YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].sisaltoTunniste);
+            }
             if (YleinenData.isPerusopetus(peruste)) {
                 PerusopetusService.deleteOsa({ $url: "dummy", id: viiteId }, successCb, Notifikaatiot.serverCb);
             } else if (YleinenData.isLukiokoulutus(peruste)) {
