@@ -13,7 +13,7 @@ import "angular-translate-loader-static-files";
 import "angular-ui-sortable";
 import "angular-ui-tree";
 import "angular-elastic";
-import "angular-ui-select/select.js";
+import "ui-select";
 import "angular-ui-bootstrap";
 import "angular-loading-bar";
 import "restangular";
