@@ -744,7 +744,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         RakenneModuuli rakenne = rakenneRepository.findOne(rakenneId);
         RakenneModuuliDto rakenneModuuliDto = mapper.map(rakenne, RakenneModuuliDto.class);
-        rakenneModuuliDto.setVersioId(rev.getNumero());
+        if (rev != null) {
+            rakenneModuuliDto.setVersioId(rev.getNumero());
+        }
+        else {
+            rakenneModuuliDto.setVersioId(0);
+        }
         return rakenneModuuliDto;
     }
 
@@ -885,7 +890,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         RakenneModuuliDto updated = mapper.map(moduuli, RakenneModuuliDto.class);
-        updateAllTutkinnonOsaJarjestys(updated);
+        updateAllTutkinnonOsaJarjestys(perusteId, updated);
 
         return updated;
     }
@@ -901,7 +906,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Transactional
-    public void updateAllTutkinnonOsaJarjestys(RakenneModuuliDto rakenne) {
+    public void updateAllTutkinnonOsaJarjestys(Long perusteId, RakenneModuuliDto rakenne) {
         // Lista tutkinnon osista tutkinnon muodostumisen mukaan
         List<TutkinnonOsaViite> viitteet = haeUniikitTutkinnonOsaViitteet(rakenne)
                 .filter(osa -> osa instanceof RakenneOsaDto)
