@@ -1,11 +1,16 @@
 package fi.vm.sade.eperusteet.service.test.util;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -13,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -69,6 +75,39 @@ public class PerusteprojektiTestUtils {
         p.setDiaarinumero("OPH-" + Long.toString(TestUtils.uniikkiId()) + "-1234");
         perusteFn.accept(p);
         return perusteService.update(p.getId(), p);
+    }
+
+    public KoodiDto createKoodiDto(String arvo) {
+        return createKoodiDto(arvo, "tutkinnonosat");
+    }
+
+    public KoodiDto createKoodiDto(String arvo, String koodisto) {
+        KoodiDto result = new KoodiDto();
+        result.setArvo(arvo);
+        result.setKoodisto(koodisto);
+        result.setUri(koodisto + "_" + arvo);
+        return result;
+    }
+
+    public TutkinnonOsaViiteDto addTutkinnonOsa(Long perusteId) {
+        return addTutkinnonOsa(perusteId, (t) -> {});
+    }
+
+    public TutkinnonOsaViiteDto addTutkinnonOsa(Long perusteId, Consumer<TutkinnonOsaViiteDto> tosaFn) {
+        HashSet<Kieli> kielet = new HashSet<>();
+        kielet.add(Kieli.FI);
+
+        TutkinnonOsaDto tosa = new TutkinnonOsaDto();
+        tosa.setKoodi(createKoodiDto("200530"));
+        tosa.setNimi(TestUtils.lt("x"));
+        tosa.getNimi().getTekstit().put(Kieli.FI, "ap_fi");
+        tosa.getNimi().getTekstit().put(Kieli.SV, "ap_sv");
+        TutkinnonOsaViiteDto result = new TutkinnonOsaViiteDto();
+        result.setTutkinnonOsaDto(tosa);
+        result.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
+        result.setLaajuus(new BigDecimal(5L));
+        tosaFn.accept(result);
+        return perusteService.addTutkinnonOsa(perusteId, Suoritustapakoodi.REFORMI, result);
     }
 
     public void asetaTila(Long projektiId, ProjektiTila tila) {

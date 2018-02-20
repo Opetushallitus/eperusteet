@@ -8,6 +8,9 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -71,7 +74,6 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
             peruste.setNimi(TestUtils.lt("zäääää"));
             peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
-            peruste.setDiaarinumero(null);
         });
         Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
         TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, siirtyma);
@@ -79,8 +81,38 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VALMIS, siirtyma);
         assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, siirtyma);
-        assertThat(status.isVaihtoOk()).isFalse();
-        assertThat(status.getInfot().get(0)).hasFieldOrPropertyWithValue("viesti", "peruste-ei-diaarinumeroa");
+        assertThat(status.isVaihtoOk()).isTrue();
+
+    }
+
+    @Test
+    @Rollback
+    public void testReforminmukaistaPerusteprojektiaEiVoiJulkaistaTutkinnonOsienTekstisisalloilla() {
+        PerusteprojektiDto projekti = ppTestUtils.createPeruste(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setReforminMukainen(true);
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
+        });
+        PerusteDto perusteDto = ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setNimi(TestUtils.lt("zäääää"));
+            peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
+            peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
+        });
+        TutkinnonOsaViiteDto tovDto = ppTestUtils.addTutkinnonOsa(perusteDto.getId());
+        RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, 0);
+        assertThat(rakenne.getOsat()).hasSize(0);
+        rakenne.getOsat().add(RakenneOsaDto.of(tovDto));
+        lockService.lock(TutkinnonRakenneLockContext.of(perusteDto.getId(), Suoritustapakoodi.REFORMI));
+        rakenne = perusteService.updateTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, rakenne);
+        assertThat(rakenne.getOsat()).hasSize(1);
+
+        // Julkaisu
+        Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
+//        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, siirtyma);
+//        assertThat(status.isVaihtoOk()).isTrue();
+//        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VALMIS, siirtyma);
+//        assertThat(status.isVaihtoOk()).isTrue();
+//        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, siirtyma);
+//        assertThat(status.isVaihtoOk()).isTrue();
     }
 
     @Test

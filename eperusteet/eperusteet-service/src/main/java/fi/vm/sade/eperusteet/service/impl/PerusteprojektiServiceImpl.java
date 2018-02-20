@@ -915,7 +915,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 peruste.getSuoritustavat().forEach(suoritustapa -> {
                     RakenneModuuli rakenne = suoritustapa.getRakenne();
                     RakenneModuuliDto dto = mapper.map(rakenne, RakenneModuuliDto.class);
-                    perusteService.updateAllTutkinnonOsaJarjestys(dto);
+                    perusteService.updateAllTutkinnonOsaJarjestys(peruste.getId(), dto);
                 });
             }
 
