@@ -199,9 +199,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             dto.setValmistumisaika(new Date());
             dokumenttiStateService.save(dto);
 
-            if (activeProfile != "test") {
-                throw new DokumenttiException(ex.getMessage(), ex);
-            }
+            throw new DokumenttiException(ex.getMessage(), ex);
         }
     }
 
