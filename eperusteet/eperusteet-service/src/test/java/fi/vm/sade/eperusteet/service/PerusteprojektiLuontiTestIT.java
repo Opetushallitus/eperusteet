@@ -117,6 +117,66 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Test
     @Rollback
+    public void testDiaarinumerollaHaku() {
+        PerusteprojektiDto projekti = ppTestUtils.createPeruste();
+        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setDiaarinumero("OPH-12345-1234");
+            peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
+        });
+
+        // Julkaisematon ei näy
+        assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
+                .isNull();
+
+        // Julkaistu ei näy koska voimassaolo ei ole vielä alkanut
+        ppTestUtils.julkaise(projekti.getId());
+        assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
+                .hasFieldOrPropertyWithValue("id", perusteDto.getId());
+
+        // Julkaistu ja voimassaoleva näkyy
+        perusteDto = ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 3, Calendar.MARCH, 12).getTime());
+        });
+        assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
+                .hasFieldOrPropertyWithValue("id", perusteDto.getId());
+
+        // Julkaistu näkyy vaikka voimassaolo olisi päättynyt
+        perusteDto = ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
+        });
+        assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
+                .hasFieldOrPropertyWithValue("id", perusteDto.getId());
+
+        // Julkaistu näkyy vaikka siirtymäaika olisi päättynyt
+        perusteDto = ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setSiirtymaPaattyy(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
+        });
+        assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
+                .hasFieldOrPropertyWithValue("id", perusteDto.getId());
+
+        // Käytetään uudempaa voimassa olevaa perustetta jos useampia
+        PerusteprojektiDto projekti2 = ppTestUtils.createPeruste();
+        PerusteDto perusteDto2 = ppTestUtils.initPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setDiaarinumero("OPH-12345-1234");
+            peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
+        });
+        assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
+                .hasFieldOrPropertyWithValue("id", perusteDto.getId());
+
+        ppTestUtils.julkaise(projekti2.getId());
+        assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
+                .hasFieldOrPropertyWithValue("id", perusteDto2.getId());
+
+        // Jos vain yksi voimassaoleva julkaistuna
+        perusteDto2 = ppTestUtils.editPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 1, Calendar.MARCH, 12).getTime());
+        });
+        assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
+                .hasFieldOrPropertyWithValue("id", perusteDto.getId());
+    }
+
+    @Test
+    @Rollback
     public void testPerusteprojektiHakuNimella() {
         PerusteprojektiDto projekti = ppTestUtils.createPeruste();
         PerusteDto perusteDto = ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {

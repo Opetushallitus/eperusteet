@@ -57,22 +57,30 @@ public class PerusteprojektiTestUtils {
         return pp;
     }
 
+    public PerusteDto initPeruste(Long perusteId, Consumer<PerusteDto> perusteFn) {
+        return editPeruste(perusteId, p -> {
+            HashSet<Kieli> kielet = new HashSet<>();
+            kielet.add(Kieli.FI);
+            p.setVoimassaoloAlkaa((new GregorianCalendar(2017, 5, 4)).getTime());
+            p.setNimi(TestUtils.lt("x"));
+            p.getNimi().getTekstit().put(Kieli.FI, "ap_fi");
+            p.getNimi().getTekstit().put(Kieli.SV, "ap_sv");
+            p.setKielet(kielet);
+            p.setDiaarinumero("OPH-" + Long.toString(TestUtils.uniikkiId()) + "-1234");
+            perusteFn.accept(p);
+        });
+    }
+
+    public PerusteDto initPeruste(Long perusteId) {
+        return initPeruste(perusteId, p -> {});
+    }
+
     public PerusteDto editPeruste(Long perusteId) {
         return editPeruste(perusteId, (p) -> {});
     }
 
     public PerusteDto editPeruste(Long perusteId, Consumer<PerusteDto> perusteFn) {
-        HashSet<Kieli> kielet = new HashSet<>();
-        kielet.add(Kieli.FI);
-
         PerusteDto p = perusteService.get(perusteId);
-
-        p.setVoimassaoloAlkaa((new GregorianCalendar(2017, 5, 4)).getTime());
-        p.setNimi(TestUtils.lt("x"));
-        p.getNimi().getTekstit().put(Kieli.FI, "ap_fi");
-        p.getNimi().getTekstit().put(Kieli.SV, "ap_sv");
-        p.setKielet(kielet);
-        p.setDiaarinumero("OPH-" + Long.toString(TestUtils.uniikkiId()) + "-1234");
         perusteFn.accept(p);
         return perusteService.update(p.getId(), p);
     }
