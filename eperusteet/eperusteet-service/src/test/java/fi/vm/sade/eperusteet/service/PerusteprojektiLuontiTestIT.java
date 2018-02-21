@@ -70,7 +70,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Rollback
     public void testPerusteprojektiaEiVoiJulkaistaIlmanDiaaria() {
         PerusteprojektiDto projekti = ppTestUtils.createPeruste();
-        ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+        ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("zäääää"));
             peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
@@ -179,7 +179,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Rollback
     public void testPerusteprojektiHakuNimella() {
         PerusteprojektiDto projekti = ppTestUtils.createPeruste();
-        PerusteDto perusteDto = ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("zäääää"));
             peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
@@ -187,7 +187,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         ppTestUtils.julkaise(projekti.getId());
 
         PerusteprojektiDto projekti2 = ppTestUtils.createPeruste();
-        PerusteDto perusteDto2 = ppTestUtils.editPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+        PerusteDto perusteDto2 = ppTestUtils.initPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("xäöäöäöä"));
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         });
@@ -222,8 +222,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     public void testLuonnissaOlevatEiHakuun() {
         PerusteprojektiDto perusteprojekti = ppTestUtils.createPeruste((PerusteprojektiLuontiDto pp) -> {
         });
-        PerusteDto perusteDto = ppTestUtils.editPeruste(perusteprojekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
-        });
+        PerusteDto perusteDto = ppTestUtils.initPeruste(perusteprojekti.getPeruste().getIdLong());
         PerusteQuery pquery = new PerusteQuery();
         Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
@@ -244,7 +243,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteprojektiDto amosaaPohja1 = ppTestUtils.createPeruste((PerusteprojektiLuontiDto ppl) -> {
             ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
         });
-        PerusteDto perusteDto = ppTestUtils.editPeruste(amosaaPohja1.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+        PerusteDto perusteDto = ppTestUtils.initPeruste(amosaaPohja1.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         });
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.VIIMEISTELY);
@@ -262,7 +261,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteprojektiDto amosaaPohja2 = ppTestUtils.createPeruste((PerusteprojektiLuontiDto ppl) -> {
             ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
         });
-        PerusteDto perusteDto2 = ppTestUtils.editPeruste(amosaaPohja2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+        PerusteDto perusteDto2 = ppTestUtils.initPeruste(amosaaPohja2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
         });
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.VIIMEISTELY);
