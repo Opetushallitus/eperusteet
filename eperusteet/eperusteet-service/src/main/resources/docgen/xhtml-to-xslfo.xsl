@@ -15,7 +15,9 @@
 
                         <fo:simple-page-master master-name="cover"
                                                page-width="210mm" page-height="297mm">
-                            <fo:region-body margin="30mm" margin-top="80mm"/>
+                            <fo:region-body margin="30mm" margin-top="80mm" margin-bottom="34mm"/>
+                            <fo:region-after region-name="ra"
+                                             extent="24mm"/>
                         </fo:simple-page-master>
 
                         <!-- Just a blank A4 -->
@@ -39,7 +41,8 @@
                             <fo:region-start region-name="rs-left" extent="30mm"
                                              reference-orientation="90" display-align="before"
                                              background-image="gradient.svg"
-                                             background-repeat="no-repeat" background-position-horizontal="left"/>
+                                             background-repeat="no-repeat"
+                                             background-position-horizontal="left"/>
                             <fo:region-end extent="30mm"/>
                         </fo:simple-page-master>
 
@@ -58,7 +61,8 @@
                             <fo:region-end region-name="re-right" extent="30mm"
                                            reference-orientation="90" display-align="after"
                                            background-image="gradient.svg"
-                                           background-repeat="no-repeat" background-position-horizontal="right"/>
+                                           background-repeat="no-repeat"
+                                           background-position-horizontal="right"/>
                         </fo:simple-page-master>
                     </xsl:when>
                 </xsl:choose>
@@ -82,6 +86,24 @@
 
             <!-- Cover page -->
             <fo:page-sequence master-reference="cover">
+                <fo:static-content flow-name="ra">
+                    <fo:block text-align="center">
+                        <xsl:choose>
+                            <xsl:when test="/html/@lang='fi' or /html/@lang='sv'">
+                                <fo:external-graphic src="logos/oph_su_ru.svg"
+                                                     height="14mm"
+                                                     content-height="scale-to-fit"
+                                                     scaling="uniform"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <fo:external-graphic src="logos/oph_en.svg"
+                                                     height="14mm"
+                                                     content-height="scale-to-fit"
+                                                     scaling="uniform"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </fo:block>
+                </fo:static-content>
                 <fo:flow flow-name="xsl-region-body">
                     <xsl:call-template name="cover"/>
                 </fo:flow>
