@@ -740,6 +740,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         updateStatus.setVaihtoOk(true);
 
         Perusteprojekti projekti = repository.findOne(id);
+        Long perusteId = projekti.getPeruste().getId();
 
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
@@ -770,6 +771,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
         Peruste peruste = projekti.getPeruste();
         boolean isValmisPohja = PerusteTyyppi.POHJA.equals(peruste.getTyyppi()) && (VALMIS.equals(projekti.getTila()) || PerusteTila.VALMIS.equals(peruste.getTila()));
+
+        // Järjestetään tutkinnon osat muodostumisen mukaan
+        peruste.getSuoritustavat().forEach(suoritustapa -> {
+            RakenneModuuli rakenne = suoritustapa.getRakenne();
+            RakenneModuuliDto dto = mapper.map(rakenne, RakenneModuuliDto.class);
+            perusteService.updateAllTutkinnonOsaJarjestys(perusteId, dto);
+        });
 
         // Perusteen validointi
         if (!isValmisPohja && peruste.getSuoritustavat() != null
@@ -910,13 +918,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.addStatus("tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta");
                     updateStatus.setVaihtoOk(false);
                 }
-
-                // Järjestetään tutkinnon osat muodostumisen mukaan
-                peruste.getSuoritustavat().forEach(suoritustapa -> {
-                    RakenneModuuli rakenne = suoritustapa.getRakenne();
-                    RakenneModuuliDto dto = mapper.map(rakenne, RakenneModuuliDto.class);
-                    perusteService.updateAllTutkinnonOsaJarjestys(peruste.getId(), dto);
-                });
             }
 
             if (tila == ProjektiTila.JULKAISTU || tila == ProjektiTila.VALMIS) {

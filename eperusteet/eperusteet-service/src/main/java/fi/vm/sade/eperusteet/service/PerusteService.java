@@ -129,7 +129,8 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     RakenneModuuliDto updateTutkinnonRakenne(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    // Käytetään vain sisäisistä palveluista ja ainoastaan synkronoi tutkinnon osien järjestysnumerot muodostumispuuta vastaavaksi
+    @PreAuthorize("isAuthenticated()")
     void updateAllTutkinnonOsaJarjestys(@P("perusteId") final Long perusteId, RakenneModuuliDto rakenne);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
