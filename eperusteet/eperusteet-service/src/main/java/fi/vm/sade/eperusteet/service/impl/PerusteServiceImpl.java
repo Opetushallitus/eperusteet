@@ -709,7 +709,21 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
         current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
 
-        Set<ConstraintViolation<Peruste>> violations = validator.validate(current, Peruste.Valmis.class);
+        Set<ConstraintViolation<Peruste>> violations = new HashSet<>();
+        switch (current.getTyyppi()) {
+            case OPAS:
+                violations = validator.validate(current, Peruste.ValmisOpas.class);
+                break;
+            case POHJA:
+                violations = validator.validate(current, Peruste.ValmisPohja.class);
+                break;
+            case NORMAALI:
+                violations = validator.validate(current, Peruste.Valmis.class);
+                break;
+            default:
+                break;
+        }
+
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }

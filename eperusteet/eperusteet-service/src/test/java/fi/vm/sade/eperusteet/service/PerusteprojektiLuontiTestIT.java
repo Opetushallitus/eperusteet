@@ -32,6 +32,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+
 import org.assertj.core.data.Index;
 
 
@@ -320,12 +322,11 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         Page<PerusteHakuInternalDto> internalperusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
         assertThat(internalperusteet.getTotalElements())
                 .isEqualTo(2);
-        assertThat(internalperusteet.getContent().stream().map(PerusteHakuDto::getId))
-                .contains(perusteDto.getId(), perusteDto2.getId());
-//        assertThat(internalperusteet.getContent())
-//                .extracting("perusteprojekti")
-//                .contains
-
+        assertThat(internalperusteet.getContent().stream())
+                .extracting("id", "perusteprojekti.id")
+                .contains(
+                        tuple(perusteDto.getId(), amosaaPohja1.getId()),
+                        tuple(perusteDto2.getId(), amosaaPohja2.getId()));
     }
 
 }
