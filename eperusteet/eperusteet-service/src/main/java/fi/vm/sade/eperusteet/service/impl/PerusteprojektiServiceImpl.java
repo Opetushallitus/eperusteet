@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
+
+import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -43,6 +45,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
@@ -799,6 +802,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                         suoritustapa.getSuoritustapakoodi(),
                                         validointi);
                                 updateStatus.setVaihtoOk(false);
+                            }
+                        }
+
+                        // Ammatitaitovaatimuksia ei voi julkaista enää tekstimuodossa
+                        if (suoritustapa.getSuoritustapakoodi().equals(Suoritustapakoodi.REFORMI)) {
+                            for (TutkinnonOsaViite tutkinnonOsaViite : suoritustapa.getTutkinnonOsat()) {
+                                LokalisoituTekstiDto nimi = mapper.map(tutkinnonOsaViite.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class);
+                                TekstiPalanen avTekstina = tutkinnonOsaViite.getTutkinnonOsa().getAmmattitaitovaatimukset();
+                                List<AmmattitaitovaatimuksenKohdealue> avTaulukkona = tutkinnonOsaViite.getTutkinnonOsa().getAmmattitaitovaatimuksetLista();
+                                if (avTekstina != null && (avTaulukkona == null || avTaulukkona.isEmpty())) {
+                                    updateStatus.addErrorStatus("tutkinnon-osan-ammattitaitovaatukset-tekstina", suoritustapa.getSuoritustapakoodi(), nimi);
+                                }
                             }
                         }
 

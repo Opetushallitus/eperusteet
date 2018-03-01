@@ -34,7 +34,8 @@ public class PageDto<S,D> extends PageImpl<D> {
         super(new ArrayList<>(Lists.transform(source.getContent(), new Function<S, D>() {
             @Override
             public D apply(S f) {
-                return mapper.map(f, dstClass);
+                D result = mapper.map(f, dstClass);
+                return result;
             }
         })), page, source.getTotalElements());
     }

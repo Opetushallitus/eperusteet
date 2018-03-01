@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.service.test.util;
 
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -39,11 +37,11 @@ public class PerusteprojektiTestUtils {
     @Autowired
     private PerusteRepository perusteRepository;
 
-    public PerusteprojektiDto createPeruste() {
-        return createPeruste((PerusteprojektiLuontiDto pp) -> {});
+    public PerusteprojektiDto createPerusteprojekti() {
+        return createPerusteprojekti((PerusteprojektiLuontiDto pp) -> {});
     }
 
-    public PerusteprojektiDto createPeruste(Consumer<PerusteprojektiLuontiDto> withPerusteprojekti) {
+    public PerusteprojektiDto createPerusteprojekti(Consumer<PerusteprojektiLuontiDto> withPerusteprojekti) {
         PerusteprojektiLuontiDto result = new PerusteprojektiLuontiDto();
         result.setNimi(TestUtils.uniikkiString());
         result.setKoulutustyyppi("koulutustyyppi_15");
@@ -104,7 +102,6 @@ public class PerusteprojektiTestUtils {
     public TutkinnonOsaViiteDto addTutkinnonOsa(Long perusteId, Consumer<TutkinnonOsaViiteDto> tosaFn) {
         HashSet<Kieli> kielet = new HashSet<>();
         kielet.add(Kieli.FI);
-
         TutkinnonOsaDto tosa = new TutkinnonOsaDto();
         tosa.setKoodi(createKoodiDto("200530"));
         tosa.setNimi(TestUtils.lt("x"));
@@ -116,6 +113,12 @@ public class PerusteprojektiTestUtils {
         result.setLaajuus(new BigDecimal(5L));
         tosaFn.accept(result);
         return perusteService.addTutkinnonOsa(perusteId, Suoritustapakoodi.REFORMI, result);
+    }
+
+    public TutkinnonOsaViiteDto editTutkinnonOsa(Long perusteId, Suoritustapakoodi st, Long tovId, Consumer<TutkinnonOsaViiteDto> tosaFn) {
+        TutkinnonOsaViiteDto tosa = perusteService.getTutkinnonOsaViite(perusteId, st, tovId);
+        tosaFn.accept(tosa);
+        return perusteService.updateTutkinnonOsa(perusteId, Suoritustapakoodi.REFORMI, tosa);
     }
 
     public void asetaTila(Long projektiId, ProjektiTila tila) {
