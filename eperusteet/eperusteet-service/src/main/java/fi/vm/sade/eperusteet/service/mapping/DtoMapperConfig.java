@@ -220,12 +220,10 @@ public class DtoMapperConfig {
                 .exclude("oppiaineet")
                 .byDefault()
                 .register();
-
         factory.classMap(Peruste.class, PerusteHakuInternalDto.class)
                 .byDefault()
                 .favorExtension(true)
                 .register();
-
         factory.classMap(Peruste.class, PerusteBaseDto.class)
                 .byDefault()
                 .favorExtension(true)

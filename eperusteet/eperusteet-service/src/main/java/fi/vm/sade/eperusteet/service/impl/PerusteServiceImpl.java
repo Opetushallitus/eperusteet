@@ -261,8 +261,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         // Lisätään mahdolliset perusteet hakujoukkoon
         Page<Peruste> result = perusteet.findBy(page, pquery, koodistostaHaetut.map(Peruste::getId).collect(Collectors.toSet()));
-        Peruste p = result.getContent().get(0);
-        PerusteHakuInternalDto pdto = mapper.map(p, PerusteHakuInternalDto.class);
         PageDto<Peruste, T> resultDto = new PageDto<>(result, type, page, mapper);
 
         if (pquery.isTutkintonimikkeet()) {
