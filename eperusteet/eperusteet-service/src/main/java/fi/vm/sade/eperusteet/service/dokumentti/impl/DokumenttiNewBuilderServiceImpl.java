@@ -165,7 +165,11 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         if (nimi != null && nimi.length() != 0) {
             title.appendChild(docBase.getDocument().createTextNode(nimi));
             docBase.getHeadElement().appendChild(title);
-            if (docBase.getPeruste().getTyyppi() != PerusteTyyppi.OPAS) {
+            if (docBase.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
+                Element opas = docBase.getDocument().createElement("opas");
+                opas.setTextContent(nimi);
+                docBase.getHeadElement().appendChild(opas);
+            } else {
                 Element peruste = docBase.getDocument().createElement("peruste");
                 peruste.setTextContent(nimi);
                 docBase.getHeadElement().appendChild(peruste);
@@ -177,6 +181,24 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         if (kuvaus != null && kuvaus.length() != 0) {
             Element description = docBase.getDocument().createElement("description");
             addTeksti(docBase, kuvaus, "div", description);
+            docBase.getHeadElement().appendChild(description);
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+
+        // Voimaantulo
+        if (docBase.getPeruste().getVoimassaoloAlkaa() != null) {
+            Element description = docBase.getDocument().createElement("meta");
+            description.setAttribute("name", "voimaantulo");
+            description.setAttribute("content", dateFormat.format(docBase.getPeruste().getVoimassaoloAlkaa()));
+            docBase.getHeadElement().appendChild(description);
+        }
+
+        // Voimaantulon päättyminen
+        if (docBase.getPeruste().getVoimassaoloLoppuu() != null) {
+            Element description = docBase.getDocument().createElement("meta");
+            description.setAttribute("name", "voimassaolo-paattyminen");
+            description.setAttribute("content", dateFormat.format(docBase.getPeruste().getVoimassaoloLoppuu()));
             docBase.getHeadElement().appendChild(description);
         }
 
@@ -285,24 +307,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             if (tutkintonimikkeet.hasChildNodes()) {
                 docBase.getHeadElement().appendChild(tutkintonimikkeet);
             }
-        }
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-
-        // Voimaantulo
-        if (docBase.getPeruste().getVoimassaoloAlkaa() != null) {
-            Element description = docBase.getDocument().createElement("meta");
-            description.setAttribute("name", "voimaantulo");
-            description.setAttribute("content", dateFormat.format(docBase.getPeruste().getVoimassaoloAlkaa()));
-            docBase.getHeadElement().appendChild(description);
-        }
-
-        // Voimaantulon päättyminen
-        if (docBase.getPeruste().getVoimassaoloLoppuu() != null) {
-            Element description = docBase.getDocument().createElement("meta");
-            description.setAttribute("name", "voimassaolo-paattyminen");
-            description.setAttribute("content", dateFormat.format(docBase.getPeruste().getVoimassaoloLoppuu()));
-            docBase.getHeadElement().appendChild(description);
         }
     }
 

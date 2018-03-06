@@ -596,8 +596,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setNimi(updated.getNimi());
             current.setOsaamisalat(null);
             current.setSiirtymaPaattyy(null);
-            current.setVoimassaoloAlkaa(null);
-            current.setVoimassaoloLoppuu(null);
+            current.setVoimassaoloAlkaa(perusteDto.getVoimassaoloAlkaa());
+            current.setVoimassaoloLoppuu(perusteDto.getVoimassaoloLoppuu());
             current.setPaatospvm(null);
             current.setKoulutusvienti(false);
             current.setDiaarinumero(null);

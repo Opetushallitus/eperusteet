@@ -176,6 +176,78 @@
             <xsl:apply-templates select="description"/>
         </fo:block>
 
+        <xsl:if test="/html/head/opas">
+            <fo:table table-layout="fixed" width="100%" font-size="10pt"
+                      border-collapse="separate" border-separation="4pt">
+                <fo:table-column column-width="proportional-column-width(1)"/>
+                <fo:table-column column-width="proportional-column-width(2)"/>
+                <fo:table-body>
+
+                    <!-- nimi -->
+                    <fo:table-row>
+                        <fo:table-cell>
+                            <fo:block font-weight="bold">
+                                <xsl:if test="/html/@lang='fi'">
+                                    <xsl:text>Oppaan nimi</xsl:text>
+                                </xsl:if>
+                                <xsl:if test="/html/@lang='sv'">
+                                    <xsl:text>Namn på guide</xsl:text>
+                                </xsl:if>
+                            </fo:block>
+                        </fo:table-cell>
+                        <fo:table-cell>
+                            <fo:block>
+                                <xsl:value-of select="opas"/>
+                            </fo:block>
+                        </fo:table-cell>
+                    </fo:table-row>
+
+                    <!-- Voimaantulo -->
+                    <xsl:if test="boolean(/html/head/meta[@name='voimaantulo'])">
+                        <fo:table-row>
+                            <fo:table-cell>
+                                <fo:block font-weight="bold">
+                                    <xsl:if test="/html/@lang='fi'">
+                                        <xsl:text>Voimaantulo</xsl:text>
+                                    </xsl:if>
+                                    <xsl:if test="/html/@lang='sv'">
+                                        <xsl:text>Träder i kraft</xsl:text>
+                                    </xsl:if>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell>
+                                <fo:block>
+                                    <xsl:apply-templates select="/html/head/meta[@name='voimaantulo']/@content"/>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </xsl:if>
+
+                    <!-- Voimassaolo päättyy -->
+                    <xsl:if test="boolean(/html/head/meta[@name='voimassaolo-paattyminen'])">
+                        <fo:table-row>
+                            <fo:table-cell>
+                                <fo:block font-weight="bold">
+                                    <xsl:if test="/html/@lang='fi'">
+                                        <xsl:text>Voimassaolon päättyminen</xsl:text>
+                                    </xsl:if>
+                                    <xsl:if test="/html/@lang='sv'">
+                                        <xsl:text>Giltigheten upphör</xsl:text>
+                                    </xsl:if>
+                                </fo:block>
+                            </fo:table-cell>
+                            <fo:table-cell>
+                                <fo:block>
+                                    <xsl:apply-templates select="/html/head/meta[@name='voimassaolo-paattyminen']/@content"/>
+                                </fo:block>
+                            </fo:table-cell>
+                        </fo:table-row>
+                    </xsl:if>
+
+                </fo:table-body>
+            </fo:table>
+        </xsl:if>
+
         <xsl:if test="/html/head/peruste">
             <fo:table table-layout="fixed" width="100%" font-size="10pt"
                       border-collapse="separate" border-separation="4pt">
@@ -287,7 +359,7 @@
                     <xsl:apply-templates select="*|text()"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <fo:block>
+                    <fo:block font-size="12pt">
                         <xsl:text>Content is missing</xsl:text>
                     </fo:block>
                 </xsl:otherwise>

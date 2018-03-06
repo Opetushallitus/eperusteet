@@ -28,7 +28,7 @@
                     <xsl:apply-templates select="*|text()"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <fo:block>
+                    <fo:block font-size="12pt">
                         <xsl:text>Content is missing</xsl:text>
                     </fo:block>
                 </xsl:otherwise>
