@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -41,6 +42,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.StringJoiner;
 
 /**
@@ -475,9 +477,14 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
                 ArviointiAsteikkoDto arviointiAsteikkoDto = arviointiAsteikkoService
                         .get(kvLiiteJulkinenDto.getArvosanaAsteikko().getIdLong());
                 StringJoiner joiner = new StringJoiner(" / ");
-                arviointiAsteikkoDto.getOsaamistasot()
-                        .forEach(osaamistasoDto -> joiner
-                                .add(DokumenttiUtils.getTextString(docBase, osaamistasoDto.getOtsikko())));
+                List<OsaamistasoDto> osaamistasot = arviointiAsteikkoDto.getOsaamistasot();
+                // EP-1315
+                if (osaamistasot.size() == 1) {
+                    joiner.add(messages.translate("docgen.kvliite.kvliiteen-yksiportainen-arviointiasteikko", docBase.getKieli()));
+                } else {
+                    osaamistasot.forEach(osaamistasoDto -> joiner
+                            .add(DokumenttiUtils.getTextString(docBase, osaamistasoDto.getOtsikko())));
+                }
                 DokumenttiUtils.addTeksti(docBase, joiner.toString(), "div", rightTd);
             }
         }

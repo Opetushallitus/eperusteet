@@ -82,6 +82,16 @@ angular
             kvliite.tasot = _.filter(kvliite.tasot, taso => (taso as any).nimi);
             $scope.arviointiasteikot = arviointiasteikot;
             $scope.arviointiasteikotMap = _.indexBy(arviointiasteikot, "id");
+            // EP-1315
+            const arviointiasteikko = _.find($scope.arviointiasteikotMap, (aa: any) => {
+                return aa.osaamistasot.length === 1;
+            });
+            if (arviointiasteikko) {
+                arviointiasteikko.osaamistasot[0].otsikko = {};
+                _.each(Kieli.SISALTOKIELET, kieli => {
+                    arviointiasteikko.osaamistasot[0].otsikko[kieli] = Kaanna.kaanna("kvliiteen-yksiportainen-arviointiasteikko", kieli);
+                });
+            }
             $scope.kvliite = kvliite;
             $scope.kvliitePeriytynyt = !kvliite || kvliite.periytynyt;
             $scope.peruste.kvliite = kvliite;
