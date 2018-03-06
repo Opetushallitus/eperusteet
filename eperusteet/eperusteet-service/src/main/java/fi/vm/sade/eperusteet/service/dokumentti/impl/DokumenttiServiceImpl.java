@@ -233,6 +233,10 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
 
         Peruste peruste = perusteRepository.findOne(perusteId);
+        if (peruste == null) {
+            return null;
+        }
+
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
         List<Dokumentti> documents;
         if (suoritustavat.isEmpty()) {
