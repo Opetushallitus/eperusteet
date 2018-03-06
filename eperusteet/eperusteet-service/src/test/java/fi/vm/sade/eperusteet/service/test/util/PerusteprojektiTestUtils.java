@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.service.test.util;
 
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -10,6 +9,8 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.MuodostumisSaantoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -39,11 +39,11 @@ public class PerusteprojektiTestUtils {
     @Autowired
     private PerusteRepository perusteRepository;
 
-    public PerusteprojektiDto createPeruste() {
-        return createPeruste((PerusteprojektiLuontiDto pp) -> {});
+    public PerusteprojektiDto createPerusteprojekti() {
+        return createPerusteprojekti((PerusteprojektiLuontiDto pp) -> {});
     }
 
-    public PerusteprojektiDto createPeruste(Consumer<PerusteprojektiLuontiDto> withPerusteprojekti) {
+    public PerusteprojektiDto createPerusteprojekti(Consumer<PerusteprojektiLuontiDto> withPerusteprojekti) {
         PerusteprojektiLuontiDto result = new PerusteprojektiLuontiDto();
         result.setNimi(TestUtils.uniikkiString());
         result.setKoulutustyyppi("koulutustyyppi_15");

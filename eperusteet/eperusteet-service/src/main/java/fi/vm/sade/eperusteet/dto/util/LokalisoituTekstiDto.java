@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -51,6 +52,12 @@ public class LokalisoituTekstiDto {
         this.id = id;
         this.tunniste = tunniste;
         this.tekstit = values == null ? null : new EnumMap<>(values);
+    }
+
+    static public LokalisoituTekstiDto of(String teksti) {
+        Map<Kieli, String> kaannokset = new HashMap<>();
+        kaannokset.put(Kieli.FI, teksti);
+        return new LokalisoituTekstiDto(null, kaannokset);
     }
 
     @JsonCreator

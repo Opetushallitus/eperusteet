@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
+@Deprecated
 public interface TpoOpetuksenSisaltoService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TaiteenalaViiteUpdateDto> getTaiteenalat(Long perusteId);

@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TpoOpetuksenSisaltoServiceImpl implements TpoOpetuksenSisaltoService {
+@Deprecated
+public class  TpoOpetuksenSisaltoServiceImpl implements TpoOpetuksenSisaltoService {
 
 
     @Override

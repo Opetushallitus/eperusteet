@@ -30,9 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,7 +66,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testPerusteprojektiaEiVoiJulkaistaIlmanDiaaria() {
-        PerusteprojektiDto projekti = ppTestUtils.createPeruste();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
         ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("zäääää"));
             peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
@@ -88,7 +85,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testReforminmukaistaPerusteprojektiaEiVoiJulkaistaTutkinnonOsienTekstisisalloilla() {
-        PerusteprojektiDto projekti = ppTestUtils.createPeruste(perusteprojektiLuontiDto -> {
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
             perusteprojektiLuontiDto.setReforminMukainen(true);
             perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
         });
@@ -118,7 +115,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testDiaarinumerollaHaku() {
-        PerusteprojektiDto projekti = ppTestUtils.createPeruste();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setDiaarinumero("OPH-12345-1234");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
@@ -155,7 +152,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
                 .hasFieldOrPropertyWithValue("id", perusteDto.getId());
 
         // Käytetään uudempaa voimassa olevaa perustetta jos useampia
-        PerusteprojektiDto projekti2 = ppTestUtils.createPeruste();
+        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti();
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setDiaarinumero("OPH-12345-1234");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
@@ -178,7 +175,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testPerusteprojektiHakuNimella() {
-        PerusteprojektiDto projekti = ppTestUtils.createPeruste();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("zäääää"));
             peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
@@ -186,7 +183,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
         ppTestUtils.julkaise(projekti.getId());
 
-        PerusteprojektiDto projekti2 = ppTestUtils.createPeruste();
+        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti();
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("xäöäöäöä"));
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
@@ -220,7 +217,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testLuonnissaOlevatEiHakuun() {
-        PerusteprojektiDto perusteprojekti = ppTestUtils.createPeruste((PerusteprojektiLuontiDto pp) -> {
+        PerusteprojektiDto perusteprojekti = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto pp) -> {
         });
         PerusteDto perusteDto = ppTestUtils.initPeruste(perusteprojekti.getPeruste().getIdLong());
         PerusteQuery pquery = new PerusteQuery();
@@ -240,7 +237,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteKaikkiDto pohja = perusteService.getAmosaaYhteinenPohja();
         assertThat(pohja).isNull();
 
-        PerusteprojektiDto amosaaPohja1 = ppTestUtils.createPeruste((PerusteprojektiLuontiDto ppl) -> {
+        PerusteprojektiDto amosaaPohja1 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
             ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
         });
         PerusteDto perusteDto = ppTestUtils.initPeruste(amosaaPohja1.getPeruste().getIdLong(), (PerusteDto peruste) -> {
@@ -258,7 +255,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         pohja = perusteService.getAmosaaYhteinenPohja();
         assertThat(pohja).isNotNull().hasFieldOrPropertyWithValue("id", perusteDto.getId());
 
-        PerusteprojektiDto amosaaPohja2 = ppTestUtils.createPeruste((PerusteprojektiLuontiDto ppl) -> {
+        PerusteprojektiDto amosaaPohja2 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
             ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
         });
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(amosaaPohja2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
