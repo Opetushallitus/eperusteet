@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaExcelDto;
@@ -97,6 +98,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private PerusteRepository perusteet;
+
+    @Autowired
+    private PerusteprojektiRepository perusteprojektiRepository;
 
     @Autowired
     private KVLiiteRepository kvliiteRepository;
@@ -202,7 +206,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> getAll(PageRequest page, String kieli) {
-        return findByInternal(page, new PerusteQuery());
+        return findByImpl(page, new PerusteQuery());
     }
 
     @Override
@@ -231,6 +235,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Transactional(readOnly = true)
     private Page<PerusteHakuDto> findByImpl(PageRequest page, PerusteQuery pquery) {
+        return findByImpl(page, pquery, PerusteHakuDto.class);
+    }
+
+    @Transactional(readOnly = true)
+    private <T extends PerusteHakuDto> Page<T> findByImpl(PageRequest page, PerusteQuery pquery, Class<T> type) {
         Stream<Peruste> koodistostaHaetut = Stream.empty();
 
         // Ladataan koodistosta osaamisala ja tutkintonimikehakua vastaavat koodit
@@ -252,7 +261,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         // Lisätään mahdolliset perusteet hakujoukkoon
         Page<Peruste> result = perusteet.findBy(page, pquery, koodistostaHaetut.map(Peruste::getId).collect(Collectors.toSet()));
-        PageDto<Peruste, PerusteHakuDto> resultDto = new PageDto<>(result, PerusteHakuDto.class, page, mapper);
+        PageDto<Peruste, T> resultDto = new PageDto<>(result, type, page, mapper);
 
         if (pquery.isTutkintonimikkeet()) {
             resultDto.forEach(dto -> {
@@ -278,11 +287,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             });
         }
 
-        // Lisätään korvaavat ja korvattavat perusteet
-        for (PerusteHakuDto haettu : resultDto) {
+        for (T haettu : resultDto) {
+            // Lisätään korvaavat ja korvattavat perusteet
             if (haettu.getKorvattavatDiaarinumerot() == null) {
                 continue;
             }
+
             Set<Diaarinumero> korvattavatDiaarinumerot = haettu.getKorvattavatDiaarinumerot().stream()
                     .map(Diaarinumero::new)
                     .collect(Collectors.toSet());
@@ -304,10 +314,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     // Sisäisen haku (palauttaa myös keskeneräisiä)
     @Override
     @Transactional(readOnly = true)
-    public Page<PerusteHakuDto> findByInternal(PageRequest page, PerusteQuery pquery) {
+    public Page<PerusteHakuInternalDto> findByInternal(PageRequest page, PerusteQuery pquery) {
         // Voidaan käyttää vain esikatseltaviin perusteprojektien perusteisiin
 //        pquery.setEsikatseltavissa(true);
-        return findByImpl(page, pquery);
+        return findByImpl(page, pquery, PerusteHakuInternalDto.class);
     }
 
     // Julkinen haku
@@ -697,7 +707,21 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
         current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
 
-        Set<ConstraintViolation<Peruste>> violations = validator.validate(current, Peruste.Valmis.class);
+        Set<ConstraintViolation<Peruste>> violations = new HashSet<>();
+        switch (current.getTyyppi()) {
+            case OPAS:
+                violations = validator.validate(current, Peruste.ValmisOpas.class);
+                break;
+            case POHJA:
+                violations = validator.validate(current, Peruste.ValmisPohja.class);
+                break;
+            case NORMAALI:
+                violations = validator.validate(current, Peruste.Valmis.class);
+                break;
+            default:
+                break;
+        }
+
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }

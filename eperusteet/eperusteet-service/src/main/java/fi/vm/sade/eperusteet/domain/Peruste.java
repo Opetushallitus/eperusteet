@@ -60,7 +60,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @NotNull(groups = Valmis.class)
+    @NotNull(groups = { Valmis.class, ValmisPohja.class, ValmisPohja.class })
     private TekstiPalanen nimi;
 
     @ValidHtml(whitelist = WhitelistType.SIMPLIFIED)
@@ -93,7 +93,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @Getter
     @Setter
-    @NotNull(groups = Valmis.class)
+    @NotNull(groups = { Valmis.class, ValmisPohja.class })
     @Column(updatable = false, name = "koulutustyyppi")
     private String koulutustyyppi;
 
@@ -126,7 +126,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     @Column(name = "voimassaolo_alkaa")
-    @NotNull(groups = Valmis.class)
+    @NotNull(groups = { Valmis.class })
     private Date voimassaoloAlkaa;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -210,7 +210,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     @CollectionTable(name = "peruste_kieli")
     @Column(name = "kieli")
-    @Size(min = 1, groups = Valmis.class)
+    @Size(min = 1, groups = { Valmis.class, ValmisPohja.class })
     private Set<Kieli> kielet = EnumSet.of(Kieli.FI, Kieli.SV);
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -411,4 +411,6 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     }
 
     public interface Valmis {}
+    public interface ValmisPohja {}
+    public interface ValmisOpas {}
 }

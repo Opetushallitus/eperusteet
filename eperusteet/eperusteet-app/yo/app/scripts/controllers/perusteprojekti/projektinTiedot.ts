@@ -36,7 +36,7 @@ angular
 
         var dhaku = _.debounce(
             function(haku) {
-                Perusteet.get(
+                Perusteet.internal(
                     {
                         nimi: haku,
                         sivu: $scope.nykyinen - 1,

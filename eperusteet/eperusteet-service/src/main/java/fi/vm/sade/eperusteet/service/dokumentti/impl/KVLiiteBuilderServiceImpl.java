@@ -416,7 +416,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
             DokumenttiUtils.addTeksti(docBase,
                     DokumenttiUtils.getTextString(docBase,
-                            kvLiiteJulkinenDto.getTyotehtavatJoissaVoiToimia()), "div", td);
+                            kvLiiteJulkinenDto.getSaadosPerusta()), "div", td);
         }
     }
 

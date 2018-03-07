@@ -24,6 +24,9 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,6 +37,8 @@ import java.util.Set;
  * @author nkala
  */
 public class PerusteenRakenne {
+    @Getter
+    @Setter
     static public class Ongelma {
         public String ongelma;
         public TekstiPalanen ryhma;
@@ -46,6 +51,8 @@ public class PerusteenRakenne {
         }
     }
 
+    @Getter
+    @Setter
     static public class Validointi {
         public List<Ongelma> ongelmat = new ArrayList<>();
         public BigDecimal laskettuLaajuus = new BigDecimal(0);

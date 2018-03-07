@@ -154,7 +154,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void testFindBy() {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setPoistunut(false);
-        Page<PerusteHakuDto> perusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuInternalDto> perusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
         assertEquals(3, perusteet.getTotalElements());
     }
 
@@ -163,7 +163,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
         pquery.setKoulutuskoodi("koulutuskoodiArvo");
-        Page<PerusteHakuDto> perusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuInternalDto> perusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
     }
 
