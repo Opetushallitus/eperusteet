@@ -78,7 +78,7 @@ public class PerusteenRakenne {
 
         BigDecimal laajuusSummaMin = new BigDecimal(0);
         BigDecimal laajuusSummaMax = new BigDecimal(0);
-        Integer ryhmienMäärä = 0;
+        Integer ryhmienMaara = 0;
         Set<Long> uniikit = new HashSet<>();
 
         for (AbstractRakenneOsa x : osat) {
@@ -99,7 +99,7 @@ public class PerusteenRakenne {
                 }
             } else if (x instanceof RakenneModuuli) {
                 RakenneModuuli rm = (RakenneModuuli) x;
-                ++ryhmienMäärä;
+                ++ryhmienMaara;
                 Validointi validoitu = validoiRyhma(osaamisalat, rm, syvyys + 1, useMax);
                 validointi.ongelmat.addAll(validoitu.ongelmat);
                 validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
@@ -127,12 +127,18 @@ public class PerusteenRakenne {
             }
         }
 
+        if (rooli != null && rooli.equals(RakenneModuuliRooli.VIRTUAALINEN)) {
+            if (osat.size() > 0) {
+                validointi.ongelmat.add(new Ongelma("Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia", nimi, syvyys));
+            }
+        }
+
         if (validointi.sisakkaisiaOsaamisalaryhmia > 1) {
             validointi.sisakkaisiaOsaamisalaryhmia = 1;
             validointi.ongelmat.add(new Ongelma("Rakenteessa sisäkkäisiä osaamisalaryhmiä", nimi, syvyys));
         }
 
-        if (rooli == RakenneModuuliRooli.NORMAALI && uniikit.size() + ryhmienMäärä != osat.size()) {
+        if (rooli == RakenneModuuliRooli.NORMAALI && uniikit.size() + ryhmienMaara != osat.size()) {
             validointi.ongelmat.add(new Ongelma("Ryhmässä on samoja tutkinnon osia (" + uniikit.size() + " uniikkia).", nimi, syvyys));
         }
 
