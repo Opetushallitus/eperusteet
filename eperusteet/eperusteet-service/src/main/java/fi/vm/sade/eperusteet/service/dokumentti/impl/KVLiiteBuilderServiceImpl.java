@@ -133,7 +133,8 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         // Lisätään Europass kuva
         Element europassTd = docBase.getDocument().createElement("td");
         tr.appendChild(europassTd);
-        europassTd.setAttribute("colspan", "1");
+        europassTd.setAttribute("colspan", "2");
+        europassTd.setAttribute("align", "left");
         Element europassImg = docBase.getDocument().createElement("img");
         europassTd.appendChild(europassImg);
         europassImg.setAttribute("src", "kvliite/europass.jpg");
@@ -150,7 +151,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         // Lisätään Suomen lippu
         Element flagTd = docBase.getDocument().createElement("td");
         tr.appendChild(flagTd);
-        flagTd.setAttribute("colspan", "1");
+        flagTd.setAttribute("colspan", "2");
         flagTd.setAttribute("align", "right");
         Element flagImg = docBase.getDocument().createElement("img");
         flagTd.appendChild(flagImg);
@@ -466,7 +467,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             if (kvLiiteJulkinenDto.getTasot() != null) {
                 kvLiiteJulkinenDto.getTasot().forEach(taso -> {
                     if (taso.getNimi() != null && taso.getNimi().get(docBase.getKieli()) != null) {
-                        DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli()), "div", leftTd);
+                        DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli()), "span", leftTd);
                     }
                 });
             }

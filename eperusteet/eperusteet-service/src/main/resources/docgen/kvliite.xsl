@@ -242,6 +242,12 @@
         </fo:block>
     </xsl:template>
 
+    <xsl:template match="span">
+        <fo:block font-size="10pt" line-height="1.25em">
+            <xsl:apply-templates select="*|text()"/>
+        </fo:block>
+    </xsl:template>
+
     <xsl:template match="abbr">
 
         <xsl:value-of select="."/>
