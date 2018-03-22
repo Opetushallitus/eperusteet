@@ -12,7 +12,7 @@ $placeholder-vari: #777;
 $puuviiva-vari: #ccc;
 $tree-container-width: 800px;
 $tree-group-width: 520px;
-$tree-box-size: 31px;
+$tree-box-size: 30px;
 
 .group-toggler,
 .group-toggler span {
@@ -584,7 +584,7 @@ $kuvausnappisize: 18px;
 
 .bubble-osa {
     width: $tree-group-width;
-    min-height: 32px;
+    min-height: 31px;
     border: 1px solid #cccccc;
     background-color: #fff;
     padding: 5px 8px;

@@ -41,7 +41,7 @@ angular
         }
 
         function kaikista(tyyppi, successCb, failureCb) {
-            failureCb = failureCb || function() {};
+            failureCb = failureCb || function(err) { };
             return function() {
                 $uibModal
                     .open({
@@ -58,8 +58,8 @@ angular
         }
 
         return {
-            kaikista: kaikista,
-            suoritustavoista: suoritustavoista
+            kaikista,
+            suoritustavoista,
         };
     })
     .controller("TuoTutkinnonOsaSuoritustavastaaCtrl", function(
@@ -164,7 +164,7 @@ angular
             $uibModalInstance.dismiss();
         };
     })
-    .controller("TuoTutkinnonOsaCtrl", function($scope, $uibModalInstance, PerusteetInternal, PerusteKaikki, Utils) {
+    .controller("TuoTutkinnonOsaCtrl", function($scope, $uibModalInstance, Perusteet, PerusteKaikki, Utils) {
         $scope.haku = true;
         $scope.perusteet = [];
         $scope.osat = [];
@@ -201,7 +201,7 @@ angular
                 pquery.tila = "valmis";
             }
 
-            PerusteetInternal.get(pquery, perusteet => ($scope.perusteet = perusteet));
+            Perusteet.internal(pquery, perusteet => ($scope.perusteet = perusteet));
         };
 
         $scope.hakuMuuttui = _.debounce(_.bind($scope.paivitaHaku, $scope), 300);

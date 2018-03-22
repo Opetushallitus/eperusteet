@@ -28,7 +28,7 @@
                     <xsl:apply-templates select="*|text()"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <fo:block>
+                    <fo:block font-size="12pt">
                         <xsl:text>Content is missing</xsl:text>
                     </fo:block>
                 </xsl:otherwise>
@@ -238,6 +238,12 @@
     <xsl:template match="div">
         <fo:block font-size="10pt" line-height="1.25em"
                   space-after="20pt" text-align="justify">
+            <xsl:apply-templates select="*|text()"/>
+        </fo:block>
+    </xsl:template>
+
+    <xsl:template match="span">
+        <fo:block font-size="10pt" line-height="1.25em">
             <xsl:apply-templates select="*|text()"/>
         </fo:block>
     </xsl:template>

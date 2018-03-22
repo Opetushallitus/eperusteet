@@ -100,7 +100,8 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             NestedCheckedException.class,
             IOException.class,
             ServletException.class,
-            ValidationException.class
+            ValidationException.class,
+            IllegalArgumentException.class
     })
     public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
         HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -183,6 +184,9 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
         } else if (ex instanceof ServiceException) {
+            map.put("syy", ex.getLocalizedMessage());
+        } else if (ex instanceof IllegalArgumentException) {
+            suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
         } else if (ex.getCause().getClass().getSimpleName().equals("ClientAbortException")) {
             suppresstrace = true;

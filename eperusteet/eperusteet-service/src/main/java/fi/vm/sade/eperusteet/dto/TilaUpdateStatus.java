@@ -40,6 +40,7 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
     @Getter
     @Setter
     List<Status> infot;
+
     @Getter
     @Setter
     boolean vaihtoOk;

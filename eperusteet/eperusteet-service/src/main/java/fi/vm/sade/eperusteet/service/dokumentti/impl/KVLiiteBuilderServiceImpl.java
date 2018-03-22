@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -41,6 +42,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.StringJoiner;
 
 /**
@@ -131,7 +133,8 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         // Lisätään Europass kuva
         Element europassTd = docBase.getDocument().createElement("td");
         tr.appendChild(europassTd);
-        europassTd.setAttribute("colspan", "1");
+        europassTd.setAttribute("colspan", "2");
+        europassTd.setAttribute("align", "left");
         Element europassImg = docBase.getDocument().createElement("img");
         europassTd.appendChild(europassImg);
         europassImg.setAttribute("src", "kvliite/europass.jpg");
@@ -148,7 +151,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         // Lisätään Suomen lippu
         Element flagTd = docBase.getDocument().createElement("td");
         tr.appendChild(flagTd);
-        flagTd.setAttribute("colspan", "1");
+        flagTd.setAttribute("colspan", "2");
         flagTd.setAttribute("align", "right");
         Element flagImg = docBase.getDocument().createElement("img");
         flagTd.appendChild(flagImg);
@@ -414,7 +417,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
             DokumenttiUtils.addTeksti(docBase,
                     DokumenttiUtils.getTextString(docBase,
-                            kvLiiteJulkinenDto.getTyotehtavatJoissaVoiToimia()), "div", td);
+                            kvLiiteJulkinenDto.getSaadosPerusta()), "div", td);
         }
     }
 
@@ -464,7 +467,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             if (kvLiiteJulkinenDto.getTasot() != null) {
                 kvLiiteJulkinenDto.getTasot().forEach(taso -> {
                     if (taso.getNimi() != null && taso.getNimi().get(docBase.getKieli()) != null) {
-                        DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli()), "div", leftTd);
+                        DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli()), "span", leftTd);
                     }
                 });
             }
@@ -475,9 +478,14 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
                 ArviointiAsteikkoDto arviointiAsteikkoDto = arviointiAsteikkoService
                         .get(kvLiiteJulkinenDto.getArvosanaAsteikko().getIdLong());
                 StringJoiner joiner = new StringJoiner(" / ");
-                arviointiAsteikkoDto.getOsaamistasot()
-                        .forEach(osaamistasoDto -> joiner
-                                .add(DokumenttiUtils.getTextString(docBase, osaamistasoDto.getOtsikko())));
+                List<OsaamistasoDto> osaamistasot = arviointiAsteikkoDto.getOsaamistasot();
+                // EP-1315
+                if (osaamistasot.size() == 1) {
+                    joiner.add(messages.translate("docgen.kvliite.kvliiteen-yksiportainen-arviointiasteikko", docBase.getKieli()));
+                } else {
+                    osaamistasot.forEach(osaamistasoDto -> joiner
+                            .add(DokumenttiUtils.getTextString(docBase, osaamistasoDto.getOtsikko())));
+                }
                 DokumenttiUtils.addTeksti(docBase, joiner.toString(), "div", rightTd);
             }
         }

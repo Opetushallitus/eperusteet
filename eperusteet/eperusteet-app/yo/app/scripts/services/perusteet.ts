@@ -111,14 +111,12 @@ angular
             {
                 kooste: { method: "GET", url: SERVICE_LOC + "/perusteet/kooste", isArray: true },
                 info: { method: "GET", url: SERVICE_LOC + "/perusteet/info" },
+                internal: { method: "GET", url: SERVICE_LOC + "/perusteet/internal" },
                 valittavatKielet: { method: "GET", url: SERVICE_LOC + "/perusteet/valittavatkielet", isArray: true },
                 diaari: { method: "GET", url: SERVICE_LOC + "/perusteet/diaari" },
                 kvliite: { method: "GET", url: SERVICE_LOC + "/perusteet/:perusteId/kvliite" }
             }
         );
-    })
-    .factory("PerusteetInternal", function($resource, SERVICE_LOC) {
-        return $resource(SERVICE_LOC + "/perusteet/internal", {}, {});
     })
     .factory("PerusopetuksenSisalto", function($resource, SERVICE_LOC) {
         const baseUrl = SERVICE_LOC + "/perusteet/:perusteId/perusopetus/sisalto";

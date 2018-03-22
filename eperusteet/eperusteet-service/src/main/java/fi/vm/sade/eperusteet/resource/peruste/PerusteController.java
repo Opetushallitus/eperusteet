@@ -131,7 +131,7 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     @ApiOperation(value = "perusteiden sisäinen haku")
-    public Page<PerusteHakuDto> getAllInternal(@ApiIgnore PerusteQuery pquery) {
+    public Page<PerusteHakuInternalDto> getAllInternal(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findByInternal(p, pquery);
     }
