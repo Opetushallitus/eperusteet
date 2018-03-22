@@ -104,5 +104,11 @@ public interface PerusteprojektiService {
     List<String> getPerusteenOsaViiteTyoryhmat(@P("id") Long perusteProjektiId, Long perusteenOsaId);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
-    public List<PerusteenOsaTyoryhmaDto> getSisallonTyoryhmat(@P("id") Long perusteProjektiId);
+    List<PerusteenOsaTyoryhmaDto> getSisallonTyoryhmat(@P("id") Long perusteProjektiId);
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    List<PerusteValidationDto> getVirheelliset();
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila);
 }

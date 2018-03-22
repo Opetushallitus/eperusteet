@@ -1,0 +1,24 @@
+div.virheelliset-perusteet
+  h1(kaanna="'virheelliset-otsikko'")
+  p(kaanna="'virheelliset-kuvaus'")
+
+  div(ng-if="virheelliset")
+    table.table.table-striped
+      thead
+        tr
+          th(kaanna="'perusteprojekti'")
+          th(kaanna="'peruste'")
+          th(kaanna="'virheet'")
+          th
+      tbody
+        tr(ng-repeat="projekti in virheelliset | orderBy:'peruste.globalVersion.aikaleima':true")
+          td
+            a(ng-href="{{ projekti.$$url }}" ng-bind="projekti.nimi | kaanna")
+          td(ng-bind="projekti.peruste.nimi | kaanna")
+          td
+            ul(ng-repeat="virhe in projekti.validation.infot")
+              li.virheviesti
+                span(ng-bind="virhe.viesti | kaanna")
+              li.virhesijainti(ng-repeat="nimi in virhe.nimet" kaanna="nimi")
+
+  // button.btn.btn-primary(icon-role="refresh" kaanna="'virheelliset-hae'" ng-click="haeVirheelliset()")

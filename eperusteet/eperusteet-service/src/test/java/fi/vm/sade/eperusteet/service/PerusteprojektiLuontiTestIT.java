@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteValidationDto;
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -202,6 +204,18 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
         assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
                 .hasFieldOrPropertyWithValue("id", perusteDto.getId());
+    }
+
+    @Test
+    @Rollback(true)
+    public void testVirheellistenPerusteprojektienListaus() {
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+        });
+        ppTestUtils.julkaise(projekti.getId());
+        List<PerusteValidationDto> virheelliset = perusteprojektiService.getVirheelliset();
+        assertThat(virheelliset)
+                .isEmpty();
     }
 
     @Test

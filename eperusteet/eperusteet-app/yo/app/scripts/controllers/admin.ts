@@ -45,6 +45,11 @@ angular
                 template: require("views/admin/tiedotteet.html"),
                 controller: "TiedotteidenHallintaController"
             })
+            .state("root.admin.virheelliset", {
+                url: "/virheelliset",
+                template: require("views/admin/virheelliset.pug"),
+                controller: "VirheellisetHallintaController"
+            })
             .state("root.admin.oppaat", {
                 url: "/oppaat",
                 template: require("views/admin/oppaat.pug"),
@@ -123,6 +128,19 @@ angular
             });
         }
     )
+    .controller("VirheellisetHallintaController", ($location, $scope, $state, Api, PerusteProjektiService) => {
+        $scope.virheelliset = null;
+        $scope.haeVirheelliset = async function() {
+            const projektit = await Api.all("perusteprojektit/virheelliset").getList();
+            $scope.virheelliset = _(projektit)
+                .map(pp => ({
+                    ...pp,
+                    $$url: PerusteProjektiService.getUrl(pp, pp.peruste)
+                }))
+                .value();
+        };
+        $scope.haeVirheelliset();
+    })
     .controller("OpasHallintaController", ($location, $scope, $state, Api) => {
         const projektitEp = Api.one("oppaat").one("projektit");
 
@@ -158,7 +176,8 @@ angular
             { label: "perusteprojektit", state: "root.admin.perusteprojektit" },
             { label: "tiedotteet", state: "root.admin.tiedotteet" },
             { label: "oppaat", state: "root.admin.oppaat" },
-            { label: "arviointiasteikot", state: "root.admin.arviointiasteikot" }
+            { label: "arviointiasteikot", state: "root.admin.arviointiasteikot" },
+            { label: "virheelliset-perusteet", state: "root.admin.virheelliset" },
         ];
 
         $scope.chooseTab = $index => {

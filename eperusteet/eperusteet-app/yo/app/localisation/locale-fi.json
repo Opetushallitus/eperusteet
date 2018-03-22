@@ -1207,6 +1207,11 @@
 
     "tutkinnolle-ei-maaritetty-kokonaislaajuutta": "Tutkinnolle ei ole määritetty laajuutta",
 
+    "virheelliset-perusteet": "Virheelliset perusteet",
+    "virheelliset-otsikko": "Virheitä sisältävät julkiset perusteet",
+    "virheelliset-kuvaus": "Listaus perusteista mitkä eivät enää pääse läpi validoinnista.",
+    "virheelliset-hae": "Hae virheitä",
+
     "lisaa-taiteenala": "Lisää taiteenala",
     "tpo": "Taiteen perusopetus",
     "taiteenala-aikuisten-opetus": "Aikuisten opetus",
