@@ -199,12 +199,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public List<PerusteValidationDto> getVirheelliset() {
-        List<PerusteprojektiDto> projektit = mapper.mapAsList(repository.findAll(), PerusteprojektiDto.class);
-        List<Peruste> perusteet = perusteRepository.findAll();
         return repository.findAll().stream()
                 .filter(pp -> pp.getTila() == JULKAISTU)
                 .map(pp -> {
-                    PerusteValidationDto result = mapper.map(pp.getPeruste(), PerusteValidationDto.class);
+                    PerusteValidationDto result = mapper.map(pp, PerusteValidationDto.class);
                     result.setValidation(validoiProjekti(pp.getId(), JULKAISTU));
                     return result;
                 })

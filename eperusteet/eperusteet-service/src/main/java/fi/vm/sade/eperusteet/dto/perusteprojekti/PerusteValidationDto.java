@@ -7,6 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PerusteValidationDto extends PerusteBaseDto {
+public class PerusteValidationDto extends PerusteprojektiInfoDto {
     TilaUpdateStatus validation;
 }
