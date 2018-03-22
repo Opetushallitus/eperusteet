@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import org.junit.After;
@@ -221,6 +222,17 @@ public class PerusteenRakenneTest {
             TestUtils.teeOsaamisalaRyhma(-1, -1, -1, -1),
             TestUtils.teeRyhma(-1, -1, -1, -1)
         );
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
+        assertTrue(validoitu.ongelmat.size() == 2);
+    }
+
+    @Test
+    public void testValidoiTutkinnossaMaariteltavatRyhmat() {
+        RakenneModuuli rakenne = TestUtils.teeRyhma(-1, -1, -1, -1,
+                TestUtils.teeRakenneOsa(4, -1)
+        );
+        rakenne.setRooli(RakenneModuuliRooli.VIRTUAALINEN);
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.size() == 2);

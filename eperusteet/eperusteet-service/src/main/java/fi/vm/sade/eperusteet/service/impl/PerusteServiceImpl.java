@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
@@ -1475,6 +1476,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         public void visit(final AbstractRakenneOsaDto dto, final int depth) {
             if (depth >= maxDepth) {
                 throw new BusinessRuleViolationException("Tutkinnon rakennehierarkia ylittää maksimisyvyyden");
+            }
+            // Tarkistetaan, että tutkinnossa määriteltäviin ryhmiin ei ole lisätty osia
+            if (dto instanceof RakenneModuuliDto) {
+                RakenneModuuliDto rakenneModuuliDto = (RakenneModuuliDto) dto;
+                if (rakenneModuuliDto.getRooli() != null
+                        && rakenneModuuliDto.getRooli().equals(RakenneModuuliRooli.VIRTUAALINEN)
+                        && rakenneModuuliDto.getOsat().size() > 0) {
+                    throw new BusinessRuleViolationException("Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia");
+                }
             }
         }
     }
