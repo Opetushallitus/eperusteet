@@ -1015,17 +1015,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                             }
                         }
 
+                        // FIXME (Ilmeisesti pitää pystyä)
                         // Ammatitaitovaatimuksia ei voi julkaista enää tekstimuodossa
-                        if (suoritustapa.getSuoritustapakoodi().equals(Suoritustapakoodi.REFORMI)) {
-                            for (TutkinnonOsaViite tutkinnonOsaViite : suoritustapa.getTutkinnonOsat()) {
-                                LokalisoituTekstiDto nimi = mapper.map(tutkinnonOsaViite.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class);
-                                TekstiPalanen avTekstina = tutkinnonOsaViite.getTutkinnonOsa().getAmmattitaitovaatimukset();
-                                List<AmmattitaitovaatimuksenKohdealue> avTaulukkona = tutkinnonOsaViite.getTutkinnonOsa().getAmmattitaitovaatimuksetLista();
-                                if (avTekstina != null && (avTaulukkona == null || avTaulukkona.isEmpty())) {
-                                    updateStatus.addErrorStatus("tutkinnon-osan-ammattitaitovaatukset-tekstina", suoritustapa.getSuoritustapakoodi(), nimi);
-                                }
-                            }
-                        }
+//                        if (suoritustapa.getSuoritustapakoodi().equals(Suoritustapakoodi.REFORMI)) {
+//                            for (TutkinnonOsaViite tutkinnonOsaViite : suoritustapa.getTutkinnonOsat()) {
+//                                LokalisoituTekstiDto nimi = mapper.map(tutkinnonOsaViite.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class);
+//                                TekstiPalanen avTekstina = tutkinnonOsaViite.getTutkinnonOsa().getAmmattitaitovaatimukset();
+//                                List<AmmattitaitovaatimuksenKohdealue> avTaulukkona = tutkinnonOsaViite.getTutkinnonOsa().getAmmattitaitovaatimuksetLista();
+//                                if (avTekstina != null && (avTaulukkona == null || avTaulukkona.isEmpty())) {
+//                                    updateStatus.addErrorStatus("tutkinnon-osan-ammattitaitovaatukset-tekstina", suoritustapa.getSuoritustapakoodi(), nimi);
+//                                }
+//                            }
+//                        }
 
                         // Vapaiden tutkinnon osien tarkistus
                         List<TutkinnonOsaViite> vapaatOsat = vapaatTutkinnonosat(suoritustapa);
