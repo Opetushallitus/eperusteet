@@ -159,8 +159,8 @@ angular
                     },
                     asyncSave: (kommentti, cb) => {
                         $scope.rakenne.rakenne.metadata = { kommentti: kommentti };
+                        cb();
                         tallennaRakenne($scope.rakenne, () => {
-                            cb();
                             $scope.editoi = false;
                         });
                     },
@@ -215,6 +215,7 @@ angular
                     },
                     function() {
                         Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+                        cb();
                     }
                 );
 
