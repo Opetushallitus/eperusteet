@@ -123,6 +123,7 @@ angular
         $scope.peruste = perusteprojektiTiedot.getPeruste();
         TekstikappaleOperations.setPeruste($scope.peruste);
         $scope.rajaus = "";
+        $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti, $scope.peruste);
         $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
 
         $scope.$watch(
