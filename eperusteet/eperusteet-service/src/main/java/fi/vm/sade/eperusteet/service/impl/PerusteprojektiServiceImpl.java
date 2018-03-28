@@ -953,11 +953,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         updateStatus.setVaihtoOk(true);
 
         Perusteprojekti projekti = repository.findOne(id);
-        Long perusteId = projekti.getPeruste().getId();
 
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
+
+        Long perusteId = projekti.getPeruste().getId();
 
         // Tarkistetaan mahdolliset tilat
         updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
@@ -983,7 +984,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
         Peruste peruste = projekti.getPeruste();
-        boolean isValmisPohja = PerusteTyyppi.POHJA.equals(peruste.getTyyppi()) && (VALMIS.equals(projekti.getTila()) || PerusteTila.VALMIS.equals(peruste.getTila()));
 
         // Järjestetään tutkinnon osat muodostumisen mukaan
         peruste.getSuoritustavat().forEach(suoritustapa -> {
@@ -992,8 +992,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             perusteService.updateAllTutkinnonOsaJarjestys(perusteId, dto);
         });
 
+        boolean isValmisPohja = PerusteTyyppi.POHJA.equals(peruste.getTyyppi()) && (VALMIS.equals(projekti.getTila()) || PerusteTila.VALMIS.equals(peruste.getTila()));
+        boolean isAmosaaYhteinen = peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN);
+
         // Perusteen validointi
-        if (!isValmisPohja && peruste.getSuoritustavat() != null
+        if (!isAmosaaYhteinen
+                && !isValmisPohja
+                && peruste.getSuoritustavat() != null
                 && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
