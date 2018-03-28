@@ -355,9 +355,9 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
             if (host.indexOf("localhost") > -1) {
                 //localhost - dev
                 return "http://localhost:9020/#/" + kieli;
-            } else if (host.indexOf("testi.virkailija.opintopolku.fi") > -1) {
+            } else if (host.indexOf("virkailija.testiopintopolku.fi") > -1) {
                 // QA
-                return "https://testi-eperusteet.opintopolku.fi/#/" + kieli;
+                return "https://eperusteet.testiopintopolku.fi/#/" + kieli;
             } else {
                 // Tuotanto
                 return "https://eperusteet.opintopolku.fi/#/" + kieli;
