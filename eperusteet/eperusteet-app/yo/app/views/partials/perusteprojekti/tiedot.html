@@ -45,7 +45,7 @@
           <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid">{{pohja() ? 'luo-perustepohja-nappi' : 'luo-perusteprojekti-nappi' | kaanna}}</button>
         </div>
       </ng-form>
-      <div class="panel panel-default panel-clean" ng-if="!wizardissa() && !isOpas">
+      <div class="panel panel-default panel-clean" ng-if="!wizardissa()">
         <div class="panel-heading">
           <h3 class="panel-title" kaanna="'perusteen-esikatselu'"></h3>
         </div>

@@ -369,6 +369,10 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
                 return null;
             }
 
+            if (peruste.tyyppi === "opas") {
+                return this.getPerusteEsikatseluHost() + "/opas/" + peruste.id + "/tiedot";
+            }
+
             switch (peruste.koulutustyyppi) {
                 case "koulutustyyppi_1":
                     return this.getPerusteEsikatseluHost() + "/esitys/" + peruste.id + "/" + suoritustapa + "/tiedot";
