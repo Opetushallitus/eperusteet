@@ -80,6 +80,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -201,15 +202,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable("validointivirheet")
     public List<PerusteValidationDto> getVirheelliset() {
         return repository.findAll().stream()
                 .filter(pp -> pp.getTila() == JULKAISTU)
+                .filter(pp -> pp.getPeruste().getVoimassaoloLoppuu() == null || pp.getPeruste().getVoimassaoloLoppuu().after(new Date()))
                 .map(pp -> {
                     PerusteValidationDto result = mapper.map(pp, PerusteValidationDto.class);
                     result.setValidation(validoiProjekti(pp.getId(), JULKAISTU));
                     return result;
                 })
                 .filter(p -> !p.getValidation().isVaihtoOk())
+                .limit(10)
                 .collect(Collectors.toList());
     }
 
