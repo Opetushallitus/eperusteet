@@ -26,6 +26,7 @@ public enum RakenneModuuliRooli {
     NORMAALI("määritelty"),
     VIRTUAALINEN("määrittelemätön"),
     OSAAMISALA("osaamisala"),
+    TUTKINTONIMIKE("tutkintonimike"),
     VIERAS("vieras");
 
     private final String rooli;
