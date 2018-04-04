@@ -28,15 +28,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author nkala
  */
 public class PerusteenRakenne {
+
+    @Getter
+    @Setter
+    static public class Validointi {
+        public List<Ongelma> ongelmat = new ArrayList<>();
+        public BigDecimal laskettuLaajuus = new BigDecimal(0);
+        public Integer sisakkaisiaOsaamisalaryhmia = 0;
+    }
+
     @Getter
     @Setter
     static public class Ongelma {
@@ -51,12 +57,9 @@ public class PerusteenRakenne {
         }
     }
 
-    @Getter
-    @Setter
-    static public class Validointi {
-        public List<Ongelma> ongelmat = new ArrayList<>();
-        public BigDecimal laskettuLaajuus = new BigDecimal(0);
-        public Integer sisakkaisiaOsaamisalaryhmia = 0;
+    static private class ValidointiCtx {
+        Set<Koodi> osaamisalat;
+        RakenneModuuli osaamisalaryhma; // Kaikkien löydettyjen osaamisalojen tätyyy löytyä tästä
     }
 
     static public Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne) {
@@ -67,7 +70,18 @@ public class PerusteenRakenne {
         return validoiRyhma(osaamisalat, rakenne, 0, useMax);
     }
 
-    static private Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, final Integer syvyys, boolean useMax) {
+    static private Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, final int syvyys, boolean useMax) {
+        ValidointiCtx ctx = new ValidointiCtx();
+        if (osaamisalat == null) {
+            ctx.osaamisalat = new HashSet<>();
+        }
+        else {
+            ctx.osaamisalat = osaamisalat;
+        }
+        return validoiRyhma(ctx, rakenne, null, syvyys, useMax);
+    }
+
+    static private Validointi validoiRyhma(ValidointiCtx ctx, RakenneModuuli rakenne, RakenneModuuli parent, final int syvyys, boolean useMax) {
         final TekstiPalanen nimi = rakenne.getNimi();
         final RakenneModuuliRooli rooli = rakenne.getRooli();
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
@@ -97,7 +111,7 @@ public class PerusteenRakenne {
                     laajuus = laajuus == null ? new BigDecimal(0) : laajuus;
                     if (useMax
                             && tov.getLaajuusMaksimi() != null
-                            && tov.getLaajuusMaksimi().compareTo(laajuus) == 1) {
+                            && tov.getLaajuusMaksimi().compareTo(laajuus) > 0) {
                         laajuus = tov.getLaajuusMaksimi();
                     }
                     laajuusSummaMin = laajuusSummaMin.add(laajuus);
@@ -107,7 +121,7 @@ public class PerusteenRakenne {
             } else if (x instanceof RakenneModuuli) {
                 RakenneModuuli rm = (RakenneModuuli) x;
                 ++ryhmienMaara;
-                Validointi validoitu = validoiRyhma(osaamisalat, rm, syvyys + 1, useMax);
+                Validointi validoitu = validoiRyhma(ctx, rm, rakenne, syvyys + 1, useMax);
                 validointi.ongelmat.addAll(validoitu.ongelmat);
                 validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
                 validointi.sisakkaisiaOsaamisalaryhmia = validoitu.sisakkaisiaOsaamisalaryhmia;
@@ -116,13 +130,13 @@ public class PerusteenRakenne {
             }
         }
 
-        if (rooli != null && rooli.equals(RakenneModuuliRooli.OSAAMISALA)) {
+        if (rooli == RakenneModuuliRooli.OSAAMISALA) {
             validointi.sisakkaisiaOsaamisalaryhmia = validointi.sisakkaisiaOsaamisalaryhmia + 1;
             // Tarkista löytyykö perusteesta valittua osaamisalaa
             Koodi roa = rakenne.getOsaamisala();
             if (roa != null) {
                 boolean osaamisalaaEiPerusteella = true;
-                for (Koodi oa : osaamisalat) {
+                for (Koodi oa : ctx.osaamisalat) {
                     if (roa.equals(oa)) {
                         osaamisalaaEiPerusteella = false;
                         break;
@@ -134,7 +148,22 @@ public class PerusteenRakenne {
             }
         }
 
-        if (rooli != null && rooli.equals(RakenneModuuliRooli.VIRTUAALINEN)) {
+        // Ylin taso ei voi olla osaamisala
+        if (rooli != null && rooli != RakenneModuuliRooli.NORMAALI && syvyys == 0) {
+            validointi.ongelmat.add(new Ongelma("paatason-muodostumisen-rooli-virheellinen", nimi, syvyys));
+        }
+
+        // Osaamisaloja saa löytyä ainoastaan yhdestä ryhmästä
+        if (rooli == RakenneModuuliRooli.OSAAMISALA) {
+            if (ctx.osaamisalaryhma == null) {
+                ctx.osaamisalaryhma = parent;
+            }
+            else if (!Objects.equals(parent.getTunniste(), ctx.osaamisalaryhma.getTunniste())) {
+                validointi.ongelmat.add(new Ongelma("rakenteessa-osaamisaloja-useassa-ryhmassa", nimi, syvyys));
+            }
+        }
+
+        if (rooli == RakenneModuuliRooli.VIRTUAALINEN) {
             if (osat.size() > 0) {
                 validointi.ongelmat.add(new Ongelma("Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia", nimi, syvyys));
             }

@@ -141,6 +141,7 @@ public abstract class TestUtils {
         ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
         aosat.addAll(Arrays.asList(osat));
         rakenne.setOsat(aosat);
+        rakenne.setOsaamisala(new Koodi());
         rakenne.setMuodostumisSaanto(ms);
         rakenne.setRooli(RakenneModuuliRooli.OSAAMISALA);
         return rakenne;

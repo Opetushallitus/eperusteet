@@ -35,6 +35,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -350,14 +352,19 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Test
     public void testRakenneBuilder() {
+        Koodi oak1 = new Koodi();
+        Koodi oak2 = new Koodi();
+
         TestUtils.RakenneModuuliBuilder oa1 = TestUtils.rakenneModuuli()
                 .laajuus(60)
                 .rooli(RakenneModuuliRooli.OSAAMISALA)
+                .osaamisala(oak1)
                 .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 1"));
 
         TestUtils.RakenneModuuliBuilder oa2 = TestUtils.rakenneModuuli()
                 .laajuus(60)
                 .rooli(RakenneModuuliRooli.OSAAMISALA)
+                .osaamisala(oak2)
                 .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 2"));
 
         RakenneModuuli rakenne = TestUtils.rakenneModuuli()
@@ -373,7 +380,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
                         .ryhma(oa2))
                 .build();
 
-        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(
+                Stream.of(oak1, oak2).collect(Collectors.toSet()),
+                rakenne);
         assertThat(validoitu.ongelmat).hasSize(0);
     }
 

@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
@@ -26,6 +27,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -209,6 +213,46 @@ public class RakenneModuuliTest {
             ryhma2
         );
         Assert.assertFalse("Rakenteiden pitäisi olla erilaiset", rakenneOld.isSame(rakenneNew, false));
+    }
+
+
+    @Test
+    public void testOsaamisalatSamallaTasolla() {
+        Koodi oak1 = new Koodi();
+        Koodi oak2 = new Koodi();
+
+        TestUtils.RakenneModuuliBuilder oa1 = TestUtils.rakenneModuuli()
+                .laajuus(60)
+                .rooli(RakenneModuuliRooli.OSAAMISALA)
+                .osaamisala(oak1)
+                .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 1"));
+
+        TestUtils.RakenneModuuliBuilder oa2 = TestUtils.rakenneModuuli()
+                .laajuus(60)
+                .rooli(RakenneModuuliRooli.OSAAMISALA)
+                .osaamisala(oak2)
+                .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 2"));
+
+        RakenneModuuli rakenne = TestUtils.rakenneModuuli()
+                .laajuus(180)
+                .ryhma(r -> r
+                        .laajuus(60)
+                        .nimi("Muut")
+                        .tayta())
+                .ryhma(r -> r
+                        .nimi("Osaamisalat")
+                        .laajuus(60)
+                        .ryhma(oa2))
+                .ryhma(r -> r
+                        .nimi("Osaamisalat 2")
+                        .laajuus(60)
+                        .ryhma(oa1))
+                .build();
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(
+                Stream.of(oak1, oak2).collect(Collectors.toSet()),
+                rakenne);
+        assertThat(validoitu.ongelmat).hasSize(1);
     }
 
 }
