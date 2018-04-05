@@ -252,4 +252,43 @@ public class PerusteenRakenneTest {
                         "Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia");
     }
 
+    @Test
+    public void testRakenteenKoko() {
+        RakenneModuuli rakenne = TestUtils.rakenneModuuli()
+                .laajuus(180)
+                .koko(2, 2)
+                .build();
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
+        assertThat(validoitu.ongelmat)
+                .extracting(PerusteenRakenne.Ongelma::getOngelma)
+                .containsExactlyInAnyOrder(
+                        "Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (0 < 180).",
+                        "Laskettu koko on pienempi kuin vaadittu minimi (0 < 2).");
+    }
+
+    @Test
+    public void testRakenteenKokoLiianSuuri() {
+        RakenneModuuli rakenne = TestUtils.rakenneModuuli()
+                .laajuus(150, 180)
+                .koko(2, 4)
+                .ryhma(r -> r
+                        .laajuus(50)
+                        .tayta())
+                .ryhma(r -> r
+                        .laajuus(50)
+                        .tayta())
+                .ryhma(r -> r
+                        .laajuus(60)
+                        .tayta())
+                .build();
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
+        assertThat(validoitu.ongelmat)
+                .extracting(PerusteenRakenne.Ongelma::getOngelma)
+                .containsExactlyInAnyOrder(
+                        "Laskettu laajuuksien summan maksimi on pienempi kuin ryhmän vaadittu maksimi (160 > 180).",
+                        "Laskettu koko on pienempi kuin ryhmän vaadittu maksimi (3 < 4).");
+    }
+
 }
