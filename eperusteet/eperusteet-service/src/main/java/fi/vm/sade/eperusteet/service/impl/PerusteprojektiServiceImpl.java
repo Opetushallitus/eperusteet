@@ -786,7 +786,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     if (PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
                         if (suoritustapa.getRakenne() != null && PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
                             validointi = PerusteenRakenne.validoiRyhma(
-                                    peruste.getOsaamisalat(),
+                                    new PerusteenRakenne.Context(peruste.getOsaamisalat(), null),
                                     suoritustapa.getRakenne(),
                                     KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                             if (!validointi.ongelmat.isEmpty()) {
@@ -1004,7 +1004,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     if (PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
                         if (suoritustapa.getRakenne() != null && PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
                             validointi = PerusteenRakenne.validoiRyhma(
-                                    peruste.getOsaamisalat(),
+                                    new PerusteenRakenne.Context(peruste.getOsaamisalat(), null),
                                     suoritustapa.getRakenne(),
                                     KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                             if (!validointi.ongelmat.isEmpty()) {

@@ -57,31 +57,51 @@ public class PerusteenRakenne {
         }
     }
 
-    static private class ValidointiCtx {
+    @Getter
+    @Setter
+    static public class Context {
         Set<Koodi> osaamisalat;
+        Set<Koodi> tutkintonimikkeet;
+
+        public Context(Set<Koodi> osaamisalat, Set<Koodi> tutkintonimikkeet) {
+            this.osaamisalat = osaamisalat;
+            this.tutkintonimikkeet = tutkintonimikkeet;
+        }
+    }
+
+    @Getter
+    @Setter
+    static private class ValidointiState {
+        Context context;
         RakenneModuuli osaamisalaryhma; // Kaikkien löydettyjen osaamisalojen tätyyy löytyä tästä
-    }
 
-    static public Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne) {
-        return validoiRyhma(osaamisalat, rakenne, 0, false);
-    }
-
-    static public Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, boolean useMax) {
-        return validoiRyhma(osaamisalat, rakenne, 0, useMax);
-    }
-
-    static private Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, final int syvyys, boolean useMax) {
-        ValidointiCtx ctx = new ValidointiCtx();
-        if (osaamisalat == null) {
-            ctx.osaamisalat = new HashSet<>();
+        ValidointiState(Context ctx) {
+            this.context = ctx;
         }
-        else {
-            ctx.osaamisalat = osaamisalat;
-        }
-        return validoiRyhma(ctx, rakenne, null, syvyys, useMax);
     }
 
-    static private Validointi validoiRyhma(ValidointiCtx ctx, RakenneModuuli rakenne, RakenneModuuli parent, final int syvyys, boolean useMax) {
+    static public Validointi validoiRyhma(Context ctx, RakenneModuuli rakenne) {
+        return validoiRyhma(ctx, rakenne, 0, false);
+    }
+
+    static public Validointi validoiRyhma(Context ctx, RakenneModuuli rakenne, boolean useMax) {
+        return validoiRyhma(ctx, rakenne, 0, useMax);
+    }
+
+    static private Validointi validoiRyhma(Context ctx, RakenneModuuli rakenne, final int syvyys, boolean useMax) {
+        if (ctx == null) {
+            ctx = new Context(null, null);
+        }
+        if (ctx.getOsaamisalat() == null) {
+            ctx.setOsaamisalat(new HashSet<>());
+        }
+        if (ctx.getOsaamisalat() == null) {
+            ctx.setOsaamisalat(new HashSet<>());
+        }
+        return validoiRyhma(new ValidointiState(ctx), rakenne, null, syvyys, useMax);
+    }
+
+    static private Validointi validoiRyhma(ValidointiState ctx, RakenneModuuli rakenne, RakenneModuuli parent, final int syvyys, boolean useMax) {
         final TekstiPalanen nimi = rakenne.getNimi();
         final RakenneModuuliRooli rooli = rakenne.getRooli();
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
@@ -136,7 +156,7 @@ public class PerusteenRakenne {
             Koodi roa = rakenne.getOsaamisala();
             if (roa != null) {
                 boolean osaamisalaaEiPerusteella = true;
-                for (Koodi oa : ctx.osaamisalat) {
+                for (Koodi oa : ctx.getContext().getOsaamisalat()) {
                     if (roa.equals(oa)) {
                         osaamisalaaEiPerusteella = false;
                         break;

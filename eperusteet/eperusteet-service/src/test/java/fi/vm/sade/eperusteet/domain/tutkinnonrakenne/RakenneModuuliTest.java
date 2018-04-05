@@ -250,9 +250,35 @@ public class RakenneModuuliTest {
                 .build();
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(
-                Stream.of(oak1, oak2).collect(Collectors.toSet()),
+                new PerusteenRakenne.Context(
+                        Stream.of(oak1, oak2).collect(Collectors.toSet()),
+                        null),
                 rakenne);
         assertThat(validoitu.ongelmat).hasSize(1);
+    }
+
+    @Test
+    public void testTutkintonimikkeet() {
+        Koodi tutkintonimike = new Koodi();
+
+        TestUtils.RakenneModuuliBuilder tnRyhma = TestUtils.rakenneModuuli()
+                .laajuus(180)
+                .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                .osaamisala(tutkintonimike)
+                .nimi(TekstiPalanen.of(Kieli.FI, "Tutkintonimike"))
+                .tayta();
+
+        RakenneModuuli rakenne = TestUtils.rakenneModuuli()
+                .laajuus(180)
+                .ryhma(tnRyhma)
+                .build();
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(
+                new PerusteenRakenne.Context(
+                        null,
+                        Stream.of(tutkintonimike).collect(Collectors.toSet())),
+                rakenne);
+        assertThat(validoitu.ongelmat).hasSize(0);
     }
 
 }

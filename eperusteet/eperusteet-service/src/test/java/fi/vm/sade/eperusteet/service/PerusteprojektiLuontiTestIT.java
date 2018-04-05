@@ -381,9 +381,10 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
                 .build();
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(
-                Stream.of(oak1, oak2).collect(Collectors.toSet()),
+                new PerusteenRakenne.Context(
+                        Stream.of(oak1, oak2).collect(Collectors.toSet()),
+                        null),
                 rakenne);
         assertThat(validoitu.ongelmat).hasSize(0);
     }
-
 }
