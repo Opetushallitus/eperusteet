@@ -266,6 +266,10 @@ angular
                 vapaatTekstit.splice(idx, 1);
             };
 
+            $scope.removeVapaaTeksti = function(vapaatTekstit, sisalto) {
+                _.remove(vapaatTekstit, sisalto);
+            };
+
             $scope.addVapaaTeksti = vapaatTekstit => {
                 vapaatTekstit.push({
                     nimi: {},
