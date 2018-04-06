@@ -559,6 +559,15 @@ angular
                 notify: mode => {
                     $scope.editEnabled = mode;
                 },
+                asyncValidate: function(after) {
+                    Editointikontrollit.notifySentenceCaseWarnings({
+                        obj: $scope.editableTekstikappale,
+                        paths: [
+                            'nimi'
+                        ],
+                        after: after
+                    });
+                },
                 validate: mandatoryValidator => {
                     return mandatoryValidator($scope.fields, $scope.editableTekstikappale);
                 }

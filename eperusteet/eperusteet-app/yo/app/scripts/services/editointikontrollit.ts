@@ -24,7 +24,8 @@ interface EditointiKontrollitCallbacks {
  * - canCancel Called before cancel, must return a promise.
  *             If promise is resolved, canceling continues.
  */
-angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Utils, Notifikaatiot) => {
+angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Utils, Notifikaatiot,
+                                                              YleinenData, $uibModal) => {
     let scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -58,6 +59,68 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
                 $rootScope.$$ekEditing = false;
             }
         },
+
+        notifySentenceCaseWarnings(obj) {
+            const warnings = [];
+            _.each(obj.paths, path => {
+                if (!this.sentenceCaseValidator(_.get(obj.obj, path))) {
+                    warnings.push(_.get(obj.obj, path));
+                }
+            });
+            if (warnings.length > 0) {
+                $uibModal.open({
+                    template: require("views/modals/sisaltoMuotoiluVaroitusModal.html"),
+                    resolve: {
+                        warnings: () => warnings
+                    },
+                    controller: ($scope, $uibModalInstance, warnings) => {
+                        $scope.warnings = warnings;
+                        $scope.ok = () => {
+                            $uibModalInstance.close();
+                        };
+                        $scope.cancel = () => {
+                            $uibModalInstance.dismiss('cancel');
+                        };
+                    },
+                }).result.then(() => {
+                    if (_.isFunction(obj.after)) {
+                            obj.after();
+                    }
+                });
+            } else {
+                if (_.isFunction(obj.after)) {
+                    obj.after();
+                }
+            }
+        },
+
+        sentenceCaseValidator(obj) {
+            function validateSentenceCase(input) {
+                return !!(_.isString(input) && _.eq(input, _.capitalize(input.toLowerCase())));
+            }
+
+            if (validateSentenceCase(obj)) {
+                return true;
+            } else if (_.isObject(obj) && !_.isEmpty(obj)) {
+
+                const langs = _(obj)
+                    .keys()
+                    .filter(key => _.includes(_.values(YleinenData.kielet), key))
+                    .value();
+
+                let valid = true;
+                _.each(langs, (key: any) => {
+                    if (!validateSentenceCase(obj[key])) {
+                        valid = false;
+                    }
+                });
+
+                return valid;
+            }
+            // Undefined is okay
+            return true;
+        },
+
         async saveEditing(kommentti) {
             $rootScope.$broadcast("editointikontrollit:preSave");
             $rootScope.$broadcast("notifyCKEditor");

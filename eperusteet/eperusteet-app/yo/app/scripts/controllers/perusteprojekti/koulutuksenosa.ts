@@ -69,6 +69,15 @@ angular
                 Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
                 goBack();
             },
+            asyncValidate: cb => {
+                Editointikontrollit.notifySentenceCaseWarnings({
+                    obj: $scope.osaAlue,
+                    paths: [
+                        'nimi'
+                    ],
+                    after: cb
+                });
+            },
             save: function() {
                 $scope.osaAlue.valmaTelmaSisalto = angular.copy($scope.valma);
 
@@ -463,7 +472,13 @@ angular
                 ) {
                     Notifikaatiot.varoitus("laajuuden-maksimi-ei-voi-olla-pienempi-tai-sama-kuin-minimi");
                 } else {
-                    done();
+                    Editointikontrollit.notifySentenceCaseWarnings({
+                        obj: $scope.editableTutkinnonOsaViite,
+                        paths: [
+                            'nimi'
+                        ],
+                        after: done
+                    });
                 }
             },
             save: function(kommentti) {

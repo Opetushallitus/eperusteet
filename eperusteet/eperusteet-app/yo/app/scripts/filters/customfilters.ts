@@ -115,4 +115,12 @@ angular
         return function(text) {
             return text.split("\n");
         };
+    })
+    .filter("sentenceCase", function () {
+        return function (input) {
+            if (_.isString(input)) {
+                return _.capitalize(input.toLowerCase())
+            }
+            return input;
+        }
     });

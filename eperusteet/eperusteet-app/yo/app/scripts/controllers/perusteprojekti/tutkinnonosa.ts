@@ -469,8 +469,12 @@ angular
                     tutke2.fetch();
                 },
                 asyncValidate: cb => {
-                    lukitse(() => {
-                        cb();
+                    Editointikontrollit.notifySentenceCaseWarnings({
+                        obj: $scope.editableTutkinnonOsaViite,
+                        paths: [
+                            'nimi'
+                        ],
+                        after: cb
                     });
                 },
                 save: kommentti => {

@@ -40,7 +40,8 @@ angular
         CloneHelper,
         $timeout,
         $state,
-        Lukitus
+        Lukitus,
+        Editointikontrollit
     ) {
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
         $scope.editableModel = {};
@@ -80,6 +81,15 @@ angular
             notify: function(value) {
                 $scope.editEnabled = value;
                 PerusteProjektiSivunavi.setVisible(!value);
+            },
+            asyncValidate: function(after) {
+                Editointikontrollit.notifySentenceCaseWarnings({
+                    obj: $scope.editableModel,
+                    paths: [
+                        'nimi'
+                    ],
+                    after: after
+                });
             },
             validate: function() {
                 return true;
