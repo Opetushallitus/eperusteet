@@ -12,21 +12,20 @@
                ng-click="toggleAll()"></a>
         </span>
         <div>
-            <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
+            <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi" class="container-items-arviointi">
                 <div class="panel arvioinnin-kohdealue" ng-repeat="kohdealue in arviointi">
                     <div class="panel-heading">
                         <h3 class="panel-title arvioinnin-kohdealue-otsikko" ng-click="kohdealue.$$accordionOpen = !kohdealue.$$accordionOpen" ng-hide="eiKohdealueita">
                             <arvioinnin-tekstikentta sisalto="kohdealue"
                                 sisaltoalue="arviointi"
                                 sisaltoteksti="kohdealue.otsikko"
-                                sisaltoalue="$parent.arviointi.arvioinninKohdealueet"
                                 edit-allowed="editAllowed"
                                 editmode="editEnabled"></arvioinnin-tekstikentta>
                         </h3>
                     </div>
 
                     <div class="panel-body" ng-show="kohdealue.$$accordionOpen">
-                        <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.arvioinninKohteet">
+                        <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.arvioinninKohteet" class="container-items-kohteet">
                             <div class="panel arvioinnin-kohde"
                                 ng-class="{'kohde-edit': arvioinninkohde === originalKohde}"
                                 ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet"
