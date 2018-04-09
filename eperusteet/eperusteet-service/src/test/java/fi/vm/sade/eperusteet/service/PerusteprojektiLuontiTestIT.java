@@ -9,10 +9,7 @@ import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKoh
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.MuodostumisSaantoDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -31,10 +28,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,6 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
 import org.assertj.core.data.Index;
+
+import javax.persistence.EntityManager;
 
 
 @DirtiesContext
@@ -53,6 +49,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiService perusteprojektiService;
+
+    @Autowired
+    private PerusteenOsaViiteService povService;
 
     @Autowired
     private PerusteRepository repo;
@@ -73,6 +72,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiTestUtils ppTestUtils;
+
+    @Autowired
+    private EntityManager em;
 
     @Test
     @Rollback
@@ -387,4 +389,40 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
                 rakenne);
         assertThat(validoitu.ongelmat).hasSize(0);
     }
+
+    @Test
+    @Rollback(true)
+    public void testOsaamisaloillaTaytyyOllaKuvaukset() {
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        KoodiDto osaamisala1 = KoodiDto.of("osaamisalat", "1234");
+        KoodiDto osaamisala2 = KoodiDto.of("osaamisalat", "12345");
+
+        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            Set<KoodiDto> osaamisalat = Stream.of(osaamisala1, osaamisala2).collect(Collectors.toSet());
+            peruste.setOsaamisalat(osaamisalat);
+        });
+
+        { // Ilman kuvauksia
+            TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
+            assertThat(status.getInfot())
+                    .extracting(TilaUpdateStatus.Status::getViesti)
+                    .contains("osaamisalan-kuvauksia-puuttuu-sisallosta");
+        }
+
+        { // Kuvauksien kanssa
+            PerusteenOsaViiteDto.Laaja st = perusteService.getSuoritustapaSisalto(perusteDto.getId(), Suoritustapakoodi.REFORMI);
+            TekstiKappaleDto tekstiKappale1 = new TekstiKappaleDto();
+            tekstiKappale1.setOsaamisala(osaamisala1);
+            PerusteenOsaViiteDto.Matala a = perusteService.addSisaltoUUSI(perusteDto.getId(), Suoritustapakoodi.REFORMI, new PerusteenOsaViiteDto.Matala(tekstiKappale1));
+            PerusteenOsaViiteDto.Matala b = perusteService.addSisaltoUUSI(perusteDto.getId(), Suoritustapakoodi.REFORMI, new PerusteenOsaViiteDto.Matala(new TekstiKappaleDto()));
+
+            TekstiKappaleDto tekstiKappale2 = new TekstiKappaleDto();
+            tekstiKappale2.setOsaamisala(osaamisala2);
+            PerusteenOsaViiteDto.Matala c = perusteService.addSisaltoLapsi(perusteDto.getId(), b.getId(), new PerusteenOsaViiteDto.Matala(tekstiKappale2));
+            em.flush();
+            TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
+            assertThat(status.isVaihtoOk()).isTrue();
+        }
+    }
+
 }

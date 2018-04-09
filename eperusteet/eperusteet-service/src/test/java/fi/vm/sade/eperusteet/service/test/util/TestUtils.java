@@ -16,14 +16,7 @@
 package fi.vm.sade.eperusteet.service.test.util;
 
 import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Osaamistaso;
-import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;

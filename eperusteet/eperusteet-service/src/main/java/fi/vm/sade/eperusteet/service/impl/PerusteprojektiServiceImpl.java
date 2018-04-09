@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Functions;
 import fi.vm.sade.eperusteet.domain.*;
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 
@@ -748,6 +749,21 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return virheellisetKielet;
     }
 
+    @Transactional
+    public List<PerusteenOsaViite> flattenSisalto(PerusteenOsaViite root) {
+        List<PerusteenOsaViite> result = new ArrayList<>();
+        Stack<PerusteenOsaViite> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.empty()) {
+            PerusteenOsaViite head = stack.pop();
+            result.add(head);
+            if (head.getLapset() != null) {
+                head.getLapset().forEach(stack::push);
+            }
+        }
+        return result;
+    }
+
     /**
      * Validoi perusteprojektin tilaa vasten
      *
@@ -779,6 +795,24 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
+
+                // Osaamisaloilla täytyy olla tekstikuvaukset
+                if (peruste.getOsaamisalat() != null) {
+                    PerusteenOsaViite sisalto = peruste.getSisalto(null);
+                    if (sisalto != null) {
+                        Set<Koodi> kuvaukselliset = flattenSisalto(sisalto).stream()
+                                .filter(osa -> osa.getPerusteenOsa() instanceof TekstiKappale)
+                                .map(osa -> (TekstiKappale) osa.getPerusteenOsa())
+                                .map(TekstiKappale::getOsaamisala)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toSet());
+
+                        if (!Objects.equals(peruste.getOsaamisalat(), kuvaukselliset)) {
+                            updateStatus.addStatus("osaamisalan-kuvauksia-puuttuu-sisallosta");
+                            updateStatus.setVaihtoOk(false);
+                        }
+                    }
+                }
 
                 // Rakenteiden validointi
                 for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
