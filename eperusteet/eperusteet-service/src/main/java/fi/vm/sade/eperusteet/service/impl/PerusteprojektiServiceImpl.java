@@ -786,15 +786,25 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
 
-
-
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
         Peruste peruste = projekti.getPeruste();
-        boolean isValmisPohja = PerusteTyyppi.POHJA.equals(peruste.getTyyppi()) && (VALMIS.equals(projekti.getTila()) || PerusteTila.VALMIS.equals(peruste.getTila()));
+        boolean isValmisPohja = PerusteTyyppi.POHJA == peruste.getTyyppi() && (VALMIS == projekti.getTila() || PerusteTila.VALMIS == peruste.getTila());
+
+        // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
+        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA && tila != KOMMENTOINTI) {
+            TekstiPalanen nimi = projekti.getPeruste().getNimi();
+            for (Kieli kieli : projekti.getPeruste().getKielet()) {
+                if (nimi == null || !nimi.getTeksti().containsKey(kieli)
+                        || nimi.getTeksti().get(kieli).isEmpty()) {
+                    updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
+                    updateStatus.setVaihtoOk(false);
+                    break;
+                }
+            }
+        }
 
         // Perusteen validointi
-        if (!isValmisPohja && peruste.getSuoritustavat() != null
-                && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
+        if (!isValmisPohja && peruste.getSuoritustavat() != null && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
 
@@ -950,8 +960,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 }
 
                 // Tarkistetaan perusteen tutkinnon osien koodien ja tutkintonimikkeiden yhteys
-                List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = perusteService.getTutkintonimikeKoodit(
-                        projekti.getPeruste().getId());
+                List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = perusteService.getTutkintonimikeKoodit(projekti.getPeruste().getId());
                 List<String> koodit = new ArrayList<>();
                 for (TutkintonimikeKoodiDto tnk : tutkintonimikeKoodit) {
                     if (tnk.getTutkinnonOsaArvo() != null) {
@@ -1011,6 +1020,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Perusteprojekti projekti = repository.findOne(id);
         Peruste peruste = projekti.getPeruste();
+
+        // Tarkistetaan mahdolliset tilat
+        updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
+        if (!updateStatus.isVaihtoOk()) {
+            String viesti = "Tilasiirtymä tilasta '" + projekti.getTila().toString() + "' tilaan '"
+                    + tila.toString() + "' ei mahdollinen";
+            updateStatus.addStatus(viesti);
+            return updateStatus;
+        }
 
         // Dokumentit generoidaan automaattisesti julkaisun yhteydessä
         if (tila == ProjektiTila.JULKAISTU && projekti.getTila() == ProjektiTila.VALMIS) {

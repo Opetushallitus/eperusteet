@@ -14,11 +14,14 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
+package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import org.junit.After;
@@ -28,6 +31,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,9 +41,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author harrik
  */
-public class RakenneModuuliTest {
+public class RakenneModuuliTestIT {
 
-    public RakenneModuuliTest() {
+    public RakenneModuuliTestIT() {
     }
 
     @BeforeClass
@@ -280,5 +284,55 @@ public class RakenneModuuliTest {
                 rakenne);
         assertThat(validoitu.ongelmat).hasSize(0);
     }
+
+    @Test
+    public void testOsaamisalojenJaTutkintonimikkeidenLaajuusHuomioidaanVainKerran() {
+        Koodi oak1 = new Koodi();
+        Koodi oak2 = new Koodi();
+        Koodi tnk1 = new Koodi();
+        Koodi tnk2 = new Koodi();
+
+        TestUtils.RakenneModuuliBuilder tn1 = TestUtils.rakenneModuuli()
+                .laajuus(20)
+                .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                .osaamisala(tnk1)
+                .nimi(TekstiPalanen.of(Kieli.FI, "tutkintonimike 1"));
+
+        TestUtils.RakenneModuuliBuilder tn2 = TestUtils.rakenneModuuli()
+                .laajuus(10)
+                .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                .osaamisala(tnk2)
+                .nimi(TekstiPalanen.of(Kieli.FI, "tutkintonimike 2"));
+
+        TestUtils.RakenneModuuliBuilder oa1 = TestUtils.rakenneModuuli()
+                .laajuus(100)
+                .rooli(RakenneModuuliRooli.OSAAMISALA)
+                .osaamisala(oak1)
+                .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 1"));
+
+        TestUtils.RakenneModuuliBuilder oa2 = TestUtils.rakenneModuuli()
+                .laajuus(150)
+                .rooli(RakenneModuuliRooli.OSAAMISALA)
+                .osaamisala(oak2)
+                .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 2"));
+
+        // Ryhmään kiinnitetyistä osaamisaloista käytetään ainoastaan pienimmän muodustmisen omaavaa
+        RakenneModuuli rakenne = TestUtils.rakenneModuuli()
+                .ryhma(oa1)
+                .ryhma(oa2)
+                .ryhma(tn1)
+                .ryhma(tn2)
+                .build();
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(
+                new PerusteenRakenne.Context(
+                        Stream.of(oak1, oak2).collect(Collectors.toSet()),
+                        null),
+                rakenne);
+
+        // Huomioidaan vain pienimmät ryhmät -> 10 + 100 = 110
+        assertThat(validoitu.getLaskettuLaajuus().compareTo(new BigDecimal(110))).isEqualTo(0);
+    }
+
 
 }

@@ -372,12 +372,12 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         RakenneModuuli rakenne = TestUtils.rakenneModuuli()
                 .laajuus(180)
                 .ryhma(r -> r
-                        .laajuus(60)
+                        .laajuus(120)
                         .nimi("Muut")
                         .tayta())
                 .ryhma(r -> r
                         .nimi("Osaamisalat")
-                        .laajuus(120)
+                        .laajuus(60)
                         .ryhma(oa1)
                         .ryhma(oa2))
                 .build();

@@ -122,6 +122,9 @@ public class PerusteenRakenne {
         Integer ryhmienMaara = 0;
         Set<Long> uniikit = new HashSet<>();
 
+        BigDecimal osaamisalojenLaajuus = null;
+        BigDecimal tutkintonimikkeidenLaajuus = null;
+
         for (AbstractRakenneOsa x : osat) {
             if (x instanceof RakenneOsa) {
                 RakenneOsa ro = (RakenneOsa) x;
@@ -138,16 +141,41 @@ public class PerusteenRakenne {
                     laajuusSummaMax = laajuusSummaMax.add(laajuus);
                     uniikit.add(tov.getTutkinnonOsa().getId());
                 }
-            } else if (x instanceof RakenneModuuli) {
+            }
+            else if (x instanceof RakenneModuuli) {
                 RakenneModuuli rm = (RakenneModuuli) x;
                 ++ryhmienMaara;
                 Validointi validoitu = validoiRyhma(ctx, rm, rakenne, syvyys + 1, useMax);
+                if (rm.getRooli() == RakenneModuuliRooli.OSAAMISALA) {
+                    if (osaamisalojenLaajuus == null || validoitu.getLaskettuLaajuus().compareTo(osaamisalojenLaajuus) < 0) {
+                        osaamisalojenLaajuus = validoitu.getLaskettuLaajuus();
+                    }
+                }
+                else if (rm.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE) {
+                    if (tutkintonimikkeidenLaajuus == null || validoitu.getLaskettuLaajuus().compareTo(tutkintonimikkeidenLaajuus) < 0) {
+                        tutkintonimikkeidenLaajuus = validoitu.getLaskettuLaajuus();
+                    }
+                }
+                else {
+                    validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
+                    laajuusSummaMin = laajuusSummaMin.add(validoitu.laskettuLaajuus);
+                    laajuusSummaMax = laajuusSummaMax.add(validoitu.laskettuLaajuus);
+                }
                 validointi.ongelmat.addAll(validoitu.ongelmat);
-                validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
                 validointi.sisakkaisiaOsaamisalaryhmia = validoitu.sisakkaisiaOsaamisalaryhmia;
-                laajuusSummaMin = laajuusSummaMin.add(validoitu.laskettuLaajuus);
-                laajuusSummaMax = laajuusSummaMax.add(validoitu.laskettuLaajuus);
             }
+        }
+
+        if (tutkintonimikkeidenLaajuus != null) {
+            validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(tutkintonimikkeidenLaajuus);
+            laajuusSummaMin = laajuusSummaMin.add(tutkintonimikkeidenLaajuus);
+            laajuusSummaMax = laajuusSummaMax.add(tutkintonimikkeidenLaajuus);
+        }
+
+        if (osaamisalojenLaajuus != null) {
+            validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(osaamisalojenLaajuus);
+            laajuusSummaMin = laajuusSummaMin.add(osaamisalojenLaajuus);
+            laajuusSummaMax = laajuusSummaMax.add(osaamisalojenLaajuus);
         }
 
         if (rooli == RakenneModuuliRooli.OSAAMISALA) {
@@ -205,9 +233,9 @@ public class PerusteenRakenne {
             final BigDecimal laajuusMax = new BigDecimal(ms.laajuusMaksimi());
 
             if (rooli == RakenneModuuliRooli.NORMAALI) {
-                if (laajuusSummaMin.compareTo(laajuusMin) == -1) {
+                if (laajuusSummaMin.compareTo(laajuusMin) < 0) {
                     validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (" + laajuusSummaMin + " < " + laajuusMin + ").", nimi, syvyys));
-                } else if (laajuusSummaMax.compareTo(laajuusMax) == -1) {
+                } else if (laajuusSummaMax.compareTo(laajuusMax) < 0) {
                     validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan maksimi on pienempi kuin ryhmän vaadittu maksimi (" + laajuusSummaMax + " > " + laajuusMax + ").", nimi, syvyys));
                 }
 
