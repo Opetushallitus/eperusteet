@@ -48,7 +48,7 @@ angular.module("eperusteApp").service("TutkinnonOsaLeikelautaService", (localSto
                     // Asetetaan kopiolle tyyppi ja nimi
                     sourceModelClone.$osanTyyppi = event.target.id;
                     switch (event.target.id) {
-                        case "vapaatTekstit":
+                        case "vapaatTekstitAnchor":
                             sourceModelClone.$osanNimi = sourceModelClone.nimi;
                             break;
                         default:
@@ -79,7 +79,7 @@ angular.module("eperusteApp").service("TutkinnonOsaLeikelautaService", (localSto
                     target = event.target,
                     item = ui.item;
 
-                if (sender && target && item) {
+                if (sender && sender.context && target && item) {
                     if (
                         sender.context.id === "leikelauta" &&
                         target.id !== item.sortable.model.$osanTyyppi &&
