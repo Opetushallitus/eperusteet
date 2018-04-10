@@ -1,0 +1,17 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title" kaanna="'sisallon-muotoilu-saattaa-sisaltaa-virheita'"></h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <p kaanna="'sisalto-muotoiluvirheet-ohita'"></p>
+    <ul>
+        <li ng-repeat="warning in warnings">
+            <span kaanna="warning"></span>
+            <span> -> </span>
+            <span>{{warning | kaanna | sentenceCase}}</span>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()" kaanna="'ok'"></button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()" kaanna="'peruuta'"></button>
+</div>

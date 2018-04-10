@@ -114,6 +114,15 @@ angular
             save: function() {
                 $scope.tallennaPeruste();
             },
+            asyncValidate: function(after) {
+                Editointikontrollit.notifySentenceCaseWarnings({
+                    obj: $scope.editablePeruste,
+                    paths: [
+                        'nimi'
+                    ],
+                    after: after
+                });
+            },
             validate: function() {
                 return $scope.projektinPerusteForm.$valid && !_.isEmpty($scope.editablePeruste.kielet);
             },

@@ -29,9 +29,9 @@ angular
                     wrapper = angular.element(".editointi-wrapper");
 
                 /**
-         * Editointipalkki asettuu staattisesti footerin päälle kun skrollataan
-         * tarpeeksi alas. Ylempänä editointipalkki kelluu.
-         */
+                 * Editointipalkki asettuu staattisesti footerin päälle kun skrollataan
+                 * tarpeeksi alas. Ylempänä editointipalkki kelluu.
+                 */
                 scope.updatePosition = function() {
                     if (window.scrollTop() + window.innerHeight() < wrapper.offset().top + container.height()) {
                         container.addClass("floating");

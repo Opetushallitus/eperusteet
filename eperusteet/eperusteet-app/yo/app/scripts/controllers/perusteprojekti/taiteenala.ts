@@ -445,6 +445,15 @@ export function taiteenalaCtrl(
                         });
                     });
                 },
+                asyncValidate: function(cb) {
+                    Editointikontrollit.notifySentenceCaseWarnings({
+                        obj: $scope.editableTaiteenala,
+                        paths: [
+                            'nimi'
+                        ],
+                        after: cb
+                    });
+                },
                 save: kommentti => {
                     return $q((resolve, reject) => {
                         let idx = 0;

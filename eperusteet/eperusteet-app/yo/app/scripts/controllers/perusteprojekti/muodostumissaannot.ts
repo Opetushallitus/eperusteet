@@ -154,7 +154,15 @@ angular
                                 .then(isEmpty => {
                                     return isEmpty ? leikelautaDialogi() : $q.when();
                                 })
-                                .then(cb);
+                                .then(() => {
+                                    Editointikontrollit.notifySentenceCaseWarnings({
+                                        obj: $scope.rakenne.muodostumisOtsikko,
+                                        paths: [
+                                            'nimi'
+                                        ],
+                                        after: cb
+                                    });
+                                });
                         });
                     },
                     asyncSave: (kommentti, cb) => {

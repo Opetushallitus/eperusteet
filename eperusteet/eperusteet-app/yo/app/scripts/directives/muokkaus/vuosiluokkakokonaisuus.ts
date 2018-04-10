@@ -105,11 +105,13 @@ angular
                 cloner.clone($scope.editableModel);
             },
             asyncValidate: function(cb) {
-                if ($scope.editableModel.id) {
-                    Lukitus.lukitse(cb);
-                } else {
-                    cb();
-                }
+                Editointikontrollit.notifySentenceCaseWarnings({
+                    obj: $scope.editableModel,
+                    paths: [
+                        'nimi'
+                    ],
+                    after: cb
+                });
             },
             save: function() {
                 if ($scope.editableModel.id) {
