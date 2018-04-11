@@ -18,21 +18,36 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
+import javax.validation.Constraint;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.Payload;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @DiscriminatorValue("RM")
 @Audited
+@RakenneModuuli.ValidRakenneModuuli
 public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli> {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -95,8 +110,19 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             this.setOsat(moduuli.getOsat());
             this.nimi = moduuli.getNimi();
             this.setKuvaus(moduuli.getKuvaus());
+            this.
             this.muodostumisSaanto = moduuli.getMuodostumisSaanto() == null ? null : new MuodostumisSaanto(moduuli.getMuodostumisSaanto());
-            this.osaamisala = moduuli.getOsaamisala();
+
+            if (moduuli.getOsaamisala() != null) {
+                this.osaamisala = moduuli.getOsaamisala();
+                this.tutkintonimike = null;
+                this.rooli = RakenneModuuliRooli.OSAAMISALA;
+            }
+            else if (moduuli.getTutkintonimike() != null) {
+                this.tutkintonimike = moduuli.getTutkintonimike();
+                this.osaamisala = null;
+                this.rooli = RakenneModuuliRooli.TUTKINTONIMIKE;
+            }
         }
 
     }
@@ -126,6 +152,14 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         }
 
         if (this.getRooli() != moduuli.getRooli()) {
+            return false;
+        }
+
+        if (!Objects.equals(this.getTutkintonimike(), moduuli.getTutkintonimike())) {
+            return false;
+        }
+
+        if (!Objects.equals(this.getOsaamisala(), moduuli.getOsaamisala())) {
             return false;
         }
 
@@ -164,5 +198,31 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         }
 
         return false;
+    }
+
+    @Target({ TYPE, ANNOTATION_TYPE })
+    @Retention(RUNTIME)
+    @Constraint(validatedBy = { ValidRakenneModuuliValidator.class })
+    @Documented
+    public @interface ValidRakenneModuuli {
+        String message() default "{org.hibernate.validator.referenceguide.chapter06.classlevel." +
+                "ValidRakenneModuuliValidator.message}";
+        Class<?>[] groups() default { };
+        Class<? extends Payload>[] payload() default { };
+    }
+
+    private static class ValidRakenneModuuliValidator implements ConstraintValidator<ValidRakenneModuuli, RakenneModuuli> {
+        @Override
+        public void initialize(ValidRakenneModuuli validRakenneModuuliValidator) {
+
+        }
+
+        @Override
+        public boolean isValid(RakenneModuuli moduuli, ConstraintValidatorContext constraintValidatorContext) {
+            boolean hasTutkintonimikeAndOsaamisala = moduuli.getTutkintonimike() != null && moduuli.getOsaamisala() != null;
+            boolean hasCorrectTutkintonimike = moduuli.getTutkintonimike() == null || moduuli.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE;
+            boolean hasCorrectOsaamisala = moduuli.getOsaamisala() == null || moduuli.getRooli() == RakenneModuuliRooli.OSAAMISALA;
+            return !hasTutkintonimikeAndOsaamisala && hasCorrectOsaamisala && hasCorrectOsaamisala;
+        }
     }
 }

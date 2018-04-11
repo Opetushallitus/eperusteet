@@ -61,6 +61,24 @@
             </div>
         </div>
 
+        <div ng-if="ryhma.osat.length === 0 && tutkintonimikkeet.length > 0 && (ryhma.rooli === 'määritelty' || ryhma.tutkintonimike)">
+            <h3 kaanna>tutkintonimike</h3>
+            <div class="modal-body tag-modal">
+              <div style="margin-bottom: 6px" ng-click="Tutkintonimike.valitse(null)">
+                <div class="tag-indicator">
+                  <span class="glyphicon" ng-class="!ryhma.tutkintonimike ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
+                </div>
+                <span kaanna="'ei-valintaa'"></span>
+              </div>
+              <div style="margin-bottom: 6px" ng-repeat="nimike in tutkintonimikkeet" ng-click="Tutkintonimike.valitse(nimike)">
+                <div class="tag-indicator">
+                  <span class="glyphicon" ng-class="ryhma.tutkintonimike.uri === nimike.tutkintonimikeUri ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
+                </div>
+                <span kaanna="nimike.nimi || nimike.tutkintonimikeUri"></span>
+              </div>
+            </div>
+        </div>
+
     </form>
 </div>
 

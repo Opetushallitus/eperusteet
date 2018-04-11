@@ -949,16 +949,18 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private RakenneModuuli checkIfOsaamisalatAlreadyExists(RakenneModuuli rakenneModuuli) {
-        Koodi osaamisalaTemp;
         if (rakenneModuuli != null) {
             if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getUri() != null) {
-                osaamisalaTemp = koodiRepository.findOneByUriAndVersio(rakenneModuuli.getOsaamisala().getUri(), rakenneModuuli.getOsaamisala().getVersio());
-                if (osaamisalaTemp != null) {
-                    rakenneModuuli.setOsaamisala(osaamisalaTemp);
+                Koodi osaamisalaKoodi = koodiRepository.findOneByUriAndVersio(
+                        rakenneModuuli.getOsaamisala().getUri(),
+                        rakenneModuuli.getOsaamisala().getVersio());
+                if (osaamisalaKoodi != null) {
+                    rakenneModuuli.setOsaamisala(osaamisalaKoodi);
                 } else {
                     rakenneModuuli.setOsaamisala(koodiRepository.save(rakenneModuuli.getOsaamisala()));
                 }
-            } else {
+            }
+            else {
                 rakenneModuuli.setOsaamisala(null);
             }
             for (AbstractRakenneOsa osa : rakenneModuuli.getOsat()) {

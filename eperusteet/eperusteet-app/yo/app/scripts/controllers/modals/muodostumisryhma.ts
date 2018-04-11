@@ -42,16 +42,39 @@ angular
                     osaamisalakoodiUri: oa.uri,
                     nimi: oa.nimi
                 };
-            })
-        );
+            }));
+
+        if (!_.isEmpty(peruste.tutkintonimikkeet)) {
+            $scope.tutkintonimikkeet = _(peruste.tutkintonimikkeet)
+                .filter(nimike => !nimike.osaamisalaUri && !nimike.tutkinnonOsaUri)
+                .value();
+        }
+
         $scope.roolit = _.map(YleinenData.rakenneRyhmaRoolit, function(rooli) {
             return { value: rooli, label: rooli };
         });
 
         $scope.luonti = !_.isObject(ryhma);
 
+        $scope.Tutkintonimike = {
+            valitse: function(nimike) {
+                $scope.ryhma.osaamisala = null;
+                // $scope.ryhma.rooli = "tutkintonimike";
+                $scope.ryhma.tutkintonimike = {
+                    id: nimike.id,
+                    koodisto: "tutkintonimikkeet",
+                    uri: nimike.tutkintonimikeUri,
+                    versio: null
+                };
+                if (nimike && nimike.nimi) {
+                    $scope.ryhma.nimi = _.cloneDeep(nimike.nimi);
+                }
+            }
+        };
+
         $scope.Osaamisala = {
             valitse: function(oa) {
+                $scope.ryhma.tutkintonimike = null;
                 $scope.ryhma.osaamisala = oa;
                 if (oa && oa.nimi) {
                     $scope.ryhma.nimi = _.cloneDeep(oa.nimi);

@@ -125,6 +125,12 @@ public class PerusteprojektiController {
         return new ResponseEntity<>(service.getTilat(id), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{id}/validoi", method = GET)
+    @ResponseBody
+    public ResponseEntity<TilaUpdateStatus> getPerusteprojektiValidointi(@PathVariable("id") final long id) {
+        return new ResponseEntity<>(service.validoiProjekti(id, ProjektiTila.JULKAISTU), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
