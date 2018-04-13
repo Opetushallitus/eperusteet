@@ -1225,5 +1225,8 @@
 
     "tutkinnon-osan-ammattitaitovaatukset-tekstina": "Tutkinnon osien ammattitaitovaatimukset täytyy laatia rakenteisena",
     "sisallon-muotoilu-saattaa-sisaltaa-virheita": "Sisältö saattaa sisältää muotoiluvirheitä",
-    "sisalto-muotoiluvirheet-ohita": "Oletko varma, että sisältö on muotoiltu oikein? Jos on, paina OK."
+    "sisalto-muotoiluvirheet-ohita": "Oletko varma, että sisältö on muotoiltu oikein? Jos on, paina OK.",
+    "etusivu": "Etusivu",
+    "eperusteet": "ePerusteet",
+    "virheelliset": "Virheelliset"
 }

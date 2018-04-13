@@ -70,12 +70,12 @@ angular
 
         function updateTitle() {
             var isEtusivu = $state.is("root.aloitussivu");
-            var prefix = Kaanna.kaanna("ePerusteet") + ": ";
+            var prefix = Kaanna.kaanna("eperusteet") + ": ";
             var title = "";
             if (inProject) {
                 title = Kaanna.kaanna(inProject.nimi);
             } else if (isEtusivu) {
-                title = Kaanna.kaanna("Etusivu");
+                title = Kaanna.kaanna("etusivu");
             }
             if ($scope.navigaatiopolku.length > 1) {
                 title += !title ? "" : ": " + Kaanna.kaanna((_.last($scope.navigaatiopolku) as any).label);
