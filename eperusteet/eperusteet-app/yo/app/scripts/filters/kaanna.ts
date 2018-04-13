@@ -19,7 +19,7 @@ import * as angular from "angular";
 
 angular
     .module("eperusteApp")
-    .service("Kaanna", function($translate, Kieli) {
+    .service("Kaanna", function($translate, Kieli, DEVELOPMENT) {
         function translate(obj, key) {
             function getTranslation(input, lang) {
                 return input[lang] || input[lang.toUpperCase()] || input["kieli_" + lang + "#1"];
@@ -50,6 +50,11 @@ angular
                     return kaannaSisalto(input) || "";
                 } else if (_.isString(input)) {
                     const result = $translate.instant(input, config);
+                    if (DEVELOPMENT) {
+                        if (!_.isEmpty(input) && _.eq(result, input)) {
+                            console.info("Käännös puuttuu:", input);
+                        }
+                    }
                     return result;
                 } else if (input === 0 || input) {
                     return "" + input;
