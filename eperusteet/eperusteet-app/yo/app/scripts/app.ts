@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 import moment from "moment";
 
 if (process.env.NODE_ENV === "development") {

@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 angular.module("eperusteApp").filter("tutkintokoodiFilter", function() {
     return function(input, tutkintotyypit) {

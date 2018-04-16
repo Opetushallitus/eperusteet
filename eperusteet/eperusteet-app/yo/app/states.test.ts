@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import { getComponent, inject, getOfType, testDirective, testModule, mockApp } from "app/testutils";
 
 describe("$state", () => {

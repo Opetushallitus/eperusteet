@@ -14,7 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
 import * as angular from "angular";
 
 angular

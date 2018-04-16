@@ -1,5 +1,5 @@
 import "app/testutils";
-import * as _ from "lodash";
+import _ from "lodash";
 import * as angular from "angular";
 
 angular.module("testModule", [])

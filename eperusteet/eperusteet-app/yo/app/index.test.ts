@@ -1,5 +1,5 @@
 import { getDirectives, getComponent, inject, getOfType, testModule, mockApp } from "app/testutils";
-import * as _ from "lodash";
+import _ from "lodash";
 
 
 describe("app", () => {
