@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * from "lodash";
+import _ from "lodash";
 
 angular
     .module("eperusteApp")
