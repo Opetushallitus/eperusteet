@@ -195,5 +195,8 @@
     "poista-tekstikappale-teksti": "[Tekstikappale \"{{nimi}}\" poistetaan. Oletko varma?]",
 
     "lisaa-koulutus": "[Lisää koulutus]",
-    "poista-koulutus": "[Poista koulutus]"
+    "poista-koulutus": "[Poista koulutus]",
+    "rajaa-koulutuksenosia": "Avgränsa utbildningsdelarna",
+
+    "osa-alueet": "Delområden"
 }
