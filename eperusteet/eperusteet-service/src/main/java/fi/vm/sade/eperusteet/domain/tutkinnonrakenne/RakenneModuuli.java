@@ -108,9 +108,9 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             }
 
             this.setOsat(moduuli.getOsat());
-            this.nimi = moduuli.getNimi();
+            this.setNimi(moduuli.getNimi());
             this.setKuvaus(moduuli.getKuvaus());
-            this.
+            this.setErikoisuus(moduuli.getErikoisuus());
             this.muodostumisSaanto = moduuli.getMuodostumisSaanto() == null ? null : new MuodostumisSaanto(moduuli.getMuodostumisSaanto());
 
             if (moduuli.getOsaamisala() != null) {

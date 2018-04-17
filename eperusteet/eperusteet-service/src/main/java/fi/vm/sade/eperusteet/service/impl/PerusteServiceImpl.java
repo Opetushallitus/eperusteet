@@ -1479,13 +1479,34 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             if (depth >= maxDepth) {
                 throw new BusinessRuleViolationException("Tutkinnon rakennehierarkia ylittää maksimisyvyyden");
             }
-            // Tarkistetaan, että tutkinnossa määriteltäviin ryhmiin ei ole lisätty osia
+
             if (dto instanceof RakenneModuuliDto) {
+                // Tarkistetaan, että tutkinnossa määriteltäviin ryhmiin ei ole lisätty osia
                 RakenneModuuliDto rakenneModuuliDto = (RakenneModuuliDto) dto;
                 if (rakenneModuuliDto.getRooli() != null
                         && rakenneModuuliDto.getRooli().equals(RakenneModuuliRooli.VIRTUAALINEN)
                         && rakenneModuuliDto.getOsat().size() > 0) {
                     throw new BusinessRuleViolationException("Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia");
+                }
+
+                // Osaamisalaa ja tutkintonimikettä ei voi asettaa samanaikaisesti
+                if (rakenneModuuliDto.getTutkintonimike() != null && rakenneModuuliDto.getOsaamisala() != null) {
+                    throw new BusinessRuleViolationException("virheellisteti-asetettu-tutkintonimike");
+                }
+
+                // Tarkistetaan tutkintonimike
+                if (rakenneModuuliDto.getTutkintonimike() == null && rakenneModuuliDto.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE) {
+                    throw new BusinessRuleViolationException("virheellisesti-asetettu-tutkintonimike");
+                }
+                if (rakenneModuuliDto.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE && rakenneModuuliDto.getTutkintonimike() == null) {
+                    throw new BusinessRuleViolationException("tutkintonimikeryhmalta-puuttuu-tutkintonimikekoodi");
+                }
+
+                if (rakenneModuuliDto.getOsaamisala() == null && rakenneModuuliDto.getRooli() == RakenneModuuliRooli.OSAAMISALA) {
+                    throw new BusinessRuleViolationException("virheellisesti-asetettu-osaamisala");
+                }
+                if (rakenneModuuliDto.getRooli() == RakenneModuuliRooli.OSAAMISALA && rakenneModuuliDto.getOsaamisala() == null) {
+                    throw new BusinessRuleViolationException("osaamisalaryhmalta-puuttuu-osaamisalakoodi");
                 }
             }
         }

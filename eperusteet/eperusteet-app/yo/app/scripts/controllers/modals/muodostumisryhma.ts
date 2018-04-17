@@ -56,28 +56,45 @@ angular
 
         $scope.luonti = !_.isObject(ryhma);
 
+        function tyhjennaRyhma() {
+            $scope.ryhma.osaamisala = null;
+            $scope.ryhma.rooli = "maaritelty";
+            $scope.ryhma.tutkintonimike = null;
+        }
+
         $scope.Tutkintonimike = {
             valitse: function(nimike) {
-                $scope.ryhma.osaamisala = null;
-                // $scope.ryhma.rooli = "tutkintonimike";
-                $scope.ryhma.tutkintonimike = {
-                    id: nimike.id,
-                    koodisto: "tutkintonimikkeet",
-                    uri: nimike.tutkintonimikeUri,
-                    versio: null
-                };
-                if (nimike && nimike.nimi) {
-                    $scope.ryhma.nimi = _.cloneDeep(nimike.nimi);
+                if (!nimike) {
+                    tyhjennaRyhma();
+                }
+                else {
+                    $scope.ryhma.osaamisala = null;
+                    $scope.ryhma.rooli = "tutkintonimike";
+                    $scope.ryhma.tutkintonimike = {
+                        id: nimike.id,
+                        koodisto: "tutkintonimikkeet",
+                        uri: nimike.tutkintonimikeUri,
+                        versio: null
+                    };
+                    if (nimike && nimike.nimi) {
+                        $scope.ryhma.nimi = _.cloneDeep(nimike.nimi);
+                    }
                 }
             }
         };
 
         $scope.Osaamisala = {
             valitse: function(oa) {
-                $scope.ryhma.tutkintonimike = null;
-                $scope.ryhma.osaamisala = oa;
-                if (oa && oa.nimi) {
-                    $scope.ryhma.nimi = _.cloneDeep(oa.nimi);
+                if (!oa) {
+                    tyhjennaRyhma();
+                }
+                else {
+                    $scope.ryhma.tutkintonimike = null;
+                    $scope.ryhma.rooli = "osaamisala";
+                    $scope.ryhma.osaamisala = oa;
+                    if (oa && oa.nimi) {
+                        $scope.ryhma.nimi = _.cloneDeep(oa.nimi);
+                    }
                 }
             }
         };
