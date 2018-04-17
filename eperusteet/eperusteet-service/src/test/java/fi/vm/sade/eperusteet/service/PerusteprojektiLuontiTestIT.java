@@ -391,6 +391,31 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testTutkintonimikeRyhmallaTaytyyOllaOsia() {
+        Koodi koodi = new Koodi();
+
+        TestUtils.RakenneModuuliBuilder nimike = TestUtils.rakenneModuuli()
+                .laajuus(0)
+                .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                .osaamisala(koodi)
+                .nimi(TekstiPalanen.of(Kieli.FI, "nimike"));
+
+        RakenneModuuli rakenne = TestUtils.rakenneModuuli()
+                .laajuus(0)
+                .ryhma(nimike)
+                .build();
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(
+                new PerusteenRakenne.Context(
+                        Stream.of(koodi).collect(Collectors.toSet()),
+                        null),
+                rakenne);
+        assertThat(validoitu.getOngelmat())
+                .extracting(PerusteenRakenne.Ongelma::getOngelma)
+                .contains("ryhmalta-puuttuu-sisalto");
+    }
+
+    @Test
     @Rollback(true)
     public void testOsaamisaloillaTaytyyOllaKuvaukset() {
         PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();

@@ -10,7 +10,15 @@
         <formfield ng-if="vanhempi || luonti || leikelauta" model="ryhma" model-var="nimi" label="nimi" type="text" ng-required="true"></formfield>
         <formfield ng-if="vanhempi || luonti || leikelauta" model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
         <div ng-show="vanhempi || luonti || leikelauta">
-          <formfield ng-if="!ryhma.osat.length" model="ryhma" model-var="rooli" label="rooli" options="roolit"><ohje teksti="ohje-ryhma-rooli"></ohje></formfield>
+          <formfield
+             ng-if="!ryhma.osat.length"
+             model="ryhma"
+             model-var="rooli"
+             label="rooli"
+             options="roolit">
+            <ohje teksti="ohje-ryhma-rooli"></ohje>
+          </formfield>
+
           <div class="row" ng-if="ryhma.osat.length">
             <label class="col-sm-3 control-label" kaanna="rooli"></label>
             <div class="col-sm-9">
@@ -29,7 +37,7 @@
             </div>
         </div>
 
-        <div ng-if="ryhma.osat.length === 0 && osaamisalat.length > 1 && (ryhma.rooli === 'määritelty' || ryhma.osaamisala)">
+        <div ng-if="ryhma.rooli === 'osaamisala'">
             <h3 kaanna>osaamisala</h3>
             <div class="modal-body tag-modal">
               <div style="margin-bottom: 6px" ng-repeat="oa in osaamisalat" ng-click="Osaamisala.valitse($index === 0 ? null : oa)">
@@ -42,7 +50,7 @@
             </div>
         </div>
 
-        <div ng-if="ryhma.osat.length === 0 && tutkintonimikkeet.length > 0 && (ryhma.rooli === 'määritelty' || ryhma.tutkintonimike)">
+        <div ng-if="ryhma.rooli === 'tutkintonimike'">
             <h3 kaanna>tutkintonimike</h3>
             <div class="modal-body tag-modal">
               <div style="margin-bottom: 6px" ng-click="Tutkintonimike.valitse(null)">
@@ -62,18 +70,18 @@
 
         <div class="row">
             <div class="col-sm-6">
-                <h3>
+                <h4>
                   <span kaanna="'tutkinnonosa-laajuus'"></span>
                   <ohje teksti="ohje-ryhma-laajuus"></ohje>
-                </h3>
+                </h4>
                 <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="float" name="laajuusMin" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
                 <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="float" name="laajuusMax" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
             </div>
             <div class="col-sm-6">
-                <h3>
+                <h4>
                   <span kaanna="'tutkinnonosa-koko'"></span>
                   <ohje teksti="ohje-ryhma-koko"></ohje>
-                </h3>
+                </h4>
                 <formfield model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="integer" name="kokoMin" min="0" max="999" form="ryhmaForm"></formfield>
                 <formfield model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="integer" name="kokoMax" min="0" max="999" form="ryhmaForm"></formfield>
             </div>

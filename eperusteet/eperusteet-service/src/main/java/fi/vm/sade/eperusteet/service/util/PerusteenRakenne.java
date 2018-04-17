@@ -105,6 +105,10 @@ public class PerusteenRakenne {
         final TekstiPalanen nimi = rakenne.getNimi();
         final RakenneModuuliRooli rooli = rakenne.getRooli();
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
+        if (osat == null) {
+            osat = new ArrayList<>();
+        }
+
         MuodostumisSaanto ms = rakenne.getMuodostumisSaanto();
 
         Validointi validointi = new Validointi();
@@ -224,6 +228,13 @@ public class PerusteenRakenne {
 
         if (rooli == RakenneModuuliRooli.NORMAALI && uniikit.size() + ryhmienMaara != osat.size()) {
             validointi.ongelmat.add(new Ongelma("Ryhmässä on samoja tutkinnon osia (" + uniikit.size() + " uniikkia).", nimi, syvyys));
+        }
+
+        // Tutkintonimike- ja osaamisalaryhmillä täytyy olla sisältöä
+        if (rooli == RakenneModuuliRooli.OSAAMISALA || rooli == RakenneModuuliRooli.TUTKINTONIMIKE) {
+            if (rakenne.getOsat().isEmpty()) {
+                validointi.ongelmat.add(new Ongelma("ryhmalta-puuttuu-sisalto", nimi, syvyys));
+            }
         }
 
         if (ms != null) {

@@ -35,9 +35,9 @@ import org.junit.Test;
  *
  * @author nkala
  */
-public class PerusteenRakenneTest {
+public class PerusteenRakenneTestIT {
 
-    public PerusteenRakenneTest() {
+    public PerusteenRakenneTestIT() {
     }
 
     @BeforeClass

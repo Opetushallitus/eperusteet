@@ -37,7 +37,7 @@ export const kommenttiMaxLength = 1024;
 
 export const kontekstit = ["ammatillinenperuskoulutus", "ammatillinenaikuiskoulutus"];
 
-export const rakenneRyhmaRoolit = ["määritelty", "määrittelemätön", "vieras"];
+export const rakenneRyhmaRoolit = ["määritelty", "määrittelemätön", "vieras", "osaamisala", "tutkintonimike"];
 
 export const osaamisalaRooli = "osaamisala";
 
