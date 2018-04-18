@@ -116,7 +116,7 @@ public class PerusteController {
             @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
             @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)"),
+            @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "Perustetta muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC). Huomioi koko perusteen sisällön."),
             @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
             @ApiImplicitParam(name = "tutkinnonosat", dataType = "boolean", paramType = "query", value = "hae myös tutkinnon osista"),
             @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),

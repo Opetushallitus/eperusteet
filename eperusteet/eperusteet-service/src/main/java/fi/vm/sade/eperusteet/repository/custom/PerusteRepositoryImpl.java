@@ -265,7 +265,8 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
 
         if (pq.getMuokattu() != null) {
-            pred = cb.and(pred, cb.greaterThan(root.get(Peruste_.muokattu), cb.literal(new Date(pq.getMuokattu()))));
+            pred = cb.and(pred, cb.greaterThan(root.join(Peruste_.globalVersion)
+                    .get(PerusteVersion_.aikaleima), cb.literal(new Date(pq.getMuokattu()))));
         }
 
         if (!ObjectUtils.isEmpty(pq.getKieli())) {
