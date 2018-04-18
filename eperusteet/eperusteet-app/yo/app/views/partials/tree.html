@@ -83,14 +83,6 @@
         <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
           <li ng-model="osa" class="skratchpad-item"
               ng-repeat="osa in uniikit | orderBy:[jarjestysSorter, nimiSorter] | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
-              <div ng-if="osa.erikoisuus === 'vieras'">
-                <div class="sp-badge">
-                  <span icon-role="plus"></span>
-                </div>
-                <div class="sp-name">
-                  <span kaanna="vateConverter('vierastutkinnonosa')"></span>
-                </div>
-              </div>
               <div ng-if="!osa.erikoisuus">
                 <div class="sp-action-icon">
                   <a class="action-link" ng-click="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate = !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate"
