@@ -246,10 +246,9 @@ angular
         PerusteprojektiResource,
         PerusteProjektiService,
         Perusteet,
-        YleinenData,
-        perusteprojektiBackLink
+        YleinenData
     ) {
-        if ($rootScope.lastState.state.name === "root.admin.tiedotteet") {
+        if ($rootScope.lastState && $rootScope.lastState.state.name === "root.admin.tiedotteet") {
             $scope.$backurl = $state.href($rootScope.lastState.state.name, $rootScope.lastState.params);
             $scope.$backurlHeader = "takaisin-tiedotteiden-hallintaan";
         }
