@@ -19,6 +19,8 @@ import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 /**
  *
  * @author nkala
@@ -34,6 +36,7 @@ public class TutkintonimikeKoodiDto {
     private String osaamisalaArvo;
     private String tutkintonimikeUri;
     private String tutkintonimikeArvo;
+    Map<String, String> nimi;
 
     public TutkintonimikeKoodiDto() {
     }

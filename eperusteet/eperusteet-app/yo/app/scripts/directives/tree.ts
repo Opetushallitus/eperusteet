@@ -204,6 +204,7 @@ angular
             '<div ng-if="rakenne.osaamisala || (rakenne.kuvaus && rakenne.kuvaus[lang].length > 0)" class="kuvaus">' +
             '  <div class="kuvausteksti" ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">' +
             '    <div class="osaamisala" ng-if="rakenne.osaamisala"><b kaanna="osaamisala"></b>: {{ rakenne.osaamisala.nimi | kaanna }} ({{ rakenne.osaamisala.osaamisalakoodiArvo }})</div>' +
+            '    <div class="osaamisala" ng-if="rakenne.tutkintonimike"><b kaanna="tutkintonimike"></b>: {{ rakenne.tutkintonimike.nimi | kaanna }} ({{ rakenne.tutkintonimike.arvo }})</div>' +
             '    <p ng-if="rakenne.kuvaus && rakenne.kuvaus[lang].length > 0">{{ rakenne.kuvaus | kaanna }}</p>' +
             "  </div>" +
             '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus" ng-attr-title="{{rakenne.$showKuvaus && (\'piilota-ryhman-kuvaus\'|kaanna) || (\'nayta-ryhman-kuvaus\'|kaanna)}}">' +

@@ -227,6 +227,8 @@ public class PerusteenRakenneTestIT {
         assertThat(validoitu.ongelmat)
                 .extracting(PerusteenRakenne.Ongelma::getOngelma)
                 .containsExactlyInAnyOrder(
+                        "ryhmalta-puuttuu-sisalto",
+                        "ryhmalta-puuttuu-sisalto",
                         "tutkinnolle-ei-maaritetty-kokonaislaajuutta",
                         "ryhman-osaamisalaa-ei-perusteella",
                         "ryhman-osaamisalaa-ei-perusteella",

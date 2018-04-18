@@ -229,13 +229,15 @@ public class RakenneModuuliTestIT {
                 .laajuus(60)
                 .rooli(RakenneModuuliRooli.OSAAMISALA)
                 .osaamisala(oak1)
-                .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 1"));
+                .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 1"))
+                .tayta();
 
         TestUtils.RakenneModuuliBuilder oa2 = TestUtils.rakenneModuuli()
                 .laajuus(60)
                 .rooli(RakenneModuuliRooli.OSAAMISALA)
                 .osaamisala(oak2)
-                .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 2"));
+                .nimi(TekstiPalanen.of(Kieli.FI, "osaamisala 2"))
+                .tayta();
 
         RakenneModuuli rakenne = TestUtils.rakenneModuuli()
                 .laajuus(180)

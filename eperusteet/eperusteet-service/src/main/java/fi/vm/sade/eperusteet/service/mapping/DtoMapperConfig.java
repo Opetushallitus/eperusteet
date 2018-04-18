@@ -74,6 +74,19 @@ public class DtoMapperConfig {
     @Autowired
     private KoodistoClient koodistoClient;
 
+    private String rakennaKoodiVirhe(Koodi koodi, String message) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("(koodisto:");
+        builder.append(koodi.getKoodisto());
+        builder.append(", uri:");
+        builder.append(koodi.getUri());
+        builder.append(", versio:");
+        builder.append(koodi.getVersio());
+        builder.append(") koodia ei voitu ladata:");
+        builder.append(message);
+        return builder.toString();
+    }
+
     @Bean
     @Dto
     public DtoMapper dtoMapper(
@@ -254,6 +267,24 @@ public class DtoMapperConfig {
                 })
                 .register();
 
+        factory.classMap(TutkintonimikeKoodi.class, TutkintonimikeKoodiDto.class)
+                .byDefault()
+                .customize(new CustomMapper<TutkintonimikeKoodi, TutkintonimikeKoodiDto>() {
+                    @Override
+                    public void mapAtoB(TutkintonimikeKoodi source, TutkintonimikeKoodiDto target, MappingContext context) {
+                        try {
+                            KoodiDto koodiDto = new KoodiDto();
+                            koodiDto.setUri(target.getTutkintonimikeUri());
+                            koodiDto.setKoodisto("tutkintonimikkeet");
+                            koodistoClient.addNimiAndUri(koodiDto);
+                            target.setNimi(koodiDto.getNimi());
+                        } catch (RestClientException | AccessDeniedException ex) {
+                            logger.error(ex.getLocalizedMessage());
+                        }
+                    }
+                })
+                .register();
+
         factory.classMap(Koodi.class, KoodiDto.class)
                 .byDefault()
                 .customize(new CustomMapper<Koodi, KoodiDto>() {
@@ -262,16 +293,7 @@ public class DtoMapperConfig {
                         try {
                             koodistoClient.addNimiAndUri(b);
                         } catch (RestClientException | AccessDeniedException ex) {
-                            StringBuilder builder = new StringBuilder();
-                            builder.append("(koodisto:");
-                            builder.append(a.getKoodisto());
-                            builder.append(", uri:");
-                            builder.append(a.getUri());
-                            builder.append(", versio:");
-                            builder.append(a.getVersio());
-                            builder.append(") koodia ei voitu ladata:");
-                            builder.append(ex.getLocalizedMessage());
-                            logger.error(builder.toString());
+                            logger.error(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
                         }
                     }
                 })
@@ -290,16 +312,7 @@ public class DtoMapperConfig {
                                 b.setOsaamisalakoodiArvo(koodi.getArvo());
                             }
                         } catch (RestClientException | AccessDeniedException ex) {
-                            StringBuilder builder = new StringBuilder();
-                            builder.append("(koodisto:");
-                            builder.append(a.getKoodisto());
-                            builder.append(", uri:");
-                            builder.append(a.getUri());
-                            builder.append(", versio:");
-                            builder.append(a.getVersio());
-                            builder.append(") koodia ei voitu ladata:");
-                            builder.append(ex.getLocalizedMessage());
-                            logger.error(builder.toString());
+                            logger.error(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
                         }
                     }
                 })
