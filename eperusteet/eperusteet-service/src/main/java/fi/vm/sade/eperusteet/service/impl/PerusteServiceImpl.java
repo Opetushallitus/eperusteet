@@ -888,28 +888,33 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
+//        Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
 
-        Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
-        lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getRakenne().getId());
+        Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteId, suoritustapakoodi);
+        if (rakenneId == null) {
+            throw new NotExistsException("Rakennetta ei ole olemassa");
+        }
+
+        RakenneModuuli nykyinen = rakenneRepository.findOne(rakenneId);
+        lockManager.ensureLockedByAuthenticatedUser(nykyinen.getId());
 
         rakenne.foreach(new VisitorImpl(maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
-        if (!moduuli.isSame(suoritustapa.getRakenne(), false)) {
+        boolean rakenneMuuttunut = moduuli.isSame(nykyinen, 0, true).isPresent();
+        if (rakenneMuuttunut) {
             if (perusteet.findOne(perusteId).getTila() == PerusteTila.VALMIS) {
-                if (!moduuli.isSame(suoritustapa.getRakenne(), true)) {
-                    throw new BusinessRuleViolationException("Vain tekstimuutokset rakenteeseen ovat sallittuja");
+                Optional<AbstractRakenneOsa.RakenneOsaVirhe> muutosVirheellinen = moduuli.isSame(nykyinen, 0, false);
+                if (muutosVirheellinen.isPresent()) {
+                    throw new BusinessRuleViolationException(muutosVirheellinen.get().getMessage());
                 }
             }
-            RakenneModuuli current = suoritustapa.getRakenne();
+
+            RakenneModuuli current = nykyinen;
             moduuli = checkIfOsaamisalatAlreadyExists(moduuli);
-            if (current != null) {
-                current.mergeState(moduuli);
-            } else {
-                current = moduuli;
-                suoritustapa.setRakenne(current);
-            }
-            rakenneRepository.save(current);
+            current.mergeState(moduuli);
+//            rakenneRepository.save(current);
+//            rakenneRepository.save(current);
             onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
         }
 

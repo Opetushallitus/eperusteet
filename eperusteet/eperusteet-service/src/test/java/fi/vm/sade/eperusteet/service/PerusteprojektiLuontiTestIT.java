@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -463,6 +464,43 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
             Set<KoodiDto> osaamisalat = Stream.of(osaamisala1, osaamisala2).collect(Collectors.toSet());
             peruste.setOsaamisalat(osaamisalat);
         });
+    }
+
+    @Test
+    public void testRakenneMapping() {
+        RakenneModuuliDto moduuli = new RakenneModuuliDto();
+        UUID uuid = UUID.randomUUID();
+        moduuli.setTunniste(uuid);
+
+        RakenneModuuli rm = mapper.map(moduuli, RakenneModuuli.class);
+        assertThat(rm.getTunniste()).isEqualTo(uuid);
+        assertThat(moduuli.getTunniste()).isEqualTo(uuid);
+
+        moduuli = mapper.map(rm, RakenneModuuliDto.class);
+        assertThat(rm.getTunniste()).isEqualTo(uuid);
+        assertThat(moduuli.getTunniste()).isEqualTo(uuid);
+    }
+
+    @Test
+    public void testOsaamisalaToKoodiMapping() {
+        OsaamisalaDto oa = new OsaamisalaDto();
+        oa.setOsaamisalakoodiArvo("1234");
+        oa.setOsaamisalakoodiUri("osaamisala_1234");
+        Koodi koodi = mapper.map(oa, Koodi.class);
+        assertThat(koodi)
+                .extracting(Koodi::getUri, Koodi::getKoodisto)
+                .contains("osaamisala_1234", "osaamisala");
+        OsaamisalaDto oaMapped = mapper.map(koodi, OsaamisalaDto.class);
+        assertThat(oaMapped)
+                .extracting(OsaamisalaDto::getOsaamisalakoodiUri)
+                .contains("osaamisala_1234");
+    }
+
+    @Test
+    public void testMuodostumisenVertailu() {
+        MuodostumisSaanto a = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(60, 60, null));
+        MuodostumisSaanto b = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(60, 60, null));
+        assertThat(a).isEqualTo(b);
     }
 
 }

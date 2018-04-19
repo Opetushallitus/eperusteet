@@ -92,6 +92,7 @@ angular
                     $scope.ryhma.tutkintonimike = null;
                     $scope.ryhma.rooli = "osaamisala";
                     $scope.ryhma.osaamisala = oa;
+
                     if (oa && oa.nimi) {
                         $scope.ryhma.nimi = _.cloneDeep(oa.nimi);
                     }

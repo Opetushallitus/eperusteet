@@ -23,10 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -128,60 +125,84 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     }
 
     @Override
-    public boolean isSame(AbstractRakenneOsa moduuli, boolean excludeText) {
-        return (moduuli instanceof RakenneModuuli) && isSame((RakenneModuuli) moduuli, excludeText);
+    public Optional<RakenneOsaVirhe> isSame(AbstractRakenneOsa moduuli, int depth, boolean includeText) {
+        if (moduuli == null) {
+            return fail("osaa-ei-voi-tyhjentaa");
+        }
+        else if (moduuli instanceof RakenneModuuli) {
+            return isSame((RakenneModuuli) moduuli, depth, includeText);
+        }
+        else {
+            return success();
+        }
     }
 
-    public boolean isSame(RakenneModuuli moduuli, boolean excludeText) {
-        if (!super.isSame(moduuli, excludeText)) {
-            return false;
+    public Optional<RakenneOsaVirhe> isSame(RakenneModuuli moduuli, int depth, boolean includeText) {
+        Optional<RakenneOsaVirhe> isSuperValid = super.isSame(moduuli, depth, includeText);
+        if (isSuperValid.isPresent()) {
+            return isSuperValid;
         }
 
-        if (!excludeText && !Objects.equals(this.nimi, moduuli.getNimi())) {
-            return false;
+        if (includeText && !Objects.equals(this.nimi, moduuli.getNimi())) {
+            return fail("ryhman-nimea-ei-voi-muuttaa");
         }
 
         if ((this.osat == null && moduuli.getOsat() != null) || (this.osat != null && moduuli.getOsat() == null)) {
-            return false;
+            return fail("ryhman-osia-ei-voi-muuttaa");
         }
 
         if ((this.getPakollinen() == null && moduuli.getPakollinen() != null)
                 || (this.getPakollinen() != null && moduuli.getPakollinen() == null)
                 || this.getPakollinen() != moduuli.getPakollinen()) {
-            return false;
+            return fail("ryhman-pakollisuutta-ei-voi-muuttaa");
         }
 
         if (this.getRooli() != moduuli.getRooli()) {
-            return false;
+            return fail("ryhman-roolia-ei-voi-vaihtaa");
         }
 
-        if (!Objects.equals(this.getTutkintonimike(), moduuli.getTutkintonimike())) {
-            return false;
+        if (moduuli.getTutkintonimike() != null && moduuli.getOsaamisala() != null) {
+            return fail("ryhman-tutkintonimike-ja-osaamisala-ei-voi-olla-samanaikaisesti");
         }
 
-        if (!Objects.equals(this.getOsaamisala(), moduuli.getOsaamisala())) {
-            return false;
+        if (includeText && osaamisala != null && !Objects.equals(osaamisala, moduuli.osaamisala)) {
+            return fail("ryhman-osaamisalaa-ei-voi-muuttaa");
         }
 
-        if (!Objects.equals(this.muodostumisSaanto, moduuli.getMuodostumisSaanto())) {
-            return false;
+        if  (includeText && tutkintonimike != null && !Objects.equals(tutkintonimike, moduuli.tutkintonimike)) {
+            return fail("ryhman-tutkintonimiketta-ei-voi-vaihtaa");
+        }
+
+        if (!Objects.equals(this.getErikoisuus(), moduuli.getErikoisuus())) {
+            return fail("ryhman-erikoisuustietoa-ei-voi-vaihtaa");
+        }
+
+
+        boolean muodostuminenMuuttunut = !Objects.equals(this.muodostumisSaanto, moduuli.getMuodostumisSaanto());
+        if (depth == 0 && this.muodostumisSaanto != null && muodostuminenMuuttunut) {
+            return fail("ryhman-juuren-muodostumista-ei-voi-muuttaa");
+        }
+
+        if (depth > 0 && muodostuminenMuuttunut) {
+            return fail("ryhman-muodostumissaantoa-ei-voi-muuttaa");
         }
 
         if (this.osat != null && moduuli.getOsat() != null) {
             if (this.osat.size() != moduuli.getOsat().size()) {
-                return false;
+                return fail("ryhman-osien-maaraa-ei-voi-muuttaa");
             }
 
             Iterator<AbstractRakenneOsa> l = this.getOsat().iterator();
             Iterator<AbstractRakenneOsa> r = moduuli.getOsat().iterator();
             while (l.hasNext() && r.hasNext()) {
-                if (!l.next().isSame(r.next(), excludeText)) {
-                    return false;
+                Optional<RakenneOsaVirhe> same = l.next().isSame(r.next(), depth + 1, includeText);
+                if (same.isPresent()) {
+                    return same;
                 }
             }
         }
 
-        return true;
+        return success();
     }
 
     public boolean isInRakenne(TutkinnonOsaViite viite, boolean ylinTaso) {

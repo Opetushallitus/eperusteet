@@ -212,6 +212,13 @@ public class DtoMapperConfig {
         factory.classMap(RakenneModuuliDto.class, RakenneModuuli.class)
                 .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
                 .byDefault()
+//                .customize(new CustomMapper<RakenneModuuliDto, RakenneModuuli>() {
+//                    @Override
+//                    public void mapAtoB(RakenneModuuliDto source, RakenneModuuli target, MappingContext context) {
+//                        super.mapAtoB(source, target, context);
+//                        target.asetaTunniste(source.getTunniste());
+//                    }
+//                })
                 .register();
         factory.classMap(RakenneOsaDto.class, RakenneOsa.class)
                 .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
@@ -304,8 +311,16 @@ public class DtoMapperConfig {
                 .byDefault()
                 .customize(new CustomMapper<Koodi, OsaamisalaDto>() {
                     @Override
+                    public void mapBtoA(OsaamisalaDto osaamisalaDto, Koodi koodi, MappingContext context) {
+                        super.mapBtoA(osaamisalaDto, koodi, context);
+                        koodi.setKoodisto("osaamisala");
+                        koodi.setUri(osaamisalaDto.getOsaamisalakoodiArvo());
+                    }
+
+                    @Override
                     public void mapAtoB(Koodi a, OsaamisalaDto b, MappingContext context) {
                         try {
+                            super.mapAtoB(a, b, context);
                             KoodiDto koodi = koodistoClient.getKoodi(a.getKoodisto(), a.getUri(), a.getVersio());
                             if (koodi != null) {
                                 b.setNimi(koodi.getNimi());

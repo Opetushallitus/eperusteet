@@ -94,4 +94,5 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
 
         lockService.unlock(ctx);
     }
+
 }

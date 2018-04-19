@@ -37,7 +37,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 public abstract class AbstractRakenneOsa implements Serializable, ReferenceableEntity {
 
     @Getter
-    @NotNull
+//    @NotNull
     @Column(updatable = false)
     private UUID tunniste;
 
@@ -72,15 +72,60 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
         return new EntityReference(id);
     }
 
-    public boolean isSame(AbstractRakenneOsa other, boolean excludeText) {
+    public void setTunniste(UUID tunniste) {
+        if (tunniste != null) {
+            this.tunniste = tunniste;
+        }
+    }
+
+    public Optional<RakenneOsaVirhe> isSame(AbstractRakenneOsa other, boolean includeText) {
+        return this.isSame(other, 0, includeText);
+    }
+
+    public Optional<RakenneOsaVirhe> isSame(AbstractRakenneOsa other, int depth, boolean includeText) {
         if (other == null) {
-            return false;
+            return fail();
         }
 
         if (this == other) {
-            return true;
+            return success();
         }
 
-        return excludeText || Objects.equals(this.kuvaus,other.getKuvaus());
+        if (pakollinen != other.pakollinen) {
+            return fail("ryhman-pakollisuutta-ei-voi-muuttaa");
+        }
+        else if (!Objects.equals(tunniste, other.tunniste)) {
+            return fail("ryhman-tunnistetta-ei-voi-muuttaa");
+        }
+        else if (includeText && !Objects.equals(kuvaus, other.kuvaus)) {
+            return fail("ryhman-kuvausta-ei-voi-muuttaa");
+        }
+
+        return success();
     }
+
+    static public class RakenneOsaVirhe {
+        @Getter
+        String message = "";
+
+        protected RakenneOsaVirhe() {
+        }
+
+        protected RakenneOsaVirhe(String message) {
+            this.message = message;
+        }
+    }
+
+    static protected Optional<RakenneOsaVirhe> fail() {
+        return Optional.of(new RakenneOsaVirhe("vain-tekstimuutokset-sallittu"));
+    }
+
+    static protected Optional<RakenneOsaVirhe> fail(String reason) {
+        return Optional.of(new RakenneOsaVirhe(reason));
+    }
+
+    static protected Optional<RakenneOsaVirhe> success() {
+        return Optional.empty();
+    }
+
 }

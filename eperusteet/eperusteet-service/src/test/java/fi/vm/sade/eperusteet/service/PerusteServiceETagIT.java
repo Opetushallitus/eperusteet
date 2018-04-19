@@ -83,7 +83,7 @@ public class PerusteServiceETagIT extends AbstractIntegrationTest {
     @Test
     public void testGetTutkinnonRakenneETag() {
         RakenneModuuliDto rakenne = new RakenneModuuliDto();
-        rakenne.setOsat(new ArrayList<AbstractRakenneOsaDto>());
+        rakenne.setOsat(new ArrayList<>());
         rakenne.getOsat().add(new RakenneModuuliDto());
         perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
 

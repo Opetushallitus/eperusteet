@@ -87,7 +87,7 @@ public class RakenneModuuliTestIT {
                 )
         );
 
-        Assert.assertFalse("Rakenteiden pitäisi olla erilaiset", rakenneOld.isSame(rakenneNew, false));
+        Assert.assertTrue("Rakenteiden pitäisi olla erilaiset", rakenneOld.isSame(rakenneNew, false).isPresent());
     }
 
     @Test
@@ -197,7 +197,7 @@ public class RakenneModuuliTestIT {
                 90, 90, -1, -1
             )
         );
-        Assert.assertFalse("Rakenneosien pitäisi olla erilaiset", rakenneOld.isSame(null, false));
+        Assert.assertTrue("Rakenneosien pitäisi olla erilaiset", rakenneOld.isSame(null, false).isPresent());
     }
 
     @Test
@@ -216,7 +216,7 @@ public class RakenneModuuliTestIT {
             120, 240, -1, -1,
             ryhma2
         );
-        Assert.assertFalse("Rakenteiden pitäisi olla erilaiset", rakenneOld.isSame(rakenneNew, false));
+        Assert.assertTrue("Rakenteiden pitäisi olla erilaiset", rakenneOld.isSame(rakenneNew, false).isPresent());
     }
 
 
