@@ -1225,5 +1225,22 @@
     "taiteenala-koodi": "Taiteenala koodi",
 
     "tutkinnon-osan-ammattitaitovaatukset-tekstina": "Tutkinnon osien ammattitaitovaatimukset täytyy laatia rakenteisena",
-    "osaamisalan-kuvauksia-puuttuu-sisallosta": "Kaikilla osaamisaloilla ei ole kuvausta"
+    "osaamisalan-kuvauksia-puuttuu-sisallosta": "Kaikilla osaamisaloilla ei ole kuvausta",
+
+    "ryhman-nimea-ei-voi-muuttaa": "Ryhmän nimeä ei voi muuttaa",
+    "ryhman-osia-ei-voi-muuttaa": "Ryhmän osia ei voi muuttaa",
+    "ryhman-pakollisuutta-ei-voi-muuttaa": "Ryhmän pakollisuutta ei voi muutta",
+    "ryhman-roolia-ei-voi-vaihtaa": "Ryhmän roolia ei voi vaihtaa",
+    "ryhman-tutkintonimike-ja-osaamisala-ei-voi-olla-samanaikaisesti": "Ryhmällä ei voi olla osaamisalaa ja tutkintonimikettä",
+    "ryhman-osaamisalaa-ei-voi-muuttaa": "Ryhmän osaamisalaa ei voi muuttaa",
+    "ryhman-tutkintonimiketta-ei-voi-vaihtaa": "Ryhmän tutkintonimikettä ei voi muuttaa",
+    "ryhman-erikoisuustietoa-ei-voi-vaihtaa": "Ryhmän ei voi muokata",
+    "ryhman-juuren-muodostumista-ei-voi-muuttaa": "Tutkinnon muodostumissääntöä ei voi muuttaa",
+    "ryhman-muodostumissaantoa-ei-voi-muuttaa": "Ryhmän muodostumissääntöä ei voi muuttaa",
+    "ryhman-osien-maaraa-ei-voi-muuttaa": "Ryhmän osien määrää ei voi muuttaa",
+    "vain-tekstimuutokset-sallittu": "Vain tekstimuutokset sallittuja",
+    "osaa-ei-voi-tyhjentaa": "Rakenteen osaa ei voi tyhjentää",
+    "ryhman-pakollisuutta-ei-voi-muuttaa": "Ryhmän pakollisuutta ei voi muuttaa",
+    "ryhman-tunnistetta-ei-voi-muuttaa": "Ryhmän tunnistetta ei voi muuttaa",
+    "ryhman-kuvausta-ei-voi-muuttaa": "Ryhmän kuvausta ei voi muuttaa"
 }
