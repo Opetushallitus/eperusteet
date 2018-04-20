@@ -10,7 +10,7 @@
                 <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()"
                              projekti-id="projekti.id"
                              korvattavat-diaarinumerot="peruste.korvattavatDiaarinumerot"></statusbadge>
-                <h2>{{ projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
+                <h2>{{projekti.nimi || ('perusteprojekti-nimi-placeholder' | kaanna)}}</h2>
                 <table ng-hide="isOpas">
                     <tr>
                         <th>{{ 'projekti-header-koulutustyyppi' | kaanna }}:</th>

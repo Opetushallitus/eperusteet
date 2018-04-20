@@ -1228,6 +1228,10 @@
     "sisallon-muotoilu-saattaa-sisaltaa-virheita": "Sisältö saattaa sisältää muotoiluvirheitä",
     "sisalto-muotoiluvirheet-ohita": "Oletko varma, että sisältö on muotoiltu oikein? Jos on, paina OK.",
 
+    "etusivu": "Etusivu",
+    "eperusteet": "ePerusteet",
+    "virheelliset": "Virheelliset",
+
     "ohje-koulutuksenosa-tyyppi": "<p>Koulutuksen osan tyyppi määrittää osalle täytettävät sisällöt.</p><p><strong>koulutuskohtainen</strong>: Koulutuksen osalle määritetään sisältö ja arviointikriteerit.</p><p><strong>Yhteinen</strong>: koulutuksen osalle määritetään osakohtaiset osa-alueet, joille kullekin määritellään oma sisältö ja arviointikriteerit.</p>",
     "ohje-muodostuminen-koulutuksenosa": "Valitse koulutuksen osa ja vie haluttuun kohtaan rakenteessa.",
 
