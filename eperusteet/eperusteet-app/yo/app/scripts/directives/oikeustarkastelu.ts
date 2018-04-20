@@ -30,6 +30,14 @@ angular.module("eperusteApp").directive("oikeustarkastelu", function(Perusteproj
                     return PerusteprojektiOikeudetService.onkoOikeudet(o.target, o.permission);
                 })
             ) {
+                // Ei toimi jos ng-disabled myös käytössä
+                /*
+                if (element.prop("tagName") === "BUTTON") {
+                    element.prop("disabled", true);
+                } else {
+                    element.hide();
+                }
+                */
                 element.hide();
             }
         }

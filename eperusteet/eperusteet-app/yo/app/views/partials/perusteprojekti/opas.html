@@ -27,10 +27,11 @@
                 <span ng-bind="'(' + peruste.sisalto.lapset.length + ')'" ng-show="peruste.sisalto.lapset.length > 0"></span>
                 <div class="pull-right buttons">
                     <button type="button" class="btn btn-default btn-sm" ng-click="addTekstikappale()"
-                            icon-role="ep-text-add" kaanna="lisaa-tutkintokohtainen-osa"></button>
+                            icon-role="ep-text-add" kaanna="'lisaa-tutkintokohtainen-osa'"
+                            oikeustarkastelu="{target:'peruste', permission:'muokkaus'}"></button>
                     <button class="btn btn-default btn-sm" ng-click="edit()" icon-role="edit"
-                            kaanna="muokkaa-rakennetta">
-                    </button>
+                            kaanna="'muokkaa-rakennetta'"
+                            oikeustarkastelu="{target:'peruste', permission:'muokkaus'}"></button>
                 </div>
             </h2>
             <div ng-show="editing">
