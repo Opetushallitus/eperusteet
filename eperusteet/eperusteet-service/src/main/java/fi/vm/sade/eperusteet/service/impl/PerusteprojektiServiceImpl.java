@@ -979,7 +979,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
                         || nimi.getTeksti().get(kieli).isEmpty()) {
-                    updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
+                    if (projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
+                        updateStatus.addStatus("oppaan-nimea-ei-ole-kaikilla-kielilla");
+                    } else {
+                        updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
+                    }
                     updateStatus.setVaihtoOk(false);
                     break;
                 }

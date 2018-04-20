@@ -21,6 +21,10 @@
                                 ng-hide="editEnabled || !versiot.latest"
                                 ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
                                 oikeustarkastelu="{target:'peruste', permission:'muokkaus'}"></button>
+                        <button ng-disabled="isLocked"
+                                ng-hide="(editEnabled || !versiot.latest) && !isOpas"
+                                ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+                                oikeustarkastelu="{target:'peruste', permission:'korjaus'}"></button>
                     </div>
                     <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'"
                             ng-hide="editEnabled || !versiot.latest"

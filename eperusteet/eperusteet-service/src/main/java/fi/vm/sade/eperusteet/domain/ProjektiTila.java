@@ -66,7 +66,12 @@ public enum ProjektiTila {
     JULKAISTU("julkaistu") {
         @Override
         public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
-            return EnumSet.noneOf(ProjektiTila.class);
+            // EP-1387
+            if (tyyppi.equals(PerusteTyyppi.OPAS)) {
+                return EnumSet.of(LAADINTA);
+            } else {
+                return EnumSet.noneOf(ProjektiTila.class);
+            }
         }
     };
 

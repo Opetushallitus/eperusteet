@@ -1179,6 +1179,7 @@
     "oppaan-tiedot": "Oppaan tiedot",
     "projekti-opastyoryhma": "Opastyöryhmä",
     "oppaan-kielet": "Oppaan kielet",
+    "oppaan-nimea-ei-ole-kaikilla-kielilla": "Oppaalle ei ole määritelty nimeä kaikilla kielillä.",
     "luo-pdf-dokumentti-oppaasta": "Luo dokumentti oppaasta",
     "oppaat": "Oppaat",
     "uusi-opas": "Uusi opas",
