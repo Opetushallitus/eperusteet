@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import {
     setInput,
     compiled,
@@ -9,6 +9,8 @@ import {
     testModule,
     mockApp
 } from "../../testutils";
+
+import localefi from "../../localisation/locale-fi.json";
 
 describe("Kaanna", () => {
     let Kaanna: any;
@@ -102,6 +104,23 @@ describe("Kaanna", () => {
         $stateGoMock.mockReset();
     });
 });
+
+describe("Kieli", () => {
+    let Kielimapper: any;
+
+    beforeEach(async () => {
+        mockApp();
+        Kielimapper = await getComponent("Kielimapper");
+    });
+
+    test("Koulutuksenosakäännöksille löytyy lokalisointi", () => {
+        const kaannokset = _.sortBy(_.values(Kielimapper.kaannosMap()));
+        const puuttuvatKaannokset = _.filter(kaannokset, (avain: any) => !localefi[avain]);
+        expect(puuttuvatKaannokset).toEqual([]);
+    });
+
+});
+
 
 describe("Kieli", () => {
     let Kieli: any;

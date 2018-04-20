@@ -75,7 +75,7 @@
       <div class="skratchpad-list-header"><span kaanna="vateConverter('tutkinnonosat')"></span><ohje teksti="ohje-muodostuminen-tutkinnonosat" suunta="left"></ohje></div>
       <div class="skratchpad-list-body">
         <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
-          <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="{{ 'rajaa-tutkinnonosia' | kaanna }}">
+          <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="{{ vateConverter('rajaa-tutkinnonosia') | kaanna }}">
         </div>
         <div class="optiolaatikko">
           <a class="action-link" ng-click="toggleNotUsed()">{{ piilotaKaikki ? 'näytä-kaikki' : 'vain-käyttämättömät' | kaanna }}</a>

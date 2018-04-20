@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 export const nakyvyyslinkkiService = () => {
     let nakyvyys = false;

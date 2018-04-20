@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 /**
  * Override pagination template to get glyphs as first/last icons.

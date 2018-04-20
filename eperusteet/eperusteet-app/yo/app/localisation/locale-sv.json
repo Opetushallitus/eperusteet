@@ -195,5 +195,10 @@
 
     "lisaa-koulutus": "[Lisää koulutus]",
     "poista-koulutus": "[Poista koulutus]",
-    "eperusteet": "eGrunder"
+
+    "eperusteet": "eGrunder",
+
+    "rajaa-koulutuksenosia": "Avgränsa utbildningsdelarna",
+
+    "osa-alueet": "Delområden"
 }

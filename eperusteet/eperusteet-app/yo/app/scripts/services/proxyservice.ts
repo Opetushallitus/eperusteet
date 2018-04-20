@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 // Älä käytä tätä ellei ole kiire
 angular.module("eperusteApp").service("ProxyService", function() {

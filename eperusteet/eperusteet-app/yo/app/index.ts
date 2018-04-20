@@ -18,7 +18,7 @@
 import $ from "jquery";
 import "jquery-ui";
 import "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 import "jquery-sticky";
 
 import "bootstrap";

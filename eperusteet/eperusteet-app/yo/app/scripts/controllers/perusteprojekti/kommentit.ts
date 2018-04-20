@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 import { Endpoints, Logic } from "scripts/misc";
 
 namespace Controllers {
