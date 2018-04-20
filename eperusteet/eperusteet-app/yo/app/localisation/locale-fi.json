@@ -1241,6 +1241,9 @@
     "vain-tekstimuutokset-sallittu": "Vain tekstimuutokset sallittuja",
     "osaa-ei-voi-tyhjentaa": "Rakenteen osaa ei voi tyhjentää",
     "ryhman-pakollisuutta-ei-voi-muuttaa": "Ryhmän pakollisuutta ei voi muuttaa",
-    "ryhman-tunnistetta-ei-voi-muuttaa": "Ryhmän tunnistetta ei voi muuttaa",
-    "ryhman-kuvausta-ei-voi-muuttaa": "Ryhmän kuvausta ei voi muuttaa"
+    "ryhman-tunnistetta-ei-voi-muuttaa": "Ryhmän rakennetta ei voi muuttaa",
+    "ryhman-kuvausta-ei-voi-muuttaa": "Ryhmän kuvausta ei voi muuttaa",
+    "ryhman-tutkintonimike-jo-kaytossa": "Ryhmän tutkintonimike on jo käytössä",
+    "ryhman-osaamisala-tutkintonimike-jo-kaytossa": "Ryhmän osaamisala on jo käytössä",
+    "ryhman-rooli-ei-salli-sisaltoa": "Ryhmän rooli ei salli sisältöä"
 }

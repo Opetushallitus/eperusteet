@@ -9,84 +9,67 @@
         <h3 ng-if="vanhempi || luonti || leikelauta" kaanna>perustiedot</h3>
         <formfield ng-if="vanhempi || luonti || leikelauta" model="ryhma" model-var="nimi" label="nimi" type="text" ng-required="true"></formfield>
         <formfield ng-if="vanhempi || luonti || leikelauta" model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
-        <div ng-show="vanhempi || luonti || leikelauta">
-          <formfield
-             ng-if="!ryhma.osat.length"
-             model="ryhma"
-             model-var="rooli"
-             label="rooli"
-             options="roolit">
+        <div>
+          <div ng-if="vanhempi || luonti">
+            <formfield
+               model="ryhma"
+               model-var="rooli"
+               label="rooli"
+               options="roolit">
             <ohje teksti="ohje-ryhma-rooli"></ohje>
-          </formfield>
+            </formfield>
 
-          <div class="row" ng-if="ryhma.osat.length">
-            <label class="col-sm-3 control-label" kaanna="rooli"></label>
-            <div class="col-sm-9">
-              <div class="alert alert-warning" kaanna="'ryhmalla-lapsia-ei-voi-muuttaa'"></div>
+            <div ng-if="ryhma.rooli === 'osaamisala'">
+              <h3 kaanna>osaamisala</h3>
+              <div class="modal-body tag-modal">
+                <div style="margin-bottom: 6px" ng-repeat="oa in osaamisalat" ng-click="Osaamisala.valitse($index === 0 ? null : oa)">
+                  <div class="tag-indicator">
+                    <span class="glyphicon" ng-class="ryhma.osaamisala.osaamisalakoodiUri === oa.osaamisalakoodiUri || (!ryhma.osaamisala && index === 0) ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
+                  </div>
+                  <span ng-show="oa.nimi" kaanna="oa.nimi"></span>
+                  <span ng-hide="oa.nimi" kaanna="'ei-valintaa'"></span>
+                </div>
+              </div>
+            </div>
+
+            <div ng-if="ryhma.rooli === 'tutkintonimike'">
+              <h3 kaanna>tutkintonimike</h3>
+              <div class="modal-body tag-modal">
+                <div style="margin-bottom: 6px" ng-click="Tutkintonimike.valitse(null)">
+                  <div class="tag-indicator">
+                    <span class="glyphicon" ng-class="!ryhma.tutkintonimike ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
+                  </div>
+                  <span kaanna="'ei-valintaa'"></span>
+                </div>
+                <div style="margin-bottom: 6px" ng-repeat="nimike in tutkintonimikkeet" ng-click="Tutkintonimike.valitse(nimike)">
+                  <div class="tag-indicator">
+                    <span class="glyphicon" ng-class="ryhma.tutkintonimike.uri === nimike.tutkintonimikeUri ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
+                  </div>
+                  <span kaanna="nimike.nimi || nimike.tutkintonimikeUri"></span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div ng-if="ryhma.rooli === 'vieras'">
-            <h3 kaanna="'tutkinnon-koodi'"></h3>
-            <div class="input-group">
-                <span ng-if="ryhma.vieras" class="form-control" kaanna="ryhma.vieras.nimi"></span>
-                <span class="input-group-btn">
-                    <button class="btn btn-default" ng-click="lisaaTutkintoKoodi()" kaanna="'hae-koodistosta'"></button>
-                </span>
-            </div>
-        </div>
-
-        <div ng-if="ryhma.rooli === 'osaamisala'">
-            <h3 kaanna>osaamisala</h3>
-            <div class="modal-body tag-modal">
-              <div style="margin-bottom: 6px" ng-repeat="oa in osaamisalat" ng-click="Osaamisala.valitse($index === 0 ? null : oa)">
-                <div class="tag-indicator">
-                  <span class="glyphicon" ng-class="ryhma.osaamisala.osaamisalakoodiUri === oa.osaamisalakoodiUri || (!ryhma.osaamisala && index === 0) ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
-                </div>
-                <span ng-show="oa.nimi" kaanna="oa.nimi"></span>
-                <span ng-hide="oa.nimi" kaanna="'ei-valintaa'"></span>
+          <div class="row">
+              <div class="col-sm-6">
+                  <h4>
+                    <span kaanna="'tutkinnonosa-laajuus'"></span>
+                    <ohje teksti="ohje-ryhma-laajuus"></ohje>
+                  </h4>
+                  <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="float" name="laajuusMin" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
+                  <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="float" name="laajuusMax" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
               </div>
-            </div>
-        </div>
-
-        <div ng-if="ryhma.rooli === 'tutkintonimike'">
-            <h3 kaanna>tutkintonimike</h3>
-            <div class="modal-body tag-modal">
-              <div style="margin-bottom: 6px" ng-click="Tutkintonimike.valitse(null)">
-                <div class="tag-indicator">
-                  <span class="glyphicon" ng-class="!ryhma.tutkintonimike ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
-                </div>
-                <span kaanna="'ei-valintaa'"></span>
+              <div class="col-sm-6" ng-show="vanhempi">
+                  <h4>
+                    <span kaanna="'tutkinnonosa-koko'"></span>
+                    <ohje teksti="ohje-ryhma-koko"></ohje>
+                  </h4>
+                  <formfield model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="integer" name="kokoMin" min="0" max="999" form="ryhmaForm"></formfield>
+                  <formfield model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="integer" name="kokoMax" min="0" max="999" form="ryhmaForm"></formfield>
               </div>
-              <div style="margin-bottom: 6px" ng-repeat="nimike in tutkintonimikkeet" ng-click="Tutkintonimike.valitse(nimike)">
-                <div class="tag-indicator">
-                  <span class="glyphicon" ng-class="ryhma.tutkintonimike.uri === nimike.tutkintonimikeUri ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
-                </div>
-                <span kaanna="nimike.nimi || nimike.tutkintonimikeUri"></span>
-              </div>
-            </div>
+          </div>
         </div>
-
-        <div class="row">
-            <div class="col-sm-6">
-                <h4>
-                  <span kaanna="'tutkinnonosa-laajuus'"></span>
-                  <ohje teksti="ohje-ryhma-laajuus"></ohje>
-                </h4>
-                <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="float" name="laajuusMin" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
-                <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="float" name="laajuusMax" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
-            </div>
-            <div class="col-sm-6">
-                <h4>
-                  <span kaanna="'tutkinnonosa-koko'"></span>
-                  <ohje teksti="ohje-ryhma-koko"></ohje>
-                </h4>
-                <formfield model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="integer" name="kokoMin" min="0" max="999" form="ryhmaForm"></formfield>
-                <formfield model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="integer" name="kokoMax" min="0" max="999" form="ryhmaForm"></formfield>
-            </div>
-        </div>
-
     </form>
 </div>
 

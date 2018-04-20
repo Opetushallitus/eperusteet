@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -80,16 +81,19 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
 
         peruste.getSuoritustavat().forEach(suoritustapa -> {
             assertThatThrownBy(() -> {
-                RakenneModuuliDto dto = mapper.map(suoritustapa.getRakenne(), RakenneModuuliDto.class);
-                dto.setRooli(RakenneModuuliRooli.VIRTUAALINEN);
-                RakenneOsaDto rakenneOsaDto = new RakenneOsaDto();
-                ArrayList<AbstractRakenneOsaDto> osat = new ArrayList<>();
-                osat.add(rakenneOsaDto);
-                dto.setOsat(osat);
+                RakenneModuuliDto rakenne = mapper.map(suoritustapa.getRakenne(), RakenneModuuliDto.class);
+                RakenneModuuli virtuaaliryhma = TestUtils.rakenneModuuli()
+                        .laajuus(5)
+                        .rooli(RakenneModuuliRooli.VIRTUAALINEN)
+                        .tayta()
+                        .build();
 
-                perusteService.updateTutkinnonRakenne(peruste.getId(), suoritustapa.getSuoritustapakoodi(), dto);
+                RakenneModuuliDto moduuli = mapper.map(virtuaaliryhma, RakenneModuuliDto.class);
+                rakenne.getOsat().add(moduuli);
+
+                perusteService.updateTutkinnonRakenne(peruste.getId(), suoritustapa.getSuoritustapakoodi(), rakenne);
             }).isInstanceOf(BusinessRuleViolationException.class)
-            .hasMessage("Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia");
+            .hasMessage("ryhman-rooli-ei-salli-sisaltoa");
         });
 
         lockService.unlock(ctx);

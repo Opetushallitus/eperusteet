@@ -137,48 +137,48 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         }
     }
 
-    public Optional<RakenneOsaVirhe> isSame(RakenneModuuli moduuli, int depth, boolean includeText) {
-        Optional<RakenneOsaVirhe> isSuperValid = super.isSame(moduuli, depth, includeText);
+    public Optional<RakenneOsaVirhe> isSame(RakenneModuuli vanha, int depth, boolean includeText) {
+        Optional<RakenneOsaVirhe> isSuperValid = super.isSame(vanha, depth, includeText);
         if (isSuperValid.isPresent()) {
             return isSuperValid;
         }
 
-        if (includeText && !Objects.equals(this.nimi, moduuli.getNimi())) {
+        if (includeText && !Objects.equals(this.nimi, vanha.getNimi())) {
             return fail("ryhman-nimea-ei-voi-muuttaa");
         }
 
-        if ((this.osat == null && moduuli.getOsat() != null) || (this.osat != null && moduuli.getOsat() == null)) {
+        if ((this.osat == null && vanha.getOsat() != null) || (this.osat != null && vanha.getOsat() == null)) {
             return fail("ryhman-osia-ei-voi-muuttaa");
         }
 
-        if ((this.getPakollinen() == null && moduuli.getPakollinen() != null)
-                || (this.getPakollinen() != null && moduuli.getPakollinen() == null)
-                || this.getPakollinen() != moduuli.getPakollinen()) {
+        if ((this.getPakollinen() == null && vanha.getPakollinen() != null)
+                || (this.getPakollinen() != null && vanha.getPakollinen() == null)
+                || this.getPakollinen() != vanha.getPakollinen()) {
             return fail("ryhman-pakollisuutta-ei-voi-muuttaa");
         }
 
-        if (this.getRooli() != moduuli.getRooli()) {
+        if (this.rooli != vanha.rooli && this.rooli != RakenneModuuliRooli.TUTKINTONIMIKE) {
             return fail("ryhman-roolia-ei-voi-vaihtaa");
         }
 
-        if (moduuli.getTutkintonimike() != null && moduuli.getOsaamisala() != null) {
+        if (vanha.getTutkintonimike() != null && vanha.getOsaamisala() != null) {
             return fail("ryhman-tutkintonimike-ja-osaamisala-ei-voi-olla-samanaikaisesti");
         }
 
-        if (includeText && osaamisala != null && !Objects.equals(osaamisala, moduuli.osaamisala)) {
+        if (includeText && osaamisala != null && !Objects.equals(osaamisala, vanha.osaamisala)) {
             return fail("ryhman-osaamisalaa-ei-voi-muuttaa");
         }
 
-        if  (includeText && tutkintonimike != null && !Objects.equals(tutkintonimike, moduuli.tutkintonimike)) {
+        if  (includeText && tutkintonimike != null && !Objects.equals(tutkintonimike, vanha.tutkintonimike)) {
             return fail("ryhman-tutkintonimiketta-ei-voi-vaihtaa");
         }
 
-        if (!Objects.equals(this.getErikoisuus(), moduuli.getErikoisuus())) {
+        if (!Objects.equals(this.getErikoisuus(), vanha.getErikoisuus())) {
             return fail("ryhman-erikoisuustietoa-ei-voi-vaihtaa");
         }
 
 
-        boolean muodostuminenMuuttunut = !Objects.equals(this.muodostumisSaanto, moduuli.getMuodostumisSaanto());
+        boolean muodostuminenMuuttunut = !Objects.equals(this.muodostumisSaanto, vanha.getMuodostumisSaanto());
         if (depth == 0 && this.muodostumisSaanto != null && muodostuminenMuuttunut) {
             return fail("ryhman-juuren-muodostumista-ei-voi-muuttaa");
         }
@@ -187,13 +187,17 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             return fail("ryhman-muodostumissaantoa-ei-voi-muuttaa");
         }
 
-        if (this.osat != null && moduuli.getOsat() != null) {
-            if (this.osat.size() != moduuli.getOsat().size()) {
+        if (this.osat != null && vanha.getOsat() != null) {
+            if (this.rooli == RakenneModuuliRooli.VIRTUAALINEN && !this.getOsat().isEmpty()) {
+                return fail("ryhman-rooli-ei-salli-sisaltoa");
+            }
+
+            if (this.osat.size() != vanha.getOsat().size()) {
                 return fail("ryhman-osien-maaraa-ei-voi-muuttaa");
             }
 
             Iterator<AbstractRakenneOsa> l = this.getOsat().iterator();
-            Iterator<AbstractRakenneOsa> r = moduuli.getOsat().iterator();
+            Iterator<AbstractRakenneOsa> r = vanha.getOsat().iterator();
             while (l.hasNext() && r.hasNext()) {
                 Optional<RakenneOsaVirhe> same = l.next().isSame(r.next(), depth + 1, includeText);
                 if (same.isPresent()) {

@@ -28,7 +28,12 @@ public class EntityReference {
     private final String id;
 
     public EntityReference(Long id) {
-        this.id = id.toString();
+        if (id != null) {
+            this.id = id.toString();
+        }
+        else {
+            this.id = null;
+        }
     }
 
     public EntityReference(String id) {

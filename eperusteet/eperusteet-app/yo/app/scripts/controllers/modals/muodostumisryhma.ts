@@ -138,10 +138,9 @@ angular
                     ml.maksimi = ml.minimi && (!ml.maksimi || ml.minimi > ml.maksimi) ? ml.minimi : ml.maksimi;
                 }
 
-                if (!_.isEmpty(uusiryhma.osaamisala)) {
-                    uusiryhma.rooli = "osaamisala";
-                } else if (uusiryhma.rooli === "osaamisala") {
-                    uusiryhma.rooli = "määritelty";
+                if (uusiryhma.rooli !== "osaamisala" && uusiryhma.rooli !== "tutkintonimike") {
+                    uusiryhma.tutkintonimike = null;
+                    uusiryhma.osaamisala = null;
                 }
             }
             $uibModalInstance.close(uusiryhma);

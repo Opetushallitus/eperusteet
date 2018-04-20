@@ -314,7 +314,7 @@ public class DtoMapperConfig {
                     public void mapBtoA(OsaamisalaDto osaamisalaDto, Koodi koodi, MappingContext context) {
                         super.mapBtoA(osaamisalaDto, koodi, context);
                         koodi.setKoodisto("osaamisala");
-                        koodi.setUri(osaamisalaDto.getOsaamisalakoodiArvo());
+                        koodi.setUri(osaamisalaDto.getOsaamisalakoodiUri());
                     }
 
                     @Override
