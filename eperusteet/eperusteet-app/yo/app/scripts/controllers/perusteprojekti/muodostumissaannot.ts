@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -154,13 +154,21 @@ angular
                                 .then(isEmpty => {
                                     return isEmpty ? leikelautaDialogi() : $q.when();
                                 })
-                                .then(cb);
+                                .then(() => {
+                                    Editointikontrollit.notifySentenceCaseWarnings({
+                                        obj: $scope.rakenne.muodostumisOtsikko,
+                                        paths: [
+                                            'nimi'
+                                        ],
+                                        after: cb
+                                    });
+                                });
                         });
                     },
                     asyncSave: (kommentti, cb) => {
                         $scope.rakenne.rakenne.metadata = { kommentti: kommentti };
+                        cb();
                         tallennaRakenne($scope.rakenne, () => {
-                            cb();
                             $scope.editoi = false;
                         });
                     },
@@ -215,6 +223,7 @@ angular
                     },
                     function() {
                         Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+                        cb();
                     }
                 );
 

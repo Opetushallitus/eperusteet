@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import { getComponent, inject, getOfType, testModule, mockApp } from "app/testutils";
 
 describe("Algoritmit", () => {

@@ -14,7 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
 import moment from "moment";
 
 export const Diaariformaatit = [/^OPH-\d{1,5}-\d{4}$/, /^\d{1,3}\/\d{3}\/\d{4}$/];
@@ -355,9 +355,9 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
             if (host.indexOf("localhost") > -1) {
                 //localhost - dev
                 return "http://localhost:9020/#/" + kieli;
-            } else if (host.indexOf("testi.virkailija.opintopolku.fi") > -1) {
+            } else if (host.indexOf("virkailija.testiopintopolku.fi") > -1) {
                 // QA
-                return "https://testi-eperusteet.opintopolku.fi/#/" + kieli;
+                return "https://eperusteet.testiopintopolku.fi/#/" + kieli;
             } else {
                 // Tuotanto
                 return "https://eperusteet.opintopolku.fi/#/" + kieli;
@@ -367,6 +367,10 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
         getPerusteEsikatseluLink(projekti, peruste, suoritustapa?:string) {
             if (!projekti.esikatseltavissa && peruste.tila !== "valmis") {
                 return null;
+            }
+
+            if (peruste.tyyppi === "opas") {
+                return this.getPerusteEsikatseluHost() + "/opas/" + peruste.id + "/tiedot";
             }
 
             switch (peruste.koulutustyyppi) {

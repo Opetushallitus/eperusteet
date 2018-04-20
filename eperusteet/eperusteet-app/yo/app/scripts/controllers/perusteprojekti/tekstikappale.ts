@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -558,6 +558,15 @@ angular
                 },
                 notify: mode => {
                     $scope.editEnabled = mode;
+                },
+                asyncValidate: function(after) {
+                    Editointikontrollit.notifySentenceCaseWarnings({
+                        obj: $scope.editableTekstikappale,
+                        paths: [
+                            'nimi'
+                        ],
+                        after: after
+                    });
                 },
                 validate: mandatoryValidator => {
                     return mandatoryValidator($scope.fields, $scope.editableTekstikappale);

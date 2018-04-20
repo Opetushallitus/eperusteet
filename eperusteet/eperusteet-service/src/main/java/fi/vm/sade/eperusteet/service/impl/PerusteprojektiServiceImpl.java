@@ -291,8 +291,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                 if (kayttaja != null && kayttajanProjektitiedot != null) {
                     CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto> combined = new CombinedDto<>(
-                        kayttaja,
-                        kayttajanProjektitiedot
+                            kayttaja,
+                            kayttajanProjektitiedot
                     );
                     kayttajat.add(combined);
                 }
@@ -472,10 +472,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (!pakollinen) {
             for (Kieli kieli : pakolliset) {
                 String osa = palanen.getTeksti().get(kieli);
-                    if (osa != null && !osa.isEmpty()) {
-                        onJollainVaaditullaKielella = true;
-                        break;
-                    }
+                if (osa != null && !osa.isEmpty()) {
+                    onJollainVaaditullaKielella = true;
+                    break;
+                }
             }
         }
 
@@ -1035,21 +1035,21 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
             Optional.of(peruste)
                     .ifPresent(p -> p.getSuoritustavat()
-                    .forEach(suoritustapa -> p.getKielet()
-                            .forEach(kieli -> {
-                                try {
-                                    DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
-                                            p.getId(),
-                                            kieli,
-                                            suoritustapa.getSuoritustapakoodi(),
-                                            GeneratorVersion.UUSI
-                                    );
-                                    dokumenttiService.setStarted(createDtoFor);
-                                    dokumenttiService.generateWithDto(createDtoFor);
-                                } catch (DokumenttiException e) {
-                                    LOG.error(e.getLocalizedMessage(), e.getCause());
-                                }
-            })));
+                            .forEach(suoritustapa -> p.getKielet()
+                                    .forEach(kieli -> {
+                                        try {
+                                            DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
+                                                    p.getId(),
+                                                    kieli,
+                                                    suoritustapa.getSuoritustapakoodi(),
+                                                    GeneratorVersion.UUSI
+                                            );
+                                            dokumenttiService.setStarted(createDtoFor);
+                                            dokumenttiService.generateWithDto(createDtoFor);
+                                        } catch (DokumenttiException e) {
+                                            LOG.error(e.getLocalizedMessage(), e.getCause());
+                                        }
+                                    })));
         }
 
         if (tila == ProjektiTila.POISTETTU) {
@@ -1087,17 +1087,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();
         LukioOpetussuunnitelmaRakenne rakenne = sisalto.getOpetussuunnitelma();
         updateStatus.forSuoritustapa(Suoritustapakoodi.LUKIOKOULUTUS).toTila(tila)
-            .forTilat(jalkeen(LAADINTA))
+                .forTilat(jalkeen(LAADINTA))
                 .addErrorGiven("peruste-lukio-ei-oppiaineita", rakenne.getOppiaineet().isEmpty())
                 .addErrorGiven("peruste-lukio-ei-aihekokonaisuuksia", KoulutusTyyppi.of(peruste.getKoulutustyyppi()) != KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS
                         && (sisalto.getAihekokonaisuudet() == null || sisalto.getAihekokonaisuudet().getAihekokonaisuudet().isEmpty()))
                 .addErrorGiven("peruste-lukio-ei-opetuksen-yleisia-tavoitteita",
                         sisalto.getOpetuksenYleisetTavoitteet() == null)
-            .forTilat(jalkeen(KOMMENTOINTI))
+                .forTilat(jalkeen(KOMMENTOINTI))
                 .addErrorStatusForAll("peruste-lukio-liittamaton-kurssi", () ->
-                    rakenne.kurssit()
-                        .filter(empty(Lukiokurssi::getOppiaineet))
-                        .map(localized(Nimetty::getNimi)))
+                        rakenne.kurssit()
+                                .filter(empty(Lukiokurssi::getOppiaineet))
+                                .map(localized(Nimetty::getNimi)))
                 /*
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () -> {
                     // EP-1143
@@ -1110,13 +1110,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 })
                 */
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
-                    rakenne.oppiaineet()
-                        .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))
-                        .map(localized(Nimetty::getNimi)))
+                        rakenne.oppiaineet()
+                                .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))
+                                .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-kooodi-puuttuu", () ->
-                    rakenne.koodilliset()
-                        .filter(emptyString(Koodillinen::getKoodiArvo).or(emptyString(Koodillinen::getKoodiUri)))
-                        .map(localized(Nimetty::getNimi)))
+                        rakenne.koodilliset()
+                                .filter(emptyString(Koodillinen::getKoodiArvo).or(emptyString(Koodillinen::getKoodiUri)))
+                                .map(localized(Nimetty::getNimi)))
                 .addErrorStatusForAll("peruste-lukio-sama-koodi", () -> {
                     List<LokalisoituTekstiDto> duplikaatit = new ArrayList<>();
                     rakenne.koodilliset()
@@ -1165,13 +1165,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private void palautaJulkaistuImpl(Peruste peruste, PerusteenOsa po, Long povId) {
         // Tarkistetaan omistaako palautettava peruste, jos on palautetaan se luonnokseksi
         peruste.getSuoritustavat()
-            .forEach(st -> st.getTutkinnonOsat().stream()
-                .map(TutkinnonOsaViite::getId)
-                .filter(id -> id.equals(povId))
-                .findFirst()
-                .ifPresent(x -> {
-                    po.palautaLuonnokseksi();
-                }));
+                .forEach(st -> st.getTutkinnonOsat().stream()
+                        .map(TutkinnonOsaViite::getId)
+                        .filter(id -> id.equals(povId))
+                        .findFirst()
+                        .ifPresent(x -> {
+                            po.palautaLuonnokseksi();
+                        }));
     }
 
     @Transactional
@@ -1229,12 +1229,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (sisaltoRoot.getPerusteenOsa() != null) {
             boolean salliTilamuutos = true;
             if (sisaltoRoot.getPerusteenOsa().getTila() == PerusteTila.VALMIS) {
-                    Set<Peruste> perusteet = perusteetJoissaJulkaistuna(sisaltoRoot.getPerusteenOsa());
-                    boolean hasCurrentPeruste = perusteet.contains(peruste);
-                    if (hasCurrentPeruste) {
-                        perusteet.remove(peruste);
-                    }
-                    salliTilamuutos = hasCurrentPeruste && perusteet.isEmpty();
+                Set<Peruste> perusteet = perusteetJoissaJulkaistuna(sisaltoRoot.getPerusteenOsa());
+                boolean hasCurrentPeruste = perusteet.contains(peruste);
+                if (hasCurrentPeruste) {
+                    perusteet.remove(peruste);
+                }
+                salliTilamuutos = hasCurrentPeruste && perusteet.isEmpty();
             }
 
             if (salliTilamuutos) {

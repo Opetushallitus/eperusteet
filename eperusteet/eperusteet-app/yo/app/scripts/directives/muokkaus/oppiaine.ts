@@ -15,7 +15,7 @@
 */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -119,7 +119,7 @@ angular
         Koodisto,
         MuokkausUtils,
         $document,
-        $log
+        Editointikontrollit
     ) {
         $scope.editableModel = {};
         $scope.editEnabled = false;
@@ -332,6 +332,15 @@ angular
             notify: function(value) {
                 $scope.editEnabled = value;
                 PerusteProjektiSivunavi.setVisible(!value);
+            },
+            asyncValidate: function(after) {
+                Editointikontrollit.notifySentenceCaseWarnings({
+                    obj: $scope.editableModel,
+                    paths: [
+                        'nimi'
+                    ],
+                    after: after
+                });
             },
             validate: function() {
                 return true;

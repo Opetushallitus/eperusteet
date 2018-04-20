@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 import { INotifikaatiot } from "../../services/notifikaatiot";
 
 angular
@@ -123,6 +123,7 @@ angular
         $scope.peruste = perusteprojektiTiedot.getPeruste();
         TekstikappaleOperations.setPeruste($scope.peruste);
         $scope.rajaus = "";
+        $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti, $scope.peruste);
         $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
 
         $scope.$watch(

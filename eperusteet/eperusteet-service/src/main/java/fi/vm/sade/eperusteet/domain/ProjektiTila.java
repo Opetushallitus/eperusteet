@@ -66,7 +66,7 @@ public enum ProjektiTila {
     JULKAISTU("julkaistu") {
         @Override
         public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
-            return EnumSet.of(LAADINTA);
+            return EnumSet.noneOf(ProjektiTila.class);
         }
     };
 

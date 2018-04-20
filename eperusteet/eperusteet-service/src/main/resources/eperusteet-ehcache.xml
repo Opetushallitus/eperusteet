@@ -284,6 +284,11 @@
         diskExpiryThreadIntervalSeconds="120"
         memoryStoreEvictionPolicy="LRU"
     />
+    <cache name="validointivirheet"
+           maxElementsInMemory="500"
+           eternal="false"
+           timeToLiveSeconds="86400"
+           overflowToDisk="false" />
     <cache name="tila"
            maxElementsInMemory="10000"
            eternal="false"

@@ -15,7 +15,7 @@
 */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 angular
     .module("eperusteApp")
@@ -266,6 +266,10 @@ angular
                 vapaatTekstit.splice(idx, 1);
             };
 
+            $scope.removeVapaaTeksti = function(vapaatTekstit, sisalto) {
+                _.remove(vapaatTekstit, sisalto);
+            };
+
             $scope.addVapaaTeksti = vapaatTekstit => {
                 vapaatTekstit.push({
                     nimi: {},
@@ -469,8 +473,12 @@ angular
                     tutke2.fetch();
                 },
                 asyncValidate: cb => {
-                    lukitse(() => {
-                        cb();
+                    Editointikontrollit.notifySentenceCaseWarnings({
+                        obj: $scope.editableTutkinnonOsaViite,
+                        paths: [
+                            'nimi'
+                        ],
+                        after: cb
                     });
                 },
                 save: kommentti => {

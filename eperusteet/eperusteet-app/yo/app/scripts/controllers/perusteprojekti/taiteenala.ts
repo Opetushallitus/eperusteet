@@ -1,5 +1,5 @@
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 
 export function taiteenalaCtrl(
     $location,
@@ -443,6 +443,15 @@ export function taiteenalaCtrl(
                                 resolve();
                             });
                         });
+                    });
+                },
+                asyncValidate: function(cb) {
+                    Editointikontrollit.notifySentenceCaseWarnings({
+                        obj: $scope.editableTaiteenala,
+                        paths: [
+                            'nimi'
+                        ],
+                        after: cb
                     });
                 },
                 save: kommentti => {

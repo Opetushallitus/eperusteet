@@ -15,7 +15,7 @@
  */
 
 import * as angular from "angular";
-import * as _ from "lodash";
+import _ from "lodash";
 import moment from "moment";
 
 angular
@@ -115,4 +115,12 @@ angular
         return function(text) {
             return text.split("\n");
         };
+    })
+    .filter("sentenceCase", function () {
+        return function (input) {
+            if (_.isString(input)) {
+                return _.capitalize(input.toLowerCase())
+            }
+            return input;
+        }
     });
