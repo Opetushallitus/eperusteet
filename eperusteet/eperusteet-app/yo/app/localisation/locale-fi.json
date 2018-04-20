@@ -1172,6 +1172,8 @@
     "koulutuksen-rakenteen-kuvaus": "Koulutuksen rakenteen kuvaus",
     "koulutuksen-muodostuminen-muokkaus": "Koulutuksen muodostumisen muokkaus",
 
+    "muodostuminen": "Muodostuminen",
+
     "perusteen-osa-kaytossa-myos-seuraavissa": "Perusteen osa käytössä myös seuraavissa projekteissa",
     "projekti-opas": "Projektin tiedot",
     "perusteenosa-kaytossa-muissa-osissa": "Perusteen osa on käytössä myös muissa projekteissa",
@@ -1226,6 +1228,28 @@
     "taiteenala-koodi": "Taiteenala koodi",
 
     "tutkinnon-osan-ammattitaitovaatukset-tekstina": "Tutkinnon osien ammattitaitovaatimukset täytyy laatia rakenteisena",
+    "osaamisalan-kuvauksia-puuttuu-sisallosta": "Kaikilla osaamisaloilla ei ole kuvausta",
+
+    "ryhman-nimea-ei-voi-muuttaa": "Ryhmän nimeä ei voi muuttaa",
+    "ryhman-osia-ei-voi-muuttaa": "Ryhmän osia ei voi muuttaa",
+    "ryhman-pakollisuutta-ei-voi-muuttaa": "Ryhmän pakollisuutta ei voi muutta",
+    "ryhman-roolia-ei-voi-vaihtaa": "Ryhmän roolia ei voi vaihtaa",
+    "ryhman-tutkintonimike-ja-osaamisala-ei-voi-olla-samanaikaisesti": "Ryhmällä ei voi olla osaamisalaa ja tutkintonimikettä",
+    "ryhman-osaamisalaa-ei-voi-muuttaa": "Ryhmän osaamisalaa ei voi muuttaa",
+    "ryhman-tutkintonimiketta-ei-voi-vaihtaa": "Ryhmän tutkintonimikettä ei voi muuttaa",
+    "ryhman-erikoisuustietoa-ei-voi-vaihtaa": "Ryhmän ei voi muokata",
+    "ryhman-juuren-muodostumista-ei-voi-muuttaa": "Tutkinnon muodostumissääntöä ei voi muuttaa",
+    "ryhman-muodostumissaantoa-ei-voi-muuttaa": "Ryhmän muodostumissääntöä ei voi muuttaa",
+    "ryhman-osien-maaraa-ei-voi-muuttaa": "Ryhmän osien määrää ei voi muuttaa",
+    "vain-tekstimuutokset-sallittu": "Vain tekstimuutokset sallittuja",
+    "osaa-ei-voi-tyhjentaa": "Rakenteen osaa ei voi tyhjentää",
+    "ryhman-pakollisuutta-ei-voi-muuttaa": "Ryhmän pakollisuutta ei voi muuttaa",
+    "ryhman-tunnistetta-ei-voi-muuttaa": "Ryhmän rakennetta ei voi muuttaa",
+    "ryhman-kuvausta-ei-voi-muuttaa": "Ryhmän kuvausta ei voi muuttaa",
+    "ryhman-tutkintonimike-jo-kaytossa": "Ryhmän tutkintonimike on jo käytössä",
+    "ryhman-osaamisala-tutkintonimike-jo-kaytossa": "Ryhmän osaamisala on jo käytössä",
+    "ryhman-rooli-ei-salli-sisaltoa": "Ryhmän rooli ei salli sisältöä",
+    "tutkinnon-osan-ammattitaitovaatukset-tekstina": "Tutkinnon osien ammattitaitovaatimukset täytyy laatia rakenteisena",
     "sisallon-muotoilu-saattaa-sisaltaa-virheita": "Sisältö saattaa sisältää muotoiluvirheitä",
     "sisalto-muotoiluvirheet-ohita": "Oletko varma, että sisältö on muotoiltu oikein? Jos on, paina OK.",
 
@@ -1269,5 +1293,4 @@
     "et-ole-viela-tallentanut-koulutuksenosia": "Et ole vielä liittänyt kaikkia koulutuksen osia perusteeseen",
     "haetaan-koulutuksen-osia": "Haetaan koulutuksen osia...",
     "haku-koulutuksen-nimi-placeholder": "Koulutuksen nimi"
-
 }

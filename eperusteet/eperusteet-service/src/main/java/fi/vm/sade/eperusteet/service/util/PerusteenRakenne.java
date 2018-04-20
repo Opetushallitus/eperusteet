@@ -28,15 +28,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author nkala
  */
 public class PerusteenRakenne {
+
+    @Getter
+    @Setter
+    static public class Validointi {
+        public List<Ongelma> ongelmat = new ArrayList<>();
+        public BigDecimal laskettuLaajuus = new BigDecimal(0);
+        public Integer sisakkaisiaOsaamisalaryhmia = 0;
+    }
+
     @Getter
     @Setter
     static public class Ongelma {
@@ -53,24 +59,56 @@ public class PerusteenRakenne {
 
     @Getter
     @Setter
-    static public class Validointi {
-        public List<Ongelma> ongelmat = new ArrayList<>();
-        public BigDecimal laskettuLaajuus = new BigDecimal(0);
-        public Integer sisakkaisiaOsaamisalaryhmia = 0;
+    static public class Context {
+        Set<Koodi> osaamisalat;
+        Set<Koodi> tutkintonimikkeet;
+
+        public Context(Set<Koodi> osaamisalat, Set<Koodi> tutkintonimikkeet) {
+            this.osaamisalat = osaamisalat;
+            this.tutkintonimikkeet = tutkintonimikkeet;
+        }
     }
 
-    static public Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne) {
-        return validoiRyhma(osaamisalat, rakenne, 0, false);
+    @Getter
+    @Setter
+    static private class ValidointiState {
+        Context context;
+        RakenneModuuli osaamisalaryhma; // Kaikkien löydettyjen osaamisalojen tätyyy löytyä tästä
+
+        ValidointiState(Context ctx) {
+            this.context = ctx;
+        }
     }
 
-    static public Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, boolean useMax) {
-        return validoiRyhma(osaamisalat, rakenne, 0, useMax);
+    static public Validointi validoiRyhma(Context ctx, RakenneModuuli rakenne) {
+        return validoiRyhma(ctx, rakenne, 0, false);
     }
 
-    static private Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, final Integer syvyys, boolean useMax) {
+    static public Validointi validoiRyhma(Context ctx, RakenneModuuli rakenne, boolean useMax) {
+        return validoiRyhma(ctx, rakenne, 0, useMax);
+    }
+
+    static private Validointi validoiRyhma(Context ctx, RakenneModuuli rakenne, final int syvyys, boolean useMax) {
+        if (ctx == null) {
+            ctx = new Context(null, null);
+        }
+        if (ctx.getOsaamisalat() == null) {
+            ctx.setOsaamisalat(new HashSet<>());
+        }
+        if (ctx.getOsaamisalat() == null) {
+            ctx.setOsaamisalat(new HashSet<>());
+        }
+        return validoiRyhma(new ValidointiState(ctx), rakenne, null, syvyys, useMax);
+    }
+
+    static private Validointi validoiRyhma(ValidointiState ctx, RakenneModuuli rakenne, RakenneModuuli parent, final int syvyys, boolean useMax) {
         final TekstiPalanen nimi = rakenne.getNimi();
         final RakenneModuuliRooli rooli = rakenne.getRooli();
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
+        if (osat == null) {
+            osat = new ArrayList<>();
+        }
+
         MuodostumisSaanto ms = rakenne.getMuodostumisSaanto();
 
         Validointi validointi = new Validointi();
@@ -88,6 +126,9 @@ public class PerusteenRakenne {
         Integer ryhmienMaara = 0;
         Set<Long> uniikit = new HashSet<>();
 
+        BigDecimal osaamisalojenLaajuus = null;
+        BigDecimal tutkintonimikkeidenLaajuus = null;
+
         for (AbstractRakenneOsa x : osat) {
             if (x instanceof RakenneOsa) {
                 RakenneOsa ro = (RakenneOsa) x;
@@ -97,32 +138,57 @@ public class PerusteenRakenne {
                     laajuus = laajuus == null ? new BigDecimal(0) : laajuus;
                     if (useMax
                             && tov.getLaajuusMaksimi() != null
-                            && tov.getLaajuusMaksimi().compareTo(laajuus) == 1) {
+                            && tov.getLaajuusMaksimi().compareTo(laajuus) > 0) {
                         laajuus = tov.getLaajuusMaksimi();
                     }
                     laajuusSummaMin = laajuusSummaMin.add(laajuus);
                     laajuusSummaMax = laajuusSummaMax.add(laajuus);
                     uniikit.add(tov.getTutkinnonOsa().getId());
                 }
-            } else if (x instanceof RakenneModuuli) {
+            }
+            else if (x instanceof RakenneModuuli) {
                 RakenneModuuli rm = (RakenneModuuli) x;
                 ++ryhmienMaara;
-                Validointi validoitu = validoiRyhma(osaamisalat, rm, syvyys + 1, useMax);
+                Validointi validoitu = validoiRyhma(ctx, rm, rakenne, syvyys + 1, useMax);
+                if (rm.getRooli() == RakenneModuuliRooli.OSAAMISALA) {
+                    if (osaamisalojenLaajuus == null || validoitu.getLaskettuLaajuus().compareTo(osaamisalojenLaajuus) < 0) {
+                        osaamisalojenLaajuus = validoitu.getLaskettuLaajuus();
+                    }
+                }
+                else if (rm.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE) {
+                    if (tutkintonimikkeidenLaajuus == null || validoitu.getLaskettuLaajuus().compareTo(tutkintonimikkeidenLaajuus) < 0) {
+                        tutkintonimikkeidenLaajuus = validoitu.getLaskettuLaajuus();
+                    }
+                }
+                else {
+                    validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
+                    laajuusSummaMin = laajuusSummaMin.add(validoitu.laskettuLaajuus);
+                    laajuusSummaMax = laajuusSummaMax.add(validoitu.laskettuLaajuus);
+                }
                 validointi.ongelmat.addAll(validoitu.ongelmat);
-                validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
                 validointi.sisakkaisiaOsaamisalaryhmia = validoitu.sisakkaisiaOsaamisalaryhmia;
-                laajuusSummaMin = laajuusSummaMin.add(validoitu.laskettuLaajuus);
-                laajuusSummaMax = laajuusSummaMax.add(validoitu.laskettuLaajuus);
             }
         }
 
-        if (rooli != null && rooli.equals(RakenneModuuliRooli.OSAAMISALA)) {
+        if (tutkintonimikkeidenLaajuus != null) {
+            validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(tutkintonimikkeidenLaajuus);
+            laajuusSummaMin = laajuusSummaMin.add(tutkintonimikkeidenLaajuus);
+            laajuusSummaMax = laajuusSummaMax.add(tutkintonimikkeidenLaajuus);
+        }
+
+        if (osaamisalojenLaajuus != null) {
+            validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(osaamisalojenLaajuus);
+            laajuusSummaMin = laajuusSummaMin.add(osaamisalojenLaajuus);
+            laajuusSummaMax = laajuusSummaMax.add(osaamisalojenLaajuus);
+        }
+
+        if (rooli == RakenneModuuliRooli.OSAAMISALA) {
             validointi.sisakkaisiaOsaamisalaryhmia = validointi.sisakkaisiaOsaamisalaryhmia + 1;
             // Tarkista löytyykö perusteesta valittua osaamisalaa
             Koodi roa = rakenne.getOsaamisala();
             if (roa != null) {
                 boolean osaamisalaaEiPerusteella = true;
-                for (Koodi oa : osaamisalat) {
+                for (Koodi oa : ctx.getContext().getOsaamisalat()) {
                     if (roa.equals(oa)) {
                         osaamisalaaEiPerusteella = false;
                         break;
@@ -134,7 +200,22 @@ public class PerusteenRakenne {
             }
         }
 
-        if (rooli != null && rooli.equals(RakenneModuuliRooli.VIRTUAALINEN)) {
+        // Ylin taso ei voi olla osaamisala
+        if (rooli != null && rooli != RakenneModuuliRooli.NORMAALI && syvyys == 0) {
+            validointi.ongelmat.add(new Ongelma("paatason-muodostumisen-rooli-virheellinen", nimi, syvyys));
+        }
+
+        // Osaamisaloja saa löytyä ainoastaan yhdestä ryhmästä
+        if (rooli == RakenneModuuliRooli.OSAAMISALA) {
+            if (ctx.osaamisalaryhma == null) {
+                ctx.osaamisalaryhma = parent;
+            }
+            else if (!Objects.equals(parent.getTunniste(), ctx.osaamisalaryhma.getTunniste())) {
+                validointi.ongelmat.add(new Ongelma("rakenteessa-osaamisaloja-useassa-ryhmassa", nimi, syvyys));
+            }
+        }
+
+        if (rooli == RakenneModuuliRooli.VIRTUAALINEN) {
             if (osat.size() > 0) {
                 validointi.ongelmat.add(new Ongelma("Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia", nimi, syvyys));
             }
@@ -149,6 +230,13 @@ public class PerusteenRakenne {
             validointi.ongelmat.add(new Ongelma("Ryhmässä on samoja tutkinnon osia (" + uniikit.size() + " uniikkia).", nimi, syvyys));
         }
 
+        // Tutkintonimike- ja osaamisalaryhmillä täytyy olla sisältöä
+        if (rooli == RakenneModuuliRooli.OSAAMISALA || rooli == RakenneModuuliRooli.TUTKINTONIMIKE) {
+            if (rakenne.getOsat().isEmpty()) {
+                validointi.ongelmat.add(new Ongelma("ryhmalta-puuttuu-sisalto", nimi, syvyys));
+            }
+        }
+
         if (ms != null) {
             final Integer kokoMin = ms.kokoMinimi();
             final Integer kokoMax = ms.kokoMaksimi();
@@ -156,9 +244,9 @@ public class PerusteenRakenne {
             final BigDecimal laajuusMax = new BigDecimal(ms.laajuusMaksimi());
 
             if (rooli == RakenneModuuliRooli.NORMAALI) {
-                if (laajuusSummaMin.compareTo(laajuusMin) == -1) {
+                if (laajuusSummaMin.compareTo(laajuusMin) < 0) {
                     validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (" + laajuusSummaMin + " < " + laajuusMin + ").", nimi, syvyys));
-                } else if (laajuusSummaMax.compareTo(laajuusMax) == -1) {
+                } else if (laajuusSummaMax.compareTo(laajuusMax) < 0) {
                     validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan maksimi on pienempi kuin ryhmän vaadittu maksimi (" + laajuusSummaMax + " > " + laajuusMax + ").", nimi, syvyys));
                 }
 

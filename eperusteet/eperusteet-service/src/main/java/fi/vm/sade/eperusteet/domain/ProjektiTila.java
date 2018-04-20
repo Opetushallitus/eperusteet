@@ -59,7 +59,7 @@ public enum ProjektiTila {
             if (tyyppi.equals(PerusteTyyppi.POHJA)) {
                 return EnumSet.of(POISTETTU);
             } else {
-                return EnumSet.of(VIIMEISTELY, JULKAISTU, POISTETTU);
+                return EnumSet.of(LAADINTA, VIIMEISTELY, JULKAISTU, POISTETTU);
             }
         }
     },

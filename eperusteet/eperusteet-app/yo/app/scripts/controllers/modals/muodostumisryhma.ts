@@ -42,19 +42,60 @@ angular
                     osaamisalakoodiUri: oa.uri,
                     nimi: oa.nimi
                 };
-            })
-        );
+            }));
+
+        if (!_.isEmpty(peruste.tutkintonimikkeet)) {
+            $scope.tutkintonimikkeet = _(peruste.tutkintonimikkeet)
+                .filter(nimike => !nimike.osaamisalaUri && !nimike.tutkinnonOsaUri)
+                .value();
+        }
+
         $scope.roolit = _.map(YleinenData.rakenneRyhmaRoolit, function(rooli) {
             return { value: rooli, label: rooli };
         });
 
         $scope.luonti = !_.isObject(ryhma);
 
+        function tyhjennaRyhma() {
+            $scope.ryhma.osaamisala = null;
+            $scope.ryhma.rooli = "maaritelty";
+            $scope.ryhma.tutkintonimike = null;
+        }
+
+        $scope.Tutkintonimike = {
+            valitse: function(nimike) {
+                if (!nimike) {
+                    tyhjennaRyhma();
+                }
+                else {
+                    $scope.ryhma.osaamisala = null;
+                    $scope.ryhma.rooli = "tutkintonimike";
+                    $scope.ryhma.tutkintonimike = {
+                        id: nimike.id,
+                        koodisto: "tutkintonimikkeet",
+                        uri: nimike.tutkintonimikeUri,
+                        versio: null
+                    };
+                    if (nimike && nimike.nimi) {
+                        $scope.ryhma.nimi = _.cloneDeep(nimike.nimi);
+                    }
+                }
+            }
+        };
+
         $scope.Osaamisala = {
             valitse: function(oa) {
-                $scope.ryhma.osaamisala = oa;
-                if (oa && oa.nimi) {
-                    $scope.ryhma.nimi = _.cloneDeep(oa.nimi);
+                if (!oa) {
+                    tyhjennaRyhma();
+                }
+                else {
+                    $scope.ryhma.tutkintonimike = null;
+                    $scope.ryhma.rooli = "osaamisala";
+                    $scope.ryhma.osaamisala = oa;
+
+                    if (oa && oa.nimi) {
+                        $scope.ryhma.nimi = _.cloneDeep(oa.nimi);
+                    }
                 }
             }
         };
@@ -97,10 +138,9 @@ angular
                     ml.maksimi = ml.minimi && (!ml.maksimi || ml.minimi > ml.maksimi) ? ml.minimi : ml.maksimi;
                 }
 
-                if (!_.isEmpty(uusiryhma.osaamisala)) {
-                    uusiryhma.rooli = "osaamisala";
-                } else if (uusiryhma.rooli === "osaamisala") {
-                    uusiryhma.rooli = "määritelty";
+                if (uusiryhma.rooli !== "osaamisala" && uusiryhma.rooli !== "tutkintonimike") {
+                    uusiryhma.tutkintonimike = null;
+                    uusiryhma.osaamisala = null;
                 }
             }
             $uibModalInstance.close(uusiryhma);

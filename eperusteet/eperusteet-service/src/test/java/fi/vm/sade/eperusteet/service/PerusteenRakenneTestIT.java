@@ -16,12 +16,15 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import org.junit.After;
 import org.junit.AfterClass;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -32,9 +35,9 @@ import org.junit.Test;
  *
  * @author nkala
  */
-public class PerusteenRakenneTest {
+public class PerusteenRakenneTestIT {
 
-    public PerusteenRakenneTest() {
+    public PerusteenRakenneTestIT() {
     }
 
     @BeforeClass
@@ -168,7 +171,7 @@ public class PerusteenRakenneTest {
             )
         );
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
-        assertTrue(validoitu.ongelmat.size() == 3);
+        assertThat(validoitu.ongelmat).hasSize(3);
     }
 
     @Test
@@ -216,15 +219,23 @@ public class PerusteenRakenneTest {
             TestUtils.teeOsaamisalaRyhma(
                 180, 180, -1, -1,
                 TestUtils.teeOsaamisalaRyhma(
-                    -1, -1, -1, -1
-                )
-            ),
+                    -1, -1, -1, -1)),
             TestUtils.teeOsaamisalaRyhma(-1, -1, -1, -1),
-            TestUtils.teeRyhma(-1, -1, -1, -1)
-        );
+            TestUtils.teeRyhma(-1, -1, -1, -1));
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
-        assertTrue(validoitu.ongelmat.size() == 2);
+        assertThat(validoitu.ongelmat)
+                .extracting(PerusteenRakenne.Ongelma::getOngelma)
+                .containsExactlyInAnyOrder(
+                        "ryhmalta-puuttuu-sisalto",
+                        "ryhmalta-puuttuu-sisalto",
+                        "tutkinnolle-ei-maaritetty-kokonaislaajuutta",
+                        "ryhman-osaamisalaa-ei-perusteella",
+                        "ryhman-osaamisalaa-ei-perusteella",
+                        "rakenteessa-osaamisaloja-useassa-ryhmassa",
+                        "Rakenteessa sisäkkäisiä osaamisalaryhmiä",
+                        "ryhman-osaamisalaa-ei-perusteella",
+                        "rakenteessa-osaamisaloja-useassa-ryhmassa");
     }
 
     @Test
@@ -235,6 +246,51 @@ public class PerusteenRakenneTest {
         rakenne.setRooli(RakenneModuuliRooli.VIRTUAALINEN);
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
-        assertTrue(validoitu.ongelmat.size() == 2);
+        assertThat(validoitu.ongelmat)
+                .extracting(PerusteenRakenne.Ongelma::getOngelma)
+                .containsExactlyInAnyOrder(
+                        "tutkinnolle-ei-maaritetty-kokonaislaajuutta",
+                        "paatason-muodostumisen-rooli-virheellinen",
+                        "Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia");
     }
+
+    @Test
+    public void testRakenteenKoko() {
+        RakenneModuuli rakenne = TestUtils.rakenneModuuli()
+                .laajuus(180)
+                .koko(2, 2)
+                .build();
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
+        assertThat(validoitu.ongelmat)
+                .extracting(PerusteenRakenne.Ongelma::getOngelma)
+                .containsExactlyInAnyOrder(
+                        "Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (0 < 180).",
+                        "Laskettu koko on pienempi kuin vaadittu minimi (0 < 2).");
+    }
+
+    @Test
+    public void testRakenteenKokoLiianSuuri() {
+        RakenneModuuli rakenne = TestUtils.rakenneModuuli()
+                .laajuus(150, 180)
+                .koko(2, 4)
+                .ryhma(r -> r
+                        .laajuus(50)
+                        .tayta())
+                .ryhma(r -> r
+                        .laajuus(50)
+                        .tayta())
+                .ryhma(r -> r
+                        .laajuus(60)
+                        .tayta())
+                .build();
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
+        assertThat(validoitu.ongelmat)
+                .extracting(PerusteenRakenne.Ongelma::getOngelma)
+                .containsExactlyInAnyOrder(
+                        "Laskettu laajuuksien summan maksimi on pienempi kuin ryhmän vaadittu maksimi (160 > 180).",
+                        "Laskettu koko on pienempi kuin ryhmän vaadittu maksimi (3 < 4).");
+    }
+
 }

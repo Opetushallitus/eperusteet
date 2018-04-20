@@ -38,6 +38,8 @@ import java.util.stream.Stream;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.Assert;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
@@ -525,7 +527,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         em.persist(pp);
 
         TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
-        Assert.assertFalse(status.isVaihtoOk());
+        assertThat(status.isVaihtoOk()).isFalse();
+
 
         HashSet<Kieli> kielet = new HashSet<>();
         kielet.add(Kieli.FI);

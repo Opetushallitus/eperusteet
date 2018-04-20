@@ -19,20 +19,44 @@ import _ from "lodash";
 
 angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, $q) {
     var skratchpadHasContent = false;
-    function osienLaajuudenSumma(rakenneOsat) {
-        return (
-            _(rakenneOsat || [])
-                .map(function(osa) {
-                    return osa
-                        ? osa.$vaadittuLaajuus && osa.$laajuus > osa.$vaadittuLaajuus
-                          ? osa.$vaadittuLaajuus
-                          : Math.max(osa.$laajuus || 0, osa.$laajuusMaksimi || 0)
-                        : 0;
-                })
-                .reduce(function(sum, newval) {
-                    return sum + newval;
-                }, 0) || 0
-        );
+
+    function osienLaajuudenSumma(rakenneOsat = []) {
+        let result = 0;
+        function lisaaOsa(osa) {
+            if (osa) {
+                if (osa.$vaadittuLaajuus && osa.$laajuus > osa.$vaadittuLaajuus) {
+                    result += osa.$vaadittuLaajuus;
+                }
+                else {
+                    result += Math.max(osa.$laajuus || 0, osa.$laajuusMaksimi || 0);
+                }
+            }
+        }
+
+        let suppeinOsaamisala = null;
+        let suppeinTutkintonimike = null;
+
+        for (const osa of rakenneOsat) {
+            switch (osa.rooli) {
+                case "osaamisala":
+                    if (!suppeinOsaamisala || osa.$laajuus < suppeinOsaamisala.$laajuus) {
+                        suppeinOsaamisala = osa;
+                    }
+                    break;
+                case "tutkintonimike":
+                    if (!suppeinTutkintonimike || osa.$laajuus < suppeinTutkintonimike.$laajuus) {
+                        suppeinTutkintonimike = osa;
+                    }
+                    break;
+                default:
+                    lisaaOsa(osa);
+            }
+        }
+
+        lisaaOsa(suppeinOsaamisala);
+        lisaaOsa(suppeinTutkintonimike);
+
+        return result;
     }
 
     function kaannaSaanto(ms?) {
@@ -186,7 +210,8 @@ angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, 
         if (rakenne._tutkinnonOsaViite) {
             rakenne.$laajuus = viitteet[rakenne._tutkinnonOsaViite].laajuus;
             rakenne.$laajuusMaksimi = viitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi;
-        } else if (rakenne.osat) {
+        }
+        else if (rakenne.osat) {
             // Ryhmä
             if (rakenne.muodostumisSaanto) {
                 var msl = rakenne.muodostumisSaanto.laajuus;
@@ -194,8 +219,13 @@ angular.module("eperusteApp").service("Muodostumissaannot", function($uibModal, 
                     rakenne.$vaadittuLaajuus = msl.maksimi || msl.minimi;
                 }
             }
-            rakenne.$laajuus =
-                rakenne.rooli === "määritelty" ? osienLaajuudenSumma(rakenne.osat) : rakenne.$vaadittuLaajuus;
+
+            if (rakenne.rooli === "määritelty") {
+                rakenne.$laajuus = osienLaajuudenSumma(rakenne.osat);
+            }
+            else {
+                rakenne.$laajuus = rakenne.$vaadittuLaajuus;
+            }
         }
     }
 

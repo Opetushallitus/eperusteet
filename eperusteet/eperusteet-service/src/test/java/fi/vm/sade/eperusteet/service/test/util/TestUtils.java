@@ -16,33 +16,24 @@
 package fi.vm.sade.eperusteet.service.test.util;
 
 import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Osaamistaso;
-import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertTrue;
 
@@ -143,9 +134,183 @@ public abstract class TestUtils {
         ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
         aosat.addAll(Arrays.asList(osat));
         rakenne.setOsat(aosat);
+        rakenne.setOsaamisala(new Koodi());
         rakenne.setMuodostumisSaanto(ms);
         rakenne.setRooli(RakenneModuuliRooli.OSAAMISALA);
         return rakenne;
+    }
+
+    static public class RakenneBuilder<T extends RakenneBuilder<T>> {
+        @Getter
+        private AbstractRakenneOsa osa;
+
+        protected RakenneBuilder(AbstractRakenneOsa osa) {
+            this.osa = osa;
+        }
+
+        public T kuvaus(TekstiPalanen kuvaus) {
+            osa.setKuvaus(kuvaus);
+            return (T)this;
+        }
+
+        public T pakollinen(boolean pakollinen) {
+            osa.setPakollinen(pakollinen);
+            return (T)this;
+        }
+
+        public T id(Long id) {
+            osa.setId(id);
+            return (T)this;
+        }
+
+        public T vieras(Koodi vieras) {
+            osa.setVieras(vieras);
+            return (T)this;
+        }
+
+    }
+
+    static public class RakenneOsaBuilder extends RakenneBuilder<RakenneOsaBuilder> {
+
+        public RakenneOsaBuilder() {
+            super(new RakenneOsa());
+        }
+
+        protected RakenneOsa osa() {
+            return (RakenneOsa)super.getOsa();
+        }
+
+        public RakenneOsaBuilder tutkinnonOsaViite(TutkinnonOsaViite viite) {
+            osa().setTutkinnonOsaViite(viite);
+            return this;
+        }
+
+        public RakenneOsaBuilder erikoisuus(String erikoisuus) {
+            osa().setErikoisuus(erikoisuus);
+            return this;
+        }
+
+        public RakenneOsa build() {
+            return osa();
+        }
+    }
+
+    static public class RakenneModuuliBuilder extends RakenneBuilder<RakenneModuuliBuilder> {
+        protected RakenneModuuli rakenne() {
+            return (RakenneModuuli)super.getOsa();
+        }
+
+        public RakenneModuuliBuilder() {
+            super(new RakenneModuuli());
+            rakenne().setOsat(new ArrayList<>());
+            rakenne().setRooli(RakenneModuuliRooli.NORMAALI);
+            rakenne().setMuodostumisSaanto(new MuodostumisSaanto());
+            rakenne().setNimi(TekstiPalanen.of(Kieli.FI, uniikkiString()));
+        }
+
+        public RakenneModuuliBuilder laajuus(Integer minimi) {
+            return this.laajuus(minimi, minimi);
+        }
+
+        public RakenneModuuliBuilder laajuus(Integer minimi, Integer maksimi) {
+            rakenne().setMuodostumisSaanto(new MuodostumisSaanto(
+                    new MuodostumisSaanto.Laajuus(minimi, maksimi, LaajuusYksikko.OSAAMISPISTE),
+                    rakenne().getMuodostumisSaanto().getKoko()));
+            return this;
+        }
+
+        public RakenneModuuliBuilder koko(Integer minimi) {
+            return this.koko(minimi, minimi);
+        }
+
+        // "Täyttää" rakennemoduulin osilla
+        public RakenneModuuliBuilder tayta() {
+            Integer laajuus = rakenne().getOsat().stream()
+                    .map(osa -> {
+                        if (osa instanceof RakenneModuuli) {
+                            MuodostumisSaanto saanto = ((RakenneModuuli) osa).getMuodostumisSaanto();
+                            return saanto != null && saanto.getLaajuus() != null && saanto.getLaajuus().getMinimi() != null
+                                    ? saanto.getLaajuus().getMinimi()
+                                    : 0;
+                        } else if (osa instanceof RakenneOsa) {
+                            return ((RakenneOsa) osa).getTutkinnonOsaViite().getLaajuus().intValue();
+                        } else {
+                            return 0;
+                        }
+                    }).mapToInt(Integer::intValue).sum();
+            Integer vaadittuMinimi = rakenne().getMuodostumisSaanto().laajuusMinimi();
+            if (vaadittuMinimi != null && vaadittuMinimi > 0) {
+                Integer lisaosanLaajuus = vaadittuMinimi - laajuus;
+                if (lisaosanLaajuus > 0) {
+                    TutkinnonOsa to = new TutkinnonOsa();
+                    TutkinnonOsaViite tov = new TutkinnonOsaViite();
+                    tov.setTutkinnonOsa(to);
+                    tov.setLaajuus(new BigDecimal(lisaosanLaajuus));
+                    osa(r -> r.tutkinnonOsaViite(tov));
+                }
+            }
+            return this;
+        }
+
+        public RakenneModuuliBuilder koko(Integer minimi, Integer maksimi) {
+            rakenne().setMuodostumisSaanto(new MuodostumisSaanto(
+                    rakenne().getMuodostumisSaanto().getLaajuus(),
+                    new MuodostumisSaanto.Koko(minimi, maksimi)));
+            return this;
+        }
+
+        public RakenneModuuliBuilder osaamisala(Koodi osaamisala) {
+            rakenne().setOsaamisala(osaamisala);
+            return this;
+        }
+
+        public RakenneModuuliBuilder tutkintonimike(Koodi tutkintonimike) {
+            rakenne().setTutkintonimike(tutkintonimike);
+            return this;
+        }
+
+        public RakenneModuuliBuilder nimi(TekstiPalanen nimi) {
+            rakenne().setNimi(nimi);
+            return this;
+        }
+
+        public RakenneModuuliBuilder nimi(String nimi) {
+            rakenne().setNimi(TekstiPalanen.of(Kieli.FI, nimi));
+            return this;
+        }
+
+        public RakenneModuuliBuilder erikoisuus(RakenneModuuliErikoisuus erikoisuus) {
+            rakenne().setErikoisuus(erikoisuus);
+            return this;
+        }
+
+        public RakenneModuuliBuilder rooli(RakenneModuuliRooli rooli) {
+            rakenne().setRooli(rooli);
+            return this;
+        }
+
+        public RakenneModuuliBuilder ryhma(RakenneModuuliBuilder builder) {
+            rakenne().getOsat().add(builder.build());
+            return this;
+        }
+
+        public RakenneModuuliBuilder ryhma(Function<RakenneModuuliBuilder, RakenneModuuliBuilder> fn) {
+            rakenne().getOsat().add(fn.apply(new RakenneModuuliBuilder()).build());
+            return this;
+        }
+
+        public RakenneModuuliBuilder osa(Function<RakenneOsaBuilder, RakenneOsaBuilder> fn) {
+            rakenne().getOsat().add(fn.apply(new RakenneOsaBuilder()).build());
+            return this;
+        }
+
+        public RakenneModuuli build() {
+            return rakenne();
+        }
+    }
+
+    static public RakenneModuuliBuilder rakenneModuuli() {
+        return new RakenneModuuliBuilder();
     }
 
     static public PerusteenOsaViite teePerusteenOsaViite() {

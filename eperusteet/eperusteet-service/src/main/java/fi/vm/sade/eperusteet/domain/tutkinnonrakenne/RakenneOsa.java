@@ -24,6 +24,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
+import java.util.Optional;
+
 /**
  *
  * @author jhyoty
@@ -42,19 +44,20 @@ public class RakenneOsa extends AbstractRakenneOsa {
     private String erikoisuus;
 
     @Override
-    public boolean isSame(AbstractRakenneOsa other, boolean excludeText) {
-
-        if (!super.isSame(other, excludeText)) {
-            return false;
+    public Optional<RakenneOsaVirhe> isSame(AbstractRakenneOsa other, int depth, boolean excludeText) {
+        Optional<RakenneOsaVirhe> supervalidation = super.isSame(other, depth, excludeText);
+        if (!supervalidation.isPresent()) {
+            return supervalidation;
         }
 
         if (other instanceof RakenneOsa) {
             final RakenneOsa ro = (RakenneOsa) other;
-            return this.getPakollinen() == ro.getPakollinen()
-                && Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite())
-                && (erikoisuus == null ? ro.getErikoisuus() == null : erikoisuus.equals(ro.getErikoisuus()));
+            boolean rakenneOsaValid = this.getPakollinen() == ro.getPakollinen()
+                    && Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite())
+                    && (erikoisuus == null ? ro.getErikoisuus() == null : erikoisuus.equals(ro.getErikoisuus()));
+            return fail("rakenne-osan-validointi-epaonnistui");
         }
 
-        return false;
+        return success();
     }
 }

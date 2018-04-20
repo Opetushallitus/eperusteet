@@ -28,16 +28,12 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaExcelDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.*;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
@@ -888,34 +884,37 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
+        Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteId, suoritustapakoodi);
+        if (rakenneId == null) {
+            throw new NotExistsException("Rakennetta ei ole olemassa");
+        }
 
-        Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
-        lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getRakenne().getId());
+        rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
+        tarkistaUniikitKoodit(rakenne);
+
+        RakenneModuuli nykyinen = rakenneRepository.findOne(rakenneId);
+        lockManager.ensureLockedByAuthenticatedUser(nykyinen.getId());
 
         rakenne.foreach(new VisitorImpl(maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
-        if (!moduuli.isSame(suoritustapa.getRakenne(), false)) {
+        boolean rakenneMuuttunut = moduuli.isSame(nykyinen, 0, true).isPresent();
+        if (rakenneMuuttunut) {
             if (perusteet.findOne(perusteId).getTila() == PerusteTila.VALMIS) {
-                if (!moduuli.isSame(suoritustapa.getRakenne(), true)) {
-                    throw new BusinessRuleViolationException("Vain tekstimuutokset rakenteeseen ovat sallittuja");
+                Optional<AbstractRakenneOsa.RakenneOsaVirhe> muutosVirheellinen = moduuli.isSame(nykyinen, 0, false);
+                if (muutosVirheellinen.isPresent()) {
+                    throw new BusinessRuleViolationException(muutosVirheellinen.get().getMessage());
                 }
             }
-            RakenneModuuli current = suoritustapa.getRakenne();
-            moduuli = checkIfOsaamisalatAlreadyExists(moduuli);
-            if (current != null) {
-                current.mergeState(moduuli);
-            } else {
-                current = moduuli;
-                suoritustapa.setRakenne(current);
-            }
-            rakenneRepository.save(current);
+
+            RakenneModuuli current = nykyinen;
+            moduuli = checkIfKoodiAlreadyExists(moduuli);
+            current.mergeState(moduuli);
             onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
         }
 
         RakenneModuuliDto updated = mapper.map(moduuli, RakenneModuuliDto.class);
         updateAllTutkinnonOsaJarjestys(perusteId, updated);
-
         return updated;
     }
     
@@ -948,22 +947,50 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
-    private RakenneModuuli checkIfOsaamisalatAlreadyExists(RakenneModuuli rakenneModuuli) {
-        Koodi osaamisalaTemp;
+    private void tarkistaUniikitKoodit(RakenneModuuliDto rakenneModuuli) {
+        HashSet<String> koodit = new HashSet<>();
+        Stack<RakenneModuuliDto> stack = new Stack<>();
+        stack.push(rakenneModuuli);
+
+        while (!stack.empty()) {
+            RakenneModuuliDto head = stack.pop();
+
+            if (head.getTutkintonimike() != null && !koodit.add(head.getTutkintonimike().getUri())) {
+                throw new BusinessRuleViolationException("ryhman-tutkintonimike-jo-kaytossa");
+            }
+
+            if (head.getOsaamisala() != null && !koodit.add(head.getOsaamisala().getOsaamisalakoodiUri())) {
+                throw new BusinessRuleViolationException("ryhman-osaamisala-jo-kaytossa");
+            }
+
+            if (head.getOsat() != null) {
+                for (AbstractRakenneOsaDto osa : head.getOsat()) {
+                    if (osa instanceof RakenneModuuliDto) {
+                        stack.push((RakenneModuuliDto)osa);
+                    }
+                }
+            }
+        }
+    }
+
+    private RakenneModuuli checkIfKoodiAlreadyExists(RakenneModuuli rakenneModuuli) {
         if (rakenneModuuli != null) {
             if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getUri() != null) {
-                osaamisalaTemp = koodiRepository.findOneByUriAndVersio(rakenneModuuli.getOsaamisala().getUri(), rakenneModuuli.getOsaamisala().getVersio());
-                if (osaamisalaTemp != null) {
-                    rakenneModuuli.setOsaamisala(osaamisalaTemp);
+                Koodi osaamisalaKoodi = koodiRepository.findOneByUriAndVersio(
+                        rakenneModuuli.getOsaamisala().getUri(),
+                        rakenneModuuli.getOsaamisala().getVersio());
+                if (osaamisalaKoodi != null) {
+                    rakenneModuuli.setOsaamisala(osaamisalaKoodi);
                 } else {
                     rakenneModuuli.setOsaamisala(koodiRepository.save(rakenneModuuli.getOsaamisala()));
                 }
-            } else {
+            }
+            else {
                 rakenneModuuli.setOsaamisala(null);
             }
             for (AbstractRakenneOsa osa : rakenneModuuli.getOsat()) {
                 if (osa instanceof RakenneModuuli) {
-                    osa = checkIfOsaamisalatAlreadyExists((RakenneModuuli) osa);
+                    osa = checkIfKoodiAlreadyExists((RakenneModuuli) osa);
                 }
             }
         }
@@ -1477,13 +1504,34 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             if (depth >= maxDepth) {
                 throw new BusinessRuleViolationException("Tutkinnon rakennehierarkia ylittää maksimisyvyyden");
             }
-            // Tarkistetaan, että tutkinnossa määriteltäviin ryhmiin ei ole lisätty osia
+
             if (dto instanceof RakenneModuuliDto) {
+                // Tarkistetaan, että tutkinnossa määriteltäviin ryhmiin ei ole lisätty osia
                 RakenneModuuliDto rakenneModuuliDto = (RakenneModuuliDto) dto;
                 if (rakenneModuuliDto.getRooli() != null
                         && rakenneModuuliDto.getRooli().equals(RakenneModuuliRooli.VIRTUAALINEN)
                         && rakenneModuuliDto.getOsat().size() > 0) {
-                    throw new BusinessRuleViolationException("Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia");
+                    throw new BusinessRuleViolationException("ryhman-rooli-ei-salli-sisaltoa");
+                }
+
+                // Osaamisalaa ja tutkintonimikettä ei voi asettaa samanaikaisesti
+                if (rakenneModuuliDto.getTutkintonimike() != null && rakenneModuuliDto.getOsaamisala() != null) {
+                    throw new BusinessRuleViolationException("virheellisteti-asetettu-tutkintonimike");
+                }
+
+                // Tarkistetaan tutkintonimike
+                if (rakenneModuuliDto.getTutkintonimike() == null && rakenneModuuliDto.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE) {
+                    throw new BusinessRuleViolationException("virheellisesti-asetettu-tutkintonimike");
+                }
+                if (rakenneModuuliDto.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE && rakenneModuuliDto.getTutkintonimike() == null) {
+                    throw new BusinessRuleViolationException("tutkintonimikeryhmalta-puuttuu-tutkintonimikekoodi");
+                }
+
+                if (rakenneModuuliDto.getOsaamisala() == null && rakenneModuuliDto.getRooli() == RakenneModuuliRooli.OSAAMISALA) {
+                    throw new BusinessRuleViolationException("virheellisesti-asetettu-osaamisala");
+                }
+                if (rakenneModuuliDto.getRooli() == RakenneModuuliRooli.OSAAMISALA && rakenneModuuliDto.getOsaamisala() == null) {
+                    throw new BusinessRuleViolationException("osaamisalaryhmalta-puuttuu-osaamisalakoodi");
                 }
             }
         }

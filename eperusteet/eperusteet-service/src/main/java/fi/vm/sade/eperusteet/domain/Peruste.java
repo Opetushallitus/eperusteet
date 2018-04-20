@@ -333,6 +333,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
                         return suoritustapa.getSisalto();
                     }
                 }
+
+                if (!this.getSuoritustavat().isEmpty()) {
+                    return this.getSuoritustavat().iterator().next().getSisalto();
+                }
                 break;
         }
 
