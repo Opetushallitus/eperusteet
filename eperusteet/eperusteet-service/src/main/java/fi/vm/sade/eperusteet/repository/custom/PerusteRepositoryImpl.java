@@ -82,19 +82,27 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Predicate pred = buildPredicate(root, teksti, cb, pquery, koodistostaHaetut);
 
         final List<Order> order = new ArrayList<>();
-        if ("muokattu".equals(pquery.getJarjestys())) {
-            order.add(cb.desc(root.get(Peruste_.muokattu)));
-        }
+        Expression<Date> muokattu = root.join(Peruste_.globalVersion).get(PerusteVersion_.aikaleima);
 
         if (pquery.getKieli() != null && pquery.getKieli().size() == 1) {
             Expression<String> n = cb.lower(teksti
                     .on(cb.equal(teksti.get(LokalisoituTeksti_.kieli), Kieli.of(pquery.getKieli().iterator().next())))
                     .get(LokalisoituTeksti_.teksti));
             order.add(cb.asc(n));
-            query = query.multiselect(root, n);
+            if ("muokattu".equals(pquery.getJarjestys())) {
+                order.add(cb.desc(muokattu));
+                query = query.multiselect(root, n, muokattu);
+            } else {
+                query = query.multiselect(root, n);
+            }
         }
         else {
-            query = query.multiselect(root);
+            if ("muokattu".equals(pquery.getJarjestys())) {
+                order.add(cb.desc(muokattu));
+                query = query.multiselect(root, muokattu);
+            } else {
+                query = query.multiselect(root);
+            }
         }
 
         order.add(cb.asc(root.get(Peruste_.id)));
