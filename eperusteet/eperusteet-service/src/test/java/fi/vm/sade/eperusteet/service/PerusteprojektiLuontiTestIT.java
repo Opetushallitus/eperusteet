@@ -92,7 +92,6 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, siirtyma);
         assertThat(status.isVaihtoOk()).isTrue();
-
     }
 
     @Test

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.EsiopetuksenPerusteenSisaltoDto;

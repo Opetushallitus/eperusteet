@@ -20,10 +20,12 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -54,7 +56,7 @@ import org.hibernate.envers.NotAudited;
     name = "PerusteenOsaViite.rootId",
     columns = {@ColumnResult(name="id", type=Long.class)}
 )
-public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
+public class PerusteenOsaViite implements ReferenceableEntity, Serializable, Linkable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -188,5 +190,23 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
         }
         pov.setLapset(uudetLapset);
         return pov;
+    }
+
+    @Override
+    public Metalink getMetalink() {
+        try {
+            Set<Peruste> perusteet = this.getSuoritustapa().getPerusteet();
+            if (perusteet.size() == 1) {
+                return Metalink.fromPerusteenOsaViite(
+                        perusteet.iterator().next().getId(),
+                        getSuoritustapa().getSuoritustapakoodi(),
+                        getId(),
+                        getPerusteenOsa().getId());
+            }
+        }
+        catch (NullPointerException ex) {
+            return null;
+        }
+        return null;
     }
 }

@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
@@ -244,6 +245,12 @@ public class DtoMapperConfig {
                 .byDefault()
                 .favorExtension(true)
                 .register();
+
+//        factory.classMap(Metalink.class, Metalink.class)
+//                .byDefault()
+//                .favorExtension(true)
+//                .register();
+
         factory.classMap(Peruste.class, PerusteBaseDto.class)
                 .byDefault()
                 .favorExtension(true)

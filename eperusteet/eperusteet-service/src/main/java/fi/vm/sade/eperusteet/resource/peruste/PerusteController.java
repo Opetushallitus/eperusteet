@@ -265,7 +265,10 @@ public class PerusteController {
     @ResponseBody
     @ApiOperation(value = "perusteen kaikkien tietojen haku")
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(@PathVariable("perusteId") final long id) {
-        return handleGet(id, 3600, () -> service.getKokoSisalto(id));
+        return handleGet(id, 3600, () -> {
+            PerusteKaikkiDto res = service.getKokoSisalto(id);
+            return res;
+        });
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)

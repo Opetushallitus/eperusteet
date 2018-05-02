@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import java.io.Serializable;
@@ -41,7 +42,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "peruste")
 @Audited
-public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity, WithPerusteTila {
+public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity, WithPerusteTila, Linkable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -199,6 +200,12 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             this.kvliite = liite;
             liite.setPeruste(this);
         }
+    }
+
+    @Override
+    @Transient
+    public Metalink getMetalink() {
+        return Metalink.fromPeruste(getId());
     }
 
     /**

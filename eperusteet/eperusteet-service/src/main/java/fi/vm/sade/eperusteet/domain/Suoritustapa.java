@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +39,7 @@ import java.util.Set;
 @Entity
 @Table(name = "suoritustapa")
 @Audited
-public class Suoritustapa implements Serializable, ReferenceableEntity {
+public class Suoritustapa implements Serializable, ReferenceableEntity, Linkable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -80,6 +81,11 @@ public class Suoritustapa implements Serializable, ReferenceableEntity {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "suoritustavat")
     @Getter
     private Set<Peruste> perusteet = new HashSet<>();
+
+    @Override
+    public Metalink getMetalink() {
+        return Metalink.fromSuoritustapa(perusteet.iterator().next().getId(), getSuoritustapakoodi());
+    }
 
     @Override
     public EntityReference getReference() {

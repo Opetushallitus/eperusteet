@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.util.List;
 import lombok.Getter;
@@ -36,6 +37,8 @@ public class PerusteenOsaViiteDto<R extends PerusteenOsaDto> {
     @JsonProperty("_perusteenOsa")
     private EntityReference perusteenOsaRef;
     private R perusteenOsa;
+
+    private Metalink metalink;
 
     public PerusteenOsaViiteDto() {
 
