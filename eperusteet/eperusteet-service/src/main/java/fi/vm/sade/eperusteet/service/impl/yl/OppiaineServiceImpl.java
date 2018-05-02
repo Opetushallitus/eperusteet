@@ -399,10 +399,10 @@ public class OppiaineServiceImpl implements OppiaineService {
             oppiaineRepository.lock(ovk.getOppiaine());
         }
         mapper.map(dto, ovk);
-        if ( sisalto.getPeruste().getTila() == PerusteTila.VALMIS ) {
+        if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
             Revision rev = vuosiluokkakokonaisuusRepository.getLatestRevisionId(ovk.getId());
             OppiaineenVuosiluokkaKokonaisuus latest = vuosiluokkakokonaisuusRepository.findRevision(ovk.getId(), rev.getNumero());
-            if ( !latest.structureEquals(ovk) ) {
+            if (!latest.structureEquals(ovk)) {
                 throw new BusinessRuleViolationException(VAIN_KORJAUKSET_SALLITTU);
             }
         }

@@ -41,6 +41,6 @@ public interface TutkinnonOsaViiteRepository extends JpaWithVersioningRepository
 
     List<TutkinnonOsaViite> findAllByTutkinnonOsa(TutkinnonOsa perusteenOsa);
 
-    @Query("SELECT tov FROM TutkinnonOsaViite tov WHERE tov.tutkinnonOsa.koodiUri = ?1 AND tov.suoritustapa.suoritustapakoodi = ?2")
+    @Query("SELECT tov FROM TutkinnonOsaViite tov WHERE tov.tutkinnonOsa.koodi.uri = ?1 AND tov.suoritustapa.suoritustapakoodi = ?2")
     TutkinnonOsaViite findOneByKoodiUri(String koodiUri, Suoritustapakoodi st);
 }

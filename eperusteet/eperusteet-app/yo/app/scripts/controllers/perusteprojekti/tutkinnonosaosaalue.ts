@@ -80,7 +80,10 @@ angular
         }
 
         $scope.valitseAlarelaatio = function(ar) {
-            $scope.osaAlue.koodi = ar ? ar.koodi : undefined;
+            $scope.osaAlue.koodi = $scope.osaAlue.koodi ? $scope.osaAlue.koodi : {};
+            $scope.osaAlue.koodi.koodiUri = ar ? ar.koodiUri : null;
+            $scope.osaAlue.koodi.koodisto = "tutkinnonosat";
+            $scope.osaAlue.koodi.versio = ar ? ar.versio : null;
             $scope.osaAlue.koodiUri = ar ? ar.koodiUri : undefined;
             $scope.osaAlue.koodiArvo = ar ? ar.koodiArvo : undefined;
         };
