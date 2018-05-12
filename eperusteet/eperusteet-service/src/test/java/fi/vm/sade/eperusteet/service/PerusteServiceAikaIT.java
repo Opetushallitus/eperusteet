@@ -168,12 +168,11 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
     }
 
     private void julkaise(Long projektiId) {
-        Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, siirtyma);
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, null);
         assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, siirtyma);
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, siirtyma);
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, null);
         assertThat(status.isVaihtoOk()).isTrue();
     }
 

@@ -38,15 +38,16 @@ angular
                                 korvattavatDiaarinumerot: parametrit.korvattavatDiaarinumerot,
                                 statuses: _.map(parametrit.mahdollisetTilat, function(item) {
                                     return { key: item, description: "tilakuvaus-" + item };
-                                })
+                                }),
+                                tiedote: {}
                             };
                         }
                     }
                 })
                 .result.then(successCb);
         };
-        this.set = function(status, siirtymaPaattyy, successCb) {
-            that.setFn(status, siirtymaPaattyy, successCb);
+        this.set = function(status, siirtymaPaattyy, tiedote, successCb) {
+            that.setFn(status, siirtymaPaattyy, tiedote, successCb);
         };
     })
     .controller("PerusteprojektinTilaModalController", function($scope, $uibModal, $uibModalInstance, $state, data) {
@@ -131,7 +132,7 @@ angular
             ) {
                 $scope.data.siirtymaPaattyy = $scope.data.siirtymaPaattyy.valueOf();
             }
-            PerusteprojektinTilanvaihto.set(data.selected, $scope.data.siirtymaPaattyy);
+            PerusteprojektinTilanvaihto.set(data.selected, $scope.data.siirtymaPaattyy, $scope.data.tiedote);
             $uibModalInstance.close();
         };
 

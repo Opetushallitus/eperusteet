@@ -20,6 +20,7 @@
 
         <p ng-bind-html="'tilanvaihdos-' + data.oldStatus + '-' + data.selected | kaanna | unsafe"></p>
     </div>
+    <!-- Todo: Selvitä, miksi ei ole käytössä enää
     <div ng-show="data.selected === 'julkaistu' && data.korvattavatDiaarinumerot.length > 0">
         <p kaanna="'julkaisu-korvaa-perusteet'"></p>
 
@@ -51,7 +52,33 @@
             </div>
             <p class="alert alert-error" ng-show="pvm.siirtyma.$invalid" kaanna>kelvoton-pvm</p>
         </form>
-
+    </div>
+    -->
+    <div ng-show="data.selected === 'julkaistu'">
+        <h3 kaanna="'lisaa-tiedote'"></h3>
+        <div class="termi-muokkaus">
+            <table>
+                <tr>
+                    <td class="has-checkbox"><input id="yleinen-valinta" ng-model="data.tiedote.yleinen" type="checkbox" class="form-control"></td>
+                    <td><label for="yleinen-valinta" kaanna="'yleinen-tiedote'"></label></td>
+                    <td><ohje teksti="'ohje-yleinen-tiedote'" suunta="right"></ohje></td>
+                </tr>
+            </table>
+        </div>
+        <h4 kaanna="'otsikko'"></h4>
+        <input class="form-control"
+               ng-model="data.tiedote.otsikko"
+               slocalized
+               type="text"
+               required="true"
+               data-empty-placeholder-enabled="true"
+               placeholder="{{'tiedote-otsikko-placeholder' | kaanna}}">
+        <h4 kaanna="'tiedoteteksti'"></h4>
+        <div id="toolbar" style="display: none">
+            <div id="ck-toolbar-top"></div>
+            <div id="ck-toolbar-bottom"></div>
+        </div>
+        <div ckeditor ng-model="data.tiedote.sisalto" slocalized editor-placeholder="tiedote-teksti-placeholder"></div>
     </div>
 
 </div>

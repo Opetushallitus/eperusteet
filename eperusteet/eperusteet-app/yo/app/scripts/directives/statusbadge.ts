@@ -60,7 +60,8 @@ angular
         Notifikaatiot,
         $http,
         SERVICE_LOC,
-        $uibModal
+        $uibModal,
+        Utils
     ) {
         $scope.iconMapping = {
             laadinta: "pencil",
@@ -99,11 +100,11 @@ angular
                             mahdollisetTilat: vastaus.data,
                             korvattavatDiaarinumerot: $scope.korvattavatDiaarinumerot
                         },
-                        function(newStatus, siirtymaPaattyy) {
+                        function(newStatus, siirtymaPaattyy, tiedote) {
                             // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
                             PerusteprojektiTila.save(
                                 { id: $scope.projektiId, tila: newStatus, siirtymaPaattyy: siirtymaPaattyy },
-                                {},
+                                Utils.presaveStrip(tiedote),
                                 function(vastaus) {
                                     if (vastaus.vaihtoOk) {
                                         $scope.status = newStatus;

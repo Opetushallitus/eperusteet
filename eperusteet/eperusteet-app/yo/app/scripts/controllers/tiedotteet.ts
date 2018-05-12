@@ -221,8 +221,6 @@ angular
 
         $scope.ok = function() {
             $rootScope.$broadcast("notifyCKEditor");
-            console.log(perusteprojektiId);
-            console.log($scope.model.$liitaPerusteprojekti);
             if ($scope.model.$liitaPerusteprojekti) {
                 $scope.model._perusteprojekti = perusteprojektiId;
             }

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -40,7 +41,6 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
@@ -147,11 +147,10 @@ public class PerusteprojektiController {
     public TilaUpdateStatus updateTila(
             @PathVariable("id") final long id,
             @PathVariable("tila") final String tila,
-            final Long siirtymaPaattyy) {
+            @RequestBody TiedoteDto tiedoteDto
+    ) {
         return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, TILAMUUTOS).add("perusteprojektiId", id),
-                Void -> service.updateTila(id, ProjektiTila.of(tila), siirtymaPaattyy != null
-                        ? new Date(siirtymaPaattyy)
-                        : null));
+                Void -> service.updateTila(id, ProjektiTila.of(tila), tiedoteDto));
     }
 
     @RequestMapping(method = POST)

@@ -396,7 +396,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
 
-        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 1, Calendar.MARCH, 12).getTime());
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, null);
         tulostaInfo(status);
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
