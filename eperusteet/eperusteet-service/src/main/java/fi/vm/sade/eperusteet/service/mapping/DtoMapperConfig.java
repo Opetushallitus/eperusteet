@@ -242,7 +242,7 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
         factory.classMap(Tiedote.class, TiedoteDto.class)
-                .field("perusteprojekti.peruste", "peruste")
+                .fieldAToB("perusteprojekti.peruste", "peruste")
                 .byDefault()
                 .register();
         factory.classMap(Peruste.class, PerusteHakuInternalDto.class)
