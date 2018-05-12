@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Tiedote;
@@ -10,6 +9,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TiedoteRepository;
+import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.TiedoteService;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
@@ -17,7 +17,6 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,7 +25,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 /**
  *
@@ -36,12 +34,15 @@ import org.springframework.util.ObjectUtils;
 @Transactional
 public class TiedoteServiceImpl implements TiedoteService {
 
-    @Autowired
     @Dto
+    @Autowired
     private DtoMapper mapper;
 
     @Autowired
     private TiedoteRepository repository;
+
+    @Autowired
+    private TiedoteRepositoryCustom tiedoteRepositoryCustom;
 
     @Autowired
     private KayttajanTietoService kayttajat;
@@ -50,35 +51,22 @@ public class TiedoteServiceImpl implements TiedoteService {
     private PerusteRepository perusteRepository;
 
     @Override
-    public Page<TiedoteDto> findBy(TiedoteQuery query) {
+    public Page<TiedoteDto> findBy(TiedoteQuery tquery) {
         // Sisäiset tiedotteet vaativat kirjautumisen
         if (!SecurityUtil.isAuthenticated()) {
-            query.setJulkinen(true);
+            tquery.setJulkinen(true);
         }
 
-        // Pakko hakea ainakin jollain kielellä
-        if (ObjectUtils.isEmpty(query.getKieli())) {
-            query.setKieli(new HashSet<>());
-            query.getKieli().add(Kieli.FI);
-        }
-
-        Page<Tiedote> tiedotteet;
         PageRequest pageRequest = new PageRequest(
-                query.getSivu(),
-                query.getSivukoko(),
+                tquery.getSivu(),
+                tquery.getSivukoko(),
                 Sort.Direction.DESC,
                 "luotu"
         );
 
-        if (query.getJulkinen() != null) {
-            tiedotteet = repository.findByJulkinenAndOtsikkoTekstiKieliIn(query.getJulkinen(), query.getKieli(), pageRequest);
-        } else {
-            tiedotteet = repository.findByOtsikkoTekstiKieliIn(query.getKieli(), pageRequest);
-        }
+        Page<Tiedote> tiedotteet = tiedoteRepositoryCustom.findBy(pageRequest, tquery);
 
-        PageDto<Tiedote, TiedoteDto> resultDto = new PageDto<>(tiedotteet, TiedoteDto.class, pageRequest, mapper);
-
-        return resultDto;
+        return new PageDto<>(tiedotteet, TiedoteDto.class, pageRequest, mapper);
     }
 
     @Override

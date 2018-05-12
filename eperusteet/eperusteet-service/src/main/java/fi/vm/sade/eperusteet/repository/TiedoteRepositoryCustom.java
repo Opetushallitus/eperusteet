@@ -14,22 +14,15 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.peruste;
+package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.Tiedote;
+import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.NoRepositoryBean;
 
-import java.util.List;
-
-@Getter
-@Setter
-public class TiedoteQuery {
-    private int sivu = 0;
-    private int sivukoko = 25;
-    private List<Kieli> kieli;
-    private String nimi;
-    private Long perusteId;
-    private Boolean julkinen; // Jos null, haetaan julkiset ja sisäiset
-    private Boolean yleinen; // Jos halutaan esittää mm. etusivulla
+@NoRepositoryBean
+public interface TiedoteRepositoryCustom {
+    Page<Tiedote> findBy(PageRequest page, TiedoteQuery query);
 }
