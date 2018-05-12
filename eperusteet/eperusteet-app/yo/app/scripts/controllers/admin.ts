@@ -42,7 +42,7 @@ angular
             })
             .state("root.admin.tiedotteet", {
                 url: "/tiedotteet",
-                template: require("views/admin/tiedotteet.html"),
+                template: require("views/admin/tiedotteet.pug"),
                 controller: "TiedotteidenHallintaController"
             })
             .state("root.admin.virheelliset", {

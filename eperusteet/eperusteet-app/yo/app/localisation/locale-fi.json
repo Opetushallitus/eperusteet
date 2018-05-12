@@ -89,7 +89,9 @@
     "muokkaa-tiedotetta": "Muokkaa tiedotetta",
     "tiedoteteksti": "Tiedoteteksti",
     "julkinen-tiedote": "Julkinen tiedote",
+    "yleinen-tiedote": "Yleinen tiedote",
     "julkinen-tiedote-header": "Julkinen",
+    "yleinen-tiedote-header": "Yleinen",
     "tiedote-julkinen": "julkinen",
     "tiedote-liittyy-perusteprojektiin": "Tiedote liittyy perusteprojektiin",
 
@@ -305,6 +307,7 @@
     "ohje-perusteprojekti": "Tämän näkymän kautta voi hallinnoida perusteprojekteja ja pohjia.",
     "ohje-muodostuminen-ryhma": "Luo ryhmä ja vie haluttuun kohtaan rakenteessa.",
     "ohje-muodostuminen-tutkinnonosat": "Valitse tutkinnon osa ja vie haluttuun kohtaan rakenteessa.",
+    "ohje-yleinen-tiedote": "Yleinen tiedote näkyy julkisella puolella myös etusivulla",
     "tuo-koulutuksenosa": "Tuo koulutuksenosa",
 
     "otsikko": "Otsikko",
@@ -1250,7 +1253,7 @@
     "ryhman-osaamisala-tutkintonimike-jo-kaytossa": "Ryhmän osaamisala on jo käytössä",
     "ryhman-rooli-ei-salli-sisaltoa": "Ryhmän rooli ei salli sisältöä",
     "rakenteen-roolia-ei-voi-vaihtaa": "Rakenteen roolia ei voi vaihtaa",
-    
+
     "tutkinnon-osan-ammattitaitovaatukset-tekstina": "Tutkinnon osien ammattitaitovaatimukset täytyy laatia rakenteisena",
     "sisallon-muotoilu-saattaa-sisaltaa-virheita": "Sisältö saattaa sisältää muotoiluvirheitä",
     "sisalto-muotoiluvirheet-ohita": "Oletko varma, että sisältö on muotoiltu oikein? Jos on, paina OK.",
