@@ -101,7 +101,8 @@ public class PerusteprojektiTestUtils {
         return addTutkinnonOsa(perusteId, (t) -> {});
     }
 
-    public TutkinnonOsaViiteDto addTutkinnonOsa(Long perusteId, Consumer<TutkinnonOsaViiteDto> tosaFn) {
+
+    private TutkinnonOsaViiteDto initTutkinnonOsaViite(Consumer<TutkinnonOsaViiteDto> tosaFn) {
         HashSet<Kieli> kielet = new HashSet<>();
         kielet.add(Kieli.FI);
         TutkinnonOsaDto tosa = new TutkinnonOsaDto();
@@ -114,7 +115,15 @@ public class PerusteprojektiTestUtils {
         result.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
         result.setLaajuus(new BigDecimal(5L));
         tosaFn.accept(result);
-        return perusteService.addTutkinnonOsa(perusteId, Suoritustapakoodi.REFORMI, result);
+        return result;
+    }
+
+    public TutkinnonOsaViiteDto addTutkinnonOsa(Long perusteId, Consumer<TutkinnonOsaViiteDto> tosaFn) {
+        return perusteService.addTutkinnonOsa(perusteId, Suoritustapakoodi.REFORMI, initTutkinnonOsaViite(tosaFn));
+    }
+
+    public TutkinnonOsaViiteDto attachTutkinnonOsa(Long perusteId, Consumer<TutkinnonOsaViiteDto> tosaFn) {
+        return perusteService.attachTutkinnonOsa(perusteId, Suoritustapakoodi.REFORMI, initTutkinnonOsaViite(tosaFn));
     }
 
     public TutkinnonOsaViiteDto editTutkinnonOsa(Long perusteId, Suoritustapakoodi st, Long tovId, Consumer<TutkinnonOsaViiteDto> tosaFn) {

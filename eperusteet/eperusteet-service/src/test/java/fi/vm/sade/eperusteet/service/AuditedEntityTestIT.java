@@ -142,7 +142,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
 
 
-        tutkinnonOsaDto.setAmmattitaitovaatimukset( new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimukset"))) );
+        tutkinnonOsaDto.setAmmattitaitovaatimukset( new LokalisoituTekstiDto((Collections.singletonMap("fi", "TutkinnonOsanAmmattitaitovaatimukset"))) );
 
         List<AmmattitaitovaatimusKohdealueetDto> ammattitaitovaatimusLista = new ArrayList<>();
         AmmattitaitovaatimusKohdealueetDto ammattitaitovaatimusKohdealueetDto = new AmmattitaitovaatimusKohdealueetDto();
@@ -155,7 +155,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
         List<AmmattitaitovaatimusDto> ammattitaitovaatimukset = new ArrayList<>();
         AmmattitaitovaatimusDto ammattitaitovaatimusDto = new AmmattitaitovaatimusDto();
-        ammattitaitovaatimusDto.setSelite( new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimus selite"))) );
+        ammattitaitovaatimusDto.setSelite( new LokalisoituTekstiDto((Collections.singletonMap("fi", "AmmattitaitovaatimusV2 selite"))) );
         ammattitaitovaatimusDto.setAmmattitaitovaatimusKoodi("vaatimuskoodi");
         ammattitaitovaatimusDto.setJarjestys(0);
 

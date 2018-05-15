@@ -1042,6 +1042,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
             viite.setTutkinnonOsa(tutkinnonOsa);
         }
+
         viite.setSuoritustapa(suoritustapa);
         viite.setMuokattu(new Date());
         if (suoritustapa.getTutkinnonOsat().add(viite)) {

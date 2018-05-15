@@ -37,7 +37,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "arviointiasteikko")
 public class ArviointiAsteikko implements Serializable, ReferenceableEntity {
-
     @Id
     @Getter
     @Setter

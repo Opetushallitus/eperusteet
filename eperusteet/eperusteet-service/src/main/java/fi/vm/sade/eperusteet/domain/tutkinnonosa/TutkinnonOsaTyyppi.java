@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum TutkinnonOsaTyyppi {
     NORMAALI("normaali"),
+    REFORMI("reformi"),
     TUTKE2("tutke2"),
     REFORMI_TUTKE2("reformi_tutke2");
             

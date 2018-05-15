@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
@@ -501,6 +502,24 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         MuodostumisSaanto a = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(60, 60, null));
         MuodostumisSaanto b = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(60, 60, null));
         assertThat(a).isEqualTo(b);
+    }
+
+    @Test
+    @Rollback
+    public void testReforminMukaisetTutkinnonOsat() {
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setReforminMukainen(true);
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
+        });
+
+        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong());
+        TutkinnonOsaViiteDto tovDto = ppTestUtils.addTutkinnonOsa(perusteDto.getId(), tov -> {
+            tov.getTutkinnonOsaDto().setTyyppi(TutkinnonOsaTyyppi.REFORMI);
+            tov.setTyyppi(TutkinnonOsaTyyppi.REFORMI);
+            tov.getTutkinnonOsaDto().setAmmattitaitovaatimukset(TestUtils.lt("ammatitaitovaatimukset tekstinä"));
+        });
+
+        assertThat(tovDto.getTyyppi()).isEqualTo(TutkinnonOsaTyyppi.REFORMI);
     }
 
 }
