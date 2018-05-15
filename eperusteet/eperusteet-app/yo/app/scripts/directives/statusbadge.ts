@@ -100,10 +100,10 @@ angular
                             mahdollisetTilat: vastaus.data,
                             korvattavatDiaarinumerot: $scope.korvattavatDiaarinumerot
                         },
-                        function(newStatus, siirtymaPaattyy, tiedote) {
+                        function(newStatus, tiedote) {
                             // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
                             PerusteprojektiTila.save(
-                                { id: $scope.projektiId, tila: newStatus, siirtymaPaattyy: siirtymaPaattyy },
+                                { id: $scope.projektiId, tila: newStatus },
                                 Utils.presaveStrip(tiedote),
                                 function(vastaus) {
                                     if (vastaus.vaihtoOk) {

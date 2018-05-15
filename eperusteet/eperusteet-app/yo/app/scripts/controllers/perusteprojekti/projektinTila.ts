@@ -46,8 +46,8 @@ angular
                 })
                 .result.then(successCb);
         };
-        this.set = function(status, siirtymaPaattyy, tiedote, successCb) {
-            that.setFn(status, siirtymaPaattyy, tiedote, successCb);
+        this.set = function(status, tiedote, successCb) {
+            that.setFn(status, tiedote, successCb);
         };
     })
     .controller("PerusteprojektinTilaModalController", function($scope, $uibModal, $uibModalInstance, $state, data) {
@@ -125,14 +125,7 @@ angular
         };
 
         $scope.ok = function() {
-            if (
-                $scope.data.siirtymaPaattyy !== null &&
-                $scope.data.siirtymaPaattyy !== undefined &&
-                typeof $scope.data.siirtymaPaattyy === "object"
-            ) {
-                $scope.data.siirtymaPaattyy = $scope.data.siirtymaPaattyy.valueOf();
-            }
-            PerusteprojektinTilanvaihto.set(data.selected, $scope.data.siirtymaPaattyy, $scope.data.tiedote);
+            PerusteprojektinTilanvaihto.set(data.selected, $scope.data.tiedote);
             $uibModalInstance.close();
         };
 

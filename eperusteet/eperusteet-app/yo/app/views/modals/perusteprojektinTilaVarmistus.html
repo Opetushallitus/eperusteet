@@ -20,40 +20,6 @@
 
         <p ng-bind-html="'tilanvaihdos-' + data.oldStatus + '-' + data.selected | kaanna | unsafe"></p>
     </div>
-    <!-- Todo: Selvitä, miksi ei ole käytössä enää
-    <div ng-show="data.selected === 'julkaistu' && data.korvattavatDiaarinumerot.length > 0">
-        <p kaanna="'julkaisu-korvaa-perusteet'"></p>
-
-        <small-spinner ng-show="ladataanDiaareja"></small-spinner>
-        <table class="table" ng-hide="ladataanDiaareja">
-            <tr ng-repeat="korvattava in data.korvattavatDiaarinumerot">
-                <td>
-                    {{korvattava}}
-                </td>
-                <td ng-show="korvattavatNimiMap[korvattava] === 'korvattavaa-ei-loydy-jarjestelmasta'">
-                    <em>{{korvattavatNimiMap[korvattava]| kaanna}}</em>
-                </td>
-                <td ng-hide="korvattavatNimiMap[korvattava] === 'korvattavaa-ei-loydy-jarjestelmasta'">
-                    {{korvattavatNimiMap[korvattava]| kaanna}}
-                </td>
-            </tr>
-        </table>
-
-        <form name="pvm">
-            <div class="input-group">
-                <input type="text" name="siirtyma" class="form-control" uib-datepicker-popup="{{datePicker.format}}"
-                       ng-model="data.siirtymaPaattyy"
-                       placeholder="{{'valitse siirtymän päättymis pvm'| kaanna}}" is-open="datePicker.state"
-                       uib-datepicker-options="datePicker.options"
-                       show-button-bar="false" dateformatvalidator>
-                <span class="input-group-btn">
-          <button class="btn btn-default" ng-click="datePicker.open($event)" icon-role="calendar"></button>
-        </span>
-            </div>
-            <p class="alert alert-error" ng-show="pvm.siirtyma.$invalid" kaanna>kelvoton-pvm</p>
-        </form>
-    </div>
-    -->
     <div ng-show="data.selected === 'julkaistu'">
         <h3 kaanna="'lisaa-tiedote'"></h3>
         <div class="termi-muokkaus">
