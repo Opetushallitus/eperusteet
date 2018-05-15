@@ -66,6 +66,7 @@ import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import static fi.vm.sade.eperusteet.service.util.Util.*;
+
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,10 +78,12 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
+import org.hibernate.annotations.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -202,6 +205,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable("validointivirheet")
     public List<PerusteValidationDto> getVirheelliset() {
         return repository.findAll().stream()
                 .filter(pp -> pp.getTila() == JULKAISTU)

@@ -40,4 +40,6 @@ public class AbstractIntegrationTest {
         ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test","test"));
         SecurityContextHolder.setContext(ctx);
     }
+
+
 }
