@@ -172,7 +172,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, null);
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, TestUtils.createTiedote());
         assertThat(status.isVaihtoOk()).isTrue();
     }
 

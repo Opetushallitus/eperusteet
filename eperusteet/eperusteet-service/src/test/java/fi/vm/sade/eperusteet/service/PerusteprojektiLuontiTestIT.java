@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
+import fi.vm.sade.eperusteet.service.util.Util;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +90,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, null);
+        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, TestUtils.createTiedote());
         assertThat(status.isVaihtoOk()).isTrue();
 
     }

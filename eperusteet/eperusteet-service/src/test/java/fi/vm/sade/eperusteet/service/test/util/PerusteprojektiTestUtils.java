@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.test.util;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -124,7 +125,11 @@ public class PerusteprojektiTestUtils {
     }
 
     public void asetaTila(Long projektiId, ProjektiTila tila) {
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, tila, null);
+        TiedoteDto tiedote = null;
+        if (tila.equals(ProjektiTila.JULKAISTU)) {
+            tiedote = TestUtils.createTiedote();
+        }
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, tila, tiedote);
         assertThat(status.isVaihtoOk()).isTrue();
     }
 
@@ -133,7 +138,7 @@ public class PerusteprojektiTestUtils {
         assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, null);
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, TestUtils.createTiedote());
         assertThat(status.isVaihtoOk()).isTrue();
     }
 

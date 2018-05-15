@@ -575,7 +575,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
             Assert.assertTrue(problems.isVaihtoOk());
             service.updateTila(p.getId(), ProjektiTila.VALMIS, null);
             Assert.assertTrue(problems.isVaihtoOk());
-            problems = service.updateTila(p.getId(), ProjektiTila.JULKAISTU, null);
+            problems = service.updateTila(p.getId(), ProjektiTila.JULKAISTU, TestUtils.createTiedote());
             Assert.assertTrue(problems.isVaihtoOk());
         };
 

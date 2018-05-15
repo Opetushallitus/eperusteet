@@ -1036,6 +1036,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
 
             // EP-1357 Julkaisun yhteydessä on pakko tehdä tiedote
+            if (tiedoteDto == null) {
+                throw new BusinessRuleViolationException("Julkaisun yhteydessä täytyy tehdä tiedoite");
+            }
             tiedoteDto.setId(null);
             tiedoteDto.setJulkinen(true);
             tiedoteDto.setPerusteprojekti(new EntityReference(projekti.getId()));
