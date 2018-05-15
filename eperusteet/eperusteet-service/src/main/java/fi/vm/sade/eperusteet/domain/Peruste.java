@@ -411,7 +411,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         }
 
 
-        throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");
+        throw new BusinessRuleViolationException("ei-toteutusta-koulutustyypilla");
     }
 
     public interface Valmis {}

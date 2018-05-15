@@ -120,7 +120,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public PerusteenOsaDto.Laaja getByViite(final Long viiteId) {
         PerusteenOsaViite viite = perusteenOsaViiteRepository.findOne(viiteId);
         if (viite == null || viite.getPerusteenOsa() == null) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
         return mapper.map(viite.getPerusteenOsa(), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class);
     }
@@ -143,7 +143,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         List<TutkinnonOsa> tosatByKoodi = tutkinnonOsaRepo.findByKoodiUri(koodiUri);
         for (TutkinnonOsa tosa : tosatByKoodi) {
             if (tosa.getTila() == PerusteTila.VALMIS) {
-                throw new BusinessRuleViolationException("Tutkinnon osan koodi on jo käytössä");
+                throw new BusinessRuleViolationException("tutkinnon-osan-koodi-on-jo-kaytossa");
             }
         }
     }
@@ -151,7 +151,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional
     private void tarkistaVoikoMuokata(PerusteenOsa osa) {
         if (osa != null && osa.getTila() == PerusteTila.POISTETTU) {
-            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+            throw new BusinessRuleViolationException("arkistoitujen-tutkinnon-osien-muokkaus-on-estetty");
         }
     }
 
@@ -173,7 +173,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
 
         if (current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
-            throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
 
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
@@ -254,7 +254,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
 
         if (tutkinnonOsa != null && tutkinnonOsa.getTila() == PerusteTila.POISTETTU) {
-            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+            throw new BusinessRuleViolationException("arkistoitujen-tutkinnon-osien-muokkaus-on-estetty");
         }
 
         OsaAlue osaAlue;
@@ -275,7 +275,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public OsaAlueKokonaanDto getTutkinnonOsaOsaAlue(Long viiteId, Long osaAlueId) {
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
         if (viite == null || viite.getTutkinnonOsa() == null || viite.getTutkinnonOsa().getOsaAlueet() == null) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
 
         List<Long> osaAlueIds = new ArrayList<>();
@@ -283,7 +283,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             osaAlueIds.add(osaAlue.getId());
         }
         if (!osaAlueIds.contains(osaAlueId)) {
-            throw new BusinessRuleViolationException("Virheellinen osaAlueId");
+            throw new BusinessRuleViolationException("virheellinen-osaalueid");
         }
 
         return mapper.map(osaAlueRepository.findOne(osaAlueId), OsaAlueKokonaanDto.class);
@@ -295,7 +295,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
         if (viite == null || viite.getTutkinnonOsa() == null || viite.getTutkinnonOsa().getOsaAlueet() == null) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
 
         Long id = viite.getTutkinnonOsa().getId();
@@ -424,7 +424,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
 
         if (tutkinnonOsa != null && tutkinnonOsa.getTila() == PerusteTila.POISTETTU) {
-            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+            throw new BusinessRuleViolationException("arkistoitujen-tutkinnon-osien-muokkaus-on-estetty");
         }
 
         tutkinnonOsa.getOsaAlueet().remove(osaAlue);
@@ -472,7 +472,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         lockManager.ensureLockedByAuthenticatedUser(id);
         PerusteenOsa current = perusteenOsaRepo.findOne(id);
         if (current != null && current.getTila() == PerusteTila.POISTETTU) {
-            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+            throw new BusinessRuleViolationException("arkistoitujen-tutkinnon-osien-muokkaus-on-estetty");
         }
 
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
@@ -493,7 +493,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(id);
         PerusteenOsa current = perusteenOsaRepo.findOne(id);
         if (current != null && current.getTila() == PerusteTila.POISTETTU) {
-            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+            throw new BusinessRuleViolationException("arkistoitujen-tutkinnon-osien-muokkaus-on-estetty");
         }
 
         lockManager.ensureLockedByAuthenticatedUser(id);
@@ -516,7 +516,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(id);
         PerusteenOsa current = perusteenOsaRepo.findOne(id);
         if (current != null && current.getTila() == PerusteTila.POISTETTU) {
-            throw new BusinessRuleViolationException("Arkistoitujen tutkinnon osien muokkaus on estetty");
+            throw new BusinessRuleViolationException("arkistoitujen-tutkinnon-osien-muokkaus-on-estetty");
         }
 
         lockManager.lock(id);
@@ -613,7 +613,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     private void assertExists(Long id) {
         if (!perusteenOsaRepo.exists(id)) {
-            throw new NotExistsException("Pyydettyä perusteen osaa ei ole olemassa");
+            throw new NotExistsException("pyydettya-perusteen-osaa-ei-ole-olemassa");
         }
     }
 

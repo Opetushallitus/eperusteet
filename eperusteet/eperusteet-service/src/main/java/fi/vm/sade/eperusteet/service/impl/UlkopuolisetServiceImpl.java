@@ -57,7 +57,7 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
             JsonNode response = mapper.readTree(crc.getAsString(url));
             return response;
         } catch (IOException ex) {
-            throw new BusinessRuleViolationException("Työryhmän tietojen hakeminen epäonnistui", ex);
+            throw new BusinessRuleViolationException("tyoryhman-tietojen-hakeminen-epaonnistui", ex);
         }
     }
 
@@ -81,7 +81,7 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
             }
             return response;
         } catch (IOException ex) {
-            throw new BusinessRuleViolationException("Työryhmätietojen hakeminen epäonnistui", ex);
+            throw new BusinessRuleViolationException("tyoryhman-tietojen-hakeminen-epaonnistui", ex);
         }
     }
 }

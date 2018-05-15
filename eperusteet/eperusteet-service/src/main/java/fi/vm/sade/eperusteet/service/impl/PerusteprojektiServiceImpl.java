@@ -45,8 +45,6 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
@@ -72,7 +70,6 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import org.apache.commons.io.IOUtils;
@@ -248,7 +245,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         ObjectMapper omapper = new ObjectMapper();
 
         if (p == null || p.getRyhmaOid() == null | p.getRyhmaOid().isEmpty()) {
-            throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
+            throw new BusinessRuleViolationException("perusteprojektilla-ei-ole-oida");
         }
 
         try {
@@ -258,7 +255,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             InputStream contentStream = response.getEntity().getContent();
             kayttajat = KayttajanTietoParser.parsiKayttajat(omapper.readTree(IOUtils.toString(contentStream)));
         } catch (IOException ex) {
-            throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
+            throw new BusinessRuleViolationException("kayttajien-tietojen-hakeminen-epaonnistui");
         }
 
         return kayttajat;
@@ -271,7 +268,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti p = repository.findOne(id);
 
         if (p == null || p.getRyhmaOid() == null || p.getRyhmaOid().isEmpty()) {
-            throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
+            throw new BusinessRuleViolationException("perusteprojektilla-ei-ole-oida");
         }
 
         List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> kayttajat = new ArrayList<>();
@@ -298,7 +295,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 }
             }
         } catch (IOException ex) {
-            // throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
         }
         return kayttajat;
     }
@@ -323,12 +319,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         && KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi()).isAmmatillinen());
 
         if (tyyppi == PerusteTyyppi.OPAS) {
-            throw new BusinessRuleViolationException("Virheellinen perustetyyppi");
+            throw new BusinessRuleViolationException("virheellinen-perustetyyppi");
         }
 
         if (tyyppi != PerusteTyyppi.POHJA) {
             if (koulutustyyppi == null) {
-                throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla koulutustyyppi");
+                throw new BusinessRuleViolationException("opetussuunnitelmalla-taytyy-olla-koulutustyyppi");
             }
 
             if (yksikko == null && koulutustyyppi
@@ -337,11 +333,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                             KoulutusTyyppi.ERIKOISAMMATTITUTKINTO,
                             KoulutusTyyppi.TELMA,
                             KoulutusTyyppi.VALMA)) {
-                throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
+                throw new BusinessRuleViolationException("opetussuunnitelmalla-taytyy-olla-yksikko");
             }
 
             if (perusteprojektiDto.getDiaarinumero() == null) {
-                throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
+                throw new BusinessRuleViolationException("diaarinumeroa-ei-ole-asetettu");
             }
 
             DiaarinumeroHakuDto diaariHaku = onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
@@ -356,7 +352,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         if (perusteprojektiDto.getRyhmaOid() == null) {
-            throw new BusinessRuleViolationException("Perustetyöryhmä ei ole asetettu");
+            throw new BusinessRuleViolationException("perustetyoryhma-ei-ole-asetettu");
         }
 
         Peruste peruste;
@@ -428,7 +424,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public PerusteprojektiDto update(Long id, PerusteprojektiDto perusteprojektiDto) {
         Perusteprojekti vanhaProjekti = repository.findOne(id);
         if (vanhaProjekti == null) {
-            throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
+            throw new BusinessRuleViolationException("projektia-ei-ole-olemassa-id",
+                    new HashMap<String, Object>(){{ put("id", id); }});
         }
 
         perusteprojektiDto.setId(id);
@@ -445,7 +442,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public Set<ProjektiTila> getTilat(Long id) {
         Perusteprojekti p = repository.findOne(id);
         if (p == null) {
-            throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
+            throw new BusinessRuleViolationException("projektia-ei-ole-olemassa-id",
+                    new HashMap<String, Object>(){{ put("id", id); }});
         }
 
         return p.getTila().mahdollisetTilat(p.getPeruste().getTyyppi());
@@ -519,7 +517,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     public OmistajaDto isOwner(Long id, Long perusteenOsaId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("ei-tuettu-viela");
     }
 
     @Transactional(readOnly = true)
@@ -783,7 +781,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Long perusteId = projekti.getPeruste().getId();
 
         if (projekti == null) {
-            throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
+            throw new BusinessRuleViolationException("projektia-ei-ole-olemassa-id",
+                    new HashMap<String, Object>(){{ put("id", id); }});
         }
 
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
@@ -1378,7 +1377,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             pot.setPerusteprojekti(pp);
             pot.setPerusteenosa(po);
             if (perusteprojektiTyoryhmaRepository.findAllByPerusteprojektiAndNimi(pp, nimi).isEmpty()) {
-                throw new BusinessRuleViolationException("Perusteprojekti ryhmää ei ole olemassa: " + nimi);
+                throw new BusinessRuleViolationException("perusteprojekti-ryhmaa-ei-ole-olemassa",
+                        new HashMap<String, Object>(){{ put("nimi", nimi); }});
             }
             res.add(perusteenOsaTyoryhmaRepository.save(pot).getNimi());
         }

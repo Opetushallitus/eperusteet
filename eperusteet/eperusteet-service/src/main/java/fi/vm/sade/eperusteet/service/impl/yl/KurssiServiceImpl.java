@@ -44,10 +44,9 @@ import fi.vm.sade.eperusteet.service.yl.KurssiService;
 import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import static java.util.Comparator.comparing;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
+
 import static java.util.stream.Collectors.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,7 +209,7 @@ public class KurssiServiceImpl implements KurssiService {
     @Transactional
     public long createLukiokurssi(long perusteId, LukioKurssiLuontiDto kurssiDto) throws BusinessRuleViolationException {
         LukiokoulutuksenPerusteenSisalto sisalto = found(lukioSisaltoRepository.findByPerusteId(perusteId),
-                () -> new BusinessRuleViolationException("Perustetta ei ole."));
+                () -> new BusinessRuleViolationException("perustetta-ei-ole"));
         lukioSisaltoRepository.lock(sisalto, false);
 
         Lukiokurssi kurssi = mapper.map(kurssiDto, new Lukiokurssi());
@@ -285,8 +284,11 @@ public class KurssiServiceImpl implements KurssiService {
             if (tryRestoreFromRevision != null && kurssitById.get(kurssiDto.getId()) == null) {
                 Lukiokurssi oldKurssi = found(lukiokurssiRepository.findRevision(kurssiDto.getId(),
                         tryRestoreFromRevision), inPeruste(perusteId),
-                        () -> new NotExistsException("No Lukiokurssi " + kurssiDto.getId()
-                                + " in lukioperuste at revision " + tryRestoreFromRevision));
+                        () -> new NotExistsException("no-lukiokurssi-in-lukioperuste-at-revision",
+                                new HashMap<String, Object>(){{
+                                    put("kurssiId", kurssiDto.getId());
+                                    put("revision", tryRestoreFromRevision);
+                                }}));
                 long id = createLukiokurssi(perusteId, mapper.map(oldKurssi, new LukioKurssiLuontiDto()));
                 logger.info("Restored Lukiokurssi {} to id={}", oldKurssi.getId(), id);
                 Lukiokurssi newKurssi = lukiokurssiRepository.findOne(id);
@@ -294,7 +296,10 @@ public class KurssiServiceImpl implements KurssiService {
                 kurssitById.put(kurssiDto.getId(), newKurssi); // new id differs
             }
             Lukiokurssi kurssi = found(kurssitById.get(kurssiDto.getId()), inPeruste(perusteId),
-                    () -> new NotExistsException("No Lukiokurssi with id=" + kurssiDto.getId()));
+                    () -> new NotExistsException("no-lukiokurssi-with-id",
+                            new HashMap<String, Object>(){{
+                                put("kurssiId", kurssiDto.getId());
+                            }}));
             lukiokurssiRepository.lock(kurssi, false);
             mergeOppiaineet(perusteId, kurssi, kurssiDto.getOppiaineet());
         });

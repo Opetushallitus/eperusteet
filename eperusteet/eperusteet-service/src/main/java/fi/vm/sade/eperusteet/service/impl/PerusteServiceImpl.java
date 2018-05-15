@@ -547,11 +547,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         Peruste peruste = perusteet.findOne(perusteId);
         if (peruste == null) {
-            throw new NotExistsException("Perustetta ei ole olemassa");
+            throw new NotExistsException("perustetta-ei-ole-olemassa");
         }
         PerusteenOsaViite sisalto = peruste.getSisalto(suoritustapakoodi);
         if (sisalto == null) {
-            throw new NotExistsException("Perusteen sisältörakennetta ei ole olemassa");
+            throw new NotExistsException("perusteen-sisaltorakennetta-ei-ole-olemassa");
         }
         return mapper.map(sisalto, view);
     }
@@ -592,7 +592,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste current = perusteet.findOne(perusteId);
 
         if (current == null || current.getTila() == PerusteTila.POISTETTU) {
-            throw new NotExistsException("Päivitettävää perustetta ei ole olemassa tai se on poistettu");
+            throw new NotExistsException("paivitettavaa-perustetta-ei-ole-olemassa-tai-se-on-poistettu");
         }
 
         if (current.getTyyppi() == PerusteTyyppi.OPAS) {
@@ -628,7 +628,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
 
             if (!current.getKoulutustyyppi().equals(updated.getKoulutustyyppi())) {
-                throw new BusinessRuleViolationException("Koulutustyyppiä ei voi vaihtaa");
+                throw new BusinessRuleViolationException("koulutustyyppia-ei-voi-vaihtaa");
             }
 
             if (current.getTila() == PerusteTila.VALMIS) {
@@ -697,7 +697,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setKoulutusvienti(updated.isKoulutusvienti());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
-            throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");
+            throw new BusinessRuleViolationException("valmiin-perusteen-osaamisaloja-ei-voi-muuttaa");
         }
 
         current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
@@ -755,7 +755,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteid, suoritustapakoodi);
         if (rakenneId == null) {
-            throw new NotExistsException("Rakennetta ei ole olemassa");
+            throw new NotExistsException("rakennetta-ei-ole-olemassa");
         }
         Revision rev = rakenneRepository.getLatestRevisionId(rakenneId);
         if (eTag != null && rev != null && rev.getNumero().equals(eTag)) {
@@ -886,7 +886,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
         Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteId, suoritustapakoodi);
         if (rakenneId == null) {
-            throw new NotExistsException("Rakennetta ei ole olemassa");
+            throw new NotExistsException("rakennetta-ei-ole-olemassa");
         }
 
         rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
@@ -1009,11 +1009,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
             if (suoritustapa.getTutkinnonOsat().contains(viite)) {
                 if (tutkinnonOsaViiteRepository.isInUse(viite)) {
-                    throw new BusinessRuleViolationException("Tutkinnonosa on käytössä");
+                    throw new BusinessRuleViolationException("tutkinnonosa-on-kaytossa");
                 }
                 suoritustapa.getTutkinnonOsat().remove(viite);
             } else {
-                throw new BusinessRuleViolationException("Tutkinnonosa ei kuulu tähän suoritustapaan");
+                throw new BusinessRuleViolationException("tutkinnonosa-ei-kuulu-tahan-suoritustapaan");
             }
         } finally {
             lockManager.unlock(suoritustapa.getId());
@@ -1047,7 +1047,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (suoritustapa.getTutkinnonOsat().add(viite)) {
             viite = tutkinnonOsaViiteRepository.save(viite);
         } else {
-            throw new BusinessRuleViolationException("Viite tutkinnon osaan on jo olemassa");
+            throw new BusinessRuleViolationException("viite-tutkinnon-osaan-on-jo-olemassa");
         }
         return mapper.map(viite, TutkinnonOsaViiteDto.class);
 
@@ -1067,7 +1067,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (suoritustapa.getTutkinnonOsat().add(viite)) {
             viite = tutkinnonOsaViiteRepository.save(viite);
         } else {
-            throw new BusinessRuleViolationException("Viite tutkinnon osaan on jo olemassa");
+            throw new BusinessRuleViolationException("viite-tutkinnon-osaan-on-jo-olemassa");
         }
         return mapper.map(viite, TutkinnonOsaViiteDto.class);
     }
@@ -1080,7 +1080,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)
                 || !viite.getTutkinnonOsa().getReference().equals(osa.getTutkinnonOsa())) {
-            throw new BusinessRuleViolationException("Virheellinen viite");
+            throw new BusinessRuleViolationException("virheellinen-viite");
         }
 
         TutkinnonOsaViiteDto dto = tutkinnonOsaViiteService.update(osa);
@@ -1107,7 +1107,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
 
         if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
 
         TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
@@ -1117,14 +1117,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return viiteDto;
     }
 
-    private Suoritustapa getSuoritustapaEntity(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
-        if (!perusteet.exists(perusteid)) {
-            throw new NotExistsException("Perustetta ei ole olemassa");
+    private Suoritustapa getSuoritustapaEntity(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
+        if (!perusteet.exists(perusteId)) {
+            throw new NotExistsException("perustetta-ei-ole-olemassa");
         }
-        Suoritustapa suoritustapa = suoritustapaRepository.findByPerusteAndKoodi(perusteid, suoritustapakoodi);
+        Suoritustapa suoritustapa = suoritustapaRepository.findByPerusteAndKoodi(perusteId, suoritustapakoodi);
         if (suoritustapa == null) {
-            throw new BusinessRuleViolationException(
-                    "Perusteella " + perusteid + " + ei ole suoritustapaa " + suoritustapakoodi
+            throw new BusinessRuleViolationException("perusteella-ei-ole-suoritustapaa",
+                    new HashMap<String, Object>(){{
+                        put("perusteId", perusteId);
+                        put("koodi", suoritustapakoodi);
+                    }}
             );
         }
         return suoritustapa;
@@ -1135,7 +1138,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite) {
         Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
         if (suoritustapa == null) {
-            throw new BusinessRuleViolationException("Suoritustapaa ei ole");
+            throw new BusinessRuleViolationException("suoritustapaa-ei-ole");
         }
         return perusteenOsaViiteService.addSisalto(perusteId, suoritustapa.getSisalto().getId(), viite);
     }
@@ -1145,11 +1148,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteenOsaViiteDto.Matala addSisaltoUUSI(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite) {
         Peruste peruste = perusteet.findOne(perusteId);
         if (peruste == null) {
-            throw new NotExistsException("Perustetta ei ole olemassa");
+            throw new NotExistsException("perustetta-ei-ole-olemassa");
         }
         PerusteenOsaViite sisalto = peruste.getSisalto(suoritustapakoodi);
         if (sisalto == null) {
-            throw new NotExistsException("Perusteen sisältörakennetta ei ole olemassa");
+            throw new NotExistsException("perusteen-sisaltorakennetta-ei-ole-olemassa");
         }
         return perusteenOsaViiteService.addSisalto(perusteId, sisalto.getId(), viite);
     }
@@ -1259,7 +1262,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             boolean isReforminMukainen
     ) {
         if (koulutustyyppi == null) {
-            throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
+            throw new BusinessRuleViolationException("koulutustyyppia ei ole asetettu");
         }
 
         Peruste peruste = new Peruste();
@@ -1502,7 +1505,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         @Override
         public void visit(final AbstractRakenneOsaDto dto, final int depth) {
             if (depth >= maxDepth) {
-                throw new BusinessRuleViolationException("Tutkinnon rakennehierarkia ylittää maksimisyvyyden");
+                throw new BusinessRuleViolationException("tutkinnon-rakennehierarkia-ylittaa-maksimisyvyyden");
             }
 
             if (dto instanceof RakenneModuuliDto) {
@@ -1658,7 +1661,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOneByKoodiUri(koodiUri, suoritustapakoodi);
 
         if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
 
         TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);

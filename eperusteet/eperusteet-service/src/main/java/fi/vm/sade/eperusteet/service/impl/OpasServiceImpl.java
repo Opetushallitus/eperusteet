@@ -67,7 +67,7 @@ public class OpasServiceImpl implements OpasService {
 
     @Override
     public OpasDto get(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("ei-tuettu-viela");
     }
 
     @Override
@@ -75,7 +75,7 @@ public class OpasServiceImpl implements OpasService {
     public OpasDto save(OpasLuontiDto opasDto) {
         Perusteprojekti perusteprojekti = mapper.map(opasDto, Perusteprojekti.class);
         if (opasDto.getRyhmaOid() == null) {
-            throw new BusinessRuleViolationException("Opastyöryhmää ei ole asetettu");
+            throw new BusinessRuleViolationException("opastyoryhmaa-ei-ole-asetettu");
         }
 
         perusteprojekti.setTila(LAADINTA);

@@ -64,7 +64,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findRevision(id, versioId);
 
         if (viite == null) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
         TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
         TutkinnonOsaDto tutkinnonOsaDto = mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class);
@@ -82,7 +82,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         assertExists(viiteId);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
         if (viite == null || viite.getTutkinnonOsa() == null ) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
         return LukkoDto.of(lockManager.lock(viite.getTutkinnonOsa().getId()));
     }
@@ -92,7 +92,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         assertExists(viiteId);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
         if (viite == null || viite.getTutkinnonOsa() == null ) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
         lockManager.unlock(viite.getTutkinnonOsa().getId());
     }
@@ -102,7 +102,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         assertExists(viiteId);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
         if (viite == null || viite.getTutkinnonOsa() == null ) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
         return LukkoDto.of(lockManager.getLock(viite.getTutkinnonOsa().getId()));
     }
@@ -124,7 +124,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteDto.getId());
 
         if (viite == null || viite.getTutkinnonOsa() == null ) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
+            throw new BusinessRuleViolationException("virheellinen-viiteid");
         }
 
         if (viiteDto.getLaajuus() == null) {
@@ -134,7 +134,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         if (viiteDto.getLaajuus() != null
                 && viiteDto.getLaajuusMaksimi() != null
                 && viiteDto.getLaajuusMaksimi().compareTo(viiteDto.getLaajuus()) < 0) {
-            throw new BusinessRuleViolationException("Laajuuden maksimin täytyy olla suurempi kuin minimiarvon");
+            throw new BusinessRuleViolationException("laajuuden-maksimin-taytyy-olla-suurempi-kuin-minimiarvon");
         }
 
         lockManager.ensureLockedByAuthenticatedUser(viite.getTutkinnonOsa().getId());
@@ -154,7 +154,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
 
     private void assertExists(Long id) {
         if (!tutkinnonOsaViiteRepository.exists(id)) {
-            throw new BusinessRuleViolationException("Pyydettyä tutkinnonosaviitettä ei ole olemassa");
+            throw new BusinessRuleViolationException("pyydettya-tutkinnonosaviitetta-ei-ole-olemassa");
         }
     }
 }

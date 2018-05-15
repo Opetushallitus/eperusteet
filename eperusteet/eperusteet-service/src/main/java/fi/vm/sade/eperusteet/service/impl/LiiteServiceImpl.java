@@ -75,8 +75,12 @@ public class LiiteServiceImpl implements LiiteService {
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public LiiteDto get(Long perusteId, UUID id) {
-        Peruste peruste = perusteet.findOne(perusteId);
         Liite liite = liitteet.findOne(id);
+        Peruste peruste = perusteet.findOne(perusteId);
+
+        if (liite == null) {
+            throw new NotExistsException("liite-ei-loytynyt");
+        }
 
         if (!liite.getPerusteet().contains(peruste)) {
             throw new BusinessRuleViolationException("kuva-ei-kuulu-julkaistuun-perusteeseen");

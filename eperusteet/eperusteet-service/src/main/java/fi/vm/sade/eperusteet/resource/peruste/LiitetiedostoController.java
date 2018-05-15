@@ -86,8 +86,8 @@ public class LiitetiedostoController {
         @P("perusteId") Long perusteId,
         @RequestParam("nimi") String nimi,
         @RequestParam("file") Part file,
-        UriComponentsBuilder ucb)
-        throws IOException, HttpMediaTypeNotSupportedException {
+        UriComponentsBuilder ucb
+    ) throws IOException, HttpMediaTypeNotSupportedException {
         final long koko = file.getSize();
         try (PushbackInputStream pis = new PushbackInputStream(file.getInputStream(), BUFSIZE)) {
             byte[] buf = new byte[koko < BUFSIZE ? (int) koko : BUFSIZE];
@@ -114,22 +114,18 @@ public class LiitetiedostoController {
         @PathVariable("perusteId") Long perusteId,
         @PathVariable("id") UUID id,
         @RequestHeader(value = "If-None-Match", required = false) String etag,
-        HttpServletResponse response) throws IOException {
-
+        HttpServletResponse response
+    ) throws IOException {
         LiiteDto dto = liitteet.get(perusteId, id);
-        if (dto != null) {
-            if (etag != null && dto.getId().toString().equals(etag)) {
-                response.setStatus(HttpStatus.NOT_MODIFIED.value());
-            } else {
-                response.setHeader("Content-Type", dto.getTyyppi());
-                response.setHeader("ETag", id.toString());
-                try (OutputStream os = response.getOutputStream()) {
-                    liitteet.export(perusteId, id, os);
-                    os.flush();
-                }
-            }
+        if (etag != null && dto.getId().toString().equals(etag)) {
+            response.setStatus(HttpStatus.NOT_MODIFIED.value());
         } else {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setHeader("Content-Type", dto.getTyyppi());
+            response.setHeader("ETag", id.toString());
+            try (OutputStream os = response.getOutputStream()) {
+                liitteet.export(perusteId, id, os);
+                os.flush();
+            }
         }
     }
 
@@ -137,7 +133,8 @@ public class LiitetiedostoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
         @PathVariable("perusteId") Long perusteId,
-        @PathVariable("id") UUID id) {
+        @PathVariable("id") UUID id
+    ) {
         audit.withAudit(LogMessage.builder(perusteId, KUVA, POISTO), (Void) -> {
             liitteet.delete(perusteId, id);
             return null;

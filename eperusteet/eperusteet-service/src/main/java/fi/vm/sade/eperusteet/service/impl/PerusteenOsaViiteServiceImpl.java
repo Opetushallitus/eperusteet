@@ -108,7 +108,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
                 return mapper.map(tov, TutkinnonOsaViiteDto.class);
             }
         }
-        throw new BusinessRuleViolationException("virheellinen viite");
+        throw new BusinessRuleViolationException("virheellinen-viite");
     }
 
     @Override
@@ -121,15 +121,15 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     public void removeSisalto(Long perusteId, Long id) {
         PerusteenOsaViite viite = findViite(perusteId, id);
         if (viite == null) {
-            throw new NotExistsException("Perusteenosaviitettä ei ole olemassa");
+            throw new NotExistsException("perusteenosaviitetta-ei-ole-olemassa");
         }
 
         if (viite.getVanhempi() == null) {
-            throw new BusinessRuleViolationException("Sisällön juurielementtiä ei voi poistaa");
+            throw new BusinessRuleViolationException("sisallon-juurielementtia-ei-voi-poistaa");
         }
 
         if (viite.getLapset() != null && !viite.getLapset().isEmpty()) {
-            throw new BusinessRuleViolationException("Sisällöllä on lapsia, ei voida poistaa");
+            throw new BusinessRuleViolationException("sisallolla-on-lapsia-ei-voida-poistaa");
         }
 
         if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(PerusteTila.LUONNOS)
@@ -165,7 +165,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         PerusteenOsaViite viite = repository.findOne(viiteId);
 
         if (peruste == null || !peruste.containsViite(viite)) {
-            throw new BusinessRuleViolationException("Sisältö ei kuulu tähän perusteeseen");
+            throw new BusinessRuleViolationException("sisalto-ei-kuulu-tahan-perusteeseen");
         }
 
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();
@@ -211,7 +211,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         if (peruste != null && peruste.containsViite(viite)) {
             return viite;
         }
-        throw new BusinessRuleViolationException("virheellinen viite");
+        throw new BusinessRuleViolationException("virheellinen-viite");
     }
 
     private void clearChildren(PerusteenOsaViite pov, Set<PerusteenOsaViite> refs) {
@@ -226,7 +226,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     private PerusteenOsaViite updateTraverse(PerusteenOsaViite parent, PerusteenOsaViiteDto.Puu<?, ?> uusi, Set<PerusteenOsaViite> refs) {
         PerusteenOsaViite pov = repository.getOne(uusi.getId());
         if (!refs.remove(pov)) {
-            throw new BusinessRuleViolationException("viitepuun päivitysvirhe");
+            throw new BusinessRuleViolationException("viitepuun-paivitysvirhe");
         }
         pov.setVanhempi(parent);
 
