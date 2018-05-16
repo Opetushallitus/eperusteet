@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
@@ -40,6 +41,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * @author harrik
  */
 public interface PerusteprojektiService {
+
+    void validoiPerusteetTask();
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<KayttajanTietoDto> getJasenet(@P("id") Long id);
@@ -107,7 +110,7 @@ public interface PerusteprojektiService {
     List<PerusteenOsaTyoryhmaDto> getSisallonTyoryhmat(@P("id") Long perusteProjektiId);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    List<PerusteValidationDto> getVirheelliset();
+    Page<ValidationDto> getVirheelliset(PageRequest p);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila);

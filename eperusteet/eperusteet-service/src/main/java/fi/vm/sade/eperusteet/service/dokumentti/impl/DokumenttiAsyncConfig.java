@@ -26,6 +26,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @author isaul
@@ -34,6 +35,12 @@ import java.util.concurrent.Executor;
 @EnableAsync
 @Profile("!test")
 public class DokumenttiAsyncConfig implements AsyncConfigurer {
+
+    @Bean(value = "schedulingExecutor")
+    public Executor createScheduledExecutor() {
+        return Executors.newSingleThreadExecutor();
+    }
+
 
     @Override
     @Bean(name = "docTaskExecutor")

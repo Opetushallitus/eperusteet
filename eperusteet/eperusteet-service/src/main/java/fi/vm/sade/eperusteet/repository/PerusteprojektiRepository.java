@@ -41,8 +41,15 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
 
     Perusteprojekti findOneByRyhmaOid(String ryhmaOid);
 
-    @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' AND p.peruste.tyyppi != 'Opas'")
-    List<Perusteprojekti> findAllKeskeneraiset();
+    @Query("SELECT p from Perusteprojekti p" +
+            " WHERE p.peruste.tyyppi = 'NORMAALI' AND p.tila = 'JULKAISTU'" +
+            "   AND p.peruste NOT IN (SELECT peruste FROM ValidointiStatus)")
+    Set<Perusteprojekti> findAllValidoimattomatUudet();
+
+    @Query("SELECT p from Perusteprojekti p, ValidointiStatus vs" +
+            " WHERE p.peruste.tyyppi = 'NORMAALI' AND p.tila = 'JULKAISTU'" +
+            " AND vs.peruste = p.peruste AND p.peruste.globalVersion.aikaleima > vs.lastCheck")
+    Set<Perusteprojekti> findAllValidoimattomat();
 
     @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' AND (p.luoja = ?1 OR p.ryhmaOid IN (?2)) AND p.peruste.tyyppi != 'Opas'")
     List<Perusteprojekti> findOmatPerusteprojektit(String userOid, Set<String> orgs);

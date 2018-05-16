@@ -23,7 +23,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Global ersion for peruste related changes.
+ * Global version for peruste related changes.
  *
  * Not audited nor versioned in purpose. Seperate from Peruste: won't affect it or it's muokattu timestamp
  * nor cause locking issues.
