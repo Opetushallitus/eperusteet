@@ -85,7 +85,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
             sisalto.removeVuosiluokkakokonaisuus(vk);
             kokonaisuusRepository.delete(vk);
         } else {
-            throw new BusinessRuleViolationException("Vuosiluokkakokonaisuutta ei voi poistaa koska siihen liittyy oppiaineita");
+            throw new BusinessRuleViolationException("vuosiluokkakokonaisuutta-ei-voi-poistaa-koska-siihen-liittyy-oppiaineita");
         }
 
     }
@@ -98,7 +98,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
             return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
         }
-        throw new BusinessRuleViolationException("Haettu vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
+        throw new BusinessRuleViolationException("haettu-vuosiluokkakokonaisuus-ei-kuulu-tahan-perusteeseen");
     }
 
     @Override
@@ -109,7 +109,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
             return mapper.map(kokonaisuusRepository.findRevision(kokonaisuusId, revisio), VuosiluokkaKokonaisuusDto.class);
         }
-        throw new BusinessRuleViolationException("Haettu vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
+        throw new BusinessRuleViolationException("haettu-vuosiluokkakokonaisuus-ei-kuulu-tahan-perusteeseen");
 
     }
 
@@ -121,7 +121,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
             return kokonaisuusRepository.getRevisions(kokonaisuusId);
         }
-        throw new BusinessRuleViolationException("Haettu vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
+        throw new BusinessRuleViolationException("haettu-vuosiluokkakokonaisuus-ei-kuulu-tahan-perusteeseen");
     }
 
     @Override
@@ -140,7 +140,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
             }
             return mapper.mapAsList(aineet, OppiaineSuppeaDto.class);
         }
-        throw new BusinessRuleViolationException("Haettu vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
+        throw new BusinessRuleViolationException("haettu-vuosiluokkakokonaisuus-ei-kuulu-tahan-perusteeseen");
     }
 
     @Override
@@ -151,7 +151,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(dto.getId());
         if ( sisalto.getPeruste().getTila() == PerusteTila.VALMIS ) {
             if ( !vk.getVuosiluokat().equals(dto.getVuosiluokat()) ) {
-                throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+                throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
             }
         }
         mapper.map(dto, vk);

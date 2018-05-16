@@ -17,6 +17,8 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.HashMap;
+
 /**
  *
  * @author nkala
@@ -36,12 +38,13 @@ public enum RakenneModuuliErikoisuus {
     }
 
     @JsonCreator
-    public static RakenneModuuliErikoisuus of(String x) {
+    public static RakenneModuuliErikoisuus of(String erikoisuus) {
         for (RakenneModuuliErikoisuus r : values()) {
-            if (r.erikoisuus.equalsIgnoreCase(x)) {
+            if (r.erikoisuus.equalsIgnoreCase(erikoisuus)) {
                 return r;
             }
         }
-        throw new IllegalArgumentException(x + " ei ole kelvollinen tyyppi");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("erikoisuus-ei-ole-kelvollinen-erikoisuus",
+                new HashMap<String, Object>(){{ put("erikoisuus", erikoisuus); }});
     }
 }

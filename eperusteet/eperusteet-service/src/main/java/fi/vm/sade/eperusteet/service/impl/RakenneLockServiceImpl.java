@@ -70,7 +70,7 @@ public class RakenneLockServiceImpl extends AbstractLockService<TutkinnonRakenne
             }
             return peruste.getSuoritustapa(ctx.getKoodi()).getRakenne().getId();
         }
-        throw new BusinessRuleViolationException("Perustetta ei ole");
+        throw new BusinessRuleViolationException("perustetta-ei-ole");
     }
 
 }

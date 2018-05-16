@@ -17,6 +17,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.HashMap;
+
 public enum JarjestysTapa {
     NIMI("nimi"),
     TILA("tila"),
@@ -41,6 +43,7 @@ public enum JarjestysTapa {
                 return s;
             }
         }
-        throw new IllegalArgumentException(tapa + " ei ole kelvollinen järjestystapa");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("tapa-ei-ole-kelvollinen-jarjestystapa",
+                new HashMap<String, Object>(){{ put("tapa", tapa); }});
     }
 }

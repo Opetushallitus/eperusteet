@@ -17,32 +17,20 @@
 package fi.vm.sade.eperusteet.service.exception;
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Map;
 
-/**
- *
- * @author jhyoty
- */
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class BusinessRuleViolationException extends ServiceException {
-
+public class IllegalArgumentException extends java.lang.IllegalArgumentException {
     @Getter
     private Map<String, Object> parameters;
 
-    public BusinessRuleViolationException(String message) {
-        super(message);
-    }
-
-    public BusinessRuleViolationException(String message, Map<String, Object> params) {
-        super(message);
+    public IllegalArgumentException(String s, Map<String, Object> params) {
+        super(s);
         parameters = params;
     }
 
-    public BusinessRuleViolationException(String message, Throwable cause) {
+    public IllegalArgumentException(String message, Throwable cause, Map<String, Object> parameters) {
         super(message, cause);
+        this.parameters = parameters;
     }
-
 }

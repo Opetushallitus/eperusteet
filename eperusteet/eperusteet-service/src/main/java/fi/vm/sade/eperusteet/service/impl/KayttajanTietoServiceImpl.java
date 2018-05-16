@@ -74,7 +74,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Cacheable("kayttajat")
     public KayttajanTietoDto hae(String oid) {
         if (oid == null || oid.isEmpty()) {
-            throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
+            throw new BusinessRuleViolationException("haettua-kayttajaa-ei-ole-olemassa");
         }
         CachingRestClient crc = restClientFactory.get(onrServiceUrl);
 
@@ -91,7 +91,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Override
     public List<KayttajanProjektitiedotDto> haePerusteprojektit(String oid) {
         if (oid == null || oid.isEmpty()) {
-            throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
+            throw new BusinessRuleViolationException("haettua-kayttajaa-ei-ole-olemassa");
         }
 
         CachingRestClient crc = restClientFactory.get(koServiceUrl);
@@ -117,13 +117,13 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Cacheable("kayttajan_projekti")
     public KayttajanProjektitiedotDto haePerusteprojekti(String oid, Long projektiId) {
         if (oid == null || oid.isEmpty()) {
-            throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
+            throw new BusinessRuleViolationException("haettua-kayttajaa-ei-ole-olemassa");
         }
 
         Perusteprojekti pp = perusteprojektiRepository.findOne(projektiId);
 
         if (pp == null) {
-            throw new BusinessRuleViolationException("Käyttäjällä ei ole kyseistä perusteprojektia");
+            throw new BusinessRuleViolationException("kayttajalla-ei-ole-kyseista-perusteprojektia");
         }
 
         CachingRestClient crc = restClientFactory.get(koServiceUrl);

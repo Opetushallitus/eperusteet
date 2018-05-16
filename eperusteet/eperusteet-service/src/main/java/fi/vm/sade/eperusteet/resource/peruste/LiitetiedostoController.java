@@ -26,14 +26,10 @@ import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,19 +82,21 @@ public class LiitetiedostoController {
         @P("perusteId") Long perusteId,
         @RequestParam("nimi") String nimi,
         @RequestParam("file") Part file,
-        UriComponentsBuilder ucb)
-        throws IOException, HttpMediaTypeNotSupportedException {
+        UriComponentsBuilder ucb
+    ) throws IOException, HttpMediaTypeNotSupportedException {
         final long koko = file.getSize();
         try (PushbackInputStream pis = new PushbackInputStream(file.getInputStream(), BUFSIZE)) {
             byte[] buf = new byte[koko < BUFSIZE ? (int) koko : BUFSIZE];
             int len = pis.read(buf);
             if (len < buf.length) {
-                throw new IOException("luku epäonnistui");
+                throw new IOException("luku-epaonnistui");
             }
             pis.unread(buf);
             String tyyppi = tika.detect(buf);
             if (!SUPPORTED_TYPES.contains(tyyppi)) {
-                throw new HttpMediaTypeNotSupportedException(tyyppi + "ei ole tuettu");
+                MediaType  type = MediaType.parseMediaType(tyyppi);
+                List<MediaType> supportedTypes = MediaType.parseMediaTypes(new ArrayList<>(SUPPORTED_TYPES));
+                throw new HttpMediaTypeNotSupportedException(type, supportedTypes, "ei-ole-tuettu");
             }
             UUID id = liitteet.add(perusteId, tyyppi, nimi, koko, pis);
             HttpHeaders h = new HttpHeaders();
@@ -114,22 +112,18 @@ public class LiitetiedostoController {
         @PathVariable("perusteId") Long perusteId,
         @PathVariable("id") UUID id,
         @RequestHeader(value = "If-None-Match", required = false) String etag,
-        HttpServletResponse response) throws IOException {
-
+        HttpServletResponse response
+    ) throws IOException {
         LiiteDto dto = liitteet.get(perusteId, id);
-        if (dto != null) {
-            if (etag != null && dto.getId().toString().equals(etag)) {
-                response.setStatus(HttpStatus.NOT_MODIFIED.value());
-            } else {
-                response.setHeader("Content-Type", dto.getTyyppi());
-                response.setHeader("ETag", id.toString());
-                try (OutputStream os = response.getOutputStream()) {
-                    liitteet.export(perusteId, id, os);
-                    os.flush();
-                }
-            }
+        if (etag != null && dto.getId().toString().equals(etag)) {
+            response.setStatus(HttpStatus.NOT_MODIFIED.value());
         } else {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setHeader("Content-Type", dto.getTyyppi());
+            response.setHeader("ETag", id.toString());
+            try (OutputStream os = response.getOutputStream()) {
+                liitteet.export(perusteId, id, os);
+                os.flush();
+            }
         }
     }
 
@@ -137,7 +131,8 @@ public class LiitetiedostoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
         @PathVariable("perusteId") Long perusteId,
-        @PathVariable("id") UUID id) {
+        @PathVariable("id") UUID id
+    ) {
         audit.withAudit(LogMessage.builder(perusteId, KUVA, POISTO), (Void) -> {
             liitteet.delete(perusteId, id);
             return null;

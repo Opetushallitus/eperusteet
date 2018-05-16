@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -50,7 +51,8 @@ public enum Kieli {
                 return k;
             }
         }
-        throw new IllegalArgumentException(koodi + " ei ole kelvollinen kielikoodi");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("koodi-ei-ole-kelvollinen-kielikoodi",
+                new HashMap<String, Object>(){{ put("koodi", koodi); }});
     }
 
     public static List<String> vaihtoehdot() {

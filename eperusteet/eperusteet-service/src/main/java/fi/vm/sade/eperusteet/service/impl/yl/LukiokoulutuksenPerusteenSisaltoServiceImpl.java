@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -112,13 +113,14 @@ public class LukiokoulutuksenPerusteenSisaltoServiceImpl
         LukiokoulutuksenPerusteenSisalto sisalto = getByPerusteId(perusteId);
         return found(lukioOpetussuunnitelmaRakenneRepository.findRevision(
                     found(sisalto.getOpetussuunnitelma()).getId(), revision),
-                () -> new NotExistsException("Lukiokoulutuksen rakennetta ei löydy revisiolla " + revision));
+                () -> new NotExistsException("lukiokoulutuksen-rakennetta-ei-loydy-revisiolla",
+                        new HashMap<String, Object>(){{ put("revision", revision); }}));
     }
 
     @Override
     protected LukiokoulutuksenPerusteenSisalto getByPerusteId(Long perusteId) {
         LukiokoulutuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Sisaltoä annetulle perusteelle ei ole olemassa");
+        assertExists(sisalto, "sisaltoa-annetulle-perusteelle-ei-ole-olemassa");
         return sisalto;
     }
 

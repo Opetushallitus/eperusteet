@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.HashMap;
+
 /**
  *
  * @author nkala
@@ -39,12 +41,13 @@ public enum PerusteenOsaTunniste {
     }
 
     @JsonCreator
-    public static PerusteenOsaTunniste of(String tila) {
+    public static PerusteenOsaTunniste of(String tunniste) {
         for (PerusteenOsaTunniste s : values()) {
-            if (s.tunniste.equalsIgnoreCase(tila)) {
+            if (s.tunniste.equalsIgnoreCase(tunniste)) {
                 return s;
             }
         }
-        throw new IllegalArgumentException(tila + " ei ole kelvollinen tunniste");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("tunniste-ei-ole-kelvollinen-tunniste",
+                new HashMap<String, Object>(){{ put("tunniste", tunniste); }});
     }
 }

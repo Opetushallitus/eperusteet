@@ -81,7 +81,7 @@ public class Lukko {
         if (this.vanhentuu == null || t.equals(this.vanhentuu)) {
             this.vanhentuu = t;
         } else {
-            throw new IllegalStateException("vanhenemisaikaa ei voi muuttaa");
+            throw new IllegalStateException("vanhenemisaikaa-ei-voi-muuttaa");
         }
     }
 

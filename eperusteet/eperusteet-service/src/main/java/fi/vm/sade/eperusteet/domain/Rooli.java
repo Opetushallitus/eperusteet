@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.HashMap;
+
 /**
  *
  * @author nkala
@@ -47,6 +49,7 @@ public enum Rooli {
                 return r;
             }
         }
-        throw new IllegalArgumentException(rooli + " ei ole kelvollinen rooli");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("rooli-ei-ole-kelvollinen-rooli",
+                new HashMap<String, Object>(){{ put("rooli", rooli); }});
     }
 }

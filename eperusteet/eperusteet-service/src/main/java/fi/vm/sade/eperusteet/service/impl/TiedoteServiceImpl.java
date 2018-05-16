@@ -91,7 +91,7 @@ public class TiedoteServiceImpl implements TiedoteService {
     @Override
     public TiedoteDto updateTiedote(TiedoteDto tiedoteDto) {
         Tiedote tiedote = repository.findOne(tiedoteDto.getId());
-        assertExists(tiedote, "Päivitettävää tietoa ei ole olemassa");
+        assertExists(tiedote, "paivitettavaa-tietoa-ei-ole-olemassa");
         mapper.map(tiedoteDto, tiedote);
         tiedote = repository.save(tiedote);
         return mapper.map(tiedote, TiedoteDto.class);

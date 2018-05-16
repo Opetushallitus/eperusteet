@@ -57,7 +57,7 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
     @Override
     public LaajaalainenOsaaminenDto addLaajaalainenOsaaminen(Long perusteId, LaajaalainenOsaaminenDto dto) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        notNull(sisalto, "Päivitettävää tietoa ei ole olemassa");
+        notNull(sisalto, "paivitettavaa-tietoa-ei-ole-olemassa");
         LaajaalainenOsaaminen tmp = mapper.map(dto, LaajaalainenOsaaminen.class);
         sisaltoRepository.lock(sisalto);
         tmp = osaaminenRepository.save(tmp);
@@ -68,7 +68,7 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
     @Override
     public LaajaalainenOsaaminenDto updateLaajaalainenOsaaminen(Long perusteId, LaajaalainenOsaaminenDto dto) {
         LaajaalainenOsaaminen current = osaaminenRepository.findBy(perusteId, dto.getId());
-        notNull(current, "Päivitettävää tietoa ei ole olemassa");
+        notNull(current, "paivitettavaa-tietoa-ei-ole-olemassa");
         lockService.assertLock(LaajaalainenOsaaminenContext.of(perusteId, dto.getId()));
         osaaminenRepository.lock(current);
         mapper.map(dto, current);
@@ -87,22 +87,22 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
     @Transactional(readOnly = true)
     public LaajaalainenOsaaminenDto getLaajaalainenOsaaminen(Long perusteId, Long id, int revisio) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findRevision(id, revisio);
-        notNull(sisalto, "Perustetta ei ole olemassa");
+        notNull(sisalto, "perustetta-ei-ole-olemassa");
         return mapper.map(sisalto.getLaajaalainenosaaminen(id), LaajaalainenOsaaminenDto.class);
     }
 
     @Override
     public List<Revision> getLaajaalainenOsaaminenVersiot(Long perusteId, Long id) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        notNull(notNull(sisalto, "Perustetta ei ole olemassa").getLaajaalainenosaaminen(id), "Laaja-alaista osaamista ei ole olemassa");
+        notNull(notNull(sisalto, "perustetta-ei-ole-olemassa").getLaajaalainenosaaminen(id), "Laaja-alaista osaamista ei ole olemassa");
         return osaaminenRepository.getRevisions(id);
     }
 
     @Override
     public void deleteLaajaalainenOsaaminen(Long perusteId, Long id) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        LaajaalainenOsaaminen lo = notNull(sisalto, "Perustetta ei ole olemassa").getLaajaalainenosaaminen(id);
-        notNull(lo, "Laaja-alaista osaamista ei ole olemassa");
+        LaajaalainenOsaaminen lo = notNull(sisalto, "perustetta-ei-ole-olemassa").getLaajaalainenosaaminen(id);
+        notNull(lo, "laajaa-laista-osaamista-ei-ole-olemassa");
         final LaajaalainenOsaaminenContext ctx = LaajaalainenOsaaminenContext.of(perusteId, id);
         lockService.assertLock(ctx);
         //lukko täytyy poistaa ennen varsinaista poistoa (turvallista koska poisto ei näy transaktion ulkopuolelle)

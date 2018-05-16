@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.validation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.HashMap;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
@@ -55,7 +56,9 @@ public class ValidDateRangeValidator implements ConstraintValidator<ValidateDate
         try {
             return (Date) obj.getClass().getMethod(methodName, EMPTY_CLASS_ARRAY).invoke(obj, EMPTY_OBJECT_ARRAY);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {
-            throw new IllegalArgumentException("Unable to access " + obj.getClass().getName() + "#" + methodName, e);
+            throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("unable-to-access-class-method",
+                    e,
+                    new HashMap<String, Object>(){{ put("class", obj.getClass().getName()); put("method", methodName); }});
         }
     }
 

@@ -47,7 +47,7 @@ public abstract class AbstractOppiaineOpetuksenSisalto extends AbstractAuditedRe
             if (containsOppiaine(oppiaine.getOppiaine())) {
                 oppiaine.getOppiaine().addOppimaara(oppiaine);
             } else {
-                throw new IllegalArgumentException("Ei voida lisätä oppimäärää jonka oppiaine ei kuulu sisältöön");
+                throw new IllegalArgumentException("ei-voida-lisata-oppimaaraa-jonka-oppiaine-ei-kuulu-sisaltoon");
             }
         } else {
             getOppiaineet().add(oppiaine);

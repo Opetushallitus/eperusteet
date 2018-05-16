@@ -225,7 +225,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
 
     public void removeVuosiluokkaKokonaisuus(OppiaineenVuosiluokkaKokonaisuus ovk) {
         if (!ovk.getOppiaine().equals(this)) {
-            throw new IllegalArgumentException("Vuosiluokkakokonaisuus ei kuulu tähän oppiaineeseen");
+            throw new IllegalArgumentException("vuosiluokkakokonaisuus-ei-kuulu-tahan-oppiaineeseen");
         }
         vuosiluokkakokonaisuudet.remove(ovk);
         ovk.setOppiaine(null);
@@ -233,7 +233,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
 
     public void addOppimaara(Oppiaine oppimaara) {
         if (!koosteinen) {
-            throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
+            throw new IllegalStateException("oppiaine-ei-ole-koosteinen-eika-tue-oppimaaria");
         }
         if (oppimaarat == null) {
             oppimaarat = new HashSet<>();
@@ -246,12 +246,12 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
 
     public void removeOppimaara(Oppiaine aine) {
         if (!koosteinen) {
-            throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
+            throw new IllegalStateException("oppiaine-ei-ole-koosteinen-eika-tue-oppimaaria");
         }
         if (aine.getOppiaine().equals(this) && oppimaarat.remove(aine)) {
             aine.oppiaine = null;
         } else {
-            throw new IllegalArgumentException("Oppimäärä ei kuulu tähän oppiaineeseen");
+            throw new IllegalArgumentException("oppimaara-ei-kuulu-tahan-oppiaineeseen");
         }
     }
 
@@ -259,7 +259,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
         if (this.oppiaine == null || this.oppiaine.equals(oppiaine)) {
             this.oppiaine = oppiaine;
         } else {
-            throw new IllegalStateException("Oppiaineviittausta ei voi muuttaa");
+            throw new IllegalStateException("oppiaineviittausta-ei-voi-muuttaa");
         }
     }
 

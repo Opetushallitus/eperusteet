@@ -58,7 +58,7 @@ public class TermistoServiceImpl implements TermistoService {
     @Override
     public TermiDto addTermi(Long perusteId, TermiDto dto) {
         Peruste peruste = perusteet.findOne(perusteId);
-        assertExists(peruste, "Perustetta ei ole olemassa");
+        assertExists(peruste, "perustetta-ei-ole-olemassa");
         Termi tmp = mapper.map(dto, Termi.class);
         tmp.setPeruste(peruste);
         tmp = termisto.save(tmp);
@@ -68,9 +68,9 @@ public class TermistoServiceImpl implements TermistoService {
     @Override
     public TermiDto updateTermi(Long perusteId, TermiDto dto) {
         Peruste peruste = perusteet.findOne(perusteId);
-        assertExists(peruste, "Perustetta ei ole olemassa");
+        assertExists(peruste, "perustetta-ei-ole-olemassa");
         Termi current = termisto.findOne(dto.getId());
-        assertExists(current, "Päivitettävää tietoa ei ole olemassa");
+        assertExists(current, "paivitettavaa-tietoa-ei-ole-olemassa");
         mapper.map(dto, current);
         termisto.save(current);
         return mapper.map(current, TermiDto.class);

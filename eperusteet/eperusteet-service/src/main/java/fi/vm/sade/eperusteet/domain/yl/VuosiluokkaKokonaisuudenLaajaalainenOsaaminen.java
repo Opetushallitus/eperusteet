@@ -64,7 +64,7 @@ public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminen extends AbstractRefer
         if ( this.vuosiluokkaKokonaisuus == null || this.vuosiluokkaKokonaisuus.equals(vuosiluokkaKokonaisuus) ) {
             this.vuosiluokkaKokonaisuus = vuosiluokkaKokonaisuus;
         } else {
-            throw new IllegalStateException("Vuosiluokkakokonaisuuteen kuulumista ei voi muuttaa");
+            throw new IllegalStateException("vuosiluokkakokonaisuuteen-kuulumista-ei-voi-muuttaa");
         }
     }
 

@@ -215,7 +215,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
 
     public void setEsitieto(Osaamistavoite esitieto) {
         if (this == esitieto) {
-            throw new IllegalArgumentException("Osaamistavoite ei voi olla oma esitietonsa");
+            throw new IllegalArgumentException("osaamistavoite-ei-voi-olla-oma-esitietonsa");
         }
         this.esitieto = esitieto;
     }

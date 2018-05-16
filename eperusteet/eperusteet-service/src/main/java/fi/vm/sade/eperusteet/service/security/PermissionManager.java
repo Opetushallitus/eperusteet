@@ -361,7 +361,7 @@ public class PermissionManager {
             // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
             TutkinnonOsaViite t = viiteRepository.findOne((Long) targetId);
             if (t == null || t.getTutkinnonOsa() == null) {
-                throw new NotExistsException("Tutkinnon osan viitettä ei löytynyt");
+                throw new NotExistsException("tutkinnon-osan-viitetta-ei-loytynyt");
             }
             targetId = t.getTutkinnonOsa().getId();
             targetType = Target.PERUSTEENOSA;
@@ -371,7 +371,7 @@ public class PermissionManager {
             // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
             PerusteenOsaViite p = perusteenOsaViiteRepository.findOne((Long) targetId);
             if (p == null || p.getPerusteenOsa() == null) {
-                throw new NotExistsException("Perusteen osan viitettä ei löytynyt");
+                throw new NotExistsException("tutkinnon-osan-viitetta-ei-loytynyt");
             }
             targetId = p.getPerusteenOsa().getId();
             targetType = Target.PERUSTEENOSA;
@@ -443,7 +443,7 @@ public class PermissionManager {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Perusteprojekti projekti = projektiRepository.findOne(id);
         if (projekti == null) {
-            throw new NotExistsException("Perusteprojektia ei ole olemassa");
+            throw new NotExistsException("perusteprojektia-ei-ole-olemassa");
         }
         permissionMap.put(Target.PERUSTEPROJEKTI, getPermissions(authentication, projekti.getId(), Target.PERUSTEPROJEKTI, projekti.getTila()));
 
@@ -452,7 +452,7 @@ public class PermissionManager {
             permissionMap.put(Target.PERUSTE, getPermissions(authentication, peruste.getId(), Target.PERUSTE, projekti.getTila()));
             permissionMap.put(Target.PERUSTEENMETATIEDOT, getPermissions(authentication, peruste.getId(), Target.PERUSTEENMETATIEDOT, projekti.getTila()));
         } else {
-            throw new NotExistsException("Perustetta ei ole olemassa");
+            throw new NotExistsException("perustetta-ei-ole-olemassa");
         }
 
         return permissionMap;
@@ -488,7 +488,7 @@ public class PermissionManager {
     private Set<Pair<String, ProjektiTila>> findPerusteProjektiTila(Target targetType, Serializable targetId) {
 
         if (!(targetId instanceof Long)) {
-            throw new IllegalArgumentException("Expected Long");
+            throw new IllegalArgumentException("expected-long");
         }
         final Long id = (Long) targetId;
 
@@ -504,7 +504,8 @@ public class PermissionManager {
                 return setOf(perusteProjektit.findTilaByPerusteenOsaId(id));
             }
             default:
-                throw new IllegalArgumentException(targetType.toString());
+                throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("tyyppi-ei-ole-kelvollinen-tyyppi",
+                        new HashMap<String, Object>(){{ put("tyyppi", targetType.toString()); }});
         }
     }
 
