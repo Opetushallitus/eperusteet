@@ -17,6 +17,9 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.util.HashMap;
+
 /**
  *
  * @author harrik
@@ -53,6 +56,7 @@ public enum Suoritustapakoodi {
                 return s;
             }
         }
-        throw new IllegalArgumentException(koodi + " ei ole kelvollinen suoritustapakoodi");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("koodi-ei-ole-kelvollinen-suoritustapakoodi",
+                new HashMap<String, Object>(){{ put("koodi", koodi); }});
     }
 }

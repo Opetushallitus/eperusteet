@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.HashMap;
+
 /**
  *
  * @author jussi
@@ -47,6 +49,7 @@ public enum DokumenttiVirhe {
                 return t;
             }
         }
-        throw new IllegalArgumentException(virhe + " ei ole kelvollinen virhekoodi");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("virhe-ei-ole-kelvollinen-virhekoodi",
+                new HashMap<String, Object>(){{ put("virhe", virhe); }});
     }
 }

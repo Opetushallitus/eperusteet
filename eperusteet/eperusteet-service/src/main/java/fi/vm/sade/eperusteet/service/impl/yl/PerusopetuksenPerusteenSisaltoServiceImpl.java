@@ -52,7 +52,7 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl
     protected PerusopetuksenPerusteenSisalto getByPerusteId(Long perusteId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         if (sisalto == null) {
-            throw new BusinessRuleViolationException("Perusteen sisältöä ei löydy");
+            throw new BusinessRuleViolationException("perusteen-sisaltoa-ei-loydy");
         }
 
         return sisalto;

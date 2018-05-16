@@ -64,7 +64,7 @@ public abstract class AbstractOppiaineOpetuksenSisaltoService<EntityType extends
     @Transactional
     public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala dto) {
         AbstractOppiaineOpetuksenSisalto sisalto = getByPerusteId(perusteId);
-        assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
+        assertExists(sisalto, "pyydettya-perustetta-ei-ole-olemassa");
         if (viiteId == null) {
             return viiteService.addSisalto(perusteId, sisalto.getSisalto().getId(), dto);
         } else {

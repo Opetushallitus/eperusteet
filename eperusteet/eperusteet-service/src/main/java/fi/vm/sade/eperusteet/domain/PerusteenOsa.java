@@ -121,7 +121,7 @@ public abstract class PerusteenOsa
     @Override
     public void mergeState(PerusteenOsa updated) {
         if (this.getClass().isAssignableFrom(updated.getClass()) && getId() == null || !getId().equals(updated.getId())) {
-            throw new IllegalArgumentException("Vain kahden saman entiteetin tilan voi yhdistää");
+            throw new IllegalArgumentException("vain-kahden-saman-entiteetin-tilan-voi-yhdistaa");
         }
         copyState(updated);
     }

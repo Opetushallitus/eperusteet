@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.HashMap;
+
 /**
  *
  * @author harrik
@@ -50,6 +52,7 @@ public enum TutkinnonOsaTyyppi {
                 return s;
             }
         }
-        throw new IllegalArgumentException(tyyppi + " ei ole kelvollinen tyyppi");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("tyyppi-ei-ole-kelvollinen-tyyppi",
+                new HashMap<String, Object>(){{ put("tyyppi", tyyppi); }});
     }
 }

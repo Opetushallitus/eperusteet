@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.HashMap;
+
 /**
  *
  * @author jussi
@@ -49,6 +51,7 @@ public enum DokumenttiTila {
                 return t;
             }
         }
-        throw new IllegalArgumentException(tila + " ei ole kelvollinen dokumenttitila");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("tila-ei-ole-kelvollinen-dokumenttitila",
+                new HashMap<String, Object>(){{ put("tila", tila); }});
     }
 }

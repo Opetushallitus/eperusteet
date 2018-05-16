@@ -247,7 +247,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             }
         }
 
-        throw new IllegalArgumentException("Perusteella ei ole pyydettyä suoritustapaa");
+        throw new IllegalArgumentException("perusteella-ei-ole-pyydettya-suoritustapaa");
     }
 
     @Override

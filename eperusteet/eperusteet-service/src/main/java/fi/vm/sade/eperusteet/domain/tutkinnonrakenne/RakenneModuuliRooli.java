@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.HashMap;
+
 /**
  *
  * @author nkala
@@ -41,12 +43,13 @@ public enum RakenneModuuliRooli {
     }
 
     @JsonCreator
-    public static RakenneModuuliRooli of(String x) {
+    public static RakenneModuuliRooli of(String rooli) {
         for (RakenneModuuliRooli r : values()) {
-            if (r.rooli.equalsIgnoreCase(x)) {
+            if (r.rooli.equalsIgnoreCase(rooli)) {
                 return r;
             }
         }
-        throw new IllegalArgumentException(x + " ei ole kelvollinen tyyppi");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("rooli-ei-ole-kelvollinen-rooli",
+                new HashMap<String, Object>(){{ put("rooli", rooli); }});
     }
 }

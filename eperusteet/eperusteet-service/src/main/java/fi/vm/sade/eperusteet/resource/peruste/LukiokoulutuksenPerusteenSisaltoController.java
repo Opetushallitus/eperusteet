@@ -223,7 +223,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         if (kurssi.getId() == null) {
             kurssi.setId(kurssiId);
         } else if (!kurssi.getId().equals(kurssiId)) {
-            throw new NotExistsException("Kurssia ei löytynyt");
+            throw new NotExistsException("kurssia-ei-loytynyt");
         }
     }
 
@@ -453,7 +453,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @RequestBody LukioAihekokonaisuusMuokkausDto aihekokonaisuus) {
         return audit.withAudit(LogMessage.builder(perusteId, AIHEKOKONAISUUS, LISAYS), (Void) -> {
             if (!aihekokonaisuus.getId().equals(aihekokonaisuusId)) {
-                throw new NotExistsException("Aihekokonaisuutta ei löytynyt");
+                throw new NotExistsException("aihekokonaisuutta-ei-loytynyt");
             }
             aihekokonaisuudet.muokkaaAihekokonaisuutta(perusteId, aihekokonaisuus);
             return new RedirectView("" + aihekokonaisuusId, true);

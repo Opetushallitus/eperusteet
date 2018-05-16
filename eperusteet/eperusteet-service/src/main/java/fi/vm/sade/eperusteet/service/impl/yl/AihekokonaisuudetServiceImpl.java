@@ -109,7 +109,7 @@ public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
     public long luoAihekokonaisuus(long perusteId, LukioAihekokonaisuusLuontiDto aihekokonaisuusLuontiDto)
             throws BusinessRuleViolationException {
         LukiokoulutuksenPerusteenSisalto sisalto = found(lukioSisaltoRepository.findByPerusteId(perusteId),
-                () -> new BusinessRuleViolationException("Perustetta ei ole."));
+                () -> new BusinessRuleViolationException("perustetta-ei-ole"));
         lukioSisaltoRepository.lock(sisalto, false);
 
         Aihekokonaisuudet aihekokonaisuudet = sisalto.getAihekokonaisuudet();

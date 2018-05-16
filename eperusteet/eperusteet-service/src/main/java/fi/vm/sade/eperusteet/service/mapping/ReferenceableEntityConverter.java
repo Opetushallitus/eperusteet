@@ -24,6 +24,8 @@ import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+
 /**
  *
  * @author teele1
@@ -54,7 +56,8 @@ public class ReferenceableEntityConverter extends BidirectionalConverter<Referen
              */
             ReferenceableEntity e = em.find(type.getRawType(), Long.valueOf(reference.getId()));
             if ( e == null ) {
-                throw new IllegalArgumentException("Virheellinen viite " + reference );
+                throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("virheellinen-viite-reference",
+                        new HashMap<String, Object>(){{ put("reference", reference); }});
             }
         }
         return em.getReference(type.getRawType(), Long.valueOf(reference.getId()));

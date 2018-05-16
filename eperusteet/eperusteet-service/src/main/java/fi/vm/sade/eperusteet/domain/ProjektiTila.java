@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -97,7 +98,8 @@ public enum ProjektiTila {
                 return s;
             }
         }
-        throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("tila-ei-ole-kelvollinen-tila",
+                new HashMap<String, Object>(){{ put("tila", tila); }});
     }
 
     public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {

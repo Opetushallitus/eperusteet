@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.HashMap;
+
 /**
  *
  * @author harrik
@@ -45,6 +47,7 @@ public enum PerusteTila {
                 return s;
             }
         }
-        throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
+        throw new fi.vm.sade.eperusteet.service.exception.IllegalArgumentException("tila-ei-ole-kelvollinen-tila",
+                new HashMap<String, Object>(){{ put("tila", tila); }});
     }
 }
