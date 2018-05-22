@@ -171,7 +171,6 @@ angular
         function lisaaTiedote(tiedote, perusteprojektiId, saveCb, deleteCb) {
             saveCb = saveCb || _.noop;
             deleteCb = deleteCb || _.noop;
-            console.log("lisaaTiedote", tiedote, perusteprojektiId);
 
             $uibModal
                 .open({
