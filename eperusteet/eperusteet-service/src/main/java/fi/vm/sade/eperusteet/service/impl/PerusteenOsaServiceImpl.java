@@ -44,7 +44,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.*;
 import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
+import fi.vm.sade.eperusteet.service.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -303,7 +303,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlueEntity = osaAlueRepository.findOne(osaAlueId);
         if (osaAlueEntity == null) {
-            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+            throw new EntityNotFoundException("osa-aluetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("osaAlueId", osaAlueId); }});
         }
         List<Osaamistavoite> uudetTavoitteet = tallennaUudetOsaamistavoitteet(osaAlue.getOsaamistavoitteet());
 
@@ -396,7 +397,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueet(Long id) {
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
         if (tutkinnonOsa == null) {
-            throw new EntityNotFoundException("Tutkinnon osaa ei löytynyt id:llä: " + id);
+            throw new EntityNotFoundException("tutkinnon-osaa-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("id", id); }});
         }
 
         return mapper.mapAsList(tutkinnonOsa.getOsaAlueet(), OsaAlueKokonaanDto.class);
@@ -407,7 +409,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueetVersio(Long id, Integer versioId) {
         TutkinnonOsa t = tutkinnonOsaRepo.findRevision(id, versioId);
         if (t == null) {
-            throw new EntityNotFoundException("Tutkinnon osa (id: " + id + ") versiota ei löytynyt versioId:llä " + versioId);
+            throw new EntityNotFoundException("tutkinnon-osa-id-versiota-ei-löoytynyt-versioidlla",
+                    new HashMap<String, Object>(){{ put("id", id); put("versioId", versioId); }});
         }
         return mapper.mapAsList(t.getOsaAlueet(), OsaAlueKokonaanDto.class);
     }
@@ -419,7 +422,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
-            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+            throw new EntityNotFoundException("osa-aluetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("osaAlueId", osaAlueId); }});
         }
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
 
@@ -438,7 +442,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
-            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+            throw new EntityNotFoundException("osa-aluetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("osaAlueId", osaAlueId); }});
         }
         Osaamistavoite osaamistavoite;
         if (osaamistavoiteDto != null) {
@@ -459,7 +464,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
-            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+            throw new EntityNotFoundException("osa-aluetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("osaAlueId", osaAlueId); }});
         }
         return mapper.mapAsList(osaAlue.getOsaamistavoitteet(), OsaamistavoiteLaajaDto.class);
 
@@ -477,11 +483,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
-            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+            throw new EntityNotFoundException("osa-aluetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("osaAlueId", osaAlueId); }});
         }
         Osaamistavoite osaamistavoiteEntity = osaamistavoiteRepository.findOne(osaamistavoiteId);
         if (osaamistavoiteEntity == null) {
-            throw new EntityNotFoundException("Osaamistavoitetta ei löytynyt id:llä: " + osaamistavoiteId);
+            throw new EntityNotFoundException("osaamistavoitetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("osaamistavoiteId", osaamistavoiteId); }});
         }
         osaAlue.getOsaamistavoitteet().remove(osaamistavoiteEntity);
         osaamistavoiteRepository.delete(osaamistavoiteEntity);
@@ -499,11 +507,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
-            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+            throw new EntityNotFoundException("osa-aluetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("osaAlueId", osaAlueId); }});
         }
         Osaamistavoite osaamistavoiteEntity = osaamistavoiteRepository.findOne(osaamistavoiteId);
         if (osaamistavoiteEntity == null) {
-            throw new EntityNotFoundException("Osaamistavoitetta ei löytynyt id:llä: " + osaamistavoiteId);
+            throw new EntityNotFoundException("osaamistavoitetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("osaamistavoiteId", osaamistavoiteId); }});
         }
         Osaamistavoite osaamistavoiteUusi = mapper.map(osaamistavoite, Osaamistavoite.class);
         osaamistavoiteEntity.mergeState(osaamistavoiteUusi);
@@ -555,7 +565,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public List<Revision> getVersiotByViite(Long id) {
         PerusteenOsaViite p = perusteenOsaViiteRepository.findOne(id);
         if (p == null || p.getPerusteenOsa() == null) {
-            throw new EntityNotFoundException("Perusteen osaa ei löytynyt viite id:llä: " + id);
+            throw new EntityNotFoundException("perusteen-osaa-ei-loytynyt-viite-idlla",
+                    new HashMap<String, Object>(){{ put("id", id); }});
         }
         return getVersiot(p.getPerusteenOsa().getId());
     }
@@ -565,7 +576,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public PerusteenOsaDto getVersioByViite(Long id, Integer versioId) {
         PerusteenOsaViite p = perusteenOsaViiteRepository.findOne(id);
         if (p == null || p.getPerusteenOsa() == null) {
-            throw new EntityNotFoundException("Perusteen osaa ei löytynyt viite id:llä: " + id);
+            throw new EntityNotFoundException("perusteen-osaa-ei-loytynyt-viite-idlla",
+                    new HashMap<String, Object>(){{ put("id", id); }});
         }
         return getVersio(p.getPerusteenOsa().getId(), versioId);
     }

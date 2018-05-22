@@ -110,7 +110,7 @@ public class LockManagerImpl implements LockManager {
         }
 
         if (lukko == null || !oid.equals(lukko.getHaltijaOid())) {
-            throw new LockingException("Kohde on lukittu", LukkoDto.of(lukko));
+            throw new LockingException("kohde-on-lukittu", LukkoDto.of(lukko));
         }
 
         return lukko;
@@ -158,7 +158,7 @@ public class LockManagerImpl implements LockManager {
             lukko.setVanhentumisAika(maxLockTime);
         }
         if (!isLockedByAuthenticatedUser(lukko)) {
-            throw new LockingException("Käyttäjä ei omista lukkoa", LukkoDto.of(lukko));
+            throw new LockingException("kayttaja-ei-omista-lukkoa", LukkoDto.of(lukko));
         }
     }
 
@@ -174,7 +174,7 @@ public class LockManagerImpl implements LockManager {
             em.remove(lukko);
             return true;
         }
-        throw new LockingException("Käyttäjä ei omista lukkoa", LukkoDto.of(lukko));
+        throw new LockingException("kayttaja-ei-omista-lukkoa", LukkoDto.of(lukko));
     }
 
     @Override

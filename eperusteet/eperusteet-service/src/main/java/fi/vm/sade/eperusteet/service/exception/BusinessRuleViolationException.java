@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.service.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -27,22 +26,21 @@ import java.util.Map;
  * @author jhyoty
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class BusinessRuleViolationException extends ServiceException {
-
-    @Getter
-    private Map<String, Object> parameters;
+public class BusinessRuleViolationException extends ParameterizedServiceException {
 
     public BusinessRuleViolationException(String message) {
         super(message);
-    }
-
-    public BusinessRuleViolationException(String message, Map<String, Object> params) {
-        super(message);
-        parameters = params;
     }
 
     public BusinessRuleViolationException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    public BusinessRuleViolationException(String msg, Map<String, Object> parameters) {
+        super(msg, parameters);
+    }
+
+    public BusinessRuleViolationException(String msg, Throwable cause, Map<String, Object> parameters) {
+        super(msg, cause, parameters);
+    }
 }

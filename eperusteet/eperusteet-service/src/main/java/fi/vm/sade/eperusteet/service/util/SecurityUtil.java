@@ -17,7 +17,9 @@
 package fi.vm.sade.eperusteet.service.util;
 
 import java.security.Principal;
-import org.springframework.security.access.AccessDeniedException;
+import java.util.HashMap;
+
+import fi.vm.sade.eperusteet.service.exception.AccessDeniedException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,9 +42,13 @@ public final class SecurityUtil {
         Principal p = getAuthenticatedPrincipal();
         if ( p == null || !p.getName().equals(principalName)) {
             if (p != null) {
-                throw new AccessDeniedException("Pääsy evätty (" + p + " != " + principalName + ")");
+                throw new AccessDeniedException("paasy-evatty",
+                        new HashMap<String, Object>(){{ put("p", p); put("principalName", principalName); }}
+                        );
             } else {
-                throw new AccessDeniedException("Pääsy evätty (null != " + principalName + ")");
+                throw new AccessDeniedException("paasy-evatty",
+                        new HashMap<String, Object>(){{ put("p", null); put("principalName", principalName); }}
+                );
             }
         }
     }

@@ -15,21 +15,19 @@
  */
 package fi.vm.sade.eperusteet.service.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Map;
+
 
 /**
  *
  * @author jhyoty
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class NotExistsException extends ServiceException {
+public class NotExistsException extends ParameterizedServiceException {
 
-    @Getter
-    private Map<String, Object> parameters;
 
     public NotExistsException() {
         super("ei-loytynyt");
@@ -39,12 +37,17 @@ public class NotExistsException extends ServiceException {
         super(message);
     }
 
-    public NotExistsException(String message, Map<String, Object> params) {
-        super(message);
-        parameters = params;
-    }
-
     public NotExistsException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public NotExistsException(String msg, Map<String, Object> parameters) {
+        super(msg, parameters);
+    }
+
+    public NotExistsException(String msg, Throwable cause, Map<String, Object> parameters) {
+        super(msg, cause, parameters);
+    }
+
+
 }

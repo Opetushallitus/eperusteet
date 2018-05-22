@@ -43,6 +43,7 @@ import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.EntityNotFoundException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
@@ -56,7 +57,6 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
@@ -780,11 +780,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         Peruste peruste = perusteet.findOne(id);
         if (peruste == null) {
-            throw new EntityNotFoundException("Perustetta ei löytynyt id:llä: " + id);
+            throw new EntityNotFoundException("perustetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("id", id); }});
         }
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         if (suoritustapa == null) {
-            throw new EntityNotFoundException("Suoritustapaa " + suoritustapakoodi.toString() + " ei löytynyt");
+            throw new EntityNotFoundException("suoritustapaa-suoritustapakoodi-ei-loytynyt",
+                    new HashMap<String, Object>(){{ put("suoritustapakoodi", suoritustapakoodi); }});
         }
         RakenneModuuli rakenne = suoritustapa.getRakenne();
         if (rakenne != null) {
@@ -797,11 +799,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private Suoritustapa haeSuoritustapaVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
         Peruste peruste = perusteet.findOne(id);
         if (peruste == null) {
-            throw new EntityNotFoundException("Perustetta ei löytynyt id:llä: " + id);
+            throw new EntityNotFoundException("perustetta-ei-loytynyt-idlla",
+                    new HashMap<String, Object>(){{ put("id", id); }});
         }
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         if (suoritustapa == null) {
-            throw new EntityNotFoundException("Suoritustapaa " + suoritustapakoodi.toString() + " ei löytynyt");
+            throw new EntityNotFoundException("suoritustapaa-suoritustapakoodi-ei-loytynyt",
+                    new HashMap<String, Object>(){{ put("suoritustapakoodi", suoritustapakoodi); }});
         }
         return suoritustapaRepository.findRevision(suoritustapa.getId(), versioId);
     }

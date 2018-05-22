@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service.exception;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class LockingException extends ServiceException {
 
+    @Getter
     private final LukkoDto lukko;
 
     public LockingException(String message) {
@@ -44,8 +46,8 @@ public class LockingException extends ServiceException {
         this.lukko = lukko;
     }
 
-    public LukkoDto getLukko() {
-        return lukko;
+    public LockingException(String message, Throwable cause, LukkoDto lukko) {
+        super(message, cause);
+        this.lukko = lukko;
     }
-    
 }

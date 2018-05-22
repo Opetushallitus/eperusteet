@@ -20,16 +20,25 @@ import lombok.Getter;
 
 import java.util.Map;
 
-public class IllegalArgumentException extends java.lang.IllegalArgumentException {
+public abstract class ParameterizedServiceException extends ServiceException {
+
     @Getter
     private Map<String, Object> parameters;
 
-    public IllegalArgumentException(String s, Map<String, Object> params) {
-        super(s);
-        parameters = params;
+    public ParameterizedServiceException(String message) {
+        super(message);
     }
 
-    public IllegalArgumentException(String message, Throwable cause, Map<String, Object> parameters) {
+    public ParameterizedServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ParameterizedServiceException(String message, Map<String, Object> parameters) {
+        super(message);
+        this.parameters = parameters;
+    }
+
+    public ParameterizedServiceException(String message, Throwable cause, Map<String, Object> parameters) {
         super(message, cause);
         this.parameters = parameters;
     }

@@ -1390,6 +1390,15 @@
     "tunniste-ei-ole-kelvollinen-tunniste": "{{tunniste}} ei ole kelvollinen tunniste",
     "tyyppi-ei-ole-kelvollinen-tyyppi": "{{tyyppi}} ei ole kelvollinen tyyppi",
     "unable-to-access-class-method": "Unable to access {{class}}#{{method}}",
-    "virheellinen-viite-reference": "Virheellinen viite {{reference}}"
-
+    "virheellinen-viite-reference": "Virheellinen viite {{reference}}",
+    "osa-aluetta-ei-loytynyt-idlla": "Osa-aluetta ei löytynyt id:llä: {{osaAlueId}}",
+    "osaamistavoitetta-ei-loytynyt-idlla": "Osaamistavoitetta ei löytynyt id:llä {{osaamistavoiteId}}",
+    "perusteen-osaa-ei-loytynyt-viite-idlla": "Perusteen osaa ei löytynyt viite id:llä: {{id}}",
+    "tutkinnon-osaa-ei-loytynyt-idlla": "Tutkinnon osaa ei löytynyt id:llä: {{id}}",
+    "tutkinnon-osa-id-versiota-ei-löoytynyt-versioidlla": "Tutkinnon osa (id: {{id}}) versiota ei löytynyt versioId:llä {{versioId}}",
+    "perustetta-ei-loytynyt-idlla": "Perustetta ei löytynyt id:llä: {{id}}",
+    "suoritustapaa-suoritustapakoodi-ei-loytynyt": "Suoritustapaa {{suoritustapakoodi}} ei löytynyt",
+    "paasy-evatty": "Pääsy evätty ({{p}} != {{principalName}})",
+    "kohde-on-lukittu": "Kohde on lukittu",
+    "kayttaja-ei-omista-lukkoa": "Käyttäjä ei omista lukkoa"
 }

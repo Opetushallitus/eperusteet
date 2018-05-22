@@ -31,5 +31,4 @@ public abstract class ServiceException extends NestedRuntimeException {
     public ServiceException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }
