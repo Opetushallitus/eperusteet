@@ -39,7 +39,7 @@ import static java.util.Arrays.asList;
 public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
     @Getter
     @Setter
-    List<Status> infot;
+    List<Status> infot = new ArrayList<>();
 
     @Getter
     @Setter
@@ -153,11 +153,13 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
     @Getter
     @Setter
     public static class Status {
-
         String viesti;
         Validointi validointi;
-        List<LokalisoituTekstiDto> nimet;
+        List<LokalisoituTekstiDto> nimet = new ArrayList<>();
         Suoritustapakoodi suoritustapa;
+
+        public Status() {
+        }
         
         public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet) {
             this.viesti = viesti;

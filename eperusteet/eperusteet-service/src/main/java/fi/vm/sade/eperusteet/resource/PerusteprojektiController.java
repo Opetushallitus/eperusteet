@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
@@ -40,7 +41,8 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.swagger.annotations.Api;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
@@ -60,6 +62,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/perusteprojektit")
 @InternalApi
 public class PerusteprojektiController {
+    private static final Logger log = LoggerFactory.getLogger(PerusteprojektiController.class);
 
     @Autowired
     private EperusteetAudit audit;
@@ -81,6 +84,8 @@ public class PerusteprojektiController {
     public Page<PerusteprojektiKevytDto> getAllKevyt(PerusteprojektiQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
         Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
+        long id = Thread.currentThread().getId();
+        log.debug(String.valueOf(id));
         return page;
     }
 
@@ -93,8 +98,12 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/virheelliset", method = GET)
     @ResponseBody
     @Description("Lista julkaistujen perusteprojektien virheistä. Tätä käytetään helpottamaan perusteiden korjausta validointisääntöjen muuttuessa.")
-    public ResponseEntity<List<PerusteValidationDto>> getVirheelliset() {
-        return new ResponseEntity<>(service.getVirheelliset(), HttpStatus.OK);
+    public ResponseEntity<Page<ValidationDto>> getVirheelliset(
+            @RequestParam(defaultValue = "0") Integer sivu,
+            @RequestParam(defaultValue = "10") Integer sivukoko
+    ) {
+        PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 20));
+        return new ResponseEntity<>(service.getVirheelliset(p), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = GET)

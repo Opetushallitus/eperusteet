@@ -167,6 +167,9 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId);
 
+    @PreAuthorize("permitAll()")
+    List<TutkintonimikeKoodiDto> doGetTutkintonimikeKoodit(@P("perusteId") Long perusteId);
+
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     TutkintonimikeKoodiDto addTutkintonimikeKoodi(@P("perusteId") Long perusteId, TutkintonimikeKoodiDto dto);
 

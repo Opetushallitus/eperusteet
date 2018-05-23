@@ -35,8 +35,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
-import org.assertj.core.data.Index;
-
 import javax.persistence.EntityManager;
 
 
@@ -223,7 +221,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
         });
         ppTestUtils.julkaise(projekti.getId());
-        List<PerusteValidationDto> virheelliset = perusteprojektiService.getVirheelliset();
+        List<PerusteValidationDto> virheelliset = perusteprojektiService.getVirheelliset(p);
         assertThat(virheelliset)
                 .isEmpty();
     }

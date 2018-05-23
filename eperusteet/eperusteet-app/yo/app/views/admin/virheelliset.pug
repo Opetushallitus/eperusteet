@@ -11,14 +11,20 @@ div.virheelliset-perusteet
           th(kaanna="'virheet'")
           th
       tbody
-        tr(ng-repeat="projekti in virheelliset | orderBy:'peruste.globalVersion.aikaleima':true")
+        tr(ng-repeat="validation in virheelliset | orderBy:'peruste.globalVersion.aikaleima':true")
           td
-            a(ng-href="{{ projekti.$$url }}" ng-bind="projekti.nimi | kaanna")
-          td(ng-bind="projekti.peruste.nimi | kaanna")
+            a(ng-href="{{ validation.perusteprojekti.$$url }}" ng-bind="validation.perusteprojekti.nimi | kaanna")
+          td(ng-bind="validation.perusteprojekti.peruste.nimi | kaanna")
           td
-            ul(ng-repeat="virhe in projekti.validation.infot")
+            ul(ng-repeat="virhe in validation.infot")
               li.virheviesti
                 span(ng-bind="virhe.viesti | kaanna")
-              li.virhesijainti(ng-repeat="nimi in virhe.nimet" kaanna="nimi")
+              ul
+                li.virhesijainti(ng-repeat="nimi in virhe.nimet" kaanna="nimi.teksti")
+
+    ep-pagination(ng-model="sivu"
+                  ng-change="haeVirheelliset"
+                  total-items="kokonaismaara"
+                  items-per-page="sivukoko")
 
   // button.btn.btn-primary(icon-role="refresh" kaanna="'virheelliset-hae'" ng-click="haeVirheelliset()")

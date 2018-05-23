@@ -1169,9 +1169,18 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
+
     @Override
     @Transactional(readOnly = true)
-    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId) {
+    @IgnorePerusteUpdateCheck
+    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId) {
+        return doGetTutkintonimikeKoodit(perusteId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
+    public List<TutkintonimikeKoodiDto> doGetTutkintonimikeKoodit(Long perusteId) {
         List<TutkintonimikeKoodi> koodit = tutkintonimikeKoodiRepository.findByPerusteId(perusteId);
         return mapper.mapAsList(koodit, TutkintonimikeKoodiDto.class);
     }
