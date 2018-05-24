@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -220,8 +221,10 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
         });
+
         ppTestUtils.julkaise(projekti.getId());
-        List<PerusteValidationDto> virheelliset = perusteprojektiService.getVirheelliset(p);
+        PageRequest preq = new PageRequest(0, 10);
+        Page<ValidationDto> virheelliset = perusteprojektiService.getVirheelliset(preq);
         assertThat(virheelliset)
                 .isEmpty();
     }
