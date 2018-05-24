@@ -156,7 +156,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         });
     }
 
-    @Tes
+    @Test
     public void testUpdateTilaKommentointiToLaadinta() {
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.KOMMENTOINTI, null, PerusteTila.LUONNOS);
         PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
