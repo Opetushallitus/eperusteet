@@ -1297,5 +1297,7 @@
     "koulutuksen-muodostuminen": "Koulutuksen muodostuminen",
     "et-ole-viela-tallentanut-koulutuksenosia": "Et ole vielä liittänyt kaikkia koulutuksen osia perusteeseen",
     "haetaan-koulutuksen-osia": "Haetaan koulutuksen osia...",
-    "haku-koulutuksen-nimi-placeholder": "Koulutuksen nimi"
+    "haku-koulutuksen-nimi-placeholder": "Koulutuksen nimi",
+
+    "tutkintonimikkeen-osaamisala-puuttuu-perusteesta": "Tutkintonimikkeessä määritetty osaamisala puuttuu perusteesta"
 }

@@ -882,6 +882,28 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         // Perusteen validointi
         if (!isValmisPohja && peruste.getSuoritustavat() != null && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
+            if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
+                Set<String> osaamisalat = peruste.getOsaamisalat()
+                        .stream()
+                        .map(Koodi::getUri)
+                        .collect(Collectors.toSet());
+                List<TutkintonimikeKoodiDto> tutkintonimikkeet = doGetTutkintonimikeKoodit(peruste.getId());
+
+                { // Tutkintonimikkeiden osaamisalat täytyvät olla perusteessa
+                    Set<String> tutkintonimikkeidenOsaamisalat = tutkintonimikkeet.stream()
+                            .map(TutkintonimikeKoodiDto::getOsaamisalaUri)
+                            .collect(Collectors.toSet());
+
+                    for (String nimikkeenOsaamisala : tutkintonimikkeidenOsaamisalat) {
+                        if (!osaamisalat.contains(nimikkeenOsaamisala)) {
+                            updateStatus.addStatus("tutkintonimikkeen-osaamisala-puuttuu-perusteesta");
+                            updateStatus.setVaihtoOk(false);
+                            break;
+                        }
+                    }
+                }
+            }
+
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
 
