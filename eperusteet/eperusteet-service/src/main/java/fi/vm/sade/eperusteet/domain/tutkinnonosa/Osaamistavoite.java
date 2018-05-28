@@ -114,29 +114,13 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
-    /**
-     * Jos osaamistavoiteesta on vain yksi kieliversio, määritellään se tässä.
-     */
-    private Kieli kieli;
+    private Kieli kieli; // Jos osaamistavoiteesta on vain yksi kieliversio, määritellään se tässä
 
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private Koodi koodi;
-
-    /**
-     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
-     */
-    @Column(name = "koodi_uri")
-    private String koodiUri;
-
-    /**
-     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
-     */
-    @Column(name = "koodi_arvo")
-    private String koodiArvo;
-
 
     public Osaamistavoite() {
     }
@@ -148,8 +132,6 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         this.tunnustaminen = ot.getTunnustaminen();
         this.kieli = ot.kieli;
         this.koodi = ot.koodi;
-        this.koodiArvo = ot.koodiArvo;
-        this.koodiUri = ot.koodiUri;
         this.arviointi = ot.getArviointi() == null ? null : new Arviointi(ot.getArviointi());
         this.tavoitteet = ot.tavoitteet;
 
@@ -218,37 +200,6 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
             throw new IllegalArgumentException("Osaamistavoite ei voi olla oma esitietonsa");
         }
         this.esitieto = esitieto;
-    }
-
-    @Deprecated
-    public String getKoodiUri() {
-        if (koodi != null) {
-            return koodi.getUri();
-        } else {
-            return koodiUri;
-        }
-    }
-
-    @Deprecated
-    public void setKoodiUri(String koodiUri) {
-        this.koodiUri = koodiUri;
-        if (koodi != null) {
-            koodi.setUri(koodiUri);
-        } else if (koodiUri != null) {
-            koodi = new Koodi();
-            koodi.setUri(koodiUri);
-            koodi.setKoodisto("tutkinnonosat");
-        }
-    }
-
-    @Deprecated
-    public String getKoodiArvo() {
-        return koodiArvo;
-    }
-
-    @Deprecated
-    public void setKoodiArvo(String koodiArvo) {
-        this.koodiArvo = koodiArvo;
     }
 
     public boolean structureEquals(Osaamistavoite other) {

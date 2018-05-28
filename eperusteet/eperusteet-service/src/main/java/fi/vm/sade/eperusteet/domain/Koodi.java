@@ -19,8 +19,7 @@ package fi.vm.sade.eperusteet.domain;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
-import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.hibernate.annotations.Immutable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,15 +29,15 @@ import lombok.Setter;
  * @author nkala
  */
 @Entity
-@Table(name = "koodi")
 @Immutable
+@Table(name = "koodi")
 @EqualsAndHashCode(of = {"koodisto", "uri", "versio"})
 public class Koodi implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Getter

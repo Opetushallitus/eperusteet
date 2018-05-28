@@ -60,8 +60,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
@@ -1676,6 +1674,4 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         return viiteDto;
     }
-
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
 }
