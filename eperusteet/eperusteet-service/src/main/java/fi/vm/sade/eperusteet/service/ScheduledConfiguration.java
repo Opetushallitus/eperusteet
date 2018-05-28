@@ -49,7 +49,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     @Autowired
     ThreadPoolTaskExecutor pool;
 
-    @Scheduled(cron = "0 3 * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     public void scheduledValidationTask() {
         task();
     }
