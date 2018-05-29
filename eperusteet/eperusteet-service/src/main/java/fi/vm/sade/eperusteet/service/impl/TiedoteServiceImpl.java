@@ -5,8 +5,11 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Tiedote;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
+import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TiedoteRepository;
+import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.TiedoteService;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
@@ -16,6 +19,9 @@ import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,18 +34,40 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TiedoteServiceImpl implements TiedoteService {
 
-    @Autowired
     @Dto
+    @Autowired
     private DtoMapper mapper;
 
     @Autowired
     private TiedoteRepository repository;
 
     @Autowired
+    private TiedoteRepositoryCustom tiedoteRepositoryCustom;
+
+    @Autowired
     private KayttajanTietoService kayttajat;
 
     @Autowired
     private PerusteRepository perusteRepository;
+
+    @Override
+    public Page<TiedoteDto> findBy(TiedoteQuery tquery) {
+        // Sisäiset tiedotteet vaativat kirjautumisen
+        if (!SecurityUtil.isAuthenticated()) {
+            tquery.setJulkinen(true);
+        }
+
+        PageRequest pageRequest = new PageRequest(
+                tquery.getSivu(),
+                tquery.getSivukoko(),
+                Sort.Direction.DESC,
+                "luotu"
+        );
+
+        Page<Tiedote> tiedotteet = tiedoteRepositoryCustom.findBy(pageRequest, tquery);
+
+        return new PageDto<>(tiedotteet, TiedoteDto.class, pageRequest, mapper);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -54,7 +82,7 @@ public class TiedoteServiceImpl implements TiedoteService {
             vainJulkiset = true;
         }
 
-        List<Tiedote> tiedotteet = null;
+        List<Tiedote> tiedotteet;
         if (perusteId == null) {
             tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen));
         }

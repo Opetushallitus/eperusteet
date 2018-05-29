@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
@@ -377,4 +378,10 @@ public abstract class TestUtils {
         return oppiaine;
     }
 
+    public static TiedoteDto createTiedote() {
+        TiedoteDto tiedoteDto = new TiedoteDto();
+        tiedoteDto.setOtsikko(lt(uniikkiString()));
+        tiedoteDto.setSisalto(lt(uniikkiString()));
+        return tiedoteDto;
+    }
 }

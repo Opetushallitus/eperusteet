@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -76,7 +77,7 @@ public interface PerusteprojektiService {
     Set<ProjektiTila> getTilat(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'TILANVAIHTO')")
-    TilaUpdateStatus updateTila(@P("id") final Long id, ProjektiTila tila, Date siirtymaPaattyy);
+    TilaUpdateStatus updateTila(@P("id") final Long id, ProjektiTila tila, TiedoteDto tiedoteDto);
 
     @PreAuthorize("isAuthenticated()")
     DiaarinumeroHakuDto onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero);

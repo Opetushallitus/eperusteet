@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.test.util;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -124,18 +125,20 @@ public class PerusteprojektiTestUtils {
     }
 
     public void asetaTila(Long projektiId, ProjektiTila tila) {
-        Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, tila, siirtyma);
+        TiedoteDto tiedote = null;
+        if (tila.equals(ProjektiTila.JULKAISTU)) {
+            tiedote = TestUtils.createTiedote();
+        }
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, tila, tiedote);
         assertThat(status.isVaihtoOk()).isTrue();
     }
 
     public void julkaise(Long projektiId) {
-        Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, siirtyma);
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, null);
         assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, siirtyma);
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, siirtyma);
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, TestUtils.createTiedote());
         assertThat(status.isVaihtoOk()).isTrue();
     }
 

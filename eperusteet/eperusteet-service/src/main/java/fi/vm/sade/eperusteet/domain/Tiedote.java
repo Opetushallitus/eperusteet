@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -32,6 +33,10 @@ public class Tiedote extends AbstractAuditedEntity {
     @Getter
     @Setter
     private boolean julkinen;
+
+    @Getter
+    @Setter
+    private boolean yleinen; // Jos tiedoite on tarkoitettu etusivulle
 
     @Getter
     @Setter

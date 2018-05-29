@@ -1,0 +1,52 @@
+// admin/tiedotteet.html
+.admin-tiedotteet
+  .hallintapainikkeet
+    button.btn.btn-default(icon-role='add', kaanna='uusi-tiedote', ng-click='edit()')
+  h2
+    span(kaanna="'tiedotteet'")
+    ohje(teksti='ohje-tiedotteet')
+  .tilarajaus
+    .tilarajaus-item
+      rajaus(model='search.term', placeholder='etsi-tiedotteista', callback='search.changed(value)')
+  p(ng-show='!tiedotteet || tiedotteet.length === 0', kaanna='ei-tiedotteita')
+  table.table.table-striped.admin-table(ng-show='tiedotteet.length > 0')
+    tr
+      th(width='20%')
+        a.action-link(ng-click="setOrderBy('luotu')")
+          span(kaanna="'luotu'")
+          span(ng-show="jarjestysTapa === 'luotu'")
+            span.glyphicon(ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'")
+      th(width='20%')
+        a.action-link(ng-click="setOrderBy('muokattu')")
+          span(kaanna="'muokattu'")
+          span(ng-show="jarjestysTapa === 'muokattu'")
+            span.glyphicon(ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'")
+      th
+        a.action-link(ng-click="setOrderBy('nimi')")
+          span(kaanna="'otsikko'")
+          span(ng-show="jarjestysTapa === 'nimi'")
+            span.glyphicon(ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'")
+      th(width='10%')
+        a.action-link(ng-click="setOrderBy('julkinen')")
+          span(kaanna="'julkinen-tiedote-header'")
+          span(ng-show="jarjestysTapa === 'julkinen'")
+            span.glyphicon(ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'")
+      th(width='10%')
+        a.action-link(ng-click="setOrderBy('yleinen')")
+          span(kaanna="'yleinen-tiedote-header'")
+          span(ng-show="jarjestysTapa === 'yleinen'")
+            span.glyphicon(ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'")
+      th(kaanna="'toiminto'", width='20%')
+    tr(ng-repeat='tiedote in filtered = (tiedotteet | filter:search.filterFn) | orderBy:orderFn:jarjestysOrder | startFrom:(paginate.current-1)*paginate.perPage | limitTo: paginate.perPage')
+      td {{tiedote.luotu | aikaleima}}
+      td {{tiedote.muokattu | aikaleima}}
+      td
+        a(ui-sref='root.tiedote({tiedoteId: tiedote.id})', ep-highlight='search.term', ng-bind='tiedote.otsikko | kaanna')
+      td.has-checkbox
+        span(icon-role='ok', ng-show='tiedote.julkinen')
+      td.has-checkbox
+        span(icon-role='ok', ng-show='tiedote.yleinen')
+      td
+        button.btn.btn-default.rivinappi(icon-role='edit', kaanna="'muokkaa'", ng-click='edit(tiedote)')
+        button.btn.btn-default.rivinappi(icon-role='remove', kaanna="'poista'", ng-click='delete(tiedote)')
+  ep-pagination(ng-model='paginate.current', total-items='filtered.length', items-per-page='paginate.perPage')

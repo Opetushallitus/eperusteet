@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
@@ -238,6 +239,10 @@ public class DtoMapperConfig {
                 .register();
         factory.classMap(LukiokurssiMuokkausDto.class, Lukiokurssi.class)
                 .exclude("oppiaineet")
+                .byDefault()
+                .register();
+        factory.classMap(Tiedote.class, TiedoteDto.class)
+                .fieldAToB("perusteprojekti.peruste", "peruste")
                 .byDefault()
                 .register();
         factory.classMap(Peruste.class, PerusteHakuInternalDto.class)

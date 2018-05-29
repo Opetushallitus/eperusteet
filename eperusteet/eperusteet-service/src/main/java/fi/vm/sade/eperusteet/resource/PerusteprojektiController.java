@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -41,8 +42,7 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
@@ -58,11 +58,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 /**
  * @author harrik
  */
+@Slf4j
 @Controller
 @RequestMapping("/perusteprojektit")
 @InternalApi
 public class PerusteprojektiController {
-    private static final Logger log = LoggerFactory.getLogger(PerusteprojektiController.class);
 
     @Autowired
     private EperusteetAudit audit;
@@ -84,8 +84,6 @@ public class PerusteprojektiController {
     public Page<PerusteprojektiKevytDto> getAllKevyt(PerusteprojektiQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
         Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
-        long id = Thread.currentThread().getId();
-        log.debug(String.valueOf(id));
         return page;
     }
 
@@ -156,11 +154,10 @@ public class PerusteprojektiController {
     public TilaUpdateStatus updateTila(
             @PathVariable("id") final long id,
             @PathVariable("tila") final String tila,
-            final Long siirtymaPaattyy) {
+            @RequestBody TiedoteDto tiedoteDto
+    ) {
         return audit.withAudit(LogMessage.builder(null, PERUSTEPROJEKTI, TILAMUUTOS).add("perusteprojektiId", id),
-                Void -> service.updateTila(id, ProjektiTila.of(tila), siirtymaPaattyy != null
-                        ? new Date(siirtymaPaattyy)
-                        : null));
+                Void -> service.updateTila(id, ProjektiTila.of(tila), tiedoteDto));
     }
 
     @RequestMapping(method = POST)
