@@ -14,31 +14,33 @@
  * European Union Public Licence for more details.
  */
 
-import * as angular from "angular";
-import _ from "lodash";
-
 export const nakyvyyslinkkiService = () => {
     let nakyvyys = false;
 
     return {
-        setNakyvyys(value: boolean) {
+        setNakyvyys(value: boolean, localStorageService) {
+            if (localStorageService != null && localStorageService.isSupported) {
+                localStorageService.set("nakyvyys", value);
+            }
             nakyvyys = value;
         },
 
-        getNakyvyys() {
-            return nakyvyys;
+        getNakyvyys(localStorageService) {
+            if (localStorageService != null && localStorageService.isSupported) {
+                return localStorageService.get("nakyvyys");
+            } else {
+                return nakyvyys;
+            }
         }
     };
 };
 
-export const nakyvyyslinkki = ($window, $rootScope, nakyvyyslinkkiService) => {
+export const nakyvyyslinkki = ($window, $rootScope, nakyvyyslinkkiService, localStorageService) => {
     return {
         template:
         `<button
             ng-show="projektissa"
-            style="margin: 0px"
             class="btn-link"
-            ng-cloak
             ng-click="vaihdaTila(!$naytaKaannosvirheet)"
             icon-role="flag">
             <span ng-show="$naytaKaannosvirheet" kaanna="'piilota-kaannosvirheet'"></span>
@@ -46,7 +48,7 @@ export const nakyvyyslinkki = ($window, $rootScope, nakyvyyslinkkiService) => {
         </button>`,
         restrict: "E",
         controller($scope, $state) {
-            $rootScope.$naytaKaannosvirheet = false;
+            $rootScope.$naytaKaannosvirheet = nakyvyyslinkkiService.getNakyvyys(localStorageService);;
             $scope.projektissa = false;
 
             $scope.$on("$stateChangeSuccess", () => {
@@ -55,7 +57,7 @@ export const nakyvyyslinkki = ($window, $rootScope, nakyvyyslinkkiService) => {
 
             $scope.vaihdaTila = (tila) => {
                 $scope.$naytaKaannosvirheet = tila;
-                nakyvyyslinkkiService.setNakyvyys(tila);
+                nakyvyyslinkkiService.setNakyvyys(tila, localStorageService);
                 $rootScope.$broadcast("naytaKaannosvirheet", tila);
             };
         }

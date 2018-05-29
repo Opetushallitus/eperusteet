@@ -74,18 +74,15 @@
                 <projektin-murupolku></projektin-murupolku>
 
                 <h1 ng-if="editEnabled">
-                    <span ng-show="isNew" kaanna>luonti-tekstikappale</span>
-                    <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
+                    <span ng-show="isNew" kaanna="'luonti-tekstikappale'"></span>
+                    <span ng-show="!isNew" kaanna="'muokkaus-tekstikappale'"></span>
                 </h1>
                 <h1 ng-if="!editEnabled">
-                    <span style="margin-right: 4px" ng-bind-html="tekstikappale.nimi | kaanna"></span>
+                    <span>{{tekstikappale.nimi | kaanna}}</span>
                     <lang-validator kentta="tekstikappale.nimi"></lang-validator>
-                    <valmiskaannos style="font-size: 20px" is-editing="editEnabled"
+                    <valmiskaannos is-editing="editEnabled"
                                    ng-model="editableTekstikappale"></valmiskaannos>
                 </h1>
-
-                <!-- <muut&#45;projektit perusteid="editableTekstikappale.id"></muut&#45;projektit> -->
-
                 <h5 ng-if="!editEnabled && tekstikappale.osaamisala">
                     <b>{{ 'osaamisalan-kuvaus' | kaanna }}</b>:
                     {{ tekstikappale.osaamisala.nimi | kaanna }} ({{ tekstikappale.osaamisala.arvo }})

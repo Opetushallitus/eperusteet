@@ -104,10 +104,12 @@ mixin kvliite()
       div(ng-form='projektinPerusteForm')
         .panel.panel-default.panel-clean
           .panel-heading
-            h3.panel-title(kaanna='') nimi
+            h3.panel-title(kaanna="'nimi'")
           .panel-body
             input.form-control(ng-show='editEnabled', ng-model='editablePeruste.nimi', slocalized='')
-            p(ng-hide='editEnabled') {{ peruste.nimi | kaanna }}
+            p(ng-hide='editEnabled')
+              span {{ peruste.nimi | kaanna }}
+              lang-validator(kentta="peruste.nimi")
         .panel.panel-default.panel-clean(ng-show="!isOpas")
           .panel-heading
             h3.panel-title(kaanna="'maarayksen-diaarinumero'")

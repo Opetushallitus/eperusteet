@@ -743,8 +743,8 @@
     "vahvista-poisto": "Vahvista poisto",
     "poistetaanko-koulutus": "Poistetaanko koulutuskoodi?",
     "puuttuvat-kieliversiot": "Puuttuvat kieliversiot",
-    "piilota-kaannosvirheet": "Piilota virheet",
-    "nayta-kaannosvirheet": "Näytä virheet",
+    "piilota-kaannosvirheet": "Piilota puuttuvat käänökset",
+    "nayta-kaannosvirheet": "Näytä puuttuvat käänökset",
 
     "projekti-perustiedot": "Perustiedot",
     "projekti-projektiryhma": "Perustetyöryhmä",

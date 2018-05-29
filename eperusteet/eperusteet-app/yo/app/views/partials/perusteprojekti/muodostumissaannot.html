@@ -25,8 +25,10 @@
                 </div>
             </div>
 
-            <h1 ng-show="!editoi && rakenne.muodostumisOtsikko">{{rakenne.muodostumisOtsikko.nimi|kaanna}}</h1>
-            <lang-validator ng-show="!editoi" kentta="rakenne.muodostumisOtsikko.nimi"></lang-validator>
+            <h1 ng-show="!editoi && rakenne.muodostumisOtsikko">
+                <span>{{rakenne.muodostumisOtsikko.nimi | kaanna}}</span>
+                <lang-validator ng-show="!editoi" kentta="rakenne.muodostumisOtsikko.nimi"></lang-validator>
+            </h1>
             <h1 ng-show="!editoi && !rakenne.muodostumisOtsikko" kaanna="vateConverter('tutkinnon-muodostuminen')"></h1>
             <h1 ng-show="editoi" kaanna="vateConverter('tutkinnon-muodostuminen-muokkaus')"></h1>
         </div>
