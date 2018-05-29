@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.service.OpintoalaService;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,8 +62,8 @@ public class OpintoalaServiceImpl implements OpintoalaService {
             return mapper.mapAsList(Arrays.asList(opintoalat), OpintoalaDto.class);
         }
         catch (HttpServerErrorException ex) {
-            return new ArrayList<>();
         }
+        return new ArrayList<>();
     }
 
 }

@@ -931,7 +931,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     if (PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
                         if (suoritustapa.getRakenne() != null && PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
                             validointi = PerusteenRakenne.validoiRyhma(
-                                    new PerusteenRakenne.Context(peruste.getOsaamisalat(), null),
+                                    new PerusteenRakenne.Context(peruste.getOsaamisalat(), doGetTutkintonimikeKoodit(peruste.getId())),
                                     suoritustapa.getRakenne(),
                                     KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                             if (!validointi.ongelmat.isEmpty()) {
