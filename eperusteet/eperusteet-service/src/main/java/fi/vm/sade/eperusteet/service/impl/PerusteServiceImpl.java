@@ -60,8 +60,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
@@ -1169,9 +1167,18 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
+
     @Override
     @Transactional(readOnly = true)
-    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId) {
+    @IgnorePerusteUpdateCheck
+    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId) {
+        return doGetTutkintonimikeKoodit(perusteId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
+    public List<TutkintonimikeKoodiDto> doGetTutkintonimikeKoodit(Long perusteId) {
         List<TutkintonimikeKoodi> koodit = tutkintonimikeKoodiRepository.findByPerusteId(perusteId);
         return mapper.mapAsList(koodit, TutkintonimikeKoodiDto.class);
     }
@@ -1667,6 +1674,4 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         return viiteDto;
     }
-
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
 }

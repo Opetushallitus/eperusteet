@@ -26,7 +26,6 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -114,44 +113,6 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private Koodi koodi;
 
-    /**
-     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
-     */
-    @Deprecated
-    @Column(name = "koodi_uri")
-    private String koodiUri;
-
-    /**
-     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
-     */
-    @Deprecated
-    @Column(name = "koodi_arvo")
-    private String koodiArvo;
-
-    @Deprecated
-    public String getKoodiUri() {
-        if (koodi != null) {
-            return koodi.getUri();
-        } else {
-            return koodiUri;
-        }
-    }
-
-    @Deprecated
-    public void setKoodiUri(String koodiUri) {
-        // NOP
-    }
-
-    @Deprecated
-    public String getKoodiArvo() {
-        return koodiArvo;
-    }
-
-    @Deprecated
-    public void setKoodiArvo(String koodiArvo) {
-        // NOP
-    }
-
     public OsaAlue() {
     }
 
@@ -161,8 +122,6 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         this.osaamistavoitteet = new ArrayList<>();
         this.valmaTelmaSisalto = null;
         this.koodi = o.koodi;
-        this.koodiUri = o.koodiUri;
-        this.koodiArvo = o.koodiArvo;
         this.kieli = o.kieli;
 
         IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
@@ -193,8 +152,6 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
             this.setNimi(updated.getNimi());
             this.setKuvaus(updated.getKuvaus());
             this.koodi = updated.getKoodi();
-            this.koodiUri = updated.getKoodiUri();
-            this.koodiArvo = updated.getKoodiArvo();
 
             if (updated.getOsaamistavoitteet() != null) {
                 this.setOsaamistavoitteet(mergeOsaamistavoitteet(this.getOsaamistavoitteet(), updated.getOsaamistavoitteet()));

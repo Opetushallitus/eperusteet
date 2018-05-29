@@ -130,13 +130,25 @@ angular
     )
     .controller("VirheellisetHallintaController", ($location, $scope, $state, Api, PerusteProjektiService) => {
         $scope.virheelliset = null;
+        $scope.sivu = 0;
+        $scope.sivukoko = 10;
+        $scope.kokonaismaara = 10;
         $scope.haeVirheelliset = async function() {
-            const projektit = await Api.all("perusteprojektit/virheelliset").getList();
-            $scope.virheelliset = _(projektit)
-                .map(pp => ({
-                    ...pp,
-                    $$url: PerusteProjektiService.getUrl(pp, pp.peruste)
-                }))
+            const virheelliset = await Api.all("perusteprojektit").get("virheelliset", {
+                sivu: $scope.sivu,
+                sivukoko: $scope.sivukoko,
+            });
+            $scope.sivu = virheelliset.sivu;
+            $scope.sivukoko = virheelliset.sivu;
+            $scope.kokonaismaara = virheelliset.kokonaismäärä;
+            $scope.virheelliset = _(virheelliset.data)
+                .map(validointi => {
+                    console.log(validointi.perusteprojekti, validointi.perusteprojekti.peruste);
+                    return {
+                        ...validointi,
+                        $$url: PerusteProjektiService.getUrl(validointi.perusteprojekti, validointi.perusteprojekti.peruste)
+                    };
+                })
                 .value();
         };
         $scope.haeVirheelliset();

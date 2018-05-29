@@ -61,6 +61,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -144,7 +145,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate.execute(transactionStatus -> {
                 Perusteprojekti pp = repo.findOne(projektiDto.getId());
                 assertTrue(status.isVaihtoOk());
-                assertNull(status.getInfot());
+                assertThat(status.getInfot()).isEmpty();
                 assertTrue(pp.getTila().equals(ProjektiTila.KOMMENTOINTI));
                 assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
                 for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -168,7 +169,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -195,7 +196,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.VIIMEISTELY));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -282,7 +283,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         Object object = transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -310,7 +311,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         Object object = transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.VALMIS));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -339,7 +340,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         Object object = transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.JULKAISTU));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.VALMIS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {

@@ -50,6 +50,10 @@ public class PerusteenRakenne {
         public TekstiPalanen ryhma;
         public Integer syvyys;
 
+        Ongelma() {
+
+        }
+
         Ongelma(String ongelma, TekstiPalanen ryhma, Integer syvyys) {
             this.ongelma = ongelma;
             this.ryhma = ryhma;

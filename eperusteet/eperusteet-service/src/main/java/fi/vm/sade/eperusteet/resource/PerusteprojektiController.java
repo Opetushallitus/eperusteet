@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
@@ -41,6 +42,7 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
@@ -56,6 +58,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 /**
  * @author harrik
  */
+@Slf4j
 @Controller
 @RequestMapping("/perusteprojektit")
 @InternalApi
@@ -93,8 +96,12 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/virheelliset", method = GET)
     @ResponseBody
     @Description("Lista julkaistujen perusteprojektien virheistä. Tätä käytetään helpottamaan perusteiden korjausta validointisääntöjen muuttuessa.")
-    public ResponseEntity<List<PerusteValidationDto>> getVirheelliset() {
-        return new ResponseEntity<>(service.getVirheelliset(), HttpStatus.OK);
+    public ResponseEntity<Page<ValidationDto>> getVirheelliset(
+            @RequestParam(defaultValue = "0") Integer sivu,
+            @RequestParam(defaultValue = "10") Integer sivukoko
+    ) {
+        PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 20));
+        return new ResponseEntity<>(service.getVirheelliset(p), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = GET)

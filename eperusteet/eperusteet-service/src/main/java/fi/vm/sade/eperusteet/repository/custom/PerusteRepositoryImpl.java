@@ -143,8 +143,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Expression<java.sql.Date> currentDate = cb.literal(new java.sql.Date(pq.getNykyinenAika()));
         final Set<Kieli> kieli;
         if (ObjectUtils.isEmpty(pq.getKieli())) {
-            kieli = new HashSet<>();
-            kieli.addAll(Arrays.asList(Kieli.values()));
+            kieli = new HashSet<>(Arrays.asList(Kieli.values()));
         } else {
             kieli = pq.getKieli().stream()
                     .map(Kieli::of)
@@ -172,8 +171,10 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
                 Join<TekstiPalanen, LokalisoituTeksti> tutkinnonOsanNimi = tutkinnonOsa
                         .join(TutkinnonOsa_.nimi)
                         .join(TekstiPalanen_.teksti);
+                Join<TutkinnonOsa, Koodi> koodi = tutkinnonOsa.join(TutkinnonOsa_.koodi);
+
                 Predicate tutkinnonOsaJulkaistu = cb.equal(tutkinnonOsa.get(TutkinnonOsa_.tila), PerusteTila.VALMIS);
-                Predicate tosanKoodiArvossa = cb.like(tutkinnonOsa.get(TutkinnonOsa_.koodiArvo), nimiLit);
+                Predicate tosanKoodiArvossa = cb.like(koodi.get(Koodi_.uri), nimiLit);
                 Predicate tosanNimessa = cb.like(cb.lower(tutkinnonOsanNimi.get(LokalisoituTeksti_.teksti)), nimiLit);
                 preds.add(cb.and(tutkinnonOsaJulkaistu, cb.or(tosanKoodiArvossa, tosanNimessa)));
             }
