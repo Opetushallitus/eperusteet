@@ -740,8 +740,8 @@
     "vahvista-poisto": "Vahvista poisto",
     "poistetaanko-koulutus": "Poistetaanko koulutuskoodi?",
     "puuttuvat-kieliversiot": "Puuttuvat kieliversiot",
-    "piilota-kaannosvirheet": "Piilota virheet",
-    "nayta-kaannosvirheet": "Näytä virheet",
+    "piilota-kaannosvirheet": "Piilota puuttuvat käänökset",
+    "nayta-kaannosvirheet": "Näytä puuttuvat käänökset",
 
     "projekti-perustiedot": "Perustiedot",
     "projekti-projektiryhma": "Perustetyöryhmä",
@@ -1250,7 +1250,7 @@
     "ryhman-osaamisala-tutkintonimike-jo-kaytossa": "Ryhmän osaamisala on jo käytössä",
     "ryhman-rooli-ei-salli-sisaltoa": "Ryhmän rooli ei salli sisältöä",
     "rakenteen-roolia-ei-voi-vaihtaa": "Rakenteen roolia ei voi vaihtaa",
-    
+
     "tutkinnon-osan-ammattitaitovaatukset-tekstina": "Tutkinnon osien ammattitaitovaatimukset täytyy laatia rakenteisena",
     "sisallon-muotoilu-saattaa-sisaltaa-virheita": "Sisältö saattaa sisältää muotoiluvirheitä",
     "sisalto-muotoiluvirheet-ohita": "Oletko varma, että sisältö on muotoiltu oikein? Jos on, paina OK.",

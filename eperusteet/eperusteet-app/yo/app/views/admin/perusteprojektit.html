@@ -94,9 +94,9 @@
             <td>
                 <a ng-if="pp.tila !== 'poistettu'"
                    ng-href="{{pp.$$url}}"
-                   ng-bind="pp.nimi"></a>
+                   ng-bind="pp.nimi || 'nimeton' | kaanna"></a>
                 <span ng-if="pp.tila === 'poistettu'"
-                      ng-bind="pp.nimi"></span>
+                      ng-bind="pp.nimi || 'nimeton' | kaanna"></span>
                 <span class="badge"
                       ng-if="pp.tyyppi === 'pohja'"
                       kaanna="'pohja'"></span>

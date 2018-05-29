@@ -49,7 +49,8 @@
                         <div class="col-sm-9">
                             <span class="glyphicon"
                                   ng-class="alue.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
-                            <span ng-show="!alue.$editing" class="otsikko">{{alue.nimi| kaanna}}</span>
+                            <span ng-show="!alue.$editing" class="otsikko">{{alue.nimi | kaanna}}</span>
+                            <lang-validator kentta="alue.nimi"></lang-validator>
                             <input ng-show="alue.$editing" class="osa-alue-nimi" ng-model="osaAlue.$editing.nimi"
                                    slocalized ng-click="$event.stopPropagation()" >
                             <span ng-hide="isEditingInProgress()">

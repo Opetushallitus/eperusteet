@@ -47,6 +47,7 @@
                 </td>
                 <td>
                     <a ng-href="{{urlGenerator({value: v})}}">{{ v.nimi || vateConverter('uusi-tutkinnonosa') | kaanna }}</a>
+                    <lang-validator kentta="v.nimi"></lang-validator>
                 </td>
                 <td ng-if="hasLaajuus">
                     <span ng-if="isNumber(v.laajuus)">
