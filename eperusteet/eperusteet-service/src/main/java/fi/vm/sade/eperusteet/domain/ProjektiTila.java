@@ -97,7 +97,7 @@ public enum ProjektiTila {
                 return s;
             }
         }
-        throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
+        throw new IllegalArgumentException(tila + " ei ole kelvollinen ProjektiTila");
     }
 
     public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {

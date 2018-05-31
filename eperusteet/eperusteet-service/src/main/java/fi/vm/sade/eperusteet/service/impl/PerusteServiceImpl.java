@@ -181,9 +181,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public List<PerusteExcelDto> getKooste() {
-        return perusteet.findAll().stream()
+        return perusteet.findAllPerusteet().stream()
                 .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
-                .filter(peruste -> KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen())
+                .filter(peruste -> peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen())
                 .map(peruste -> {
                     PerusteExcelDto result = mapper.map(peruste, PerusteExcelDto.class);
                     Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
