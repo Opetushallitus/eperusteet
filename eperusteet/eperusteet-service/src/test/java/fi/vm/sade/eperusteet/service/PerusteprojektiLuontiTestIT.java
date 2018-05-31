@@ -5,6 +5,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.opas.OpasDto;
+import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -48,6 +50,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiService perusteprojektiService;
+
+    @Autowired
+    private OpasService opasService;
 
     @Autowired
     private PerusteenOsaViiteService povService;
@@ -283,6 +288,20 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         ppTestUtils.asetaTila(perusteprojekti.getId(), ProjektiTila.VALMIS);
         perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
+    }
+
+    @Test
+    @Rollback
+    public void testKoosteenLuominen() {
+        OpasLuontiDto luontiDto = new OpasLuontiDto();
+        luontiDto.setNimi("Opas");
+        luontiDto.setRyhmaOid("abc");
+        OpasDto opas = opasService.save(luontiDto);
+
+        ppTestUtils.julkaise(opas.getId());
+
+        List<PerusteExcelDto> kooste = perusteService.getKooste();
+        assertThat(kooste).isEmpty();
     }
 
     @Test

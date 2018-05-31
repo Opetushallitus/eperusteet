@@ -859,9 +859,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
 
-        Set<String> tutkinnonOsienKoodit = new HashSet<>();
-        Peruste peruste = projekti.getPeruste();
-        boolean isValmisPohja = PerusteTyyppi.POHJA == peruste.getTyyppi() && (VALMIS == projekti.getTila() || PerusteTila.VALMIS == peruste.getTila());
+        if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
+            return updateStatus;
+        }
 
         // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
         if (tila != ProjektiTila.POISTETTU && tila != LAADINTA && tila != KOMMENTOINTI) {
@@ -869,19 +869,21 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
                         || nimi.getTeksti().get(kieli).isEmpty()) {
-                    if (projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
-                        updateStatus.addStatus("oppaan-nimea-ei-ole-kaikilla-kielilla");
-                    } else {
-                        updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
-                    }
+                    updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
                     updateStatus.setVaihtoOk(false);
                     break;
                 }
             }
         }
 
+        Set<String> tutkinnonOsienKoodit = new HashSet<>();
+        Peruste peruste = projekti.getPeruste();
+        boolean isValmisPohja = PerusteTyyppi.POHJA == peruste.getTyyppi() && (VALMIS == projekti.getTila() || PerusteTila.VALMIS == peruste.getTila());
+
         // Perusteen validointi
-        if (!isValmisPohja && peruste.getSuoritustavat() != null && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
+        if (!isValmisPohja
+                && peruste.getSuoritustavat() != null
+                && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
             if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
                 Set<String> osaamisalat = peruste.getOsaamisalat()
                         .stream()
