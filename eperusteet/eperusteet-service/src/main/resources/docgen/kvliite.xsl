@@ -236,8 +236,13 @@
     </xsl:template>
 
     <xsl:template match="div">
-        <fo:block font-size="10pt" line-height="1.25em"
-                  space-after="20pt" text-align="justify">
+        <fo:block font-size="10pt" line-height="1.25em" space-after="20pt">
+            <xsl:apply-templates select="*|text()"/>
+        </fo:block>
+    </xsl:template>
+
+    <xsl:template match="article">
+        <fo:block font-size="10pt" line-height="1.25em" space-after="20pt" text-align="justify">
             <xsl:apply-templates select="*|text()"/>
         </fo:block>
     </xsl:template>

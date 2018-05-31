@@ -156,7 +156,6 @@ public class DokumenttiController {
     @RequestMapping(value = "/{dokumenttiId}/tila", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<DokumenttiDto> query(@PathVariable("dokumenttiId") final Long dokumenttiId) {
-        LOG.debug("query {}", dokumenttiId);
         DokumenttiDto dto = service.query(dokumenttiId);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
