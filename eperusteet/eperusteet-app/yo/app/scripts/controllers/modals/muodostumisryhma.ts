@@ -32,7 +32,6 @@ angular
         Utils,
         peruste
     ) {
-        console.log(peruste);
         $scope.vanhempi = vanhempi;
         $scope.leikelauta = leikelauta;
         $scope.suoritustapa = suoritustapa;
@@ -45,7 +44,6 @@ angular
             })];
 
         if (!_.isEmpty(peruste.tutkintonimikkeet)) {
-            console.log(peruste);
             $scope.tutkintonimikkeet = _(peruste.tutkintonimikkeet)
                 // .filter(nimike => !nimike.osaamisalaUri && !nimike.tutkinnonOsaUri)
                 .value();
