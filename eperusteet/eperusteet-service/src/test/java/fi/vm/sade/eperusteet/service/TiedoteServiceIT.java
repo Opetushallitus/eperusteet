@@ -2,6 +2,8 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -137,7 +139,12 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         assertEquals(2, tiedotteet.size());
 
         PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(dto -> dto.setKoulutustyyppi(KoulutusTyyppi.AMMATTITUTKINTO.toString()));
-
+        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), dto -> {
+            SuoritustapaDto stDto = new SuoritustapaDto();
+            stDto.setLaajuusYksikko(LaajuusYksikko.OSAAMISPISTE);
+            stDto.setSuoritustapakoodi(Suoritustapakoodi.REFORMI);
+            dto.getSuoritustavat().add(stDto);
+        });
         assertEquals(2, tiedotteet.size());
         Long id = tiedotteet.iterator().next().getId();
 

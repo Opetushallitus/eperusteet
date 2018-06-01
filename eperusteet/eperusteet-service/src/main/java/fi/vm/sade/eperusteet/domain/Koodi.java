@@ -53,4 +53,13 @@ public class Koodi implements Serializable {
     @Getter
     @Setter
     private Long versio; // Oletuksena null milloin käytetään uusinta koodiston versiota
+
+    public Koodi() {
+    }
+
+    public Koodi(String uri, String koodisto) {
+        this.uri = uri;
+        this.koodisto = koodisto;
+        this.versio = null;
+    }
 }

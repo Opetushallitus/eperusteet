@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
-import fi.vm.sade.eperusteet.service.util.Util;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +82,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testPerusteprojektiaEiVoiJulkaistaIlmanDiaaria() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("zäääää"));
             peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
@@ -160,7 +161,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testDiaarinumerollaHaku() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setDiaarinumero("OPH-12345-1234");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
@@ -197,7 +200,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
                 .hasFieldOrPropertyWithValue("id", perusteDto.getId());
 
         // Käytetään uudempaa voimassa olevaa perustetta jos useampia
-        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setDiaarinumero("OPH-12345-1234");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
@@ -220,7 +225,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testVirheellistenPerusteprojektienListaus() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
         });
 
@@ -234,7 +241,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testPerusteprojektiHakuNimella() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("zäääää"));
             peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
@@ -242,7 +251,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
         ppTestUtils.julkaise(projekti.getId());
 
-        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("xäöäöäöä"));
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
@@ -277,6 +288,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Rollback
     public void testLuonnissaOlevatEiHakuun() {
         PerusteprojektiDto perusteprojekti = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto pp) -> {
+            pp.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
         });
         PerusteDto perusteDto = ppTestUtils.initPeruste(perusteprojekti.getPeruste().getIdLong());
         PerusteQuery pquery = new PerusteQuery();
@@ -300,8 +312,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
         ppTestUtils.julkaise(opas.getId());
 
-        List<PerusteExcelDto> kooste = perusteService.getKooste();
-        assertThat(kooste).isEmpty();
+        List<PerusteKoosteDto> kooste = perusteService.getKooste();assertThat(kooste).isEmpty();
     }
 
     @Test
@@ -466,7 +477,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
             PerusteenOsaViiteDto.Matala c = perusteService.addSisaltoLapsi(perusteDto.getId(), b.getId(), new PerusteenOsaViiteDto.Matala(tekstiKappale2));
             em.flush();
             TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
-            assertThat(status.isVaihtoOk()).isTrue();
+            assertThat(status.getInfot())
+                    .extracting(TilaUpdateStatus.Status::getViesti)
+                    .contains("rakenteen-validointi-virhe");
         }
     }
 

@@ -30,7 +30,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaExcelDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKoosteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
@@ -180,19 +180,36 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public List<PerusteExcelDto> getKooste() {
+    public List<PerusteKoosteDto> getKooste() {
         return perusteet.findAllPerusteet().stream()
                 .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
                 .filter(peruste -> peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen())
                 .map(peruste -> {
-                    PerusteExcelDto result = mapper.map(peruste, PerusteExcelDto.class);
-                    Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
+                    PerusteKoosteDto result = mapper.map(peruste, PerusteKoosteDto.class);
+                    Set<Koodi> tutkinnonOsat = new LinkedHashSet<>();
                     for (Suoritustapa st : peruste.getSuoritustavat()) {
                         for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
-                            tutkinnonOsat.add(t.getTutkinnonOsa());
+                            tutkinnonOsat.add(t.getTutkinnonOsa().getKoodi());
                         }
                     }
-                    result.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaExcelDto.class));
+
+                    result.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, KoodiDto.class));
+
+                    if (peruste.getOsaamisalat() != null && !peruste.getOsaamisalat().isEmpty()) {
+                        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = getTutkintonimikeKoodit(peruste.getId());
+                        result.setOsaamisalat(peruste.getOsaamisalat().stream()
+                                .map(osaamisala -> {
+                                    KoosteenOsaamisalaDto oa = new KoosteenOsaamisalaDto();
+                                    oa.setKoodi(mapper.map(osaamisala, KoodiDto.class));
+                                    oa.setTutkinnonOsat(tutkintonimikeKoodit.stream()
+                                            .filter(tk -> Objects.equals(tk.getOsaamisalaUri(), osaamisala.getUri()))
+                                            .filter(tk -> Objects.nonNull(tk.getTutkinnonOsaUri()))
+                                            .map(tk -> mapper.map(new Koodi("tutkinnonosat", tk.getTutkinnonOsaUri()), KoodiDto.class))
+                                            .collect(Collectors.toList()));
+                                    return oa;
+                                })
+                                .collect(Collectors.toList()));
+                    }
                     return result;
                 })
                 .collect(Collectors.toList());

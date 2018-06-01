@@ -80,7 +80,7 @@ public interface PerusteService {
     Page<PerusteHakuDto> getAll(PageRequest page, String kieli);
 
     @PreAuthorize("permitAll()")
-    List<PerusteExcelDto> getKooste();
+    List<PerusteKoosteDto> getKooste();
 
     @PreAuthorize("permitAll()")
     List<PerusteDto> getUusimmat();

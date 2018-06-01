@@ -26,7 +26,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class TutkinnonOsaExcelDto {
+public class TutkinnonOsaKoosteDto {
     private LokalisoituTekstiDto nimi;
     private String koodiArvo;
 }

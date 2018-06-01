@@ -80,7 +80,7 @@ public class PerusteController {
     @RequestMapping(value = "/kooste", method = GET)
     @ResponseBody
     @ApiIgnore
-    public ResponseEntity<List<PerusteExcelDto>> getKooste() {
+    public ResponseEntity<List<PerusteKoosteDto>> getKooste() {
         return new ResponseEntity<>(service.getKooste(), HttpStatus.OK);
     }
 

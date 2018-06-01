@@ -47,7 +47,7 @@ public class PerusteprojektiTestUtils {
     public PerusteprojektiDto createPerusteprojekti(Consumer<PerusteprojektiLuontiDto> withPerusteprojekti) {
         PerusteprojektiLuontiDto result = new PerusteprojektiLuontiDto();
         result.setNimi(TestUtils.uniikkiString());
-        result.setKoulutustyyppi("koulutustyyppi_15");
+        result.setKoulutustyyppi(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
         result.setLaajuusYksikko(LaajuusYksikko.OSAAMISPISTE);
         result.setReforminMukainen(true);
         result.setTyyppi(PerusteTyyppi.NORMAALI);
