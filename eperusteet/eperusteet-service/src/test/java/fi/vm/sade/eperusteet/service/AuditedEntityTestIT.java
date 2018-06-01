@@ -155,7 +155,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
         List<AmmattitaitovaatimusDto> ammattitaitovaatimukset = new ArrayList<>();
         AmmattitaitovaatimusDto ammattitaitovaatimusDto = new AmmattitaitovaatimusDto();
-        ammattitaitovaatimusDto.setSelite( new LokalisoituTekstiDto((Collections.singletonMap("fi", "AmmattitaitovaatimusV2 selite"))) );
+        ammattitaitovaatimusDto.setSelite( new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimus selite"))) );
         ammattitaitovaatimusDto.setAmmattitaitovaatimusKoodi("vaatimuskoodi");
         ammattitaitovaatimusDto.setJarjestys(0);
 

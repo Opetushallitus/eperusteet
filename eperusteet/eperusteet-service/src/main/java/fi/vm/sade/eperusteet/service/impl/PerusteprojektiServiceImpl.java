@@ -849,7 +849,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                         // FIXME (Ilmeisesti pitää pystyä)
                         // Ammatitaitovaatimuksia ei voi julkaista enää tekstimuodossa
-//                        if (suoritustapa.getSuoritustapakoodi().equals(Suoritustapakoodi.REFORMI)) {
+//                        if (suoritustapa.getSuoritustapakoodi().equals(Suoritustapakoodi.TUTKINNONOSA_2018)) {
 //                            for (TutkinnonOsaViite tutkinnonOsaViite : suoritustapa.getTutkinnonOsat()) {
 //                                LokalisoituTekstiDto nimi = mapper.map(tutkinnonOsaViite.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class);
 //                                TekstiPalanen avTekstina = tutkinnonOsaViite.getTutkinnonOsa().getAmmattitaitovaatimukset();

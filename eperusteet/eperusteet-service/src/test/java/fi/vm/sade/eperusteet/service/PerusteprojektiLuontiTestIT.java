@@ -36,8 +36,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
-import org.assertj.core.data.Index;
-
 import javax.persistence.EntityManager;
 
 
@@ -514,12 +512,12 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong());
         TutkinnonOsaViiteDto tovDto = ppTestUtils.addTutkinnonOsa(perusteDto.getId(), tov -> {
-            tov.getTutkinnonOsaDto().setTyyppi(TutkinnonOsaTyyppi.REFORMI);
-            tov.setTyyppi(TutkinnonOsaTyyppi.REFORMI);
+            tov.getTutkinnonOsaDto().setTyyppi(TutkinnonOsaTyyppi.TUTKINNONOSA_2018);
+            tov.setTyyppi(TutkinnonOsaTyyppi.TUTKINNONOSA_2018);
             tov.getTutkinnonOsaDto().setAmmattitaitovaatimukset(TestUtils.lt("ammatitaitovaatimukset tekstinä"));
         });
 
-        assertThat(tovDto.getTyyppi()).isEqualTo(TutkinnonOsaTyyppi.REFORMI);
+        assertThat(tovDto.getTyyppi()).isEqualTo(TutkinnonOsaTyyppi.TUTKINNONOSA_2018);
     }
 
 }

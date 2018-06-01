@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.domain.reformi;
+package fi.vm.sade.eperusteet.domain.tutkinnonosa_2018;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Entity
 @Audited
 @Table(name = "ammattitaitovaatimus_v2")
-public class AmmattitaitovaatimusV2 {
+public class Ammattitaitovaatimus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -49,7 +49,7 @@ public class AmmattitaitovaatimusV2 {
     @Column(updatable = false)
     private UUID tunniste;
 
-    public AmmattitaitovaatimusV2() {
+    public Ammattitaitovaatimus() {
         this.tunniste = this.tunniste != null ? this.tunniste : UUID.randomUUID();
     }
 

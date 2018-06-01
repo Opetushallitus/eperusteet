@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.domain.reformi;
+package fi.vm.sade.eperusteet.domain.tutkinnonosa_2018;
 
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;

@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.domain.reformi;
+package fi.vm.sade.eperusteet.domain.tutkinnonosa_2018;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -8,7 +8,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "tutkinnonosan_ammattitaitovaatimukset")
@@ -42,6 +41,6 @@ public class TutkinnonOsanAmmattitaitovaatimukset {
 //    @OrderColumn(name = "ammattitaitovaatimus_order")
 //    @Getter
 //    @Setter
-//    private List<AmmattitaitovaatimusV2> ammattitaitovaatimukset;
+//    private List<Ammattitaitovaatimus> ammattitaitovaatimukset;
 
 }
