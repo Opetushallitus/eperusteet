@@ -117,6 +117,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         addAmmatillinenOsaaminen(docBase);
         addVirallisuus(docBase);
         addTutkintotodistuksenSaanti(docBase);
+        addSelventavaHuomautus(docBase);
     }
 
     private void addHeader(KVLiiteDokumentti docBase) {
@@ -203,12 +204,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         KVLiiteJulkinenDto kvLiiteJulkinenDto = docBase.getKvLiiteJulkinenDto();
         StringBuilder voimaantulopaivaJaDiaari = new StringBuilder();
 
-        SimpleDateFormat dateFormat;
-        if (docBase.getKieli().equals(Kieli.EN)) {
-            dateFormat = new SimpleDateFormat("d MMMM yyyy");
-        } else {
-            dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         if (kvLiiteJulkinenDto.getVoimassaoloAlkaa() != null) {
             voimaantulopaivaJaDiaari.append(messages
@@ -564,6 +560,53 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             DokumenttiUtils.addTeksti(docBase,
                     DokumenttiUtils.getTextString(docBase,
                             kvLiiteJulkinenDto.getLisatietoja()), "div", td);
+        }
+    }
+
+    private void addSelventavaHuomautus(KVLiiteDokumentti docBase) {
+        // Selventävä huomautus
+        {
+            Element article = docBase.getDocument().createElement("article");
+
+            // Otsikko
+            {
+                Element h6 = docBase.getDocument().createElement("h6");
+                Element otsikkoEl = docBase.getDocument().createElement("strong");
+                otsikkoEl.setTextContent(messages.translate("docgen.kvliite.selventava-huomautus-otsikko", docBase.getKieli()));
+                h6.appendChild(otsikkoEl);
+                article.appendChild(h6);
+            }
+
+            // Teksti
+            {
+                Element p = docBase.getDocument().createElement("p");
+                p.setTextContent(messages.translate("docgen.kvliite.selventava-huomautus-teksti", docBase.getKieli()));
+                article.appendChild(p);
+            }
+
+            // Lisätietoa
+            {
+                Element p = docBase.getDocument().createElement("p");
+                p.setTextContent(messages.translate("docgen.kvliite.selventava-huomautus-lisatietoja", docBase.getKieli()) + " ");
+
+                Element a = docBase.getDocument().createElement("a");
+                String linkki = messages.translate("docgen.kvliite.selventava-huomautus-lisatietoja-linkki", docBase.getKieli());
+                a.setTextContent(linkki);
+                a.setAttribute("href", linkki);
+
+                p.appendChild(a);
+
+                article.appendChild(p);
+            }
+
+            // Allekirjoitus
+            {
+                Element p = docBase.getDocument().createElement("p");
+                p.setTextContent(messages.translate("docgen.kvliite.selventava-huomautus-allekirjoitus", docBase.getKieli()));
+                article.appendChild(p);
+            }
+
+            docBase.getBodyElement().appendChild(article);
         }
     }
 }
