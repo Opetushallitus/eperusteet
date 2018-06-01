@@ -2,8 +2,6 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -11,11 +9,9 @@ import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import java.util.Date;
 import java.util.List;
-import javax.transaction.Transactional;
 
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,7 +29,6 @@ import static org.junit.Assert.assertNotNull;
  * @author mikkom
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@Transactional
 public class TiedoteServiceIT extends AbstractIntegrationTest {
     @Autowired
     private TiedoteService tiedoteService;
@@ -137,26 +132,22 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testDtoConversion() {
         List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L);
         assertEquals(2, tiedotteet.size());
 
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
-        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), dto -> {
-            SuoritustapaDto stDto = new SuoritustapaDto();
-            stDto.setLaajuusYksikko(LaajuusYksikko.OSAAMISPISTE);
-            stDto.setSuoritustapakoodi(Suoritustapakoodi.REFORMI);
-            dto.getSuoritustavat().add(stDto);
-        });
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(dto -> dto.setKoulutustyyppi(KoulutusTyyppi.AMMATTITUTKINTO.toString()));
 
         assertEquals(2, tiedotteet.size());
         Long id = tiedotteet.iterator().next().getId();
 
+        // Liitä perusteprojekti
         TiedoteDto tiedoteDto = tiedoteService.getTiedote(id);
         tiedoteDto.setPerusteprojekti(new EntityReference(projekti.getId()));
-        tiedoteDto = tiedoteService.updateTiedote(tiedoteDto);
+        tiedoteService.updateTiedote(tiedoteDto);
 
+        // Koitetaan poistaa suoritustapa tiedotteen kautta
+        tiedoteDto = tiedoteService.getTiedote(id);
         tiedoteDto.getPeruste().getSuoritustavat().clear();
         tiedoteDto = tiedoteService.updateTiedote(tiedoteDto);
 
