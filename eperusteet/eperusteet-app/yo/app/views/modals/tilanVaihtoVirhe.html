@@ -27,6 +27,12 @@
                         {{ongelma.ongelma | kaanna}}
                     </li>
                 </ul>
+                <p ng-if="info.kielet" kaanna="'puuttuvat-kaannokset-kielilla'"></p>
+                <ul ng-if="info.kielet">
+                    <li ng-repeat="kieli in info.kielet">
+                        <span kaanna="kieli"></span>
+                    </li>
+                </ul>
             </td>
         </tr>
     </table>
