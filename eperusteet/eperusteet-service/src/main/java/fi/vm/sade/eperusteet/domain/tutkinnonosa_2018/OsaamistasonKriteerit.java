@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "tutkinnonosa_2018.OsaamistasonKriteerit")
 @Audited
-@Table(name = "osaamistason_kriteerit")
+@Table(name = "osaamistason_kriteerit", schema = "tutkinnonosa_2018")
 public class OsaamistasonKriteerit {
 
     @Id
@@ -31,16 +31,18 @@ public class OsaamistasonKriteerit {
     @Setter
     private Osaamistaso osaamistaso;
 
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @OrderColumn
-    @JoinTable(name = "osaamistasonkriteerit_tekstipalanen",
-            joinColumns = @JoinColumn(name = "osaamistasonkriteerit_id"),
-            inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @BatchSize(size = 25)
-    @Getter
-    private List<TekstiPalanen> kriteerit = new ArrayList<>();
+//    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+//    @OrderColumn
+//    @JoinTable(
+//            name = "osaamistasonkriteerit_tekstipalanen",
+//            schema = "tutkinnonosa_2018",
+//            joinColumns = @JoinColumn(name = "osaamistasonkriteerit_id"),
+//            inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
+//    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+//    @BatchSize(size = 25)
+//    @Getter
+//    private List<TekstiPalanen> kriteerit = new ArrayList<>();
 
     @Getter
     @Column(updatable = false)
@@ -50,9 +52,9 @@ public class OsaamistasonKriteerit {
         this.tunniste = this.tunniste != null ? this.tunniste : UUID.randomUUID();
     }
 
-    public void setKriteerit(List<TekstiPalanen> kriteerit) {
-        this.kriteerit.clear();
-        this.kriteerit.addAll(kriteerit);
-    }
+//    public void setKriteerit(List<TekstiPalanen> kriteerit) {
+//        this.kriteerit.clear();
+//        this.kriteerit.addAll(kriteerit);
+//    }
 
 }

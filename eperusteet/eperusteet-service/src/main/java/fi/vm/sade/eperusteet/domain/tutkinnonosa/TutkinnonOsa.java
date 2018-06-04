@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa_2018.Ammattitaitovaatimus;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -30,6 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -45,15 +47,15 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
-    @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen tavoitteet;
+    @Getter
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private TutkinnonOsaTyyppi tyyppi = TutkinnonOsaTyyppi.NORMAALI;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen ammattitaitovaatimukset;
+    private TekstiPalanen kuvaus;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
@@ -63,7 +65,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen kuvaus;
+    private TekstiPalanen tavoitteet;
 
     @Getter
     @Setter
@@ -71,19 +73,17 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private Koodi koodi;
 
-    /**
-     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
-     */
-    @Deprecated
-    @Column(name = "koodi_uri")
-    private String koodiUri;
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinTable(schema = "tutkinnonosa_2018")
+    @Getter
+    @Setter
+    @OrderColumn(name = "jarjestys")
+    private List<Ammattitaitovaatimus> ammattitaitovaatimukset2018 = new ArrayList<>();
 
-    /**
-     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
-     */
-    @Deprecated
-    @Column(name = "koodi_arvo")
-    private String koodiArvo;
+    @ValidHtml
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen ammattitaitovaatimukset;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "ammattitaitovaatimuksenkohdealue_tutkinnonosa",
@@ -100,15 +100,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Getter
     @Setter
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "tutkinnonosa_tutkinnonosa_kevyttekstikappale",
-               joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
-               inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
-    @OrderColumn(name = "kevyttekstikappaleet_order")
-    private List<KevytTekstiKappale> vapaatTekstit;
-
-    @Getter
-    @Setter
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_tutkinnonosa_osaalue",
                joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
                inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
@@ -116,15 +107,33 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     // TUTKE2:n mukainen osa-alue
     private List<OsaAlue> osaAlueet;
 
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
+    @Deprecated
+    @Column(name = "koodi_uri")
+    private String koodiUri;
+
+    /**
+     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
+     */
+    @Deprecated
+    @Column(name = "koodi_arvo")
+    private String koodiArvo;
+
     @Getter
     @Setter
     @OneToOne(cascade = {CascadeType.ALL})
     private ValmaTelmaSisalto valmaTelmaSisalto;
 
     @Getter
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private TutkinnonOsaTyyppi tyyppi = TutkinnonOsaTyyppi.NORMAALI;
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "tutkinnonosa_tutkinnonosa_kevyttekstikappale",
+            joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
+            inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
+    @OrderColumn(name = "kevyttekstikappaleet_order")
+    private List<KevytTekstiKappale> vapaatTekstit;
 
     public TutkinnonOsa() {
     }
@@ -132,6 +141,45 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     public TutkinnonOsa(TutkinnonOsa other) {
         super(other);
         copyState(other);
+    }
+
+    @PrePersist
+    void prePersist() {
+        if (this.getTyyppi() == TutkinnonOsaTyyppi.TUTKINNONOSA_2018) {
+            this.arviointi = null;
+            this.ammattitaitovaatimukset = null;
+            this.arviointi = null;
+            this.osaAlueet = null;
+            this.valmaTelmaSisalto = null;
+        }
+    }
+
+    public TekstiPalanen getKuvaus() {
+        return kuvaus;
+    }
+
+    public void setKuvaus(TekstiPalanen kuvaus) {
+        this.kuvaus = kuvaus;
+    }
+
+    public TekstiPalanen getTavoitteet() {
+        return tavoitteet;
+    }
+
+    public void setTavoitteet(TekstiPalanen tavoitteet) {
+        this.tavoitteet = tavoitteet;
+    }
+
+    public TekstiPalanen getAmmattitaidonOsoittamistavat() {
+        return ammattitaidonOsoittamistavat;
+    }
+
+    public void setAmmattitaidonOsoittamistavat(TekstiPalanen ammattitaidonOsoittamistavat) {
+        this.ammattitaidonOsoittamistavat = ammattitaidonOsoittamistavat;
+    }
+
+    public void setTyyppi(TutkinnonOsaTyyppi tyyppi) {
+        this.tyyppi = tyyppi == null ? TutkinnonOsaTyyppi.NORMAALI : tyyppi;
     }
 
     @Override
@@ -144,60 +192,12 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         return new TutkinnonOsa(this);
     }
 
-    public TekstiPalanen getTavoitteet() {
-        return tavoitteet;
-    }
-
-    public void setTavoitteet(TekstiPalanen tavoitteet) {
-        this.tavoitteet = tavoitteet;
-    }
-
     public TekstiPalanen getAmmattitaitovaatimukset() {
         return ammattitaitovaatimukset;
     }
 
     public void setAmmattitaitovaatimukset(TekstiPalanen ammattitaitovaatimukset) {
         this.ammattitaitovaatimukset = ammattitaitovaatimukset;
-    }
-
-    public TekstiPalanen getAmmattitaidonOsoittamistavat() {
-        return ammattitaidonOsoittamistavat;
-    }
-
-    public void setAmmattitaidonOsoittamistavat(TekstiPalanen ammattitaidonOsoittamistavat) {
-        this.ammattitaidonOsoittamistavat = ammattitaidonOsoittamistavat;
-    }
-
-    public TekstiPalanen getKuvaus() {
-        return kuvaus;
-    }
-
-    public void setKuvaus(TekstiPalanen kuvaus) {
-        this.kuvaus = kuvaus;
-    }
-
-    @Deprecated
-    public String getKoodiUri() {
-        if (koodi != null) {
-            return koodi.getUri();
-        } else {
-            return koodiUri;
-        }
-    }
-
-    @Deprecated
-    public void setKoodiUri(String koodiUri) {
-        // NOP
-    }
-
-    @Deprecated
-    public String getKoodiArvo() {
-        return koodiArvo;
-    }
-
-    @Deprecated
-    public void setKoodiArvo(String koodiArvo) {
-        // NOP
     }
 
     public Arviointi getArviointi() {
@@ -260,8 +260,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
             this.setTavoitteet(other.getTavoitteet());
             this.setKoodi(other.getKoodi());
-            this.setKoodiUri(other.getKoodiUri());
-            this.setKoodiArvo(other.getKoodiArvo());
             this.setTyyppi(other.getTyyppi());
             this.setKuvaus(other.getKuvaus());
             this.setValmaTelmaSisalto(other.getValmaTelmaSisalto());
@@ -280,22 +278,22 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     private void copyState(TutkinnonOsa other) {
+        this.koodi = other.getKoodi();
+        this.kuvaus = other.getKuvaus();
+        this.tyyppi = other.getTyyppi();
+        this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
+        this.tavoitteet = other.getTavoitteet();
         this.arviointi = other.getArviointi() == null ? null : new Arviointi(other.getArviointi());
         this.ammattitaitovaatimukset = other.getAmmattitaitovaatimukset();
+        this.koodiUri = other.getKoodiUri();
+        this.koodiArvo = other.getKoodiArvo();
         this.ammattitaitovaatimuksetLista = other.getAmmattitaitovaatimuksetLista().stream()
                 .map(AmmattitaitovaatimuksenKohdealue::new)
                 .collect(Collectors.toList());
-        this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
-        this.tavoitteet = other.getTavoitteet();
-        this.koodi = other.getKoodi();
-        this.koodiUri = other.getKoodiUri();
-        this.koodiArvo = other.getKoodiArvo();
-        this.tyyppi = other.getTyyppi();
-        this.kuvaus = other.getKuvaus();
         if (other.getValmaTelmaSisalto() != null) {
             this.valmaTelmaSisalto = new ValmaTelmaSisalto(other.getValmaTelmaSisalto());
         }
-        if (TutkinnonOsaTyyppi.isTutke(this.tyyppi) && other.getOsaAlueet() != null) {
+        if (TutkinnonOsaTyyppi.isTutke(this.getTyyppi()) && other.getOsaAlueet() != null) {
             this.osaAlueet = new ArrayList<>();
             for (OsaAlue o : other.getOsaAlueet()) {
                 this.osaAlueet.add(new OsaAlue(o));
@@ -327,7 +325,28 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         return tempList;
     }
 
-    public void setTyyppi(TutkinnonOsaTyyppi tyyppi) {
-        this.tyyppi = tyyppi == null ? TutkinnonOsaTyyppi.NORMAALI : tyyppi;
+    @Deprecated
+    public String getKoodiUri() {
+        if (this.getKoodi() != null) {
+            return this.getKoodi().getUri();
+        } else {
+            return koodiUri;
+        }
     }
+
+    @Deprecated
+    public void setKoodiUri(String koodiUri) {
+        // NOP
+    }
+
+    @Deprecated
+    public String getKoodiArvo() {
+        return koodiArvo;
+    }
+
+    @Deprecated
+    public void setKoodiArvo(String koodiArvo) {
+        // NOP
+    }
+
 }

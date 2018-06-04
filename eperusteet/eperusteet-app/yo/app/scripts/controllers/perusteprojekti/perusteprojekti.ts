@@ -219,7 +219,7 @@ angular
             })
             .state("root.perusteprojekti.suoritustapa.tutkinnonosa", {
                 url: "/tutkinnonosa/{tutkinnonOsaViiteId}?{versio?:int}",
-                template: require("views/partials/muokkaus/tutkinnonosa.html"),
+                template: require("views/partials/muokkaus/tutkinnonosa.pug"),
                 controller: "muokkausTutkinnonosaCtrl",
                 onEnter: PerusteProjektiSivunavi => {
                     PerusteProjektiSivunavi.setVisible();

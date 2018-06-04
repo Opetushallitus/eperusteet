@@ -15,9 +15,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "tutkinnonosa_2018.Ammattitaitovaatimus")
 @Audited
-@Table(name = "ammattitaitovaatimus_v2")
+@Table(name = "ammattitaitovaatimus", schema = "tutkinnonosa_2018")
 public class Ammattitaitovaatimus {
 
     @Id
@@ -40,10 +40,10 @@ public class Ammattitaitovaatimus {
     @Setter
     private ArviointiAsteikko arviointiAsteikko;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @Getter
-    @BatchSize(size = 10)
-    private Set<OsaamistasonKriteerit> osaamistasonKriteerit = new HashSet<>();
+//    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+//    @Getter
+//    @BatchSize(size = 10)
+//    private Set<OsaamistasonKriteerit> osaamistasonKriteerit = new HashSet<>();
 
     @Getter
     @Column(updatable = false)

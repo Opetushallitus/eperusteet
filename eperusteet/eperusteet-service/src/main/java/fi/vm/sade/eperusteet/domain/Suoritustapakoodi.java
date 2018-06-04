@@ -25,7 +25,7 @@ public enum Suoritustapakoodi {
 
     OPS("ops"),
     NAYTTO("naytto"),
-    REFORMI("tutkinnonosa_2018"),
+    REFORMI("reformi"),
     PERUSOPETUS("perusopetus"),
     LISAOPETUS("lisaopetus"),
     VARHAISKASVATUS("varhaiskasvatus"),

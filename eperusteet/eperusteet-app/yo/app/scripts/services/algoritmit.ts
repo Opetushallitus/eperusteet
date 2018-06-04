@@ -78,7 +78,7 @@ angular.module("eperusteApp").service("Algoritmit", Kaanna => {
         var foundSt = _.find(peruste.suoritustavat, function(st: any) {
             return st.suoritustapakoodi === suoritustapa;
         });
-        return foundSt ? foundSt.laajuusYksikko : "OPINTOPISTE";
+        return foundSt ? foundSt.laajuusYksikko : "OSAAMISPISTE";
     }
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {

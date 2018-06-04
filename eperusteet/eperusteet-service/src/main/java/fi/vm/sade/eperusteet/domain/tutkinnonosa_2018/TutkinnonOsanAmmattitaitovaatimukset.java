@@ -8,10 +8,12 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity
-@Table(name = "tutkinnonosan_ammattitaitovaatimukset")
-@Audited
+//@Entity(name = "tutkinnonosa_2018.TutkinnonOsanAmmattitaitovaatimukset")
+//@Table(name = "tutkinnonosan_ammattitaitovaatimukset", schema = "tutkinnonosa_2018")
+//@Audited
 public class TutkinnonOsanAmmattitaitovaatimukset {
 
     @Id
@@ -35,12 +37,14 @@ public class TutkinnonOsanAmmattitaitovaatimukset {
     private TekstiPalanen arvioinninKohde;
 
 //    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
-//    @JoinTable(name = "ammattitaitovaatimus_v2",
+//    @JoinTable(
+//            name = "tutkinnonosan_ammattitaitovaatimus",
+//            schema = "tutkinnonosa_2018",
 //            joinColumns = @JoinColumn(name = "tutkinnonosan_ammattitaitovaatimukset_id"),
-//            inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimus_v2_id"))
+//            inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimus_id"))
 //    @OrderColumn(name = "ammattitaitovaatimus_order")
 //    @Getter
 //    @Setter
-//    private List<Ammattitaitovaatimus> ammattitaitovaatimukset;
+//    private List<Ammattitaitovaatimus> ammattitaitovaatimukset = new ArrayList<>();
 
 }
