@@ -340,6 +340,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteDto perusteDto = ppTestUtils.initPeruste(amosaaPohja1.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         });
+        ppTestUtils.luoValidiKVLiite(perusteDto.getId());
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.VIIMEISTELY);
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.VALMIS);
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.JULKAISTU);
@@ -358,6 +359,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(amosaaPohja2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
         });
+        ppTestUtils.luoValidiKVLiite(perusteDto2.getId());
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.VIIMEISTELY);
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.VALMIS);
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.JULKAISTU);
