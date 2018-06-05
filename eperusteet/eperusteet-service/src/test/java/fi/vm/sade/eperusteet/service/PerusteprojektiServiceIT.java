@@ -537,6 +537,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
         ppTestUtils.asetaMuodostumiset(pp.getPeruste().getId());
 
+        ppTestUtils.luoValidiKVLiite(pp.getPeruste().getId());
+
         repository.save(pp);
         em.persist(pp);
 
@@ -564,9 +566,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
             pp.getPeruste().setKielet(Stream.of(Kieli.FI).collect(Collectors.toSet()));
             pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
             pp.getPeruste().setVoimassaoloLoppuu(new Date(now + 100000));
-            pp.getPeruste().getSuoritustavat().stream().forEach(st -> {
-                st.getRakenne().setMuodostumisSaanto(new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE), null));
-            });
+            pp.getPeruste().getSuoritustavat().forEach(st -> st.getRakenne()
+                    .setMuodostumisSaanto(new MuodostumisSaanto(new MuodostumisSaanto
+                            .Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE), null)));
             return pp;
         };
 
@@ -581,8 +583,10 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
         Perusteprojekti a = luontiHelper.apply(adto);
         a.getPeruste().setVoimassaoloAlkaa(new Date(now - 100));
+        ppTestUtils.luoValidiKVLiite(a.getPeruste().getId());
         Perusteprojekti b = luontiHelper.apply(bdto);
         b.getPeruste().setVoimassaoloAlkaa(new Date(now - 200));
+        ppTestUtils.luoValidiKVLiite(b.getPeruste().getId());
         repository.save(a);
         em.persist(a);
         repository.save(b);

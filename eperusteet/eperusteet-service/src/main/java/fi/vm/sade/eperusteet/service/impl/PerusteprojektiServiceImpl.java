@@ -1171,11 +1171,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 julkinenKVLiite.getTutkinnostaPaattavaViranomainen(), vaaditutKielet, virheellisetKielet);
         tarkistaLokalisoituTekstiDto("kvliite-validointi-nimi",
                 julkinenKVLiite.getNimi(), vaaditutKielet, virheellisetKielet);
-        Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus = julkinenKVLiite.getMuodostumisenKuvaus();
         if (ObjectUtils.isEmpty(julkinenKVLiite.getTasot())) {
             updateStatus.setVaihtoOk(false);
             updateStatus.addStatus("kvliite-validointi-tasot");
         }
+        Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus = julkinenKVLiite.getMuodostumisenKuvaus();
         if (!ObjectUtils.isEmpty(muodostumisenKuvaus)) {
             muodostumisenKuvaus.forEach((st, kuvaus)
                     -> tarkistaLokalisoituTekstiDto("kvliite-validointi-muodostumisen-kuvaus-" + st,

@@ -329,6 +329,28 @@ public abstract class TestUtils {
         return prefix + (++uniikki).toString();
     }
 
+    static public Map<Kieli, String> uniikkiLokalisoituString() {
+        Map<Kieli, String> tekstit = new HashMap<>();
+        tekstit.put(Kieli.FI, uniikkiString());
+        tekstit.put(Kieli.SV, uniikkiString());
+        tekstit.put(Kieli.EN, uniikkiString());
+        return tekstit;
+    }
+
+    static public LokalisoituTekstiDto uniikkiLokalisoituTekstiDto() {
+        Map<String, String> tekstit = new HashMap<>();
+        tekstit.put("fi", uniikkiString());
+        tekstit.put("sv", uniikkiString());
+        tekstit.put("en", uniikkiString());
+        return new LokalisoituTekstiDto(tekstit);
+    }
+
+    static public LokalisoituTekstiDto uniikkiLokalisoituTekstiDto(Set<Kieli> kielet) {
+        Map<String, String> tekstit = new HashMap<>();
+        kielet.forEach(kieli -> tekstit.put(kieli.toString(), uniikkiString()));
+        return new LokalisoituTekstiDto(tekstit);
+    }
+
     static public Long uniikkiId() {
         return ++uniikki;
     }

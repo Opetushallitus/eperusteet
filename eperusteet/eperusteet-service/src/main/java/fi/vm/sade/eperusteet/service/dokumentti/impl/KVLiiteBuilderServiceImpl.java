@@ -234,7 +234,11 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         KVLiiteJulkinenDto kvLiiteJulkinenDto = docBase.getKvLiiteJulkinenDto();
 
         // Jos dokumentin kieli ei ole suomi ja dokumentin kielellä löytyy nimi
-        if (docBase.getKieli().equals(Kieli.EN)) {
+        if (docBase.getKieli().equals(Kieli.EN)
+                && kvLiiteJulkinenDto.getNimi() != null
+                && kvLiiteJulkinenDto.getNimi().getTekstit() != null
+                && kvLiiteJulkinenDto.getNimi().getTekstit().containsKey(docBase.getKieli())) {
+
             // Lisätään taulukko
             Element table = docBase.getDocument().createElement("table");
             docBase.getBodyElement().appendChild(table);

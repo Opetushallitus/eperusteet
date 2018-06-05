@@ -15,9 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.util;
 
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
+import fi.vm.sade.eperusteet.dto.koodisto.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
@@ -51,6 +49,24 @@ public class KoodistoClientMock implements KoodistoClient {
         KoodistoKoodiLaajaDto result = new KoodistoKoodiLaajaDto();
         result.setKoodiArvo(koodi);
         result.setVersio(versio);
+
+        // Lisätään nqf koodi
+        KoodiElementti[] elementit = new KoodiElementti[1];
+        KoodiElementti elementti = new KoodiElementti();
+
+        elementti.setCodeElementUri("nqf_4");
+        elementti.setCodeElementValue("4");
+        elementti.setCodeElementVersion(1L);
+        elementti.setPassive(false);
+
+        KoodistoMetadataDto[] parentMetadatas = new KoodistoMetadataDto[3];
+        parentMetadatas[0] = KoodistoMetadataDto.of("nqf", "SV", "Nationell referensram för examina (nqf)");
+        parentMetadatas[1] = KoodistoMetadataDto.of("nqf", "EN", "National Qualifications Framework (nqf)");
+        parentMetadatas[2] = KoodistoMetadataDto.of("nqf", "FI", "Kansallinen tutkintojen viitekehys (nqf)");
+        elementti.setParentMetadata(parentMetadatas);
+
+        elementit[0] = elementti;
+        result.setIncludesCodeElements(elementit);
         return result;
     }
 
