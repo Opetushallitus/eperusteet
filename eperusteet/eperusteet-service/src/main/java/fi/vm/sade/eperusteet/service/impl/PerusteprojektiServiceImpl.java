@@ -35,14 +35,11 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
-import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -70,6 +67,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import org.apache.commons.io.IOUtils;
@@ -89,6 +87,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -548,6 +547,33 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
     }
 
+    public void tarkistaLokalisoituTekstiDto(
+            final String nimi,
+            final LokalisoituTekstiDto tekstiDto,
+            final Set<Kieli> pakolliset,
+            Map<String, Set<Kieli>> virheellisetKielet
+    ) {
+        for (Kieli kieli : pakolliset) {
+            if (ObjectUtils.isEmpty(tekstiDto)) {
+                if (virheellisetKielet.containsKey(nimi)) {
+                    virheellisetKielet.get(nimi).add(kieli);
+                } else {
+                    virheellisetKielet.put(nimi, Stream.of(kieli).collect(Collectors.toSet()));
+                }
+                continue;
+            }
+
+            Map<Kieli, String> teksti = tekstiDto.getTekstit();
+            if (!teksti.containsKey(kieli) || ObjectUtils.isEmpty(teksti.get(kieli))) {
+                if (virheellisetKielet.containsKey(nimi)) {
+                    virheellisetKielet.get(nimi).add(kieli);
+                } else {
+                    virheellisetKielet.put(nimi, Stream.of(kieli).collect(Collectors.toSet()));
+                }
+            }
+        }
+    }
+
     @SuppressWarnings("ServiceMethodEntity")
     @Transactional(readOnly = true)
     public void tarkistaSisalto(final PerusteenOsaViite viite, final Set<Kieli> pakolliset,
@@ -853,7 +879,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         updateStatus.setVaihtoOk(true);
 
         Perusteprojekti projekti = repository.findOne(id);
-        Long perusteId = projekti.getPeruste().getId();
 
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
@@ -1082,6 +1107,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.setVaihtoOk(false);
                     updateStatus.addStatus(entry.getKey());
                 }
+
+                // Tarkista KV-liite
+                if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
+                    KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(peruste.getId());
+                    Set<Kieli> vaaditutKielet = new HashSet<>();
+                    vaaditutKielet.add(Kieli.FI);
+                    vaaditutKielet.add(Kieli.SV);
+                    vaaditutKielet.add(Kieli.EN);
+                    tarkistaKvliite(julkinenKVLiite, vaaditutKielet, updateStatus);
+                }
             }
 
             if (tila == ProjektiTila.JULKAISTU) {
@@ -1105,6 +1140,52 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         return updateStatus;
+    }
+
+    private void tarkistaKvliite(KVLiiteJulkinenDto julkinenKVLiite, Set<Kieli> vaaditutKielet, TilaUpdateStatus updateStatus) {
+
+        Map<String, Set<Kieli>> virheellisetKielet = new HashMap<>();
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-suorittaneen-osaaminen",
+                julkinenKVLiite.getSuorittaneenOsaaminen(), vaaditutKielet, virheellisetKielet);
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-tyotehtavat-joissa-voi-toimia",
+                julkinenKVLiite.getTyotehtavatJoissaVoiToimia(), vaaditutKielet, virheellisetKielet);
+        // tutkinnonVirallinenAsema?
+        if (julkinenKVLiite.getArvosanaAsteikko() == null) {
+            updateStatus.setVaihtoOk(false);
+            updateStatus.addStatus("kvliite-validointi-arvosana-asteikko");
+        }
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-jatkoopinto-kelpoisuus",
+                julkinenKVLiite.getJatkoopintoKelpoisuus(), vaaditutKielet, virheellisetKielet);
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-kansainvaliset-sopimukset",
+                julkinenKVLiite.getKansainvalisetSopimukset(), vaaditutKielet, virheellisetKielet);
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-saados-perusta",
+                julkinenKVLiite.getSaadosPerusta(), vaaditutKielet, virheellisetKielet);
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-pohjakoulutusvaatimukset",
+                julkinenKVLiite.getPohjakoulutusvaatimukset(), vaaditutKielet, virheellisetKielet);
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-lisatietoja",
+                julkinenKVLiite.getLisatietoja(), vaaditutKielet, virheellisetKielet);
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-tutkintotodistuksen-saaminen",
+                julkinenKVLiite.getTutkintotodistuksenSaaminen(), vaaditutKielet, virheellisetKielet);
+        // tutkinnonTaso?
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-tutkinnosta-paattava-viranomainen",
+                julkinenKVLiite.getTutkinnostaPaattavaViranomainen(), vaaditutKielet, virheellisetKielet);
+        tarkistaLokalisoituTekstiDto("kvliite-validointi-nimi",
+                julkinenKVLiite.getNimi(), vaaditutKielet, virheellisetKielet);
+        if (ObjectUtils.isEmpty(julkinenKVLiite.getTasot())) {
+            updateStatus.setVaihtoOk(false);
+            updateStatus.addStatus("kvliite-validointi-tasot");
+        }
+        Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus = julkinenKVLiite.getMuodostumisenKuvaus();
+        if (!ObjectUtils.isEmpty(muodostumisenKuvaus)) {
+            muodostumisenKuvaus.forEach((st, kuvaus)
+                    -> tarkistaLokalisoituTekstiDto("kvliite-validointi-muodostumisen-kuvaus-" + st,
+                            kuvaus, vaaditutKielet, virheellisetKielet));
+        }
+
+        virheellisetKielet.forEach((viesti, kielet) -> {
+            updateStatus.setVaihtoOk(false);
+            updateStatus.addStatus(viesti, kielet);
+        });
     }
 
     @Override

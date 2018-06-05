@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteTasoDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
@@ -42,6 +43,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -228,10 +230,11 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         KVLiiteJulkinenDto kvLiiteJulkinenDto = docBase.getKvLiiteJulkinenDto();
 
         // Jos dokumentin kieli ei ole suomi ja dokumentin kielellä löytyy nimi
-        if (!docBase.getKieli().equals(Kieli.FI)
+        if (docBase.getKieli().equals(Kieli.EN)
                 && kvLiiteJulkinenDto.getNimi() != null
                 && kvLiiteJulkinenDto.getNimi().getTekstit() != null
                 && kvLiiteJulkinenDto.getNimi().getTekstit().containsKey(docBase.getKieli())) {
+
             // Lisätään taulukko
             Element table = docBase.getDocument().createElement("table");
             docBase.getBodyElement().appendChild(table);
@@ -461,11 +464,13 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             leftTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
                     messages.translate("docgen.kvliite.taso", docBase.getKieli())));
             if (kvLiiteJulkinenDto.getTasot() != null) {
-                kvLiiteJulkinenDto.getTasot().forEach(taso -> {
-                    if (taso.getNimi() != null && taso.getNimi().get(docBase.getKieli()) != null) {
-                        DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli()), "span", leftTd);
-                    }
-                });
+                kvLiiteJulkinenDto.getTasot().stream()
+                        .sorted(Comparator.comparingInt(KVLiiteTasoDto::getJarjestys))
+                        .forEach(taso -> {
+                            if (taso.getNimi() != null && taso.getNimi().get(docBase.getKieli()) != null) {
+                                DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli()), "span", leftTd);
+                            }
+                        });
             }
 
             rightTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),

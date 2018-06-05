@@ -57,16 +57,6 @@ public class ArviointiAsteikkoServiceImpl implements ArviointiAsteikkoService {
     }
 
     @Override
-    public ArviointiAsteikkoDto add(ArviointiAsteikkoDto arviointiAsteikkoDto) {
-        ArviointiAsteikko arviointiasteikko = mapper.map(arviointiAsteikkoDto, ArviointiAsteikko.class);
-        arviointiasteikko.setId(null);
-
-        arviointiasteikko = repository.save(arviointiasteikko);
-
-        return mapper.map(arviointiasteikko, ArviointiAsteikkoDto.class);
-    }
-
-    @Override
     public ArviointiAsteikkoDto update(ArviointiAsteikkoDto arviointiAsteikkoDto) {
         if (arviointiAsteikkoDto.getId() == null) {
             throw new BusinessRuleViolationException("arviointiasteikko-ei-olemassa");

@@ -16,11 +16,13 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 
@@ -41,6 +43,11 @@ public class TilaUpdateStatusBuilder {
 
     public TilaUpdateStatusBuilder addStatus(String viesti) {
         status.addStatus(viesti, null, null, null);
+        return this;
+    }
+
+    public TilaUpdateStatusBuilder addStatus(String viesti, Set<Kieli> kielet) {
+        status.addStatus(viesti, null, null, null, kielet);
         return this;
     }
 
