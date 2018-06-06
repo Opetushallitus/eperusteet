@@ -1149,7 +1149,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 julkinenKVLiite.getSuorittaneenOsaaminen(), vaaditutKielet, virheellisetKielet);
         tarkistaLokalisoituTekstiDto("kvliite-validointi-tyotehtavat-joissa-voi-toimia",
                 julkinenKVLiite.getTyotehtavatJoissaVoiToimia(), vaaditutKielet, virheellisetKielet);
-        // tutkinnonVirallinenAsema?
         if (julkinenKVLiite.getArvosanaAsteikko() == null) {
             updateStatus.setVaihtoOk(false);
             updateStatus.addStatus("kvliite-validointi-arvosana-asteikko");
@@ -1166,7 +1165,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 julkinenKVLiite.getLisatietoja(), vaaditutKielet, virheellisetKielet);
         tarkistaLokalisoituTekstiDto("kvliite-validointi-tutkintotodistuksen-saaminen",
                 julkinenKVLiite.getTutkintotodistuksenSaaminen(), vaaditutKielet, virheellisetKielet);
-        // tutkinnonTaso?
         tarkistaLokalisoituTekstiDto("kvliite-validointi-tutkinnosta-paattava-viranomainen",
                 julkinenKVLiite.getTutkinnostaPaattavaViranomainen(), vaaditutKielet, virheellisetKielet);
         tarkistaLokalisoituTekstiDto("kvliite-validointi-nimi",
