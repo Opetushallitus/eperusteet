@@ -12,10 +12,24 @@ describe("Algoritmit", () => {
 
     test("Can be injected", () => expect(Algoritmit).toBeTruthy());
 
+    test("findFirstWords", () => {
+        const fn = Algoritmit.findFirstWords;
+        expect(fn([
+            "foo bar baz",
+            "foo bar bar",
+        ])).toEqual(["foo", "bar"]);
+
+        expect(fn([
+            "a b",
+            "b a",
+        ])).toEqual([]);
+    });
+
     test("match", () => {
         const match = Algoritmit.match;
         expect(match("hello", "Hello World")).toBeTruthy();
         expect(match("", "Hello World")).toBeTruthy();
         expect(match("xyz", "Hello World")).toBeFalsy();
     });
+
 });

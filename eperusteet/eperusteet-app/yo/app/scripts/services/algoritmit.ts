@@ -126,7 +126,38 @@ angular.module("eperusteApp").service("Algoritmit", Kaanna => {
         }
     }
 
+    function findFirstWords(sentences: Array<String>) {
+        const result = [];
+        const splits = _(sentences)
+            .map(str => str.split(" "))
+            .value();
+        let idx = 0;
+
+        if (_.size(splits) < 2) {
+            return "";
+        }
+
+        while (true) {
+            let next = null;
+            for (const split of splits) {
+                if (idx >= _.size(split)) {
+                    return result;
+                }
+                else if (next === null) {
+                    next = split[idx];
+                }
+                else if (split[idx] !== next) {
+                    return result;
+                }
+            }
+
+            result.push(next);
+            ++idx;
+        }
+    }
+
     return {
+        findFirstWords,
         normalizeTeksti,
         rajausVertailu,
         mapLapsisolmut,

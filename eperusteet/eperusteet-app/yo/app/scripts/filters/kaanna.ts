@@ -52,7 +52,7 @@ angular
                     const result = $translate.instant(input, config);
                     if (DEVELOPMENT) {
                         if (!_.isEmpty(input) && _.eq(result, input)) {
-                            console.info("Käännös puuttuu:", input);
+                            // console.info("Käännös puuttuu:", input);
                         }
                     }
                     return result;

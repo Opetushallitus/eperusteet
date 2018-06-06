@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteValidationDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -131,7 +132,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong());
         TutkinnonOsaViiteDto tovDto = ppTestUtils.addTutkinnonOsa(perusteDto.getId(), tov -> {
-            tov.getTutkinnonOsaDto().setAmmattitaitovaatimukset(TestUtils.lt("ammatitaitovaatimukset tekstinä"));
+            ((TutkinnonOsaDto)tov.getTutkinnonOsaDto()).setAmmattitaitovaatimukset(TestUtils.lt("ammatitaitovaatimukset tekstinä"));
 //            AmmattitaitovaatimusKohdealueetDto list = new AmmattitaitovaatimusKohdealueetDto();
 //            list.
 //            tov.getTutkinnonOsaDto().setAmmattitaitovaatimuksetLista();
@@ -512,12 +513,12 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong());
         TutkinnonOsaViiteDto tovDto = ppTestUtils.addTutkinnonOsa(perusteDto.getId(), tov -> {
-            tov.getTutkinnonOsaDto().setTyyppi(TutkinnonOsaTyyppi.TUTKINNONOSA_2018);
-            tov.setTyyppi(TutkinnonOsaTyyppi.TUTKINNONOSA_2018);
-            tov.getTutkinnonOsaDto().setAmmattitaitovaatimukset(TestUtils.lt("ammatitaitovaatimukset tekstinä"));
+            tov.getTutkinnonOsaDto().setTyyppi(TutkinnonOsaTyyppi.TUTKINNONOSA2018);
+            tov.setTyyppi(TutkinnonOsaTyyppi.TUTKINNONOSA2018);
+            ((TutkinnonOsaDto)tov.getTutkinnonOsaDto()).setAmmattitaitovaatimukset(TestUtils.lt("ammatitaitovaatimukset tekstinä"));
         });
 
-        assertThat(tovDto.getTyyppi()).isEqualTo(TutkinnonOsaTyyppi.TUTKINNONOSA_2018);
+        assertThat(tovDto.getTyyppi()).isEqualTo(TutkinnonOsaTyyppi.TUTKINNONOSA2018);
     }
 
 }

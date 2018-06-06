@@ -1,5 +1,10 @@
 // partials/muokkaus/tutkinnonosa.html
 
+mixin TutkinnonOsa2018
+  pre(ng-bind="tutkinnonOsaViite | json")
+
+
+
 #toolbar.navbar-fixed-top.ck-toolbar(style='display: none')
   #ck-toolbar-top
   #ck-toolbar-bottom
@@ -43,89 +48,91 @@
               span(kaanna='yksikko')
             valmiskaannos(ng-model='tutkinnonOsaViite.tutkinnonOsa')
       versiotiedot(ng-hide='editEnabled')
-      hr(ng-show='editEnabled')
-      .table-layout
-        .table-cell(ng-class="{'max-sm-leveys': isLeikelautaOpen}")
-          valmiskaannos(ng-if='editEnabled' is-editing='editEnabled' ng-model='editableTutkinnonOsaViite.tutkinnonOsa')
-          form(name='tutkinnonOsaHeaderForm' role='form')
-            .non-collapsibles(ng-if='editEnabled')
-              div(ng-show='isNew')
-                label.header
-                  | {{&apos;tyyppi&apos;|kaanna}}
-                  ohje(teksti="vateConverter('ohje-tutkinnonosa-tyyppi')")
-                .btn-group
-                  label.btn.btn-default(ng-model='editableTutkinnonOsaViite.tutkinnonOsa.tyyppi' uib-btn-radio="'normaali'") {{&apos;tyyppi-tutkintokohtainen&apos; | kaanna}}
-                  label.btn.btn-default(ng-model='editableTutkinnonOsaViite.tutkinnonOsa.tyyppi' uib-btn-radio="'tutke2'" ng-show='!isReformi') {{&apos;tyyppi-yhteinen&apos; | kaanna}}
-                  label.btn.btn-default(ng-model='editableTutkinnonOsaViite.tutkinnonOsa.tyyppi' uib-btn-radio="'reformi_tutke2'" ng-show='isReformi') {{&apos;tyyppi-yhteinen&apos; | kaanna}}
-                .clearfix
-              label.header(for='nimi-input') {{vateConverter(&apos;muokkaus-tutkinnon-osan-nimi-header&apos;)|kaanna}}*
-              input#nimi-input.form-control(ng-model='editableTutkinnonOsaViite.tutkinnonOsa.nimi' slocalized='' required='')
-              p.alert.alert-error(ng-show='(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError' kaanna='') Nimi on pakollinen tieto
-              div
+      div(ng-if="tutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutkinnonosa_2018'")
+        +TutkinnonOsa2018
+      div(ng-if="tutkinnonOsaViite.tutkinnonOsa.tyyppi !== 'tutkinnonosa_2018'")
+        hr(ng-show='editEnabled')
+        .table-layout
+          .table-cell(ng-class="{'max-sm-leveys': isLeikelautaOpen}")
+            valmiskaannos(ng-if='editEnabled' is-editing='editEnabled' ng-model='editableTutkinnonOsaViite.tutkinnonOsa')
+            form(name='tutkinnonOsaHeaderForm' role='form')
+              .non-collapsibles(ng-if='editEnabled')
+                div(ng-show='isNew')
+                  label.header
+                    | {{&apos;tyyppi&apos;|kaanna}}
+                    ohje(teksti="vateConverter('ohje-tutkinnonosa-tyyppi')")
+                  .btn-group
+                    label.btn.btn-default(ng-model='editableTutkinnonOsaViite.tutkinnonOsa.tyyppi' uib-btn-radio="'normaali'") {{&apos;tyyppi-tutkintokohtainen&apos; | kaanna}}
+                    label.btn.btn-default(ng-model='editableTutkinnonOsaViite.tutkinnonOsa.tyyppi' uib-btn-radio="'tutke2'" ng-show='!isReformi') {{&apos;tyyppi-yhteinen&apos; | kaanna}}
+                    label.btn.btn-default(ng-model='editableTutkinnonOsaViite.tutkinnonOsa.tyyppi' uib-btn-radio="'reformi_tutke2'" ng-show='isReformi') {{&apos;tyyppi-yhteinen&apos; | kaanna}}
+                  .clearfix
+                label.header(for='nimi-input') {{vateConverter(&apos;muokkaus-tutkinnon-osan-nimi-header&apos;)|kaanna}}*
+                input#nimi-input.form-control(ng-model='editableTutkinnonOsaViite.tutkinnonOsa.nimi' slocalized='' required='')
+                p.alert.alert-error(ng-show='(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError' kaanna='') Nimi on pakollinen tieto
                 div
-                  label.header(for='laajuus-input' kaanna="vateConverter('tutkinnonosa-laajuus')")
-                .laajuus-tyyppi-valitsin(ng-show='isVaTe' ng-click='toggleLaajuusRange()')
-                  input(ng-model='$laajuusRangena' type='checkbox')
-                  span(kaanna="'laajuus-maarita-alueella'")
-                .fixed-group
-                  .pull-left
-                    numberinput#laajuus-input(label-id='laajuus-input' luokka='form-control' model='editableTutkinnonOsaViite.laajuus' min='0' max='999' type='float' step='0.5' form='tutkinnonOsaHeaderForm')
-                  div(ng-show='isVaTe && $laajuusRangena')
-                    .laajuuserotin
+                  div
+                    label.header(for='laajuus-input' kaanna="vateConverter('tutkinnonosa-laajuus')")
+                  .laajuus-tyyppi-valitsin(ng-show='isVaTe' ng-click='toggleLaajuusRange()')
+                    input(ng-model='$laajuusRangena' type='checkbox')
+                    span(kaanna="'laajuus-maarita-alueella'")
+                  .fixed-group
                     .pull-left
-                      numberinput(label-id='laajuus-input' luokka='form-control' model='editableTutkinnonOsaViite.laajuusMaksimi' min='0' max='999' type='float' step='0.5' form='tutkinnonOsaHeaderForm')
-                  .pull-left.addon
-                    p {{ yksikko | kaanna }}
-              label.header(for='koodi-input' kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')")
-              .form-inline
-                input#koodi-input.form-control(ng-if='editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo' type='text' ng-model='editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo' editointi-kontrolli='' disabled='disabled')
-                input#koodi-input.form-control(ng-if='!editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo' type='text' ng-model='editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo' editointi-kontrolli='' disabled='disabled')
-                button.btn.btn-default(ng-click='koodistoClick()' kaanna="'hae-koodistosta'")
-                button.btn.btn-danger(ng-show="(editableTutkinnonOsaViite.tutkinnonOsa.koodi || editableTutkinnonOsaViite.tutkinnonOsa.koodiUri) && editableTutkinnonOsaViite.tutkinnonOsa.tila === 'luonnos'" ng-click='cleanKoodi()' kaanna="'tyhjenna-koodin-arvo'")
-          .non-collapsibles(ng-if='!editEnabled')
-            div
-              label.header(kaanna="vateConverter('muokkaus-tutkinnon-jarjestysnumero')")
-              | :
-              span  {{ tutkinnonOsaViite.jarjestys || &apos;-&apos; }}
-            div
-              label.header(kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')")
-              | :
-              span  {{ tutkinnonOsaViite.tutkinnonOsa.koodiArvo || &apos;-&apos; }}
-            div
-              label.header(kaanna="'tutkinnonosa-laajuus'")
-              | :
-              span  {{ tutkinnonOsaViite.laajuus || &apos;-&apos; }}
-              span(ng-if='tutkinnonOsaViite.laajuus' kaanna="projekti.laajuusYksikko || 'OSAAMISPISTE'")
-          .tutkinnonosa-sisalto(ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'")
-            kenttalistaus(hide-empty-placeholder='editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit' edit-enabled='editEnabled' object-promise='tutkinnonOsaPromise' fields='fields')
-            .to-vapaat-tekstit(ng-show='editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit.length > 0')
-              div(ng-hide='editEnabled')
-                .list-group-item(ng-repeat='vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit')
-                  h3.osio-otsikko(ng-click='vt.$$closed = !vt.$$closed')
-                    span(ng-show='vt.$$closed' icon-role='chevron-right')
-                    span(ng-hide='vt.$$closed' icon-role='chevron-down')
-                    span(ng-bind-html='vt.nimi | kaanna')
-                    lang-validator(kentta='vt.nimi')
-                  div(uib-collapse='vt.$$closed' ng-bind-html='vt.teksti | kaanna')
-                  lang-validator(kentta='vt.teksti')
-              #vapaatTekstitAnchor.container-items(ng-show='editEnabled' ui-sortable='sortableOptions' ng-model='editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit')
-                div(ng-repeat='vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit')
-                  .row.tovp-header
-                    .col-xs-10
-                      .input-group
-                        span.input-group-addon.handle(icon-role='drag')
-                        input.form-control(slocalized='' ng-model='vt.nimi' placeholder="{{ 'otsikko' | kaanna }}")
-                    .col-xs-2
-                      a.pull-right(href='' ng-click='removeVapaaTeksti(editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit, vt)')
-                        span(icon-role='remove')
-                  .tovp-body(ckeditor='' slocalized='' layout='normal' ng-model='vt.teksti')
-          .non-collapsibles(ng-if='isTutke2(editableTutkinnonOsaViite)')
-            label.header(for='tutke2-kuvaus' kaanna='') kuvaus
-            textarea#tutke2-kuvaus.form-control.msd-elastic(ng-show='editEnabled' slocalized='' ng-model='editableTutkinnonOsaViite.tutkinnonOsa.kuvaus')
-            p(ng-show='!editEnabled') {{tutkinnonOsaViite.tutkinnonOsa.kuvaus| kaanna}}
-          .tutkinnonosa-sisalto(ng-if='isTutke2(editableTutkinnonOsaViite)')
-            tutke2kentat#muokattavat-kentat(edit-enabled='editEnabled' tutkinnonosa-viite='tutkinnonOsaPromise' kontrollit='editointikontrollit' yksikko='yksikko')
-        .table-cell.table-cell-fixed(ng-if='editEnabled && isLeikelautaOpen')
-          leikelauta(is-open='isLeikelautaOpen')
-      kommentit
-
+                      numberinput#laajuus-input(label-id='laajuus-input' luokka='form-control' model='editableTutkinnonOsaViite.laajuus' min='0' max='999' type='float' step='0.5' form='tutkinnonOsaHeaderForm')
+                    div(ng-show='isVaTe && $laajuusRangena')
+                      .laajuuserotin
+                      .pull-left
+                        numberinput(label-id='laajuus-input' luokka='form-control' model='editableTutkinnonOsaViite.laajuusMaksimi' min='0' max='999' type='float' step='0.5' form='tutkinnonOsaHeaderForm')
+                    .pull-left.addon
+                      p {{ yksikko | kaanna }}
+                label.header(for='koodi-input' kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')")
+                .form-inline
+                  input#koodi-input.form-control(ng-if='editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo' type='text' ng-model='editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo' editointi-kontrolli='' disabled='disabled')
+                  input#koodi-input.form-control(ng-if='!editableTutkinnonOsaViite.tutkinnonOsa.koodi.arvo' type='text' ng-model='editableTutkinnonOsaViite.tutkinnonOsa.koodiArvo' editointi-kontrolli='' disabled='disabled')
+                  button.btn.btn-default(ng-click='koodistoClick()' kaanna="'hae-koodistosta'")
+                  button.btn.btn-danger(ng-show="(editableTutkinnonOsaViite.tutkinnonOsa.koodi || editableTutkinnonOsaViite.tutkinnonOsa.koodiUri) && editableTutkinnonOsaViite.tutkinnonOsa.tila === 'luonnos'" ng-click='cleanKoodi()' kaanna="'tyhjenna-koodin-arvo'")
+            .non-collapsibles(ng-if='!editEnabled')
+              div
+                label.header(kaanna="vateConverter('muokkaus-tutkinnon-jarjestysnumero')")
+                | :
+                span  {{ tutkinnonOsaViite.jarjestys || &apos;-&apos; }}
+              div
+                label.header(kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')")
+                | :
+                span  {{ tutkinnonOsaViite.tutkinnonOsa.koodiArvo || &apos;-&apos; }}
+              div
+                label.header(kaanna="'tutkinnonosa-laajuus'")
+                | :
+                span  {{ tutkinnonOsaViite.laajuus || &apos;-&apos; }}
+                span(ng-if='tutkinnonOsaViite.laajuus' kaanna="projekti.laajuusYksikko || 'OSAAMISPISTE'")
+            .tutkinnonosa-sisalto(ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'")
+              kenttalistaus(hide-empty-placeholder='editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit' edit-enabled='editEnabled' object-promise='tutkinnonOsaPromise' fields='fields')
+              .to-vapaat-tekstit(ng-show='editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit.length > 0')
+                div(ng-hide='editEnabled')
+                  .list-group-item(ng-repeat='vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit')
+                    h3.osio-otsikko(ng-click='vt.$$closed = !vt.$$closed')
+                      span(ng-show='vt.$$closed' icon-role='chevron-right')
+                      span(ng-hide='vt.$$closed' icon-role='chevron-down')
+                      span(ng-bind-html='vt.nimi | kaanna')
+                      lang-validator(kentta='vt.nimi')
+                    div(uib-collapse='vt.$$closed' ng-bind-html='vt.teksti | kaanna')
+                    lang-validator(kentta='vt.teksti')
+                #vapaatTekstitAnchor.container-items(ng-show='editEnabled' ui-sortable='sortableOptions' ng-model='editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit')
+                  div(ng-repeat='vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit')
+                    .row.tovp-header
+                      .col-xs-10
+                        .input-group
+                          span.input-group-addon.handle(icon-role='drag')
+                          input.form-control(slocalized='' ng-model='vt.nimi' placeholder="{{ 'otsikko' | kaanna }}")
+                      .col-xs-2
+                        a.pull-right(href='' ng-click='removeVapaaTeksti(editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit, vt)')
+                          span(icon-role='remove')
+                    .tovp-body(ckeditor='' slocalized='' layout='normal' ng-model='vt.teksti')
+            .non-collapsibles(ng-if='isTutke2(editableTutkinnonOsaViite)')
+              label.header(for='tutke2-kuvaus' kaanna='') kuvaus
+              textarea#tutke2-kuvaus.form-control.msd-elastic(ng-show='editEnabled' slocalized='' ng-model='editableTutkinnonOsaViite.tutkinnonOsa.kuvaus')
+              p(ng-show='!editEnabled') {{tutkinnonOsaViite.tutkinnonOsa.kuvaus| kaanna}}
+            .tutkinnonosa-sisalto(ng-if='isTutke2(editableTutkinnonOsaViite)')
+              tutke2kentat#muokattavat-kentat(edit-enabled='editEnabled' tutkinnonosa-viite='tutkinnonOsaPromise' kontrollit='editointikontrollit' yksikko='yksikko')
+          .table-cell.table-cell-fixed(ng-if='editEnabled && isLeikelautaOpen')
+            leikelauta(is-open='isLeikelautaOpen')
+        kommentit

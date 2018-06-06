@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa_2018;
 
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -11,8 +12,9 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "tutkinnonosa_2018.Ammattitaitovaatimus")
@@ -40,10 +42,16 @@ public class Ammattitaitovaatimus {
     @Setter
     private ArviointiAsteikko arviointiAsteikko;
 
-//    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
-//    @Getter
-//    @BatchSize(size = 10)
-//    private Set<OsaamistasonKriteerit> osaamistasonKriteerit = new HashSet<>();
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    private Koodi koodi;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @Getter
+    @BatchSize(size = 10)
+    private List<AmmattiatitovaatimuksenOsaamistaso> osaamistasonKriteerit = new ArrayList<>();
 
     @Getter
     @Column(updatable = false)

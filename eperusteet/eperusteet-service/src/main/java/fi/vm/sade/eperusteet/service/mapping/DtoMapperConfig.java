@@ -32,6 +32,8 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.AbstractTutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsa2018Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -156,10 +158,43 @@ public class DtoMapperConfig {
         factory.classMap(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
-        factory.classMap(TutkinnonOsaDto.class, TutkinnonOsa.class)
+        factory.classMap(AbstractTutkinnonOsaDto.class, TutkinnonOsa.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .favorExtension(true)
                 .byDefault()
+                .customize(new CustomMapper<AbstractTutkinnonOsaDto, TutkinnonOsa>() {
+                    @Override
+                    public void mapAtoB(AbstractTutkinnonOsaDto abstractTutkinnonOsaDto, TutkinnonOsa tutkinnonOsa, MappingContext context) {
+                        super.mapAtoB(abstractTutkinnonOsaDto, tutkinnonOsa, context);
+                    }
+
+                    @Override
+                    public void mapBtoA(TutkinnonOsa tutkinnonOsa, AbstractTutkinnonOsaDto abstractTutkinnonOsaDto, MappingContext context) {
+                        super.mapBtoA(tutkinnonOsa, abstractTutkinnonOsaDto, context);
+                    }
+                })
                 .register();
+        factory.classMap(TutkinnonOsa2018Dto.class, TutkinnonOsa.class)
+                .field("ammattitaitovaatimukset", "ammattitaitovaatimukset2018")
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .customize(new CustomMapper<TutkinnonOsa2018Dto, TutkinnonOsa>() {
+                    @Override
+                    public void mapAtoB(TutkinnonOsa2018Dto tutkinnonOsa2018Dto, TutkinnonOsa tutkinnonOsa, MappingContext context) {
+                        super.mapAtoB(tutkinnonOsa2018Dto, tutkinnonOsa, context);
+                    }
+
+                    @Override
+                    public void mapBtoA(TutkinnonOsa tutkinnonOsa, TutkinnonOsa2018Dto tutkinnonOsa2018Dto, MappingContext context) {
+                        super.mapBtoA(tutkinnonOsa, tutkinnonOsa2018Dto, context);
+                    }
+                })
+                .register();
+
+//        factory.classMap(TutkinnonOsaDto.class, TutkinnonOsa.class)
+//                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+//                .favorExtension(true)
+//                .byDefault()
+//                .register();
         factory.classMap(PerusopetuksenPerusteenSisalto.class, PerusopetuksenPerusteenSisaltoDto.class)
                 .fieldAToB("oppiaineetCopy", "oppiaineet")
                 .byDefault()

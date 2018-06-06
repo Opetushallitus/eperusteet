@@ -105,6 +105,21 @@
     box-shadow: none;
 }
 
+.btn-link,
+.btn-link:hover,
+.btn-link:focus,
+.btn-link:active,
+.btn-link.active,
+.btn-link.disabled,
+.btn-link[disabled] {
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    outline: 0 !important;
+}
+
 body {
     font-size: 13px;
 }

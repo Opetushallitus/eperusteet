@@ -20,27 +20,33 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.AbstractTutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
 
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TutkinnonOsaViiteDto implements ReferenceableDto {
+@Builder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+public class TutkinnonOsaViiteDto<T extends AbstractTutkinnonOsaDto> implements ReferenceableDto {
 
     private Long id;
     private BigDecimal laajuus;
-    private BigDecimal laajuusMaksimi; // TODO: Ainoastaan valmatelmalla
+    private BigDecimal laajuusMaksimi;
     private Integer jarjestys;
+
     @JsonProperty("_tutkinnonOsa")
     private EntityReference tutkinnonOsa;
+
     @JsonProperty("tutkinnonOsa")
-    private TutkinnonOsaDto tutkinnonOsaDto;
+    private T tutkinnonOsaDto;
 
     private Date muokattu;
     private LokalisoituTekstiDto nimi;

@@ -1294,5 +1294,8 @@
     "koulutuksen-muodostuminen": "Koulutuksen muodostuminen",
     "et-ole-viela-tallentanut-koulutuksenosia": "Et ole vielä liittänyt kaikkia koulutuksen osia perusteeseen",
     "haetaan-koulutuksen-osia": "Haetaan koulutuksen osia...",
-    "haku-koulutuksen-nimi-placeholder": "Koulutuksen nimi"
+    "haku-koulutuksen-nimi-placeholder": "Koulutuksen nimi",
+    "vaatimus-nimi": "Ammattitaitovaatimuksen nimi",
+    "lisaa-ammattitaitovaatimus": "Lisää ammattitaitovaatimus",
+    "uusi-ammattitaitovaatimus": "Uusi ammattitaitovaatimus"
 }

@@ -70,7 +70,7 @@
         <property name="jpaPropertyMap">
             <map>
                 <entry key="hibernate.hbm2ddl.auto" value="validate"/>
-                <entry key="hibernate.show_sql" value="true"/>
+                <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
                 <entry key="net.sf.ehcache.configurationResourceName" value="/eperusteet-hibernate-ehcache.xml"/>
                 <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>

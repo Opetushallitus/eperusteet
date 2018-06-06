@@ -38,19 +38,13 @@ import java.util.List;
 @Getter
 @Setter
 @JsonTypeName("tutkinnonosa")
-public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
-    private LokalisoituTekstiDto tavoitteet;
+public class TutkinnonOsaDto extends AbstractTutkinnonOsaDto {
     private ArviointiDto arviointi;
     private List<AmmattitaitovaatimusKohdealueetDto> ammattitaitovaatimuksetLista;
     private LokalisoituTekstiDto ammattitaitovaatimukset;
-    private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
-    private LokalisoituTekstiDto kuvaus;
-    private KoodiDto koodi;
     private String koodiUri;
     private String koodiArvo;
     private List<OsaAlueDto> osaAlueet;
-    private List<KevytTekstiKappaleDto> vapaatTekstit;
-    private TutkinnonOsaTyyppi tyyppi;
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
 
     public TutkinnonOsaDto() {

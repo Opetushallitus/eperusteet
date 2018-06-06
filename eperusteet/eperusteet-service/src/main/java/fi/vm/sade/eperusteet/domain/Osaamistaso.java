@@ -28,7 +28,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  *
  * @author teele1
  */
-@Entity(name = "Osaamistaso")
+@Entity(name = "AmmattiatitovaatimuksenOsaamistaso")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "osaamistaso")

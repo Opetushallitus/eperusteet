@@ -102,6 +102,7 @@ angular
         };
 
         $scope.lisaaTutkinnonOsa = function(tyyppi) {
+            console.log($scope);
             var osa = tyyppi ? { tyyppi: tyyppi } : {};
 
             PerusteTutkinnonosa.save(

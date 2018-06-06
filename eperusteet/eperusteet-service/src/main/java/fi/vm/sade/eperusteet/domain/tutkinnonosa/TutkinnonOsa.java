@@ -145,7 +145,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @PrePersist
     void prePersist() {
-        if (this.getTyyppi() == TutkinnonOsaTyyppi.TUTKINNONOSA_2018) {
+        if (this.getTyyppi() == TutkinnonOsaTyyppi.TUTKINNONOSA2018) {
             this.arviointi = null;
             this.ammattitaitovaatimukset = null;
             this.arviointi = null;

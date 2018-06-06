@@ -203,10 +203,6 @@ angular
                 controller: "muokkausKoulutuksenosaCtrl",
                 onEnter: PerusteProjektiSivunavi => {
                     PerusteProjektiSivunavi.setVisible();
-                },
-                resolve: {
-                    rakenne: ($stateParams, PerusteenRakenne) =>
-                        PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $stateParams.suoritustapa)
                 }
             })
             .state("root.perusteprojekti.suoritustapa.tutkinnonosat", {
@@ -219,12 +215,23 @@ angular
             })
             .state("root.perusteprojekti.suoritustapa.tutkinnonosa", {
                 url: "/tutkinnonosa/{tutkinnonOsaViiteId}?{versio?:int}",
-                template: require("views/partials/muokkaus/tutkinnonosa.pug"),
-                controller: "muokkausTutkinnonosaCtrl",
+                template: require("views/partials/tutkinnonosa/tutkinnonosa2018.pug"),
+                // template: require("views/partials/tutkinnonosa/tutkinnonosa2018.pug"),
+                controller: "tutkinnonOsa2018Ctrl",
                 onEnter: PerusteProjektiSivunavi => {
                     PerusteProjektiSivunavi.setVisible();
+                },
+                resolve: {
                 }
             })
+            // .state("root.perusteprojekti.suoritustapa.tutkinnonosa", {
+            //     url: "/tutkinnonosa/{tutkinnonOsaViiteId}?{versio?:int}",
+            //     template: require("views/partials/muokkaus/tutkinnonosa.pug"),
+            //     controller: "muokkausTutkinnonosaCtrl",
+            //     onEnter: PerusteProjektiSivunavi => {
+            //         PerusteProjektiSivunavi.setVisible();
+            //     }
+            // })
             .state("root.perusteprojekti.suoritustapa.taiteenala", {
                 url: "/taiteenala/{perusteenOsaViiteId}?{versio?:int}",
                 template: require("views/partials/muokkaus/taiteenala.html"),

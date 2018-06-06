@@ -589,6 +589,7 @@ angular
                     });
                 });
             };
+
             $scope.$watch("editEnabled", editEnabled => {
                 PerusteProjektiSivunavi.setVisible(!editEnabled);
             });

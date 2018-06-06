@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsa2018Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
@@ -29,8 +30,9 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
  *
@@ -38,6 +40,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@SuperBuilder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class PerusteenOsaDto {
     private Long id;
     private Date luotu;
@@ -61,10 +65,12 @@ public abstract class PerusteenOsaDto {
         this.tunniste = tunniste;
     }
 
+    @SuperBuilder
     @JsonTypeInfo(use = Id.NAME, include = As.EXISTING_PROPERTY, property = "osanTyyppi")
     @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = TekstiKappaleDto.class),
         @JsonSubTypes.Type(value = TutkinnonOsaDto.class),
+        @JsonSubTypes.Type(value = TutkinnonOsa2018Dto.class),
         @JsonSubTypes.Type(value = TaiteenalaDto.class),
         @JsonSubTypes.Type(value = AihekokonaisuudetLaajaDto.class),
         @JsonSubTypes.Type(value = OpetuksenYleisetTavoitteetLaajaDto.class),

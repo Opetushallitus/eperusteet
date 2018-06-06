@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +27,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
 public class OsaamistasoDto {
     private Long id;
     private LokalisoituTekstiDto otsikko;

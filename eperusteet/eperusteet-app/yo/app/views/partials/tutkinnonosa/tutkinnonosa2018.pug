@@ -1,0 +1,142 @@
+div.tutkinnonosa-2018(ng-show="!loading" ng-cloak)
+  // Lukutila
+  div(ng-if="!editEnabled")
+    div.tutkinnonosa-header
+      h2
+        span(ng-bind="tov.tutkinnonOsa.nimi | kaanna")
+        =" ("
+        span(ng-bind="tov.tutkinnonOsa.koodi.arvo | kaanna")
+        =")"
+      div
+        button.btn.btn-default.pull-right(icon-role='edit' kaanna="'muokkaa'" ng-click='muokkaa()')
+
+    div.tutkinnonosa-field
+      p(ng-bind-html="tov.tutkinnonOsa.kuvaus | kaanna")
+
+    div.tutkinnonosa-field
+      h4(kaanna="'ammattitaidonOsoittamistavat'")
+      p(ng-bind-html="tov.tutkinnonOsa.ammattitaidonOsoittamistavat | kaanna")
+
+    div.ammattitaitovaatimukset
+      h3(kaanna="'ammattitaitovaatimukset'")
+      p(ng-bind="ammattitaitovaatimukset.kohde")
+      ul
+        li(ng-repeat="kohde in ammattitaitovaatimukset.lista" ng-bind="kohde")
+
+      h4
+        span(kaanna="'arviointi'")
+        button.btn.btn-link.toggle-arviointi(type="button" kaanna="'avaa-sulje-kaikki'" ng-click="toggleArviointi()")
+
+      div
+        div(ng-repeat="vaatimus in tov.tutkinnonOsa.ammattitaitovaatimukset")
+          div.panel.panel-info
+            div.panel-heading
+              button.btn.btn-link.panel-title(type="button" ng-click="toggleVaatimus(vaatimus)")
+                span(ng-show="vaatimus.$$open" icon-role="chevron-down")
+                span(ng-hide="vaatimus.$$open" icon-role="chevron-right")
+                span(kaanna="vaatimus.nimi")
+            div.panel-body(ng-show="vaatimus.$$open")
+              div.osaamistasot
+                div.osaamistaso(ng-if="osaamistaso.kriteerit.length > 0" ng-repeat="osaamistaso in vaatimus.osaamistasot")
+                  div.asteikko
+                    span(ng-bind="arviointiasteikot[vaatimus.arviointiasteikko_id].osaamistasot[osaamistaso.osaamistaso_id].otsikko | kaanna")
+                  div.kriteerit
+                    p(ng-bind="osaamistaso.$$simplifiedKriteerit.kohde")
+                    ul
+                      li(ng-repeat="kriteeri in osaamistaso.$$simplifiedKriteerit.lista" ng-bind="kriteeri")
+
+  // Editointitila
+  div(ng-if="editEnabled")
+    div.tutkinnonosa-edit-field
+      h3(kaanna="'nimi'")
+      input.form-control(slocalized='' ng-model='tov.tutkinnonOsa.nimi' placeholder="{{ 'nimi' | kaanna }}")
+
+    div.tutkinnonosa-edit-field
+      h3(kaanna="'koodi'")
+
+    div.tutkinnonosa-edit-field
+      h3(kaanna="'kuvaus'")
+      div.form-control(ckeditor slocalized ng-model="tov.tutkinnonOsa.kuvaus" type="text")
+
+    div.tutkinnonosa-edit-field
+      h3(kaanna="'ammattitaidonOsoittamistavat'")
+      div.form-control(ckeditor slocalized ng-model="tov.tutkinnonOsa.ammattitaidonOsoittamistavat" type="text")
+
+
+    div.ammattitaitovaatimukset
+      h3
+        span(kaanna="'ammattitaitovaatimukset'")
+        button.btn.btn-link.toggle-arviointi(
+          type="button"
+          kaanna="'avaa-sulje-kaikki'"
+          ng-click="toggleArviointi()")
+
+      div
+        div(ng-model="tov.tutkinnonOsa.ammattitaitovaatimukset" ui-sortable="sortableOptionsAmmattitaitovaatimukset")
+          div(ng-repeat="vaatimus in tov.tutkinnonOsa.ammattitaitovaatimukset")
+            div.panel(ng-class="{ 'panel-info': vaatimus.id, 'panel-success': !vaatimus.id }")
+              div.panel-heading
+                span.handle.pull-right(icon-role="sort")
+                button.btn.btn-link.panel-title(
+                  type="button"
+                  ng-click="toggleVaatimus(vaatimus)")
+                  span(ng-show="vaatimus.$$open" icon-role="chevron-down")
+                  span(ng-hide="vaatimus.$$open" icon-role="chevron-right")
+                  span(ng-hide="vaatimus.id" kaanna="'uusi-ammattitaitovaatimus'")
+                  span(ng-show="vaatimus.id" kaanna="vaatimus.nimi")
+              div.panel-body(ng-show="vaatimus.$$open")
+                div.vaatimus-otsikko
+                  input.form-control(slocalized ng-model='vaatimus.nimi' placeholder="{{ 'vaatimus-nimi' | kaanna }}" style="width: 100%")
+                div.osaamistasot
+                  div.osaamistaso(ng-repeat="osaamistaso in vaatimus.osaamistasot")
+                    div.asteikko
+                      span(ng-bind="arviointiasteikot[vaatimus.arviointiasteikko_id].osaamistasot[osaamistaso.osaamistaso_id].otsikko | kaanna")
+                    div.kriteerit
+                      div.sortable-kriteerit(ng-model="osaamistaso.kriteerit" ui-sortable="sortableOptionsKriteerit" style="min-height: 8px")
+                        div.kriteeri.input-group(ng-repeat="kriteeri in osaamistaso.kriteerit")
+                          span.input-group-addon.handle
+                            span(icon-role="sort")
+                          input.form-control(slocalized ng-model='kriteeri.kuvaus' placeholder="{{ 'nimi' | kaanna }}")
+                          span.input-group-btn
+                            button.btn.btn-default(ng-click="poistaKriteeri(osaamistaso.kriteerit, kriteeri)" ng-disabled="kriteeri.$$poistoTimeout > 3")
+                              span(ng-show="kriteeri.$$klikattu")
+                                span(kaanna="'varmista-poisto'")
+                                span(ng-show="kriteeri.$$poistoTimeout < 4")
+                                  =" ("
+                                  span(ng-bind="kriteeri.$$poistoTimeout")
+                                  =")"
+                              span(ng-hide="kriteeri.$$klikattu" icon-role="remove")
+                        button.btn.btn-default(icon-role="plus" kaanna="'lisaa-kriteeri'" ng-click="lisaaKriteeri(osaamistaso.kriteerit)")
+
+      div.lisays
+        div.panel.panel-success(ng-show="uusiAmmattitaitovaatimus")
+          div.panel-heading
+            h4(kaanna="'uusi-ammattitaitovaatimus'")
+          div.panel-body.uusi-ammattitaitovaatimus
+            div(ng-repeat="asteikko in arviointiasteikot")
+              label
+                input(type="radio" ng-model="uusiAmmattitaitovaatimus.arviointiasteikko_id" ng-value="asteikko.id")
+                span(ng-repeat="(key, value) in asteikko.osaamistasot")
+                  span(kaanna="value.otsikko")
+                  span(ng-show="!$last")
+                    =" / "
+
+            button.btn.btn-primary.actions(
+              kaanna="'tallenna'"
+              icon-role="plus"
+              ng-click="ammattitaitovaatimus.tallenna(tov.tutkinnonOsa)")
+
+            button.btn.btn-primary.actions(
+              kaanna="'peruuta'"
+              icon-role="remove"
+              ng-click="ammattitaitovaatimus.peruutaLisays(tov.tutkinnonOsa)")
+
+        button.btn.btn-primary.actions(
+          ng-hide="uusiAmmattitaitovaatimus"
+          kaanna="'lisaa-ammattitaitovaatimus'"
+          icon-role="plus"
+          ng-click="ammattitaitovaatimus.aloitaLisays(tov.tutkinnonOsa)")
+            
+            div.list-edit-spacer
+  
+  pre(ng-bind="tov | json")
