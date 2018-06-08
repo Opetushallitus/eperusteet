@@ -16,11 +16,13 @@
 
 package fi.vm.sade.eperusteet.domain.yl;
 
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+
 /**
  *
  * @author nkala
  */
-public interface AIPEJarjestettava extends AIPEHasId {
+public interface AIPEJarjestettava extends ReferenceableDto {
     Integer getJarjestys();
     void setJarjestys(Integer value);
 }

@@ -16,9 +16,10 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import fi.vm.sade.eperusteet.domain.yl.AIPEHasId;
 import java.util.Date;
 import java.util.UUID;
+
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +29,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AIPEVaiheBaseDto implements AIPEHasId {
+public class AIPEVaiheBaseDto implements ReferenceableDto {
     private Long id;
     private UUID tunniste;
 

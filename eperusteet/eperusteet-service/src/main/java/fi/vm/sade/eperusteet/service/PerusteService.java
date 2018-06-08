@@ -67,6 +67,9 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id);
 
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id, Integer rev);
+
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     PerusteDto update(@P("perusteId") Long perusteId, PerusteDto perusteDto);
 

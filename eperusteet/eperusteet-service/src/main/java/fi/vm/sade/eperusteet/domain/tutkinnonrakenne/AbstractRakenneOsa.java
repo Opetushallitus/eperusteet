@@ -37,7 +37,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 public abstract class AbstractRakenneOsa implements Serializable, ReferenceableEntity {
 
     @Getter
-//    @NotNull
+    @NotNull
     @Column(updatable = false)
     private UUID tunniste;
 
