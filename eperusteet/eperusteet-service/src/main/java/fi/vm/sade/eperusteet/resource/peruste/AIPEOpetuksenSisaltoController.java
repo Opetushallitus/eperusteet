@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.*;
@@ -66,10 +67,20 @@ public class AIPEOpetuksenSisaltoController {
     @RequestMapping(value = "/vaiheet/{vaiheId}", method = GET)
     public ResponseEntity<AIPEVaiheDto> getVaihe(
             @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("vaiheId") final Long vaiheId,
+            @RequestParam(required = false) final Integer rev
+    ) {
+        return ResponseEntity.ok(sisalto.getVaihe(perusteId, vaiheId, rev));
+    }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/versiot", method = GET)
+    public ResponseEntity<List<Revision>> getVaiheVersio(
+            @PathVariable("perusteId") final Long perusteId,
             @PathVariable("vaiheId") final Long vaiheId
     ) {
-        return ResponseEntity.ok(sisalto.getVaihe(perusteId, vaiheId));
+        return ResponseEntity.ok(sisalto.getVaiheRevisions(perusteId, vaiheId));
     }
+
 
     @RequestMapping(value = "/vaiheet/{vaiheId}", method = DELETE)
     public ResponseEntity removeVaihe(

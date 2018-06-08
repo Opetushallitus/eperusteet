@@ -72,7 +72,9 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
 
     @Override
     public T findRevision(ID id, Integer revisionId) {
-        return AuditReaderFactory.get(entityManager).find(entityInformation.getJavaType(), id, revisionId);
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        T t = auditReader.find(entityInformation.getJavaType(), id, revisionId);
+        return t;
     }
 
     @Override

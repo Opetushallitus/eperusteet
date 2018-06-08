@@ -488,7 +488,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getKokoSisalto(final Long id) {
-        Peruste peruste = perusteet.findOne(id);
+        return getKokoSisalto(id, null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteKaikkiDto getKokoSisalto(final Long id, Integer perusteRev) {
+        Peruste peruste;
+        if (perusteRev != null) {
+            peruste = perusteet.findRevision(id, perusteRev);
+        }
+        else {
+            peruste = perusteet.findOne(id);
+        }
+
         if (peruste == null) {
             return null;
         }

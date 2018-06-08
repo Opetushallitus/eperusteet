@@ -19,16 +19,16 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,7 +257,8 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public List<OpetuksenKohdealueDto> getKohdealueet(Long perusteId, Long vaiheId) {
-        return mapper.mapAsList(getVaiheImpl(perusteId, vaiheId).getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
+//        return mapper.mapAsList(getVaiheImpl(perusteId, vaiheId).getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
+        return new ArrayList<>();
     }
 
     @Override
@@ -268,11 +269,15 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     @Override
-    public AIPEVaiheDto getVaihe(Long perusteId, Long vaiheId) {
-        AIPEVaihe vaihe = vaiheRepository.findOne(vaiheId);
+    public AIPEVaiheDto getVaihe(Long perusteId, Long vaiheId, Integer rev) {
+        AIPEVaihe vaihe = rev != null
+                ? vaiheRepository.findRevision(vaiheId, rev)
+                : vaiheRepository.findOne(vaiheId);
         AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
-        dto.setOpetuksenKohdealueet(mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class));
-        return dto;
+//        List<OpetuksenKohdealueDto> ok = mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
+//        dto.setOpetuksenKohdealueet(mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class));
+//        return dto;
+        return null;
     }
 
     @Override
@@ -318,7 +323,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         return mapper.mapAsList(laajaalaisetosaamiset, LaajaalainenOsaaminenDto.class);
     }
 
-    private <T extends AIPEJarjestettava, G extends AIPEHasId> void updateJarjestys(List<T> muutettavat, List<G> jarjestys) {
+    private <T extends AIPEJarjestettava, G extends ReferenceableDto> void updateJarjestys(List<T> muutettavat, List<G> jarjestys) {
         if (jarjestys.size() != muutettavat.size()) {
             Set<Long> nykyiset = muutettavat.stream()
                     .map(T::getId)
@@ -335,7 +340,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
                 .collect(Collectors.toMap(T::getId, obj -> obj));
 
         Integer idx = 0;
-        for (AIPEHasId obj : jarjestys) {
+        for (ReferenceableDto obj : jarjestys) {
             loMap.get(obj.getId()).setJarjestys(idx);
             idx += 1;
         }
@@ -381,5 +386,11 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     @Override
     public void updateLaajaalainenOsaaminenJarjestys(Long perusteId, List<LaajaalainenOsaaminenDto> laajaalaiset) {
         updateJarjestys(getPerusteSisalto(perusteId).getLaajaalaisetosaamiset(), laajaalaiset);
+    }
+
+    @Override
+    public List<Revision> getVaiheRevisions(Long perusteId, Long vaiheId) {
+        getVaihe(perusteId, vaiheId, null);
+        return vaiheRepository.getRevisions(vaiheId);
     }
 }

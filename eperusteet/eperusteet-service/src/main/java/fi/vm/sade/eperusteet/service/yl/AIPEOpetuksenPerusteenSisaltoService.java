@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.service.yl;
 
 import fi.vm.sade.eperusteet.dto.yl.*;
 import java.util.List;
+
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -67,7 +69,7 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
     void removeOppiaine(@P("perusteId") Long perusteId, Long vaiheId, Long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    AIPEVaiheDto getVaihe(@P("perusteId") Long perusteId, Long vaiheId);
+    AIPEVaiheDto getVaihe(@P("perusteId") Long perusteId, Long vaiheId, Integer rev);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     AIPEVaiheDto addVaihe(@P("perusteId") Long perusteId, AIPEVaiheDto vaiheDto);
@@ -110,4 +112,7 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void updateOppimaaratJarjestys(Long perusteId, Long vaiheId, Long oppiaineId, List<AIPEOppiaineBaseDto> jarjestys);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<Revision> getVaiheRevisions(Long perusteId, Long vaiheId);
 }
