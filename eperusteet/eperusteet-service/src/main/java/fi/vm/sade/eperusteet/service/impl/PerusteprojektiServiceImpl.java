@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.validation.ValidointiStatus;
+import fi.vm.sade.eperusteet.service.ProjektiValidator;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
@@ -152,6 +153,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Autowired
     private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
 
+    @Autowired
+    private ProjektiValidator projektiValidator;
 
     @Override
     @Transactional(readOnly = true)
@@ -852,6 +855,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
+    @Deprecated
     public TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila) {
         return validoiProjektiImpl(id, tila);
     }
@@ -1192,6 +1196,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, TiedoteDto tiedoteDto) {
 
         TilaUpdateStatus updateStatus = validoiProjekti(id, tila);
+        updateStatus.merge(projektiValidator.run(id, tila));
 
         // Perusteen tilan muutos
         if (!updateStatus.isVaihtoOk()) {

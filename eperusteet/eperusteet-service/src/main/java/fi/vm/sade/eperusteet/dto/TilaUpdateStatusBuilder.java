@@ -71,4 +71,8 @@ public class TilaUpdateStatusBuilder {
         status.setVaihtoOk(false);
         return this;
     }
+
+    public TilaUpdateStatus build() {
+        return status;
+    }
 }

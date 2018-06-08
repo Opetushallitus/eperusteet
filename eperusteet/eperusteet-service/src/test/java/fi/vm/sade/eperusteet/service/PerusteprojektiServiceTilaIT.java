@@ -15,19 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -475,7 +463,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         Object object = transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertFalse(status.isVaihtoOk());
-            assertEquals(13, status.getInfot().size());
+            assertEquals(12, status.getInfot().size());
             assertEquals(pp.getTila(), ProjektiTila.VIIMEISTELY);
             assertEquals(pp.getPeruste().getTila(), PerusteTila.LUONNOS);
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -544,6 +532,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         HashSet<Kieli> kielet = new HashSet<>();
         peruste.setKielet(kielet);
         peruste.asetaTila(perusteTila);
+        peruste.setKoulutukset(new HashSet<Koulutus>() {{ add(new Koulutus()); }});
         perusteRepo.save(peruste);
 
         return service.get(projektiDto.getId());

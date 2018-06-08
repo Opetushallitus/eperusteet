@@ -312,7 +312,8 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
         ppTestUtils.julkaise(opas.getId());
 
-        List<PerusteKoosteDto> kooste = perusteService.getKooste();assertThat(kooste).isEmpty();
+        List<PerusteKoosteDto> kooste = perusteService.getKooste();
+        assertThat(kooste).isEmpty();
     }
 
     @Test

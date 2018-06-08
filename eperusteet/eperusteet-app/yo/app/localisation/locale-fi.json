@@ -1318,5 +1318,6 @@
     "haku-koulutuksen-nimi-placeholder": "Koulutuksen nimi",
 
     "tutkintonimikkeen-osaamisala-puuttuu-perusteesta": "Tutkintonimikkeessä määritetty osaamisala puuttuu perusteesta",
-    "ryhman-osaamisalalta-puuttuu-vaaditut-tutkintonimikekuvaukset": "Osaamisalalta puuttuu määritetyt tutkintonimikeryhmät"
+    "ryhman-osaamisalalta-puuttuu-vaaditut-tutkintonimikekuvaukset": "Osaamisalalta puuttuu määritetyt tutkintonimikeryhmät",
+    "koulutuskoodi-puuttuu": "Perusteelta puuttuu koulutuskoodi"
 }
