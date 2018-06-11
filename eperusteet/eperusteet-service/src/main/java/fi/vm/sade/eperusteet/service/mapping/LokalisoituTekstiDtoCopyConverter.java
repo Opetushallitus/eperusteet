@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 
@@ -28,13 +29,14 @@ import ma.glasnost.orika.metadata.Type;
  * Time: 13.54
  */
 public class LokalisoituTekstiDtoCopyConverter extends BidirectionalConverter<LokalisoituTekstiDto,LokalisoituTekstiDto> {
+
     @Override
-    public LokalisoituTekstiDto convertTo(LokalisoituTekstiDto source, Type<LokalisoituTekstiDto> destinationType) {
-        return convertFrom(source, destinationType);
+    public LokalisoituTekstiDto convertTo(LokalisoituTekstiDto source, Type<LokalisoituTekstiDto> destinationType, MappingContext mappingContext) {
+        return convertFrom(source, destinationType, mappingContext);
     }
 
     @Override
-    public LokalisoituTekstiDto convertFrom(LokalisoituTekstiDto source, Type<LokalisoituTekstiDto> destinationType) {
+    public LokalisoituTekstiDto convertFrom(LokalisoituTekstiDto source, Type<LokalisoituTekstiDto> destinationType, MappingContext mappingContext) {
         return new LokalisoituTekstiDto(source.getId(), source.getTekstit());
     }
 }

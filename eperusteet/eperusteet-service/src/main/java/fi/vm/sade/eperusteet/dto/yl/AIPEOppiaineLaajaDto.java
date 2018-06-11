@@ -45,8 +45,8 @@ public class AIPEOppiaineLaajaDto extends AIPEOppiaineSuppeaDto {
 
     private List<OpetuksenTavoiteDto> tavoitteet;
 
-    private Optional<List<KeskeinenSisaltoalueDto>> sisaltoalueet;
+    private List<KeskeinenSisaltoalueDto> sisaltoalueet;
 
-    private Optional<List<AIPEKurssiDto>> kurssit;
+    private List<AIPEKurssiDto> kurssit;
 
 }

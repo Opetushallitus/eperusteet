@@ -16,36 +16,38 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.Koodistokoodi;
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author harrik
  */
+@Slf4j
 @Component
 public class KoodistokoodiConverter extends BidirectionalConverter<Koodistokoodi, String> {
-    
-    private static final Logger LOG = LoggerFactory.getLogger(KoodistokoodiConverter.class);
- 
+
+
     @Override
-    public String convertTo(Koodistokoodi s, Type<String> type) {
-        LOG.info("KoodistokoodiConverter convertTo kutsuttu luokalla: " + type.getRawType());
-        return s.getKoodi();
+    public String convertTo(Koodistokoodi source, Type<String> destinationType, MappingContext mappingContext) {
+        log.info("KoodistokoodiConverter convertTo kutsuttu luokalla: " + destinationType.getRawType());
+        return source.getKoodi();
     }
 
     @Override
-    public Koodistokoodi convertFrom(String d, Type<Koodistokoodi> type) {
-    /*    LOG.info("KoodistokoodiConverter convertFrom kutsuttu luokalla: " + type.getRawType());
+    public Koodistokoodi convertFrom(String source, Type<Koodistokoodi> destinationType, MappingContext mappingContext) {
+        /*
+        log.info("KoodistokoodiConverter convertFrom kutsuttu luokalla: " + type.getRawType());
         Class<?> klass = type.getRawType();
         if (klass == Koulutusala.class) {
             return koulutusalaRepo.findOneByKoodi(d);
         } else if (klass == Opintoala.class) {
             return opintoalaRepo.findOneByKoodi(d);
-        }*/
+        }
+        */
         return null;
     }
 }

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.mapping;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
+import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.slf4j.Logger;
@@ -38,29 +39,28 @@ public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen
     private TekstiPalanenRepository repository;
 
     @Override
-    public LokalisoituTekstiDto convertTo(TekstiPalanen tekstiPalanen, Type<LokalisoituTekstiDto> type) {
-        return new LokalisoituTekstiDto(tekstiPalanen.getId(), tekstiPalanen.getTunniste(), tekstiPalanen.getTeksti());
+    public LokalisoituTekstiDto convertTo(TekstiPalanen source, Type<LokalisoituTekstiDto> destinationType, MappingContext mappingContext) {
+        return new LokalisoituTekstiDto(source.getId(), source.getTunniste(), source.getTeksti());
     }
 
     @Override
-    public TekstiPalanen convertFrom(LokalisoituTekstiDto dto, Type<TekstiPalanen> type) {
-
-        if (dto.getId() != null) {
+    public TekstiPalanen convertFrom(LokalisoituTekstiDto source, Type<TekstiPalanen> destinationType, MappingContext mappingContext) {
+        if (source.getId() != null) {
             /*
             Jos id on mukana, yritä yhdistää olemassa olevaan tekstipalaseen
             Koska tekstipalanen on muuttumaton ja cachetettu, niin oletustapaus on että
             tekstipalanen on jo cachessa (luettu aikaisemmin) ja tietokantahaku vältetään.
             Huom! vihamielinen/virheellinen client voisi keksiä id:n aiheuttaen turhia tietokantahakuja.
             */
-            TekstiPalanen current = repository.findOne(dto.getId());
+            TekstiPalanen current = repository.findOne(source.getId());
             if (current != null) {
-                TekstiPalanen tekstiPalanen = TekstiPalanen.of(dto.getTekstit(), current.getTunniste());
+                TekstiPalanen tekstiPalanen = TekstiPalanen.of(source.getTekstit(), current.getTunniste());
                 if ( current.equals(tekstiPalanen) ) {
                     return current;
                 }
                 return tekstiPalanen;
             }
         }
-        return TekstiPalanen.of(dto.getTekstit());
+        return TekstiPalanen.of(source.getTekstit());
     }
 }

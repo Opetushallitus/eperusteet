@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
@@ -257,8 +258,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public List<OpetuksenKohdealueDto> getKohdealueet(Long perusteId, Long vaiheId) {
-//        return mapper.mapAsList(getVaiheImpl(perusteId, vaiheId).getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
-        return new ArrayList<>();
+        return mapper.mapAsList(getVaiheImpl(perusteId, vaiheId).getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
     }
 
     @Override
@@ -273,11 +273,15 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEVaihe vaihe = rev != null
                 ? vaiheRepository.findRevision(vaiheId, rev)
                 : vaiheRepository.findOne(vaiheId);
+
+        if (vaihe == null) {
+            throw new NotExistsException("vaihetta-ei-loytynyt");
+        }
+
         AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
-//        List<OpetuksenKohdealueDto> ok = mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
-//        dto.setOpetuksenKohdealueet(mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class));
-//        return dto;
-        return null;
+        dto.setOppiaineet(mapper.mapAsList(vaihe.getOppiaineet(), AIPEOppiaineLaajaDto.class));
+        dto.setOpetuksenKohdealueet(mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class));
+        return dto;
     }
 
     @Override
@@ -390,7 +394,6 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public List<Revision> getVaiheRevisions(Long perusteId, Long vaiheId) {
-        getVaihe(perusteId, vaiheId, null);
         return vaiheRepository.getRevisions(vaiheId);
     }
 }
