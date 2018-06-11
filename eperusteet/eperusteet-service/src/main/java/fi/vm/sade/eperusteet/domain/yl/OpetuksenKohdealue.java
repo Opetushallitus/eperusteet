@@ -62,16 +62,6 @@ public class OpetuksenKohdealue extends AbstractReferenceableEntity {
             inverseJoinColumns = @JoinColumn(name = "yl_oppiaine_id", nullable = false, updatable = false))
     private Set<Oppiaine> oppiaineet;
 
-    /*@Getter
-    @NotAudited
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "aipevaihe_kohdealue",
-            joinColumns = @JoinColumn(name = "kohdealue_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "vaihe_id", nullable = false, updatable = false))
-    @OrderColumn(name = "kohdealue_order")
-    private Set<AIPEVaihe> vaiheet = new HashSet<>();*/
-
-
     @Getter
     @RelatesToPeruste
     @NotAudited

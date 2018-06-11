@@ -26,6 +26,7 @@
         </encoder>
     </appender>
 
+    <!--<logger name="ma.glasnost.orika" level="debug"/>-->
     <logger name="org.apache.fop" level="off"/>
     <!--<logger name="org.hibernate.SQL" level="trace"/>-->
     <logger name="org.hibernate" level="error"/>

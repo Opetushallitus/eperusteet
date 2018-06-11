@@ -188,10 +188,6 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         } else if (ex instanceof IllegalArgumentException) {
             suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
-        } else if (ex.getCause().getClass().getSimpleName().equals("ClientAbortException")) {
-            suppresstrace = true;
-            map.put("syy", ex.getLocalizedMessage());
-            map.put("avain", "client-abort-virhe");
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");

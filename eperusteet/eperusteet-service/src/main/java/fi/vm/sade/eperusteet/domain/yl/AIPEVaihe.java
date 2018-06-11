@@ -72,14 +72,14 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
     @Setter
     private Integer jarjestys;
 
-//    @Getter
-//    @Audited
-//    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
-//    @JoinTable(name = "aipevaihe_kohdealue",
-//            joinColumns = @JoinColumn(name = "vaihe_id", insertable = false, unique = true),
-//            inverseJoinColumns = @JoinColumn(name = "kohdealue_id", insertable = false, unique = true))
-//    @OrderColumn(name = "kohdealue_order")
-//    private List<OpetuksenKohdealue> opetuksenKohdealueet = new ArrayList<>();
+    @Getter
+    @Audited
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinTable(name = "aipevaihe_kohdealue",
+            joinColumns = @JoinColumn(name = "vaihe_id", insertable = false, unique = true),
+            inverseJoinColumns = @JoinColumn(name = "kohdealue_id", insertable = false, unique = true))
+    @OrderColumn(name = "kohdealue_order")
+    private List<OpetuksenKohdealue> opetuksenKohdealueet = new ArrayList<>();
 
     @Getter
     @Audited
