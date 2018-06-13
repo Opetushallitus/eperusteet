@@ -38,7 +38,7 @@ angular.module("eperusteApp").config($stateProvider => {
                     const versiot = {};
                     VersionHelper.getAIPEVaiheVersions(versiot,
                         {
-                            id: peruste.id,
+                            perusteId: peruste.id,
                             vaiheId: $stateParams.osanId
                         }, true, res => {
                             deferred.resolve(versiot);

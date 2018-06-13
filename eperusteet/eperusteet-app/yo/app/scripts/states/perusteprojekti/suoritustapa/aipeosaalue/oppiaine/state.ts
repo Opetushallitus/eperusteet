@@ -28,7 +28,7 @@ angular.module("eperusteApp").config($stateProvider => {
                     const versiot = {};
                     VersionHelper.getAIPEOppiaineVersions(versiot,
                         {
-                            id: peruste.id,
+                            perusteId: peruste.id,
                             vaiheId: $stateParams.osanId,
                             oppiaineId: $stateParams.oppiaineId
                         }, true, res => {
@@ -76,7 +76,8 @@ angular.module("eperusteApp").config($stateProvider => {
                     oppiaineet,
                     oppimaarat,
                     laajaalaiset,
-                    vaihe
+                    vaihe,
+                    versiot
                 ) => {
                     for (const oa of oppimaarat) {
                         oa.$$url = $state.href("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
@@ -104,6 +105,19 @@ angular.module("eperusteApp").config($stateProvider => {
                     $scope.isOppimaara = !!oppiaine._oppiaine;
                     $scope.canAddKurssit = _.isEmpty(oppimaarat);
                     $scope.canAddOppimaara = !$scope.isOppimaara && _.isEmpty(kurssit);
+                    $scope.versiot = versiot;
+
+                    $scope.revertCb = () => {
+                        VersionHelper.getAIPEOppiaineVersions(versiot,
+                            {
+                                perusteId: $scope.peruste.id,
+                                vaiheId: $stateParams.osanId,
+                                oppiaineId: $stateParams.oppiaineId
+                            }, true, res => {
+                                Notifikaatiot.onnistui("aipe-oppiaine-palautettu");
+                                VersionHelper.setUrl(res);
+                            });
+                    };
 
                     $scope.lisaaOppimaara = async () => {
                         const oppimaara = await oppimaarat.post({});

@@ -75,6 +75,17 @@ angular.module("eperusteApp").directive("muokkausVaihe", () => {
                 VersionHelper.setUrl($scope.versiot);
             };
 
+            $scope.revertCb = () => {
+                VersionHelper.getAIPEVaiheVersions($scope.versiot,
+                    {
+                        perusteId: AIPEService.getPerusteId(),
+                        vaiheId: $stateParams.osanId,
+                    }, true, res => {
+                        Notifikaatiot.onnistui("aipe-vaihe-palautettu");
+                        VersionHelper.setUrl(res);
+                    });
+            };
+
             const createOppiaineUrl = oppiaine => $state.href(".oppiaine", { oppiaineId: oppiaine.id });
 
             if ($scope.editableModel && _.isArray($scope.editableModel.oppiaineet)) {
