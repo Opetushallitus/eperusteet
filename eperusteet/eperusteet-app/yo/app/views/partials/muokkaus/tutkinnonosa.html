@@ -51,7 +51,7 @@
 
                 <pikamenu ng-if="tutkinnonOsaViite.$resolved">
                     <span ng-if="!editEnabled">
-                        <span kaanna="tutkinnonOsaViite.tutkinnonOsa.nimi"></span>
+                        <span kaanna="tutkinnonOsaViite.tutkinnonOsa.nimi ||'nimeton'"></span>
                         <lang-validator kentta="tutkinnonOsaViite.tutkinnonOsa.nimi"></lang-validator>
                         <valmiskaannos ng-model="tutkinnonOsaViite.tutkinnonOsa"></valmiskaannos>
                     </span>

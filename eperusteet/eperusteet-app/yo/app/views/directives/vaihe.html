@@ -58,9 +58,10 @@
         <span ng-show="editEnabled">{{isNew ? 'uusi-vaihe' : 'muokkaa-vaihe' | kaanna}}</span>
     </h1>
 
-
     <versiotiedot ng-hide="editEnabled"></versiotiedot>
+
     <hr ng-show="editEnabled">
+
     <form name="tutkinnonOsaHeaderForm" role="form">
         <div ng-if="!editEnabled">
             <div ng-bind-html="valitseKieli(editableModel.kuvaus) | unsafe"></div>

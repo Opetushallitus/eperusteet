@@ -241,8 +241,26 @@ angular
         });
     })
     .factory("AIPEVaiheet", function($resource, SERVICE_LOC) {
-        return $resource(SERVICE_LOC + "/perusteet/:perusteId/aipeopetus/vaiheet/:vaiheId", {
-            vaiheId: "@id"
+        const baseUrl = SERVICE_LOC + "/perusteet/:perusteId/aipeopetus/vaiheet/:vaiheId";
+        return $resource(baseUrl, {
+            perusteId: "@perusteId",
+            vaiheId: "@vaiheId",
+            versio: "@versio"
+        }, {
+            versiot: { method: "GET", isArray: true, url: baseUrl + "/versiot" },
+            palauta: { method: "post", isArray: false, url: baseUrl + "/palauta/:versio" }
+        });
+    })
+    .factory("AIPEOppiaineet", function($resource, SERVICE_LOC) {
+        const baseUrl = SERVICE_LOC + "/perusteet/:perusteId/aipeopetus/vaiheet/:vaiheId/oppiaineet/:oppiaineId";
+        return $resource(baseUrl, {
+            perusteId: "@perusteId",
+            vaiheId: "@vaiheId",
+            oppiaineId: "@oppiaineId",
+            versio: "@versio"
+        }, {
+            versiot: { method: "GET", isArray: true, url: baseUrl + "/versiot" },
+            palauta: { method: "post", isArray: false, url: baseUrl + "/palauta/:versio" }
         });
     })
     .factory("Suoritustapa", function($resource, SERVICE_LOC) {

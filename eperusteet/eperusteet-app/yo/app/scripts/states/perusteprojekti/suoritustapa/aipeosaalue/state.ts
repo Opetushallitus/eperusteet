@@ -19,7 +19,7 @@ import _ from "lodash";
 
 angular.module("eperusteApp").config($stateProvider => {
     $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue", {
-        url: "/aipeosat/:osanTyyppi/:osanId",
+        url: "/aipeosat/:osanTyyppi/:osanId?{versio?:int}",
         template: require("scripts/states/perusteprojekti/suoritustapa/aipeosaalue/view.html"),
         resolve: {
             perusteprojektit: Api => Api.all("perusteprojektit"),
@@ -32,16 +32,40 @@ angular.module("eperusteApp").config($stateProvider => {
             isOsaaminen: ($stateParams, AIPEService) => $stateParams.osanTyyppi === AIPEService.OSAAMINEN,
             isVaihe: ($stateParams, AIPEService) => $stateParams.osanTyyppi === AIPEService.VAIHEET,
             isNew: $stateParams => $stateParams.osanId === "uusi",
-            vaihe: (vaiheet, $stateParams, Api, isVaihe, isNew) =>
-                isVaihe && !isNew
-                    ? vaiheet.get($stateParams.osanId)
-                    : Api.restangularizeElement(vaiheet, { opetuksenKohdealueet: [] }, ""),
+            versiot: ($stateParams, $q, VersionHelper, peruste, isVaihe) => {
+                const deferred = $q.defer();
+                if (isVaihe) {
+                    const versiot = {};
+                    VersionHelper.getAIPEVaiheVersions(versiot,
+                        {
+                            id: peruste.id,
+                            vaiheId: $stateParams.osanId
+                        }, true, res => {
+                            deferred.resolve(versiot);
+                        });
+                } else {
+                    deferred.resolve();
+                }
+                return deferred.promise;
+            },
+            vaihe: ($stateParams, Api, VersionHelper, vaiheet, isVaihe, isNew, versiot) => {
+                if (isVaihe && !isNew) {
+                    const versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, "") : null;
+                    const rev = VersionHelper.select(versiot, versio);
+                    const params: any = {};
+                    if (rev) {
+                        params.rev = rev;
+                    }
+                    return vaiheet.customGET($stateParams.osanId, params);
+                } else {
+                    return Api.restangularizeElement(vaiheet, { opetuksenKohdealueet: [] }, "");
+                }
+            },
             laajaalaiset: aipeopetus => aipeopetus.all("laajaalaiset").getList(),
             laajaalainen: (laajaalaiset, $stateParams, Api, isOsaaminen, isNew) =>
                 isOsaaminen && !isNew
                     ? laajaalaiset.get($stateParams.osanId)
-                    : Api.restangularizeElement(laajaalaiset, {}, ""),
-            oppiaineet: (vaihe, isVaihe, isNew) => (isVaihe && !isNew ? vaihe.all("oppiaineet").getList() : null)
+                    : Api.restangularizeElement(laajaalaiset, {}, "")
         },
         controller: (
             $scope,
@@ -59,15 +83,13 @@ angular.module("eperusteApp").config($stateProvider => {
             isOsaaminen,
             isVaihe,
             isNew,
-            oppiaineet,
-            AIPEService
+            AIPEService,
+            versiot
         ) => {
             $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
             $scope.isNew = isNew;
             $scope.osanTyyppi = $stateParams.osanTyyppi;
-            $scope.versiot = {
-                latest: true
-            };
+            $scope.versiot = {};
             $scope.$state = $state;
             $scope.aipeService = AIPEService;
 
@@ -77,7 +99,7 @@ angular.module("eperusteApp").config($stateProvider => {
             } else if (isVaihe) {
                 $scope.isVaihe = () => $state.is("root.perusteprojekti.suoritustapa.aipeosaalue");
                 $scope.dataObject = vaihe;
-                $scope.dataObject.oppiaineet = oppiaineet;
+                $scope.versiot = versiot;
             }
 
             $scope.edit = () => {
