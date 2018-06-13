@@ -20,22 +20,25 @@ import _ from "lodash";
 angular
     .module("eperusteApp")
     .service("VersionHelper", function(
-        PerusteenOsat,
         $uibModal,
-        RakenneVersiot,
         $log,
-        RakenneVersio,
-        Notifikaatiot,
         $state,
         $location,
         $stateParams,
+        $q,
+        PerusteenOsat,
+        RakenneVersiot,
+        RakenneVersio,
+        Notifikaatiot,
         TutkinnonOsaViitteet,
         LukioYleisetTavoitteetService,
         LukioAihekokonaisuudetService,
         LukioKurssiService,
         LukioOppiaineService,
         Kayttajatiedot,
-        $q
+        AIPEVaiheet,
+        AIPEOppiaineet,
+        AIPEService
     ) {
         const rakennaNimet = (list: any) => {
             let reqs = [];
@@ -62,7 +65,7 @@ angular
             if (!force && data.list) {
                 return;
             }
-            var handle = function(res) {
+            const handle = function(res) {
                 rakennaNimet(res);
                 data.list = res;
                 versiotListHandler(data);
@@ -99,6 +102,19 @@ angular
                 case "lukiorakenne":
                     LukioKurssiService.listRakenneVersions(cb).then(handle);
                     break;
+                case "aipevaihe":
+                    AIPEVaiheet.versiot({
+                        perusteId: tunniste.id,
+                        vaiheId: tunniste.vaiheId
+                    }).$promise.then(handle);
+                    break;
+                case "aipeoppiaine":
+                    AIPEOppiaineet.versiot({
+                        perusteId: tunniste.id,
+                        vaiheId: tunniste.vaiheId,
+                        oppiaineId: tunniste.oppiaineId
+                    }).$promise.then(handle);
+                    break;
                 default:
                     $log.error("Unknwon versio tyyppi: ", tyyppi);
             }
@@ -119,7 +135,7 @@ angular
         }
 
         function revert(data, tunniste, tyyppi, cb) {
-            var genericHandler = function(res) {
+            const genericHandler = function(res) {
                 cb(res);
             };
             // revert = get old (currently chosen) data, save as new version
@@ -170,6 +186,10 @@ angular
                 LukioOppiaineService.palautaLukioOppiaine(tunniste, data.chosen.numero).then(genericHandler);
             } else if (tyyppi === "lukiorakenne") {
                 LukioKurssiService.palautaRakenne(data.chosen.numero).then(genericHandler);
+            } else if (tyyppi === "aipevaihe") {
+                AIPEService.palautaVaihe(tunniste, data.chosen.numero).then(genericHandler);
+            } else if (tyyppi === "aipeoppiaine") {
+                AIPEService.palautaOppiaine(tunniste, data.chosen.numero).then(genericHandler);
             }
         }
 
@@ -201,7 +221,7 @@ angular
 
         this.lastModified = function(data) {
             if (data && data.chosen) {
-                var found = _.find(data.list, { numero: data.chosen.numero });
+                const found = _.find(data.list, { numero: data.chosen.numero });
                 if (found) {
                     return (found as any).pvm;
                 }
@@ -209,7 +229,7 @@ angular
         };
 
         this.select = function(data, index) {
-            var found = _.find(data.list, { index: parseInt(index, 10) });
+            const found = _.find(data.list, { index: parseInt(index, 10) });
             if (found) {
                 data.chosen = found;
                 data.latest = data.chosen.numero === (latest(data.list) as any).numero;
@@ -224,7 +244,7 @@ angular
         };
 
         this.latestIndex = function(data) {
-            var latestItem = latest(data.list);
+            const latestItem = latest(data.list);
             if (latestItem) {
                 return (latestItem as any).index;
             }
@@ -270,6 +290,14 @@ angular
             getVersions(data, tunniste, "lukiorakenne", force, cb);
         };
 
+        this.getAIPEVaiheVersions = function (data, tunniste, force, cb) {
+            getVersions(data, tunniste, "aipevaihe", force, cb);
+        };
+
+        this.getAIPEOppiaineVersions = function (data, tunniste, force, cb) {
+            getVersions(data, tunniste, "aipeoppiaine", force, cb);
+        };
+
         this.chooseLatest = function(data) {
             data.chosen = latest(data.list);
         };
@@ -287,8 +315,8 @@ angular
         };
 
         this.revertPerusteenosa = function(data, object, cb) {
-            var isTekstikappale = _.has(object, "nimi") && _.has(object, "teksti");
-            var type = isTekstikappale ? "Perusteenosa" : "Tutkinnonosa";
+            const isTekstikappale = _.has(object, "nimi") && _.has(object, "teksti");
+            const type = isTekstikappale ? "Perusteenosa" : "Tutkinnonosa";
             revert(data, { id: object.id }, type, cb);
         };
 
@@ -320,6 +348,14 @@ angular
             revert(data, tunniste, "lukiorakenne", cb);
         };
 
+        this.revertAIPEVaihe = function(data, tunniste, cb) {
+            revert(data, tunniste, "aipevaihe", cb);
+        };
+
+        this.revertAIPEOppiaine = function(data, tunniste, cb) {
+            revert(data, tunniste, "aipeoppiaine", cb);
+        };
+
         this.setUrl = function(data) {
             if (_.isEmpty(data)) {
                 return;
@@ -328,10 +364,12 @@ angular
             const currentIdx = this.currentIndex(data);
             const latestIdx = this.latestIndex(data);
 
-            $state.go($state.current.name, {
+            const params = {
                 ...$stateParams,
                 versio: currentIdx === latestIdx ? undefined : currentIdx
-            });
+            };
+
+            $state.go($state.current.name, params);
         };
 
         this.historyView = function(data) {
@@ -346,7 +384,7 @@ angular
                     }
                 })
                 .result.then(function(re) {
-                    var params = _.clone($stateParams);
+                    let params = _.clone($stateParams);
                     params.versio = "/" + re.index;
                     $state.go($state.current.name, params);
                 });

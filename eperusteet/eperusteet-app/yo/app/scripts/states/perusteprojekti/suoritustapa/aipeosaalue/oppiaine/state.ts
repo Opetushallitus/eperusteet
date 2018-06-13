@@ -21,7 +21,33 @@ angular.module("eperusteApp").config($stateProvider => {
     $stateProvider.state("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
         url: "/oppiaineet/:oppiaineId",
         resolve: {
-            oppiaine: (vaihe, $stateParams, Api) => vaihe.one("oppiaineet", $stateParams.oppiaineId).get(),
+            oppiaineet: (vaihe, isVaihe, isNew) => (isVaihe && !isNew ? vaihe.all("oppiaineet").getList() : null),
+            versiot: ($stateParams, $q, VersionHelper, peruste, isVaihe) => {
+                const deferred = $q.defer();
+                if (isVaihe) {
+                    const versiot = {};
+                    VersionHelper.getAIPEOppiaineVersions(versiot,
+                        {
+                            id: peruste.id,
+                            vaiheId: $stateParams.osanId,
+                            oppiaineId: $stateParams.oppiaineId
+                        }, true, res => {
+                            deferred.resolve(versiot);
+                        });
+                } else {
+                    deferred.resolve();
+                }
+                return deferred.promise;
+            },
+            oppiaine: ($stateParams, VersionHelper, vaihe, versiot) => {
+                const versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, "") : null;
+                const rev = VersionHelper.select(versiot, versio);
+                const params: any = {};
+                if (rev) {
+                    params.rev = rev;
+                }
+                return vaihe.one("oppiaineet").customGET($stateParams.oppiaineId, params)
+            },
             kurssit: (oppiaine, $stateParams) => oppiaine.all("kurssit").getList(),
             oppimaarat: oppiaine => oppiaine.all("oppimaarat").getList()
         },
@@ -29,25 +55,26 @@ angular.module("eperusteApp").config($stateProvider => {
             "aipeosaalue@root.perusteprojekti.suoritustapa.aipeosaalue": {
                 template: require("scripts/states/perusteprojekti/suoritustapa/aipeosaalue/oppiaine/view.pug"),
                 controller: (
+                    $rootScope,
                     $scope,
-                    oppiaine,
-                    Api,
-                    kurssit,
+                    $state,
+                    $stateParams,
                     Editointikontrollit,
                     PerusteProjektiSivunavi,
                     Notifikaatiot,
-                    oppiaineet,
-                    oppimaarat,
                     Varmistusdialogi,
-                    $state,
-                    $stateParams,
                     AIPEService,
-                    $rootScope,
+                    Api,
                     Utils,
                     Kieli,
                     Kaanna,
                     Koodisto,
                     MuokkausUtils,
+                    VersionHelper,
+                    oppiaine,
+                    kurssit,
+                    oppiaineet,
+                    oppimaarat,
                     laajaalaiset,
                     vaihe
                 ) => {
@@ -63,6 +90,11 @@ angular.module("eperusteApp").config($stateProvider => {
                         });
                     }
 
+                    $scope.vaihdaVersio = () => {
+                        $scope.versiot.hasChanged = true;
+                        VersionHelper.setUrl($scope.versiot);
+                    };
+
                     $scope.isSorting = false;
                     $scope.editEnabled = false;
                     $scope.editableModel = Api.copy(oppiaine);
@@ -72,6 +104,7 @@ angular.module("eperusteApp").config($stateProvider => {
                     $scope.isOppimaara = !!oppiaine._oppiaine;
                     $scope.canAddKurssit = _.isEmpty(oppimaarat);
                     $scope.canAddOppimaara = !$scope.isOppimaara && _.isEmpty(kurssit);
+
                     $scope.lisaaOppimaara = async () => {
                         const oppimaara = await oppimaarat.post({});
                         await $state.go("root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine", {
