@@ -70,7 +70,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     private Peruste getPeruste(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
-            throw new BusinessRuleViolationException("perustetta-ei-olemassa");
+            throw new NotExistsException("perustetta-ei-olemassa");
         }
         return peruste;
     }
@@ -79,32 +79,39 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     private AIPEOpetuksenSisalto getPerusteSisalto(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
-            throw new BusinessRuleViolationException("perustetta-ei-olemassa");
+            throw new NotExistsException("perustetta-ei-olemassa");
         }
 
         AIPEOpetuksenSisalto sisalto = peruste.getAipeOpetuksenPerusteenSisalto();
         if (sisalto == null) {
-            throw new BusinessRuleViolationException("perusteella-ei-oikeaa-sisaltoa");
+            throw new NotExistsException("perusteella-ei-oikeaa-sisaltoa");
         }
         return sisalto;
     }
 
-    private AIPEVaihe getVaiheImpl(Long perusteId, Long vaiheId) {
+    private AIPEVaihe getVaiheImpl(Long perusteId, Long vaiheId, Integer rev) {
         Peruste peruste = getPeruste(perusteId);
         AIPEOpetuksenSisalto sisalto = peruste.getAipeOpetuksenPerusteenSisalto();
         Optional<AIPEVaihe> vaihe = sisalto.getVaihe(vaiheId);
         if (!vaihe.isPresent()) {
-            throw new BusinessRuleViolationException("vaihetta-ei-olemassa");
+            throw new NotExistsException("vaihetta-ei-olemassa");
         }
-        return vaihe.get();
+
+        // On oikeus vaiheeseen perusteen kautta
+        AIPEVaihe aipeVaihe = rev != null
+                ? vaiheRepository.findRevision(vaiheId, rev)
+                : vaihe.get();
+
+        return aipeVaihe;
     }
 
-    private AIPEOppiaine getOppiaineImpl(Long perusteID, Long vaiheId, Long oppiaineId) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteID, vaiheId);
+    private AIPEOppiaine getOppiaineImpl(Long perusteId, Long vaiheId, Long oppiaineId) {
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
         if (oppiaine == null) {
-            throw new BusinessRuleViolationException("oppiainetta-ei-olemassa");
+            throw new NotExistsException("oppiainetta-ei-olemassa");
         }
+
         return oppiaine;
     }
 
@@ -112,16 +119,16 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEOpetuksenSisalto sisalto = getPerusteSisalto(perusteId);
         Optional<LaajaalainenOsaaminen> optLo = sisalto.getLaajaalainenOsaaminen(laajalainenId);
         if (!optLo.isPresent()) {
-            throw new BusinessRuleViolationException("laajaalainen-ei-olemassa");
+            throw new NotExistsException("laajaalainen-ei-olemassa");
         }
         return optLo.get();
     }
 
-    private AIPEKurssi getKurssiImpl(Long perusteID, Long vaiheId, Long oppiaineId, Long kurssiId) {
-        AIPEOppiaine oppiaine = getOppiaineImpl(perusteID, vaiheId, oppiaineId);
+    private AIPEKurssi getKurssiImpl(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId) {
+        AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
         Optional<AIPEKurssi> kurssi = oppiaine.getKurssi(kurssiId);
         if (!kurssi.isPresent()) {
-            throw new BusinessRuleViolationException("kurssia-ei-olemassa");
+            throw new NotExistsException("kurssia-ei-olemassa");
         }
         return kurssi.get();
     }
@@ -215,8 +222,27 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     @Override
-    public AIPEOppiaineDto getOppiaine(Long perusteId, Long vaiheId, Long oppiaineId) {
-        return mapper.map(getOppiaineImpl(perusteId, vaiheId, oppiaineId), AIPEOppiaineDto.class);
+    public AIPEOppiaineDto getOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev) {
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, rev);
+        AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
+
+        if (oppiaine == null) {
+            throw new NotExistsException("oppiainetta-ei-olemassa");
+        }
+
+        // On oikeus oppiaineeseen vaiheen ja perusteen kautta
+        oppiaine = rev != null
+                ? oppiaineRepository.findRevision(oppiaineId, rev)
+                : oppiaine;
+
+        AIPEOppiaineDto oppiaineDto = mapper.map(oppiaine, AIPEOppiaineDto.class);
+        return oppiaineDto;
+    }
+
+    @Override
+    public List<Revision> getOppiaineRevisions(Long perusteId, Long vaiheId, Long oppiaineId) {
+        getOppiaineImpl(perusteId, vaiheId, oppiaineId); // Jos ei oikeutta, heitetään poikkeus
+        return oppiaineRepository.getRevisions(oppiaineId);
     }
 
     @Override
@@ -243,9 +269,8 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public void removeOppiaine(Long perusteId, Long vaiheId, Long oppiaineId) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
-//        Set<AIPEOppiaine> oppiaineet = new HashSet<>();
         if (!vaihe.getOppiaineet().remove(oppiaine)) {
             // FIXME: JoinTable, mäppäys lapsioliosta parentiin ja envers
             for (AIPEOppiaine parent : vaihe.getOppiaineet()) {
@@ -258,25 +283,19 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public List<OpetuksenKohdealueDto> getKohdealueet(Long perusteId, Long vaiheId) {
-        return mapper.mapAsList(getVaiheImpl(perusteId, vaiheId).getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
+        return mapper.mapAsList(getVaiheImpl(perusteId, vaiheId, null).getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
     }
 
     @Override
     public List<AIPEOppiaineSuppeaDto> getOppiaineet(Long perusteId, Long vaiheId) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         List<AIPEOppiaine> oppiaineet = vaihe.getOppiaineet();
         return mapper.mapAsList(oppiaineet, AIPEOppiaineSuppeaDto.class);
     }
 
     @Override
     public AIPEVaiheDto getVaihe(Long perusteId, Long vaiheId, Integer rev) {
-        AIPEVaihe vaihe = rev != null
-                ? vaiheRepository.findRevision(vaiheId, rev)
-                : vaiheRepository.findOne(vaiheId);
-
-        if (vaihe == null) {
-            throw new NotExistsException("vaihetta-ei-loytynyt");
-        }
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, rev);
 
         AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
         dto.setOppiaineet(mapper.mapAsList(vaihe.getOppiaineet(), AIPEOppiaineLaajaDto.class));
@@ -303,7 +322,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public AIPEVaiheDto updateVaihe(Long perusteId, Long vaiheId, AIPEVaiheDto vaiheDto) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         vaiheDto.setId(vaiheId);
         vaihe = mapper.map(vaiheDto, vaihe);
         vaihe = vaiheRepository.save(vaihe);
@@ -312,7 +331,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public void removeVaihe(Long perusteId, Long vaiheId) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         if (!vaihe.getOppiaineet().isEmpty()) {
             throw new BusinessRuleViolationException("vaiheella-oppiaineita");
         }
@@ -364,7 +383,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
             || koodiArvo.startsWith("TK")
             || koodiArvo.startsWith("TK")
             || koodiArvo.startsWith("VK");
-    };
+    }
 
 
     @Override
@@ -374,7 +393,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public void updateOppiaineetJarjestys(Long perusteId, Long vaiheId, List<AIPEOppiaineBaseDto> jarjestys) {
-        updateJarjestys(getVaiheImpl(perusteId, vaiheId).getOppiaineet(), jarjestys);
+        updateJarjestys(getVaiheImpl(perusteId, vaiheId, null).getOppiaineet(), jarjestys);
     }
 
     @Override
@@ -394,6 +413,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public List<Revision> getVaiheRevisions(Long perusteId, Long vaiheId) {
+        getVaiheImpl(perusteId, vaiheId, null); // Jos ei oikeutta, heitetään poikkeus
         return vaiheRepository.getRevisions(vaiheId);
     }
 }
