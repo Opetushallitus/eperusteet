@@ -416,4 +416,32 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         getVaiheImpl(perusteId, vaiheId, null); // Jos ei oikeutta, heitetään poikkeus
         return vaiheRepository.getRevisions(vaiheId);
     }
+
+    @Override
+    public AIPEVaiheDto revertVaihe(Long perusteId, Long vaiheId, Integer rev) {
+        // Todo: Tarkista, että ei ole uusin
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, rev);
+        vaihe = vaiheRepository.save(vaihe);
+        return mapper.map(vaihe, AIPEVaiheDto.class);
+    }
+
+    @Override
+    public AIPEOppiaineDto revertOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev) {
+        // Todo: Tarkista, että ei ole uusin
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
+        AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
+
+        if (oppiaine == null) {
+            throw new NotExistsException("oppiainetta-ei-olemassa");
+        }
+
+        oppiaine = oppiaineRepository.findRevision(oppiaineId, rev);
+
+        if (oppiaine == null) {
+            throw new NotExistsException("oppiainetta-ei-olemassa");
+        }
+
+        oppiaineRepository.save(oppiaine);
+        return mapper.map(oppiaine, AIPEOppiaineDto.class);
+    }
 }

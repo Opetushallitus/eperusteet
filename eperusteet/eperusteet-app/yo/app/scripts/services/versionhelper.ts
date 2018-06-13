@@ -104,13 +104,13 @@ angular
                     break;
                 case "aipevaihe":
                     AIPEVaiheet.versiot({
-                        perusteId: tunniste.id,
+                        perusteId: tunniste.perusteId,
                         vaiheId: tunniste.vaiheId
                     }).$promise.then(handle);
                     break;
                 case "aipeoppiaine":
                     AIPEOppiaineet.versiot({
-                        perusteId: tunniste.id,
+                        perusteId: tunniste.perusteId,
                         vaiheId: tunniste.vaiheId,
                         oppiaineId: tunniste.oppiaineId
                     }).$promise.then(handle);

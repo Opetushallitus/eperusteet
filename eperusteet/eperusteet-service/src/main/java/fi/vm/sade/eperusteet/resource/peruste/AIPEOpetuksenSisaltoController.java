@@ -81,6 +81,16 @@ public class AIPEOpetuksenSisaltoController {
         return ResponseEntity.ok(sisalto.getVaiheRevisions(perusteId, vaiheId));
     }
 
+    @RequestMapping(value = "/vaiheet/{vaiheId}/palauta/{rev}", method = POST)
+    public AIPEVaiheDto revertVaihe(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long vaiheId,
+            @PathVariable final Integer rev
+    ) {
+        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, PALAUTUS)
+                .palautus(vaiheId, rev.longValue()), Void -> sisalto.revertVaihe(perusteId, vaiheId, rev));
+    }
+
 
     @RequestMapping(value = "/vaiheet/{vaiheId}", method = DELETE)
     public ResponseEntity removeVaihe(
@@ -288,6 +298,18 @@ public class AIPEOpetuksenSisaltoController {
             @PathVariable final Long oppiaineId
     ) {
         return ResponseEntity.ok(sisalto.getOppiaineRevisions(perusteId, vaiheId, oppiaineId));
+    }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/palauta/{rev}", method = POST)
+    public AIPEOppiaineDto revertOppiaine(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long vaiheId,
+            @PathVariable final Long oppiaineId,
+            @PathVariable final Integer rev
+    ) {
+        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, PALAUTUS)
+                .palautus(oppiaineId, rev.longValue()),
+                Void -> sisalto.revertOppiaine(perusteId, vaiheId, oppiaineId, rev));
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/oppimaarat", method = GET)

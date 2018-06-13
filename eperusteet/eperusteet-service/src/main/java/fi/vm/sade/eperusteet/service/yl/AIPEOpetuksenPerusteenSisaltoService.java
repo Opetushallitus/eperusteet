@@ -118,4 +118,10 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<Revision> getVaiheRevisions(Long perusteId, Long vaiheId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    AIPEVaiheDto revertVaihe(Long perusteId, Long vaiheId, Integer rev);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    AIPEOppiaineDto revertOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev);
 }
