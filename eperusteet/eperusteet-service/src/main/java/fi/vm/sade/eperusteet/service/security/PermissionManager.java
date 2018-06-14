@@ -425,9 +425,13 @@ public class PermissionManager {
     private boolean hasAnyRole(Authentication authentication, String perusteProjektiRyhmaOid, Collection<String> roles) {
         if (authentication != null && authentication.isAuthenticated()) {
             for (String role : roles) {
-                GrantedAuthority auth = new SimpleGrantedAuthority(perusteProjektiRyhmaOid == null ? role : role.replace("<oid>", perusteProjektiRyhmaOid));
-                if (authentication.getAuthorities().contains(auth)) {
-                    return true;
+                String accurateRole = perusteProjektiRyhmaOid == null
+                        ? role
+                        : role.replace("<oid>", perusteProjektiRyhmaOid);
+                for (GrantedAuthority authority : authentication.getAuthorities()) {
+                    if (authority.getAuthority() != null && authority.getAuthority().equals(accurateRole)) {
+                        return true;
+                    }
                 }
             }
         }
