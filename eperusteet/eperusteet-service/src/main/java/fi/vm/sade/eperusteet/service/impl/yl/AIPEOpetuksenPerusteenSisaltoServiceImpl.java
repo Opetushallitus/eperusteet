@@ -66,7 +66,6 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     @Autowired
     private PerusteRepository perusteRepository;
 
-    @Transactional
     private Peruste getPeruste(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
@@ -75,7 +74,6 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         return peruste;
     }
 
-    @Transactional
     private AIPEOpetuksenSisalto getPerusteSisalto(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
@@ -101,6 +99,10 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEVaihe aipeVaihe = rev != null
                 ? vaiheRepository.findRevision(vaiheId, rev)
                 : vaihe.get();
+
+        if (!vaihe.isPresent()) {
+            throw new NotExistsException("vaihetta-ei-olemassa");
+        }
 
         return aipeVaihe;
     }
@@ -421,8 +423,9 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     public AIPEVaiheDto revertVaihe(Long perusteId, Long vaiheId, Integer rev) {
         // Todo: Tarkista, että ei ole uusin
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, rev);
-        vaihe = vaiheRepository.save(vaihe);
-        return mapper.map(vaihe, AIPEVaiheDto.class);
+
+        AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
+        return updateVaihe(perusteId, vaiheId, dto);
     }
 
     @Override
@@ -441,7 +444,15 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
             throw new NotExistsException("oppiainetta-ei-olemassa");
         }
 
-        oppiaineRepository.save(oppiaine);
-        return mapper.map(oppiaine, AIPEOppiaineDto.class);
+        AIPEOppiaineDto dto = mapper.map(oppiaine, AIPEOppiaineDto.class);
+
+        // Todo: Miksi ei voi käyttää updateOppiaine metodia?
+        // PersistentObjectException: detached entity passed to persist: fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite
+        // return updateOppiaine(perusteId, vaiheId, oppiaineId, dto);
+
+        AIPEOppiaine palautettu = mapper.map(dto, AIPEOppiaine.class);
+        oppiaineRepository.save(palautettu);
+
+        return dto;
     }
 }
