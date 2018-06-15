@@ -164,11 +164,6 @@
         <beans:property name="cache" ref="casTicketsCacheBean"/>
     </beans:bean>
 
-    <beans:bean id="userDetailsService" class="fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl">
-        <beans:constructor-arg index="0" value="${host.alb}" />
-        <beans:constructor-arg index="1" value="osoite" />
-    </beans:bean>
-
     <beans:bean id="casAuthenticationProvider" class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
         <beans:property name="userDetailsService" ref="ldapUserService"/>
         <beans:property name="serviceProperties" ref="casServiceProperties"/>
