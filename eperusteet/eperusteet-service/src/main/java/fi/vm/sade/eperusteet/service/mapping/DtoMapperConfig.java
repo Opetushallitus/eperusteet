@@ -141,6 +141,7 @@ public class DtoMapperConfig {
 
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
         factory.getConverterFactory().registerConverter(cachedEntityConverter);
+        // Mikä järki konvertoida dto samaksi? testLukiokurssi vaatii, mutta miksi ei ole mockattu?
         factory.getConverterFactory().registerConverter(new LokalisoituTekstiDtoCopyConverter());
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));

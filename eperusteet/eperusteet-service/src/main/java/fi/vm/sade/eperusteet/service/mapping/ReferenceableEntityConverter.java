@@ -47,7 +47,7 @@ public class ReferenceableEntityConverter extends BidirectionalConverter<Referen
             // Perintähierarkioiden tapauksessa getReference() aiheuttaa ongelmia mappauksen kanssa
             // (viitteen luokka on perintähierarkian isäluokka eikä "oikea" luokka)
             ReferenceableEntity e = em.find(destinationType.getRawType(), Long.valueOf(source.getId()));
-            if ( e == null ) {
+            if (e == null) {
                 throw new IllegalArgumentException("Virheellinen viite " + source);
             }
         }
