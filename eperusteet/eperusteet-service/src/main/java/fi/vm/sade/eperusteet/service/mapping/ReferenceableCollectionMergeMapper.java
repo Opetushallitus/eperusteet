@@ -47,13 +47,8 @@ public class ReferenceableCollectionMergeMapper extends CustomMapper<Collection<
     @Override
     public void mapAtoB(Collection<ReferenceableDto> a, Collection<ReferenceableEntity> b, MappingContext context) {
         if (b.isEmpty()) {
-            try {
-                Class<? extends ReferenceableEntity> typeB = context.getResolvedDestinationType().getComponentType().getRawType().asSubclass(ReferenceableEntity.class);
-                map(a, b, typeB, context);
-            } catch (ClassCastException ex)  {
-                // FIXME: miksi tapahttuu?
-                log.error(ex.getLocalizedMessage(), ex.getCause());
-            }
+            Class<? extends ReferenceableEntity> typeB = context.getResolvedDestinationType().getComponentType().getRawType().asSubclass(ReferenceableEntity.class);
+            map(a, b, typeB, context);
         } else {
             mergeMap(a, b, context);
         }
