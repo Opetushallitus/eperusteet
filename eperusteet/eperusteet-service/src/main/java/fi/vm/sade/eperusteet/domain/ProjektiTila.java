@@ -103,4 +103,13 @@ public enum ProjektiTila {
     public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
         return EnumSet.noneOf(ProjektiTila.class);
     }
+
+    public boolean isOneOf(ProjektiTila... tilat) {
+        for (ProjektiTila toinen : tilat) {
+            if (toinen.toString().equals(this.tila)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

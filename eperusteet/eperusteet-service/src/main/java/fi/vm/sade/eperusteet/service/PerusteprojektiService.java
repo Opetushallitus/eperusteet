@@ -113,6 +113,6 @@ public interface PerusteprojektiService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     Page<ValidationDto> getVirheelliset(PageRequest p);
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila);
 }

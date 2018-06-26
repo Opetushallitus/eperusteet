@@ -48,4 +48,13 @@ public enum PerusteTyyppi {
         throw new IllegalArgumentException(tila + " ei ole kelvollinen PerusteTyyppi");
     }
 
+    public boolean isOneOf(PerusteTyyppi... tyypit) {
+        for (PerusteTyyppi toinen : tyypit) {
+            if (toinen.toString().equals(this.tila)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

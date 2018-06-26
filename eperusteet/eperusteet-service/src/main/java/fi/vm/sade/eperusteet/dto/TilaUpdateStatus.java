@@ -44,10 +44,17 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
 
     @Getter
     @Setter
-    boolean vaihtoOk;
+    boolean vaihtoOk = true;
 
     public TilaUpdateStatus() {
         status = this;
+    }
+
+    public void merge(TilaUpdateStatus other) {
+        if (other != null) {
+            vaihtoOk = vaihtoOk && other.isVaihtoOk();
+            infot.addAll(other.infot);
+        }
     }
 
     public static class TilaUpdateStatusBuilderForSuoritustapa {
