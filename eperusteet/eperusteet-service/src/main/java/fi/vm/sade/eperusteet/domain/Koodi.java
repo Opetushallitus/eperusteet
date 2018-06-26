@@ -17,8 +17,11 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import org.hibernate.annotations.Immutable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -62,4 +65,11 @@ public class Koodi implements Serializable {
         this.koodisto = koodisto;
         this.versio = null;
     }
+
+    public static void validateChange(Koodi a, Koodi b) {
+        if (a != null && !Objects.equals(a, b)) {
+            throw new BusinessRuleViolationException("koodia-ei-voi-muuttaa");
+        }
+    }
+
 }

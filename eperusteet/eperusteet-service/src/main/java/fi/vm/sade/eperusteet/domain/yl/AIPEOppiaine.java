@@ -19,12 +19,15 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Tunnistettava;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -38,7 +41,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Audited
 @Table(name = "yl_aipe_oppiaine")
-public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEOppiaine>, AIPEJarjestettava {
+public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEOppiaine>, AIPEJarjestettava, Tunnistettava {
 
     @NotNull
     @Column(updatable = false)
@@ -189,5 +192,64 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
                 .filter(kurssi -> Objects.equals(kurssi.getId(), kurssiId))
                 .findFirst();
     }
+
+    public static void validateChange(AIPEOppiaine a, AIPEOppiaine b) {
+        if (a.getNimi() != null && b.getNimi() == null) {
+            throw new BusinessRuleViolationException("nimea-ei-voi-poistaa");
+        }
+
+        if (a.getKoodi() != null && b.getKoodi() == null) {
+            throw new BusinessRuleViolationException("koodia-ei-voi-muuttaa");
+        }
+
+        if (!Objects.equals(a.getTunniste(), b.getTunniste())) {
+            throw new BusinessRuleViolationException("tunnistetta-ei-voi-muuttaa");
+        }
+
+        if (a.pakollinenKurssiKuvaus != null && b.pakollinenKurssiKuvaus == null) {
+            throw new BusinessRuleViolationException("nimea-ei-voi-poistaa");
+        }
+
+        if (a.syventavaKurssiKuvaus != null && b.syventavaKurssiKuvaus == null) {
+            throw new BusinessRuleViolationException("nimea-ei-voi-poistaa");
+        }
+
+        if (a.soveltavaKurssiKuvaus != null && b.soveltavaKurssiKuvaus == null) {
+            throw new BusinessRuleViolationException("nimea-ei-voi-poistaa");
+        }
+
+        if (a.kielikasvatus != null && b.kielikasvatus == null) {
+            throw new BusinessRuleViolationException("nimea-ei-voi-poistaa");
+        }
+
+        if (a.koosteinen != b.koosteinen) {
+            throw new BusinessRuleViolationException("oppiaineen-ominaisuutta-ei-voi-muuttaa");
+        }
+
+        if (a.abstrakti != b.abstrakti) {
+            throw new BusinessRuleViolationException("oppiaineen-ominaisuutta-ei-voi-muuttaa");
+        }
+
+        if ((a.oppiaine != null && b.oppiaine == null || (a.oppiaine != null && Objects.equals(a.oppiaine.getId(), b.oppiaine.getId())))) {
+            throw new BusinessRuleViolationException("omistavaa-oppiainetta-ei-voi-muuttaa");
+        }
+
+        TekstiOsa.validateChange(a.tehtava, b.tehtava);
+        TekstiOsa.validateChange(a.tyotavat, b.tyotavat);
+        TekstiOsa.validateChange(a.ohjaus, b.tehtava);
+        TekstiOsa.validateChange(a.arviointi, b.arviointi);
+        TekstiOsa.validateChange(a.sisaltoalueinfo, b.sisaltoalueinfo);
+
+        if (a.getKurssit() != null) {
+            if (!Objects.equals(a.getKurssit().size(), b.getKurssit().size())) {
+                throw new BusinessRuleViolationException("rakennetta-ei-voi-muuttaa");
+            }
+
+            for (Integer idx = 0; idx < a.getKurssit().size(); ++idx) {
+                AIPEKurssi.validateChange(a.getKurssit().get(idx), b.getKurssit().get(idx));
+            }
+        }
+    }
+
 
 }

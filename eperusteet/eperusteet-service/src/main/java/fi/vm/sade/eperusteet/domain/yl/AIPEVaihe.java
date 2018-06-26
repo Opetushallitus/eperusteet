@@ -22,6 +22,8 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -112,4 +114,38 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
     public AIPEVaihe kloonaa() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    static public void validateChange(AIPEVaihe a, AIPEVaihe b, boolean checkTextChanges) throws BusinessRuleViolationException {
+        if (b == null) {
+            throw new BusinessRuleViolationException("rakennetta-ei-voi-muuttaa");
+        }
+
+        TekstiOsa.validateChange(a.getSiirtymaEdellisesta(), b.getSiirtymaEdellisesta());
+        TekstiOsa.validateChange(a.getTehtava(), b.getSiirtymaEdellisesta());
+        TekstiOsa.validateChange(a.getSiirtymaSeuraavaan(), b.getSiirtymaEdellisesta());
+        TekstiOsa.validateChange(a.getPaikallisestiPaatettavatAsiat(), b.getPaikallisestiPaatettavatAsiat());
+
+        if (!Objects.equals(a.getTunniste(), b.getTunniste())) {
+            throw new BusinessRuleViolationException("tunnistetta-ei-voi-muuttaa");
+        }
+
+        if (!Objects.equals(a.getJarjestys(), b.getJarjestys())) {
+            throw new BusinessRuleViolationException("rakennetta-ei-voi-muuttaa");
+        }
+
+        if (!Objects.equals(a.getJarjestys(), b.getJarjestys())) {
+            throw new BusinessRuleViolationException("rakennetta-ei-voi-muuttaa");
+        }
+
+        if (a.getOppiaineet() != null) {
+            if (!Objects.equals(a.getOppiaineet().size(), b.getOppiaineet().size())) {
+                throw new BusinessRuleViolationException("rakennetta-ei-voi-muuttaa");
+            }
+
+            for (Integer idx = 0; idx < a.getOppiaineet().size(); ++idx) {
+                AIPEOppiaine.validateChange(a.getOppiaineet().get(idx), b.getOppiaineet().get(idx));
+            }
+        }
+    }
+
 }

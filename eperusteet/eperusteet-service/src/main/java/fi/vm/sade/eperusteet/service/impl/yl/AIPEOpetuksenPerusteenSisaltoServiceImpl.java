@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
@@ -324,9 +325,10 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public AIPEVaiheDto updateVaihe(Long perusteId, Long vaiheId, AIPEVaiheDto vaiheDto) {
+        Peruste peruste = getPeruste(perusteId);
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         vaiheDto.setId(vaiheId);
-        vaihe = mapper.map(vaiheDto, vaihe);
+        AIPEVaihe uusivaihe = mapper.map(vaiheDto, AIPEVaihe.class);
         vaihe = vaiheRepository.save(vaihe);
         return mapper.map(vaihe, AIPEVaiheDto.class);
     }

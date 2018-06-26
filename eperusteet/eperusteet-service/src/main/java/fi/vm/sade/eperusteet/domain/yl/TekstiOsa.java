@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -70,5 +71,25 @@ public class TekstiOsa implements Serializable, Identifiable {
         this.otsikko = other.getOtsikko();
         this.teksti = other.getTeksti();
     }
+
+    public static void validateChange(TekstiOsa a, TekstiOsa b) {
+        if (a == null) {
+            return;
+        }
+
+        if (b == null) {
+            throw new BusinessRuleViolationException("tekstiosaa-ei-voi-poistaa");
+        }
+
+        if (a.getOtsikko() != null && b.getOtsikko() == null) {
+            throw new BusinessRuleViolationException("otsikkoa-ei-voi-poistaa");
+        }
+
+        if (a.getTeksti() != null && b.getTeksti() == null) {
+            throw new BusinessRuleViolationException("tekstia-ei-voi-poistaa");
+        }
+
+    }
+
 
 }
