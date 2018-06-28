@@ -47,6 +47,8 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+
+import static fi.vm.sade.eperusteet.domain.TekstiPalanen.tarkistaTekstipalanen;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.*;
@@ -510,71 +512,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         return p.getTila().mahdollisetTilat(p.getPeruste().getTyyppi());
-    }
-
-    @SuppressWarnings("ServiceMethodEntity")
-    @Transactional(readOnly = true)
-    public void tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen,
-                                      final Set<Kieli> pakolliset, Map<String, String> virheellisetKielet) {
-        tarkistaTekstipalanen(nimi, palanen, pakolliset, virheellisetKielet, false);
-    }
-
-    @SuppressWarnings("ServiceMethodEntity")
-    @Transactional(readOnly = true)
-    public void tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen,
-                                      final Set<Kieli> pakolliset,
-                                      Map<String, String> virheellisetKielet, boolean pakollinen) {
-        if (palanen == null || palanen.getTeksti() == null) {
-            return;
-        }
-
-        // Oispa lambdat
-        boolean onJollainVaaditullaKielella = false;
-        if (!pakollinen) {
-            for (Kieli kieli : pakolliset) {
-                String osa = palanen.getTeksti().get(kieli);
-                if (osa != null && !osa.isEmpty()) {
-                    onJollainVaaditullaKielella = true;
-                    break;
-                }
-            }
-        }
-
-        if (pakollinen || onJollainVaaditullaKielella) {
-            for (Kieli kieli : pakolliset) {
-                Map<Kieli, String> teksti = palanen.getTeksti();
-                if (!teksti.containsKey(kieli) || teksti.get(kieli) == null || teksti.get(kieli).isEmpty()) {
-                    virheellisetKielet.put(nimi, kieli.name());
-                }
-            }
-        }
-    }
-
-    public void tarkistaLokalisoituTekstiDto(
-            final String nimi,
-            final LokalisoituTekstiDto tekstiDto,
-            final Set<Kieli> pakolliset,
-            Map<String, Set<Kieli>> virheellisetKielet
-    ) {
-        for (Kieli kieli : pakolliset) {
-            if (ObjectUtils.isEmpty(tekstiDto)) {
-                if (virheellisetKielet.containsKey(nimi)) {
-                    virheellisetKielet.get(nimi).add(kieli);
-                } else {
-                    virheellisetKielet.put(nimi, Stream.of(kieli).collect(Collectors.toSet()));
-                }
-                continue;
-            }
-
-            Map<Kieli, String> teksti = tekstiDto.getTekstit();
-            if (!teksti.containsKey(kieli) || ObjectUtils.isEmpty(teksti.get(kieli))) {
-                if (virheellisetKielet.containsKey(nimi)) {
-                    virheellisetKielet.get(nimi).add(kieli);
-                } else {
-                    virheellisetKielet.put(nimi, Stream.of(kieli).collect(Collectors.toSet()));
-                }
-            }
-        }
     }
 
     @SuppressWarnings("ServiceMethodEntity")
@@ -1115,11 +1052,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 // Tarkista KV-liite
                 if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
                     KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(peruste.getId());
-                    Set<Kieli> vaaditutKielet = new HashSet<>();
-                    vaaditutKielet.add(Kieli.FI);
-                    vaaditutKielet.add(Kieli.SV);
-                    vaaditutKielet.add(Kieli.EN);
-                    tarkistaKvliite(julkinenKVLiite, vaaditutKielet, updateStatus);
+                    Set<Kieli> vaaditutKielet = new HashSet<Kieli>() {{
+                        add(Kieli.FI);
+                        add(Kieli.SV);
+                        add(Kieli.EN);
+                    }};
                 }
             }
 
@@ -1144,50 +1081,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         return updateStatus;
-    }
-
-    private void tarkistaKvliite(KVLiiteJulkinenDto julkinenKVLiite, Set<Kieli> vaaditutKielet, TilaUpdateStatus updateStatus) {
-
-        Map<String, Set<Kieli>> virheellisetKielet = new HashMap<>();
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-suorittaneen-osaaminen",
-                julkinenKVLiite.getSuorittaneenOsaaminen(), vaaditutKielet, virheellisetKielet);
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-tyotehtavat-joissa-voi-toimia",
-                julkinenKVLiite.getTyotehtavatJoissaVoiToimia(), vaaditutKielet, virheellisetKielet);
-        if (julkinenKVLiite.getArvosanaAsteikko() == null) {
-            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus("kvliite-validointi-arvosana-asteikko");
-        }
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-jatkoopinto-kelpoisuus",
-                julkinenKVLiite.getJatkoopintoKelpoisuus(), vaaditutKielet, virheellisetKielet);
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-kansainvaliset-sopimukset",
-                julkinenKVLiite.getKansainvalisetSopimukset(), vaaditutKielet, virheellisetKielet);
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-saados-perusta",
-                julkinenKVLiite.getSaadosPerusta(), vaaditutKielet, virheellisetKielet);
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-pohjakoulutusvaatimukset",
-                julkinenKVLiite.getPohjakoulutusvaatimukset(), vaaditutKielet, virheellisetKielet);
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-lisatietoja",
-                julkinenKVLiite.getLisatietoja(), vaaditutKielet, virheellisetKielet);
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-tutkintotodistuksen-saaminen",
-                julkinenKVLiite.getTutkintotodistuksenSaaminen(), vaaditutKielet, virheellisetKielet);
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-tutkinnosta-paattava-viranomainen",
-                julkinenKVLiite.getTutkinnostaPaattavaViranomainen(), vaaditutKielet, virheellisetKielet);
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-nimi",
-                julkinenKVLiite.getNimi(), vaaditutKielet, virheellisetKielet);
-        if (ObjectUtils.isEmpty(julkinenKVLiite.getTasot())) {
-            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus("kvliite-validointi-tasot");
-        }
-        Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus = julkinenKVLiite.getMuodostumisenKuvaus();
-        if (!ObjectUtils.isEmpty(muodostumisenKuvaus)) {
-            muodostumisenKuvaus.forEach((st, kuvaus)
-                    -> tarkistaLokalisoituTekstiDto("kvliite-validointi-muodostumisen-kuvaus-" + st,
-                            kuvaus, vaaditutKielet, virheellisetKielet));
-        }
-
-        virheellisetKielet.forEach((viesti, kielet) -> {
-            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus(viesti, kielet);
-        });
     }
 
     @Override
