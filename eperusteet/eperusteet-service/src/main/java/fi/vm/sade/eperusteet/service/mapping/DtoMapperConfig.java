@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
+import fi.vm.sade.eperusteet.dto.KoulutusDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -275,6 +276,24 @@ public class DtoMapperConfig {
                                 }
                             }
                         } catch (RestClientException | AccessDeniedException ex) {
+                        }
+                    }
+                })
+                .register();
+
+        factory.classMap(Koulutus.class, KoulutusDto.class)
+                .byDefault()
+                .customize(new CustomMapper<Koulutus, KoulutusDto>() {
+                    @Override
+                    public void mapAtoB(Koulutus source, KoulutusDto target, MappingContext context) {
+                        try {
+                            KoodiDto koodiDto = new KoodiDto();
+                            koodiDto.setUri(target.getKoulutuskoodiUri());
+                            koodiDto.setKoodisto("koulutus");
+                            koodistoClient.addNimiAndUri(koodiDto);
+                            target.setNimi(new LokalisoituTekstiDto(koodiDto.getNimi()));
+                        } catch (RestClientException | AccessDeniedException ex) {
+                            logger.error(ex.getLocalizedMessage());
                         }
                     }
                 })
