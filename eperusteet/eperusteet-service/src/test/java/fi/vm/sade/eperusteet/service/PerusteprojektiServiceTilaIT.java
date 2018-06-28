@@ -448,6 +448,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void testUpdateTilaViimeistelyToValmisInvalidKVLiite() {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VIIMEISTELY, null, PerusteTila.LUONNOS);
