@@ -31,7 +31,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AIPEKurssiBaseDto implements ReferenceableDto {
+public class AIPEKurssiBaseDto implements AIPEHasId {
     private Long id;
     private UUID tunniste;
     private Optional<LokalisoituTekstiDto> nimi;

@@ -28,7 +28,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LaajaalainenOsaaminenDto implements ReferenceableDto {
+public class LaajaalainenOsaaminenDto implements ReferenceableDto, AIPEHasId {
     private Long id;
     private UUID tunniste;
     private Optional<LokalisoituTekstiDto> nimi;

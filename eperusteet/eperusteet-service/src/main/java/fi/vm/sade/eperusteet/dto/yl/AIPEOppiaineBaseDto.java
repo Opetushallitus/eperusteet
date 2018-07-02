@@ -30,7 +30,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AIPEOppiaineBaseDto implements ReferenceableDto {
+public class AIPEOppiaineBaseDto implements AIPEHasId {
     private Long id;
     private UUID tunniste;
     private Optional<LokalisoituTekstiDto> nimi;

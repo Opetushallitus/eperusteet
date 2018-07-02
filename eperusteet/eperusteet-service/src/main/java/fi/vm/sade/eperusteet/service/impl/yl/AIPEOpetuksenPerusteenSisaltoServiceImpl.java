@@ -350,7 +350,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         return mapper.mapAsList(laajaalaisetosaamiset, LaajaalainenOsaaminenDto.class);
     }
 
-    private <T extends AIPEJarjestettava, G extends ReferenceableDto> void updateJarjestys(List<T> muutettavat, List<G> jarjestys) {
+    private <T extends AIPEJarjestettava, G extends AIPEHasId> void updateJarjestys(List<T> muutettavat, List<G> jarjestys) {
         if (jarjestys.size() != muutettavat.size()) {
             Set<Long> nykyiset = muutettavat.stream()
                     .map(T::getId)
@@ -367,7 +367,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
                 .collect(Collectors.toMap(T::getId, obj -> obj));
 
         Integer idx = 0;
-        for (ReferenceableDto obj : jarjestys) {
+        for (AIPEHasId obj : jarjestys) {
             loMap.get(obj.getId()).setJarjestys(idx);
             idx += 1;
         }
