@@ -32,9 +32,9 @@ angular.module("eperusteApp").config($stateProvider => {
             isOsaaminen: ($stateParams, AIPEService) => $stateParams.osanTyyppi === AIPEService.OSAAMINEN,
             isVaihe: ($stateParams, AIPEService) => $stateParams.osanTyyppi === AIPEService.VAIHEET,
             isNew: $stateParams => $stateParams.osanId === "uusi",
-            versiot: ($stateParams, $q, VersionHelper, peruste, isVaihe) => {
+            versiot: ($stateParams, $q, VersionHelper, peruste, isVaihe, isNew) => {
                 const deferred = $q.defer();
-                if (isVaihe) {
+                if (isVaihe && !isNew) {
                     const versiot = {};
                     VersionHelper.getAIPEVaiheVersions(versiot,
                         {
