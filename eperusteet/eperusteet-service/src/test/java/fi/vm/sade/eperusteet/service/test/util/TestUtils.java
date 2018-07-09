@@ -118,6 +118,7 @@ public abstract class TestUtils {
 
         ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
         aosat.addAll(Arrays.asList(osat));
+        rakenne.setTunniste(UUID.randomUUID());
         rakenne.setOsat(aosat);
         rakenne.setMuodostumisSaanto(ms);
         rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
@@ -134,6 +135,7 @@ public abstract class TestUtils {
 
         ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
         aosat.addAll(Arrays.asList(osat));
+        rakenne.setTunniste(UUID.randomUUID());
         rakenne.setOsat(aosat);
         rakenne.setOsaamisala(new Koodi());
         rakenne.setMuodostumisSaanto(ms);
@@ -204,6 +206,7 @@ public abstract class TestUtils {
         public RakenneModuuliBuilder() {
             super(new RakenneModuuli());
             rakenne().setOsat(new ArrayList<>());
+            rakenne().setTunniste(UUID.randomUUID());
             rakenne().setRooli(RakenneModuuliRooli.NORMAALI);
             rakenne().setMuodostumisSaanto(new MuodostumisSaanto());
             rakenne().setNimi(TekstiPalanen.of(Kieli.FI, uniikkiString()));

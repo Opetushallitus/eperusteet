@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Tunnistettava;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.*;
 import javax.persistence.*;
@@ -36,12 +37,12 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Audited
 @Table(name = "yl_aipe_vaihe")
-public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEVaihe>, AIPEJarjestettava {
+public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEVaihe>, AIPEJarjestettava, Tunnistettava {
 
     @NotNull
     @Column(updatable = false)
     @Getter
-    private UUID tunniste = UUID.randomUUID();
+    private UUID tunniste;
 
     @Getter
     @Setter
@@ -93,6 +94,19 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
                    @JoinColumn(name = "oppiaine_id")})
     @OrderBy("jarjestys, id")
     private List<AIPEOppiaine> oppiaineet = new ArrayList<>(0);
+
+    public void setTunniste(UUID tunniste) {
+        if (this.tunniste == null) {
+            this.tunniste = tunniste;
+        }
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (this.tunniste == null) {
+            this.tunniste = UUID.randomUUID();
+        }
+    }
 
     public AIPEOppiaine getOppiaine(Long oppiaineId) {
         Optional<AIPEOppiaine> result = oppiaineet.stream()

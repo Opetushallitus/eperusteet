@@ -909,9 +909,28 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return updated;
     }
 
+    private Set<UUID> keraaTunnisteet(RakenneModuuli rakenne) {
+        HashSet<UUID> result = new HashSet<>();
+        if (rakenne != null) {
+            result.add(rakenne.getTunniste());
+            if (rakenne.getOsat() != null) {
+                rakenne.getOsat()
+                        .forEach(osa -> {
+                            result.add(osa.getTunniste());
+                            if (osa instanceof RakenneModuuli) {
+                                result.addAll(keraaTunnisteet((RakenneModuuli)osa));
+                            }
+                        });
+            }
+        }
+        return result;
+    }
+
     @Override
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
+        Peruste peruste = perusteet.findOne(perusteId);
+
         Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteId, suoritustapakoodi);
         if (rakenneId == null) {
             throw new NotExistsException("Rakennetta ei ole olemassa");
@@ -925,6 +944,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         rakenne.foreach(new VisitorImpl(maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
+
+        if (PerusteTila.VALMIS.equals(peruste.getTila())) {
+            Set<UUID> nykyisetTunnisteet = keraaTunnisteet(nykyinen);
+            Set<UUID> uudetTunnisteet = keraaTunnisteet(moduuli);
+
+            if (!uudetTunnisteet.containsAll(nykyisetTunnisteet)) {
+                throw new BusinessRuleViolationException("rakenteen-tunnisteita-ei-voi-muuttaa");
+            }
+        }
 
         boolean rakenneMuuttunut = moduuli.isSame(nykyinen, 0, true).isPresent();
         if (rakenneMuuttunut) {

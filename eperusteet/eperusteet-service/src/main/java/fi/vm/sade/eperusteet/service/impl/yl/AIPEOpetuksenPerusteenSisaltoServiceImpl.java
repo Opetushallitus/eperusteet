@@ -31,6 +31,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,11 +252,17 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     @Override
     public AIPEOppiaineDto updateOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, AIPEOppiaineDto oppiaineDto) {
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        Peruste peruste = getPeruste(perusteId);
         oppiaineDto.setId(oppiaineId);
-        oppiaine = mapper.map(oppiaineDto, oppiaine);
-        List<OpetuksenTavoite> tavoitteet = oppiaine.getTavoitteet();
+        AIPEOppiaine uusioppiaine = mapper.map(oppiaineDto, oppiaine);
+        List<OpetuksenTavoite> tavoitteet = uusioppiaine.getTavoitteet();
         List<OpetuksenTavoiteDto> tavoitteetDtos = mapper.mapAsList(tavoitteet, OpetuksenTavoiteDto.class);
-        AIPEOppiaineDto dto = mapper.map(oppiaine, AIPEOppiaineDto.class);
+
+        if (PerusteTila.VALMIS.equals(peruste.getTila())) {
+            AIPEOppiaine.validateChange(oppiaine, uusioppiaine);
+        }
+
+        AIPEOppiaineDto dto = mapper.map(uusioppiaine, AIPEOppiaineDto.class);
         dto.setTavoitteet(tavoitteetDtos);
         return dto;
     }
@@ -329,6 +336,11 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         vaiheDto.setId(vaiheId);
         AIPEVaihe uusivaihe = mapper.map(vaiheDto, AIPEVaihe.class);
+
+        if (PerusteTila.VALMIS.equals(peruste.getTila())) {
+            AIPEVaihe.validateChange(vaihe, uusivaihe, false);
+        }
+
         vaihe = vaiheRepository.save(vaihe);
         return mapper.map(vaihe, AIPEVaiheDto.class);
     }

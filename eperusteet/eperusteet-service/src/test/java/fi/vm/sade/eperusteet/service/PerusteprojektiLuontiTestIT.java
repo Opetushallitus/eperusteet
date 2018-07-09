@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
+import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.opas.OpasDto;
 import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
@@ -12,6 +13,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -534,6 +536,21 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         MuodostumisSaanto a = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(60, 60, null));
         MuodostumisSaanto b = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(60, 60, null));
         assertThat(a).isEqualTo(b);
+    }
+
+    @Test
+    public void testVaiheTunnisteMapping() {
+        AIPEVaihe vaihe = new AIPEVaihe();
+        vaihe.setTunniste(UUID.randomUUID());
+        AIPEVaiheDto vaiheDto = mapper.map(vaihe, AIPEVaiheDto.class);
+        AIPEVaihe uusivaihe = mapper.map(vaiheDto, AIPEVaihe.class);
+        assertThat(vaihe.getTunniste()).isEqualTo(vaiheDto.getTunniste());
+        assertThat(vaihe.getTunniste()).isEqualTo(uusivaihe.getTunniste());
+    }
+
+    @Test
+    public void testRakenneTunniste() {
+
     }
 
 }

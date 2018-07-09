@@ -262,6 +262,7 @@ public class RakenneModuuliTestIT {
                         Stream.of(oak1, oak2).collect(Collectors.toSet()),
                         null),
                 rakenne);
+
         assertThat(validoitu.ongelmat).hasSize(1);
     }
 
