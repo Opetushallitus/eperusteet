@@ -6,7 +6,7 @@ import
     json
 
 
-const koosteEndpoint = "https://virkailija.opintopolku.fi/eperusteet-service/api/perusteet/kooste"
+const koosteEndpoint = "https://virkailija.testiopintopolku.fi/eperusteet-service/api/perusteet/kooste"
 
 var
     client = newHttpClient()

@@ -20,12 +20,12 @@ import _ from "lodash";
 angular
     .module("eperusteApp")
     .service("AIPEService", function(
-        AIPEOppiaineet,
         $q,
+        AIPEOppiaineet,
         AIPELaajaalaisetOsaamiset,
+        AIPEVaiheet,
         Notifikaatiot,
-        SuoritustapaSisalto,
-        AIPEVaiheet
+        SuoritustapaSisalto
     ) {
         this.OSAAMINEN = "osaaminen";
         this.VAIHEET = "vaiheet";
@@ -169,5 +169,21 @@ angular
                 default:
                     return [];
             }
+        };
+
+        this.palautaVaihe = async (tunniste, versio) => {
+            return await AIPEVaiheet.palauta({
+                perusteId: this.getPerusteId(),
+                ...tunniste,
+                versio
+            });
+        };
+
+        this.palautaOppiaine = async (tunniste, versio) => {
+            return await AIPEOppiaineet.palauta({
+                perusteId: this.getPerusteId(),
+                ...tunniste,
+                versio
+            });
         };
     });

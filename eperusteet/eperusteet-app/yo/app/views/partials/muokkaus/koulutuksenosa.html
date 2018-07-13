@@ -48,15 +48,11 @@
           <span ng-show="!isNew" kaanna="vateConverter('muokkaus-tutkinnon-osa')"></span>
           <span ng-show="isNew" kaanna="vateConverter('luonti-tutkinnon-osa')"></span>
         </h1>
+
         <pikamenu ng-if="tutkinnonOsaViite.$resolved">
-          <!-- <span ng-if="editEnabled" edit-in-place="editableTutkinnonOsa.nimi"></span> -->
           <span ng-if="!editEnabled">
-            {{ tutkinnonOsaViite.tutkinnonOsa.nimi | kaanna:true }}
-            <span class="osan-laajuus" ng-if="getTosa() && getTosa().laajuus">
-              <span ng-bind="getTosa().laajuus"></span>
-              <span ng-show="isVaTe && getTosa().laajuusMaksimi"> - {{ getTosa().laajuusMaksimi }}</span>
-              <span kaanna="yksikko"></span>
-            </span>
+            <span kaanna="tutkinnonOsaViite.tutkinnonOsa.nimi"></span>
+            <lang-validator kentta="tutkinnonOsaViite.tutkinnonOsa.nimi"></lang-validator>
           </span>
         </pikamenu>
       </div>

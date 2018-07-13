@@ -80,7 +80,7 @@ public class PerusteController {
     @RequestMapping(value = "/kooste", method = GET)
     @ResponseBody
     @ApiIgnore
-    public ResponseEntity<List<PerusteExcelDto>> getKooste() {
+    public ResponseEntity<List<PerusteKoosteDto>> getKooste() {
         return new ResponseEntity<>(service.getKooste(), HttpStatus.OK);
     }
 
@@ -264,11 +264,11 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/kaikki", method = GET)
     @ResponseBody
     @ApiOperation(value = "perusteen kaikkien tietojen haku")
-    public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(@PathVariable("perusteId") final long id) {
-        return handleGet(id, 3600, () -> {
-            PerusteKaikkiDto res = service.getKokoSisalto(id);
-            return res;
-        });
+
+    public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
+            @PathVariable("perusteId") final long id,
+            @RequestParam(value = "rev", required = false) final Integer rev) {
+        return handleGet(id, 3600, () -> service.getKokoSisalto(id, rev));
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)

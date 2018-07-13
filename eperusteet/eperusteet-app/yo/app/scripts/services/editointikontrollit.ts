@@ -63,9 +63,7 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
         notifySentenceCaseWarnings(obj) {
             const warnings = [];
             _.each(obj.paths, path => {
-                if (!this.sentenceCaseValidator(_.get(obj.obj, path))) {
-                    warnings.push(_.get(obj.obj, path));
-                }
+                this.sentenceCaseValidator(_.get(obj.obj, path), warnings);
             });
             if (warnings.length > 0) {
                 $uibModal.open({
@@ -94,31 +92,31 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
             }
         },
 
-        sentenceCaseValidator(obj) {
-            function validateSentenceCase(input) {
-                return !!(_.isString(input) && _.eq(input, _.capitalize(input.toLowerCase())));
+        sentenceCaseValidator(obj, warnings) {
+            function validateSentenceCase(input, lang?) {
+                const isValid = _.isString(input) && _.eq(input, _.capitalize(input.toLowerCase()));
+                if (!isValid) {
+                    warnings.push({
+                        text: input,
+                        lang
+                    });
+                }
+                return isValid;
             }
 
-            if (validateSentenceCase(obj)) {
-                return true;
-            } else if (_.isObject(obj) && !_.isEmpty(obj)) {
-
+            if (_.isObject(obj) && !_.isEmpty(obj)) {
                 const langs = _(obj)
                     .keys()
                     .filter(key => _.includes(_.values(YleinenData.kielet), key))
                     .value();
 
-                let valid = true;
                 _.each(langs, (key: any) => {
-                    if (!validateSentenceCase(obj[key])) {
-                        valid = false;
-                    }
+                    validateSentenceCase(obj[key], key)
                 });
 
-                return valid;
+            } else {
+                validateSentenceCase(obj)
             }
-            // Undefined is okay
-            return true;
         },
 
         async saveEditing(kommentti) {

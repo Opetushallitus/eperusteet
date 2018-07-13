@@ -26,6 +26,7 @@
         </encoder>
     </appender>
 
+    <!--<logger name="ma.glasnost.orika" level="debug"/>-->
     <logger name="org.apache.fop" level="off"/>
     <!--<logger name="org.hibernate.SQL" level="trace"/>-->
     <logger name="org.hibernate" level="error"/>
@@ -36,6 +37,7 @@
     <logger name="fi.vm.sade.eperusteet" level="debug"/>
     <logger name="fi.vm.sade.eperusteet.PROFILING" level="trace"/>
     <logger name="fi.vm.sade.eperusteet.service.dokumentti" level="info"/>
+    <logger name="fi.vm.sade.eperusteet.repository.custom.TiedoteRepositoryImpl" level="info"/>
     <logger name="springfox.documentation" level="warn"/>
     <root level="info">
         <appender-ref ref="console"/>

@@ -4,12 +4,16 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
+import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteValidationDto;
+import fi.vm.sade.eperusteet.dto.opas.OpasDto;
+import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -35,8 +39,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
-import org.assertj.core.data.Index;
-
 import javax.persistence.EntityManager;
 
 
@@ -49,6 +51,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiService perusteprojektiService;
+
+    @Autowired
+    private OpasService opasService;
 
     @Autowired
     private PerusteenOsaViiteService povService;
@@ -79,18 +84,19 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testPerusteprojektiaEiVoiJulkaistaIlmanDiaaria() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("zäääää"));
             peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         });
-        Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, siirtyma);
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, null);
         assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VALMIS, siirtyma);
+        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, siirtyma);
+        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, TestUtils.createTiedote());
         assertThat(status.isVaihtoOk()).isTrue();
     }
 
@@ -104,8 +110,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong());
 
         // Julkaisu
-        Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, siirtyma);
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, null);
         assertThat(status.isVaihtoOk()).isFalse();
         assertThat(status.getInfot()).hasSize(1);
         assertThat(status.getInfot())
@@ -117,7 +122,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         rakenne.setMuodostumisSaanto(new MuodostumisSaantoDto(new MuodostumisSaantoDto.Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE)));
         lockService.lock(TutkinnonRakenneLockContext.of(perusteDto.getId(), Suoritustapakoodi.REFORMI));
         perusteService.updateTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, rakenne);
-        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, siirtyma);
+        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, null);
         assertThat(status.isVaihtoOk()).isTrue();
     }
 
@@ -145,8 +150,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         assertThat(rakenne.getOsat()).hasSize(1);
 
         // Julkaisu
-        Date siirtyma = (new GregorianCalendar(2099, 5, 4)).getTime();
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, siirtyma);
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, null);
 
         // FIXME
 //        assertThat(status.isVaihtoOk()).isFalse();
@@ -158,7 +162,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testDiaarinumerollaHaku() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setDiaarinumero("OPH-12345-1234");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
@@ -195,7 +201,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
                 .hasFieldOrPropertyWithValue("id", perusteDto.getId());
 
         // Käytetään uudempaa voimassa olevaa perustetta jos useampia
-        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setDiaarinumero("OPH-12345-1234");
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
@@ -218,11 +226,15 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testVirheellistenPerusteprojektienListaus() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
         });
+
         ppTestUtils.julkaise(projekti.getId());
-        List<PerusteValidationDto> virheelliset = perusteprojektiService.getVirheelliset();
+        PageRequest preq = new PageRequest(0, 10);
+        Page<ValidationDto> virheelliset = perusteprojektiService.getVirheelliset(preq);
         assertThat(virheelliset)
                 .isEmpty();
     }
@@ -230,7 +242,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testPerusteprojektiHakuNimella() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("zäääää"));
             peruste.getNimi().getTekstit().put(Kieli.SV, "ååå");
@@ -238,7 +252,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
         ppTestUtils.julkaise(projekti.getId());
 
-        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti();
+        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
+            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
+        });
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(projekti2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setNimi(TestUtils.lt("xäöäöäöä"));
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
@@ -273,6 +289,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Rollback
     public void testLuonnissaOlevatEiHakuun() {
         PerusteprojektiDto perusteprojekti = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto pp) -> {
+            pp.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
         });
         PerusteDto perusteDto = ppTestUtils.initPeruste(perusteprojekti.getPeruste().getIdLong());
         PerusteQuery pquery = new PerusteQuery();
@@ -284,6 +301,20 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         ppTestUtils.asetaTila(perusteprojekti.getId(), ProjektiTila.VALMIS);
         perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
+    }
+
+    @Test
+    @Rollback
+    public void testKoosteenLuominen() {
+        OpasLuontiDto luontiDto = new OpasLuontiDto();
+        luontiDto.setNimi("Opas");
+        luontiDto.setRyhmaOid("abc");
+        OpasDto opas = opasService.save(luontiDto);
+
+        ppTestUtils.julkaise(opas.getId());
+
+        List<PerusteKoosteDto> kooste = perusteService.getKooste();
+        assertThat(kooste).isEmpty();
     }
 
     @Test
@@ -311,6 +342,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteDto perusteDto = ppTestUtils.initPeruste(amosaaPohja1.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         });
+        ppTestUtils.luoValidiKVLiite(perusteDto.getId());
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.VIIMEISTELY);
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.VALMIS);
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.JULKAISTU);
@@ -329,6 +361,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(amosaaPohja2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
         });
+        ppTestUtils.luoValidiKVLiite(perusteDto2.getId());
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.VIIMEISTELY);
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.VALMIS);
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.JULKAISTU);
@@ -448,7 +481,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
             PerusteenOsaViiteDto.Matala c = perusteService.addSisaltoLapsi(perusteDto.getId(), b.getId(), new PerusteenOsaViiteDto.Matala(tekstiKappale2));
             em.flush();
             TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
-            assertThat(status.isVaihtoOk()).isTrue();
+            assertThat(status.getInfot())
+                    .extracting(TilaUpdateStatus.Status::getViesti)
+                    .contains("rakenteen-validointi-virhe");
         }
     }
 
@@ -500,6 +535,21 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         MuodostumisSaanto a = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(60, 60, null));
         MuodostumisSaanto b = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(60, 60, null));
         assertThat(a).isEqualTo(b);
+    }
+
+    @Test
+    public void testVaiheTunnisteMapping() {
+        AIPEVaihe vaihe = new AIPEVaihe();
+        vaihe.setTunniste(UUID.randomUUID());
+        AIPEVaiheDto vaiheDto = mapper.map(vaihe, AIPEVaiheDto.class);
+        AIPEVaihe uusivaihe = mapper.map(vaiheDto, AIPEVaihe.class);
+        assertThat(vaihe.getTunniste()).isEqualTo(vaiheDto.getTunniste());
+        assertThat(vaihe.getTunniste()).isEqualTo(uusivaihe.getTunniste());
+    }
+
+    @Test
+    public void testRakenneTunniste() {
+
     }
 
 }

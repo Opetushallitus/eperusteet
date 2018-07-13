@@ -299,7 +299,6 @@ export function createPeruste(koulutustyyppi: Koulutustyyppi, config?: Object) {
             id: genId(),
             suorittaneenOsaaminen: null,
             tyotehtavatJoissaVoiToimia: null,
-            tutkinnonVirallinenAsema: null,
             tutkintotodistuksenAntaja: null,
             _arvosanaAsteikko: null,
             jatkoopintoKelpoisuus: null,
@@ -308,7 +307,6 @@ export function createPeruste(koulutustyyppi: Koulutustyyppi, config?: Object) {
             pohjakoulutusvaatimukset: null,
             lisatietoja: null,
             tutkintotodistuksenSaaminen: null,
-            tutkinnonTaso: null,
             tutkinnostaPaattavaViranomainen: null
         },
         ...config

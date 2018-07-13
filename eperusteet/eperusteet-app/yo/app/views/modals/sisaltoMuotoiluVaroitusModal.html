@@ -5,9 +5,14 @@
     <p kaanna="'sisalto-muotoiluvirheet-ohita'"></p>
     <ul>
         <li ng-repeat="warning in warnings">
-            <span kaanna="warning"></span>
+            <span kaanna="warning.text"></span>
             <span> -> </span>
-            <span>{{warning | kaanna | sentenceCase}}</span>
+            <span>{{warning.text | sentenceCase}}</span>
+            <ul ng-show="warning.lang">
+                <li>
+                    <span kaanna="warning.lang"></span>
+                </li>
+            </ul>
         </li>
     </ul>
 </div>

@@ -114,6 +114,8 @@
     <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean"/>
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <!-- compatibility problem with Java properties files encoding -->
+        <property name="defaultEncoding" value="UTF-8"/>
         <property name="basename">
             <value>messages</value>
         </property>

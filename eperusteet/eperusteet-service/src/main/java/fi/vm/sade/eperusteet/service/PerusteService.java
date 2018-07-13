@@ -67,6 +67,9 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id);
 
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id, Integer rev);
+
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     PerusteDto update(@P("perusteId") Long perusteId, PerusteDto perusteDto);
 
@@ -80,7 +83,7 @@ public interface PerusteService {
     Page<PerusteHakuDto> getAll(PageRequest page, String kieli);
 
     @PreAuthorize("permitAll()")
-    List<PerusteExcelDto> getKooste();
+    List<PerusteKoosteDto> getKooste();
 
     @PreAuthorize("permitAll()")
     List<PerusteDto> getUusimmat();
@@ -166,6 +169,9 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId);
+
+    @PreAuthorize("permitAll()")
+    List<TutkintonimikeKoodiDto> doGetTutkintonimikeKoodit(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     TutkintonimikeKoodiDto addTutkintonimikeKoodi(@P("perusteId") Long perusteId, TutkintonimikeKoodiDto dto);

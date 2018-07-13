@@ -15,7 +15,6 @@
  */
 
 import _ from "lodash";
-import * as angular from "angular";
 
 export const LangValidator = (Kaanna, $compile, PerusteprojektiTiedotService, nakyvyyslinkkiService) => {
     return {
@@ -30,9 +29,9 @@ export const LangValidator = (Kaanna, $compile, PerusteprojektiTiedotService, na
             </span>
         </span>
         `,
-        controller($scope) {
+        controller($scope, $timeout, localStorageService) {
             $scope.virheet = [];
-            $scope.nayta = nakyvyyslinkkiService.getNakyvyys();
+            $scope.nayta = nakyvyyslinkkiService.getNakyvyys(localStorageService);
 
             async function updateKaannosvirheet() {
                 if (!$scope.nayta) {
@@ -53,6 +52,7 @@ export const LangValidator = (Kaanna, $compile, PerusteprojektiTiedotService, na
                 else {
                     $scope.virheet = [];
                 }
+                $timeout(() => $scope.$apply());
             }
 
             $scope.$watch("kentta", updateKaannosvirheet);
@@ -64,4 +64,4 @@ export const LangValidator = (Kaanna, $compile, PerusteprojektiTiedotService, na
             });
         }
     };
-}
+};

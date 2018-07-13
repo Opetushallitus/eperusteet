@@ -15,19 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -44,6 +32,7 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Ongelma;
 import java.math.BigDecimal;
@@ -61,6 +50,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -96,6 +86,9 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
     @Autowired
     PlatformTransactionManager transactionManager;
+
+    @Autowired
+    private PerusteprojektiTestUtils ppTestUtils;
 
     private final String ryhmaId = "1.2.246.562.28.11287634288";
     private final LaajuusYksikko yksikko = LaajuusYksikko.OSAAMISPISTE;
@@ -144,7 +137,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate.execute(transactionStatus -> {
                 Perusteprojekti pp = repo.findOne(projektiDto.getId());
                 assertTrue(status.isVaihtoOk());
-                assertNull(status.getInfot());
+                assertThat(status.getInfot()).isEmpty();
                 assertTrue(pp.getTila().equals(ProjektiTila.KOMMENTOINTI));
                 assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
                 for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -168,7 +161,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -195,7 +188,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.VIIMEISTELY));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -282,7 +275,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         Object object = transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -302,6 +295,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
         lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+        ppTestUtils.luoValidiKVLiite(projektiDto.getPeruste().getIdLong());
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VALMIS, null);
         tulostaInfo(status);
@@ -310,7 +304,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         Object object = transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.VALMIS));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -331,15 +325,16 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
         lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+        ppTestUtils.luoValidiKVLiite(projektiDto.getPeruste().getIdLong());
 
-        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, null);
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, TestUtils.createTiedote());
         tulostaInfo(status);
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         Object object = transactionTemplate.execute(transactionStatus -> {
             Perusteprojekti pp = repo.findOne(projektiDto.getId());
             assertTrue(status.isVaihtoOk());
-            assertNull(status.getInfot());
+            assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.JULKAISTU));
             assertTrue(pp.getPeruste().getTila().equals(PerusteTila.VALMIS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
@@ -396,7 +391,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
 
-        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 1, Calendar.MARCH, 12).getTime());
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, null);
         tulostaInfo(status);
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
@@ -426,10 +421,11 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
         lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.VALMIS));
+        ppTestUtils.luoValidiKVLiite(projektiDto.getPeruste().getIdLong());
 
         service.updateTila(projektiDto.getId(), ProjektiTila.VIIMEISTELY, null);
         service.updateTila(projektiDto.getId(), ProjektiTila.VALMIS, null);
-        service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, null);
+        service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, TestUtils.createTiedote());
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VALMIS, null);
         tulostaInfo(status);
@@ -444,6 +440,36 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
                 commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.VALMIS);
                 commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.VALMIS);
+            }
+            return null;
+        });
+        lockService.unlock(ctx);
+
+    }
+
+    @Test
+    @Ignore
+    public void testUpdateTilaViimeistelyToValmisInvalidKVLiite() {
+
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VIIMEISTELY, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.lock(ctx);
+        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VALMIS, null);
+        tulostaInfo(status);
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        // the code in this method executes in a transactional context
+        Object object = transactionTemplate.execute(transactionStatus -> {
+            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            assertFalse(status.isVaihtoOk());
+            assertEquals(12, status.getInfot().size());
+            assertEquals(pp.getTila(), ProjektiTila.VIIMEISTELY);
+            assertEquals(pp.getPeruste().getTila(), PerusteTila.LUONNOS);
+            for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
+                commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
             }
             return null;
         });
@@ -507,6 +533,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         HashSet<Kieli> kielet = new HashSet<>();
         peruste.setKielet(kielet);
         peruste.asetaTila(perusteTila);
+        peruste.setKoulutukset(new HashSet<Koulutus>() {{ add(new Koulutus()); }});
         perusteRepo.save(peruste);
 
         return service.get(projektiDto.getId());

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -39,14 +40,21 @@ import static java.util.Arrays.asList;
 public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
     @Getter
     @Setter
-    List<Status> infot;
+    List<Status> infot = new ArrayList<>();
 
     @Getter
     @Setter
-    boolean vaihtoOk;
+    boolean vaihtoOk = true;
 
     public TilaUpdateStatus() {
         status = this;
+    }
+
+    public void merge(TilaUpdateStatus other) {
+        if (other != null) {
+            vaihtoOk = vaihtoOk && other.isVaihtoOk();
+            infot.addAll(other.infot);
+        }
     }
 
     public static class TilaUpdateStatusBuilderForSuoritustapa {
@@ -150,20 +158,38 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         infot.add(new Status(viesti, suoritustapa, validointi, nimet));
     }
 
+    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet) {
+        if (infot == null) {
+            infot = new ArrayList<>();
+        }
+        infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet));
+    }
+
     @Getter
     @Setter
     public static class Status {
-
         String viesti;
         Validointi validointi;
-        List<LokalisoituTekstiDto> nimet;
+        List<LokalisoituTekstiDto> nimet = new ArrayList<>();
         Suoritustapakoodi suoritustapa;
+        Set<Kieli> kielet;
+
+        public Status() {
+        }
         
         public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet) {
             this.viesti = viesti;
             this.validointi = validointi;
             this.nimet = nimet;
             this.suoritustapa = suoritustapa;
+        }
+
+        public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet) {
+            this.viesti = viesti;
+            this.validointi = validointi;
+            this.nimet = nimet;
+            this.suoritustapa = suoritustapa;
+            this.kielet = kielet;
         }
     }
 

@@ -18,17 +18,20 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,45 +68,54 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     @Autowired
     private PerusteRepository perusteRepository;
 
-    @Transactional
     private Peruste getPeruste(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
-            throw new BusinessRuleViolationException("perustetta-ei-olemassa");
+            throw new NotExistsException("perustetta-ei-olemassa");
         }
         return peruste;
     }
 
-    @Transactional
     private AIPEOpetuksenSisalto getPerusteSisalto(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
-            throw new BusinessRuleViolationException("perustetta-ei-olemassa");
+            throw new NotExistsException("perustetta-ei-olemassa");
         }
 
         AIPEOpetuksenSisalto sisalto = peruste.getAipeOpetuksenPerusteenSisalto();
         if (sisalto == null) {
-            throw new BusinessRuleViolationException("perusteella-ei-oikeaa-sisaltoa");
+            throw new NotExistsException("perusteella-ei-oikeaa-sisaltoa");
         }
         return sisalto;
     }
 
-    private AIPEVaihe getVaiheImpl(Long perusteId, Long vaiheId) {
+    private AIPEVaihe getVaiheImpl(Long perusteId, Long vaiheId, Integer rev) {
         Peruste peruste = getPeruste(perusteId);
         AIPEOpetuksenSisalto sisalto = peruste.getAipeOpetuksenPerusteenSisalto();
         Optional<AIPEVaihe> vaihe = sisalto.getVaihe(vaiheId);
         if (!vaihe.isPresent()) {
-            throw new BusinessRuleViolationException("vaihetta-ei-olemassa");
+            throw new NotExistsException("vaihetta-ei-olemassa");
         }
-        return vaihe.get();
+
+        // On oikeus vaiheeseen perusteen kautta
+        AIPEVaihe aipeVaihe = rev != null
+                ? vaiheRepository.findRevision(vaiheId, rev)
+                : vaihe.get();
+
+        if (!vaihe.isPresent()) {
+            throw new NotExistsException("vaihetta-ei-olemassa");
+        }
+
+        return aipeVaihe;
     }
 
-    private AIPEOppiaine getOppiaineImpl(Long perusteID, Long vaiheId, Long oppiaineId) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteID, vaiheId);
+    private AIPEOppiaine getOppiaineImpl(Long perusteId, Long vaiheId, Long oppiaineId) {
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
         if (oppiaine == null) {
-            throw new BusinessRuleViolationException("oppiainetta-ei-olemassa");
+            throw new NotExistsException("oppiainetta-ei-olemassa");
         }
+
         return oppiaine;
     }
 
@@ -111,16 +123,16 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEOpetuksenSisalto sisalto = getPerusteSisalto(perusteId);
         Optional<LaajaalainenOsaaminen> optLo = sisalto.getLaajaalainenOsaaminen(laajalainenId);
         if (!optLo.isPresent()) {
-            throw new BusinessRuleViolationException("laajaalainen-ei-olemassa");
+            throw new NotExistsException("laajaalainen-ei-olemassa");
         }
         return optLo.get();
     }
 
-    private AIPEKurssi getKurssiImpl(Long perusteID, Long vaiheId, Long oppiaineId, Long kurssiId) {
-        AIPEOppiaine oppiaine = getOppiaineImpl(perusteID, vaiheId, oppiaineId);
+    private AIPEKurssi getKurssiImpl(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId) {
+        AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
         Optional<AIPEKurssi> kurssi = oppiaine.getKurssi(kurssiId);
         if (!kurssi.isPresent()) {
-            throw new BusinessRuleViolationException("kurssia-ei-olemassa");
+            throw new NotExistsException("kurssia-ei-olemassa");
         }
         return kurssi.get();
     }
@@ -214,18 +226,43 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     @Override
-    public AIPEOppiaineDto getOppiaine(Long perusteId, Long vaiheId, Long oppiaineId) {
-        return mapper.map(getOppiaineImpl(perusteId, vaiheId, oppiaineId), AIPEOppiaineDto.class);
+    public AIPEOppiaineDto getOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev) {
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, rev);
+        AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
+
+        if (oppiaine == null) {
+            throw new NotExistsException("oppiainetta-ei-olemassa");
+        }
+
+        // On oikeus oppiaineeseen vaiheen ja perusteen kautta
+        oppiaine = rev != null
+                ? oppiaineRepository.findRevision(oppiaineId, rev)
+                : oppiaine;
+
+        AIPEOppiaineDto oppiaineDto = mapper.map(oppiaine, AIPEOppiaineDto.class);
+        return oppiaineDto;
+    }
+
+    @Override
+    public List<Revision> getOppiaineRevisions(Long perusteId, Long vaiheId, Long oppiaineId) {
+        getOppiaineImpl(perusteId, vaiheId, oppiaineId); // Jos ei oikeutta, heitetään poikkeus
+        return oppiaineRepository.getRevisions(oppiaineId);
     }
 
     @Override
     public AIPEOppiaineDto updateOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, AIPEOppiaineDto oppiaineDto) {
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        Peruste peruste = getPeruste(perusteId);
         oppiaineDto.setId(oppiaineId);
-        oppiaine = mapper.map(oppiaineDto, oppiaine);
-        List<OpetuksenTavoite> tavoitteet = oppiaine.getTavoitteet();
+        AIPEOppiaine uusioppiaine = mapper.map(oppiaineDto, oppiaine);
+        List<OpetuksenTavoite> tavoitteet = uusioppiaine.getTavoitteet();
         List<OpetuksenTavoiteDto> tavoitteetDtos = mapper.mapAsList(tavoitteet, OpetuksenTavoiteDto.class);
-        AIPEOppiaineDto dto = mapper.map(oppiaine, AIPEOppiaineDto.class);
+
+        if (PerusteTila.VALMIS.equals(peruste.getTila())) {
+            AIPEOppiaine.validateChange(oppiaine, uusioppiaine);
+        }
+
+        AIPEOppiaineDto dto = mapper.map(uusioppiaine, AIPEOppiaineDto.class);
         dto.setTavoitteet(tavoitteetDtos);
         return dto;
     }
@@ -242,9 +279,8 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public void removeOppiaine(Long perusteId, Long vaiheId, Long oppiaineId) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
-//        Set<AIPEOppiaine> oppiaineet = new HashSet<>();
         if (!vaihe.getOppiaineet().remove(oppiaine)) {
             // FIXME: JoinTable, mäppäys lapsioliosta parentiin ja envers
             for (AIPEOppiaine parent : vaihe.getOppiaineet()) {
@@ -257,20 +293,22 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public List<OpetuksenKohdealueDto> getKohdealueet(Long perusteId, Long vaiheId) {
-        return mapper.mapAsList(getVaiheImpl(perusteId, vaiheId).getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
+        return mapper.mapAsList(getVaiheImpl(perusteId, vaiheId, null).getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class);
     }
 
     @Override
     public List<AIPEOppiaineSuppeaDto> getOppiaineet(Long perusteId, Long vaiheId) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         List<AIPEOppiaine> oppiaineet = vaihe.getOppiaineet();
         return mapper.mapAsList(oppiaineet, AIPEOppiaineSuppeaDto.class);
     }
 
     @Override
-    public AIPEVaiheDto getVaihe(Long perusteId, Long vaiheId) {
-        AIPEVaihe vaihe = vaiheRepository.findOne(vaiheId);
+    public AIPEVaiheDto getVaihe(Long perusteId, Long vaiheId, Integer rev) {
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, rev);
+
         AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
+        dto.setOppiaineet(mapper.mapAsList(vaihe.getOppiaineet(), AIPEOppiaineLaajaDto.class));
         dto.setOpetuksenKohdealueet(mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class));
         return dto;
     }
@@ -294,16 +332,22 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public AIPEVaiheDto updateVaihe(Long perusteId, Long vaiheId, AIPEVaiheDto vaiheDto) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        Peruste peruste = getPeruste(perusteId);
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         vaiheDto.setId(vaiheId);
-        vaihe = mapper.map(vaiheDto, vaihe);
+        AIPEVaihe uusivaihe = mapper.map(vaiheDto, AIPEVaihe.class);
+
+        if (PerusteTila.VALMIS.equals(peruste.getTila())) {
+            AIPEVaihe.validateChange(vaihe, uusivaihe, false);
+        }
+
         vaihe = vaiheRepository.save(vaihe);
         return mapper.map(vaihe, AIPEVaiheDto.class);
     }
 
     @Override
     public void removeVaihe(Long perusteId, Long vaiheId) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId);
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         if (!vaihe.getOppiaineet().isEmpty()) {
             throw new BusinessRuleViolationException("vaiheella-oppiaineita");
         }
@@ -355,7 +399,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
             || koodiArvo.startsWith("TK")
             || koodiArvo.startsWith("TK")
             || koodiArvo.startsWith("VK");
-    };
+    }
 
 
     @Override
@@ -365,7 +409,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public void updateOppiaineetJarjestys(Long perusteId, Long vaiheId, List<AIPEOppiaineBaseDto> jarjestys) {
-        updateJarjestys(getVaiheImpl(perusteId, vaiheId).getOppiaineet(), jarjestys);
+        updateJarjestys(getVaiheImpl(perusteId, vaiheId, null).getOppiaineet(), jarjestys);
     }
 
     @Override
@@ -381,5 +425,48 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     @Override
     public void updateLaajaalainenOsaaminenJarjestys(Long perusteId, List<LaajaalainenOsaaminenDto> laajaalaiset) {
         updateJarjestys(getPerusteSisalto(perusteId).getLaajaalaisetosaamiset(), laajaalaiset);
+    }
+
+    @Override
+    public List<Revision> getVaiheRevisions(Long perusteId, Long vaiheId) {
+        getVaiheImpl(perusteId, vaiheId, null); // Jos ei oikeutta, heitetään poikkeus
+        return vaiheRepository.getRevisions(vaiheId);
+    }
+
+    @Override
+    public AIPEVaiheDto revertVaihe(Long perusteId, Long vaiheId, Integer rev) {
+        // Todo: Tarkista, että ei ole uusin
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, rev);
+
+        AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
+        return updateVaihe(perusteId, vaiheId, dto);
+    }
+
+    @Override
+    public AIPEOppiaineDto revertOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev) {
+        // Todo: Tarkista, että ei ole uusin
+        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
+        AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
+
+        if (oppiaine == null) {
+            throw new NotExistsException("oppiainetta-ei-olemassa");
+        }
+
+        oppiaine = oppiaineRepository.findRevision(oppiaineId, rev);
+
+        if (oppiaine == null) {
+            throw new NotExistsException("oppiainetta-ei-olemassa");
+        }
+
+        AIPEOppiaineDto dto = mapper.map(oppiaine, AIPEOppiaineDto.class);
+
+        // Todo: Miksi ei voi käyttää updateOppiaine metodia?
+        // PersistentObjectException: detached entity passed to persist: fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite
+        // return updateOppiaine(perusteId, vaiheId, oppiaineId, dto);
+
+        AIPEOppiaine palautettu = mapper.map(dto, AIPEOppiaine.class);
+        oppiaineRepository.save(palautettu);
+
+        return dto;
     }
 }

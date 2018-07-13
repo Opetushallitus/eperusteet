@@ -19,9 +19,11 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import org.junit.After;
@@ -260,17 +262,19 @@ public class RakenneModuuliTestIT {
                         Stream.of(oak1, oak2).collect(Collectors.toSet()),
                         null),
                 rakenne);
+
         assertThat(validoitu.ongelmat).hasSize(1);
     }
 
     @Test
     public void testTutkintonimikkeet() {
         Koodi tutkintonimike = new Koodi();
+        tutkintonimike.setUri("turi");
 
         TestUtils.RakenneModuuliBuilder tnRyhma = TestUtils.rakenneModuuli()
                 .laajuus(180)
                 .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
-                .osaamisala(tutkintonimike)
+                .tutkintonimike(tutkintonimike)
                 .nimi(TekstiPalanen.of(Kieli.FI, "Tutkintonimike"))
                 .tayta();
 
@@ -279,10 +283,13 @@ public class RakenneModuuliTestIT {
                 .ryhma(tnRyhma)
                 .build();
 
+        TutkintonimikeKoodiDto tutkintonimikeKoodi = new TutkintonimikeKoodiDto();
+        tutkintonimikeKoodi.setTutkintonimikeUri("turi");
+
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(
                 new PerusteenRakenne.Context(
                         null,
-                        Stream.of(tutkintonimike).collect(Collectors.toSet())),
+                        Stream.of(tutkintonimikeKoodi).collect(Collectors.toList())),
                 rakenne);
         assertThat(validoitu.ongelmat).hasSize(0);
     }

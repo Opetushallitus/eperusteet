@@ -17,44 +17,41 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Functions;
 import fi.vm.sade.eperusteet.domain.*;
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 
-import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.validation.ValidointiStatus;
+import fi.vm.sade.eperusteet.service.ProjektiValidator;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
-import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+
+import static fi.vm.sade.eperusteet.domain.TekstiPalanen.tarkistaTekstipalanen;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
 import fi.vm.sade.eperusteet.repository.*;
-import fi.vm.sade.eperusteet.service.KayttajanTietoService;
-import fi.vm.sade.eperusteet.service.KoodistoClient;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -66,6 +63,7 @@ import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import static fi.vm.sade.eperusteet.service.util.Util.*;
+
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,11 +82,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -144,6 +146,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Autowired
     private DokumenttiService dokumenttiService;
 
+    @Autowired
+    private TiedoteService tiedoteService;
+
+    @Autowired
+    private ValidointiStatusRepository validointiStatusRepository;
+
+    @Autowired
+    private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
+
+    @Autowired
+    private ProjektiValidator projektiValidator;
+
     @Override
     @Transactional(readOnly = true)
     public List<PerusteprojektiInfoDto> getBasicInfo() {
@@ -176,6 +190,56 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional
+    public void validoiPerusteetTask() {
+        final AnonymousAuthenticationToken token = new AnonymousAuthenticationToken("system", "system",
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        SecurityContextHolder.getContext().setAuthentication(token);
+        Set<Perusteprojekti> projektit = new HashSet<>();
+        projektit.addAll(repository.findAllValidoimattomat());
+        projektit.addAll(repository.findAllValidoimattomatUudet());
+        LOG.debug("Tarkastetaan " + projektit.size() + " perustetta.");
+
+        for (Perusteprojekti pp : projektit) {
+            try {
+                if (pp.getTila() != JULKAISTU || pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
+                    return;
+                }
+
+                ValidointiStatus vs = validointiStatusRepository.findOneByPeruste(pp.getPeruste());
+                boolean vaatiiValidoinnin = vs == null
+                        || !vs.isVaihtoOk()
+                        || pp.getPeruste().getGlobalVersion().getAikaleima().after(vs.getLastCheck());
+
+                if (!vaatiiValidoinnin) {
+                    return;
+                }
+
+                LOG.debug("Perusteen ajastettu validointi: " + pp.getPeruste().getId());
+
+                TilaUpdateStatus status = validoiProjektiImpl(pp.getId(), JULKAISTU);
+
+                if (vs != null) {
+                    mapper.map(status, vs);
+                }
+                else {
+                    vs = mapper.map(status, ValidointiStatus.class);
+                }
+
+                vs.setPeruste(pp.getPeruste());
+                vs.setLastCheck(pp.getPeruste().getGlobalVersion().getAikaleima());
+
+                validointiStatusRepository.save(vs);
+            }
+            catch (AuthenticationCredentialsNotFoundException ex) {
+                LOG.debug(ex.getMessage());
+            }
+        }
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<PerusteprojektiKevytDto> findBy(PageRequest page, PerusteprojektiQueryDto query) {
         Page<PerusteprojektiKevytDto> result = repository.findBy(page, query).map(pp -> {
@@ -202,16 +266,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PerusteValidationDto> getVirheelliset() {
-        return repository.findAll().stream()
-                .filter(pp -> pp.getTila() == JULKAISTU)
-                .map(pp -> {
-                    PerusteValidationDto result = mapper.map(pp, PerusteValidationDto.class);
-                    result.setValidation(validoiProjekti(pp.getId(), JULKAISTU));
-                    return result;
-                })
-                .filter(p -> !p.getValidation().isVaihtoOk())
-                .collect(Collectors.toList());
+    public Page<ValidationDto> getVirheelliset(PageRequest p) {
+        Page<ValidointiStatus> virheelliset = validointiStatusRepository.findVirheelliset(p);
+        Page<ValidationDto> result = virheelliset
+                .map(validation -> {
+                    ValidationDto dto = mapper.map(validation, ValidationDto.class);
+                    dto.setPerusteprojekti(mapper.map(validation.getPeruste().getPerusteprojekti(), PerusteprojektiListausDto.class));
+                    return dto;
+                });
+        return result;
     }
 
     @Override
@@ -449,44 +512,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         return p.getTila().mahdollisetTilat(p.getPeruste().getTyyppi());
-    }
-
-    @SuppressWarnings("ServiceMethodEntity")
-    @Transactional(readOnly = true)
-    public void tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen,
-                                      final Set<Kieli> pakolliset, Map<String, String> virheellisetKielet) {
-        tarkistaTekstipalanen(nimi, palanen, pakolliset, virheellisetKielet, false);
-    }
-
-    @SuppressWarnings("ServiceMethodEntity")
-    @Transactional(readOnly = true)
-    public void tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen,
-                                      final Set<Kieli> pakolliset,
-                                      Map<String, String> virheellisetKielet, boolean pakollinen) {
-        if (palanen == null || palanen.getTeksti() == null) {
-            return;
-        }
-
-        // Oispa lambdat
-        boolean onJollainVaaditullaKielella = false;
-        if (!pakollinen) {
-            for (Kieli kieli : pakolliset) {
-                String osa = palanen.getTeksti().get(kieli);
-                if (osa != null && !osa.isEmpty()) {
-                    onJollainVaaditullaKielella = true;
-                    break;
-                }
-            }
-        }
-
-        if (pakollinen || onJollainVaaditullaKielella) {
-            for (Kieli kieli : pakolliset) {
-                Map<Kieli, String> teksti = palanen.getTeksti();
-                if (!teksti.containsKey(kieli) || teksti.get(kieli) == null || teksti.get(kieli).isEmpty()) {
-                    virheellisetKielet.put(nimi, kieli.name());
-                }
-            }
-        }
     }
 
     @SuppressWarnings("ServiceMethodEntity")
@@ -764,6 +789,22 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return result;
     }
 
+    @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional
+    @Deprecated
+    public TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila) {
+        return validoiProjektiImpl(id, tila);
+    }
+
+
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
+    private List<TutkintonimikeKoodiDto> doGetTutkintonimikeKoodit(Long perusteId) {
+        List<TutkintonimikeKoodi> koodit = tutkintonimikeKoodiRepository.findByPerusteId(perusteId);
+        return mapper.mapAsList(koodit, TutkintonimikeKoodiDto.class);
+    }
+
     /**
      * Validoi perusteprojektin tilaa vasten
      *
@@ -771,24 +812,22 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
      * @param tila
      * @return
      */
-    @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-    public TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila) {
+    private TilaUpdateStatus validoiProjektiImpl(Long id, ProjektiTila tila) {
 
         TilaUpdateStatus updateStatus = new TilaUpdateStatus();
         updateStatus.setVaihtoOk(true);
 
         Perusteprojekti projekti = repository.findOne(id);
-        Long perusteId = projekti.getPeruste().getId();
 
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
 
-        Set<String> tutkinnonOsienKoodit = new HashSet<>();
-        Peruste peruste = projekti.getPeruste();
-        boolean isValmisPohja = PerusteTyyppi.POHJA == peruste.getTyyppi() && (VALMIS == projekti.getTila() || PerusteTila.VALMIS == peruste.getTila());
+        if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
+            return updateStatus;
+        }
 
         // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
         if (tila != ProjektiTila.POISTETTU && tila != LAADINTA && tila != KOMMENTOINTI) {
@@ -796,19 +835,43 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
                         || nimi.getTeksti().get(kieli).isEmpty()) {
-                    if (projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
-                        updateStatus.addStatus("oppaan-nimea-ei-ole-kaikilla-kielilla");
-                    } else {
-                        updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
-                    }
+                    updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
                     updateStatus.setVaihtoOk(false);
                     break;
                 }
             }
         }
 
+        Set<String> tutkinnonOsienKoodit = new HashSet<>();
+        Peruste peruste = projekti.getPeruste();
+        boolean isValmisPohja = PerusteTyyppi.POHJA == peruste.getTyyppi() && (VALMIS == projekti.getTila() || PerusteTila.VALMIS == peruste.getTila());
+
         // Perusteen validointi
-        if (!isValmisPohja && peruste.getSuoritustavat() != null && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
+        if (!isValmisPohja
+                && peruste.getSuoritustavat() != null
+                && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
+            if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
+                Set<String> osaamisalat = peruste.getOsaamisalat()
+                        .stream()
+                        .map(Koodi::getUri)
+                        .collect(Collectors.toSet());
+                List<TutkintonimikeKoodiDto> tutkintonimikkeet = doGetTutkintonimikeKoodit(peruste.getId());
+
+                { // Tutkintonimikkeiden osaamisalat täytyvät olla perusteessa
+                    Set<String> tutkintonimikkeidenOsaamisalat = tutkintonimikkeet.stream()
+                            .map(TutkintonimikeKoodiDto::getOsaamisalaUri)
+                            .collect(Collectors.toSet());
+
+                    for (String nimikkeenOsaamisala : tutkintonimikkeidenOsaamisalat) {
+                        if (!osaamisalat.contains(nimikkeenOsaamisala)) {
+                            updateStatus.addStatus("tutkintonimikkeen-osaamisala-puuttuu-perusteesta");
+                            updateStatus.setVaihtoOk(false);
+                            break;
+                        }
+                    }
+                }
+            }
+
             if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
                 Validointi validointi;
 
@@ -836,7 +899,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     if (PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
                         if (suoritustapa.getRakenne() != null && PerusteTyyppi.NORMAALI.equals(peruste.getTyyppi())) {
                             validointi = PerusteenRakenne.validoiRyhma(
-                                    new PerusteenRakenne.Context(peruste.getOsaamisalat(), null),
+                                    new PerusteenRakenne.Context(peruste.getOsaamisalat(), doGetTutkintonimikeKoodit(peruste.getId())),
                                     suoritustapa.getRakenne(),
                                     KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                             if (!validointi.ongelmat.isEmpty()) {
@@ -964,7 +1027,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 }
 
                 // Tarkistetaan perusteen tutkinnon osien koodien ja tutkintonimikkeiden yhteys
-                List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = perusteService.getTutkintonimikeKoodit(projekti.getPeruste().getId());
+                List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = doGetTutkintonimikeKoodit(projekti.getPeruste().getId());
                 List<String> koodit = new ArrayList<>();
                 for (TutkintonimikeKoodiDto tnk : tutkintonimikeKoodit) {
                     if (tnk.getTutkinnonOsaArvo() != null) {
@@ -984,6 +1047,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 for (Entry<String, String> entry : lokalisointivirheet.entrySet()) {
                     updateStatus.setVaihtoOk(false);
                     updateStatus.addStatus(entry.getKey());
+                }
+
+                // Tarkista KV-liite
+                if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
+                    KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(peruste.getId());
+                    Set<Kieli> vaaditutKielet = new HashSet<Kieli>() {{
+                        add(Kieli.FI);
+                        add(Kieli.SV);
+                        add(Kieli.EN);
+                    }};
                 }
             }
 
@@ -1013,9 +1086,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-    public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, Date siirtymaPaattyy) {
+    public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, TiedoteDto tiedoteDto) {
 
         TilaUpdateStatus updateStatus = validoiProjekti(id, tila);
+        updateStatus.merge(projektiValidator.run(id, tila));
 
         // Perusteen tilan muutos
         if (!updateStatus.isVaihtoOk()) {
@@ -1037,6 +1111,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         // Dokumentit generoidaan automaattisesti julkaisun yhteydessä
         if (tila == ProjektiTila.JULKAISTU && projekti.getTila() == ProjektiTila.VALMIS) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
+
+            // EP-1357 Julkaisun yhteydessä on pakko tehdä tiedote
+            if (tiedoteDto == null) {
+                throw new BusinessRuleViolationException("Julkaisun yhteydessä täytyy tehdä tiedoite");
+            }
+            tiedoteDto.setId(null);
+            tiedoteDto.setJulkinen(true);
+            tiedoteDto.setPerusteprojekti(new EntityReference(projekti.getId()));
+            tiedoteService.addTiedote(tiedoteDto);
+
             Optional.of(peruste)
                     .ifPresent(p -> p.getSuoritustavat()
                             .forEach(suoritustapa -> p.getKielet()

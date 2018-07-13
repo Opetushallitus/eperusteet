@@ -69,20 +69,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable, Linkable
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private Koodi koodi;
 
-    /**
-     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
-     */
-    @Deprecated
-    @Column(name = "koodi_uri")
-    private String koodiUri;
-
-    /**
-     * @deprecated Muutettu käyttämään koodia ja säilytetty, jotta rajapinta ei muutu
-     */
-    @Deprecated
-    @Column(name = "koodi_arvo")
-    private String koodiArvo;
-
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "ammattitaitovaatimuksenkohdealue_tutkinnonosa",
             joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
@@ -179,29 +165,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable, Linkable
         return Metalink.fromTutkinnonOsa(getId());
     }
 
-    @Deprecated
-    public String getKoodiUri() {
-        if (koodi != null) {
-            return koodi.getUri();
-        } else {
-            return koodiUri;
-        }
-    }
-
-    @Deprecated
-    public void setKoodiUri(String koodiUri) {
-        // NOP
-    }
-
-    @Deprecated
-    public String getKoodiArvo() {
-        return koodiArvo;
-    }
-
-    @Deprecated
-    public void setKoodiArvo(String koodiArvo) {
-        // NOP
-    }
 
     public Arviointi getArviointi() {
         return arviointi;
@@ -228,9 +191,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable, Linkable
             result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
             result &= Objects.equals(getTyyppi(), that.getTyyppi());
             result &= Objects.equals(getKoodi(), that.getKoodi());
-            // Todo: ei toimi vanhojen kanssa
-            //result &= Objects.equals(getKoodiArvo(), that.getKoodiArvo());
-            //result &= Objects.equals(getKoodiUri(), that.getKoodiUri());
             result &= refXnor(getTavoitteet(), that.getTavoitteet());
             result &= refXnor(getAmmattitaidonOsoittamistavat(), that.getAmmattitaidonOsoittamistavat());
             result &= refXnor(getAmmattitaitovaatimukset(), that.getAmmattitaitovaatimukset());
@@ -263,8 +223,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable, Linkable
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
             this.setTavoitteet(other.getTavoitteet());
             this.setKoodi(other.getKoodi());
-            this.setKoodiUri(other.getKoodiUri());
-            this.setKoodiArvo(other.getKoodiArvo());
             this.setTyyppi(other.getTyyppi());
             this.setKuvaus(other.getKuvaus());
             this.setValmaTelmaSisalto(other.getValmaTelmaSisalto());
@@ -291,8 +249,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable, Linkable
         this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
         this.tavoitteet = other.getTavoitteet();
         this.koodi = other.getKoodi();
-        this.koodiUri = other.getKoodiUri();
-        this.koodiArvo = other.getKoodiArvo();
         this.tyyppi = other.getTyyppi();
         this.kuvaus = other.getKuvaus();
         if (other.getValmaTelmaSisalto() != null) {

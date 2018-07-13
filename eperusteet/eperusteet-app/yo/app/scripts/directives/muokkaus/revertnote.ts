@@ -142,6 +142,31 @@ angular.module("eperusteApp").directive("revertNote", function() {
                                 });
                             };
                             break;
+                        case "root.perusteprojekti.suoritustapa.aipeosaalue":
+                            cb = () => {
+                                // Todo: lukitse ennen palautusta
+                                VersionHelper.revertAIPEVaihe(
+                                    $scope.versiot,
+                                    {
+                                        vaiheId: $stateParams.osanId
+                                    },
+                                    revCb
+                                );
+                            };
+                            break;
+                        case "root.perusteprojekti.suoritustapa.aipeosaalue.oppiaine":
+                            cb = () => {
+                                // Todo: lukitse ennen palautusta
+                                VersionHelper.revertAIPEOppiaine(
+                                    $scope.versiot,
+                                    {
+                                        vaiheId: $stateParams.osanId,
+                                        oppiaineId: $stateParams.oppiaineId
+                                    },
+                                    revCb
+                                );
+                            };
+                            break;
                         default:
                             cb = angular.noop;
                     }

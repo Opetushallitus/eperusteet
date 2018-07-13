@@ -10,9 +10,10 @@ div
   projektin-murupolku
 
   div(ng-if='!editEnabled')
+    revert-note(object='editableModel', revert-cb='revertCb(response)', versions='versiot', change-version='vaihdaVersio()')
     button.btn.btn-default.pull-right(ng-disabled="isSorting" icon-role='edit', style='margin-left: 10px;', ng-hide='!versiot.latest', ng-click='muokkaa()', kaanna="'muokkaa'", oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]")
     button.btn.btn-default.pull-right(ng-disabled="isSorting" icon-role='plus' ng-show="canAddOppimaara && versiot.latest" style="margin-left: 10px;" ng-click="lisaaOppimaara()" kaanna="'lisaa-oppimaara'" oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]")
-    button.btn.btn-default.pull-right(ng-disabled="isSorting" icon-role='plus' ng-show="canAddKurssit" ng-click='lisaaKurssi()' kaanna="'lisaa-kurssi'" oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]")
+    button.btn.btn-default.pull-right(ng-disabled="isSorting" icon-role='plus' ng-show="canAddKurssit && versiot.latest" ng-click='lisaaKurssi()' kaanna="'lisaa-kurssi'" oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]")
     h1(ng-bind="editableModel.nimi || 'nimeton-oppiaine' | kaanna")
     versiotiedot
 

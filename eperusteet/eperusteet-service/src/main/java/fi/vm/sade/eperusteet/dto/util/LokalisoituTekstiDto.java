@@ -21,12 +21,14 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import lombok.Getter;
+import org.springframework.util.ObjectUtils;
 
 /**
  *
@@ -145,5 +147,32 @@ public class LokalisoituTekstiDto {
     @SuppressWarnings("DtoClassesNotContainEntities")
     public static<T> LocalizedFunction<T> localized(Function<T,TekstiPalanen> s) {
         return from -> localized(s.apply(from));
+    }
+
+    static public void tarkistaLokalisoituTekstiDto(
+            final String nimi,
+            final LokalisoituTekstiDto tekstiDto,
+            final Set<Kieli> pakolliset,
+            Map<String, Set<Kieli>> virheellisetKielet
+    ) {
+        for (Kieli kieli : pakolliset) {
+            if (ObjectUtils.isEmpty(tekstiDto)) {
+                if (virheellisetKielet.containsKey(nimi)) {
+                    virheellisetKielet.get(nimi).add(kieli);
+                } else {
+                    virheellisetKielet.put(nimi, Stream.of(kieli).collect(Collectors.toSet()));
+                }
+                continue;
+            }
+
+            Map<Kieli, String> teksti = tekstiDto.getTekstit();
+            if (!teksti.containsKey(kieli) || ObjectUtils.isEmpty(teksti.get(kieli))) {
+                if (virheellisetKielet.containsKey(nimi)) {
+                    virheellisetKielet.get(nimi).add(kieli);
+                } else {
+                    virheellisetKielet.put(nimi, Stream.of(kieli).collect(Collectors.toSet()));
+                }
+            }
+        }
     }
 }

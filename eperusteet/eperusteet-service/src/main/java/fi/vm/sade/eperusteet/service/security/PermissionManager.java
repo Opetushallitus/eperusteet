@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -425,9 +424,13 @@ public class PermissionManager {
     private boolean hasAnyRole(Authentication authentication, String perusteProjektiRyhmaOid, Collection<String> roles) {
         if (authentication != null && authentication.isAuthenticated()) {
             for (String role : roles) {
-                GrantedAuthority auth = new SimpleGrantedAuthority(perusteProjektiRyhmaOid == null ? role : role.replace("<oid>", perusteProjektiRyhmaOid));
-                if (authentication.getAuthorities().contains(auth)) {
-                    return true;
+                String accurateRole = perusteProjektiRyhmaOid == null
+                        ? role
+                        : role.replace("<oid>", perusteProjektiRyhmaOid);
+                for (GrantedAuthority authority : authentication.getAuthorities()) {
+                    if (authority.getAuthority() != null && authority.getAuthority().equals(accurateRole)) {
+                        return true;
+                    }
                 }
             }
         }

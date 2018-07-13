@@ -23,6 +23,8 @@ import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
 
@@ -32,6 +34,7 @@ import ma.glasnost.orika.MappingContext;
  *
  * @author jhyoty
  */
+@Slf4j
 public class ReferenceableCollectionMergeMapper extends CustomMapper<Collection<ReferenceableDto>, Collection<ReferenceableEntity>> {
 
     @Override

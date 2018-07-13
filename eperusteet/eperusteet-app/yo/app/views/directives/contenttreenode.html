@@ -11,6 +11,7 @@
                 </div>
                 <h3>
                     <span ep-highlight="rajaus" ng-bind="sisalto.perusteenOsa.nimi || sisalto.nimi | kaanna"></span>
+                    <lang-validator kentta="sisalto.perusteenOsa.nimi || sisalto.nimi"></lang-validator>
                     <span style="margin: 0 0 0 6px">
                         <valmiskaannos ng-if="sisalto && sisalto.perusteenOsa"
                                        ng-model="sisalto.perusteenOsa"></valmiskaannos>

@@ -157,9 +157,17 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             return fail("ryhman-pakollisuutta-ei-voi-muuttaa");
         }
 
-        if (this.rooli != vanha.rooli && this.rooli != RakenneModuuliRooli.TUTKINTONIMIKE) {
-            return fail("ryhman-roolia-ei-voi-vaihtaa");
+        if (depth > 0) {
+            if (this.rooli != vanha.rooli && this.rooli != RakenneModuuliRooli.TUTKINTONIMIKE) {
+                return fail("ryhman-roolia-ei-voi-vaihtaa");
+            }
         }
+        else {
+            if (this.rooli != null && this.rooli != RakenneModuuliRooli.NORMAALI) {
+                return fail("rakenteen-roolia-ei-voi-vaihtaa");
+            }
+        }
+
 
         if (vanha.getTutkintonimike() != null && vanha.getOsaamisala() != null) {
             return fail("ryhman-tutkintonimike-ja-osaamisala-ei-voi-olla-samanaikaisesti");

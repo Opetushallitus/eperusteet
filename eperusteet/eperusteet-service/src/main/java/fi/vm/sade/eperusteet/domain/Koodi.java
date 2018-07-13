@@ -17,10 +17,12 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import org.hibernate.annotations.Immutable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,15 +32,15 @@ import lombok.Setter;
  * @author nkala
  */
 @Entity
-@Table(name = "koodi")
 @Immutable
+@Table(name = "koodi")
 @EqualsAndHashCode(of = {"koodisto", "uri", "versio"})
 public class Koodi implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Getter
@@ -54,4 +56,20 @@ public class Koodi implements Serializable {
     @Getter
     @Setter
     private Long versio; // Oletuksena null milloin käytetään uusinta koodiston versiota
+
+    public Koodi() {
+    }
+
+    public Koodi(String uri, String koodisto) {
+        this.uri = uri;
+        this.koodisto = koodisto;
+        this.versio = null;
+    }
+
+    public static void validateChange(Koodi a, Koodi b) {
+        if (a != null && !Objects.equals(a, b)) {
+            throw new BusinessRuleViolationException("koodia-ei-voi-muuttaa");
+        }
+    }
+
 }

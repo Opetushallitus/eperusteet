@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
@@ -32,7 +31,6 @@ public class KVLiiteDto {
     private Long id;
     private LokalisoituTekstiDto suorittaneenOsaaminen;
     private LokalisoituTekstiDto tyotehtavatJoissaVoiToimia;
-    private LokalisoituTekstiDto tutkinnonVirallinenAsema;
     private LokalisoituTekstiDto tutkintotodistuksenAntaja;
     private EntityReference arvosanaAsteikko;
     private LokalisoituTekstiDto jatkoopintoKelpoisuus;
@@ -41,6 +39,5 @@ public class KVLiiteDto {
     private LokalisoituTekstiDto pohjakoulutusvaatimukset;
     private LokalisoituTekstiDto lisatietoja;
     private LokalisoituTekstiDto tutkintotodistuksenSaaminen;
-    private KoodiDto tutkinnonTaso;
     private LokalisoituTekstiDto tutkinnostaPaattavaViranomainen;
 }

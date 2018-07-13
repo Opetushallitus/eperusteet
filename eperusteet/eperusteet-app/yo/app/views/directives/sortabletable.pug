@@ -13,7 +13,7 @@ table.table.table-hover
           a(ng-bind="$index + 1" ng-href="{{ rivi.$$url }}")
         span.handle(ng-show="isSorting" icon-role="sort")
       td
-        a(ng-if="rivi.$$url" ng-href="{{ rivi.$$url }}" ng-bind="(rivi.nimi || nimeton) | kaanna")
-        span(ng-if="!rivi.$$url" ng-bind="rivi.nimi | kaanna")
+        a(ng-if="rivi.$$url" ng-href="{{ rivi.$$url }}" ng-bind="rivi.nimi || 'nimeton' | kaanna")
+        span(ng-if="!rivi.$$url" ng-bind="rivi.nimi || 'nimeton' | kaanna")
 
       td(ng-show="hasMuokattu" ng-bind="rivi.muokattu | aikaleima")

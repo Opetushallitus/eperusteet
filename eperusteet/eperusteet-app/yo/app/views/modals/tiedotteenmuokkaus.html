@@ -7,8 +7,13 @@
 <div class="modal-body termi-muokkaus">
   <table>
     <tr>
-      <td class="has-checkbox"><input id="julkisuus-valinta" ng-model="model.julkinen" type="checkbox" class="form-control"></td>
-      <td><label for="julkisuus-valinta" kaanna>julkinen-tiedote</label></td>
+      <td class="has-checkbox"><input id="julkinen-valinta" ng-model="model.julkinen" type="checkbox" class="form-control"></td>
+      <td><label for="julkinen-valinta" kaanna>julkinen-tiedote</label></td>
+    </tr>
+    <tr>
+      <td class="has-checkbox"><input id="yleinen-valinta" ng-model="model.yleinen" type="checkbox" class="form-control"></td>
+      <td><label for="yleinen-valinta" kaanna="'yleinen-tiedote'"></label></td>
+      <td><ohje teksti="'ohje-yleinen-tiedote'" suunta="right"></ohje></td>
     </tr>
     <tr ng-if="perusteprojektiId">
       <td class="has-checkbox"><input id="liita-perusteprojekti-valinta" ng-model="model.$liitaPerusteprojekti" type="checkbox" class="form-control"></td>

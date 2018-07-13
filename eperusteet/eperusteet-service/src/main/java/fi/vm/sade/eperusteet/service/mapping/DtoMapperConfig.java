@@ -30,6 +30,8 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.Metalink;
+import fi.vm.sade.eperusteet.dto.KoulutusDto;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
@@ -141,6 +143,7 @@ public class DtoMapperConfig {
 
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
         factory.getConverterFactory().registerConverter(cachedEntityConverter);
+        // Mikä järki konvertoida dto samaksi? testLukiokurssi vaatii, mutta miksi ei ole mockattu?
         factory.getConverterFactory().registerConverter(new LokalisoituTekstiDtoCopyConverter());
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
@@ -241,6 +244,10 @@ public class DtoMapperConfig {
                 .exclude("oppiaineet")
                 .byDefault()
                 .register();
+        factory.classMap(Tiedote.class, TiedoteDto.class)
+                .fieldAToB("perusteprojekti.peruste", "peruste")
+                .byDefault()
+                .register();
         factory.classMap(Peruste.class, PerusteHakuInternalDto.class)
                 .byDefault()
                 .favorExtension(true)
@@ -276,6 +283,24 @@ public class DtoMapperConfig {
                                 }
                             }
                         } catch (RestClientException | AccessDeniedException ex) {
+                        }
+                    }
+                })
+                .register();
+
+        factory.classMap(Koulutus.class, KoulutusDto.class)
+                .byDefault()
+                .customize(new CustomMapper<Koulutus, KoulutusDto>() {
+                    @Override
+                    public void mapAtoB(Koulutus source, KoulutusDto target, MappingContext context) {
+                        try {
+                            KoodiDto koodiDto = new KoodiDto();
+                            koodiDto.setUri(target.getKoulutuskoodiUri());
+                            koodiDto.setKoodisto("koulutus");
+                            koodistoClient.addNimiAndUri(koodiDto);
+                            target.setNimi(new LokalisoituTekstiDto(koodiDto.getNimi()));
+                        } catch (RestClientException | AccessDeniedException ex) {
+                            logger.error(ex.getLocalizedMessage());
                         }
                     }
                 })

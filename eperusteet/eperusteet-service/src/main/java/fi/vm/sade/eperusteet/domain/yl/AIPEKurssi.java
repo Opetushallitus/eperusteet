@@ -19,11 +19,15 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Tunnistettava;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.*;
+
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -37,7 +41,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "yl_aipe_kurssi", schema = "public")
 @Audited
-public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AIPEJarjestettava {
+public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AIPEJarjestettava, Tunnistettava {
 
     @Getter
     @Column(nullable = false, unique = true, updatable = false)
@@ -87,4 +91,22 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
     public void setTavoitteet(Set<OpetuksenTavoite> tavoitteet) {
         this.tavoitteet = tavoitteet;
     }
+
+    public static void validateChange(AIPEKurssi a, AIPEKurssi b) {
+        Koodi.validateChange(a.koodi, b.koodi);
+
+        if (!Objects.equals(a.getTunniste(), b.getTunniste())) {
+            throw new BusinessRuleViolationException("tunnistetta-ei-voi-muuttaa");
+        }
+
+        if (a.nimi != null && b.nimi == null) {
+            throw new BusinessRuleViolationException("nimea-ei-voi-poistaa");
+        }
+
+        if (a.kuvaus != null && b.kuvaus == null) {
+            throw new BusinessRuleViolationException("nimea-ei-voi-poistaa");
+        }
+
+    }
+
 }

@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.domain.yl.AIPEHasId;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -33,7 +33,7 @@ import lombok.Setter;
 @Setter
 public class AIPEKurssiBaseDto implements AIPEHasId {
     private Long id;
-    private Optional<UUID> tunniste;
+    private UUID tunniste;
     private Optional<LokalisoituTekstiDto> nimi;
     private EntityReference oppiaine;
     private KoodiDto koodi;

@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteTasoDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
@@ -42,6 +43,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -117,6 +119,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         addAmmatillinenOsaaminen(docBase);
         addVirallisuus(docBase);
         addTutkintotodistuksenSaanti(docBase);
+        addSelventavaHuomautus(docBase);
     }
 
     private void addHeader(KVLiiteDokumentti docBase) {
@@ -203,12 +206,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         KVLiiteJulkinenDto kvLiiteJulkinenDto = docBase.getKvLiiteJulkinenDto();
         StringBuilder voimaantulopaivaJaDiaari = new StringBuilder();
 
-        SimpleDateFormat dateFormat;
-        if (docBase.getKieli().equals(Kieli.EN)) {
-            dateFormat = new SimpleDateFormat("d MMMM yyyy");
-        } else {
-            dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         if (kvLiiteJulkinenDto.getVoimassaoloAlkaa() != null) {
             voimaantulopaivaJaDiaari.append(messages
@@ -232,10 +230,11 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         KVLiiteJulkinenDto kvLiiteJulkinenDto = docBase.getKvLiiteJulkinenDto();
 
         // Jos dokumentin kieli ei ole suomi ja dokumentin kielellä löytyy nimi
-        if (!docBase.getKieli().equals(Kieli.FI)
+        if (docBase.getKieli().equals(Kieli.EN)
                 && kvLiiteJulkinenDto.getNimi() != null
                 && kvLiiteJulkinenDto.getNimi().getTekstit() != null
                 && kvLiiteJulkinenDto.getNimi().getTekstit().containsKey(docBase.getKieli())) {
+
             // Lisätään taulukko
             Element table = docBase.getDocument().createElement("table");
             docBase.getBodyElement().appendChild(table);
@@ -465,11 +464,13 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             leftTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
                     messages.translate("docgen.kvliite.taso", docBase.getKieli())));
             if (kvLiiteJulkinenDto.getTasot() != null) {
-                kvLiiteJulkinenDto.getTasot().forEach(taso -> {
-                    if (taso.getNimi() != null && taso.getNimi().get(docBase.getKieli()) != null) {
-                        DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli()), "span", leftTd);
-                    }
-                });
+                kvLiiteJulkinenDto.getTasot().stream()
+                        .sorted(Comparator.comparingInt(KVLiiteTasoDto::getJarjestys))
+                        .forEach(taso -> {
+                            if (taso.getNimi() != null && taso.getNimi().get(docBase.getKieli()) != null) {
+                                DokumenttiUtils.addTeksti(docBase, taso.getNimi().get(docBase.getKieli()), "span", leftTd);
+                            }
+                        });
             }
 
             rightTd.appendChild(DokumenttiUtils.newBoldElement(docBase.getDocument(),
@@ -564,6 +565,53 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             DokumenttiUtils.addTeksti(docBase,
                     DokumenttiUtils.getTextString(docBase,
                             kvLiiteJulkinenDto.getLisatietoja()), "div", td);
+        }
+    }
+
+    private void addSelventavaHuomautus(KVLiiteDokumentti docBase) {
+        // Selventävä huomautus
+        {
+            Element article = docBase.getDocument().createElement("article");
+
+            // Otsikko
+            {
+                Element h6 = docBase.getDocument().createElement("h6");
+                Element otsikkoEl = docBase.getDocument().createElement("strong");
+                otsikkoEl.setTextContent(messages.translate("docgen.kvliite.selventava-huomautus-otsikko", docBase.getKieli()));
+                h6.appendChild(otsikkoEl);
+                article.appendChild(h6);
+            }
+
+            // Teksti
+            {
+                Element p = docBase.getDocument().createElement("p");
+                p.setTextContent(messages.translate("docgen.kvliite.selventava-huomautus-teksti", docBase.getKieli()));
+                article.appendChild(p);
+            }
+
+            // Lisätietoa
+            {
+                Element p = docBase.getDocument().createElement("p");
+                p.setTextContent(messages.translate("docgen.kvliite.selventava-huomautus-lisatietoja", docBase.getKieli()) + " ");
+
+                Element a = docBase.getDocument().createElement("a");
+                String linkki = messages.translate("docgen.kvliite.selventava-huomautus-lisatietoja-linkki", docBase.getKieli());
+                a.setTextContent(linkki);
+                a.setAttribute("href", linkki);
+
+                p.appendChild(a);
+
+                article.appendChild(p);
+            }
+
+            // Allekirjoitus
+            {
+                Element p = docBase.getDocument().createElement("p");
+                p.setTextContent(messages.translate("docgen.kvliite.selventava-huomautus-allekirjoitus", docBase.getKieli()));
+                article.appendChild(p);
+            }
+
+            docBase.getBodyElement().appendChild(article);
         }
     }
 }

@@ -49,18 +49,12 @@
                     <span ng-show="isNew" kaanna="vateConverter('luonti-tutkinnon-osa')"></span>
                 </h1>
 
-                <!-- <muut&#45;projektit perusteid="editableTutkinnonOsaViite.tutkinnonOsa.id"></muut&#45;projektit> -->
                 <pikamenu ng-if="tutkinnonOsaViite.$resolved">
-
-                <span ng-if="!editEnabled">
-                    {{ tutkinnonOsaViite.tutkinnonOsa.nimi | kaanna:true }}
-                    <span class="osan-laajuus" ng-if="getTosa() && getTosa().laajuus">
-                        <span ng-bind="getTosa().laajuus"></span>
-                        <span ng-show="isVaTe && getTosa().laajuusMaksimi"> - {{ getTosa().laajuusMaksimi }}</span>
-                        <span kaanna="yksikko"></span>
+                    <span ng-if="!editEnabled">
+                        <span kaanna="tutkinnonOsaViite.tutkinnonOsa.nimi ||'nimeton'"></span>
+                        <lang-validator kentta="tutkinnonOsaViite.tutkinnonOsa.nimi"></lang-validator>
+                        <valmiskaannos ng-model="tutkinnonOsaViite.tutkinnonOsa"></valmiskaannos>
                     </span>
-                    <valmiskaannos ng-model="tutkinnonOsaViite.tutkinnonOsa"></valmiskaannos>
-                </span>
                 </pikamenu>
             </div>
 

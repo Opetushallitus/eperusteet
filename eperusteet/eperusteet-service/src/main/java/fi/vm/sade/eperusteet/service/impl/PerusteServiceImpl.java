@@ -30,7 +30,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaExcelDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKoosteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
@@ -60,8 +60,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
@@ -182,19 +180,36 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public List<PerusteExcelDto> getKooste() {
-        return perusteet.findAll().stream()
+    public List<PerusteKoosteDto> getKooste() {
+        return perusteet.findAllPerusteet().stream()
                 .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
-                .filter(peruste -> KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen())
+                .filter(peruste -> peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen())
                 .map(peruste -> {
-                    PerusteExcelDto result = mapper.map(peruste, PerusteExcelDto.class);
-                    Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
+                    PerusteKoosteDto result = mapper.map(peruste, PerusteKoosteDto.class);
+                    Set<Koodi> tutkinnonOsat = new LinkedHashSet<>();
                     for (Suoritustapa st : peruste.getSuoritustavat()) {
                         for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
-                            tutkinnonOsat.add(t.getTutkinnonOsa());
+                            tutkinnonOsat.add(t.getTutkinnonOsa().getKoodi());
                         }
                     }
-                    result.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaExcelDto.class));
+
+                    result.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, KoodiDto.class));
+
+                    if (peruste.getOsaamisalat() != null && !peruste.getOsaamisalat().isEmpty()) {
+                        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = getTutkintonimikeKoodit(peruste.getId());
+                        result.setOsaamisalat(peruste.getOsaamisalat().stream()
+                                .map(osaamisala -> {
+                                    KoosteenOsaamisalaDto oa = new KoosteenOsaamisalaDto();
+                                    oa.setKoodi(mapper.map(osaamisala, KoodiDto.class));
+                                    oa.setTutkinnonOsat(tutkintonimikeKoodit.stream()
+                                            .filter(tk -> Objects.equals(tk.getOsaamisalaUri(), osaamisala.getUri()))
+                                            .filter(tk -> Objects.nonNull(tk.getTutkinnonOsaUri()))
+                                            .map(tk -> mapper.map(new Koodi("tutkinnonosat", tk.getTutkinnonOsaUri()), KoodiDto.class))
+                                            .collect(Collectors.toList()));
+                                    return oa;
+                                })
+                                .collect(Collectors.toList()));
+                    }
                     return result;
                 })
                 .collect(Collectors.toList());
@@ -473,7 +488,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getKokoSisalto(final Long id) {
-        Peruste peruste = perusteet.findOne(id);
+        return getKokoSisalto(id, null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteKaikkiDto getKokoSisalto(final Long id, Integer perusteRev) {
+        Peruste peruste;
+        if (perusteRev != null) {
+            peruste = perusteet.findRevision(id, perusteRev);
+        }
+        else {
+            peruste = perusteet.findOne(id);
+        }
+
         if (peruste == null) {
             return null;
         }
@@ -881,9 +909,28 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return updated;
     }
 
+    private Set<UUID> keraaTunnisteet(RakenneModuuli rakenne) {
+        HashSet<UUID> result = new HashSet<>();
+        if (rakenne != null) {
+            result.add(rakenne.getTunniste());
+            if (rakenne.getOsat() != null) {
+                rakenne.getOsat()
+                        .forEach(osa -> {
+                            result.add(osa.getTunniste());
+                            if (osa instanceof RakenneModuuli) {
+                                result.addAll(keraaTunnisteet((RakenneModuuli)osa));
+                            }
+                        });
+            }
+        }
+        return result;
+    }
+
     @Override
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
+        Peruste peruste = perusteet.findOne(perusteId);
+
         Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteId, suoritustapakoodi);
         if (rakenneId == null) {
             throw new NotExistsException("Rakennetta ei ole olemassa");
@@ -897,6 +944,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         rakenne.foreach(new VisitorImpl(maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
+
+        if (PerusteTila.VALMIS.equals(peruste.getTila())) {
+            Set<UUID> nykyisetTunnisteet = keraaTunnisteet(nykyinen);
+            Set<UUID> uudetTunnisteet = keraaTunnisteet(moduuli);
+
+            if (!uudetTunnisteet.containsAll(nykyisetTunnisteet)) {
+                throw new BusinessRuleViolationException("rakenteen-tunnisteita-ei-voi-muuttaa");
+            }
+        }
 
         boolean rakenneMuuttunut = moduuli.isSame(nykyinen, 0, true).isPresent();
         if (rakenneMuuttunut) {
@@ -1169,9 +1225,18 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
+
     @Override
     @Transactional(readOnly = true)
-    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId) {
+    @IgnorePerusteUpdateCheck
+    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId) {
+        return doGetTutkintonimikeKoodit(perusteId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
+    public List<TutkintonimikeKoodiDto> doGetTutkintonimikeKoodit(Long perusteId) {
         List<TutkintonimikeKoodi> koodit = tutkintonimikeKoodiRepository.findByPerusteId(perusteId);
         return mapper.mapAsList(koodit, TutkintonimikeKoodiDto.class);
     }
@@ -1609,7 +1674,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             kvliiteDto.setTutkintotodistuksenSaaminen(pohjaLiiteDto.getTutkintotodistuksenSaaminen());
             kvliiteDto.setPohjakoulutusvaatimukset(pohjaLiiteDto.getPohjakoulutusvaatimukset());
             kvliiteDto.setLisatietoja(pohjaLiiteDto.getLisatietoja());
-            kvliiteDto.setTutkinnonVirallinenAsema(pohjaLiiteDto.getTutkinnonVirallinenAsema());
         }
 
         kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
@@ -1646,7 +1710,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                         }
                         return result;
                     })
-                    .sorted((a, b) -> Integer.compare(a.getJarjestys(), b.getJarjestys()))
+                    .sorted(Comparator.comparingInt(KVLiiteTasoDto::getJarjestys))
                     .collect(Collectors.toList()));
         }
         return kvliiteDto;
@@ -1667,6 +1731,4 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         return viiteDto;
     }
-
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
 }

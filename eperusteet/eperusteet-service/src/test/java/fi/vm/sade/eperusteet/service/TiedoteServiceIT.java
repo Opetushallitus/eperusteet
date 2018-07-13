@@ -1,14 +1,22 @@
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import java.util.Date;
 import java.util.List;
-import javax.transaction.Transactional;
+
+import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
@@ -23,10 +31,15 @@ import static org.junit.Assert.assertNotNull;
  * @author mikkom
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@Transactional
 public class TiedoteServiceIT extends AbstractIntegrationTest {
     @Autowired
-    TiedoteService tiedoteService;
+    private TiedoteService tiedoteService;
+
+    @Autowired
+    private PerusteprojektiTestUtils ppTestUtils;
+
+    @Autowired
+    private TiedoteRepositoryCustom tiedoteRepositoryCustom;
 
     @Before
     public void setUp()
@@ -102,5 +115,49 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         tiedoteService.removeTiedote(id);
 
         assertEquals(1, tiedoteService.getAll(false, 0L).size());
+    }
+
+    @Test
+    public void testHakuJulkinen() {
+        TiedoteQuery tq = new TiedoteQuery();
+        tq.setJulkinen(true);
+        Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
+        assertEquals(tiedotteet.getTotalElements(), 1);
+    }
+
+    @Test
+    public void testHakuSisainen() {
+        TiedoteQuery tq = new TiedoteQuery();
+        tq.setJulkinen(false);
+        Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
+        assertEquals(1, tiedotteet.getTotalElements());
+    }
+
+    @Test
+    public void testDtoConversion() {
+        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L);
+        assertEquals(2, tiedotteet.size());
+
+        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(dto -> dto.setKoulutustyyppi(KoulutusTyyppi.AMMATTITUTKINTO.toString()));
+        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), dto -> {
+            SuoritustapaDto stDto = new SuoritustapaDto();
+            stDto.setLaajuusYksikko(LaajuusYksikko.OSAAMISPISTE);
+            stDto.setSuoritustapakoodi(Suoritustapakoodi.REFORMI);
+            dto.getSuoritustavat().add(stDto);
+        });
+        assertEquals(2, tiedotteet.size());
+        Long id = tiedotteet.iterator().next().getId();
+
+        // Liitä perusteprojekti
+        TiedoteDto tiedoteDto = tiedoteService.getTiedote(id);
+        tiedoteDto.setPerusteprojekti(new EntityReference(projekti.getId()));
+        tiedoteService.updateTiedote(tiedoteDto);
+
+        // Koitetaan poistaa suoritustapa tiedotteen kautta
+        tiedoteDto = tiedoteService.getTiedote(id);
+        tiedoteDto.getPeruste().getSuoritustavat().clear();
+        tiedoteDto = tiedoteService.updateTiedote(tiedoteDto);
+
+        assertEquals(1, tiedoteDto.getPeruste().getSuoritustavat().size());
     }
 }

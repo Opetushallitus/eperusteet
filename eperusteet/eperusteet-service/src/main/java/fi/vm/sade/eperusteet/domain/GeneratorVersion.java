@@ -29,6 +29,6 @@ public enum GeneratorVersion {
             }
         }
 
-        throw new IllegalArgumentException(version + " ei ole kelvollinen tila");
+        throw new IllegalArgumentException(version + " ei ole kelvollinen GeneratorVersion");
     }
 }

@@ -23,7 +23,7 @@ angular.module("eperusteApp").directive("muokkausVaihe", () => {
         restrict: "E",
         scope: {
             model: "=",
-            versiot: "="
+            versiot: "=",
         },
         controller: (
             $scope,
@@ -39,7 +39,8 @@ angular.module("eperusteApp").directive("muokkausVaihe", () => {
             Utils,
             $rootScope,
             Kieli,
-            Kaanna
+            Kaanna,
+            VersionHelper
         ) => {
             $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
             $scope.isNew = $stateParams.osanId === "uusi";
@@ -67,6 +68,22 @@ angular.module("eperusteApp").directive("muokkausVaihe", () => {
                         );
                     }
                 })();
+            };
+
+            $scope.vaihdaVersio = () => {
+                $scope.versiot.hasChanged = true;
+                VersionHelper.setUrl($scope.versiot);
+            };
+
+            $scope.revertCb = () => {
+                VersionHelper.getAIPEVaiheVersions($scope.versiot,
+                    {
+                        perusteId: AIPEService.getPerusteId(),
+                        vaiheId: $stateParams.osanId,
+                    }, true, res => {
+                        Notifikaatiot.onnistui("aipe-vaihe-palautettu");
+                        VersionHelper.setUrl(res);
+                    });
             };
 
             const createOppiaineUrl = oppiaine => $state.href(".oppiaine", { oppiaineId: oppiaine.id });

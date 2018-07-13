@@ -17,14 +17,11 @@ package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.dto.peruste.*;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -36,10 +33,8 @@ import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
 
+import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -47,8 +42,6 @@ import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -58,8 +51,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -269,5 +260,38 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         RakenneModuuliDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceIT.class);
+    @Test
+    public void testTutkinnonOsaViiteByKoodiUri() {
+        Suoritustapa s = peruste.getSuoritustapa(Suoritustapakoodi.OPS);
+
+        String koodiUri = TestUtils.uniikkiString();
+        TutkinnonOsaViiteDto viiteDto = luoKoodillinenTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, koodiUri);
+
+        TutkinnonOsaViiteDto haettuViiteDto = perusteService.getTutkinnonOsaViiteByKoodiUri(
+                peruste.getId(),s.getSuoritustapakoodi(), koodiUri);
+
+        assertEquals(viiteDto.getId(), haettuViiteDto.getId());
+        assertEquals(koodiUri, haettuViiteDto.getTutkinnonOsaDto().getKoodi().getUri());
+        // Testataan myös vanhan muotoinen uri
+        assertEquals(koodiUri, haettuViiteDto.getTutkinnonOsaDto().getKoodiUri());
+    }
+
+    private TutkinnonOsaViiteDto luoKoodillinenTutkinnonOsa(
+            Long id,
+            Suoritustapakoodi suoritustapakoodi,
+            String koodiUri
+    ) {
+        TutkinnonOsaViiteDto dto = new TutkinnonOsaViiteDto(
+                BigDecimal.ONE, 1, TestUtils.lt(TestUtils.uniikkiString()), TutkinnonOsaTyyppi.NORMAALI);
+        TutkinnonOsaDto tosa = new TutkinnonOsaDto();
+        tosa.setNimi(dto.getNimi());
+        KoodiDto koodiDto = new KoodiDto();
+        koodiDto.setUri(koodiUri);
+        koodiDto.setKoodisto("tutkinnonosat");
+        tosa.setKoodi(koodiDto);
+
+        dto.setTutkinnonOsaDto(tosa);
+        TutkinnonOsaViiteDto lisatty = perusteService.addTutkinnonOsa(id, suoritustapakoodi, dto);
+        return lisatty;
+    }
 }

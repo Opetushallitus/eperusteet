@@ -1,5 +1,7 @@
 {
     "aipe-opetuksen-sisalto-puuttuu": "Aikuisten perusopetuksen sisältö puuttuu",
+    "aipe-vaihe-palautettu": "AIPE vaihe palautettu",
+    "aipe-oppiaine-palautettu": "AIPE oppiaine palautettu",
     "edellinen": "Edellinen",
     "oletus": "Oletus",
     "kieli": "Kieli",
@@ -89,9 +91,28 @@
     "muokkaa-tiedotetta": "Muokkaa tiedotetta",
     "tiedoteteksti": "Tiedoteteksti",
     "julkinen-tiedote": "Julkinen tiedote",
+    "yleinen-tiedote": "Yleinen tiedote",
     "julkinen-tiedote-header": "Julkinen",
+    "yleinen-tiedote-header": "Yleinen",
     "tiedote-julkinen": "julkinen",
     "tiedote-liittyy-perusteprojektiin": "Tiedote liittyy perusteprojektiin",
+
+    "kvliite-validointi-suorittaneen-osaaminen": "Tutkinnon suorittaneen osaaminen ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-tyotehtavat-joissa-voi-toimia": "Työtehtäviä, joissa tutkinnon suorittanut voi toimia ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-tutkinnon-virallinen-asema": "Tutkinnon virallinen asema ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-arvosana-asteikko": "Arvosana-asteikko/hyväksymisvaatimukset ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-jatkoopinto-kelpoisuus": "Jatko-opintokelpoisuus ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-kansainvaliset-sopimukset": "Kansainväliset sopimukset",
+    "kvliite-validointi-saados-perusta": "Säädösperusta ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-pohjakoulutusvaatimukset": "Pohjakoulutusvaatimukset ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-lisatietoja": "Lisätietoja ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-tutkintotodistuksen-saaminen": "Tutkintotodistuksen voi säädösten mukaan saada seuraavilla tavoilla ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-tutkinnosta-paattava-viranomainen": "Tutkinnosta päättävän kansallisen/alueellisen viranomaisen nimi ja asema ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-nimi": "Perusteen nimeä ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-tasot": "Tutkinnon taso ei ole määritelty kv-liitettä varten",
+    "kvliite-validointi-muodostumisen-kuvaus-ops": "Tutkinnon muodostuminen (ops) ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-muodostumisen-kuvaus-naytto": "Tutkinnon muodostuminen (naytto) ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-muodostumisen-kuvaus-reformi": "Tutkinnon muodostuminen (reformi) ei ole lokalisoitu kv-liitettä varten",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -305,6 +326,7 @@
     "ohje-perusteprojekti": "Tämän näkymän kautta voi hallinnoida perusteprojekteja ja pohjia.",
     "ohje-muodostuminen-ryhma": "Luo ryhmä ja vie haluttuun kohtaan rakenteessa.",
     "ohje-muodostuminen-tutkinnonosat": "Valitse tutkinnon osa ja vie haluttuun kohtaan rakenteessa.",
+    "ohje-yleinen-tiedote": "Yleinen tiedote näkyy julkisella puolella myös etusivulla",
     "tuo-koulutuksenosa": "Tuo koulutuksenosa",
 
     "otsikko": "Otsikko",
@@ -740,8 +762,9 @@
     "vahvista-poisto": "Vahvista poisto",
     "poistetaanko-koulutus": "Poistetaanko koulutuskoodi?",
     "puuttuvat-kieliversiot": "Puuttuvat kieliversiot",
-    "piilota-kaannosvirheet": "Piilota virheet",
-    "nayta-kaannosvirheet": "Näytä virheet",
+    "piilota-kaannosvirheet": "Piilota puuttuvat käännökset",
+    "nayta-kaannosvirheet": "Näytä puuttuvat käännökset",
+    "puuttuvat-kaannokset-kielilla": "Puuttuvat käännökset kielillä:",
 
     "projekti-perustiedot": "Perustiedot",
     "projekti-projektiryhma": "Perustetyöryhmä",
@@ -1249,6 +1272,8 @@
     "ryhman-tutkintonimike-jo-kaytossa": "Ryhmän tutkintonimike on jo käytössä",
     "ryhman-osaamisala-tutkintonimike-jo-kaytossa": "Ryhmän osaamisala on jo käytössä",
     "ryhman-rooli-ei-salli-sisaltoa": "Ryhmän rooli ei salli sisältöä",
+    "rakenteen-roolia-ei-voi-vaihtaa": "Rakenteen roolia ei voi vaihtaa",
+
     "tutkinnon-osan-ammattitaitovaatukset-tekstina": "Tutkinnon osien ammattitaitovaatimukset täytyy laatia rakenteisena",
     "sisallon-muotoilu-saattaa-sisaltaa-virheita": "Sisältö saattaa sisältää muotoiluvirheitä",
     "sisalto-muotoiluvirheet-ohita": "Oletko varma, että sisältö on muotoiltu oikein? Jos on, paina OK.",
@@ -1292,5 +1317,9 @@
     "koulutuksen-muodostuminen": "Koulutuksen muodostuminen",
     "et-ole-viela-tallentanut-koulutuksenosia": "Et ole vielä liittänyt kaikkia koulutuksen osia perusteeseen",
     "haetaan-koulutuksen-osia": "Haetaan koulutuksen osia...",
-    "haku-koulutuksen-nimi-placeholder": "Koulutuksen nimi"
+    "haku-koulutuksen-nimi-placeholder": "Koulutuksen nimi",
+
+    "tutkintonimikkeen-osaamisala-puuttuu-perusteesta": "Tutkintonimikkeessä määritetty osaamisala puuttuu perusteesta",
+    "ryhman-osaamisalalta-puuttuu-vaaditut-tutkintonimikekuvaukset": "Osaamisalalta puuttuu määritetyt tutkintonimikeryhmät",
+    "koulutuskoodi-puuttuu": "Perusteelta puuttuu koulutuskoodi"
 }

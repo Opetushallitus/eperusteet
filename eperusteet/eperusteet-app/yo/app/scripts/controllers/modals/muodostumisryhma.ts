@@ -35,18 +35,17 @@ angular
         $scope.vanhempi = vanhempi;
         $scope.leikelauta = leikelauta;
         $scope.suoritustapa = suoritustapa;
-        $scope.osaamisalat = [{}].concat(
-            _.map(_.clone(peruste.osaamisalat), function(oa: any) {
+        $scope.osaamisalat = [{}, ..._.map(peruste.osaamisalat, (oa: any) => {
                 return {
                     osaamisalakoodiArvo: oa.arvo,
                     osaamisalakoodiUri: oa.uri,
                     nimi: oa.nimi
                 };
-            }));
+            })];
 
         if (!_.isEmpty(peruste.tutkintonimikkeet)) {
             $scope.tutkintonimikkeet = _(peruste.tutkintonimikkeet)
-                .filter(nimike => !nimike.osaamisalaUri && !nimike.tutkinnonOsaUri)
+                // .filter(nimike => !nimike.osaamisalaUri && !nimike.tutkinnonOsaUri)
                 .value();
         }
 

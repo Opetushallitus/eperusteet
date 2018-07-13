@@ -222,7 +222,6 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         kvliite.setPohjakoulutusvaatimukset(TestUtils.lt(prefix + "4"));
         kvliite.setSaadosPerusta(TestUtils.lt(prefix + "5"));
         kvliite.setSuorittaneenOsaaminen(TestUtils.lt(prefix + "6"));
-        kvliite.setTutkinnonVirallinenAsema(TestUtils.lt(prefix + "7"));
         kvliite.setTutkintotodistuksenSaaminen(TestUtils.lt(prefix + "8"));
         kvliite.setTyotehtavatJoissaVoiToimia(TestUtils.lt(prefix + "9"));
         kvliite.setTutkinnostaPaattavaViranomainen(TestUtils.lt(prefix + "10"));
@@ -236,7 +235,6 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals(kvliite.getPohjakoulutusvaatimukset().get(Kieli.FI), prefix + "4");
         Assert.assertEquals(kvliite.getSaadosPerusta().get(Kieli.FI), prefix + "5");
         Assert.assertEquals(kvliite.getSuorittaneenOsaaminen().get(Kieli.FI), prefix + "6");
-        Assert.assertEquals(kvliite.getTutkinnonVirallinenAsema().get(Kieli.FI), prefix + "7");
         Assert.assertEquals(kvliite.getTutkintotodistuksenSaaminen().get(Kieli.FI), prefix + "8");
         Assert.assertEquals(kvliite.getTyotehtavatJoissaVoiToimia().get(Kieli.FI), prefix + "9");
         Assert.assertEquals(kvliite.getTutkinnostaPaattavaViranomainen().get(Kieli.FI), prefix + "10");
@@ -288,7 +286,6 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals("a4", julkinenKVLiite.getPohjakoulutusvaatimukset().get(Kieli.FI));
         Assert.assertEquals("a5", julkinenKVLiite.getSaadosPerusta().get(Kieli.FI));
         Assert.assertEquals("b6", julkinenKVLiite.getSuorittaneenOsaaminen().get(Kieli.FI));
-        Assert.assertEquals("a7", julkinenKVLiite.getTutkinnonVirallinenAsema().get(Kieli.FI));
         Assert.assertEquals("a8", julkinenKVLiite.getTutkintotodistuksenSaaminen().get(Kieli.FI));
         Assert.assertEquals("b9", julkinenKVLiite.getTyotehtavatJoissaVoiToimia().get(Kieli.FI));
         Assert.assertEquals("a10", julkinenKVLiite.getTutkinnostaPaattavaViranomainen().get(Kieli.FI));
@@ -537,6 +534,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
         ppTestUtils.asetaMuodostumiset(pp.getPeruste().getId());
 
+        ppTestUtils.luoValidiKVLiite(pp.getPeruste().getId());
+
         repository.save(pp);
         em.persist(pp);
 
@@ -564,9 +563,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
             pp.getPeruste().setKielet(Stream.of(Kieli.FI).collect(Collectors.toSet()));
             pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
             pp.getPeruste().setVoimassaoloLoppuu(new Date(now + 100000));
-            pp.getPeruste().getSuoritustavat().stream().forEach(st -> {
-                st.getRakenne().setMuodostumisSaanto(new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE), null));
-            });
+            pp.getPeruste().getSuoritustavat().forEach(st -> st.getRakenne()
+                    .setMuodostumisSaanto(new MuodostumisSaanto(new MuodostumisSaanto
+                            .Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE), null)));
             return pp;
         };
 
@@ -575,14 +574,16 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
             Assert.assertTrue(problems.isVaihtoOk());
             service.updateTila(p.getId(), ProjektiTila.VALMIS, null);
             Assert.assertTrue(problems.isVaihtoOk());
-            problems = service.updateTila(p.getId(), ProjektiTila.JULKAISTU, null);
+            problems = service.updateTila(p.getId(), ProjektiTila.JULKAISTU, TestUtils.createTiedote());
             Assert.assertTrue(problems.isVaihtoOk());
         };
 
         Perusteprojekti a = luontiHelper.apply(adto);
         a.getPeruste().setVoimassaoloAlkaa(new Date(now - 100));
+        ppTestUtils.luoValidiKVLiite(a.getPeruste().getId());
         Perusteprojekti b = luontiHelper.apply(bdto);
         b.getPeruste().setVoimassaoloAlkaa(new Date(now - 200));
+        ppTestUtils.luoValidiKVLiite(b.getPeruste().getId());
         repository.save(a);
         em.persist(a);
         repository.save(b);

@@ -20,6 +20,8 @@ import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import javax.persistence.EntityManager;
 import javax.persistence.Inheritance;
 import javax.persistence.PersistenceContext;
+
+import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;
@@ -35,28 +37,27 @@ public class ReferenceableEntityConverter extends BidirectionalConverter<Referen
     private EntityManager em;
 
     @Override
+    public EntityReference convertTo(ReferenceableEntity source, Type<EntityReference> destinationType, MappingContext mappingContext) {
+        return source.getReference();
+    }
+
+    @Override
+    public ReferenceableEntity convertFrom(EntityReference source, Type<ReferenceableEntity> destinationType, MappingContext mappingContext) {
+        if (destinationType.getRawType().isAnnotationPresent(Inheritance.class)) {
+            // Perintähierarkioiden tapauksessa getReference() aiheuttaa ongelmia mappauksen kanssa
+            // (viitteen luokka on perintähierarkian isäluokka eikä "oikea" luokka)
+            ReferenceableEntity e = em.find(destinationType.getRawType(), Long.valueOf(source.getId()));
+            if (e == null) {
+                throw new IllegalArgumentException("Virheellinen viite " + source);
+            }
+        }
+        return em.getReference(destinationType.getRawType(), Long.valueOf(source.getId()));
+    }
+
+    @Override
     public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {
         return (this.sourceType.isAssignableFrom(sourceType) && this.destinationType.isAssignableFrom(destinationType))
             || (this.sourceType.isAssignableFrom(destinationType) && this.destinationType.isAssignableFrom(sourceType));
     }
 
-    @Override
-    public EntityReference convertTo(ReferenceableEntity s, Type<EntityReference> type) {
-        return s.getReference();
-    }
-
-    @Override
-    public ReferenceableEntity convertFrom(EntityReference reference, Type<ReferenceableEntity> type) {
-        if (type.getRawType().isAnnotationPresent(Inheritance.class)) {
-            /*
-            perintähierarkioiden tapauksessa getReference() aiheuttaa ongelmia mappauksen kanssa
-            (viitteen luokka on perintähierarkian isäluokka eikä "oikea" luokka)
-             */
-            ReferenceableEntity e = em.find(type.getRawType(), Long.valueOf(reference.getId()));
-            if ( e == null ) {
-                throw new IllegalArgumentException("Virheellinen viite " + reference );
-            }
-        }
-        return em.getReference(type.getRawType(), Long.valueOf(reference.getId()));
-    }
 }

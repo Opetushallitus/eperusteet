@@ -45,6 +45,6 @@ public enum PerusteTila {
                 return s;
             }
         }
-        throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
+        throw new IllegalArgumentException(tila + " ei ole kelvollinen PerusteTila");
     }
 }

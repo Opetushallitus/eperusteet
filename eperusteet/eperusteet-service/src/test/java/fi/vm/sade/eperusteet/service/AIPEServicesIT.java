@@ -24,7 +24,7 @@ import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -180,10 +180,8 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
             try {
                 AIPEKurssiDto poistettuKurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId1, kurssi.getId());
                 fail("Kurssi ei pitäisi olla olemassa");
-            }
-            catch (BusinessRuleViolationException ex) {
-            }
-            finally {
+            } catch (NotExistsException ex) {
+            } finally {
             }
         }
     }

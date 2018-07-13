@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
@@ -117,6 +118,7 @@ public abstract class TestUtils {
 
         ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
         aosat.addAll(Arrays.asList(osat));
+        rakenne.setTunniste(UUID.randomUUID());
         rakenne.setOsat(aosat);
         rakenne.setMuodostumisSaanto(ms);
         rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
@@ -133,6 +135,7 @@ public abstract class TestUtils {
 
         ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
         aosat.addAll(Arrays.asList(osat));
+        rakenne.setTunniste(UUID.randomUUID());
         rakenne.setOsat(aosat);
         rakenne.setOsaamisala(new Koodi());
         rakenne.setMuodostumisSaanto(ms);
@@ -203,6 +206,7 @@ public abstract class TestUtils {
         public RakenneModuuliBuilder() {
             super(new RakenneModuuli());
             rakenne().setOsat(new ArrayList<>());
+            rakenne().setTunniste(UUID.randomUUID());
             rakenne().setRooli(RakenneModuuliRooli.NORMAALI);
             rakenne().setMuodostumisSaanto(new MuodostumisSaanto());
             rakenne().setNimi(TekstiPalanen.of(Kieli.FI, uniikkiString()));
@@ -328,6 +332,28 @@ public abstract class TestUtils {
         return prefix + (++uniikki).toString();
     }
 
+    static public Map<Kieli, String> uniikkiLokalisoituString() {
+        Map<Kieli, String> tekstit = new HashMap<>();
+        tekstit.put(Kieli.FI, uniikkiString());
+        tekstit.put(Kieli.SV, uniikkiString());
+        tekstit.put(Kieli.EN, uniikkiString());
+        return tekstit;
+    }
+
+    static public LokalisoituTekstiDto uniikkiLokalisoituTekstiDto() {
+        Map<String, String> tekstit = new HashMap<>();
+        tekstit.put("fi", uniikkiString());
+        tekstit.put("sv", uniikkiString());
+        tekstit.put("en", uniikkiString());
+        return new LokalisoituTekstiDto(tekstit);
+    }
+
+    static public LokalisoituTekstiDto uniikkiLokalisoituTekstiDto(Set<Kieli> kielet) {
+        Map<String, String> tekstit = new HashMap<>();
+        kielet.forEach(kieli -> tekstit.put(kieli.toString(), uniikkiString()));
+        return new LokalisoituTekstiDto(tekstit);
+    }
+
     static public Long uniikkiId() {
         return ++uniikki;
     }
@@ -377,4 +403,10 @@ public abstract class TestUtils {
         return oppiaine;
     }
 
+    public static TiedoteDto createTiedote() {
+        TiedoteDto tiedoteDto = new TiedoteDto();
+        tiedoteDto.setOtsikko(lt(uniikkiString()));
+        tiedoteDto.setSisalto(lt(uniikkiString()));
+        return tiedoteDto;
+    }
 }

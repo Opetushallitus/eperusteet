@@ -20,16 +20,11 @@ import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.util.Collection;
-import ma.glasnost.orika.CustomConverter;
-import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.MappingContext;
-import ma.glasnost.orika.MappingException;
-import ma.glasnost.orika.NullFilter;
+
+import ma.glasnost.orika.*;
 import ma.glasnost.orika.metadata.Type;
 
 /**
- * Tuki Guavan Optional-luokalle Orika mapperin yhteydessä.
  *
  * Tarkoitettu Dto->Entiteetti->Dto mappaukseen.
  *
@@ -114,7 +109,7 @@ public final class OptionalSupport {
         }
 
         @Override
-        public Optional<?> convert(Object source, Type<? extends Optional<?>> destinationType) {
+        public Optional<?> convert(Object source, Type<? extends Optional<?>> destinationType, MappingContext mappingContext) {
             if (source != null) {
                 return Optional.of(mapperFacade.map(source, destinationType.getComponentType().getRawType()));
             }
@@ -131,7 +126,7 @@ public final class OptionalSupport {
         }
 
         @Override
-        public ReferenceableEntity convert(Optional<EntityReference> source, Type<? extends ReferenceableEntity> destinationType) {
+        public ReferenceableEntity convert(Optional<EntityReference> source, Type<? extends ReferenceableEntity> destinationType, MappingContext mappingContext) {
             if (source != null && source.isPresent()) {
                 return mapperFacade.map(source.get(), destinationType.getRawType());
             }
@@ -148,7 +143,7 @@ public final class OptionalSupport {
         }
 
         @Override
-        public Object convert(Optional<?> source, Type<? extends Object> destinationType) {
+        public Object convert(Optional<?> source, Type<?> destinationType, MappingContext mappingContext) {
             if (source != null && source.isPresent()) {
                 return mapperFacade.map(source.get(), destinationType.getRawType());
             }

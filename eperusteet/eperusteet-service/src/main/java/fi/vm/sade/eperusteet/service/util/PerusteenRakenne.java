@@ -24,11 +24,13 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author nkala
@@ -50,6 +52,10 @@ public class PerusteenRakenne {
         public TekstiPalanen ryhma;
         public Integer syvyys;
 
+        Ongelma() {
+
+        }
+
         Ongelma(String ongelma, TekstiPalanen ryhma, Integer syvyys) {
             this.ongelma = ongelma;
             this.ryhma = ryhma;
@@ -60,12 +66,23 @@ public class PerusteenRakenne {
     @Getter
     @Setter
     static public class Context {
-        Set<Koodi> osaamisalat;
-        Set<Koodi> tutkintonimikkeet;
+        Set<Koodi> osaamisalat = new HashSet<>();
+        List<TutkintonimikeKoodiDto> tutkintonimikkeet = new ArrayList<>();
 
-        public Context(Set<Koodi> osaamisalat, Set<Koodi> tutkintonimikkeet) {
-            this.osaamisalat = osaamisalat;
-            this.tutkintonimikkeet = tutkintonimikkeet;
+        public Context(Set<Koodi> osaamisalat, List<TutkintonimikeKoodiDto> tutkintonimikkeet) {
+            if (osaamisalat != null) {
+                this.osaamisalat = osaamisalat;
+            }
+            if (tutkintonimikkeet != null) {
+                this.tutkintonimikkeet = tutkintonimikkeet;
+            }
+        }
+
+        public Set<String> getOsaamisalanTutkintonimikekoodit(String osaamisalaUri) {
+            return this.tutkintonimikkeet.stream()
+                    .filter(koodi -> Objects.equals(koodi.getOsaamisalaUri(), osaamisalaUri))
+                    .map(TutkintonimikeKoodiDto::getTutkintonimikeUri)
+                    .collect(Collectors.toSet());
         }
     }
 
@@ -183,21 +200,7 @@ public class PerusteenRakenne {
         }
 
         if (rooli == RakenneModuuliRooli.OSAAMISALA) {
-            validointi.sisakkaisiaOsaamisalaryhmia = validointi.sisakkaisiaOsaamisalaryhmia + 1;
-            // Tarkista löytyykö perusteesta valittua osaamisalaa
-            Koodi roa = rakenne.getOsaamisala();
-            if (roa != null) {
-                boolean osaamisalaaEiPerusteella = true;
-                for (Koodi oa : ctx.getContext().getOsaamisalat()) {
-                    if (roa.equals(oa)) {
-                        osaamisalaaEiPerusteella = false;
-                        break;
-                    }
-                }
-                if (osaamisalaaEiPerusteella) {
-                    validointi.ongelmat.add(new Ongelma("ryhman-osaamisalaa-ei-perusteella", nimi, syvyys));
-                }
-            }
+            validoiOsaamisala(ctx, rakenne, syvyys, nimi, validointi);
         }
 
         // Ylin taso ei voi olla osaamisala
@@ -261,5 +264,43 @@ public class PerusteenRakenne {
             }
         }
         return validointi;
+    }
+
+    private static void validoiOsaamisala(ValidointiState ctx, RakenneModuuli rakenne, int syvyys, TekstiPalanen nimi, Validointi validointi) {
+        validointi.sisakkaisiaOsaamisalaryhmia = validointi.sisakkaisiaOsaamisalaryhmia + 1;
+        // Tarkista löytyykö perusteesta valittua osaamisalaa
+        Koodi roa = rakenne.getOsaamisala();
+        if (roa != null) {
+            boolean osaamisalaaEiPerusteella = true;
+            for (Koodi oa : ctx.getContext().getOsaamisalat()) {
+                if (roa.equals(oa)) {
+                    osaamisalaaEiPerusteella = false;
+                    break;
+                }
+            }
+
+            if (osaamisalaaEiPerusteella) {
+                validointi.ongelmat.add(new Ongelma("ryhman-osaamisalaa-ei-perusteella", nimi, syvyys));
+            }
+
+            { // Osaamisalalta löytyy kaikki vaadittavat tutkintonimikkeet
+                Set<String> vaaditut = ctx.context.getOsaamisalanTutkintonimikekoodit(roa.getUri());
+                if (vaaditut.size() > 1) {
+                    Set<String> actual = new HashSet<>();
+                    if (rakenne.getOsat() != null) {
+                        actual = rakenne.getOsat().stream()
+                                .filter(osa -> osa instanceof RakenneModuuli)
+                                .map(osa -> (RakenneModuuli) osa)
+                                .filter(ryhma -> ryhma.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE && ryhma.getTutkintonimike() != null)
+                                .map(ryhma -> ryhma.getTutkintonimike().getUri())
+                                .collect(Collectors.toSet());
+                    }
+
+                    if (!vaaditut.equals(actual)) {
+                        validointi.ongelmat.add(new Ongelma("ryhman-osaamisalalta-puuttuu-vaaditut-tutkintonimikekuvaukset", nimi, syvyys));
+                    }
+                }
+            }
+        }
     }
 }

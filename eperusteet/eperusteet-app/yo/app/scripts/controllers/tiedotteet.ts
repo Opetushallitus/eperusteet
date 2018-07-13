@@ -24,6 +24,9 @@ angular
             tiedoteId: "@id"
         });
     })
+    .factory("TiedotteetHaku", function($resource, SERVICE_LOC) {
+        return $resource(SERVICE_LOC + "/tiedotteet/haku", {});
+    })
     .controller("SivupalkkiTiedotteetController", function(
         $scope,
         Algoritmit,
@@ -62,6 +65,7 @@ angular
         $uibModal,
         Varmistusdialogi,
         TiedotteetCRUD,
+        TiedotteetHaku,
         Notifikaatiot,
         Utils,
         TiedoteService
@@ -115,6 +119,8 @@ angular
                     return -1 * item.muokattu;
                 case "julkinen":
                     return "" + item.julkinen;
+                case "yleinen":
+                    return "" + item.yleinen;
                 default:
                     break;
             }
@@ -132,7 +138,7 @@ angular
         };
 
         $scope.edit = function(tiedote) {
-            TiedoteService.lisaaTiedote(tiedote, null, fetch, fetch);
+            TiedoteService.lisaaTiedote(tiedote, tiedote ? tiedote._perusteprojekti : null, fetch, fetch);
         };
     })
     .service("TiedoteService", function($uibModal, TiedotteetCRUD, Notifikaatiot, Utils) {

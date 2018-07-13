@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.*;
@@ -66,10 +67,30 @@ public class AIPEOpetuksenSisaltoController {
     @RequestMapping(value = "/vaiheet/{vaiheId}", method = GET)
     public ResponseEntity<AIPEVaiheDto> getVaihe(
             @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("vaiheId") final Long vaiheId,
+            @RequestParam(required = false) final Integer rev
+    ) {
+        return ResponseEntity.ok(sisalto.getVaihe(perusteId, vaiheId, rev));
+    }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/versiot", method = GET)
+    public ResponseEntity<List<Revision>> getVaiheVersio(
+            @PathVariable("perusteId") final Long perusteId,
             @PathVariable("vaiheId") final Long vaiheId
     ) {
-        return ResponseEntity.ok(sisalto.getVaihe(perusteId, vaiheId));
+        return ResponseEntity.ok(sisalto.getVaiheRevisions(perusteId, vaiheId));
     }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/palauta/{rev}", method = POST)
+    public AIPEVaiheDto revertVaihe(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long vaiheId,
+            @PathVariable final Integer rev
+    ) {
+        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, PALAUTUS)
+                .palautus(vaiheId, rev.longValue()), Void -> sisalto.revertVaihe(perusteId, vaiheId, rev));
+    }
+
 
     @RequestMapping(value = "/vaiheet/{vaiheId}", method = DELETE)
     public ResponseEntity removeVaihe(
@@ -264,9 +285,31 @@ public class AIPEOpetuksenSisaltoController {
     public ResponseEntity<AIPEOppiaineDto> getOppiaine(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
+            @PathVariable final Long oppiaineId,
+            @RequestParam(required = false) final Integer rev
+    ) {
+        return ResponseEntity.ok(sisalto.getOppiaine(perusteId, vaiheId, oppiaineId, rev));
+    }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/versiot", method = GET)
+    public ResponseEntity<List<Revision>> getOppiaineVersio(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("vaiheId") final Long vaiheId,
             @PathVariable final Long oppiaineId
     ) {
-        return ResponseEntity.ok(sisalto.getOppiaine(perusteId, vaiheId, oppiaineId));
+        return ResponseEntity.ok(sisalto.getOppiaineRevisions(perusteId, vaiheId, oppiaineId));
+    }
+
+    @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/palauta/{rev}", method = POST)
+    public AIPEOppiaineDto revertOppiaine(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long vaiheId,
+            @PathVariable final Long oppiaineId,
+            @PathVariable final Integer rev
+    ) {
+        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, PALAUTUS)
+                .palautus(oppiaineId, rev.longValue()),
+                Void -> sisalto.revertOppiaine(perusteId, vaiheId, oppiaineId, rev));
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/oppimaarat", method = GET)

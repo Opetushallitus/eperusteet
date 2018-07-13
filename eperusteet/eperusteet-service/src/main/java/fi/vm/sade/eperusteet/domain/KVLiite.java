@@ -83,13 +83,6 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen tyotehtavatJoissaVoiToimia;
 
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @Getter
-    @Setter
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen tutkinnonVirallinenAsema;
-
     @Getter
     @Setter
     @Deprecated

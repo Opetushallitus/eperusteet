@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.domain.yl.AIPEHasId;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.UUID;
