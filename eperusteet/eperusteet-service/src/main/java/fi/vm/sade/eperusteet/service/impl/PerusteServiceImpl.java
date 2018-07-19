@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.views.TekstiHakuView;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
@@ -30,7 +31,6 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKoosteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
@@ -56,6 +56,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -90,6 +91,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         "koulutus_355412", "koulutus_324126", "koulutus_355413", "koulutus_324127", "koulutus_358412", "koulutus_327126",
         "koulutus_354708",
         "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private PerusteRepository perusteet;
@@ -143,6 +147,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private TekstiPalanenRepository tekstiPalanenRepository;
+
+    @Autowired
+    private TekstihakuRepository tekstihakuRepository;
 
     @Autowired
     private VuosiluokkaKokonaisuusRepository vuosiluokkaKokonaisuusRepository;
@@ -1730,5 +1737,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         viiteDto.setTutkinnonOsaDto(tutkinnonOsaDto);
 
         return viiteDto;
+    }
+
+    @Override
+    public Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery, PageRequest p) {
+        return tekstihakuRepository
+                .tekstihaku(pquery.getTeksti(), p)
+                .map(x -> mapper.map(x, TekstiHakuTulosDto.class));
     }
 }
