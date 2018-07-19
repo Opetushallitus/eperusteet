@@ -69,7 +69,7 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
             params.put("ids_"+i, ids);
             ++i;
         }
-        Query q =session.createSQLQuery("SELECT " +
+        Query q = session.createSQLQuery("SELECT " +
                 "   t.tekstipalanen_id as id, " +
                 "   t.kieli as kieli, " +
                 "   t.teksti as teksti " +

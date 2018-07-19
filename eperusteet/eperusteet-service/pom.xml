@@ -12,7 +12,7 @@
     <name>eperusteet-service</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>4.3.9.Final</hibernate.version>
+        <hibernate.version>4.3.11.Final</hibernate.version>
         <spring.version>4.3.4.RELEASE</spring.version>
         <spring.security.version>4.2.0.RELEASE</spring.security.version>
         <spring.data.jpa.version>1.10.6.RELEASE</spring.data.jpa.version>
@@ -194,6 +194,11 @@
             <artifactId>hibernate-validator</artifactId>
             <version>5.2.4.Final</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-search-orm</artifactId>-->
+            <!--<version>5.10.3.Final</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -554,7 +559,8 @@
                         <type>${hibernate.export.type}</type>
                         <target>SCRIPT</target>
                         <driverClassName>org.postgresql.Driver</driverClassName>
-                        <hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>
+                        <!--<hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>-->
+                        <hibernateDialect>fi.vm.sade.eperusteet.hibernate.CustomPostgreSQL9Dialect</hibernateDialect>
                         <url/>
                         <username/>
                         <password/>

@@ -80,9 +80,11 @@
         <property name="entityManagerInterface" value="org.hibernate.jpa.HibernateEntityManager" />
         <property name="jpaPropertyMap">
             <map>
-                <entry key="hibernate.hbm2ddl.auto" value="validate"/>
+                <!-- FIXME: https://hibernate.atlassian.net/browse/HHH&#45;9602 -->
+                <!-- <entry key="hibernate.hbm2ddl.auto" value="validate"/> -->
                 <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
-                <entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
+                <!--<entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>-->
+                <entry key="hibernate.dialect" value="fi.vm.sade.eperusteet.hibernate.CustomPostgreSQL9Dialect"/>
                 <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
                 <entry key="hibernate.cache.use_second_level_cache" value="${hibernate.cache.use_second_level_cache:true}"/>
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
