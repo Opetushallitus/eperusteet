@@ -50,6 +50,11 @@ angular
                 template: require("views/admin/virheelliset.pug"),
                 controller: "VirheellisetHallintaController"
             })
+            .state("root.admin.koodisto", {
+                url: "/koodisto",
+                template: require("views/admin/koodisto.pug"),
+                controller: "KoodistoHallintaController"
+            })
             .state("root.admin.oppaat", {
                 url: "/oppaat",
                 template: require("views/admin/oppaat.pug"),
@@ -153,6 +158,9 @@ angular
         };
         $scope.haeVirheelliset();
     })
+    .controller("KoodistoHallintaController", ($scope) => {
+
+    })
     .controller("OpasHallintaController", ($location, $scope, $state, Api) => {
         const projektitEp = Api.one("oppaat").one("projektit");
 
@@ -190,6 +198,7 @@ angular
             { label: "oppaat", state: "root.admin.oppaat" },
             { label: "arviointiasteikot", state: "root.admin.arviointiasteikot" },
             { label: "virheelliset-perusteet", state: "root.admin.virheelliset" },
+            { label: "koodisto-erot", state: "root.admin.koodisto" }
         ];
 
         $scope.chooseTab = $index => {

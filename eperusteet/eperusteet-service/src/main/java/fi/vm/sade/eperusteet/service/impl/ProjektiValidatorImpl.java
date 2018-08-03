@@ -24,14 +24,14 @@ public class ProjektiValidatorImpl implements ProjektiValidator {
     @Autowired
     private List<Validator> validators;
 
-    @PostConstruct
+    /*@PostConstruct
     public void postConstruct() {
-        StringBuilder validointiDebug = new StringBuilder("\n  Rakennetaan projektivalidointi:\n");
+        StringBuilder validointiDebug = new StringBuilder("\nRakennetaan projektivalidointi:\n");
         for (Validator validator : validators) {
-            validointiDebug.append("    ").append(validator.toString()).append("\n");
+            validointiDebug.append("- ").append(validator.getName()).append("\n");
         }
         log.debug(validointiDebug.toString());
-    }
+    }*/
 
     public TilaUpdateStatus run(Long perusteprojektiId, ProjektiTila tila) {
         TilaUpdateStatus result = new TilaUpdateStatus();

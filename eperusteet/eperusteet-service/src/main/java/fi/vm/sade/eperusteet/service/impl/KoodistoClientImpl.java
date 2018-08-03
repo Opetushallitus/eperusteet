@@ -48,6 +48,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     private static final String KOODISTO_API = "/rest/json/";
     private static final String YLARELAATIO = "relaatio/sisaltyy-ylakoodit/";
     private static final String ALARELAATIO = "relaatio/sisaltyy-alakoodit/";
+    private static final String RINNASTEINEN = "relaatio/rinnasteinen/";
     private static final String CODEELEMENT = "/rest/codeelement";
     private static final String LATEST = CODEELEMENT + "/latest/";
 
@@ -125,6 +126,16 @@ public class KoodistoClientImpl implements KoodistoClient {
     public List<KoodistoKoodiDto> getYlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + YLARELAATIO + koodi;
+        KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
+        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
+        return koodistoDtot;
+    }
+
+    @Override
+    @Cacheable(value = "koodistot", key="'rinnasteiset:'+#p0")
+    public List<KoodistoKoodiDto> getRinnasteiset(String koodi) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = koodistoServiceUrl + KOODISTO_API + RINNASTEINEN + koodi;
         KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
         return koodistoDtot;

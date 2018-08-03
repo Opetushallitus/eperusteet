@@ -18,8 +18,6 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
-
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -27,7 +25,6 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.validation.ValidointiStatus;
-import fi.vm.sade.eperusteet.service.ProjektiValidator;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
@@ -36,20 +33,17 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.peruste.*;
-import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-
-import static fi.vm.sade.eperusteet.domain.TekstiPalanen.tarkistaTekstipalanen;
-import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
+import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
@@ -62,17 +56,7 @@ import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import static fi.vm.sade.eperusteet.service.util.Util.*;
-
 import fi.vm.sade.generic.rest.CachingRestClient;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
@@ -90,8 +74,19 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
+import static fi.vm.sade.eperusteet.domain.TekstiPalanen.tarkistaTekstipalanen;
+import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
+import static fi.vm.sade.eperusteet.service.util.Util.*;
+import static java.util.stream.Collectors.toMap;
 
 /**
  *
@@ -153,10 +148,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private ValidointiStatusRepository validointiStatusRepository;
 
     @Autowired
+    private KoulutuskoodiStatusRepository koulutuskoodiStatusRepository;
+
+    @Autowired
     private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
 
     @Autowired
     private ProjektiValidator projektiValidator;
+
+    @Autowired
+    private KoodistoClient koodistoClient;
 
     @Override
     @Transactional(readOnly = true)
@@ -237,6 +238,135 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
         }
         SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional
+    public void tarkistaKooditTask() {
+        AnonymousAuthenticationToken auth = new AnonymousAuthenticationToken("system", "system",
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        LOG.debug("Tarkistetaan koodit käyttäjällä: " + auth.getName());
+
+        Set<Perusteprojekti> projektit = new HashSet<>();
+        projektit.addAll(repository.findAllKoodiValidoimattomat());
+        projektit.addAll(repository.findAllKoodiValidoimattomatUudet());
+
+
+        LOG.debug("Tarkastetaan " + projektit.size() + " perustetta.");
+
+        for (Perusteprojekti pp : projektit) {
+            Peruste peruste = pp.getPeruste();
+            KoulutuskoodiStatus status = koulutuskoodiStatusRepository.findOneByPeruste(peruste);
+            boolean vaatiiTarkistuksen = status == null
+                    || !status.isKooditOk()
+                    || pp.getPeruste().getGlobalVersion().getAikaleima().after(status.getLastCheck());
+
+            if (!vaatiiTarkistuksen) {
+                return;
+            }
+
+            if (status == null) {
+                status = new KoulutuskoodiStatus();
+            }
+
+            tarkistaTutkinnonKoodit(peruste, status);
+
+            koulutuskoodiStatusRepository.save(status);
+        }
+    }
+
+    private void tarkistaTutkinnonKoodit(Peruste p, KoulutuskoodiStatus status) {
+        status.setLastCheck(new Date());
+        status.setPeruste(p);
+
+        Set<Koulutus> koulutuskoodit = p.getKoulutukset();
+
+        if (p.getSuoritustavat() != null && p.getSuoritustavat().size() > 0) {
+            LOG.debug("Tarkistetaan perustetta: " + p.getNimi().toString());
+
+            LOG.debug("Käydään lävitse tutkinnon osat suoritustapa kerrallaan.");
+            for (Suoritustapa st : p.getSuoritustavat()) {
+                LOG.debug("Tarkistetaan suoritustapa: " + st.getSuoritustapakoodi());
+
+                List<TutkinnonOsaViite> viitteet = mapper.mapAsList(perusteService.getTutkinnonOsat(p.getId(),
+                        st.getSuoritustapakoodi()), TutkinnonOsaViite.class);
+
+                List<Koodi> koodit = viitteet.stream()
+                        .map(TutkinnonOsaViite::getTutkinnonOsa)
+                        .map(TutkinnonOsa::getKoodi)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+
+                if (koodit.size() > 0) {
+                    LOG.debug("Tutkinnon osien koodit:");
+
+                    for (Koodi koodi : koodit) {
+                        LOG.debug("- " + koodi.getUri());
+
+                        boolean koodiOk = false;
+
+                        List<KoodistoKoodiDto> ylarelaatiot = getKoulutukset(koodi.getUri());
+
+                        // Katsotaan ensiksi, löytyykä koulutus suoraan ylärelaatiosta
+                        if (hasKoulutus(koulutuskoodit, ylarelaatiot)) {
+                            // Tarkistetaan ylärelaatiot
+                            LOG.debug("On linkitetty suoraan kautta.");
+                            koodiOk = true;
+                            return;
+                        } else {
+                            // Tarkistetaan rinnasteiden ylärelaatiot (syvyys = 1)
+                            List<KoodistoKoodiDto> rinnasteiset = koodistoClient.getRinnasteiset(koodi.getUri());
+                            for (KoodistoKoodiDto rinnasteinen : rinnasteiset) {
+                                List<KoodistoKoodiDto> koulutukset = getKoulutukset(rinnasteinen.getKoodiUri());
+
+                                if (hasKoulutus(koulutuskoodit, koulutukset)) {
+                                    // Tutkinnon osan koodi on linkitetty ainakin yhteen koulutuskoodiin
+                                    LOG.debug("On linkitetty rinnasteisen kautta.");
+                                    koodiOk = true;
+                                }
+                            }
+                        }
+
+                        if (!koodiOk) {
+                            KoulutuskoodiStatusInfo info = new KoulutuskoodiStatusInfo();
+                            info.setSuoritustapa(st.getSuoritustapakoodi());
+                            //info.setViite();
+                            status.getInfot().add(info);
+                            status.setKooditOk(false);
+                        }
+
+                    }
+                } else {
+                    LOG.debug("Yhtään tutkinnon osan koodia ei löytynyt.");
+                }
+            }
+        }
+    }
+
+    private boolean hasKoulutus(Set<Koulutus> koulutuskoodit, List<KoodistoKoodiDto> koulutukset) {
+        return koulutukset.stream()
+                .flatMap(k -> koulutuskoodit.stream()
+                        .filter(kk -> k.getKoodiUri().equals(kk.getKoulutuskoodiUri()))
+                        .limit(1))
+                .findFirst()
+                .isPresent();
+    }
+
+    private String getKoodisto(KoodistoKoodiDto koodi) {
+        if (koodi != null && koodi.getKoodisto() != null) {
+            return koodi.getKoodisto().getKoodistoUri();
+        }
+
+        return null;
+    }
+
+    private List<KoodistoKoodiDto> getKoulutukset(String koodiUri) {
+        return koodistoClient.getYlarelaatio(koodiUri).stream()
+                .filter(koodi -> "koulutus".equals(getKoodisto(koodi)))
+                .collect(Collectors.toList());
     }
 
     @Override
