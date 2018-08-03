@@ -158,8 +158,22 @@ angular
         };
         $scope.haeVirheelliset();
     })
-    .controller("KoodistoHallintaController", ($scope) => {
-
+    .controller("KoodistoHallintaController", ($scope, Api) => {
+        $scope.ongelmalliset = null;
+        $scope.sivu = 0;
+        $scope.sivukoko = 10;
+        $scope.kokonaismaara = 10;
+        $scope.haeOngelmalliset = async function() {
+            const virheelliset = await Api.all("perusteprojektit").get("koodiongelmat", {
+                sivu: $scope.sivu,
+                sivukoko: $scope.sivukoko,
+            });
+            $scope.sivu = virheelliset.sivu;
+            $scope.sivukoko = virheelliset.sivu;
+            $scope.kokonaismaara = virheelliset.kokonaismäärä;
+            $scope.ongelmalliset = _(virheelliset.data).value();
+        };
+        $scope.haeOngelmalliset();
     })
     .controller("OpasHallintaController", ($location, $scope, $state, Api) => {
         const projektitEp = Api.one("oppaat").one("projektit");

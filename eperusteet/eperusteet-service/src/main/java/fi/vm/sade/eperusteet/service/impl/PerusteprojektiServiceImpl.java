@@ -29,10 +29,7 @@ import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
-import fi.vm.sade.eperusteet.dto.DokumenttiDto;
-import fi.vm.sade.eperusteet.dto.OmistajaDto;
-import fi.vm.sade.eperusteet.dto.TiedoteDto;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.*;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
@@ -53,6 +50,7 @@ import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
+import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
@@ -294,27 +292,40 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 List<TutkinnonOsaViite> viitteet = mapper.mapAsList(perusteService.getTutkinnonOsat(p.getId(),
                         st.getSuoritustapakoodi()), TutkinnonOsaViite.class);
 
-                List<Koodi> koodit = viitteet.stream()
+                /*List<Koodi> koodit = viitteet.stream()
                         .map(TutkinnonOsaViite::getTutkinnonOsa)
                         .map(TutkinnonOsa::getKoodi)
                         .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList());*/
+
+                List<Pair<Koodi, TutkinnonOsaViite>> koodit = new ArrayList<>();
+                for (TutkinnonOsaViite viite : viitteet) {
+                    TutkinnonOsa tutkinnonOsa = viite.getTutkinnonOsa();
+                    if (tutkinnonOsa != null) {
+                        Koodi koodi = tutkinnonOsa.getKoodi();
+                        if (koodi != null) {
+                            koodit.add(Pair.of(koodi, viite));
+                        }
+                    }
+                }
 
                 if (koodit.size() > 0) {
                     LOG.debug("Tutkinnon osien koodit:");
 
-                    for (Koodi koodi : koodit) {
+                    for (Pair<Koodi, TutkinnonOsaViite> pari : koodit) {
+                        Koodi koodi = pari.getFirst();
+                        TutkinnonOsaViite viite = pari.getSecond();
+
                         LOG.debug("- " + koodi.getUri());
 
-                        boolean koodiOk = false;
-
                         List<KoodistoKoodiDto> ylarelaatiot = getKoulutukset(koodi.getUri());
+
 
                         // Katsotaan ensiksi, löytyykä koulutus suoraan ylärelaatiosta
                         if (hasKoulutus(koulutuskoodit, ylarelaatiot)) {
                             // Tarkistetaan ylärelaatiot
                             LOG.debug("On linkitetty suoraan kautta.");
-                            koodiOk = true;
+                            status.setKooditOk(true);
                             return;
                         } else {
                             // Tarkistetaan rinnasteiden ylärelaatiot (syvyys = 1)
@@ -325,19 +336,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                 if (hasKoulutus(koulutuskoodit, koulutukset)) {
                                     // Tutkinnon osan koodi on linkitetty ainakin yhteen koulutuskoodiin
                                     LOG.debug("On linkitetty rinnasteisen kautta.");
-                                    koodiOk = true;
+                                    status.setKooditOk(true);
                                 }
                             }
                         }
 
-                        if (!koodiOk) {
-                            KoulutuskoodiStatusInfo info = new KoulutuskoodiStatusInfo();
-                            info.setSuoritustapa(st.getSuoritustapakoodi());
-                            //info.setViite();
-                            status.getInfot().add(info);
-                            status.setKooditOk(false);
+                        if (!status.isKooditOk()){
+                            addStatusInfo(status, st, viite);
                         }
-
                     }
                 } else {
                     LOG.debug("Yhtään tutkinnon osan koodia ei löytynyt.");
@@ -346,13 +352,25 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
     }
 
+    private void addStatusInfo(KoulutuskoodiStatus status, Suoritustapa st, TutkinnonOsaViite viite) {
+        KoulutuskoodiStatusInfo info = new KoulutuskoodiStatusInfo();
+        info.setSuoritustapa(st.getSuoritustapakoodi());
+        info.setViite(viite);
+
+        status.getInfot().add(info);
+    }
+
     private boolean hasKoulutus(Set<Koulutus> koulutuskoodit, List<KoodistoKoodiDto> koulutukset) {
-        return koulutukset.stream()
-                .flatMap(k -> koulutuskoodit.stream()
-                        .filter(kk -> k.getKoodiUri().equals(kk.getKoulutuskoodiUri()))
-                        .limit(1))
-                .findFirst()
-                .isPresent();
+        for (KoodistoKoodiDto koodi : koulutukset) {
+            for (Koulutus koulutus : koulutuskoodit) {
+                String koodiUri = koodi.getKoodiUri();
+                String koulutuskoodiUri = koulutus.getKoulutuskoodiUri();
+                if (Objects.equals(koodiUri, koulutuskoodiUri)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private String getKoodisto(KoodistoKoodiDto koodi) {
@@ -405,6 +423,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     return dto;
                 });
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<KoulutuskoodiStatusDto> getKoodiongelmat(PageRequest p) {
+        Page<KoulutuskoodiStatus> ongelmalliset = koulutuskoodiStatusRepository.findOngelmalliset(p);
+        return ongelmalliset.map(status -> mapper.map(status, KoulutuskoodiStatusDto.class));
     }
 
     @Override

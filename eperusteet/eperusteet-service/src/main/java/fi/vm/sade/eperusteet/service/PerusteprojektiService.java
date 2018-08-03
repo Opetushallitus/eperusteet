@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.dto.KoulutuskoodiStatusDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -28,7 +29,6 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -114,6 +114,9 @@ public interface PerusteprojektiService {
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     Page<ValidationDto> getVirheelliset(PageRequest p);
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    Page<KoulutuskoodiStatusDto> getKoodiongelmat(PageRequest p);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila);

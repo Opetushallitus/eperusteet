@@ -27,5 +27,5 @@ public interface KoulutuskoodiStatusRepository extends JpaRepository<Koulutuskoo
     KoulutuskoodiStatus findOneByPeruste(Peruste peruste);
 
     @Query("SELECT vs FROM KoulutuskoodiStatus vs WHERE vs.kooditOk = FALSE OR vs.kooditOk IS NULL")
-    Page<KoulutuskoodiStatus> findVirheelliset(Pageable pageable);
+    Page<KoulutuskoodiStatus> findOngelmalliset(Pageable pageable);
 }

@@ -16,7 +16,9 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.KoulutuskoodiStatus;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.dto.KoulutuskoodiStatusDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -102,6 +104,17 @@ public class PerusteprojektiController {
     ) {
         PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 20));
         return new ResponseEntity<>(service.getVirheelliset(p), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/koodiongelmat", method = GET)
+    @ResponseBody
+    @Description("Lista tutkinnon osista, joista puuttuu yhteys koulutukseen. Tätä käytetään helpottamaan tutkinnon osien koodien ja koulutuskoodin eroavaisuuksien etsimiseen.")
+    public ResponseEntity<Page<KoulutuskoodiStatusDto>> getKoodiongelmat(
+            @RequestParam(defaultValue = "0") Integer sivu,
+            @RequestParam(defaultValue = "10") Integer sivukoko
+    ) {
+        PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 20));
+        return new ResponseEntity<>(service.getKoodiongelmat(p), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
