@@ -50,10 +50,10 @@ angular
                 template: require("views/admin/virheelliset.pug"),
                 controller: "VirheellisetHallintaController"
             })
-            .state("root.admin.koodisto", {
+            .state("root.admin.koulutuskoodiongelmat", {
                 url: "/koodisto",
-                template: require("views/admin/koodisto.pug"),
-                controller: "KoodistoHallintaController"
+                template: require("views/admin/koulutuskoodiongelmat.pug"),
+                controller: "KoulutuskoodiOngelmatController"
             })
             .state("root.admin.oppaat", {
                 url: "/oppaat",
@@ -148,7 +148,6 @@ angular
             $scope.kokonaismaara = virheelliset.kokonaismäärä;
             $scope.virheelliset = _(virheelliset.data)
                 .map(validointi => {
-                    console.log(validointi.perusteprojekti, validointi.perusteprojekti.peruste);
                     return {
                         ...validointi,
                         $$url: PerusteProjektiService.getUrl(validointi.perusteprojekti, validointi.perusteprojekti.peruste)
@@ -158,20 +157,28 @@ angular
         };
         $scope.haeVirheelliset();
     })
-    .controller("KoodistoHallintaController", ($scope, Api) => {
+    .controller("KoulutuskoodiOngelmatController", ($scope, Api, PerusteProjektiService) => {
         $scope.ongelmalliset = null;
         $scope.sivu = 0;
         $scope.sivukoko = 10;
         $scope.kokonaismaara = 10;
         $scope.haeOngelmalliset = async function() {
-            const virheelliset = await Api.all("perusteprojektit").get("koodiongelmat", {
+            const ongelmalliset = await Api.all("perusteprojektit").get("koodiongelmat", {
                 sivu: $scope.sivu,
                 sivukoko: $scope.sivukoko,
             });
-            $scope.sivu = virheelliset.sivu;
-            $scope.sivukoko = virheelliset.sivu;
-            $scope.kokonaismaara = virheelliset.kokonaismäärä;
-            $scope.ongelmalliset = _(virheelliset.data).value();
+            $scope.sivu = ongelmalliset.sivu;
+            $scope.sivukoko = ongelmalliset.sivu;
+            $scope.kokonaismaara = ongelmalliset.kokonaismäärä;
+            $scope.ongelmalliset = _(ongelmalliset.data)
+                .map(ongelma => {
+                    return {
+                        ...ongelma,
+                        $$url: PerusteProjektiService.getUrl(ongelma.perusteprojekti, ongelma.perusteprojekti.peruste)
+                    };
+                })
+                .value();
+            console.log($scope.ongelmalliset);
         };
         $scope.haeOngelmalliset();
     })
@@ -212,7 +219,7 @@ angular
             { label: "oppaat", state: "root.admin.oppaat" },
             { label: "arviointiasteikot", state: "root.admin.arviointiasteikot" },
             { label: "virheelliset-perusteet", state: "root.admin.virheelliset" },
-            { label: "koodisto-erot", state: "root.admin.koodisto" }
+            { label: "koulutuskoodi-ongelmat", state: "root.admin.koulutuskoodiongelmat" }
         ];
 
         $scope.chooseTab = $index => {

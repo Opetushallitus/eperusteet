@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +27,7 @@ import java.util.List;
 @Setter
 public class KoulutuskoodiStatusDto {
     private Long id;
-    private PerusteHakuInternalDto peruste;
+    private PerusteprojektiListausDto perusteprojekti;
     private Date lastCheck;
     private List<KoulutuskoodiStatusInfoDto> infot;
     private boolean kooditOk;

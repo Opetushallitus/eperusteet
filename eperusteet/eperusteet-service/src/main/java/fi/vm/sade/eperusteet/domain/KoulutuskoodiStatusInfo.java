@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "koulutuskoodi_status_info")
@@ -41,4 +42,15 @@ public class KoulutuskoodiStatusInfo {
     @Setter
     @OneToOne(fetch = FetchType.LAZY)
     private TutkinnonOsaViite viite;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        KoulutuskoodiStatusInfo oInfo = (KoulutuskoodiStatusInfo) o;
+        TutkinnonOsaViite oViite = oInfo.getViite();
+        if (viite == null || oViite == null) return false;
+        return suoritustapa == oInfo.suoritustapa &&
+                Objects.equals(this.viite.getId(), oInfo.viite.getId());
+    }
 }

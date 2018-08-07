@@ -1,7 +1,3 @@
-//div(ng-repeat="osa in ongelmalliset")
-  pre {{osa | json}}
-
-
 div.ongelmalliset-perusteet
   h1(kaanna="'ongelmalliset-otsikko'")
   p(kaanna="'ongelmalliset-kuvaus'")
@@ -12,24 +8,18 @@ div.ongelmalliset-perusteet
         tr
           th(kaanna="'perusteprojekti'")
           th(kaanna="'peruste'")
-          th(kaanna="'virheet'")
+          th(kaanna="'tutkinnon-osa'")
           th
       tbody
         tr(ng-repeat="ongelma in ongelmalliset | orderBy:'peruste.globalVersion.aikaleima':true")
           td
-            a(ng-bind="ongelma.perusteprojekti.nimi | kaanna")
-          td(ng-bind="ongelma.peruste.nimi | kaanna")
+            a(ng-href="{{ ongelma.$$url }}" ng-bind="ongelma.perusteprojekti.nimi | kaanna")
+          td(ng-bind="ongelma.perusteprojekti.peruste.nimi | kaanna")
           td
             ul(ng-repeat="info in ongelma.infot")
-              pre {{info | json}}
-              //li.virheviesti
-                span(ng-bind="virhe.viesti | kaanna")
-              //ul
-                li.virhesijainti(ng-repeat="nimi in virhe.nimet" kaanna="nimi.teksti")
+              li {{info.viite.nimi | kaanna}}
 
     ep-pagination(ng-model="sivu"
                   ng-change="haeVirheelliset"
                   total-items="kokonaismaara"
                   items-per-page="sivukoko")
-
-  // button.btn.btn-primary(icon-role="refresh" kaanna="'virheelliset-hae'" ng-click="haeVirheelliset()")

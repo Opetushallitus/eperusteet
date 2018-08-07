@@ -292,12 +292,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 List<TutkinnonOsaViite> viitteet = mapper.mapAsList(perusteService.getTutkinnonOsat(p.getId(),
                         st.getSuoritustapakoodi()), TutkinnonOsaViite.class);
 
-                /*List<Koodi> koodit = viitteet.stream()
-                        .map(TutkinnonOsaViite::getTutkinnonOsa)
-                        .map(TutkinnonOsa::getKoodi)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());*/
-
                 List<Pair<Koodi, TutkinnonOsaViite>> koodit = new ArrayList<>();
                 for (TutkinnonOsaViite viite : viitteet) {
                     TutkinnonOsa tutkinnonOsa = viite.getTutkinnonOsa();
@@ -320,12 +314,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                         List<KoodistoKoodiDto> ylarelaatiot = getKoulutukset(koodi.getUri());
 
+                        boolean koodiOk = false;
+
 
                         // Katsotaan ensiksi, löytyykä koulutus suoraan ylärelaatiosta
                         if (hasKoulutus(koulutuskoodit, ylarelaatiot)) {
                             // Tarkistetaan ylärelaatiot
-                            LOG.debug("On linkitetty suoraan kautta.");
-                            status.setKooditOk(true);
+                            LOG.debug("On linkitetty suoraan.");
+                            koodiOk = true;
                             return;
                         } else {
                             // Tarkistetaan rinnasteiden ylärelaatiot (syvyys = 1)
@@ -335,14 +331,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                                 if (hasKoulutus(koulutuskoodit, koulutukset)) {
                                     // Tutkinnon osan koodi on linkitetty ainakin yhteen koulutuskoodiin
-                                    LOG.debug("On linkitetty rinnasteisen kautta.");
-                                    status.setKooditOk(true);
+                                    LOG.debug("On linkitetty rinnasteisen.");
+                                    koodiOk = true;
                                 }
                             }
                         }
 
-                        if (!status.isKooditOk()){
+                        if (!koodiOk) {
                             addStatusInfo(status, st, viite);
+                            status.setKooditOk(false);
+                        } else {
+                            status.setInfot(new ArrayList<>());
+                            status.setKooditOk(true);
                         }
                     }
                 } else {
@@ -357,7 +357,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         info.setSuoritustapa(st.getSuoritustapakoodi());
         info.setViite(viite);
 
-        status.getInfot().add(info);
+        if (!status.getInfot().contains(info)) {
+            status.getInfot().add(info);
+        }
     }
 
     private boolean hasKoulutus(Set<Koulutus> koulutuskoodit, List<KoodistoKoodiDto> koulutukset) {
@@ -429,7 +431,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     public Page<KoulutuskoodiStatusDto> getKoodiongelmat(PageRequest p) {
         Page<KoulutuskoodiStatus> ongelmalliset = koulutuskoodiStatusRepository.findOngelmalliset(p);
-        return ongelmalliset.map(status -> mapper.map(status, KoulutuskoodiStatusDto.class));
+        return ongelmalliset.map(status -> {
+            KoulutuskoodiStatusDto dto = mapper.map(status, KoulutuskoodiStatusDto.class);
+            dto.setPerusteprojekti(mapper.map(status.getPeruste().getPerusteprojekti(), PerusteprojektiListausDto.class));
+            return dto;
+        });
     }
 
     @Override

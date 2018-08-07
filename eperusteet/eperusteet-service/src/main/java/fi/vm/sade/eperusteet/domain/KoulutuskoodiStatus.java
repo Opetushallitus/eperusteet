@@ -52,7 +52,7 @@ public class KoulutuskoodiStatus {
 
     @Getter
     @Setter
-    private boolean kooditOk = false;
+    private boolean kooditOk = true;
 
     public void setInfot(List<KoulutuskoodiStatusInfo> infot) {
         if (infot != null) {
