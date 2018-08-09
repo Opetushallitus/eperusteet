@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
@@ -37,10 +38,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -66,6 +64,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -104,6 +106,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     private DokumenttiStateService dokumenttiStateService;
+
+    @Autowired
+    private PerusteprojektiRepository perusteprojektiRepository;
 
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
@@ -403,5 +408,49 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 return new ByteArrayInputStream(saved.toByteArray());
             }
         }
+    }
+
+    @Override
+    @Transactional
+    @IgnorePerusteUpdateCheck
+    public void paivitaDokumentit() {
+        /*AnonymousAuthenticationToken token = new AnonymousAuthenticationToken("system", "system",
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));*/
+
+        LOG.debug("Luodaan uudet PDF-dokumentit.");
+
+        String role = "ROLE_ADMIN";
+
+        List<Perusteprojekti> perusteprojektit = perusteprojektiRepository.findAll();
+        for (Perusteprojekti pp : perusteprojektit) {
+
+            // Käytetään pääkäyttäjän oikeuksia.
+            Authentication token = new UsernamePasswordAuthenticationToken("system",
+                    role, AuthorityUtils.createAuthorityList(role, "ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
+            SecurityContextHolder.getContext().setAuthentication(token);
+
+            Peruste p = pp.getPeruste();
+            Set<Kieli> kielet = p.getKielet();
+            for (Suoritustapa st : p.getSuoritustavat()) {
+                for (Kieli kieli : kielet) {
+                    try {
+                        DokumenttiDto createDtoFor = createDtoFor(
+                                p.getId(),
+                                kieli,
+                                st.getSuoritustapakoodi(),
+                                GeneratorVersion.UUSI
+                        );
+                        setStarted(createDtoFor);
+                        generateWithDto(createDtoFor);
+                    } catch (DokumenttiException e) {
+                        LOG.error(e.getLocalizedMessage(), e.getCause());
+                    }
+                }
+            }
+
+            SecurityContextHolder.getContext().setAuthentication(null);
+        }
+
+        LOG.debug("Uudet PDF-dokumentit luotu.");
     }
 }

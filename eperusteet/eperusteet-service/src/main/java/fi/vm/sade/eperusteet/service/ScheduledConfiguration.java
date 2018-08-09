@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,19 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     PerusteprojektiService perusteprojektiService;
 
     @Autowired
+    DokumenttiService dokumenttiService;
+
+    @Autowired
     ThreadPoolTaskExecutor pool;
 
     @Scheduled(cron = "0 0 3 * * *")
     public void scheduledValidationTask() {
         task();
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    public void scheduledPDFGenerationTask() {
+        dokumenttiService.paivitaDokumentit();
     }
 
     @Scheduled(cron = "0 0 4 * * *")
