@@ -100,4 +100,9 @@ public class ValidatorKvliite implements Validator {
             updateStatus.addStatus(viesti, kielet);
         });
     }
+
+    @Override
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
 }

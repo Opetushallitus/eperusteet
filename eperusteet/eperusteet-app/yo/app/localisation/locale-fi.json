@@ -1280,5 +1280,9 @@
     "vuosiluokka_8": "Vuosiluokka 8",
     "vuosiluokka_9": "Vuosiluokka 9",
     "yleiset-osuudet": "Yleiset osuudet",
-    "yleiset-tavoitteet": "Yleiset tavoitteet"
+    "yleiset-tavoitteet": "Yleiset tavoitteet",
+    "ongelmalliset-otsikko": "Ongelmalliset koodit",
+    "ongelmalliset-kuvaus": "Tähän näkymään kertyvät ne perusteprojektit, joissa on tutkinnon osia, joilla on koodeja, jotka eivät ole liitetty koulutuskoodeihin.",
+    "koodi-ei-liitetty": "Tutkinnon osa",
+    "koulutuskoodi-ongelmat": "Koulutuskoodi ongelmat"
 }

@@ -12,8 +12,8 @@ public interface Validator {
     @PreAuthorize("isAuthenticated()")
     TilaUpdateStatus validate(Long perusteprojektiId);
 
-    @PreAuthorize("isAuthenticated()")
-    String toString();
+    @PreAuthorize("permitAll()")
+    String getName();
 
     @PreAuthorize("isAuthenticated()")
     boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi);

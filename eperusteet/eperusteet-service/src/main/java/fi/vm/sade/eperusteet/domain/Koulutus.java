@@ -64,7 +64,7 @@ public class Koulutus implements Serializable, Mergeable<Koulutus>{
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
-    @Deprecated() // Haetaan tarvittaessa koodistopalvelusta
+    @Deprecated // Haetaan tarvittaessa koodistopalvelusta
     private TekstiPalanen nimi;
 
     @Column(name = "koulutuskoodi_arvo")
