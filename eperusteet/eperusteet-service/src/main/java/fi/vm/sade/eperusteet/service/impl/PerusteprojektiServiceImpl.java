@@ -285,9 +285,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (p.getSuoritustavat() != null && p.getSuoritustavat().size() > 0) {
             LOG.debug("Tarkistetaan perustetta: " + p.getNimi().toString());
 
-            LOG.debug("Käydään lävitse tutkinnon osat suoritustapa kerrallaan.");
+            LOG.debug("  Käydään lävitse tutkinnon osat suoritustapa kerrallaan.");
             for (Suoritustapa st : p.getSuoritustavat()) {
-                LOG.debug("Tarkistetaan suoritustapa: " + st.getSuoritustapakoodi());
+                LOG.debug("  Tarkistetaan suoritustapa: " + st.getSuoritustapakoodi());
 
                 List<TutkinnonOsaViite> viitteet = mapper.mapAsList(perusteService.getTutkinnonOsat(p.getId(),
                         st.getSuoritustapakoodi()), TutkinnonOsaViite.class);
@@ -304,13 +304,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 }
 
                 if (koodit.size() > 0) {
-                    LOG.debug("Tutkinnon osien koodit:");
+                    LOG.debug("    Tutkinnon osien koodit:");
 
                     for (Pair<Koodi, TutkinnonOsaViite> pari : koodit) {
                         Koodi koodi = pari.getFirst();
                         TutkinnonOsaViite viite = pari.getSecond();
 
-                        LOG.debug("- " + koodi.getUri());
+                        LOG.debug("    - " + koodi.getUri());
 
                         List<KoodistoKoodiDto> ylarelaatiot = getKoulutukset(koodi.getUri());
 
@@ -320,7 +320,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         // Katsotaan ensiksi, löytyykä koulutus suoraan ylärelaatiosta
                         if (hasKoulutus(koulutuskoodit, ylarelaatiot)) {
                             // Tarkistetaan ylärelaatiot
-                            LOG.debug("On linkitetty suoraan.");
+                            LOG.debug("    On linkitetty suoraan.");
                             koodiOk = true;
                             return;
                         } else {
@@ -331,7 +331,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                                 if (hasKoulutus(koulutuskoodit, koulutukset)) {
                                     // Tutkinnon osan koodi on linkitetty ainakin yhteen koulutuskoodiin
-                                    LOG.debug("On linkitetty rinnasteisen.");
+                                    LOG.debug("    On linkitetty rinnasteisen.");
                                     koodiOk = true;
                                 }
                             }
@@ -346,7 +346,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         }
                     }
                 } else {
-                    LOG.debug("Yhtään tutkinnon osan koodia ei löytynyt.");
+                    LOG.debug("    Yhtään tutkinnon osan koodia ei löytynyt.");
                 }
             }
         }

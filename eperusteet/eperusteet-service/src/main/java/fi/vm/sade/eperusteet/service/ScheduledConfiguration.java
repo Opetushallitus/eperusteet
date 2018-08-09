@@ -37,7 +37,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
         task();
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 4 * * *")
     public void tarkistaKoodit() {
         perusteprojektiService.tarkistaKooditTask();
     }
