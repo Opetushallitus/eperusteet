@@ -35,6 +35,9 @@ public interface DokumenttiService {
     @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
     void generateWithDto(@P("dto") DokumenttiDto dto) throws DokumenttiException;
 
+    @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
+    void generateWithDtoSync(@P("dto") DokumenttiDto dto) throws DokumenttiException;
+
     @PreAuthorize("hasPermission(#id, 'peruste', 'LUKU')")
     DokumenttiDto createDtoFor(
             @P("id") final long id,

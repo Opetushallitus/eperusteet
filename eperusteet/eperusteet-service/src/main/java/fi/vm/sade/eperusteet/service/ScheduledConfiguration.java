@@ -23,9 +23,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
 
     ScheduledConfiguration() {
         scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setErrorHandler(err -> {
-            log.error(err.getMessage(), err);
-        });
+        scheduler.setErrorHandler(err -> log.error(err.getMessage(), err));
         scheduler.initialize();
     }
 
