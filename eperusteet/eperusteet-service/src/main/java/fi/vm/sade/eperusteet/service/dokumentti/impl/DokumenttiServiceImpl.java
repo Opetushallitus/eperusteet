@@ -70,8 +70,11 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.JULKAISTU;
 
 /**
  *
@@ -161,8 +164,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
         List<Dokumentti> documents;
         if (version != null) {
-            documents = new ArrayList<>(dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndGeneratorVersion(
-                    id, kieli, DokumenttiTila.VALMIS, version, sort));
+            documents = new ArrayList<>(dokumenttiRepository
+                    .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(id,
+                            kieli, DokumenttiTila.VALMIS, suoritustapakoodi, version, sort));
         }
         else {
             documents = new ArrayList<>(dokumenttiRepository
@@ -185,6 +189,33 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @IgnorePerusteUpdateCheck
     @Async(value = "docTaskExecutor")
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
+        dto.setTila(DokumenttiTila.LUODAAN);
+        dokumenttiStateService.save(dto);
+
+        Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
+        if (dokumentti == null) {
+            dokumentti = mapper.map(dto, Dokumentti.class);
+        }
+
+        try {
+            dokumentti.setData(generateFor(dto));
+            dokumentti.setTila(DokumenttiTila.VALMIS);
+            dokumentti.setValmistumisaika(new Date());
+            dokumenttiRepository.save(dokumentti);
+        } catch (Exception ex) {
+            dto.setTila(DokumenttiTila.EPAONNISTUI);
+            dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
+            dto.setValmistumisaika(new Date());
+            dokumenttiStateService.save(dto);
+
+            throw new DokumenttiException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    @Transactional(noRollbackFor = DokumenttiException.class)
+    @IgnorePerusteUpdateCheck
+    public void generateWithDtoSync(DokumenttiDto dto) throws DokumenttiException {
         dto.setTila(DokumenttiTila.LUODAAN);
         dokumenttiStateService.save(dto);
 
@@ -297,7 +328,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         ValidationResult result;
         GeneratorVersion version = dto.getGeneratorVersion();
 
-        LOG.info("Generate PDF (perusteId=" + dto.getPerusteId() + ")");
+        LOG.info("Luodaan dokumenttia (" + dto.getPerusteId() + ", " + dto.getSuoritustapakoodi() + ", "
+                + kieli + ", " + version + ") perusteelle.");
         switch (version) {
             case VANHA:
                 String xmlpath = builder.generateXML(peruste, kieli, suoritustapakoodi);
@@ -334,11 +366,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 // Validoidaan dokumnetti
                 result = DokumenttiUtils.validatePdf(toReturn);
                 if (result.isValid()) {
-                    LOG.info("PDF (peruste " + dto.getId() + ") is a valid PDF/A-1b file");
+                    LOG.debug("Dokumentti (" + dto.getPerusteId() + ", "
+                            + dto.getSuoritustapakoodi() + ", " + kieli + ") on PDF/A-1b mukainen.");
                 } else {
-                    LOG.warn("PDF (peruste " + dto.getId() + ") is not valid, error(s) :");
+                    LOG.warn("Dokumentti (" + dto.getPerusteId() + ", " + dto.getSuoritustapakoodi() + ", "
+                            + kieli + ") ei ole PDF/A-1b mukainen. Dokumentti sisältää virheen/virheet:");
                     result.getErrorsList().forEach(error -> LOG
-                            .warn(error.getErrorCode() + " : " + error.getDetails()));
+                            .warn("  - " + error.getDetails() + " (" + error.getErrorCode() + ")"));
                 }
 
                 break;
@@ -349,11 +383,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 // Validoi kvliite
                 result = DokumenttiUtils.validatePdf(toReturn);
                 if (result.isValid()) {
-                    LOG.info("PDF (peruste " + dto.getId() + ") is a valid PDF/A-1b file");
+                    LOG.debug("Dokumentti (" + dto.getPerusteId() + ", " + kieli + ") on PDF/A-1b mukainen.");
                 } else {
-                    LOG.warn("PDF (peruste " + dto.getId() + ") is not valid, error(s) :");
+                    LOG.warn("Dokumentti (" + dto.getId() + ", " + kieli
+                            + ") ei ole PDF/A-1b mukainen. Dokumentti sisältää virheen/virheet:");
                     result.getErrorsList().forEach(error -> LOG
-                            .warn(error.getErrorCode() + " : " + error.getDetails()));
+                            .warn("  - " + error.getDetails() + " (" + error.getErrorCode() + ")"));
                 }
 
                 break;
@@ -414,43 +449,96 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional
     @IgnorePerusteUpdateCheck
     public void paivitaDokumentit() {
-        /*AnonymousAuthenticationToken token = new AnonymousAuthenticationToken("system", "system",
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));*/
-
         LOG.debug("Luodaan uudet PDF-dokumentit.");
 
-        String role = "ROLE_ADMIN";
+        // Käytetään pääkäyttäjän oikeuksia.
+        Authentication token = new UsernamePasswordAuthenticationToken("system",
+                "ROLE_ADMIN", AuthorityUtils.createAuthorityList("ROLE_ADMIN",
+                "ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
+        SecurityContextHolder.getContext().setAuthentication(token);
 
         List<Perusteprojekti> perusteprojektit = perusteprojektiRepository.findAll();
+        long dokumenttiCounter = 0;
+        long kvliiteCounter = 0;
         for (Perusteprojekti pp : perusteprojektit) {
 
-            // Käytetään pääkäyttäjän oikeuksia.
-            Authentication token = new UsernamePasswordAuthenticationToken("system",
-                    role, AuthorityUtils.createAuthorityList(role, "ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
-            SecurityContextHolder.getContext().setAuthentication(token);
-
             Peruste p = pp.getPeruste();
-            Set<Kieli> kielet = p.getKielet();
-            for (Suoritustapa st : p.getSuoritustavat()) {
-                for (Kieli kieli : kielet) {
-                    try {
-                        DokumenttiDto createDtoFor = createDtoFor(
-                                p.getId(),
-                                kieli,
-                                st.getSuoritustapakoodi(),
-                                GeneratorVersion.UUSI
-                        );
-                        setStarted(createDtoFor);
-                        generateWithDto(createDtoFor);
-                    } catch (DokumenttiException e) {
-                        LOG.error(e.getLocalizedMessage(), e.getCause());
+            if (pp.getTila() != JULKAISTU || pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
+                continue;
+            }
+
+            for (Kieli kieli : p.getKielet()) {
+                for (Suoritustapa st : p.getSuoritustavat()) {
+                    {
+                        // Luodaan perusteen dokumentit
+
+                        // Haetaan uusin dokumentti
+                        DokumenttiDto latest = findLatest(p.getId(), kieli, st.getSuoritustapakoodi(),
+                                GeneratorVersion.UUSI);
+
+                        // Jos uusin dokumentti on "vanhentunut" luodaan uusi tilalle.
+                        if (latest == null || latest.getAloitusaika() == null
+                                || latest.getAloitusaika().before(p.getGlobalVersion().getAikaleima())) {
+                            LOG.debug("Aloitetaan perusteelle " + "(" + p.getId() + ", " + st.getSuoritustapakoodi()
+                                    + ", " + kieli + ")" + " uuden dokumentin luonti.");
+                            try {
+                                DokumenttiDto createDtoFor = createDtoFor(
+                                        p.getId(),
+                                        kieli,
+                                        st.getSuoritustapakoodi(),
+                                        GeneratorVersion.UUSI
+                                );
+                                setStarted(createDtoFor);
+                                generateWithDtoSync(createDtoFor);
+                                dokumenttiCounter++;
+                            } catch (DokumenttiException e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        } else {
+                            LOG.debug("Perusteesta " + "(" + p.getId() + ", " + st.getSuoritustapakoodi()
+                                    + ", " + kieli + ")" + " on jo luotu uusi dokumentti.");
+                        }
+                    }
+                }
+
+                if (!ObjectUtils.isEmpty(p.getSuoritustavat())){
+                    // Luodaan kvliitteet
+
+                    // Haetaan uusin dokumentti
+                    DokumenttiDto latest = findLatest(p.getId(), kieli, null,
+                            GeneratorVersion.KVLIITE);
+
+                    // Jos uusin dokumentti on "vanhentunut" luodaan uusi tilalle.
+                    // Todo: Erityisehto, dokumentti pitää olla ainakin kerran luotu.
+                    if (latest != null && !DokumenttiTila.EI_OLE.equals(latest.getTila())
+                            && (latest.getAloitusaika() == null || latest.getAloitusaika().before(p
+                            .getGlobalVersion().getAikaleima()))) {
+                        LOG.debug("Aloitetaan perusteelle " + "(" + p.getId() + ", " + kieli + ")"
+                                + " uuden kvliite-dokumentin luonti.");
+                        try {
+                            DokumenttiDto createDtoFor = createDtoFor(
+                                    p.getId(),
+                                    kieli,
+                                    p.getSuoritustavat().iterator().next().getSuoritustapakoodi(),
+                                    GeneratorVersion.KVLIITE
+                            );
+                            setStarted(createDtoFor);
+                            generateWithDtoSync(createDtoFor);
+                            kvliiteCounter++;
+                        } catch (DokumenttiException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    } else {
+                        LOG.debug("Peruteen " + "(" + p.getId() + ", " + kieli + ")"
+                                + " on jo luotu uusi kvliite-dokumentti.");
                     }
                 }
             }
-
-            SecurityContextHolder.getContext().setAuthentication(null);
         }
 
-        LOG.debug("Uudet PDF-dokumentit luotu.");
+        SecurityContextHolder.getContext().setAuthentication(null);
+
+        LOG.debug("Uudet PDF-dokumentit luotu. Uusia perusteen dokumentteja on luotu "
+                + dokumenttiCounter + " ja kvliitteitä " + kvliiteCounter + " kappaletta.");
     }
 }

@@ -203,7 +203,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         for (Perusteprojekti pp : projektit) {
             try {
                 if (pp.getTila() != JULKAISTU || pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
-                    return;
+                    return; // Todo: pitäisikö olla continue?
                 }
 
                 ValidointiStatus vs = validointiStatusRepository.findOneByPeruste(pp.getPeruste());
@@ -212,7 +212,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         || pp.getPeruste().getGlobalVersion().getAikaleima().after(vs.getLastCheck());
 
                 if (!vaatiiValidoinnin) {
-                    return;
+                    return; // Todo: pitäisikö olla continue?
                 }
 
                 LOG.debug("Perusteen ajastettu validointi: " + pp.getPeruste().getId());
@@ -1296,7 +1296,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                             dokumenttiService.setStarted(createDtoFor);
                                             dokumenttiService.generateWithDto(createDtoFor);
                                         } catch (DokumenttiException e) {
-                                            LOG.error(e.getLocalizedMessage(), e.getCause());
+                                            LOG.error(e.getLocalizedMessage(), e);
                                         }
                                     })));
         }
