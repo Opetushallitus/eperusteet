@@ -162,17 +162,19 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @IgnorePerusteUpdateCheck
     public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version) {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
+
         List<Dokumentti> documents;
-        if (version != null) {
-            documents = new ArrayList<>(dokumenttiRepository
-                    .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(id,
-                            kieli, DokumenttiTila.VALMIS, suoritustapakoodi, version, sort));
+
+        // Kvliite ei riipu suoritustavasta
+        if (GeneratorVersion.KVLIITE.equals(version)) {
+            documents = dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndGeneratorVersion(
+                    id, kieli, DokumenttiTila.VALMIS, version, sort);
+        } else {
+            documents = dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(
+                    id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi,
+                    version != null ? version : GeneratorVersion.UUSI, sort);
         }
-        else {
-            documents = new ArrayList<>(dokumenttiRepository
-                    .findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(
-                            id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, GeneratorVersion.UUSI, sort));
-        }
+
         if (documents.size() > 0) {
             return mapper.map(documents.get(0), DokumenttiDto.class);
         } else {
@@ -460,6 +462,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         List<Perusteprojekti> perusteprojektit = perusteprojektiRepository.findAll();
         long dokumenttiCounter = 0;
         long kvliiteCounter = 0;
+
+        // Mahdolliset kvliite kielet
+        List<Kieli> kvliiteKielet = new ArrayList<>();
+        kvliiteKielet.add(Kieli.FI);
+        kvliiteKielet.add(Kieli.SV);
+        kvliiteKielet.add(Kieli.EN);
+
         for (Perusteprojekti pp : perusteprojektit) {
 
             Peruste p = pp.getPeruste();
@@ -500,7 +509,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                         }
                     }
                 }
+            }
 
+            for (Kieli kieli : kvliiteKielet) {
                 if (!ObjectUtils.isEmpty(p.getSuoritustavat())){
                     // Luodaan kvliitteet
 
@@ -511,8 +522,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                     // Jos uusin dokumentti on "vanhentunut" luodaan uusi tilalle.
                     // Todo: Erityisehto, dokumentti pitää olla ainakin kerran luotu.
                     if (latest != null && !DokumenttiTila.EI_OLE.equals(latest.getTila())
-                            && (latest.getAloitusaika() == null || latest.getAloitusaika().before(p
-                            .getGlobalVersion().getAikaleima()))) {
+                            && (latest.getAloitusaika() == null || latest.getAloitusaika()
+                            .before(p.getGlobalVersion().getAikaleima()))) {
                         LOG.debug("Aloitetaan perusteelle " + "(" + p.getId() + ", " + kieli + ")"
                                 + " uuden kvliite-dokumentin luonti.");
                         try {
