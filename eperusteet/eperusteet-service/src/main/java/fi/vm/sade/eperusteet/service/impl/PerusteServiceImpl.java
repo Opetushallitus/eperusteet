@@ -68,6 +68,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 /**
  *
@@ -1610,13 +1611,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return yleistTavoitteet;
     }
 
-    private boolean isTasoKoodi(String koodi) {
-        return koodi != null
-                && (koodi.startsWith("eqf_")
-                || koodi.startsWith("nqf_")
-                || koodi.startsWith("isced2011koulutusastetaso1_"));
-    }
-
     @Override
     @IgnorePerusteUpdateCheck
     public KVLiiteJulkinenDto getJulkinenKVLiite(long perusteId) {
@@ -1678,42 +1672,67 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
 
-        Set<String> tasokoodiFilter = new HashSet<>();
-        if (peruste.getKoulutukset() != null) {
-            kvliiteDto.setTasot(peruste.getKoulutukset().stream()
-                    .map(Koulutus::getKoulutuskoodiUri)
-                    .map(koulutusKoodiUri -> koodistoService.getLatest(koulutusKoodiUri))
-                    .map(latest -> koodistoService.getAllByVersio(latest.getKoodiUri(), latest.getVersio()))
-                    .map(all -> Arrays.stream(all.getIncludesCodeElements()))
-                    .flatMap(x -> x)
-                    .filter(el -> isTasoKoodi(el.getCodeElementUri()))
-                    .filter(el -> tasokoodiFilter.add(el.getCodeElementUri()))
-                    .map(el -> {
-                        KVLiiteTasoDto result = new KVLiiteTasoDto();
-                        result.setCodeUri(el.getCodeElementUri());
-                        result.setCodeValue(el.getCodeElementValue());
+        if (!ObjectUtils.isEmpty(peruste.getKoulutukset())) {
+            kvliiteDto.setTasot(haeTasot(peruste));
+        }
 
-                        if (el.getCodeElementUri().startsWith("nqf_") || el.getCodeElementUri().startsWith("eqf_")) {
-                            result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
+        return kvliiteDto;
+    }
+
+    private List<KVLiiteTasoDto> haeTasot(Peruste peruste) {
+        Set<String> tasokoodiFilter = new HashSet<>();
+        return peruste.getKoulutukset().stream()
+                .map(Koulutus::getKoulutuskoodiUri)
+                .map(koulutusKoodiUri -> koodistoService.getLatest(koulutusKoodiUri))
+                .map(latest -> koodistoService.getAllByVersio(latest.getKoodiUri(), latest.getVersio()))
+                .map(all -> Arrays.stream(all.getIncludesCodeElements()))
+                .flatMap(x -> x)
+                .filter(el -> isTasoKoodi(el.getCodeElementUri()))
+                .filter(el -> tasokoodiFilter.add(el.getCodeElementUri()))
+                .map(el -> {
+                    KVLiiteTasoDto result = new KVLiiteTasoDto();
+                    result.setCodeUri(el.getCodeElementUri());
+                    result.setCodeValue(el.getCodeElementValue());
+
+                    if (el.getCodeElementUri().startsWith("nqf_") || el.getCodeElementUri().startsWith("eqf_")) {
+                        result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
                                 .collect(Collectors.toMap(
                                         lokaali -> lokaali.getKieli().toLowerCase(),
                                         lokaali -> lokaali.getKuvaus() + " " + el.getCodeElementValue()))));
-                        }
-                        else if (el.getCodeElementUri().startsWith("isced2011")) { // ISCED
-                            result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
+                    }
+                    else if (el.getCodeElementUri().startsWith("isced2011")) { // ISCED
+                        result.setNimi(new LokalisoituTekstiDto(Arrays.stream(el.getParentMetadata())
                                 .collect(Collectors.toMap(
                                         lokaali -> lokaali.getKieli().toLowerCase(),
-                                        lokaali -> "ISCED " + el.getCodeElementValue()))));
-                        }
-                        else {
-                            result.setNimi(null);
-                        }
-                        return result;
-                    })
-                    .sorted(Comparator.comparingInt(KVLiiteTasoDto::getJarjestys))
-                    .collect(Collectors.toList()));
+                                        lokaali -> "ISCED " + getISCEDTaso(peruste, el.getCodeElementValue())))));
+                    }
+                    else {
+                        result.setNimi(null);
+                    }
+                    return result;
+                })
+                .sorted(Comparator.comparingInt(KVLiiteTasoDto::getJarjestys))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isTasoKoodi(String koodi) {
+
+        return koodi != null
+                && (koodi.startsWith("eqf_")
+                || koodi.startsWith("nqf_")
+                || koodi.startsWith("isced2011koulutusastetaso1_"));
+    }
+
+    private String getISCEDTaso(Peruste peruste, String oletus) {
+        switch (KoulutusTyyppi.of(peruste.getKoulutustyyppi())) {
+            case PERUSTUTKINTO:
+            case AMMATTITUTKINTO:
+                return "3";
+            case ERIKOISAMMATTITUTKINTO:
+                return "4";
+            default:
+                return oletus;
         }
-        return kvliiteDto;
     }
 
     @Override
