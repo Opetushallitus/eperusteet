@@ -1,30 +1,16 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.*;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Configuration
@@ -37,9 +23,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
 
     ScheduledConfiguration() {
         scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setErrorHandler(err -> {
-            log.error(err.getMessage());
-        });
+        scheduler.setErrorHandler(err -> log.error(err.getMessage(), err));
         scheduler.initialize();
     }
 
@@ -47,11 +31,19 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     PerusteprojektiService perusteprojektiService;
 
     @Autowired
+    DokumenttiService dokumenttiService;
+
+    @Autowired
     ThreadPoolTaskExecutor pool;
 
     @Scheduled(cron = "0 0 3 * * *")
     public void scheduledValidationTask() {
         task();
+    }
+
+    @Scheduled(cron = "0 0 2 * * *")
+    public void scheduledPDFGenerationTask() {
+        dokumenttiService.paivitaDokumentit();
     }
 
     @Override

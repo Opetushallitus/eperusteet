@@ -24,7 +24,6 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -34,11 +33,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DokumenttiRepository extends JpaRepository<Dokumentti, Long> {
     Dokumentti findById(Long id);
-
-    @Query("SELECT d.id FROM Dokumentti d where d.perusteId = ?1 AND d.kieli = ?2 AND d.tila = ?3 AND d.valmistumisaika IS NOT NULL ORDER BY d.valmistumisaika DESC")
-    List<Long> findLatest(Long perusteId, Kieli kieli, DokumenttiTila tila);
-
-    List<Dokumentti> findByPerusteIdAndKieliAndTila(Long perusteId, Kieli kieli, DokumenttiTila tila, Sort sort);
-    List<Dokumentti> findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(Long perusteId, Kieli kieli, DokumenttiTila tila, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version, Sort sort);
-    List<Dokumentti> findByPerusteIdAndKieliAndTilaAndGeneratorVersion(Long perusteId, Kieli kieli, DokumenttiTila tila, GeneratorVersion version, Sort sort);
+    List<Dokumentti> findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(
+            Long perusteId,
+            Kieli kieli,
+            DokumenttiTila tila,
+            Suoritustapakoodi suoritustapakoodi,
+            GeneratorVersion version,
+            Sort sort
+    );
+    List<Dokumentti> findByPerusteIdAndKieliAndTilaAndGeneratorVersion(
+            Long perusteId,
+            Kieli kieli,
+            DokumenttiTila tila,
+            GeneratorVersion version,
+            Sort sort
+    );
 }
