@@ -453,12 +453,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     public void paivitaDokumentit() {
         LOG.debug("Luodaan uudet PDF-dokumentit.");
 
-        // Käytetään pääkäyttäjän oikeuksia.
-        Authentication token = new UsernamePasswordAuthenticationToken("system",
-                "ROLE_ADMIN", AuthorityUtils.createAuthorityList("ROLE_ADMIN",
-                "ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
-        SecurityContextHolder.getContext().setAuthentication(token);
-
         List<Perusteprojekti> perusteprojektit = perusteprojektiRepository.findAll();
         long dokumenttiCounter = 0;
         long kvliiteCounter = 0;
@@ -546,8 +540,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 }
             }
         }
-
-        SecurityContextHolder.getContext().setAuthentication(null);
 
         LOG.debug("Uudet PDF-dokumentit luotu. Uusia perusteen dokumentteja on luotu "
                 + dokumenttiCounter + " ja kvliitteitä " + kvliiteCounter + " kappaletta.");

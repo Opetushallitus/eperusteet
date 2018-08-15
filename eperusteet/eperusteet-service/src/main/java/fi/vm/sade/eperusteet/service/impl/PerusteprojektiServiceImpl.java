@@ -192,9 +192,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @IgnorePerusteUpdateCheck
     @Transactional
     public void validoiPerusteetTask() {
-        final AnonymousAuthenticationToken token = new AnonymousAuthenticationToken("system", "system",
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        SecurityContextHolder.getContext().setAuthentication(token);
         Set<Perusteprojekti> projektit = new HashSet<>();
         projektit.addAll(repository.findAllValidoimattomat());
         projektit.addAll(repository.findAllValidoimattomatUudet());
@@ -235,25 +232,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 LOG.debug(ex.getMessage());
             }
         }
-        SecurityContextHolder.getContext().setAuthentication(null);
     }
 
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
     public void tarkistaKooditTask() {
-        AnonymousAuthenticationToken auth = new AnonymousAuthenticationToken("system", "system",
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        LOG.debug("Tarkistetaan koodit käyttäjällä: " + auth.getName());
-
         Set<Perusteprojekti> projektit = new HashSet<>();
         projektit.addAll(repository.findAllKoodiValidoimattomat());
         projektit.addAll(repository.findAllKoodiValidoimattomatUudet());
 
-
-        LOG.debug("Tarkastetaan " + projektit.size() + " perustetta.");
+        LOG.debug("Tarkastetaan " + projektit.size() + " perusteen koulutuskoodit.");
 
         for (Perusteprojekti pp : projektit) {
             Peruste peruste = pp.getPeruste();
@@ -911,11 +900,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         // Muut
         for (Suoritustapa st : peruste.getSuoritustavat()) {
             PerusteenOsaViite sisalto = st.getSisalto();
-            for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
-                tarkistaSisalto(lapsi, vaaditutKielet, virheellisetKielet);
+            if (sisalto != null) {
+                for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
+                    tarkistaSisalto(lapsi, vaaditutKielet, virheellisetKielet);
+                }
             }
 
-            tarkistaRakenne(st.getRakenne(), vaaditutKielet, virheellisetKielet);
+            RakenneModuuli rakenne = st.getRakenne();
+            if (rakenne != null) {
+                tarkistaRakenne(st.getRakenne(), vaaditutKielet, virheellisetKielet);
+            }
 
             for (TutkinnonOsaViite tov : st.getTutkinnonOsat()) {
                 TutkinnonOsa tosa = tov.getTutkinnonOsa();
