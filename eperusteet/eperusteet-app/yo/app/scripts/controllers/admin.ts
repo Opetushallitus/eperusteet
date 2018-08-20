@@ -50,6 +50,11 @@ angular
                 template: require("views/admin/virheelliset.pug"),
                 controller: "VirheellisetHallintaController"
             })
+            .state("root.admin.koulutuskoodiongelmat", {
+                url: "/koodisto",
+                template: require("views/admin/koulutuskoodiongelmat.pug"),
+                controller: "KoulutuskoodiOngelmatController"
+            })
             .state("root.admin.oppaat", {
                 url: "/oppaat",
                 template: require("views/admin/oppaat.pug"),
@@ -143,7 +148,6 @@ angular
             $scope.kokonaismaara = virheelliset.kokonaismäärä;
             $scope.virheelliset = _(virheelliset.data)
                 .map(validointi => {
-                    console.log(validointi.perusteprojekti, validointi.perusteprojekti.peruste);
                     return {
                         ...validointi,
                         $$url: PerusteProjektiService.getUrl(validointi.perusteprojekti, validointi.perusteprojekti.peruste)
@@ -152,6 +156,31 @@ angular
                 .value();
         };
         $scope.haeVirheelliset();
+    })
+    .controller("KoulutuskoodiOngelmatController", ($scope, Api, PerusteProjektiService) => {
+        $scope.ongelmalliset = null;
+        $scope.sivu = 0;
+        $scope.sivukoko = 10;
+        $scope.kokonaismaara = 10;
+        $scope.haeOngelmalliset = async function() {
+            const ongelmalliset = await Api.all("perusteprojektit").get("koodiongelmat", {
+                sivu: $scope.sivu,
+                sivukoko: $scope.sivukoko,
+            });
+            $scope.sivu = ongelmalliset.sivu;
+            $scope.sivukoko = ongelmalliset.sivu;
+            $scope.kokonaismaara = ongelmalliset.kokonaismäärä;
+            $scope.ongelmalliset = _(ongelmalliset.data)
+                .map(ongelma => {
+                    return {
+                        ...ongelma,
+                        $$url: PerusteProjektiService.getUrl(ongelma.perusteprojekti, ongelma.perusteprojekti.peruste)
+                    };
+                })
+                .value();
+            console.log($scope.ongelmalliset);
+        };
+        $scope.haeOngelmalliset();
     })
     .controller("OpasHallintaController", ($location, $scope, $state, Api) => {
         const projektitEp = Api.one("oppaat").one("projektit");
@@ -190,6 +219,7 @@ angular
             { label: "oppaat", state: "root.admin.oppaat" },
             { label: "arviointiasteikot", state: "root.admin.arviointiasteikot" },
             { label: "virheelliset-perusteet", state: "root.admin.virheelliset" },
+            { label: "koulutuskoodi-ongelmat", state: "root.admin.koulutuskoodiongelmat" }
         ];
 
         $scope.chooseTab = $index => {

@@ -1,10 +1,7 @@
 package fi.vm.sade.eperusteet.domain.validation;
 
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import lombok.Getter;
 import lombok.Setter;
 

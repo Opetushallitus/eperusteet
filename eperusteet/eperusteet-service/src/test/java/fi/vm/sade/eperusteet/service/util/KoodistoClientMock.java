@@ -125,4 +125,9 @@ public class KoodistoClientMock implements KoodistoClient {
         return Collections.emptyList();
     }
 
+    @Override
+    public List<KoodistoKoodiDto> getRinnasteiset(String koodi) {
+        return Collections.emptyList();
+    }
+
 }
