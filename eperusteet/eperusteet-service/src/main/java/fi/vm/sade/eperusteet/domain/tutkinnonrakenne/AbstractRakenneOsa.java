@@ -97,13 +97,13 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
             return success();
         }
 
-        if (pakollinen != other.pakollinen) {
+        if (pakollinen != other.getPakollinen()) {
             return fail("ryhman-pakollisuutta-ei-voi-muuttaa");
         }
-        else if (!Objects.equals(tunniste, other.tunniste)) {
+        else if (!Objects.equals(tunniste, other.getTunniste())) {
             return fail("ryhman-tunnistetta-ei-voi-muuttaa");
         }
-        else if (includeText && !Objects.equals(kuvaus, other.kuvaus)) {
+        else if (includeText && !Objects.equals(kuvaus, other.getKuvaus())) {
             return fail("ryhman-kuvausta-ei-voi-muuttaa");
         }
 

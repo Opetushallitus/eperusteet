@@ -158,7 +158,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         }
 
         if (depth > 0) {
-            if (this.rooli != vanha.rooli && this.rooli != RakenneModuuliRooli.TUTKINTONIMIKE) {
+            if (this.rooli != vanha.getRooli() && this.rooli != RakenneModuuliRooli.TUTKINTONIMIKE) {
                 return fail("ryhman-roolia-ei-voi-vaihtaa");
             }
         }
@@ -173,11 +173,11 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             return fail("ryhman-tutkintonimike-ja-osaamisala-ei-voi-olla-samanaikaisesti");
         }
 
-        if (includeText && osaamisala != null && !Objects.equals(osaamisala, vanha.osaamisala)) {
+        if (includeText && osaamisala != null && !Objects.equals(osaamisala, vanha.getOsaamisala())) {
             return fail("ryhman-osaamisalaa-ei-voi-muuttaa");
         }
 
-        if  (includeText && tutkintonimike != null && !Objects.equals(tutkintonimike, vanha.tutkintonimike)) {
+        if  (includeText && tutkintonimike != null && !Objects.equals(tutkintonimike, vanha.getTutkintonimike())) {
             return fail("ryhman-tutkintonimiketta-ei-voi-vaihtaa");
         }
 
