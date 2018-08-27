@@ -49,9 +49,10 @@ angular
                 .value();
         }
 
-        $scope.roolit = _.map(YleinenData.rakenneRyhmaRoolit, function(rooli) {
-            return { value: rooli, label: rooli };
-        });
+        $scope.roolit = _(YleinenData.rakenneRyhmaRoolit)
+            .map((rooli) => ({ value: rooli, label: rooli }))
+            .reject(rooli => _.size($scope.tutkintonimikkeet) < 2 && rooli.value === "tutkintonimike")
+            .value();
 
         $scope.luonti = !_.isObject(ryhma);
 
