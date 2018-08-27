@@ -60,6 +60,7 @@ describe("Kaanna", () => {
         expect(Kaanna.kaanna("")).toEqual("");
         expect(Kaanna.kaanna(1)).toEqual("1");
         expect(Kaanna.kaanna([])).toEqual("");
+        expect(Kaanna.kaanna({})).toEqual("");
 
         expect(
             Kaanna.kaanna({

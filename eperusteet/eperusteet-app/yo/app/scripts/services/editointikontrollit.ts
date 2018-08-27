@@ -94,7 +94,7 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
 
         sentenceCaseValidator(obj, warnings) {
             function validateSentenceCase(input, lang?) {
-                const isValid = _.isString(input) && _.eq(input, _.capitalize(input.toLowerCase()));
+                const isValid = _.isEmpty(input) || (_.isString(input) && _.eq(input, _.capitalize(input.toLowerCase())));
                 if (!isValid) {
                     warnings.push({
                         text: input,
