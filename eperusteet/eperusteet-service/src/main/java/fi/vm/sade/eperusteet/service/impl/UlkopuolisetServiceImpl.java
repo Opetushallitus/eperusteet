@@ -23,8 +23,9 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import fi.vm.sade.eperusteet.service.UlkopuolisetService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
+
+import fi.vm.sade.javautils.http.OphHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -51,10 +52,10 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
     @Override
     @Transactional
     public JsonNode getRyhma(String organisaatioOid) {
-        CachingRestClient crc = restClientFactory.get(serviceUrl);
+        OphHttpClient client = restClientFactory.get(serviceUrl);
         try {
             String url = serviceUrl + ORGANISAATIOT + organisaatioOid;
-            JsonNode response = mapper.readTree(crc.getAsString(url));
+            JsonNode response = mapper.readTree(client.getAsString(url));
             return response;
         } catch (IOException ex) {
             throw new BusinessRuleViolationException("Työryhmän tietojen hakeminen epäonnistui", ex);
@@ -64,10 +65,10 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
     @Override
     @Transactional
     public JsonNode getRyhmat() {
-        CachingRestClient crc = restClientFactory.get(serviceUrl);
+        OphHttpClient client = restClientFactory.get(serviceUrl);
         try {
             String url = serviceUrl + ORGANISAATIORYHMAT;
-            JsonNode tree = mapper.readTree(crc.getAsString(url));
+            JsonNode tree = mapper.readTree(client.getAsString(url));
             ArrayNode response = JsonNodeFactory.instance.arrayNode();
 
             for (JsonNode ryhma : tree) {

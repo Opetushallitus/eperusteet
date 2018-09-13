@@ -16,9 +16,11 @@
 
 package fi.vm.sade.eperusteet.service.util;
 
-import fi.vm.sade.generic.rest.CachingRestClient;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import fi.vm.sade.javautils.http.OphHttpClient;
+import fi.vm.sade.javautils.http.auth.CasAuthenticator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -39,18 +41,25 @@ public class RestClientFactory {
     @Value("${web.url.cas:''}")
     private String casUrl;
 
-    private final ConcurrentMap<String, CachingRestClient> cache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, OphHttpClient> cache = new ConcurrentHashMap<>();
 
-    public CachingRestClient get(String service) {
+    public OphHttpClient get(String service) {
         if (cache.containsKey(service)) {
             return cache.get(service);
         } else {
-            CachingRestClient crc = new CachingRestClient(TIMEOUT);
-            crc.setUsername(username);
-            crc.setPassword(password);
-            crc.setWebCasUrl(casUrl);
-            crc.setCasService(service + "/j_spring_cas_security_check");
-            cache.putIfAbsent(service, crc);
+            CasAuthenticator casAuthenticator = new CasAuthenticator.Builder()
+                    .username(username)
+                    .password(password)
+                    .webCasUrl(casUrl)
+                    .casServiceUrl(service)
+                    .build();
+
+            OphHttpClient client = new OphHttpClient.Builder(service)
+                    .authenticator(casAuthenticator)
+                    .timeoutMs(TIMEOUT)
+                    .build();
+
+            cache.putIfAbsent(service, client);
             return cache.get(service);
         }
     }

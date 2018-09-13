@@ -54,7 +54,7 @@ import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import fi.vm.sade.generic.rest.CachingRestClient;
+import fi.vm.sade.javautils.http.OphHttpClient;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
@@ -64,11 +64,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -455,7 +453,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public List<KayttajanTietoDto> getJasenet(Long id) {
-        CachingRestClient crc = restClientFactory.get(onrServiceUrl);
+        OphHttpClient client = restClientFactory.get(onrServiceUrl);
         Perusteprojekti p = repository.findOne(id);
         List<KayttajanTietoDto> kayttajat;
         ObjectMapper omapper = new ObjectMapper();
@@ -467,7 +465,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         try {
             String url = onrServiceUrl + HENKILO_YHTEYSTIEDOT_API;
             String ryhmaOid = p.getRyhmaOid();
-            HttpResponse response = crc.post(url, "application/json", "{ \"organisaatioOids\": [\"" + ryhmaOid + "\"] }");
+            HttpResponse response = client.post(url, "application/json", "{ \"organisaatioOids\": [\"" + ryhmaOid + "\"] }");
             InputStream contentStream = response.getEntity().getContent();
             kayttajat = KayttajanTietoParser.parsiKayttajat(omapper.readTree(IOUtils.toString(contentStream)));
         } catch (IOException ex) {
@@ -480,7 +478,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id) {
-        CachingRestClient crc = restClientFactory.get(onrServiceUrl);
+        OphHttpClient client = restClientFactory.get(onrServiceUrl);
         Perusteprojekti p = repository.findOne(id);
 
         if (p == null || p.getRyhmaOid() == null || p.getRyhmaOid().isEmpty()) {
@@ -492,7 +490,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         try {
             String url = onrServiceUrl + HENKILO_YHTEYSTIEDOT_API;
             String ryhmaOid = p.getRyhmaOid();
-            HttpResponse response = crc.post(url, "application/json", "{ \"organisaatioOids\": [\"" + ryhmaOid + "\"] }");
+            HttpResponse response = client.post(url, "application/json", "{ \"organisaatioOids\": [\"" + ryhmaOid + "\"] }");
             InputStream contentStream = response.getEntity().getContent();
             ObjectMapper omapper = new ObjectMapper();
 

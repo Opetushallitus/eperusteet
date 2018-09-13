@@ -24,14 +24,19 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Future;
 
+import fi.vm.sade.javautils.http.OphHttpClient;
+import fi.vm.sade.javautils.http.OphHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,6 +44,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 /**
  *
@@ -73,19 +79,31 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Override
     @Cacheable("kayttajat")
     public KayttajanTietoDto hae(String oid) {
-        if (oid == null || oid.isEmpty()) {
+        if (ObjectUtils.isEmpty(oid)) {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
         }
-        CachingRestClient crc = restClientFactory.get(onrServiceUrl);
 
-        try {
-            String url = onrServiceUrl + HENKILO_API + oid;
-            JsonNode json = mapper.readTree(crc.getAsString(url));
+        OphHttpClient client = restClientFactory.get(onrServiceUrl);
 
-            return parsiKayttaja(json);
-        } catch (IOException e) {
-            return null;
-        }
+        String url = onrServiceUrl + HENKILO_API + oid;
+
+        OphHttpRequest request = OphHttpRequest.Builder
+                .get(url)
+                .build();
+
+        return client.<KayttajanTietoDto>execute(request)
+                .handleErrorStatus(SC_UNAUTHORIZED)
+                .with(res -> Optional.empty())
+                .expectedStatus(SC_OK)
+                .mapWith(text -> {
+                    try {
+                        JsonNode json = mapper.readTree(text);
+                        return parsiKayttaja(json);
+                    } catch (IOException e) {
+                        return null;
+                    }
+                })
+                .orElse(null);
     }
 
     @Override
@@ -94,12 +112,13 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
         }
 
-        CachingRestClient crc = restClientFactory.get(koServiceUrl);
+        OphHttpClient client = restClientFactory.get(koServiceUrl);
         String url = koServiceUrl + HENKILO_API + oid + "/organisaatiohenkilo";
+
 
         try {
             List<KayttajanProjektitiedotDto> kpp = new ArrayList<>();
-            List<KayttajanProjektitiedotDto> unfiltered = Arrays.asList(crc.get(url, KayttajanProjektitiedotDto[].class));
+            List<KayttajanProjektitiedotDto> unfiltered = Arrays.asList(client.get(url, KayttajanProjektitiedotDto[].class));
             for (KayttajanProjektitiedotDto kp : unfiltered) {
                 Perusteprojekti pp = perusteprojektiRepository.findOneByRyhmaOid(kp.getOrganisaatioOid());
                 if (pp != null) {
@@ -126,11 +145,11 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Käyttäjällä ei ole kyseistä perusteprojektia");
         }
 
-        CachingRestClient crc = restClientFactory.get(koServiceUrl);
+        OphHttpClient client = restClientFactory.get(koServiceUrl);
         String url = koServiceUrl + HENKILO_API + oid + "/organisaatiohenkilo/" + pp.getRyhmaOid();
 
         try {
-            KayttajanProjektitiedotDto ppt = crc.get(url, KayttajanProjektitiedotDto.class);
+            KayttajanProjektitiedotDto ppt = client.get(url, KayttajanProjektitiedotDto.class);
             ppt.setPerusteprojekti(pp.getId());
             return ppt;
         } catch (IOException ex) {
