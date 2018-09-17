@@ -947,6 +947,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         rakenne.foreach(new VisitorImpl(maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
+        // Valmiin perusteen tunnisteet eivät saa muuttua
         if (PerusteTila.VALMIS.equals(peruste.getTila())) {
             Set<UUID> nykyisetTunnisteet = keraaTunnisteet(nykyinen);
             Set<UUID> uudetTunnisteet = keraaTunnisteet(moduuli);
