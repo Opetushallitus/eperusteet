@@ -38,7 +38,7 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
 
     @Getter
     @NotNull
-    @Column(updatable = false)
+    @Column(updatable = false, unique = true)
     private UUID tunniste;
 
     @Id
