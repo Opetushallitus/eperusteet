@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
@@ -30,7 +32,6 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
@@ -45,6 +46,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+
+import javax.annotation.PostConstruct;
 
 /**
  *
@@ -69,6 +72,11 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
 
     @Autowired
     RestClientFactory restClientFactory;
+
+    @PostConstruct
+    public void configureMapper() {
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
 
     @Override
     @Async
@@ -116,20 +124,34 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
         String url = koServiceUrl + HENKILO_API + oid + "/organisaatiohenkilo";
 
 
-        try {
-            List<KayttajanProjektitiedotDto> kpp = new ArrayList<>();
-            List<KayttajanProjektitiedotDto> unfiltered = Arrays.asList(client.get(url, KayttajanProjektitiedotDto[].class));
-            for (KayttajanProjektitiedotDto kp : unfiltered) {
+        List<KayttajanProjektitiedotDto> kpp = new ArrayList<>();
+
+        OphHttpRequest request = OphHttpRequest.Builder
+                .get(url)
+                .build();
+
+        Optional<List<KayttajanProjektitiedotDto>> unfiltered = client.<List<KayttajanProjektitiedotDto>>execute(request)
+                .handleErrorStatus(SC_UNAUTHORIZED)
+                .with(res -> Optional.empty())
+                .expectedStatus(SC_OK)
+                .mapWith(text -> {
+                    try {
+                        return mapper.readValue(text, new TypeReference<List<KayttajanProjektitiedotDto>>(){});
+                    } catch (IOException ex) {
+                        return new ArrayList<>();
+                    }
+                });
+
+        if (unfiltered.isPresent()) {
+            for (KayttajanProjektitiedotDto kp : unfiltered.get()) {
                 Perusteprojekti pp = perusteprojektiRepository.findOneByRyhmaOid(kp.getOrganisaatioOid());
                 if (pp != null) {
                     kp.setPerusteprojekti(pp.getId());
                     kpp.add(kp);
                 }
             }
-            return kpp;
-        } catch (IOException ex) {
-            return new ArrayList<>();
         }
+        return kpp;
     }
 
     @Override
@@ -148,12 +170,28 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
         OphHttpClient client = restClientFactory.get(koServiceUrl);
         String url = koServiceUrl + HENKILO_API + oid + "/organisaatiohenkilo/" + pp.getRyhmaOid();
 
-        try {
-            KayttajanProjektitiedotDto ppt = client.get(url, KayttajanProjektitiedotDto.class);
-            ppt.setPerusteprojekti(pp.getId());
-            return ppt;
-        } catch (IOException ex) {
-            return null;
+        OphHttpRequest request = OphHttpRequest.Builder
+                .get(url)
+                .build();
+
+        Optional<KayttajanProjektitiedotDto> dto = client.<KayttajanProjektitiedotDto>execute(request)
+                .handleErrorStatus(SC_UNAUTHORIZED)
+                .with(res -> Optional.empty())
+                .expectedStatus(SC_OK)
+                .mapWith(text -> {
+                    try {
+                        return mapper.readValue(text, KayttajanProjektitiedotDto.class);
+                    } catch (IOException e) {
+                        return null;
+                    }
+                });
+
+        KayttajanProjektitiedotDto kayttajanProjektitiedotDto = null;
+        if (dto.isPresent()) {
+            kayttajanProjektitiedotDto = dto.get();
+            kayttajanProjektitiedotDto.setPerusteprojekti(pp.getId());
         }
+
+        return kayttajanProjektitiedotDto;
     }
 }

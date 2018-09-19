@@ -59,7 +59,6 @@ angular
         $scope,
         $uibModal,
         $stateParams,
-        PerusteprojektiJasenet,
         Notifikaatiot,
         Projektiryhma,
         PerusteProjektiService,
