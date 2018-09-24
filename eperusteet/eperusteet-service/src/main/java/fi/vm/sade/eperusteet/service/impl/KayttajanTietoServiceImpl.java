@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
@@ -24,14 +26,18 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Future;
 
+import fi.vm.sade.javautils.http.OphHttpClient;
+import fi.vm.sade.javautils.http.OphHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,6 +45,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
+import javax.annotation.PostConstruct;
 
 /**
  *
@@ -64,6 +73,11 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Autowired
     RestClientFactory restClientFactory;
 
+    @PostConstruct
+    public void configureMapper() {
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
     @Override
     @Async
     public Future<KayttajanTietoDto> haeAsync(String oid) {
@@ -73,19 +87,31 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Override
     @Cacheable("kayttajat")
     public KayttajanTietoDto hae(String oid) {
-        if (oid == null || oid.isEmpty()) {
+        if (ObjectUtils.isEmpty(oid)) {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
         }
-        CachingRestClient crc = restClientFactory.get(onrServiceUrl);
 
-        try {
-            String url = onrServiceUrl + HENKILO_API + oid;
-            JsonNode json = mapper.readTree(crc.getAsString(url));
+        OphHttpClient client = restClientFactory.get(onrServiceUrl);
 
-            return parsiKayttaja(json);
-        } catch (IOException e) {
-            return null;
-        }
+        String url = onrServiceUrl + HENKILO_API + oid;
+
+        OphHttpRequest request = OphHttpRequest.Builder
+                .get(url)
+                .build();
+
+        return client.<KayttajanTietoDto>execute(request)
+                .handleErrorStatus(SC_UNAUTHORIZED)
+                .with(res -> Optional.empty())
+                .expectedStatus(SC_OK)
+                .mapWith(text -> {
+                    try {
+                        JsonNode json = mapper.readTree(text);
+                        return parsiKayttaja(json);
+                    } catch (IOException e) {
+                        return null;
+                    }
+                })
+                .orElse(null);
     }
 
     @Override
@@ -94,23 +120,38 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
         }
 
-        CachingRestClient crc = restClientFactory.get(koServiceUrl);
+        OphHttpClient client = restClientFactory.get(koServiceUrl);
         String url = koServiceUrl + HENKILO_API + oid + "/organisaatiohenkilo";
 
-        try {
-            List<KayttajanProjektitiedotDto> kpp = new ArrayList<>();
-            List<KayttajanProjektitiedotDto> unfiltered = Arrays.asList(crc.get(url, KayttajanProjektitiedotDto[].class));
-            for (KayttajanProjektitiedotDto kp : unfiltered) {
+
+        List<KayttajanProjektitiedotDto> kpp = new ArrayList<>();
+
+        OphHttpRequest request = OphHttpRequest.Builder
+                .get(url)
+                .build();
+
+        Optional<List<KayttajanProjektitiedotDto>> unfiltered = client.<List<KayttajanProjektitiedotDto>>execute(request)
+                .handleErrorStatus(SC_UNAUTHORIZED)
+                .with(res -> Optional.empty())
+                .expectedStatus(SC_OK)
+                .mapWith(text -> {
+                    try {
+                        return mapper.readValue(text, new TypeReference<List<KayttajanProjektitiedotDto>>(){});
+                    } catch (IOException ex) {
+                        return new ArrayList<>();
+                    }
+                });
+
+        if (unfiltered.isPresent()) {
+            for (KayttajanProjektitiedotDto kp : unfiltered.get()) {
                 Perusteprojekti pp = perusteprojektiRepository.findOneByRyhmaOid(kp.getOrganisaatioOid());
                 if (pp != null) {
                     kp.setPerusteprojekti(pp.getId());
                     kpp.add(kp);
                 }
             }
-            return kpp;
-        } catch (IOException ex) {
-            return new ArrayList<>();
         }
+        return kpp;
     }
 
     @Override
@@ -126,15 +167,31 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Käyttäjällä ei ole kyseistä perusteprojektia");
         }
 
-        CachingRestClient crc = restClientFactory.get(koServiceUrl);
+        OphHttpClient client = restClientFactory.get(koServiceUrl);
         String url = koServiceUrl + HENKILO_API + oid + "/organisaatiohenkilo/" + pp.getRyhmaOid();
 
-        try {
-            KayttajanProjektitiedotDto ppt = crc.get(url, KayttajanProjektitiedotDto.class);
-            ppt.setPerusteprojekti(pp.getId());
-            return ppt;
-        } catch (IOException ex) {
-            return null;
+        OphHttpRequest request = OphHttpRequest.Builder
+                .get(url)
+                .build();
+
+        Optional<KayttajanProjektitiedotDto> dto = client.<KayttajanProjektitiedotDto>execute(request)
+                .handleErrorStatus(SC_UNAUTHORIZED)
+                .with(res -> Optional.empty())
+                .expectedStatus(SC_OK)
+                .mapWith(text -> {
+                    try {
+                        return mapper.readValue(text, KayttajanProjektitiedotDto.class);
+                    } catch (IOException e) {
+                        return null;
+                    }
+                });
+
+        KayttajanProjektitiedotDto kayttajanProjektitiedotDto = null;
+        if (dto.isPresent()) {
+            kayttajanProjektitiedotDto = dto.get();
+            kayttajanProjektitiedotDto.setPerusteprojekti(pp.getId());
         }
+
+        return kayttajanProjektitiedotDto;
     }
 }
