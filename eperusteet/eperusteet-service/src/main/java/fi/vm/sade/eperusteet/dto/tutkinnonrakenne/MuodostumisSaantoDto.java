@@ -16,11 +16,13 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class MuodostumisSaantoDto {
 
     private Laajuus laajuus;
@@ -46,6 +48,7 @@ public class MuodostumisSaantoDto {
 
     @Getter
     @Setter
+    @Builder
     public static class Laajuus {
 
         private Integer minimi;
@@ -65,6 +68,7 @@ public class MuodostumisSaantoDto {
 
     @Getter
     @Setter
+    @Builder
     public static class Koko {
 
         Integer minimi;

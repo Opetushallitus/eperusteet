@@ -56,6 +56,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -174,6 +175,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private LocalizedMessagesService messages;
+
+    @Autowired
+    private EntityManager em;
 
     @Override
     public List<PerusteDto> getUusimmat() {
@@ -931,12 +935,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
+
+        // EP-1487 päätason muodostumiselle ei sallita kokoa
+        if (rakenne.getMuodostumisSaanto() != null && rakenne.getMuodostumisSaanto().getKoko() != null) {
+            rakenne.getMuodostumisSaanto().setKoko(null);
+        }
+
         Peruste peruste = perusteet.findOne(perusteId);
 
         Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteId, suoritustapakoodi);
         if (rakenneId == null) {
             throw new NotExistsException("Rakennetta ei ole olemassa");
         }
+
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
 
         rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
         tarkistaUniikitKoodit(rakenne);
@@ -966,9 +978,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 }
             }
 
-            RakenneModuuli current = nykyinen;
             moduuli = checkIfKoodiAlreadyExists(moduuli);
-            current.mergeState(moduuli);
+
+            { // Save-delete ongelma uniikkien tunnisteiden kanssa
+                rakenneRepository.delete(suoritustapa.getRakenne());
+                suoritustapa.setRakenne(new RakenneModuuli());
+                em.flush();
+            }
+
+            (new RakenneModuuli()).mergeState(moduuli);
+            suoritustapa.setRakenne(rakenneRepository.save(moduuli));
             onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
         }
 

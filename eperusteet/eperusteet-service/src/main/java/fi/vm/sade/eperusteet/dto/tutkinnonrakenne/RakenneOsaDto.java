@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
