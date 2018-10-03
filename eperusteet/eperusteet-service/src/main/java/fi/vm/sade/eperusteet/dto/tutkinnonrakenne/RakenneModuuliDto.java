@@ -19,12 +19,17 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.VersionedDto;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RakenneModuuliDto extends AbstractRakenneOsaDto implements VersionedDto{
+@Builder
+@AllArgsConstructor
+public class RakenneModuuliDto extends AbstractRakenneOsaDto implements VersionedDto {
 
     private LokalisoituTekstiDto nimi;
     private RakenneModuuliRooli rooli;
@@ -33,6 +38,9 @@ public class RakenneModuuliDto extends AbstractRakenneOsaDto implements Versione
     private KoodiDto tutkintonimike;
     private List<AbstractRakenneOsaDto> osat;
     private Integer versioId;
+
+    public RakenneModuuliDto() {
+    }
 
     @Override
     public Integer getVersioId() {

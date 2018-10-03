@@ -207,7 +207,9 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             Iterator<AbstractRakenneOsa> l = this.getOsat().iterator();
             Iterator<AbstractRakenneOsa> r = vanha.getOsat().iterator();
             while (l.hasNext() && r.hasNext()) {
-                Optional<RakenneOsaVirhe> same = l.next().isSame(r.next(), depth + 1, includeText);
+                AbstractRakenneOsa a = l.next();
+                AbstractRakenneOsa b = r.next();
+                Optional<RakenneOsaVirhe> same = a.isSame(b, depth + 1, includeText);
                 if (same.isPresent()) {
                     return same;
                 }

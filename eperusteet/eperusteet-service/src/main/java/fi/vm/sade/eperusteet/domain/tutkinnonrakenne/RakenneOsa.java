@@ -46,7 +46,7 @@ public class RakenneOsa extends AbstractRakenneOsa {
     @Override
     public Optional<RakenneOsaVirhe> isSame(AbstractRakenneOsa other, int depth, boolean excludeText) {
         Optional<RakenneOsaVirhe> supervalidation = super.isSame(other, depth, excludeText);
-        if (!supervalidation.isPresent()) {
+        if (supervalidation.isPresent()) {
             return supervalidation;
         }
 

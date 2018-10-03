@@ -38,7 +38,7 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
 
     @Getter
     @NotNull
-    @Column(updatable = false, unique = true)
+    @Column(updatable = false, unique = true, nullable = false)
     private UUID tunniste;
 
     @Id
@@ -78,9 +78,9 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
         return new EntityReference(id);
     }
 
-    public void setTunniste(UUID tunniste) {
-        if (tunniste != null) {
-            this.tunniste = tunniste;
+    public void setTunniste(UUID t) {
+        if (t != null && this.tunniste == null) {
+            this.tunniste = t;
         }
     }
 
