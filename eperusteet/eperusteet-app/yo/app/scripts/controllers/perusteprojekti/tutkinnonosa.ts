@@ -154,12 +154,12 @@ angular
 
             $scope.isLeikelautaOpen = false;
             if (localStorageService.isSupported) {
-                $scope.isLeikelautaOpen = localStorageService.get("leikeautaOpen");
+                $scope.isLeikelautaOpen = localStorageService.get("leikelautaOpen");
             }
             $scope.toggleLeikelauta = () => {
                 if (localStorageService.isSupported) {
                     $scope.isLeikelautaOpen = !$scope.isLeikelautaOpen;
-                    localStorageService.set("leikeautaOpen", $scope.isLeikelautaOpen);
+                    localStorageService.set("leikelautaOpen", $scope.isLeikelautaOpen);
                 } else {
                     Notifikaatiot.varoitus("selain-ei-tue");
                 }
