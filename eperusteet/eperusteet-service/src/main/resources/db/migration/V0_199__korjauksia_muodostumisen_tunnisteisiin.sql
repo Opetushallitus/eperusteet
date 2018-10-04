@@ -17,6 +17,8 @@ CREATE OR REPLACE FUNCTION fix_tunniste(fixId bigint) RETURNS void AS $$
     END
 $$ LANGUAGE plpgsql;
 
+SELECT fix_tunniste(id) FROM fix_duplicates_id_helper;
+
 CREATE UNIQUE INDEX IF NOT EXISTS tutkinnon_rakenne_uniikki_tunniste ON tutkinnon_rakenne (tunniste);
 
 DROP TABLE fix_duplicates_helper;
