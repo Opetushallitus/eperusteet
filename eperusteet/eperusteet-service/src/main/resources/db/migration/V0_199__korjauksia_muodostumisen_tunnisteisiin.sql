@@ -21,4 +21,4 @@ CREATE UNIQUE INDEX IF NOT EXISTS tutkinnon_rakenne_uniikki_tunniste ON tutkinno
 
 DROP TABLE fix_duplicates_helper;
 DROP TABLE fix_duplicates_id_helper;
-DROP FUNCTION fix_tunniste;
+DROP FUNCTION fix_tunniste(bigint);
