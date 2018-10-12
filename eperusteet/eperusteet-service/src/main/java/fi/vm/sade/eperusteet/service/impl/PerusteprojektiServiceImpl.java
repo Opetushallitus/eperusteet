@@ -1051,6 +1051,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 { // Tutkintonimikkeiden osaamisalat täytyvät olla perusteessa
                     Set<String> tutkintonimikkeidenOsaamisalat = tutkintonimikkeet.stream()
                             .map(TutkintonimikeKoodiDto::getOsaamisalaUri)
+                            .filter(Objects::nonNull)
                             .collect(Collectors.toSet());
 
                     for (String nimikkeenOsaamisala : tutkintonimikkeidenOsaamisalat) {

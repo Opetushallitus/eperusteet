@@ -22,6 +22,9 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -43,6 +46,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,6 +68,9 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     @Dto
@@ -89,6 +96,10 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
 
     private RakenneModuuliDto getRakenneDto() {
         return perusteService.getTutkinnonRakenne(peruste.getId(), suoritustapa.getSuoritustapakoodi(), null);
+    }
+
+    private PerusteDto update(PerusteDto perusteDto) {
+        return perusteService.update(perusteDto.getId(), perusteDto);
     }
 
     private RakenneModuuliDto update(RakenneModuuliDto rakenne) {
@@ -169,8 +180,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
                         rakenneDto,
                         rakenneDto.getOsat().get(1),
                         rakenneDto.getOsat().get(2),
-                        ((RakenneModuuliDto)rakenneDto.getOsat().get(2)).getOsat().get(1)
-                    )
+                        ((RakenneModuuliDto)rakenneDto.getOsat().get(2)).getOsat().get(1))
                     .map(AbstractRakenneOsaDto::getTunniste))
                     .containsExactly(rootTunniste, a, b, c);
         }
@@ -208,6 +218,45 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         rakenneDto = update(rakenneDto);
         assertThat(rakenneDto.getOsat().stream().map(AbstractRakenneOsaDto::getTunniste))
                 .containsExactly(bt, at);
+    }
+
+    @Test
+    @Rollback
+    public void testTutkintonimikekoodeihinPerusteAutomaattisesti() {
+        TutkintonimikeKoodiDto koodi = perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
+                .tutkintonimikeArvo("1001")
+                .tutkintonimikeUri("tutkintonimike_1001").build());
+
+        assertThat(koodi.getPeruste().getIdLong())
+                .isEqualTo(peruste.getId());
+    }
+
+    @Test
+    @Rollback
+    public void testRegressionRakenteessaUsampiTutkintonimikeIlmanOsaamisaloja() {
+        perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
+                    .tutkintonimikeArvo("1001")
+                    .tutkintonimikeUri("tutkintonimike_1001").build());
+
+        perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
+                .tutkintonimikeArvo("1002")
+                .tutkintonimikeUri("tutkintonimike_1002").build());
+
+        RakenneModuuliDto rakenneDto = getRakenneDto();
+        rakenneDto.setOsat(Arrays.asList(
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1001"))
+                        .build(),
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1002"))
+                        .build()));
+        RakenneModuuliDto rakenne = update(rakenneDto);
+        TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
+        List<TilaUpdateStatus.Status> infot = status.getInfot();
+        assertThat(status.getInfot().stream().map(TilaUpdateStatus.Status::getViesti))
+            .doesNotContain("tutkintonimikkeen-osaamisala-puuttuu-perusteesta");
     }
 
     @Test
