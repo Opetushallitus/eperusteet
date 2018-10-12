@@ -16,17 +16,24 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.Map;
 
 /**
  *
+ * FIXME: tutkintonimike, osaamisala ja tutkinnon osa käyttämään KoodiDto:ta
+ *
  * @author nkala
  */
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class TutkintonimikeKoodiDto {
     private Long id;
     private EntityReference peruste;
@@ -36,11 +43,12 @@ public class TutkintonimikeKoodiDto {
     private String osaamisalaArvo;
     private String tutkintonimikeUri;
     private String tutkintonimikeArvo;
-    Map<String, String> nimi;
+    private Map<String, String> nimi;
 
     public TutkintonimikeKoodiDto() {
     }
 
+    @Deprecated
     public TutkintonimikeKoodiDto(EntityReference peruste, String tutkinnonOsaArvo, String osaamisalaArvo, String tutkintonimikeArvo) {
         this.peruste = peruste;
         this.tutkinnonOsaArvo = tutkinnonOsaArvo;
