@@ -1,5 +1,4 @@
 coverage
-node
 node_modules
 dist
 .awcache
