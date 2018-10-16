@@ -17,9 +17,8 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
 
 /**
  *
@@ -29,6 +28,9 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(of = {"uri", "versio"})
 @JsonIgnoreProperties(ignoreUnknown = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class KoodiDto {
     Map<String, String> nimi;
     private String arvo;
@@ -36,7 +38,7 @@ public class KoodiDto {
     private String koodisto;
     private Long versio;
 
-    static public KoodiDto of (String koodisto, String arvo) {
+    static public KoodiDto of(String koodisto, String arvo) {
         KoodiDto result = new KoodiDto();
         result.setUri(koodisto + "_" + arvo);
         result.setKoodisto(koodisto);

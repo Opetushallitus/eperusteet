@@ -109,7 +109,7 @@
     "js-xlsx": "SheetJS/js-xlsx#0.7.11",
     "lodash": "3.10.1",
     "mathjax": "2.7.1",
-    "moment": "2.17.1",
+    "moment": "2.22.2",
     "ng-file-upload": "^12.2.13",
     "node-inspector": "^1.1.1",
     "restangular": "^1.6.1",

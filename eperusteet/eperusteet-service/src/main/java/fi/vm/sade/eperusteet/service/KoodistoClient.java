@@ -48,6 +48,9 @@ public interface KoodistoClient {
     List<KoodistoKoodiDto> getYlarelaatio(String koodi);
 
     @PreAuthorize("permitAll()")
+    List<KoodistoKoodiDto> getRinnasteiset(String koodi);
+
+    @PreAuthorize("permitAll()")
     KoodistoKoodiLaajaDto getAllByVersio(String koodi, String versio);
 
     @PreAuthorize("permitAll()")

@@ -217,8 +217,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         rakenne.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1, ryhma));
 
+        TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(peruste.getId(), Suoritustapakoodi.OPS);
+        lockService.lock(ctx);
+
         RakenneModuuliDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
 
+        lockService.lock(ctx);
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
         assertEquals(new EntityReference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
 

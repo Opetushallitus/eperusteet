@@ -2,11 +2,9 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatusBuilder;
 import fi.vm.sade.eperusteet.service.Validator;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,4 +47,8 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
         return tyyppi.isOneOf(PerusteTyyppi.NORMAALI);
     }
 
+    @Override
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
 }

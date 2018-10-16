@@ -23,12 +23,18 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import fi.vm.sade.eperusteet.service.UlkopuolisetService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
+import java.util.Optional;
+
+import fi.vm.sade.javautils.http.OphHttpClient;
+import fi.vm.sade.javautils.http.OphHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 /**
  *
@@ -51,37 +57,66 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
     @Override
     @Transactional
     public JsonNode getRyhma(String organisaatioOid) {
-        CachingRestClient crc = restClientFactory.get(serviceUrl);
-        try {
-            String url = serviceUrl + ORGANISAATIOT + organisaatioOid;
-            JsonNode response = mapper.readTree(crc.getAsString(url));
-            return response;
-        } catch (IOException ex) {
-            throw new BusinessRuleViolationException("Työryhmän tietojen hakeminen epäonnistui", ex);
-        }
+
+        OphHttpClient client = restClientFactory.get(serviceUrl);
+
+        String url = serviceUrl + ORGANISAATIOT + organisaatioOid;
+
+        OphHttpRequest request = OphHttpRequest.Builder
+                .get(url)
+                .build();
+
+        return client.<JsonNode>execute(request)
+                .handleErrorStatus(SC_UNAUTHORIZED)
+                .with(res -> Optional.empty())
+                .expectedStatus(SC_OK)
+                .mapWith(text -> {
+                    try {
+                        return mapper.readTree(text);
+                    } catch (IOException ex) {
+                        throw new BusinessRuleViolationException("Työryhmän tietojen hakeminen epäonnistui", ex);
+                    }
+                })
+                .orElse(null);
     }
 
     @Override
     @Transactional
     public JsonNode getRyhmat() {
-        CachingRestClient crc = restClientFactory.get(serviceUrl);
-        try {
-            String url = serviceUrl + ORGANISAATIORYHMAT;
-            JsonNode tree = mapper.readTree(crc.getAsString(url));
-            ArrayNode response = JsonNodeFactory.instance.arrayNode();
 
-            for (JsonNode ryhma : tree) {
-                JsonNode kayttoryhmat = ryhma.get("kayttoryhmat");
-                for (JsonNode kayttoryhma : kayttoryhmat) {
-                    if ("perusteiden_laadinta".equals(kayttoryhma.asText())) {
-                        response.add(ryhma);
-                        break;
+        OphHttpClient client = restClientFactory.get(serviceUrl);
+
+        String url = serviceUrl + ORGANISAATIORYHMAT;
+
+        OphHttpRequest request = OphHttpRequest.Builder
+                .get(url)
+                .build();
+
+        ArrayNode response = JsonNodeFactory.instance.arrayNode();
+
+        client.<JsonNode>execute(request)
+                .handleErrorStatus(SC_UNAUTHORIZED)
+                .with(res -> Optional.empty())
+                .expectedStatus(SC_OK)
+                .mapWith(text -> {
+                    try {
+                        return mapper.readTree(text);
+                    } catch (IOException ex) {
+                        throw new BusinessRuleViolationException("Työryhmätietojen hakeminen epäonnistui", ex);
                     }
-                }
-            }
-            return response;
-        } catch (IOException ex) {
-            throw new BusinessRuleViolationException("Työryhmätietojen hakeminen epäonnistui", ex);
-        }
+                })
+                .ifPresent(tree -> {
+                    for (JsonNode ryhma : tree) {
+                        JsonNode kayttoryhmat = ryhma.get("kayttoryhmat");
+                        for (JsonNode kayttoryhma : kayttoryhmat) {
+                            if ("perusteiden_laadinta".equals(kayttoryhma.asText())) {
+                                response.add(ryhma);
+                                break;
+                            }
+                        }
+                    }
+                });
+
+        return response;
     }
 }

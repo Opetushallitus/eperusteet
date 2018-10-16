@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
@@ -23,15 +22,6 @@ public class ProjektiValidatorImpl implements ProjektiValidator {
 
     @Autowired
     private List<Validator> validators;
-
-    @PostConstruct
-    public void postConstruct() {
-        StringBuilder validointiDebug = new StringBuilder("\n  Rakennetaan projektivalidointi:\n");
-        for (Validator validator : validators) {
-            validointiDebug.append("    ").append(validator.toString()).append("\n");
-        }
-        log.debug(validointiDebug.toString());
-    }
 
     public TilaUpdateStatus run(Long perusteprojektiId, ProjektiTila tila) {
         TilaUpdateStatus result = new TilaUpdateStatus();

@@ -1,0 +1,25 @@
+div.ongelmalliset-perusteet
+  h1(kaanna="'ongelmalliset-otsikko'")
+  p(kaanna="'ongelmalliset-kuvaus'")
+
+  div(ng-if="ongelmalliset")
+    table.table.table-striped
+      thead
+        tr
+          th(kaanna="'perusteprojekti'")
+          th(kaanna="'peruste'")
+          th(kaanna="'tutkinnon-osa'")
+          th
+      tbody
+        tr(ng-repeat="ongelma in ongelmalliset | orderBy:'peruste.globalVersion.aikaleima':true")
+          td
+            a(ng-href="{{ ongelma.$$url }}" ng-bind="ongelma.perusteprojekti.nimi | kaanna")
+          td(ng-bind="ongelma.perusteprojekti.peruste.nimi | kaanna")
+          td
+            ul(ng-repeat="info in ongelma.infot")
+              li {{info.viite.nimi | kaanna}}
+
+    ep-pagination(ng-model="sivu"
+                  ng-change="haeVirheelliset"
+                  total-items="kokonaismaara"
+                  items-per-page="sivukoko")

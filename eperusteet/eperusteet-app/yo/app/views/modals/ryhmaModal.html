@@ -16,7 +16,7 @@
                model-var="rooli"
                label="rooli"
                options="roolit">
-            <ohje teksti="ohje-ryhma-rooli"></ohje>
+              <ohje teksti="ohje-ryhma-rooli"></ohje>
             </formfield>
 
             <div ng-if="ryhma.rooli === 'osaamisala'">
@@ -32,7 +32,7 @@
               </div>
             </div>
 
-            <div ng-if="ryhma.rooli === 'tutkintonimike'">
+            <div ng-if="ryhma.rooli === 'tutkintonimike' && tutkintonimikkeet.length > 1">
               <h3 kaanna>tutkintonimike</h3>
               <div class="modal-body tag-modal">
                 <div style="margin-bottom: 6px" ng-click="Tutkintonimike.valitse(null)">
