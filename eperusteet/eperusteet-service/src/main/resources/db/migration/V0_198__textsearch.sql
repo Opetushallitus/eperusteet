@@ -1,13 +1,14 @@
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 DROP TABLE IF EXISTS tekstihaku;
-DROP TABLE IF EXISTS tekstihaku_t;
+DROP TABLE IF EXISTS tekstihaku_tulos;
 DROP TYPE IF EXISTS TekstihakuKind;
 
 CREATE TYPE TekstihakuKind AS ENUM (
     'PERUSTE',
     'TEKSTIKAPPALE',
     'TUTKINNONOSA');
+
 
 CREATE TABLE tekstihaku (
     id SERIAL NOT NULL,
@@ -18,6 +19,21 @@ CREATE TABLE tekstihaku (
     pov_id BIGINT,
     tov_id BIGINT,
     teksti_id BIGINT
+);
+
+
+CREATE TABLE tekstihaku_tulos (
+    id SERIAL NOT NULL,
+    tyyppi TekstihakuKind NOT NULL,
+    tila VARCHAR(255),
+    esikatseltavissa BOOLEAN,
+    perusteprojekti_id BIGINT REFERENCES perusteprojekti(id) NOT NULL,
+    peruste_id BIGINT REFERENCES peruste(id) NOT NULL,
+    suoritustapa_id BIGINT,
+    pov_id BIGINT,
+    tov_id BIGINT,
+    kieli VARCHAR(2),
+    teksti TEXT
 );
 
 
@@ -153,22 +169,36 @@ $$ LANGUAGE sql;
 
 CREATE OR REPLACE FUNCTION haku_pre () RETURNS void AS $$
     -- DELETE FROM tekstihaku;
-    -- DELETE FROM tekstihaku_t;
+    -- DELETE FROM tekstihaku_tulos;
 $$ LANGUAGE sql;
 
 
 CREATE OR REPLACE FUNCTION haku_post () RETURNS void AS $$
-    SELECT tyyppi, perusteprojekti_id, peruste_id, suoritustapa_id, pov_id, tov_id,
+    INSERT INTO
+        tekstihaku_tulos (tyyppi, perusteprojekti_id, peruste_id, suoritustapa_id, pov_id, tov_id, teksti)
+    SELECT
+        tyyppi,
+        perusteprojekti_id,
+        peruste_id,
+        suoritustapa_id,
+        pov_id,
+        tov_id,
         string_agg(poista_tagit(get_teksti(teksti_id)), '\n') AS teksti
-        INTO tekstihaku_t
-        FROM tekstihaku
-        GROUP BY tyyppi, perusteprojekti_id, peruste_id, suoritustapa_id, pov_id, tov_id;
+    FROM
+        tekstihaku
+    GROUP BY
+        tyyppi,
+        perusteprojekti_id,
+        peruste_id,
+        suoritustapa_id,
+        pov_id,
+        tov_id;
 
     -- Optimointeja tekstihakutaululle
-    ALTER TABLE tekstihaku_t SET UNLOGGED;
+    ALTER TABLE tekstihaku_tulos SET UNLOGGED;
 
     -- Indeksien luonti
-    CREATE INDEX tekstihaku_trgm_idx ON tekstihaku_t USING GIN (teksti gin_trgm_ops);
+    CREATE INDEX tekstihaku_trgm_idx ON tekstihaku_tulos USING GIN (teksti gin_trgm_ops);
 $$ LANGUAGE sql;
 
 

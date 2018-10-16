@@ -23,7 +23,7 @@ public class ExperimentalController {
 
     @RequestMapping(value = "/tekstihaku", method = GET)
     @ResponseBody
-    public Page<TekstiHakuTulosDto> getAllKevyt(VapaaTekstiQueryDto pquery) {
+    public Page<TekstiHakuTulosDto> getAll(VapaaTekstiQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 10));
         return service.findByTeksti(pquery, p);
     }
