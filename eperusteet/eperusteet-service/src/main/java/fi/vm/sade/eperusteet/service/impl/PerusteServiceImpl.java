@@ -183,9 +183,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private LocalizedMessagesService messages;
 
-    @Autowired
-    private EntityManager em;
-
     @Override
     public List<PerusteDto> getUusimmat() {
         return mapper.mapAsList(perusteet.findAllUusimmat(new PageRequest(0, 10)), PerusteDto.class);
