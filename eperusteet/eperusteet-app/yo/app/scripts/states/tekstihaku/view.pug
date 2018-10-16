@@ -1,0 +1,14 @@
+div
+  input.form-control(
+    ng-model="query.teksti"
+    ng-model-options="{ debounce: 300 }"
+    ng-change="search(query)")
+
+  div(ng-if="results.data")
+    div(ng-repeat="entry in results.data")
+      pre(ng-bind="entry | json")
+
+    pre(ng-bind="results.sivu | json")
+    pre(ng-bind="results.sivuja | json")
+    pre(ng-bind="results.sivukoko | json")
+    pre(ng-bind="results['kokonaismäärä'] | json")

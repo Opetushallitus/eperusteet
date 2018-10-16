@@ -217,7 +217,7 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'HALLINTA')")
 //    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery, PageRequest p);
 }
