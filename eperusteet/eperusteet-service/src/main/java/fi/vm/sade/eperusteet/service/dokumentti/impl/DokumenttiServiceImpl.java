@@ -19,9 +19,11 @@ import com.google.code.docbook4j.Docbook4JException;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.DokumenttiMetaDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
@@ -64,10 +66,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -112,6 +110,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
+
+    @Autowired
+    private LocalizedMessagesService messages;
 
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
@@ -330,6 +331,10 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         ValidationResult result;
         GeneratorVersion version = dto.getGeneratorVersion();
 
+        DokumenttiMetaDto meta = DokumenttiMetaDto.builder()
+                .title(DokumenttiUtils.getTextString(dokumentti.getKieli(), peruste.getNimi()))
+                .build();
+
         LOG.info("Luodaan dokumenttia (" + dto.getPerusteId() + ", " + dto.getSuoritustapakoodi() + ", "
                 + kieli + ", " + version + ") perusteelle.");
         switch (version) {
@@ -363,7 +368,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 break;
             case UUSI:
                 Document doc = newBuilder.generateXML(peruste, dokumentti);
-                toReturn = pdfService.xhtml2pdf(doc);
+
+                meta.setSubject(messages.translate("docgen.meta.subject.peruste", kieli));
+                toReturn = pdfService.xhtml2pdf(doc, meta);
 
                 // Validoidaan dokumnetti
                 result = DokumenttiUtils.validatePdf(toReturn);
@@ -380,7 +387,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 break;
             case KVLIITE:
                 doc = kvLiiteBuilderService.generateXML(peruste, kieli);
-                toReturn = pdfService.xhtml2pdf(doc, version);
+
+                meta.setSubject(messages.translate("docgen.meta.subject.kvliite", kieli));
+                toReturn = pdfService.xhtml2pdf(doc, version, meta);
 
                 // Validoi kvliite
                 result = DokumenttiUtils.validatePdf(toReturn);
