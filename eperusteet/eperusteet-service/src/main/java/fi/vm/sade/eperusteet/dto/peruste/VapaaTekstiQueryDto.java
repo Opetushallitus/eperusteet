@@ -1,11 +1,16 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
-public class VapaaTekstiQueryDto extends PageableQueryDto {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true, of = { "teksti" })
+public class VapaaTekstiQueryDto extends PageableQueryDto implements Serializable {
     private String teksti = "";
 }

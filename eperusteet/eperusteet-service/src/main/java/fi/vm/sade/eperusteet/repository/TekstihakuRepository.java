@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 
-
 @Repository
 public interface TekstihakuRepository extends JpaRepository<TekstiHakuTulos, Long> {
     @Query("SELECT haku FROM TekstiHakuTulos haku WHERE haku.teksti LIKE %?1%")

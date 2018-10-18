@@ -7,9 +7,13 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.ExecutionException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -23,8 +27,14 @@ public class ExperimentalController {
 
     @RequestMapping(value = "/tekstihaku", method = GET)
     @ResponseBody
-    public Page<TekstiHakuTulosDto> getAll(VapaaTekstiQueryDto pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 10));
-        return service.findByTeksti(pquery, p);
+    public ResponseEntity<Page<TekstiHakuTulosDto>> getAll(VapaaTekstiQueryDto pquery) {
+        try {
+            Page<TekstiHakuTulosDto> result = service.findByTeksti(pquery);
+            if (result != null) {
+                return ResponseEntity.ok(result);
+            }
+        } catch (ExecutionException | InterruptedException ignored) {
+        }
+        return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
     }
 }

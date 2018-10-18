@@ -1,14 +1,35 @@
-div
+
+
+div.tekstihaku
   input.form-control(
     ng-model="query.teksti"
-    ng-model-options="{ debounce: 300 }"
     ng-change="search(query)")
 
   div(ng-if="results.data")
+    div
+      span(kaanna="'loydettiin-hakutulosta'")
+      =": "
+      span(ng-bind="results['kokonaismäärä']")
     div(ng-repeat="entry in results.data")
-      pre(ng-bind="entry | json")
+      div.murut
+        span.muru(ng-show="entry.perusteprojekti.nimi")
+          span(kaanna="entry.perusteprojekti.nimi")
+        span.muru(ng-show="entry.peruste.nimi")
+          span(kaanna="entry.peruste.nimi")
+          =" ("
+          span(kaanna="entry.peruste.diaarinumero")
+          =")"
+        span.muru(ng-show="entry.pov && entry.pov.perusteenOsa")
+          span(kaanna="entry.pov.perusteenOsa.nimi")
+        span.muru(ng-show="entry.pov && entry.tov.tutkinnonOsa")
+          span(kaanna="entry.tov.tutkinnonOsa.nimi")
+        //- div(ng-bind-html="entry.teksti")
+      div.hakutulokset
+        div.hakutulos(ng-repeat="tulos in entry.$$tekstit")
+          p(ng-bind-html="tulos")
+      hr
 
-    pre(ng-bind="results.sivu | json")
-    pre(ng-bind="results.sivuja | json")
-    pre(ng-bind="results.sivukoko | json")
-    pre(ng-bind="results['kokonaismäärä'] | json")
+    ep-pagination(ng-model="results.sivu"
+                  ng-change="updatePage"
+                  total-items="results['kokonaismäärä']"
+                  items-per-page="results.sivukoko")

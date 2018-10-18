@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.views.TekstiHakuTulos;
+import fi.vm.sade.eperusteet.dto.peruste.VapaaTekstiQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.util.TekstiHakuTulosDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
@@ -13,6 +14,8 @@ import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,7 +97,24 @@ public class TekstihakuServiceIT extends AbstractIntegrationTest {
                         null,
                         Kieli.FI,
                         "hello");
+    }
 
+    @Test
+    public void testTyhjaHaku() {
+        Page<TekstiHakuTulosDto> tulos = perusteService.findByTeksti(VapaaTekstiQueryDto.builder()
+                        .teksti("")
+                        .build(),
+                new PageRequest(0, 10));
+        assertThat(tulos.getTotalElements()).isEqualTo(0L);
+    }
+
+    @Test
+    public void testTekstihaku() {
+        Page<TekstiHakuTulosDto> tulos = perusteService.findByTeksti(VapaaTekstiQueryDto.builder()
+                        .teksti("Teksti")
+                        .build(),
+                new PageRequest(0, 10));
+        assertThat(tulos.getTotalElements()).isEqualTo(0L);
     }
 
 }

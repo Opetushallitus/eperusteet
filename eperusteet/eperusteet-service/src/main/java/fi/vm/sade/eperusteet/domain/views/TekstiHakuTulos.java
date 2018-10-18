@@ -18,6 +18,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
+@NamedStoredProcedureQuery(
+        procedureName = "rakenna_haku",
+        name = "rakennaHaku")
 public class TekstiHakuTulos implements Serializable {
 
     @Id

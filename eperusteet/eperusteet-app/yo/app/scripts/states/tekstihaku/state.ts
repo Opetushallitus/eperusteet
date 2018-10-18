@@ -27,6 +27,7 @@ angular.module("eperusteApp").config($stateProvider => {
             $q,
             $state,
             $stateParams,
+            $timeout,
             Api
         ) => {
             $scope.query = {
@@ -35,13 +36,49 @@ angular.module("eperusteApp").config($stateProvider => {
 
             $scope.results = {};
 
-            $scope.search = async (query) => {
+            function processResults(query, results) {
+                const regex = new RegExp(query.teksti, "g");
+                for (const result of results.data) {
+                    result.$$tekstit = _((result.teksti || "").split("\\n"))
+                        .filter(val => _.includes(val, query.teksti))
+                        .map(val => val.replace(regex, "<span class=\"match\">$&</span>"))
+                        .value();
+                }
+                return results;
+            }
+
+            $scope.search = _.debounce(async (query, tries = 3) => {
                 if (!query.teksti) {
                     return;
                 }
-                const response = await Api.all("experimental").customGET("tekstihaku", query);
-                $scope.results = response.plain();
+
+                try {
+                    const response = await Api.all("experimental").customGET("tekstihaku", query);
+                    $scope.results = processResults(query, response.plain());
+                }
+                catch (err) {
+                    if (err.status === 429) {
+                        if (tries > 0) {
+                            $scope.search(query, tries - 1);
+                        }
+                    }
+                    console.log(err);
+                }
+            }, 300);
+
+            $scope.updatePage = (sivu) => {
+                $scope.search({
+                    ...$scope.query,
+                    sivu: sivu
+                });
             };
+
+            // TODO: poista
+            $timeout(() => {
+                $scope.query.teksti = "a"
+                $scope.search($scope.query);
+            }, 300);
+
         },
     });
 });

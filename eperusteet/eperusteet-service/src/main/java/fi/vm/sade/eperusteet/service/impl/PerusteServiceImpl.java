@@ -15,12 +15,14 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.google.common.base.Strings;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.views.TekstiHakuTulos;
 import fi.vm.sade.eperusteet.domain.views.TekstiHakuView;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
@@ -52,6 +54,9 @@ import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -63,10 +68,13 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1775,10 +1783,32 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return viiteDto;
     }
 
+    // FIXME: käytä parempaa mekanismia
+    private AtomicInteger amount = new AtomicInteger(0);
+
     @Override
-    public Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery, PageRequest p) {
-        return tekstihakuRepository
-                .tekstihaku(pquery.getTeksti(), p)
-                .map(x -> mapper.map(x, TekstiHakuTulosDto.class));
+    @Cacheable("tekstihaku")
+    public Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery) throws ExecutionException, InterruptedException {
+        if (!Strings.isNullOrEmpty(pquery.getTeksti()) & pquery.getTeksti().length() > 2) {
+            int next = amount.incrementAndGet();
+            try {
+                if (next > 3) {
+                    return null;
+                }
+                else {
+                    PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 10));
+                    Page<TekstiHakuTulosDto> result = tekstihakuRepository
+                            .tekstihaku(pquery.getTeksti(), p)
+                            .map(x -> mapper.map(x, TekstiHakuTulosDto.class));
+                    return result;
+                }
+            }
+            finally {
+                amount.decrementAndGet();
+            }
+        }
+        else {
+            return new PageImpl<>(new ArrayList<>());
+        }
     }
 }

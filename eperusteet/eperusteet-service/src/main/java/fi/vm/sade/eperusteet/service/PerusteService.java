@@ -29,6 +29,8 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
@@ -219,5 +221,5 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
 //    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery, PageRequest p);
+    Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery) throws ExecutionException, InterruptedException;
 }
