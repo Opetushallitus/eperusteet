@@ -258,10 +258,11 @@ RETURNS VOID AS $$
     WHERE
         alt.perusteenosa_id = osa.id AND osa.id = tk.id
         AND tpt.tekstipalanen_id IN (osa.nimi_id, tk.teksti_id);
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL VOLATILE;
 
 CREATE OR REPLACE FUNCTION haku_lisaa_tekstikappaleet () RETURNS void AS $$
-    SELECT
+BEGIN
+    PERFORM
         add_tekstikappale_hierarkia(pp.id, p.id, s.id, s.sisalto_perusteenosaviite_id)
     FROM
         perusteprojekti pp,
@@ -271,7 +272,8 @@ CREATE OR REPLACE FUNCTION haku_lisaa_tekstikappaleet () RETURNS void AS $$
     WHERE
         pp.peruste_id = p.id
         AND p.id = ps.peruste_id AND ps.suoritustapa_id = s.id;
-$$ LANGUAGE sql;
+END
+$$ LANGUAGE plpgsql VOLATILE;
 
 
 -- Hakuindeksin koostaminen
@@ -285,15 +287,18 @@ BEGIN
         DELETE FROM tekstihaku_tulos;
     END IF;
 END
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 
 CREATE OR REPLACE FUNCTION haku_pre () RETURNS void AS $$
-    SELECT drop_old_tekstihaku();
-$$ LANGUAGE sql;
+BEGIN
+    PERFORM drop_old_tekstihaku();
+END
+$$ LANGUAGE plpgsql VOLATILE;
 
 
 CREATE OR REPLACE FUNCTION haku_post () RETURNS void AS $$
+BEGIN
     INSERT INTO
         tekstihaku_tulos (tyyppi, perusteprojekti_id, peruste_id, suoritustapa_id, pov_id, tov_id, osaalue_id, arviointi_id, teksti)
     SELECT
@@ -320,25 +325,29 @@ CREATE OR REPLACE FUNCTION haku_post () RETURNS void AS $$
 
     -- Optimointeja tekstihakutaululle
     ALTER TABLE tekstihaku_tulos SET UNLOGGED;
-$$ LANGUAGE sql;
+END
+$$ LANGUAGE plpgsql VOLATILE;
 
 
 -- NOTE: Ylikirjoitettava uusia kohteita lisätessä
-CREATE OR REPLACE FUNCTION hakukohteet() RETURNS void AS $$ BEGIN
+CREATE OR REPLACE FUNCTION hakukohteet() RETURNS void AS $$
+BEGIN
     PERFORM haku_lisaa_perusteet();
     PERFORM haku_lisaa_tekstikappaleet();
     PERFORM haku_lisaa_tutkinnon_osat();
-END $$ LANGUAGE plpgsql;
+END
+$$ LANGUAGE plpgsql VOLATILE;
 
 
-CREATE OR REPLACE FUNCTION rakenna_haku() RETURNS void AS $$ BEGIN
+CREATE OR REPLACE FUNCTION rakenna_haku() RETURNS void AS $$
+BEGIN
     PERFORM haku_pre();
     PERFORM hakukohteet();
     PERFORM haku_post();
-END $$ LANGUAGE plpgsql;
+END
+$$ LANGUAGE plpgsql VOLATILE;
 
 
 -- NOTE: To create the text search index table, run:
 SELECT rakenna_haku();
-SELECT teksti FROM tekstihaku_tulos;
-
+-- SELECT teksti FROM tekstihaku_tulos;

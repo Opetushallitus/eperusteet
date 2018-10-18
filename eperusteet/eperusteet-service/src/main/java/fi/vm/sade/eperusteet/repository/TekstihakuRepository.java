@@ -9,7 +9,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface TekstihakuRepository extends JpaRepository<TekstiHakuTulos, Long> {
-    @Query("SELECT haku FROM TekstiHakuTulos haku WHERE haku.teksti LIKE %?1%")
-    Page<TekstiHakuTulos> tekstihaku(String query, Pageable pageable);
+public interface TekstihakuRepository extends JpaRepository<TekstiHakuTulos, Long>, TekstihakuRepositoryCustom {
 }

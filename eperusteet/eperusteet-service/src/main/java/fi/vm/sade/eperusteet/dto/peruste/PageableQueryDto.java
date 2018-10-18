@@ -11,5 +11,5 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = { "sivu", "sivukoko" })
 public class PageableQueryDto implements Serializable {
     private int sivu = 0;
-    private int sivukoko = 25;
+    private int sivukoko = 10;
 }

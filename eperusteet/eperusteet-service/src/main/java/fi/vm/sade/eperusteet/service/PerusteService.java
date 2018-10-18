@@ -221,5 +221,8 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
 //    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery) throws ExecutionException, InterruptedException;
+    Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery);
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    void rakennaTekstihaku();
 }

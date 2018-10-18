@@ -38,6 +38,14 @@ public class TekstiHakuTulos implements Serializable {
     @Setter
     private Peruste peruste;
 
+    @Getter
+    @Setter
+    private Boolean esikatseltavissa;
+
+    @Getter
+    @Setter
+    private ProjektiTila tila;
+
     @OneToOne(fetch = FetchType.LAZY)
     @Getter
     @Setter

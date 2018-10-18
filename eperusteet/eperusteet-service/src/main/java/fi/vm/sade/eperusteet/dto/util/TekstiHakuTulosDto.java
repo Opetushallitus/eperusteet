@@ -24,7 +24,7 @@ public class TekstiHakuTulosDto implements Serializable {
     private PerusteprojektiInfoDto perusteprojekti;
     private PerusteInfoDto peruste;
     private SuoritustapaDto suoritustapa;
-    private PerusteenOsaViiteDto.Suppea pov;
+    private PerusteenOsaViiteDto pov;
     private TutkinnonOsaViiteDto tov;
     private Kieli kieli;
     private String teksti;

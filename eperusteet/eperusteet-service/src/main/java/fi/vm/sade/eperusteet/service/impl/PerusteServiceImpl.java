@@ -1788,7 +1788,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Cacheable("tekstihaku")
-    public Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery) throws ExecutionException, InterruptedException {
+    public Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery) {
         if (!Strings.isNullOrEmpty(pquery.getTeksti()) & pquery.getTeksti().length() > 2) {
             int next = amount.incrementAndGet();
             try {
@@ -1798,7 +1798,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 else {
                     PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 10));
                     Page<TekstiHakuTulosDto> result = tekstihakuRepository
-                            .tekstihaku(pquery.getTeksti(), p)
+                            .tekstihaku(pquery)
                             .map(x -> mapper.map(x, TekstiHakuTulosDto.class));
                     return result;
                 }
@@ -1810,5 +1810,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         else {
             return new PageImpl<>(new ArrayList<>());
         }
+    }
+
+    @Override
+    public void rakennaTekstihaku() {
+        tekstihakuRepository.rakennaTekstihaku();
     }
 }
