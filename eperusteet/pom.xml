@@ -58,38 +58,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>write buildversion.txt</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <echo message="writing target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
-                <echo file="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt">
-                  <![CDATA[artifactId=${project.artifactId}
-version=${project.version}
-buildNumber=${buildNumber}
-branchName=${branch}
-vcsRevision=${revision}
-buildTtime=${maven.build.timestamp}
-]]>
-                </echo>
-                <loadfile property="buildversiontxt"
-                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
-                <echo message="${buildversiontxt}"/>
-                <echo file="target/mavenversion.txt">${project.version}</echo>
-              </target>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -289,4 +257,41 @@ buildTtime=${maven.build.timestamp}
       </reporting>
     </profile>
   </profiles>
+  <repositories>
+    <repository>
+      <id>oph-sade-artifactory-snapshots</id>
+      <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>oph-sade-artifactory-releases</id>
+      <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
+    </repository>
+    <repository>
+      <id>repository.jboss.org</id>
+      <name>JBoss Repository</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+    </repository>
+    <repository>
+      <id>public</id>
+      <url>http://maven.nuxeo.org/nexus/content/repositories/public/</url>
+    </repository>
+  </repositories>
+  <distributionManagement>
+    <repository>
+      <id>oph-sade-artifactory</id>
+      <name>oph-sade-artifactory-releases</name>
+      <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
+    </repository>
+    <snapshotRepository>
+      <id>oph-sade-artifactory</id>
+      <name>oph-sade-artifactory-snapshots</name>
+      <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
