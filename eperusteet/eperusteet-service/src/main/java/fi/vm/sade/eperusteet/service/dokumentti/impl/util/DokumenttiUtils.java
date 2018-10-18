@@ -21,8 +21,11 @@ import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.DokumenttiMetaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.preflight.PreflightDocument;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
@@ -103,6 +106,17 @@ public class DokumenttiUtils {
         return result != null ? result : "";
     }
 
+    public static String getTextString(Kieli kieli, TekstiPalanen tekstiPalanen) {
+        if (tekstiPalanen != null
+                && tekstiPalanen.getTeksti() != null
+                && tekstiPalanen.getTeksti().containsKey(kieli)
+                && tekstiPalanen.getTeksti().get(kieli) != null) {
+            return unescapeHtml5(tekstiPalanen.getTeksti().get(kieli));
+        } else {
+            return "";
+        }
+    }
+
     public static String getTextString(DokumenttiBase docBase, TekstiPalanen tekstiPalanen) {
         if (tekstiPalanen != null
                 && tekstiPalanen.getTeksti() != null
@@ -171,6 +185,34 @@ public class DokumenttiUtils {
 
         Date newDate = DateUtils.addMinutes(date, MAX_TIME_IN_MINUTES);
         return newDate.before(new Date());
+    }
+
+    public static byte[] addMetadata(byte[] pdf, DokumenttiMetaDto meta) throws IOException {
+        PDDocument document = PDDocument.load(pdf);
+        PDDocumentInformation info = document.getDocumentInformation();
+
+        if (meta.getTitle() != null) {
+            info.setTitle(meta.getTitle());
+        }
+        if (meta.getAuthor() != null) {
+            info.setAuthor(meta.getAuthor());
+        }
+        if (meta.getSubject() != null) {
+            info.setSubject(meta.getSubject());
+        }
+        if (meta.getKeywords() != null) {
+            info.setKeywords(meta.getKeywords());
+        }
+        if (meta.getCreator() != null) {
+            info.setCreator(meta.getCreator());
+        }
+        if (meta.getProducer() != null) {
+            info.setProducer(meta.getProducer());
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        document.save(baos);
+        return baos.toByteArray();
     }
 
     public static ValidationResult validatePdf(byte[] pdf) throws IOException {
