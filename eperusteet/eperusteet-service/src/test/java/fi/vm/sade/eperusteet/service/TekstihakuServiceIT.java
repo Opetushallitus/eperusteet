@@ -62,6 +62,7 @@ public class TekstihakuServiceIT extends AbstractIntegrationTest {
         peruste = projekti.getPeruste();
         suoritustapa = peruste.getSuoritustapa(Suoritustapakoodi.REFORMI);
         rakenne = suoritustapa.getRakenne();
+        em.flush();
     }
 
     @Test
@@ -83,7 +84,7 @@ public class TekstihakuServiceIT extends AbstractIntegrationTest {
                         "id",
                         "perusteprojekti.id",
                         "peruste.id",
-                        "suoritustapa.id",
+                        "suoritustapa.suoritustapakoodi",
                         "pov.id",
                         "tov.id",
                         "kieli",
@@ -92,7 +93,7 @@ public class TekstihakuServiceIT extends AbstractIntegrationTest {
                         1L,
                         this.projekti.getId(),
                         this.peruste.getId(),
-                        this.suoritustapa.getId(),
+                        this.suoritustapa.getSuoritustapakoodi(),
                         this.suoritustapa.getSisalto().getId(),
                         null,
                         Kieli.FI,
@@ -103,8 +104,7 @@ public class TekstihakuServiceIT extends AbstractIntegrationTest {
     public void testTyhjaHaku() {
         Page<TekstiHakuTulosDto> tulos = perusteService.findByTeksti(VapaaTekstiQueryDto.builder()
                         .teksti("")
-                        .build(),
-                new PageRequest(0, 10));
+                        .build());
         assertThat(tulos.getTotalElements()).isEqualTo(0L);
     }
 
@@ -112,8 +112,7 @@ public class TekstihakuServiceIT extends AbstractIntegrationTest {
     public void testTekstihaku() {
         Page<TekstiHakuTulosDto> tulos = perusteService.findByTeksti(VapaaTekstiQueryDto.builder()
                         .teksti("Teksti")
-                        .build(),
-                new PageRequest(0, 10));
+                        .build());
         assertThat(tulos.getTotalElements()).isEqualTo(0L);
     }
 

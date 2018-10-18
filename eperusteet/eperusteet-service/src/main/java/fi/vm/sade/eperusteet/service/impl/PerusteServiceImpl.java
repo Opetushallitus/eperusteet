@@ -1788,7 +1788,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Cacheable("tekstihaku")
-    public Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery) throws ExecutionException, InterruptedException {
+    public Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery) {
         if (!Strings.isNullOrEmpty(pquery.getTeksti()) & pquery.getTeksti().length() > 2) {
             int next = amount.incrementAndGet();
             try {

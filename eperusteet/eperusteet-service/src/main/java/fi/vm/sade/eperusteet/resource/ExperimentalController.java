@@ -28,13 +28,12 @@ public class ExperimentalController {
     @RequestMapping(value = "/tekstihaku", method = GET)
     @ResponseBody
     public ResponseEntity<Page<TekstiHakuTulosDto>> getAll(VapaaTekstiQueryDto pquery) {
-        try {
-            Page<TekstiHakuTulosDto> result = service.findByTeksti(pquery);
-            if (result != null) {
-                return ResponseEntity.ok(result);
-            }
-        } catch (ExecutionException | InterruptedException ignored) {
+        Page<TekstiHakuTulosDto> result = service.findByTeksti(pquery);
+        if (result != null) {
+            return ResponseEntity.ok(result);
         }
-        return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
+        else {
+            return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
+        }
     }
 }
