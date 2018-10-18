@@ -55,7 +55,9 @@ public class RakenneOsa extends AbstractRakenneOsa {
             boolean rakenneOsaValid = this.getPakollinen() == ro.getPakollinen()
                     && Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite())
                     && (erikoisuus == null ? ro.getErikoisuus() == null : erikoisuus.equals(ro.getErikoisuus()));
-            return fail("rakenne-osan-validointi-epaonnistui");
+            if (!rakenneOsaValid) {
+                return fail("rakenne-osan-validointi-epaonnistui");
+            }
         }
 
         return success();
