@@ -1,0 +1,44 @@
+sudo: required
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+services:
+  - docker
+
+cache:
+  directories:
+    - $HOME/.m2
+
+env:
+  global:
+    # AWS_ACCESS_KEY_ID
+    - secure: "FYD48mr1LheMzHUzqO4OdZ3pkidAeBqMXSpojSNyI1CTwovT25HamkIgbi4tPdigehqQEoFg057MtkhoosLYpP+06OaDpCV9vo+yhVh8KL+fdW9zs+thlZHxRugI9+e5QtdiYbVhx6l8yp3TrY4fTu18URzDayCHd0qtF0D1Qqk="
+    # AWS_SECRET_ACCESS_KEY
+    - secure: "YU91n/1seuU03KphWAujw/3NdQbWj9JGKFjlIjZHURv+h7fHFNONNlpcd3a7hSMghN0CgcYXywjjSbWvG1qmYVHWktQVczMIziXT5nZRTp23JvobrUzk6ywVz7JHidEbV8nIpDuYMInavQvEtVCuGFKxh1N+4NQZEMBrDCZoKJY="
+
+install:
+  - git clone https://github.com/Opetushallitus/ci-tools.git
+  - source ci-tools/common/setup-tools.sh
+  - export ARTIFACT_NAME="eperusteet"
+
+script:
+  - cd ${ARTIFACT_NAME}
+
+  - mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
+
+  - mv ${ARTIFACT_NAME}-app/target/${ARTIFACT_NAME}-app.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-app.war
+  - mv ${ARTIFACT_NAME}-service/target/${ARTIFACT_NAME}-service.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-service.war
+  - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
+
+  - export BASE_IMAGE="base-legacy:0.1"
+  - ./ci-tools/common/pull-image.sh
+  - ./ci-tools/build/build-war.sh ${ARTIFACT_NAME}
+
+deploy:
+  provider: script
+  script: ./ci-tools/build/upload-image.sh ${ARTIFACT_NAME}
+  on:
+    all_branches: true
