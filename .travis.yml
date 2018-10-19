@@ -33,6 +33,8 @@ script:
   - mv ${ARTIFACT_NAME}-service/target/${ARTIFACT_NAME}-service.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-service.war
   - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
 
+  - cd ..
+
   - export BASE_IMAGE="base-legacy:0.1"
   - ./ci-tools/common/pull-image.sh
   - ./ci-tools/build/build-war.sh ${ARTIFACT_NAME}
