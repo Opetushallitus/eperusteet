@@ -41,7 +41,13 @@ script:
   - ./ci-tools/build/build-war.sh ${ARTIFACT_NAME}
 
 deploy:
-  provider: script
-  script: ./ci-tools/build/upload-image.sh ${ARTIFACT_NAME}
-  on:
-    all_branches: true
+  - provider: script
+    script: cd eperusteet && mvn deploy -pl ${ARTIFACT_NAME}-app -DskipTests --settings ci-tools/common/maven-settings.xml && cd ..
+    skip_cleanup: true
+    on:
+      branch: master
+
+  - provider: script
+    script: ./ci-tools/build/upload-image.sh ${ARTIFACT_NAME}
+    on:
+      all_branches: true
