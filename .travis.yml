@@ -42,7 +42,7 @@ script:
 
 deploy:
   - provider: script
-    script: cd eperusteet && mvn deploy -pl ${ARTIFACT_NAME}-app -DskipTests --settings ci-tools/common/maven-settings.xml && cd ..
+    script: cd eperusteet && mvn deploy -pl ${ARTIFACT_NAME}-app -DskipTests --settings ../ci-tools/common/maven-settings.xml && cd ..
     skip_cleanup: true
     on:
       branch: master
