@@ -13,21 +13,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service.internal;
 
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.GeneratorVersion;
-import fi.vm.sade.eperusteet.dto.DokumenttiMetaDto;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
-
-/**
- * @author isaul
- */
-public interface PdfService {
-    byte[] xhtml2pdf(Document document, GeneratorVersion version, DokumenttiMetaDto meta) throws IOException, TransformerException, SAXException;
-    byte[] xhtml2pdf(Document document, DokumenttiMetaDto meta) throws IOException, TransformerException, SAXException;
+@Getter
+@Setter
+@Builder
+public class DokumenttiMetaDto {
+    private String title;
+    private String author;
+    private String subject;
+    private String keywords;
+    private String creator;
+    private String producer;
 }

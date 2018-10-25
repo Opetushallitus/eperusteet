@@ -16,12 +16,11 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
+import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
@@ -29,7 +28,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
-import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -37,8 +36,6 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import jdk.nashorn.internal.objects.annotations.Setter;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -296,6 +293,33 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         });
 
         lockService.unlock(ctx);
+    }
+
+    @Test
+    public void testLisaaRuotsinnosJulkaistuunPerusteeseen() {
+        TutkinnonOsaViiteDto dto = testUtils.addTutkinnonOsa(peruste.getId());
+        RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(peruste.getId(),
+                Suoritustapakoodi.REFORMI, 0);
+        rakenne.getOsat().add(RakenneOsaDto.of(dto));
+
+        final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(peruste.getId(),
+                Suoritustapakoodi.REFORMI);
+
+        lockService.lock(ctx);
+        rakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.REFORMI, rakenne);
+        lockService.unlock(ctx);
+
+        perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, null);
+        perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VALMIS, null);
+        perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, new TiedoteDto());
+
+        // Muutetaan muodostumisen kuvaus
+        rakenne.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
+
+        lockService.lock(ctx);
+        perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.REFORMI, rakenne);
+        lockService.unlock(ctx);
+
     }
 
 }

@@ -198,12 +198,6 @@ mixin kvliite()
                     tr
                       th {{'perusteen-koodi'| kaanna}}
                       td {{koulutus.koulutuskoodiArvo}}
-                    tr
-                      th {{'haku-koulutusala'| kaanna}}
-                      td {{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}
-                    tr
-                      th {{'haku-opintoala'| kaanna}}
-                      td {{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}
               div
                 button.btn.btn-default(type='button', ng-if='editEnabled', icon-role='add', ng-click='avaaKoodistoModaali()', ng-disabled='hakemassa', kaanna='lisaa-koulutus')
           .panel.panel-default.panel-clean(ng-show="!isOpas && isAmmatillinen")
