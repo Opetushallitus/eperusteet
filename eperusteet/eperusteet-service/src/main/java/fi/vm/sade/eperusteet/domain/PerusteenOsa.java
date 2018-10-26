@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import fi.vm.sade.eperusteet.dto.Metalink;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;

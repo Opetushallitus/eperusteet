@@ -264,6 +264,7 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/kaikki", method = GET)
     @ResponseBody
     @ApiOperation(value = "perusteen kaikkien tietojen haku")
+
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
             @PathVariable("perusteId") final long id,
             @RequestParam(value = "rev", required = false) final Integer rev) {

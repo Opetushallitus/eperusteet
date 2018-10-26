@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import java.util.Set;
@@ -36,6 +37,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 @Setter
 @JsonInclude(NON_NULL)
 public class SuoritustapaLaajaDto {
+    private Metalink metalink;
     private Suoritustapakoodi suoritustapakoodi;
     private LaajuusYksikko laajuusYksikko;
     private RakenneModuuliDto rakenne;

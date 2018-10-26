@@ -15,14 +15,18 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.Linkable;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,7 +51,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Table(name = "tutkinnonosaviite")
 @Audited
-public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
+public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Linkable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -98,6 +102,26 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
         hash = 97 * hash + Objects.hashCode(this.suoritustapa);
         hash = 97 * hash + Objects.hashCode(this.tutkinnonOsa);
         return hash;
+    }
+
+    @Override
+    public Metalink getMetalink() {
+        try {
+            Set<Peruste> perusteet = this.getSuoritustapa().getPerusteet();
+            if (perusteet.size() == 1) {
+                return Metalink.fromTutkinnonOsaViite(
+                        perusteet.iterator().next().getId(),
+                        this.getSuoritustapa().getSuoritustapakoodi(),
+                        getId(),
+                        tutkinnonOsa.getId());
+            }
+            else {
+                return null;
+            }
+        }
+        catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     @Override

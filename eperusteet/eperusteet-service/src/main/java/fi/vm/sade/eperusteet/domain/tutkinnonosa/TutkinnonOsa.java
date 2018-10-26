@@ -16,13 +16,11 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
@@ -43,7 +41,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "tutkinnonosa")
 @JsonTypeName("tutkinnonosa")
 @Audited
-public class TutkinnonOsa extends PerusteenOsa implements Serializable {
+public class TutkinnonOsa extends PerusteenOsa implements Serializable, Linkable {
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
@@ -161,6 +159,12 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     public void setKuvaus(TekstiPalanen kuvaus) {
         this.kuvaus = kuvaus;
     }
+
+    @Override
+    public Metalink getMetalink() {
+        return Metalink.fromTutkinnonOsa(getId());
+    }
+
 
     public Arviointi getArviointi() {
         return arviointi;

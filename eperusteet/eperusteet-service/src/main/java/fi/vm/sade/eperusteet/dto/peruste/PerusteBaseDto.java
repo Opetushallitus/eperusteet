@@ -18,9 +18,11 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Linkable;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
+import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.MuutosmaaraysDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -66,6 +68,8 @@ public abstract class PerusteBaseDto implements Serializable {
 
     private Set<String> korvattavatDiaarinumerot;
     private Set<KoodiDto> osaamisalat;
+
+    private Metalink metalink;
 
     // Tuodaan kvliitteestä
     private LokalisoituTekstiDto tyotehtavatJoissaVoiToimia;
