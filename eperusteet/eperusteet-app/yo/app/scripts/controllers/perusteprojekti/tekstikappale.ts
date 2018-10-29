@@ -212,6 +212,12 @@ angular
         $scope.tekstikappalePromise = tekstikappaleDefer.promise;
 
         $scope.valitseOsaamisala = function(oa) {
+            if (oa && oa.nimi) {
+                $scope.editableTekstikappale.nimi = {
+                    ...$scope.editableTekstikappale.nimi,
+                    ...oa.nimi,
+                };
+            }
             $scope.editableTekstikappale.osaamisala = oa;
         };
 
