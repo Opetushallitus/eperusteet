@@ -248,13 +248,6 @@ mixin kvliite()
                 formfield(model='editablePeruste', model-var='siirtymaPaattyy', type='date', placeholder="{{'anna-siirtyman-paattymis-pvm' | kaanna}}")
               .aligned(ng-show='!editEnabled', pvm='peruste.siirtymaPaattyy')
               p  ({{'siirtyman-kuvaus' | kaanna}})
-          .panel.panel-default.panel-clean
-            .panel-heading
-              h3.panel-title(kaanna='') tiivistelma
-            .panel-body
-              div(ckeditor='', ng-if='editEnabled', slocalized='', ng-model='editablePeruste.kuvaus')
-              span(ng-show='hasContent(peruste.kuvaus) && !editEnabled', ng-bind-html='peruste.kuvaus | kaanna | unsafe')
-              p(ng-show='!hasContent(peruste.kuvaus) && !editEnabled', kaanna='ei-tiivistelmaa')
           .panel.panel-default.panel-clean(ng-show="!isOpas")
             .panel-heading
               h3.panel-title(kaanna='') maarayksen-paatospaivamaara
