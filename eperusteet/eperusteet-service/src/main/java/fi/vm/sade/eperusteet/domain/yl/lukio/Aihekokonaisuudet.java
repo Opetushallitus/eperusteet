@@ -15,12 +15,13 @@
  */
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -98,5 +99,15 @@ public class Aihekokonaisuudet extends PerusteenOsa {
     @Override
     public EntityReference getReference() {
         return new EntityReference(getId());
+    }
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return null;
     }
 }

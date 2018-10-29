@@ -16,7 +16,8 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.dto.Metalink;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
@@ -102,4 +103,16 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
         this.setOsaamisala(other.getOsaamisala());
     }
 
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        haku.add("tekstihaku-tekstikappale-nimi", getNimi());
+        haku.add("tekstihaku-tekstikappale-teksti", getTeksti());
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .tekstiKappale(this)
+                .build();
+    }
 }

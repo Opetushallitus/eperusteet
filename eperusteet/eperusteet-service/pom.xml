@@ -462,15 +462,6 @@
                     <path>/eperusteet-service</path>
                     <contextReloadable>true</contextReloadable>
                     <contextFile>${basedir}/src/test/config/context.xml</contextFile>
-                    <webapps>
-                        <webapp>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>eperusteet-app</artifactId>
-                            <version>${project.version}</version>
-                            <type>war</type>
-                            <asWebapp>true</asWebapp>
-                        </webapp>
-                    </webapps>
                 </configuration>
                 <dependencies>
                     <dependency>

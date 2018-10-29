@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
@@ -42,7 +44,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "peruste")
 @Audited
-public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity, WithPerusteTila, Linkable {
+public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity, WithPerusteTila, Linkable, Tekstihaettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -419,6 +421,31 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
 
         throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");
+    }
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        haku.add("tekstihaku-nimi", getNimi());
+        haku.add("tekstihaku-kuvaus", getKuvaus());
+        if (getDiaarinumero() != null) {
+            haku.add("tekstihaku-diaarinumero", getDiaarinumero().getDiaarinumero());
+        }
+
+        if (getKvliite() != null) {
+            getKvliite().traverse(haku);
+        }
+
+        getSuoritustavat().forEach(suoritustapa -> {
+            suoritustapa.traverse(haku);
+        });
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .peruste(this)
+                .koulutustyyppi(getKoulutustyyppi())
+                .build();
     }
 
     public interface Valmis {}

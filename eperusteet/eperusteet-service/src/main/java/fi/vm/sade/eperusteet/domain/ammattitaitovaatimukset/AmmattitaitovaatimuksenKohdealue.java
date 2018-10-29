@@ -1,7 +1,9 @@
 package fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Tekstihaettava;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
@@ -22,7 +24,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "ammattitaitovaatimuksenkohdealue")
 @Audited
-public class AmmattitaitovaatimuksenKohdealue implements Serializable {
+public class AmmattitaitovaatimuksenKohdealue implements Serializable, Tekstihaettava {
 
     @Id
     @Getter
@@ -59,6 +61,10 @@ public class AmmattitaitovaatimuksenKohdealue implements Serializable {
         for (AmmattitaitovaatimuksenKohde kohde : other.getVaatimuksenKohteet()) {
             this.vaatimuksenKohteet.add(new AmmattitaitovaatimuksenKohde(this, kohde));
         }
+    }
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
     }
 
     @Override

@@ -17,13 +17,14 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.google.common.base.Strings;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstiHakuTulos;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.domain.views.TekstiHakuTulos;
-import fi.vm.sade.eperusteet.domain.views.TekstiHakuView;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstiHaku;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
@@ -54,8 +55,6 @@ import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -66,18 +65,21 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -86,6 +88,7 @@ import org.springframework.util.ObjectUtils;
  */
 @Service
 @Transactional
+@Slf4j
 public class PerusteServiceImpl implements PerusteService, ApplicationListener<PerusteUpdatedEvent> {
 
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
@@ -104,6 +107,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private EntityManager em;
+
+    @Autowired
+    private PlatformTransactionManager tm;
 
     @Autowired
     private PerusteRepository perusteet;
@@ -1788,7 +1794,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Cacheable("tekstihaku")
-    public Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery) {
+    public TekstiHakuTuloksetDto findByTeksti(VapaaTekstiQueryDto pquery) {
+        TekstiHakuTuloksetDto result = new TekstiHakuTuloksetDto();
+        result.setSivu(pquery.getSivu());
+        result.setSivukoko(pquery.getSivukoko());
         if (!Strings.isNullOrEmpty(pquery.getTeksti()) & pquery.getTeksti().length() > 2) {
             int next = amount.incrementAndGet();
             try {
@@ -1796,10 +1805,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     return null;
                 }
                 else {
-                    PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 10));
-                    Page<TekstiHakuTulosDto> result = tekstihakuRepository
-                            .tekstihaku(pquery)
-                            .map(x -> mapper.map(x, TekstiHakuTulosDto.class));
+                    result.setTulokset(tekstihakuRepository
+                            .tekstihaku(pquery).stream()
+                            .map(x -> mapper.map(x, TekstiHakuTulosDto.class))
+                            .collect(Collectors.toList()));
                     return result;
                 }
             }
@@ -1807,13 +1816,43 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 amount.decrementAndGet();
             }
         }
-        else {
-            return new PageImpl<>(new ArrayList<>());
-        }
+        return result;
     }
 
+    private void rakennaTekstihaku(Long ppId) {
+        TransactionTemplate template = new TransactionTemplate(tm);
+        template.execute(status -> {
+            TekstihakuCollection result = new TekstihakuCollection();
+            Perusteprojekti pp = perusteprojektiRepository.getOne(ppId);
+            pp.traverse(result);
+            for (TekstiHaku haku : result.getResult()) {
+                TekstiHakuTulos rivi = new TekstiHakuTulos(haku);
+                tekstihakuRepository.save(rivi);
+            }
+            return true;
+        });
+    }
+
+//    @Transactional(propagation = Propagation.NEVER)
     @Override
     public void rakennaTekstihaku() {
-        tekstihakuRepository.rakennaTekstihaku();
+        tekstihakuRepository.deleteAll();
+        for (Perusteprojekti perusteprojekti : perusteprojektiRepository.findAll()) {
+            if (!KoulutusTyyppi.of(perusteprojekti.getPeruste().getKoulutustyyppi()).isAmmatillinen()) {
+                continue;
+            }
+
+            try {
+                log.debug("Generoidaan tekstihakua", perusteprojekti.getId());
+                rakennaTekstihaku(perusteprojekti.getId());
+            }
+            catch (NullPointerException ex) {
+                log.error("Tekstihakukooste NPE", ex);
+            }
+            catch (TransactionException ex) {
+                log.error("Tekstihakukooste Transaktio", ex);
+            }
+        }
+//        tekstihakuRepository.rakennaTekstihaku();
     }
 }

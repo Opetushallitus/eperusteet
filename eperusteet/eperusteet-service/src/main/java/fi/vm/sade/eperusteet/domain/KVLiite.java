@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -36,7 +38,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "kvliite")
 @Audited
-public class KVLiite extends AbstractAuditedEntity implements Serializable, ReferenceableEntity {
+public class KVLiite extends AbstractAuditedEntity implements Serializable, ReferenceableEntity, Tekstihaettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -67,7 +69,7 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
 //        - voimaantulopäivä
 //        - diaarinumero
 //    Tutkinnossa osoitettu ammatillinen osaaminen
-//        - Tutkinnon muodostuminen (sanallinen  kuvaus)
+//        - Tutkinnon muodostuminen (sanallinen  kuvaus)p
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -157,6 +159,18 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen lisatietoja;
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        haku.add("tekstihaku-suorittaneenosaaminen", getSuorittaneenOsaaminen());
+        haku.add("tekstihaku-tyotehtavatjoissavoitoimia", getTyotehtavatJoissaVoiToimia());
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .build();
+    }
 
     public TekstiPalanen getTutkintotodistuksenAntaja() {
         if (tutkintotodistuksenAntaja == null) {

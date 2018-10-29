@@ -19,6 +19,8 @@ package fi.vm.sade.eperusteet.domain.yl;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,9 +29,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -121,4 +120,14 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
         setOppimisenArviointiOpetuksessa(KevytTekstiKappale.getCopy(other.getOppimisenArviointiOpetuksessa()));
     }
 
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .build();
+    }
 }

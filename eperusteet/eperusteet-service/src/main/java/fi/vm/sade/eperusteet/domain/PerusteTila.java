@@ -26,7 +26,7 @@ public enum PerusteTila {
     LUONNOS("luonnos"),
     VALMIS("valmis"),
     POISTETTU("poistettu");
-            
+
     private final String tila;
 
     private PerusteTila(String tila) {

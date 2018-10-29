@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.peruste.VapaaTekstiQueryDto;
+import fi.vm.sade.eperusteet.dto.util.TekstiHakuTuloksetDto;
 import fi.vm.sade.eperusteet.dto.util.TekstiHakuTulosDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -40,8 +41,8 @@ public class ExperimentalController {
             @ApiImplicitParam(name = "teksti", dataType = "string", paramType = "query", value = "Vapaatekstihaun merkkijono"),
             @ApiImplicitParam(name = "peruste", dataType = "long", paramType = "query", value = "Rajattava peruste")
     })
-    public ResponseEntity<Page<TekstiHakuTulosDto>> getAll(@ApiIgnore VapaaTekstiQueryDto pquery) {
-        Page<TekstiHakuTulosDto> result = service.findByTeksti(pquery);
+    public ResponseEntity<TekstiHakuTuloksetDto> getAll(@ApiIgnore VapaaTekstiQueryDto pquery) {
+        TekstiHakuTuloksetDto result = service.findByTeksti(pquery);
         if (result != null) {
             return ResponseEntity.ok(result);
         }

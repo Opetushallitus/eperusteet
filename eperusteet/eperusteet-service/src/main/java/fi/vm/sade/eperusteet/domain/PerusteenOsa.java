@@ -25,7 +25,6 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-import fi.vm.sade.eperusteet.dto.Metalink;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -42,7 +41,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "perusteenosa")
 public abstract class PerusteenOsa
     extends AbstractAuditedEntity
-    implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity {
+    implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity, Tekstihaettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

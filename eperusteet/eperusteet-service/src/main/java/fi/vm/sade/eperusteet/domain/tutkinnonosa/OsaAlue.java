@@ -16,11 +16,10 @@
 
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.PartialMergeable;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
@@ -53,7 +52,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "tutkinnonosa_osaalue")
 @Audited
-public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
+public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, Tekstihaettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -134,6 +133,21 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
                 this.osaamistavoitteet.add(t);
             }
         }
+    }
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        haku.add("tekstihaku-osaalue-nimi", getNimi());
+        haku.add("tekstihaku-osaalue-kuvaus", getKuvaus());
+
+        getOsaamistavoitteet().forEach(osaamistavoite -> osaamistavoite.traverse(haku));
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .osaalue(this)
+                .build();
     }
 
     public void setOsaamistavoitteet(List<Osaamistavoite> osaamistavoitteet) {

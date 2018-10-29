@@ -31,6 +31,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -42,7 +45,7 @@ import org.hibernate.envers.Audited;
 @Table(name = "perusteprojekti")
 @ValidateDateRange(start="toimikausiAlku", end="toimikausiLoppu")
 @Audited
-public class Perusteprojekti extends AbstractAuditedEntity {
+public class Perusteprojekti extends AbstractAuditedEntity implements Tekstihaettava {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
@@ -123,5 +126,26 @@ public class Perusteprojekti extends AbstractAuditedEntity {
         this.ryhmaOid = ryhmaOid;
         this.tehtava = tehtava;
         this.yhteistyotaho = yhteistyotaho;
+    }
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        haku.add("tekstihaku-nimi", getNimi());
+        haku.add("tekstihaku-tehtava", getTehtava());
+        haku.add("tekstihaku-yhteistyotaho", getYhteistyotaho());
+        if (getDiaarinumero() != null) {
+            haku.add("tekstihaku-diaarinumero", getDiaarinumero().getDiaarinumero());
+        }
+
+        getPeruste().traverse(haku);
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .perusteprojekti(this)
+                .esikatseltavissa(isEsikatseltavissa())
+                .tila(getTila())
+                .build();
     }
 }

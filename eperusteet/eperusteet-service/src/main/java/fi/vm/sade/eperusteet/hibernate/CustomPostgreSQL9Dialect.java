@@ -7,6 +7,7 @@ public class CustomPostgreSQL9Dialect extends PostgreSQL9Dialect {
     public CustomPostgreSQL9Dialect() {
         super();
         registerFunction("textsearch", new PostgreTextSearchFunction());
-        registerFunction("rakenna_tekstihaku", new StandardSQLFunction("rakenna_haku"));
+        StandardSQLFunction rakenna_haku = new StandardSQLFunction("rakenna_haku");
+        registerFunction("rakenna_haku", rakenna_haku);
     }
 }

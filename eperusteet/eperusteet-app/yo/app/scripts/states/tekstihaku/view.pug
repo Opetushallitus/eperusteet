@@ -1,35 +1,31 @@
-
-
 div.tekstihaku
   input.form-control(
+    placeholder="{{ tekstihaku }}"
     ng-model="query.teksti"
     ng-change="search(query)")
 
-  div(ng-if="results.data")
-    div
-      span(kaanna="'loydettiin-hakutulosta'")
-      =": "
-      span(ng-bind="results['kokonaismäärä']")
-    div(ng-repeat="entry in results.data")
+  div(ng-if="results && results.tulokset")
+    div.entry(ng-repeat="entry in results.tulokset")
+      div.otsikko(ng-show="entry.kuvaus" kaanna="entry.kuvaus")
       div.murut
         span.muru(ng-show="entry.perusteprojekti.nimi")
-          span(kaanna="entry.perusteprojekti.nimi")
+          a(kaanna="entry.perusteprojekti.nimi" ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: entry.perusteprojekti.id, suoritustapa: entry.suoritustapa.suoritustapakoodi })")
         span.muru(ng-show="entry.peruste.nimi")
-          span(kaanna="entry.peruste.nimi")
-          =" ("
-          span(kaanna="entry.peruste.diaarinumero")
-          =")"
-        span.muru(ng-show="entry.pov && entry.pov.perusteenOsa")
-          span(kaanna="entry.pov.perusteenOsa.nimi")
-        span.muru(ng-show="entry.pov && entry.tov.tutkinnonOsa")
-          span(kaanna="entry.tov.tutkinnonOsa.nimi")
-        //- div(ng-bind-html="entry.teksti")
+          span.spacer &raquo;
+          a(ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: entry.perusteprojekti.id, suoritustapa: entry.suoritustapa.suoritustapakoodi })")
+            span(kaanna="entry.peruste.nimi")
+            =" ("
+            span(kaanna="entry.peruste.diaarinumero")
+            =")"
+        span.muru(ng-show="entry.pov && entry.perusteenOsa")
+          span.spacer &raquo;
+          a(kaanna="entry.pov.perusteenOsa.nimi" ui-sref="root.perusteprojekti.suoritustapa.tekstikappale({ perusteProjektiId: entry.perusteprojekti.id, suoritustapa: entry.suoritustapa.suoritustapakoodi, perusteenOsaViiteId: entry.pov.id })")
+        span.muru(ng-show="entry.tov && entry.tutkinnonOsa")
+          span.spacer &raquo;
+          a(kaanna="entry.tutkinnonOsa.nimi" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ perusteProjektiId: entry.perusteprojekti.id, suoritustapa: entry.suoritustapa.suoritustapakoodi, tutkinnonOsaViiteId: entry.tov.id })")
       div.hakutulokset
         div.hakutulos(ng-repeat="tulos in entry.$$tekstit")
           p(ng-bind-html="tulos")
-      hr
 
-    ep-pagination(ng-model="results.sivu"
-                  ng-change="updatePage"
-                  total-items="results['kokonaismäärä']"
-                  items-per-page="results.sivukoko")
+    button.btn.btn-default(ng-click="lataaLisaa(results.sivu + 1)" ng-if="$$lisaaTuloksia" style="width: 100%")
+      span(kaanna="'lataa-lisaa'")

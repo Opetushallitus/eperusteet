@@ -21,10 +21,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.util.TekstiHakuTulosDto;
-import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
-import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.util.*;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
@@ -221,7 +218,7 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
 //    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    Page<TekstiHakuTulosDto> findByTeksti(VapaaTekstiQueryDto pquery);
+    TekstiHakuTuloksetDto findByTeksti(VapaaTekstiQueryDto pquery);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void rakennaTekstihaku();

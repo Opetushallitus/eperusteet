@@ -16,6 +16,8 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
@@ -56,7 +58,7 @@ import org.hibernate.envers.NotAudited;
     name = "PerusteenOsaViite.rootId",
     columns = {@ColumnResult(name="id", type=Long.class)}
 )
-public class PerusteenOsaViite implements ReferenceableEntity, Serializable, Linkable {
+public class PerusteenOsaViite implements ReferenceableEntity, Serializable, Linkable, Tekstihaettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -209,4 +211,23 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable, Lin
         }
         return null;
     }
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        if (getPerusteenOsa() != null) {
+            getPerusteenOsa().traverse(haku);
+        }
+
+        getLapset().forEach(perusteenOsaViite -> {
+            perusteenOsaViite.traverse(haku);
+        });
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .pov(this)
+                .build();
+    }
+
 }

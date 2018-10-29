@@ -1,13 +1,9 @@
 package fi.vm.sade.eperusteet.repository.custom;
 
-import fi.vm.sade.eperusteet.domain.views.TekstiHakuTulos;
-import fi.vm.sade.eperusteet.domain.views.TekstiHakuTulos_;
+import fi.vm.sade.eperusteet.domain.tekstihaku.*;
 import fi.vm.sade.eperusteet.dto.peruste.VapaaTekstiQueryDto;
 import fi.vm.sade.eperusteet.repository.TekstihakuRepositoryCustom;
 import org.hibernate.Query;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,21 +11,14 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import static fi.vm.sade.eperusteet.repository.custom.RepositoryUtil.ESCAPE_CHAR;
 
 public class TekstihakuRepositoryImpl implements TekstihakuRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
-
-    private Long getCount(VapaaTekstiQueryDto pquery) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        Root<TekstiHakuTulos> from = countQuery.from(TekstiHakuTulos.class);
-        countQuery
-                .select(cb.count(from))
-                .where(createPredicate(pquery, from));
-        return em.createQuery(countQuery).getSingleResult();
-    }
 
     private TypedQuery<TekstiHakuTulos> getResult(VapaaTekstiQueryDto pquery) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -38,6 +27,19 @@ public class TekstihakuRepositoryImpl implements TekstihakuRepositoryCustom {
         query.select(from)
              .where(createPredicate(pquery, from));
         return em.createQuery(query);
+    }
+
+    public static String tekstihakuMatch(String teksti) {
+        if (teksti == null) {
+            teksti = "";
+        }
+        StringBuilder b = new StringBuilder("%");
+        b.append(teksti
+                .replace("" + ESCAPE_CHAR, "" + ESCAPE_CHAR + ESCAPE_CHAR)
+                .replace("_", ESCAPE_CHAR + "_")
+                .replace("%", ESCAPE_CHAR + "%"));
+        b.append("%");
+        return b.toString();
     }
 
     private Predicate createPredicate(VapaaTekstiQueryDto pquery, Root<TekstiHakuTulos> from) {
@@ -52,14 +54,18 @@ public class TekstihakuRepositoryImpl implements TekstihakuRepositoryCustom {
             preds.add(cb.equal(from.get(TekstiHakuTulos_.peruste), pquery.getPeruste()));
         }
 
-//        if (pquery.getTila() != null) {
-//            preds.add(cb.equal(from.get(TekstiHakuTulos_.tila), pquery.getTila()));
-//        }
+        if (pquery.getTila() != null) {
+//            Set<TekstihakuTyyppi> kohteet = pquery.getKohteet();
+//            if (!kohteet.equals(TekstihakuTyyppi.kaikki())) {
+//                preds.add(from.get(TekstiHakuTulos_.tyyppi).in(kohteet));
+//            }
+        }
 
-        { // Tekstihaku
+        { // TekstiHaku
+            String match = tekstihakuMatch(pquery.getTeksti());
             Predicate tekstihakuPred = cb.like(
                     from.get(TekstiHakuTulos_.teksti),
-                    cb.literal(RepositoryUtil.kutenCaseSensitive(pquery.getTeksti())));
+                    cb.literal(match));
             preds.add(tekstihakuPred);
         }
 
@@ -67,22 +73,18 @@ public class TekstihakuRepositoryImpl implements TekstihakuRepositoryCustom {
     }
 
     @Override
-    public Page<TekstiHakuTulos> tekstihaku(VapaaTekstiQueryDto pquery) {
-        Long count = getCount(pquery);
+    public List<TekstiHakuTulos> tekstihaku(VapaaTekstiQueryDto pquery) {
         TypedQuery<TekstiHakuTulos> query = getResult(pquery)
-            .setFirstResult(pquery.getSivu())
+            .setFirstResult(pquery.getSivu() * pquery.getSivukoko())
             .setMaxResults(pquery.getSivukoko());
 
         String querystr = query.unwrap(Query.class).getQueryString();
-
-        return new PageImpl<>(
-                query.getResultList(),
-                new PageRequest(pquery.getSivu(), pquery.getSivukoko()),
-                count);
+        return query.getResultList();
     }
 
     @Override
     public void rakennaTekstihaku() {
-        em.createStoredProcedureQuery("rakenna_tekstihaku").execute();
+        em.createStoredProcedureQuery("rakenna_haku")
+                .execute();
     }
 }

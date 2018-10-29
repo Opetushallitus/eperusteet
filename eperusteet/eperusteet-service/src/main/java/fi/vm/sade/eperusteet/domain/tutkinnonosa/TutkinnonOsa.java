@@ -20,6 +20,8 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -76,6 +78,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable, Linkable
     @Getter
     @Setter
     @OrderColumn(name = "jarjestys")
+    @Deprecated
     private List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -284,6 +287,25 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable, Linkable
         }
 
         return tempList;
+    }
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        haku.add("tekstihaku-tutkinnonosa-nimi", getNimi());
+        haku.add("tekstihaku-tutkinnonosa-tavoitteet", getTavoitteet());
+        haku.add("tekstihaku-tutkinnonosa-ammattitaitovaatimukset", getAmmattitaitovaatimukset());
+        haku.add("tekstihaku-tutkinnonosa-ammattitaidonosoittamistavat", getAmmattitaidonOsoittamistavat());
+        haku.add("tekstihaku-tutkinnonosa-kuvaus", getKuvaus());
+
+        getVapaatTekstit().forEach(kevytTekstiKappale -> kevytTekstiKappale.traverse(haku));
+        getOsaAlueet().forEach(osaAlue -> osaAlue.traverse(haku));
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .tutkinnonOsa(this)
+                .build();
     }
 
     public void setTyyppi(TutkinnonOsaTyyppi tyyppi) {

@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -36,7 +37,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "peruste_version", schema = "public")
-public class PerusteVersion {
+public class PerusteVersion implements Serializable {
     @Id
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @GeneratedValue(generator = "peruste_version_id_seq")

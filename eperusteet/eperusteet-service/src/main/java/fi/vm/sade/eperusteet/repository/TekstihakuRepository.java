@@ -1,10 +1,8 @@
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.views.TekstiHakuTulos;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstiHaku;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstiHakuTulos;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 

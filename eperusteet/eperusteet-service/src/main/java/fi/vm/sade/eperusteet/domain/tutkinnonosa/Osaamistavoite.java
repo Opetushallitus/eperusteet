@@ -20,6 +20,8 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -45,7 +47,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "osaamistavoite")
 @Audited
 @ValidOsaamistavoiteEsitieto
-public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistavoite>, ReferenceableEntity {
+public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistavoite>, ReferenceableEntity, Tekstihaettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -146,6 +148,15 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
                 esitiedot.put(ot.getEsitieto(), this.esitieto);
             }
         }
+    }
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        haku.add("tekstihaku-osaamistavoite-nimi", getNimi());
+        haku.add("tekstihaku-osaamistavoite-tavoitteet", getTavoitteet());
+        haku.add("tekstihaku-osaamistavoite-tunnustaminen", getTunnustaminen());
+
+        getAmmattitaitovaatimuksetLista().forEach(ammattitaitovaatimuksenKohdealue -> ammattitaitovaatimuksenKohdealue.traverse(haku));
     }
 
     public void setArviointi(Arviointi arviointi) {

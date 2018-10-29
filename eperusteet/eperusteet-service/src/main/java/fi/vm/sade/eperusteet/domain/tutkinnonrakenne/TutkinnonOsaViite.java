@@ -15,10 +15,9 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
-import fi.vm.sade.eperusteet.domain.Linkable;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -51,7 +50,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Table(name = "tutkinnonosaviite")
 @Audited
-public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Linkable {
+public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Linkable, Tekstihaettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -140,5 +139,17 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Lin
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        getTutkinnonOsa().traverse(haku);
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .tov(this)
+                .build();
     }
 }

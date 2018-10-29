@@ -31,14 +31,19 @@ angular.module("eperusteApp").config($stateProvider => {
             Api
         ) => {
             $scope.query = {
-                teksti: ""
+                teksti: "",
+                sivukoko: 5,
             };
+            let lastQuery = "";
 
-            $scope.results = {};
+            $scope.$$lisaaTuloksia = false;
+            $scope.results = {
+                tulokset: [],
+            };
 
             function processResults(query, results) {
                 const regex = new RegExp(query.teksti, "g");
-                for (const result of results.data) {
+                for (const result of results.tulokset) {
                     result.$$tekstit = _((result.teksti || "").split("\\n"))
                         .filter(val => _.includes(val, query.teksti))
                         .map(val => val.replace(regex, "<span class=\"match\">$&</span>"))
@@ -54,7 +59,25 @@ angular.module("eperusteApp").config($stateProvider => {
 
                 try {
                     const response = await Api.all("experimental").customGET("tekstihaku", query);
-                    $scope.results = processResults(query, response.plain());
+                    const results = processResults(query, response.plain());
+                    if (lastQuery === query.teksti) {
+                        console.log(response.plain());
+                        $scope.results = {
+                            ...$scope.results,
+                            ...results,
+                            tulokset: [...$scope.results.tulokset, ...results.tulokset],
+                        };
+                        $scope.results.sivu = results.sivu;
+                    }
+                    else {
+                        $scope.results = results;
+                    }
+
+                    if (!_.isEmpty(results.tulokset)) {
+                        $scope.$$lisaaTuloksia = true;
+                    }
+                    console.log($scope.results);
+                    lastQuery = query.teksti;
                 }
                 catch (err) {
                     if (err.status === 429) {
@@ -66,19 +89,13 @@ angular.module("eperusteApp").config($stateProvider => {
                 }
             }, 300);
 
-            $scope.updatePage = (sivu) => {
+            $scope.lataaLisaa = (sivu) => {
+                $scope.$$lisaaTuloksia = false;
                 $scope.search({
                     ...$scope.query,
                     sivu: sivu
                 });
             };
-
-            // TODO: poista
-            $timeout(() => {
-                $scope.query.teksti = "a"
-                $scope.search($scope.query);
-            }, 300);
-
         },
     });
 });

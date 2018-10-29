@@ -1,15 +1,36 @@
 .tekstihaku {
-    .murut {
-        .muru {
-            padding: 8px;
-        }
-    }
+    .entry {
+        border: 1px solid #eee;
+        margin-top: 4px;
+        padding: 4px;
 
-    .hakutulokset {
-        .hakutulos {
-            span.match {
-                font-weight: bold;
-                background: #ffffc7;
+        .murut {
+            .muru {
+                span.spacer {
+                    padding: 6px;
+                }
+                a {
+                }
+            }
+        }
+
+        .otsikko {
+            font-weight: bold;
+        }
+
+        .hakutulokset {
+            .hakutulos {
+                .otsikko {
+                }
+
+                p {
+                    padding: 4px 2px 2px 2px;
+                }
+
+                span.match {
+                    font-weight: bold;
+                    background: #ffffc7;
+                }
             }
         }
     }

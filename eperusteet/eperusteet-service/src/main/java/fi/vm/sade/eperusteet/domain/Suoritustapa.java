@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.dto.Metalink;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
@@ -39,7 +41,7 @@ import java.util.Set;
 @Entity
 @Table(name = "suoritustapa")
 @Audited
-public class Suoritustapa implements Serializable, ReferenceableEntity, Linkable {
+public class Suoritustapa implements Serializable, ReferenceableEntity, Linkable, Tekstihaettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -116,4 +118,18 @@ public class Suoritustapa implements Serializable, ReferenceableEntity, Linkable
         return viite != null && sisalto == viite.getRoot();
     }
 
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        getSisalto().traverse(haku);
+        for (TutkinnonOsaViite viite : getTutkinnonOsat()) {
+            viite.traverse(haku);
+        }
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return TekstihakuCtx.builder()
+                .suoritustapa(this)
+                .build();
+    }
 }

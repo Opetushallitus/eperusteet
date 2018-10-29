@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCollection;
+import fi.vm.sade.eperusteet.domain.tekstihaku.TekstihakuCtx;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
 import javax.persistence.*;
@@ -30,7 +32,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "kevyttekstikappale")
 @Audited
-public class KevytTekstiKappale extends AbstractAuditedEntity implements Serializable {
+public class KevytTekstiKappale extends AbstractAuditedEntity implements Serializable, Tekstihaettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -55,6 +57,17 @@ public class KevytTekstiKappale extends AbstractAuditedEntity implements Seriali
     @Getter
     @Setter
     private Integer jnro;
+
+    @Override
+    public void getTekstihaku(TekstihakuCollection haku) {
+        haku.add("tekstihaku-vapaa-teksti-nimi", getNimi());
+        haku.add("tekstihaku-vapaa-teksti-teksti", getTeksti());
+    }
+
+    @Override
+    public TekstihakuCtx partialContext() {
+        return null;
+    }
 
     public KevytTekstiKappale() {
     }
