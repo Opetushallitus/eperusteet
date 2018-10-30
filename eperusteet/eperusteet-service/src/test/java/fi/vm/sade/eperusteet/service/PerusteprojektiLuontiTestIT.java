@@ -549,6 +549,10 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testOsaamisalakuvauksetPerustietoihin() {
+    }
+
+    @Test
     public void testRakenneTunniste() {
 
     }
