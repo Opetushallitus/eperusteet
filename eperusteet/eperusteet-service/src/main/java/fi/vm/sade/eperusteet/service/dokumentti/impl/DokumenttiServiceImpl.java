@@ -19,7 +19,6 @@ import com.google.code.docbook4j.Docbook4JException;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
-import fi.vm.sade.eperusteet.dto.DokumenttiMetaDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
@@ -54,6 +53,8 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import fi.vm.sade.eperusteet.utils.dto.dokumentti.DokumenttiMetaDto;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;

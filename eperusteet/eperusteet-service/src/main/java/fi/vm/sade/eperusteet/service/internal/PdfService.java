@@ -17,7 +17,7 @@ package fi.vm.sade.eperusteet.service.internal;
 
 
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
-import fi.vm.sade.eperusteet.dto.DokumenttiMetaDto;
+import fi.vm.sade.eperusteet.utils.dto.dokumentti.DokumenttiMetaDto;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
