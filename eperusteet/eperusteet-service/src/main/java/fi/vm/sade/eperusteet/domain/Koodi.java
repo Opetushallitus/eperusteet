@@ -26,11 +26,13 @@ import org.hibernate.annotations.Immutable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.ObjectUtils;
 
 /**
  *
  * @author nkala
  */
+
 @Entity
 @Immutable
 @Table(name = "koodi")
@@ -69,6 +71,19 @@ public class Koodi implements Serializable {
     public static void validateChange(Koodi a, Koodi b) {
         if (a != null && !Objects.equals(a, b)) {
             throw new BusinessRuleViolationException("koodia-ei-voi-muuttaa");
+        }
+    }
+
+    @PrePersist
+    public void onPrePersist() {
+        if (!ObjectUtils.isEmpty(getUri())) {
+            String[] osat = getUri().split("_");
+            if (osat.length > 1) {
+                String uriKoodisto = osat[0];
+                if (!getKoodisto().equals(uriKoodisto)) {
+                    throw new BusinessRuleViolationException("uri: " + getUri() + " ei vastaa koodistoa: " + getKoodisto());
+                }
+            }
         }
     }
 
