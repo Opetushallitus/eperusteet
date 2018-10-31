@@ -140,7 +140,7 @@ $pikamenu-size: 22px;
         font-size: 120%;
         color: $brand-primary;
     }
-    .mujuviiva {
+    .viiva {
         border: 0px none;
         height: 1px;
         background: none repeat scroll 0% 0% #ddd;
@@ -506,6 +506,10 @@ $sisalto-min-height: 450px;
     .osa-alue-otsikko {
         cursor: pointer;
     }
+}
+
+.koodi-valinta {
+    cursor: pointer;
 }
 
 .vuosiluokkasisalto {

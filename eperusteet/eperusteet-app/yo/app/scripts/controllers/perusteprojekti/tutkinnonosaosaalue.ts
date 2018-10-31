@@ -81,11 +81,9 @@ angular
 
         $scope.valitseAlarelaatio = function(ar) {
             $scope.osaAlue.koodi = $scope.osaAlue.koodi ? $scope.osaAlue.koodi : {};
-            $scope.osaAlue.koodi.koodiUri = ar ? ar.koodiUri : null;
-            $scope.osaAlue.koodi.koodisto = "tutkinnonosat";
+            $scope.osaAlue.koodi.uri = ar ? ar.koodiUri : null;
+            $scope.osaAlue.koodi.koodisto = ar ? (ar.koodisto ? ar.koodisto.koodistoUri : null) : null;
             $scope.osaAlue.koodi.versio = ar ? ar.versio : null;
-            $scope.osaAlue.koodiUri = ar ? ar.koodiUri : undefined;
-            $scope.osaAlue.koodiArvo = ar ? ar.koodiArvo : undefined;
         };
 
         function luoOsaamistavoitepuu() {
