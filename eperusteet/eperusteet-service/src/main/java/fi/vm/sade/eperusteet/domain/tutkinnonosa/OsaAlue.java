@@ -17,10 +17,10 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.koodi.OsaAlueKoodi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.io.Serializable;
@@ -111,7 +111,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    private Koodi koodi;
+    private OsaAlueKoodi koodi;
 
     public OsaAlue() {
     }

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.koodi.TaiteenalaKoodi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
@@ -27,9 +28,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -44,7 +42,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 public class Taiteenala extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private Koodi koodi;
+    private TaiteenalaKoodi koodi;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)

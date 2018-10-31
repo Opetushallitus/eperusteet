@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
+import fi.vm.sade.eperusteet.domain.koodi.OsaamistavoiteKoodi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -120,7 +121,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    private Koodi koodi;
+    private OsaamistavoiteKoodi koodi;
 
     public Osaamistavoite() {
     }

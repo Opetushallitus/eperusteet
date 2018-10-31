@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tunnistettava;
+import fi.vm.sade.eperusteet.domain.koodi.AIPEKurssiKoodi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.HashSet;
 import java.util.Objects;
@@ -66,7 +67,7 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
     @Setter
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private Koodi koodi;
+    private AIPEKurssiKoodi koodi;
 
     @Getter
     @Setter

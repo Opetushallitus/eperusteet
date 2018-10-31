@@ -17,9 +17,9 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tunnistettava;
+import fi.vm.sade.eperusteet.domain.koodi.AIPEOppiaineKoodi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.util.*;
@@ -60,7 +60,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @Setter
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private Koodi koodi;
+    private AIPEOppiaineKoodi koodi;
 
     @Getter
     @Setter
