@@ -11,7 +11,7 @@ services:
 cache:
   directories:
     - $HOME/.m2
-    - $HOME/.npm
+    - $HOME/.cache/yarn
 
 env:
   global:
