@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.OsaamisalaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext
 @Transactional
 public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
+
+    @Before
+    public void setup() {
+        super.setup();
+    }
 
     @Test
     public void testPerusteprojektinMetatiedoissaTuleeOsaamisalat() {

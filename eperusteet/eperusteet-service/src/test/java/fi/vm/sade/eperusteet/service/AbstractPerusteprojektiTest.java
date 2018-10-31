@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,8 +66,7 @@ public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
     protected Suoritustapa suoritustapa;
     protected RakenneModuuli rakenne;
 
-    @Before
-    public void setup() {
+    protected void setup() {
         PerusteprojektiDto projektiDto = testUtils.createPerusteprojekti();
         projekti = perusteprojektiRepository.findOne(projektiDto.getId());
         peruste = projekti.getPeruste();
@@ -115,4 +115,8 @@ public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
         return result;
     }
 
+    @Test
+    public void noop() {
+
+    }
 }
