@@ -548,9 +548,4 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         assertThat(vaihe.getTunniste()).isEqualTo(uusivaihe.getTunniste());
     }
 
-    @Test
-    public void testRakenneTunniste() {
-
-    }
-
 }

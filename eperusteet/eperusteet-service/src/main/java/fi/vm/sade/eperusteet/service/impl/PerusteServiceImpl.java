@@ -369,6 +369,22 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return mapper.map(p, PerusteInfoDto.class);
     }
 
+    // TODO: Use native "with recursive" if too slow
+    @Transactional(readOnly = true)
+    private void asetaOsaamisalakuvaukset(PerusteenOsaViite viite, List<TekstiKappaleDto> kuvaukset) {
+        if (viite == null) {
+            return;
+        }
+
+        TekstiKappale tk = (TekstiKappale) viite.getPerusteenOsa();
+        if (tk != null && tk.getOsaamisala() != null) {
+            kuvaukset.add(mapper.map(tk.getOsaamisala(), TekstiKappaleDto.class));
+        }
+        for (PerusteenOsaViite alikappale : viite.getLapset()) {
+            asetaOsaamisalakuvaukset(alikappale, kuvaukset);
+        }
+    }
+
     @Override
     @Transactional(readOnly = true)
     public PerusteDto get(final Long id) {
