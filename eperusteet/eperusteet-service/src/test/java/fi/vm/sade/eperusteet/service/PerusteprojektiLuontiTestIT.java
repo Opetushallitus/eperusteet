@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
@@ -546,11 +547,6 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         AIPEVaihe uusivaihe = mapper.map(vaiheDto, AIPEVaihe.class);
         assertThat(vaihe.getTunniste()).isEqualTo(vaiheDto.getTunniste());
         assertThat(vaihe.getTunniste()).isEqualTo(uusivaihe.getTunniste());
-    }
-
-    @Test
-    public void testRakenneTunniste() {
-
     }
 
 }

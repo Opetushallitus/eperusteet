@@ -40,6 +40,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -111,6 +113,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ValidKoodisto(koodisto = "ammatillisenoppiaineet")
     private Koodi koodi;
 
     public OsaAlue() {

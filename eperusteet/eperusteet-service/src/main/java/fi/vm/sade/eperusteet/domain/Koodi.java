@@ -21,6 +21,7 @@ import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import org.hibernate.annotations.Immutable;
 import lombok.EqualsAndHashCode;
