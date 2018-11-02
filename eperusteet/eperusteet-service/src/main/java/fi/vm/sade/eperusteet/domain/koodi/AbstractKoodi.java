@@ -14,30 +14,27 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain;
-
-import java.io.Serializable;
-import java.util.Objects;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+package fi.vm.sade.eperusteet.domain.koodi;
 
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import org.hibernate.annotations.Immutable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
 
-/**
- *
- * @author nkala
- */
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Objects;
 
+@Slf4j
 @Entity
-@Immutable
 @Table(name = "koodi")
+@DiscriminatorColumn(name="tyyppi")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @EqualsAndHashCode(of = {"koodisto", "uri", "versio"})
-public class Koodi implements Serializable {
+public abstract class AbstractKoodi implements Serializable {
 
     @Id
     @Getter
@@ -59,23 +56,13 @@ public class Koodi implements Serializable {
     @Setter
     private Long versio; // Oletuksena null milloin käytetään uusinta koodiston versiota
 
-    public Koodi() {
-    }
-
-    public Koodi(String uri, String koodisto) {
-        this.uri = uri;
-        this.koodisto = koodisto;
-        this.versio = null;
-    }
-
     public static void validateChange(Koodi a, Koodi b) {
         if (a != null && !Objects.equals(a, b)) {
             throw new BusinessRuleViolationException("koodia-ei-voi-muuttaa");
         }
     }
 
-    @PrePersist
-    public void onPrePersist() {
+    public void tarkistaUriKoodistoVastaavuus() {
         if (!ObjectUtils.isEmpty(getUri())) {
             String[] osat = getUri().split("_");
             if (osat.length > 1) {

@@ -15,11 +15,10 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
-import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.koodi.Koodi;
 import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

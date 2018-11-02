@@ -16,6 +16,8 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.koodi.AbstractKoodi;
+import fi.vm.sade.eperusteet.domain.koodi.Koodi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -30,7 +32,6 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKoosteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
@@ -64,7 +65,6 @@ import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
@@ -80,19 +80,8 @@ import org.springframework.util.ObjectUtils;
 @Transactional
 public class PerusteServiceImpl implements PerusteService, ApplicationListener<PerusteUpdatedEvent> {
 
-    private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
-    private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
-    private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
-    private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
-    private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
-
-    private static final List<String> ERIKOISTAPAUKSET = new ArrayList<>(Arrays.asList(new String[]{"koulutus_357802",
-        "koulutus_327110", "koulutus_354803", "koulutus_324111", "koulutus_354710",
-        "koulutus_324125", "koulutus_357709", "koulutus_327124", "koulutus_355904", "koulutus_324129", "koulutus_358903",
-        "koulutus_327127",
-        "koulutus_355412", "koulutus_324126", "koulutus_355413", "koulutus_324127", "koulutus_358412", "koulutus_327126",
-        "koulutus_354708",
-        "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
+    @Value("${fi.vm.sade.eperusteet.tutkinnonrakenne.maksimisyvyys}")
+    private int maxRakenneDepth;
 
     @Autowired
     private PerusteRepository perusteet;
@@ -121,8 +110,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private KoodiRepository koodiRepository;
 
-    @Autowired
     @Dto
+    @Autowired
     private DtoMapper mapper;
 
     @Autowired
@@ -758,23 +747,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return current;
     }
 
-    @Deprecated
-    private Set<Koulutus> checkIfKoulutuksetAlreadyExists(Set<Koulutus> koulutukset) {
-        Set<Koulutus> tmp = new HashSet<>();
-        if (koulutukset != null) {
-            for (Koulutus koulutus : koulutukset) {
-                Koulutus k = koulutusRepo.findOneByKoulutuskoodiArvo(koulutus.getKoulutuskoodiArvo());
-                if (k != null) {
-                    k.mergeState(koulutus);
-                    tmp.add(k);
-                } else {
-                    tmp.add(koulutus);
-                }
-            }
-        }
-        return tmp;
-    }
-
     @Override
     @Transactional(readOnly = true)
     public SuoritustapaDto getSuoritustapa(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
@@ -791,7 +763,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new NotExistsException("Rakennetta ei ole olemassa");
         }
         Revision rev = rakenneRepository.getLatestRevisionId(rakenneId);
-        if (eTag != null && rev != null && rev.getNumero().equals(eTag)) {
+        if (rev != null && rev.getNumero().equals(eTag)) {
             return null;
         }
 
@@ -901,9 +873,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Suoritustapa suoritustapa = suoritustapaRepository.findRevision(peruste.getSuoritustapa(suoritustapakoodi).getId(), revisio);
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
     }
-
-    @Value("${fi.vm.sade.eperusteet.tutkinnonrakenne.maksimisyvyys}")
-    private int maxRakenneDepth;
 
     @Override
     @Transactional
@@ -1054,11 +1023,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private RakenneModuuli checkIfKoodiAlreadyExists(RakenneModuuli rakenneModuuli) {
         if (rakenneModuuli != null) {
             if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getUri() != null) {
-                Koodi osaamisalaKoodi = koodiRepository.findOneByUriAndVersio(
+                AbstractKoodi koodi = koodiRepository.findOneByUriAndVersio(
                         rakenneModuuli.getOsaamisala().getUri(),
                         rakenneModuuli.getOsaamisala().getVersio());
-                if (osaamisalaKoodi != null) {
-                    rakenneModuuli.setOsaamisala(osaamisalaKoodi);
+
+                if (koodi instanceof Koodi) {
+                    rakenneModuuli.setOsaamisala((Koodi) koodi);
                 } else {
                     rakenneModuuli.setOsaamisala(koodiRepository.save(rakenneModuuli.getOsaamisala()));
                 }
@@ -1079,9 +1049,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public void removeTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, Long osaId) {
         Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
-        //varmistetaan että rakenteen muokkaus ei ole käynnissä.
+        // Varmistetaan että rakenteen muokkaus ei ole käynnissä.
         lockManager.lock(suoritustapa.getId());
-        //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
+        // Workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
         suoritustapaRepository.lock(suoritustapa);
         try {
             TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
@@ -1103,7 +1073,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
 
-        //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
+        // Workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
         suoritustapaRepository.lock(suoritustapa);
 
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
@@ -1135,7 +1105,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
-        final Peruste peruste = perusteet.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
 
         // Workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa
         suoritustapaRepository.lock(suoritustapa, false);
@@ -1237,16 +1206,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteenOsaViiteDto.Matala addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId, PerusteenOsaViiteDto.Matala viite) {
         return perusteenOsaViiteService.addSisalto(perusteId, perusteenosaViiteId, viite);
     }
-
-    private void getLocksPerusteenOsat(PerusteenOsaViite sisalto, Map<Long, LukkoDto> map) {
-        for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
-            LukkoDto lock = perusteenOsaService.getLock(lapsi.getPerusteenOsa().getId());
-            if (lock != null) {
-                map.put(lapsi.getPerusteenOsa().getId(), lock);
-            }
-        }
-    }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -1454,18 +1413,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         // Osaamisalat
         if (vanha.getOsaamisalat() != null) {
-            peruste.setOsaamisalat(new HashSet());
+            peruste.setOsaamisalat(new HashSet<>());
             peruste.getOsaamisalat().addAll(vanha.getOsaamisalat());
         }
 
         // Koulutukset
         Set<Koulutus> vanhatKoulutukset = vanha.getKoulutukset();
-        Set<Koulutus> koulutukset = new HashSet<>();
-
         if (vanhatKoulutukset != null) {
-            for (Koulutus vanhaKoulutus : vanhatKoulutukset) {
-                koulutukset.add(vanhaKoulutus);
-            }
+            Set<Koulutus> koulutukset = new HashSet<>(vanhatKoulutukset);
             peruste.setKoulutukset(koulutukset);
         }
 
@@ -1574,7 +1529,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (opetuksenYleisetTavoitteet != null) {
             return lukioYleisetTavoitteetRepository.getRevisions(opetuksenYleisetTavoitteet.getId());
         } else {
-            return new ArrayList<Revision>();
+            return new ArrayList<>();
         }
     }
 
@@ -1624,7 +1579,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     @Override
     public LukiokoulutuksenYleisetTavoitteetDto palautaYleisetTavoitteet(long perusteId, int revisio) {
         LukiokoulutuksenYleisetTavoitteetDto yleistTavoitteet = getYleisetTavoitteetByVersion(perusteId, revisio);
@@ -1662,7 +1617,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         KVLiite kvliite = peruste.getKvliite();
         if (kvliite != null) {
             KVLiite pohjaLiite = kvliite.getPohja();
-            KVLiiteDto pohjaLiiteDto = null;
 
             if (pohjaLiite == null) {
                 pohjaLiite = kvliite;
@@ -1671,7 +1625,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 kvliiteDto.setPeriytynyt(true);
             }
 
-            pohjaLiiteDto = mapper.map(pohjaLiite, KVLiiteDto.class);
+            KVLiiteDto pohjaLiiteDto = mapper.map(pohjaLiite, KVLiiteDto.class);
 
             if (kvliiteDto.getSuorittaneenOsaaminen() == null) {
                 kvliiteDto.setSuorittaneenOsaaminen(pohjaLiiteDto.getSuorittaneenOsaaminen());

@@ -170,6 +170,16 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             TutkinnonOsa tutkinnonOsa = (TutkinnonOsa) updated;
             tutkinnonOsa.setOsaAlueet(createOsaAlueIfNotExist(tutkinnonOsa.getOsaAlueet()));
             tutkinnonOsa.setValmaTelmaSisalto( createValmatelmaIfNotExist( tutkinnonOsa.getValmaTelmaSisalto() ) );
+
+            // Jos tutkinnon osan koodi muuttuu, poistetaan osa-alueiden valitut koodit
+            if (current instanceof TutkinnonOsa) {
+                TutkinnonOsa currentOsa = (TutkinnonOsa) current;
+                if (tutkinnonOsa.getKoodi() == null || !(tutkinnonOsa.getKoodi().equals(currentOsa.getKoodi()))) {
+                    if (currentOsa.getOsaAlueet() != null) {
+                        currentOsa.getOsaAlueet().forEach(oa -> oa.setKoodi(null));
+                    }
+                }
+            }
         }
 
         if (current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
@@ -264,8 +274,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             osaAlue = new OsaAlue();
         }
         osaAlueRepository.save(osaAlue);
-        tutkinnonOsa.getOsaAlueet().add(osaAlue);
-        tutkinnonOsaRepo.save(tutkinnonOsa);
+
+        if (tutkinnonOsa != null) {
+            tutkinnonOsa.getOsaAlueet().add(osaAlue);
+            tutkinnonOsaRepo.save(tutkinnonOsa);
+        }
 
         return mapper.map(osaAlue, OsaAlueLaajaDto.class);
     }

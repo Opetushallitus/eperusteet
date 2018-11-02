@@ -16,15 +16,10 @@
 
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.koodi.AbstractKoodi;
+import fi.vm.sade.eperusteet.domain.koodi.OsaAlueKoodi;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- *
- * @author nkala
- */
 @Repository
-public interface KoodiRepository extends BaseKoodiRepository<AbstractKoodi>, JpaRepository<AbstractKoodi, Long> {
-
+public interface OsaAlueKoodiRepository extends BaseKoodiRepository<OsaAlueKoodi>, JpaRepository<OsaAlueKoodi, Long> {
 }

@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
-import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.koodi.Koodi;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import org.junit.Test;
 

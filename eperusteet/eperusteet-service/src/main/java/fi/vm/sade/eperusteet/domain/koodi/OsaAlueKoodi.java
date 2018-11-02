@@ -14,17 +14,27 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.repository;
+package fi.vm.sade.eperusteet.domain.koodi;
 
-import fi.vm.sade.eperusteet.domain.koodi.AbstractKoodi;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Immutable;
 
-/**
- *
- * @author nkala
- */
-@Repository
-public interface KoodiRepository extends BaseKoodiRepository<AbstractKoodi>, JpaRepository<AbstractKoodi, Long> {
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.PrePersist;
+
+@Entity
+@Immutable
+@DiscriminatorValue("AMMATILLISENOPPIAINEET")
+@EqualsAndHashCode(callSuper = true)
+@Slf4j
+public class OsaAlueKoodi extends AbstractKoodi {
+
+    @PrePersist
+    public void tarkistaKoodisto() {
+        super.tarkistaUriKoodistoVastaavuus();
+        // Check koodisto on ammatillisenoppiaineet
+    }
 
 }

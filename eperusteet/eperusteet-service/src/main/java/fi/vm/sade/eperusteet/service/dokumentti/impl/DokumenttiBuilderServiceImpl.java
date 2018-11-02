@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimus
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
+import fi.vm.sade.eperusteet.domain.koodi.OsaAlueKoodi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
@@ -1201,7 +1202,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             StringBuilder nimiBuilder = new StringBuilder();
             nimiBuilder.append(getTextString(osaAlue.getNimi(), kieli));
 
-            Koodi koodi = osaAlue.getKoodi();
+            OsaAlueKoodi koodi = osaAlue.getKoodi();
             if (koodi != null) {
                 KoodiDto dto = mapper.map(koodi, KoodiDto.class);
                 if (dto.getArvo() != null) {

@@ -18,13 +18,9 @@ package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.koodi.AbstractKoodi;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.NoRepositoryBean;
 
-/**
- *
- * @author nkala
- */
-@Repository
-public interface KoodiRepository extends BaseKoodiRepository<AbstractKoodi>, JpaRepository<AbstractKoodi, Long> {
-
+@NoRepositoryBean
+public interface BaseKoodiRepository<EntityType extends AbstractKoodi> extends JpaRepository<EntityType, Long> {
+    EntityType findOneByUriAndVersio(String uri, Long versio);
 }
