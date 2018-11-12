@@ -1822,8 +1822,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private void rakennaTekstihaku(Long ppId) {
         TransactionTemplate template = new TransactionTemplate(tm);
         template.execute(status -> {
-            TekstihakuCollection result = new TekstihakuCollection();
+            log.debug("Generoidaan tekstihakua: " + String.valueOf(ppId));
             Perusteprojekti pp = perusteprojektiRepository.getOne(ppId);
+            if (!KoulutusTyyppi.of(pp.getPeruste().getKoulutustyyppi()).isAmmatillinen()) {
+                return true;
+            }
+            TekstihakuCollection result = new TekstihakuCollection();
             pp.traverse(result);
             for (TekstiHaku haku : result.getResult()) {
                 TekstiHakuTulos rivi = new TekstiHakuTulos(haku);
@@ -1833,18 +1837,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         });
     }
 
-//    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(propagation = Propagation.NEVER)
     @Override
     public void rakennaTekstihaku() {
         tekstihakuRepository.deleteAll();
-        for (Perusteprojekti perusteprojekti : perusteprojektiRepository.findAll()) {
-            if (!KoulutusTyyppi.of(perusteprojekti.getPeruste().getKoulutustyyppi()).isAmmatillinen()) {
-                continue;
-            }
-
+        List<Long> projektit = perusteprojektiRepository.findAll().stream()
+                .map(Perusteprojekti::getId)
+                .collect(Collectors.toList());
+        for (Long perusteprojekti : projektit) {
             try {
-                log.debug("Generoidaan tekstihakua", perusteprojekti.getId());
-                rakennaTekstihaku(perusteprojekti.getId());
+                rakennaTekstihaku(perusteprojekti);
             }
             catch (NullPointerException ex) {
                 log.error("Tekstihakukooste NPE", ex);

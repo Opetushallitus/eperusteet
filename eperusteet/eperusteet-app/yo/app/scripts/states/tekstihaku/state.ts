@@ -52,16 +52,54 @@ angular.module("eperusteApp").config($stateProvider => {
                 return results;
             }
 
+            let searchCanceller = null;
+
+            async function search(query, canceller = undefined, tries = 3) {
+                try {
+                    const response = await Api
+                        .all("experimental")
+                        .withHttpConfig({ timeout: canceller, })
+                        .customGET("tekstihaku", query);
+                    const results = processResults(query, response.plain());
+                    return results;
+                }
+                catch (err) {
+                    if (err.status === 429) {
+                        if (tries > 0) {
+                            return await search(query, tries - 1);
+                        }
+                    }
+                    console.log(err);
+                }
+                finally {
+                    searchCanceller = null;
+                }
+            }
+
             $scope.search = _.debounce(async (query, tries = 3) => {
                 if (!query.teksti) {
                     return;
                 }
 
+                if (searchCanceller) {
+                    await searchCanceller.resolve();
+                }
+
                 try {
-                    const response = await Api.all("experimental").customGET("tekstihaku", query);
+                    if (lastQuery !== query.teksti) {
+                        $scope.results = {
+                            tulokset: [],
+                        };
+                    }
+
+                    searchCanceller = $q.defer();
+                    const response = await Api
+                        .all("experimental")
+                        .withHttpConfig({ timeout: searchCanceller.promise, })
+                        .customGET("tekstihaku", query);
                     const results = processResults(query, response.plain());
+                    console.log(results);
                     if (lastQuery === query.teksti) {
-                        console.log(response.plain());
                         $scope.results = {
                             ...$scope.results,
                             ...results,
@@ -86,6 +124,9 @@ angular.module("eperusteApp").config($stateProvider => {
                         }
                     }
                     console.log(err);
+                }
+                finally {
+                    searchCanceller = null;
                 }
             }, 300);
 
