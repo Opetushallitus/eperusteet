@@ -1536,7 +1536,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         List<TutkintonimikeKoodi> nimikeKoodit = tutkintonimikeKoodiRepository.findByPerusteId(peruste.getId());
         Element nimikelist = doc.createElement("simplelist");
         for (TutkintonimikeKoodi tnkoodi : nimikeKoodit) {
-            KoodistoKoodiDto koodiDto = koodistoService.get("tutkintonimikkeet", tnkoodi.getTutkintonimikeUri());
+            KoodistoKoodiDto koodiDto = koodistoService.get("tutkintonimikeKoodit", tnkoodi.getTutkintonimikeUri());
 
             for (KoodistoMetadataDto meta : koodiDto.getMetadata()) {
                 if (meta.getKieli().toLowerCase().equals(kieli.toString().toLowerCase())) {

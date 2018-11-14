@@ -30,7 +30,6 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKoosteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
@@ -51,26 +50,26 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
-import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -268,17 +267,24 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             koodistostaHaetut = Stream.concat(koodistostaHaetut, osaamisalat);
         }
 
-        // Haetaan perusteiden id:t mihin on liitetty osaamisalat tai tutkintonimikkeet
+        // Haetaan perusteiden id:t mihin on liitetty osaamisalat tai tutkintonimikeKoodit
         if (pquery.getNimi() != null && pquery.isTutkintonimikkeet()) {
             koodistostaHaetut = Stream.concat(koodistostaHaetut, getPerusteetByUris(
                     koodistoService.filterBy(
-                            "tutkintonimikkeet",
+                            "tutkintonimikeKoodit",
                             pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri),
                             tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
         }
 
         // Lisätään mahdolliset perusteet hakujoukkoon
-        Page<Peruste> result = perusteet.findBy(page, pquery, koodistostaHaetut.map(Peruste::getId).collect(Collectors.toSet()));
+        Page<Peruste> result = perusteet.findBy(page, pquery, koodistostaHaetut.map(Peruste::getId)
+                .collect(Collectors.toSet()))
+                .map(p -> { // Collect tutkintonimikeKoodit for easy display in list views
+                    p.setTutkintonimikeKoodit(tutkintonimikeKoodiRepository.findByPerusteId(p.getId()).stream()
+                        .map(tutkintonimikeKoodi -> new Koodi(tutkintonimikeKoodi.getTutkintonimikeUri(), "tutkintonimikkeet"))
+                        .collect(Collectors.toSet()));
+                    return p;
+                });
         PageDto<Peruste, T> resultDto = new PageDto<>(result, type, page, mapper);
 
         if (pquery.isTutkintonimikkeet()) {
@@ -294,7 +300,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     if (tkd.getOsaamisalaUri() != null) {
                         nimet.put(tkd.getOsaamisalaArvo(), koodistoService.get("osaamisala", tkd.getOsaamisalaUri()));
                     }
-                    nimet.put(tkd.getTutkintonimikeArvo(), koodistoService.get("tutkintonimikkeet", tkd.getTutkintonimikeUri()));
+                    nimet.put(tkd.getTutkintonimikeArvo(), koodistoService.get("tutkintonimikeKoodit", tkd.getTutkintonimikeUri()));
                     if (tkd.getTutkinnonOsaUri() != null) {
                         nimet.put(tkd.getTutkinnonOsaArvo(), koodistoService.get("tutkinnonosat", tkd.getTutkinnonOsaUri()));
                     }
@@ -702,7 +708,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
         }
         perusteet.save(current);
-        return mapper.map(current, PerusteDto.class);
+        PerusteDto result = mapper.map(current, PerusteDto.class);
+        return result;
     }
 
     @Override
