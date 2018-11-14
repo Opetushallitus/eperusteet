@@ -307,7 +307,7 @@ public class DtoMapperConfig {
                         try {
                             KoodiDto koodiDto = new KoodiDto();
                             koodiDto.setUri(target.getTutkintonimikeUri());
-                            koodiDto.setKoodisto("tutkintonimikkeet");
+                            koodiDto.setKoodisto("tutkintonimikeKoodit");
                             koodistoClient.addNimiAndUri(koodiDto);
                             target.setNimi(koodiDto.getNimi());
                         } catch (RestClientException | AccessDeniedException ex) {

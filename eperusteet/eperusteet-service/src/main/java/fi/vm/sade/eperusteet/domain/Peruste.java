@@ -24,15 +24,16 @@ import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import java.io.Serializable;
-import java.util.*;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  *
@@ -190,6 +191,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
+
+    @Getter
+    @Setter
+    @Transient
+    private Set<Koodi> tutkintonimikeKoodit;
 
     @Getter
     @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = { CascadeType.ALL })

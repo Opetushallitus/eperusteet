@@ -283,7 +283,7 @@ public class PerusteenRakenne {
                 validointi.ongelmat.add(new Ongelma("ryhman-osaamisalaa-ei-perusteella", nimi, syvyys));
             }
 
-            { // Osaamisalalta löytyy kaikki vaadittavat tutkintonimikkeet
+            { // Osaamisalalta löytyy kaikki vaadittavat tutkintonimikeKoodit
                 Set<String> vaaditut = ctx.context.getOsaamisalanTutkintonimikekoodit(roa.getUri());
                 if (vaaditut.size() > 1) {
                     Set<String> actual = new HashSet<>();
