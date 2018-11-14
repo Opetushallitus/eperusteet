@@ -121,7 +121,7 @@ public class PerusteController {
             @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "Perustetta muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC). Huomioi koko perusteen sisällön."),
-            @ApiImplicitParam(name = "tutkintonimikeKoodit", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
+            @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
             @ApiImplicitParam(name = "tutkinnonosat", dataType = "boolean", paramType = "query", value = "hae myös tutkinnon osista"),
             @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),
             @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä")
@@ -192,7 +192,7 @@ public class PerusteController {
             if (tkd.getOsaamisalaUri() != null) {
                 nimet.put(tkd.getOsaamisalaArvo(), koodistoService.get("osaamisala", tkd.getOsaamisalaUri()));
             }
-            nimet.put(tkd.getTutkintonimikeArvo(), koodistoService.get("tutkintonimikeKoodit", tkd.getTutkintonimikeUri()));
+            nimet.put(tkd.getTutkintonimikeArvo(), koodistoService.get("tutkintonimikkeet", tkd.getTutkintonimikeUri()));
             if (tkd.getTutkinnonOsaUri() != null) {
                 nimet.put(tkd.getTutkinnonOsaArvo(), koodistoService.get("tutkinnonosat", tkd.getTutkinnonOsaUri()));
             }

@@ -290,9 +290,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         List<TutkintonimikeKoodi> nimikeKoodit = tutkintonimikeKoodiRepository
                 .findByPerusteId(docBase.getPeruste().getId());
         if (nimikeKoodit != null && nimikeKoodit.size() != 0) {
-            Element tutkintonimikkeet = docBase.getDocument().createElement("tutkintonimikeKoodit");
+            Element tutkintonimikkeet = docBase.getDocument().createElement("tutkintonimikkeet");
             nimikeKoodit.forEach(tnkoodi -> {
-                KoodistoKoodiDto koodiDto = koodistoService.get("tutkintonimikeKoodit", tnkoodi.getTutkintonimikeUri());
+                KoodistoKoodiDto koodiDto = koodistoService.get("tutkintonimikkeet", tnkoodi.getTutkintonimikeUri());
 
                 for (KoodistoMetadataDto meta : koodiDto.getMetadata()) {
                     if (meta.getKieli().toLowerCase().equals(docBase.getKieli().toString().toLowerCase())) {

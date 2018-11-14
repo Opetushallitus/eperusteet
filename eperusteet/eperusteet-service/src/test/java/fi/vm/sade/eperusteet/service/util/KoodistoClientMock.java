@@ -18,13 +18,14 @@ package fi.vm.sade.eperusteet.service.util;
 import fi.vm.sade.eperusteet.dto.koodisto.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
 
 /**
  *
@@ -111,8 +112,8 @@ public class KoodistoClientMock implements KoodistoClient {
     }
 
     @Override
-    public Stream<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
-        return Stream.empty();
+    public List<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
+        return Collections.emptyList();
     }
 
     @Override
