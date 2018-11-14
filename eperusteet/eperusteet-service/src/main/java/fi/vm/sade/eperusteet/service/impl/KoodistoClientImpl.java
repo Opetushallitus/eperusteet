@@ -22,17 +22,19 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -84,10 +86,14 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
-    public Stream<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
+    public List<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
         return getAll(koodisto).stream()
                 .filter(koodi -> koodi.getKoodiArvo().contains(haku) || Arrays.stream(koodi.getMetadata())
-                            .anyMatch(meta -> meta.getNimi().toLowerCase().contains(haku.toLowerCase())));
+                            .filter(Objects::nonNull)
+                            .map(KoodistoMetadataDto::getNimi)
+                            .filter(Objects::nonNull)
+                            .anyMatch(str -> StringUtils.contains(StringUtils.lowerCase(str), StringUtils.lowerCase(haku))))
+                .collect(Collectors.toList());
     }
 
     private Map<String, String> metadataToLocalized(KoodistoKoodiDto koodistoKoodi) {

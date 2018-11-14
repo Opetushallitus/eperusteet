@@ -21,7 +21,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  *
@@ -39,7 +38,7 @@ public interface KoodistoClient {
     KoodistoKoodiDto get(String koodistoUri, String koodiUri, Long versio);
 
     @PreAuthorize("permitAll()")
-    Stream<KoodistoKoodiDto> filterBy(String koodisto, String haku);
+    List<KoodistoKoodiDto> filterBy(String koodisto, String haku);
 
     @PreAuthorize("permitAll()")
     List<KoodistoKoodiDto> getAlarelaatio(String koodi);

@@ -19,17 +19,18 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
  *
@@ -49,7 +50,7 @@ public class KoodistoController {
         @RequestParam(value = "haku", required = false) final String haku) {
         return new ResponseEntity<>(haku == null || haku.isEmpty()
                 ? service.getAll(koodisto)
-                : service.filterBy(koodisto, haku).collect(Collectors.toList()), HttpStatus.OK);
+                : service.filterBy(koodisto, haku), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{koodisto}/{koodi}", method = GET)
