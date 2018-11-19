@@ -49,7 +49,7 @@ public class AbstractRakenneOsaDeserializer extends StdDeserializer<AbstractRake
         if (osat != null) {
             return codec.treeToValue(tree, RakenneModuuliDto.class);
         }
-        throw new JsonMappingException("Tuntematon rakenneosan", jp.getCurrentLocation());
+        throw new JsonMappingException(jp, "Tuntematon rakenneosan", jp.getCurrentLocation());
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRakenneOsaDeserializer.class);
