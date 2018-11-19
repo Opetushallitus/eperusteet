@@ -2,7 +2,9 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
@@ -12,14 +14,12 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +29,8 @@ import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -156,6 +156,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     private PerusteprojektiDto createPeruste() {
         PerusteprojektiLuontiDto result = new PerusteprojektiLuontiDto();
+        result.setReforminMukainen(false);
         result.setNimi(TestUtils.uniikkiString());
         result.setKoulutustyyppi("koulutustyyppi_15");
         result.setLaajuusYksikko(LaajuusYksikko.OSAAMISPISTE);

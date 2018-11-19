@@ -30,18 +30,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Assert;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -49,6 +38,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  *
@@ -97,11 +97,13 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiLuontiDto ppldto = null;
         if (tyyppi == PerusteTyyppi.NORMAALI) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, null, null, tyyppi, ryhmaId);
+            ppldto.setReforminMukainen(false);
             ppldto.setDiaarinumero(TestUtils.uniikkiString());
             ppldto.setYhteistyotaho(yhteistyotaho);
             ppldto.setTehtava(tehtava);
         } else if (tyyppi == PerusteTyyppi.POHJA) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, null, null, null, tyyppi, ryhmaId);
+            ppldto.setReforminMukainen(false);
             ppldto.setYhteistyotaho(yhteistyotaho);
             ppldto.setTehtava(tehtava);
         }
@@ -175,6 +177,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Rollback(true)
     public void testPerusteprojektiLuontiVirheellinenTyyppi() {
         PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.OPAS, ryhmaId);
+        luontiDto.setReforminMukainen(false);
         service.save(luontiDto);
     }
 
@@ -190,6 +193,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         perusteprojektiLuontiCommonSuoritustavat(pp, 3);
 
         PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.NORMAALI, ryhmaId);
+        luontiDto.setReforminMukainen(false);
         luontiDto.setPerusteId(pp.getPeruste().getId());
         luontiDto.setDiaarinumero(TestUtils.uniikkiString());
         luontiDto.setNimi(TestUtils.uniikkiString());
@@ -268,6 +272,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         pohjaDto = perusteService.updateFull(pohjaDto.getId(), pohjaDto);
 
         PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.NORMAALI, ryhmaId);
+        luontiDto.setReforminMukainen(false);
         luontiDto.setPerusteId(pohjaDto.getId());
         luontiDto.setDiaarinumero(TestUtils.uniikkiString());
         luontiDto.setNimi(TestUtils.uniikkiString());
