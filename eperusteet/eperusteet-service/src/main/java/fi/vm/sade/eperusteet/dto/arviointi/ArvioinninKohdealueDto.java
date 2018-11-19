@@ -32,7 +32,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArvioinninKohdealueDto {
-    private Long id;
+    //private Long id; // Tämän jos laittaa, tulee StaleStateException
     private LokalisoituTekstiDto otsikko;
     private List<ArvioinninKohdeDto> arvioinninKohteet;
     private AmattitaitovaatimusKoodiDto koodi;
