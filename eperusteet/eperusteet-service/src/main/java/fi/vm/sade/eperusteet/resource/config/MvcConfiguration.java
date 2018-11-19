@@ -91,13 +91,13 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
             @Override
             public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
                 String defaultName) {
-                return getName(config, method.getGenericType(), defaultName);
+                return getName(config, method.getType(), defaultName);
             }
 
             @Override
             public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
                 String defaultName) {
-                return getName(config, method.getParameter(0).getGenericType(), defaultName);
+                return getName(config, method.getParameter(0).getType(), defaultName);
             }
 
             private String getName(MapperConfig<?> config, Type type, String defaultName) {
