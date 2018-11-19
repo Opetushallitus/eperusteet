@@ -91,7 +91,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
             @Override
             public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
                 String defaultName) {
-                return getName(config, method.getGenericReturnType(), defaultName);
+                return getName(config, method.getGenericType(), defaultName);
             }
 
             @Override
@@ -101,7 +101,8 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
             }
 
             private String getName(MapperConfig<?> config, Type type, String defaultName) {
-                final JavaType ot = config.getTypeFactory().constructParametricType(Optional.class, EntityReference.class);
+                final JavaType ot = config.getTypeFactory().constructParametrizedType(Optional.class,
+                        Optional.class, EntityReference.class);
                 final JavaType et = config.getTypeFactory().constructType(EntityReference.class);
                 final JavaType t = config.getTypeFactory().constructType(type);
 

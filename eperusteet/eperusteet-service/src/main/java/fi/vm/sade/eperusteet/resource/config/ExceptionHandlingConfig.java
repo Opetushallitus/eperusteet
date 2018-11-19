@@ -48,7 +48,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 import javax.persistence.PersistenceException;
 import javax.servlet.ServletException;
@@ -147,8 +146,6 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             describe(map, "pyynnöstä-puuttui-parametri", "Pyynnöstä puuttui parametri, eikä sitä voitu tästä syystä käsitellä.");
         } else if (ex instanceof MissingServletRequestPartException) {
             describe(map, "pyynnöstä-puuttui-osa", "Pyynnöstä puuttui osa, eikä sitä voitu tästä syystä käsitellä.");
-        } else if (ex instanceof NoSuchRequestHandlingMethodException) {
-            describe(map, "palvelimelta-ei-löytynyt-käsittelijää", "Palvelimelta ei löytynyt http-pyynnölle käsittelijää.");
         } else if (ex instanceof TypeMismatchException) {
             describe(map, "tyypin-yhteensopivuusongelma", "Tyypin yhteensopivuusongelma.");
         } else if (ex instanceof TransactionSystemException) {
