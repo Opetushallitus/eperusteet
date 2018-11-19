@@ -35,22 +35,19 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Ongelma;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.*;
-import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.math.BigDecimal;
+import java.util.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -512,6 +509,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     private PerusteprojektiDto teePerusteprojekti(ProjektiTila tila, Long perusteId, PerusteTila perusteTila) {
         PerusteprojektiLuontiDto ppldto;
         ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, perusteId, tila, tyyppi, ryhmaId);
+        ppldto.setReforminMukainen(false);
         ppldto.setDiaarinumero(TestUtils.uniikkiString());
         ppldto.setYhteistyotaho(yhteistyotaho);
         ppldto.setTehtava(tehtava);
