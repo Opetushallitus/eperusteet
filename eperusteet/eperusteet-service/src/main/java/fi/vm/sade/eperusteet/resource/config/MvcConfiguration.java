@@ -16,16 +16,10 @@
 package fi.vm.sade.eperusteet.resource.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
@@ -41,7 +35,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.*;
 
 import javax.persistence.EntityManagerFactory;
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -86,40 +79,13 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         converter.setPrettyPrint(true);
         converter.getObjectMapper().enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         converter.getObjectMapper().enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
-        converter.getObjectMapper().setPropertyNamingStrategy(new PropertyNamingStrategy() {
-
-            @Override
-            public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
-                String defaultName) {
-                return getName(config, method.getType(), defaultName);
-            }
-
-            @Override
-            public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
-                String defaultName) {
-                return getName(config, method.getParameter(0).getType(), defaultName);
-            }
-
-            private String getName(MapperConfig<?> config, Type type, String defaultName) {
-                final JavaType ot = config.getTypeFactory()
-                        .constructParametricType(Optional.class, EntityReference.class);
-                final JavaType et = config.getTypeFactory().constructType(EntityReference.class);
-                final JavaType t = config.getTypeFactory().constructType(type);
-
-                if (et.equals(t) || ot.equals(t)) {
-                    return "_" + defaultName;
-                }
-
-                return defaultName;
-            }
-        });
+        converter.getObjectMapper().registerModule(new Jdk8Module());
         converter.getObjectMapper().registerModule(new JodaModule());
-        converter.getObjectMapper().registerModule(new GuavaModule());
-        EPerusteetMappingModule module = new EPerusteetMappingModule();
-        module
-            .addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer())
-            .addDeserializer(PerusteenOsaUpdateDto.class, new PerusteenOsaUpdateDtoDeserializer());
+        MappingModule module = new MappingModule();
+        module.addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
+        module.addDeserializer(PerusteenOsaUpdateDto.class, new PerusteenOsaUpdateDtoDeserializer());
         converter.getObjectMapper().registerModule(module);
+        converter.getObjectMapper().setPropertyNamingStrategy(new ReferenceNamingStrategy());
         return converter;
     }
 

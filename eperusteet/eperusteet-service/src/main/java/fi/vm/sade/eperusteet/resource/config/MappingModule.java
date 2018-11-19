@@ -18,18 +18,19 @@ package fi.vm.sade.eperusteet.resource.config;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+
+import java.util.List;
 
 /**
  *
  * @author jhyoty
  */
-public class EPerusteetMappingModule extends SimpleModule {
+public class MappingModule extends SimpleModule {
 
-    public EPerusteetMappingModule() {
-        super(EPerusteetMappingModule.class.getSimpleName());
+    public MappingModule() {
+        super(MappingModule.class.getSimpleName());
     }
 
     @Override
