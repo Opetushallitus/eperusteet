@@ -101,8 +101,8 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
             }
 
             private String getName(MapperConfig<?> config, Type type, String defaultName) {
-                final JavaType ot = config.getTypeFactory().constructParametrizedType(Optional.class,
-                        Optional.class, EntityReference.class);
+                final JavaType ot = config.getTypeFactory()
+                        .constructParametricType(Optional.class, EntityReference.class);
                 final JavaType et = config.getTypeFactory().constructType(EntityReference.class);
                 final JavaType t = config.getTypeFactory().constructType(type);
 
