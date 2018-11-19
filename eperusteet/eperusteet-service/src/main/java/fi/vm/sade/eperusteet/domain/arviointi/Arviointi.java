@@ -15,52 +15,56 @@
  */
 package fi.vm.sade.eperusteet.domain.arviointi;
 
+import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 /**
  *
  * @author teele1
  */
 @Entity
-@Table(name = "arviointi")
 @Audited
-public class Arviointi implements Serializable {
+@Table(name = "arviointi")
+public class Arviointi implements Serializable, Mergeable<Arviointi> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
+    @Setter
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Getter
+    @Setter
     @ValidHtml(whitelist = WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Getter
-    @Setter
     private TekstiPalanen lisatiedot;
 
+    @Getter
+    @OrderColumn
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "arviointi_arvioinninkohdealue",
                joinColumns = @JoinColumn(name = "arviointi_id"),
                inverseJoinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
-    @OrderColumn
-    @Getter
     private List<ArvioinninKohdealue> arvioinninKohdealueet = new ArrayList<>();
 
     @Getter
@@ -128,6 +132,7 @@ public class Arviointi implements Serializable {
         return false;
     }
 
+    @Override
     public void mergeState(Arviointi other) {
         if (this != other) {
             this.setLisatiedot(other.getLisatiedot());

@@ -24,16 +24,21 @@ import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimuk
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
-import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -214,6 +219,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         if (perusteenOsa instanceof TutkinnonOsa) {
             TutkinnonOsa other = (TutkinnonOsa) perusteenOsa;
             this.setArviointi(other.getArviointi());
+            //this.getArviointi().mergeState(other.getArviointi());
             this.setAmmattitaitovaatimukset(other.getAmmattitaitovaatimukset());
             this.setAmmattitaitovaatimuksetLista(connectAmmattitaitovaatimusListToTutkinnonOsa(other));
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
@@ -263,13 +269,15 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         boolean loyty = false;
         if (other != null) {
             for (OsaAlue osaAlueOther : other) {
-                for (OsaAlue osaAlueCurrent : current) {
-                    if (osaAlueCurrent.getId().equals(osaAlueOther.getId())) {
-                        // Jos tutkinnon osalla osa-aluelista mergessä, niin kyseessä on kevyempi
-                        // osa-alue objekteja. Joten käytetään partialMergeStatea.
-                        osaAlueCurrent.partialMergeState(osaAlueOther);
-                        tempList.add(osaAlueCurrent);
-                        loyty = true;
+                if (current != null) {
+                    for (OsaAlue osaAlueCurrent : current) {
+                        if (osaAlueCurrent.getId().equals(osaAlueOther.getId())) {
+                            // Jos tutkinnon osalla osa-aluelista mergessä, niin kyseessä on kevyempi
+                            // osa-alue objekteja. Joten käytetään partialMergeStatea.
+                            osaAlueCurrent.partialMergeState(osaAlueOther);
+                            tempList.add(osaAlueCurrent);
+                            loyty = true;
+                        }
                     }
                 }
                 if (!loyty) {
@@ -285,4 +293,5 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     public void setTyyppi(TutkinnonOsaTyyppi tyyppi) {
         this.tyyppi = tyyppi == null ? TutkinnonOsaTyyppi.NORMAALI : tyyppi;
     }
+
 }

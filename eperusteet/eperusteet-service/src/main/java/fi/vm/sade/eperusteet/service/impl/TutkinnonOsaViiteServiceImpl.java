@@ -27,11 +27,12 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.Date;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -142,7 +143,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         viite.setLaajuus(viiteDto.getLaajuus());
         viite.setLaajuusMaksimi(viiteDto.getLaajuusMaksimi());
         viite.setMuokattu(new Date());
-        viite = tutkinnonOsaViiteRepository.save(viite);
+        viite = tutkinnonOsaViiteRepository.saveAndFlush(viite);
         TutkinnonOsaViiteDto uusiViiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
 
         if(viiteDto.getTutkinnonOsaDto() != null) {

@@ -16,10 +16,11 @@
 
 package fi.vm.sade.eperusteet.dto.arviointi;
 
+import fi.vm.sade.eperusteet.dto.AmattitaitovaatimusKoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.*;
+
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
@@ -27,7 +28,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArvioinninKohdealueDto {
+    private Long id;
     private LokalisoituTekstiDto otsikko;
     private List<ArvioinninKohdeDto> arvioinninKohteet;
+    private AmattitaitovaatimusKoodiDto koodi;
 }

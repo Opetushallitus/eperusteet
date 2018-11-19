@@ -15,14 +15,14 @@
  */
 package fi.vm.sade.eperusteet.domain.arviointi;
 
+import fi.vm.sade.eperusteet.domain.AmmattitaitovaatimusKoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
@@ -41,14 +41,25 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 public class ArvioinninKohdealue implements Serializable {
 
     @Id
+    @Getter
+    @Setter
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Getter
+    @Setter
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen otsikko;
 
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    private AmmattitaitovaatimusKoodi koodi;
+
+    @Getter
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "arvioinninkohdealue_arvioinninkohde",
                joinColumns = @JoinColumn(name = "arvioinninkohdealue_id"),
@@ -57,44 +68,16 @@ public class ArvioinninKohdealue implements Serializable {
     @BatchSize(size = 10)
     private List<ArvioinninKohde> arvioinninKohteet = new ArrayList<>();
 
-    /// TODO: rikkoo testin fi.vm.sade.eperusteet.service.AuditedEntityTestIT#testTutkinnonOsaRevisions
-//    @Getter
-//    @NotAudited
-//    @RelatesToPeruste
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "arviointi_arvioinninkohdealue",
-//            inverseJoinColumns = @JoinColumn(name = "arviointi_id"),
-//            joinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
-//    private Set<Arviointi> arvioinnit = new HashSet<>();
-
     public ArvioinninKohdealue() {
     }
 
     public ArvioinninKohdealue(ArvioinninKohdealue other) {
+        this.id = null;
+        this.koodi = null;
         this.otsikko = other.getOtsikko();
         for (ArvioinninKohde ak : other.getArvioinninKohteet()) {
             this.arvioinninKohteet.add(new ArvioinninKohde(ak));
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public TekstiPalanen getOtsikko() {
-        return otsikko;
-    }
-
-    public void setOtsikko(TekstiPalanen otsikko) {
-        this.otsikko = otsikko;
-    }
-
-    public List<ArvioinninKohde> getArvioinninKohteet() {
-        return arvioinninKohteet;
     }
 
     public void setArvioinninKohteet(List<ArvioinninKohde> arvioinninKohteet) {
@@ -104,10 +87,18 @@ public class ArvioinninKohdealue implements Serializable {
         }
     }
 
+    @PrePersist
+    public void prePersist() {
+        if (this.koodi == null) {
+            this.koodi = new AmmattitaitovaatimusKoodi();
+        }
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 71 * hash + Objects.hashCode(this.otsikko);
+        hash = 71 * hash + Objects.hashCode(this.koodi);
         hash = 71 * hash + Objects.hashCode(this.arvioinninKohteet);
         return hash;
     }
@@ -125,6 +116,9 @@ public class ArvioinninKohdealue implements Serializable {
             if (!Objects.equals(this.otsikko, other.otsikko)) {
                 return false;
             }
+            if (!Objects.equals(this.koodi, other.koodi)) {
+                return false;
+            }
             return Objects.equals(this.arvioinninKohteet, other.arvioinninKohteet);
         }
         return false;
@@ -135,6 +129,7 @@ public class ArvioinninKohdealue implements Serializable {
             return true;
         }
         boolean result = refXnor(getOtsikko(), other.getOtsikko());
+        result &= refXnor(this.getKoodi(), other.getKoodi());
         Iterator<ArvioinninKohde> i = getArvioinninKohteet().iterator();
         Iterator<ArvioinninKohde> j = other.getArvioinninKohteet().iterator();
         while (result && i.hasNext() && j.hasNext()) {
@@ -144,5 +139,4 @@ public class ArvioinninKohdealue implements Serializable {
         result &= !j.hasNext();
         return result;
     }
-
 }

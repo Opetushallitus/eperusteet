@@ -20,9 +20,9 @@ import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKoh
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,10 +31,13 @@ import java.util.List;
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OsaamistavoiteLaajaDto extends OsaamistavoiteDto {
     private LokalisoituTekstiDto tavoitteet;
     private LokalisoituTekstiDto tunnustaminen;
     private ArviointiDto arviointi;
-    private List<AmmattitaitovaatimusKohdealueetDto> ammattitaitovaatimuksetLista;
+    private List<AmmattitaitovaatimusKohdealueetDto> ammattitaitovaatimuksetLista = new ArrayList<>();
     private EntityReference esitieto;
 }

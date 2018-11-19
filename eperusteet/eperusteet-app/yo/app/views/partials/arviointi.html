@@ -25,6 +25,12 @@
                     </div>
 
                     <div class="panel-body" ng-show="kohdealue.$$accordionOpen">
+
+                        <div ng-if="kohdealue.koodi.arvo">
+                            <label class="header" for="koodi-{{$index}}">{{'koodi' | kaanna}}:</label>
+                            <span id="koodi-{{$index}}">{{kohdealue.koodi.arvo}}</span>
+                        </div>
+
                         <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.arvioinninKohteet" class="container-items-kohteet">
                             <div class="panel arvioinnin-kohde"
                                 ng-class="{'kohde-edit': arvioinninkohde === originalKohde}"

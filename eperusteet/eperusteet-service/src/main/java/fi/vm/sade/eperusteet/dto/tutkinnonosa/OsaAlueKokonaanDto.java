@@ -15,9 +15,9 @@
  */
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
+import lombok.*;
+
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
@@ -25,6 +25,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OsaAlueKokonaanDto extends OsaAlueDto {
-    private List<OsaamistavoiteLaajaDto> osaamistavoitteet;
+    @Singular("osaamistavoite") private List<OsaamistavoiteLaajaDto> osaamistavoitteet;
 }

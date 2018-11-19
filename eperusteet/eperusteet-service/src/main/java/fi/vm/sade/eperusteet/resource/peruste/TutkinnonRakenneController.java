@@ -27,30 +27,23 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
-import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
-import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import java.util.ArrayList;
-import java.util.List;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.SUORITUSTAVANRAKENNE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSA;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSAVIITE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.KLOONAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LIITOS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.PALAUTUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
+import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.*;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**

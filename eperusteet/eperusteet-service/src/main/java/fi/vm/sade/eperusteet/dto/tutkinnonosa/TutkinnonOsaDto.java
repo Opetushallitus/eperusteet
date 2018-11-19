@@ -26,10 +26,7 @@ import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -39,9 +36,10 @@ import java.util.List;
  */
 @Getter
 @Setter
-@JsonTypeName("tutkinnonosa")
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@JsonTypeName("tutkinnonosa")
 public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto tavoitteet;
     private ArviointiDto arviointi;
@@ -52,13 +50,11 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private KoodiDto koodi;
     private String koodiUri;
     private String koodiArvo;
-    private List<OsaAlueDto> osaAlueet;
+    @Singular("osaAlue") private List<OsaAlueDto> osaAlueet;
     private List<KevytTekstiKappaleDto> vapaatTekstit;
     private TutkinnonOsaTyyppi tyyppi;
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
 
-    public TutkinnonOsaDto() {
-    }
     public TutkinnonOsaDto (LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
     }

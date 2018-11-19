@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.domain.validation;
 
 import fi.vm.sade.eperusteet.domain.Koodi;
+import org.springframework.util.ObjectUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -16,10 +17,9 @@ public class ValidKoodiValidator implements ConstraintValidator<ValidKoodisto, K
 
     @Override
     public boolean isValid(Koodi value, ConstraintValidatorContext context) {
-        if (this.value != null && !this.value.isEmpty()) {
+        if (value != null && !ObjectUtils.isEmpty(this.value)) {
             return Objects.equals(this.value, value.getKoodisto());
-        }
-        else {
+        } else {
             return true;
         }
     }

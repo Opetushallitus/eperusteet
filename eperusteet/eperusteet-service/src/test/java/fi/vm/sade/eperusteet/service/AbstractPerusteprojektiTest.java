@@ -5,24 +5,23 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -46,6 +45,9 @@ public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
 
     @Autowired
     protected PerusteenOsaService perusteenOsaService;
+
+    @Autowired
+    protected TutkinnonOsaViiteService tutkinnonOsaViiteService;
 
     @Autowired
     protected PerusteprojektiRepository perusteprojektiRepository;
@@ -89,12 +91,29 @@ public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
         return updated;
     }
 
-    protected TutkinnonOsaViiteDto uusiTutkinnonOsa() {
-        TutkinnonOsaViiteDto result = perusteService.addTutkinnonOsa(peruste.getId(), suoritustapa.getSuoritustapakoodi(), TutkinnonOsaViiteDto.builder()
-                .tyyppi(TutkinnonOsaTyyppi.NORMAALI)
-                .tutkinnonOsaDto(TutkinnonOsaDto.builder()
-                        .build())
-                .build());
+    protected TutkinnonOsaViiteDto uusiTutkinnonOsa(TutkinnonOsaViiteDto dto) {
+        TutkinnonOsaViiteDto result = perusteService.addTutkinnonOsa(peruste.getId(),
+                suoritustapa.getSuoritustapakoodi(), dto);
+        return result;
+    }
+
+    protected TutkinnonOsaViiteDto paivitaTutkinnonOsa(TutkinnonOsaViiteUpdateDto dto) {
+        // Vaatii lukon
+        TutkinnonOsaViiteDto result = perusteService.updateTutkinnonOsa(peruste.getId(),
+                suoritustapa.getSuoritustapakoodi(), dto);
+
+        return result;
+    }
+
+    protected OsaAlueKokonaanDto paivitaOsaAlue(
+            TutkinnonOsaViiteDto viiteDto,
+            OsaAlueDto osaAlueDto,
+            OsaAlueKokonaanDto dto
+    ) {
+        // Vaatii lukon
+        OsaAlueKokonaanDto result = perusteenOsaService.updateTutkinnonOsaOsaAlue(viiteDto.getId(),
+                osaAlueDto.getId(), dto);
+
         return result;
     }
 

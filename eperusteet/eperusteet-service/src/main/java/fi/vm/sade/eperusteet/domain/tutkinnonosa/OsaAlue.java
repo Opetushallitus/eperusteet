@@ -22,31 +22,18 @@ import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
-import java.io.Serializable;
-import java.util.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.*;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -154,7 +141,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         if (updated != null) {
             this.setNimi(updated.getNimi());
             this.setKuvaus(updated.getKuvaus());
-            this.koodi = updated.getKoodi();
+            this.setKoodi(updated.getKoodi());
 
             if (updated.getOsaamistavoitteet() != null) {
                 this.setOsaamistavoitteet(mergeOsaamistavoitteet(this.getOsaamistavoitteet(), updated.getOsaamistavoitteet()));
