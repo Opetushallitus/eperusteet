@@ -144,7 +144,7 @@ angular
         $scope.docs = {};
         $scope.kvliitteet = {};
         $scope.versiot = {
-            lista: ["uusi", "vanha"],
+            lista: ["uusi"],
             valittu: "uusi"
         };
 
