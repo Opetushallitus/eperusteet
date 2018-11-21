@@ -261,6 +261,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
     public void testValidoiTutkinnossaMaariteltavatRyhmat() {
         PerusteprojektiLuontiDto ppldto = new PerusteprojektiLuontiDto(KoulutusTyyppi.PERUSTUTKINTO.toString(),
                 LaajuusYksikko.OSAAMISPISTE, null, null, PerusteTyyppi.NORMAALI, "1.2.246.562.28.11287634288");
+        ppldto.setReforminMukainen(false);
         ppldto.setNimi(TestUtils.uniikkiString());
         ppldto.setDiaarinumero(TestUtils.uniikkiString());
         ppldto.setReforminMukainen(true);
