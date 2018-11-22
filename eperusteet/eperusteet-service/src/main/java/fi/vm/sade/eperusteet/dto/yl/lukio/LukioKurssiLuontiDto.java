@@ -20,15 +20,10 @@ import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Builder;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,7 +39,7 @@ import java.util.List;
 public class LukioKurssiLuontiDto implements Serializable {
     @NotNull
     private LukiokurssiTyyppi tyyppi;
-    private List<KurssinOppiaineDto> oppiaineet = new ArrayList<>();
+    private List<KurssinOppiaineDto> oppiaineet;
     @NotNull
     private LokalisoituTekstiDto nimi;
     private String koodiArvo;

@@ -41,5 +41,4 @@ public class AbstractIntegrationTest {
         SecurityContextHolder.setContext(ctx);
     }
 
-
 }

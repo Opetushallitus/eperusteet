@@ -83,7 +83,6 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private boolean koulutusvienti = false;
 
     @Getter
-    @Setter
     @OrderColumn
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Muutosmaarays> muutosmaaraykset = new ArrayList<>();

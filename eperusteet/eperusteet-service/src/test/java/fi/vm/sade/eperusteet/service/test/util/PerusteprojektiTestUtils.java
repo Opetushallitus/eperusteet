@@ -56,6 +56,7 @@ public class PerusteprojektiTestUtils {
 
     public PerusteprojektiDto createPerusteprojekti(Consumer<PerusteprojektiLuontiDto> withPerusteprojekti) {
         PerusteprojektiLuontiDto result = new PerusteprojektiLuontiDto();
+        result.setReforminMukainen(false);
         result.setNimi(TestUtils.uniikkiString());
         result.setKoulutustyyppi(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
         result.setLaajuusYksikko(LaajuusYksikko.OSAAMISPISTE);
