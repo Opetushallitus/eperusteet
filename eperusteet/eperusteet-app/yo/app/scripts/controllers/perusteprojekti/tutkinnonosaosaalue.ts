@@ -45,23 +45,6 @@ angular
             kuvaus: {}
         };
 
-        // TODO: Tee parempi korjaus ilman watchia
-        $scope.$watch("tutkinnonOsaViite", () => {
-            if ($scope.tutkinnonOsaViite.tutkinnonOsa) {
-                // Haetaan alarelaatio koodi osa-alueelle
-                const koodiUri = $scope.tutkinnonOsaViite.tutkinnonOsa.koodiUri;
-                if (koodiUri !== null || koodiUri === "") {
-                    Koodisto.haeAlarelaatiot(koodiUri, alarelaatiot => {
-                        alarelaatiot.unshift({});
-                        $scope.alarelaatiot = alarelaatiot;
-                        $scope.alarelaatiotLadattu = true;
-                    });
-                } else {
-                    $scope.alarelaatiotLadattu = true;
-                }
-            }
-        });
-
         if ($scope.isVaTe) {
             $scope.$$osaamistavoiteOpen = true;
             $scope.$$osaamisenArviointiOpen = true;
@@ -164,20 +147,20 @@ angular
             $state.go("^", {}, { reload: true });
         }
 
-        $scope.openKoodisto = function(tavoite) {
-            if (!tavoite.koodi) {
-                tavoite.koodi = {};
+        $scope.openKoodisto = function(osaAlue) {
+            if (!osaAlue.koodi) {
+                osaAlue.koodi = {};
             }
             var openDialog = Koodisto.modaali(
                 function(koodisto) {
-                    tavoite.koodi = {
+                    osaAlue.koodi = {
                         uri: koodisto.koodiUri,
                         arvo: koodisto.koodiArvo,
                         versio: koodisto.versio,
                         koodisto: koodisto.koodisto.koodistoUri
                     };
-                    MuokkausUtils.nestedSet(tavoite.koodi, "koodiUri", ",", koodisto.koodiUri);
-                    MuokkausUtils.nestedSet(tavoite.koodi, "koodiArvo", ",", koodisto.koodiArvo);
+                    MuokkausUtils.nestedSet(osaAlue.koodi, "koodiUri", ",", koodisto.koodiUri);
+                    MuokkausUtils.nestedSet(osaAlue.koodi, "koodiArvo", ",", koodisto.koodiArvo);
                 },
                 {
                     tyyppi: function() {

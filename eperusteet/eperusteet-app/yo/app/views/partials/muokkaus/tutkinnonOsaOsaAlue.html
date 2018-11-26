@@ -9,19 +9,15 @@
     <label class="header">{{'nimi'| kaanna}}*</label>
     <input class="form-control" slocalized ng-model="osaAlue.nimi" type="text">
 
-    <label for="koodi-input" class="header" kaanna="muokkaus-tutkinnon-osan-koodi-header"></label>
-    <div ng-if="alarelaatiotLadattu">
-        <div ng-if="alarelaatiot && alarelaatiot.length > 0">
-            <div style="margin-bottom: 6px" ng-repeat="ar in alarelaatiot"
-                 ng-click="valitseAlarelaatio($index === 0 ? null : ar)" class="koodi-valinta">
-                <span class="glyphicon"
-                      ng-class="osaAlue.koodiUri === ar.koodiUri || osaAlue.koodi.uri === ar.koodiUri || (!osaAlue.koodiUri && !osaAlue.koodi.uri && $index === 0) ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
-                <span ng-hide="ar.nimi" kaanna="'ei-valintaa'"></span>
-                <span ng-show="ar.nimi">{{ ar.nimi | kaanna }} (<b>{{ ar.koodiArvo }}</b>)</span>
+    <div>
+        <label>{{'koodi' | kaanna}}</label>
+        <div class="fixed-group">
+            <input id="koodi-input" class="form-control" type="text" ng-model="osaAlue.koodi.arvo"
+                   editointi-kontrolli disabled="disabled">
+            <div class="addon">
+                <button class="btn btn-default" ng-click="openKoodisto(osaAlue)"
+                        kaanna="hae-koodistosta"></button>
             </div>
-        </div>
-        <div ng-if="!alarelaatiot" class="alert alert-danger">
-            <span kaanna="'tutkinnon-osalla-ei-ole-koodia'"></span>
         </div>
     </div>
 
@@ -64,18 +60,6 @@
                 <numberinput style="margin-bottom: 3px" luokka="form-control" model="tavoite.laajuus" type="float"
                              step="0.5" luokka="form-control"></numberinput>
 
-                <div>
-                    <label>{{'koodi' | kaanna}}</label>
-                    <div class="fixed-group">
-                        <input id="koodi-input" class="form-control" type="text" ng-model="tavoite.koodi.arvo"
-                               editointi-kontrolli disabled="disabled">
-                        <div class="addon">
-                            <button class="btn btn-default" ng-click="openKoodisto(tavoite)"
-                                    kaanna="hae-koodistosta"></button>
-                        </div>
-                    </div>
-                </div>
-
                 <label kaanna>tavoitteet</label>
                 <div ng-model="tavoite.tavoitteet" slocalized ckeditor editing-enabled="true"
                      editor-placeholder="Kirjoita tavoitteet"></div>
@@ -105,18 +89,6 @@
                     <label kaanna>laajuus</label>
                     <numberinput style="margin-bottom: 3px" luokka="form-control" model="tavoite.lapsi.laajuus"
                                  type="float" step="0.5"></numberinput>
-
-                    <div>
-                        <label>{{'koodi' | kaanna}}</label>
-                        <div class="fixed-group">
-                            <input id="koodi-input" class="form-control" type="text"
-                                   ng-model="tavoite.lapsi.koodi.koodiArvo" editointi-kontrolli disabled="disabled">
-                            <div class="addon">
-                                <button class="btn btn-default" ng-click="openKoodisto( tavoite.lapsi )"
-                                        kaanna="hae-koodistosta"></button>
-                            </div>
-                        </div>
-                    </div>
 
                     <label kaanna>tavoitteet</label>
                     <div ng-model="tavoite.lapsi.tavoitteet" slocalized ckeditor editing-enabled="true"
