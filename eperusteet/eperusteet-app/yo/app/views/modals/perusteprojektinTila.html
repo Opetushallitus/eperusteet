@@ -4,16 +4,26 @@
 </div>
 
 <div class="modal-body tilanvaihto">
-    <ul class="list-group">
-        <li class="list-group-item" ng-repeat="tila in data.statuses"
-            ng-class="{vanha: tila.key === data.oldStatus, uusi: tila.key === data.selected}"
-            ng-click="data.selected = tila.key"
-            ng-dblclick="data.selected = tila.key; (data.selected !== data.oldStatus) && valitse();">
+    <div ng-if="data.statuses.length > 0">
+        <h3 kaanna="'seuraava-tila'"></h3>
+        <div class="tila"
+             ng-class="{vanha: data.statuses[0].key === data.oldStatus, uusi: data.statuses[0].key === data.selected}"
+             ng-click="data.selected = data.statuses[0].key"
+             ng-dblclick="data.selected = data.statuses[0].key; (data.selected !== data.oldStatus) && valitse();">
+            <statusbadge editable="data.editable" status="data.statuses[0].key"></statusbadge>
+            <div class="description clearfix" ng-bind-html="data.statuses[0].description | kaanna | unsafe"></div>
+        </div>
+        <h3 kaanna="'edelliset-tilat'" ng-show="data.statuses.length > 1"></h3>
+        <div class="tila"
+             ng-repeat="tila in data.statuses"
+             ng-hide="$first"
+             ng-class="{vanha: tila.key === data.oldStatus, uusi: tila.key === data.selected}"
+             ng-click="data.selected = tila.key"
+             ng-dblclick="data.selected = tila.key; (data.selected !== data.oldStatus) && valitse();">
             <statusbadge editable="data.editable" status="tila.key"></statusbadge>
-            <div class="description" ng-bind-html="tila.description | kaanna | unsafe"></div>
-            <div class="clearfix"></div>
-        </li>
-    </ul>
+            <div class="description clearfix" ng-bind-html="tila.description | kaanna | unsafe"></div>
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">

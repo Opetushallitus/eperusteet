@@ -21,7 +21,7 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
     }
     .statusbadge {
         float: left;
-        margin-right: 14px;
+        margin: 10px;
     }
     margin-bottom: 25px;
     min-height: 102px;
@@ -59,10 +59,11 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
             text-decoration: none;
         }
     }
-    .btn-header-pdf {
-        position: absolute;
-        right: 0px;
-        margin: 10px;
+    .buttons {
+        button {
+            margin-top: 10px;
+            margin-right: 10px;
+        }
     }
     @media (max-width: 900px) {
         .headernavi {
@@ -74,11 +75,17 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .project-otsikkotiedot {
-    margin: 10px 5px 3px 10px;
+    margin: 0 0 0 -15px;
     table {
         color: $secondary-lighter;
         th {
             padding-right: 5px;
+        }
+    }
+    .project-otsikkotiedot-tekstit {
+        padding-top: 10px;
+        h2 {
+            margin: 0;
         }
     }
 }
@@ -167,12 +174,19 @@ form[name="perusteForm"] {
 }
 
 .tilanvaihto {
-    li {
+    h3 {
+        margin-top: 10px;
+    }
+    h3:first-child {
+        margin-top: 0;
+    }
+    .tila {
+        padding: 10px;
         cursor: pointer;
         border: none;
         .statusbadge {
             float: left;
-            margin-right: 20px;
+            margin-right: 10px;
         }
         &.vanha {
             background-color: #ccc;

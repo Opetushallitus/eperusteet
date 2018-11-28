@@ -216,7 +216,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     @CollectionTable(name = "peruste_kieli")
     @Column(name = "kieli")
-    @Size(min = 1, groups = { Valmis.class, ValmisPohja.class })
+    @Size(min = 2, groups = { Valmis.class, ValmisPohja.class })
     private Set<Kieli> kielet = EnumSet.of(Kieli.FI, Kieli.SV);
 
     @ManyToMany(fetch = FetchType.LAZY)

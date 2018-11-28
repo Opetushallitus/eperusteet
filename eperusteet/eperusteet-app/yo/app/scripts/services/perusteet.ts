@@ -586,9 +586,7 @@ angular
             });
         }
 
-        function tallennaRakenne(rakenne, id, suoritustapa, success, after) {
-            success = success || angular.noop;
-            after = after || angular.noop;
+        function tallennaRakenne(rakenne, id, suoritustapa, success = angular.noop, error = angular.noop) {
             PerusteRakenteet.save(
                 {
                     perusteId: id,
@@ -596,12 +594,10 @@ angular
                 },
                 Utils.presaveStrip(rakenne.rakenne),
                 function() {
-                    after();
                     success();
                 },
                 function(err) {
-                    after();
-                    Notifikaatiot.serverCb(err);
+                    error(err);
                 }
             );
         }

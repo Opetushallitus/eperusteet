@@ -213,7 +213,7 @@ angular
                     rakenne,
                     rakenne.$peruste.id,
                     $scope.suoritustapa,
-                    function() {
+                    () => {
                         Notifikaatiot.onnistui("tallennus-onnistui");
                         haeVersiot(true, function() {
                             VersionHelper.setUrl($scope.versiot);
@@ -221,9 +221,10 @@ angular
                         Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
                         cb();
                     },
-                    function() {
+                    (err) => {
+                        Notifikaatiot.serverCb(err);
                         Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-                        cb();
+                        haeRakenne().then(cb);
                     }
                 );
 

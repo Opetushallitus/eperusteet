@@ -17,8 +17,8 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.util.EnumSet;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -27,50 +27,50 @@ import java.util.stream.Stream;
 public enum ProjektiTila {
     POISTETTU("poistettu") {
         @Override
-        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
-            return EnumSet.of(LAADINTA);
+        public List<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+            return Collections.singletonList(LAADINTA);
         }
     },
     LAADINTA("laadinta") {
         @Override
-        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+        public List<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             if (tyyppi.equals(PerusteTyyppi.POHJA)) {
-                return EnumSet.of(POISTETTU, VALMIS);
+                return Arrays.asList(VALMIS, POISTETTU);
             } else {
-                return EnumSet.of(KOMMENTOINTI, VIIMEISTELY, POISTETTU);
+                return Arrays.asList(VIIMEISTELY, POISTETTU);
             }
-        }
-    },
-    KOMMENTOINTI("kommentointi") {
-        @Override
-        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
-            return EnumSet.of(LAADINTA, POISTETTU);
         }
     },
     VIIMEISTELY("viimeistely") {
         @Override
-        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
-            return EnumSet.of(LAADINTA, VALMIS, POISTETTU);
+        public List<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+            return Arrays.asList(KAANNOS, LAADINTA);
+        }
+    },
+    KAANNOS("kaannos") {
+        @Override
+        public List<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+            return Arrays.asList(VALMIS, VIIMEISTELY, LAADINTA);
         }
     },
     VALMIS("valmis") {
         @Override
-        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+        public List<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             if (tyyppi.equals(PerusteTyyppi.POHJA)) {
-                return EnumSet.of(POISTETTU);
+                return Collections.singletonList(LAADINTA);
             } else {
-                return EnumSet.of(LAADINTA, VIIMEISTELY, JULKAISTU, POISTETTU);
+                return Arrays.asList(JULKAISTU, KAANNOS, VIIMEISTELY, LAADINTA);
             }
         }
     },
     JULKAISTU("julkaistu") {
         @Override
-        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+        public List<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             // EP-1387
             if (tyyppi.equals(PerusteTyyppi.OPAS)) {
-                return EnumSet.of(LAADINTA);
+                return Collections.singletonList(LAADINTA);
             } else {
-                return EnumSet.noneOf(ProjektiTila.class);
+                return Collections.emptyList();
             }
         }
     };
@@ -100,8 +100,8 @@ public enum ProjektiTila {
         throw new IllegalArgumentException(tila + " ei ole kelvollinen ProjektiTila");
     }
 
-    public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
-        return EnumSet.noneOf(ProjektiTila.class);
+    public List<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+        return new ArrayList<>();
     }
 
     public boolean isOneOf(ProjektiTila... tilat) {

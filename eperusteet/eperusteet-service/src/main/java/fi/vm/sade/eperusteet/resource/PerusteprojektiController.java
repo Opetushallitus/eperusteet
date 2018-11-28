@@ -21,28 +21,18 @@ import fi.vm.sade.eperusteet.dto.KoulutuskoodiStatusDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTEPROJEKTI;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TYORYHMA;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LUONTI;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.TILAMUUTOS;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
@@ -53,8 +43,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTEPROJEKTI;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TYORYHMA;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
  * @author harrik
@@ -140,7 +139,7 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/{id}/tilat", method = GET)
     @ResponseBody
-    public ResponseEntity<Set<ProjektiTila>> getTilat(@PathVariable("id") final long id) {
+    public ResponseEntity<List<ProjektiTila>> getTilat(@PathVariable("id") final long id) {
         return new ResponseEntity<>(service.getTilat(id), HttpStatus.OK);
     }
 

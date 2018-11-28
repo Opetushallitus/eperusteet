@@ -691,7 +691,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public Set<ProjektiTila> getTilat(Long id) {
+    public List<ProjektiTila> getTilat(Long id) {
         Perusteprojekti p = repository.findOne(id);
         if (p == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
@@ -983,9 +983,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-    @Deprecated
     public TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila) {
-        return validoiProjektiImpl(id, tila);
+        TilaUpdateStatus updateStatus = validoiProjektiImpl(id, tila);
+        updateStatus.merge(projektiValidator.run(id, tila));
+        return updateStatus;
     }
 
 
@@ -996,6 +997,85 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return mapper.mapAsList(koodit, TutkintonimikeKoodiDto.class);
     }
 
+    @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional
+    public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, TiedoteDto tiedoteDto) {
+        TilaUpdateStatus updateStatus = validoiProjekti(id, tila);
+
+        // Perusteen tilan muutos
+        if (!updateStatus.isVaihtoOk()) {
+            return updateStatus;
+        }
+
+        // Haetaan projekti ja peruste
+        Perusteprojekti projekti = repository.findOne(id);
+        Peruste peruste = projekti.getPeruste();
+
+        // Tarkistetaan mahdolliset tilat
+        updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
+        if (!updateStatus.isVaihtoOk()) {
+            String viesti = "Tilasiirtymä tilasta '" + projekti.getTila().toString() + "' tilaan '"
+                    + tila.toString() + "' ei mahdollinen";
+            updateStatus.addStatus(viesti);
+            return updateStatus;
+        }
+
+        // Aseta perusteen tila projektitilan mukaiseksi
+        switch (tila) {
+            case POISTETTU:
+                setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
+                break;
+            case LAADINTA:
+            case VIIMEISTELY:
+                setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
+                break;
+            case KAANNOS:
+            case VALMIS:
+            case JULKAISTU:
+                setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
+                break;
+            default:
+                throw new BusinessRuleViolationException("tila-ei-ole-toteutettu");
+        }
+        projekti.setTila(tila);
+
+        // Julkaisun rutiinit
+        if (tila == ProjektiTila.JULKAISTU && projekti.getTila() == ProjektiTila.VALMIS) {
+
+            // EP-1357 Julkaisun yhteydessä on pakko tehdä tiedote
+            if (tiedoteDto == null) {
+                throw new BusinessRuleViolationException("Julkaisun yhteydessä täytyy tehdä tiedoite");
+            }
+            tiedoteDto.setId(null);
+            tiedoteDto.setJulkinen(true);
+            tiedoteDto.setPerusteprojekti(new EntityReference(projekti.getId()));
+            tiedoteService.addTiedote(tiedoteDto);
+
+            // Dokumentit generoidaan automaattisesti julkaisun yhteydessä
+            Optional.of(peruste)
+                    .ifPresent(p -> p.getSuoritustavat()
+                            .forEach(suoritustapa -> p.getKielet()
+                                    .forEach(kieli -> {
+                                        try {
+                                            DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
+                                                    p.getId(),
+                                                    kieli,
+                                                    suoritustapa.getSuoritustapakoodi(),
+                                                    GeneratorVersion.UUSI
+                                            );
+                                            dokumenttiService.setStarted(createDtoFor);
+                                            dokumenttiService.generateWithDto(createDtoFor);
+                                        } catch (DokumenttiException e) {
+                                            LOG.error(e.getLocalizedMessage(), e);
+                                        }
+                                    })));
+        }
+
+        repository.save(projekti);
+        return updateStatus;
+    }
+
     /**
      * Validoi perusteprojektin tilaa vasten
      *
@@ -1003,8 +1083,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
      * @param tila
      * @return
      */
-    @IgnorePerusteUpdateCheck
+    @Deprecated
     @Transactional
+    @IgnorePerusteUpdateCheck
     private TilaUpdateStatus validoiProjektiImpl(Long id, ProjektiTila tila) {
 
         TilaUpdateStatus updateStatus = new TilaUpdateStatus();
@@ -1021,7 +1102,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
-        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA && tila != KOMMENTOINTI) {
+        if (tila == JULKAISTU) {
             TekstiPalanen nimi = projekti.getPeruste().getNimi();
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
@@ -1040,7 +1121,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         // Perusteen validointi
         if (!isValmisPohja
                 && peruste.getSuoritustavat() != null
-                && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
+                && tila != LAADINTA && tila != POISTETTU) {
             if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
                 Set<String> osaamisalat = peruste.getOsaamisalat()
                         .stream()
@@ -1240,16 +1321,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.setVaihtoOk(false);
                     updateStatus.addStatus(entry.getKey());
                 }
-
-                // Tarkista KV-liite
-                if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
-                    KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(peruste.getId());
-                    Set<Kieli> vaaditutKielet = new HashSet<Kieli>() {{
-                        add(Kieli.FI);
-                        add(Kieli.SV);
-                        add(Kieli.EN);
-                    }};
-                }
             }
 
             if (tila == ProjektiTila.JULKAISTU) {
@@ -1275,94 +1346,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return updateStatus;
     }
 
-    @Override
-    @IgnorePerusteUpdateCheck
-    @Transactional
-    public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, TiedoteDto tiedoteDto) {
-
-        TilaUpdateStatus updateStatus = validoiProjekti(id, tila);
-        updateStatus.merge(projektiValidator.run(id, tila));
-
-        // Perusteen tilan muutos
-        if (!updateStatus.isVaihtoOk()) {
-            return updateStatus;
-        }
-
-        Perusteprojekti projekti = repository.findOne(id);
-        Peruste peruste = projekti.getPeruste();
-
-        // Tarkistetaan mahdolliset tilat
-        updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
-        if (!updateStatus.isVaihtoOk()) {
-            String viesti = "Tilasiirtymä tilasta '" + projekti.getTila().toString() + "' tilaan '"
-                    + tila.toString() + "' ei mahdollinen";
-            updateStatus.addStatus(viesti);
-            return updateStatus;
-        }
-
-        // Dokumentit generoidaan automaattisesti julkaisun yhteydessä
-        if (tila == ProjektiTila.JULKAISTU && projekti.getTila() == ProjektiTila.VALMIS) {
-            setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
-
-            // EP-1357 Julkaisun yhteydessä on pakko tehdä tiedote
-            if (tiedoteDto == null) {
-                throw new BusinessRuleViolationException("Julkaisun yhteydessä täytyy tehdä tiedoite");
-            }
-            tiedoteDto.setId(null);
-            tiedoteDto.setJulkinen(true);
-            tiedoteDto.setPerusteprojekti(new EntityReference(projekti.getId()));
-            tiedoteService.addTiedote(tiedoteDto);
-
-            Optional.of(peruste)
-                    .ifPresent(p -> p.getSuoritustavat()
-                            .forEach(suoritustapa -> p.getKielet()
-                                    .forEach(kieli -> {
-                                        try {
-                                            DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
-                                                    p.getId(),
-                                                    kieli,
-                                                    suoritustapa.getSuoritustapakoodi(),
-                                                    GeneratorVersion.UUSI
-                                            );
-                                            dokumenttiService.setStarted(createDtoFor);
-                                            dokumenttiService.generateWithDto(createDtoFor);
-                                        } catch (DokumenttiException e) {
-                                            LOG.error(e.getLocalizedMessage(), e);
-                                        }
-                                    })));
-        }
-
-        if (tila == ProjektiTila.POISTETTU) {
-            if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
-                projekti.setTila(ProjektiTila.POISTETTU);
-                projekti.getPeruste().asetaTila(PerusteTila.POISTETTU);
-            }
-            else {
-                setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
-            }
-        }
-
-        if (tila == LAADINTA) {
-            if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
-                projekti.setTila(ProjektiTila.LAADINTA);
-                projekti.getPeruste().asetaTila(PerusteTila.LUONNOS);
-            }
-            else {
-                setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
-            }
-        }
-
-        if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.POHJA
-                && tila == ProjektiTila.VALMIS
-                && projekti.getTila() == LAADINTA) {
-            setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
-        }
-
-        projekti.setTila(tila);
-        repository.save(projekti);
-        return updateStatus;
-    }
-
     private void validoiLukio(Peruste peruste, ProjektiTila tila, TilaUpdateStatus updateStatus) {
         LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();
         LukioOpetussuunnitelmaRakenne rakenne = sisalto.getOpetussuunnitelma();
@@ -1373,22 +1356,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         && (sisalto.getAihekokonaisuudet() == null || sisalto.getAihekokonaisuudet().getAihekokonaisuudet().isEmpty()))
                 .addErrorGiven("peruste-lukio-ei-opetuksen-yleisia-tavoitteita",
                         sisalto.getOpetuksenYleisetTavoitteet() == null)
-                .forTilat(jalkeen(KOMMENTOINTI))
                 .addErrorStatusForAll("peruste-lukio-liittamaton-kurssi", () ->
                         rakenne.kurssit()
                                 .filter(empty(Lukiokurssi::getOppiaineet))
                                 .map(localized(Nimetty::getNimi)))
-                /*
-                .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () -> {
-                    // EP-1143
-                    // EP-1183
-                    return rakenne.oppiaineetMaarineen()
-                            .filter(not(Oppiaine::isKoosteinen)
-                                    .and(not(Oppiaine::isAbstraktiBool))
-                                    .and(empty(Oppiaine::getLukiokurssit)))
-                            .map(localized(Nimetty::getNimi));
-                })
-                */
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
                         rakenne.oppiaineet()
                                 .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))

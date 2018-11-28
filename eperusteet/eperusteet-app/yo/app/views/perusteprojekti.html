@@ -1,70 +1,74 @@
 <!-- perusteprojekti.html -->
 <div class="project-header">
-    <div class="row">
-        <div class="pull-right">
-            <!-- <button class="btn btn&#45;primary" -->
-            <!--     ng&#45;hide="muokkausEnabled" -->
-            <!--     ng&#45;click="validoiPeruste()" -->
-            <!--     kaanna="'tarkista&#45;virheet'" -->
-            <!--     oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" -->
-            <!--     ng&#45;if="pdfEnabled"></button> -->
-            <button class="btn btn-primary btn-header-pdf"
-                    ng-hide="muokkausEnabled"
-                    ng-click="luoPdf()"
-                    oikeustarkastelu="{ target: 'peruste', permission: 'luku' }"
-                    ng-if="pdfEnabled">
-                <img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}
-            </button>
-        </div>
-        <div class="col-xs-6">
-            <div class="project-otsikkotiedot">
-                <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()"
-                             projekti-id="projekti.id"
-                             korvattavat-diaarinumerot="peruste.korvattavatDiaarinumerot"></statusbadge>
-                <h2>{{projekti.nimi || ('perusteprojekti-nimi-placeholder' | kaanna)}}</h2>
-                <table ng-hide="isOpas">
-                    <tr>
-                        <th>{{ 'projekti-header-koulutustyyppi' | kaanna }}:</th>
-                        <td>{{peruste.koulutustyyppi|| 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}
-                        <td>
-                    </tr>
-                    <tr ng-show="isAmmatillinen">
-                        <th>{{'projekti-header-koulutusala'| kaanna}}:</th>
-                        <td>{{koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{'projekti-header-paatosPvm'| kaanna}}:</th>
-                        <td>{{projekti.paatosPvm| date:'dd.MM.yyyy'}}</td>
-                    </tr>
-                </table>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="buttons pull-right">
+                <button class="btn btn-primary"
+                        ng-disabled="editEnabled"
+                        ng-click="validoiPeruste()"
+                        oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]">
+                     <span class="glyphicon glyphicon-export"></span> {{'validoi' | kaanna}}
+                </button><button class="btn btn-primary"
+                        ng-disabled="editEnabled"
+                        ng-click="luoPdf()"
+                        oikeustarkastelu="{ target: 'peruste', permission: 'luku' }"
+                        ng-if="pdfEnabled">
+                    <span class="glyphicon glyphicon-file"></span> {{'pdf' | kaanna}}
+                </button>
             </div>
-        </div>
+            <div class="col-xs-6">
+                <div class="project-otsikkotiedot">
+                    <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()"
+                                 projekti-id="projekti.id"
+                                 korvattavat-diaarinumerot="peruste.korvattavatDiaarinumerot"
+                                 editEnabled="editEnabled"></statusbadge>
+                    <div class="project-otsikkotiedot-tekstit">
+                        <h2>{{projekti.nimi || ('perusteprojekti-nimi-placeholder' | kaanna)}}</h2>
+                        <table ng-hide="isOpas">
+                            <tr>
+                                <th>{{ 'projekti-header-koulutustyyppi' | kaanna }}:</th>
+                                <td>{{peruste.koulutustyyppi|| 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}
+                                <td>
+                            </tr>
+                            <tr ng-show="isAmmatillinen">
+                                <th>{{'projekti-header-koulutusala'| kaanna}}:</th>
+                                <td>{{koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{{'projekti-header-paatosPvm'| kaanna}}:</th>
+                                <td>{{projekti.paatosPvm| date:'dd.MM.yyyy'}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-        <div class="col-xs-6 headernavi">
-            <ul>
-                <li>
-                    <a class="action-link" ng-click="lisaaTiedote()"
-                       icon-role="envelope" kaanna="'lisaa-tiedote'"></a>
-                </li>
-                <li>
-                    <a ui-sref="root.perusteprojekti.termisto({ perusteProjektiId: projekti.id })"
-                       ui-sref-active="headernavi-active" icon-role="book" kaanna="'perusteen-termisto'"></a>
-                </li>
-                <li>
-                    <a ui-sref="root.perusteprojekti.tiedot({ perusteProjektiId: projekti.id })"
-                       ui-sref-active="headernavi-active" icon-role="info" kaanna="$$kaannokset['projektin-tiedot']"></a>
-                </li>
-                <li>
-                    <a ui-sref="root.perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
-                       ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="$$kaannokset['perusteen-tiedot']"
-                       oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'luku' }"></a>
-                </li>
-                <li>
-                    <a ui-sref="root.perusteprojekti.projektiryhma({ perusteProjektiId: projekti.id })"
-                       ui-sref-active="headernavi-active" icon-role="user" kaanna="$$kaannokset['projekti-projektiryhma']"></a>
-                </li>
-            </ul>
+            <div class="col-xs-6 headernavi">
+                <ul>
+                    <li>
+                        <a class="action-link" ng-click="lisaaTiedote()"
+                           icon-role="envelope" kaanna="'lisaa-tiedote'"></a>
+                    </li>
+                    <li>
+                        <a ui-sref="root.perusteprojekti.termisto({ perusteProjektiId: projekti.id })"
+                           ui-sref-active="headernavi-active" icon-role="book" kaanna="'perusteen-termisto'"></a>
+                    </li>
+                    <li>
+                        <a ui-sref="root.perusteprojekti.tiedot({ perusteProjektiId: projekti.id })"
+                           ui-sref-active="headernavi-active" icon-role="info" kaanna="$$kaannokset['projektin-tiedot']"></a>
+                    </li>
+                    <li>
+                        <a ui-sref="root.perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
+                           ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="$$kaannokset['perusteen-tiedot']"
+                           oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'luku' }"></a>
+                    </li>
+                    <li>
+                        <a ui-sref="root.perusteprojekti.projektiryhma({ perusteProjektiId: projekti.id })"
+                           ui-sref-active="headernavi-active" icon-role="user" kaanna="$$kaannokset['projekti-projektiryhma']"></a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

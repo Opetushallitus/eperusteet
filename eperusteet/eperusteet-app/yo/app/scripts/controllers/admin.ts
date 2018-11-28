@@ -17,8 +17,8 @@
 enum ProjektiTila {
     POISTETTU = "poistettu",
     LAADINTA = "laadinta",
-    KOMMENTOINTI = "kommentointi",
     VIIMEISTELY = "viimeistely",
+    KAANNOS = "kaannos",
     VALMIS = "valmis",
     JULKAISTU = "julkaistu"
 }

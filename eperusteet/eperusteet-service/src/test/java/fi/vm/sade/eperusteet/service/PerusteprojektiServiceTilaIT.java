@@ -121,56 +121,6 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testUpdateTilaLaadintaToKommentointi() {
-        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);
-        long perusteId = projektiDto.getPeruste().getIdLong();
-        luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        luoTutkinnonOsa(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
-
-        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.KOMMENTOINTI, null);
-
-        transactionTemplate = new TransactionTemplate(transactionManager);
-        // the code in this method executes in a transactional context
-        transactionTemplate.execute(transactionStatus -> {
-                Perusteprojekti pp = repo.findOne(projektiDto.getId());
-                assertTrue(status.isVaihtoOk());
-                assertThat(status.getInfot()).isEmpty();
-                assertTrue(pp.getTila().equals(ProjektiTila.KOMMENTOINTI));
-                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
-                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
-                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
-                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
-                }
-            return null;
-        });
-    }
-
-    @Test
-    public void testUpdateTilaKommentointiToLaadinta() {
-        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.KOMMENTOINTI, null, PerusteTila.LUONNOS);
-        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        TutkinnonOsaViiteDto osaDto = luoTutkinnonOsa(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
-
-        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.LAADINTA, null);
-
-        transactionTemplate = new TransactionTemplate(transactionManager);
-        // the code in this method executes in a transactional context
-        transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
-            assertTrue(status.isVaihtoOk());
-            assertThat(status.getInfot()).isEmpty();
-            assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
-            assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
-            for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
-                commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
-                commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
-            }
-            return null;
-        });
-
-    }
-
-    @Test
     public void testUpdateTilaLaadintaToViimeistelyValidiRakenne() {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);

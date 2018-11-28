@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
     public TilaUpdateStatus validate(Long perusteprojektiId) {
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
         Set<Koulutus> koulutukset = projekti.getPeruste().getKoulutukset();
-        if (koulutukset == null || koulutukset.isEmpty()) {
+        if (ObjectUtils.isEmpty(koulutukset)) {
             TilaUpdateStatus status = new TilaUpdateStatus();
             status.setVaihtoOk(false);
             status.addStatus("koulutuskoodi-puuttuu");
@@ -39,7 +40,7 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
 
     @Override
     public boolean applicableTila(ProjektiTila tila) {
-        return tila.isOneOf(ProjektiTila.JULKAISTU, ProjektiTila.VIIMEISTELY);
+        return tila.isOneOf(ProjektiTila.JULKAISTU, ProjektiTila.VALMIS);
     }
 
     @Override

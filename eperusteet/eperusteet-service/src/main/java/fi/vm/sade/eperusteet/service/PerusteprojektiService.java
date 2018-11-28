@@ -22,20 +22,20 @@ import fi.vm.sade.eperusteet.dto.KoulutuskoodiStatusDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import java.util.List;
-import java.util.Set;
+import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  *
@@ -76,7 +76,7 @@ public interface PerusteprojektiService {
     PerusteprojektiDto update(@P("id") final Long id, PerusteprojektiDto perusteprojektiDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
-    Set<ProjektiTila> getTilat(@P("id") final Long id);
+    List<ProjektiTila> getTilat(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'TILANVAIHTO')")
     TilaUpdateStatus updateTila(@P("id") final Long id, ProjektiTila tila, TiedoteDto tiedoteDto);
@@ -118,6 +118,6 @@ public interface PerusteprojektiService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     Page<KoulutuskoodiStatusDto> getKoodiongelmat(PageRequest p);
 
-    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'TILANVAIHTO')")
     TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila);
 }

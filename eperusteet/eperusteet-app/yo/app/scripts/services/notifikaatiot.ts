@@ -140,7 +140,13 @@ angular
                     );
                 } else if (response.data && response.data.syy) {
                     var syy = response.data.syy;
-                    uusiViesti(2, _.isArray(syy) ? syy[0] : syy);
+                    if (_.isArray(syy)) {
+                        _.each(syy, osasyy => {
+                            uusiViesti(2, osasyy);
+                        });
+                    } else {
+                        uusiViesti(2, syy);
+                    }
                 } else {
                     uusiViesti(2, Kaanna.kaanna("odottamaton-virhe"));
                 }

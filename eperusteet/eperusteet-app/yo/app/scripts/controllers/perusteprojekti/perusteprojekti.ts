@@ -434,12 +434,16 @@ angular
             $scope.isOpas = isOpas; // Käytetään alinäkymissä
             const isAmmatillinen = koulutustyyppi => _.includes(YleinenData.ammatillisetkoulutustyypit, koulutustyyppi);
             $scope.isAmmatillinen = isAmmatillinen($scope.peruste.koulutustyyppi);
-            $scope.muokkausEnabled = false;
+            $scope.editEnabled = false;
             $scope.backLink = perusteprojektiBackLink;
             $scope.$$kaannokset = perusteprojektiTiedot.getPerusteprojektiKaannokset($scope.isOpas && "opas");
 
             $scope.lisaaTiedote = () => {
                 TiedoteService.lisaaTiedote(null, $stateParams.perusteProjektiId);
+            };
+
+            $scope.validoiPeruste = () => {
+                // http://localhost:9000/eperusteet-service/api/perusteprojektit/3000/validoi
             };
 
             $scope.luoPdf = () => {
@@ -505,8 +509,10 @@ angular
 
             $scope.koulutusalaNimi = koodi => koulutusalaService.haeKoulutusalaNimi(koodi);
 
-            $scope.canChangePerusteprojektiStatus = () =>
-                perusteprojektiOikeudet.onkoOikeudet("perusteprojekti", "tilanvaihto");
+            $scope.canChangePerusteprojektiStatus =
+                () => perusteprojektiOikeudet.onkoOikeudet("perusteprojekti", "tilanvaihto")
+                    && !$scope.editEnabled;
+
 
             $scope.showBackLink = () =>
                 !(
@@ -554,10 +560,10 @@ angular
             };
 
             $scope.$on("enableEditing", () => {
-                $scope.muokkausEnabled = true;
+                $scope.editEnabled = true;
             });
             $scope.$on("disableEditing", () => {
-                $scope.muokkausEnabled = false;
+                $scope.editEnabled = false;
             });
 
             $scope.$on("$destroy", () => {

@@ -48,7 +48,7 @@ public class ValidatorKvliite implements Validator {
 
     @Override
     public boolean applicableTila(ProjektiTila tila) {
-        return tila.isOneOf(ProjektiTila.JULKAISTU, ProjektiTila.VIIMEISTELY);
+        return tila.isOneOf(ProjektiTila.JULKAISTU, ProjektiTila.VALMIS);
     }
 
     @Override
