@@ -15,13 +15,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = {ValidKoodiValidator.class})
 @Documented
 public @interface ValidKoodisto {
-
-    String message() default "koodilla-vaara-koodisto";
-
-    Class<?>[] groups() default {};
-
-    Class<? extends Payload>[] payload() default {};
-
     String koodisto() default "";
     String message() default "koodilla-vaara-koodisto";
     Class<?>[] groups() default {};
