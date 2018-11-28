@@ -23,5 +23,7 @@ public @interface ValidKoodisto {
     Class<? extends Payload>[] payload() default {};
 
     String koodisto() default "";
-
+    String message() default "koodilla-vaara-koodisto";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 }

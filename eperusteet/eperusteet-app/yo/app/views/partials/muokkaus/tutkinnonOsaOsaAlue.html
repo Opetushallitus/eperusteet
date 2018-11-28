@@ -13,9 +13,9 @@
     <div ng-if="alarelaatiotLadattu">
         <div ng-if="alarelaatiot && alarelaatiot.length > 0">
             <div style="margin-bottom: 6px" ng-repeat="ar in alarelaatiot"
-                 ng-click="valitseAlarelaatio($index === 0 ? null : ar)">
+                 ng-click="valitseAlarelaatio($index === 0 ? null : ar)" class="koodi-valinta">
                 <span class="glyphicon"
-                      ng-class="osaAlue.koodiUri === ar.koodiUri || (!osaAlue.koodiUri && $index === 0) ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
+                      ng-class="osaAlue.koodiUri === ar.koodiUri || osaAlue.koodi.uri === ar.koodiUri || (!osaAlue.koodiUri && !osaAlue.koodi.uri && $index === 0) ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
                 <span ng-hide="ar.nimi" kaanna="'ei-valintaa'"></span>
                 <span ng-show="ar.nimi">{{ ar.nimi | kaanna }} (<b>{{ ar.koodiArvo }}</b>)</span>
             </div>
@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <hr class="mujuviiva">
+    <hr class="viiva">
 
     <div ng-repeat="tavoite in osaamistavoitepuu | filter:{$poistettu: false}"
          class="panel-clean osa-alue">

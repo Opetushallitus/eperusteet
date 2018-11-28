@@ -28,14 +28,15 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
@@ -79,11 +80,13 @@ public class OpasServiceIT {
         PerusteprojektiLuontiDto ppldto = null;
         if (tyyppi == PerusteTyyppi.NORMAALI) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, null, null, tyyppi, ryhmaId);
+            ppldto.setReforminMukainen(false);
             ppldto.setDiaarinumero(TestUtils.uniikkiString());
             ppldto.setYhteistyotaho(yhteistyotaho);
             ppldto.setTehtava(tehtava);
         } else if (tyyppi == PerusteTyyppi.POHJA) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, null, null, null, tyyppi, ryhmaId);
+            ppldto.setReforminMukainen(false);
             ppldto.setYhteistyotaho(yhteistyotaho);
             ppldto.setTehtava(tehtava);
         }

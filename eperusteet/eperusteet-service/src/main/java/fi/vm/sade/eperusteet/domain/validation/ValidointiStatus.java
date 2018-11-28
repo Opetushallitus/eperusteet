@@ -1,10 +1,8 @@
 package fi.vm.sade.eperusteet.domain.validation;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,7 +32,6 @@ public class ValidointiStatus {
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @Getter
-    @Setter
     private List<ValidointiStatusInfo> infot = new ArrayList<>();
 
     @Getter

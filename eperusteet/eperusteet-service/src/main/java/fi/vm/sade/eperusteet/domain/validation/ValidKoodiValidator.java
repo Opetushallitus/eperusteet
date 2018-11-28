@@ -8,18 +8,19 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.Objects;
 
 public class ValidKoodiValidator implements ConstraintValidator<ValidKoodisto, Koodi> {
-    private String value = "";
+    private String koodisto = "";
 
     @Override
     public void initialize(ValidKoodisto constraintAnnotation) {
-        this.value = constraintAnnotation.koodisto();
+        koodisto = constraintAnnotation.koodisto();
     }
 
     @Override
-    public boolean isValid(Koodi value, ConstraintValidatorContext context) {
-        if (value != null && !ObjectUtils.isEmpty(this.value)) {
-            return Objects.equals(this.value, value.getKoodisto());
-        } else {
+    public boolean isValid(Koodi koodi, ConstraintValidatorContext context) {
+        if (koodi != null && !ObjectUtils.isEmpty(koodisto)) {
+            return Objects.equals(koodisto, koodi.getKoodisto());
+        }
+        else {
             return true;
         }
     }

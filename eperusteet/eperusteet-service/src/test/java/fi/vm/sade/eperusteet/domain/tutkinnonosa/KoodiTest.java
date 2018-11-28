@@ -14,27 +14,26 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
-import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import org.junit.Test;
 
-import java.util.UUID;
+public class KoodiTest {
+    @Test
+    public void validKoodisto() {
+        Koodi koodi = new Koodi();
+        koodi.setKoodisto("koodisto");
+        koodi.setUri("koodisto_uri");
+        koodi.onPrePersist();
+    }
 
-/**
- *
- * @author nkala
- */
-@Getter
-@Setter
-public class AIPEKurssiBaseDto implements AIPEHasId {
-    private Long id;
-    private UUID tunniste;
-    private Optional<LokalisoituTekstiDto> nimi;
-    private EntityReference oppiaine;
-    private KoodiDto koodi;
+    @Test(expected = BusinessRuleViolationException.class)
+    public void invalidKoodisto() {
+        Koodi koodi = new Koodi();
+        koodi.setKoodisto("koodisto");
+        koodi.setUri("koodisto2_uri");
+        koodi.onPrePersist();
+    }
 }

@@ -19,9 +19,9 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Builder;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;

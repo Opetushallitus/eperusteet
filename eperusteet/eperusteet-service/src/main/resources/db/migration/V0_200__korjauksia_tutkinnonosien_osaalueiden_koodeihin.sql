@@ -1,0 +1,1 @@
+UPDATE koodi SET koodisto = 'ammatillisenoppiaineet' WHERE uri LIKE 'ammatillisenoppiaineet_%' AND koodisto = 'tutkinnonosat';

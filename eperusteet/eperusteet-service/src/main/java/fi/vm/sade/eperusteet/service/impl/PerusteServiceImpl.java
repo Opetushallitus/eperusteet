@@ -50,6 +50,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
@@ -257,52 +258,39 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Transactional(readOnly = true)
     private <T extends PerusteHakuDto> Page<T> findByImpl(PageRequest page, PerusteQuery pquery, Class<T> type) {
-        Stream<Peruste> koodistostaHaetut = Stream.empty();
+        Set<Long> koodistostaLoydetyt = new HashSet<>();
 
         // Ladataan koodistosta osaamisala ja tutkintonimikehakua vastaavat koodit
-        if (pquery.getNimi() != null && "".equals(pquery.getNimi()) && pquery.isOsaamisalat()) {
-            Stream<KoodistoKoodiDto> urit = koodistoService.filterBy("osaamisala", pquery.getNimi());
-            Stream <Peruste> osaamisalat = getPerusteetByUris(urit.map(KoodistoKoodiDto::getKoodiUri),
-                    perusteet::findAllByOsaamisala);
-            koodistostaHaetut = Stream.concat(koodistostaHaetut, osaamisalat);
+        if (StringUtils.isNotEmpty(pquery.getNimi()) && pquery.isOsaamisalat()) {
+            List<KoodistoKoodiDto> osaamisalakoodit = koodistoService.filterBy("osaamisala", pquery.getNimi());
+            Set<Long> osaamisalat = getPerusteetByUris(
+                        osaamisalakoodit.stream().map(KoodistoKoodiDto::getKoodiUri),
+                        perusteet::findAllByOsaamisala)
+                    .map(Peruste::getId)
+                    .collect(Collectors.toSet());
+            koodistostaLoydetyt.addAll(osaamisalat);
         }
 
         // Haetaan perusteiden id:t mihin on liitetty osaamisalat tai tutkintonimikkeet
-        if (pquery.getNimi() != null && pquery.isTutkintonimikkeet()) {
-            koodistostaHaetut = Stream.concat(koodistostaHaetut, getPerusteetByUris(
-                    koodistoService.filterBy(
-                            "tutkintonimikkeet",
-                            pquery.getNimi()).map(KoodistoKoodiDto::getKoodiUri),
-                            tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri));
+        if (StringUtils.isNotEmpty(pquery.getNimi()) && pquery.isTutkintonimikkeet()) {
+            List<KoodistoKoodiDto> tutkintonimikekoodit = koodistoService.filterBy("tutkintonimikkeet", pquery.getNimi());
+            Set<Long> tutkintonimikkeelliset = getPerusteetByUris(
+                        tutkintonimikekoodit.stream().map(KoodistoKoodiDto::getKoodiUri),
+                        tutkintonimikeKoodiRepository::findAllByTutkintonimikeUri)
+                    .map(Peruste::getId)
+                    .collect(Collectors.toSet());
+            koodistostaLoydetyt.addAll(tutkintonimikkeelliset);
         }
 
         // Lisätään mahdolliset perusteet hakujoukkoon
-        Page<Peruste> result = perusteet.findBy(page, pquery, koodistostaHaetut.map(Peruste::getId).collect(Collectors.toSet()));
+        Page<Peruste> result = perusteet.findBy(page, pquery, koodistostaLoydetyt)
+                .map(p -> { // Collect tutkintonimikkeet for easy display in list views
+                    p.setTutkintonimikeKoodit(tutkintonimikeKoodiRepository.findByPerusteId(p.getId()).stream()
+                        .map(tutkintonimikeKoodi -> new Koodi(tutkintonimikeKoodi.getTutkintonimikeUri(), "tutkintonimikkeet"))
+                        .collect(Collectors.toSet()));
+                    return p;
+                });
         PageDto<Peruste, T> resultDto = new PageDto<>(result, type, page, mapper);
-
-        if (pquery.isTutkintonimikkeet()) {
-            resultDto.forEach(dto -> {
-                List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = getTutkintonimikeKoodit(dto.getId());
-                dto.setTutkintonimikkeet(mapper.mapAsList(tutkintonimikeKoodit, TutkintonimikeKoodiDto.class));
-
-                List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>> tutkintonimikkeetKoodisto = new ArrayList<>();
-
-                // FIXME
-                for (TutkintonimikeKoodiDto tkd : tutkintonimikeKoodit) {
-                    HashMap<String, KoodistoKoodiDto> nimet = new HashMap<>();
-                    if (tkd.getOsaamisalaUri() != null) {
-                        nimet.put(tkd.getOsaamisalaArvo(), koodistoService.get("osaamisala", tkd.getOsaamisalaUri()));
-                    }
-                    nimet.put(tkd.getTutkintonimikeArvo(), koodistoService.get("tutkintonimikkeet", tkd.getTutkintonimikeUri()));
-                    if (tkd.getTutkinnonOsaUri() != null) {
-                        nimet.put(tkd.getTutkinnonOsaArvo(), koodistoService.get("tutkinnonosat", tkd.getTutkinnonOsaUri()));
-                    }
-                    tutkintonimikkeetKoodisto.add(new CombinedDto<>(tkd, nimet));
-                }
-
-                dto.setTutkintonimikkeetKoodisto(tutkintonimikkeetKoodisto);
-            });
-        }
 
         for (T haettu : resultDto) {
             // Lisätään korvaavat ja korvattavat perusteet
@@ -701,7 +689,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
         }
         perusteet.save(current);
-        return mapper.map(current, PerusteDto.class);
+        PerusteDto result = mapper.map(current, PerusteDto.class);
+        return result;
     }
 
     @Override

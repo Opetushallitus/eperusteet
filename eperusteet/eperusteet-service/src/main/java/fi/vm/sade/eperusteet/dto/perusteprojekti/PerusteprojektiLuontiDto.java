@@ -37,7 +37,7 @@ public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private ProjektiTila tila;
     private PerusteTyyppi tyyppi;
     private String ryhmaOid;
-    private boolean reforminMukainen = false;
+    private boolean reforminMukainen = true;
 
     public PerusteprojektiLuontiDto(String koulutustyyppi, LaajuusYksikko laajuusYksikko, Long perusteId, ProjektiTila tila, PerusteTyyppi tyyppi, String ryhmaOid) {
         this.koulutustyyppi = koulutustyyppi;

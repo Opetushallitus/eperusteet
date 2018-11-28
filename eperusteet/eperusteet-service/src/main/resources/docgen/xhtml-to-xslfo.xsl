@@ -15,7 +15,9 @@
 
                         <fo:simple-page-master master-name="cover"
                                                page-width="210mm" page-height="297mm">
-                            <fo:region-body margin="30mm" margin-top="80mm" margin-bottom="34mm"/>
+                            <fo:region-body margin="30mm" margin-top="60mm" margin-bottom="34mm"/>
+                            <fo:region-before region-name="rb"
+                                              extent="20mm"/>
                             <fo:region-after region-name="ra"
                                              extent="24mm"/>
                         </fo:simple-page-master>
@@ -86,6 +88,13 @@
 
             <!-- Cover page -->
             <fo:page-sequence master-reference="cover">
+                <fo:static-content flow-name="rb">
+                    <fo:block font-size="18pt" font-weight="bold" text-align="center" margin-top="10mm">
+                        <xsl:if test="/html/@lang='fi'">
+                            <xsl:text>Tutkinnon perusteet</xsl:text>
+                        </xsl:if>
+                    </fo:block>
+                </fo:static-content>
                 <fo:static-content flow-name="ra">
                     <fo:block text-align="center">
                         <xsl:choose>

@@ -4,7 +4,6 @@ import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
-import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.TpoOpetuksenSisaltoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TAITEENALA;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController

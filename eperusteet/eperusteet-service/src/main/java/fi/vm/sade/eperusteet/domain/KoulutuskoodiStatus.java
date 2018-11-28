@@ -46,7 +46,6 @@ public class KoulutuskoodiStatus {
     private Date lastCheck;
 
     @Getter
-    @Setter
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     private List<KoulutuskoodiStatusInfo> infot = new ArrayList<>();
 
