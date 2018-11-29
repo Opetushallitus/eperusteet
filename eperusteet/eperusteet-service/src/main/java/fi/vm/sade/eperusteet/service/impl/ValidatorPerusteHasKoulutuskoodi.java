@@ -20,7 +20,7 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
     private PerusteRepository perusteRepository;
 
     @Override
-    public TilaUpdateStatus validate(Long perusteprojektiId) {
+    public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila tila) {
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
         Set<Koulutus> koulutukset = projekti.getPeruste().getKoulutukset();
         if (koulutukset == null || koulutukset.isEmpty()) {
@@ -39,7 +39,7 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
 
     @Override
     public boolean applicableTila(ProjektiTila tila) {
-        return tila.isOneOf(ProjektiTila.JULKAISTU, ProjektiTila.VIIMEISTELY);
+        return tila.isOneOf(ProjektiTila.JULKAISTU, ProjektiTila.VALMIS);
     }
 
     @Override

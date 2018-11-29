@@ -28,7 +28,7 @@ public class ValidatorKvliite implements Validator {
     private PerusteService perusteService;
 
     @Override
-    public TilaUpdateStatus validate(Long perusteprojektiId) {
+    public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila tila) {
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
         KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(projekti.getPeruste().getId());
         Set<Kieli> vaaditutKielet = new HashSet<Kieli>() {{
@@ -47,11 +47,6 @@ public class ValidatorKvliite implements Validator {
     }
 
     @Override
-    public boolean applicableTila(ProjektiTila tila) {
-        return tila.isOneOf(ProjektiTila.JULKAISTU, ProjektiTila.VIIMEISTELY);
-    }
-
-    @Override
     public boolean applicablePerustetyyppi(PerusteTyyppi tyyppi) {
         return tyyppi.isOneOf(PerusteTyyppi.NORMAALI);
     }
@@ -64,7 +59,7 @@ public class ValidatorKvliite implements Validator {
         tarkistaLokalisoituTekstiDto("kvliite-validointi-tyotehtavat-joissa-voi-toimia",
                 julkinenKVLiite.getTyotehtavatJoissaVoiToimia(), vaaditutKielet, virheellisetKielet);
         if (julkinenKVLiite.getArvosanaAsteikko() == null) {
-            updateStatus.setVaihtoOk(false);
+//            updateStatus.setVaihtoOk(false);
             updateStatus.addStatus("kvliite-validointi-arvosana-asteikko");
         }
         tarkistaLokalisoituTekstiDto("kvliite-validointi-jatkoopinto-kelpoisuus",
@@ -84,7 +79,7 @@ public class ValidatorKvliite implements Validator {
         tarkistaLokalisoituTekstiDto("kvliite-validointi-nimi",
                 julkinenKVLiite.getNimi(), vaaditutKielet, virheellisetKielet);
         if (ObjectUtils.isEmpty(julkinenKVLiite.getTasot())) {
-            updateStatus.setVaihtoOk(false);
+//            updateStatus.setVaihtoOk(false);
             updateStatus.addStatus("kvliite-validointi-tasot");
         }
         Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus = julkinenKVLiite.getMuodostumisenKuvaus();
@@ -95,13 +90,8 @@ public class ValidatorKvliite implements Validator {
         }
 
         virheellisetKielet.forEach((viesti, kielet) -> {
-            updateStatus.setVaihtoOk(false);
+//            updateStatus.setVaihtoOk(false);
             updateStatus.addStatus(viesti, kielet);
         });
-    }
-
-    @Override
-    public String getName() {
-        return this.getClass().getSimpleName();
     }
 }
