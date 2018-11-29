@@ -41,7 +41,7 @@ public class ProjektiValidatorImpl implements ProjektiValidator {
                 continue;
             }
 
-            if (validator.applicableTila(tila)) {
+            if (!validator.applicableTila(tila)) {
                 continue;
             }
 

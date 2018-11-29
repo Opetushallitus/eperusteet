@@ -1,7 +1,9 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -48,6 +50,17 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
                 .containsExactly(
                         osaamisala.getUri(),
                         osaamisala.getKoodisto());
+    }
+
+    @Test
+    public void testPerusteprojektiValidators() {
+        TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.LAADINTA);
+        assertThat(status.isVaihtoOk()).isTrue();
+
+        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
+        assertThat(status.isVaihtoOk()).isFalse();
+        assertThat(status.getInfot().stream().map(TilaUpdateStatus.Status::getViesti))
+                .contains("koulutuskoodi-puuttuu");
     }
 
 }
