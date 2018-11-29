@@ -983,9 +983,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-    @Deprecated
     public TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila) {
-        return validoiProjektiImpl(id, tila);
+        TilaUpdateStatus status = validoiProjektiImpl(id, tila);
+        status.merge(projektiValidator.run(id, tila));
+        return status;
     }
 
 
@@ -1005,6 +1006,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
      */
     @IgnorePerusteUpdateCheck
     @Transactional
+    @Deprecated
     private TilaUpdateStatus validoiProjektiImpl(Long id, ProjektiTila tila) {
 
         TilaUpdateStatus updateStatus = new TilaUpdateStatus();
@@ -1281,7 +1283,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, TiedoteDto tiedoteDto) {
 
         TilaUpdateStatus updateStatus = validoiProjekti(id, tila);
-        updateStatus.merge(projektiValidator.run(id, tila));
 
         // Perusteen tilan muutos
         if (!updateStatus.isVaihtoOk()) {

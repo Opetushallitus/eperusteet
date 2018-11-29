@@ -37,7 +37,7 @@ public class ValidatorKvliite implements Validator {
             add(Kieli.EN);
         }};
         TilaUpdateStatus result = new TilaUpdateStatus();
-//        tarkistaKvliite(julkinenKVLiite, vaaditutKielet, result);
+        tarkistaKvliite(julkinenKVLiite, vaaditutKielet, result);
         return result;
     }
 
