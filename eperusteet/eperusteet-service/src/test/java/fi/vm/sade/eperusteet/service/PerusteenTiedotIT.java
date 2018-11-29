@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.from;
 
 
 @DirtiesContext
@@ -58,9 +59,22 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
         assertThat(status.isVaihtoOk()).isTrue();
 
         status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
-        assertThat(status.isVaihtoOk()).isFalse();
-        assertThat(status.getInfot().stream().map(TilaUpdateStatus.Status::getViesti))
-                .contains("koulutuskoodi-puuttuu");
+        assertThat(status)
+                .returns(false, from(TilaUpdateStatus::isVaihtoOk));
+        assertThat(status.getInfot())
+                .extracting(TilaUpdateStatus.Status::getViesti)
+                .contains(
+                        "koulutuskoodi-puuttuu",
+                        "kvliite-validointi-tyotehtavat-joissa-voi-toimia");
+        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.VIIMEISTELY);
+        assertThat(status)
+                .returns(false, from(TilaUpdateStatus::isVaihtoOk));
+        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.KOMMENTOINTI);
+        assertThat(status)
+                .returns(true, from(TilaUpdateStatus::isVaihtoOk));
+        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.POISTETTU);
+        assertThat(status)
+                .returns(true, from(TilaUpdateStatus::isVaihtoOk));
     }
 
 }

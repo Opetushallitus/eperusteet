@@ -10,17 +10,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public interface Validator {
     @PreAuthorize("isAuthenticated()")
-    TilaUpdateStatus validate(Long perusteprojektiId);
+    TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila targetTila);
 
     @PreAuthorize("permitAll()")
-    String getName();
+    default String getName() {
+        return this.getClass().getSimpleName();
+    }
 
     @PreAuthorize("isAuthenticated()")
     boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi);
 
     @PreAuthorize("isAuthenticated()")
-    boolean applicableTila(ProjektiTila tila);
+    default boolean applicableTila(ProjektiTila tila) {
+        return tila.isOneOf(ProjektiTila.JULKAISTU, ProjektiTila.VALMIS);
+    }
 
     @PreAuthorize("isAuthenticated()")
-    boolean applicablePerustetyyppi(PerusteTyyppi tyyppi);
+    default boolean applicablePerustetyyppi(PerusteTyyppi tyyppi) {
+        return PerusteTyyppi.NORMAALI.equals(tyyppi);
+    }
 }

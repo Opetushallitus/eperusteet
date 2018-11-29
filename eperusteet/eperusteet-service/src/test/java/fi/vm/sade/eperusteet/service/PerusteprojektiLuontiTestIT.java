@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
@@ -33,14 +32,13 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
-
-import javax.persistence.EntityManager;
 
 
 @DirtiesContext
@@ -117,7 +115,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         assertThat(status.getInfot()).hasSize(1);
         assertThat(status.getInfot())
                 .extracting("viesti")
-                .containsExactly("rakenteen-validointi-virhe");
+                .contains("rakenteen-validointi-virhe");
         assertThat(status.getInfot().get(0).getValidointi().ongelmat.get(0).ongelma)
                 .isEqualTo("tutkinnolle-ei-maaritetty-kokonaislaajuutta");
         RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, 0);
