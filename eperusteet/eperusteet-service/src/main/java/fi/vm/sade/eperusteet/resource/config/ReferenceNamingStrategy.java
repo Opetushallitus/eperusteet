@@ -45,9 +45,12 @@ public class ReferenceNamingStrategy extends PropertyNamingStrategy {
     private String getName(MapperConfig<?> config, Type type, String defaultName) {
         final JavaType et = config.getTypeFactory().constructType(EntityReference.class);
         final JavaType ot = config.getTypeFactory().constructReferenceType(Optional.class, et);
+        // Todo: Use only java.util.Optional
+        final JavaType googleOt = config.getTypeFactory()
+                .constructReferenceType(com.google.common.base.Optional.class, et);
         final JavaType t = config.getTypeFactory().constructType(type);
 
-        if (et.equals(t) || ot.equals(t)) {
+        if (et.equals(t) || ot.equals(t) || googleOt.equals(t)) {
             return "_" + defaultName;
         }
 
