@@ -16,12 +16,12 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Set;
-
-import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Optional;
+import java.util.Set;
 
 /**
  *

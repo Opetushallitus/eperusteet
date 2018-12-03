@@ -16,8 +16,6 @@
 
 package fi.vm.sade.eperusteet.hibernate;
 
-import com.google.common.base.Optional;
-import static com.google.common.base.Optional.fromNullable;
 import fi.ratamaa.dtoconverter.reflection.Property;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.annotation.Identifiable;

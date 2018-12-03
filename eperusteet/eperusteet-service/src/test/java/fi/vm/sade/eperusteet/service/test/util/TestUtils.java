@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.test.util;
 
-import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
