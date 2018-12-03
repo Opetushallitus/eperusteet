@@ -192,6 +192,7 @@ angular
         };
 
         $scope.tallennaPerusteprojekti = function() {
+            $scope.perusteprojektiForm.$saving = true;
             let projekti = PerusteProjektiService.get();
             if ($scope.isLukiokoulutus()) {
                 //Lukiokoulutus

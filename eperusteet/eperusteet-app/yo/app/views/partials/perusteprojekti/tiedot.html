@@ -42,7 +42,13 @@
 
         <div class="projekti-form-buttons" ng-show="wizardissa()">
           <button ui-sref="root.aloitussivu" id="cancel" class="btn" kaanna="'peruuta'"></button>
-          <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid">{{pohja() ? 'luo-perustepohja-nappi' : 'luo-perusteprojekti-nappi' | kaanna}}</button>
+          <button
+            type="submit"
+            ng-click="tallennaPerusteprojekti()"
+            id="submit"
+            class="btn btn-primary"
+            ng-disabled="perusteprojektiForm.$invalid || perusteprojektiForm.$saving">
+            {{pohja() ? 'luo-perustepohja-nappi' : 'luo-perusteprojekti-nappi' | kaanna}}</button>
         </div>
       </ng-form>
       <div class="panel panel-default panel-clean" ng-if="!wizardissa()">
