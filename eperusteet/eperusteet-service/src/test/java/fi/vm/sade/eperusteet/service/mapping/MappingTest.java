@@ -25,8 +25,6 @@ import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
-import java.util.Collections;
-import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,18 +33,17 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.List;
+
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author jhyoty
  */
 public class MappingTest {
-
     @Test
     public void testOptionalMapping() {
 

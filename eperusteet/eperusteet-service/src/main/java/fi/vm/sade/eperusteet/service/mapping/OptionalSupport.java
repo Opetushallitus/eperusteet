@@ -19,10 +19,10 @@ import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.util.Collection;
-
 import ma.glasnost.orika.*;
 import ma.glasnost.orika.metadata.Type;
+
+import java.util.Collection;
 
 /**
  *
