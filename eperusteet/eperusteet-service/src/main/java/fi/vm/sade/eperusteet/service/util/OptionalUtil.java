@@ -57,31 +57,12 @@ public class OptionalUtil {
         return found(opt, OptionalUtil.<T>truePredicate(), exception);
     }
 
-    public static <T> T found(Optional<T> opt, Predicate<? super T> predicate) throws NotExistsException {
-        return found(opt, predicate, NOT_EXISTS);
-    }
-
     public static <T> T found(Optional<T> opt) throws NotExistsException {
         return found(opt, OptionalUtil.<T>truePredicate(), NOT_EXISTS);
     }
 
-    public static <T,Ex extends Exception> T found(Optional<T> opt, Predicate<? super T> predicate, Supplier<Ex> exception) throws Ex{
-        if (!opt.isPresent()) {
-            throw exception.get();
-        }
-        return tested(predicate, exception, opt.get());
-    }
-
-    public static <T,Ex extends Exception> T found(Optional<T> opt, Predicate<? super T> predicate) throws Ex{
+    public static <T,Ex extends Exception> T found(Optional<T> opt, Predicate<? super T> predicate) throws Ex {
         return found(opt, predicate, NOT_EXISTS);
-    }
-
-    public static <T,Ex extends Exception> T found(Optional<T> opt, Supplier<Ex> exception) throws Ex {
-        return found(opt, OptionalUtil.<T>truePredicate(), exception);
-    }
-
-    public static <T> T found(Optional<T> opt) throws NotExistsException {
-        return found(opt, OptionalUtil.<T>truePredicate(), NOT_EXISTS);
     }
 
     public static <T> T found(T opt) throws NotExistsException {

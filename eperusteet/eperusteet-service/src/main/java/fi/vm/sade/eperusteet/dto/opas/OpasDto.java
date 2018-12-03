@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.dto.opas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,7 +32,7 @@ import lombok.Setter;
 public class OpasDto {
     private Long id;
     private String nimi;
-    private EntityReference peruste;
+    private Reference peruste;
     private ProjektiTila tila;
     private String ryhmaOid;
 }

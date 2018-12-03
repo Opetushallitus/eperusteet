@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import java.io.Serializable;
 import javax.persistence.*;
 
@@ -50,8 +50,8 @@ public class Osaamistaso implements Serializable, ReferenceableEntity {
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id);
     }
 
 }

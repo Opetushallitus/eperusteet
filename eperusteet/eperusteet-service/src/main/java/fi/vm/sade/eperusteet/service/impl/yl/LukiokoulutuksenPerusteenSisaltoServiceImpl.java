@@ -20,7 +20,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.*;
@@ -39,7 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
@@ -94,8 +93,8 @@ public class LukiokoulutuksenPerusteenSisaltoServiceImpl
         structure.getOppiaineet().addAll(oldRakenne.getOppiaineet().stream().map(oa ->
             new OppiaineJarjestysDto(oa.getId(),
                     // On muuten pirun käteviä ja hyödyllisiä nämä Orikalta nulleina ulos tulevat Optionalit:
-                    oa.getOppiaine() == null ? null : oa.getOppiaine().transform(EntityReference::getIdLong).orNull(),
-                    oa.getJnro() == null ? null : oa.getJnro().orNull())).collect(toList()));
+                    oa.getOppiaine() == null ? null : oa.getOppiaine().map(Reference::getIdLong).orElse(null),
+                    oa.getJnro() == null ? null : oa.getJnro().orElse(null))).collect(toList()));
         kurssiService.updateTreeStructure(perusteId, structure, revision);
         return oldRakenne;
     }

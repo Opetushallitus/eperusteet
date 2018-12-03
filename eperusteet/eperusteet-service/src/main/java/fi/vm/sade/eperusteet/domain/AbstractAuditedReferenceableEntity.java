@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,8 +39,8 @@ public abstract class AbstractAuditedReferenceableEntity extends AbstractAudited
     private Long id;
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id.toString());
     }
 
 }

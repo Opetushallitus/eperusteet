@@ -17,10 +17,11 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.math.BigDecimal;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -30,5 +31,5 @@ public class TutkinnonOsaViiteSuppeaDto {
     private BigDecimal laajuus;
     private BigDecimal laajuusMaksimi; // TODO: Ainoastaan valmatelmalla
     private Integer jarjestys;
-    private EntityReference tutkinnonOsa;
+    private Reference tutkinnonOsa;
 }

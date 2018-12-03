@@ -15,24 +15,30 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import ma.glasnost.orika.*;
 import ma.glasnost.orika.metadata.Type;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
- *
- * Tarkoitettu Dto->Entiteetti->Dto mappaukseen.
- *
- * Mahdollistaa mappauksen siten, että DTO-luokissa voi määritellä attribuuttela Optional<Attr> a ja mappaus entiteetteihin toimii seuraavasti:
- * null: pidetään kohdearvo
- * Present: mapätään rekursiivisesti kohdearvoon
- * Absent: asetetaan kohdearvo NULL-arvoksi
- *
+ * Tuki Javan Optional-luokalle Orika mapperin yhteydessä.
+ * <p>
+ * Tarkoitettu Dto-Entiteetti-Dto mappaukseen.
+ * <p>
+ * Mahdollistaa mappauksen siten, että DTO-luokissa voi määritellä attribuutteja Optional&lt;Attr&gt; ja mappaus entiteetteihin toimii seuraavasti:
+ * <ul>
+ * <li>null: pidetään kohdearvo
+ * <li>present: mapätään rekursiivisesti kohdearvoon
+ * <li>empty: asetetaan kohdearvo NULL-arvoksi
+ * </ul>
  * TODO: Kohdearvo ei voi olla itse Optional (ainakaan kaikissa tapauksissa).
+ *
  * @author jhyoty
  */
 public final class OptionalSupport {
@@ -49,12 +55,22 @@ public final class OptionalSupport {
         factory.registerMapper(new Mapper());
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T unproxy(T entity) {
+        if (entity instanceof HibernateProxy) {
+            Hibernate.initialize(entity);
+            entity = (T) ((HibernateProxy) entity).getHibernateLazyInitializer()
+                    .getImplementation();
+        }
+        return entity;
+    }
+
     static final class Mapper extends CustomMapper<Optional<?>, Object> {
 
         @Override
         public void mapAtoB(Optional<?> a, Object b, MappingContext context) {
             if (a.isPresent()) {
-                mapperFacade.map(a.get(), b, context);
+                mapperFacade.map(a.get(), unproxy(b), context);
             } else {
                 throw new MappingException("Optional.absent havaittu");
             }
@@ -68,7 +84,6 @@ public final class OptionalSupport {
 
     }
 
-    //Optional.absent --> null
     static final class Filter extends NullFilter<Optional<?>, Object> {
 
         @Override
@@ -112,11 +127,11 @@ public final class OptionalSupport {
             if (source != null) {
                 return Optional.of(mapperFacade.map(source, destinationType.getComponentType().getRawType()));
             }
-            return null;
+            return Optional.empty();
         }
     }
 
-    static final class OptionalEntitityReferenceConverter extends CustomConverter<Optional<EntityReference>, ReferenceableEntity> {
+    static final class OptionalEntitityReferenceConverter extends CustomConverter<Optional<Reference>, ReferenceableEntity> {
 
         @Override
         public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {
@@ -125,7 +140,7 @@ public final class OptionalSupport {
         }
 
         @Override
-        public ReferenceableEntity convert(Optional<EntityReference> source, Type<? extends ReferenceableEntity> destinationType, MappingContext mappingContext) {
+        public ReferenceableEntity convert(Optional<Reference> source, Type<? extends ReferenceableEntity> destinationType, MappingContext mappingContext) {
             if (source != null && source.isPresent()) {
                 return mapperFacade.map(source.get(), destinationType.getRawType());
             }
@@ -150,13 +165,11 @@ public final class OptionalSupport {
         }
 
         private static boolean isImmutable(Type<?> type) {
-            return
-                TekstiPalanen.class.isAssignableFrom(type.getRawType())
-                || type.isPrimitiveWrapper()
-                || type.isEnum()
-                || type.isPrimitive()
-                || type.isString();
+            return LokalisoituTeksti.class.isAssignableFrom(type.getRawType())
+                    || type.isPrimitiveWrapper()
+                    || type.isEnum()
+                    || type.isPrimitive()
+                    || type.isString();
         }
-
     }
 }

@@ -19,17 +19,17 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -43,7 +43,7 @@ public class TutkinnonOsaViiteDto implements ReferenceableDto {
     private BigDecimal laajuusMaksimi; // TODO: Ainoastaan valmatelmalla
     private Integer jarjestys;
     @JsonProperty("_tutkinnonOsa")
-    private EntityReference tutkinnonOsa;
+    private Reference tutkinnonOsa;
     @JsonProperty("tutkinnonOsa")
     private TutkinnonOsaDto tutkinnonOsaDto;
 
