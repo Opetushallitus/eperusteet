@@ -15,6 +15,12 @@
  */
 package fi.vm.sade.eperusteet.resource.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +75,18 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean
     MappingJackson2HttpMessageConverter converter() {
-        return InitJacksonConverter.createConverter();
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setPrettyPrint(true);
+        converter.getObjectMapper().enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+        converter.getObjectMapper().enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+        converter.getObjectMapper().registerModule(new Jdk8Module());
+        converter.getObjectMapper().registerModule(new JodaModule());
+        MappingModule module = new MappingModule();
+        module.addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
+        module.addDeserializer(PerusteenOsaUpdateDto.class, new PerusteenOsaUpdateDtoDeserializer());
+        converter.getObjectMapper().registerModule(module);
+        converter.getObjectMapper().setPropertyNamingStrategy(new ReferenceNamingStrategy());
+        return converter;
     }
 
     @Bean

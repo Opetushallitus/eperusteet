@@ -15,13 +15,12 @@
  */
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -96,7 +95,7 @@ public class Aihekokonaisuudet extends PerusteenOsa {
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(getId());
+    public Reference getReference() {
+        return new Reference(getId());
     }
 }

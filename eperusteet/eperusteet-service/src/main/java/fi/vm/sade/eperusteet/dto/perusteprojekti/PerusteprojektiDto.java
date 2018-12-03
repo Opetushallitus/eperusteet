@@ -18,11 +18,12 @@ package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.io.Serializable;
-import java.util.Date;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  *
@@ -34,7 +35,7 @@ import lombok.Setter;
 public class PerusteprojektiDto implements Serializable {
     private Long id;
     private String nimi;
-    private EntityReference peruste;
+    private Reference peruste;
     private String diaarinumero;
     private Date paatosPvm;
     private Date toimikausiAlku;
@@ -46,7 +47,7 @@ public class PerusteprojektiDto implements Serializable {
     private String ryhmaOid;
     private boolean esikatseltavissa = false;
 
-    public PerusteprojektiDto(String nimi, EntityReference peruste, String diaarinumero, Date paatosPvm, Date toimikausiAlku, Date toimikausiLoppu, String tehtavaluokka, String tehtava, String yhteistyotaho, ProjektiTila tila, String ryhmaOid) {
+    public PerusteprojektiDto(String nimi, Reference peruste, String diaarinumero, Date paatosPvm, Date toimikausiAlku, Date toimikausiLoppu, String tehtavaluokka, String tehtava, String yhteistyotaho, ProjektiTila tila, String ryhmaOid) {
         this.nimi = nimi;
         this.peruste = peruste;
         this.diaarinumero = diaarinumero;

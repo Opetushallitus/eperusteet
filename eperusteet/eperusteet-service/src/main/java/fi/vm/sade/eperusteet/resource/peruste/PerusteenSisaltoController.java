@@ -19,7 +19,7 @@ import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Puu;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -59,7 +59,7 @@ public class PerusteenSisaltoController {
      * @param perusteId perusteId
      * @param suoritustapa suoritustapa
      * @param dto perusteenosaviite (valinnainen, luodaan tyhjänä jos puuttuu)
-     * @return Luodun perusteenOsaViite entityReferencen
+     * @return Luodun perusteenOsaViite referencen
      */
     @RequestMapping(value = "/sisalto", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
@@ -101,7 +101,7 @@ public class PerusteenSisaltoController {
         @PathVariable("childId") final Long childId) {
         return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSAVIITE, LIITOS), (Void) -> {
             PerusteenOsaViiteDto.Matala viite = new PerusteenOsaViiteDto.Matala();
-            viite.setPerusteenOsaRef(new EntityReference(childId));
+            viite.setPerusteenOsaRef(new Reference(childId));
             return service.addSisaltoLapsi(perusteId, parentId, viite);
         });
     }

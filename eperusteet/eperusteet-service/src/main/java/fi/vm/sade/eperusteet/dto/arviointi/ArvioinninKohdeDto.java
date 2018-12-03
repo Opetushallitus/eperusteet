@@ -16,12 +16,13 @@
 
 package fi.vm.sade.eperusteet.dto.arviointi;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.OsaamistasonKriteeriDto;
-import java.util.Set;
+import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
 
 /**
  *
@@ -32,6 +33,6 @@ import lombok.Setter;
 public class ArvioinninKohdeDto {
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto selite;
-    private EntityReference arviointiAsteikko;
+    private Reference arviointiAsteikko;
     private Set<OsaamistasonKriteeriDto> osaamistasonKriteerit;
 }

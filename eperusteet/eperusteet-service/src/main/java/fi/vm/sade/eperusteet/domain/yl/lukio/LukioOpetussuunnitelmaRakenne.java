@@ -21,17 +21,19 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.NimettyKoodillinen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Predicate;
-import static java.util.stream.Collectors.toList;
-import java.util.stream.Stream;
-import static java.util.stream.Stream.concat;
-import javax.persistence.*;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.concat;
 
 /**
  * User: tommiratamaa
@@ -87,8 +89,8 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(getId());
+    public Reference getReference() {
+        return new Reference(getId());
     }
 
     public Stream<Lukiokurssi> kurssit() {

@@ -14,7 +14,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -186,7 +186,7 @@ public class PerusteprojektiTestUtils {
         ArviointiAsteikko arviointiAsteikko = new ArviointiAsteikko();
         arviointiAsteikko.setId(1L);
         arviointiAsteikko = arviointiAsteikkoRepository.save(arviointiAsteikko);
-        kvLiiteDto.setArvosanaAsteikko(new EntityReference(arviointiAsteikko.getId()));
+        kvLiiteDto.setArvosanaAsteikko(new Reference(arviointiAsteikko.getId()));
 
         kvLiiteDto.setJatkoopintoKelpoisuus(TestUtils.uniikkiLokalisoituTekstiDto(kielet));
         kvLiiteDto.setKansainvalisetSopimukset(TestUtils.uniikkiLokalisoituTekstiDto(kielet));

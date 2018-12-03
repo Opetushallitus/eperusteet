@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
@@ -74,8 +74,8 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id.toString());
     }
 
     public void setTunniste(UUID t) {

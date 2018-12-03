@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -88,8 +88,8 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
     private Date muokattu;
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id.toString());
     }
 
     @Override

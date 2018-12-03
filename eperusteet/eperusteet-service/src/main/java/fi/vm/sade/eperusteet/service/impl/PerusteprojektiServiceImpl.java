@@ -39,7 +39,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.repository.*;
@@ -755,7 +755,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
             tiedoteDto.setId(null);
             tiedoteDto.setJulkinen(true);
-            tiedoteDto.setPerusteprojekti(new EntityReference(projekti.getId()));
+            tiedoteDto.setPerusteprojekti(new Reference(projekti.getId()));
             tiedoteService.addTiedote(tiedoteDto);
 
             Optional.of(peruste)
