@@ -31,16 +31,13 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.fakes.Referer;
+import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.OsaamisalaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
@@ -89,9 +86,7 @@ public class DtoMapperConfig {
         return builder.toString();
     }
 
-    @Bean
-    @Dto
-    public DtoMapper dtoMapper(
+    static public DefaultMapperFactory createFactory(
             TekstiPalanenConverter tekstiPalanenConverter,
             ReferenceableEntityConverter cachedEntityConverter,
             KoodistokoodiConverter koodistokoodiConverter) {
@@ -149,8 +144,23 @@ public class DtoMapperConfig {
         factory.getConverterFactory().registerConverter(new TypeNameConverter());
 
         OptionalSupport.register(factory);
+
         //erikoiskäsittely säiliöille koska halutaan säilyttää "PATCH" -ominaisuus
         factory.registerMapper(new ReferenceableCollectionMergeMapper());
+        return factory;
+    }
+
+    @Bean
+    @Dto
+    public DtoMapper dtoMapper(
+            TekstiPalanenConverter tekstiPalanenConverter,
+            ReferenceableEntityConverter cachedEntityConverter,
+            KoodistokoodiConverter koodistokoodiConverter) {
+        DefaultMapperFactory factory = createFactory(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter);
+
+        factory.classMap(Referer.class, RefererDto.class)
+                .byDefault()
+                .register();
 
         factory.classMap(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
                 .fieldBToA("class", "osanTyyppi")
