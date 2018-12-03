@@ -46,9 +46,9 @@ import static org.junit.Assert.*;
 public class MappingTest {
     @Test
     public void testOptionalMapping() {
-
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
+
         factory.registerMapper(new ReferenceableCollectionMergeMapper());
         factory.getConverterFactory().registerConverter(new TekstiPalanenConverter());
         OptionalSupport.register(factory);
@@ -87,9 +87,9 @@ public class MappingTest {
 
     @Test
     public void testOptionalImmutableMapping() {
-
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
+
         OptionalSupport.register(factory);
         MapperFacade mapper = factory.getMapperFacade();
         B b = mapper.map(new A(), B.class);

@@ -16,13 +16,14 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.dto.Reference;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.envers.Audited;
 
 /**
  *
@@ -32,15 +33,15 @@ import org.hibernate.envers.Audited;
 public abstract class AbstractAuditedReferenceableEntity extends AbstractAuditedEntity implements ReferenceableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     @Audited
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Override
     public Reference getReference() {
-        return new Reference(id.toString());
+        return new Reference(id);
     }
 
 }
