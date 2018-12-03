@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 })
 public class PerusopetusOppiaineLockController extends AbstractLockController<OppiaineLockContext>{
     static final String BASE = "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}";
+
     @Autowired
     @LockCtx(OppiaineLockContext.class)
     private LockService<OppiaineLockContext> service;

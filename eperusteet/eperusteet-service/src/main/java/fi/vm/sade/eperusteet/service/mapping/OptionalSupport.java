@@ -15,8 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.Reference;
 import ma.glasnost.orika.*;
 import ma.glasnost.orika.metadata.Type;
@@ -53,16 +53,6 @@ public final class OptionalSupport {
         factory.registerFilter(new Filter());
         factory.registerFilter(new CollectionFilter());
         factory.registerMapper(new Mapper());
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T unproxy(T entity) {
-        if (entity instanceof HibernateProxy) {
-            Hibernate.initialize(entity);
-            entity = (T) ((HibernateProxy) entity).getHibernateLazyInitializer()
-                    .getImplementation();
-        }
-        return entity;
     }
 
     static final class Mapper extends CustomMapper<Optional<?>, Object> {
@@ -127,7 +117,7 @@ public final class OptionalSupport {
             if (source != null) {
                 return Optional.of(mapperFacade.map(source, destinationType.getComponentType().getRawType()));
             }
-            return Optional.empty();
+            return null;
         }
     }
 
@@ -164,12 +154,25 @@ public final class OptionalSupport {
             return null;
         }
 
+
         private static boolean isImmutable(Type<?> type) {
-            return LokalisoituTeksti.class.isAssignableFrom(type.getRawType())
-                    || type.isPrimitiveWrapper()
-                    || type.isEnum()
-                    || type.isPrimitive()
-                    || type.isString();
+            return
+                    TekstiPalanen.class.isAssignableFrom(type.getRawType())
+                            || type.isPrimitiveWrapper()
+                            || type.isEnum()
+                            || type.isPrimitive()
+                            || type.isString();
         }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T unproxy(T entity) {
+        if (entity instanceof HibernateProxy) {
+            Hibernate.initialize(entity);
+            entity = (T) ((HibernateProxy) entity).getHibernateLazyInitializer()
+                    .getImplementation();
+        }
+        return entity;
     }
 }
