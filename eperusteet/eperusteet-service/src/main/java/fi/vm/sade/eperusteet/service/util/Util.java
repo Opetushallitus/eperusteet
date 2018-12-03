@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.google.common.base.Optional.fromNullable;
 
 /**
  *

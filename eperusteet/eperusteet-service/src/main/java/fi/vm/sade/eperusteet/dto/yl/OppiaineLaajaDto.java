@@ -16,10 +16,10 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.base.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**

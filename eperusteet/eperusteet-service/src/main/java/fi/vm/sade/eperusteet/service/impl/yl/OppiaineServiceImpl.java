@@ -15,8 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import com.google.common.base.Optional;
-import static com.google.common.base.Optional.of;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine.OsaTyyppi;

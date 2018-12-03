@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Kieli;

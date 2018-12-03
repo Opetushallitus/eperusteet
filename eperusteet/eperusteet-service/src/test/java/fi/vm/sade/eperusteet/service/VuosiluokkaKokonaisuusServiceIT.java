@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
