@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
-import com.google.common.base.Optional;
+
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;

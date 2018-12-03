@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import static com.google.common.base.Optional.fromNullable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;

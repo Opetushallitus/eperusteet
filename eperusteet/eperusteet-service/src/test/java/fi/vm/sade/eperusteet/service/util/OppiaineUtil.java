@@ -27,8 +27,6 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.base.Optional.absent;
-import static com.google.common.base.Optional.of;
 
 /**
  * User: tommiratamaa
