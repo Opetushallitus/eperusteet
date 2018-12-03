@@ -2,7 +2,7 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class TaiteenalaOsaViiteDto {
     private Integer jarjestys;
 
     @JsonProperty("_taiteenala")
-    private EntityReference taiteenala;
+    private Reference taiteenala;
 
     @JsonProperty("tutkinnonOsa")
     private TaiteenalaDto taiteenalaDto;

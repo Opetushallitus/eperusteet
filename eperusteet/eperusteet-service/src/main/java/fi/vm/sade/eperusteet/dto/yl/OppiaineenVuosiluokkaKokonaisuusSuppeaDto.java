@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,5 +27,5 @@ import lombok.Setter;
 @Setter
 public class OppiaineenVuosiluokkaKokonaisuusSuppeaDto {
     private Long id;
-    private EntityReference vuosiluokkaKokonaisuus;
+    private Reference vuosiluokkaKokonaisuus;
 }

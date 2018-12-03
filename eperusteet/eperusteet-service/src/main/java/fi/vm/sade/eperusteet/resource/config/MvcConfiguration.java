@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
@@ -79,6 +80,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         converter.setPrettyPrint(true);
         converter.getObjectMapper().enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         converter.getObjectMapper().enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+        converter.getObjectMapper().registerModule(new Jdk8Module());
         converter.getObjectMapper().registerModule(new JodaModule());
         converter.getObjectMapper().registerModule(new GuavaModule());
         MappingModule module = new MappingModule();

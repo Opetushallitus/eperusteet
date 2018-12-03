@@ -17,9 +17,12 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -27,9 +30,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -89,8 +89,8 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(getId());
+    public Reference getReference() {
+        return new Reference(getId());
     }
 
     @Override

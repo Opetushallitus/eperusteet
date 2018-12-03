@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.resource.config;
 import com.fasterxml.classmate.GenericType;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.databind.JsonNode;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,7 +72,7 @@ public class SwaggerConfig {
                 .build()
                 .directModelSubstitute(fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.class,
                         LokalisoituTekstiDto.class)
-                .directModelSubstitute(EntityReference.class, Long.class)
+                .directModelSubstitute(Reference.class, Long.class)
                 .directModelSubstitute(JsonNode.class, Object.class)
                 .alternateTypeRules(
                         AlternateTypeRules.newRule(
@@ -91,7 +91,7 @@ public class SwaggerConfig {
                 .pathProvider(new RelativeSwaggerPathProvider(ctx))
                 .directModelSubstitute(fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.class,
                         LokalisoituTekstiDto.class)
-                .directModelSubstitute(EntityReference.class, Long.class)
+                .directModelSubstitute(Reference.class, Long.class)
                 .directModelSubstitute(JsonNode.class, Object.class)
                 .alternateTypeRules(
                         AlternateTypeRules.newRule(

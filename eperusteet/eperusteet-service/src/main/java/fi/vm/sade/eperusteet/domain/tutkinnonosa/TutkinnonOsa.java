@@ -23,17 +23,22 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
-import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -121,8 +126,8 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(getId());
+    public Reference getReference() {
+        return new Reference(getId());
     }
 
     @Override

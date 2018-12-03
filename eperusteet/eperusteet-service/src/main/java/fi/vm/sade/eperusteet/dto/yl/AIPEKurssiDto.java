@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,5 +32,5 @@ import java.util.Set;
 @Setter
 public class AIPEKurssiDto extends AIPEKurssiSuppeaDto {
     private Optional<LokalisoituTekstiDto> kuvaus;
-    private Set<EntityReference> tavoitteet;
+    private Set<Reference> tavoitteet;
 }

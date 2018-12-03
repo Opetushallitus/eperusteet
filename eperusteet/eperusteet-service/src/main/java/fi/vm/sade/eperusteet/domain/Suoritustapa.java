@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -82,8 +82,8 @@ public class Suoritustapa implements Serializable, ReferenceableEntity {
     private Set<Peruste> perusteet = new HashSet<>();
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id.toString());
     }
 
     public void setTutkinnonOsat(Set<TutkinnonOsaViite> osat) {

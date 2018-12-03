@@ -16,33 +16,33 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import javax.persistence.EntityManager;
-import javax.persistence.Inheritance;
-import javax.persistence.PersistenceContext;
-
+import fi.vm.sade.eperusteet.dto.Reference;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Inheritance;
+import javax.persistence.PersistenceContext;
 
 /**
  *
  * @author teele1
  */
 @Component
-public class ReferenceableEntityConverter extends BidirectionalConverter<ReferenceableEntity, EntityReference> {
+public class ReferenceableEntityConverter extends BidirectionalConverter<ReferenceableEntity, Reference> {
 
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    public EntityReference convertTo(ReferenceableEntity source, Type<EntityReference> destinationType, MappingContext mappingContext) {
+    public Reference convertTo(ReferenceableEntity source, Type<Reference> destinationType, MappingContext mappingContext) {
         return source.getReference();
     }
 
     @Override
-    public ReferenceableEntity convertFrom(EntityReference source, Type<ReferenceableEntity> destinationType, MappingContext mappingContext) {
+    public ReferenceableEntity convertFrom(Reference source, Type<ReferenceableEntity> destinationType, MappingContext mappingContext) {
         if (destinationType.getRawType().isAnnotationPresent(Inheritance.class)) {
             // Perintähierarkioiden tapauksessa getReference() aiheuttaa ongelmia mappauksen kanssa
             // (viitteen luokka on perintähierarkian isäluokka eikä "oikea" luokka)

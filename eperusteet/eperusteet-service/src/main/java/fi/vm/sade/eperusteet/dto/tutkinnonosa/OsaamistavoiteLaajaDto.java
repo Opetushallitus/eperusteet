@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,5 +36,5 @@ public class OsaamistavoiteLaajaDto extends OsaamistavoiteDto {
     private LokalisoituTekstiDto tunnustaminen;
     private ArviointiDto arviointi;
     private List<AmmattitaitovaatimusKohdealueetDto> ammattitaitovaatimuksetLista;
-    private EntityReference esitieto;
+    private Reference esitieto;
 }

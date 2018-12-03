@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
@@ -43,7 +43,7 @@ public class ReferenceNamingStrategy extends PropertyNamingStrategy {
     }
 
     private String getName(MapperConfig<?> config, Type type, String defaultName) {
-        final JavaType et = config.getTypeFactory().constructType(EntityReference.class);
+        final JavaType et = config.getTypeFactory().constructType(Reference.class);
         final JavaType ot = config.getTypeFactory().constructReferenceType(Optional.class, et);
         final JavaType t = config.getTypeFactory().constructType(type);
 

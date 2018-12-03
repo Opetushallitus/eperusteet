@@ -19,10 +19,10 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -31,15 +31,9 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
-
-import java.math.BigDecimal;
-import java.util.*;
-
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Assert;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +43,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+import static org.junit.Assert.*;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -207,12 +209,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         RakenneModuuliDto rakenne = new RakenneModuuliDto();
 
         RakenneOsaDto o1 = new RakenneOsaDto();
-        o1.setTutkinnonOsaViite(new EntityReference(v1.getId()));
+        o1.setTutkinnonOsaViite(new Reference(v1.getId()));
 
         RakenneModuuliDto ryhma = new RakenneModuuliDto();
 
         RakenneOsaDto o2 = new RakenneOsaDto();
-        o2.setTutkinnonOsaViite(new EntityReference(v2.getId()));
+        o2.setTutkinnonOsaViite(new Reference(v2.getId()));
         ryhma.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o2));
 
         rakenne.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1, ryhma));
@@ -224,7 +226,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         lockService.lock(ctx);
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
-        assertEquals(new EntityReference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
+        assertEquals(new Reference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
 
         PerusteKaikkiDto kokoSisalto = perusteService.getKokoSisalto(peruste.getId());
         assertNotNull(kokoSisalto.getTutkinnonOsat());

@@ -149,7 +149,7 @@ public class DtoMapperConfig {
         factory.getConverterFactory().registerConverter(new TypeNameConverter());
 
         OptionalSupport.register(factory);
-        //erikoiskäsittely säiliöille koska halutaan säilyttää "PATCH" -ominaisuus
+        // Erikoiskäsittely säiliöille koska halutaan säilyttää "PATCH" -ominaisuus
         factory.registerMapper(new ReferenceableCollectionMergeMapper());
 
         factory.classMap(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
