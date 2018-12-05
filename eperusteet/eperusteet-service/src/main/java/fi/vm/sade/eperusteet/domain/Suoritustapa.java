@@ -83,7 +83,7 @@ public class Suoritustapa implements Serializable, ReferenceableEntity {
 
     @Override
     public Reference getReference() {
-        return new Reference(id.toString());
+        return new Reference(id);
     }
 
     public void setTutkinnonOsat(Set<TutkinnonOsaViite> osat) {
