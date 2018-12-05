@@ -114,7 +114,12 @@ public class KurssiServiceIT extends AbstractIntegrationTest {
         assertEquals(new Integer(1), dto.getOppiaineet().get(0).getJarjestys());
         assertEquals(suomiRef.getId(), dto.getOppiaineet().get(0).getOppiaineId());
 
-        LukiokurssiMuokkausDto muokkausDto = dtoMapper.map(dto, new LukiokurssiMuokkausDto());
+
+        LukiokurssiMuokkausDto muokkausDto = new LukiokurssiMuokkausDto();
+        muokkausDto.setId(dto.getId());
+        muokkausDto.setTyyppi(dto.getTyyppi());
+        muokkausDto.setNimi(dto.getNimi());
+        muokkausDto.setKoodiArvo(dto.getKoodiArvo());
         muokkausDto.setKoodiArvo("ARVO");
         lukioKurssiLockService.lock(new KurssiLockContext(perusteId, dto.getId()));
         versionDto = perusteService.getPerusteVersion(perusteId);
