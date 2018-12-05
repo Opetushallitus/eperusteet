@@ -19,14 +19,18 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.Reference;
-import java.io.Serializable;
-import java.util.*;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
@@ -75,7 +79,7 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
 
     @Override
     public Reference getReference() {
-        return new Reference(id.toString());
+        return new Reference(id);
     }
 
     public void setTunniste(UUID t) {

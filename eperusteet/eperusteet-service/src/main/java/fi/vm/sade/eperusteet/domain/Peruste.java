@@ -264,7 +264,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @Override
     public Reference getReference() {
-        return new Reference(id.toString());
+        return new Reference(id);
     }
 
     public void setMuutosmaaraykset(List<Muutosmaarays> muutosmaaraykset) {
