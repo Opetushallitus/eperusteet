@@ -56,6 +56,6 @@ public class ArviointiAsteikko implements Serializable, ReferenceableEntity {
 
     @Override
     public Reference getReference() {
-        return new Reference(id.toString());
+        return new Reference(id);
     }
 }

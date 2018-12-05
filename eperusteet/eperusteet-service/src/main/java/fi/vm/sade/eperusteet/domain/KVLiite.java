@@ -46,7 +46,7 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
 
     @Override
     public Reference getReference() {
-        return new Reference(id.toString());
+        return new Reference(id);
     }
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
