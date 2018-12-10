@@ -15,19 +15,22 @@
  */
 package fi.vm.sade.eperusteet.domain.arviointi;
 
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import lombok.Getter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
@@ -56,6 +59,13 @@ public class ArvioinninKohdealue implements Serializable {
     @OrderColumn
     @BatchSize(size = 10)
     private List<ArvioinninKohde> arvioinninKohteet = new ArrayList<>();
+
+    // Käytetään reformin mukaisten perusteiden vanhojen arvioinnin kohdealueiden yhdistämiseen
+    @Getter
+    @ValidKoodisto(koodisto = "ammattitaitovaatimukset")
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    private Koodi koodi;
 
     /// TODO: rikkoo testin fi.vm.sade.eperusteet.service.AuditedEntityTestIT#testTutkinnonOsaRevisions
 //    @Getter
@@ -101,6 +111,12 @@ public class ArvioinninKohdealue implements Serializable {
         this.arvioinninKohteet.clear();
         if (arvioinninKohteet != null) {
             this.arvioinninKohteet.addAll(arvioinninKohteet);
+        }
+    }
+
+    public void setKoodi(Koodi koodi) {
+        if (this.koodi == null) {
+            this.koodi = koodi;
         }
     }
 

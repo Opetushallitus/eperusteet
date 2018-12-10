@@ -17,6 +17,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -49,6 +50,9 @@ public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
 
     @Autowired
     protected PerusteprojektiRepository perusteprojektiRepository;
+
+    @Autowired
+    protected PerusteRepository perusteRepository;
 
     @Autowired
     protected EntityManager em;
