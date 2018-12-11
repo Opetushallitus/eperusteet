@@ -15,3 +15,13 @@ gen_schema:
 
 sync_localisations:
 	@node ./tools/lokalisointi/sync_locales.js eperusteet/eperusteet-app/yo/app/localisation
+
+# Generoi lista puutteellisista osaamisaloista
+gen_puutteelliset_osaamisalat:
+	@cd scripts && yarn install
+	@cd scripts && yarn run puutteelliset-osaamisalat
+
+# Generoi ammattitaitovaatimuskoodiston julkaistujen kohdealueiden perusteella
+gen_ammattitaitovaatimuskoodisto:
+	@cd scripts && yarn install
+	@cd scripts && yarn run ammattitaitovaatimuskoodisto

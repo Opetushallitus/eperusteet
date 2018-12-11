@@ -33,7 +33,6 @@ import static org.assertj.core.api.Assertions.from;
 @Transactional
 public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
 
-<<<<<<< HEAD
     @Autowired
     private TutkinnonOsaRepository tutkinnonOsaRepository;
 
