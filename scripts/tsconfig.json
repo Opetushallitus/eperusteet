@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "es3",
+    "module": "commonjs",
+    "lib": ["es6", "esnext"],
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
