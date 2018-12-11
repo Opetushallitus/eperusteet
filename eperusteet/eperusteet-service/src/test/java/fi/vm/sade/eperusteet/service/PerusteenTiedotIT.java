@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.ArvioinninKohdealueRepository;
@@ -47,6 +48,9 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
     @Autowired
     private SuoritustapaRepository suoritustapaRepository;
 
+    @Autowired
+    private TutkintonimikeKoodiService tutkintonimikeKoodiService;
+
     @Before
     public void setup() {
         super.setup();
@@ -64,7 +68,6 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
 
         Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> kuvaukset = perusteService.getOsaamisalaKuvaukset(this.peruste.getId());
         TekstiKappaleDto tk = kuvaukset.values().iterator().next().values().iterator().next().get(0);
-
 
         assertThat(tk.getNimi().get(Kieli.FI)).isEqualTo("oa nimi");
         assertThat(tk.getTeksti().get(Kieli.FI)).isEqualTo("oa teksti");
@@ -151,6 +154,12 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
         status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.POISTETTU);
         assertThat(status)
                 .returns(true, from(TilaUpdateStatus::isVaihtoOk));
+    }
+
+    @Test
+    public void testTutkintonimikkeet() {
+        List<TutkintonimikeKoodiDto> tutkintonimikekoodit = tutkintonimikeKoodiService.getTutkintonimikekoodit(peruste.getId());
+        assertThat(tutkintonimikekoodit).isEmpty();
     }
 
 }
