@@ -1,0 +1,29 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "puutteelliset-osaamisalat": "ts-node ./puutteellisetosaamisalat.js",
+    "ammattitaitovaatimuskoodisto": "ts-node ./ammattitaitovaatimuskoodisto.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/lodash": "^4.14.118",
+    "@types/node": "^10.12.5",
+    "@types/qs": "^6.5.1",
+    "axios": "^0.18.0",
+    "csv": "^4.0.0",
+    "csv-writer": "^1.2.0",
+    "lodash": "^4.17.11",
+    "qs": "^6.5.2"
+  },
+  "devDependencies": {
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.6"
+  },
+  "engine": {
+    "node": ">=v10"
+  }
+}
