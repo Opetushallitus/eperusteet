@@ -2,7 +2,7 @@ import axios from "axios";
 import * as _ from "lodash";
 import * as qs from "qs";
 
-const HakuEndpoint = "https://eperusteet.opintopolku.fi/eperusteet-service/api/perusteet";
+const PerusteEndpoint = "https://eperusteet.opintopolku.fi/eperusteet-service/api/perusteet";
 
 
 const defaultParams = {
@@ -15,7 +15,7 @@ export async function* iteratePerusteet(params: any = {}) {
     params = { ...defaultParams, ...params };
 
     while (true) {
-        const res = await axios.get(HakuEndpoint, {
+        const res = await axios.get(PerusteEndpoint, {
             params: { ...params, sivu, sivukoko: 100 },
             paramsSerializer(params) {
                 return qs.stringify(params, { arrayFormat: "repeat" });
@@ -38,7 +38,7 @@ export async function* iteratePerusteet(params: any = {}) {
 
 
 export async function getOsaamisalakuvaukset(perusteId: number) {
-    const res = await axios.get(`https://eperusteet.opintopolku.fi/eperusteet-service/api/perusteet/${perusteId}/osaamisalakuvaukset`);
+    const res = await axios.get(`${PerusteEndpoint}/${perusteId}/osaamisalakuvaukset`);
     return _(_.values(res.data))
         .map(_.keys)
         .flatten()
@@ -49,7 +49,7 @@ export async function getOsaamisalakuvaukset(perusteId: number) {
 
 
 export async function getKaikki(perusteId: number) {
-    const url = `https://eperusteet.opintopolku.fi/eperusteet-service/api/perusteet/${perusteId}/kaikki`;
+    const url = `${PerusteEndpoint}/${perusteId}/kaikki`;
     console.log(url);
     const result = await axios.get(url);
     return result.data;
@@ -57,14 +57,14 @@ export async function getKaikki(perusteId: number) {
 
 
 export async function getTutkinnonOsat(perusteId: number, suoritustapa: string) {
-    const url = `https://eperusteet.opintopolku.fi/eperusteet-service/api/perusteet/${perusteId}/suoritustavat/${suoritustapa}/tutkinnonosat`;
+    const url = `${PerusteEndpoint}/${perusteId}/suoritustavat/${suoritustapa}/tutkinnonosat`;
     const result = await axios.get(url);
     return result.data;
 }
 
 
 export async function getTutkinnonOsa(perusteId: number, suoritustapa: string, tovId: number) {
-    const url = `https://eperusteet.opintopolku.fi/eperusteet-service/api/perusteet/${perusteId}/suoritustavat/${suoritustapa}/tutkinnonosat/${tovId}`;
+    const url = `${PerusteEndpoint}/${perusteId}/suoritustavat/${suoritustapa}/tutkinnonosat/${tovId}`;
     console.log(url);
     const result = await axios.get(url);
     return result.data;
