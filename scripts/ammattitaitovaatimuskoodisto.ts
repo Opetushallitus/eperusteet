@@ -3,14 +3,13 @@ import * as _ from "lodash";
 import axios from "axios";
 import { createObjectCsvWriter } from "csv-writer";
 
-
 async function main() {
     const writer = createObjectCsvWriter({
-        path: "koodisto.csv",
+        path: "ammattitaitovaatimuskoodisto.csv",
         header: [
             { id: "perusteId", title: "Peruste" },
             { id: "tutkinnonOsaId", title: "Tutkinnon osa" },
-            { id: "arvo", title: "Arvo" },
+            { id: "uri", title: "Koodi" },
             { id: "nimi_fi", title: "Nimi FI" },
             { id: "nimi_sv", title: "Nimi SV" },
             { id: "lyhyt_nimi_fi", title: "Lyhyt nimi FI" },
@@ -22,24 +21,29 @@ async function main() {
 
   try {
     const koodisto = [];
-    let arvo = 1;
 
     for await (const peruste of lib.iteratePerusteet({ suoritustapa: "reformi" })) {
       const kaikki = await lib.getKaikki(peruste.id);
       for (const tosa of kaikki.tutkinnonOsat) {
         if (!tosa.arviointi) {
-          console.log("Tutkinnon osa ilman arviointia", peruste.nimi.fi, peruste.diaarinumero, tosa.nimi.fi, tosa.id);
+          if (tosa.tyyppi === "normaali") {
+            console.log("Tutkinnon osa ilman arviointia:", peruste.nimi.fi, peruste.diaarinumero, tosa.nimi.fi, tosa.id);
+          }
           continue;
         }
 
         for (const kohdealue of tosa.arviointi.arvioinninKohdealueet) {
-          koodisto.push({
-            perusteId: peruste.id,
-            tutkinnonOsaId: tosa.id,
-            arvo: arvo++,
-            nimi_fi: kohdealue.otsikko ? kohdealue.otsikko.fi : "",
-          });
-          console.log(arvo);
+          if (!kohdealue.koodi) {
+            console.log("Kohdealue ilman koodia:", peruste.nimi.fi, peruste.diaarinumero, tosa.nimi.fi, tosa.id, kohdealue.nimi && kohdealue.nimi.fi);
+          }
+          else {
+            koodisto.push({
+              perusteId: peruste.id,
+              tutkinnonOsaId: tosa.id,
+              uri: kohdealue.koodi.uri,
+              nimi_fi: kohdealue.otsikko ? kohdealue.otsikko.fi : "",
+            });
+          }
         }
       }
 
