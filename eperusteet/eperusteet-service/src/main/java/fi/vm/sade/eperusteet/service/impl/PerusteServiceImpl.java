@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.google.common.base.Strings;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
@@ -59,6 +60,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
@@ -955,7 +957,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
 
         rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
-        tarkistaUniikitKoodit(rakenne);
+        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = mapper.mapAsList(tutkintonimikeKoodiRepository.findByPerusteId(peruste.getId()), TutkintonimikeKoodiDto.class);
+        Map<EntityReference, String> tovToKoodiMap = suoritustapa.getTutkinnonOsat().stream()
+                .collect(Collectors.toMap(
+                        tosa -> new EntityReference(tosa.getId()),
+                        tosa -> (tosa.getTutkinnonOsa().getKoodi() != null)
+                                ? tosa.getTutkinnonOsa().getKoodi().getUri()
+                                : ""));
+        tarkistaUniikitKoodit(rakenne, tutkintonimikeKoodit, tovToKoodiMap);
 
         RakenneModuuli nykyinen = rakenneRepository.findOne(rakenneId);
         lockManager.ensureLockedByAuthenticatedUser(nykyinen.getId());
@@ -1029,16 +1038,22 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
-    private void tarkistaUniikitKoodit(RakenneModuuliDto rakenneModuuli) {
+    private void tarkistaUniikitKoodit(RakenneModuuliDto rakenneModuuli,
+                                       List<TutkintonimikeKoodiDto> tutkintonimikeKoodit,
+                                       Map<EntityReference, String> tovToKoodiUriMap) {
         HashSet<String> koodit = new HashSet<>();
+        Map<String, List<RakenneModuuliDto>> tutkintonimikeRyhmat = new HashMap<>();
         Stack<RakenneModuuliDto> stack = new Stack<>();
         stack.push(rakenneModuuli);
 
         while (!stack.empty()) {
             RakenneModuuliDto head = stack.pop();
 
-            if (head.getTutkintonimike() != null && !koodit.add(head.getTutkintonimike().getUri())) {
-                throw new BusinessRuleViolationException("ryhman-tutkintonimike-jo-kaytossa");
+            // Tutkintonimikeryhmät kerätään myöhempää tarkastelua varten
+            if (head.getTutkintonimike() != null) {
+                String uri = head.getTutkintonimike().getUri();
+                List<RakenneModuuliDto> moduulit = tutkintonimikeRyhmat.computeIfAbsent(uri, k -> new ArrayList<>());
+                moduulit.add(head);
             }
 
             if (head.getOsaamisala() != null && !koodit.add(head.getOsaamisala().getOsaamisalakoodiUri())) {
@@ -1053,7 +1068,43 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 }
             }
         }
+
+        // Käytetään perusteen metatietoihin liitettyjä tutkintonimikekoodiliitoksia validointiin
+        List<TutkintonimikeKoodiDto> tutkintonimikeTutkinnonOsaLiitokset = tutkintonimikeKoodit.stream()
+                .filter(tk -> !Strings.isNullOrEmpty(tk.getTutkinnonOsaUri()) && !Strings.isNullOrEmpty(tk.getTutkintonimikeUri()))
+                .collect(Collectors.toList());
+
+        for (TutkintonimikeKoodiDto tk : tutkintonimikeTutkinnonOsaLiitokset) {
+            List<RakenneModuuliDto> moduulit = tutkintonimikeRyhmat.get(tk.getTutkintonimikeUri());
+
+            // Käydään läpi vain päällekkäiset tutkintonimikeryhmät
+            if (moduulit.size() < 2) {
+                continue;
+            }
+
+            // Kerätään tutkintonimikkeiden vaaditut tutkintonimikekoodit
+            Set<String> moduulinVaaditutKoodit = tutkintonimikeTutkinnonOsaLiitokset.stream()
+                    .filter(liitos -> Objects.equals(tk.getTutkintonimikeUri(), liitos.getTutkintonimikeUri()))
+                    .map(TutkintonimikeKoodiDto::getTutkinnonOsaUri)
+                    .collect(Collectors.toSet());
+
+            for (RakenneModuuliDto moduuli : moduulit) {
+                if (!CollectionUtils.isEmpty(moduuli.getOsat())) {
+                    Set<String> tutkinnonOsaKoodit = moduuli.getOsat().stream()
+                            .filter(osa -> osa instanceof RakenneOsaDto)
+                            .map(osa -> ((RakenneOsaDto) osa).getTutkinnonOsaViite())
+                            .map(tovToKoodiUriMap::get)
+                            .filter(x -> !Strings.isNullOrEmpty(x))
+                            .collect(Collectors.toSet());
+
+                    if (!moduulinVaaditutKoodit.removeAll(tutkinnonOsaKoodit)) {
+                        throw new BusinessRuleViolationException("tutkintonimikeryhmalle-maaritetty-tutkinnon-osa-useaan-kertaan");
+                    }
+                }
+            }
+        }
     }
+
 
     private RakenneModuuli checkIfKoodiAlreadyExists(RakenneModuuli rakenneModuuli) {
         if (rakenneModuuli != null) {
