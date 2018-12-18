@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import com.google.common.base.Strings;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
@@ -1071,7 +1070,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         // Käytetään perusteen metatietoihin liitettyjä tutkintonimikekoodiliitoksia validointiin
         List<TutkintonimikeKoodiDto> tutkintonimikeTutkinnonOsaLiitokset = tutkintonimikeKoodit.stream()
-                .filter(tk -> !Strings.isNullOrEmpty(tk.getTutkinnonOsaUri()) && !Strings.isNullOrEmpty(tk.getTutkintonimikeUri()))
+                .filter(tk -> StringUtils.isNotEmpty(tk.getTutkinnonOsaUri()) && StringUtils.isNotEmpty(tk.getTutkintonimikeUri()))
                 .collect(Collectors.toList());
 
         for (TutkintonimikeKoodiDto tk : tutkintonimikeTutkinnonOsaLiitokset) {
@@ -1094,7 +1093,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                             .filter(osa -> osa instanceof RakenneOsaDto)
                             .map(osa -> ((RakenneOsaDto) osa).getTutkinnonOsaViite())
                             .map(tovToKoodiUriMap::get)
-                            .filter(x -> !Strings.isNullOrEmpty(x))
+                            .filter(StringUtils::isNotEmpty)
                             .collect(Collectors.toSet());
 
                     if (!moduulinVaaditutKoodit.removeAll(tutkinnonOsaKoodit)) {
