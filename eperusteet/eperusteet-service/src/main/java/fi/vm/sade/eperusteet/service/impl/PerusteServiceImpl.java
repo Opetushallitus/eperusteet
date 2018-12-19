@@ -1040,8 +1040,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private void tarkistaUniikitKoodit(RakenneModuuliDto rakenneModuuli,
                                        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit,
                                        Map<EntityReference, String> tovToKoodiUriMap) {
-        HashSet<String> koodit = new HashSet<>();
         Map<String, List<RakenneModuuliDto>> tutkintonimikeRyhmat = new HashMap<>();
+        Map<String, List<RakenneModuuliDto>> osaamisalaRyhmat = new HashMap<>();
         Stack<RakenneModuuliDto> stack = new Stack<>();
         stack.push(rakenneModuuli);
 
@@ -1055,8 +1055,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 moduulit.add(head);
             }
 
-            if (head.getOsaamisala() != null && !koodit.add(head.getOsaamisala().getOsaamisalakoodiUri())) {
-                throw new BusinessRuleViolationException("ryhman-osaamisala-jo-kaytossa");
+            if (head.getOsaamisala() != null) {
+                String uri = head.getOsaamisala().getOsaamisalakoodiUri();
+                List<RakenneModuuliDto> moduulit = osaamisalaRyhmat.computeIfAbsent(uri, k -> new ArrayList<>());
+                moduulit.add(head);
             }
 
             if (head.getOsat() != null) {
@@ -1068,39 +1070,72 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
         }
 
-        // Käytetään perusteen metatietoihin liitettyjä tutkintonimikekoodiliitoksia validointiin
-        List<TutkintonimikeKoodiDto> tutkintonimikeTutkinnonOsaLiitokset = tutkintonimikeKoodit.stream()
-                .filter(tk -> StringUtils.isNotEmpty(tk.getTutkinnonOsaUri()) && StringUtils.isNotEmpty(tk.getTutkintonimikeUri()))
-                .collect(Collectors.toList());
+        { // Käytetään perusteen metatietoihin liitettyjä tutkintonimikekoodiliitoksia validointiin
+            List<TutkintonimikeKoodiDto> tutkintonimikeTutkinnonOsaLiitokset = tutkintonimikeKoodit.stream()
+                    .filter(tk -> StringUtils.isNotEmpty(tk.getTutkinnonOsaUri()) && StringUtils.isNotEmpty(tk.getTutkintonimikeUri()))
+                    .collect(Collectors.toList());
 
-        for (TutkintonimikeKoodiDto tk : tutkintonimikeTutkinnonOsaLiitokset) {
-            List<RakenneModuuliDto> moduulit = tutkintonimikeRyhmat.get(tk.getTutkintonimikeUri());
+            for (TutkintonimikeKoodiDto tk : tutkintonimikeTutkinnonOsaLiitokset) {
+                List<RakenneModuuliDto> moduulit = tutkintonimikeRyhmat.get(tk.getTutkintonimikeUri());
 
-            // Käydään läpi vain päällekkäiset tutkintonimikeryhmät
-            if (moduulit.size() < 2) {
-                continue;
-            }
+                // Käydään läpi vain päällekkäiset tutkintonimikeryhmät
+                if (moduulit.size() < 2) {
+                    continue;
+                }
 
-            // Kerätään tutkintonimikkeiden vaaditut tutkintonimikekoodit
-            Set<String> moduulinVaaditutKoodit = tutkintonimikeTutkinnonOsaLiitokset.stream()
-                    .filter(liitos -> Objects.equals(tk.getTutkintonimikeUri(), liitos.getTutkintonimikeUri()))
-                    .map(TutkintonimikeKoodiDto::getTutkinnonOsaUri)
-                    .collect(Collectors.toSet());
+                // Kerätään tutkintonimikkeiden vaaditut tutkintonimikekoodit
+                Set<String> moduulinVaaditutKoodit = tutkintonimikeTutkinnonOsaLiitokset.stream()
+                        .filter(liitos -> Objects.equals(tk.getTutkintonimikeUri(), liitos.getTutkintonimikeUri()))
+                        .map(TutkintonimikeKoodiDto::getTutkinnonOsaUri)
+                        .collect(Collectors.toSet());
 
-            for (RakenneModuuliDto moduuli : moduulit) {
-                if (!CollectionUtils.isEmpty(moduuli.getOsat())) {
-                    Set<String> tutkinnonOsaKoodit = moduuli.getOsat().stream()
-                            .filter(osa -> osa instanceof RakenneOsaDto)
-                            .map(osa -> ((RakenneOsaDto) osa).getTutkinnonOsaViite())
-                            .map(tovToKoodiUriMap::get)
-                            .filter(StringUtils::isNotEmpty)
-                            .collect(Collectors.toSet());
+                for (RakenneModuuliDto moduuli : moduulit) {
+                    if (!CollectionUtils.isEmpty(moduuli.getOsat())) {
+                        Set<String> tutkinnonOsaKoodit = moduuli.getOsat().stream()
+                                .filter(osa -> osa instanceof RakenneOsaDto)
+                                .map(osa -> ((RakenneOsaDto) osa).getTutkinnonOsaViite())
+                                .map(tovToKoodiUriMap::get)
+                                .filter(StringUtils::isNotEmpty)
+                                .collect(Collectors.toSet());
 
-                    if (!moduulinVaaditutKoodit.removeAll(tutkinnonOsaKoodit)) {
-                        throw new BusinessRuleViolationException("tutkintonimikeryhmalle-maaritetty-tutkinnon-osa-useaan-kertaan");
+                        if (!moduulinVaaditutKoodit.removeAll(tutkinnonOsaKoodit)) {
+                            throw new BusinessRuleViolationException("tutkintonimikeryhmalle-maaritetty-tutkinnon-osa-useaan-kertaan");
+                        }
                     }
                 }
             }
+        }
+
+        { // Osaamisalojen rakenteen tarkistus
+            // Osaamisala kiinnitetty rakenteeseen useammin kuin kerran -> Ryhmän sisältöjen tätyy olla uniikit muihin verrattuna
+            osaamisalaRyhmat.entrySet().stream()
+                    .filter(entry -> entry.getValue().size() > 1)
+                    .forEach(entry -> {
+                        List<Set<String>> ryhmat = entry.getValue().stream()
+                                .map(moduuli -> moduuli.getOsat().stream()
+                                        .map(AbstractRakenneOsaDto::validationIdentifier)
+                                        .filter(StringUtils::isNotEmpty)
+                                        .collect(Collectors.toSet()))
+                                .collect(Collectors.toList());
+
+                        // Uniikit koodit
+                        final int totalSize = ryhmat.stream()
+                                .map(Set::size)
+                                .reduce((acc, next) -> acc + next)
+                                .orElse(0);
+
+                        Set<String> koodit = ryhmat.stream()
+                                .reduce((acc, next) -> {
+                                    acc.addAll(next);
+                                    return acc;
+                                })
+                                .orElseGet(HashSet::new);
+
+                        // Yhdistettyjen koodien määrän täytyy olla sama kuin kokonaismäärä erikseen laskettuna
+                        if (totalSize != koodit.size()) {
+                            throw new BusinessRuleViolationException("osaamisala-liitetty-virheelliseti-tutkinnon-osiin");
+                        }
+                    });
         }
     }
 

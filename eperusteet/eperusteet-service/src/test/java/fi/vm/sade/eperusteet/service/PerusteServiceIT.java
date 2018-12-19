@@ -31,15 +31,9 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
-
-import java.math.BigDecimal;
-import java.util.*;
-
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Assert;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +43,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+import static org.junit.Assert.*;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.

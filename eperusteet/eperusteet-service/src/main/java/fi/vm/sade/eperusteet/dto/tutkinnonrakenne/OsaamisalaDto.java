@@ -16,9 +16,12 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
-import java.util.Map;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Map;
 
 /**
  *
@@ -26,8 +29,17 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class OsaamisalaDto {
     private Map<String, String> nimi;
     private String osaamisalakoodiArvo;
     private String osaamisalakoodiUri;
+
+    static public OsaamisalaDto of(String arvo) {
+        OsaamisalaDto result = new OsaamisalaDto();
+        result.setOsaamisalakoodiArvo(arvo);
+        result.setOsaamisalakoodiUri("osaamisala_" + arvo);
+        return result;
+    }
 }
