@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +30,13 @@ import lombok.Setter;
 public class RakenneOsaDto extends AbstractRakenneOsaDto {
     private String erikoisuus;
     private EntityReference tutkinnonOsaViite;
+
+    @Override
+    public String validationIdentifier() {
+        return tutkinnonOsaViite != null
+                ? tutkinnonOsaViite.getId()
+                : "";
+    }
 
     public static RakenneOsaDto of(EntityReference tov) {
         RakenneOsaDto result = new RakenneOsaDto();
