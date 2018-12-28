@@ -25,13 +25,14 @@ import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import java.util.List;
-import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -102,8 +103,8 @@ public interface PerusteService {
 
     PerusteInfoDto getMeta(final Long id);
 
-    @PreAuthorize("permitAll()")
-    Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(final Long id);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(@P("perusteId") final Long perusteId);
 
     @Deprecated
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
