@@ -27,7 +27,6 @@ import fi.vm.sade.eperusteet.service.OpasService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
 import fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LUONTI;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,12 +40,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 import springfox.documentation.annotations.ApiIgnore;
+
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LUONTI;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  *
@@ -88,12 +89,12 @@ public class OpasController {
     @ResponseBody
     @ApiOperation(value = "oppaiden haku")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "sivu", dataType = "integer", paramType = "query"),
-            @ApiImplicitParam(name = "sivukoko", dataType = "integer", paramType = "query"),
+            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", defaultValue = "fi", value = "perusteen nimen kieli"),
             @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)"),
+            @ApiImplicitParam(name = "muokattu", dataType = "long", paramType = "query", value = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)"),
     })
     public Page<PerusteHakuDto> getAll(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
