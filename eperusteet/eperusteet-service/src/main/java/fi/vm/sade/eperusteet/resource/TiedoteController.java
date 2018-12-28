@@ -7,14 +7,8 @@ import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.KieliConverter;
 import fi.vm.sade.eperusteet.service.TiedoteService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TIEDOTE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import io.swagger.annotations.Api;
-import java.util.List;
-
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +19,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TIEDOTE;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -49,11 +47,11 @@ public class TiedoteController {
 
     @ApiOperation(value = "tiedotteiden haku")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "sivu", dataType = "integer", paramType = "query"),
-            @ApiImplicitParam(name = "sivukoko", dataType = "integer", paramType = "query"),
+            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, defaultValue = "fi", value = "tiedotteen kieli"),
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query", value = "hae nimellä"),
-            @ApiImplicitParam(name = "perusteId", dataType = "integer", paramType = "query", value = "hae perusteeseen liitetyt tiedotteet"),
+            @ApiImplicitParam(name = "perusteId", dataType = "long", paramType = "query", value = "hae perusteeseen liitetyt tiedotteet"),
             @ApiImplicitParam(name = "julkinen", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae julkiset tiedotteet"),
             @ApiImplicitParam(name = "yleinen", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae yleiset tiedotteet")
     })
