@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
@@ -33,14 +32,13 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
-
-import javax.persistence.EntityManager;
 
 
 @DirtiesContext
@@ -94,6 +92,8 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         });
         TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, null);
+        assertThat(status.isVaihtoOk()).isTrue();
+        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.KAANNOS, null);
         assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isTrue();
@@ -300,6 +300,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         ppTestUtils.asetaTila(perusteprojekti.getId(), ProjektiTila.VIIMEISTELY);
         perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
+        ppTestUtils.asetaTila(perusteprojekti.getId(), ProjektiTila.KAANNOS);
+        perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        assertThat(perusteet.getTotalElements()).isEqualTo(0);
         ppTestUtils.asetaTila(perusteprojekti.getId(), ProjektiTila.VALMIS);
         perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
@@ -346,6 +349,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
         ppTestUtils.luoValidiKVLiite(perusteDto.getId());
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.VIIMEISTELY);
+        ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.KAANNOS);
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.VALMIS);
         ppTestUtils.asetaTila(amosaaPohja1.getId(), ProjektiTila.JULKAISTU);
 
@@ -365,6 +369,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
         ppTestUtils.luoValidiKVLiite(perusteDto2.getId());
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.VIIMEISTELY);
+        ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.KAANNOS);
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.VALMIS);
         ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.JULKAISTU);
 

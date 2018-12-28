@@ -69,13 +69,15 @@ public class PermissionManager {
 
     public enum Permission {
 
+        REKISTERINPITAJA("rekisterinpitaja"),
         LUKU("luku"),
         POISTO("poisto"),
         MUOKKAUS("muokkaus"),
         KAANNOS("kaannos"),
         LUONTI("luonti"),
         KORJAUS("korjaus"),
-        TILANVAIHTO("tilanvaihto");
+        TILANVAIHTO("tilanvaihto"),
+        VALIDOINTI("validointi");
 
         private final String permission;
 
@@ -131,44 +133,56 @@ public class PermissionManager {
         // Perusteprojekti
         {
             Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
-            Map<Permission, Set<String>> perm = Maps.newHashMap();
+            Map<Permission, Set<String>> perm;
 
-            perm.put(LUONTI, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
+            perm = Maps.newHashMap();
+            perm.put(REKISTERINPITAJA, r0);
             tmp.put(null, perm);
 
             perm = Maps.newHashMap();
             perm.put(TILANVAIHTO, r1);
             perm.put(LUKU, r3);
+            perm.put(REKISTERINPITAJA, r0);
+            tmp.put(ProjektiTila.POISTETTU, perm);
+
+            perm = Maps.newHashMap();
+            perm.put(TILANVAIHTO, r1);
+            perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r2);
+            perm.put(VALIDOINTI, r2);
+            perm.put(REKISTERINPITAJA, r0);
             tmp.put(ProjektiTila.LAADINTA, perm);
 
             perm = Maps.newHashMap();
             perm.put(TILANVAIHTO, r1);
             perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r1);
+            perm.put(VALIDOINTI, r2);
+            perm.put(REKISTERINPITAJA, r0);
             tmp.put(ProjektiTila.VIIMEISTELY, perm);
 
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(TILANVAIHTO, r1);
             perm.put(MUOKKAUS, r1);
+            perm.put(VALIDOINTI, r2);
+            perm.put(REKISTERINPITAJA, r0);
             tmp.put(ProjektiTila.KAANNOS, perm);
 
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(TILANVAIHTO, r1);
             perm.put(MUOKKAUS, r1);
+            perm.put(VALIDOINTI, r2);
+            perm.put(REKISTERINPITAJA, r0);
             tmp.put(ProjektiTila.VALMIS, perm);
 
             perm = Maps.newHashMap();
             perm.put(LUKU, r0);
             perm.put(TILANVAIHTO, r1);
+            perm.put(VALIDOINTI, r2);
+            perm.put(REKISTERINPITAJA, r0);
             tmp.put(ProjektiTila.JULKAISTU, perm);
-
-            perm = Maps.newHashMap();
-            perm.put(TILANVAIHTO, r1);
-            perm.put(LUKU, r3);
-            tmp.put(ProjektiTila.POISTETTU, perm);
 
             allowedRolesTmp.put(Target.PERUSTEPROJEKTI, tmp);
         }

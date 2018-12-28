@@ -8,6 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface ProjektiValidator {
 
-    @PreAuthorize("hasPermission(#perusteprojektiId, 'perusteprojekti', 'TILANVAIHTO')")
+    @PreAuthorize("hasPermission(#perusteprojektiId, 'perusteprojekti', 'VALIDOINTI')")
     TilaUpdateStatus run(@P("perusteprojektiId") Long perusteprojektiId, ProjektiTila tila);
 }

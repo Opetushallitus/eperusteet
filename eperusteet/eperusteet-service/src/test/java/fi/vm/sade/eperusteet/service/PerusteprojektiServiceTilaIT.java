@@ -235,9 +235,39 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testUpdateTilaViimeistelyToValmis() {
+    public void testUpdateTilaViimeistelyToKaannos() {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VIIMEISTELY, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.lock(ctx);
+        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+        ppTestUtils.luoValidiKVLiite(projektiDto.getPeruste().getIdLong());
+
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.KAANNOS, null);
+        tulostaInfo(status);
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        // the code in this method executes in a transactional context
+        Object object = transactionTemplate.execute(transactionStatus -> {
+            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            assertTrue(status.isVaihtoOk());
+            assertThat(status.getInfot()).isEmpty();
+            assertTrue(pp.getTila().equals(ProjektiTila.KAANNOS));
+            assertTrue(pp.getPeruste().getTila().equals(PerusteTila.VALMIS));
+            for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.VALMIS);
+                commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.VALMIS);
+            }
+            return null;
+        });
+        lockService.unlock(ctx);
+
+    }
+
+    @Test
+    public void testUpdateTilaKaannosToValmis() {
+
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.KAANNOS, null, PerusteTila.LUONNOS);
         PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
         final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
         lockService.lock(ctx);
@@ -253,10 +283,10 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
             assertTrue(status.isVaihtoOk());
             assertThat(status.getInfot()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.VALMIS));
-            assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
+            assertTrue(pp.getPeruste().getTila().equals(PerusteTila.VALMIS));
             for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
-                commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
-                commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
+                commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.VALMIS);
+                commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.VALMIS);
             }
             return null;
         });
@@ -371,6 +401,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         ppTestUtils.luoValidiKVLiite(projektiDto.getPeruste().getIdLong());
 
         service.updateTila(projektiDto.getId(), ProjektiTila.VIIMEISTELY, null);
+        service.updateTila(projektiDto.getId(), ProjektiTila.KAANNOS, null);
         service.updateTila(projektiDto.getId(), ProjektiTila.VALMIS, null);
         service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, TestUtils.createTiedote());
 

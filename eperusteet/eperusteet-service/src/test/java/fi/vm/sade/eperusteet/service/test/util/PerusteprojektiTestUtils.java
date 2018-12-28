@@ -147,6 +147,8 @@ public class PerusteprojektiTestUtils {
     public void julkaise(Long projektiId) {
         TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, null);
         assertThat(status.isVaihtoOk()).isTrue();
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.KAANNOS, null);
+        assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, TestUtils.createTiedote());

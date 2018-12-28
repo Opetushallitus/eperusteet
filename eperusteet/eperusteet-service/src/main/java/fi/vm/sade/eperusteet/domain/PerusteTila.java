@@ -23,8 +23,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author harrik
  */
 public enum PerusteTila {
-    LUONNOS("luonnos"),
-    VALMIS("valmis"),
+    LUONNOS("luonnos"), // Rakennetta voidaan vapaasti muokata
+    VALMIS("valmis"), // Vain korjaukset sallittu, voi olla joko laadinnassa tai julkinen
     POISTETTU("poistettu");
             
     private final String tila;

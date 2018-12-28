@@ -13,6 +13,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,76 +75,106 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
     @Dto
     private DtoMapper mapper;
 
-    private Peruste peruste;
+    @Autowired
+    public PerusteprojektiTestUtils ppTestUtils;
 
     private Date nykyinenAika;
-
-    public PerusteServiceAikaIT() {
-
-    }
-
     private GregorianCalendar gc;
 
     @Before
     public void setUp() {
         TransactionStatus transaction = manager.getTransaction(new DefaultTransactionDefinition());
 
-        gc = new GregorianCalendar(2017, 5, 4);
+        gc = new GregorianCalendar(2017, Calendar.JUNE, 4);
         nykyinenAika = gc.getTime();
 
         // Tuleva
-        Peruste p = TestUtils.teePeruste();
-        gc.set(2017, Calendar.JUNE, 5);
-        p.setVoimassaoloAlkaa(gc.getTime());
-        p.asetaTila(PerusteTila.VALMIS);
-        peruste = repo.save(p);
-
+        {
+            PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti();
+            PerusteDto peruste = ppTestUtils.initPeruste(pp.getPeruste().getIdLong(), p -> {
+                gc.set(2017, Calendar.JUNE, 5);
+                p.setVoimassaoloAlkaa(gc.getTime());
+            });
+            ppTestUtils.asetaMuodostumiset(peruste.getId());
+            ppTestUtils.luoValidiKVLiite(peruste.getId());
+            ppTestUtils.julkaise(pp.getId());
+        }
 
         // Tulevan ja voimassa olevan rajalla
-        p = TestUtils.teePeruste();
-        gc.set(2017, Calendar.JUNE, 4);
-        p.setVoimassaoloAlkaa(gc.getTime());
-        p.asetaTila(PerusteTila.VALMIS);
-        peruste = repo.save(p);
+        {
+            PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti();
+            PerusteDto peruste = ppTestUtils.initPeruste(pp.getPeruste().getIdLong(), p -> {
+                gc.set(2017, Calendar.JUNE, 4);
+                p.setVoimassaoloAlkaa(gc.getTime());
+            });
+            ppTestUtils.asetaMuodostumiset(peruste.getId());
+            ppTestUtils.luoValidiKVLiite(peruste.getId());
+            ppTestUtils.julkaise(pp.getId());
+        }
 
         // Voimassa oleva
-        p = TestUtils.teePeruste();
-        gc.set(2017, Calendar.JUNE, 3);
-        p.setVoimassaoloAlkaa(gc.getTime());
-        p.asetaTila(PerusteTila.VALMIS);
-        peruste = repo.save(p);
+        {
+            PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti();
+            PerusteDto peruste = ppTestUtils.initPeruste(pp.getPeruste().getIdLong(), p -> {
+                gc.set(2017, Calendar.JUNE, 3);
+                p.setVoimassaoloAlkaa(gc.getTime());
+            });
+            ppTestUtils.asetaMuodostumiset(peruste.getId());
+            ppTestUtils.luoValidiKVLiite(peruste.getId());
+            ppTestUtils.julkaise(pp.getId());
+        }
 
         // Voimassa olevan ja siirtymän rajalla
-        p = TestUtils.teePeruste();
-        gc.set(2017, Calendar.JUNE, 4);
-        p.setVoimassaoloLoppuu(gc.getTime());
-        gc.set(2017, Calendar.JUNE, 5);
-        p.setSiirtymaPaattyy(gc.getTime());
-        p.asetaTila(PerusteTila.VALMIS);
-        peruste = repo.save(p);
+        {
+            PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti();
+            PerusteDto peruste = ppTestUtils.initPeruste(pp.getPeruste().getIdLong(), p -> {
+                gc.set(2017, Calendar.JUNE, 4);
+                p.setVoimassaoloLoppuu(gc.getTime());
+                gc.set(2017, Calendar.JUNE, 5);
+                p.setSiirtymaPaattyy(gc.getTime());
+            });
+            ppTestUtils.asetaMuodostumiset(peruste.getId());
+            ppTestUtils.luoValidiKVLiite(peruste.getId());
+            ppTestUtils.julkaise(pp.getId());
+        }
 
         // Siirtymässä
-        p = TestUtils.teePeruste();
-        gc.set(2017, Calendar.JUNE, 3);
-        p.setVoimassaoloLoppuu(gc.getTime());
-        gc.set(2017, Calendar.JUNE, 5);
-        p.setSiirtymaPaattyy(gc.getTime());
-        p.asetaTila(PerusteTila.VALMIS);
-        peruste = repo.save(p);
+        {
+            PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti();
+            PerusteDto peruste = ppTestUtils.initPeruste(pp.getPeruste().getIdLong(), p -> {
+                gc.set(2017, Calendar.JUNE, 3);
+                p.setVoimassaoloLoppuu(gc.getTime());
+                gc.set(2017, Calendar.JUNE, 5);
+                p.setSiirtymaPaattyy(gc.getTime());
+            });
+            ppTestUtils.asetaMuodostumiset(peruste.getId());
+            ppTestUtils.luoValidiKVLiite(peruste.getId());
+            ppTestUtils.julkaise(pp.getId());
+        }
 
         // Siirtymän ja poistuneen rajalla
-        p = TestUtils.teePeruste();
-        gc.set(2017, Calendar.JUNE, 4);
-        p.setSiirtymaPaattyy(gc.getTime());
-        p.asetaTila(PerusteTila.VALMIS);
-        peruste = repo.save(p);
+        {
+            PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti();
+            PerusteDto peruste = ppTestUtils.initPeruste(pp.getPeruste().getIdLong(), p -> {
+                gc.set(2017, Calendar.JUNE, 4);
+                p.setSiirtymaPaattyy(gc.getTime());
+            });
+            ppTestUtils.asetaMuodostumiset(peruste.getId());
+            ppTestUtils.luoValidiKVLiite(peruste.getId());
+            ppTestUtils.julkaise(pp.getId());
+        }
 
         // Poistuneet
-        p = TestUtils.teePeruste();
-        gc.set(2017, Calendar.JUNE, 3);
-        p.setSiirtymaPaattyy(gc.getTime());
-        p.asetaTila(PerusteTila.VALMIS);
-        peruste = repo.save(p);
+        {
+            PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti();
+            PerusteDto peruste = ppTestUtils.initPeruste(pp.getPeruste().getIdLong(), p -> {
+                gc.set(2017, Calendar.JUNE, 3);
+                p.setSiirtymaPaattyy(gc.getTime());
+            });
+            ppTestUtils.asetaMuodostumiset(peruste.getId());
+            ppTestUtils.luoValidiKVLiite(peruste.getId());
+            ppTestUtils.julkaise(pp.getId());
+        }
 
         manager.commit(transaction);
     }
@@ -170,6 +201,8 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     private void julkaise(Long projektiId) {
         TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, null);
+        assertThat(status.isVaihtoOk()).isTrue();
+        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.KAANNOS, null);
         assertThat(status.isVaihtoOk()).isTrue();
         status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isTrue();

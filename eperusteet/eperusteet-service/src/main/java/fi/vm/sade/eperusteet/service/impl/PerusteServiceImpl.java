@@ -329,6 +329,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> findJulkinenBy(PageRequest page, PerusteQuery pquery) {
+        pquery.setProjektitila(ProjektiTila.JULKAISTU.toString());
         pquery.setTila(PerusteTila.VALMIS.toString());
         if (pquery.getPerusteTyyppi() == null) {
             pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());

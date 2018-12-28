@@ -547,9 +547,6 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
         Assert.assertTrue(status.isVaihtoOk());
         Assert.assertEquals(ProjektiTila.VALMIS, pp.getTila());
-
-        status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA, null);
-        Assert.assertFalse(status.isVaihtoOk());
     }
 
     @Test
@@ -576,6 +573,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
         Consumer<Perusteprojekti> julkaise = (Perusteprojekti p) -> {
             TilaUpdateStatus problems = service.updateTila(p.getId(), ProjektiTila.VIIMEISTELY, null);
+            Assert.assertTrue(problems.isVaihtoOk());
+            service.updateTila(p.getId(), ProjektiTila.KAANNOS, null);
             Assert.assertTrue(problems.isVaihtoOk());
             service.updateTila(p.getId(), ProjektiTila.VALMIS, null);
             Assert.assertTrue(problems.isVaihtoOk());

@@ -60,16 +60,16 @@ public interface PerusteprojektiService {
     PerusteprojektiDto get(@P("id") final Long id);
 
     @PreAuthorize("isAuthenticated()")
-    @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
+    @PostFilter("hasPermission(filterObject.id, 'perusteprojekti', 'LUKU')")
     List<PerusteprojektiInfoDto> getBasicInfo();
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'REKISTERINPITAJA')")
     Page<PerusteprojektiKevytDto> findBy(PageRequest page, PerusteprojektiQueryDto query);
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'REKISTERINPITAJA')")
     List<PerusteprojektiKevytDto> getKevytBasicInfo();
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'REKISTERINPITAJA')")
     PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
@@ -85,7 +85,7 @@ public interface PerusteprojektiService {
     DiaarinumeroHakuDto onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero);
 
     @PreAuthorize("isAuthenticated()")
-    @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
+    @PostFilter("hasPermission(filterObject.id, 'perusteprojekti', 'LUKU')")
     List<PerusteprojektiListausDto> getOmatProjektit();
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
@@ -112,12 +112,12 @@ public interface PerusteprojektiService {
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<PerusteenOsaTyoryhmaDto> getSisallonTyoryhmat(@P("id") Long perusteProjektiId);
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'REKISTERINPITAJA')")
     Page<ValidationDto> getVirheelliset(PageRequest p);
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'REKISTERINPITAJA')")
     Page<KoulutuskoodiStatusDto> getKoodiongelmat(PageRequest p);
 
-    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'TILANVAIHTO')")
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'VALIDOINTI')")
     TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila);
 }

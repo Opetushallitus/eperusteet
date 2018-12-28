@@ -15,12 +15,13 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
@@ -42,6 +43,7 @@ public class PerusteQuery {
     private List<String> opintoala;
     private String suoritustapa;
     private Set<String> tila;
+    private Set<String> projektitila;
     private String koulutuskoodi;
     private String perusteTyyppi;
     private String diaarinumero;
@@ -69,5 +71,14 @@ public class PerusteQuery {
 
     public void setTila(Set<String> tila) {
         this.tila = tila;
+    }
+
+    public void setProjektitila(String projektitila) {
+        this.projektitila = new HashSet<>();
+        this.projektitila.add(projektitila);
+    }
+
+    public void setProjektitila(Set<String> projektitila) {
+        this.projektitila = projektitila;
     }
 }

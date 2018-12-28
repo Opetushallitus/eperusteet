@@ -22,18 +22,19 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite_;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -261,6 +262,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
 
         pred = cb.and(pred, tilat);
+
+        if (!ObjectUtils.isEmpty(pq.getProjektitila())) {
+            Set<ProjektiTila> projektiTilat = pq.getProjektitila().stream()
+                    .map(ProjektiTila::of)
+                    .collect(Collectors.toSet());
+            Join<Peruste, Perusteprojekti> perusteprojekti = root.join(Peruste_.perusteprojekti);
+            pred = cb.and(pred, perusteprojekti.get(Perusteprojekti_.tila).in(projektiTilat));
+        }
 
         if (!ObjectUtils.isEmpty(pq.getTila())) {
             Set<PerusteTila> perusteTilat = pq.getTila().stream()

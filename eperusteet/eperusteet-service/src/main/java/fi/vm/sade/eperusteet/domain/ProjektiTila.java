@@ -101,7 +101,7 @@ public enum ProjektiTila {
     }
 
     public List<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
-        return new ArrayList<>();
+        return new ArrayList<>(EnumSet.noneOf(ProjektiTila.class));
     }
 
     public boolean isOneOf(ProjektiTila... tilat) {
