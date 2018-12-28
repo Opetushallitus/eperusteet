@@ -10,6 +10,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
@@ -21,21 +23,20 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiPeruste;
-import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
-import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.getTextString;
-
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -46,15 +47,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.*;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.*;
+
+import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 
 /**
  * @author isaul
@@ -100,26 +104,29 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         rootElement.setAttribute("lang", dokumentti.getKieli().toString());
         doc.appendChild(rootElement);
 
+        // Head-elementti
         Element headElement = doc.createElement("head");
+        rootElement.appendChild(headElement);
 
         // Poistetaan HEAD:in <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
         if (headElement.hasChildNodes()) {
             headElement.removeChild(headElement.getFirstChild());
         }
 
+        // Body-elementti
         Element bodyElement = doc.createElement("body");
-
-        rootElement.appendChild(headElement);
         rootElement.appendChild(bodyElement);
 
+        // Apuolio dataan siirtelyyn
         DokumenttiPeruste docBase = new DokumenttiPeruste();
-
         docBase.setDocument(doc);
         docBase.setHeadElement(headElement);
         docBase.setBodyElement(bodyElement);
         docBase.setGenerator(new CharapterNumberGenerator());
         docBase.setKieli(dokumentti.getKieli());
         docBase.setPeruste(peruste);
+        docBase.setKvLiiteJulkinenDto(perusteService.getJulkinenKVLiite(peruste.getId()));
+        docBase.setOsaamisalaKuvaukset(perusteService.getOsaamisalaKuvaukset(peruste.getId()));
         docBase.setDokumentti(dokumentti);
         docBase.setMapper(mapper);
         docBase.setSisalto(peruste.getSisalto(dokumentti.getSuoritustapakoodi()));
@@ -176,12 +183,46 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             }
         }
 
-        // Kuvaus
-        String kuvaus = getTextString(docBase, docBase.getPeruste().getKuvaus());
-        if (kuvaus != null && kuvaus.length() != 0) {
+        {
             Element description = docBase.getDocument().createElement("description");
-            addTeksti(docBase, kuvaus, "div", description);
             docBase.getHeadElement().appendChild(description);
+
+            KVLiiteJulkinenDto kvLiiteJulkinenDto = docBase.getKvLiiteJulkinenDto();
+            if (kvLiiteJulkinenDto != null) {
+
+                // Tutkinnon suorittaneen osaaminen
+                String suorittaneenOsaaminen = getTextString(docBase, kvLiiteJulkinenDto.getSuorittaneenOsaaminen());
+                if (!ObjectUtils.isEmpty(suorittaneenOsaaminen)) {
+                    addTeksti(docBase,
+                            messages.translate("docgen.kvliite.tutkinnon-suorittaneen-osaaminen", docBase.getKieli()),
+                            "h6",
+                            description);
+                    addTeksti(docBase, suorittaneenOsaaminen, "div", description);
+                }
+
+                // Työtehtäviä, joissa tutkinnon suorittanut voi toimia
+                String tyotehtavat = getTextString(docBase, kvLiiteJulkinenDto.getTyotehtavatJoissaVoiToimia());
+                if (!ObjectUtils.isEmpty(tyotehtavat)) {
+                    addTeksti(docBase,
+                            messages.translate("docgen.kvliite.tyotehtavat", docBase.getKieli()),
+                            "h6",
+                            description);
+                    addTeksti(docBase, tyotehtavat, "div", description);
+                }
+
+            }
+
+            Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> osaamisalaKuvaukset = docBase.getOsaamisalaKuvaukset();
+            if (osaamisalaKuvaukset != null) {
+                Suoritustapakoodi suoritustapakoodi = docBase.getDokumentti().getSuoritustapakoodi();
+                if (osaamisalaKuvaukset.containsKey(suoritustapakoodi)) {
+                    Map<String, List<TekstiKappaleDto>> osaamisalat = osaamisalaKuvaukset.get(suoritustapakoodi);
+                    osaamisalat.forEach((uri, osaamisala) -> osaamisala.forEach(tekstiKappale -> {
+                        addTeksti(docBase, getTextString(docBase, tekstiKappale.getNimi()), "h6", description);
+                        addTeksti(docBase, getTextString(docBase, tekstiKappale.getTeksti()), "div", description);
+                    }));
+                }
+            }
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");

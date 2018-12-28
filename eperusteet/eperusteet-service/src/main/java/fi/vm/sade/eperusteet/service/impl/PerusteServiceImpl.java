@@ -460,9 +460,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     @Transactional(readOnly = true)
-    public Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(final Long id) {
-        Peruste peruste = perusteet.findOne(id);
+    public Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(final Long perusteId) {
+        Peruste peruste = perusteet.findOne(perusteId);
         Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> osaamisalakuvaukset = new HashMap<>();
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
 
