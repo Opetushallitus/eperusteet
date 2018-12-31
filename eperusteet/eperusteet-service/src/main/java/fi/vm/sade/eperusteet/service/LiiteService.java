@@ -22,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -38,6 +39,9 @@ public interface LiiteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<LiiteDto> getAll(Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<LiiteDto> getAllByTyyppi(Long perusteId, Set<String> tyypit);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void delete(Long perusteId, UUID id);
