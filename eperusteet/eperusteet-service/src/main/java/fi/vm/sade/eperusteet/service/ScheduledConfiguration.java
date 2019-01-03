@@ -55,7 +55,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
         registrar.setScheduler(this.scheduler);
     }
 
-    //@Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     public void scheduledValidationTask() {
         if (!isUpdating.get()) {
             if (isUpdating.compareAndSet(false, true)) {
