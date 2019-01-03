@@ -16,7 +16,11 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+
+import java.util.List;
 import java.util.Map;
+
+import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,4 +33,5 @@ import lombok.Setter;
 public class MaarayskirjeDto {
     private Long id;
     private Map<Kieli, String> url;
+    private List<LiiteDto> liitteet;
 }

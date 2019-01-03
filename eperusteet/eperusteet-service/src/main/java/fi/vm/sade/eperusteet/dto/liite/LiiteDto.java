@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.dto.liite;
 
 import java.util.Date;
 import java.util.UUID;
+
 import lombok.Getter;
 import lombok.Setter;
 

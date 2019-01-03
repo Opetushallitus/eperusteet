@@ -55,6 +55,7 @@ angular
         $scope,
         $stateParams,
         $state,
+        SERVICE_LOC,
         Koodisto,
         Perusteet,
         YleinenData,
@@ -71,9 +72,12 @@ angular
         PerusteenTutkintonimikkeet,
         valittavatKielet,
         Kieli,
-        Arviointiasteikot
+        Arviointiasteikot,
+        Upload,
+        Api
     ) {
         $scope.kvliiteReadonly = true;
+
 
         (async function lataaKvliite() {
             const arviointiasteikotP = Arviointiasteikot.list().$promise;
@@ -209,6 +213,43 @@ angular
         $scope.$koodistoResolved = false;
         $scope.$perusteellaTutkintonimikkeet = PerusteenTutkintonimikkeet.perusteellaTutkintonimikkeet($scope.peruste);
         $scope.kieliOrder = Kieli.kieliOrder;
+        $scope.maarayskirje = {
+            files: []
+        };
+        $scope.liitteet = [];
+        $scope.liitteetUrl =  window.location.origin + SERVICE_LOC + "/perusteet/" + $scope.peruste.id + "/liitteet/";
+        console.log($scope.liitteetUrl);
+
+        $scope.getLiitteet = async () => {
+            $scope.liitteet = await Api.one("perusteet", $scope.peruste.id).all("liitteet").getList();
+        };
+        $scope.getLiitteet();
+
+        $scope.saveLiite = async () => {
+            try {
+                const image = $scope.maarayskirje.files[0];
+                const url = SERVICE_LOC + "/perusteet/" + $scope.peruste.id + "/liitteet";
+                const data = {
+                    url: url,
+                    fields: {
+                        nimi: image.name
+                    },
+                    file: image
+                };
+
+                await Upload.upload(data);
+
+                $scope.message = "liitetiedosto-tallennettu";
+                $scope.maarayskirje.files = [];
+
+                await $scope.getLiitteet();
+
+            } catch (err) {
+                console.log(err);
+                $scope.message = err.syy || "liitetiedosto-tallennusvirhe";
+                $scope.maarayskirje.files = [];
+            }
+        };
 
         $scope.Osaamisala = {
             poista: function(oa) {

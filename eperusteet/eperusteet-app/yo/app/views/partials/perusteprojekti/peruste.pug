@@ -263,15 +263,51 @@ mixin kvliite()
               h3.panel-title(kaanna='') maarayskirje
             .panel-body
               .form-group(ng-show='editEnabled')
-                label.col-sm-3.control-label(kaanna='sijainti')
+                label.col-sm-3.control-label(kaanna='liitetiedosto')
                 .col-sm-9
-                  input.col-sm-12.form-control(ng-model='editablePeruste.maarayskirje.url', slocalized='', placeholder='https://')
-              table.aligned(ng-show='!editEnabled')
-                tr
-                  th(kaanna='sijainti')
-                  td
-                    a(ng-show='hasContent(peruste.maarayskirje.url)', ng-href='{{ peruste.maarayskirje.url | kaanna }}') {{ peruste.maarayskirje.url | kaanna }}
-                    p(ng-show='!hasContent(peruste.maarayskirje.url)', kaanna='ei-asetettu')
+                  ui-select(ng-model='editablePeruste.maarayskirje.liitteet[0]')
+                    ui-select-match(placeholder="{{'liitetiedosto-valitse' | kaanna}}") {{$select.selected.nimi | kaanna}}
+                    ui-select-choices(repeat='liite as liite in liitteet track by $index')
+                      span(ng-bind-html='liite.nimi | kaanna')
+
+                  //a(ng-show='hasContent(editablePeruste.maarayskirje.url)') {{ editablePeruste.maarayskirje.url | kaanna }}
+                  //p(ng-show='!hasContent(editablePeruste.maarayskirje.url)', kaanna='ei-asetettu')
+
+              .form-group(ng-show="editEnabled")
+                label(for="inputFile" kaanna="'lataa-uusi-liitetiedosto'")
+                div
+                  button#inputFile.btn.btn-default(ngf-multiple="true"
+                                                   ng-model-rejected="maarayskirje.rejected"
+                                                   ngf-accept="'.pdf'"
+                                                   ngf-select
+                                                   ng-model="maarayskirje.files")
+                    span(kaanna="'lisaa-liitetiedosto'")
+                  span &nbsp;
+                  button.btn.btn-primary(ng-disabled='!maarayskirje.files || maarayskirje.files.length !== 1'
+                                         ng-click='saveLiite()'
+                                         kaanna="'tallenna'")
+                  p.success-message(ng-show='message') {{message | kaanna}}
+                  p.error-message(ng-show='maarayskirje.rejected.length > 0') {{'liitetiedosto-pdf-hylatty' | kaanna}}
+                p.help-block {{maarayskirje.files[0].name}}
+
+              table.table.table-striped(ng-show='!editEnabled')
+                thead
+                  tr
+                    th.col-sm-4(kaanna='nimi')
+                    th.col-sm-6 {{'sijainti' | kaanna}}
+                tbody
+                  tr(ng-repeat='maarayskirje in peruste.maarayskirje.liitteet')
+                    td
+                      p(ng-show='hasContent(maarayskirje.nimi)') {{ maarayskirje.nimi | kaanna }}
+                      p(ng-show='!hasContent(maarayskirje.nimi)', kaanna='ei-asetettu')
+                    td
+                      a(ng-href='{{liitteetUrl + maarayskirje.id}}') {{liitteetUrl + maarayskirje.id}}
+                  tr(ng-show='peruste.maarayskirje.length === 0')
+                    td
+                      p(kaanna='ei-asetettu')
+                    td
+                      p(kaanna='ei-asetettu')
+
           .panel.panel-default.panel-clean(ng-show="!isOpas && isAmmatillinen")
             .panel-heading
               h3.panel-title(ng-bind="'koulutusvienti' | kaanna")
@@ -292,7 +328,7 @@ mixin kvliite()
                 thead
                   tr
                     th.col-sm-4(kaanna='nimi')
-                    th.col-sm-6 {{'sijainti' | kaanna}}*
+                    th.col-sm-6 {{'sijainti' | kaanna}}
                     th(kaanna='toiminnot', ng-show='editEnabled')
                 tbody
                   tr(ng-repeat='muutosmaarays in editablePeruste.muutosmaaraykset', ng-show='editEnabled')
