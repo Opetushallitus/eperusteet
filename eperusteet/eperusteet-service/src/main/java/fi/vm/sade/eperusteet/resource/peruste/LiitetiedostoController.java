@@ -122,6 +122,10 @@ public class LiitetiedostoController {
     ) throws IOException {
         LiiteDto dto = liitteet.get(perusteId, id);
         if (dto != null) {
+            if (DOCUMENT_TYPES.contains(dto.getTyyppi())) {
+                response.setHeader("Content-disposition", "inline; filename=\"" + dto.getNimi() + "\"");
+            }
+
             if (etag != null && dto.getId().toString().equals(etag)) {
                 response.setStatus(HttpStatus.NOT_MODIFIED.value());
             } else {

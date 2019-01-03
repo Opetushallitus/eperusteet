@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -37,6 +38,7 @@ import fi.vm.sade.eperusteet.dto.util.*;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
@@ -177,6 +179,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private LocalizedMessagesService messages;
+
+    @Autowired
+    private LiiteRepository liitteet;
 
     @Autowired
     private EntityManager em;
@@ -659,6 +664,27 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             perusteet.lock(current);
             Peruste updated = mapper.map(perusteDto, Peruste.class);
+
+
+            // Liitetään määräyskirjeet
+            Maarayskirje maarayskirje = updated.getMaarayskirje();
+            MaarayskirjeDto maarayskirjeDto = perusteDto.getMaarayskirje();
+            if (maarayskirje != null && maarayskirjeDto != null) {
+                if (!ObjectUtils.isEmpty(maarayskirjeDto.getLiitteet())) {
+                    maarayskirje.setLiitteet(new ArrayList<>());
+                    maarayskirjeDto.getLiitteet().forEach(liiteDto -> {
+                        Peruste peruste = perusteet.findOne(perusteId);
+                        Liite liite = this.liitteet.findOne(liiteDto.getId());
+
+                        if (!liite.getPerusteet().contains(peruste)) {
+                            throw new BusinessRuleViolationException("liite-ei-kuulu-julkaistuun-perusteeseen");
+                        }
+                        maarayskirje.getLiitteet().add(liite);
+                    });
+                }
+            }
+
+
             if (updated.getMuutosmaaraykset() != null) {
                 for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
                     muutosmaarays.setPeruste(current);
