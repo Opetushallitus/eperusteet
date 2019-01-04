@@ -22,22 +22,23 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Not thread-safe and do not have to be (since request-scoped).
+ * Should be a thread-safe
  *
  * User: tommiratamaa
  * Date: 27.11.2015
  * Time: 13.42
  */
 @Component
-@Scope(value="request", proxyMode = ScopedProxyMode.INTERFACES)
 public class PerusteUpdateStoreImpl implements PerusteUpdateStore {
-    private Set<Long> perusteIds = new HashSet<>();
-    private int stackDept = 0;
-    private Set<ResolvableReferenced> resolvableReferences = new HashSet<>();
+    private Set<Long> perusteIds = Collections.synchronizedSet(new HashSet<>());
+    private AtomicInteger stackDept = new AtomicInteger();
+    private Set<ResolvableReferenced> resolvableReferences = Collections.synchronizedSet(new HashSet<>());
 
     @Override
     public void perusteUpdated(long perusteId) {
@@ -51,23 +52,23 @@ public class PerusteUpdateStoreImpl implements PerusteUpdateStore {
 
     @Override
     public void enter() {
-        stackDept++;
+        stackDept.incrementAndGet();
     }
 
     @Override
     public int leave() {
-        return --stackDept;
+        return stackDept.getAndDecrement();
     }
 
     @Override
-    public Set<Long> getAndClearUpdatedPerusteIds() {
+    public synchronized Set<Long> getAndClearUpdatedPerusteIds() {
         Set<Long> value = new HashSet<>(perusteIds);
         this.perusteIds = new HashSet<>();
         return value;
     }
 
     @Override
-    public Set<ResolvableReferenced> getAndClearReferenced() {
+    public synchronized Set<ResolvableReferenced> getAndClearReferenced() {
         Set<ResolvableReferenced> list = new HashSet<>(this.resolvableReferences);
         this.resolvableReferences = new HashSet<>();
         return list;
