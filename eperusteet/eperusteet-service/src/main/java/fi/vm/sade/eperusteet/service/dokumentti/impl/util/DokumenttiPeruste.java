@@ -16,14 +16,14 @@
 
 package fi.vm.sade.eperusteet.service.dokumentti.impl.util;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -36,7 +36,6 @@ public class DokumenttiPeruste extends DokumenttiBase {
     PerusteenOsaViite sisalto;
     AIPEOpetuksenSisalto aipeOpetuksenSisalto;
     KVLiiteJulkinenDto kvLiiteJulkinenDto;
-    Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> osaamisalaKuvaukset;
 
     public LaajuusYksikko getLaajuusYksikko() {
         Set<Suoritustapa> suoritustavat = this.getPeruste().getSuoritustavat();

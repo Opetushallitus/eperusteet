@@ -11,7 +11,6 @@ import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
@@ -55,8 +54,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 
@@ -126,7 +125,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.setKieli(dokumentti.getKieli());
         docBase.setPeruste(peruste);
         docBase.setKvLiiteJulkinenDto(perusteService.getJulkinenKVLiite(peruste.getId()));
-        docBase.setOsaamisalaKuvaukset(perusteService.getOsaamisalaKuvaukset(peruste.getId()));
         docBase.setDokumentti(dokumentti);
         docBase.setMapper(mapper);
         docBase.setSisalto(peruste.getSisalto(dokumentti.getSuoritustapakoodi()));
@@ -210,18 +208,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     addTeksti(docBase, tyotehtavat, "div", description);
                 }
 
-            }
-
-            Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> osaamisalaKuvaukset = docBase.getOsaamisalaKuvaukset();
-            if (osaamisalaKuvaukset != null) {
-                Suoritustapakoodi suoritustapakoodi = docBase.getDokumentti().getSuoritustapakoodi();
-                if (osaamisalaKuvaukset.containsKey(suoritustapakoodi)) {
-                    Map<String, List<TekstiKappaleDto>> osaamisalat = osaamisalaKuvaukset.get(suoritustapakoodi);
-                    osaamisalat.forEach((uri, osaamisala) -> osaamisala.forEach(tekstiKappale -> {
-                        addTeksti(docBase, getTextString(docBase, tekstiKappale.getNimi()), "h6", description);
-                        addTeksti(docBase, getTextString(docBase, tekstiKappale.getTeksti()), "div", description);
-                    }));
-                }
             }
         }
 
