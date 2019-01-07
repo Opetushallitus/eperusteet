@@ -25,17 +25,7 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Future;
-
 import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +38,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Future;
+
+import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
+import static javax.servlet.http.HttpServletResponse.*;
 
 /**
  *
@@ -100,7 +98,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
                 .build();
 
         return client.<KayttajanTietoDto>execute(request)
-                .handleErrorStatus(SC_UNAUTHORIZED)
+                .handleErrorStatus(SC_UNAUTHORIZED, SC_FORBIDDEN)
                 .with(res -> Optional.empty())
                 .expectedStatus(SC_OK)
                 .mapWith(text -> {
