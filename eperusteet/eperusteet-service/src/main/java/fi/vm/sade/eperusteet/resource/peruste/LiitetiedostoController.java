@@ -60,9 +60,9 @@ public class LiitetiedostoController {
     @Autowired
     private LiiteService liitteet;
 
-    private static final Set<String> IMAGE_TYPES;
+    public static final Set<String> IMAGE_TYPES;
 
-    private static final Set<String> DOCUMENT_TYPES;
+    public static final Set<String> DOCUMENT_TYPES;
 
     static {
         IMAGE_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(

@@ -28,6 +28,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -670,16 +671,23 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             Maarayskirje maarayskirje = updated.getMaarayskirje();
             MaarayskirjeDto maarayskirjeDto = perusteDto.getMaarayskirje();
             if (maarayskirje != null && maarayskirjeDto != null) {
-                if (!ObjectUtils.isEmpty(maarayskirjeDto.getLiitteet())) {
-                    maarayskirje.setLiitteet(new ArrayList<>());
-                    maarayskirjeDto.getLiitteet().forEach(liiteDto -> {
+                Map<Kieli, LiiteDto> dtoLiitteet = maarayskirjeDto.getLiitteet();
+                if (!ObjectUtils.isEmpty(dtoLiitteet)) {
+                    dtoLiitteet.forEach((kieli, liiteDto) -> {
                         Peruste peruste = perusteet.findOne(perusteId);
-                        Liite liite = this.liitteet.findOne(liiteDto.getId());
+                        if (kieli != null && liiteDto != null) {
+                            Liite liite = liitteet.findOne(liiteDto.getId());
 
-                        if (!liite.getPerusteet().contains(peruste)) {
-                            throw new BusinessRuleViolationException("liite-ei-kuulu-julkaistuun-perusteeseen");
+                            if (!liite.getPerusteet().contains(peruste)) {
+                                throw new BusinessRuleViolationException("liite-ei-kuulu-julkaistuun-perusteeseen");
+                            }
+
+                            if (maarayskirje.getLiitteet() == null) {
+                                maarayskirje.setLiitteet(new HashMap<>());
+                            }
+
+                            maarayskirje.getLiitteet().put(kieli, liite);
                         }
-                        maarayskirje.getLiitteet().add(liite);
                     });
                 }
             }

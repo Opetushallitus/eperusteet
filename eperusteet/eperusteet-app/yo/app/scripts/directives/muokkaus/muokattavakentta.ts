@@ -303,62 +303,17 @@ angular
             }
         };
     })
-    .directive("localized", ($rootScope, YleinenData) => {
+    .directive("localized", ($timeout, Kieli) => {
         return {
             priority: 5,
             restrict: "A",
             require: "ngModel",
             link: (scope, element, attrs, ngModelCtrl: any) => {
                 ngModelCtrl.$formatters.push(modelValue => {
-                    if (angular.isUndefined(modelValue)) {
-                        return;
-                    }
-                    if (modelValue === null) {
-                        return;
-                    }
-                    return modelValue[YleinenData.kieli];
-                });
-
-                ngModelCtrl.$parsers.push(viewValue => {
-                    let localizedModelValue = ngModelCtrl.$modelValue;
-
-                    if (angular.isUndefined(localizedModelValue)) {
-                        localizedModelValue = {};
-                    }
-                    if (localizedModelValue === null) {
-                        localizedModelValue = {};
-                    }
-                    localizedModelValue[YleinenData.kieli] = viewValue;
-                    return localizedModelValue;
-                });
-
-                scope.$on("$translateChangeSuccess", () => {
-                    if (
-                        !angular.isUndefined(ngModelCtrl.$modelValue) &&
-                        !_.isEmpty(ngModelCtrl.$modelValue[YleinenData.kieli])
-                    ) {
-                        ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[YleinenData.kieli]);
-                    } else {
-                        ngModelCtrl.$setViewValue("");
-                    }
-                    ngModelCtrl.$render();
-                });
-            }
-        };
-    })
-    .directive("slocalized", function($timeout, $parse, $rootScope, YleinenData, Kieli) {
-        return {
-            priority: 5,
-            restrict: "A",
-            require: "ngModel",
-            scope: false,
-            link: function(scope, element, attrs, ngModelCtrl: any) {
-                ngModelCtrl.$formatters.push(function(modelValue) {
                     if (angular.isUndefined(modelValue) || modelValue === null) {
-                        return "";
+                        return;
                     }
-                    const result = modelValue[Kieli.getSisaltokieli()];
-                    return result;
+                    return modelValue[Kieli.getSisaltokieli()];
                 });
 
                 ngModelCtrl.$parsers.push(function(viewValue) {
@@ -368,9 +323,48 @@ angular
                         localizedModelValue = {};
                     }
 
-                    if (localizedModelValue === null) {
+                    localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
+
+                    return localizedModelValue;
+                });
+
+                scope.$on("changed:sisaltokieli", function(event, sisaltokieli) {
+                    $timeout(() => {
+                        if (
+                            ngModelCtrl.$modelValue !== null &&
+                            !angular.isUndefined(ngModelCtrl.$modelValue) &&
+                            !_.isEmpty(ngModelCtrl.$modelValue[sisaltokieli])
+                        ) {
+                            ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[sisaltokieli]);
+                        } else {
+                            ngModelCtrl.$setViewValue("");
+                        }
+                        ngModelCtrl.$render();
+                    });
+                });
+            }
+        };
+    })
+    .directive("slocalized", function($timeout, Kieli) {
+        return {
+            priority: 5,
+            restrict: "A",
+            require: "ngModel",
+            link: function(scope, element, attrs, ngModelCtrl: any) {
+                ngModelCtrl.$formatters.push(function(modelValue) {
+                    if (angular.isUndefined(modelValue) || modelValue === null) {
+                        return "";
+                    }
+                    return modelValue[Kieli.getSisaltokieli()];
+                });
+
+                ngModelCtrl.$parsers.push(function(viewValue) {
+                    let localizedModelValue = ngModelCtrl.$modelValue;
+
+                    if (localizedModelValue === null || _.isUndefined(localizedModelValue)) {
                         localizedModelValue = {};
                     }
+
                     if (_.isString(viewValue)) {
                         localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
                     }

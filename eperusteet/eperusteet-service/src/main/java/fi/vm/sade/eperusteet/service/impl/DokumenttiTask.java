@@ -18,11 +18,9 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.service.ScheduledTask;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 public class DokumenttiTask implements ScheduledTask {
 
@@ -41,7 +39,6 @@ public class DokumenttiTask implements ScheduledTask {
 
     @Override
     public void execute() {
-        // Päivitä PDF dokumentit
         dokumenttiService.paivitaDokumentit();
     }
 }
