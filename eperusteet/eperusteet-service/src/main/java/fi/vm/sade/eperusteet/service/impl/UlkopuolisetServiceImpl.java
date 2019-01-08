@@ -58,7 +58,7 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
     @Transactional
     public JsonNode getRyhma(String organisaatioOid) {
 
-        OphHttpClient client = restClientFactory.get("ulkopuoliset");
+        OphHttpClient client = restClientFactory.get(serviceUrl, true);
 
         String url = serviceUrl + ORGANISAATIOT + organisaatioOid;
 
@@ -84,7 +84,7 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
     @Transactional
     public JsonNode getRyhmat() {
 
-        OphHttpClient client = restClientFactory.get("ulkopuoliset");
+        OphHttpClient client = restClientFactory.get(serviceUrl, true);
 
         String url = serviceUrl + ORGANISAATIORYHMAT;
 
