@@ -310,6 +310,11 @@
             <version>0.1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>fi.vm.sade.java-utils</groupId>
+            <artifactId>opintopolku-cas-servlet-filter</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <version>9.1-SNAPSHOT</version>
             <artifactId>generic-common</artifactId>
