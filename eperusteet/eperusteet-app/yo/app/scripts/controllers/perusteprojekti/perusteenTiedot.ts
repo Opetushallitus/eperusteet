@@ -218,7 +218,6 @@ angular
         };
         $scope.liitteet = [];
         $scope.liitteetUrl =  window.location.origin + SERVICE_LOC + "/perusteet/" + $scope.peruste.id + "/liitteet/";
-        console.log($scope.liitteetUrl);
 
         $scope.getLiitteet = async () => {
             $scope.liitteet = await Api.one("perusteet", $scope.peruste.id).all("liitteet").getList();
@@ -245,7 +244,6 @@ angular
                 await $scope.getLiitteet();
 
             } catch (err) {
-                console.log(err);
                 $scope.message = err.syy || "liitetiedosto-tallennusvirhe";
                 $scope.maarayskirje.files = [];
             }
