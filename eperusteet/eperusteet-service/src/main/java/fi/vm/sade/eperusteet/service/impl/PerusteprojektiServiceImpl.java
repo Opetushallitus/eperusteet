@@ -1132,11 +1132,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         log.debug("Tarkastetaan " + projektit.size() + " perustetta (vain julkaistut).");
 
-        projektit.stream()
-                .filter(projekti -> projekti.getTila().equals(JULKAISTU))
-                .forEach(projekti -> {
+        projektit.forEach(projekti -> {
             Peruste peruste = projekti.getPeruste();
             Maarayskirje maarayskirje = peruste.getMaarayskirje();
+
             // Koitetaan ladata määräyskirjeet, jos niitä ei ole vielä haettu
             if (maarayskirje != null) {
 
@@ -1145,7 +1144,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 OphHttpClient client = restClientFactory.get("maarayskirje");
 
                 Map<Kieli, String> urls = maarayskirje.getUrl();
-                Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet()!= null
+                Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet() != null
                         ? maarayskirje.getLiitteet()
                         : new HashMap<>();
 
@@ -1190,6 +1189,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                     log.error(e.getLocalizedMessage(), e);
                                 }
                             });
+                        } else {
+                            log.debug("Määräyskirje löytyy jo kielellä " + kieli);
                         }
 
                     });
