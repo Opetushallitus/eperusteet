@@ -30,6 +30,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RestClientFactory {
+
+    private static final String CLIENT_SUBSYSTEM_CODE = "eperusteet";
+
     private static final int TIMEOUT = 60000;
 
     @Value("${fi.vm.sade.eperusteet.oph_username:''}")
@@ -41,6 +44,9 @@ public class RestClientFactory {
     @Value("${web.url.cas:''}")
     private String casUrl;
 
+    @Value("${cas.service.eperusteet-service:''}")
+    private String casServiceUrl;
+
     private final ConcurrentMap<String, OphHttpClient> cache = new ConcurrentHashMap<>();
 
     public OphHttpClient get(String service) {
@@ -51,10 +57,10 @@ public class RestClientFactory {
                     .username(username)
                     .password(password)
                     .webCasUrl(casUrl)
-                    .casServiceUrl(service)
+                    .casServiceUrl(casServiceUrl)
                     .build();
 
-            OphHttpClient client = new OphHttpClient.Builder(service)
+            OphHttpClient client = new OphHttpClient.Builder(CLIENT_SUBSYSTEM_CODE)
                     .authenticator(casAuthenticator)
                     .timeoutMs(TIMEOUT)
                     .build();
