@@ -178,7 +178,6 @@ angular
                     };
                 })
                 .value();
-            console.log($scope.ongelmalliset);
         };
         $scope.haeOngelmalliset();
     })
