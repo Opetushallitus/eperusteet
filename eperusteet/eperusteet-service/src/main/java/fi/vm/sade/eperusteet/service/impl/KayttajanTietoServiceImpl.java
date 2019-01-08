@@ -89,7 +89,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
         }
 
-        OphHttpClient client = restClientFactory.get(onrServiceUrl);
+        OphHttpClient client = restClientFactory.get("kayttajantieto");
 
         String url = onrServiceUrl + HENKILO_API + oid;
 
@@ -118,7 +118,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
         }
 
-        OphHttpClient client = restClientFactory.get(koServiceUrl);
+        OphHttpClient client = restClientFactory.get("kayttajantieto");
         String url = koServiceUrl + HENKILO_API + oid + "/organisaatiohenkilo";
 
 
@@ -165,7 +165,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Käyttäjällä ei ole kyseistä perusteprojektia");
         }
 
-        OphHttpClient client = restClientFactory.get(koServiceUrl);
+        OphHttpClient client = restClientFactory.get("kayttajantieto");
         String url = koServiceUrl + HENKILO_API + oid + "/organisaatiohenkilo/" + pp.getRyhmaOid();
 
         OphHttpRequest request = OphHttpRequest.Builder
