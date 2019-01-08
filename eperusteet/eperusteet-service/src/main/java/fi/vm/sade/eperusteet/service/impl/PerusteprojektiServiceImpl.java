@@ -65,6 +65,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -74,6 +75,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.*;
@@ -1132,6 +1135,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         log.debug("Tarkastetaan " + projektit.size() + " perustetta (vain julkaistut).");
 
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
         projektit.forEach(projekti -> {
             Peruste peruste = projekti.getPeruste();
             Maarayskirje maarayskirje = peruste.getMaarayskirje();
@@ -1141,7 +1149,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                 log.debug("Aloitetaan " + peruste.getId() + " määräyskirjeen läpikäyminen.");
 
-                OphHttpClient client = restClientFactory.get("perusteprojekti");
 
                 Map<Kieli, String> urls = maarayskirje.getUrl();
                 Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet() != null
@@ -1154,16 +1161,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         if (!liitteet.containsKey(kieli)) {
                             log.debug("Koitetaan ladata määräyskirje " + url + " osoitteesta.");
 
-                            OphHttpRequest request = OphHttpRequest.Builder
-                                    .get(url)
-                                    .setEntity(new OphHttpEntity.Builder()
-                                            .build())
-                                    .build();
+                            try {
+                                ResponseEntity<byte[]> res = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
 
-                            client.execute(request)
-                                    .expectedStatus(SC_OK).consumeStreamWith(is -> {
-                                try {
-                                    byte[] data = IOUtils.toByteArray(is);
+                                byte[] data = res.getBody();
+                                if (res.getStatusCode().equals(HttpStatus.OK) && data != null) {
                                     String tyyppi = tika.detect(data);
                                     if (DOCUMENT_TYPES.contains(tyyppi)) {
                                         // Lisätään määräyskirje ja liitetään se perusteeseen
@@ -1182,13 +1184,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                             peruste.setGlobalVersion(new PerusteVersion(peruste));
                                         }
                                         peruste.getGlobalVersion().setAikaleima(muokattu);
-
                                     }
-                                } catch (IOException e) {
-                                    // Continue
-                                    log.error(e.getLocalizedMessage(), e);
                                 }
-                            });
+                            } catch (RestClientException e) {
+                                // Continue
+                                log.error(e.getLocalizedMessage());
+                            }
                         } else {
                             log.debug("Määräyskirje löytyy jo kielellä " + kieli);
                         }
