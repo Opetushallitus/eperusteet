@@ -1141,7 +1141,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                 log.debug("Aloitetaan " + peruste.getId() + " määräyskirjeen läpikäyminen.");
 
-                OphHttpClient client = restClientFactory.get("maarayskirje");
+                OphHttpClient client = restClientFactory.get("perusteprojekti");
 
                 Map<Kieli, String> urls = maarayskirje.getUrl();
                 Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet() != null
