@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -42,6 +43,7 @@ import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
@@ -55,9 +57,10 @@ import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpEntity;
 import fi.vm.sade.javautils.http.OphHttpRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -78,6 +81,7 @@ import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
+import static fi.vm.sade.eperusteet.resource.peruste.LiitetiedostoController.DOCUMENT_TYPES;
 import static fi.vm.sade.eperusteet.service.util.Util.*;
 import static java.util.stream.Collectors.toMap;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
@@ -87,11 +91,13 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
  *
  * @author harrik
  */
+@Slf4j
 @Service
 public class PerusteprojektiServiceImpl implements PerusteprojektiService {
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiServiceImpl.class);
 
     private static final String HENKILO_YHTEYSTIEDOT_API = "/s2s/henkilo/yhteystiedot";
+
+    final Tika tika = new Tika();
 
     @Value("${cas.service.oppijanumerorekisteri-service:''}")
     private String onrServiceUrl;
@@ -101,6 +107,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private DtoMapper mapper;
 
     private ObjectMapper omapper = new ObjectMapper();
+
+    @Autowired
+    private LiiteRepository liiteRepository;
 
     @Autowired
     private PerusteprojektiRepository repository;
@@ -194,7 +203,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Set<Perusteprojekti> projektit = new HashSet<>();
         projektit.addAll(repository.findAllValidoimattomat());
         projektit.addAll(repository.findAllValidoimattomatUudet());
-        LOG.debug("Tarkastetaan " + projektit.size() + " perustetta.");
+        log.debug("Tarkastetaan " + projektit.size() + " perustetta.");
 
         for (Perusteprojekti pp : projektit) {
             try {
@@ -211,7 +220,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     continue;
                 }
 
-                LOG.debug("Perusteen ajastettu validointi: " + pp.getPeruste().getId());
+                log.debug("Perusteen ajastettu validointi: " + pp.getPeruste().getId());
 
                 TilaUpdateStatus status = projektiValidator.run(pp.getId(), JULKAISTU);
 
@@ -228,7 +237,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 validointiStatusRepository.save(vs);
             }
             catch (AuthenticationCredentialsNotFoundException ex) {
-                LOG.debug(ex.getMessage());
+                log.debug(ex.getMessage());
             }
         }
     }
@@ -241,7 +250,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         projektit.addAll(repository.findAllKoodiValidoimattomat());
         projektit.addAll(repository.findAllKoodiValidoimattomatUudet());
 
-        LOG.debug("Tarkastetaan " + projektit.size() + " perusteen koulutuskoodit.");
+        log.debug("Tarkastetaan " + projektit.size() + " perusteen koulutuskoodit.");
 
         for (Perusteprojekti pp : projektit) {
             Peruste peruste = pp.getPeruste();
@@ -271,11 +280,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Set<Koulutus> koulutuskoodit = p.getKoulutukset();
 
         if (p.getSuoritustavat() != null && p.getSuoritustavat().size() > 0) {
-            LOG.debug("Tarkistetaan perustetta: " + p.getNimi().toString());
+            log.debug("Tarkistetaan perustetta: " + p.getNimi().toString());
 
-            LOG.debug("  Käydään lävitse tutkinnon osat suoritustapa kerrallaan.");
+            log.debug("  Käydään lävitse tutkinnon osat suoritustapa kerrallaan.");
             for (Suoritustapa st : p.getSuoritustavat()) {
-                LOG.debug("  Tarkistetaan suoritustapa: " + st.getSuoritustapakoodi());
+                log.debug("  Tarkistetaan suoritustapa: " + st.getSuoritustapakoodi());
 
                 List<TutkinnonOsaViite> viitteet = mapper.mapAsList(perusteService.getTutkinnonOsat(p.getId(),
                         st.getSuoritustapakoodi()), TutkinnonOsaViite.class);
@@ -292,13 +301,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 }
 
                 if (koodit.size() > 0) {
-                    LOG.debug("    Tutkinnon osien koodit:");
+                    log.debug("    Tutkinnon osien koodit:");
 
                     for (Pair<Koodi, TutkinnonOsaViite> pari : koodit) {
                         Koodi koodi = pari.getFirst();
                         TutkinnonOsaViite viite = pari.getSecond();
 
-                        LOG.debug("    - " + koodi.getUri());
+                        log.debug("    - " + koodi.getUri());
 
                         List<KoodistoKoodiDto> ylarelaatiot = getKoulutukset(koodi.getUri());
 
@@ -308,7 +317,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         // Katsotaan ensiksi, löytyykä koulutus suoraan ylärelaatiosta
                         if (hasKoulutus(koulutuskoodit, ylarelaatiot)) {
                             // Tarkistetaan ylärelaatiot
-                            LOG.debug("    On linkitetty suoraan.");
+                            log.debug("    On linkitetty suoraan.");
                             koodiOk = true;
                             return;
                         } else {
@@ -319,7 +328,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                                 if (hasKoulutus(koulutuskoodit, koulutukset)) {
                                     // Tutkinnon osan koodi on linkitetty ainakin yhteen koulutuskoodiin
-                                    LOG.debug("    On linkitetty rinnasteisen.");
+                                    log.debug("    On linkitetty rinnasteisen.");
                                     koodiOk = true;
                                 }
                             }
@@ -334,7 +343,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         }
                     }
                 } else {
-                    LOG.debug("    Yhtään tutkinnon osan koodia ei löytynyt.");
+                    log.debug("    Yhtään tutkinnon osan koodia ei löytynyt.");
                 }
             }
         }
@@ -760,7 +769,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                             dokumenttiService.setStarted(createDtoFor);
                                             dokumenttiService.generateWithDto(createDtoFor);
                                         } catch (DokumenttiException e) {
-                                            LOG.error(e.getLocalizedMessage(), e);
+                                            log.error(e.getLocalizedMessage(), e);
                                         }
                                     })));
         }
@@ -1111,6 +1120,82 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
         List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByPerusteprojekti(pp);
         return mapper.mapAsList(tyoryhmat, PerusteenOsaTyoryhmaDto.class);
+    }
+
+    @Override
+    @Transactional
+    @IgnorePerusteUpdateCheck
+    public void lataaMaarayskirjeetTask() {
+        List<Perusteprojekti> projektit = repository.findAll().stream()
+                .filter(projekti -> projekti.getTila().equals(JULKAISTU))
+                .collect(Collectors.toList());
+
+        log.debug("Tarkastetaan " + projektit.size() + " perustetta (vain julkaistut).");
+
+        projektit.stream()
+                .filter(projekti -> projekti.getTila().equals(JULKAISTU))
+                .forEach(projekti -> {
+            Peruste peruste = projekti.getPeruste();
+            Maarayskirje maarayskirje = peruste.getMaarayskirje();
+            // Koitetaan ladata määräyskirjeet, jos niitä ei ole vielä haettu
+            if (maarayskirje != null) {
+
+                log.debug("Aloitetaan " + peruste.getId() + " määräyskirjeen läpikäyminen.");
+
+                OphHttpClient client = restClientFactory.get("maarayskirje");
+
+                Map<Kieli, String> urls = maarayskirje.getUrl();
+                Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet()!= null
+                        ? maarayskirje.getLiitteet()
+                        : new HashMap<>();
+
+                if (urls != null) {
+                    urls.forEach((kieli, url) -> {
+
+                        if (!liitteet.containsKey(kieli)) {
+                            log.debug("Koitetaan ladata määräyskirje " + url + " osoitteesta.");
+
+                            OphHttpRequest request = OphHttpRequest.Builder
+                                    .get(url)
+                                    .setEntity(new OphHttpEntity.Builder()
+                                            .build())
+                                    .build();
+
+                            client.execute(request)
+                                    .expectedStatus(SC_OK).consumeStreamWith(is -> {
+                                try {
+                                    byte[] data = IOUtils.toByteArray(is);
+                                    String tyyppi = tika.detect(data);
+                                    if (DOCUMENT_TYPES.contains(tyyppi)) {
+                                        // Lisätään määräyskirje ja liitetään se perusteeseen
+                                        Liite liite = liiteRepository.add(tyyppi, "maarayskirje.pdf", data);
+                                        liitteet.put(kieli, liite);
+                                        peruste.attachLiite(liite);
+
+                                        // Päivitetään global version
+                                        Date muokattu = new Date();
+                                        if (peruste.getTila() == PerusteTila.VALMIS) {
+                                            perusteRepository.setRevisioKommentti("Perusteeseen lisätty määräyskirje");
+                                            peruste.muokattu();
+                                            muokattu = peruste.getMuokattu();
+                                        }
+                                        if (peruste.getGlobalVersion() == null) {
+                                            peruste.setGlobalVersion(new PerusteVersion(peruste));
+                                        }
+                                        peruste.getGlobalVersion().setAikaleima(muokattu);
+
+                                    }
+                                } catch (IOException e) {
+                                    // Continue
+                                    log.error(e.getLocalizedMessage(), e);
+                                }
+                            });
+                        }
+
+                    });
+                }
+            }
+        });
     }
 
 }

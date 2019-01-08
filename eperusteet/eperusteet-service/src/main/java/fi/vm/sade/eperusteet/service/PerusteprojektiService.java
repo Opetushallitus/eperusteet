@@ -47,6 +47,8 @@ public interface PerusteprojektiService {
 
     void tarkistaKooditTask();
 
+    void lataaMaarayskirjeetTask();
+
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<KayttajanTietoDto> getJasenet(@P("id") Long id);
 

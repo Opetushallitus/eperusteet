@@ -24,4 +24,5 @@ import java.io.InputStream;
  */
 public interface LiiteRepositoryCustom {
     Liite add(String tyyppi, String nimi, long length, InputStream is);
+    Liite add(String tyyppi, String nimi, byte[] bytes);
 }
