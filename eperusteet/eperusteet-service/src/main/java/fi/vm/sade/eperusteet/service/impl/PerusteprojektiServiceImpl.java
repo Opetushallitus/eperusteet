@@ -462,7 +462,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         String ryhmaOid = p.getRyhmaOid();
 
-        OphHttpClient client = restClientFactory.get("perusteprojekti");
+        OphHttpClient client = restClientFactory.get(onrServiceUrl, true);
 
         String url = onrServiceUrl + HENKILO_YHTEYSTIEDOT_API;
 
@@ -505,7 +505,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return kayttajat;
         }
 
-        OphHttpClient client = restClientFactory.get("perusteprojekti");
+        OphHttpClient client = restClientFactory.get(onrServiceUrl, true);
 
         String url = onrServiceUrl + HENKILO_YHTEYSTIEDOT_API;
 
