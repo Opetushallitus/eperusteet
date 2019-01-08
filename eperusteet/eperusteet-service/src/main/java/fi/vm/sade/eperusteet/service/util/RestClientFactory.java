@@ -59,12 +59,12 @@ public class RestClientFactory {
                         .casServiceUrl(service)
                         .build();
 
-                client = new OphHttpClient.Builder(service)
+                client = new OphHttpClient.Builder(CLIENT_SUBSYSTEM_CODE)
                         .authenticator(casAuthenticator)
                         .timeoutMs(TIMEOUT)
                         .build();
             } else {
-                client = new OphHttpClient.Builder(service)
+                client = new OphHttpClient.Builder(CLIENT_SUBSYSTEM_CODE)
                         .timeoutMs(TIMEOUT)
                         .build();
             }
