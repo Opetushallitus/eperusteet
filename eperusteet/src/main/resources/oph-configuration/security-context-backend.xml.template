@@ -21,6 +21,7 @@
         <intercept-url pattern="/public(/.*)?" access="permitAll"/>
         <intercept-url pattern="/**" access="${spring_security_default_access}"/>
         <custom-filter ref="casFilter" position="CAS_FILTER"/>
+        <csrf disabled="true"/>
     </http>
 
     <beans:bean id="casFilter" class="fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter">
