@@ -149,6 +149,10 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public void addNimiAndUri(KoodiDto koodi) {
+        // TODO: poista kun ammattitaitovaatimuskoodisto on luotu
+        if ("ammattitaitovaatimukset".equals(koodi.getKoodisto())) {
+            return;
+        }
         KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri(), koodi.getVersio());
         if (koodistoKoodi != null) {
             koodi.setArvo(koodistoKoodi.getKoodiArvo());
