@@ -11,7 +11,7 @@
     "dbnuke": "docker-compose rm app_db",
     "dbinspect": "docker-compose exec app_db psql -U app",
     "coverage": "./node_modules/jest/bin/jest.js --runInBand --verbose --no-cache --coverage",
-    "ci": "tsc --version && tsc --noEmit && yarn unit && yarn build",
+    "ci": "tsc --version && tsc --noEmit && npm run unit && npm run build",
     "prettier": "./node_modules/prettier/bin/prettier.js --config .prettierrc --write \"app/scripts/**/*.ts\" \"app/styles/**/*.{scss,css}\"",
     "analyze": "xdg-open .bundle_stats.html",
     "build:analyze": "npm run build && npm run analyze",
@@ -87,7 +87,7 @@
     "html-webpack-plugin": "^2.30.1",
     "image-webpack-loader": "^3.4.2",
     "imports-loader": "^0.7.1",
-    "jest": "^23.6.0",
+    "jest": "^^23.6.0",
     "node-sass": "^4.5.3",
     "nodemon": "^1.12.1",
     "prettier": "^1.6.1",
@@ -108,6 +108,6 @@
     "webpack-merge": "^4.1.0"
   },
   "engines": {
-    "node": "6.11.2"
+    "node": "10.15.0"
   }
 }
