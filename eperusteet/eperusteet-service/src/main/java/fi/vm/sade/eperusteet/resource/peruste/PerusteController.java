@@ -106,8 +106,8 @@ public class PerusteController {
     @ResponseBody
     @ApiOperation(value = "perusteiden sisäinen haku")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "sivu", dataType = "integer", paramType = "query"),
-            @ApiImplicitParam(name = "sivukoko", dataType = "integer", paramType = "query"),
+            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "tuleva", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös tulevatperusteet"),
             @ApiImplicitParam(name = "siirtyma", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös siirtymäajalla olevat perusteet"),
             @ApiImplicitParam(name = "voimassaolo", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös voimassaolevat perusteet"),
@@ -120,7 +120,7 @@ public class PerusteController {
             @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
             @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "Perustetta muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC). Huomioi koko perusteen sisällön."),
+            @ApiImplicitParam(name = "muokattu", dataType = "long", paramType = "query", value = "Perustetta muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC). Huomioi koko perusteen sisällön."),
             @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
             @ApiImplicitParam(name = "tutkinnonosat", dataType = "boolean", paramType = "query", value = "hae myös tutkinnon osista"),
             @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),

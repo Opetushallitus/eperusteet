@@ -106,13 +106,17 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         return updated;
     }
 
-    private TutkinnonOsaViiteDto uusiTutkinnonOsa() {
+    private TutkinnonOsaViiteDto uusiTutkinnonOsa(TutkinnonOsaDto tosaDto) {
         TutkinnonOsaViiteDto result = perusteService.addTutkinnonOsa(peruste.getId(), suoritustapa.getSuoritustapakoodi(), TutkinnonOsaViiteDto.builder()
                 .tyyppi(TutkinnonOsaTyyppi.NORMAALI)
-                .tutkinnonOsaDto(TutkinnonOsaDto.builder()
-                        .build())
+                .tutkinnonOsaDto(tosaDto)
                 .build());
         return result;
+    }
+
+    private TutkinnonOsaViiteDto uusiTutkinnonOsa() {
+        return uusiTutkinnonOsa(TutkinnonOsaDto.builder()
+                        .build());
     }
 
     @Test
@@ -254,6 +258,134 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         List<TilaUpdateStatus.Status> infot = status.getInfot();
         assertThat(status.getInfot().stream().map(TilaUpdateStatus.Status::getViesti))
             .doesNotContain("tutkintonimikkeen-osaamisala-puuttuu-perusteesta");
+    }
+
+    // Relates:
+    // - EP-1533
+    @Test
+    @Rollback
+    public void testDuplikaatitTutkintonimikkeetEriTutkinnonOsalla() {
+        perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
+                .tutkinnonOsaArvo("1")
+                .tutkinnonOsaUri("tutkinnonosa_1")
+                .tutkintonimikeArvo("1")
+                .tutkintonimikeUri("tutkintonimike_1").build());
+
+        perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
+                .tutkinnonOsaArvo("2")
+                .tutkinnonOsaUri("tutkinnonosa_2")
+                .tutkintonimikeArvo("1")
+                .tutkintonimikeUri("tutkintonimike_1").build());
+
+        TutkinnonOsaViiteDto a = uusiTutkinnonOsa(TutkinnonOsaDto.builder()
+                .koodi(KoodiDto.of("tutkinnonosa", "1"))
+            .build());
+
+        TutkinnonOsaViiteDto b = uusiTutkinnonOsa(TutkinnonOsaDto.builder()
+                .koodi(KoodiDto.of("tutkinnonosa", "2"))
+                .build());
+
+        RakenneModuuliDto rakenneDto = getRakenneDto();
+        rakenneDto.setOsat(new ArrayList<>(Arrays.asList(
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                        .osat(Collections.singletonList(RakenneOsaDto.of(a)))
+                        .build(),
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                        .osat(Collections.singletonList(RakenneOsaDto.of(b)))
+                        .build())));
+
+        assertThatCode(() -> update(rakenneDto))
+                .doesNotThrowAnyException();
+
+        TutkinnonOsaViiteDto c = uusiTutkinnonOsa(TutkinnonOsaDto.builder()
+                .koodi(KoodiDto.of("tutkinnonosa", "2"))
+                .build());
+
+        rakenneDto.getOsat()
+                .add(RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                        .osat(Collections.singletonList(RakenneOsaDto.of(c)))
+                        .build());
+
+        assertThatCode(() -> update(rakenneDto))
+                .hasMessage("tutkintonimikeryhmalle-maaritetty-tutkinnon-osa-useaan-kertaan");
+    }
+
+    // Relates:
+    // - EP-1533
+    @Test
+    @Rollback
+    public void testDuplikaatitOsaamisalat() {
+        perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
+                .osaamisalaArvo("1")
+                .osaamisalaUri("osaamisala_1")
+                .tutkintonimikeArvo("1")
+                .tutkintonimikeUri("tutkintonimike_1").build());
+
+        perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
+                .osaamisalaArvo("1")
+                .osaamisalaUri("osaamisala_1")
+                .tutkintonimikeArvo("1")
+                .tutkintonimikeUri("tutkintonimike_2").build());
+
+        TutkinnonOsaViiteDto a = uusiTutkinnonOsa(TutkinnonOsaDto.builder()
+                .koodi(KoodiDto.of("tutkinnonosa", "1"))
+                .build());
+
+        TutkinnonOsaViiteDto b = uusiTutkinnonOsa(TutkinnonOsaDto.builder()
+                .koodi(KoodiDto.of("tutkinnonosa", "2"))
+                .build());
+
+        RakenneModuuliDto rakenneDto = getRakenneDto();
+        rakenneDto.setOsat(new ArrayList<>(Arrays.asList(
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.OSAAMISALA)
+                        .osaamisala(OsaamisalaDto.of("2"))
+                        .build(),
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.OSAAMISALA)
+                        .osaamisala(OsaamisalaDto.of("1"))
+                        .osat(Collections.singletonList(RakenneModuuliDto.builder()
+                                .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                                .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                                .osat(Collections.singletonList(RakenneOsaDto.of(a)))
+                            .build()))
+                        .build(),
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.OSAAMISALA)
+                        .osaamisala(OsaamisalaDto.of("1"))
+                        .osat(Collections.singletonList(RakenneModuuliDto.builder()
+                                .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                                .tutkintonimike(KoodiDto.of("tutkintonimike", "2"))
+                                .osat(Collections.singletonList(RakenneOsaDto.of(a)))
+                                .build()))
+                        .build())));
+
+        assertThatCode(() -> update(rakenneDto))
+                .doesNotThrowAnyException();
+
+        TutkinnonOsaViiteDto c = uusiTutkinnonOsa(TutkinnonOsaDto.builder()
+                .koodi(KoodiDto.of("tutkinnonosa", "2"))
+                .build());
+
+        rakenneDto.getOsat()
+                .add(RakenneModuuliDto.builder()
+                    .rooli(RakenneModuuliRooli.OSAAMISALA)
+                    .osaamisala(OsaamisalaDto.of("1"))
+                    .osat(Collections.singletonList(RakenneModuuliDto.builder()
+                            .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                            .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                            .osat(Collections.singletonList(RakenneOsaDto.of(a)))
+                            .build()))
+                    .build());
+
+        assertThatCode(() -> update(rakenneDto))
+                .hasMessage("osaamisala-liitetty-virheelliseti-tutkinnon-osiin");
     }
 
     @Test

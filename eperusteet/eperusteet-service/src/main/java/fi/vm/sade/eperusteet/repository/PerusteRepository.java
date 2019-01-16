@@ -3,12 +3,13 @@ package fi.vm.sade.eperusteet.repository;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  *

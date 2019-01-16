@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -27,6 +28,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -37,6 +39,7 @@ import fi.vm.sade.eperusteet.dto.util.*;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
@@ -59,6 +62,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
@@ -176,6 +180,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private LocalizedMessagesService messages;
+
+    @Autowired
+    private LiiteRepository liitteet;
 
     @Autowired
     private EntityManager em;
@@ -460,9 +467,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     @Transactional(readOnly = true)
-    public Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(final Long id) {
-        Peruste peruste = perusteet.findOne(id);
+    public Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(final Long perusteId) {
+        Peruste peruste = perusteet.findOne(perusteId);
         Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> osaamisalakuvaukset = new HashMap<>();
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
 
@@ -657,6 +665,34 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             perusteet.lock(current);
             Peruste updated = mapper.map(perusteDto, Peruste.class);
+
+
+            // Liitetään määräyskirjeet
+            Maarayskirje maarayskirje = updated.getMaarayskirje();
+            MaarayskirjeDto maarayskirjeDto = perusteDto.getMaarayskirje();
+            if (maarayskirje != null && maarayskirjeDto != null) {
+                Map<Kieli, LiiteDto> dtoLiitteet = maarayskirjeDto.getLiitteet();
+                if (!ObjectUtils.isEmpty(dtoLiitteet)) {
+                    dtoLiitteet.forEach((kieli, liiteDto) -> {
+                        Peruste peruste = perusteet.findOne(perusteId);
+                        if (kieli != null && liiteDto != null) {
+                            Liite liite = liitteet.findOne(liiteDto.getId());
+
+                            if (!liite.getPerusteet().contains(peruste)) {
+                                throw new BusinessRuleViolationException("liite-ei-kuulu-julkaistuun-perusteeseen");
+                            }
+
+                            if (maarayskirje.getLiitteet() == null) {
+                                maarayskirje.setLiitteet(new HashMap<>());
+                            }
+
+                            maarayskirje.getLiitteet().put(kieli, liite);
+                        }
+                    });
+                }
+            }
+
+
             if (updated.getMuutosmaaraykset() != null) {
                 for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
                     muutosmaarays.setPeruste(current);
@@ -954,7 +990,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
 
         rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
-        tarkistaUniikitKoodit(rakenne);
+        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = mapper.mapAsList(tutkintonimikeKoodiRepository.findByPerusteId(peruste.getId()), TutkintonimikeKoodiDto.class);
+        Map<EntityReference, String> tovToKoodiMap = suoritustapa.getTutkinnonOsat().stream()
+                .collect(Collectors.toMap(
+                        tosa -> new EntityReference(tosa.getId()),
+                        tosa -> (tosa.getTutkinnonOsa().getKoodi() != null)
+                                ? tosa.getTutkinnonOsa().getKoodi().getUri()
+                                : ""));
+        tarkistaUniikitKoodit(rakenne, tutkintonimikeKoodit, tovToKoodiMap);
 
         RakenneModuuli nykyinen = rakenneRepository.findOne(rakenneId);
         lockManager.ensureLockedByAuthenticatedUser(nykyinen.getId());
@@ -1028,20 +1071,28 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
-    private void tarkistaUniikitKoodit(RakenneModuuliDto rakenneModuuli) {
-        HashSet<String> koodit = new HashSet<>();
+    private void tarkistaUniikitKoodit(RakenneModuuliDto rakenneModuuli,
+                                       List<TutkintonimikeKoodiDto> tutkintonimikeKoodit,
+                                       Map<EntityReference, String> tovToKoodiUriMap) {
+        Map<String, List<RakenneModuuliDto>> tutkintonimikeRyhmat = new HashMap<>();
+        Map<String, List<RakenneModuuliDto>> osaamisalaRyhmat = new HashMap<>();
         Stack<RakenneModuuliDto> stack = new Stack<>();
         stack.push(rakenneModuuli);
 
         while (!stack.empty()) {
             RakenneModuuliDto head = stack.pop();
 
-            if (head.getTutkintonimike() != null && !koodit.add(head.getTutkintonimike().getUri())) {
-                throw new BusinessRuleViolationException("ryhman-tutkintonimike-jo-kaytossa");
+            // Tutkintonimikeryhmät kerätään myöhempää tarkastelua varten
+            if (head.getTutkintonimike() != null) {
+                String uri = head.getTutkintonimike().getUri();
+                List<RakenneModuuliDto> moduulit = tutkintonimikeRyhmat.computeIfAbsent(uri, k -> new ArrayList<>());
+                moduulit.add(head);
             }
 
-            if (head.getOsaamisala() != null && !koodit.add(head.getOsaamisala().getOsaamisalakoodiUri())) {
-                throw new BusinessRuleViolationException("ryhman-osaamisala-jo-kaytossa");
+            if (head.getOsaamisala() != null) {
+                String uri = head.getOsaamisala().getOsaamisalakoodiUri();
+                List<RakenneModuuliDto> moduulit = osaamisalaRyhmat.computeIfAbsent(uri, k -> new ArrayList<>());
+                moduulit.add(head);
             }
 
             if (head.getOsat() != null) {
@@ -1052,7 +1103,76 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 }
             }
         }
+
+        { // Käytetään perusteen metatietoihin liitettyjä tutkintonimikekoodiliitoksia validointiin
+            List<TutkintonimikeKoodiDto> tutkintonimikeTutkinnonOsaLiitokset = tutkintonimikeKoodit.stream()
+                    .filter(tk -> StringUtils.isNotEmpty(tk.getTutkinnonOsaUri()) && StringUtils.isNotEmpty(tk.getTutkintonimikeUri()))
+                    .collect(Collectors.toList());
+
+            for (TutkintonimikeKoodiDto tk : tutkintonimikeTutkinnonOsaLiitokset) {
+                List<RakenneModuuliDto> moduulit = tutkintonimikeRyhmat.get(tk.getTutkintonimikeUri());
+
+                // Käydään läpi vain päällekkäiset tutkintonimikeryhmät
+                if (moduulit.size() < 2) {
+                    continue;
+                }
+
+                // Kerätään tutkintonimikkeiden vaaditut tutkintonimikekoodit
+                Set<String> moduulinVaaditutKoodit = tutkintonimikeTutkinnonOsaLiitokset.stream()
+                        .filter(liitos -> Objects.equals(tk.getTutkintonimikeUri(), liitos.getTutkintonimikeUri()))
+                        .map(TutkintonimikeKoodiDto::getTutkinnonOsaUri)
+                        .collect(Collectors.toSet());
+
+                for (RakenneModuuliDto moduuli : moduulit) {
+                    if (!CollectionUtils.isEmpty(moduuli.getOsat())) {
+                        Set<String> tutkinnonOsaKoodit = moduuli.getOsat().stream()
+                                .filter(osa -> osa instanceof RakenneOsaDto)
+                                .map(osa -> ((RakenneOsaDto) osa).getTutkinnonOsaViite())
+                                .map(tovToKoodiUriMap::get)
+                                .filter(StringUtils::isNotEmpty)
+                                .collect(Collectors.toSet());
+
+                        if (!moduulinVaaditutKoodit.removeAll(tutkinnonOsaKoodit)) {
+                            throw new BusinessRuleViolationException("tutkintonimikeryhmalle-maaritetty-tutkinnon-osa-useaan-kertaan");
+                        }
+                    }
+                }
+            }
+        }
+
+        { // Osaamisalojen rakenteen tarkistus
+            // Osaamisala kiinnitetty rakenteeseen useammin kuin kerran -> Ryhmän sisältöjen tätyy olla uniikit muihin verrattuna
+            osaamisalaRyhmat.entrySet().stream()
+                    .filter(entry -> entry.getValue().size() > 1)
+                    .forEach(entry -> {
+                        List<Set<String>> ryhmat = entry.getValue().stream()
+                                .map(moduuli -> moduuli.getOsat().stream()
+                                        .map(AbstractRakenneOsaDto::validationIdentifier)
+                                        .filter(StringUtils::isNotEmpty)
+                                        .collect(Collectors.toSet()))
+                                .collect(Collectors.toList());
+
+                        // Uniikit koodit
+                        final int totalSize = ryhmat.stream()
+                                .map(Set::size)
+                                .reduce((acc, next) -> acc + next)
+                                .orElse(0);
+
+                        Set<String> koodit = ryhmat.stream()
+                                .reduce((acc, next) -> {
+                                    acc.addAll(next);
+                                    return acc;
+                                })
+                                .orElseGet(HashSet::new);
+
+                        // Yhdistettyjen koodien määrän täytyy olla sama kuin kokonaismäärä erikseen laskettuna
+                        if (totalSize != koodit.size()) {
+                            throw new BusinessRuleViolationException("osaamisala-liitetty-virheelliseti-tutkinnon-osiin");
+                        }
+                    });
+        }
     }
+
 
     private RakenneModuuli checkIfKoodiAlreadyExists(RakenneModuuli rakenneModuuli) {
         if (rakenneModuuli != null) {

@@ -16,18 +16,17 @@
 
 package fi.vm.sade.eperusteet.domain;
 
-import java.io.Serializable;
-import java.util.Objects;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import org.hibernate.annotations.Immutable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Immutable;
 import org.springframework.util.ObjectUtils;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *

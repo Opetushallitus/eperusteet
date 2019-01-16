@@ -39,6 +39,8 @@ import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 /**
  * Interceptor to update PerusteVersion timestamp automatically when any
@@ -104,6 +106,12 @@ public class HibernateInterceptor extends EmptyInterceptor {
     }
 
     private void updatePerusteRelatedTimestamps(Object entity) {
+        // Store require request scope
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            return;
+        }
+
         Callback callback = new Callback(id -> perusteUpdateStore.perusteUpdated(id));
         findRelatedPeruste(entity, callback);
         if (!callback.isFound() && entity instanceof Identifiable) {

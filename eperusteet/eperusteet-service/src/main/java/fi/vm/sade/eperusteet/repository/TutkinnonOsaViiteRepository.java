@@ -20,8 +20,9 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
-import java.util.List;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 /**
  *

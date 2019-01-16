@@ -42,4 +42,13 @@ public class LiiteRepositoryImpl implements LiiteRepositoryCustom {
         return liite;
     }
 
+    @Override
+    public Liite add(String tyyppi, String nimi, byte[] bytes) {
+        Session session = em.unwrap(Session.class);
+        Blob blob = Hibernate.getLobCreator(session).createBlob(bytes);
+        Liite liite = new Liite(tyyppi, nimi, blob);
+        em.persist(liite);
+        return liite;
+    }
+
 }

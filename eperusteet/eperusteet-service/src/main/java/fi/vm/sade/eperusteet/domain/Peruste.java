@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
@@ -349,31 +350,37 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         return null;
     }
 
+    @JsonIgnore
     public void setSisalto(PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto) {
         this.perusopetuksenPerusteenSisalto = perusopetuksenPerusteenSisalto;
         this.perusopetuksenPerusteenSisalto.setPeruste(this);
     }
 
+    @JsonIgnore
     public void setSisalto(AIPEOpetuksenSisalto sisalto) {
         this.aipeOpetuksenPerusteenSisalto = sisalto;
         this.aipeOpetuksenPerusteenSisalto.setPeruste(this);
     }
 
+    @JsonIgnore
     public void setSisalto(OpasSisalto sisalto) {
         this.oppaanSisalto = sisalto;
         this.oppaanSisalto.setPeruste(this);
     }
 
+    @JsonIgnore
     public void setSisalto(EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto) {
         this.esiopetuksenPerusteenSisalto = esiopetuksenPerusteenSisalto;
         this.esiopetuksenPerusteenSisalto.setPeruste(this);
     }
 
+    @JsonIgnore
     public void setSisalto(TpoOpetuksenSisalto sisalto) {
         this.tpoOpetuksenSisalto = sisalto;
         this.tpoOpetuksenSisalto.setPeruste(this);
     }
 
+    @JsonIgnore
     public void setSisalto(LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto) {
         this.lukiokoulutuksenPerusteenSisalto = lukiokoulutuksenPerusteenSisalto;
         if (lukiokoulutuksenPerusteenSisalto != null) {

@@ -1285,5 +1285,14 @@
     "ongelmalliset-kuvaus": "Tähän näkymään kertyvät ne perusteprojektit, joissa on tutkinnon osia, joilla on koodeja, jotka eivät ole liitetty koulutuskoodeihin.",
     "koodi-ei-liitetty": "Tutkinnon osa",
     "koulutuskoodi-ongelmat": "Koulutuskoodi ongelmat",
-    "validoi": "Validoi"
+    "validoi": "Validoi",
+    "tutkintonimikeryhmalle-maaritetty-tutkinnon-osa-useaan-kertaan": "Tutkinnon osan voi liittää vain yhteen tutkintonimikeryhmään",
+    "osaamisala-liitetty-virheelliseti-tutkinnon-osiin": "Saman osaamisalan eri ryhmien sisältö ei voi olla jaettua keskenään",
+    "lataa-uusi-liitetiedosto": "Lataa uusi liitetiedosto",
+    "lisaa-liitetiedosto": "Lisää liitetiedosto",
+    "liitetiedosto-pdf-hylatty": "Voit ladata vain PDF-tyyppisiä liitteitä.",
+    "liitetiedosto-tallennettu": "Liitetiedosto tallennettu",
+    "liitetiedosto-tallennusvirhe": "Liitetiedoston tallennus epäonnistui",
+    "liitetiedosto-valitse": "Valitse liitetiedosto...",
+    "liitetiedosto": "Liitetiedosto"
 }

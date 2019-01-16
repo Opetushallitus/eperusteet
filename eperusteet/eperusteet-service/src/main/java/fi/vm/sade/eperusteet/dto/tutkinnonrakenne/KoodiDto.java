@@ -16,9 +16,9 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.Map;
-
 import lombok.*;
+
+import java.util.Map;
 
 /**
  *
@@ -26,7 +26,7 @@ import lombok.*;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"uri", "versio"})
+@EqualsAndHashCode(of = {"koodisto", "uri", "versio"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
 @NoArgsConstructor

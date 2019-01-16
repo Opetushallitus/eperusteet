@@ -18,9 +18,13 @@ package fi.vm.sade.eperusteet.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 /**
  *
@@ -43,7 +47,15 @@ public class Maarayskirje implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     private Map<Kieli, String> url;
 
-    public Maarayskirje() {
-    }
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = NOT_AUDITED)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "maarayskirje_liite",
+            joinColumns = {
+                    @JoinColumn(name = "maarayskirje_id")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "liite_id")})
+    private Map<Kieli, Liite> liitteet;
 
 }

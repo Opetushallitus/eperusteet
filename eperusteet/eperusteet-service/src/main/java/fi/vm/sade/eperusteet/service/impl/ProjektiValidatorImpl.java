@@ -45,7 +45,7 @@ public class ProjektiValidatorImpl implements ProjektiValidator {
                 continue;
             }
 
-            TilaUpdateStatus status = validator.validate(perusteprojektiId);
+            TilaUpdateStatus status = validator.validate(perusteprojektiId, tila);
             result.merge(status);
         }
         return result;

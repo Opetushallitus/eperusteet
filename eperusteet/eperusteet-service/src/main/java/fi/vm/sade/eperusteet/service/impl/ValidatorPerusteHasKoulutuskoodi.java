@@ -21,7 +21,7 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
     private PerusteRepository perusteRepository;
 
     @Override
-    public TilaUpdateStatus validate(Long perusteprojektiId) {
+    public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila tila) {
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
         Set<Koulutus> koulutukset = projekti.getPeruste().getKoulutukset();
         if (ObjectUtils.isEmpty(koulutukset)) {

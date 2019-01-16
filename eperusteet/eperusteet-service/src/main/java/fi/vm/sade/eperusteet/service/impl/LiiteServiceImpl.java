@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,13 @@ public class LiiteServiceImpl implements LiiteService {
     @Transactional(readOnly = true)
     public List<LiiteDto> getAll(Long perusteId) {
         List<Liite> loydetyt = liitteet.findByPerusteId(perusteId);
+        return mapper.mapAsList(loydetyt, LiiteDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LiiteDto> getAllByTyyppi(Long perusteId, Set<String> tyypit) {
+        List<Liite> loydetyt = liitteet.findByPerusteIdAndTyyppiIn(perusteId, tyypit);
         return mapper.mapAsList(loydetyt, LiiteDto.class);
     }
 

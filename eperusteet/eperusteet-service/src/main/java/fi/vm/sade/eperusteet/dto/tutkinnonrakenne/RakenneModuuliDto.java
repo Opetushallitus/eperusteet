@@ -18,12 +18,12 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.VersionedDto;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -50,6 +50,19 @@ public class RakenneModuuliDto extends AbstractRakenneOsaDto implements Versione
     @Override
     public void setVersionId(Integer id) {
         versioId = id;
+    }
+
+    @Override
+    public String validationIdentifier() {
+        if (rooli == RakenneModuuliRooli.TUTKINTONIMIKE && tutkintonimike != null) {
+            return tutkintonimike.getUri();
+        }
+        else if (rooli == RakenneModuuliRooli.OSAAMISALA && osaamisala != null) {
+            return osaamisala.getOsaamisalakoodiUri();
+        }
+        else {
+            return "";
+        }
     }
 
     @Override

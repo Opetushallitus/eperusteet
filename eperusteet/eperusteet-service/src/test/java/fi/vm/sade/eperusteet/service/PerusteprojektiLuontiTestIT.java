@@ -117,7 +117,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         assertThat(status.getInfot()).hasSize(1);
         assertThat(status.getInfot())
                 .extracting("viesti")
-                .containsExactly("rakenteen-validointi-virhe");
+                .contains("rakenteen-validointi-virhe");
         assertThat(status.getInfot().get(0).getValidointi().ongelmat.get(0).ongelma)
                 .isEqualTo("tutkinnolle-ei-maaritetty-kokonaislaajuutta");
         RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, 0);

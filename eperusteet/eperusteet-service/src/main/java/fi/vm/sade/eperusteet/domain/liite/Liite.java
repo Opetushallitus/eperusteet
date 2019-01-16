@@ -39,6 +39,7 @@ public class Liite implements Serializable {
 
     @Id
     @Getter
+    @Setter
     @Column(updatable = false)
     private UUID id;
 
@@ -48,6 +49,7 @@ public class Liite implements Serializable {
     private String tyyppi;
     
     @Getter
+    //@NotNull
     @Size(max = 1024)
     private String nimi;
 
@@ -82,7 +84,7 @@ public class Liite implements Serializable {
     }
 
     public Date getLuotu() {
-        return new Date(luotu.getTime());
+        return luotu == null ? null : new Date(luotu.getTime());
     }
 
 }

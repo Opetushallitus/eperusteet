@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,6 +35,7 @@ public class DokumenttiPeruste extends DokumenttiBase {
     CharapterNumberGenerator generator;
     PerusteenOsaViite sisalto;
     AIPEOpetuksenSisalto aipeOpetuksenSisalto;
+    KVLiiteJulkinenDto kvLiiteJulkinenDto;
 
     public LaajuusYksikko getLaajuusYksikko() {
         Set<Suoritustapa> suoritustavat = this.getPeruste().getSuoritustavat();

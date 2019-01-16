@@ -84,6 +84,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         // Head-elementti
         Element headElement = doc.createElement("head");
         rootElement.appendChild(headElement);
+
         // Poistetaan HEAD:in <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
         if (headElement.hasChildNodes()) {
             headElement.removeChild(headElement.getFirstChild());

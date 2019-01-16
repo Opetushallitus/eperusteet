@@ -15,8 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
-import com.google.code.docbook4j.Docbook4JException;
-import com.google.code.docbook4j.renderer.PerustePDFRenderer;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
@@ -29,36 +27,14 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
 import fi.vm.sade.eperusteet.service.dokumentti.KVLiiteBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.internal.PdfService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import fi.vm.sade.eperusteet.utils.dto.dokumentti.DokumenttiMetaDto;
-import org.apache.commons.io.IOUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +48,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.JULKAISTU;
 
@@ -322,7 +306,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     private byte[] generateFor(DokumenttiDto dto)
-            throws IOException,TransformerException, ParserConfigurationException, Docbook4JException, SAXException {
+            throws IOException,TransformerException, ParserConfigurationException, SAXException {
 
         Peruste peruste = perusteRepository.findOne(dto.getPerusteId());
         Kieli kieli = dto.getKieli();
@@ -340,33 +324,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 + kieli + ", " + version + ") perusteelle.");
         switch (version) {
             case VANHA:
-                String xmlpath = builder.generateXML(peruste, kieli, suoritustapakoodi);
-                LOG.debug("Temporary xml file: {}", xmlpath);
-                String style = "res:docgen/docbookstyle.xsl";
-
-                PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
-                r.setFopConfig(fopConfig.getFile());
-                r.parameter("l10n.gentext.language", kieli.toString());
-
-                // rendataan data ja otetaan kopio datasta.
-                InputStream is = r.render();
-                byte[] copy = IOUtils.toByteArray(is);
-                is.close();
-
-                // koitetaan puljata date-kenttä kuntoon fopin jäljiltä, mutta jos se
-                // mistään syystä heittää poikkeuksen, palautetaan alkuperäinen data
-                try {
-                    byte[] fixedba;
-                    try (InputStream fixed = fixMetadata(new ByteArrayInputStream(copy))) {
-                        fixedba = IOUtils.toByteArray(fixed);
-                    }
-                    toReturn = fixedba;
-                } catch (Exception ex) {
-                    LOG.warn("Fixing the xmp date field failed, returning nonfixed. Error was: ", ex);
-                    toReturn = copy;
-                }
-
-                break;
+                throw new BusinessRuleViolationException("vanha-generointi-poistettu-kaytosta");
             case UUSI:
                 Document doc = newBuilder.generateXML(peruste, dokumentti);
 
@@ -408,53 +366,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 break;
         }
         return toReturn;
-    }
-
-    /*
-      XMP-speksin mukaan dc:date arvot on oltava rdf:Seq -elementin sisällä,
-      mutta FOP ei laita Seqiä, mikäli dateja on vain yksi. Tämän takia
-      dokumentti ei läpäise validointia.
-
-      fixMetadata korjaa tämän syötteenä saadusta pdf-dokumentista.
-    */
-    private InputStream fixMetadata(InputStream pdf) throws IOException, ParserConfigurationException,
-            SAXException, TransformerException
-    {
-        try (InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/fopdate.xsl")) {
-
-            try (PDDocument document = PDDocument.load(pdf)) {
-                PDDocumentCatalog catalog = document.getDocumentCatalog();
-                PDMetadata metadata = catalog.getMetadata();
-
-                // luetaan metadata-xml pdf:stä ja parsitaan se domiin
-                InputStream metadataInputStream = metadata.createInputStream();
-                SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.newInstance();
-                DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-                fact.setNamespaceAware(true);
-                DocumentBuilder bldr = fact.newDocumentBuilder();
-                Document xml = bldr.parse(metadataInputStream);
-                DOMSource source = new DOMSource(xml);
-
-                // muljataan metadatan date-kentän sisältö xmp-speksin mukaisksi
-                Templates templates = stf.newTemplates(new StreamSource(xslresource));
-                TransformerHandler th = stf.newTransformerHandler(templates);
-                ByteArrayOutputStream transformOut = new ByteArrayOutputStream();
-                th.setResult(new StreamResult(transformOut));
-                Transformer transformer = stf.newTransformer();
-                transformer.transform(source, new SAXResult(th));
-
-                // lopuks pistetään muokattu metadata takaisin pdf:ään
-                InputStream newXMPData = new ByteArrayInputStream(transformOut.toByteArray());
-                PDMetadata newMetadata = new PDMetadata(document, newXMPData);
-                catalog.setMetadata(newMetadata);
-
-                // tallennetaan modattu pdf-dokumentti
-                ByteArrayOutputStream saved = new ByteArrayOutputStream();
-                document.save(saved);
-
-                return new ByteArrayInputStream(saved.toByteArray());
-            }
-        }
     }
 
     @Override
