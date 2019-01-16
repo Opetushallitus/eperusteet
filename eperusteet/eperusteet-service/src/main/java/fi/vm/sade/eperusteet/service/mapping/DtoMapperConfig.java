@@ -126,8 +126,9 @@ public class DtoMapperConfig {
         })
                 .build();
 
-        factory.getConverterFactory().registerConverter(referenceableEntityConverter);
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
+        factory.getConverterFactory().registerConverter(cachedEntityConverter);
+        factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
         factory.getConverterFactory().registerConverter(new PassThroughConverter(Instant.class));
 

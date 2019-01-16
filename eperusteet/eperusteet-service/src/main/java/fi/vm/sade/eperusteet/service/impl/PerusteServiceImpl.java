@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -992,9 +993,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
         List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = mapper.mapAsList(tutkintonimikeKoodiRepository.findByPerusteId(peruste.getId()), TutkintonimikeKoodiDto.class);
-        Map<EntityReference, String> tovToKoodiMap = suoritustapa.getTutkinnonOsat().stream()
+        Map<Reference, String> tovToKoodiMap = suoritustapa.getTutkinnonOsat().stream()
                 .collect(Collectors.toMap(
-                        tosa -> new EntityReference(tosa.getId()),
+                        tosa -> new Reference(tosa.getId()),
                         tosa -> (tosa.getTutkinnonOsa().getKoodi() != null)
                                 ? tosa.getTutkinnonOsa().getKoodi().getUri()
                                 : ""));
@@ -1074,7 +1075,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     private void tarkistaUniikitKoodit(RakenneModuuliDto rakenneModuuli,
                                        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit,
-                                       Map<EntityReference, String> tovToKoodiUriMap) {
+                                       Map<Reference, String> tovToKoodiUriMap) {
         Map<String, List<RakenneModuuliDto>> tutkintonimikeRyhmat = new HashMap<>();
         Map<String, List<RakenneModuuliDto>> osaamisalaRyhmat = new HashMap<>();
         Stack<RakenneModuuliDto> stack = new Stack<>();

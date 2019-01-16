@@ -3,7 +3,6 @@ package fi.vm.sade.eperusteet.resource.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
@@ -15,7 +14,6 @@ public class InitJacksonConverter {
         mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
         mapper.registerModule(new JodaModule());
-        mapper.registerModule(new GuavaModule());
         mapper.registerModule(new Jdk8Module());
         mapper.registerModule(createMappingModule());
         mapper.setPropertyNamingStrategy(new ReferenceNamingStrategy());
@@ -32,7 +30,7 @@ public class InitJacksonConverter {
     static public MappingJackson2HttpMessageConverter createConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setPrettyPrint(true);
-        configureObjectMapper(converter.getObjectMapper().enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING));
+        configureObjectMapper(converter.getObjectMapper());
         return converter;
     }
 }

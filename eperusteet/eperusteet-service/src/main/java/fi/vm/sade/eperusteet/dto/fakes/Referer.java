@@ -13,5 +13,4 @@ import lombok.Setter;
 public class Referer {
     private Referable ref;
     private Referable javaOptional;
-    private Referable googleOptional;
 }
