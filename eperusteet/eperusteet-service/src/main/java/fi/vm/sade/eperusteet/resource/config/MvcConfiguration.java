@@ -75,18 +75,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean
     MappingJackson2HttpMessageConverter converter() {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setPrettyPrint(true);
-        converter.getObjectMapper().enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-        converter.getObjectMapper().enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
-        converter.getObjectMapper().registerModule(new Jdk8Module());
-        converter.getObjectMapper().registerModule(new JodaModule());
-        MappingModule module = new MappingModule();
-        module.addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
-        module.addDeserializer(PerusteenOsaUpdateDto.class, new PerusteenOsaUpdateDtoDeserializer());
-        converter.getObjectMapper().registerModule(module);
-        converter.getObjectMapper().setPropertyNamingStrategy(new ReferenceNamingStrategy());
-        return converter;
+        return InitJacksonConverter.createConverter();
     }
 
     @Bean

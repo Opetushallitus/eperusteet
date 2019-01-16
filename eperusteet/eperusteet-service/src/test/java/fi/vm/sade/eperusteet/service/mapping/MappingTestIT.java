@@ -40,7 +40,7 @@ public class MappingTestIT extends AbstractPerusteprojektiTest {
         super.setup();
     }
 
-    // Tests mapping optional EntityReferences from entity to json
+    // Tests mapping optional References from entity to json
     @Test
     public void testReferenceMapping() throws IOException {
         Referable a = new Referable();
@@ -51,18 +51,14 @@ public class MappingTestIT extends AbstractPerusteprojektiTest {
         c.setId(43L);
 
         Referer referer = new Referer();
-        referer.setGoogleOptional(a);
         referer.setJavaOptional(b);
         referer.setRef(c);
 
         RefererDto refererDto = mapper.map(referer, RefererDto.class);
         String mapped = objectMapper.writeValueAsString(refererDto);
         JsonNode node = objectMapper.readTree(mapped);
-        assertThat(node.get("_googleOptional").asText()).isEqualTo("41");
         assertThat(node.get("_ref").asText()).isEqualTo("43");
-
-        // FIXME
-//        assertThat(node.get("_javaOptional").asText()).isEqualTo("42");
+        assertThat(node.get("_javaOptional").asText()).isEqualTo("42");
     }
 
     @Test
