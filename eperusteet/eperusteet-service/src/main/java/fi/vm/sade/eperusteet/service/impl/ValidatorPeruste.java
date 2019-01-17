@@ -74,22 +74,10 @@ public class ValidatorPeruste implements Validator {
                         && (sisalto.getAihekokonaisuudet() == null || sisalto.getAihekokonaisuudet().getAihekokonaisuudet().isEmpty()))
                 .addErrorGiven("peruste-lukio-ei-opetuksen-yleisia-tavoitteita",
                         sisalto.getOpetuksenYleisetTavoitteet() == null)
-                .forTilat(jalkeen(KOMMENTOINTI))
                 .addErrorStatusForAll("peruste-lukio-liittamaton-kurssi", () ->
                         rakenne.kurssit()
                                 .filter(empty(Lukiokurssi::getOppiaineet))
                                 .map(localized(Nimetty::getNimi)))
-                /*
-                .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-kursseja", () -> {
-                    // EP-1143
-                    // EP-1183
-                    return rakenne.oppiaineetMaarineen()
-                            .filter(not(Oppiaine::isKoosteinen)
-                                    .and(not(Oppiaine::isAbstraktiBool))
-                                    .and(empty(Oppiaine::getLukiokurssit)))
-                            .map(localized(Nimetty::getNimi));
-                })
-                */
                 .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
                         rakenne.oppiaineet()
                                 .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))
@@ -435,7 +423,7 @@ public class ValidatorPeruste implements Validator {
         }
 
         // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
-        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA && tila != KOMMENTOINTI) {
+        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA) {
             TekstiPalanen nimi = projekti.getPeruste().getNimi();
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
@@ -454,7 +442,7 @@ public class ValidatorPeruste implements Validator {
         // Perusteen validointi
         if (!isValmisPohja
                 && peruste.getSuoritustavat() != null
-                && tila != LAADINTA && tila != KOMMENTOINTI && tila != POISTETTU) {
+                && tila != LAADINTA && tila != POISTETTU) {
             if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
                 Set<String> osaamisalat = peruste.getOsaamisalat()
                         .stream()

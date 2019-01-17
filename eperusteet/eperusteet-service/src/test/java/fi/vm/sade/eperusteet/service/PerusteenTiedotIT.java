@@ -148,7 +148,7 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
         status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.VIIMEISTELY);
         assertThat(status)
                 .returns(false, from(TilaUpdateStatus::isVaihtoOk));
-        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.KOMMENTOINTI);
+        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.KAANNOS);
         assertThat(status)
                 .returns(true, from(TilaUpdateStatus::isVaihtoOk));
         status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.POISTETTU);
