@@ -115,7 +115,7 @@ public class PerusteController {
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "koulutusala", dataType = "string", paramType = "query", allowMultiple = true),
             @ApiImplicitParam(name = "koulutustyyppi", dataType = "string", paramType = "query", allowMultiple = true, value = "koulutustyyppi (koodistokoodi)"),
-            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, defaultValue = "[fi]", value = "perusteen kieli"),
+            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, value = "perusteen kieli"),
             @ApiImplicitParam(name = "opintoala", dataType = "string", paramType = "query", allowMultiple = true, value = "opintoalakoodi"),
             @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
             @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
