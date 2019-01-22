@@ -17,10 +17,8 @@ nbproject/
 
 npm-debug.log
 
-**/*.iml
-**/.idea/
-*.js
-*.js.map
+#**/*.iml
+#**/.idea/
 
 /tools/lokalisointi/*.xlsx
 /tools/lokalisointi/*.txt
