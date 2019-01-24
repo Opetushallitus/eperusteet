@@ -423,7 +423,7 @@ public class ValidatorPeruste implements Validator {
         }
 
         // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
-        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA) {
+        if (tila != ProjektiTila.POISTETTU && tila != LAADINTA && tila != KAANNOS) {
             TekstiPalanen nimi = projekti.getPeruste().getNimi();
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
@@ -442,7 +442,7 @@ public class ValidatorPeruste implements Validator {
         // Perusteen validointi
         if (!isValmisPohja
                 && peruste.getSuoritustavat() != null
-                && tila != LAADINTA && tila != POISTETTU) {
+                && tila != KAANNOS && tila != LAADINTA && tila != POISTETTU) {
             if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
                 Set<String> osaamisalat = peruste.getOsaamisalat()
                         .stream()
@@ -655,7 +655,7 @@ public class ValidatorPeruste implements Validator {
             }
 
             if (tila == ProjektiTila.JULKAISTU) {
-                if (!projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
+                if (!peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) {
                     Diaarinumero diaarinumero = projekti.getPeruste().getDiaarinumero();
                     if (diaarinumero == null) {
                         updateStatus.addStatus("peruste-ei-diaarinumeroa");
