@@ -60,4 +60,13 @@ public enum Kieli {
         }
         return kielet;
     }
+
+    public static List<Kieli> kvliiteKielet() {
+        // Mahdolliset kvliite kielet
+        List<Kieli> kielet = new ArrayList<>();
+        kielet.add(Kieli.FI);
+        kielet.add(Kieli.SV);
+        kielet.add(Kieli.EN);
+        return kielet;
+    }
 }

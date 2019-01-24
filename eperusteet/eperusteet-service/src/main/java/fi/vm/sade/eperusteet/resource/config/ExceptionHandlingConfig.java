@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -147,6 +148,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         } else if (ex instanceof MissingServletRequestPartException) {
             describe(map, "pyynnöstä-puuttui-osa", "Pyynnöstä puuttui osa, eikä sitä voitu tästä syystä käsitellä.");
         } else if (ex instanceof TypeMismatchException) {
+            suppresstrace = true;
             describe(map, "tyypin-yhteensopivuusongelma", "Tyypin yhteensopivuusongelma.");
         } else if (ex instanceof TransactionSystemException) {
             describe(map, "datan-käsittelyssä-odottamaton-virhe", "Datan käsittelyssä tapahtui odottamaton virhe.");

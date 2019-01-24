@@ -15,9 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.dokumentti;
 
-import fi.vm.sade.eperusteet.domain.GeneratorVersion;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import org.springframework.security.access.method.P;
@@ -36,7 +34,7 @@ public interface DokumenttiService {
     void generateWithDto(@P("dto") DokumenttiDto dto) throws DokumenttiException;
 
     @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
-    void generateWithDtoSync(@P("dto") DokumenttiDto dto) throws DokumenttiException;
+    void generateWithDtoSynchronous(@P("dto") DokumenttiDto dto) throws DokumenttiException;
 
     @PreAuthorize("hasPermission(#id, 'peruste', 'LUKU')")
     DokumenttiDto createDtoFor(
@@ -62,4 +60,5 @@ public interface DokumenttiService {
     DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version);
 
     void paivitaDokumentit();
+
 }

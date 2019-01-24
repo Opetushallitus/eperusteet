@@ -58,7 +58,6 @@ import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpEntity;
 import fi.vm.sade.javautils.http.OphHttpRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
