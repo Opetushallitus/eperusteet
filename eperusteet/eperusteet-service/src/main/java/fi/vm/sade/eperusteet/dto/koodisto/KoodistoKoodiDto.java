@@ -36,4 +36,5 @@ public class KoodistoKoodiDto {
     private KoodistoMetadataDto[] metadata;
     private KoodistoDto koodisto;
     private Date voimassaAlkuPvm;
+    private Date voimassaLoppuPvm;
 }
