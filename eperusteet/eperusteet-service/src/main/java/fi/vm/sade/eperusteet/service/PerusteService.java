@@ -33,6 +33,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -87,7 +88,7 @@ public interface PerusteService {
     List<PerusteKoosteDto> getKooste();
 
     @PreAuthorize("permitAll()")
-    List<PerusteDto> getUusimmat();
+    List<PerusteDto> getUusimmat(Set<Kieli> kielet);
 
     @PreAuthorize("permitAll()")
     List<PerusteInfoDto> getAllInfo();

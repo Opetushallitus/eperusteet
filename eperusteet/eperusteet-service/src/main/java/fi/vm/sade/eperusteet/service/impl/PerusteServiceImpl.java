@@ -189,8 +189,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private EntityManager em;
 
     @Override
-    public List<PerusteDto> getUusimmat() {
-        return mapper.mapAsList(perusteet.findAllUusimmat(new PageRequest(0, 10)), PerusteDto.class);
+    public List<PerusteDto> getUusimmat(Set<Kieli> kielet) {
+        return mapper.mapAsList(perusteet.findAllUusimmat(kielet, new PageRequest(0, 10)), PerusteDto.class);
     }
 
     @Override
