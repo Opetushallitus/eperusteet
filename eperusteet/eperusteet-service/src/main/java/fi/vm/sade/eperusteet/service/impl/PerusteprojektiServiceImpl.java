@@ -71,7 +71,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
@@ -80,6 +83,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
@@ -167,6 +171,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Autowired
     private TutkintonimikeKoodiService tutkintonimikeKoodiService;
 
+    @Autowired
+    private PlatformTransactionManager tm;
+
     @Override
     @Transactional(readOnly = true)
     public List<PerusteprojektiInfoDto> getBasicInfo() {
@@ -200,89 +207,142 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @IgnorePerusteUpdateCheck
-    @Transactional
+    @Transactional(propagation = Propagation.NEVER)
     public void validoiPerusteetTask() {
-        Set<Perusteprojekti> projektit = new HashSet<>();
-        projektit.addAll(repository.findAllValidoimattomat());
-        projektit.addAll(repository.findAllValidoimattomatUudet());
+
+        // Haetaan validoitavat projektit
+        TransactionTemplate template = new TransactionTemplate(tm);
+        List<PerusteprojektiValidointiDto> projektit = template.execute(status -> mapper.mapAsList(Stream
+                .concat(
+                        repository.findAllValidoimattomat().stream(),
+                        repository.findAllValidoimattomatUudet().stream()
+                )
+                .filter(projekti -> projekti.getTila().equals(JULKAISTU))
+                .collect(Collectors.toList()), PerusteprojektiValidointiDto.class));
+
         log.debug("Tarkastetaan " + projektit.size() + " perustetta.");
 
-        for (Perusteprojekti pp : projektit) {
+        int counter = 1;
+
+        for (PerusteprojektiValidointiDto pp : projektit) {
             try {
-                if (pp.getTila() != JULKAISTU || pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
+                if (pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
                     continue;
                 }
 
-                ValidointiStatus vs = validointiStatusRepository.findOneByPeruste(pp.getPeruste());
-                boolean vaatiiValidoinnin = vs == null
-                        || !vs.isVaihtoOk()
-                        || pp.getPeruste().getGlobalVersion().getAikaleima().after(vs.getLastCheck());
+                validoiPerusteTask(pp, counter);
 
-                if (!vaatiiValidoinnin) {
-                    continue;
-                }
-
-                log.debug("Perusteen ajastettu validointi: " + pp.getPeruste().getId());
-
-                TilaUpdateStatus status = projektiValidator.run(pp.getId(), JULKAISTU);
-
-                if (vs != null) {
-                    mapper.map(status, vs);
-                }
-                else {
-                    vs = mapper.map(status, ValidointiStatus.class);
-                }
-
-                vs.setPeruste(pp.getPeruste());
-                vs.setLastCheck(pp.getPeruste().getGlobalVersion().getAikaleima());
-
-                validointiStatusRepository.save(vs);
+            } catch (RuntimeException e) {
+                log.error(e.getLocalizedMessage(), e);
             }
-            catch (AuthenticationCredentialsNotFoundException ex) {
-                log.debug(ex.getMessage());
-            }
+            counter++;
         }
+    }
+
+    @Transactional(propagation = Propagation.NEVER)
+    private void validoiPerusteTask(PerusteprojektiValidointiDto pp, int counter) {
+
+        TransactionTemplate template = new TransactionTemplate(tm);
+
+        template.execute(status -> {
+
+            Peruste peruste = perusteRepository.findOne(pp.getPeruste().getId());
+            ValidointiStatus vs = validointiStatusRepository.findOneByPeruste(peruste);
+            boolean vaatiiValidoinnin = vs == null
+                    || !vs.isVaihtoOk()
+                    || peruste.getGlobalVersion().getAikaleima().after(vs.getLastCheck());
+
+            if (!vaatiiValidoinnin) {
+                return true;
+            }
+
+            log.debug(String.format("%04d", counter) + " Perusteen ajastettu validointi: " + peruste.getId());
+
+            TilaUpdateStatus tilaUpdateStatus = projektiValidator.run(pp.getId(), JULKAISTU);
+
+            if (vs != null) {
+                mapper.map(tilaUpdateStatus, vs);
+            }
+            else {
+                vs = mapper.map(tilaUpdateStatus, ValidointiStatus.class);
+            }
+
+            vs.setPeruste(peruste);
+            vs.setLastCheck(peruste.getGlobalVersion().getAikaleima());
+
+            validointiStatusRepository.save(vs);
+
+            return true;
+        });
     }
 
     @Override
     @IgnorePerusteUpdateCheck
-    @Transactional
+    @Transactional(propagation = Propagation.NEVER)
     public void tarkistaKooditTask() {
-        Set<Perusteprojekti> projektit = new HashSet<>();
-        projektit.addAll(repository.findAllKoodiValidoimattomat());
-        projektit.addAll(repository.findAllKoodiValidoimattomatUudet());
+
+        // Haetaan tarkistettavat projektit
+        TransactionTemplate template = new TransactionTemplate(tm);
+        List<PerusteprojektiKoulutuskoodiDto> projektit = template.execute(status -> mapper.mapAsList(Stream
+                .concat(
+                        repository.findAllKoodiValidoimattomat().stream(),
+                        repository.findAllKoodiValidoimattomatUudet().stream()
+                )
+                .collect(Collectors.toList()), PerusteprojektiKoulutuskoodiDto.class));
 
         log.debug("Tarkastetaan " + projektit.size() + " perusteen koulutuskoodit.");
 
-        for (Perusteprojekti pp : projektit) {
-            Peruste peruste = pp.getPeruste();
-            KoulutuskoodiStatus status = koulutuskoodiStatusRepository.findOneByPeruste(peruste);
-            boolean vaatiiTarkistuksen = status == null
-                    || !status.isKooditOk()
-                    || pp.getPeruste().getGlobalVersion().getAikaleima().after(status.getLastCheck());
+        int counter = 1;
 
-            if (!vaatiiTarkistuksen) {
-                return;
+        for (PerusteprojektiKoulutuskoodiDto pp : projektit) {
+            try {
+
+                tarkistaKoodi(pp, counter);
+
+            } catch (RuntimeException e) {
+                log.error(e.getLocalizedMessage(), e);
             }
 
-            if (status == null) {
-                status = new KoulutuskoodiStatus();
-            }
-
-            tarkistaTutkinnonKoodit(peruste, status);
-
-            koulutuskoodiStatusRepository.save(status);
+            counter++;
         }
     }
 
-    private void tarkistaTutkinnonKoodit(Peruste p, KoulutuskoodiStatus status) {
+    @Transactional(propagation = Propagation.NEVER)
+    private void tarkistaKoodi(PerusteprojektiKoulutuskoodiDto pp, int counter) {
+
+        TransactionTemplate template = new TransactionTemplate(tm);
+
+        template.execute(status -> {
+            Peruste peruste = perusteRepository.findOne(pp.getPeruste().getId());
+            KoulutuskoodiStatus koulutuskoodiStatus = koulutuskoodiStatusRepository.findOneByPeruste(peruste);
+            boolean vaatiiTarkistuksen = koulutuskoodiStatus == null
+                    || !koulutuskoodiStatus.isKooditOk()
+                    || peruste.getGlobalVersion().getAikaleima().after(koulutuskoodiStatus.getLastCheck());
+
+            if (!vaatiiTarkistuksen) {
+                return false;
+            }
+
+            if (koulutuskoodiStatus == null) {
+                koulutuskoodiStatus = new KoulutuskoodiStatus();
+            }
+
+            tarkistaTutkinnonKoodit(peruste, koulutuskoodiStatus, counter);
+
+            koulutuskoodiStatusRepository.save(koulutuskoodiStatus);
+
+            return true;
+        });
+    }
+
+    private void tarkistaTutkinnonKoodit(Peruste p, KoulutuskoodiStatus status, int counter) {
         status.setLastCheck(new Date());
         status.setPeruste(p);
 
         Set<Koulutus> koulutuskoodit = p.getKoulutukset();
 
         if (p.getSuoritustavat() != null && p.getSuoritustavat().size() > 0) {
-            log.debug("Tarkistetaan perustetta: " + p.getNimi().toString());
+            log.debug(String.format("%04d", counter) + " Tarkistetaan perustetta: " + p.getNimi().toString());
 
             log.debug("  Käydään lävitse tutkinnon osat suoritustapa kerrallaan.");
             for (Suoritustapa st : p.getSuoritustavat()) {
@@ -1125,28 +1185,46 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-    @Transactional
     @IgnorePerusteUpdateCheck
+    @Transactional(propagation = Propagation.NEVER)
     public void lataaMaarayskirjeetTask() {
-        List<Perusteprojekti> projektit = repository.findAll().stream()
-                .filter(projekti -> projekti.getTila().equals(JULKAISTU))
-                .collect(Collectors.toList());
+
+        TransactionTemplate template = new TransactionTemplate(tm);
+        List<PerusteprojektiMaarayskirjeDto> projektit = template.execute(status -> mapper
+                .mapAsList(repository.findAll().stream()
+                        .filter(projekti -> projekti.getTila().equals(JULKAISTU))
+                        .collect(Collectors.toList()), PerusteprojektiMaarayskirjeDto.class));
 
         log.debug("Tarkastetaan " + projektit.size() + " perustetta (vain julkaistut).");
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        int counter = 1;
+        for (PerusteprojektiMaarayskirjeDto pp : projektit) {
+            try {
 
-        projektit.forEach(projekti -> {
-            Peruste peruste = projekti.getPeruste();
+                lataaMaarayskirje(pp, counter);
+
+            } catch (RuntimeException e) {
+                log.error(e.getLocalizedMessage(), e);
+            }
+
+            counter++;
+
+        }
+    }
+
+    private void lataaMaarayskirje(PerusteprojektiMaarayskirjeDto pp, int counter) {
+
+        TransactionTemplate template = new TransactionTemplate(tm);
+
+        template.execute(status -> {
+            Peruste peruste = perusteRepository.findOne(pp.getPeruste().getId());
             Maarayskirje maarayskirje = peruste.getMaarayskirje();
 
             // Koitetaan ladata määräyskirjeet, jos niitä ei ole vielä haettu
             if (maarayskirje != null) {
 
-                log.debug("Aloitetaan " + peruste.getId() + " määräyskirjeen läpikäyminen.");
+                log.debug(String.format("%04d", counter)
+                        + " Aloitetaan " + peruste.getId() + " määräyskirjeen läpikäyminen.");
 
 
                 Map<Kieli, String> urls = maarayskirje.getUrl();
@@ -1155,12 +1233,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         : new HashMap<>();
 
                 if (urls != null) {
-                    urls.forEach((kieli, url) -> {
+                    for (Map.Entry<Kieli, String> entry : urls.entrySet()) {
+                        Kieli kieli = entry.getKey();
+                        String url = entry.getValue();
 
-                        if (!liitteet.containsKey(kieli)) {
+                        if (kieli != null && ObjectUtils.isEmpty(url) && !liitteet.containsKey(kieli)) {
                             log.debug("Koitetaan ladata määräyskirje " + url + " osoitteesta.");
 
                             try {
+
+                                RestTemplate restTemplate = new RestTemplate();
+                                HttpHeaders headers = new HttpHeaders();
+                                headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
+                                HttpEntity<String> entity = new HttpEntity<>(headers);
+
                                 ResponseEntity<byte[]> res = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
 
                                 byte[] data = res.getBody();
@@ -1185,7 +1271,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                         peruste.getGlobalVersion().setAikaleima(muokattu);
                                     }
                                 }
-                            } catch (RestClientException e) {
+                            } catch (RestClientException | IllegalArgumentException e) {
                                 // Continue
                                 log.error(e.getLocalizedMessage());
                             }
@@ -1193,9 +1279,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                             log.debug("Määräyskirje löytyy jo kielellä " + kieli);
                         }
 
-                    });
+                    }
                 }
             }
+
+            return true;
         });
     }
 

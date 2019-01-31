@@ -213,7 +213,7 @@ public class PerusteenRakenne {
             if (ctx.osaamisalaryhma == null) {
                 ctx.osaamisalaryhma = parent;
             }
-            else if (!Objects.equals(parent.getTunniste(), ctx.osaamisalaryhma.getTunniste())) {
+            else if (parent != null && !Objects.equals(parent.getTunniste(), ctx.osaamisalaryhma.getTunniste())) {
                 validointi.ongelmat.add(new Ongelma("rakenteessa-osaamisaloja-useassa-ryhmassa", nimi, syvyys));
             }
         }
