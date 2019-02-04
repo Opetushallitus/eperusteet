@@ -361,6 +361,10 @@ public abstract class TestUtils {
         return new LokalisoituTekstiDto(null, Collections.singletonMap(Kieli.FI, teksti));
     }
 
+    public static LokalisoituTekstiDto lt(String teksti, Kieli kieli) {
+        return new LokalisoituTekstiDto(null, Collections.singletonMap(kieli, teksti));
+    }
+
     public static Optional<LokalisoituTekstiDto> olt(String teksti) {
         return Optional.of(lt(teksti));
     }
