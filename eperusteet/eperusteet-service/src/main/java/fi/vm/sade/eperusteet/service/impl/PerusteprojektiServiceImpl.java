@@ -163,6 +163,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private KoulutuskoodiStatusRepository koulutuskoodiStatusRepository;
 
     @Autowired
+    private MaarayskirjeStatusRepository maarayskirjeStatusRepository;
+
+    @Autowired
     private ProjektiValidator projektiValidator;
 
     @Autowired
@@ -217,7 +220,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         repository.findAllValidoimattomat().stream(),
                         repository.findAllValidoimattomatUudet().stream()
                 )
-                .filter(projekti -> projekti.getTila().equals(JULKAISTU))
                 .collect(Collectors.toList()), PerusteprojektiValidointiDto.class));
 
         log.debug("Tarkastetaan " + projektit.size() + " perustetta.");
@@ -1189,19 +1191,22 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(propagation = Propagation.NEVER)
     public void lataaMaarayskirjeetTask() {
 
+        // Haetaan maarayskirjeen latausta tarvitsevat projektit
         TransactionTemplate template = new TransactionTemplate(tm);
-        List<PerusteprojektiMaarayskirjeDto> projektit = template.execute(status -> mapper
-                .mapAsList(repository.findAll().stream()
-                        .filter(projekti -> projekti.getTila().equals(JULKAISTU))
-                        .collect(Collectors.toList()), PerusteprojektiMaarayskirjeDto.class));
+        List<PerusteprojektiMaarayskirjeDto> projektit = template.execute(status -> mapper.mapAsList(Stream
+                .concat(
+                        repository.findAllMaarayskirjeet().stream(),
+                        repository.findAllMaarayskirjeetUudet().stream()
+                )
+                .collect(Collectors.toList()), PerusteprojektiMaarayskirjeDto.class));
 
-        log.debug("Tarkastetaan " + projektit.size() + " perustetta (vain julkaistut).");
+        log.debug("Tarkastetaan " + projektit.size() + " perusteen maarayskirjeet");
 
         int counter = 1;
         for (PerusteprojektiMaarayskirjeDto pp : projektit) {
             try {
 
-                lataaMaarayskirje(pp, counter);
+                lataaPerusteenMaarayskirje(pp, counter);
 
             } catch (RuntimeException e) {
                 log.error(e.getLocalizedMessage(), e);
@@ -1212,79 +1217,107 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
     }
 
-    private void lataaMaarayskirje(PerusteprojektiMaarayskirjeDto pp, int counter) {
+    private void lataaPerusteenMaarayskirje(PerusteprojektiMaarayskirjeDto pp, int counter) {
 
         TransactionTemplate template = new TransactionTemplate(tm);
 
         template.execute(status -> {
             Peruste peruste = perusteRepository.findOne(pp.getPeruste().getId());
-            Maarayskirje maarayskirje = peruste.getMaarayskirje();
 
-            // Koitetaan ladata määräyskirjeet, jos niitä ei ole vielä haettu
-            if (maarayskirje != null) {
+            MaarayskirjeStatus mks = maarayskirjeStatusRepository.findOneByPeruste(peruste);
+            boolean vaatiiLataamisen = mks == null
+                    || !mks.isLataaminenOk()
+                    || peruste.getGlobalVersion().getAikaleima().after(mks.getLastCheck());
 
-                log.debug(String.format("%04d", counter)
-                        + " Aloitetaan " + peruste.getId() + " määräyskirjeen läpikäyminen.");
-
-
-                Map<Kieli, String> urls = maarayskirje.getUrl();
-                Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet() != null
-                        ? maarayskirje.getLiitteet()
-                        : new HashMap<>();
-
-                if (urls != null) {
-                    for (Map.Entry<Kieli, String> entry : urls.entrySet()) {
-                        Kieli kieli = entry.getKey();
-                        String url = entry.getValue();
-
-                        if (kieli != null && ObjectUtils.isEmpty(url) && !liitteet.containsKey(kieli)) {
-                            log.debug("Koitetaan ladata määräyskirje " + url + " osoitteesta.");
-
-                            try {
-
-                                RestTemplate restTemplate = new RestTemplate();
-                                HttpHeaders headers = new HttpHeaders();
-                                headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
-                                HttpEntity<String> entity = new HttpEntity<>(headers);
-
-                                ResponseEntity<byte[]> res = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
-
-                                byte[] data = res.getBody();
-                                if (res.getStatusCode().equals(HttpStatus.OK) && data != null) {
-                                    String tyyppi = tika.detect(data);
-                                    if (DOCUMENT_TYPES.contains(tyyppi)) {
-                                        // Lisätään määräyskirje ja liitetään se perusteeseen
-                                        Liite liite = liiteRepository.add(tyyppi, "maarayskirje.pdf", data);
-                                        liitteet.put(kieli, liite);
-                                        peruste.attachLiite(liite);
-
-                                        // Päivitetään global version
-                                        Date muokattu = new Date();
-                                        if (peruste.getTila() == PerusteTila.VALMIS) {
-                                            perusteRepository.setRevisioKommentti("Perusteeseen lisätty määräyskirje");
-                                            peruste.muokattu();
-                                            muokattu = peruste.getMuokattu();
-                                        }
-                                        if (peruste.getGlobalVersion() == null) {
-                                            peruste.setGlobalVersion(new PerusteVersion(peruste));
-                                        }
-                                        peruste.getGlobalVersion().setAikaleima(muokattu);
-                                    }
-                                }
-                            } catch (RestClientException | IllegalArgumentException e) {
-                                // Continue
-                                log.error(e.getLocalizedMessage());
-                            }
-                        } else {
-                            log.debug("Määräyskirje löytyy jo kielellä " + kieli);
-                        }
-
-                    }
-                }
+            if (!vaatiiLataamisen) {
+                return true;
             }
+
+            // Jos kyseessä uusi julkaistu peruste
+            if (mks == null) {
+                mks = new MaarayskirjeStatus();
+                mks.setPeruste(peruste);
+            }
+
+            mks.setLastCheck(new Date());
+            mks.setLataaminenOk(true);
+
+            // Tee varsinainen lataaminen
+            lataaMaarayskirje(peruste, mks, counter);
+
+            maarayskirjeStatusRepository.save(mks);
 
             return true;
         });
+    }
+
+    private void lataaMaarayskirje(Peruste peruste, MaarayskirjeStatus mks, int counter) {
+        Maarayskirje maarayskirje = peruste.getMaarayskirje();
+
+        // Koitetaan ladata määräyskirjeet, jos niitä ei ole vielä haettu
+        if (maarayskirje != null) {
+
+            log.debug(String.format("%04d", counter)
+                    + " Aloitetaan " + peruste.getId() + " määräyskirjeen läpikäyminen.");
+
+
+            Map<Kieli, String> urls = maarayskirje.getUrl();
+            Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet() != null
+                    ? maarayskirje.getLiitteet()
+                    : new HashMap<>();
+
+            if (urls != null) {
+                for (Map.Entry<Kieli, String> entry : urls.entrySet()) {
+                    Kieli kieli = entry.getKey();
+                    String url = entry.getValue();
+
+                    if (kieli != null && ObjectUtils.isEmpty(url) && !liitteet.containsKey(kieli)) {
+                        log.debug("Koitetaan ladata määräyskirje " + url + " osoitteesta.");
+
+                        try {
+
+                            RestTemplate restTemplate = new RestTemplate();
+                            HttpHeaders headers = new HttpHeaders();
+                            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
+                            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+                            ResponseEntity<byte[]> res = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
+
+                            byte[] data = res.getBody();
+                            if (res.getStatusCode().equals(HttpStatus.OK) && data != null) {
+                                String tyyppi = tika.detect(data);
+                                if (DOCUMENT_TYPES.contains(tyyppi)) {
+                                    // Lisätään määräyskirje ja liitetään se perusteeseen
+                                    Liite liite = liiteRepository.add(tyyppi, "maarayskirje.pdf", data);
+                                    liitteet.put(kieli, liite);
+                                    peruste.attachLiite(liite);
+
+                                    // Päivitetään global version
+                                    Date muokattu = new Date();
+                                    if (peruste.getTila() == PerusteTila.VALMIS) {
+                                        perusteRepository.setRevisioKommentti("Perusteeseen lisätty määräyskirje");
+                                        peruste.muokattu();
+                                        muokattu = peruste.getMuokattu();
+                                    }
+                                    if (peruste.getGlobalVersion() == null) {
+                                        peruste.setGlobalVersion(new PerusteVersion(peruste));
+                                    }
+                                    peruste.getGlobalVersion().setAikaleima(muokattu);
+                                }
+                            }
+                        } catch (RestClientException | IllegalArgumentException e) {
+                            // Jos lataaminen ei onnistunut
+                            mks.setLataaminenOk(false);
+
+                            log.error(e.getLocalizedMessage());
+                        }
+                    } else {
+                        log.debug("Määräyskirje löytyy jo kielellä " + kieli);
+                    }
+
+                }
+            }
+        }
     }
 
 }

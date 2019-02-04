@@ -14,4 +14,5 @@ public class PerusteDokumenttiDto {
     private PerusteTyyppi tyyppi;
     private Set<Kieli> kielet;
     private Set<SuoritustapaDto> suoritustavat;
+    private PerusteVersionDto globalVersion;
 }

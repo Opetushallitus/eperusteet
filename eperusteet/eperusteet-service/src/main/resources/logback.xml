@@ -37,7 +37,6 @@
     <logger name="fi.vm.sade" level="info"/>
     <logger name="fi.vm.sade.eperusteet" level="debug"/>
     <!--<logger name="fi.vm.sade.eperusteet.PROFILING" level="trace"/>-->
-    <logger name="fi.vm.sade.eperusteet.service.dokumentti" level="info"/>
     <logger name="fi.vm.sade.eperusteet.repository.custom.TiedoteRepositoryImpl" level="info"/>
     <logger name="springfox.documentation" level="warn"/>
     <root level="info">

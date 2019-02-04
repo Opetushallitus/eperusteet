@@ -380,30 +380,28 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
     public void paivitaDokumentit() {
-        LOG.debug("Luodaan uudet PDF-dokumentit.");
 
-
+        // Luodaan uudet dokumentit
         TransactionTemplate template = new TransactionTemplate(tm);
-        List<PerusteprojektiDokumenttiDto> perusteprojektit = template.execute(status -> mapper
+        List<PerusteprojektiDokumenttiDto> projektit = template.execute(status -> mapper
                 .mapAsList(perusteprojektiRepository.findAll().stream()
                         .filter(projekti -> projekti.getTila().equals(JULKAISTU))
+                        .filter(projekti -> projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.NORMAALI))
                         .collect(Collectors.toList()), PerusteprojektiDokumenttiDto.class));
 
+        LOG.debug("Tarkastetaan " + projektit.size() + " perusteen dokumentit");
 
         int counter = 1;
 
-        for (PerusteprojektiDokumenttiDto pp : perusteprojektit) {
+        for (PerusteprojektiDokumenttiDto pp : projektit) {
 
             PerusteDokumenttiDto p = pp.getPeruste();
-            if (p.getTyyppi() != PerusteTyyppi.NORMAALI) {
-                continue;
-            }
 
             for (Kieli kieli : p.getKielet()) {
                 for (SuoritustapaDto st : p.getSuoritustavat()) {
                     // Luodaan perusteen dokumentit
                     try {
-                        paivitaDokumentti(p.getId(), kieli, st.getSuoritustapakoodi(), counter);
+                        paivitaDokumentti(p, kieli, st.getSuoritustapakoodi(), counter);
                     } catch (RuntimeException e) {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
@@ -426,21 +424,18 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     @Transactional(propagation = Propagation.NEVER)
-    private void paivitaDokumentti(Long perusteId, Kieli kieli, Suoritustapakoodi koodi, int counter) {
+    private void paivitaDokumentti(PerusteDokumenttiDto p, Kieli kieli, Suoritustapakoodi koodi, int counter) {
 
         TransactionTemplate template = new TransactionTemplate(tm);
 
         template.execute(status -> {
 
-            // Haetaan peruste
-            Peruste p = perusteRepository.findOne(perusteId);
-
             // Haetaan uusin dokumentti
-            DokumenttiDto latest = findLatest(p.getId(), kieli, koodi,
-                    GeneratorVersion.UUSI);
+            DokumenttiDto latest = findLatest(p.getId(), kieli, koodi, GeneratorVersion.UUSI);
 
             // Jos uusin dokumentti on "vanhentunut" luodaan uusi tilalle.
-            if (latest == null || latest.getAloitusaika() == null
+            if (latest == null
+                    || latest.getAloitusaika() == null
                     || latest.getAloitusaika().before(p.getGlobalVersion().getAikaleima())) {
                 LOG.debug(String.format("%04d", counter)
                         + " Aloitetaan perusteelle " + "(" + p.getId() + ", " + koodi
