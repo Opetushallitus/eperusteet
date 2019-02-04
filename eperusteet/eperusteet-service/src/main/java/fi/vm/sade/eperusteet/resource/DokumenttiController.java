@@ -94,8 +94,9 @@ public class DokumenttiController {
         Peruste peruste = perusteRepository.findOne(dokumenttiDto.getPerusteId());
         if (peruste != null) {
             TekstiPalanen nimi = peruste.getNimi();
-            if (nimi != null) {
-                headers.set("Content-disposition", "inline; filename=\"" + nimi + ".pdf\"");
+            if (nimi != null && nimi.getTeksti().containsKey(dokumenttiDto.getKieli())) {
+                headers.set("Content-disposition", "inline; filename=\""
+                        + nimi.getTeksti().get(dokumenttiDto.getKieli()) + ".pdf\"");
             } else {
                 headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + ".pdf\"");
             }
