@@ -505,7 +505,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
             } else {
                 LOG.debug(String.format("%04d", counter)
-                        + " Peruteen " + "(" + p.getId() + ", " + kieli + ")"
+                        + " Perusteesta " + "(" + p.getId() + ", " + kieli + ")"
                         + " on jo luotu uusi kvliite-dokumentti.");
             }
 
