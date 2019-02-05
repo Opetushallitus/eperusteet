@@ -42,6 +42,7 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
         super(nimi, tila, tunniste);
     }
 
+    @Override
     public String getOsanTyyppi() {
         return "tekstikappale";
     }

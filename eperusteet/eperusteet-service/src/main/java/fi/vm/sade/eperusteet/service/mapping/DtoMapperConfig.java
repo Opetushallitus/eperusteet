@@ -62,6 +62,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestClientException;
 
 import java.time.Instant;
@@ -152,8 +153,16 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
-                .fieldBToA("class", "osanTyyppi")
                 .byDefault()
+                .customize(new CustomMapper<PerusteenOsaDto.Suppea, PerusteenOsa>() {
+                    @Override
+                    public void mapBtoA(PerusteenOsa perusteenOsa, PerusteenOsaDto.Suppea suppea, MappingContext context) {
+                        String name = perusteenOsa.getClass().getSimpleName();
+                        if (!ObjectUtils.isEmpty(name)) {
+                            suppea.setOsanTyyppi(name.toLowerCase());
+                        }
+                    }
+                })
                 .register();
 
         factory.classMap(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)

@@ -63,6 +63,7 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
         super(nimi, tila, tunniste);
     }
 
+    @Override
     public String getOsanTyyppi() {
         return "tutkinnonosa";
     }

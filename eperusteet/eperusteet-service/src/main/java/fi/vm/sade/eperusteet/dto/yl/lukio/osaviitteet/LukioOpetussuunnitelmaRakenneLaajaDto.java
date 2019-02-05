@@ -39,6 +39,7 @@ public class LukioOpetussuunnitelmaRakenneLaajaDto extends PerusteenOsaDto.Laaja
         super(nimi, tila, tunniste);
     }
 
+    @Override
     public String getOsanTyyppi() {
         return "rakenne";
     }

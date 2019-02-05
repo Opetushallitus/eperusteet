@@ -45,6 +45,7 @@ public class TaiteenalaDto extends PerusteenOsaDto.Laaja {
     private KevytTekstiKappaleDto tyotavatOpetuksessa;
     private KevytTekstiKappaleDto oppimisenArviointiOpetuksessa;
 
+    @Override
     public String getOsanTyyppi() {
         return "taiteenala";
     }
