@@ -71,7 +71,7 @@ public abstract class PerusteenOsaDto {
         @JsonSubTypes.Type(value = LukioOpetussuunnitelmaRakenneLaajaDto.class)
     })
     public static abstract class Laaja extends PerusteenOsaDto {
-
+        public abstract String getOsanTyyppi();
         public Laaja() {
         }
         public Laaja(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {

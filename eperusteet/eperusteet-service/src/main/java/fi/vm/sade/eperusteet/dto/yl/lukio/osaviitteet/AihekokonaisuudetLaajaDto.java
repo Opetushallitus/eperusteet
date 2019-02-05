@@ -48,6 +48,7 @@ public class AihekokonaisuudetLaajaDto extends Laaja {
         super(nimi, tila, tunniste);
     }
 
+    @Override
     public String getOsanTyyppi() {
         return "aihekokonaisuudet";
     }
