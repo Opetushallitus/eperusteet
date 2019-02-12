@@ -38,9 +38,8 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import fi.vm.sade.eperusteet.utils.dto.dokumentti.DokumenttiMetaDto;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.preflight.ValidationResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -51,28 +50,25 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.ObjectUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.JULKAISTU;
 
 /**
  *
  * @author jussini
  */
+@Slf4j
 @Service
 public class DokumenttiServiceImpl implements DokumenttiService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DokumenttiServiceImpl.class);
 
     @Autowired
     private DokumenttiRepository dokumenttiRepository;
@@ -328,7 +324,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 .title(DokumenttiUtils.getTextString(dokumentti.getKieli(), peruste.getNimi()))
                 .build();
 
-        LOG.info("Luodaan dokumenttia (" + dto.getPerusteId() + ", " + dto.getSuoritustapakoodi() + ", "
+        log.info("Luodaan dokumenttia (" + dto.getPerusteId() + ", " + dto.getSuoritustapakoodi() + ", "
                 + kieli + ", " + version + ") perusteelle.");
         switch (version) {
             case VANHA:
@@ -342,12 +338,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 // Validoidaan dokumnetti
                 result = DokumenttiUtils.validatePdf(toReturn);
                 if (result.isValid()) {
-                    LOG.debug("Dokumentti (" + dto.getPerusteId() + ", "
+                    log.debug("Dokumentti (" + dto.getPerusteId() + ", "
                             + dto.getSuoritustapakoodi() + ", " + kieli + ") on PDF/A-1b mukainen.");
                 } else {
-                    LOG.debug("Dokumentti (" + dto.getPerusteId() + ", " + dto.getSuoritustapakoodi() + ", "
+                    log.debug("Dokumentti (" + dto.getPerusteId() + ", " + dto.getSuoritustapakoodi() + ", "
                             + kieli + ") ei ole PDF/A-1b mukainen. Dokumentti sisältää virheen/virheet:");
-                    result.getErrorsList().forEach(error -> LOG
+                    result.getErrorsList().forEach(error -> log
                             .debug("  - " + error.getDetails() + " (" + error.getErrorCode() + ")"));
                 }
 
@@ -361,11 +357,11 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 // Validoi kvliite
                 result = DokumenttiUtils.validatePdf(toReturn);
                 if (result.isValid()) {
-                    LOG.debug("Dokumentti (" + dto.getPerusteId() + ", " + kieli + ") on PDF/A-1b mukainen.");
+                    log.debug("Dokumentti (" + dto.getPerusteId() + ", " + kieli + ") on PDF/A-1b mukainen.");
                 } else {
-                    LOG.debug("Dokumentti (" + dto.getId() + ", " + kieli
+                    log.debug("Dokumentti (" + dto.getId() + ", " + kieli
                             + ") ei ole PDF/A-1b mukainen. Dokumentti sisältää virheen/virheet:");
-                    result.getErrorsList().forEach(error -> LOG
+                    result.getErrorsList().forEach(error -> log
                             .debug("  - " + error.getDetails() + " (" + error.getErrorCode() + ")"));
                 }
 
@@ -381,135 +377,90 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional(propagation = Propagation.NEVER)
     public void paivitaDokumentit() {
 
-        // Luodaan uudet dokumentit
+        // Haetaan päivitettävät dokumentit
         TransactionTemplate template = new TransactionTemplate(tm);
-        List<PerusteprojektiDokumenttiDto> projektit = template.execute(status -> mapper
-                .mapAsList(perusteprojektiRepository.findAll().stream()
-                        .filter(projekti -> projekti.getTila().equals(JULKAISTU))
-                        .filter(projekti -> projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.NORMAALI))
-                        .collect(Collectors.toList()), PerusteprojektiDokumenttiDto.class));
+        List<PerusteprojektiDokumenttiDto> tarkistettavat = template.execute(status -> mapper.mapAsList(
+                perusteprojektiRepository.findAllByTilaAndPerusteTyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI),
+                PerusteprojektiDokumenttiDto.class));
 
-        LOG.debug("Tarkastetaan " + projektit.size() + " perusteen dokumentit");
+        List<DokumenttiDto> paivitettavat = getPaivitettavat(tarkistettavat);
+
+        log.debug("Päivitetään " + paivitettavat.size() + " dokumenttia");
 
         int counter = 1;
-
-        for (PerusteprojektiDokumenttiDto pp : projektit) {
-
-            PerusteDokumenttiDto p = pp.getPeruste();
-
-            for (Kieli kieli : p.getKielet()) {
-                for (SuoritustapaDto st : p.getSuoritustavat()) {
-                    // Luodaan perusteen dokumentit
-                    try {
-                        paivitaDokumentti(p, kieli, st.getSuoritustapakoodi(), counter);
-                    } catch (RuntimeException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
+        for (DokumenttiDto d : paivitettavat) {
+            try {
+                paivitaDokumentti(d, counter);
+            } catch (RuntimeException e) {
+                log.error(e.getLocalizedMessage(), e);
             }
-
-            for (Kieli kieli : Kieli.kvliiteKielet()) {
-                if (!ObjectUtils.isEmpty(p.getSuoritustavat())) {
-                    // Luodaan kvliitteet
-                    try {
-                        paivitaKVliite(p.getId(), kieli, counter);
-                    } catch (RuntimeException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
-            }
-
             counter++;
         }
     }
 
     @Transactional(propagation = Propagation.NEVER)
-    private void paivitaDokumentti(PerusteDokumenttiDto p, Kieli kieli, Suoritustapakoodi koodi, int counter) {
+    private List<DokumenttiDto> getPaivitettavat(List<PerusteprojektiDokumenttiDto> tarkistettavat) {
 
         TransactionTemplate template = new TransactionTemplate(tm);
 
-        template.execute(status -> {
+        List<DokumenttiDto> paivitettavat = new ArrayList<>();
+        for (PerusteprojektiDokumenttiDto pp : tarkistettavat) {
+            PerusteDokumenttiDto p = pp.getPeruste();
 
-            // Haetaan uusin dokumentti
-            DokumenttiDto latest = findLatest(p.getId(), kieli, koodi, GeneratorVersion.UUSI);
+            for (Kieli kieli : p.getKielet()) {
+                for (SuoritustapaDto st : p.getSuoritustavat()) {
+                    template.execute(status -> {
+                        DokumenttiDto latest = findLatest(p.getId(), kieli, st.getSuoritustapakoodi(), GeneratorVersion.UUSI);
+                        if (latest != null
+                                && latest.getAloitusaika() != null
+                                && latest.getAloitusaika().before(p.getGlobalVersion().getAikaleima())) {
+                            paivitettavat.add(latest);
+                        }
 
-            // Jos uusin dokumentti on "vanhentunut" luodaan uusi tilalle.
-            if (latest == null
-                    || latest.getAloitusaika() == null
-                    || latest.getAloitusaika().before(p.getGlobalVersion().getAikaleima())) {
-                LOG.debug(String.format("%04d", counter)
-                        + " Aloitetaan perusteelle " + "(" + p.getId() + ", " + koodi
-                        + ", " + kieli + ")" + " uuden dokumentin luonti.");
-                try {
-                    DokumenttiDto createDtoFor = createDtoFor(
-                            p.getId(),
-                            kieli,
-                            koodi,
-                            GeneratorVersion.UUSI
-                    );
-                    setStarted(createDtoFor);
-                    generateWithDtoSynchronous(createDtoFor);
-
-                    return true;
-
-                } catch (DokumenttiException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
+                        DokumenttiDto latestKvliite = findLatest(p.getId(), kieli, st.getSuoritustapakoodi(), GeneratorVersion.KVLIITE);
+                        if (latestKvliite != null
+                                && !DokumenttiTila.EI_OLE.equals(latestKvliite.getTila())
+                                && (latestKvliite.getAloitusaika() == null || latestKvliite.getAloitusaika()
+                                .before(p.getGlobalVersion().getAikaleima()))) {
+                            paivitettavat.add(latestKvliite);
+                        }
+                        return true;
+                    });
                 }
-            } else {
-                LOG.debug(String.format("%04d", counter)
-                        + " Perusteesta " + "(" + p.getId() + ", " + koodi
-                        + ", " + kieli + ")" + " on jo luotu uusi dokumentti.");
             }
+        }
 
-            return false;
-
-        });
+        return paivitettavat;
     }
 
     @Transactional(propagation = Propagation.NEVER)
-    private void paivitaKVliite(Long perusteId, Kieli kieli, int counter) {
+    private void paivitaDokumentti(DokumenttiDto latest, int counter) {
 
         TransactionTemplate template = new TransactionTemplate(tm);
 
         template.execute(status -> {
-            // Haetaan peruste
-            Peruste p = perusteRepository.findOne(perusteId);
 
-            // Haetaan uusin dokumentti
-            DokumenttiDto latest = findLatest(p.getId(), kieli, null,
-                    GeneratorVersion.KVLIITE);
+            log.debug(String.format("%04d", counter)
+                    + " Aloitetaan perusteelle (" + latest.getPerusteId() + ", " + latest.getSuoritustapakoodi()
+                    + ", " + latest.getKieli() + ", " + latest.getGeneratorVersion() + ") uuden dokumentin luonti.");
+            try {
+                DokumenttiDto createDtoFor = createDtoFor(
+                        latest.getPerusteId(),
+                        latest.getKieli(),
+                        latest.getSuoritustapakoodi(),
+                        GeneratorVersion.UUSI
+                );
+                setStarted(createDtoFor);
+                generateWithDtoSynchronous(createDtoFor);
 
-            // Jos uusin dokumentti on "vanhentunut" luodaan uusi tilalle.
-            if (latest != null && !DokumenttiTila.EI_OLE.equals(latest.getTila())
-                    && (latest.getAloitusaika() == null || latest.getAloitusaika()
-                    .before(p.getGlobalVersion().getAikaleima()))) {
+                return true;
 
-                LOG.debug(String.format("%04d", counter)
-                        + " Aloitetaan perusteelle " + "(" + p.getId() + ", " + kieli + ")"
-                        + " uuden kvliite-dokumentin luonti.");
-                try {
-                    DokumenttiDto createDtoFor = createDtoFor(
-                            p.getId(),
-                            kieli,
-                            p.getSuoritustavat().iterator().next().getSuoritustapakoodi(),
-                            GeneratorVersion.KVLIITE
-                    );
-                    setStarted(createDtoFor);
-                    generateWithDtoSynchronous(createDtoFor);
-
-                    return true;
-
-                } catch (DokumenttiException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-
-            } else {
-                LOG.debug(String.format("%04d", counter)
-                        + " Perusteesta " + "(" + p.getId() + ", " + kieli + ")"
-                        + " on jo luotu uusi kvliite-dokumentti.");
+            } catch (DokumenttiException e) {
+                log.error(e.getLocalizedMessage(), e);
             }
 
             return false;
+
         });
     }
 
