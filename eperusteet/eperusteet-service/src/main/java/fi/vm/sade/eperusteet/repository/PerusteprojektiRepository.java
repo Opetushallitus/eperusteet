@@ -15,9 +15,7 @@
 
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import java.util.List;
 import java.util.Set;
@@ -69,6 +67,8 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
             " WHERE p.tila = 'JULKAISTU'" +
             " AND mks.peruste = p.peruste AND p.peruste.globalVersion.aikaleima > mks.lastCheck")
     Set<Perusteprojekti> findAllMaarayskirjeet();
+
+    List<Perusteprojekti> findAllByTilaAndPerusteTyyppi(ProjektiTila tila, PerusteTyyppi tyyppi);
 
     @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' AND (p.luoja = ?1 OR p.ryhmaOid IN (?2)) AND p.peruste.tyyppi != 'Opas'")
     List<Perusteprojekti> findOmatPerusteprojektit(String userOid, Set<String> orgs);
