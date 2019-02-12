@@ -28,11 +28,9 @@ import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkinnonOsaQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektinPerusteenosaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
@@ -47,8 +45,11 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
@@ -60,6 +61,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class PerusteenOsaServiceImpl implements PerusteenOsaService {
+
+    @Autowired
+    private TutkinnonOsaRepositoryCustom tutkinnonOsaRepositoryCustom;
 
     @Autowired
     private KommenttiService kommenttiService;
@@ -639,4 +643,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TutkinnonOsaDto> findTutkinnonOsatBy(TutkinnonOsaQueryDto pquery) {
+        if (StringUtils.isEmpty(pquery.getKoodiUri())) {
+            throw new BusinessRuleViolationException("koodiUri on pakollinen");
+        }
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        return tutkinnonOsaRepositoryCustom.findBy(p, pquery)
+                .map((osa) -> mapper.map(osa, TutkinnonOsaDto.class));
+    }
 }
