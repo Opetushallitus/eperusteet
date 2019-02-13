@@ -285,7 +285,7 @@
         memoryStoreEvictionPolicy="LRU"
     />
     <cache name="validointivirheet"
-           maxElementsInMemory="500"
+           maxElementsInMemory="50"
            eternal="false"
            timeToLiveSeconds="86400"
            overflowToDisk="false" />
@@ -300,7 +300,7 @@
          timeToLiveSeconds="600"
          overflowToDisk="false" />
     <cache name="koodistokoodit"
-         maxElementsInMemory="10000"
+         maxElementsInMemory="100"
          eternal="false"
          timeToLiveSeconds="600"
          overflowToDisk="false" />
@@ -315,7 +315,7 @@
          timeToLiveSeconds="600"
          overflowToDisk="false" />
     <cache name="kayttajat"
-         maxElementsInMemory="10000"
+         maxElementsInMemory="1000"
          eternal="false"
          timeToLiveSeconds="3600"
          overflowToDisk="false" />
@@ -325,7 +325,7 @@
          timeToLiveSeconds="3600"
          overflowToDisk="false" />
     <cache name="lokalisoinnit"
-         maxElementsInMemory="10000"
+         maxElementsInMemory="1000"
          eternal="false"
          timeToLiveSeconds="600"
          overflowToDisk="false" />
