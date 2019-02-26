@@ -107,9 +107,6 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
         // Rakennetaan varsinainen dokumentti
         addKVLiite(docBase);
 
-        // Tulostetaan dokumentti konsoliin
-        LOG.debug(DokumenttiUtils.printDocument(docBase.getDocument()).toString());
-
         return doc;
     }
 
