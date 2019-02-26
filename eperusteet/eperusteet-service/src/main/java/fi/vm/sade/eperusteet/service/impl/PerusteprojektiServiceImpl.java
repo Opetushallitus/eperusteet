@@ -177,6 +177,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Autowired
     private PlatformTransactionManager tm;
 
+    @Autowired
+    private LocalizedMessagesService messages;
+
     @Override
     @Transactional(readOnly = true)
     public List<PerusteprojektiInfoDto> getBasicInfo() {
@@ -1258,7 +1261,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (maarayskirje != null) {
 
             log.debug(String.format("%04d", counter)
-                    + " Aloitetaan " + peruste.getId() + " määräyskirjeen läpikäyminen.");
+                    + " Aloitetaan muuttuneen perusteen " + peruste.getId() + " määräyskirjeen läpikäyminen");
 
 
             Map<Kieli, String> urls = maarayskirje.getUrl();
@@ -1271,10 +1274,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     Kieli kieli = entry.getKey();
                     String url = entry.getValue();
 
-                    if (kieli != null && ObjectUtils.isEmpty(url) && !liitteet.containsKey(kieli)) {
-                        log.debug("Koitetaan ladata määräyskirje " + url + " osoitteesta.");
+                    if (kieli != null && !ObjectUtils.isEmpty(url) && !liitteet.containsKey(kieli)) {
 
                         try {
+
+                            log.debug("Ladataan määräyskirje " + url);
 
                             RestTemplate restTemplate = new RestTemplate();
                             HttpHeaders headers = new HttpHeaders();
@@ -1288,7 +1292,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                 String tyyppi = tika.detect(data);
                                 if (DOCUMENT_TYPES.contains(tyyppi)) {
                                     // Lisätään määräyskirje ja liitetään se perusteeseen
-                                    Liite liite = liiteRepository.add(tyyppi, "maarayskirje.pdf", data);
+                                    String nimi = messages.translate("maarayskirje", kieli);
+                                    if (ObjectUtils.isEmpty(nimi)) {
+                                        nimi = "maarayskirje";
+                                    }
+                                    Liite liite = liiteRepository.add(tyyppi, nimi + ".pdf", data);
                                     liitteet.put(kieli, liite);
                                     peruste.attachLiite(liite);
 
@@ -1303,18 +1311,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                         peruste.setGlobalVersion(new PerusteVersion(peruste));
                                     }
                                     peruste.getGlobalVersion().setAikaleima(muokattu);
+                                    log.debug("Määräyskirje " + url + " lataaminen onnistui");
                                 }
                             }
-                        } catch (RestClientException | IllegalArgumentException e) {
+                        } catch (RestClientException | IllegalArgumentException | IllegalStateException e) {
                             // Jos lataaminen ei onnistunut
                             mks.setLataaminenOk(false);
 
-                            log.error(e.getLocalizedMessage());
+                            log.error("Määräyskirje " + url + " lataaminen epäonnistui: " + e.getLocalizedMessage());
                         }
-                    } else {
-                        log.debug("Määräyskirje löytyy jo kielellä " + kieli);
                     }
-
                 }
             }
         }
