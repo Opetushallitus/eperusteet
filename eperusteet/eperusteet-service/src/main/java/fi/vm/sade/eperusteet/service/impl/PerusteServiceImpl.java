@@ -707,7 +707,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             if (current.getTila() == PerusteTila.VALMIS) {
                 current = updateValmisPeruste(current, updated);
-            } else {
+            }
+            else {
                 // FIXME: refactor
                 current.setDiaarinumero(updated.getDiaarinumero());
                 current.setKielet(updated.getKielet());
@@ -767,7 +768,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setKuvaus(updated.getKuvaus());
         current.setNimi(updated.getNimi());
         current.setPaatospvm(updated.getPaatospvm());
-        current.setDiaarinumero(updated.getDiaarinumero());
         current.setKoulutusvienti(updated.isKoulutusvienti());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
