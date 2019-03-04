@@ -5,7 +5,7 @@ import fi.vm.sade.eperusteet.service.ScheduledTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class MaarayskirjeTask implements ScheduledTask {
 
     @Autowired
