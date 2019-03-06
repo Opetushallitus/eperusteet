@@ -38,6 +38,8 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
 
     Perusteprojekti findOneByRyhmaOid(String ryhmaOid);
 
+    Perusteprojekti findOneByPeruste(Peruste peruste);
+
     @Query("SELECT p from Perusteprojekti p" +
             " WHERE p.peruste.tyyppi = 'NORMAALI' AND p.tila = 'JULKAISTU'" +
             "   AND p.peruste NOT IN (SELECT peruste FROM ValidointiStatus)")

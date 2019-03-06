@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Consumer;
@@ -45,10 +46,13 @@ public class PerusteprojektiTestUtils {
     private PerusteRepository perusteRepository;
 
     @Autowired
-    ArviointiAsteikkoService arviointiAsteikkoService;
+    private ArviointiAsteikkoService arviointiAsteikkoService;
 
     @Autowired
-    ArviointiAsteikkoRepository arviointiAsteikkoRepository;
+    private ArviointiAsteikkoRepository arviointiAsteikkoRepository;
+
+    @Autowired
+    private EntityManager em;
 
     public PerusteprojektiDto createPerusteprojekti() {
         return createPerusteprojekti((PerusteprojektiLuontiDto pp) -> {});
@@ -66,6 +70,7 @@ public class PerusteprojektiTestUtils {
         result.setDiaarinumero(TestUtils.uniikkiString());
         withPerusteprojekti.accept(result);
         PerusteprojektiDto pp = perusteprojektiService.save(result);
+        em.flush();
         return pp;
     }
 

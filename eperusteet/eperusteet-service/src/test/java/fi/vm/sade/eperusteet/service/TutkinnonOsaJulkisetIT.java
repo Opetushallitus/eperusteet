@@ -8,6 +8,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.TutkinnonOsaQueryDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.repository.ArvioinninKohdealueRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
@@ -21,6 +23,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -99,6 +102,38 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
         assertThat(osat.getContent().get(0).getKoodi().getUri())
                 .isEqualTo("tutkinnonosat_123456");
 
+    }
+
+    @Test
+    @Rollback
+    public void testTutkinnonOsienToteutustenHaku() {
+        TutkinnonOsa tosa = new TutkinnonOsa();
+        tosa.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
+        tosa.asetaTila(PerusteTila.VALMIS);
+        tosa.setKoodi(new Koodi("tutkinnonosat_123456", "tutkinnonosat"));
+        tosa = perusteenOsaRepository.save(tosa);
+
+        perusteenOsaRepository.saveAndFlush(tosa);
+
+        TutkinnonOsaViite tov = new TutkinnonOsaViite();
+        tov.setTutkinnonOsa(tosa);
+        tov.setSuoritustapa(suoritustapa);
+        suoritustapa.getTutkinnonOsat().add(tov);
+        suoritustapa = suoritustapaRepository.saveAndFlush(suoritustapa);
+        tov = suoritustapa.getTutkinnonOsat().iterator().next();
+
+        projekti.setTila(ProjektiTila.JULKAISTU);
+        peruste.asetaTila(PerusteTila.VALMIS);
+        projekti = perusteprojektiRepository.save(projekti);
+        peruste = perusteRepository.save(peruste);
+        ammattitaitovaatimusService.addAmmattitaitovaatimuskoodit();
+        em.flush();
+
+        List<TutkinnonOsaViiteKontekstiDto> viitteet = perusteenOsaService.findTutkinnonOsaViitteetByTutkinnonOsa(tosa.getId());
+        assertThat(viitteet).hasSize(1);
+        assertThat(viitteet.get(0))
+                .extracting("id", "peruste.id", "suoritustapa.suoritustapakoodi")
+                .contains(tov.getId(), peruste.getId(), suoritustapa.getSuoritustapakoodi());
     }
 
 }

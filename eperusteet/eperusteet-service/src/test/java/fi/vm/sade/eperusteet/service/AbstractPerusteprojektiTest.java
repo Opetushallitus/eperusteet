@@ -35,7 +35,6 @@ import javax.persistence.EntityManager;
 @Transactional
 public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
 
-
     @Autowired
     protected PerusteprojektiService perusteprojektiService;
 
