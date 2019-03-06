@@ -52,7 +52,6 @@ public class TutkinnonOsaViiteDto implements ReferenceableDto {
     private TutkinnonOsaTyyppi tyyppi;
 
     public TutkinnonOsaViiteDto() {
-
     }
 
     public TutkinnonOsaViiteDto (BigDecimal laajuus, Integer jarjestys, LokalisoituTekstiDto nimi, TutkinnonOsaTyyppi tyyppi) {
