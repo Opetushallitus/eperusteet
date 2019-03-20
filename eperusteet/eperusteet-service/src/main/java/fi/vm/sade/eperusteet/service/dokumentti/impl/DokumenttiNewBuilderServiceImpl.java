@@ -860,10 +860,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 continue;
             }
 
-            String otsikkoTeksti = tyyppi == TutkinnonOsaTyyppi.NORMAALI
-                    ? getTextString(docBase, ka.getOtsikko())
-                    : messages.translate("docgen.tutke2.arvioinnin_kohteet.title", docBase.getKieli());
-            addTeksti(docBase, otsikkoTeksti, "h6");
+            if (TutkinnonOsaTyyppi.NORMAALI.equals(tyyppi)) {
+                String otsikkoTeksti = getTextString(docBase, ka.getOtsikko());
+                addTeksti(docBase, otsikkoTeksti, "h6");
+            }
 
             for (ArvioinninKohde kohde : arvioinninKohteet) {
                 TekstiPalanen otsikko = kohde.getOtsikko();
