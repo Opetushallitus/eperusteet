@@ -130,16 +130,21 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
             pred = cb.and(pred, nimessa);
         }
 
+        Join<Perusteprojekti, Peruste> peruste = root.join(Tiedote_.perusteprojekti).join(Perusteprojekti_.peruste);
+
+        if (tq.getPerusteeton() != null && tq.getPerusteeton()) {
+            pred = cb.and(pred, cb.isNull(peruste));
+        }
+
         if (!ObjectUtils.isEmpty(tq.getPerusteId())) {
-            Join<Perusteprojekti, Peruste> peruste = root.join(Tiedote_.perusteprojekti).join(Perusteprojekti_.peruste);
             pred = cb.and(pred, cb.equal(peruste.get(Peruste_.id), tq.getPerusteId()));
         }
 
-        if (!ObjectUtils.isEmpty(tq.getJulkinen())) {
+        if (tq.getJulkinen() != null && tq.getJulkinen()) {
             pred = cb.and(pred, cb.equal(root.get(Tiedote_.julkinen), tq.getJulkinen()));
         }
 
-        if (!ObjectUtils.isEmpty(tq.getYleinen())) {
+        if (tq.getYleinen() != null && tq.getYleinen()) {
             pred = cb.and(pred, cb.equal(root.get(Tiedote_.yleinen), tq.getYleinen()));
         }
 
