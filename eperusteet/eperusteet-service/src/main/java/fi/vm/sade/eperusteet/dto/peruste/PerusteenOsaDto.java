@@ -48,7 +48,9 @@ public abstract class PerusteenOsaDto {
     private PerusteTila tila;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private PerusteenOsaTunniste tunniste;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean valmis;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean kaannettava;
 
     public PerusteenOsaDto() {

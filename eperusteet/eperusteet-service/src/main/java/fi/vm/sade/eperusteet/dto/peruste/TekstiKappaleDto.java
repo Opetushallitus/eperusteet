@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
@@ -33,6 +34,7 @@ import lombok.Setter;
 @JsonTypeName("tekstikappale")
 public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto teksti;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private KoodiDto osaamisala;
 
     public TekstiKappaleDto() {

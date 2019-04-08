@@ -13,48 +13,41 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
+ * @author nkala
  *
- * @author harrik
+ * Koulutustyyppi ei enää yksilöi toteutusta ja toteutus voi olla jaettu eri koulutustyyppien välillä.
+ *
  */
-public enum Suoritustapakoodi {
-
-    OPS("ops"),
-    NAYTTO("naytto"),
-    REFORMI("reformi"),
+public enum KoulutustyyppiToteutus {
+    YKSINKERTAINEN("yksinkertainen"), // Sisältää ainoastaan tekstikappaleita
     PERUSOPETUS("perusopetus"),
-    LISAOPETUS("lisaopetus"),
-    VARHAISKASVATUS("varhaiskasvatus"),
-    OPAS("opas"),
-    ESIOPETUS("esiopetus"),
-    AIPE("aipe"),
-    TPO("tpo"),
-    LUKIOKOULUTUS("lukiokoulutus"),
-    LUKIOKOULUTUS2019("lukiokoulutus2019");
+    LOPS("lops"),
+    LOPS2019("lops2019");
 
-    private final String koodi;
+    private final String tyyppi;
 
-    Suoritustapakoodi(String koodi) {
-        this.koodi = koodi;
+    KoulutustyyppiToteutus(String tyyppi) {
+        this.tyyppi = tyyppi;
+    }
+
+    @JsonCreator
+    public static KoulutustyyppiToteutus of(String tila) {
+        for (KoulutustyyppiToteutus s : values()) {
+            if (s.tyyppi.equalsIgnoreCase(tila)) {
+                return s;
+            }
+        }
+        throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
     }
 
     @Override
     public String toString() {
-        return koodi;
+        return tyyppi;
     }
 
-    @JsonCreator
-    public static Suoritustapakoodi of(String koodi) {
-        for (Suoritustapakoodi s : values()) {
-            if (s.koodi.equalsIgnoreCase(koodi)) {
-                return s;
-            }
-        }
-        throw new IllegalArgumentException(koodi + " ei ole kelvollinen suoritustapakoodi");
-    }
 }

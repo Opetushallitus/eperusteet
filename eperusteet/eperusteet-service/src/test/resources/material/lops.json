@@ -1,0 +1,1322 @@
+{
+  "id" : 1,
+  "globalVersion" : {
+    "aikaleima" : 1525271279758
+  },
+  "nimi" : {
+    "fi" : "Lukion opetussuunnitelman perusteet 2015",
+    "sv" : "Grunderna för gymnasiets läroplan 2015",
+    "_id" : "1431924"
+  },
+  "koulutustyyppi" : "koulutustyyppi_2",
+  "toteutus" : "lops2019",
+  "koulutukset" : [ ],
+  "kielet" : [ "sv", "fi" ],
+  "kuvaus" : {
+    "fi" : "<p>Nuorille tarkoitetun lukiokoulutuksen opetussuunnitelman perusteet</p>",
+    "sv" : "<p>Grunderna för läroplanen för gymnasieutbildning för ungdomar</p>",
+    "_id" : "1431926"
+  },
+  "maarayskirje" : {
+    "id" : 1372980,
+    "url" : {
+      "sv" : "http://www.oph.fi/download/172125_grunderna_for_gymnasiets_laroplan_2015.pdf",
+      "fi" : "http://www.oph.fi/download/172124_lukion_opetussuunnitelman_perusteet_2015.pdf"
+    },
+    "liitteet" : { }
+  },
+  "muutosmaaraykset" : [],
+  "diaarinumero" : "1/2/3",
+  "voimassaoloAlkaa" : 1469998800000,
+  "siirtymaPaattyy" : null,
+  "voimassaoloLoppuu" : null,
+  "paatospvm" : 1445896800000,
+  "luotu" : 1449736763749,
+  "muokattu" : 1525271279758,
+  "tila" : "valmis",
+  "tyyppi" : "normaali",
+  "koulutusvienti" : false,
+  "korvattavatDiaarinumerot" : [ "10/011/2009", "33/011/2003", "6/011/2014", "42/011/2010", "21/011/2006" ],
+  "osaamisalat" : [ ],
+  "tyotehtavatJoissaVoiToimia" : null,
+  "suorittaneenOsaaminen" : null,
+  "suoritustavat" : [ {
+    "suoritustapakoodi" : "lukiokoulutus2019",
+    "laajuusYksikko" : "OPINTOPISTE"
+  } ],
+  "kvliite" : {
+    "id" : 10,
+    "suorittaneenOsaaminen" : null,
+    "tyotehtavatJoissaVoiToimia" : null,
+    "tutkintotodistuksenAntaja" : null,
+    "_arvosanaAsteikko" : null,
+    "jatkoopintoKelpoisuus" : null,
+    "kansainvalisetSopimukset" : null,
+    "saadosPerusta" : null,
+    "pohjakoulutusvaatimukset" : null,
+    "lisatietoja" : null,
+    "tutkintotodistuksenSaaminen" : null,
+    "tutkinnostaPaattavaViranomainen" : null
+  },
+  "lops2019": {
+    "sisalto" : {
+      "id" : 20001,
+      "lapset" : [{
+        "id" : 20002,
+        "perusteenOsa" : {
+          "id" : 30002,
+          "luotu" : 1449736763770,
+          "muokattu" : 1450450639080,
+          "tunniste" : "normaali",
+          "nimi" : {
+            "fi" : "Opetussuunnitelman laatiminen ja sisältö"
+          },
+          "teksti" : {
+            "fi" : ""
+          },
+          "osanTyyppi" : "tekstikappale"
+        },
+        "lapset" : [{
+          "id" : 20004,
+          "perusteenOsa" : {
+            "id" : 30004,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Uudistuva lukiokoulutus"
+            },
+            "teksti" : {
+              "fi" : "Suomen hallitus päätti puolivälitarkastelunsa yhteydessä huhtikuussa 2017 käynnistää lukiokoulutuksen uudistuksen: se sisältää lukiolain uusimisen ja lukion toiminnallisen uudistamisen, kuten myös lukioasetuksen ja ylioppilastutkinnon säädösten muuttamisen. Nämä lukion opetussuunnitelman perusteet perustuvat kesällä 2018 hyväksyttyyn lukiolakiin (714/2018) ja syksyllä 2018 hyväksyttyyn valtioneuvoston asetukseen lukiokoulutuksesta (810/2018). Näiden lukion opetussuunnitelman perusteiden mukaiset opetussuunnitelmat otetaan paikallisesti käyttöön 1.8.2021. Uusi lukiolaki astui voimaan 1.8.2019, mutta kaikki opetussuunnitelmassa tarkemmin kuvattavat, eli opetukseen, oppimisen tukeen, ohjaukseen sekä yhteistyöhön liittyvät asiat velvoittavat koulutuksen järjestäjiä elokuusta 2021 alkaen. Lukiouudistuksen tavoitteena on nostaa kansakunnan koulutustasoa, jotta Suomi menestyisi mahdollisimman hyvin tulevina vuosikymmeninä. Korkeakoulutettujen osuus 25–34-vuotiaiden ikäluokasta halutaan nostaa vuoteen 2030 mennessä 50 prosenttiin nykyisestä 41 prosentista. Siksi uudistuksella halutaan lisätä lukiokoulutuksen vetovoimaa yleissivistävänä, korkeakouluihin jatko-opintokelpoisuuden antavana koulutusmuotona, vahvistaa koulutuksen laatua ja oppimistuloksia sekä sujuvoittaa siirtymistä toisen asteen opinnoista korkea-asteelle. Yksilöllisemmät ja joustavammat opintopolut, niiden vaatima ohjaus ja tuki, oppiainerajat ylittävät opinnot ja korkeakouluyhteistyö ovat keskeisiä keinoja tavoitteiden saavuttamiseksi. Lukiokoulutus on edelleen kolmivuotinen koulutus, jota järjestetään erikseen nuorille ja aikuisille tarkoitettuina oppimäärinä. Oppimäärien ja niihin kuuluvien opintojen mitoituksen perusteena käytetään kurssien sijaan opintopisteitä: yksi entinen kurssi on laajuudeltaan kaksi opintopistettä. Lukion oppimäärän laajuus on nuorille tarkoitetussa lukiokoulutuksessa vähintään 150 opintopistettä ja aikuisille tarkoitetussa lukiokoulutuksessa vähintään 88 opintopistettä. Tavoitteena on paitsi edistää oppiaineiden tavoitteiden ja keskeisten sisältöjen hallintaa myös kehittää laaja-alaista osaamista. Lukiokoulutuksen eheyttämiseksi opetussuunnitelman perusteisiin on muotoiltu laaja-alaisen osaamisen osa-alueet, jotka muodostavat kaikkien oppiaineiden yhteiset tavoitteet: 1) hyvinvointiosaaminen, 2) vuorovaikutusosaaminen, 3) monitieteinen ja luova osaaminen, 4) yhteiskunnallinen osaaminen, 5) eettisyys ja ympäristöosaaminen sekä 6) globaali- ja kulttuuriosaaminen. Lisäksi eheyttämistä edistää opintojen uudenlainen rakenne. Pakolliset ja valtakunnalliset valinnaiset opinnot on jäsennelty opetussuunnitelman perusteisiin 1–3 opintopisteen moduuleiksi, joista paikallisesti rakennetaan joko oppiaineiden omia tai yhteisiä opintojaksoja. Nämä entisten kurssien sijaan laadittavat opintojaksot voivat olla laajuudeltaan ja muodoltaan erilaisia. Opinnot arvioidaan opintojaksoittain. Tavoitteena on edistää lukiolaisten hyvinvointia ja tukea opiskelijoita entistä paremmin heidän opinnoissaan. Lukioiden toimintakulttuurissa painotetaan yhä vahvemmin opiskelijoiden osallisuutta, yhteistyötä, yhteisöllisyyttä ja monimuotoisuutta yksilölliset tarpeet samalla huomioon ottaen. Lisäksi lukio-opintojen opiskelijalähtöisyys ja opintojen henkilökohtaistaminen vahvistuvat, jolloin opiskelumotivaatio ja opintojen mielekkyys kasvavat. Opiskelijalla on oikeus saada säännöllisesti tarpeidensa mukaista henkilökohtaista ja muuta opintoihin ja jatko-opintoihin hakeutumiseen liittyvää ohjausta. Oppilaitoksesta pois siirtyvällä opiskelijalla on oikeus myös jatko-ohjaukseen. Sitä annetaan opiskelijoille, joiden opiskeluoikeus on päättymässä tai jotka ovat eroamassa oppilaitoksesta, sekä henkilöille, jotka lukiokoulutuksen oppimäärän suorittamisen jälkeen eivät ole saaneet jatko-opiskelupaikkaa. Opiskelijalla on oikeus jatko-ohjaukseen oppimäärän suorittamisvuotta seuraavan vuoden aikana. Opiskelijalla, jolla on oppimisvaikeuksien vuoksi vaikeuksia suoriutua opinnoistaan, on oikeus saada erityisopetusta ja muuta oppimisen tukea. Lukiokoulutuksen järjestäjien yhteistyövelvoitteita vahvistetaan erityisesti lukioiden ja korkeakoulujen välisen yhteistyön osalta. Osa lukiokoulutuksen oppimäärän opinnoista on järjestettävä yhteistyössä yhden tai useamman korkeakoulun kanssa siten, että jokainen lukiolainen saa halutessaan mahdollisuuden saada kokemusta korkeakouluopiskelusta. Opetus on lisäksi järjestettävä niin, että opiskelijalla on mahdollisuus kehittää kansainvälistä osaamistaan sekä työelämä- ja yrittäjyysosaamistaan. Laadukas koulutus, monipuoliset yhteydet ympäröivään maailmaan, yhteisöllinen ja osallistava toimintakulttuuri sekä hyvinvointia tukevat elämänhallinnan taidot vahvistavat lukiolaisen sydämen sivistystä. Tavoitteena on lukiolain mukaisesti tukea lukiolaisen kasvua hyväksi, tasapainoiseksi ja sivistyneeksi ihmiseksi sekä aktiiviseksi yhteiskunnan jäseneksi. Yksilön ja yhteiskunnan kannalta tärkeänä yhteisenä tavoitteena on klassisten sivistysihanteiden toteuttaminen eli pyrkimys hyvyyteen, totuuteen ja kauneuteen."
+            },
+            "osanTyyppi" : "tekstikappale"
+          }
+        }, {
+          "id" : 20015,
+          "perusteenOsa" : {
+            "id" : 30015,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Opetussuunnitelman laatiminen"
+            },
+            "teksti" : {
+              "fi" : "Lukiokoulutuksen opetussuunnitelmajärjestelmän osia ovat lukiolaki (714/2018) valtioneuvoston asetus lukiokoulutuksesta (810/2018) Opetushallituksen määräys lukion opetussuunnitelman perusteista koulutuksen järjestäjän hyväksymä opetussuunnitelma vuosittain laadittava opetussuunnitelmaan perustuva suunnitelma. Kaikki nuorten lukiokoulutuksen järjestäjät laativat lukion opetussuunnitelman näiden lukion opetussuunnitelman perusteiden mukaan, jollei opetus- ja kulttuuriministeriön myöntämästä järjestämisluvasta muuta johdu. Jos lukiokoulutuksen järjestämislupaan liittyy erityinen koulutustehtävä, siihen liittyvät määräykset otetaan huomioon opetussuunnitelmaa laadittaessa. Lukiokoulutus on kokonaisuus, jossa eri toimintojen tavoitteet ja sisällöt liittyvät yhteen ja muodostavat opetuksen ja toimintakulttuurin perustan. Tämän vuoksi lukion opetussuunnitelman perusteet sisältää tavoitteita, keskeisiä sisältöjä ja opiskelijan oppimisen arviointia koskevien määräysten lisäksi niiden ymmärtämistä avaavaa tekstiä. Opetussuunnitelmassa päätetään lukion opetus- ja kasvatustyöstä. Koulutuksen järjestäjä laatii vuosittain opetussuunnitelmaan perustuvan suunnitelman opetuksen käytännön järjestämisestä. Opiskelija laatii oppilaitoksen opetushenkilöstön tuella henkilökohtaisen opintosuunnitelman, joka sisältää opiskelusuunnitelman, ylioppilastutkintosuunnitelman sekä jatko-opinto- ja urasuunnitelman. Opetussuunnitelmaa laadittaessa tulee ottaa huomioon muiden oppilaitosten opetustarjonta sekä lukion toimintaympäristö, paikalliset osaamisvahvuudet ja erityisresurssit. Lukiopaikkakunnan tai -alueen luonto ja ympäristö, historia, kieliolosuhteet sekä elinkeino- ja kulttuurielämä tuovat opetussuunnitelmaan paikallisuutta. Käytännön yhteistyö eri alojen asiantuntijoiden kanssa lisää opiskelun elämänläheisyyttä ja syvällisyyttä. Opetussuunnitelmaa laadittaessa myös ajankohtaistetaan opetussuunnitelman perusteissa määrättyjä asioita. Koulutuksen järjestäjä hyväksyy lukion opetussuunnitelman ennen sen käyttöönottoa erikseen suomenkielistä, ruotsinkielistä, saamenkielistä ja tarvittaessa muulla kielellä annettavaa opetusta varten. Opiskelijan mahdollisuus suorittaa lukiokoulutuksen oppimäärään sisältyvät opinnot kolmessa vuodessa on turvattava järjestämällä opintojen eteneminen joustavasti ja tarjoamalla tarvittava oppimisen ja opiskelun tuki. Opetussuunnitelma tulee laatia siten, että se antaa opiskelijalle mahdollisuuden yksilöllisiin opintoja koskeviin valintoihin omassa oppilaitoksessaan sekä myös koulutuksen järjestäjän muiden oppilaitosten, korkeakoulujen ja muiden koulutuksen järjestäjien antamaa opetusta hyväksi käyttäen. Koulutuksen järjestäjä päättää, miten opetussuunnitelma laaditaan opetussuunnitelman perusteiden pohjalta. Lukion opetussuunnitelma laaditaan yhteistyössä lukion henkilöstön, opiskelijoiden, opiskelijoiden vanhempien ja huoltajien sekä säännösten edellyttämiltä osin lisäksi kunnan sosiaali- ja terveydenhuollon toimeenpanoon kuuluvia tehtäviä hoitavien viranomaisten kanssa. Yhteistyötä opetussuunnitelman laatimisessa voidaan tehdä myös muiden koulutuksen järjestäjien ja eri sidosryhmien kanssa. Kaikilla opiskelijoiden vanhemmilla ja huoltajilla tulee olla mahdollisuus tutustua opetussuunnitelmaan. Ennen opetussuunnitelman hyväksymistä koulutuksen järjestäjän tulee kuulla opiskelijakuntaa ja lukion henkilöstöä sekä varata lukion kaikille opiskelijoille mahdollisuus ilmaista mielipiteensä siitä. Yhteistyöllä eri tahojen kanssa pyritään varmistamaan lukiokoulutuksen korkeatasoisuus, yhteiskunnallinen merkittävyys sekä koko yhteisön sitoutuminen yhdessä määriteltyihin tavoitteisiin ja toimintatapoihin. Opetussuunnitelmaa laadittaessa pyritään ratkaisuihin, jotka kehittävät lukion toimintakulttuuria, tukevat opiskelijoiden hyvinvointia, jaksamista ja osallisuutta, rohkaisevat resurssien joustavaan ja tehokkaaseen käyttöön sekä monipuolistavat vuorovaikutusta lukion sisällä ja suhteessa ympäröivään yhteiskuntaan."
+            },
+            "osanTyyppi" : "tekstikappale"
+          }
+        }, {
+          "id" : 20016,
+          "perusteenOsa" : {
+            "id" : 30016,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Opetussuunnitelman sisältö"
+            },
+            "teksti" : {
+              "fi" : "Nuorten lukiokoulutuksen opetussuunnitelma sisältää seuraavat osat: lukion toiminta-ajatus ja arvopainotukset oppimiskäsitys, opiskeluympäristöt ja menetelmät lukion toimintakulttuurin pääpiirteet koulutuksen järjestäjän hyväksymä lukion tuntijako lukion kieliohjelma itsenäisen opiskelun periaatteet laaja-alainen osaaminen oppiaineen tehtävä, oppiaineen opetuksen yleiset tavoitteet ja arviointi tavoitteet, keskeiset sisällöt, laaja-alaisen osaamisen tavoitteiden totetuminen ja arviointi opintojaksoittain kodin ja oppilaitoksen yhteistyön toteuttaminen ohjaussuunnitelma oppimisen ja opiskelun tukea tarvitsevien opiskelijoiden opetus kieli- ja kulttuuriryhmien opetus yhteistyö muiden lukioiden ja ammatillisten oppilaitosten kanssa yhteistyö yliopistojen, ammattikorkeakoulujen, muiden oppilaitosten ja tahojen kanssa tieto- ja viestintäteknologian opetuskäytön suunnitelma opiskelijahuolto opiskelijan oppimisen arviointi toiminnan jatkuva kehittäminen ja arviointi. Lukion opetussuunnitelmassa tulee kuvata kaikkien siihen sisältyvien opintojaksojen tavoitteet ja keskeiset sisällöt. Mikäli lukio järjestää vieraskielistä opetusta, etäopetusta tai mahdollisuuden suorittaa lukiodiplomeita, se tulee määritellä opetussuunnitelmassa. Lukiolain (714/2018) 33 §:ssä säädetään opiskelijoiden vaikutusmahdollisuuksien turvaamisesta ja opiskelijakunnasta. Pykälässä tarkoitettu toiminta tulee suunnitella opetussuunnitelman ja muiden siihen perustuvien suunnitelmien osana tai yhteydessä. Oppilas- ja opiskelijahuoltolain (1287/2013) 13 §:n 1 momentin (muutettu lailla 1501/2016) mukaan koulutuksen järjestäjä vastaa siitä, että opiskeluhuollon toteuttamista, arviointia ja kehittämistä varten laaditaan oppilaitoskohtainen opiskeluhuoltosuunnitelma. Suunnitelma opiskelijoiden suojaamiseksi väkivallalta, kiusaamiselta ja häirinnältä on kirjattava oppilaitoskohtaiseen opiskeluhuoltosuunnitelmaan (oppilas- ja opiskelijahuoltolaki 1287/2013, 13 §). Lukiolain (714/2018) 40 §:n 3 momentin mukaan koulutuksen järjestäjän tulee laatia ja ohjeistaa opetussuunnitelman yhteydessä suunnitelma kurinpitokeinojen käyttämisestä ja niihin liittyvistä menettelytavoista. Naisten ja miesten välisestä tasa-arvosta annetun lain 5 a §:n mukaan (609/1986, muutettu lailla 1329/2014) koulutuksen järjestäjä vastaa siitä, että vuosittain laaditaan oppilaitoskohtaisesti tasa-arvosuunnitelma yhteistyössä henkilöstön ja opiskelijoiden kanssa. Vuosittaisen tarkastelun sijasta suunnitelma voidaan laatia enintään kolmeksi vuodeksi kerralla. Tasa-arvosuunnitelma voidaan sisällyttää osaksi opetussuunnitelmaa tai muuta oppilaitoksen suunnitelmaa. Yhdenvertaisuuslain (1325/2014) 6 §:n 2 momentin mukaan koulutuksen järjestäjän on huolehdittava siitä, että oppilaitoksella on suunnitelma tarvittavista toimenpiteistä yhdenvertaisuuden edistämiseksi. Yhdenvertaisuussuunnitelma voi sisältyä opetussuunnitelmaan."
+            },
+            "osanTyyppi" : "tekstikappale"
+          }
+        }, {
+          "id" : 20016,
+          "perusteenOsa" : {
+            "id" : 30016,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Lukiokoulutuksen tehtävä"
+            },
+            "teksti" : {
+              "fi" : "Lukiokoulutuksen tehtävänä on laaja-alaisen yleissivistyksen vahvistaminen. Lukiokoulutuksessa yleissivistys koostuu arvoista, tiedoista, taidoista, asenteista ja tahdosta, joiden avulla kriittiseen ja itsenäiseen ajatteluun pystyvät yksilöt osaavat toimia vastuullisesti, myötätuntoisesti, yhteisöllisesti ja itseään kehittäen. Lukioaikana opiskelija kartuttaa olennaista ihmistä, kulttuureja, ympäristöä ja yhteiskuntaa koskevaa tietoa ja osaamista. Lukio-opetus valmistaa opiskelijaa ymmärtämään elämässä ja maailmassa vallitsevia monitahoisia keskinäisriippuvuuksia sekä jäsentämään laaja-alaisia ilmiöitä. Lukiokoulutuksella on opetus- ja kasvatustehtävä. Lukiokoulutuksen aikana opiskelija rakentaa identiteettiään, ihmiskäsitystään, maailmankuvaansa ja -katsomustaan sekä paikkaansa maailmassa. Samalla opiskelija kehittää suhdettaan menneisyyteen ja suuntautuu tulevaisuuteen. Lukiokoulutus syventää opiskelijan kiinnostusta tieteiden ja taiteiden maailmaan sekä kehittää valmiuksia elämänhallintaan ja työelämään. Lukiokoulutus rakentuu perusopetuksen oppimäärälle. Se antaa yleiset ja monipuoliset jatko-opintovalmiudet yliopistoihin, ammattikorkeakouluihin ja lukion oppimäärään perustuvaan ammatilliseen koulutukseen. Lukiossa hankittuja tietoja ja taitoja osoitetaan lukion päättötodistuksella, ylioppilastutkintotodistuksella, lukiodiplomeilla ja muilla näytöillä. Lukiokoulutus ohjaa opiskelijaa tulevaisuuden suunnitelmien laadintaan, kansainvälisyyteen ja jatkuvaan oppimiseen."
+            },
+            "osanTyyppi" : "tekstikappale"
+          }
+        }]
+      }, {
+        "id" : 20003,
+        "perusteenOsa" : {
+          "id" : 30003,
+          "luotu" : 1449736763770,
+          "muokattu" : 1450450639080,
+          "tunniste" : "normaali",
+          "nimi" : {
+            "fi" : "Arvoperusta"
+          },
+          "teksti" : {
+            "fi" : "Teksti 2"
+          },
+          "osanTyyppi" : "tekstikappale"
+        },
+        "lapset" : [{
+          "id" : 20020,
+          "perusteenOsa" : {
+            "id" : 30020,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Lukiokoulutuksen tehtävä"
+            },
+            "teksti" : {
+              "fi" : ""
+            },
+            "osanTyyppi" : "tekstikappale"
+          }
+        }, {
+          "id" : 20021,
+          "perusteenOsa" : {
+            "id" : 30021,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Arvoperusta"
+            },
+            "teksti" : {
+              "fi" : ""
+            },
+            "osanTyyppi" : "tekstikappale"
+          }
+        }]
+      }, {
+        "id" : 20011,
+        "perusteenOsa" : {
+          "id" : 30011,
+          "luotu" : 1449736763770,
+          "muokattu" : 1450450639080,
+          "tunniste" : "normaali",
+          "nimi" : {
+            "fi" : "Lukiokoulutuksen tehtävä ja arvoperusta"
+          },
+          "teksti" : {
+            "fi" : "Teksti 2"
+          },
+          "osanTyyppi" : "tekstikappale"
+        }
+      }, {
+        "id" : 20010,
+        "perusteenOsa" : {
+          "id" : 30010,
+          "luotu" : 1449736763770,
+          "muokattu" : 1450450639080,
+          "tunniste" : "normaali",
+          "nimi" : {
+            "fi" : "Opetuksen toteuttaminen"
+          },
+          "teksti" : {
+            "fi" : ""
+          },
+          "osanTyyppi" : "tekstikappale"
+        },
+        "lapset" : [{
+          "id" : 20054,
+          "perusteenOsa" : {
+            "id" : 30054,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Opintojen rakenne"
+            },
+            "teksti" : {
+              "fi" : "Nuorille tarkoitetun lukiokoulutuksen oppimäärän laajuus on 150 opintopistettä. Lukio-opinnot muodostuvat lukiokoulutuksesta annetun valtioneuvoston asetuksen (810/2018) liitteen 1 mukaisista pakollisista ja valtakunnallisista valinnaisista opinnoista, joita koulutuksen järjestäjän tulee tarjota opiskelijalle. Valtioneuvoston asetuksen mukaisia valtakunnallisia valinnaisia opintoja nuorille tarkoitetun lukiokoulutuksen oppimäärään tulee sisältyä vähintään 20 opistopistettä. Oppimäärään voi lisäksi sisältyä lukiodiplomeita ja muita valinnaisia opintoja koulutuksen järjestäjän päättämällä tavalla.  Opetushallitus on laatinut opetussuunnitelman perusteet lukiokoulutuksesta annetun valtioneuvoston asetuksen (810/2018) liitteessä 1 tarkoitettuihin pakollisiin ja valtakunnallisiin valinnaisiin opintoihin lukuun ottamatta temaattisia opintoja. Lisäksi Opetushallitus on laatinut opetussuunnitelman perusteet lukiodiplomeihin. Lukiodiplomien laajuus on kaksi opintopistettä.  Koulutuksen järjestäjä päättää, minkä laajuisina opintojaksoina opinnot tarjotaan opiskelijalle. Koulutuksen järjestäjän tulee kuitenkin tarjota opiskelijalle mahdollisuus suorittaa valtioneuvoston asetuksen liitteen 1 mukaisia valtakunnallisia valinnaisia opintoja kahden opintopisteen laajuisina opintojaksoina.  Oppiaineen opintojen suoritusjärjestyksestä päätetään lukion opetussuunnitelmassa."
+            },
+            "osanTyyppi" : "tekstikappale"
+          }
+        }, {
+          "id" : 20055,
+          "perusteenOsa" : {
+            "id" : 30055,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Oppimiskäsitys"
+            },
+            "teksti" : {
+              "fi" : "Opetussuunnitelman perusteet pohjautuvat oppimiskäsitykseen, jonka mukaan oppiminen on seurausta opiskelijan aktiivisesta, tavoitteellisesta ja itseohjautuvasta toiminnasta. Oppimisprosessin aikana opiskelija tulkitsee, analysoi ja arvioi eri muodoissa esitettyä dataa, informaatiota tai tietoa aikaisempien kokemusten ja tietojen pohjalta. Hän kehittää ratkaisuja ja luo uudenlaisia kokonaisuuksia aineistojen pohjalta sekä tietoja ja taitoja uudella tavalla yhdistäen. Ohjaus ja rakentava palaute vahvistavat itseluottamusta ja auttavat opiskelijaa kehittämään ajatteluaan ja työskentelemään tarkoituksenmukaisella tavalla.  Oppiminen tapahtuu vuorovaikutuksessa muiden opiskelijoiden, opettajien, asiantuntijoiden ja yhteisöjen kanssa erilaisissa ympäristöissä. Se on monimuotoista ja sidoksissa siihen toimintaan, tilanteeseen ja kulttuuriin, jossa se tapahtuu. Myös kieli, kehollisuus ja eri aistien käyttö ovat oppimisen kannalta olennaisia. Lukio-opinnoissa opiskelijoita opiskelijaa ohjataan havaitsemaan käsitteiden, tiedonalojen ja osaamisen välisiä yhteyksiä sekä soveltamaan aiemmin oppimaansa muuttuvissa tilanteissa. Näin kehittyvät myös jatkuvan oppimisen edellyttämät taidot. Oppimisprosesseistaan tietoinsen opiskelija t opiskelijat oppiivat vähitellen yhä paremmin arviomaan ja kehittämään opiskelu- ja ajattelutaitojaan. Opintoihin liittyvät onnistumiset ja muut myönteiset kokemukset edistävät oppimista ja innostavat osaamisen kehittämiseen.  "
+            },
+            "osanTyyppi" : "tekstikappale"
+          }
+        }, {
+          "id" : 20056,
+          "perusteenOsa" : {
+            "id" : 30056,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Opiskeluympäristöt ja -menetelmät"
+            },
+            "teksti" : {
+              "fi" : "Lukion opiskeluympäristöjä ja -menetelmiä koskevien ratkaisujen lähtökohtana ovat oppimiskäsitys sekä opetukselle asetetut tavoitteet. Opiskeluympäristöjen kehittämisessä ja menetelmien valinnassa otetaan huomioon myös opiskelijoiden yhdenvertaisuus, edellytykset, kiinnostuksen kohteet, näkemykset ja yksilölliset tarpeet.    Opiskeluympäristöt Opiskeluympäristöt lukiossa ovat monipuolisia, turvallisia ja viihtyisiä. Ne edistävät opiskelumotivaatiota ja rikastuttavat opiskeluun liittyviä kokemuksia. Hyvä opiskeluympäristö tukee sekä vuorovaikutusta ja yhdessä työskentelyä että itsenäistä opiskelua. Opiskelijoita aktivoidaan kehittämään opiskeluympäristöjään.  Rakennettuja tiloja ja luontoa hyödynnetään opiskelussa siten, että luova ajattelu ja tutkimiseen perustuva opiskelu on mahdollista. Yliopistojen, ammattikorkeakoulujen ja muiden oppilaitosten, kirjastojen, liikunta- ja luontokeskusten, taide- ja kulttuurilaitosten, työelämän ja yritysten sekä muiden tahojen tarjoamia mahdollisuuksia hyödynnetään monin tavoin sekä kansallisesti että kansainvälisesti. Opiskeluympäristöä laajennetaan oppilaitoksen ulkopuolelle tieto- ja viestintäteknologian avulla.  Opiskelijaa ohjataan hyödyntämään digitaalisia opiskeluympäristöjä, oppimateriaaleja ja työvälineitä tiedon hankintaan, käsittelyyn ja arviointiin sekä tuottamiseen ja jakamiseen. Yksilöllistä etenemistä, henkilökohtaisia oppimispolkuja ja osaamisen kehittymistä voidaan tukea tarjoamalla opiskelijalle mahdollisuuksia suorittaa opintoja myös verkko-opiskeluna.  Itsenäistä opiskelua järjestettäessä otetaan huomion opiskelijan edellytykset suorittaa opintoja opetukseen osallistumatta sekä hänen ohjauksen ja tuen tarpeensa.  Opiskelumenetelmät Lukiossa käytetään monipuolisia opetus-, ohjaus- ja opiskelumenetelmiä, joilla on yhteys oppiaineissa edellytettyyn tiedonalan käsitteelliseen ja menetelmälliseen osaamiseen. Opetusta koskevilla ratkaisuilla rakennetaan myös kokonaisuuksien hallintaa ja oppiainerajat ylittävää osaamista. Tutkimiseen, kokeilemiseen ja ongelmanratkaisuun perustuvat opiskelumenetelmät edistävät oppimaan oppimista ja kehittävät kriittistä ja luovaa ajattelua.  Merkitykselliset oppimiskokemukset sitouttavat ja innostavat opiskeluun. Opiskelijalle tarjotaan mahdollisuuksia työskentelyyn, joka kytkee opiskeltavat tiedot ja taidot sekä hänen kokemuksiinsa että ympäristössä ja yhteiskunnassa esiintyviin ilmiöihin. Opiskelijaa rohkaistaan ja ohjataan ratkomaan avoimia ja riittävän haastavia tehtäviä, havaitsemaan ongelmia sekä esittämään kysymyksiä ja etsimään vastauksia.  Lukion opetuksen ja opiskelumenetelmien tarkoituksena on edistää opiskelijan aktiivista työskentelyä ja yhteistyötaitojen kehittymistä. Opiskelijaa ohjataan suunnittelemaan opiskeluaan, arvioimaan toiminta- ja työskentelytaitojaan sekä ottamaan vastuuta omasta oppimisestaan. Opiskelija saa tilaisuuksia käyttää monipuolisesti tieto- ja viestintäteknologiaa sekä itsenäisessä että yhteisöllisessä työskentelyssä.  Opiskelumenetelmien valinnassa ja työskentelyn ohjauksessa kiinnitetään huomiota yhdenvertaisiin opiskelumahdollisuuksiin sekä sukupuolittuneiden asenteiden ja käytänteiden tunnistamiseen ja muuttamiseen."
+            },
+            "osanTyyppi" : "tekstikappale"
+          }
+        }]
+      }, {
+        "id" : 20012,
+        "perusteenOsa" : {
+          "id" : 30012,
+          "luotu" : 1449736763770,
+          "muokattu" : 1450450639080,
+          "tunniste" : "normaali",
+          "nimi" : {
+            "fi" : "Opetuksen ohjaus ja tukeminen"
+          },
+          "teksti" : {
+            "fi" : "Teksti 2"
+          },
+          "osanTyyppi" : "tekstikappale"
+        },
+        "lapset" : [{
+          "id" : 20040,
+          "perusteenOsa" : {
+            "id" : 30040,
+            "luotu" : 1449736763770,
+            "muokattu" : 1450450639080,
+            "tunniste" : "normaali",
+            "nimi" : {
+              "fi" : "Opiskeluhuolto"
+            },
+            "teksti" : {
+              "fi" : ""
+            },
+            "osanTyyppi" : "tekstikappale"
+          },
+          "lapset" : [{
+            "id" : 20050,
+            "perusteenOsa" : {
+              "id" : 30050,
+              "luotu" : 1449736763770,
+              "muokattu" : 1450450639080,
+              "tunniste" : "normaali",
+              "nimi" : {
+                "fi" : "Opiskeluhuollon keskeiset periaatteet"
+              },
+              "teksti" : {
+                "fi" : ""
+              },
+              "osanTyyppi" : "tekstikappale"
+            }
+          }]
+        }]
+      }, {
+        "id" : 20013,
+        "perusteenOsa" : {
+          "id" : 30013,
+          "luotu" : 1449736763770,
+          "muokattu" : 1450450639080,
+          "tunniste" : "normaali",
+          "nimi" : {
+            "fi" : "Opiskelijan oppimisen ja osaasmisen arviointi"
+          },
+          "teksti" : {
+            "fi" : "Teksti 2"
+          },
+          "osanTyyppi" : "tekstikappale"
+        }
+      }
+      ]
+    },
+    "laajaAlainenOsaaminen": {
+      "laajaAlaisetOsaamiset": [{
+        "id": 101,
+        "nimi": {
+          "fi": "Hyvinvointiosaaminen"
+        },
+        "kuvaus": {
+          "fi": "Aihealueen opinnoilla tavoitellaan osaamista, jota opiskelija tarvitsee lisätäkseen hyvinvointiaan ja lukio-opiskelusta saamaansa motivaatiota ja iloa. Aihealue pyrkii varmistamaan osaltaan, että jokaisen lukiolaisen ainutlaatuisuus ja merkityksellisyys tulisi tunnistetuksi ja tunnustetuksi. Aihealueen keskeisiä teemoja ovat itsetuntemus, elämänhallinta sekä terveyttä, hyvinvointia ja turvallisuutta edistävät tiedot, taidot, asenteet, arvot ja tahto."
+        },
+        "opinnot": {
+          "fi": "Aihealueen opinnot ovat osa lukion hyvinvointia ja turvallisuutta ylläpitävää toimintakulttuuria, jossa yhteisöllisyys ja keskinäinen huolenpito korostuvat. Hyvinvointi- ja turvallisuusnäkökulmat liittyvät myös opiskelijakunnan toimintaan, kodin ja oppilaitoksen yhteistyöhön, oppilaitosruokailuun sekä opiskeluhuoltoon. Aihealueen toteuttamiseksi lukio voi tehdä yhteistyötä nuoriso-, liikunta-, kulttuuri- ja sosiaalitoimen sekä poliisin ja pelastuslaitoksen sekä erilaisten järjestöjen kanssa."
+        },
+        "tavoitteet": [{
+          "kohde": {
+            "fi": "Opiskelija"
+          },
+          "tavoitteet": [{
+            "kuvaus": {
+              "fi": "saa rohkaisua oman identiteettinsä rakentamiseen, oppii tunnistamaan vahvuuksiaan ja kehittämistä kaipaavia puoliaan (opiskelijana, lukiolaisena); saa monenlaisen oppimisen ja siinä onnistumisen kokemuksia, omaksuu epävarmuuden sietokykyä (sinnikkyyttä) ja vahvistaa luottamustaan siihen, että elämä kantaa. "
+            }
+          }, {
+            "kuvaus": {
+              "fi": "lisää ymmärrystään ja vastuutaan sitoutumisesta elämänmittaiseen fyysiseen aktiivisuuteen sekä terveyttä ja toimintakykyä edistäviin elintapoihin"
+            }
+          }]
+        }],
+        "painopisteet": [{
+          "nimi": {
+            "fi": "Omien vahvuuksien tunnistaminen ja käyttäminen sekä identiteetin rakentaminen"
+          }
+        }, {
+          "nimi": {
+            "fi": "Huolenpito itsestä ja muista"
+          }
+        }, {
+          "nimi": {
+            "fi": "Epävarmuuden sietokyky / Sinnikkyys muutosten ja yllätysten maailmassa"
+          }
+        }]
+      }, {
+        "id": 102,
+        "nimi": {
+          "fi": "Vuorovaikutusosaaminen"
+        }
+      }, {
+        "id": 103,
+        "nimi": {
+          "fi": "Monitieteinen ja luova osaaminen"
+        }
+      }, {
+        "id": 104,
+        "nimi": {
+          "fi": "Yhteiskunnallinen osaaminen"
+        }
+      }, {
+        "id": 105,
+        "nimi": {
+          "fi": "Eettinen ja ympäristöosaaminen"
+        }
+      }, {
+        "id": 106,
+        "nimi": {
+          "fi": "Globaali- ja kulttuuriosaaminen"
+        }
+      }]
+    },
+    "oppiaineet": [{
+      "id": 1003,
+      "nimi": {
+        "fi": "Biologia"
+      },
+      "koodi": {
+        "uri": "oppiaineet_bi",
+        "arvo": "BI",
+        "nimi": {
+          "fi": "Biologia"
+        }
+      },
+      "arviointi": {
+        "kuvaus": {
+          "fi": "Biologiassa arvioidaan oppiaineen tavoitteiden saavuttamista moduulikohtaisia tavoitteita ja sisältöjä painottaen. Arviointi ohjaa opiskelijaa tulemaan tietoiseksi omista työskentelytavoistaan ja kehittämään omaa osaamistaan. Arvosanan antaminen perustuu monipuoliseen näyttöön sekä opiskelijan käsitteellisen ja menetelmällisen osaamisen havainnointiin.  Arvioinnissa keskeisiä kohteita ovat opiskelijan tiedot ja taidot, kuten biologian peruskäsitteiden hallinta sekä ajattelu-, argumentointi- ja tutkimustaidot. Arvioinnissa otetaan huomioon opiskelijan kyky ymmärtää, soveltaa, analysoida, arvioida ja esittää biologista tietoa erilaisissa tilanteissa. Arvioinnissa kiinnitetään huomiota luonnontieteellisten lainalaisuuksien sekä syy- ja seuraussuhteiden ymmärtämiseen, vuorovaikutussuhteiden merkityksen oivaltamiseen sekä kokonaisuuksien hahmottamiseen. Arvioinnissa otetaan huomioon myös opiskelijan taito arvioida tietoa kriittisesti.  Opiskelija voi osoittaa arvioitavaa osaamista myös kokeellisilla työskentelyillä maastossa tai laboratoriossa sekä esitelmillä, tutkielmilla ja muilla tuotoksilla."
+        }
+      },
+      "tehtava": {
+        "kuvaus": {
+          "fi": "Biologia on luonnontiede, joka tutkii elämään liittyviä ilmiöitä molekyyli- ja solutasolta biosfääriin. Biologian opetuksen tarkoituksena on herättää kiinnostusta bio- ja ympäristötieteisiin ja tukea opiskelijan luonnontieteellisen ajattelun kehittymistä. Opetus lisää ymmärrystä biologian merkityksestä osana luonnontieteellisen maailmankuvan rakentumista. Luonnontieteellinen maailmankuva perustuu tieteelliseen tutkimukseen ja auttaa siten opiskelijaa ymmärtämään maailmaa tietoperustaisesti. Biologian opetus ohjaa opiskelijaa ymmärtämään elollisen luonnon rakennetta, toimintaa ja vuorovaikutussuhteita sekä evoluution merkityksen eliökunnan kehittymisessä.  Biologian oppiaine antaa opiskelijalle valmiuksia arkielämään, työelämään ja jatko-opintoihin. Biologian opetuksessa opiskelijalle välittyy kuva siitä, että biotieteet ovat nopeasti kehittyviä tieteenaloja, joiden sovelluksia hyödynnetään monin tavoin esimerkiksi lääketieteissä, teollisuudessa sekä maa- ja metsätaloudessa. Biologian opetus auttaa opiskelijaa ymmärtämään biotieteiden tarjoamia mahdollisuuksia edistää ihmiskunnan, muun eliökunnan ja elinympäristöjen hyvinvointia.  Biologian opetukselle on ominaista havainnointiin ja kokeellisuuteen perustuva tiedonhankinta, tutkimuksellisuus sekä aktivoivat ja vuorovaikutteiset työ- ja toimintatavat. Biologian opetuksessa tehdään laborointeja ja työskennellään myös digitaalisissa ja koulun ulkopuolisissa opiskeluympäristöissä. Opiskelun edetessä kokeellisen työskentelyn taidot monipuolistuvat ja syventyvät. Opetuksessa tehdään monipuolisesti yhteistyötä muiden oppiaineiden kanssa. Biologian opetukseen sisältyviä ilmiöitä tarkastellaan erityisesti maantieteessä, kemiassa, fysiikassa, psykologiassa ja terveystiedossa kullekin oppiaineelle ominaisella tavalla."
+        }
+      },
+      "laajaAlainenOsaaminen": {
+        "laajaAlaisetOsaamiset": [{
+          "laajaAlainenId": 103
+        }],
+        "kuvaus": {
+          "fi": "Biologian opetuksen perustana on luonnon monimuotoisuuden ja sen kehittymisen ymmärtäminen. Opetuksessa keskeinen teema on kestävän tulevaisuuden rakentaminen. Laaja-alaisen osaamisen tavoitteet toteutuvat yhdessä biologian tavoitteiden saavuttamisen kanssa.  Biologian opetus vahvistaa luontevasti opiskelijan hyvinvointiosaamista. Opetus lisää opiskelijan ymmärrystä monimuotoisen, puhtaan ja terveellisen ympäristön merkityksestä ihmisen kokonaisvaltaiselle hyvinvoinnille. Biologiassa korostuu yksilöiden erilaisuus ja monimuotoisuus sekä niiden biologinen tausta, mikä antaa opiskelijalle työkaluja erilaisuuden hyväksymiseen. Opiskelija saa ohjausta omien tavoitteiden asettamisessa sekä tukea ja kannustusta oppimisprosessin eri vaiheissa, mikä vahvistaa  vahvistaen opiskelijan itsetuntemusta ja pitkäjännitteisyyttäpitkäjänteisyyttä.  Vuorovaikutusosaamisen osalta opiskelija oppii biologian oppiaineessa argumentoimaan ja arvioimaan omia ja muiden näkökulmia biologisen tiedon avulla. Opetusta annetaan erilaisissa oppimisympäristöissä ja monipuolisilla työmenetelmillä, mikä kehittää opiskelijan sosiaalisia ja vuorovaikutuksellisia valmiuksia.  Biologian opetus ohjaa opiskelijaa luonnontieteelliseen ajatteluun, tiedonhankintaan ja tietojen kriittiseen analyysiin nopeasti kehittyvällä kansainvälisellä biotieteiden alalla tukien näin monitieteistä ja luovaa osaamista. Opetuksessa perehdytään biologian taustalla olevien tieteenalojen kieleen, käsitteistöön ja tapoihin rakentaa tietoa. Biologian opetus harjaannuttaa opiskelijaa tutkimuksellisuuteen sekä monitieteiseen ja luovaan työskentelyyn vaihtelevissa oppimisympäristöissä.  Yhteiskunnallisen osaamisen osalta biologian opetuksessa opiskelijalle annetaan opiskelijalle valmiuksia työskennellä yhteiskunnan kannalta tärkeillä aloilla kuten terveydenhuollossa, ympäristöalalla sekä maa- ja metsätaloudessa. Biotieteet ovat nopeasti kehittyvä kansainvälinen ala, jonka sovelluksia hyödynnetään yhteiskunnassa paikallisella, kansallisella ja kansainvälisellä tasolla. Biologian opetus antaa tietopohjan, jonka avulla opiskelija voi ottaa kantaa moniin ajankohtaisiin yhteiskunnallisiin kysymyksiin ja kykenee kriittisyyteen seuratessaan mediaa. Opetus ohjaa opiskelijaa kestävään elämäntapaan ja globaalin vastuun ottamiseen aktiivisina yhteiskunnan jäseninä vahvistaen näin opiskelijan globaali- ja kulttuuriosaamista.  Biologian opetus kehittää opiskelijoiden ympäristöosaamista ja halua vaalia luonnon monimuotoisuutta. Opetuksessa Siinä korostuu ymmärrys luonnon ainutlaatuisuudesta. Opetuksessa käsitellään biologisten sovellusten ja ekosysteemipalveluiden mahdollisuuksia kestävän tulevaisuuden kannalta. Opetus auttaa opiskelijaa tekemään kestäviä valintoja arkielämässä sekä soveltamaan biologista tietoa eettistä osaamista vaativissa pohdinnoissa."
+        }
+      },
+      "tavoitteet": {
+        "kuvaus": {
+          "fi": "Biologian opetuksessa edistetään opiskelijan kykyä tarkastella ilmiöitä biotieteiden näkökulmasta sekä vahvistetaan ja syvennetään biologian tietoja, taitoja ja osaamista monipuolisesti. Tavoitteet liittyvät biologiseen tarkastelutapaan, biologian ilmiöihin ja prosesseihin sekä biologisiin taitoihin ja niiden soveltamiseen. Tavoitealueittain opetuksen yleiset tavoitteet ovat seuraavat."
+        },
+        "tavoitealueet": [{
+          "nimi": {
+            "fi": "Biologiset ilmiöt ja prosessit"
+          },
+          "kohde": {
+            "fi": "Tavoitteena on, että opiskelija"
+          },
+          "tavoitteet": [{
+            "fi": "osaa eliöiden perusrakenteita ja toimintoja"
+          }, {
+            "fi": "ymmärtää biologisia syy-seuraussuhteita molekyylitasolta biosfääriin"
+          }, {
+            "fi": "ymmärtää evoluution merkityksen"
+          }, {
+            "fi": "tuntee biologiseen tietoon perustuvia sovelluksia"
+          }]
+        }]
+      },
+      "moduulit": [{
+        "id": 100001,
+        "nimi": {
+          "fi": "Elämä ja evoluutio"
+        },
+        "kuvaus": {
+          "fi": "Moduulissa perehdytään elämän edellytyksiin ja kaikille eliöille tunnusomaisiin piirteisiin. Keskeinen näkökulma moduulissa on evoluutio ja sen merkityksen ymmärtäminen. Moduulissa tutustutaan biologiseen tapaan hankkia ja kuvata tietoa sekä biologiaan osana luonnontieteitä."
+        },
+        "pakollinen": true,
+        "laajuus": 2,
+        "koodi": {
+          "uri": "moduulit_bi1",
+          "arvo": "BI1",
+          "koodisto": "moduulit",
+          "nimi": {
+            "fi": "Elämä ja evoluutio"
+          }
+        },
+        "tavoitteet": {
+          "kohde": {
+            "fi": "Moduulin tavoitteena on, että opiskelija"
+          },
+          "tavoitteet": [{
+            "fi": "osaa selittää elämän tunnusmerkit ja perusedellytykset sekä tunnistaa niitä esimerkeistä"
+          }, {
+            "fi": "osaa solun perusrakennetta ja toimintaa tasolla, joka mahdollistaa evoluution ja ekosysteemin toiminnan ymmärtämiseen "
+          }, {
+            "fi": "osaa selittää perinnölliseen muunteluun, luonnonvalintaan ja lajiutumiseen liittyviä mekanismeja ja osaa selittää näiden merkityksen evoluutiolle"
+          }]
+        },
+        "sisallot": [{
+          "kohde": {
+            "fi": "Biologia tieteenä"
+          },
+          "sisallot": [{
+            "fi": "elämän tunnuspiirteet ja organisaatiotasot"
+          }, {
+            "fi": "biologiset tieteenalat ja tutkimusmenetelmät"
+          }, {
+            "fi": "biologiset havainnot, tutkimuskysymykset ja hypoteesien muodostaminen"
+          }]
+        }, {
+          "kohde": {
+            "fi": "Evoluutio"
+          },
+          "sisallot": [{
+            "fi": "solujen synty ja kehittyminen"
+          }, {
+            "fi": "suvullinen ja suvuton lisääntyminen"
+          }, {
+            "fi": "muuntelu ja sen perinnölliset perusteet"
+          }]
+        }]
+      }, {
+        "id": 100004,
+        "nimi": {
+          "fi": "Ekologian perusteet"
+        },
+        "kuvaus": {
+          "fi": "Moduulissa tarkastellaan ekologian perusteita ja elämän monimuotoisuutta."
+        },
+        "pakollinen": true,
+        "laajuus": 1,
+        "koodi": {
+          "uri": "moduulit_bi2_1",
+          "arvo": "BI2.1",
+          "koodisto": "moduulit",
+          "nimi": {
+            "fi": "Ekologian perusteet"
+          }
+        },
+        "tavoitteet": {
+          "kohde": {
+            "fi": "Moduulin tavoitteena on, että opiskelija"
+          },
+          "tavoitteet": [{
+            "fi": "osaa selittää elämän tunnusmerkit ja perusedellytykset sekä tunnistaa niitä esimerkeistä"
+          }, {
+            "fi": "osaa solun perusrakennetta ja toimintaa tasolla, joka mahdollistaa evoluution ja ekosysteemin toiminnan ymmärtämiseen "
+          }, {
+            "fi": "osaa selittää perinnölliseen muunteluun, luonnonvalintaan ja lajiutumiseen liittyviä mekanismeja ja osaa selittää näiden merkityksen evoluutiolle"
+          }]
+        },
+        "sisallot": [{
+          "kohde": {
+            "fi": "Biologia tieteenä"
+          },
+          "sisallot": [{
+            "fi": "elämän tunnuspiirteet ja organisaatiotasot"
+          }, {
+            "fi": "biologiset tieteenalat ja tutkimusmenetelmät"
+          }, {
+            "fi": "biologiset havainnot, tutkimuskysymykset ja hypoteesien muodostaminen"
+          }]
+        }, {
+          "kohde": {
+            "fi": "Evoluutio"
+          },
+          "sisallot": [{
+            "fi": "solujen synty ja kehittyminen"
+          }, {
+            "fi": "suvullinen ja suvuton lisääntyminen"
+          }, {
+            "fi": "muuntelu ja sen perinnölliset perusteet"
+          }]
+        }]
+      }, {
+        "id": 100007,
+        "nimi": {
+          "fi": "Ihmisen vaikutukset ekosysteemeihin"
+        },
+        "kuvaus": {
+          "fi": "Moduulin keskeisinä teemoina ovat ekologiset ympäristöongelmat Suomessa ja muualla maailmassa sekä mahdollisuudet suojella ekosysteemejä ja monimuotoisuutta. Moduulissa tutustutaan ekologiseen tutkimukseen ja sen soveltamiseen ympäristön suojelussa."
+        },
+        "pakollinen": true,
+        "laajuus": 1,
+        "koodi": {
+          "uri": "moduulit_bi2_2",
+          "arvo": "BI2.2",
+          "koodisto": "moduulit",
+          "nimi": {
+            "fi": "Elämä ja evoluutio"
+          }
+        },
+        "tavoitteet": {
+          "kohde": {
+            "fi": "Moduulin tavoitteena on, että opiskelija"
+          },
+          "tavoitteet": [{
+            "fi": "osaa selittää elämän tunnusmerkit ja perusedellytykset sekä tunnistaa niitä esimerkeistä"
+          }, {
+            "fi": "osaa solun perusrakennetta ja toimintaa tasolla, joka mahdollistaa evoluution ja ekosysteemin toiminnan ymmärtämiseen "
+          }, {
+            "fi": "osaa selittää perinnölliseen muunteluun, luonnonvalintaan ja lajiutumiseen liittyviä mekanismeja ja osaa selittää näiden merkityksen evoluutiolle"
+          }]
+        },
+        "sisallot": [{
+          "kohde": {
+            "fi": "Biologia tieteenä"
+          },
+          "sisallot": [{
+            "fi": "elämän tunnuspiirteet ja organisaatiotasot"
+          }, {
+            "fi": "biologiset tieteenalat ja tutkimusmenetelmät"
+          }, {
+            "fi": "biologiset havainnot, tutkimuskysymykset ja hypoteesien muodostaminen"
+          }]
+        }, {
+          "kohde": {
+            "fi": "Evoluutio"
+          },
+          "sisallot": [{
+            "fi": "solujen synty ja kehittyminen"
+          }, {
+            "fi": "suvullinen ja suvuton lisääntyminen"
+          }, {
+            "fi": "muuntelu ja sen perinnölliset perusteet"
+          }]
+        }]
+      }, {
+        "id": 100008,
+        "nimi": {
+          "fi": "Solu ja perinnöllisyys"
+        },
+        "kuvaus": {
+          "fi": "Moduulin keskeisinä teemoina ovat ekologiset ympäristöongelmat Suomessa ja muualla maailmassa sekä mahdollisuudet suojella ekosysteemejä ja monimuotoisuutta. Moduulissa tutustutaan ekologiseen tutkimukseen ja sen soveltamiseen ympäristön suojelussa."
+        },
+        "pakollinen": false,
+        "laajuus": 2,
+        "koodi": {
+          "uri": "moduulit_bi3",
+          "arvo": "BI3",
+          "koodisto": "moduulit",
+          "nimi": {
+            "fi": "Elämä ja evoluutio"
+          }
+        },
+        "tavoitteet": {
+          "kohde": {
+            "fi": "Moduulin tavoitteena on, että opiskelija"
+          },
+          "tavoitteet": [{
+            "fi": "osaa selittää elämän tunnusmerkit ja perusedellytykset sekä tunnistaa niitä esimerkeistä"
+          }, {
+            "fi": "osaa solun perusrakennetta ja toimintaa tasolla, joka mahdollistaa evoluution ja ekosysteemin toiminnan ymmärtämiseen "
+          }, {
+            "fi": "osaa selittää perinnölliseen muunteluun, luonnonvalintaan ja lajiutumiseen liittyviä mekanismeja ja osaa selittää näiden merkityksen evoluutiolle"
+          }]
+        },
+        "sisallot": [{
+          "kohde": {
+            "fi": "Biologia tieteenä"
+          },
+          "sisallot": [{
+            "fi": "elämän tunnuspiirteet ja organisaatiotasot"
+          }, {
+            "fi": "biologiset tieteenalat ja tutkimusmenetelmät"
+          }, {
+            "fi": "biologiset havainnot, tutkimuskysymykset ja hypoteesien muodostaminen"
+          }]
+        }, {
+          "kohde": {
+            "fi": "Evoluutio"
+          },
+          "sisallot": [{
+            "fi": "solujen synty ja kehittyminen"
+          }, {
+            "fi": "suvullinen ja suvuton lisääntyminen"
+          }, {
+            "fi": "muuntelu ja sen perinnölliset perusteet"
+          }]
+        }]
+      }, {
+        "id": 100011,
+        "nimi": {
+          "fi": "Ihmisen biologia"
+        },
+        "kuvaus": {
+          "fi": "Moduulissa perehdytään ihmisen anatomiaan ja fysiologiaan. Keskeisiä tarkastelun kohteita ovat ihmisen elintoiminnot ja lisääntyminen. Moduulissa tarkastellaan ihmiselimistön kykyä sopeutua muutoksiin ja puolustautua ulkoisia uhkia vastaan.  "
+        },
+        "pakollinen": false,
+        "laajuus": 2,
+        "koodi": {
+          "uri": "moduulit_bi4",
+          "arvo": "BI4",
+          "koodisto": "moduulit",
+          "nimi": {
+            "fi": "Elämä ja evoluutio"
+          }
+        },
+        "tavoitteet": {
+          "kohde": {
+            "fi": "Moduulin tavoitteena on, että opiskelija"
+          },
+          "tavoitteet": [{
+            "fi": "osaa selittää elämän tunnusmerkit ja perusedellytykset sekä tunnistaa niitä esimerkeistä"
+          }, {
+            "fi": "osaa solun perusrakennetta ja toimintaa tasolla, joka mahdollistaa evoluution ja ekosysteemin toiminnan ymmärtämiseen "
+          }, {
+            "fi": "osaa selittää perinnölliseen muunteluun, luonnonvalintaan ja lajiutumiseen liittyviä mekanismeja ja osaa selittää näiden merkityksen evoluutiolle"
+          }]
+        },
+        "sisallot": [{
+          "kohde": {
+            "fi": "Biologia tieteenä"
+          },
+          "sisallot": [{
+            "fi": "elämän tunnuspiirteet ja organisaatiotasot"
+          }, {
+            "fi": "biologiset tieteenalat ja tutkimusmenetelmät"
+          }, {
+            "fi": "biologiset havainnot, tutkimuskysymykset ja hypoteesien muodostaminen"
+          }]
+        }, {
+          "kohde": {
+            "fi": "Evoluutio"
+          },
+          "sisallot": [{
+            "fi": "solujen synty ja kehittyminen"
+          }, {
+            "fi": "suvullinen ja suvuton lisääntyminen"
+          }, {
+            "fi": "muuntelu ja sen perinnölliset perusteet"
+          }]
+        }]
+      }, {
+        "id": 100012,
+        "nimi": {
+          "fi": "Biotekniikka ja sen sovellukset"
+        },
+        "kuvaus": {
+          "fi": "Moduulin tarkoituksena on, että opiskelija ymmärtää biologisen tutkimuksen merkityksen sovellusten kehittämisessä niin lääketieteessä, teollisuudessa, elintarviketuotannossa kuin luonnonvarojen kestävän kehityksen mukaisessa käytössä. Keskeisiä tarkastelun kohteita ovat geenitekniikan ja mikrobiologian erilaiset sovellukset. Moduulissa esitellään uusimpia biotekniikan sovelluksia nopeasti kehittyvällä alalla.  "
+        },
+        "pakollinen": false,
+        "laajuus": 2,
+        "koodi": {
+          "uri": "moduulit_bi5",
+          "arvo": "BI5",
+          "koodisto": "moduulit",
+          "nimi": {
+            "fi": "Elämä ja evoluutio"
+          }
+        },
+        "tavoitteet": {
+          "kohde": {
+            "fi": "Moduulin tavoitteena on, että opiskelija"
+          },
+          "tavoitteet": [{
+            "fi": "osaa selittää elämän tunnusmerkit ja perusedellytykset sekä tunnistaa niitä esimerkeistä"
+          }, {
+            "fi": "osaa solun perusrakennetta ja toimintaa tasolla, joka mahdollistaa evoluution ja ekosysteemin toiminnan ymmärtämiseen "
+          }, {
+            "fi": "osaa selittää perinnölliseen muunteluun, luonnonvalintaan ja lajiutumiseen liittyviä mekanismeja ja osaa selittää näiden merkityksen evoluutiolle"
+          }]
+        },
+        "sisallot": [{
+          "kohde": {
+            "fi": "Biologia tieteenä"
+          },
+          "sisallot": [{
+            "fi": "elämän tunnuspiirteet ja organisaatiotasot"
+          }, {
+            "fi": "biologiset tieteenalat ja tutkimusmenetelmät"
+          }, {
+            "fi": "biologiset havainnot, tutkimuskysymykset ja hypoteesien muodostaminen"
+          }]
+        }, {
+          "kohde": {
+            "fi": "Evoluutio"
+          },
+          "sisallot": [{
+            "fi": "solujen synty ja kehittyminen"
+          }, {
+            "fi": "suvullinen ja suvuton lisääntyminen"
+          }, {
+            "fi": "muuntelu ja sen perinnölliset perusteet"
+          }]
+        }]
+      }]
+    }, {
+      "id": 1001,
+      "nimi": {
+        "fi": "Matematiikka"
+      },
+      "koodi": {
+        "uri": "oppiaineet_ma",
+        "arvo": "MA",
+        "nimi": {
+          "fi": "Matematiikka"
+        }
+      },
+      "arviointi": {
+        "kuvaus": {
+          "fi": "Monipuolisella arvioinnilla ja kannustavalla palautteella tuetaan opiskelijan matemaattisen ajattelun ja itseluottamuksen kehittymistä sekä ylläpidetään ja vahvistetaan opiskelumotivaatiota. Arviointi ohjaa opiskelijaa kehittämään matematiikan osaamistaan ja ymmärtämistään sekä pitkäjänteisen työskentelyn taitoja. Sillä autetaan opiskelijaa kehittämään matemaattisten ratkaisujen esittämistä, tuetaan häntä käsitteiden muodostamisprosessissa ja ohjataan oman työn arvioimiseen. Onnistunut palaute auttaa opiskelijaa huomaamaan vahvuutensa sekä sen, mitä ja miten tietoja ja taitoja tulisi edelleen kehittää."
+        }
+      },
+      "tehtava": {
+        "kuvaus": {
+          "fi": "Matematiikan opiskelu antaa opiskelijalle valmiudet ymmärtää, soveltaa ja tuottaa sekä arvioida matemaattisesti esitettyä tietoa. Opetus ohjaa opiskelijaa ymmärtämään matematiikan merkityksen aikamme kulttuurissa ja huomaamaan sen välttämättömyyden monilla aloilla kuten luonnontieteissä, tekniikassa, lääketieteessä, taloustieteessä ja yhteiskuntatieteissä sekä taiteessa. Matematiikan opetuksen tehtävänä on perehdyttää opiskelija matematiikan peruskäsitteisiin, matematiikan perusideoihin ja rakenteisiin sekä ohjata käyttämään puhuttua ja kirjoitettua matematiikan kieltä. Lisäksi opetus kehittää laskemisen, luovan ajattelun, ilmiöiden mallintamisen, ennustamisen ja ongelmien ratkaisemisen taitoja."
+        }
+      },
+      "laajaAlainenOsaaminen": {
+        "laajaAlaisetOsaamiset": [{
+          "laajaAlainenId": 103
+        }],
+        "kuvaus": {
+          "fi": "Opetuksessa tutkitaan arkielämän ja matematiikan välisiä yhteyksiä sekä hyödynnetään mahdollisuuksia opiskelijan kiinnostuksen ohjaamiseen, itsetunnon vahvistamiseen, kokeiluihin kannustamiseen ja tiedonhankintaprosessien kehittämiseen sekä sinnikkääseen työskentelyyn. Matematiikassa opittavia taitoja sovelletaan omien tavoitteiden asettamisessa ja päätöksenteossa sekä pohditaan, kuinka näitä taitoja voidaan hyödyntää kestävän kehitykseen ja ihmiskuntaan liittyvien ongelmien ratkaisussa."
+        }
+      },
+      "tavoitteet": {
+        "kuvaus": {},
+        "tavoitealueet": [{
+          "nimi": null,
+          "kohde": {
+            "fi": "Matematiikan opetuksen yleisenä tavoitteena on, että opiskelija"
+          },
+          "tavoitteet": [{
+            "fi": "saa myönteisiä oppimiskokemuksia ja tottuu pitkäjänteiseen työskentelyyn sekä oppii luottamaan omiin matemaattisiin kykyihinsä, taitoihinsa ja ajatteluunsa"
+          }, {
+            "fi": "vahvistaa matemaattista pohjaa jatko-opinnoilleen"
+          }]
+        }]
+      },
+      "oppimaarat": [{
+        "id": 1005,
+        "nimi": {
+          "fi": "Matematiikan yhteinen opintokokonaisuus"
+        },
+        "koodi": {
+          "uri": "oppiaineet_may",
+          "arvo": "MAY",
+          "koodisto": "oppiaineet"
+        },
+        "moduulit": [{
+          "id": 100016,
+          "nimi": {
+            "fi": "Luvut ja yhtälöt"
+          },
+          "pakollinen": true,
+          "laajuus": 2,
+          "koodi": {
+            "uri": "moduulit_may1",
+            "arvo": "MAY1",
+            "koodisto": "moduulit"
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }]
+      }, {
+        "id": 1006,
+        "nimi": {
+          "fi": "Matematiikan lyhyt oppimäärä"
+        },
+        "koodi": {
+          "uri": "oppiaineet_mab",
+          "arvo": "MAB",
+          "koodisto": "oppiaineet"
+        },
+        "moduulit": [{
+          "id": 100002,
+          "nimi": {
+            "fi": "Lausekkeet ja yhtälöt"
+          },
+          "pakollinen": true,
+          "laajuus": 2,
+          "koodi": {
+            "uri": "moduulit_mab2",
+            "arvo": "MAB2",
+            "koodisto": "moduulit",
+            "nimi": {
+              "fi": "Algebralliset funktiot ja yhtälöt"
+            }
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }]
+      }, {
+        "id": 1004,
+        "nimi": {
+          "fi": "Matematiikan pitkä oppimäärä"
+        },
+        "koodi": {
+          "uri": "oppiaineet_maa",
+          "arvo": "MAA",
+          "koodisto": "oppiaineet",
+          "nimi": {
+            "fi": "Matematiikkan pitkä oppimäärä"
+          }
+        },
+        "moduulit": [{
+          "id": 100002,
+          "nimi": {
+            "fi": "Algebralliset funktiot ja yhtälöt"
+          },
+          "pakollinen": true,
+          "laajuus": 3,
+          "koodi": {
+            "uri": "moduulit_maa2",
+            "arvo": "MAA2",
+            "koodisto": "moduulit",
+            "nimi": {
+              "fi": "Algebralliset funktiot ja yhtälöt"
+            }
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }, {
+          "id": 100019,
+          "nimi": {
+            "fi": "Geometria"
+          },
+          "pakollinen": true,
+          "laajuus": 3,
+          "koodi": {
+            "uri": "moduulit_maa3",
+            "arvo": "MAA3",
+            "koodisto": "moduulit"
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }, {
+          "id": 100020,
+          "nimi": {
+            "fi": "Analyyttinen geometria ja vektorit"
+          },
+          "pakollinen": true,
+          "laajuus": 3,
+          "koodi": {
+            "uri": "moduulit_maa4",
+            "arvo": "MAA4",
+            "koodisto": "moduulit"
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }, {
+          "id": 100021,
+          "nimi": {
+            "fi": "Transkendenttiset funktiot ja yhtälöt"
+          },
+          "pakollinen": true,
+          "laajuus": 2,
+          "koodi": {
+            "uri": "moduulit_maa5",
+            "arvo": "MAA5",
+            "koodisto": "moduulit"
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }, {
+          "id": 100022,
+          "nimi": {
+            "fi": "Derivaatta"
+          },
+          "pakollinen": true,
+          "laajuus": 2,
+          "koodi": {
+            "uri": "moduulit_maa6",
+            "arvo": "MAA6",
+            "koodisto": "moduulit"
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }, {
+          "id": 100023,
+          "nimi": {
+            "fi": "Integraalilaskenta"
+          },
+          "pakollinen": true,
+          "laajuus": 2,
+          "koodi": {
+            "uri": "moduulit_maa7",
+            "arvo": "MAA7",
+            "koodisto": "moduulit"
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }, {
+          "id": 100024,
+          "nimi": {
+            "fi": "Tilastot ja todennäköisyys"
+          },
+          "pakollinen": true,
+          "laajuus": 2,
+          "koodi": {
+            "uri": "moduulit_maa8",
+            "arvo": "MAA8",
+            "koodisto": "moduulit"
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }, {
+          "id": 100025,
+          "nimi": {
+            "fi": "Talousmatematiikka"
+          },
+          "pakollinen": true,
+          "laajuus": 1,
+          "koodi": {
+            "uri": "moduulit_maa9",
+            "arvo": "MAA9",
+            "koodisto": "moduulit"
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "A"
+            }, {
+              "fi": "B"
+            }, {
+              "fi": "C"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "X"
+            }, {
+              "fi": "Y"
+            }, {
+              "fi": "Z"
+            }]
+          }]
+        }, {
+          "id": 100003,
+          "nimi": {
+            "fi": "3D-geometria"
+          },
+          "pakollinen": false,
+          "laajuus": 2,
+          "koodi": {
+            "uri": "moduulit_maa10",
+            "arvo": "MAA10",
+            "koodisto": "moduulit",
+            "nimi": {
+              "fi": "3D-grafiikka"
+            }
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "syventää vektorilaskennan tuntemustaan ja oppii käyttämään vektoreita kolmiulotteisessa avaruudessa"
+            }, {
+              "fi": "oppii tutkimaan xyz-koordinaatiston pisteitä, suoria ja tasoja vektoreiden avulla"
+            }, {
+              "fi": "tutustuu kahden muuttujan funktioon"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "vektoriesitys kolmiulotteisessa koordinaatistossa"
+            }, {
+              "fi": "pistetulo"
+            }, {
+              "fi": "ristitulo"
+            }, {
+              "fi": "piste, suora ja taso avaruudessa"
+            }, {
+              "fi": "kulma avaruudessa"
+            }, {
+              "fi": "kahden muuttujan funktio ja pinta avaruudessa"
+            }]
+          }]
+        }, {
+          "id": 100030,
+          "nimi": {
+            "fi": "Algoritmit"
+          },
+          "pakollinen": false,
+          "laajuus": 2,
+          "koodi": {
+            "uri": "moduulit_maa11",
+            "arvo": "MAA11",
+            "koodisto": "moduulit",
+            "nimi": {
+              "fi": "3D-grafiikka"
+            }
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "syventää vektorilaskennan tuntemustaan ja oppii käyttämään vektoreita kolmiulotteisessa avaruudessa"
+            }, {
+              "fi": "oppii tutkimaan xyz-koordinaatiston pisteitä, suoria ja tasoja vektoreiden avulla"
+            }, {
+              "fi": "tutustuu kahden muuttujan funktioon"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "vektoriesitys kolmiulotteisessa koordinaatistossa"
+            }, {
+              "fi": "pistetulo"
+            }, {
+              "fi": "ristitulo"
+            }, {
+              "fi": "piste, suora ja taso avaruudessa"
+            }, {
+              "fi": "kulma avaruudessa"
+            }, {
+              "fi": "kahden muuttujan funktio ja pinta avaruudessa"
+            }]
+          }]
+        }, {
+          "id": 100031,
+          "nimi": {
+            "fi": "Analyysi ja jatkuva jakauma"
+          },
+          "pakollinen": false,
+          "laajuus": 2,
+          "koodi": {
+            "uri": "moduulit_maa12",
+            "arvo": "MAA12",
+            "koodisto": "moduulit",
+            "nimi": {
+              "fi": "3D-grafiikka"
+            }
+          },
+          "tavoitteet": {
+            "kohde": {
+              "fi": "Moduulin tavoitteena on, että opiskelija"
+            },
+            "tavoitteet": [{
+              "fi": "syventää vektorilaskennan tuntemustaan ja oppii käyttämään vektoreita kolmiulotteisessa avaruudessa"
+            }, {
+              "fi": "oppii tutkimaan xyz-koordinaatiston pisteitä, suoria ja tasoja vektoreiden avulla"
+            }, {
+              "fi": "tutustuu kahden muuttujan funktioon"
+            }]
+          },
+          "sisallot": [{
+            "kohde": null,
+            "sisallot": [{
+              "fi": "vektoriesitys kolmiulotteisessa koordinaatistossa"
+            }, {
+              "fi": "pistetulo"
+            }, {
+              "fi": "ristitulo"
+            }, {
+              "fi": "piste, suora ja taso avaruudessa"
+            }, {
+              "fi": "kulma avaruudessa"
+            }, {
+              "fi": "kahden muuttujan funktio ja pinta avaruudessa"
+            }]
+          }]
+        }]
+      }]
+    }]
+  }
+}
