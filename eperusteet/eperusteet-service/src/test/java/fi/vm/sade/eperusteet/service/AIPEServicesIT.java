@@ -65,7 +65,7 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-        peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.AIKUISTENPERUSOPETUS, LaajuusYksikko.KURSSI, PerusteTyyppi.NORMAALI);
+        peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.AIKUISTENPERUSOPETUS, null, LaajuusYksikko.KURSSI, PerusteTyyppi.NORMAALI);
         AIPEVaiheDto vaihe = sisalto.addVaihe(peruste.getId(), TestUtils.createVaihe());
         LaajaalainenOsaaminenDto l1 = TestUtils.createLaajaalainen();
         LaajaalainenOsaaminenDto l2 = TestUtils.createLaajaalainen();

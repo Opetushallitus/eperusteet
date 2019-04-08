@@ -67,7 +67,8 @@ public class LukiokoulutuksenSisaltoServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-        Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.LUKIOKOULUTUS, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
+        Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.LUKIOKOULUTUS, null,
+                LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         perusteId = peruste.getId();
         paaOsaViiteId = peruste.getLukiokoulutuksenPerusteenSisalto().getSisalto().getId();
     }

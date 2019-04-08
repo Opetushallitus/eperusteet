@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -1450,8 +1451,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
-    public Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
-        return luoPerusteRunko(koulutustyyppi, yksikko, tyyppi, false);
+    @Override
+    public Peruste luoPerusteRunko(
+            KoulutusTyyppi koulutustyyppi,
+            KoulutustyyppiToteutus toteutus,
+            LaajuusYksikko yksikko,
+            PerusteTyyppi tyyppi
+    ) {
+        return luoPerusteRunko(koulutustyyppi, toteutus,yksikko, tyyppi, false);
     }
 
     /**
@@ -1466,6 +1473,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     public Peruste luoPerusteRunko(
             KoulutusTyyppi koulutustyyppi,
+            KoulutustyyppiToteutus toteutus,
             LaajuusYksikko yksikko,
             PerusteTyyppi tyyppi,
             boolean isReforminMukainen
@@ -1503,11 +1511,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else if (koulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS
                 || koulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS
                 || koulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS) {
-            st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS, LaajuusYksikko.KURSSI);
-            LukiokoulutuksenPerusteenSisalto sisalto = new LukiokoulutuksenPerusteenSisalto();
-            initLukioOpetuksenYleisetTavoitteet(sisalto);
-            aihekokonaisuudetService.initAihekokonaisuudet(sisalto);
-            initLukioOpetussuunitelmaRakenne(peruste, sisalto);
+            if (KoulutustyyppiToteutus.LOPS2019.equals(toteutus)) {
+                peruste.setSisalto(new Lops2019Sisalto());
+                peruste.setToteutus(toteutus);
+            } else {
+                st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS, LaajuusYksikko.KURSSI);
+                LukiokoulutuksenPerusteenSisalto sisalto = new LukiokoulutuksenPerusteenSisalto();
+                initLukioOpetuksenYleisetTavoitteet(sisalto);
+                aihekokonaisuudetService.initAihekokonaisuudet(sisalto);
+                initLukioOpetussuunitelmaRakenne(peruste, sisalto);
+            }
         }
         else if (koulutustyyppi == KoulutusTyyppi.AIKUISTENPERUSOPETUS) {
             AIPEOpetuksenSisalto sisalto = new AIPEOpetuksenSisalto();

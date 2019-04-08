@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
@@ -90,6 +91,14 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private LukiokoulutuksenPerusteenSisalto lukiokoulutuksenPerusteenSisalto;
 
+
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private Lops2019Sisalto lops2019Sisalto;
+
     @RelatesToPeruste
     @NotAudited
     @Getter
@@ -144,6 +153,10 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
 
     public PerusteenOsaViite(LukiokoulutuksenPerusteenSisalto sisalto) {
         this.lukiokoulutuksenPerusteenSisalto = sisalto;
+    }
+
+    public PerusteenOsaViite(Lops2019Sisalto sisalto) {
+        this.lops2019Sisalto = sisalto;
     }
 
     public PerusteenOsaViite(EsiopetuksenPerusteenSisalto sisalto) {

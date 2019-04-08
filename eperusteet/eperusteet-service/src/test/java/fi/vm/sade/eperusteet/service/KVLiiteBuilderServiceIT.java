@@ -52,6 +52,7 @@ public class KVLiiteBuilderServiceIT extends AbstractIntegrationTest {
     public void setup() {
         Peruste peruste = perusteService.luoPerusteRunko(
                 KoulutusTyyppi.AMMATTITUTKINTO,
+                null,
                 LaajuusYksikko.OSAAMISPISTE,
                 PerusteTyyppi.NORMAALI,
                 true

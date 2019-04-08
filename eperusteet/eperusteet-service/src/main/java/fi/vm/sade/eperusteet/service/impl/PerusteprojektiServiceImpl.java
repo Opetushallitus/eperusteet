@@ -682,7 +682,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
-            peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, tyyppi, perusteprojektiDto.isReforminMukainen());
+            peruste = perusteService.luoPerusteRunko(koulutustyyppi, perusteprojektiDto.getToteutus(),
+                    yksikko, tyyppi, perusteprojektiDto.isReforminMukainen());
         } else {
             Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
             if (pohjaPeruste == null) {

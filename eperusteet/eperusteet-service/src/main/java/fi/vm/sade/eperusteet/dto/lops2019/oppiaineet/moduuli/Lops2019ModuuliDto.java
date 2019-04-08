@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Lops2019ModuuliDto {
+public class Lops2019ModuuliDto implements ReferenceableDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
     @JsonInclude(JsonInclude.Include.NON_NULL)

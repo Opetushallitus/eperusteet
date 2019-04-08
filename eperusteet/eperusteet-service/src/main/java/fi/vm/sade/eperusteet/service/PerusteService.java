@@ -158,10 +158,12 @@ public interface PerusteService {
     List<TutkinnonOsaTilaDto> getTutkinnonOsienTilat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("isAuthenticated()")
-    Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi);
+    Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, KoulutustyyppiToteutus toteutus, LaajuusYksikko yksikko,
+                            PerusteTyyppi tyyppi);
 
     @PreAuthorize("isAuthenticated()")
-    Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi, boolean isReforminMukainen);
+    Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, KoulutustyyppiToteutus toteutus, LaajuusYksikko yksikko,
+                            PerusteTyyppi tyyppi, boolean isReforminMukainen);
 
     @PreAuthorize("isAuthenticated()")
     Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi);

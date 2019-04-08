@@ -26,7 +26,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -63,6 +62,7 @@ public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenS
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="aihekokonaisuudet_id")
     private Aihekokonaisuudet aihekokonaisuudet;
+
 
     @Getter
     @Setter

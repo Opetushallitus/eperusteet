@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
@@ -35,6 +36,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.*;
+
+import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 
 /**
  *
@@ -171,6 +174,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @Getter
     @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private Lops2019Sisalto lops2019Sisalto;
+
+    @Getter
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private AIPEOpetuksenSisalto aipeOpetuksenPerusteenSisalto;
 
     @Getter
@@ -185,6 +192,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
+
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private KoulutustyyppiToteutus toteutus;
 
     @Getter
     @Setter
@@ -315,11 +327,20 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             case LUKIOKOULUTUS:
             case LUKIOVALMISTAVAKOULUTUS:
             case AIKUISTENLUKIOKOULUTUS:
-                LukiokoulutuksenPerusteenSisalto lukioSisalto = this.getLukiokoulutuksenPerusteenSisalto();
-                if (lukioSisalto != null) {
-                    return lukioSisalto.getSisalto();
+                // LOPS 2019 toteutus
+                if (LOPS2019.equals(toteutus)) {
+                    Lops2019Sisalto lops2019Sisalto = this.getLops2019Sisalto();
+                    if (lops2019Sisalto != null) {
+                        return lops2019Sisalto.getSisalto();
+                    }
+                    break;
+                } else {
+                    LukiokoulutuksenPerusteenSisalto lukioSisalto = this.getLukiokoulutuksenPerusteenSisalto();
+                    if (lukioSisalto != null) {
+                        return lukioSisalto.getSisalto();
+                    }
+                    break;
                 }
-                break;
 
             case TPO:
                 TpoOpetuksenSisalto sisalto = this.getTpoOpetuksenSisalto();
@@ -388,6 +409,19 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         }
     }
 
+    @JsonIgnore
+    public void setSisalto(Lops2019Sisalto lops2019Sisalto) {
+        this.lops2019Sisalto = lops2019Sisalto;
+        this.lops2019Sisalto.setPeruste(this);
+    }
+
+    // Käytetään ainoastaan testaamiseen
+    @Deprecated
+    public void setLops2019Sisalto(Lops2019Sisalto lops2019Sisalto) {
+        this.lops2019Sisalto = lops2019Sisalto;
+        this.lops2019Sisalto.setPeruste(this);
+    }
+
     public boolean containsViite(PerusteenOsaViite viite) {
         if (suoritustavat != null) {
             for (Suoritustapa s : suoritustavat) {
@@ -413,13 +447,15 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             return esiopetuksenPerusteenSisalto.containsViite(viite);
         }
 
-        if  (lukiokoulutuksenPerusteenSisalto != null
-                && lukiokoulutuksenPerusteenSisalto.containsViite(viite)) {
+        if (lukiokoulutuksenPerusteenSisalto != null) {
             return lukiokoulutuksenPerusteenSisalto.containsViite(viite);
         }
 
-        if  (this.oppaanSisalto != null
-                && this.oppaanSisalto.containsViite(viite)) {
+        if (lops2019Sisalto != null) {
+            return lops2019Sisalto.containsViite(viite);
+        }
+
+        if (this.oppaanSisalto != null) {
             return this.oppaanSisalto.containsViite(viite);
         }
 
