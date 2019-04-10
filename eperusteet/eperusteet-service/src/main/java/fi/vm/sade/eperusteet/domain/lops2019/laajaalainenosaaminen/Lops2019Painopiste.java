@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen;
 
+import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
@@ -14,11 +15,7 @@ import javax.persistence.*;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine_painopiste")
-public class Lops2019Painopiste {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+public class Lops2019Painopiste extends AbstractAuditedReferenceableEntity {
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

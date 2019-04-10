@@ -39,6 +39,4 @@ public class Lops2019ModuuliSisalto {
             inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> sisallot = new ArrayList<>();
-
-    private Integer jarjestys;
 }

@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen;
 
+import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
@@ -15,12 +16,8 @@ import java.util.List;
 @Setter
 @Entity
 @Audited
-@Table(name = "yl_lops2019_laaja_alainen_osaaminen_tavoite")
-public class Lops2019Tavoite {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+@Table(name = "yl_lops2019_tavoite")
+public class Lops2019Tavoite extends AbstractAuditedReferenceableEntity {
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -28,7 +25,7 @@ public class Lops2019Tavoite {
     private TekstiPalanen kohde;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "yl_lops2019_laaja_alainen_osaaminen_tavoite_tavoite",
+    @JoinTable(name = "yl_lops2019_tavoite_tavoite_tavoite",
             joinColumns = @JoinColumn(name = "tavoite_id"),
             inverseJoinColumns = @JoinColumn(name = "tavoite_tavoite_id"))
     @OrderBy("jarjestys, id")

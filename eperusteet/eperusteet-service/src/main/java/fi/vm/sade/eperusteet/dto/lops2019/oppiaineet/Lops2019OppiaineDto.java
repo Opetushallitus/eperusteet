@@ -16,16 +16,22 @@ public class Lops2019OppiaineDto implements ReferenceableDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
     private KoodiDto koodi;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Lops2019ModuuliDto> moduulit;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Lops2019ArviointiDto arviointi;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Lops2019TehtavaDto tehtava;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Lops2019OppiaineLaajaAlainenOsaaminenDto> laajaAlaisetOsaamiset;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Lops2019OppiaineTavoitteetDto tavoitteet;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Lops2019OppiaineDto> oppimaarat;
 }

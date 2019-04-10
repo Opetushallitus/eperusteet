@@ -12,6 +12,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -54,8 +55,8 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity {
     @JoinTable(name = "yl_lops2019_oppiaine_moduuli_sisalto",
             joinColumns = @JoinColumn(name = "moduuli_id"),
             inverseJoinColumns = @JoinColumn(name = "sisalto_id"))
-    @OrderBy("jarjestys, id")
-    private List<Lops2019ModuuliSisalto> sisallot;
+    @OrderBy("koodi.uri, id")
+    private List<Lops2019ModuuliSisalto> sisallot = new ArrayList<>();
 
     private Integer jarjestys;
 }

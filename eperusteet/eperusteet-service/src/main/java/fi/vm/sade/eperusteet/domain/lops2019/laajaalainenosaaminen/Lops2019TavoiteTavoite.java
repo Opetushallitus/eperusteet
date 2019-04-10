@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Audited
-@Table(name = "yl_lops2019_laaja_alainen_osaaminen_tavoite_tavoite")
+@Table(name = "yl_lops2019_tavoite_tavoite")
 public class Lops2019TavoiteTavoite {
 
     @Id
