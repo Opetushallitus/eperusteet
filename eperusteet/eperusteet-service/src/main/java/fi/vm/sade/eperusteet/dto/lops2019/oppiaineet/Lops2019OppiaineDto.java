@@ -23,7 +23,7 @@ public class Lops2019OppiaineDto implements ReferenceableDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Lops2019TehtavaDto tehtava;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Lops2019OppiaineLaajaAlainenOsaaminenKokonaisuusDto laajaAlainenOsaaminen;
+    private List<Lops2019OppiaineLaajaAlainenOsaaminenDto> laajaAlaisetOsaamiset;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Lops2019OppiaineTavoitteetDto tavoitteet;
     @JsonInclude(JsonInclude.Include.NON_NULL)

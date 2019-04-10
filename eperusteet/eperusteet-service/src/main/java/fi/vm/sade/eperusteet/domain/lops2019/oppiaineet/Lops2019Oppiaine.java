@@ -47,9 +47,12 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Lops2019Tehtava tehtava;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name="laaja_alainen_osaaminen_kokonaisuus_id")
-    private Lops2019OppiaineLaajaAlainenOsaaminenKokonaisuus laajaAlainenOsaaminen;
+    @OrderColumn
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "yl_lops2019_oppiaine_laaja_alaiset_osaamiset",
+            joinColumns = @JoinColumn(name = "oppiaine_id"),
+            inverseJoinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"))
+    private List<Lops2019OppiaineLaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new ArrayList<>();
 
     @JoinColumn(name = "tavoitteet_id")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
