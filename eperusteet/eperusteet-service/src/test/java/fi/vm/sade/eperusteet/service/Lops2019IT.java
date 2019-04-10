@@ -24,12 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.util.List;
 
 @Slf4j
+@Transactional
 @DirtiesContext
 public class Lops2019IT extends AbstractIntegrationTest {
 
@@ -73,10 +75,11 @@ public class Lops2019IT extends AbstractIntegrationTest {
         Assert.notNull(lops2019Sisalto, "Perusteen sisältö puuttuu");
         List<Lops2019Oppiaine> oppiaineet = lops2019Sisalto.getOppiaineet();
         Assert.notNull(oppiaineet, "Perusteen oppiaineet puuttuvat");
+
     }
 
     @Test
-    public void createLops2019Peruste() {
+    public void createLops2019Peruste() throws IOException {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
             ppl.setKoulutustyyppi(KoulutusTyyppi.LUKIOKOULUTUS.toString());
             ppl.setToteutus(KoulutustyyppiToteutus.LOPS2019);
@@ -86,8 +89,25 @@ public class Lops2019IT extends AbstractIntegrationTest {
         PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
 
         PerusteKaikkiDto perusteKaikkiDto = perusteService.getKokoSisalto(perusteDto.getId());
-        Lops2019SisaltoDto lops2019Sisalto = perusteKaikkiDto.getLops2019Sisalto();
-        Assert.notNull(lops2019Sisalto, "Perusteen sisältö puuttuu");
+        Assert.notNull(perusteKaikkiDto.getLops2019Sisalto(), "Perusteen sisältö puuttuu");
+
+        Peruste peruste = repository.findOne(perusteKaikkiDto.getId());
+        Assert.notNull(peruste, "Peruste puuttuu");
+
+        // Haetaan tiedostosta perusteen sisältö
+        PerusteKaikkiDto perusteTiedostosta = readPerusteFile();
+        updatePeruste(peruste, perusteTiedostosta);
+
+        Assert.notNull(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen(),
+                "Perusteen sisällön laaja-alainen osaaminen puuttuu");
+    }
+
+    private Peruste updatePeruste(Peruste peruste, PerusteKaikkiDto uusi) {
+        Lops2019Sisalto lops2019Sisalto = mapper.map(uusi.getLops2019Sisalto(), Lops2019Sisalto.class);
+        peruste.getLops2019Sisalto().setSisalto(lops2019Sisalto.getSisalto());
+        peruste.getLops2019Sisalto().setLaajaAlainenOsaaminen(lops2019Sisalto.getLaajaAlainenOsaaminen());
+        peruste.getLops2019Sisalto().setOppiaineet(lops2019Sisalto.getOppiaineet());
+        return repository.save(peruste);
     }
 
     private PerusteKaikkiDto readPerusteFile() throws IOException {

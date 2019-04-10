@@ -15,27 +15,23 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Audited
 @Table(name = "yl_lops2019_sisalto")
 public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity {
 
+    @NotNull
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Getter
-    @Setter
-    @NotNull
     @JoinColumn(name = "peruste_id", nullable = false, updatable = false, unique = true)
     private Peruste peruste;
 
-    @Getter
-    @Setter
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="laaja_alainen_osaaminen_kokonaisuus_id")
     private Lops2019LaajaAlainenOsaaminenKokonaisuus laajaAlainenOsaaminen;
 
-    @Getter
-    @Audited
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "yl_lops2019_sisalto_oppiaine",
             joinColumns = @JoinColumn(name = "sisalto_id"),
@@ -44,8 +40,6 @@ public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity {
     private List<Lops2019Oppiaine> oppiaineet = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Getter
-    @Setter
     @JoinColumn(name="sisalto_id")
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
