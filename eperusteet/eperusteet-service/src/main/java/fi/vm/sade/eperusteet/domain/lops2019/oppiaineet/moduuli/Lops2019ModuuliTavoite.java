@@ -1,9 +1,10 @@
-package fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen;
+package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -15,24 +16,29 @@ import java.util.List;
 @Setter
 @Entity
 @Audited
-@Table(name = "yl_lops2019_laaja_alainen_osaaminen_tavoite")
-public class Lops2019Tavoite {
+@Table(name = "yl_lops2019_oppiaine_moduuli_tavoite")
+public class Lops2019ModuuliTavoite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Getter
+    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kohde;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "yl_lops2019_laaja_alainen_osaaminen_tavoite_tavoite",
+    @Getter
+    @Setter
+    @OrderColumn
+    @BatchSize(size = 25)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(name = "yl_lops2019_oppiaine_moduuli_tavoite_tekstipalanen",
             joinColumns = @JoinColumn(name = "tavoite_id"),
-            inverseJoinColumns = @JoinColumn(name = "tavoite_tavoite_id"))
-    @OrderBy("jarjestys, id")
-    private List<Lops2019TavoiteTavoite> tavoitteet = new ArrayList<>();
-
-    private Integer jarjestys;
+            inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private List<TekstiPalanen> tavoitteet = new ArrayList<>();
 }

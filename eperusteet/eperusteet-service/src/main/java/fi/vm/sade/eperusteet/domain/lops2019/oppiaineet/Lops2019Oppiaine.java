@@ -3,8 +3,8 @@ package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -12,52 +12,55 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine")
 public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity {
 
+    @NotNull
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Getter
-    @Setter
-    @NotNull(groups = Oppiaine.Strict.class)
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen nimi;
 
-    @Getter
-    @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private Koodi koodi;
 
-    //moduulit
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinTable(name = "yl_lops2019_oppiaine_moduuli",
+            joinColumns = @JoinColumn(name = "oppiaine_id"),
+            inverseJoinColumns = @JoinColumn(name = "moduuli_id"))
+    @OrderBy("jarjestys, id")
+    private List<Lops2019Moduuli> moduulit;
 
-    //arviointi
+    @JoinColumn(name="arviointi_id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Lops2019Arviointi arviointi;
 
-    //tehtava
+    @JoinColumn(name="tehtava_id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Lops2019Tehtava tehtava;
 
-    //laajaAlainenOsaaminen
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name="laaja_alainen_osaaminen_kokonaisuus_id")
+    private Lops2019OppiaineLaajaAlainenOsaaminenKokonaisuus laajaAlainenOsaaminen;
 
-    @Getter
-    @Setter
     @JoinColumn(name = "tavoitteet_id")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Lops2019OppiaineTavoitteet tavoitteet;
 
-    @Getter
-    @Setter
-    @Audited
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @JoinTable(name = "yl_lops2019_oppiaine_oppiaine",
+    @JoinTable(name = "yl_lops2019_oppiaine_oppimaara",
             joinColumns = @JoinColumn(name = "oppiaine_id"),
             inverseJoinColumns = @JoinColumn(name = "oppimaara_id"))
     @OrderBy("jarjestys, id")
-    private List<Lops2019Oppiaine> oppimaarat;
+    private List<Lops2019Oppiaine> oppimaarat = new ArrayList<>();
 
-    @Getter
-    @Setter
     private Integer jarjestys;
 }

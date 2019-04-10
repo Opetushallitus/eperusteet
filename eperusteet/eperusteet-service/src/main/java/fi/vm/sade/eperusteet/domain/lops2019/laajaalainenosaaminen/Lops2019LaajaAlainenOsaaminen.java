@@ -9,53 +9,44 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Audited
 @Table(name = "yl_lops2019_laaja_alainen_osaaminen")
 public class Lops2019LaajaAlainenOsaaminen extends AbstractAuditedReferenceableEntity {
 
-    @Getter
-    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
-    @Getter
-    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
-    @Getter
-    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen opinnot;
 
-    /*@Getter
-    @Audited
-    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "yl_lops2019_laaja_alainen_osaaminen_tavoite",
             joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"),
             inverseJoinColumns = @JoinColumn(name = "tavoite_id"))
     @OrderBy("jarjestys, id")
-    private List<Lops2019Tavoite> tavoitteet;
+    private List<Lops2019Tavoite> tavoitteet = new ArrayList<>();
 
-    @Getter
-    @Audited
-    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "yl_lops2019_laaja_alainen_osaaminen_painopiste",
             joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"),
             inverseJoinColumns = @JoinColumn(name = "painopiste_id"))
     @OrderBy("jarjestys, id")
-    private List<Lops2019Painopiste> painopisteet;*/
+    private List<Lops2019Painopiste> painopisteet = new ArrayList<>();
 
-    @Getter
-    @Setter
     private Integer jarjestys;
 }

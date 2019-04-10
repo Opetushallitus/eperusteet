@@ -15,12 +15,6 @@
  */
 package fi.vm.sade.eperusteet.resource.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;

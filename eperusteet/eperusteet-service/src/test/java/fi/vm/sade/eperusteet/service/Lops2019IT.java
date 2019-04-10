@@ -3,14 +3,16 @@ package fi.vm.sade.eperusteet.service;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -25,6 +27,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @DirtiesContext
@@ -47,8 +50,7 @@ public class Lops2019IT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-        objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-        objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+        InitJacksonConverter.configureObjectMapper(objectMapper);
         objectMapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, true);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
@@ -64,9 +66,13 @@ public class Lops2019IT extends AbstractIntegrationTest {
         PerusteKaikkiDto perusteDto = readPerusteFile();
         Lops2019SisaltoDto lops2019SisaltoDto = perusteDto.getLops2019Sisalto();
         Assert.notNull(lops2019SisaltoDto, "Perusteen sisältö puuttuu");
+        List<Lops2019OppiaineDto> oppiaineetDto = lops2019SisaltoDto.getOppiaineet();
+        Assert.notNull(oppiaineetDto, "Perusteen oppiaineet puuttuvat");
         Peruste peruste = mapper.map(perusteDto, Peruste.class);
         Lops2019Sisalto lops2019Sisalto = peruste.getLops2019Sisalto();
         Assert.notNull(lops2019Sisalto, "Perusteen sisältö puuttuu");
+        List<Lops2019Oppiaine> oppiaineet = lops2019Sisalto.getOppiaineet();
+        Assert.notNull(oppiaineet, "Perusteen oppiaineet puuttuvat");
     }
 
     @Test

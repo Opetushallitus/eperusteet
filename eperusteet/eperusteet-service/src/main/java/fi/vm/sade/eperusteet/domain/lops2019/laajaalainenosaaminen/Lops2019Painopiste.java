@@ -9,6 +9,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine_painopiste")
@@ -16,17 +18,12 @@ public class Lops2019Painopiste {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Getter
     private Long id;
 
-    @Getter
-    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
-    @Getter
-    @Setter
     private Integer jarjestys;
 }

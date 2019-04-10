@@ -11,30 +11,26 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Audited
-@Table(name = "yl_lops2019_oppiaine_tavoitteet")
-public class Lops2019OppiaineTavoitteet {
+@Table(name = "yl_lops2019_oppiaine_laaja_alainen_osaaminen_kokonaisuus")
+public class Lops2019OppiaineLaajaAlainenOsaaminenKokonaisuus {
 
     @Id
-    @Getter
-    @Setter
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Getter
-    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
-    @Getter
-    @Setter
     @OrderColumn
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "yl_lops2019_oppiaine_tavoitteet_tavoitealue",
-            joinColumns = @JoinColumn(name = "tavoitteet_id"),
-            inverseJoinColumns = @JoinColumn(name = "tavoitealue_id"))
-    private List<Lops2019OppiaineTavoitealue> tavoitealueet = new ArrayList<>();
+    @JoinTable(name = "yl_lops2019_oppiaine_laaja_alainen_osaaminen_kokonaisuus_laaja_alainen_osaaminen",
+            joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_kokonaisuus_id"),
+            inverseJoinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"))
+    private List<Lops2019OppiaineLaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new ArrayList<>();
 }

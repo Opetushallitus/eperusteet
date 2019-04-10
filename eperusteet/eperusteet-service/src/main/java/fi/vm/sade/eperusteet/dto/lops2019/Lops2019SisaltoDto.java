@@ -6,12 +6,11 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
-public class Lops2019SisaltoDto implements Serializable {
+public class Lops2019SisaltoDto {
     private Lops2019LaajaAlainenOsaaminenKokonaisuusDto laajaAlainenOsaaminen;
     private List<Lops2019OppiaineDto> oppiaineet;
     private PerusteenOsaViiteDto.Laaja sisalto;
