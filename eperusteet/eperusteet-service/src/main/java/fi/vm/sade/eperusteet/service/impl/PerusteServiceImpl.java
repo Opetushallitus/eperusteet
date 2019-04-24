@@ -1512,6 +1512,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 || koulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS
                 || koulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS) {
             if (KoulutustyyppiToteutus.LOPS2019.equals(toteutus)) {
+                st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS2019, LaajuusYksikko.OPINTOPISTE);
                 peruste.setSisalto(new Lops2019Sisalto());
                 peruste.setToteutus(toteutus);
             } else {

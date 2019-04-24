@@ -29,7 +29,8 @@ angular
         TutkinnonOsaEditMode,
         PerusopetusService,
         $stateParams,
-        LukiokoulutusService
+        LukiokoulutusService,
+        Api
     ) {
         var peruste = null;
         var deleteDone = false;
@@ -46,7 +47,7 @@ angular
             $state.go("root.perusteprojekti.suoritustapa.tekstikappale", params, { reload: true });
         }
 
-        this.add = function() {
+        this.add = async function() {
             if (YleinenData.isPerusopetus(peruste)) {
                 PerusopetusService.saveOsa(
                     {},
@@ -59,16 +60,25 @@ angular
                     }
                 );
             } else if (YleinenData.isLukiokoulutus(peruste)) {
-                LukiokoulutusService.saveOsa(
-                    {},
-                    {
-                        osanTyyppi: "tekstikappale"
-                    },
-                    response => {
-                        TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-                        goToView(response);
-                    }
-                );
+                if (peruste.toteutus === 'lops2019') {
+                    const response = await Api
+                        .one("perusteet", peruste.id)
+                        .all("lops2019")
+                        .customPOST({}, "sisalto");
+                    TutkinnonOsaEditMode.setMode(true);
+                    goToView(response);
+                } else {
+                    LukiokoulutusService.saveOsa(
+                        {},
+                        {
+                            osanTyyppi: "tekstikappale"
+                        },
+                        response => {
+                            TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
+                            goToView(response);
+                        }
+                    );
+                }
             }
         };
 
@@ -81,7 +91,8 @@ angular
             deleteDone = false;
         };
 
-        this.delete = function(viiteId, isNew, then?) {
+        this.delete = async function(viiteId, isNew, then?) {
+            console.log("delete", viiteId, isNew, then);
             function commonCb(tyyppi) {
                 deleteDone = true;
                 if (isNew !== true) {
@@ -94,13 +105,30 @@ angular
             let successCb;
             if (peruste && peruste.tyyppi === "opas") {
                 successCb = _.partial(commonCb, "opassisalto");
-            } else {
+            }
+            else if (peruste && peruste.toteutus === "lops2019") {
+                successCb = _.partial(commonCb, "lops2019");
+            }
+            else {
                 successCb = _.partial(commonCb, YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].sisaltoTunniste);
             }
             if (YleinenData.isPerusopetus(peruste)) {
                 PerusopetusService.deleteOsa({ $url: "dummy", id: viiteId }, successCb, Notifikaatiot.serverCb);
             } else if (YleinenData.isLukiokoulutus(peruste)) {
-                LukiokoulutusService.deleteOsa({ $url: "dummy", id: viiteId }, successCb, Notifikaatiot.serverCb);
+                if (peruste.toteutus === "lops2019") {
+                    try {
+                        await Api
+                            .one("perusteet", peruste.id)
+                            .all("lops2019")
+                            .one("sisalto", viiteId)
+                            .remove();
+                        successCb();
+                    } catch (e) {
+                        Notifikaatiot.serverCb(e);
+                    }
+                } else {
+                    LukiokoulutusService.deleteOsa({ $url: "dummy", id: viiteId }, successCb, Notifikaatiot.serverCb);
+                }
             } else {
                 PerusteenOsaViitteet.delete({ viiteId: viiteId }, {}, successCb, Notifikaatiot.serverCb);
             }

@@ -123,18 +123,33 @@ angular
             return hasSuoritustapa(peruste, getSuoritustapa()) ? getSuoritustapa() : projekti.suoritustapa;
         }
 
+        function getInfo(projekti, peruste) {
+            // Joko projektissa tai perusteessa voi olla tieto koulutustyypistä ja toteutuksesta
+            if (_.isObject(projekti)
+                && projekti.koulutustyyppi === "koulutustyyppi_2"
+                && projekti.toteutus === "lops2019"
+                || (_.isObject(peruste)
+                    && peruste.koulutustyyppi === "koulutustyyppi_2"
+                    && peruste.toteutus === "lops2019")) {
+                return {
+                    oletusSuoritustapa: "lukiokoulutus2019",
+                    sisaltoTunniste: "lops2019"
+                }
+            } else {
+                const koulutustyyppi = (_.isObject(projekti) && projekti.koulutustyyppi)
+                    || (_.isObject(peruste) && peruste.koulutustyyppi);
+                return YleinenData.koulutustyyppiInfo[koulutustyyppi];
+            }
+        }
+
         /**
-     * Luo oikea url perusteprojektille
-     * @param peruste optional
-     */
+         * Luo oikea url perusteprojektille
+         * @param peruste optional
+         */
         function urlFn(projekti, peruste) {
             let suoritustapa;
             let sisaltoTunniste = "sisalto";
-
-            const info =
-                YleinenData.koulutustyyppiInfo[
-                    (_.isObject(projekti) && projekti.koulutustyyppi) || (_.isObject(peruste) && peruste.koulutustyyppi)
-                ];
+            let info = getInfo(projekti, peruste);
 
             if (peruste && peruste.tyyppi === "opas") {
                 suoritustapa = "opas";
@@ -162,13 +177,14 @@ angular
             }
 
             const stateName = "root.perusteprojekti.suoritustapa." + sisaltoTunniste;
-            const result = $state.href(stateName, {
+            const hrefParams = {
                 lang: $stateParams.lang || "fi",
                 perusteProjektiId: projekti.id,
                 suoritustapa
-            });
+            };
 
-            return result;
+            const url = $state.href(stateName, hrefParams);
+            return url;
         }
 
         function mergeProjekti(projekti, tuoPohja) {
@@ -257,6 +273,7 @@ angular
         LukiokoulutusService,
         LukioKurssiService,
         AIPEService,
+        Lops2019Service,
     ) {
         var deferred = $q.defer();
         var projekti: any = {};
@@ -367,16 +384,25 @@ angular
                         sisaltoProvider,
                         kurssitProvider = null;
                     if (YleinenData.isLukiokoulutus(peruste)) {
-                        labels = LukiokoulutusService.LABELS;
-                        osatProvider = function(key) {
-                            return LukiokoulutusService.getOsat(key, true);
-                        };
-                        sisaltoProvider = function() {
-                            return LukiokoulutusService.getSisalto().$promise;
-                        };
-                        kurssitProvider = function() {
-                            return LukioKurssiService.listByPeruste(perusteId);
-                        };
+                        if (peruste.toteutus === 'lops2019') {
+                            osatProvider = function(key) {
+                                return Lops2019Service.getOsat(key, true);
+                            };
+                            sisaltoProvider = function() {
+                                return Lops2019Service.getSisalto();
+                            };
+                        } else {
+                            labels = LukiokoulutusService.LABELS;
+                            osatProvider = function(key) {
+                                return LukiokoulutusService.getOsat(key, true);
+                            };
+                            sisaltoProvider = function() {
+                                return LukiokoulutusService.getSisalto().$promise;
+                            };
+                            kurssitProvider = function() {
+                                return LukioKurssiService.listByPeruste(perusteId);
+                            };
+                        }
                     } else if (YleinenData.isAipe(peruste)) {
                         labels = AIPEService.LABELS;
                         osatProvider = function(key) {
@@ -447,6 +473,7 @@ angular
 
         this.alustaProjektinTiedot = function(stateParams) {
             LukiokoulutusService.setTiedot(this);
+            Lops2019Service.setTiedot(this);
             PerusopetusService.setTiedot(this);
             AIPEService.setTiedot(this);
             projektinTiedotDeferred = $q.defer();
@@ -470,8 +497,7 @@ angular
 
         this.alustaPerusteenSisalto = async function(stateParams, forced) {
             PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
-            if (
-                forced ||
+            if (forced ||
                 stateParams.suoritustapa === "opas" ||
                 YleinenData.isPerusopetus(peruste) ||
                 YleinenData.isAipe(peruste) ||

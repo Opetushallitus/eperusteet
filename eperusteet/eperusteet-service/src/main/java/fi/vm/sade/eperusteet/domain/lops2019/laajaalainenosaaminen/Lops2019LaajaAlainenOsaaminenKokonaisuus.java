@@ -22,7 +22,7 @@ public class Lops2019LaajaAlainenOsaaminenKokonaisuus {
 
     @OrderBy("jarjestys, id")
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    @JoinTable(name = "yl_lops2019_laaja_alainen_osaaminen_kokonaisuus_laaja_alainen_osaaminen",
+    @JoinTable(name = "yl_lops2019_lao_kokonaisuus_lao",
             joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_kokonaisuus_id"),
             inverseJoinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"))
     private List<Lops2019LaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new ArrayList<>();

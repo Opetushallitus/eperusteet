@@ -140,19 +140,10 @@ angular
                 navigaationimi: "navi-perusteprojekti",
                 resolve: {
                     perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService,
-                    projektinTiedotAlustettu: async (perusteprojektiTiedot, $log) => {
-                        const result = await perusteprojektiTiedot.projektinTiedotAlustettu();
-                        return result;
-                    },
-                    perusteenSisaltoAlustus: async (
-                        perusteprojektiTiedot,
-                        projektinTiedotAlustettu,
-                        $stateParams,
-                        $log
-                    ) => {
-                        const result = await perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
-                        return result;
-                    }
+                    projektinTiedotAlustettu: (perusteprojektiTiedot) =>
+                        perusteprojektiTiedot.projektinTiedotAlustettu(),
+                    perusteenSisaltoAlustus: (perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) =>
+                        perusteprojektiTiedot.alustaPerusteenSisalto($stateParams)
                 },
                 controller: (
                     $timeout,
@@ -277,6 +268,14 @@ angular
                 url: "/lukiosisalto",
                 template: require("views/partials/perusteprojekti/lukiokoulutus.html"),
                 controller: "LukiokoulutussisaltoController",
+                onEnter: PerusteProjektiSivunavi => {
+                    PerusteProjektiSivunavi.setVisible(false);
+                }
+            })
+            .state("root.perusteprojekti.suoritustapa.lops2019", {
+                url: "/lops2019",
+                template: require("views/partials/perusteprojekti/lops2019.html"),
+                controller: "Lops2019Controller",
                 onEnter: PerusteProjektiSivunavi => {
                     PerusteProjektiSivunavi.setVisible(false);
                 }
@@ -518,7 +517,8 @@ angular
                     $state.is("root.perusteprojekti.suoritustapa.eosisalto") ||
                     $state.is("root.perusteprojekti.suoritustapa.losisalto") ||
                     $state.is("root.perusteprojekti.suoritustapa.tposisalto") ||
-                    $state.is("root.perusteprojekti.suoritustapa.lukiosisalto")
+                    $state.is("root.perusteprojekti.suoritustapa.lukiosisalto") ||
+                    $state.is("root.perusteprojekti.suoritustapa.lops2019")
                 );
             $scope.isNaviVisible = () => PerusteProjektiSivunavi.isVisible();
 

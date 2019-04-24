@@ -463,6 +463,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 String pdiaari = peruste.getDiaarinumero() != null ? peruste.getDiaarinumero().toString() : null;
                 ppk.setPerusteendiaarinumero(pdiaari);
                 ppk.setKoulutustyyppi(peruste.getKoulutustyyppi());
+                ppk.setToteutus(peruste.getToteutus());
                 ppk.setTyyppi(peruste.getTyyppi());
                 ppk.setSuoritustavat(peruste.getSuoritustavat().stream()
                         .map(Suoritustapa::getSuoritustapakoodi)

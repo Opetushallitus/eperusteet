@@ -1293,5 +1293,10 @@
     "liitetiedosto-tallennettu": "Liitetiedosto tallennettu",
     "liitetiedosto-tallennusvirhe": "Liitetiedoston tallennus epäonnistui",
     "liitetiedosto-valitse": "Valitse liitetiedosto...",
-    "liitetiedosto": "Liitetiedosto"
+    "liitetiedosto": "Liitetiedosto",
+    "toteutus-label": "Koulutustyypin toteutus",
+    "valitse-toteutus": "Valitse koulutustyypin toteutus",
+    "lops2019": "Lukiokoulutus 2019",
+    "yksinkertainen": "Yksinkertainen",
+    "lops": "Lukiokoulutus 2015"
 }

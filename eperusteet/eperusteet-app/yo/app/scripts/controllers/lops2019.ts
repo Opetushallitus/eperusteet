@@ -1,0 +1,47 @@
+import * as angular from "angular";
+import _ from "lodash";
+
+angular
+.module("eperusteApp")
+.controller("Lops2019Controller", function(
+    $scope,
+    $state,
+    Api,
+    YleinenData,
+    Algoritmit,
+    perusteprojektiTiedot,
+    TekstikappaleOperations
+) {
+    const manipulateSisaltoUrls = sisalto => {
+        Algoritmit.kaikilleLapsisolmuille(sisalto, "lapset", lapsi => {
+            switch (_.get(lapsi, "perusteenOsa.osanTyyppi")) {
+                case "tekstikappale":
+                    lapsi.$url = $state.href("root.perusteprojekti.suoritustapa.tekstikappale", {
+                        suoritustapa: "lukiokoulutus2019",
+                        perusteenOsaViiteId: lapsi.id,
+                        versio: ""
+                    });
+                    break;
+            }
+        });
+    };
+
+    const getSisalto = () => {
+        const sisalto = perusteprojektiTiedot.getYlTiedot().sisalto;
+        manipulateSisaltoUrls(sisalto); // Mutatoi sisältöä
+        return sisalto;
+    };
+
+    $scope.projekti = perusteprojektiTiedot.getProjekti();
+    $scope.peruste = perusteprojektiTiedot.getPeruste();
+    $scope.sisalto = getSisalto();
+    $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti, $scope.peruste);
+    $scope.rajaus = "";
+
+    TekstikappaleOperations.setPeruste($scope.peruste);
+
+    $scope.addTekstikappale = () => {
+        TekstikappaleOperations.add();
+    };
+
+});

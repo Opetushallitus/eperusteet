@@ -1,0 +1,52 @@
+<!-- partials/perusteprojekti/lukiokoulutus.html -->
+<div class="main-content" id="main">
+    <div class="row tutkinto-sisalto">
+        <div class="tutkinto">
+            <div class="esityksen-tarkastelu clearfix">
+                <a href="{{esitysurl}}"
+                   ng-show="esitysurl"
+                   kaanna="'tarkastele-esitysta'"
+                   icon-role="sunglasses"
+                   class="url">
+                </a>
+            </div>
+
+            <!--<div ng-hide="editing" class="clearfix">
+                <div class="toolbar-input pull-left">
+                    <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value)"></rajaus>
+                </div>
+            </div>-->
+
+            <!-- TODO -->
+            <div ng-hide="editing" class="clearfix">
+                <h2>{{'oppiaineet' | kaanna}}</h2>
+                <div content-tree="datat.opetus.lapset"
+                     filter-by="rajaus"
+                     no-content-placeholder="suoritustavalle-ei-ole-viela-sisaltoa"></div>
+            </div>
+
+            <h2 ng-hide="editing" class="clearfix">
+                {{'tekstikappaleet' | kaanna}} ({{sisalto.lapset.length || 0}})
+                <div class="pull-right buttons">
+                    <button type="button" class="btn btn-default btn-sm" ng-click="addTekstikappale()"
+                            icon-role="ep-text-add" kaanna="'lisaa-tutkintokohtainen-osa'"></button>
+                    <button class="btn btn-default btn-sm" ng-click="edit()" icon-role="edit"
+                            kaanna="'muokkaa-rakennetta'">
+                    </button>
+                </div>
+            </h2>
+
+            <h2 ng-show="editing" class="clearfix">
+                {{'muokkaa-tekstikappaleiden-rakennetta' | kaanna}}
+                <a ng-click="avaaSuljeKaikki()" class="open-close action-link">
+                    <span class="avaa-sulje" icon-role="ep-open-close">{{'avaa-sulje-kaikki' | kaanna}}</span></a>
+            </h2>
+
+            <div content-tree="sisalto.lapset"
+                 filter-by="rajaus"
+                 no-content-placeholder="peruste-ei-sisaltoa"
+                 edit-mode="editing"></div>
+
+        </div>
+    </div>
+</div>

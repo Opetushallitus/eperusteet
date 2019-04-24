@@ -92,12 +92,14 @@ angular
         Notifikaatiot,
         Perusteet,
         Editointikontrollit,
-        Organisaatioryhmat
+        Organisaatioryhmat,
+        YleinenData
     ) {
         PerusteProjektiService.watcher($scope, "projekti");
         $scope.lang = $translate.use() || $translate.preferredLanguage();
         $scope.editEnabled = false;
         $scope.$ryhmaNimi = "";
+        $scope.toteutukset = YleinenData.toteutukset;
         var originalProjekti = null;
 
         var editingCallbacks = {

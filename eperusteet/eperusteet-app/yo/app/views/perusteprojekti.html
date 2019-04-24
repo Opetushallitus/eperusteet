@@ -25,8 +25,7 @@
                 <table ng-hide="isOpas">
                     <tr>
                         <th>{{ 'projekti-header-koulutustyyppi' | kaanna }}:</th>
-                        <td>{{peruste.koulutustyyppi|| 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}
-                        <td>
+                        <td>{{peruste.toteutus || peruste.koulutustyyppi | kaanna}}<td>
                     </tr>
                     <tr ng-show="isAmmatillinen">
                         <th>{{'projekti-header-koulutusala'| kaanna}}:</th>

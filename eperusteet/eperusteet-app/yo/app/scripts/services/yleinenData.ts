@@ -204,6 +204,11 @@ export function laajuudellisetKoulutustyypit() {
         .value();
 }
 
+export const toteutukset = [
+    "lops",
+    "lops2019"
+];
+
 export const kvliitekielet = ["fi", "sv", "en"];
 
 export const kielet = {
@@ -323,6 +328,7 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
         suoritustavat,
         koulutustyyppiInfo,
         koulutustyypit,
+        toteutukset,
         ammatillisetkoulutustyypit,
         laajuudellisetKoulutustyypit,
         kvliitekielet,
