@@ -10,7 +10,8 @@ angular
     YleinenData,
     Algoritmit,
     perusteprojektiTiedot,
-    TekstikappaleOperations
+    TekstikappaleOperations,
+    Lops2019Service
 ) {
     const manipulateSisaltoUrls = sisalto => {
         Algoritmit.kaikilleLapsisolmuille(sisalto, "lapset", lapsi => {
@@ -38,10 +39,18 @@ angular
     $scope.esitysurl = YleinenData.getPerusteEsikatseluLink($scope.projekti, $scope.peruste);
     $scope.rajaus = "";
 
+    $scope.opetus = Lops2019Service.getOpetus();
+
     TekstikappaleOperations.setPeruste($scope.peruste);
 
     $scope.addTekstikappale = () => {
         TekstikappaleOperations.add();
     };
 
+})
+.controller("Lops2019LaajaalaisetController", function () {
+    console.log("Lops2019LaajaalaisetController");
+})
+.controller("Lops2019OppiaineetController", function () {
+    console.log("Lops2019OppiaineetController");
 });

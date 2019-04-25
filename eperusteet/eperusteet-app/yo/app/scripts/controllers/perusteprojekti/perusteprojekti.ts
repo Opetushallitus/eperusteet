@@ -280,6 +280,22 @@ angular
                     PerusteProjektiSivunavi.setVisible(false);
                 }
             })
+            .state("root.perusteprojekti.suoritustapa.lops2019laajaalaiset", {
+                url: "/lops2019/laajaalaiset?{versio?:int}",
+                template: require("views/partials/lops2019/laajaalaiset.html"),
+                controller: "Lops2019LaajaalaisetController",
+                onEnter: PerusteProjektiSivunavi => {
+                    PerusteProjektiSivunavi.setVisible(false);
+                }
+            })
+            .state("root.perusteprojekti.suoritustapa.lops2019oppiaineet", {
+                url: "/lops2019/oppiaineet?{versio?:int}",
+                template: require("views/partials/lops2019/oppiaineet.html"),
+                controller: "Lops2019OppiaineetController",
+                onEnter: PerusteProjektiSivunavi => {
+                    PerusteProjektiSivunavi.setVisible(false);
+                }
+            })
             .state("root.perusteprojekti.suoritustapa.losisalto", {
                 url: "/losisalto",
                 template: require("views/partials/perusteprojekti/esiopetus.html"),
