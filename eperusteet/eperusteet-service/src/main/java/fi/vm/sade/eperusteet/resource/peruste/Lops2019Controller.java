@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
+import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
@@ -38,7 +39,8 @@ public class Lops2019Controller {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PerusteenOsaViiteDto.Matala> addSisalto(
             @PathVariable("perusteId") final Long perusteId,
-            @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
+            @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto
+    ) {
         return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSA, LISAYS), (Void) -> {
             if (dto == null || (dto.getPerusteenOsa() == null && dto.getPerusteenOsaRef() == null)) {
                 return ResponseEntity.ok(service.addSisalto(perusteId, null, null));
@@ -52,7 +54,8 @@ public class Lops2019Controller {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSisalto(
             @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("id") final Long id) {
+            @PathVariable("id") final Long id
+    ) {
         audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSA, POISTO), (Void) -> {
             service.removeSisalto(perusteId, id);
             return null;
@@ -63,7 +66,16 @@ public class Lops2019Controller {
     public ResponseEntity<Lops2019LaajaAlainenOsaaminenKokonaisuusDto> getLaajaAlainenOsaaminenKokonaisuus(
             @PathVariable("perusteId") final Long perusteId
     ) {
-        return ResponseEntity.ok(service.getLaajaAlainenOsaaminenKokonaisuus(perusteId));
+        Lops2019LaajaAlainenOsaaminenKokonaisuusDto kokonaisuus = service.getLaajaAlainenOsaaminenKokonaisuus(perusteId);
+        return ResponseEntity.ok(kokonaisuus);
+    }
+
+    @RequestMapping(value = "/laajaalaiset", method = PUT)
+    public ResponseEntity<Lops2019LaajaAlainenOsaaminenKokonaisuusDto> updateLaajaAlainenOsaaminenKokonaisuus(
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody Lops2019LaajaAlainenOsaaminenKokonaisuusDto dto
+    ) {
+        return ResponseEntity.ok(service.updateLaajaAlainenOsaaminenKokonaisuus(perusteId, dto));
     }
 
     @RequestMapping(value = "/oppiaineet", method = GET)

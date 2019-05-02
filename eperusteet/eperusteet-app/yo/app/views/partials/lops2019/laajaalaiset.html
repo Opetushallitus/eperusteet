@@ -1,1 +1,18 @@
-<pre>laajaalaiset</pre>
+<div class="row">
+    <div class="col-md-12 ep-sisalto-inner">
+        <div class="pull-right">
+            <button icon-role="add"
+                    class="btn btn-default"
+                    ng-click="add()"
+                    kaanna="'lisaa-laaja-alainen-osaaminen'"></button>
+        </div>
+
+        <h1 kaanna="'laaja-alaiset-osaamiset'"></h1>
+
+        <div ng-repeat="osaaminen in laajaAlaisetOsaamiset">
+            <h2 kaanna="osaaminen.nimi || 'nimeton'"></h2>
+            <pre>{{osaaminen | json}}</pre>
+        </div>
+
+    </div>
+</div>

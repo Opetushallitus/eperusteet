@@ -48,9 +48,25 @@ angular
     };
 
 })
-.controller("Lops2019LaajaalaisetController", function () {
-    console.log("Lops2019LaajaalaisetController");
+.controller("Lops2019LaajaalaisetController", function (
+    $scope,
+    Api,
+    laajaalaiset
+) {
+    $scope.laajaAlaisetOsaamiset = laajaalaiset.laajaAlaisetOsaamiset;
+
+    $scope.add = async () => {
+        laajaalaiset.laajaAlaisetOsaamiset.push({});
+        $scope.laajaAlaisetOsaamiset = (await laajaalaiset.save()).laajaAlaisetOsaamiset;
+    };
 })
-.controller("Lops2019OppiaineetController", function () {
-    console.log("Lops2019OppiaineetController");
+.controller("Lops2019OppiaineetController", function (
+    $scope,
+    oppiaineet
+) {
+    $scope.oppiaineet = oppiaineet;
+
+    $scope.add = async () => {
+
+    };
 });

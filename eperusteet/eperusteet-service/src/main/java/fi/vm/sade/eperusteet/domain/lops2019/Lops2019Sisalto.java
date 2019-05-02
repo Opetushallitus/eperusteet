@@ -28,7 +28,7 @@ public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity {
     @JoinColumn(name = "peruste_id", nullable = false, updatable = false, unique = true)
     private Peruste peruste;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, optional = false)
     @JoinColumn(name="laaja_alainen_osaaminen_kokonaisuus_id")
     private Lops2019LaajaAlainenOsaaminenKokonaisuus laajaAlainenOsaaminen;
 

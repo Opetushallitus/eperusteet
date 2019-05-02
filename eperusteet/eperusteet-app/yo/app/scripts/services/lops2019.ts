@@ -42,24 +42,15 @@ angular
                 lapset: []
             };
 
-            // Iteroi alueet
+            // Iteroi sisällöt
             _.each(this.sisallot, async item => {
-                const data = {
+                opetus.lapset.push({
                     nimi: item.label,
                     tyyppi: item.tyyppi,
-                    lapset: [],
+                    lapset: await this.getOsat(item.tyyppi),
                     $type: "ep-parts",
                     $url: $state.href("root.perusteprojekti.suoritustapa." + item.stateName)
-                };
-
-                try {
-                    data.lapset = await this.getOsat(item.tyyppi);
-                } catch (e) {
-                    console.warn(e);
-                    // TODO
-                }
-
-                opetus.lapset.push(data);
+                });
             });
 
             return opetus;
@@ -73,17 +64,16 @@ angular
                         return await Api
                             .one("perusteet", tiedot.getPeruste().id)
                             .one("lops2019")
-                            .customGET("laajaalaiset");
+                            .customGET("laajaalaiset").laajaAlaisetOsaamiset;
                     case this.OPPIAINEET_OPPIMAARAT:
                         // Hae oppiaineet
                         return await Api
                             .one("perusteet", tiedot.getPeruste().id)
                             .one("lops2019")
-                            .customGET("oppiaineet");
+                            .customGETLIST("oppiaineet");
                 }
             } catch (e) {
-                console.warn(e);
-                // TODO
+                return [];
             }
         };
     });

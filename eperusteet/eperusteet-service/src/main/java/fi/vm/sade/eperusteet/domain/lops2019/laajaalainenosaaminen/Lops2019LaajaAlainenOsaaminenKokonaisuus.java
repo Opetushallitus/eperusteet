@@ -26,4 +26,11 @@ public class Lops2019LaajaAlainenOsaaminenKokonaisuus {
             joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_kokonaisuus_id"),
             inverseJoinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"))
     private List<Lops2019LaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new ArrayList<>();
+
+    public void setLaajaAlaisetOsaamiset(List<Lops2019LaajaAlainenOsaaminen> laajaAlaiset) {
+        this.laajaAlaisetOsaamiset.clear();
+        if (laajaAlaiset != null) {
+            this.laajaAlaisetOsaamiset.addAll(laajaAlaiset);
+        }
+    }
 }

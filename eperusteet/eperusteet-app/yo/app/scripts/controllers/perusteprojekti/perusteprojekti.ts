@@ -283,6 +283,15 @@ angular
             .state("root.perusteprojekti.suoritustapa.lops2019laajaalaiset", {
                 url: "/lops2019/laajaalaiset?{versio?:int}",
                 template: require("views/partials/lops2019/laajaalaiset.html"),
+                resolve: {
+                    laajaalaiset: (Api, projektinTiedotAlustettu, perusteprojektiTiedot) => {
+                        return Api
+                            .one("perusteet", perusteprojektiTiedot.getPeruste().id)
+                            .one("lops2019")
+                            .one("laajaalaiset")
+                            .get()
+                    }
+                },
                 controller: "Lops2019LaajaalaisetController",
                 onEnter: PerusteProjektiSivunavi => {
                     PerusteProjektiSivunavi.setVisible(false);
@@ -292,6 +301,14 @@ angular
                 url: "/lops2019/oppiaineet?{versio?:int}",
                 template: require("views/partials/lops2019/oppiaineet.html"),
                 controller: "Lops2019OppiaineetController",
+                resolve: {
+                    oppiaineet: (Api, projektinTiedotAlustettu, perusteprojektiTiedot) => {
+                        return Api
+                            .one("perusteet", perusteprojektiTiedot.getPeruste().id)
+                            .one("lops2019")
+                            .customGETLIST("oppiaineet")
+                    }
+                },
                 onEnter: PerusteProjektiSivunavi => {
                     PerusteProjektiSivunavi.setVisible(false);
                 }

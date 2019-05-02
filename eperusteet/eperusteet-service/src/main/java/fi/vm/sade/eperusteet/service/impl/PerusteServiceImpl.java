@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
+import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -1513,7 +1514,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 || koulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS) {
             if (KoulutustyyppiToteutus.LOPS2019.equals(toteutus)) {
                 st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS2019, LaajuusYksikko.OPINTOPISTE);
-                peruste.setSisalto(new Lops2019Sisalto());
+                Lops2019Sisalto sisalto = new Lops2019Sisalto();
+                sisalto.setLaajaAlainenOsaaminen(new Lops2019LaajaAlainenOsaaminenKokonaisuus());
+                peruste.setSisalto(sisalto);
                 peruste.setToteutus(toteutus);
             } else {
                 st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS, LaajuusYksikko.KURSSI);
