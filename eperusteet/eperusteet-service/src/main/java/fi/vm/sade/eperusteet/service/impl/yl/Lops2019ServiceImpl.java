@@ -56,14 +56,7 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         Lops2019LaajaAlainenOsaaminenKokonaisuus kokonaisuus = sisalto.getLaajaAlainenOsaaminen();
 
-        // Lisää osaamiset
-        List<Lops2019LaajaAlainenOsaaminenDto> laajaAlaiset = mapper
-                .mapAsList(kokonaisuus.getLaajaAlaisetOsaamiset(), Lops2019LaajaAlainenOsaaminenDto.class);
-        Lops2019LaajaAlainenOsaaminenKokonaisuusDto kokonaisuusDto = mapper
-                .map(kokonaisuus, Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
-        kokonaisuusDto.setLaajaAlaisetOsaamiset(laajaAlaiset);
-
-        return kokonaisuusDto;
+        return mapper.map(kokonaisuus, Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
     }
 
     @Override
@@ -75,16 +68,9 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         List<Lops2019LaajaAlainenOsaaminen> laajaAlaiset = mapper.mapAsList(dto.getLaajaAlaisetOsaamiset(),
                 Lops2019LaajaAlainenOsaaminen.class);
         sisalto.getLaajaAlainenOsaaminen().setLaajaAlaisetOsaamiset(laajaAlaiset);
-
         sisalto = sisaltoRepository.save(sisalto);
 
-        // Lisää osaamiset
-        List<Lops2019LaajaAlainenOsaaminenDto> laajaAlaisetDtos = mapper
-                .mapAsList(sisalto.getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset(), Lops2019LaajaAlainenOsaaminenDto.class);
-        Lops2019LaajaAlainenOsaaminenKokonaisuusDto kokonaisuusDto = mapper.map(sisaltoRepository.save(sisalto), Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
-        kokonaisuusDto.setLaajaAlaisetOsaamiset(laajaAlaisetDtos);
-
-        return kokonaisuusDto;
+        return mapper.map(sisalto.getLaajaAlainenOsaaminen(), Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
     }
 
     @Override

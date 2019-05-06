@@ -51,14 +51,40 @@ angular
 .controller("Lops2019LaajaalaisetController", function (
     $scope,
     Api,
+    Editointikontrollit,
     laajaalaiset
 ) {
-    $scope.laajaAlaisetOsaamiset = laajaalaiset.laajaAlaisetOsaamiset;
+    $scope.laajaalaiset = laajaalaiset.clone();
 
-    $scope.add = async () => {
-        laajaalaiset.laajaAlaisetOsaamiset.push({});
-        $scope.laajaAlaisetOsaamiset = (await laajaalaiset.save()).laajaAlaisetOsaamiset;
+    $scope.add = (parent, field) => {
+        if (!parent.hasOwnProperty(field)) {
+            parent[field] = [];
+        }
+        parent[field].push({});
     };
+
+    $scope.remove = (target, el) => {
+        _.remove(target, el);
+    };
+
+    $scope.edit = () => {
+        Editointikontrollit.startEditing();
+    };
+
+    Editointikontrollit.registerCallback({
+        edit: () => {
+        },
+        save: async () => {
+            laajaalaiset = (await $scope.laajaalaiset.save());
+            $scope.laajaalaiset = laajaalaiset.clone();
+        },
+        cancel: () => {
+            $scope.laajaalaiset = laajaalaiset.clone();
+        },
+        notify: value => {
+            $scope.editEnabled = value;
+        }
+    });
 })
 .controller("Lops2019OppiaineetController", function (
     $scope,

@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Lops2019LaajaAlainenOsaaminenDto implements ReferenceableDto {
+public class Lops2019LaajaAlainenOsaaminenDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
     @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -21,7 +21,7 @@ public class Lops2019LaajaAlainenOsaaminenKokonaisuus {
     private Long id;
 
     @OrderBy("jarjestys, id")
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinTable(name = "yl_lops2019_lao_kokonaisuus_lao",
             joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_kokonaisuus_id"),
             inverseJoinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"))
