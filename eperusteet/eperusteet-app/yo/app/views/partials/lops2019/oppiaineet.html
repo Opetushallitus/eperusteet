@@ -1,1 +1,28 @@
-<pre>{{oppiaineet}}</pre>
+<div class="row lops2019">
+    <div class="col-md-12 ep-sisalto-inner">
+
+        <div class="pull-right" ng-if="!editEnabled">
+            <button icon-role="add"
+                    class="btn btn-default"
+                    ng-click="add()"
+                    kaanna="'lisaa-oppiaine'"></button>
+            <button icon-role="sort"
+                    class="btn btn-default"
+                    ng-click="sort()"
+                    kaanna="'jarjesta'"></button>
+        </div>
+
+        <h1 kaanna="'oppiaineet'"></h1>
+
+        <div ng-repeat="oppiaine in oppiaineet">
+            <a ui-sref='root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: oppiaine.id})'>
+                <div class="oppiaine">
+                    <span ng-bind="oppiaine.nimi || 'nimeton' | kaanna"></span>
+                </div>
+            </a>
+        </div>
+
+        <br>
+        <pre>{{oppiaineet.plain() | json}}</pre>
+    </div>
+</div>

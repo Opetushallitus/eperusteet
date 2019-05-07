@@ -31,4 +31,16 @@ public interface Lops2019Service {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<Lops2019OppiaineDto> getOppiaineet(Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    Lops2019OppiaineDto addOppiaine(Long perusteId, Lops2019OppiaineDto dto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    Lops2019OppiaineDto getOppiaine(Long perusteId, Long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    Lops2019OppiaineDto updateOppiaine(Long perusteId, Lops2019OppiaineDto dto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void removeOppiaine(@P("perusteId") Long perusteId, Long id);
 }

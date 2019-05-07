@@ -306,7 +306,25 @@ angular
                         return Api
                             .one("perusteet", perusteprojektiTiedot.getPeruste().id)
                             .one("lops2019")
-                            .customGETLIST("oppiaineet")
+                            .all("oppiaineet")
+                            .getList()
+                    }
+                },
+                onEnter: PerusteProjektiSivunavi => {
+                    PerusteProjektiSivunavi.setVisible(false);
+                }
+            })
+            .state("root.perusteprojekti.suoritustapa.lops2019oppiaine", {
+                url: "/lops2019/oppiaineet/{oppiaineId}?{versio?:int}",
+                template: require("views/partials/lops2019/oppiaine.html"),
+                controller: "Lops2019OppiaineController",
+                resolve: {
+                    oppiaine: (Api, projektinTiedotAlustettu, perusteprojektiTiedot, $stateParams) => {
+                        return Api
+                            .one("perusteet", perusteprojektiTiedot.getPeruste().id)
+                            .one("lops2019")
+                            .one("oppiaineet", $stateParams.oppiaineId)
+                            .get()
                     }
                 },
                 onEnter: PerusteProjektiSivunavi => {

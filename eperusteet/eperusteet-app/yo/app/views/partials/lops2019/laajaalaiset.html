@@ -1,5 +1,6 @@
 <div class="row lops2019">
     <div class="col-md-12 ep-sisalto-inner">
+
         <div class="pull-right" ng-if="!editEnabled">
             <button icon-role="edit"
                     class="btn btn-default"
@@ -35,7 +36,7 @@
             <div ng-if="editEnabled">
                 <div class="clearfix">
                     <button icon-role="remove"
-                            class="btn btn-default pull-right"
+                            class="btn btn-warning pull-right"
                             ng-click="remove(laajaalaiset.laajaAlaisetOsaamiset, osaaminen)"
                             kaanna="'poista'"></button>
                 </div>
@@ -53,7 +54,7 @@
                                 <input class="form-control" ng-model="tavoite.kuvaus" slocalized>
                                 <span class="input-group-btn">
                                     <button icon-role="remove"
-                                            class="btn btn-default"
+                                            class="btn btn-warning"
                                             ng-click="remove(tavoitealue.tavoitteet, tavoite)"
                                             kaanna="'poista'"></button>
                                 </span>
@@ -61,11 +62,11 @@
                         </div>
                         <div class="clearfix">
                             <button icon-role="remove"
-                                    class="btn btn-default pull-right"
+                                    class="btn btn-warning pull-right"
                                     ng-click="remove(osaaminen.tavoitteet, tavoitealue)"
                                     kaanna="'poista'"></button>
                             <button icon-role="add"
-                                    class="btn btn-default pull-right"
+                                    class="btn btn-primary pull-right"
                                     ng-click="add(tavoitealue, 'tavoitteet')"
                                     kaanna="'lisaa-tavoite'"
                                     style="margin-right: 10px"></button>
@@ -73,7 +74,7 @@
                     </div>
                     <div class="clearfix">
                         <button icon-role="add"
-                                class="btn btn-default pull-right"
+                                class="btn btn-primary pull-right"
                                 ng-click="add(osaaminen, 'tavoitteet')"
                                 kaanna="'lisaa-tavoitealue'"></button>
                     </div>
@@ -86,7 +87,7 @@
                             <input class="form-control" ng-model="painopiste.nimi" slocalized>
                             <span class="input-group-btn">
                                 <button icon-role="remove"
-                                        class="btn btn-default"
+                                        class="btn btn-warning"
                                         ng-click="remove(osaaminen.painopisteet, painopiste)"
                                         kaanna="'poista'"></button>
                             </span>
@@ -94,7 +95,7 @@
                     </div>
                     <div class="clearfix">
                         <button icon-role="add"
-                                class="btn btn-default pull-right"
+                                class="btn btn-primary pull-right"
                                 ng-click="add(osaaminen, 'painopisteet')"
                                 kaanna="'lisaa-painopiste'"></button>
                     </div>
@@ -106,7 +107,7 @@
 
         <div class="pull-right" ng-if="editEnabled">
             <button icon-role="add"
-                    class="btn btn-default"
+                    class="btn btn-primary"
                     ng-click="add(laajaalaiset, 'laajaAlaisetOsaamiset')"
                     kaanna="'lisaa-laaja-alainen-osaaminen'"></button>
         </div>

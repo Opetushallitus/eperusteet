@@ -16,7 +16,7 @@ angular
         this.sisallot = [
             {
                 tyyppi: this.LAAJA_ALAINEN_OSAAMINEN,
-                label: "laaja-alainen-osaaminen",
+                label: "laaja-alaiset-osaamiset",
                 emptyPlaceholder: "tyhja-placeholder-laaja-alainen-osaaminen",
                 addLabel: "lisaa-laaja-alainen-osaaminen",
                 stateName: 'lops2019laajaalaiset'
@@ -67,10 +67,19 @@ angular
                             .customGET("laajaalaiset").laajaAlaisetOsaamiset;
                     case this.OPPIAINEET_OPPIMAARAT:
                         // Hae oppiaineet
-                        return await Api
+                        const oppiaineet = await Api
                             .one("perusteet", tiedot.getPeruste().id)
                             .one("lops2019")
                             .customGETLIST("oppiaineet");
+
+                        // Luodaan linkit oppiaineisiin
+                        _.each(oppiaineet, oppiaine => {
+                            oppiaine.$url = $state.href("root.perusteprojekti.suoritustapa.lops2019oppiaine", {
+                                oppiaineId: oppiaine.id
+                            });
+                        });
+
+                        return oppiaineet;
                 }
             } catch (e) {
                 return [];
