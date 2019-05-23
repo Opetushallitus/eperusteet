@@ -55,6 +55,19 @@ angular
                 template: require("views/admin/koulutuskoodiongelmat.pug"),
                 controller: "KoulutuskoodiOngelmatController"
             })
+            .state("root.admin.geneerinenarviointi", {
+                url: "/geneerinenarviointi",
+                template: require("views/admin/geneerinenarviointi.pug"),
+                controller: "GeneerinenArviointiController",
+                resolve: {
+                    geneeriset($stateParams, Api) {
+                        return Api.all("geneerinenarviointi").getList();
+                    },
+                    arviointiasteikot($stateParams, Arviointiasteikot) {
+                        return Arviointiasteikot.list({}).$promise;
+                    }
+                }
+            })
             .state("root.admin.oppaat", {
                 url: "/oppaat",
                 template: require("views/admin/oppaat.pug"),
@@ -70,6 +83,11 @@ angular
                     }
                 }
             });
+    })
+    .controller(
+        "GeneerinenArviointiController",
+        ($scope, geneeriset, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot) => {
+        $scope.geneeriset = geneeriset;
     })
     .controller(
         "ArviointiasteikotHallintaController",
@@ -90,6 +108,7 @@ angular
             $scope.edit = () => {
                 Editointikontrollit.startEditing();
             };
+
             $scope.sortableOptions = {
                 handle: ".handle",
                 cursor: "move",
@@ -217,6 +236,7 @@ angular
             { label: "tiedotteet", state: "root.admin.tiedotteet" },
             { label: "oppaat", state: "root.admin.oppaat" },
             { label: "arviointiasteikot", state: "root.admin.arviointiasteikot" },
+            { label: "geneerinenarviointi", state: "root.admin.geneerinenarviointi" },
             { label: "virheelliset-perusteet", state: "root.admin.virheelliset" },
             { label: "koulutuskoodi-ongelmat", state: "root.admin.koulutuskoodiongelmat" }
         ];
