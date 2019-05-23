@@ -503,11 +503,12 @@
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>4.0.3</version>
+                <version>5.2.4</version>
                 <configuration>
                     <url>${eperusteet.devdb.jdbcurl}</url>
                     <user>${eperusteet.devdb.user}</user>
                     <password>${eperusteet.devdb.password}</password>
+                    <outOfOrder>true</outOfOrder>
                 </configuration>
                 <dependencies>
                     <dependency>
