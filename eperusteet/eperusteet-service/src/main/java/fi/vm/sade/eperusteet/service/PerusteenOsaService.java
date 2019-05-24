@@ -31,6 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -94,6 +95,9 @@ public interface PerusteenOsaService {
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     LukkoDto getLock(@P("id") final Long id);
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    <T extends PerusteenOsaDto.Laaja> T addJulkaistuun(PerusteenOsaViite viite, T perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     OsaAlueLaajaDto addTutkinnonOsaOsaAlue(@P("id") final Long id, OsaAlueLaajaDto osaAlueDto);

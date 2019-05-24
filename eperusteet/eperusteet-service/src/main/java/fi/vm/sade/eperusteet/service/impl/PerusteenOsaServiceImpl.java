@@ -228,14 +228,25 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         return updated;
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto.Laaja> T add(PerusteenOsaViite viite, T perusteenOsaDto) {
+    @Transactional
+    private <T extends PerusteenOsaDto.Laaja> T addImpl(PerusteenOsaViite viite, T perusteenOsaDto) {
         PerusteenOsa perusteenOsa = mapper.map(perusteenOsaDto, PerusteenOsa.class);
         viite.setPerusteenOsa(perusteenOsa);
         perusteenOsa = perusteenOsaRepo.saveAndFlush(perusteenOsa);
         mapper.map(perusteenOsa, perusteenOsaDto);
         return perusteenOsaDto;
+    }
+
+    @Override
+    @Transactional
+    public <T extends PerusteenOsaDto.Laaja> T add(PerusteenOsaViite viite, T perusteenOsaDto) {
+        return addImpl(viite, perusteenOsaDto);
+    }
+
+    @Override
+    @Transactional
+    public <T extends PerusteenOsaDto.Laaja> T addJulkaistuun(PerusteenOsaViite viite, T perusteenOsaDto) {
+        return addImpl(viite, perusteenOsaDto);
     }
 
     private List<OsaAlue> createOsaAlueIfNotExist(List<OsaAlue> osaAlueet) {
