@@ -38,8 +38,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     public void addMissingOsaamisalakuvaukset() {
         Set<Peruste> korjattavat = perusteRepository.findAllPerusteet().stream()
                 .filter(peruste -> ProjektiTila.JULKAISTU.equals(peruste.getPerusteprojekti().getTila()))
-//                .filter(peruste -> peruste.getVoimassaoloLoppuu() == null
-//                        || (peruste.getSiirtymaPaattyy() != null && peruste.getSiirtymaPaattyy().after(new Date())))
+                .filter(peruste -> peruste.getVoimassaoloLoppuu() == null || peruste.getVoimassaoloLoppuu().before(new Date()))
                 .filter(peruste -> peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen())
                 .filter(peruste -> peruste.getSuoritustavat().size() == 1
                         && Suoritustapakoodi.REFORMI.equals(peruste.getSuoritustavat().iterator().next().getSuoritustapakoodi()))
