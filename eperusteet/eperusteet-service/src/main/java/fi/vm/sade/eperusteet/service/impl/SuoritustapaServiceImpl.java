@@ -124,6 +124,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         rm.setNimi(vanha.getNimi());
         rm.setRooli(vanha.getRooli());
         rm.setOsaamisala(vanha.getOsaamisala());
+        rm.setTutkintonimike(vanha.getTutkintonimike());
         rakenneRepository.save(rm);
 
         MuodostumisSaanto vanhaMs = vanha.getMuodostumisSaanto();
