@@ -55,8 +55,12 @@ public class LokalisoituTekstiDto {
     }
 
     static public LokalisoituTekstiDto of(String teksti) {
+        return of(Kieli.FI, teksti);
+    }
+
+    static public LokalisoituTekstiDto of(Kieli kieli, String teksti) {
         Map<Kieli, String> kaannokset = new HashMap<>();
-        kaannokset.put(Kieli.FI, teksti);
+        kaannokset.put(kieli, teksti);
         return new LokalisoituTekstiDto(null, kaannokset);
     }
 

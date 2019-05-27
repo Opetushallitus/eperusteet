@@ -17,8 +17,11 @@ public interface GeneerinenArviointiasteikkoService {
     GeneerinenArviointiasteikkoDto add(GeneerinenArviointiasteikkoDto asteikko);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    GeneerinenArviointiasteikkoDto update(Long id);
+    GeneerinenArviointiasteikkoDto update(Long id, GeneerinenArviointiasteikkoDto asteikkoDto);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void remove(Long id);
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    GeneerinenArviointiasteikkoDto kopioi(Long id);
 }

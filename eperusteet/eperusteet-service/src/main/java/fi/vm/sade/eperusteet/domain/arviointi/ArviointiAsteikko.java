@@ -19,10 +19,10 @@ package fi.vm.sade.eperusteet.domain.arviointi;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.Reference;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -36,6 +36,9 @@ import java.util.List;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "arviointiasteikko")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ArviointiAsteikko implements Serializable, ReferenceableEntity {
 
     @Id
