@@ -20,7 +20,7 @@ public class Lops2019Tehtava {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;

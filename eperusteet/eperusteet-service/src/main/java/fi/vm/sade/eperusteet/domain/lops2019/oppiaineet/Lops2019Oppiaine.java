@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -55,7 +56,7 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity {
     private List<Lops2019OppiaineLaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new ArrayList<>();
 
     @JoinColumn(name = "tavoitteet_id")
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Lops2019OppiaineTavoitteet tavoitteet;
 
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
@@ -66,4 +67,14 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity {
     private List<Lops2019Oppiaine> oppimaarat = new ArrayList<>();
 
     private Integer jarjestys;
+
+    public void setModuulit(List<Lops2019Moduuli> moduulit) {
+        if (this.moduulit == null) {
+            this.moduulit = new ArrayList<>();
+        }
+        if (!ObjectUtils.isEmpty(moduulit)) {
+            this.moduulit.clear();
+            this.moduulit.addAll(moduulit);
+        }
+    }
 }

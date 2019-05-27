@@ -19,7 +19,7 @@ import java.util.List;
 @Setter
 @Entity
 @Audited
-@Table(name = "yl_lops2019_oppiaine_moduuli")
+@Table(name = "yl_lops2019_moduuli")
 public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity {
 
     @NotNull
@@ -55,7 +55,9 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity {
     @JoinTable(name = "yl_lops2019_oppiaine_moduuli_sisalto",
             joinColumns = @JoinColumn(name = "moduuli_id"),
             inverseJoinColumns = @JoinColumn(name = "sisalto_id"))
-    @OrderBy("koodi.uri, id")
+    // TODO: order by koodi voi olla null
+    //@OrderBy("koodi.uri, id")
+    @OrderBy("id")
     private List<Lops2019ModuuliSisalto> sisallot = new ArrayList<>();
 
     private Integer jarjestys;

@@ -12,25 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Audited
 @Table(name = "yl_lops2019_oppiaine_tavoitteet")
 public class Lops2019OppiaineTavoitteet {
 
     @Id
-    @Getter
-    @Setter
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Getter
-    @Setter
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
-    @Getter
-    @Setter
     @OrderColumn
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "yl_lops2019_oppiaine_tavoitteet_tavoitealue",

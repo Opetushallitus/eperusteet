@@ -35,7 +35,7 @@
                         <strong kaanna="'koodi'"></strong>
                         <p>
                         <span ng-repeat="koodi in osaaminen.koodit">
-                            {{koodi.arvo || koodi.uri}}{{!$last ? ', ' : '' }}
+                            {{koodi.arvo}} {{koodi.nimi | kaanna}}{{!$last ? ', ' : '' }}
                         </span>
                         </p>
                     </div>
@@ -45,6 +45,18 @@
             <div ng-if="oppiaine.tavoitteet">
                 <h2 kaanna="'tavoitteet'"></h2>
                 <div ng-bind-html="oppiaine.tavoitteet.kuvaus | kaanna | unsafe"></div>
+                <div ng-if="oppiaine.tavoitteet.tavoitealueet && oppiaine.tavoitteet.tavoitealueet.length > 0">
+                    <h3 kaanna="'tavoitealueet'"></h3>
+                    <div ng-repeat="tavoitealue in oppiaine.tavoitteet.tavoitealueet">
+                        <strong kaanna="tavoitealue.nimi"></strong>
+                        <p kaanna="tavoitealue.kohde"></p>
+                        <ul>
+                            <li ng-repeat="tavoite in tavoitealue.tavoitteet">
+                                <span ng-bind="tavoite || 'nimeton' | kaanna"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <div ng-if="oppiaine.arviointi">
@@ -59,7 +71,13 @@
 
             <div ng-if="oppiaine.oppimaarat">
                 <h2 kaanna="'oppimaarat'"></h2>
-                <pre>{{oppiaine.oppimaarat | json}}</pre>
+                <div ng-repeat="oppimaara in oppiaine.oppimaarat">
+                    <a ui-sref='root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: oppimaara.id})'>
+                        <div class="oppiaine">
+                            <span ng-bind="oppimaara.nimi || 'nimeton' | kaanna"></span>
+                        </div>
+                    </a>
+                </div>
             </div>
 
         </div>
@@ -71,9 +89,10 @@
                        class="form-control"
                        type="text"
                        ng-model="oppiaine.koodi.arvo"
-                       editointi-kontrolli>
+                       editointi-kontrolli
+                       ng-disabled="true">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" ng-click="openKoodisto(oppiaine, 'oppiaineetjaoppimaaratlops2021')" kaanna="hae-koodistosta"></button>
+                    <button class="btn btn-default" ng-click="openKoodisto(oppiaine, 'oppiaineetjaoppimaaratlops2021', false)" kaanna="hae-koodistosta"></button>
                 </span>
             </div>
 
@@ -91,7 +110,7 @@
                 <strong kaanna="'koodi'"></strong>
                 <p>
                     <span ng-repeat="koodi in osaaminen.koodit">
-                        {{koodi.arvo || koodi.uri}}{{!$last ? ', ' : '' }}
+                        {{koodi.arvo}} {{koodi.nimi | kaanna}}{{!$last ? ', ' : '' }}
                     </span>
                 </p>
                 <div class="clearfix" style="margin-top: 10px">
@@ -101,7 +120,7 @@
                             kaanna="'poista-laaja-alainen-osaaminen'"></button>
                     <button icon-role="add"
                             class="btn btn-primary pull-right"
-                            ng-click="openKoodisto(osaaminen.koodit, 'laajaalainenosaaminenlops2021')"
+                            ng-click="openKoodisto(osaaminen.koodit, 'laajaalainenosaaminenlops2021', true)"
                             kaanna="'lisaa-koodi'"
                             style="margin-right: 10px"></button>
                 </div>
@@ -109,7 +128,7 @@
             <div class="clearfix">
                 <button icon-role="add"
                         class="btn btn-primary pull-right"
-                        ng-click="add(oppiaine.laajaAlaisetOsaamiset)"
+                        ng-click="add(oppiaine, 'laajaAlaisetOsaamiset')"
                         kaanna="'lisaa-laaja-alainen-osaaminen'"></button>
             </div>
 
@@ -119,7 +138,45 @@
                  ckeditor
                  editor-placeholder="oppiaineen-tavoitteet-kuvaus-placeholder"></div>
             <br>
-            <pre>TODO: tavoitealueet</pre>
+
+            <div>
+                <div ng-repeat="tavoitealue in oppiaine.tavoitteet.tavoitealueet" class="tavoitealue">
+                    <label for="{{'tavoitealue-nimi-input-' + $index}}" class="header">{{'nimi' | kaanna}}</label>
+                    <input id="{{'tavoitealue-nimi-input-' + $index}}" class="form-control" ng-model="tavoitealue.nimi" slocalized style="margin-bottom: 10px">
+
+                    <label for="{{'tavoitealue-kohde-input-' + $index}}" class="header">{{'kohde' | kaanna}}</label>
+                    <input id="{{'tavoitealue-kohde-input-' + $index}}" class="form-control" ng-model="tavoitealue.kohde" slocalized style="margin-bottom: 10px">
+
+                    <div ng-repeat="tavoite in tavoitealue.tavoitteet" style="margin-bottom: 10px; margin-left: 40px">
+                        <div class="input-group">
+                            <input class="form-control" ng-model="tavoite" slocalized>
+                            <span class="input-group-btn">
+                                    <button icon-role="remove"
+                                            class="btn btn-warning"
+                                            ng-click="remove(tavoitealue.tavoitteet, tavoite)"
+                                            kaanna="'poista'"></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <button icon-role="remove"
+                                class="btn btn-warning pull-right"
+                                ng-click="remove(osaaminen.tavoitteet, tavoitealue)"
+                                kaanna="'poista'"></button>
+                        <button icon-role="add"
+                                class="btn btn-primary pull-right"
+                                ng-click="add(tavoitealue, 'tavoitteet')"
+                                kaanna="'lisaa-tavoite'"
+                                style="margin-right: 10px"></button>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <button icon-role="add"
+                            class="btn btn-primary pull-right"
+                            ng-click="add(oppiaine.tavoitteet, 'tavoitealueet')"
+                            kaanna="'lisaa-tavoitealue'"></button>
+                </div>
+            </div>
 
             <h2 kaanna="'arviointi'"></h2>
             <div ng-model="oppiaine.arviointi.kuvaus"
@@ -128,26 +185,29 @@
                  editor-placeholder="oppiaineen-arviointi-kuvaus-placeholder"></div>
 
             <h2 kaanna="'moduulit'"></h2>
+            <pre>{{oppiaine.moduulit | json}}</pre>
             <div class="clearfix">
                 <button icon-role="add"
                         class="btn btn-primary pull-right"
-                        ng-click="add(oppiaine.moduulit)"
+                        ng-click="addModuuli()"
                         kaanna="'lisaa-moduuli'"></button>
             </div>
-            <pre>{{oppiaine.moduulit | json}}</pre>
 
             <h2 kaanna="'oppimaarat'"></h2>
+            <div style="margin-bottom: 10px">
+                <div ng-repeat="oppimaara in oppiaine.oppimaarat">
+                    <div class="oppiaine">
+                        <span ng-bind="oppimaara.nimi || 'nimeton' | kaanna"></span>
+                    </div>
+                </div>
+            </div>
             <div class="clearfix">
                 <button icon-role="add"
                         class="btn btn-primary pull-right"
-                        ng-click="add(oppiaine.oppimaarat)"
+                        ng-click="addOppimaara()"
                         kaanna="'lisaa-oppimaara'"></button>
             </div>
-            <pre>{{oppiaine.oppimaarat | json}}</pre>
 
-            <br>
-
-            <pre>{{oppiaine.plain() | json}}</pre>
         </div>
     </div>
 </div>

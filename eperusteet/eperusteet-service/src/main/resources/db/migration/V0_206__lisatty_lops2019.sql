@@ -43,20 +43,6 @@ create table yl_lops2019_laaja_alainen_osaaminen_kokonaisuus_AUD (
     primary key (id, REV)
 );
 
-create table yl_lops2019_lao_kokonaisuus_lao (
-    laaja_alainen_osaaminen_kokonaisuus_id int8 not null,
-    laaja_alainen_osaaminen_id int8 not null
-);
-
-create table yl_lops2019_lao_kokonaisuus_lao_AUD (
-    REV int4 not null,
-    laaja_alainen_osaaminen_kokonaisuus_id int8 not null,
-    laaja_alainen_osaaminen_id int8 not null,
-    REVTYPE int2,
-    REVEND int4,
-    primary key (REV, laaja_alainen_osaaminen_kokonaisuus_id, laaja_alainen_osaaminen_id)
-);
-
 create table yl_lops2019_laaja_alainen_osaaminen_painopiste (
     laaja_alainen_osaaminen_id int8 not null,
     painopiste_id int8 not null
@@ -83,6 +69,70 @@ create table yl_lops2019_laaja_alainen_osaaminen_tavoite_AUD (
     REVTYPE int2,
     REVEND int4,
     primary key (REV, laaja_alainen_osaaminen_id, tavoite_id)
+);
+
+create table yl_lops2019_lao_kokonaisuus_lao (
+    laaja_alainen_osaaminen_kokonaisuus_id int8 not null,
+    laaja_alainen_osaaminen_id int8 not null
+);
+
+create table yl_lops2019_lao_kokonaisuus_lao_AUD (
+    REV int4 not null,
+    laaja_alainen_osaaminen_kokonaisuus_id int8 not null,
+    laaja_alainen_osaaminen_id int8 not null,
+    REVTYPE int2,
+    REVEND int4,
+    primary key (REV, laaja_alainen_osaaminen_kokonaisuus_id, laaja_alainen_osaaminen_id)
+);
+
+create table yl_lops2019_moduuli (
+    id int8 not null,
+    luoja varchar(255),
+    luotu timestamp,
+    muokattu timestamp,
+    muokkaaja varchar(255),
+    jarjestys int4,
+    laajuus numeric(10, 2),
+    pakollinen boolean not null,
+    koodi_id int8,
+    kuvaus_id int8,
+    nimi_id int8 not null,
+    tavoitteet_id int8,
+    primary key (id)
+);
+
+create table yl_lops2019_moduuli_AUD (
+    id int8 not null,
+    REV int4 not null,
+    REVTYPE int2,
+    REVEND int4,
+    luoja varchar(255),
+    luotu timestamp,
+    muokattu timestamp,
+    muokkaaja varchar(255),
+    jarjestys int4,
+    laajuus numeric(10, 2),
+    pakollinen boolean,
+    koodi_id int8,
+    kuvaus_id int8,
+    nimi_id int8,
+    tavoitteet_id int8,
+    primary key (id, REV)
+);
+
+create table yl_lops2019_moduuli_sisalto (
+    id int8 not null,
+    kohde_id int8,
+    primary key (id)
+);
+
+create table yl_lops2019_moduuli_sisalto_AUD (
+    id int8 not null,
+    REV int4 not null,
+    REVTYPE int2,
+    REVEND int4,
+    kohde_id int8,
+    primary key (id, REV)
 );
 
 create table yl_lops2019_oppiaine (
@@ -183,21 +233,8 @@ create table yl_lops2019_oppiaine_laaja_alaiset_osaamiset_AUD (
 );
 
 create table yl_lops2019_oppiaine_moduuli (
-    id int8 not null,
-    luoja varchar(255),
-    luotu timestamp,
-    muokattu timestamp,
-    muokkaaja varchar(255),
-    jarjestys int4,
-    laajuus numeric(10, 2),
-    pakollinen boolean not null,
-    koodi_id int8,
-    kuvaus_id int8,
-    nimi_id int8 not null,
-    tavoitteet_id int8,
     oppiaine_id int8 not null,
-    moduuli_id int8 not null,
-    primary key (id)
+    moduuli_id int8 not null
 );
 
 create table yl_lops2019_oppiaine_moduuli_AUD (
@@ -206,37 +243,20 @@ create table yl_lops2019_oppiaine_moduuli_AUD (
     moduuli_id int8 not null,
     REVTYPE int2,
     REVEND int4,
-    id int8 not null,
-    luoja varchar(255),
-    luotu timestamp,
-    muokattu timestamp,
-    muokkaaja varchar(255),
-    jarjestys int4,
-    laajuus numeric(10, 2),
-    pakollinen boolean,
-    koodi_id int8,
-    kuvaus_id int8,
-    nimi_id int8,
-    tavoitteet_id int8,
-    primary key (id, REV)
+    primary key (REV, oppiaine_id, moduuli_id)
 );
 
 create table yl_lops2019_oppiaine_moduuli_sisalto (
-    id int8 not null,
-    kohde_id int8,
     moduuli_id int8 not null,
-    sisalto_id int8 not null,
-    primary key (id)
+    sisalto_id int8 not null
 );
 
 create table yl_lops2019_oppiaine_moduuli_sisalto_AUD (
-    id int8 not null,
     REV int4 not null,
-    REVTYPE int2,
-    REVEND int4,
-    kohde_id int8,
     moduuli_id int8 not null,
     sisalto_id int8 not null,
+    REVTYPE int2,
+    REVEND int4,
     primary key (REV, moduuli_id, sisalto_id)
 );
 
@@ -415,7 +435,7 @@ create table yl_lops2019_sisalto (
     luotu timestamp,
     muokattu timestamp,
     muokkaaja varchar(255),
-    laaja_alainen_osaaminen_kokonaisuus_id int8,
+    laaja_alainen_osaaminen_kokonaisuus_id int8 not null,
     peruste_id int8 not null,
     sisalto_id int8,
     primary key (id)

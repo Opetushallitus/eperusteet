@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019LaajaAlainenRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
@@ -109,7 +110,15 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     public Lops2019OppiaineDto getOppiaine(Long perusteId, Long oppiaineId) {
         Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
         // Todo: tarkista, että kuuluu perusteeseen
-        return mapper.map(oppiaine, Lops2019OppiaineDto.class);
+        Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
+
+        List<Lops2019OppiaineDto> oppimaarat = mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class);
+        oppiaineDto.setOppimaarat(oppimaarat);
+
+        List<Lops2019ModuuliDto> moduulit = mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class);
+        oppiaineDto.setModuulit(moduulit);
+
+        return oppiaineDto;
     }
 
     @Override
@@ -117,7 +126,15 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
         oppiaine = oppiaineRepository.save(oppiaine);
         // Todo: tarkista, että kuuluu perusteeseen
-        return mapper.map(oppiaine, Lops2019OppiaineDto.class);
+        Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
+
+        List<Lops2019OppiaineDto> oppimaarat = mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class);
+        oppiaineDto.setOppimaarat(oppimaarat);
+
+        List<Lops2019ModuuliDto> moduulit = mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class);
+        oppiaineDto.setModuulit(moduulit);
+
+        return oppiaineDto;
     }
 
     @Override

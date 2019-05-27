@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @Entity
 @Audited
-@Table(name = "yl_lops2019_oppiaine_moduuli_sisalto")
+@Table(name = "yl_lops2019_moduuli_sisalto")
 public class Lops2019ModuuliSisalto {
 
     @Id

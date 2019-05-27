@@ -127,15 +127,91 @@ angular
 .controller('Lops2019OppiaineController', function (
     $scope,
     $state,
+    $uibModal,
     Editointikontrollit,
     Varmistusdialogi,
     Koodisto,
     oppiaine
 ) {
     $scope.oppiaine = oppiaine.clone();
+    $scope.oppiaine.tavoitteet = $scope.oppiaine.tavoitteet || {};
 
-    $scope.add = (target) => {
-        target.push({});
+    $scope.add = (parent, field) => {
+        if (!_.has(parent, field)) {
+            parent[field] = [];
+        }
+        parent[field].push({});
+    };
+
+    $scope.remove = (target, element) => {
+        _.remove(target, element);
+    };
+
+    $scope.addModuuli = async () => {
+        $uibModal.open({
+            template:
+                '' +
+                '<div class="modal-header"><h2 kaanna="\'lisaa-moduuli\'"></h2></div>' +
+                '<div class="modal-body">' +
+                '  <label for="moduuli-nimi-input" class="header">{{\'nimi\' | kaanna}}</label>\n' +
+                '  <input id="moduuli-nimi-input" class="form-control" ng-model="moduuli.nimi" slocalized>' +
+                '  <div class="checkbox">' +
+                '    <label>' +
+                '      <input type="checkbox" ng-model="moduuli.pakollinen"> {{\'pakollinen\' | kaanna}}' +
+                '    </label>' +
+                '  </div>' +
+                '</div>' +
+                '<div class="modal-footer">' +
+                '  <button class="btn btn-warning" type="button" ng-click="cancel()" kaanna="\'peruuta\'"></button>' +
+                '  <button class="btn btn-primary" type="button" ng-click="ok()" kaanna="\'lisaa\'"></button>' +
+                '</div>',
+            controller: function($scope, $uibModalInstance) {
+                $scope.moduuli = {
+                    pakollinen: false
+                };
+                $scope.ok = () => {
+                    $uibModalInstance.close($scope.moduuli);
+                };
+                $scope.cancel = () => {
+                    $uibModalInstance.dismiss('cancel');
+                };
+            }
+        }).result.then(async moduuli => {
+            if (!_.has($scope.oppiaine, 'moduulit')) {
+                $scope.oppiaine['moduulit'] = [];
+            }
+            $scope.oppiaine.moduulit.push(moduuli);
+        });
+    };
+
+    $scope.addOppimaara = async () => {
+        $uibModal.open({
+            template:
+                '' +
+                '<div class="modal-header"><h2 kaanna="\'lisaa-oppimaara\'"></h2></div>' +
+                '<div class="modal-body">' +
+                '  <label for="oppimaara-nimi-input" class="header">{{\'nimi\' | kaanna}}</label>\n' +
+                '  <input id="oppimaara-nimi-input" class="form-control" ng-model="oppimaara.nimi" slocalized>' +
+                '</div>' +
+                '<div class="modal-footer">' +
+                '  <button class="btn btn-warning" type="button" ng-click="cancel()" kaanna="\'peruuta\'"></button>' +
+                '  <button class="btn btn-primary" type="button" ng-click="ok()" kaanna="\'lisaa\'"></button>' +
+                '</div>',
+            controller: function($scope, $uibModalInstance) {
+                $scope.oppimaara = {};
+                $scope.ok = () => {
+                    $uibModalInstance.close($scope.oppimaara);
+                };
+                $scope.cancel = () => {
+                    $uibModalInstance.dismiss('cancel');
+                };
+            }
+        }).result.then(async oppimaara => {
+            if (!_.has($scope.oppiaine, 'oppimaarat')) {
+                $scope.oppiaine['oppimaarat'] = [];
+            }
+            $scope.oppiaine.oppimaarat.push(oppimaara);
+        });
     };
 
     $scope.removeOppiaine = () => {
@@ -150,25 +226,25 @@ angular
         })();
     };
 
-    $scope.remove = (target, element) => {
-      _.remove(target, element);
-    };
-
     $scope.edit = () => {
         Editointikontrollit.startEditing();
     };
 
-    $scope.openKoodisto = (target, koodisto) => {
+    $scope.openKoodisto = (target, koodisto, isArray) => {
         Koodisto.modaali(
             koodi => {
                 const valittu = {
                     arvo: koodi.koodiArvo,
                     uri: koodi.koodiUri,
+                    nimi: koodi.nimi,
                     koodisto: koodi.koodisto.koodistoUri,
                     versio: koodi.versio
                 };
 
-                if (_.isArray(target)) {
+                if (isArray) {
+                    if (!target) {
+                        target = [];
+                    }
                     target.push(valittu);
                 } else {
                     target.koodi = valittu;
@@ -194,9 +270,11 @@ angular
         save: async () => {
             oppiaine = await $scope.oppiaine.save();
             $scope.oppiaine = oppiaine.clone();
+            $scope.oppiaine.tavoitteet = $scope.oppiaine.tavoitteet || {};
         },
         cancel: () => {
             $scope.oppiaine = oppiaine.clone();
+            $scope.oppiaine.tavoitteet = $scope.oppiaine.tavoitteet || {};
         },
         notify: value => {
             $scope.editEnabled = value;
