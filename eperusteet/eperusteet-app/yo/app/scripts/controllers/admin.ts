@@ -84,10 +84,112 @@ angular
                 }
             });
     })
-    .controller(
-        "GeneerinenArviointiController",
-        ($scope, geneeriset, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot) => {
+    .controller("GeneerinenArviointiController",
+        ($timeout, $scope, geneeriset, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot, Varmistusdialogi) => {
+        console.log(_.cloneDeep(geneeriset.plain()));
+
         $scope.geneeriset = geneeriset;
+
+        $scope.arviointiasteikot = _(arviointiasteikot)
+            .sortBy(aa => _.size(aa.osaamistasot))
+            .map(aa => ({
+                ...aa,
+                $$tasoMap: _.indexBy(aa.osaamistasot, taso => "" + taso.id),
+            }))
+            .reverse()
+            .value();
+
+        $scope.arviointiasteikotMap = _.indexBy($scope.arviointiasteikot, asteikko => "" + asteikko.id);
+        $scope.uusiArviointi = {
+            arviointiAsteikko: $scope.arviointiasteikot[0].id,
+        };
+
+        $scope.lisaaKriteeri = (ot) => {
+            ot.kriteerit.push({});
+        };
+
+        $scope.poistaKriteeri = (ot, kriteeri) => {
+            _.remove(ot.kriteerit, kriteeri);
+        };
+
+        $scope.lisaa = async () => {
+            const geneerinen = await geneeriset.post({
+                _arviointiAsteikko: "" + $scope.uusiArviointi.arviointiAsteikko,
+                arviointiAsteikko: "" + $scope.uusiArviointi.arviointiAsteikko,
+            });
+            $scope.geneeriset.push(geneerinen);
+        };
+
+        $scope.julkaise = (el) => {
+            Varmistusdialogi.dialogi({
+                otsikko: "vahvista-julkaisu",
+                teksti: "haluatko-varmasti-julkaista",
+                primaryBtn: "julkaise",
+                async successCb() {
+                    el.julkaistu = true;
+                    try {
+                        await $scope.paivita(el);
+                        Notifikaatiot.onnistui("julkaisu-onnistui");
+                    }
+                    catch (err) {
+                        Notifikaatiot.serverCb(err);
+                    }
+                }
+            })();
+        };
+
+        $scope.poista = (el) => {
+            Varmistusdialogi.dialogi({
+                otsikko: "vahvista-poisto",
+                teksti: "poistetaanko-julkaisematon-arviointiasteikko",
+                primaryBtn: "poista",
+                async successCb() {
+                    try {
+                        await el.remove();
+                        _.remove($scope.geneeriset, el);
+                        Notifikaatiot.onnistui("poisto-onnistui");
+                    }
+                    catch (err) {
+                        Notifikaatiot.serverCb(err);
+                    }
+                }
+            })();
+        };
+
+        $scope.paivita = async(el) => {
+            try {
+                const wat = await geneeriset.customPUT(el, el.id);
+                _.merge(el, wat);
+                Notifikaatiot.onnistui("paivitys-onnistui");
+            }
+            catch (err) {
+                Notifikaatiot.serverCb(err);
+            }
+        };
+
+        $scope.kopioi = async (el) => {
+            try {
+                Varmistusdialogi.dialogi({
+                    otsikko: "vahvista-kopiointi",
+                    teksti: "kopioidaanko-asteikko-varmasti",
+                    primaryBtn: "kopioi",
+                    async successCb() {
+                        try {
+                            $scope.geneeriset.push(await el.customPOST(undefined, "/kopioi"));
+                            Notifikaatiot.onnistui("kopiointi-onnistui");
+                        }
+                        catch (err) {
+                            console.log(err);
+                            Notifikaatiot.serverCb(err);
+                        }
+                    }
+                })();
+            }
+            catch (err) {
+                Notifikaatiot.serverCb(err);
+            }
+        };
+
     })
     .controller(
         "ArviointiasteikotHallintaController",
