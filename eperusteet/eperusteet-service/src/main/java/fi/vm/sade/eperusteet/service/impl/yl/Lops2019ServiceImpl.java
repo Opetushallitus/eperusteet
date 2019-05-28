@@ -4,12 +4,14 @@ import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019LaajaAlainenRepository;
+import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -20,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,6 +41,9 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Autowired
     private Lops2019OppiaineRepository oppiaineRepository;
+
+    @Autowired
+    private Lops2019ModuuliRepository moduuliRepository;
 
     @Autowired
     @Dto
@@ -138,15 +145,34 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public void removeOppiaine(Long perusteId, Long id) {
+    public void removeOppiaine(Long perusteId, Long oppiaineId) {
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(id);
+        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
         boolean removed = sisalto.getOppiaineet().remove(oppiaine);
 
         // Poistetaan, jos viitattu perusteen sisällöstä
         if (removed) {
-            oppiaineRepository.delete(id);
+            oppiaineRepository.delete(oppiaineId);
         }
+    }
+
+    @Override
+    public Lops2019ModuuliDto getModuuli(Long perusteId, Long oppiaineId, Long moduuliId) {
+        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
+        // Todo: tarkista, että kuuluu perusteeseen
+        Optional<Lops2019Moduuli> moduuliOptional = oppiaine.getModuulit().stream()
+                .filter(moduuli -> moduuli.getId().equals(moduuliId))
+                .findAny();
+
+        return moduuliOptional.map(lops2019Moduuli -> mapper.map(lops2019Moduuli, Lops2019ModuuliDto.class))
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public Lops2019ModuuliDto updateModuuli(Long perusteId, Lops2019ModuuliDto dto) {
+        Lops2019Moduuli moduuli = mapper.map(dto, Lops2019Moduuli.class);
+        moduuli = moduuliRepository.save(moduuli);
+        return mapper.map(moduuli, Lops2019ModuuliDto.class);
     }
 
 }

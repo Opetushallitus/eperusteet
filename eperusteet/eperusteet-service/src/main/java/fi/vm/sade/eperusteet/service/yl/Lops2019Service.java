@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.yl;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,4 +44,10 @@ public interface Lops2019Service {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void removeOppiaine(@P("perusteId") Long perusteId, Long id);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    Lops2019ModuuliDto getModuuli(Long perusteId, Long oppiaineId, Long moduuliId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    Lops2019ModuuliDto updateModuuli(Long perusteId, Lops2019ModuuliDto dto);
 }

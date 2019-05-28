@@ -136,11 +136,15 @@ angular
     $scope.oppiaine = oppiaine.clone();
     $scope.oppiaine.tavoitteet = $scope.oppiaine.tavoitteet || {};
 
-    $scope.add = (parent, field) => {
+    $scope.add = (parent, field, obj) => {
         if (!_.has(parent, field)) {
             parent[field] = [];
         }
-        parent[field].push({});
+        if (obj) {
+            parent[field].push(obj);
+        } else {
+            parent[field].push({});
+        }
     };
 
     $scope.remove = (target, element) => {
@@ -167,7 +171,7 @@ angular
                 '</div>',
             controller: function($scope, $uibModalInstance) {
                 $scope.moduuli = {
-                    pakollinen: false
+                    pakollinen: true
                 };
                 $scope.ok = () => {
                     $uibModalInstance.close($scope.moduuli);
@@ -262,7 +266,6 @@ angular
         )();
     };
 
-
     Editointikontrollit.registerCallback({
         edit: () => {
             // Todo: Hae uusin versio
@@ -275,6 +278,76 @@ angular
         cancel: () => {
             $scope.oppiaine = oppiaine.clone();
             $scope.oppiaine.tavoitteet = $scope.oppiaine.tavoitteet || {};
+        },
+        notify: value => {
+            $scope.editEnabled = value;
+        }
+    });
+})
+.controller("Lops2019ModuuliController", function (
+    $scope,
+    Editointikontrollit,
+    Koodisto,
+    moduuli
+) {
+    $scope.moduuli = moduuli.clone();
+    $scope.moduuli.tavoitteet = $scope.moduuli.tavoitteet || {};
+
+    $scope.edit = () => {
+        Editointikontrollit.startEditing();
+    };
+
+    $scope.add = (parent, field, obj) => {
+        if (!_.has(parent, field) || !parent[field]) {
+            parent[field] = [];
+        }
+
+        if (obj) {
+            parent[field].push(obj);
+        } else {
+            parent[field].push({});
+        }
+    };
+
+    $scope.remove = (target, el) => {
+        _.remove(target, el);
+    };
+
+    $scope.openKoodisto = (target, koodisto) => {
+        Koodisto.modaali(
+            koodi => {
+                target.koodi = {
+                    arvo: koodi.koodiArvo,
+                    uri: koodi.koodiUri,
+                    nimi: koodi.nimi,
+                    koodisto: koodi.koodisto.koodistoUri,
+                    versio: koodi.versio
+                };
+            },
+            {
+                tyyppi: () => {
+                    return koodisto; // Todo: uusi koodisto hahtuvalla
+                },
+                ylarelaatioTyyppi: () => {
+                    return "";
+                },
+                tarkista: _.constant(true)
+            }
+        )();
+    };
+
+    Editointikontrollit.registerCallback({
+        edit: () => {
+            // Todo: Hae uusin versio
+        },
+        save: async () => {
+            moduuli = await $scope.moduuli.save();
+            $scope.moduuli = moduuli.clone();
+            $scope.moduuli.tavoitteet = $scope.moduuli.tavoitteet || {};
+        },
+        cancel: () => {
+            $scope.oppiaine = moduuli.clone();
+            $scope.moduuli.tavoitteet = $scope.moduuli.tavoitteet || {};
         },
         notify: value => {
             $scope.editEnabled = value;

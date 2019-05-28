@@ -19,7 +19,7 @@
         <div ng-if="!editEnabled">
             <div ng-if="oppiaine.koodi">
                 <strong kaanna="'koodi'"></strong>
-                <p>{{oppiaine.koodi.arvo || oppiaine.koodi.uri | kaanna}}</p>
+                <p>{{oppiaine.koodi.nimi || oppiaine.koodi.arvo | kaanna}}</p>
             </div>
 
             <div ng-if="oppiaine.tehtava">
@@ -34,9 +34,9 @@
                     <div ng-if="osaaminen.koodit && osaaminen.koodit.length > 0">
                         <strong kaanna="'koodi'"></strong>
                         <p>
-                        <span ng-repeat="koodi in osaaminen.koodit">
-                            {{koodi.arvo}} {{koodi.nimi | kaanna}}{{!$last ? ', ' : '' }}
-                        </span>
+                            <span ng-repeat="koodi in osaaminen.koodit">
+                                {{koodi.arvo}} {{koodi.nimi | kaanna}}{{!$last ? ', ' : '' }}
+                            </span>
                         </p>
                     </div>
                 </div>
@@ -66,13 +66,17 @@
 
             <div ng-if="oppiaine.moduulit">
                 <h2 kaanna="'moduulit'"></h2>
-                <pre>{{oppiaine.moduulit | json}}</pre>
+                <div ng-repeat="moduuli in oppiaine.moduulit" class="moduuli" ng-class="{'moduuli-pakollinen': moduuli.pakollinen}">
+                    <a ui-sref="root.perusteprojekti.suoritustapa.lops2019moduuli({oppiaineId: oppiaine.id, moduuliId: moduuli.id})">
+                        <span ng-bind="moduuli.nimi || 'nimeton' | kaanna"></span>
+                    </a>
+                </div>
             </div>
 
             <div ng-if="oppiaine.oppimaarat">
                 <h2 kaanna="'oppimaarat'"></h2>
                 <div ng-repeat="oppimaara in oppiaine.oppimaarat">
-                    <a ui-sref='root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: oppimaara.id})'>
+                    <a ui-sref="root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: oppimaara.id})">
                         <div class="oppiaine">
                             <span ng-bind="oppimaara.nimi || 'nimeton' | kaanna"></span>
                         </div>
@@ -128,7 +132,7 @@
             <div class="clearfix">
                 <button icon-role="add"
                         class="btn btn-primary pull-right"
-                        ng-click="add(oppiaine, 'laajaAlaisetOsaamiset')"
+                        ng-click="add(oppiaine, 'laajaAlaisetOsaamiset', { koodit: [] })"
                         kaanna="'lisaa-laaja-alainen-osaaminen'"></button>
             </div>
 
@@ -185,7 +189,12 @@
                  editor-placeholder="oppiaineen-arviointi-kuvaus-placeholder"></div>
 
             <h2 kaanna="'moduulit'"></h2>
-            <pre>{{oppiaine.moduulit | json}}</pre>
+            <div style="margin-bottom: 10px;">
+                <div ng-repeat="moduuli in oppiaine.moduulit" class="moduuli" ng-class="{'moduuli-pakollinen': moduuli.pakollinen}">
+                    <span ng-bind="moduuli.nimi || 'nimeton' | kaanna"></span>
+                </div>
+                <pre>{{oppiaine.moduulit | json}}</pre>
+            </div>
             <div class="clearfix">
                 <button icon-role="add"
                         class="btn btn-primary pull-right"

@@ -331,6 +331,24 @@ angular
                     PerusteProjektiSivunavi.setVisible(false);
                 }
             })
+            .state("root.perusteprojekti.suoritustapa.lops2019moduuli", {
+                url: "/lops2019/oppiaineet/{oppiaineId}/moduulit/{moduuliId}?{versio?:int}",
+                template: require("views/partials/lops2019/moduuli.html"),
+                controller: "Lops2019ModuuliController",
+                resolve: {
+                    moduuli: (Api, projektinTiedotAlustettu, perusteprojektiTiedot, $stateParams) => {
+                        return Api
+                            .one("perusteet", perusteprojektiTiedot.getPeruste().id)
+                            .one("lops2019")
+                            .one("oppiaineet", $stateParams.oppiaineId)
+                            .one("moduulit", $stateParams.moduuliId)
+                            .get()
+                    }
+                },
+                onEnter: PerusteProjektiSivunavi => {
+                    PerusteProjektiSivunavi.setVisible(false);
+                }
+            })
             .state("root.perusteprojekti.suoritustapa.losisalto", {
                 url: "/losisalto",
                 template: require("views/partials/perusteprojekti/esiopetus.html"),

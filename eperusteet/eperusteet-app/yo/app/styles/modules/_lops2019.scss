@@ -12,4 +12,21 @@
         padding: 5px 10px;
         margin-bottom: 5px;
     }
+
+    .moduuli {
+        border-radius: 30px;
+        padding: 10px 20px;
+        display: flex;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        background-color: #eaf5fe;
+    }
+
+    .moduuli-pakollinen {
+        background-color: #e4f3cf;
+    }
+
+    .oppimaara {
+        background-color: #e4f3cf;
+    }
 }

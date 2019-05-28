@@ -2,13 +2,12 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
-import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -119,6 +118,26 @@ public class Lops2019Controller {
         audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, POISTO), (Void) -> {
             service.removeOppiaine(perusteId, id);
             return null;
+        });
+    }
+
+    @RequestMapping(value = "/oppiaineet/{oppiaineId}/moduulit/{moduuliId}", method = GET)
+    public ResponseEntity<Lops2019ModuuliDto> getModuuli(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long oppiaineId,
+            @PathVariable final Long moduuliId) {
+        return ResponseEntity.ok(service.getModuuli(perusteId, oppiaineId, moduuliId));
+    }
+
+    @RequestMapping(value = "/oppiaineet/{oppiaineId}/moduulit/{moduuliId}", method = PUT)
+    public ResponseEntity<Lops2019ModuuliDto> updateModuuli(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long oppiaineId,
+            @PathVariable final Long moduuliId,
+            @RequestBody Lops2019ModuuliDto dto) {
+        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, MUOKKAUS), (Void) -> {
+            dto.setId(moduuliId);
+            return ResponseEntity.ok(service.updateModuuli(perusteId, dto));
         });
     }
 
