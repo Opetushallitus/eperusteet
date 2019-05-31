@@ -85,6 +85,16 @@ public class Lops2019Controller {
 
     @RequestMapping(value = "/oppiaineet", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<List<Lops2019OppiaineDto>> sortOppiaineet(
+            @PathVariable final Long perusteId,
+            @RequestBody final List<Lops2019OppiaineDto> oppiaineet
+    ) {
+        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, MUOKKAUS),
+                (Void) -> ResponseEntity.ok(service.sortOppiaineet(perusteId, oppiaineet)));
+    }
+
+    @RequestMapping(value = "/oppiaineet/uusi", method = POST)
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Lops2019OppiaineDto> addOppiaine(
             @PathVariable final Long perusteId,
             @RequestBody final Lops2019OppiaineDto dto

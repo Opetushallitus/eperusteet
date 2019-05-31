@@ -14,12 +14,19 @@
 
         <h1 kaanna="'oppiaineet'"></h1>
 
-        <div ng-repeat="oppiaine in oppiaineet">
-            <a ui-sref='root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: oppiaine.id})'>
-                <div class="oppiaine">
+        <div ui-sortable="sortableOptions" ng-model="oppiaineet">
+            <div ng-repeat="oppiaine in oppiaineet">
+                <a ui-sref='root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: oppiaine.id})'
+                   ng-show="!editEnabled">
+                    <div class="oppiaine">
+                        <span ng-bind="oppiaine.nimi || 'nimeton' | kaanna"></span>
+                    </div>
+                </a>
+                <div class="oppiaine handle" ng-show="editEnabled">
+                    <span icon-role="drag"></span>
                     <span ng-bind="oppiaine.nimi || 'nimeton' | kaanna"></span>
                 </div>
-            </a>
+            </div>
         </div>
 
         <br>

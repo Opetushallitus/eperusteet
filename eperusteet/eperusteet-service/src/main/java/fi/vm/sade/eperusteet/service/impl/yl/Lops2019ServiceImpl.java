@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -102,6 +103,20 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
+    public List<Lops2019OppiaineDto> sortOppiaineet(Long perusteId, List<Lops2019OppiaineDto> dtos) {
+        List<Lops2019Oppiaine> oppiaineet = mapper.mapAsList(dtos, Lops2019Oppiaine.class);
+
+        // Asetetaan järjestysnumero jokaiselle oppiaineelle
+        for (int i = 0; i < oppiaineet.size(); i++) {
+            Lops2019Oppiaine oppiaine = oppiaineet.get(i);
+            oppiaine.setJarjestys(i);
+            oppiaineRepository.save(oppiaine);
+        }
+
+        return mapper.mapAsList(oppiaineet, Lops2019OppiaineDto.class);
+    }
+
+    @Override
     public Lops2019OppiaineDto addOppiaine(Long perusteId, Lops2019OppiaineDto dto) {
         Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
         oppiaine = oppiaineRepository.save(oppiaine);
@@ -119,11 +134,9 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         // Todo: tarkista, että kuuluu perusteeseen
         Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
 
-        List<Lops2019OppiaineDto> oppimaarat = mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class);
-        oppiaineDto.setOppimaarat(oppimaarat);
-
-        List<Lops2019ModuuliDto> moduulit = mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class);
-        oppiaineDto.setModuulit(moduulit);
+        // Haetaan manuaalisesti oppimäärät ja moduulit
+        oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class));
+        oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class));
 
         return oppiaineDto;
     }
@@ -131,15 +144,35 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     @Override
     public Lops2019OppiaineDto updateOppiaine(Long perusteId, Lops2019OppiaineDto dto) {
         Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
+
+        // Asetetaan oppimäärien järjetys
+        List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
+        if (!ObjectUtils.isEmpty(oppimaarat)) {
+            for (int i = 0; i < oppimaarat.size(); i++) {
+                Lops2019Oppiaine oppimaara = oppimaarat.get(i);
+                oppimaara.setJarjestys(i);
+            }
+        }
+
+        // Asetetaan oppimäärien järjetys
+        List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
+        if (!ObjectUtils.isEmpty(moduulit)) {
+            for (int i = 0; i < moduulit.size(); i++) {
+                Lops2019Moduuli moduuli = moduulit.get(i);
+                moduuli.setJarjestys(i);
+            }
+        }
+
+        // Tallennetaan muokattu oppiaine
         oppiaine = oppiaineRepository.save(oppiaine);
+
+
         // Todo: tarkista, että kuuluu perusteeseen
         Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
 
-        List<Lops2019OppiaineDto> oppimaarat = mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class);
-        oppiaineDto.setOppimaarat(oppimaarat);
-
-        List<Lops2019ModuuliDto> moduulit = mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class);
-        oppiaineDto.setModuulit(moduulit);
+        // Haetaan manuaalisesti oppimäärät ja moduulit
+        oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class));
+        oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class));
 
         return oppiaineDto;
     }

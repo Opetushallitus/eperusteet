@@ -189,9 +189,15 @@
                  editor-placeholder="oppiaineen-arviointi-kuvaus-placeholder"></div>
 
             <h2 kaanna="'moduulit'"></h2>
-            <div style="margin-bottom: 10px;">
-                <div ng-repeat="moduuli in oppiaine.moduulit" class="moduuli" ng-class="{'moduuli-pakollinen': moduuli.pakollinen}">
-                    <span ng-bind="moduuli.nimi || 'nimeton' | kaanna"></span>
+            <div style="margin-bottom: 10px;"
+                 ui-sortable="sortableOptions"
+                 ng-model="oppiaine.moduulit">
+                <div ng-repeat="moduuli in oppiaine.moduulit">
+                    <div class="moduuli handle" ng-class="{'moduuli-pakollinen': moduuli.pakollinen}">
+                        <span icon-role="drag" class="handle"></span>
+                        <span ng-bind="moduuli.nimi || 'nimeton' | kaanna"></span>
+                        <a class="action-link pull-right" icon-role="remove" ng-click="remove(oppiaine.moduulit, moduuli)"></a>
+                    </div>
                 </div>
             </div>
             <div class="clearfix">
@@ -202,10 +208,14 @@
             </div>
 
             <h2 kaanna="'oppimaarat'"></h2>
-            <div style="margin-bottom: 10px">
+            <div style="margin-bottom: 10px"
+                 ui-sortable="sortableOptions"
+                 ng-model="oppiaine.oppimaarat">
                 <div ng-repeat="oppimaara in oppiaine.oppimaarat">
-                    <div class="oppiaine">
+                    <div class="oppiaine handle">
+                        <span icon-role="drag"></span>
                         <span ng-bind="oppimaara.nimi || 'nimeton' | kaanna"></span>
+                        <a class="action-link pull-right" icon-role="remove" ng-click="remove(oppiaine.oppimaarat, oppimaara)"></a>
                     </div>
                 </div>
             </div>

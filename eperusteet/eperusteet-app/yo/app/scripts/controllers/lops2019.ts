@@ -119,10 +119,39 @@ angular
                 };
             }
         }).result.then(async uusi => {
-            const oppiaine = await $scope.oppiaineet.post(uusi);
+            const oppiaine = await $scope.oppiaineet.all("uusi").post(uusi);
             $scope.oppiaineet.push(oppiaine);
         });
     };
+
+    $scope.sortableOptions = {
+        cursor: "move",
+        cursorAt: { top: 2, left: 2 },
+        handle: ".handle",
+        delay: 100,
+        tolerance: "pointer",
+        axis: "y"
+    };
+
+    $scope.sort = () => {
+        Editointikontrollit.startEditing();
+    };
+
+    Editointikontrollit.registerCallback({
+        edit: () => {
+            // Todo: Hae uusin versio
+        },
+        save: async () => {
+            oppiaineet = (await $scope.oppiaineet.post($scope.oppiaineet.plain()));
+            $scope.oppiaineet = oppiaineet.clone();
+        },
+        cancel: () => {
+            $scope.oppiaineet = oppiaineet.clone();
+        },
+        notify: value => {
+            $scope.editEnabled = value;
+        }
+    });
 })
 .controller('Lops2019OppiaineController', function (
     $scope,
@@ -228,6 +257,15 @@ angular
                 $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaineet");
             }
         })();
+    };
+
+    $scope.sortableOptions = {
+        cursor: "move",
+        //cursorAt: { top: 2, left: 2 },
+        handle: ".handle",
+        delay: 100,
+        tolerance: "pointer",
+        axis: "y"
     };
 
     $scope.edit = () => {
