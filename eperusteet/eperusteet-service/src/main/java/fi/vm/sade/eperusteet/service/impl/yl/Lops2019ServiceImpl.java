@@ -175,4 +175,17 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         return mapper.map(moduuli, Lops2019ModuuliDto.class);
     }
 
+    @Override
+    public void removeModuuli(Long perusteId, Long oppiaineId, Long moduuliId) {
+        Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
+        Lops2019Moduuli moduuli = moduuliRepository.findOne(moduuliId);
+        boolean removed = oppiaine.getModuulit().remove(moduuli);
+
+        // Poistetaan, jos viitattu perusteen sisällöstä
+        if (removed) {
+            moduuliRepository.delete(moduuliId);
+        }
+    }
+
 }

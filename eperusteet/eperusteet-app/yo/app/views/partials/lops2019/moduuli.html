@@ -10,7 +10,7 @@
         <div class="pull-right" ng-if="editEnabled">
             <button icon-role="remove"
                     class="btn btn-danger"
-                    ng-click="removeOppiaine()"
+                    ng-click="removeModuuli()"
                     kaanna="'poista-moduuli'"></button>
         </div>
 
@@ -19,6 +19,11 @@
         <div ng-if="!editEnabled">
             <div ng-if="moduuli.kuvaus">
                 <div ng-bind-html="moduuli.kuvaus | kaanna | unsafe"></div>
+            </div>
+
+            <div ng-if="moduuli.koodi">
+                <strong kaanna="'koodi'"></strong>
+                <p>{{moduuli.koodi.nimi || moduuli.koodi.arvo | kaanna}}</p>
             </div>
 
             <div>
@@ -31,12 +36,7 @@
                 <p>{{moduuli.laajuus}}</p>
             </div>
 
-            <div ng-if="moduuli.koodi">
-                <strong kaanna="'koodi'"></strong>
-                <p>{{moduuli.koodi.nimi || moduuli.koodi.arvo | kaanna}}</p>
-            </div>
-
-            <div ng-if="moduuli.tavoitteet">
+            <div ng-if="moduuli.tavoitteet && moduuli.tavoitteet.kohde">
                 <strong class="header" kaanna="'tavoitteet'"></strong>
                 <p kaanna="moduuli.tavoitteet.kohde"></p>
                 <ul>
@@ -78,6 +78,21 @@
                      editor-placeholder="moduulin-kuvaus-placeholder"></div>
             </div>
 
+            <div style="margin-bottom: 10px">
+                <label for="koodi-input" class="header" kaanna="koodi"></label>
+                <div class="input-group">
+                    <input id="koodi-input"
+                           class="form-control"
+                           type="text"
+                           ng-model="moduuli.koodi.arvo"
+                           editointi-kontrolli
+                           ng-disabled="true">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" ng-click="openKoodisto(moduuli, 'moduulikoodistolops2021')" kaanna="hae-koodistosta"></button>
+                    </span>
+                </div>
+            </div>
+
             <div>
                 <strong kaanna="'tyyppi'"></strong>
                 <ohje teksti="ohje-moduuli-pakollinen"></ohje>
@@ -96,21 +111,6 @@
                              step="0.5"></numberinput>
             </div>
 
-            <div style="margin-bottom: 10px">
-                <label for="koodi-input" class="header" kaanna="koodi"></label>
-                <div class="input-group">
-                    <input id="koodi-input"
-                           class="form-control"
-                           type="text"
-                           ng-model="moduuli.koodi.arvo"
-                           editointi-kontrolli
-                           ng-disabled="true">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" ng-click="openKoodisto(moduuli, 'moduulikoodistolops2021')" kaanna="hae-koodistosta"></button>
-                    </span>
-                </div>
-            </div>
-
             <div>
                 <strong class="header" kaanna="'tavoitteet'"></strong>
                 <div class="tavoitealue">
@@ -123,7 +123,7 @@
                             <span class="input-group-btn">
                                 <button icon-role="remove"
                                         class="btn btn-warning"
-                                        ng-click="remove(tavoitealue.tavoitteet, tavoite)"
+                                        ng-click="remove(moduuli.tavoitteet.tavoitteet, tavoite)"
                                         kaanna="'poista'"></button>
                             </span>
                         </div>
@@ -150,7 +150,7 @@
                             <span class="input-group-btn">
                                 <button icon-role="remove"
                                         class="btn btn-warning"
-                                        ng-click="remove(moduuli.sisallot.sisallot, osa)"
+                                        ng-click="remove(sisalto.sisallot, osa)"
                                         kaanna="'poista'"></button>
                             </span>
                         </div>

@@ -22,7 +22,7 @@
                 <p>{{oppiaine.koodi.nimi || oppiaine.koodi.arvo | kaanna}}</p>
             </div>
 
-            <div ng-if="oppiaine.tehtava">
+            <div ng-if="oppiaine.tehtava && oppiaine.tehtava.kuvaus">
                 <h2 kaanna="'oppiaine-ja-tehtava'"></h2>
                 <div ng-bind-html="oppiaine.tehtava.kuvaus | kaanna | unsafe"></div>
             </div>
@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <div ng-if="oppiaine.tavoitteet">
+            <div ng-if="oppiaine.tavoitteet && oppiaine.tavoitteet.kuvaus">
                 <h2 kaanna="'tavoitteet'"></h2>
                 <div ng-bind-html="oppiaine.tavoitteet.kuvaus | kaanna | unsafe"></div>
                 <div ng-if="oppiaine.tavoitteet.tavoitealueet && oppiaine.tavoitteet.tavoitealueet.length > 0">
@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            <div ng-if="oppiaine.arviointi">
+            <div ng-if="oppiaine.arviointi && oppiaine.arviointi.kuvaus">
                 <h2 kaanna="'arviointi'"></h2>
                 <div ng-bind-html="oppiaine.arviointi.kuvaus | kaanna | unsafe"></div>
             </div>
@@ -165,7 +165,7 @@
                     <div class="clearfix">
                         <button icon-role="remove"
                                 class="btn btn-warning pull-right"
-                                ng-click="remove(osaaminen.tavoitteet, tavoitealue)"
+                                ng-click="remove(oppiaine.tavoitteet.tavoitealueet, tavoitealue)"
                                 kaanna="'poista'"></button>
                         <button icon-role="add"
                                 class="btn btn-primary pull-right"
@@ -193,7 +193,6 @@
                 <div ng-repeat="moduuli in oppiaine.moduulit" class="moduuli" ng-class="{'moduuli-pakollinen': moduuli.pakollinen}">
                     <span ng-bind="moduuli.nimi || 'nimeton' | kaanna"></span>
                 </div>
-                <pre>{{oppiaine.moduulit | json}}</pre>
             </div>
             <div class="clearfix">
                 <button icon-role="add"

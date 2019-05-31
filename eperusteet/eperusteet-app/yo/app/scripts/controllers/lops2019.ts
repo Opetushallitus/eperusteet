@@ -286,7 +286,10 @@ angular
 })
 .controller("Lops2019ModuuliController", function (
     $scope,
+    $state,
+    $stateParams,
     Editointikontrollit,
+    Varmistusdialogi,
     Koodisto,
     moduuli
 ) {
@@ -311,6 +314,20 @@ angular
 
     $scope.remove = (target, el) => {
         _.remove(target, el);
+    };
+
+    $scope.removeModuuli = () => {
+        Varmistusdialogi.dialogi({
+            otsikko: "poistetaanko-moduuli",
+            primaryBtn: "poista",
+            successCb: async () => {
+                await $scope.moduuli.remove();
+                await Editointikontrollit.cancelEditing();
+                $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaine", {
+                    oppiaineId: $stateParams.oppiaineId
+                });
+            }
+        })();
     };
 
     $scope.openKoodisto = (target, koodisto) => {

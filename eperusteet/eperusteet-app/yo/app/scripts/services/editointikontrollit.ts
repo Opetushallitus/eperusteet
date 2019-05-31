@@ -177,11 +177,16 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
             }
         },
         async cancelEditing() {
-            setEditMode(false);
-            $rootScope.$broadcast("disableEditing");
-            $rootScope.$broadcast("notifyCKEditor");
-            await scope.editingCallback.cancel();
-            $rootScope.$$ekEditing = false;
+            try {
+                setEditMode(false);
+                $rootScope.$broadcast("disableEditing");
+                $rootScope.$broadcast("notifyCKEditor");
+                await scope.editingCallback.cancel();
+                $rootScope.$$ekEditing = false;
+            } catch (e) {
+                // Todo: Scope.$broadcast saattaa heittää poikkeuksen
+                console.warn(e);
+            }
         },
         registerCallback: function(callback) {
             if (

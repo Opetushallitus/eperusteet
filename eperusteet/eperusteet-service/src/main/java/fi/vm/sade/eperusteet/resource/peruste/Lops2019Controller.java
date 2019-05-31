@@ -35,8 +35,8 @@ public class Lops2019Controller {
     @RequestMapping(value = "/sisalto", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PerusteenOsaViiteDto.Matala> addSisalto(
-            @PathVariable("perusteId") final Long perusteId,
-            @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto
+            @PathVariable final Long perusteId,
+            @RequestBody(required = false) final PerusteenOsaViiteDto.Matala dto
     ) {
         return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSA, LISAYS), (Void) -> {
             if (dto == null || (dto.getPerusteenOsa() == null && dto.getPerusteenOsaRef() == null)) {
@@ -50,8 +50,8 @@ public class Lops2019Controller {
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSisalto(
-            @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("id") final Long id
+            @PathVariable final Long perusteId,
+            @PathVariable final Long id
     ) {
         audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSA, POISTO), (Void) -> {
             service.removeSisalto(perusteId, id);
@@ -61,7 +61,7 @@ public class Lops2019Controller {
 
     @RequestMapping(value = "/laajaalaiset", method = GET)
     public ResponseEntity<Lops2019LaajaAlainenOsaaminenKokonaisuusDto> getLaajaAlainenOsaaminenKokonaisuus(
-            @PathVariable("perusteId") final Long perusteId
+            @PathVariable final Long perusteId
     ) {
         Lops2019LaajaAlainenOsaaminenKokonaisuusDto kokonaisuus = service.getLaajaAlainenOsaaminenKokonaisuus(perusteId);
         return ResponseEntity.ok(kokonaisuus);
@@ -69,8 +69,8 @@ public class Lops2019Controller {
 
     @RequestMapping(value = "/laajaalaiset", method = PUT)
     public ResponseEntity<Lops2019LaajaAlainenOsaaminenKokonaisuusDto> updateLaajaAlainenOsaaminenKokonaisuus(
-            @PathVariable("perusteId") final Long perusteId,
-            @RequestBody Lops2019LaajaAlainenOsaaminenKokonaisuusDto dto
+            @PathVariable final Long perusteId,
+            @RequestBody final Lops2019LaajaAlainenOsaaminenKokonaisuusDto dto
     ) {
         return audit.withAudit(LogMessage.builder(perusteId, LAAJAALAINENOSAAMINEN, MUOKKAUS),
                 (Void) -> ResponseEntity.ok(service.updateLaajaAlainenOsaaminenKokonaisuus(perusteId, dto)));
@@ -78,31 +78,35 @@ public class Lops2019Controller {
 
     @RequestMapping(value = "/oppiaineet", method = GET)
     public List<Lops2019OppiaineDto> getOppiaineet(
-            @PathVariable("perusteId") final Long perusteId
+            @PathVariable final Long perusteId
     ) {
         return service.getOppiaineet(perusteId);
     }
 
     @RequestMapping(value = "/oppiaineet", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Lops2019OppiaineDto> addOppiaine(@PathVariable("perusteId") final Long perusteId,
-                                   @RequestBody Lops2019OppiaineDto dto) {
+    public ResponseEntity<Lops2019OppiaineDto> addOppiaine(
+            @PathVariable final Long perusteId,
+            @RequestBody final Lops2019OppiaineDto dto
+    ) {
         return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, LISAYS),
                 (Void) -> ResponseEntity.ok(service.addOppiaine(perusteId, dto)));
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = GET)
     public ResponseEntity<Lops2019OppiaineDto> getOppiaine(
-            @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("id") final Long id) {
+            @PathVariable final Long perusteId,
+            @PathVariable final Long id
+    ) {
         return ResponseEntity.ok(service.getOppiaine(perusteId, id));
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = PUT)
     public ResponseEntity<Lops2019OppiaineDto> updateOppiaine(
-            @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("id") final Long id,
-            @RequestBody Lops2019OppiaineDto dto) {
+            @PathVariable final Long perusteId,
+            @PathVariable final Long id,
+            @RequestBody final Lops2019OppiaineDto dto
+    ) {
         return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, MUOKKAUS), (Void) -> {
             dto.setId(id);
             return ResponseEntity.ok(service.updateOppiaine(perusteId, dto));
@@ -112,8 +116,8 @@ public class Lops2019Controller {
     @RequestMapping(value = "/oppiaineet/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOppiaine(
-            @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("id") final Long id
+            @PathVariable final Long perusteId,
+            @PathVariable final Long id
     ) {
         audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, POISTO), (Void) -> {
             service.removeOppiaine(perusteId, id);
@@ -125,7 +129,8 @@ public class Lops2019Controller {
     public ResponseEntity<Lops2019ModuuliDto> getModuuli(
             @PathVariable final Long perusteId,
             @PathVariable final Long oppiaineId,
-            @PathVariable final Long moduuliId) {
+            @PathVariable final Long moduuliId
+    ) {
         return ResponseEntity.ok(service.getModuuli(perusteId, oppiaineId, moduuliId));
     }
 
@@ -134,10 +139,24 @@ public class Lops2019Controller {
             @PathVariable final Long perusteId,
             @PathVariable final Long oppiaineId,
             @PathVariable final Long moduuliId,
-            @RequestBody Lops2019ModuuliDto dto) {
+            @RequestBody Lops2019ModuuliDto dto
+    ) {
         return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, MUOKKAUS), (Void) -> {
             dto.setId(moduuliId);
             return ResponseEntity.ok(service.updateModuuli(perusteId, dto));
+        });
+    }
+
+    @RequestMapping(value = "/oppiaineet/{oppiaineId}/moduulit/{moduuliId}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteModuuli(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long oppiaineId,
+            @PathVariable final Long moduuliId
+    ) {
+        audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, POISTO), (Void) -> {
+            service.removeModuuli(perusteId, oppiaineId, moduuliId);
+            return null;
         });
     }
 

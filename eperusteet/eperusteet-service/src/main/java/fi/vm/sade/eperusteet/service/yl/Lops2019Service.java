@@ -19,35 +19,38 @@ public interface Lops2019Service {
     void removeSisalto(@P("perusteId") Long perusteId, Long viiteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    Lops2019LaajaAlainenOsaaminenKokonaisuusDto getLaajaAlainenOsaaminenKokonaisuus(Long perusteId);
+    Lops2019LaajaAlainenOsaaminenKokonaisuusDto getLaajaAlainenOsaaminenKokonaisuus(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     Lops2019LaajaAlainenOsaaminenKokonaisuusDto updateLaajaAlainenOsaaminenKokonaisuus(
-            Long perusteId,
+            @P("perusteId") Long perusteId,
             Lops2019LaajaAlainenOsaaminenKokonaisuusDto dto
     );
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    Lops2019LaajaAlainenOsaaminenDto addLaajaAlainenOsaaminen(Long perusteId);
+    Lops2019LaajaAlainenOsaaminenDto addLaajaAlainenOsaaminen(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<Lops2019OppiaineDto> getOppiaineet(Long perusteId);
+    List<Lops2019OppiaineDto> getOppiaineet(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    Lops2019OppiaineDto addOppiaine(Long perusteId, Lops2019OppiaineDto dto);
+    Lops2019OppiaineDto addOppiaine(@P("perusteId") Long perusteId, Lops2019OppiaineDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    Lops2019OppiaineDto getOppiaine(Long perusteId, Long oppiaineId);
+    Lops2019OppiaineDto getOppiaine(@P("perusteId") Long perusteId, Long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    Lops2019OppiaineDto updateOppiaine(Long perusteId, Lops2019OppiaineDto dto);
+    Lops2019OppiaineDto updateOppiaine(@P("perusteId") Long perusteId, Lops2019OppiaineDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void removeOppiaine(@P("perusteId") Long perusteId, Long id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    Lops2019ModuuliDto getModuuli(Long perusteId, Long oppiaineId, Long moduuliId);
+    Lops2019ModuuliDto getModuuli(@P("perusteId") Long perusteId, Long oppiaineId, Long moduuliId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    Lops2019ModuuliDto updateModuuli(Long perusteId, Lops2019ModuuliDto dto);
+    Lops2019ModuuliDto updateModuuli(@P("perusteId") Long perusteId, Lops2019ModuuliDto dto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void removeModuuli(@P("perusteId") Long perusteId, Long oppiaineId, Long moduuliId);
 }
