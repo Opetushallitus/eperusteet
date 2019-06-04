@@ -18,6 +18,7 @@ describe("PerusteProjektiSivunavi", () => {
     let $timeout: any;
 
     beforeEach(() => {
+        window.HTMLCanvasElement.prototype.getContext = () => {};
         return mockApp().service("PerusteprojektiTiedotService", async function() {
             const peruste = createPeruste(T.Tpo, { id: 1 });
             const projekti = createPerusteprojekti(peruste.id, { id: 2 });

@@ -8,6 +8,7 @@ describe("$state", () => {
     let $timeout: any;
 
     beforeEach(async () => {
+        window.HTMLCanvasElement.prototype.getContext = () => {};
         mockApp();
         $state = await getComponent("$state");
         $stateParams = await getComponent("$stateParams");

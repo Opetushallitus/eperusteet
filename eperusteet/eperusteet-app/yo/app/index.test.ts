@@ -43,7 +43,7 @@ describe("app", () => {
             .forEach(comp => {
                 expect(comp).toEqual(expect.stringMatching(/^.+Service$/));
             })
-    })
+    });
 
     test("Komponentit on nimetty oikein", async () => {
         getOfType("controller")
