@@ -313,6 +313,12 @@ angular
                     collapsible: true
                 },
                 {
+                    path: "tutkinnonOsa._geneerinenArviointiasteikko",
+                    localeKey: "tutkinnon-osan-geneerinen-arviointi",
+                    type: "geneerinenarviointi",
+                    collapsible: true,
+                },
+                {
                     path: "tutkinnonOsa.arviointi.lisatiedot",
                     localeKey: "tutkinnon-osan-arviointi-teksti",
                     type: "editor-area",
@@ -635,7 +641,9 @@ angular
             // Palauttaa true jos kaikki mahdolliset osiot on jo lisätty
             $scope.allVisible = () => {
                 const lisatty = _.all($scope.fields, (field: any) => {
-                    return _.contains(field.path, "arviointi.") || !field.inMenu || (field.inMenu && field.visible);
+                    return _.contains(field.path, "arviointi.")
+                        || !field.inMenu
+                        || (field.inMenu && field.visible);
                 });
                 return lisatty && $scope.arviointiHelper.exists();
             };
@@ -655,6 +663,8 @@ angular
                 if ($scope.arviointiHelper) {
                     $scope.arviointiHelper.setMenu($scope.menuItems);
                 }
+                console.log($scope.menuItems);
+                $scope.menuItems.push();
             };
 
             $scope.$watch("arviointiFields.teksti.visible", $scope.updateMenu);

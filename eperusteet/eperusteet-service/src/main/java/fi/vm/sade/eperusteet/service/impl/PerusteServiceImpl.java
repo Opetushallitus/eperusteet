@@ -1308,6 +1308,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public TutkinnonOsaViiteDto getTutkinnonOsaViite(Long perusteId, Suoritustapakoodi suoritustapakoodi, Long viiteId) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
+        TutkinnonOsa tutkinnonOsa = viite.getTutkinnonOsa();
 
         if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");

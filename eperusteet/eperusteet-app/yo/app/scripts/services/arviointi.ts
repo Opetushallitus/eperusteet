@@ -17,15 +17,33 @@
 import * as angular from "angular";
 import _ from "lodash";
 
-angular.module("eperusteApp").factory("Arviointiasteikot", function($resource, SERVICE_LOC) {
-    return $resource(
-        SERVICE_LOC + "/arviointiasteikot/:asteikkoId",
-        {
-            asteikkoId: "@id"
-        },
-        {
-            list: { method: "GET", isArray: true, cache: true },
-            save: { method: "PUT", isArray: true }
-        }
-    );
-});
+angular.module("eperusteApp")
+    .factory("Arviointiasteikot", function($resource, SERVICE_LOC) {
+        return $resource(
+            SERVICE_LOC + "/arviointiasteikot/:asteikkoId",
+            {
+                asteikkoId: "@id"
+            },
+            {
+                list: { method: "GET", isArray: true, cache: true },
+                save: { method: "PUT", isArray: true }
+            }
+        );
+    })
+    .service("ArviointiasteikkoHelper", (Api) => {
+        return {
+            async getMappedArviointiasteikot() {
+                const asteikot = await Api.all("arviointiasteikot").getList();
+                return _(asteikot)
+                    .sortBy(aa => _.size(aa.osaamistasot))
+                    .map(aa => ({
+                        ...aa,
+                        osaamistasotMap: _.indexBy(aa.osaamistasot, (taso: any) => String(taso.id)),
+                    }))
+                    .reverse()
+                    .indexBy(asteikko => String(asteikko.id))
+                    .value();
+
+            },
+        };
+    });

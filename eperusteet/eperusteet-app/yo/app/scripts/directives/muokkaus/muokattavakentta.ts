@@ -189,6 +189,15 @@ angular
                             "edit-enabled": "editEnabled"
                         }
                     ],
+                    geneerinenarviointi: [
+                        "",
+                        "<tutkinnonosangeneerisetammattitaitovaatimukset>",
+                        {
+                            "editointi-sallittu": "true",
+                            "edit-enabled": "editEnabled",
+                            geneerinen: "object." + scope.field.path,
+                        }
+                    ],
                     valmaarviointi: [
                         "",
                         "<valmaarviointi>",

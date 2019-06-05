@@ -86,7 +86,6 @@ angular
     })
     .controller("GeneerinenArviointiController",
         ($timeout, $scope, geneeriset, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot, Varmistusdialogi) => {
-        console.log(_.cloneDeep(geneeriset.plain()));
 
         $scope.geneeriset = geneeriset;
 
@@ -116,6 +115,10 @@ angular
             const geneerinen = await geneeriset.post({
                 _arviointiAsteikko: "" + $scope.uusiArviointi.arviointiAsteikko,
                 arviointiAsteikko: "" + $scope.uusiArviointi.arviointiAsteikko,
+                kohde: {
+                    fi: "Opiskelija",
+                    sv: "Den studerande"
+                },
             });
             $scope.geneeriset.push(geneerinen);
         };
