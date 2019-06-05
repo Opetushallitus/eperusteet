@@ -52,6 +52,7 @@ public class TiedoteController {
             @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, value = "tiedotteen kieli"),
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query", value = "hae nimellä"),
             @ApiImplicitParam(name = "perusteId", dataType = "long", paramType = "query", value = "hae perusteeseen liitetyt tiedotteet"),
+            @ApiImplicitParam(name = "perusteeton", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae perusteettomat tiedotteet"),
             @ApiImplicitParam(name = "julkinen", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae julkiset tiedotteet"),
             @ApiImplicitParam(name = "yleinen", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae yleiset tiedotteet")
     })
