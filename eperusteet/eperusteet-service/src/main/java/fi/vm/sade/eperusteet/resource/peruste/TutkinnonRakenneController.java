@@ -259,7 +259,8 @@ public class TutkinnonRakenneController {
             @PathVariable("perusteId") final Long id,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("viiteId") final Long viiteId) {
-        return perusteService.getTutkinnonOsaViite(id, suoritustapakoodi, viiteId);
+        TutkinnonOsaViiteDto result = perusteService.getTutkinnonOsaViite(id, suoritustapakoodi, viiteId);
+        return result;
     }
 
     @RequestMapping(value = "/tutkinnonosat/koodi/{koodiUri}", method = GET)

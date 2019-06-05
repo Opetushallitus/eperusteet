@@ -1,0 +1,31 @@
+div
+  .geneerinen-arviointi-2019(ng-show="valittu && !editEnabled")
+    .geneeriset
+      .geneerinen
+        .geneerinen-heading
+          h3(ng-bind="valittu.nimi | kaanna")
+
+        .geneerinen-body
+          .perustiedot
+            .kohde(ng-bind="valittu.kohde | kaanna")
+
+          .osaamistasot
+            .osaamistaso(ng-repeat="ot in valittu.osaamistasonKriteerit")
+              .asteikko(ng-bind="arviointiasteikot[valittu._arviointiAsteikko].osaamistasotMap[ot._osaamistaso].otsikko | kaanna")
+              .kriteerit
+                ul.kriteeri(ng-repeat="kriteeri in ot.kriteerit")
+                  li(ng-bind="kriteeri | kaanna")
+
+                .alert.alert-info(ng-show="ot.kriteerit.length === 0", kaanna="'kriteereita-ei-lisatty'")
+
+  .asteikot(ng-show="editEnabled")
+    .asteikko(ng-repeat="asteikko in geneeriset")
+      .radio
+        label
+          input(
+            type="radio",
+            ng-change="changeGeneerinen(asteikko.id)",
+            ng-model="state.geneerinen",
+            name="optionsRadios",
+            ng-value="asteikko.id")
+          span(ng-bind="asteikko.nimi | kaanna")

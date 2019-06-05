@@ -16,10 +16,7 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -69,6 +66,11 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private GeneerinenArviointiasteikko geneerinenArviointiasteikko;
 
     @Getter
     @Setter
@@ -225,6 +227,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setTavoitteet(other.getTavoitteet());
             this.setKoodi(other.getKoodi());
             this.setTyyppi(other.getTyyppi());
+            this.setGeneerinenArviointiasteikko(other.getGeneerinenArviointiasteikko());
             this.setKuvaus(other.getKuvaus());
             this.setValmaTelmaSisalto(other.getValmaTelmaSisalto());
             this.setVapaatTekstit(other.getVapaatTekstit());

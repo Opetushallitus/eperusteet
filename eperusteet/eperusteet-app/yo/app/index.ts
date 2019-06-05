@@ -206,3 +206,4 @@ import "scripts/directives/muokkaus/vaihe"
 import "scripts/directives/perustetoisetprojektit"
 import "scripts/components/tavoitteet/tavoitteet"
 import "scripts/directives/ckeditor";
+import "scripts/directives/tutkinnonosangeneerisetammattitaitovaatimukset";
