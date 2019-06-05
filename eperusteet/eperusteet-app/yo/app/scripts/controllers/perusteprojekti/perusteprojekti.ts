@@ -439,7 +439,7 @@ angular
             $scope.$$kaannokset = perusteprojektiTiedot.getPerusteprojektiKaannokset($scope.isOpas && "opas");
 
             $scope.lisaaTiedote = () => {
-                TiedoteService.lisaaTiedote(null, $stateParams.perusteProjektiId);
+                TiedoteService.lisaaTiedote({ julkinen: true }, $stateParams.perusteProjektiId);
             };
 
             $scope.luoPdf = () => {
