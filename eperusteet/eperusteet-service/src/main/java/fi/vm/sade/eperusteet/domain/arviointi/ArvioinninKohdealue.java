@@ -64,7 +64,7 @@ public class ArvioinninKohdealue implements Serializable {
     @Getter
     @ValidKoodisto(koodisto = "ammattitaitovaatimukset")
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private Koodi koodi;
 
     /// TODO: rikkoo testin fi.vm.sade.eperusteet.service.AuditedEntityTestIT#testTutkinnonOsaRevisions
