@@ -673,7 +673,6 @@ angular
                 if ($scope.arviointiHelper) {
                     $scope.arviointiHelper.setMenu($scope.menuItems);
                 }
-                console.log($scope.menuItems);
                 $scope.menuItems.push();
             };
 
