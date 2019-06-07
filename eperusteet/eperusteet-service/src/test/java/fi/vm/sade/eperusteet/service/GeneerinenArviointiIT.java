@@ -55,7 +55,7 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         assertThat(geneerinen.getId()).isNotNull();
         assertThat(geneerinen.getArviointiAsteikko()).isNotNull();
         assertThat(geneerinen.getKohde()).isNotNull();
-        assertThat(geneerinen.getOsaamistasonKriteerit()).hasSize(2);
+        assertThat(geneerinen.getOsaamistasonKriteerit()).hasSize(3);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         GeneerinenArviointiasteikkoDto kopio = geneerinenArviointiasteikkoService.kopioi(geneerinen.getId());
         assertThat(kopio.getId()).isNotEqualTo(geneerinen.getId());
         assertThat(kopio.isJulkaistu()).isFalse();
-        assertThat(kopio.getOsaamistasonKriteerit()).hasSize(2);
+        assertThat(kopio.getOsaamistasonKriteerit()).hasSize(3);
     }
 
 }
