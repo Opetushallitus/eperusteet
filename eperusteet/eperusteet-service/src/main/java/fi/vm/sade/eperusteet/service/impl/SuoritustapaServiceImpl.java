@@ -158,6 +158,17 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
 
     @Override
     @Transactional
+    public Suoritustapa createSuoritustapa(Suoritustapakoodi suoritustapakoodi, LaajuusYksikko yksikko) {
+        Suoritustapa suoritustapa = new Suoritustapa();
+        suoritustapa.setSuoritustapakoodi(suoritustapakoodi);
+        suoritustapa.setLaajuusYksikko(yksikko);
+
+        suoritustapa = suoritustapaRepository.save(suoritustapa);
+        return suoritustapa;
+    }
+
+    @Override
+    @Transactional
     public Suoritustapa createFromOther(final Long suoritustapaId) {
         Suoritustapa vanhaSt = suoritustapaRepository.getOne(suoritustapaId);
         Suoritustapa suoritustapa = createCommon(vanhaSt.getSuoritustapakoodi(), vanhaSt.getLaajuusYksikko());
