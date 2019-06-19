@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -58,12 +59,14 @@ public class Lops2019IT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void readJsonToDto() throws IOException {
         PerusteKaikkiDto perusteDto = readPerusteFile();
         Assert.notNull(perusteDto, "Perusteen lukeminen epäonnistui");
     }
 
     @Test
+    @Ignore
     public void convertDtoToEntity() throws IOException {
         PerusteKaikkiDto perusteDto = readPerusteFile();
         Lops2019SisaltoDto lops2019SisaltoDto = perusteDto.getLops2019Sisalto();
@@ -79,6 +82,7 @@ public class Lops2019IT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void createLops2019Peruste() throws IOException {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
             ppl.setKoulutustyyppi(KoulutusTyyppi.LUKIOKOULUTUS.toString());
