@@ -478,7 +478,7 @@ public class ValidatorPeruste implements Validator {
                 }
             }
 
-            if (peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
+            if (!(peruste.getLukiokoulutuksenPerusteenSisalto() != null || peruste.getLops2019Sisalto() != null)) {
                 PerusteenRakenne.Validointi validointi;
 
                 // Osaamisaloilla täytyy olla tekstikuvaukset
