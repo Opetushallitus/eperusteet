@@ -32,6 +32,7 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -55,6 +56,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
+import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,6 +149,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+
+    @Autowired
+    private Lops2019Service lops2019Service;
 
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
@@ -536,6 +541,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             updateLukioKaikkiRakenne(perusteDto, peruste);
         }
 
+        if (peruste.getLops2019Sisalto() != null) {
+            getLops2019KaikkiRakenne(perusteDto, peruste);
+        }
+
         Revision rev = perusteet.getLatestRevisionId(id);
         if (rev != null) {
             perusteDto.setRevision(rev.getNumero());
@@ -559,6 +568,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         return perusteDto;
+    }
+
+    private void getLops2019KaikkiRakenne(PerusteKaikkiDto perusteDto, Peruste peruste) {
+        lops2019Service.getOppiaineet(peruste.getId()).forEach(oppiaine -> {
+            Lops2019OppiaineDto oa = lops2019Service.getOppiaine(peruste.getId(), oppiaine.getId());
+            List<Lops2019OppiaineDto> oppimaarat = oa.getOppimaarat().stream()
+                    .map(om -> lops2019Service.getOppiaine(peruste.getId(), om.getId()))
+                    .collect(Collectors.toList());
+            oa.setOppimaarat(oppimaarat);
+            perusteDto.getLops2019Sisalto().getOppiaineet().add(oa);
+        });
     }
 
     private void updateLukioKaikkiRakenne(PerusteKaikkiDto perusteDto, Peruste peruste) {
@@ -1419,7 +1439,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
             pov.setVanhempi(sisalto);
             sisalto.getLapset().add(pov);
-        } else if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
+        } else if (KoulutusTyyppi.LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+                && KoulutustyyppiToteutus.LOPS2019.equals(peruste.getToteutus())) {
+            // noop
+        }
+        else if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             PerusteenOsaViite sisalto = peruste.getAipeOpetuksenPerusteenSisalto().getSisalto();
             TekstiKappale tk = new TekstiKappale();
             HashMap<Kieli, String> hm = new HashMap<>();
@@ -1513,7 +1537,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 || koulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS
                 || koulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS) {
             if (KoulutustyyppiToteutus.LOPS2019.equals(toteutus)) {
-                st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.LUKIOKOULUTUS2019, LaajuusYksikko.OPINTOPISTE);
+                st = suoritustapaService.createSuoritustapa(Suoritustapakoodi.LUKIOKOULUTUS2019, LaajuusYksikko.OPINTOPISTE);
                 Lops2019Sisalto sisalto = new Lops2019Sisalto();
                 sisalto.setLaajaAlainenOsaaminen(new Lops2019LaajaAlainenOsaaminenKokonaisuus());
                 peruste.setSisalto(sisalto);
