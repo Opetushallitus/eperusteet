@@ -30,8 +30,9 @@ import org.springframework.test.annotation.DirtiesContext;
  *
  * @author nkala
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext
 public class KayttajaprofiiliServiceIT extends AbstractIntegrationTest {
+
     @Autowired
     KayttajaprofiiliService service;
 

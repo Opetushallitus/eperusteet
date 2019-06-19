@@ -43,7 +43,7 @@ import javax.persistence.PersistenceContext;
  * @author nkala
  */
 @Transactional
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext
 public class OpasServiceIT {
 
     @Autowired

@@ -37,7 +37,6 @@ import static org.junit.Assert.assertEquals;
  *
  * @author isaul
  */
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @DirtiesContext
 @Transactional
 public class PerusteServiceAikaIT extends AbstractIntegrationTest {

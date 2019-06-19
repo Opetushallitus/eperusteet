@@ -44,7 +44,7 @@ import static org.junit.Assert.assertNotEquals;
  * @author harrik
  */
 @Transactional
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext
 public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
 
     @Autowired

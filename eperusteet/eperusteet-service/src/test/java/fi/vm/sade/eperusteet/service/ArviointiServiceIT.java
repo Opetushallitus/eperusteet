@@ -56,7 +56,7 @@ import java.util.List;
  * @author teele1
  */
 @Transactional
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext
 public class ArviointiServiceIT extends AbstractIntegrationTest {
 
     @Autowired

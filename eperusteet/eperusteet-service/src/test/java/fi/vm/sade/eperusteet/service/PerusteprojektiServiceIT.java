@@ -56,7 +56,7 @@ import static org.junit.Assert.assertNotEquals;
  */
 
 @Transactional
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext
 public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
