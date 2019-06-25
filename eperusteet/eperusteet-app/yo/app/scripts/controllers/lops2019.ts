@@ -6,12 +6,15 @@ angular
 .controller("Lops2019Controller", function(
     $scope,
     $state,
+    $stateParams,
     Api,
     YleinenData,
     Algoritmit,
     perusteprojektiTiedot,
     TekstikappaleOperations,
-    Lops2019Service
+    Lops2019Service,
+    Editointikontrollit,
+    Notifikaatiot
 ) {
     const manipulateSisaltoUrls = sisalto => {
         Algoritmit.kaikilleLapsisolmuille(sisalto, "lapset", lapsi => {
@@ -47,6 +50,31 @@ angular
         TekstikappaleOperations.add();
     };
 
+    $scope.edit = () => {
+        Editointikontrollit.startEditing();
+    };
+
+    Editointikontrollit.registerCallback({
+        edit: () => {
+            $scope.rajaus = "";
+        },
+        save: () => {
+            TekstikappaleOperations.updateViitteet($scope.sisalto, () => {
+                Notifikaatiot.onnistui("osien-rakenteen-päivitys-onnistui");
+            });
+        },
+        cancel: () => {
+            $state.go($state.current.name, $stateParams, {
+                reload: true
+            });
+        },
+        validate: () => {
+            return true;
+        },
+        notify: value => {
+            $scope.editing = value;
+        }
+    });
 })
 .controller("Lops2019LaajaalaisetController", function (
     $scope,
