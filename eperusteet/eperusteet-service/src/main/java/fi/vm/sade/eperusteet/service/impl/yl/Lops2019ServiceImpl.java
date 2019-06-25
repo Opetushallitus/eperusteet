@@ -15,6 +15,7 @@ import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
@@ -119,6 +120,11 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     @Override
     public Lops2019OppiaineDto addOppiaine(Long perusteId, Lops2019OppiaineDto dto) {
         Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
+
+        if (oppiaine.getOppiaine() != null && !ObjectUtils.isEmpty(oppiaine.getOppimaarat())) {
+            throw new BusinessRuleViolationException("oppimaaralla-ei-voi-olla-oppimaaria");
+        }
+
         oppiaine = oppiaineRepository.save(oppiaine);
 
         // Lisätään sisältöön viittaus oppiaineeseen
@@ -144,6 +150,10 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     @Override
     public Lops2019OppiaineDto updateOppiaine(Long perusteId, Lops2019OppiaineDto dto) {
         Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
+
+        if (oppiaine.getOppiaine() != null && !ObjectUtils.isEmpty(oppiaine.getOppimaarat())) {
+            throw new BusinessRuleViolationException("oppimaaralla-ei-voi-olla-oppimaaria");
+        }
 
         // Asetetaan oppimäärien järjetys
         List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();

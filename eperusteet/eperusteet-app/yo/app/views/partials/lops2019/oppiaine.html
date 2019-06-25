@@ -73,7 +73,7 @@
                 </div>
             </div>
 
-            <div ng-if="oppiaine.oppimaarat">
+            <div ng-if="oppiaine.oppimaarat && !oppiaine._oppiaine">
                 <h2 kaanna="'oppimaarat'"></h2>
                 <div ng-repeat="oppimaara in oppiaine.oppimaarat">
                     <a ui-sref="root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: oppimaara.id})">
@@ -207,23 +207,25 @@
                         kaanna="'lisaa-moduuli'"></button>
             </div>
 
-            <h2 kaanna="'oppimaarat'"></h2>
-            <div style="margin-bottom: 10px"
-                 ui-sortable="sortableOptions"
-                 ng-model="oppiaine.oppimaarat">
-                <div ng-repeat="oppimaara in oppiaine.oppimaarat">
-                    <div class="oppiaine handle">
-                        <span icon-role="drag"></span>
-                        <span ng-bind="oppimaara.nimi || 'nimeton' | kaanna"></span>
-                        <a class="action-link pull-right" icon-role="remove" ng-click="remove(oppiaine.oppimaarat, oppimaara)"></a>
+            <div ng-if="!oppiaine._oppiaine">
+                <h2 kaanna="'oppimaarat'"></h2>
+                <div style="margin-bottom: 10px"
+                     ui-sortable="sortableOptions"
+                     ng-model="oppiaine.oppimaarat">
+                    <div ng-repeat="oppimaara in oppiaine.oppimaarat">
+                        <div class="oppiaine handle">
+                            <span icon-role="drag"></span>
+                            <span ng-bind="oppimaara.nimi || 'nimeton' | kaanna"></span>
+                            <a class="action-link pull-right" icon-role="remove" ng-click="remove(oppiaine.oppimaarat, oppimaara)"></a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="clearfix">
-                <button icon-role="add"
-                        class="btn btn-primary pull-right"
-                        ng-click="addOppimaara()"
-                        kaanna="'lisaa-oppimaara'"></button>
+                <div class="clearfix">
+                    <button icon-role="add"
+                            class="btn btn-primary pull-right"
+                            ng-click="addOppimaara()"
+                            kaanna="'lisaa-oppimaara'"></button>
+                </div>
             </div>
 
         </div>
