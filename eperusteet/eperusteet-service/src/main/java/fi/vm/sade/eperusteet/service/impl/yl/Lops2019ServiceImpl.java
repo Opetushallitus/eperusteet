@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019LaajaAlainenRepository;
@@ -119,11 +120,11 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Override
     public Lops2019OppiaineDto addOppiaine(Long perusteId, Lops2019OppiaineDto dto) {
-        Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
-
-        if (oppiaine.getOppiaine() != null && !ObjectUtils.isEmpty(oppiaine.getOppimaarat())) {
+        if (dto.getOppiaine() != null && !ObjectUtils.isEmpty(dto.getOppimaarat())) {
             throw new BusinessRuleViolationException("oppimaaralla-ei-voi-olla-oppimaaria");
         }
+
+        Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
 
         oppiaine = oppiaineRepository.save(oppiaine);
 
@@ -136,24 +137,27 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Override
     public Lops2019OppiaineDto getOppiaine(Long perusteId, Long oppiaineId) {
-        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
         // Todo: tarkista, että kuuluu perusteeseen
+        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
         Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
 
         // Haetaan manuaalisesti oppimäärät ja moduulit
         oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class));
-        oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class));
+        oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliBaseDto.class));
 
         return oppiaineDto;
     }
 
     @Override
     public Lops2019OppiaineDto updateOppiaine(Long perusteId, Lops2019OppiaineDto dto) {
-        Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
-
-        if (oppiaine.getOppiaine() != null && !ObjectUtils.isEmpty(oppiaine.getOppimaarat())) {
+        if (dto.getOppiaine() != null && !ObjectUtils.isEmpty(dto.getOppimaarat())) {
             throw new BusinessRuleViolationException("oppimaaralla-ei-voi-olla-oppimaaria");
         }
+
+        // Todo: tarkista, että kuuluu perusteeseen
+        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(dto.getId());
+
+        mapper.map(dto, oppiaine);
 
         // Asetetaan oppimäärien järjetys
         List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
@@ -164,7 +168,7 @@ public class Lops2019ServiceImpl implements Lops2019Service {
             }
         }
 
-        // Asetetaan oppimäärien järjetys
+        // Asetetaan moduulien järjetys
         List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
         if (!ObjectUtils.isEmpty(moduulit)) {
             for (int i = 0; i < moduulit.size(); i++) {
@@ -176,13 +180,11 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         // Tallennetaan muokattu oppiaine
         oppiaine = oppiaineRepository.save(oppiaine);
 
-
-        // Todo: tarkista, että kuuluu perusteeseen
         Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
 
-        // Haetaan manuaalisesti oppimäärät ja moduulit
+        // Haetaan manuaalisesti oppimäärät ja moduulit mukaan
         oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class));
-        oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class));
+        oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliBaseDto.class));
 
         return oppiaineDto;
     }
@@ -191,7 +193,16 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     public void removeOppiaine(Long perusteId, Long oppiaineId) {
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
-        boolean removed = sisalto.getOppiaineet().remove(oppiaine);
+        Lops2019Oppiaine parent = oppiaine.getOppiaine();
+
+        boolean removed;
+
+        if (parent != null) {
+            removed = parent.getOppimaarat().remove(oppiaine);
+
+        } else {
+            removed = sisalto.getOppiaineet().remove(oppiaine);
+        }
 
         // Poistetaan, jos viitattu perusteen sisällöstä
         if (removed) {
@@ -213,7 +224,10 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Override
     public Lops2019ModuuliDto updateModuuli(Long perusteId, Lops2019ModuuliDto dto) {
-        Lops2019Moduuli moduuli = mapper.map(dto, Lops2019Moduuli.class);
+        Lops2019Moduuli moduuli = moduuliRepository.findOne(dto.getId());
+
+        mapper.map(dto, moduuli);
+
         moduuli = moduuliRepository.save(moduuli);
         return mapper.map(moduuli, Lops2019ModuuliDto.class);
     }

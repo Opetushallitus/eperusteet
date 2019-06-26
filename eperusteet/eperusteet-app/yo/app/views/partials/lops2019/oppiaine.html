@@ -1,6 +1,17 @@
 <div class="row lops2019">
     <div class="col-md-12 ep-sisalto-inner">
 
+        <div class="sivunavi-takaisin" ng-if="!oppiaine._oppiaine">
+            <a ui-sref="root.perusteprojekti.suoritustapa.lops2019oppiaineet"
+               icon-role="back"
+               kaanna="takaisin-oppiaineet"></a>
+        </div>
+        <div class="sivunavi-takaisin" ng-if="oppiaine._oppiaine">
+            <a ui-sref="root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: oppiaine._oppiaine})"
+               icon-role="back"
+               kaanna="takaisin-oppiaineeseen"></a>
+        </div>
+
         <div class="pull-right" ng-if="!editEnabled">
             <button icon-role="edit"
                     class="btn btn-default"
@@ -14,7 +25,7 @@
                     kaanna="'poista-oppiaine'"></button>
         </div>
 
-        <h1 kaanna="oppiaine.nimi || 'nimeton'"></h1>
+        <h1>{{oppiaine.nimi || 'nimeton' | kaanna}}</h1>
 
         <div ng-if="!editEnabled">
             <div ng-if="oppiaine.koodi">
@@ -87,6 +98,14 @@
         </div>
 
         <div ng-if="editEnabled">
+            <label for="oppiaine-nimi-input"
+                   class="header">{{'nimi' | kaanna}}</label>
+            <input id="oppiaine-nimi-input"
+                   class="form-control"
+                   ng-model="oppiaine.nimi"
+                   slocalized
+                   style="margin-bottom: 10px">
+
             <label for="koodi-input" class="header" kaanna="koodi"></label>
             <div class="input-group">
                 <input id="koodi-input"

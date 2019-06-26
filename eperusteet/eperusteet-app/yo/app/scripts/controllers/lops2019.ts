@@ -1,5 +1,6 @@
 import * as angular from "angular";
 import _ from "lodash";
+import { Lokalisointi } from "scripts/services/utils";
 
 angular
 .module("eperusteApp")
@@ -282,7 +283,13 @@ angular
             successCb: async () => {
                 await $scope.oppiaine.remove();
                 await Editointikontrollit.cancelEditing();
-                $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaineet");
+                if ($scope.oppiaine._oppiaine) {
+                    $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaine", {
+                        oppiaineId: $scope.oppiaine._oppiaine
+                    });
+                } else {
+                    $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaineet");
+                }
             }
         })();
     };
@@ -319,6 +326,9 @@ angular
                 } else {
                     target.koodi = valittu;
                 }
+
+                // Muutetaan oppiaineen nimi
+                target.nimi = Lokalisointi.merge(target.nimi, koodi.nimi);
             },
             {
                 tyyppi: () => {
@@ -337,9 +347,13 @@ angular
             // Todo: Hae uusin versio
         },
         save: async () => {
-            oppiaine = await $scope.oppiaine.save();
-            $scope.oppiaine = oppiaine.clone();
-            $scope.oppiaine.tavoitteet = $scope.oppiaine.tavoitteet || {};
+            try {
+                oppiaine = await $scope.oppiaine.save();
+                $scope.oppiaine = oppiaine.clone();
+                $scope.oppiaine.tavoitteet = $scope.oppiaine.tavoitteet || {};
+            } catch (e) {
+                // Todo: virheviesti
+            }
         },
         cancel: () => {
             $scope.oppiaine = oppiaine.clone();
@@ -387,11 +401,15 @@ angular
             otsikko: "poistetaanko-moduuli",
             primaryBtn: "poista",
             successCb: async () => {
-                await $scope.moduuli.remove();
-                await Editointikontrollit.cancelEditing();
-                $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaine", {
-                    oppiaineId: $stateParams.oppiaineId
-                });
+                try {
+                    await $scope.moduuli.remove();
+                    await Editointikontrollit.cancelEditing();
+                    $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaine", {
+                        oppiaineId: $stateParams.oppiaineId
+                    });
+                } catch (e) {
+                    // Todo: virheviesti
+                }
             }
         })();
     };
@@ -406,6 +424,9 @@ angular
                     koodisto: koodi.koodisto.koodistoUri,
                     versio: koodi.versio
                 };
+
+                // Muutetaan moduulin nimi
+                target.nimi = Lokalisointi.merge(target.nimi, koodi.nimi);
             },
             {
                 tyyppi: () => {
@@ -424,9 +445,13 @@ angular
             // Todo: Hae uusin versio
         },
         save: async () => {
-            moduuli = await $scope.moduuli.save();
-            $scope.moduuli = moduuli.clone();
-            $scope.moduuli.tavoitteet = $scope.moduuli.tavoitteet || {};
+            try {
+                moduuli = await $scope.moduuli.save();
+                $scope.moduuli = moduuli.clone();
+                $scope.moduuli.tavoitteet = $scope.moduuli.tavoitteet || {};
+            } catch (e) {
+                // Todo: virheviesti
+            }
         },
         cancel: () => {
             $scope.oppiaine = moduuli.clone();

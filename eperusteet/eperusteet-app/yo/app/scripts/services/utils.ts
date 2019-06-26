@@ -174,6 +174,19 @@ export namespace Lokalisointi {
         };
     }
 
+    export function merge(a: Lokalisoitu, b: Lokalisoitu) {
+        const keys: string[] = (_.keys(b))
+            .filter(lang => !_.isEmpty(b[lang]) && _.isString(b[lang]));
+
+        const result = _.pick(a, 'fi', 'sv', 'en');
+
+        _.each(keys, key => {
+            result[key] = b[key];
+        });
+
+        return result;
+    }
+
     export function concat(...a: (Lokalisoitu | string)[]): Lokalisoitu {
         if (a.length == 0) {
             return forAll(null);

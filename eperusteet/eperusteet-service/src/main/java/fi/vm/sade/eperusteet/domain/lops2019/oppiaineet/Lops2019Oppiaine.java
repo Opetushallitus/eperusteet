@@ -10,7 +10,6 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -37,12 +36,13 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity {
     private Koodi koodi;
 
     @Getter
+    @Setter
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "yl_lops2019_oppiaine_moduuli",
             joinColumns = @JoinColumn(name = "oppiaine_id"),
             inverseJoinColumns = @JoinColumn(name = "moduuli_id"))
     @OrderBy("jarjestys, id")
-    private List<Lops2019Moduuli> moduulit;
+    private List<Lops2019Moduuli> moduulit = new ArrayList<>();
 
     @Getter
     @Setter
@@ -90,15 +90,6 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity {
     @JoinTable(name = "yl_lops2019_oppiaine_oppimaara",
             joinColumns = {@JoinColumn(name = "oppimaara_id", insertable = false, updatable = false)},
             inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
-    private Lops2019Oppiaine oppiaine;
+    private Lops2019Oppiaine oppiaine; // Oppimäärän viittaus oppiaineeseen
 
-    public void setModuulit(List<Lops2019Moduuli> moduulit) {
-        if (this.moduulit == null) {
-            this.moduulit = new ArrayList<>();
-        }
-        if (!ObjectUtils.isEmpty(moduulit)) {
-            this.moduulit.clear();
-            this.moduulit.addAll(moduulit);
-        }
-    }
 }

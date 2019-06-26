@@ -1,6 +1,12 @@
 <div class="row lops2019">
     <div class="col-md-12 ep-sisalto-inner">
 
+        <div class="sivunavi-takaisin" ng-if="moduuli._oppiaine">
+            <a ui-sref="root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: moduuli._oppiaine})"
+               icon-role="back"
+               kaanna="takaisin-aineeseen"></a>
+        </div>
+
         <div class="pull-right" ng-if="!editEnabled">
             <button icon-role="edit"
                     class="btn btn-default"
@@ -14,7 +20,7 @@
                     kaanna="'poista-moduuli'"></button>
         </div>
 
-        <h1 kaanna="moduuli.nimi || 'nimeton'"></h1>
+        <h1>{{moduuli.nimi || 'nimeton' | kaanna}}</h1>
 
         <div ng-if="!editEnabled">
             <div ng-if="moduuli.kuvaus">

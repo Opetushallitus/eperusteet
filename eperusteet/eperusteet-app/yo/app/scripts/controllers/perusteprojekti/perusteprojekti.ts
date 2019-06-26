@@ -587,8 +587,11 @@ angular
                     $state.is("root.perusteprojekti.suoritustapa.losisalto") ||
                     $state.is("root.perusteprojekti.suoritustapa.tposisalto") ||
                     $state.is("root.perusteprojekti.suoritustapa.lukiosisalto") ||
-                    $state.is("root.perusteprojekti.suoritustapa.lops2019")
+                    $state.is("root.perusteprojekti.suoritustapa.lops2019") ||
+                    $state.is("root.perusteprojekti.suoritustapa.lops2019oppiaine") ||
+                    $state.is("root.perusteprojekti.suoritustapa.lops2019moduuli")
                 );
+
             $scope.isNaviVisible = () => PerusteProjektiSivunavi.isVisible();
 
             $scope.$on("update:perusteprojekti", () => {

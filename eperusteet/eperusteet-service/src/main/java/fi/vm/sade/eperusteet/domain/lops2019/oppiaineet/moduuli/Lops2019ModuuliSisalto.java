@@ -28,8 +28,6 @@ public class Lops2019ModuuliSisalto {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kohde;
 
-    @Getter
-    @Setter
     @OrderColumn
     @BatchSize(size = 25)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
