@@ -44,6 +44,13 @@ angular
     ) {
         $scope.projekti = perusteprojektiTiedot.getProjekti();
         $scope.peruste = perusteprojektiTiedot.getPeruste();
+
+        // FIXME
+        // Jossain kohtaan tehdään uudelleenohjaus yleinendata sisalto tunnisteen avulla lukiosisalto sisältöön.
+        if ($scope.peruste.toteutus === 'lops2019') {
+            $state.go("root.perusteprojekti.suoritustapa.lops2019");
+        }
+
         TekstikappaleOperations.setPeruste($scope.peruste);
         $scope.rajaus = "";
 
