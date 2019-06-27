@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.repository.liite.impl;
 
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepositoryCustom;
 import java.io.InputStream;
 import java.sql.Blob;
@@ -34,19 +35,19 @@ public class LiiteRepositoryImpl implements LiiteRepositoryCustom {
     EntityManager em;
 
     @Override
-    public Liite add(String tyyppi, String nimi, long length, InputStream is) {
+    public Liite add(LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is) {
         Session session = em.unwrap(Session.class);
         Blob blob = Hibernate.getLobCreator(session).createBlob(is, length);
-        Liite liite = new Liite(tyyppi, nimi, blob);
+        Liite liite = new Liite(tyyppi, mime, nimi, blob);
         em.persist(liite);
         return liite;
     }
 
     @Override
-    public Liite add(String tyyppi, String nimi, byte[] bytes) {
+    public Liite add(LiiteTyyppi tyyppi, String mime, String nimi, byte[] bytes) {
         Session session = em.unwrap(Session.class);
         Blob blob = Hibernate.getLobCreator(session).createBlob(bytes);
-        Liite liite = new Liite(tyyppi, nimi, blob);
+        Liite liite = new Liite(tyyppi, mime, nimi, blob);
         em.persist(liite);
         return liite;
     }

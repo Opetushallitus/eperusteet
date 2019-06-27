@@ -16,6 +16,8 @@
 package fi.vm.sade.eperusteet.repository.liite;
 
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
+
 import java.io.InputStream;
 
 /**
@@ -23,6 +25,6 @@ import java.io.InputStream;
  * @author jhyoty
  */
 public interface LiiteRepositoryCustom {
-    Liite add(String tyyppi, String nimi, long length, InputStream is);
-    Liite add(String tyyppi, String nimi, byte[] bytes);
+    Liite add(LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is);
+    Liite add(LiiteTyyppi tyyppi, String mime, String nimi, byte[] bytes);
 }

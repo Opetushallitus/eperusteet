@@ -29,7 +29,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
+import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -187,6 +187,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private EntityManager em;
+
+    @Autowired
+    private LiiteRepository liiteRepository;
 
     @Override
     public List<PerusteDto> getUusimmat(Set<Kieli> kielet) {
@@ -673,7 +676,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             Maarayskirje maarayskirje = updated.getMaarayskirje();
             MaarayskirjeDto maarayskirjeDto = perusteDto.getMaarayskirje();
             if (maarayskirje != null && maarayskirjeDto != null) {
-                Map<Kieli, LiiteDto> dtoLiitteet = maarayskirjeDto.getLiitteet();
+                Map<Kieli, LiiteBaseDto> dtoLiitteet = maarayskirjeDto.getLiitteet();
                 if (!ObjectUtils.isEmpty(dtoLiitteet)) {
                     dtoLiitteet.forEach((kieli, liiteDto) -> {
                         Peruste peruste = perusteet.findOne(perusteId);
@@ -697,7 +700,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             if (updated.getMuutosmaaraykset() != null) {
                 for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
+                    Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
+                    Map<Kieli, Liite> tempLiitteet = new HashMap<>();
+                    liitteet.forEach((kieli, liiteId) -> {
+                        Liite liite = liiteRepository.findOne(perusteId, liiteId.getId());
+                        if (liite != null) {
+                            tempLiitteet.put(kieli, liite);
+                        }
+                    });
+
                     muutosmaarays.setPeruste(current);
+                    muutosmaarays.setLiitteet(tempLiitteet);
                 }
             }
 

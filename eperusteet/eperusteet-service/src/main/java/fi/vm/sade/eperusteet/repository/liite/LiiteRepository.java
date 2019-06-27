@@ -33,8 +33,8 @@ public interface LiiteRepository extends JpaRepository<Liite, UUID>, LiiteReposi
     @Query("SELECT l FROM Peruste o JOIN o.liitteet l WHERE o.id = ?1")
     List<Liite> findByPerusteId(Long perusteId);
 
-    @Query("SELECT l FROM Peruste o JOIN o.liitteet l WHERE o.id = ?1 AND l.tyyppi IN ?2")
-    List<Liite> findByPerusteIdAndTyyppiIn(Long perusteId, Set<String> tyypit);
+    @Query("SELECT l FROM Peruste o JOIN o.liitteet l WHERE o.id = ?1 AND l.mime IN ?2")
+    List<Liite> findByPerusteIdAndMimeIn(Long perusteId, Set<String> tyypit);
 
     @Query("SELECT l FROM Peruste o JOIN o.liitteet l WHERE o.id = ?1 AND l.id = ?2")
     Liite findOne(Long perusteId, UUID id);

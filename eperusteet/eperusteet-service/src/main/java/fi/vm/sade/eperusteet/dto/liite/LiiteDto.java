@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.dto.liite;
 import java.util.Date;
 import java.util.UUID;
 
+import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,9 +29,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LiiteDto {
-    private UUID id;
-    private String tyyppi;
-    private String nimi;
+public class LiiteDto extends LiiteBaseDto {
+    private LiiteTyyppi tyyppi;
     private Date luotu;
+    private String mime;
 }
