@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +33,7 @@ import java.util.UUID;
 public interface LiiteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
-    UUID add(@P("perusteId") final Long perusteId, String tyyppi, String nimi, long length, InputStream is);
+    UUID add(@P("perusteId") final Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     LiiteDto get(Long perusteId, UUID id);

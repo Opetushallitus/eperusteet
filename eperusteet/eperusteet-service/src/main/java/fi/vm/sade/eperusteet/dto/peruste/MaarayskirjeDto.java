@@ -19,7 +19,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 
 import java.util.Map;
 
-import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
+import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,5 +32,5 @@ import lombok.Setter;
 public class MaarayskirjeDto {
     private Long id;
     private Map<Kieli, String> url;
-    private Map<Kieli, LiiteDto> liitteet;
+    private Map<Kieli, LiiteBaseDto> liitteet;
 }
