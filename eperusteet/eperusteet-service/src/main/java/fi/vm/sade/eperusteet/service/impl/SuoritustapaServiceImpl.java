@@ -107,7 +107,8 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
     @Transactional
     private RakenneOsa kopioiRakenneOsa(RakenneOsa vanha, Map<TutkinnonOsaViite, TutkinnonOsaViite> viitemap) {
         RakenneOsa osa = new RakenneOsa();
-        osa.setPakollinen(osa.getPakollinen());
+        osa.setPakollinen(vanha.getPakollinen());
+        osa.setErikoisuus(vanha.getErikoisuus());
         osa.setTutkinnonOsaViite(viitemap.get(vanha.getTutkinnonOsaViite()));
         return osa;
     }
@@ -123,6 +124,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         rm.setNimi(vanha.getNimi());
         rm.setRooli(vanha.getRooli());
         rm.setOsaamisala(vanha.getOsaamisala());
+        rm.setTutkintonimike(vanha.getTutkintonimike());
         rakenneRepository.save(rm);
 
         MuodostumisSaanto vanhaMs = vanha.getMuodostumisSaanto();

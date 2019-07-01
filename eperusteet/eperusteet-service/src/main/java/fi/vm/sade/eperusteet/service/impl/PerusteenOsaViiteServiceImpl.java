@@ -43,6 +43,8 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -160,7 +162,18 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Override
     @Transactional
+    public PerusteenOsaViiteDto.Matala addSisaltoJulkaistuun(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala viiteDto) {
+        return addSisaltoImpl(perusteId, viiteId, viiteDto, true);
+    }
+
+    @Override
+    @Transactional
     public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala viiteDto) {
+        return addSisaltoImpl(perusteId, viiteId, viiteDto, false);
+    }
+
+    @Transactional
+    private PerusteenOsaViiteDto.Matala addSisaltoImpl(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala viiteDto, boolean julkaistuun) {
         Peruste peruste = perusteet.findOne(perusteId);
         PerusteenOsaViite viite = repository.findOne(viiteId);
 
@@ -192,19 +205,26 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
                 permissionChecker.checkPermission(viiteEntity.getPerusteenOsa().getId(), PermissionManager.Target.PERUSTEENOSA, PermissionManager.Permission.LUKU);
                 uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
             } else if (viiteDto.getPerusteenOsa() != null) {
-                perusteenOsaService.add(uusiViite, viiteDto.getPerusteenOsa());
+                if (julkaistuun) {
+                    perusteenOsaService.addJulkaistuun(uusiViite, viiteDto.getPerusteenOsa());
+                }
+                else {
+                    perusteenOsaService.add(uusiViite, viiteDto.getPerusteenOsa());
+                }
             }
         }
         repository.flush();
         return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
     }
 
+    @Transactional
     private List<PerusteenOsaViite> findViitteet(Long perusteId, Long viiteId) {
         PerusteenOsaViite viite = findViite(perusteId, viiteId);
         List<PerusteenOsaViite> viitteet = repository.findAllByPerusteenOsa(viite.getPerusteenOsa());
         return viitteet;
     }
 
+    @Transactional
     private PerusteenOsaViite findViite(Long perusteId, Long viiteId) {
         Peruste peruste = perusteet.findOne(perusteId);
         PerusteenOsaViite viite = repository.findOne(viiteId);
@@ -214,6 +234,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         throw new BusinessRuleViolationException("virheellinen viite");
     }
 
+    @Transactional
     private void clearChildren(PerusteenOsaViite pov, Set<PerusteenOsaViite> refs) {
         for (PerusteenOsaViite lapsi : pov.getLapset()) {
             refs.add(lapsi);
@@ -223,6 +244,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         pov.getLapset().clear();
     }
 
+    @Transactional
     private PerusteenOsaViite updateTraverse(PerusteenOsaViite parent, PerusteenOsaViiteDto.Puu<?, ?> uusi, Set<PerusteenOsaViite> refs) {
         PerusteenOsaViite pov = repository.getOne(uusi.getId());
         if (!refs.remove(pov)) {

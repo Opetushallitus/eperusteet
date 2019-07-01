@@ -47,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author nkala
  */
 @Service
+@Transactional
 public class OpasServiceImpl implements OpasService {
 
     @Autowired
@@ -67,11 +68,10 @@ public class OpasServiceImpl implements OpasService {
 
     @Override
     public OpasDto get(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    @Transactional
     public OpasDto save(OpasLuontiDto opasDto) {
         Perusteprojekti perusteprojekti = mapper.map(opasDto, Perusteprojekti.class);
         if (opasDto.getRyhmaOid() == null) {
