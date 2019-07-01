@@ -93,12 +93,12 @@ angular
             .sortBy(aa => _.size(aa.osaamistasot))
             .map(aa => ({
                 ...aa,
-                $$tasoMap: _.indexBy(aa.osaamistasot, taso => "" + taso.id),
+                $$tasoMap: _.indexBy(aa.osaamistasot, (taso: any) => "" + taso.id),
             }))
             .reverse()
             .value();
 
-        $scope.arviointiasteikotMap = _.indexBy($scope.arviointiasteikot, asteikko => "" + asteikko.id);
+        $scope.arviointiasteikotMap = _.indexBy($scope.arviointiasteikot, (asteikko: any) => "" + asteikko.id);
         $scope.uusiArviointi = {
             arviointiAsteikko: $scope.arviointiasteikot[0].id,
         };
