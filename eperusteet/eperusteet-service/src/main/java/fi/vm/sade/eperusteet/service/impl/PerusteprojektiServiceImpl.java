@@ -215,7 +215,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
-    public void validoiPerusteetTask() {
+    public void validoiPerusteetTask(int max) {
 
         // Haetaan validoitavat projektit
         TransactionTemplate template = new TransactionTemplate(tm);
@@ -234,6 +234,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             try {
                 if (pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
                     continue;
+                }
+
+                if (max > 0 && counter > max) {
+                    break;
                 }
 
                 validoiPerusteTask(pp, counter);
