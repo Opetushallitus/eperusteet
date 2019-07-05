@@ -15,6 +15,9 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
@@ -45,9 +48,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.Mapper;
-import ma.glasnost.orika.MappingContext;
+import ma.glasnost.orika.*;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory.Builder;
@@ -202,6 +203,24 @@ public class DtoMapperConfig {
         factory.classMap(LukioOpetussuunnitelmaRakenneLaajaDto.class, LukioOpetussuunnitelmaRakenne.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
+                .register();
+
+        factory.registerObjectFactory((source, mappingContext) -> JsonNodeFactory.instance.objectNode(), ObjectNode.class);
+
+        factory.classMap(ObjectNode.class, ObjectNode.class)
+                .byDefault()
+                .customize(new CustomMapper<ObjectNode, ObjectNode>() {
+                    @Override
+                    public void mapAtoB(ObjectNode a, ObjectNode b, MappingContext context) {
+                        b.removeAll();
+                        b.setAll(a);
+                    }
+
+                    @Override
+                    public void mapBtoA(ObjectNode b, ObjectNode a, MappingContext context) {
+                        mapAtoB(b, a, context);
+                    }
+                })
                 .register();
 
         factory.classMap(LukioOpetussuunnitelmaRakenneSuppeaDto.class, LukioOpetussuunnitelmaRakenne.class)

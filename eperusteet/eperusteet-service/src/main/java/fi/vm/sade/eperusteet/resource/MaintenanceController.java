@@ -38,4 +38,14 @@ public class MaintenanceController {
         maintenanceService.addMissingOsaamisalakuvaukset();
     }
 
+    @RequestMapping(value = "/validoi", method = GET)
+    public void runValidointi() {
+        maintenanceService.runValidointi();
+    }
+
+    @RequestMapping(value = "/julkaisut", method = GET)
+    public void teeJulkaisut() {
+        maintenanceService.teeJulkaisut();
+    }
+
 }
