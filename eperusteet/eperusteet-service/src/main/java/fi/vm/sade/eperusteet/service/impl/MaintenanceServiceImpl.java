@@ -17,6 +17,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
+@Profile("!test")
 public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Autowired

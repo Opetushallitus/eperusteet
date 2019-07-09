@@ -71,7 +71,7 @@
             <map>
                 <entry key="hibernate.hbm2ddl.auto" value="validate"/>
                 <entry key="hibernate.show_sql" value="true"/>
-                <entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.CustomPostgreSqlDialect"/>
                 <entry key="net.sf.ehcache.configurationResourceName" value="/eperusteet-hibernate-ehcache.xml"/>
                 <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
                 <entry key="hibernate.cache.use_second_level_cache" value="true"/>
