@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.repository.dialect.JsonBType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -13,9 +14,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-//@Cacheable
-//@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-//@Immutable
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Immutable
 @Table(name = "julkaistu_peruste_data")
 @TypeDef(name = "jsonb", defaultForType = JsonBType.class, typeClass = JsonBType.class)
 public class JulkaistuPerusteData {
