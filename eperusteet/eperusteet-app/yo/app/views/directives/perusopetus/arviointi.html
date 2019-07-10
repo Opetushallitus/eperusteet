@@ -30,12 +30,31 @@
               <input ng-model="arviointi.arvioinninKohde" slocalized class="form-control">
             </span>
             </td>
+            <!-- TODO: Myöhemmin käyttöön -->
+            <!-- <td> -->
+            <!--     <span ng&#45;if="!editMode">{{arviointi.valttavanOsaamisenKuvaus | kaanna}}</span> -->
+            <!--     <span ng&#45;if="editMode"> -->
+            <!--         <textarea ng&#45;model="arviointi.valttavanOsaamisenKuvaus" slocalized class="form&#45;control msd&#45;elastic"></textarea> -->
+            <!--     </span> -->
+            <!-- </td> -->
+            <!-- <td> -->
+            <!--     <span ng&#45;if="!editMode">{{arviointi.tyydyttavanOsaamisenKuvaus | kaanna}}</span> -->
+            <!--     <span ng&#45;if="editMode"> -->
+            <!--         <textarea ng&#45;model="arviointi.tyydyttavanOsaamisenKuvaus" slocalized class="form&#45;control msd&#45;elastic"></textarea> -->
+            <!--     </span> -->
+            <!-- </td> -->
             <td>
                 <span ng-if="!editMode">{{arviointi.hyvanOsaamisenKuvaus | kaanna}}</span>
                 <span ng-if="editMode">
-              <textarea ng-model="arviointi.hyvanOsaamisenKuvaus" slocalized class="form-control msd-elastic"></textarea>
-            </span>
+                    <textarea ng-model="arviointi.hyvanOsaamisenKuvaus" slocalized class="form-control msd-elastic"></textarea>
+                </span>
             </td>
+            <!-- <td> -->
+            <!--     <span ng&#45;if="!editMode">{{arviointi.kiitettavanOsaamisenKuvaus | kaanna}}</span> -->
+            <!--     <span ng&#45;if="editMode"> -->
+            <!--         <textarea ng&#45;model="arviointi.kiitettavanOsaamisenKuvaus" slocalized class="form&#45;control msd&#45;elastic"></textarea> -->
+            <!--     </span> -->
+            <!-- </td> -->
             <td ng-if="editMode">
                 <a icon-role="remove" ng-click="removeKohde($index)" title="{{'poista'|kaanna}}"></a>
             </td>

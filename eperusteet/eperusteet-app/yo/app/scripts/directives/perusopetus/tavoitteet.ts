@@ -183,7 +183,14 @@ angular
         };
 
         $scope.addArviointi = function(tavoite) {
-            tavoite.arvioinninkohteet = [{ arvioinninKohde: {}, hyvanOsaamisenKuvaus: {} }];
+            tavoite.arvioinninkohteet = [{
+                arvioinninKohde: {},
+                // TODO: myöhemmin käyttöön
+                // valttavanOsaamisenKuvaus: {},
+                // tyydyttavanOsaamisenKuvaus: {},
+                hyvanOsaamisenKuvaus: {},
+                // kiitettavanOsaamisenKuvaus: {},
+            }];
         };
 
         var cloner = CloneHelper.init(["tavoite", "sisaltoalueet", "laajattavoitteet", "arvioinninkohteet"]);

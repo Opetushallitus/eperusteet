@@ -128,8 +128,11 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         tavoiteDto.setTavoite(olt("Tässäpä jokin kiva tavoite"));
         TavoitteenArviointiDto arvio = new TavoitteenArviointiDto();
         arvio.setArvioinninKohde(olt("Kohde"));
-        arvio.setHyvanOsaamisenKuvaus(olt("Kuvaus"));
-        tavoiteDto.setArvioinninkohteet(new HashSet<TavoitteenArviointiDto>());
+        arvio.setValttavanOsaamisenKuvaus(olt("Kuvaus 1"));
+        arvio.setTyydyttavanOsaamisenKuvaus(olt("Kuvaus 2"));
+        arvio.setHyvanOsaamisenKuvaus(olt("Kuvaus 3"));
+        arvio.setKiitettavanOsaamisenKuvaus(olt("Kuvaus 4"));
+        tavoiteDto.setArvioinninkohteet(new HashSet<>());
         tavoiteDto.getArvioinninkohteet().add(arvio);
         vkDto.getTavoitteet().add(tavoiteDto);
 

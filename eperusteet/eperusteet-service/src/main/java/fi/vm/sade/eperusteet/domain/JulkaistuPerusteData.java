@@ -14,8 +14,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
 @Table(name = "julkaistu_peruste_data")
 @TypeDef(name = "jsonb", defaultForType = JsonBType.class, typeClass = JsonBType.class)
