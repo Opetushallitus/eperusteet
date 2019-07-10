@@ -538,7 +538,7 @@
                 <plugin>
                     <groupId>de.juplo</groupId>
                     <artifactId>hibernate4-maven-plugin</artifactId>
-                    <version>1.0.4</version>
+                    <version>1.1.1</version>
                     <executions>
                         <execution>
                             <goals>
@@ -551,8 +551,8 @@
                         <type>${hibernate.export.type}</type>
                         <target>SCRIPT</target>
                         <driverClassName>org.postgresql.Driver</driverClassName>
-                        <hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>
-<!--                        <hibernateDialect>fi.vm.sade.eperusteet.repository.dialect.CustomPostgreSqlDialect</hibernateDialect>-->
+<!--                        <hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>-->
+                        <hibernateDialect>fi.vm.sade.eperusteet.repository.dialect.CustomPostgreSqlDialect</hibernateDialect>
                         <url/>
                         <username/>
                         <password/>

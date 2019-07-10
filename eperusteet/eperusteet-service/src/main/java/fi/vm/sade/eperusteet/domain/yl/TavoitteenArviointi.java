@@ -52,7 +52,28 @@ public class TavoitteenArviointi extends AbstractReferenceableEntity {
     @Getter
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    private TekstiPalanen valttavanOsaamisenKuvaus;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Getter
+    @Setter
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    private TekstiPalanen tyydyttavanOsaamisenKuvaus;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Getter
+    @Setter
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen hyvanOsaamisenKuvaus;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Getter
+    @Setter
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    private TekstiPalanen kiitettavanOsaamisenKuvaus;
 
     @Getter
     @RelatesToPeruste
@@ -66,7 +87,10 @@ public class TavoitteenArviointi extends AbstractReferenceableEntity {
     public TavoitteenArviointi kloonaa() {
         TavoitteenArviointi klooni = new TavoitteenArviointi();
         klooni.setArvioinninKohde(arvioinninKohde);
+        klooni.setHyvanOsaamisenKuvaus(valttavanOsaamisenKuvaus);
+        klooni.setHyvanOsaamisenKuvaus(tyydyttavanOsaamisenKuvaus);
         klooni.setHyvanOsaamisenKuvaus(hyvanOsaamisenKuvaus);
+        klooni.setHyvanOsaamisenKuvaus(kiitettavanOsaamisenKuvaus);
         return klooni;
     }
 }

@@ -16,8 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 @Entity
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
 @Getter
 @Setter

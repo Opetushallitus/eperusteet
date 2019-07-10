@@ -1201,13 +1201,21 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     kohdeTr.appendChild(kohdeTd);
                     kohdeTd.setTextContent(getTextString(docBase, tavoitteenArviointi.getArvioinninKohde()));
 
-                    Element hyvanOsaamisenKuvausTd = docBase.getDocument().createElement("td");
-                    kohdeTr.appendChild(hyvanOsaamisenKuvausTd);
-                    hyvanOsaamisenKuvausTd.setTextContent(getTextString(docBase,
-                            tavoitteenArviointi.getHyvanOsaamisenKuvaus()));
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getValttavanOsaamisenKuvaus());
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getTyydyttavanOsaamisenKuvaus());
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getHyvanOsaamisenKuvaus());
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getKiitettavanOsaamisenKuvaus());
                 });
             }
         });
+    }
+
+    private void lisaaOsaamisenKuvaukset(DokumenttiPeruste docBase, Element kohdeTr, TekstiPalanen osaamisenKuvaus) {
+        if (osaamisenKuvaus != null) {
+            Element td = docBase.getDocument().createElement("td");
+            kohdeTr.appendChild(td);
+            td.setTextContent(getTextString(docBase, osaamisenKuvaus));
+        }
     }
 
     private void addKurssit(DokumenttiPeruste docBase, List<AIPEKurssi> kurssit) {
