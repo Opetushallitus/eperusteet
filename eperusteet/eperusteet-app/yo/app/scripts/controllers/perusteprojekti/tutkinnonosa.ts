@@ -96,42 +96,43 @@ angular
     .controller(
         "muokkausTutkinnonosaCtrl",
         (
+            $q,
+            $rootScope,
             $scope,
             $state,
             $stateParams,
-            $rootScope,
-            $q,
-            Editointikontrollit,
-            PerusteenOsat,
-            PerusteenRakenne,
-            PerusteTutkinnonosa,
-            TutkinnonOsaEditMode,
             $timeout,
-            Varmistusdialogi,
-            VersionHelper,
-            Lukitus,
-            MuokkausUtils,
-            PerusteenOsaViitteet,
-            Utils,
-            ArviointiHelper,
+            Algoritmit,
             AmmattitaitoHelper,
-            PerusteProjektiSivunavi,
-            Notifikaatiot,
-            Koodisto,
-            Tutke2OsaData,
+            ArviointiHelper,
+            AutomaattitallennusService,
+            Editointikontrollit,
+            FieldSplitter,
             Kommentit,
             KommentitByPerusteenOsa,
-            FieldSplitter,
-            Algoritmit,
-            TutkinnonosanTiedotService,
-            TutkinnonOsaViitteet,
-            PerusteenOsaViite,
-            virheService,
-            ProjektinMurupolkuService,
-            localStorageService,
-            TutkinnonOsaLeikelautaService,
+            Koodisto,
+            Lukitus,
+            MuokkausUtils,
             MuutProjektitService,
-            YleinenData
+            Notifikaatiot,
+            PerusteProjektiSivunavi,
+            PerusteTutkinnonosa,
+            PerusteenOsaViite,
+            PerusteenOsaViitteet,
+            PerusteenOsat,
+            PerusteenRakenne,
+            ProjektinMurupolkuService,
+            Tutke2OsaData,
+            TutkinnonOsaEditMode,
+            TutkinnonOsaLeikelautaService,
+            TutkinnonOsaViitteet,
+            TutkinnonosanTiedotService,
+            Utils,
+            Varmistusdialogi,
+            VersionHelper,
+            YleinenData,
+            localStorageService,
+            virheService,
         ) => {
             Utils.scrollTo("#ylasivuankkuri");
 
@@ -397,6 +398,7 @@ angular
 
             function saveCb(res) {
                 Lukitus.vapautaPerusteenosa(res.id);
+                AutomaattitallennusService.stop();
                 ProjektinMurupolkuService.set(
                     "tutkinnonOsaViiteId",
                     $scope.tutkinnonOsaViite.id,
@@ -469,8 +471,16 @@ angular
             };
 
             const normalCallbacks = {
-                edit: () => {
+                async edit() {
                     tutke2.fetch();
+                    if ($scope.editableTutkinnonOsaViite.id) {
+                        await AutomaattitallennusService.start(
+                            "tutkinnonosa" + $scope.editableTutkinnonOsaViite.id,
+                            () => $scope.editableTutkinnonOsaViite,
+                            (data: any) => {
+                                $scope.editableTutkinnonOsaViite = angular.copy(data);
+                            });
+                    }
                 },
                 asyncValidate: cb => {
                     Editointikontrollit.notifySentenceCaseWarnings({

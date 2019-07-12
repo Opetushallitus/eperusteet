@@ -80,6 +80,7 @@ import "scripts/services/excel";
 import "scripts/services/muodostumissaannot";
 import "scripts/services/lokalisointi";
 import "scripts/services/versionhelper";
+import "scripts/services/automaattitallennus";
 import "scripts/services/proxyservice";
 import "scripts/directives/iconrole";
 import "scripts/directives/tagcloud";
