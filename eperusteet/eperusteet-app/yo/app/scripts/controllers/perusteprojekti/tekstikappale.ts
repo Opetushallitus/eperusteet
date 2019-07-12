@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
-
 import * as angular from "angular";
 import _ from "lodash";
 
@@ -175,6 +159,7 @@ angular
         $scope,
         $state,
         $stateParams,
+        AutomaattitallennusService,
         Editointikontrollit,
         Kaanna,
         Kommentit,
@@ -197,7 +182,7 @@ angular
         VersionHelper,
         YleinenData,
         perusteprojektiBackLink,
-        virheService
+        virheService,
     ) {
         $scope.tekstikappale = {};
         $scope.versiot = {};
@@ -477,7 +462,7 @@ angular
             storeTree($scope.sisalto);
         }
 
-        function refreshPromise() {
+        async function refreshPromise() {
             $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
             tekstikappaleDefer = $q.defer();
             $scope.tekstikappalePromise = tekstikappaleDefer.promise;
@@ -486,6 +471,7 @@ angular
 
         async function saveCb(res) {
             // Päivitä versiot
+            AutomaattitallennusService.stop();
             const versiot = await haeVersiot(true);
             VersionHelper.setUrl($scope.versiot);
             PerusteProjektiSivunavi.refresh();
@@ -517,13 +503,20 @@ angular
 
             Editointikontrollit.registerCallback({
                 edit: () => {
-                    return $q((resolve, reject) => {
+                    return $q(async (resolve, reject) => {
                         TekstikappaleOperations.noDeleteWasDoneYet();
-                        lukitse().then(() => {
-                            fetch(function() {
-                                refreshPromise();
-                                resolve();
-                            });
+                        await lukitse();
+                        fetch(async function() {
+                            if ($scope.tekstikappale.id) {
+                                await AutomaattitallennusService.start(
+                                    "tekstikappale" + $scope.tekstikappale.id,
+                                    () => $scope.editableTekstikappale,
+                                    (data: any) => {
+                                        $scope.tekstikappale = angular.copy(data);
+                                    });
+                            }
+                            await refreshPromise();
+                            resolve();
                         });
                     });
                 },
@@ -552,8 +545,8 @@ angular
                                 if ($scope.isNew) {
                                     doDelete(true);
                                 } else {
-                                    fetch(function() {
-                                        refreshPromise();
+                                    fetch(async function() {
+                                        await refreshPromise();
                                     });
                                 }
                                 $scope.isNew = false;

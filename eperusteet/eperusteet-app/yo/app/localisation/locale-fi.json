@@ -1,6 +1,8 @@
 {
     "aipe-opetuksen-sisalto-puuttuu": "Aikuisten perusopetuksen sisältö puuttuu",
     "tavoitteista-johdetut-oppimisen-tavoitteet": "Tavoitteista johdetut oppimisen tavoitteet",
+    "palautetaanko-vanha-versio": "Palautetaanko vanha versio sisällöstä?",
+    "peruttu-versio-loytyi": "Tallentamaton versio sisällöstä löydetty. Voit ottaa sen muokattavaksi.",
     "aipe-vaihe-palautettu": "AIPE vaihe palautettu",
     "aipe-oppiaine-palautettu": "AIPE oppiaine palautettu",
     "edellinen": "Edellinen",
