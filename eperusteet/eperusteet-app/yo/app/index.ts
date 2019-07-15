@@ -107,6 +107,7 @@ import "scripts/controllers/tiedotteet";
 import "scripts/directives/spinner";
 import "scripts/controllers/modals/uudelleenohjaus";
 import "scripts/controllers/modals/muodostumisryhma";
+import "scripts/controllers/modals/validointi";
 import "scripts/directives/fileselect";
 import "scripts/directives/formfield";
 import "scripts/directives/followscroll";

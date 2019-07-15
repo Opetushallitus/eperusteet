@@ -1,19 +1,20 @@
 <!-- perusteprojekti.html -->
 <div class="project-header">
     <div class="row">
-        <div class="pull-right">
-            <!-- <button class="btn btn&#45;primary" -->
-            <!--     ng&#45;hide="muokkausEnabled" -->
-            <!--     ng&#45;click="validoiPeruste()" -->
-            <!--     kaanna="'tarkista&#45;virheet'" -->
-            <!--     oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" -->
-            <!--     ng&#45;if="pdfEnabled"></button> -->
-            <button class="btn btn-primary btn-header-pdf"
+        <div class="pull-right actionbuttons">
+            <button class="btn btn-primary"
+                ng-hide="muokkausEnabled"
+                ng-click="validoiPeruste()"
+                kaanna="'tarkista-virheet'"
+                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"
+            ></button>
+            <button class="btn btn-primary"
                     ng-hide="muokkausEnabled"
                     ng-click="luoPdf()"
                     oikeustarkastelu="{ target: 'peruste', permission: 'luku' }"
                     ng-if="pdfEnabled">
-                <img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}
+                <!-- <img src="images/pdf&#45;file&#45;24.png" alt=""> -->
+                {{'luo-pdf' | kaanna}}
             </button>
         </div>
         <div class="col-xs-6">

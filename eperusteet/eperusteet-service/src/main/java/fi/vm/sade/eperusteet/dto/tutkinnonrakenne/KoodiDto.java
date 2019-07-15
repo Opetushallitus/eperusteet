@@ -32,7 +32,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 public class KoodiDto {
-    Map<String, String> nimi;
+    private Map<String, String> nimi;
     private String arvo;
     private String uri;
     private String koodisto;
