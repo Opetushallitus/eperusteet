@@ -402,6 +402,7 @@ angular
             $scope,
             $state,
             $stateParams,
+            Api,
             Kieli,
             Navigaatiopolku,
             Notifikaatiot,
@@ -413,13 +414,14 @@ angular
             TermistoService,
             TiedoteService,
             TutkinnonOsaEditMode,
+            ValidointivirheService,
             YleinenData,
             isOpas,
             koulutusalaService,
             opintoalaService,
             perusteprojektiBackLink,
             perusteprojektiOikeudet,
-            perusteprojektiTiedot
+            perusteprojektiTiedot,
         ) => {
             function init() {
                 $scope.projekti = perusteprojektiTiedot.getProjekti();
@@ -440,6 +442,10 @@ angular
 
             $scope.lisaaTiedote = () => {
                 TiedoteService.lisaaTiedote({ julkinen: true }, $stateParams.perusteProjektiId);
+            };
+
+            $scope.validoiPeruste = async () => {
+                await ValidointivirheService.validoiProjekti($scope.projekti.id);
             };
 
             $scope.luoPdf = () => {
