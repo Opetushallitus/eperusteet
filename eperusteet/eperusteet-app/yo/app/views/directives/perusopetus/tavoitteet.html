@@ -32,6 +32,11 @@
                                 <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" slocalized
                                      editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
 
+                                <h4 kaanna="tavoitteista-johdetut-oppimisen-tavoitteet"></h4>
+                                <p ng-show="!tavoite.$editing" ng-bind-html="tavoite.tavoitteistaJohdetutOppimisenTavoitteet | kaanna | unsafe"></p>
+                                <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoitteistaJohdetutOppimisenTavoitteet" slocalized
+                                     editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
+
                                 <h4 ng-show="tavoite.$valittuKohdealue || tavoite.$editing" kaanna="'kohdealue'"></h4>
                                 <p ng-if="tavoite.$valittuKohdealue && !tavoite.$editing">
                                     {{ tavoite.$valittuKohdealue ? tavoite.$valittuKohdealue.nimi : '' | kaanna }}

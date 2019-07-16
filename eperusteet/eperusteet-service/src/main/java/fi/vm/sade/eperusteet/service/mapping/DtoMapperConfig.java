@@ -15,6 +15,9 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
@@ -44,9 +47,8 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
-import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.Mapper;
-import ma.glasnost.orika.MappingContext;
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.*;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory.Builder;
@@ -61,30 +63,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestClientException;
+
+import java.time.Instant;
 
 /**
  * @author jhyoty
  */
+@Slf4j
 @Configuration
 public class DtoMapperConfig {
     private static final Logger logger = LoggerFactory.getLogger(DtoMapperConfig.class);
 
     @Autowired
     private KoodistoClient koodistoClient;
-
-    private String rakennaKoodiVirhe(Koodi koodi, String message) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("(koodisto:");
-        builder.append(koodi.getKoodisto());
-        builder.append(", uri:");
-        builder.append(koodi.getUri());
-        builder.append(", versio:");
-        builder.append(koodi.getVersio());
-        builder.append(") koodia ei voitu ladata:");
-        builder.append(message);
-        return builder.toString();
-    }
 
     static public DefaultMapperFactory createFactory(
             TekstiPalanenConverter tekstiPalanenConverter,
@@ -137,15 +130,13 @@ public class DtoMapperConfig {
 
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
         factory.getConverterFactory().registerConverter(cachedEntityConverter);
-        // Mikä järki konvertoida dto samaksi? testLukiokurssi vaatii, mutta miksi ei ole mockattu?
-        factory.getConverterFactory().registerConverter(new LokalisoituTekstiDtoCopyConverter());
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
-        factory.getConverterFactory().registerConverter(new TypeNameConverter());
+        factory.getConverterFactory().registerConverter(new PassThroughConverter(Instant.class));
 
+        // Lisätään Optional tuki
         OptionalSupport.register(factory);
 
-        //erikoiskäsittely säiliöille koska halutaan säilyttää "PATCH" -ominaisuus
         factory.registerMapper(new ReferenceableCollectionMergeMapper());
         return factory;
     }
@@ -163,104 +154,147 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
-                .fieldBToA("class", "osanTyyppi")
                 .byDefault()
+                .customize(new CustomMapper<PerusteenOsaDto.Suppea, PerusteenOsa>() {
+                    @Override
+                    public void mapBtoA(PerusteenOsa perusteenOsa, PerusteenOsaDto.Suppea suppea, MappingContext context) {
+                        String name = perusteenOsa.getClass().getSimpleName();
+                        if (!ObjectUtils.isEmpty(name)) {
+                            suppea.setOsanTyyppi(name.toLowerCase());
+                        }
+                    }
+                })
                 .register();
+
         factory.classMap(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(TutkinnonOsaDto.class, TutkinnonOsa.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(PerusopetuksenPerusteenSisalto.class, PerusopetuksenPerusteenSisaltoDto.class)
                 .fieldAToB("oppiaineetCopy", "oppiaineet")
                 .byDefault()
                 .register();
+
         factory.classMap(AihekokonaisuudetLaajaDto.class, Aihekokonaisuudet.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(AihekokonaisuudetSuppeaDto.class, Aihekokonaisuudet.class)
                 .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(OpetuksenYleisetTavoitteetSuppeaDto.class, OpetuksenYleisetTavoitteet.class)
                 .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(OpetuksenYleisetTavoitteetLaajaDto.class, OpetuksenYleisetTavoitteet.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(LukioOpetussuunnitelmaRakenneLaajaDto.class, LukioOpetussuunnitelmaRakenne.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
+        factory.registerObjectFactory((source, mappingContext) -> JsonNodeFactory.instance.objectNode(), ObjectNode.class);
+
+        factory.classMap(ObjectNode.class, ObjectNode.class)
+                .byDefault()
+                .customize(new CustomMapper<ObjectNode, ObjectNode>() {
+                    @Override
+                    public void mapAtoB(ObjectNode a, ObjectNode b, MappingContext context) {
+                        b.removeAll();
+                        b.setAll(a);
+                    }
+
+                    @Override
+                    public void mapBtoA(ObjectNode b, ObjectNode a, MappingContext context) {
+                        mapAtoB(b, a, context);
+                    }
+                })
+                .register();
+
         factory.classMap(LukioOpetussuunnitelmaRakenneSuppeaDto.class, LukioOpetussuunnitelmaRakenne.class)
                 .use(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(TaiteenalaDto.class, Taiteenala.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(TekstiKappaleDto.class, TekstiKappale.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(PerusteDto.class, Peruste.class)
                 .byDefault()
                 .register();
+
         factory.classMap(PerusteprojektiDto.class, Perusteprojekti.class)
                 .byDefault()
                 .register();
+
         factory.classMap(PerusteprojektiInfoDto.class, Perusteprojekti.class)
                 .fieldBToA("peruste.koulutustyyppi", "koulutustyyppi")
                 .byDefault()
                 .register();
+
         factory.classMap(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(RakenneModuuliDto.class, RakenneModuuli.class)
                 .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
                 .byDefault()
-//                .customize(new CustomMapper<RakenneModuuliDto, RakenneModuuli>() {
-//                    @Override
-//                    public void mapAtoB(RakenneModuuliDto source, RakenneModuuli target, MappingContext context) {
-//                        super.mapAtoB(source, target, context);
-//                        target.asetaTunniste(source.getTunniste());
-//                    }
-//                })
                 .register();
+
         factory.classMap(RakenneOsaDto.class, RakenneOsa.class)
                 .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(TutkinnonOsaViiteDto.class, TutkinnonOsaViite.class)
                 .fieldBToA("tutkinnonOsa.nimi", "nimi")
                 .fieldBToA("tutkinnonOsa.tyyppi", "tyyppi")
                 .byDefault()
                 .register();
+
         factory.classMap(SuoritustapaDto.class, Suoritustapa.class)
                 .byDefault()
                 .register();
+
         factory.classMap(LukioKurssiLuontiDto.class, Lukiokurssi.class)
                 .exclude("oppiaineet")
                 .byDefault()
                 .register();
+
         factory.classMap(LukiokurssiMuokkausDto.class, Lukiokurssi.class)
                 .exclude("oppiaineet")
                 .byDefault()
                 .register();
+
         factory.classMap(Tiedote.class, TiedoteDto.class)
                 .fieldAToB("perusteprojekti.peruste", "peruste")
                 .byDefault()
                 .register();
+
         factory.classMap(Peruste.class, PerusteHakuInternalDto.class)
                 .byDefault()
                 .favorExtension(true)
                 .register();
+
         factory.classMap(Peruste.class, PerusteBaseDto.class)
                 .byDefault()
                 .favorExtension(true)
@@ -268,25 +302,24 @@ public class DtoMapperConfig {
                     @Override
                     public void mapAtoB(Peruste source, PerusteBaseDto target, MappingContext context) {
                         super.mapAtoB(source, target, context);
-                        try {
-                            KVLiite kvliite = source.getKvliite();
-                            if (kvliite != null) {
-                                KVLiite pohja = kvliite.getPohja();
-                                TekstiPalanen osaaminen = kvliite.getSuorittaneenOsaaminen();
-                                TekstiPalanen tyotehtavat = kvliite.getTyotehtavatJoissaVoiToimia();
-                                if (pohja != null) {
-                                    osaaminen = osaaminen != null ? osaaminen : pohja.getSuorittaneenOsaaminen();
-                                    tyotehtavat = tyotehtavat != null ? tyotehtavat : pohja.getTyotehtavatJoissaVoiToimia();
-                                }
-                                if (osaaminen != null) {
-                                    target.setSuorittaneenOsaaminen(new LokalisoituTekstiDto(osaaminen.getId(), osaaminen.getTeksti()));
-                                }
-                                if (tyotehtavat != null) {
-                                    target.setTyotehtavatJoissaVoiToimia(new LokalisoituTekstiDto(tyotehtavat.getId(), tyotehtavat.getTeksti()));
-                                }
+
+                        KVLiite kvliite = source.getKvliite();
+                        if (kvliite != null) {
+                            KVLiite pohja = kvliite.getPohja();
+                            TekstiPalanen osaaminen = kvliite.getSuorittaneenOsaaminen();
+                            TekstiPalanen tyotehtavat = kvliite.getTyotehtavatJoissaVoiToimia();
+                            if (pohja != null) {
+                                osaaminen = osaaminen != null ? osaaminen : pohja.getSuorittaneenOsaaminen();
+                                tyotehtavat = tyotehtavat != null ? tyotehtavat : pohja.getTyotehtavatJoissaVoiToimia();
                             }
-                        } catch (RestClientException | AccessDeniedException ex) {
+                            if (osaaminen != null) {
+                                target.setSuorittaneenOsaaminen(new LokalisoituTekstiDto(osaaminen.getId(), osaaminen.getTeksti()));
+                            }
+                            if (tyotehtavat != null) {
+                                target.setTyotehtavatJoissaVoiToimia(new LokalisoituTekstiDto(tyotehtavat.getId(), tyotehtavat.getTeksti()));
+                            }
                         }
+
                     }
                 })
                 .register();
@@ -374,10 +407,12 @@ public class DtoMapperConfig {
                 .fieldBToA(Oppiaine_.vuosiluokkakokonaisuudet.getName(), Oppiaine_.vuosiluokkakokonaisuudet.getName())
                 .byDefault()
                 .register();
+
         factory.classMap(LukioOppiaineUpdateDto.class, Oppiaine.class)
                 .mapNulls(true)
                 .byDefault()
                 .register();
+
         factory.classMap(OppiaineSuppeaDto.class, Oppiaine.class)
                 .fieldBToA(Oppiaine_.muokattu.getName(), Oppiaine_.muokattu.getName())
                 .byDefault()
@@ -391,7 +426,7 @@ public class DtoMapperConfig {
     }
 
     private static void perusteenOsaViiteMapping(DefaultMapperFactory factory, Class<? extends PerusteenOsaViiteDto<?>> dtoClass) {
-        //pelkästään yliluokan mappauksen konffaus ei toiminut
+        // Pelkästään yliluokan mappauksen konffaus ei toiminut
         factory.classMap(dtoClass, PerusteenOsaViite.class)
                 .mapNulls(false)
                 .field("perusteenOsaRef", "perusteenOsa")
@@ -401,4 +436,16 @@ public class DtoMapperConfig {
                 .register();
     }
 
+    private static String rakennaKoodiVirhe(Koodi koodi, String message) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("(koodisto:");
+        builder.append(koodi.getKoodisto());
+        builder.append(", uri:");
+        builder.append(koodi.getUri());
+        builder.append(", versio:");
+        builder.append(koodi.getVersio());
+        builder.append(") koodia ei voitu ladata:");
+        builder.append(message);
+        return builder.toString();
+    }
 }

@@ -15,16 +15,15 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
-import com.google.common.base.Optional;
+
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
-import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +34,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
 import static org.junit.Assert.*;
@@ -46,9 +46,9 @@ import static org.junit.Assert.*;
 public class MappingTest {
     @Test
     public void testOptionalMapping() {
-
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
+
         factory.registerMapper(new ReferenceableCollectionMergeMapper());
         factory.getConverterFactory().registerConverter(new TekstiPalanenConverter());
         OptionalSupport.register(factory);
@@ -66,8 +66,8 @@ public class MappingTest {
 
         OppiaineenVuosiluokkaKokonaisuusDto dto = mapper.map(ovk, OppiaineenVuosiluokkaKokonaisuusDto.class);
         dto.setArviointi(null);
-        dto.setVuosiluokkaKokonaisuus(Optional.of(new EntityReference(0L)));
-        dto.setOhjaus(Optional.<TekstiOsaDto>absent());
+        dto.setVuosiluokkaKokonaisuus(Optional.of(new Reference(0L)));
+        dto.setOhjaus(Optional.empty());
         dto.getTavoitteet().get(0).setTavoite(olt("Tavoite"));
         mapper.map(dto, ovk);
 
@@ -87,9 +87,9 @@ public class MappingTest {
 
     @Test
     public void testOptionalImmutableMapping() {
-
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
+
         OptionalSupport.register(factory);
         MapperFacade mapper = factory.getMapperFacade();
         B b = mapper.map(new A(), B.class);
@@ -98,7 +98,7 @@ public class MappingTest {
         a.setL(null);
         mapper.map(a, b);
         assertEquals(Long.valueOf(42L), b.getL());
-        a.setL(Optional.<Long>absent());
+        a.setL(Optional.empty());
         mapper.map(a, b);
         assertNull(b.getL());
     }

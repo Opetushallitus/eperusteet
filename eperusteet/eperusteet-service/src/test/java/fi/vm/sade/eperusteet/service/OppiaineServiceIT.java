@@ -15,37 +15,21 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.dto.yl.KeskeinenSisaltoalueDto;
-import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
-import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
-import fi.vm.sade.eperusteet.dto.yl.TavoitteenArviointiDto;
-import fi.vm.sade.eperusteet.repository.OppiaineRepository;
-import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
+import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -53,15 +37,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.to;
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.*;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -124,7 +107,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().get(Kieli.FI));
         ks.setNimi(olt("Nimi2"));
         oa.getTehtava().setOtsikko(Optional.of(new LokalisoituTekstiDto(null)));
-        oa.getTehtava().setTeksti(Optional.<LokalisoituTekstiDto>absent());
+        oa.getTehtava().setTeksti(Optional.empty());
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().add(0, ks);
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).setNimi(null);
         versionDto = perusteService.getPerusteVersion(perusteId);
@@ -140,13 +123,16 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         vkDto = oa.getVuosiluokkakokonaisuudet().iterator().next();
         OpetuksenTavoiteDto tavoiteDto = new OpetuksenTavoiteDto();
-        tavoiteDto.setKohdealueet(Collections.singleton(new EntityReference(oa.getKohdealueet().iterator().next().getId())));
-        tavoiteDto.setSisaltoalueet(Collections.singleton(new EntityReference(vkDto.getSisaltoalueet().get(0).getId())));
+        tavoiteDto.setKohdealueet(Collections.singleton(new Reference(oa.getKohdealueet().iterator().next().getId())));
+        tavoiteDto.setSisaltoalueet(Collections.singleton(new Reference(vkDto.getSisaltoalueet().get(0).getId())));
         tavoiteDto.setTavoite(olt("Tässäpä jokin kiva tavoite"));
         TavoitteenArviointiDto arvio = new TavoitteenArviointiDto();
         arvio.setArvioinninKohde(olt("Kohde"));
-        arvio.setHyvanOsaamisenKuvaus(olt("Kuvaus"));
-        tavoiteDto.setArvioinninkohteet(new HashSet<TavoitteenArviointiDto>());
+        arvio.setValttavanOsaamisenKuvaus(olt("Kuvaus 1"));
+        arvio.setTyydyttavanOsaamisenKuvaus(olt("Kuvaus 2"));
+        arvio.setHyvanOsaamisenKuvaus(olt("Kuvaus 3"));
+        arvio.setKiitettavanOsaamisenKuvaus(olt("Kuvaus 4"));
+        tavoiteDto.setArvioinninkohteet(new HashSet<>());
         tavoiteDto.getArvioinninkohteet().add(arvio);
         vkDto.getTavoitteet().add(tavoiteDto);
 
@@ -200,7 +186,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         OppiaineDto oppimaara = new OppiaineDto();
         oppimaara.setNimi(olt("OppimaaranNimi"));
-        oppimaara.setOppiaine(Optional.of(new EntityReference(oa1.getId())));
+        oppimaara.setOppiaine(Optional.of(new Reference(oa1.getId())));
         vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
         vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
         vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));

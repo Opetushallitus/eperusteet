@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
@@ -49,6 +50,7 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto ammattitaitovaatimukset;
     private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
     private LokalisoituTekstiDto kuvaus;
+    private Reference geneerinenArviointiasteikko;
     private KoodiDto koodi;
     private String koodiUri;
     private String koodiArvo;
@@ -63,6 +65,7 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
         super(nimi, tila, tunniste);
     }
 
+    @Override
     public String getOsanTyyppi() {
         return "tutkinnonosa";
     }

@@ -45,8 +45,10 @@ public class PerusteServiceDbIT extends AbstractDbIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
+
     @Autowired
     private PerusteRepository repo;
+
     @PersistenceContext
     private EntityManager em;
 

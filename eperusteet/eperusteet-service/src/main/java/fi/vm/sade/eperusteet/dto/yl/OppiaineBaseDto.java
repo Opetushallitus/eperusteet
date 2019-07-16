@@ -16,14 +16,15 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.Date;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *
@@ -37,7 +38,7 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     //"äitioppiaine" jos kyseessä on oppiaineen oppimäärä
-    private Optional<EntityReference> oppiaine;
+    private Optional<Reference> oppiaine;
     private Optional<Boolean> koosteinen;
     private Optional<Boolean> abstrakti;
     private Optional<LokalisoituTekstiDto> nimi;

@@ -22,20 +22,22 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+import fi.vm.sade.eperusteet.dto.Reference;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -191,8 +193,8 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id);
     }
 
     public void setEsitieto(Osaamistavoite esitieto) {

@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -36,6 +38,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 /**
  *
  * @author nkala
@@ -45,6 +52,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class SuoritustapaServiceIT extends AbstractIntegrationTest {
 
     @Autowired
+    private EntityManager em;
+
+    @Autowired
     private SuoritustapaService suoritustapaService;
 
     @Autowired
@@ -52,6 +62,9 @@ public class SuoritustapaServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
+
+    @Autowired
+    private SuoritustapaRepository suoritustapaRepository;
 
     public SuoritustapaServiceIT() {
     }
@@ -69,7 +82,7 @@ public class SuoritustapaServiceIT extends AbstractIntegrationTest {
      * Test of testCreateFromOther method, of class SuoritustapaServiceImpl.
      */
     @Test
-    @Rollback(true)
+    @Rollback
     public void testCreateFromOther() {
         Suoritustapa st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, LaajuusYksikko.OSAAMISPISTE);
         PerusteenOsaViite sisalto = st.getSisalto();
@@ -91,5 +104,26 @@ public class SuoritustapaServiceIT extends AbstractIntegrationTest {
 
 //        Assert.assertTrue(lapset1 != null && lapset2 != null);
 //        Assert.assertTrue(Objects.equals(lapset1.size(), lapset2.size()));
+    }
+
+    @Test
+    @Rollback
+    public void testRakenteenKopiointi() {
+        Suoritustapa st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.REFORMI, LaajuusYksikko.OSAAMISPISTE);
+        PerusteenOsaViite sisalto = st.getSisalto();
+
+        RakenneOsa osa = new RakenneOsa();
+        osa.setErikoisuus("erikoisuus");
+        osa.setPakollinen(true);
+        st.getRakenne().getOsat().add(osa);
+
+        st = suoritustapaRepository.save(st);
+
+        Suoritustapa uusi = suoritustapaService.createFromOther(st.getId());
+        assertThat(uusi.getRakenne()).isNotNull();
+        RakenneOsa uusiOsa = (RakenneOsa) uusi.getRakenne().getOsat().get(0);
+        assertThat(uusiOsa.getPakollinen()).isTrue();
+        assertThat(uusiOsa.getErikoisuus()).isEqualTo("erikoisuus");
+
     }
 }

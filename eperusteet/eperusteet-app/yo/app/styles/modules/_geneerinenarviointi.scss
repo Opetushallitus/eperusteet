@@ -1,0 +1,116 @@
+.mr-2 {
+    margin-right: 2px;
+}
+
+.ml-2 {
+    margin-left: 2px;
+}
+
+.geneerinen-arviointi-2019 {
+    .geneerinen-arviointi-edit-field {
+        margin-bottom: 18px;
+    }
+
+    .geneeriset {
+        .toggle-arviointi {
+            float: right;
+            font-size: small;
+        }
+
+        .geneerinen {
+            border: 1px solid #BCE8F1;
+            margin-top: 10px;
+
+             .geneerinen-heading {
+                cursor: pointer;
+                user-select: none;
+                padding-left: 5px;
+
+                .handle {
+                    padding: 10px;
+                }
+            }
+
+            .geneerinen-body {
+                margin-top: 8px;
+                animation: vaatimus-animation 0.5s;
+
+                .actions {
+                    border-top: 1px solid #BCE8F1;
+                    padding: 10px;
+                    button {
+                        margin-right: 2px;
+                    }
+                }
+
+                .osaamistasot {
+                    margin-top: 5px;
+                    border-top: 1px solid #BCE8F1;
+
+                    .osaamistaso {
+                        display: flex;
+                        border-bottom: 1px solid #BCE8F1;
+
+                        &:last-child {
+                            border-bottom: none;
+                        }
+
+                        .asteikko {
+                            flex: 0 0 120px;
+                            background: #D9EDF7;
+                            text-align: center;
+                            padding: 15px;
+                            font-weight: bold;
+                        }
+
+                        .kriteerit {
+                            width: 100%;
+                            padding: 15px;
+
+                            .kriteeri {
+                                padding: 3px;
+                            }
+
+                            .lisays {
+                                padding: 3px;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        @keyframes vaatimus-animation {
+            0% {
+                max-height: 0px;
+                opacity: 0;
+            }
+            100% {
+                max-height: 1200px;
+                opacity: 1;
+            }
+        }
+
+        .vaatimus-otsikko {
+            padding: 1px 1px 4px 1px;
+        }
+
+        .perustiedot {
+            padding: 5px;
+
+            .nimi {
+                margin-top: 6px;
+            }
+
+            .kohde {
+                margin-top: 6px;
+            }
+        }
+    }
+
+    // Tyhjää tilaa helpottamaan listojen muokkausta
+    .list-edit-spacer {
+        min-height: 400px;
+    }
+}

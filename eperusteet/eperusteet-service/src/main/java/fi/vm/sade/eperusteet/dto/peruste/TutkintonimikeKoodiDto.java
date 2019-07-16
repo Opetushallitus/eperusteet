@@ -15,12 +15,11 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.context.annotation.DependsOn;
 
 import java.util.Map;
 
@@ -36,7 +35,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class TutkintonimikeKoodiDto {
     private Long id;
-    private EntityReference peruste;
+    private Reference peruste;
     private String tutkinnonOsaUri;
     private String tutkinnonOsaArvo;
     private String osaamisalaUri;
@@ -49,7 +48,7 @@ public class TutkintonimikeKoodiDto {
     }
 
     @Deprecated
-    public TutkintonimikeKoodiDto(EntityReference peruste, String tutkinnonOsaArvo, String osaamisalaArvo, String tutkintonimikeArvo) {
+    public TutkintonimikeKoodiDto(Reference peruste, String tutkinnonOsaArvo, String osaamisalaArvo, String tutkintonimikeArvo) {
         this.peruste = peruste;
         this.tutkinnonOsaArvo = tutkinnonOsaArvo;
         this.tutkinnonOsaUri = "tutkinnonosat_" + tutkinnonOsaArvo;

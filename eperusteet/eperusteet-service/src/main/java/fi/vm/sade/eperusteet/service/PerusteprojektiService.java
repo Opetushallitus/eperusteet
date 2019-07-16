@@ -43,7 +43,7 @@ import java.util.List;
  */
 public interface PerusteprojektiService {
 
-    void validoiPerusteetTask();
+    void validoiPerusteetTask(int max);
 
     void tarkistaKooditTask();
 

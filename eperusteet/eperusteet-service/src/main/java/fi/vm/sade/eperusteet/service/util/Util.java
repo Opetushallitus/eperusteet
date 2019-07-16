@@ -18,10 +18,10 @@ package fi.vm.sade.eperusteet.service.util;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.google.common.base.Optional.fromNullable;
 
 /**
  *
@@ -55,11 +55,11 @@ public final class Util {
     }
 
     public static<F,E,T extends Collection<E>> Predicate<F> empty(Function<F,T> src) {
-        return from -> fromNullable(src.apply(from)).transform(Collection::isEmpty).or(true);
+        return from -> Optional.ofNullable(src.apply(from)).map(Collection::isEmpty).orElse(true);
     }
 
     public static<F> Predicate<F> emptyString(Function<F,String> src) {
-        return from -> fromNullable(src.apply(from)).transform(str -> str.trim().isEmpty()).or(true);
+        return from -> Optional.ofNullable(src.apply(from)).map(str -> str.trim().isEmpty()).orElse(true);
     }
 
     public static<T> Predicate<T> and(Predicate<T> a, Predicate<? super T> b) {

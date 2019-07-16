@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,7 @@ public class KVLiiteDto {
     private LokalisoituTekstiDto suorittaneenOsaaminen;
     private LokalisoituTekstiDto tyotehtavatJoissaVoiToimia;
     private LokalisoituTekstiDto tutkintotodistuksenAntaja;
-    private EntityReference arvosanaAsteikko;
+    private Reference arvosanaAsteikko;
     private LokalisoituTekstiDto jatkoopintoKelpoisuus;
     private LokalisoituTekstiDto kansainvalisetSopimukset;
     private LokalisoituTekstiDto saadosPerusta;

@@ -20,16 +20,17 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.*;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -162,8 +163,8 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id);
     }
 
     public PerusteenOsaViite getRoot() {

@@ -15,21 +15,20 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.ValmaTelmaSisalto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektinPerusteenosaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
@@ -42,13 +41,18 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -56,6 +60,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class PerusteenOsaServiceImpl implements PerusteenOsaService {
+
+    @Autowired
+    private TutkinnonOsaRepositoryCustom tutkinnonOsaRepositoryCustom;
 
     @Autowired
     private KommenttiService kommenttiService;
@@ -221,14 +228,25 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         return updated;
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto.Laaja> T add(PerusteenOsaViite viite, T perusteenOsaDto) {
+    @Transactional
+    private <T extends PerusteenOsaDto.Laaja> T addImpl(PerusteenOsaViite viite, T perusteenOsaDto) {
         PerusteenOsa perusteenOsa = mapper.map(perusteenOsaDto, PerusteenOsa.class);
         viite.setPerusteenOsa(perusteenOsa);
         perusteenOsa = perusteenOsaRepo.saveAndFlush(perusteenOsa);
         mapper.map(perusteenOsa, perusteenOsaDto);
         return perusteenOsaDto;
+    }
+
+    @Override
+    @Transactional
+    public <T extends PerusteenOsaDto.Laaja> T add(PerusteenOsaViite viite, T perusteenOsaDto) {
+        return addImpl(viite, perusteenOsaDto);
+    }
+
+    @Override
+    @Transactional
+    public <T extends PerusteenOsaDto.Laaja> T addJulkaistuun(PerusteenOsaViite viite, T perusteenOsaDto) {
+        return addImpl(viite, perusteenOsaDto);
     }
 
     private List<OsaAlue> createOsaAlueIfNotExist(List<OsaAlue> osaAlueet) {
@@ -363,8 +381,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
                 // käydään läpi valinnaiset ja asetetaan esitieto id kohdalleen.
                 for (OsaamistavoiteLaajaDto osaamistavoiteValinnainenDto : osaamistavoitteet) {
                     if (!osaamistavoiteValinnainenDto.isPakollinen() && osaamistavoiteValinnainenDto.getEsitieto() != null) {
-                        if (osaamistavoiteValinnainenDto.getEsitieto().getId().equals(tempId.toString())) {
-                            osaamistavoiteValinnainenDto.setEsitieto(new EntityReference(tallennettuPakollinenTavoite.getId()));
+                        if (osaamistavoiteValinnainenDto.getEsitieto().getId().equals(tempId != null ? tempId.toString() : null)) {
+                            osaamistavoiteValinnainenDto.setEsitieto(new Reference(tallennettuPakollinenTavoite.getId()));
                         }
                     }
                 }
@@ -633,6 +651,53 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
                 .map(perusteProjektiId -> perusteprojektiRepository.findOne(perusteProjektiId))
                 .map(pp -> mapper.map(pp, PerusteprojektinPerusteenosaDto.class))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TutkinnonOsaDto> findTutkinnonOsatBy(TutkinnonOsaQueryDto pquery) {
+        if (StringUtils.isEmpty(pquery.getKoodiUri())) {
+            throw new BusinessRuleViolationException("koodiUri on pakollinen");
+        }
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        return tutkinnonOsaRepositoryCustom.findBy(p, pquery)
+                .map((osa) -> mapper.map(osa, TutkinnonOsaDto.class));
+    }
+
+    @Override
+    @Transactional
+    public List<TutkinnonOsaViiteKontekstiDto> findTutkinnonOsaViitteetByTutkinnonOsa(Long tutkinnonOsaId) {
+        TutkinnonOsa tosa = getTutkinnonOsa(tutkinnonOsaId);
+        List<TutkinnonOsaViite> viitteet = tutkinnonOsaViiteRepository.findAllByTutkinnonOsa(tosa);
+        List<TutkinnonOsaViiteKontekstiDto> result = new ArrayList<>();
+
+        for (TutkinnonOsaViite viite : viitteet) {
+            Suoritustapa suoritustapa = viite.getSuoritustapa();
+            Set<Peruste> perusteet = new HashSet<>(suoritustapa.getPerusteet());
+            Set<Peruste> julkaistut = perusteet.stream()
+                    .filter(peruste -> Objects.equals(
+                            ProjektiTila.JULKAISTU,
+                            perusteprojektiRepository.findOneByPeruste(peruste).getTila()))
+                    .collect(Collectors.toSet());
+
+            if (julkaistut.size() > 0) {
+                TutkinnonOsaViiteKontekstiDto viiteDto = mapper.map(viite, TutkinnonOsaViiteKontekstiDto.class);
+                viiteDto.setPeruste(mapper.map(julkaistut.iterator().next(), PerusteInfoDto.class));
+                viiteDto.setSuoritustapa(mapper.map(suoritustapa, SuoritustapaDto.class));
+                result.add(viiteDto);
+            }
+        }
+
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    private TutkinnonOsa getTutkinnonOsa(Long tutkinnonOsaId) {
+        TutkinnonOsa tosa = tutkinnonOsaRepo.findOne(tutkinnonOsaId);
+        if (tosa == null) {
+            throw new BusinessRuleViolationException("tutkinnon-osaa-ei-ole");
+        }
+        return tosa;
     }
 
 }

@@ -93,7 +93,6 @@ mixin kvliite()
     +kvliiteKentta('pohjakoulutusvaatimukset', 'pohjakoulutusvaatimukset')
     +kvliiteKentta('lisatietoja', 'lisatietoja')
 
-
 .row
   .col-md-12
     .action-buttons
@@ -265,28 +264,12 @@ mixin kvliite()
               .form-group(ng-show='editEnabled')
                 ui-select(ng-model='editablePeruste.maarayskirje.liitteet' localized)
                   ui-select-match(placeholder="{{'liitetiedosto-valitse' | kaanna}}") {{$select.selected.nimi}}
-                  ui-select-choices(repeat='liite as liite in liitteet track by $index')
+                  ui-select-choices(repeat='liite in liitteet track by $index')
                     span(ng-bind-html='liite.nimi')
                 br
                 button.btn.btn-default(ng-disabled='editablePeruste.maarayskirje.liitteet === null'
-                ng-click='editablePeruste.maarayskirje.liitteet = null'
-                kaanna="'tyhjenna'")
-                br
-                p
-                  strong(kaanna="'lataa-uusi-liitetiedosto'")
-                button#inputFile.btn.btn-default(ngf-multiple="true"
-                                                 ng-model-rejected="maarayskirje.rejected"
-                                                 ngf-accept="'.pdf'"
-                                                 ngf-select
-                                                 ng-model="maarayskirje.files")
-                  span(kaanna="'lisaa-liitetiedosto'")
-                span &nbsp;
-                button.btn.btn-primary(ng-disabled='!maarayskirje.files || maarayskirje.files.length !== 1'
-                                       ng-click='saveLiite()'
-                                       kaanna="'tallenna'")
-                p.success-message(ng-show='message') {{message | kaanna}}
-                p.error-message(ng-show='maarayskirje.rejected.length > 0') {{'liitetiedosto-pdf-hylatty' | kaanna}}
-                p.help-block {{maarayskirje.files[0].name}}
+                  ng-click='editablePeruste.maarayskirje.liitteet = null'
+                  kaanna="'tyhjenna'")
 
               table.table.table-striped(ng-show='!editEnabled')
                 thead
@@ -332,7 +315,9 @@ mixin kvliite()
                     td
                       input.form-control.col-sm-12(ng-model='muutosmaarays.nimi', slocalized='')
                     td
-                      input.form-control.col-sm-12(ng-model='muutosmaarays.url', slocalized='', required='', placeholder='https://')
+                      ui-select(ng-model="muutosmaarays.liitteet" localized)
+                        ui-select-match(placeholder="{{'liitetiedosto-valitse' | kaanna}}") {{$select.selected.nimi}}
+                        ui-select-choices(repeat='liite in liitteet track by $index') {{liite.nimi}}
                     td(ng-show='editEnabled')
                       button.btn.btn-warning(type='button', ng-click='poistaMuutosmaarays(muutosmaarays)', kaanna='poista')
                   tr(ng-repeat='muutosmaarays in peruste.muutosmaaraykset', ng-show='!editEnabled')
@@ -340,11 +325,54 @@ mixin kvliite()
                       p(ng-show='hasContent(muutosmaarays.nimi)') {{ muutosmaarays.nimi | kaanna }}
                       p(ng-show='!hasContent(muutosmaarays.nimi)', kaanna='ei-asetettu')
                     td
-                      a(ng-show='hasContent(muutosmaarays.url)', ng-href='{{ muutosmaarays.url | kaanna }}') {{ muutosmaarays.url | kaanna }}
-                      p(ng-show='!hasContent(muutosmaarays.url)', kaanna='ei-asetettu')
+                      a(ng-show="(muutosmaarays.liitteet | kaanna).id"
+                        ng-href='{{liitteetUrl + (muutosmaarays.liitteet | kaanna).id}}'
+                        target="_blank"
+                        rel="noopener noreferrer") {{liitteetUrl + (muutosmaarays.liitteet | kaanna).id}}
+                      a(ng-show='!(muutosmaarays.liitteet | kaanna).id && hasContent(muutosmaarays.url)', ng-href='{{ muutosmaarays.url | kaanna }}') {{ muutosmaarays.url | kaanna }}
+                      p(ng-show='!(muutosmaarays.liitteet | kaanna).id && !hasContent(muutosmaarays.url)', kaanna='ei-asetettu')
                   tr(ng-show='peruste.muutosmaaraykset.length === 0 && !editEnabled')
                     td
                       p(kaanna='ei-asetettu')
                     td
                       p(kaanna='ei-asetettu')
               button.btn.btn-default(type='button', ng-click='lisaaMuutosmaarays()', icon-role='add', kaanna='lisaa-muutosmaarays', ng-show='editEnabled')
+
+          .panel.panel-default.panel-clean(ng-show="!isOpas")
+            .panel-heading
+              h3.panel-title(kaanna="'liitteet'")
+            .panel-body
+              p(kaanna="'liitteet-kuvaus'")
+
+              table.table.table-striped
+                thead
+                  tr
+                    th.col-sm-6(kaanna='nimi')
+                    th.col-sm-6(kaanna='luotu')
+                    th(kaanna='toiminnot', ng-show='editEnabled')
+                tbody
+                  tr(ng-repeat='liite in liitteet')
+                    td
+                      p(ng-show='hasContent(liite.nimi)') {{liite.nimi}}
+                      p(ng-show='!hasContent(liite.nimi)', kaanna='ei-asetettu')
+                    td
+                      p {{liite.luotu | aikaleima}}
+                    td(ng-show='editEnabled')
+                      button.btn.btn-warning(type='button', ng-click='poistaLiite(liite)', kaanna='poista')
+
+              div(ng-show='editEnabled')
+                p
+                  strong(kaanna="'lataa-uusi-liitetiedosto'")
+                button#inputMuutosmaaraykset.btn.btn-default(ngf-multiple="true"
+                  ng-model-rejected="liite.rejected"
+                  ngf-accept="'.pdf'"
+                  ngf-select
+                  ng-model="liite.files")
+                  span(kaanna="'lisaa-liitetiedosto'")
+                span &nbsp;
+                button.btn.btn-primary(ng-disabled="!liite.files || liite.files.length !== 1"
+                  ng-click="saveLiite('tuntematon')"
+                  kaanna="'tallenna'")
+                p.success-message(ng-show='message') {{message | kaanna}}
+                p.error-message(ng-show='liite.rejected.length > 0') {{'liitetiedosto-pdf-hylatty' | kaanna}}
+                p.help-block {{liite.files[0].name}}

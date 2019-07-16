@@ -15,12 +15,11 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -32,6 +31,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "osaamistaso")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Osaamistaso implements Serializable, ReferenceableEntity {
 
     @Id
@@ -50,8 +52,8 @@ public class Osaamistaso implements Serializable, ReferenceableEntity {
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id);
     }
 
 }

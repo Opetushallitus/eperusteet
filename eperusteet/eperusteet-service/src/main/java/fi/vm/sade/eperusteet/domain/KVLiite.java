@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -45,8 +45,8 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
     private Long id;
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id);
     }
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

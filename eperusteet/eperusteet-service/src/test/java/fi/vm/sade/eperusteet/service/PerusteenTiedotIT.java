@@ -16,6 +16,7 @@ import fi.vm.sade.eperusteet.repository.ArvioinninKohdealueRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
+import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,12 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
+
+    @Autowired
+    private PerusteprojektiService perusteprojektiService;
+
+    @Autowired
+    private PerusteService perusteService;
 
     @Autowired
     private AmmattitaitovaatimusService ammattitaitovaatimusService;
@@ -90,6 +97,34 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
             return null;
         }
     }
+
+    @Test
+    @Rollback
+    public void testPerusteDiaarinumeronPaivitys() {
+        peruste.setDiaarinumero(new Diaarinumero("OPH-12345-1234"));
+        projekti = perusteprojektiRepository.save(projekti);
+        peruste = perusteRepository.save(peruste);
+        em.flush();
+        assertThat(peruste.getDiaarinumero().toString()).isEqualTo("OPH-12345-1234");
+
+        PerusteDto perusteDto = mapper.map(this.peruste, PerusteDto.class);
+        perusteDto.setDiaarinumero("OPH-12345-1233");
+        perusteDto.setNimi(TestUtils.lt("nimi"));
+        perusteDto.setVoimassaoloAlkaa(new Date());
+        PerusteDto updated = perusteService.update(peruste.getId(), perusteDto);
+        assertThat(updated.getDiaarinumero()).isEqualTo("OPH-12345-1233");
+
+        projekti.setTila(ProjektiTila.JULKAISTU);
+        peruste.asetaTila(PerusteTila.VALMIS);
+        peruste = perusteRepository.save(peruste);
+        em.flush();
+
+        perusteDto.setDiaarinumero("OPH-12345-1234");
+        updated = perusteService.update(peruste.getId(), perusteDto);
+        assertThat(updated.getDiaarinumero()).isEqualTo("OPH-12345-1233");
+
+    }
+
 
     @Test
     @Rollback

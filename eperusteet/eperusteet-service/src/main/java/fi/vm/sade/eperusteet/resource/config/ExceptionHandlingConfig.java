@@ -22,6 +22,9 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.exception.ServiceException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import ma.glasnost.orika.MappingException;
+import org.apache.catalina.connector.ClientAbortException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -51,10 +54,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.PersistenceException;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,6 +95,15 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         } else {
             return handleExceptionInternal(ex, null, headers, status, request);
         }
+    }
+
+    @ExceptionHandler(ClientAbortException.class)
+    public void clientAbortExceptionHandler(HttpServletRequest request, ClientAbortException ex) {
+        Principal principal = request.getUserPrincipal();
+        String username = principal != null ? principal.getName() : "<NONE>";
+        LOG.warn("ClientAbortException: message={} username={}, remoteAddr={}, userAgent={}, requestedURL={}",
+                ex.getLocalizedMessage(), username, request.getRemoteAddr(), request.getHeader("User-Agent"),
+                request.getRequestURL());
     }
 
     @ExceptionHandler(value = {
@@ -147,6 +161,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         } else if (ex instanceof MissingServletRequestPartException) {
             describe(map, "pyynnöstä-puuttui-osa", "Pyynnöstä puuttui osa, eikä sitä voitu tästä syystä käsitellä.");
         } else if (ex instanceof TypeMismatchException) {
+            suppresstrace = true;
             describe(map, "tyypin-yhteensopivuusongelma", "Tyypin yhteensopivuusongelma.");
         } else if (ex instanceof TransactionSystemException) {
             describe(map, "datan-käsittelyssä-odottamaton-virhe", "Datan käsittelyssä tapahtui odottamaton virhe.");
@@ -185,6 +200,12 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         } else if (ex instanceof IllegalArgumentException) {
             suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
+        } else if (ex instanceof IOException) {
+            if (StringUtils.containsIgnoreCase(ExceptionUtils.getRootCauseMessage(ex), "Broken pipe")) {
+                suppresstrace = true;
+                map.put("syy", ex.getLocalizedMessage());
+                map.put("avain", "client-abort-virhe");
+            }
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");

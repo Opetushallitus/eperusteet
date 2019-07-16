@@ -15,13 +15,12 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto;
@@ -31,12 +30,14 @@ import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
-import java.io.IOException;
-import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Optional;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.oto;
@@ -63,7 +64,7 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
     private LaajaalainenOsaaminenService osaaminenService;
 
     private Long perusteId;
-    private EntityReference osaaminen;
+    private Reference osaaminen;
 
     @Before
     public void setup() {
@@ -72,7 +73,7 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         LaajaalainenOsaaminenDto lo = new LaajaalainenOsaaminenDto();
         lo.setNimi(olt("Nimi"));
         lo = osaaminenService.addLaajaalainenOsaaminen(perusteId, lo);
-        osaaminen = new EntityReference(lo.getId());
+        osaaminen = new Reference(lo.getId());
     }
 
     @Test

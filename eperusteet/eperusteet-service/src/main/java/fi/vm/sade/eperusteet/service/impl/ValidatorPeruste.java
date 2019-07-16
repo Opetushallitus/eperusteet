@@ -17,6 +17,7 @@ import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -458,7 +459,18 @@ public class ValidatorPeruste implements Validator {
 
                     for (String nimikkeenOsaamisala : tutkintonimikkeidenOsaamisalat) {
                         if (!osaamisalat.contains(nimikkeenOsaamisala)) {
-                            updateStatus.addStatus("tutkintonimikkeen-osaamisala-puuttuu-perusteesta");
+                            List<LokalisoituTekstiDto> puuttuvatOsaamisalat = tutkintonimikkeidenOsaamisalat.stream()
+                                    .map(uri -> {
+                                        Koodi koodi = new Koodi();
+                                        koodi.setUri(uri);
+                                        koodi.setKoodisto("osaamisalat");
+                                        return koodi;
+                                    })
+                                    .map(k -> mapper.map(k, KoodiDto.class))
+                                    .map(KoodiDto::getNimi)
+                                    .map(LokalisoituTekstiDto::new)
+                                    .collect(Collectors.toList());
+                            updateStatus.addStatus("tutkintonimikkeen-osaamisala-puuttuu-perusteesta", null, puuttuvatOsaamisalat);
                             updateStatus.setVaihtoOk(false);
                             break;
                         }
@@ -470,7 +482,7 @@ public class ValidatorPeruste implements Validator {
                 PerusteenRakenne.Validointi validointi;
 
                 // Osaamisaloilla täytyy olla tekstikuvaukset
-                if (peruste.getOsaamisalat() != null) {
+                if (peruste.getOsaamisalat() != null && peruste.getOsaamisalat().size() > 0) {
                     PerusteenOsaViite sisalto = peruste.getSisalto(null);
                     if (sisalto != null) {
                         Set<Koodi> kuvaukselliset = flattenSisalto(sisalto).stream()
@@ -480,8 +492,15 @@ public class ValidatorPeruste implements Validator {
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toSet());
 
-                        if (!Objects.equals(peruste.getOsaamisalat(), kuvaukselliset)) {
-                            updateStatus.addStatus("osaamisalan-kuvauksia-puuttuu-sisallosta");
+                        Set<Koodi> oalat = new HashSet<>(peruste.getOsaamisalat());
+
+                        if (!Objects.equals(oalat, kuvaukselliset)) {
+                            oalat.removeAll(kuvaukselliset);
+                            List<LokalisoituTekstiDto> puuttuvat = oalat.stream()
+                                    .map(koodi -> mapper.map(koodi, KoodiDto.class))
+                                    .map(koodiDto -> new LokalisoituTekstiDto(koodiDto.getNimi()))
+                                    .collect(Collectors.toList());
+                            updateStatus.addStatus("osaamisalan-kuvauksia-puuttuu-sisallosta", null, puuttuvat);
                             updateStatus.setVaihtoOk(false);
                         }
                     }

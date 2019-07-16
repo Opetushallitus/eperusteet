@@ -80,6 +80,7 @@ import "scripts/services/excel";
 import "scripts/services/muodostumissaannot";
 import "scripts/services/lokalisointi";
 import "scripts/services/versionhelper";
+import "scripts/services/automaattitallennus";
 import "scripts/services/proxyservice";
 import "scripts/directives/iconrole";
 import "scripts/directives/tagcloud";
@@ -106,6 +107,7 @@ import "scripts/controllers/tiedotteet";
 import "scripts/directives/spinner";
 import "scripts/controllers/modals/uudelleenohjaus";
 import "scripts/controllers/modals/muodostumisryhma";
+import "scripts/controllers/modals/validointi";
 import "scripts/directives/fileselect";
 import "scripts/directives/formfield";
 import "scripts/directives/followscroll";
@@ -204,3 +206,4 @@ import "scripts/directives/muokkaus/vaihe"
 import "scripts/directives/perustetoisetprojektit"
 import "scripts/components/tavoitteet/tavoitteet"
 import "scripts/directives/ckeditor";
+import "scripts/directives/tutkinnonosangeneerisetammattitaitovaatimukset";

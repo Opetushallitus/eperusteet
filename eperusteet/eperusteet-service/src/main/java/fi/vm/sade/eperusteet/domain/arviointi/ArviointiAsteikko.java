@@ -18,15 +18,15 @@ package fi.vm.sade.eperusteet.domain.arviointi;
 
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import java.io.Serializable;
-import java.util.List;
-import javax.persistence.*;
-
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.dto.Reference;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.NotAudited;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -36,6 +36,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "arviointiasteikko")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ArviointiAsteikko implements Serializable, ReferenceableEntity {
 
     @Id
@@ -55,7 +58,7 @@ public class ArviointiAsteikko implements Serializable, ReferenceableEntity {
     private List<Osaamistaso> osaamistasot;
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
+    public Reference getReference() {
+        return new Reference(id);
     }
 }

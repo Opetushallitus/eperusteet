@@ -28,9 +28,10 @@ import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
-import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 /**
  *
@@ -43,8 +44,6 @@ public abstract class PerusteenOsaDto {
     private Date luotu;
     private Date muokattu;
     private String muokkaaja;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String muokkaajanNimi;
     private LokalisoituTekstiDto nimi;
     private PerusteTila tila;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -71,7 +70,7 @@ public abstract class PerusteenOsaDto {
         @JsonSubTypes.Type(value = LukioOpetussuunnitelmaRakenneLaajaDto.class)
     })
     public static abstract class Laaja extends PerusteenOsaDto {
-
+        public abstract String getOsanTyyppi();
         public Laaja() {
         }
         public Laaja(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {

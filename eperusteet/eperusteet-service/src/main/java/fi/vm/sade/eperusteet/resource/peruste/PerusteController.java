@@ -40,10 +40,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTE;
@@ -90,8 +87,10 @@ public class PerusteController {
 
     @RequestMapping(value = "/uusimmat", method = GET)
     @ResponseBody
-    public ResponseEntity<List<PerusteDto>> getUusimmat() {
-        return new ResponseEntity<>(service.getUusimmat(), HttpStatus.OK);
+    public ResponseEntity<List<PerusteDto>> getUusimmat(@RequestParam(defaultValue = "fi") String kieli) {
+        HashSet<Kieli> kielet = new HashSet<>();
+        kielet.add(Kieli.of(kieli));
+        return new ResponseEntity<>(service.getUusimmat(kielet), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/perusopetus", method = GET)
@@ -115,7 +114,7 @@ public class PerusteController {
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "koulutusala", dataType = "string", paramType = "query", allowMultiple = true),
             @ApiImplicitParam(name = "koulutustyyppi", dataType = "string", paramType = "query", allowMultiple = true, value = "koulutustyyppi (koodistokoodi)"),
-            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, defaultValue = "fi", value = "perusteen kieli"),
+            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, value = "perusteen kieli"),
             @ApiImplicitParam(name = "opintoala", dataType = "string", paramType = "query", allowMultiple = true, value = "opintoalakoodi"),
             @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
             @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),

@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.service.util;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
@@ -26,9 +25,8 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static com.google.common.base.Optional.absent;
-import static com.google.common.base.Optional.of;
 
 /**
  * User: tommiratamaa
@@ -76,7 +74,7 @@ public class OppiaineUtil {
 
         public OppiaineDto luo(OppiaineService service, Long perusteId, OppiaineOpetuksenSisaltoTyyppi tyyppi) {
             OppiaineDto luotava = oppaine(teksti, vanhempi == null ? null : vanhempi.id);
-            luotava.setKoosteinen(of(this.koosteinen));
+            luotava.setKoosteinen(Optional.of(this.koosteinen));
             OppiaineDto luotu = service.addOppiaine(perusteId, luotava, tyyppi);
             this.id = luotu.getId();
             if (this.idRef != null) {
@@ -93,8 +91,9 @@ public class OppiaineUtil {
 
     public static OppiaineDto oppaine(LokalisoituTekstiDto nimi, Long parentId) {
         OppiaineDto dto = new OppiaineDto();
-        dto.setNimi(of(nimi));
-        dto.setOppiaine(parentId == null ? absent() : of(new EntityReference(parentId)));
+        dto.setNimi(Optional.of(nimi));
+        dto.setOppiaine(parentId == null ? Optional.empty() : Optional.of(new fi.vm.sade.eperusteet.dto.Reference(parentId.toString())));
+
         return dto;
     }
 

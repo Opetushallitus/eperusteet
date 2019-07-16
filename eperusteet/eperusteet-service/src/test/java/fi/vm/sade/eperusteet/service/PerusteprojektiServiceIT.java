@@ -337,6 +337,74 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Test
     @Rollback(true)
+    public void testUusimmatPerusteet() {
+        {
+            PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+            PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+                peruste.setNimi(TestUtils.lt("fi"));
+                peruste.setVoimassaoloAlkaa(new Date());
+                peruste.setPaatospvm(new Date());
+                Set<Kieli> kielet = new HashSet<>();
+                kielet.add(Kieli.FI);
+                peruste.setKielet(kielet);
+            });
+            ppTestUtils.asetaMuodostumiset(perusteDto.getId());
+            ppTestUtils.luoValidiKVLiite(perusteDto.getId());
+            ppTestUtils.julkaise(projekti.getId());
+        }
+
+        {
+            PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
+            PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+                peruste.setNimi(TestUtils.lt("en", Kieli.EN));
+                peruste.setVoimassaoloAlkaa(new Date());
+                peruste.setPaatospvm(new Date());
+                Set<Kieli> kielet = new HashSet<>();
+                kielet.add(Kieli.EN);
+                peruste.setKielet(kielet);
+            });
+            ppTestUtils.asetaMuodostumiset(perusteDto.getId());
+            ppTestUtils.luoValidiKVLiite(perusteDto.getId());
+            ppTestUtils.julkaise(projekti.getId());
+        }
+
+        List<Peruste> perusteet = perusteRepository.findAll();
+
+        {
+            Set<Kieli> kielet = new HashSet<>();
+            kielet.add(Kieli.FI);
+            kielet.add(Kieli.EN);
+            List<PerusteDto> uusimmat = perusteService.getUusimmat(kielet);
+
+            Assert.assertEquals(uusimmat.size(), perusteet.size());
+        }
+
+        {
+            Set<Kieli> kielet = new HashSet<>();
+            kielet.add(Kieli.FI);
+            List<PerusteDto> uusimmat = perusteService.getUusimmat(kielet);
+
+            Assert.assertEquals(uusimmat.size(), 1);
+        }
+
+        {
+            Set<Kieli> kielet = new HashSet<>();
+            kielet.add(Kieli.EN);
+            List<PerusteDto> uusimmat = perusteService.getUusimmat(kielet);
+
+            Assert.assertEquals(uusimmat.size(), 1);
+        }
+
+        {
+            Set<Kieli> kielet = new HashSet<>();
+            List<PerusteDto> uusimmat = perusteService.getUusimmat(kielet);
+
+            Assert.assertEquals(uusimmat.size(), 0);
+        }
+    }
+
+    @Test
+    @Rollback(true)
     public void testTyoryhmat() {
         // Lisääminen
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());

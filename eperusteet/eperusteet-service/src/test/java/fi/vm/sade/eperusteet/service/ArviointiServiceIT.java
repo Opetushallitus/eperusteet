@@ -28,7 +28,7 @@ import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.resource.config.MappingModule;
 import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -87,8 +87,8 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
             }
 
             private String tryToconvertFromMethodName(AnnotatedMethod annotatedMethod, String defaultName) {
-                if((annotatedMethod.getParameterCount() == 1 && EntityReference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
-                        || EntityReference.class.isAssignableFrom(annotatedMethod.getRawReturnType())) {
+                if((annotatedMethod.getParameterCount() == 1 && Reference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
+                        || Reference.class.isAssignableFrom(annotatedMethod.getRawReturnType())) {
                     defaultName = '_' + defaultName;
                 }
                 return defaultName;

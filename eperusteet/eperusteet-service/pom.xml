@@ -141,11 +141,6 @@
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-guava</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
             <version>${jackson.version}</version>
         </dependency>
@@ -307,7 +302,7 @@
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>java-http</artifactId>
-            <version>0.1.4-SNAPSHOT</version>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
@@ -329,6 +324,12 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jasper-el</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
             <version>${tomcat.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -502,11 +503,12 @@
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>4.0.3</version>
+                <version>5.2.4</version>
                 <configuration>
                     <url>${eperusteet.devdb.jdbcurl}</url>
                     <user>${eperusteet.devdb.user}</user>
                     <password>${eperusteet.devdb.password}</password>
+                    <outOfOrder>true</outOfOrder>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -537,7 +539,7 @@
                 <plugin>
                     <groupId>de.juplo</groupId>
                     <artifactId>hibernate4-maven-plugin</artifactId>
-                    <version>1.0.4</version>
+                    <version>1.1.1</version>
                     <executions>
                         <execution>
                             <goals>
@@ -550,7 +552,8 @@
                         <type>${hibernate.export.type}</type>
                         <target>SCRIPT</target>
                         <driverClassName>org.postgresql.Driver</driverClassName>
-                        <hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>
+<!--                        <hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>-->
+                        <hibernateDialect>fi.vm.sade.eperusteet.repository.dialect.CustomPostgreSqlDialect</hibernateDialect>
                         <url/>
                         <username/>
                         <password/>

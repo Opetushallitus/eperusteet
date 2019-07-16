@@ -15,8 +15,12 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Maarayskirje;
+import fi.vm.sade.eperusteet.domain.Muutosmaarays;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
@@ -30,13 +34,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 /**
  *
@@ -88,8 +92,8 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     @Transactional
-    public UUID add(Long perusteId, String tyyppi, String nimi, long length, InputStream is) {
-        Liite liite = liitteet.add(tyyppi, nimi, length, is);
+    public UUID add(Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is) {
+        Liite liite = liitteet.add(tyyppi, mime, nimi, length, is);
         Peruste peruste = perusteet.findOne(perusteId);
         peruste.attachLiite(liite);
         return liite.getId();
@@ -105,7 +109,7 @@ public class LiiteServiceImpl implements LiiteService {
     @Override
     @Transactional(readOnly = true)
     public List<LiiteDto> getAllByTyyppi(Long perusteId, Set<String> tyypit) {
-        List<Liite> loydetyt = liitteet.findByPerusteIdAndTyyppiIn(perusteId, tyypit);
+        List<Liite> loydetyt = liitteet.findByPerusteIdAndMimeIn(perusteId, tyypit);
         return mapper.mapAsList(loydetyt, LiiteDto.class);
     }
 
@@ -113,10 +117,43 @@ public class LiiteServiceImpl implements LiiteService {
     @Transactional
     public void delete(Long perusteId, UUID id) {
         Liite liite = liitteet.findOne(perusteId, id);
-        if ( liite == null ) {
+        if (liite == null) {
             throw new NotExistsException();
         }
-        perusteet.findOne(perusteId).removeLiite(liite);
+        Peruste peruste = perusteet.findOne(perusteId);
+        peruste.removeLiite(liite);
+
+        // Maaräyskirjeen poisto
+        Maarayskirje maarayskirje = peruste.getMaarayskirje();
+        if (maarayskirje != null) {
+            Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet();
+            if (!ObjectUtils.isEmpty(liitteet)) {
+                List<Kieli> poistettavat = new ArrayList<>();
+                liitteet.forEach((kieli, l) -> {
+                    if (liite.getId().equals(l.getId())) {
+                        poistettavat.add(kieli);
+                    }
+                });
+                poistettavat.forEach(liitteet::remove);
+            }
+        }
+
+        // Muutosmääräyksien poisto
+        List<Muutosmaarays> muutosmaaraykset = peruste.getMuutosmaaraykset();
+        if (!ObjectUtils.isEmpty(muutosmaaraykset)) {
+            muutosmaaraykset.forEach(muutosmaarays -> {
+                Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
+                if (!ObjectUtils.isEmpty(liitteet)) {
+                    List<Kieli> poistettavat = new ArrayList<>();
+                    liitteet.forEach((kieli, l) -> {
+                        if (liite.getId().equals(l.getId())) {
+                            poistettavat.add(kieli);
+                        }
+                    });
+                    poistettavat.forEach(liitteet::remove);
+                }
+            });
+        }
     }
 
 }

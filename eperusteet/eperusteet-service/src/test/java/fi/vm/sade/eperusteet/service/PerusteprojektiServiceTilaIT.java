@@ -26,7 +26,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
@@ -594,7 +594,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         asetaPerusteenOsanTila(new Long(luotuDto.getTutkinnonOsa().getId()), tila);
 
         RakenneOsaDto ro = new RakenneOsaDto();
-        ro.setTutkinnonOsaViite(new EntityReference(luotuDto.getId()));
+        ro.setTutkinnonOsaViite(new Reference(luotuDto.getId()));
         return ro;
     }
 

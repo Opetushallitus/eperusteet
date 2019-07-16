@@ -16,10 +16,11 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  *

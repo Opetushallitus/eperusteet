@@ -15,14 +15,15 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.Set;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -35,12 +36,13 @@ public class OpetuksenTavoiteDto implements ReferenceableDto {
     private Long id;
     private UUID tunniste;
     private Optional<LokalisoituTekstiDto> tavoite;
-    private Set<EntityReference> sisaltoalueet;
-    private Set<EntityReference> laajattavoitteet;
-    private Set<EntityReference> kohdealueet;
+    private Set<Reference> sisaltoalueet;
+    private Set<Reference> laajattavoitteet;
+    private Set<Reference> kohdealueet;
     private Set<TavoitteenArviointiDto> arvioinninkohteet;
     private Optional<LokalisoituTekstiDto> arvioinninOtsikko;
     private Optional<LokalisoituTekstiDto> arvioinninKuvaus;
     private Optional<LokalisoituTekstiDto> arvioinninOsaamisenKuvaus;
+    private Optional<LokalisoituTekstiDto> tavoitteistaJohdetutOppimisenTavoitteet;
 
 }

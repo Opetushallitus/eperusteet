@@ -1,28 +1,29 @@
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
-import java.util.Date;
-import java.util.List;
-
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.Date;
+import java.util.List;
+
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
-
-import org.junit.Assert;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -150,7 +151,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
         // Liitä perusteprojekti
         TiedoteDto tiedoteDto = tiedoteService.getTiedote(id);
-        tiedoteDto.setPerusteprojekti(new EntityReference(projekti.getId()));
+        tiedoteDto.setPerusteprojekti(new Reference(projekti.getId()));
         tiedoteService.updateTiedote(tiedoteDto);
 
         // Koitetaan poistaa suoritustapa tiedotteen kautta

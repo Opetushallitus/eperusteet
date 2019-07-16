@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,7 +33,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     private ThreadPoolTaskExecutor pool;
 
     @Autowired
-    private List<ScheduledTask> tasks;
+    private List<ScheduledTask> tasks = new ArrayList<>();
 
     ScheduledConfiguration() {
         scheduler = new ThreadPoolTaskScheduler();
@@ -55,7 +56,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
         registrar.setScheduler(this.scheduler);
     }
 
-    @Scheduled(cron = "0 0 3 * * *")
+//    @Scheduled(cron = "0 0 3 * * *")
     public void scheduledValidationTask() {
         if (!isUpdating.get()) {
             if (isUpdating.compareAndSet(false, true)) {
@@ -83,7 +84,8 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
 
                     SecurityContextHolder.getContext().setAuthentication(null);
 
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     log.debug("Fatal error occurred while running background jobs");
                     isUpdating.set(false);
                     return;

@@ -96,42 +96,43 @@ angular
     .controller(
         "muokkausTutkinnonosaCtrl",
         (
+            $q,
+            $rootScope,
             $scope,
             $state,
             $stateParams,
-            $rootScope,
-            $q,
-            Editointikontrollit,
-            PerusteenOsat,
-            PerusteenRakenne,
-            PerusteTutkinnonosa,
-            TutkinnonOsaEditMode,
             $timeout,
-            Varmistusdialogi,
-            VersionHelper,
-            Lukitus,
-            MuokkausUtils,
-            PerusteenOsaViitteet,
-            Utils,
-            ArviointiHelper,
+            Algoritmit,
             AmmattitaitoHelper,
-            PerusteProjektiSivunavi,
-            Notifikaatiot,
-            Koodisto,
-            Tutke2OsaData,
+            ArviointiHelper,
+            AutomaattitallennusService,
+            Editointikontrollit,
+            FieldSplitter,
             Kommentit,
             KommentitByPerusteenOsa,
-            FieldSplitter,
-            Algoritmit,
-            TutkinnonosanTiedotService,
-            TutkinnonOsaViitteet,
-            PerusteenOsaViite,
-            virheService,
-            ProjektinMurupolkuService,
-            localStorageService,
-            TutkinnonOsaLeikelautaService,
+            Koodisto,
+            Lukitus,
+            MuokkausUtils,
             MuutProjektitService,
-            YleinenData
+            Notifikaatiot,
+            PerusteProjektiSivunavi,
+            PerusteTutkinnonosa,
+            PerusteenOsaViite,
+            PerusteenOsaViitteet,
+            PerusteenOsat,
+            PerusteenRakenne,
+            ProjektinMurupolkuService,
+            Tutke2OsaData,
+            TutkinnonOsaEditMode,
+            TutkinnonOsaLeikelautaService,
+            TutkinnonOsaViitteet,
+            TutkinnonosanTiedotService,
+            Utils,
+            Varmistusdialogi,
+            VersionHelper,
+            YleinenData,
+            localStorageService,
+            virheService,
         ) => {
             Utils.scrollTo("#ylasivuankkuri");
 
@@ -313,6 +314,12 @@ angular
                     collapsible: true
                 },
                 {
+                    path: "tutkinnonOsa._geneerinenArviointiasteikko",
+                    localeKey: "tutkinnon-osan-geneerinen-arviointi",
+                    type: "geneerinenarviointi",
+                    collapsible: true,
+                },
+                {
                     path: "tutkinnonOsa.arviointi.lisatiedot",
                     localeKey: "tutkinnon-osan-arviointi-teksti",
                     type: "editor-area",
@@ -397,6 +404,7 @@ angular
 
             function saveCb(res) {
                 Lukitus.vapautaPerusteenosa(res.id);
+                AutomaattitallennusService.stop();
                 ProjektinMurupolkuService.set(
                     "tutkinnonOsaViiteId",
                     $scope.tutkinnonOsaViite.id,
@@ -469,8 +477,16 @@ angular
             };
 
             const normalCallbacks = {
-                edit: () => {
+                async edit() {
                     tutke2.fetch();
+                    if ($scope.editableTutkinnonOsaViite.id) {
+                        await AutomaattitallennusService.start(
+                            "tutkinnonosa" + $scope.editableTutkinnonOsaViite.id,
+                            () => $scope.editableTutkinnonOsaViite,
+                            (data: any) => {
+                                $scope.editableTutkinnonOsaViite = angular.copy(data);
+                            });
+                    }
                 },
                 asyncValidate: cb => {
                     Editointikontrollit.notifySentenceCaseWarnings({
@@ -635,7 +651,9 @@ angular
             // Palauttaa true jos kaikki mahdolliset osiot on jo lisätty
             $scope.allVisible = () => {
                 const lisatty = _.all($scope.fields, (field: any) => {
-                    return _.contains(field.path, "arviointi.") || !field.inMenu || (field.inMenu && field.visible);
+                    return _.contains(field.path, "arviointi.")
+                        || !field.inMenu
+                        || (field.inMenu && field.visible);
                 });
                 return lisatty && $scope.arviointiHelper.exists();
             };
@@ -655,6 +673,7 @@ angular
                 if ($scope.arviointiHelper) {
                     $scope.arviointiHelper.setMenu($scope.menuItems);
                 }
+                $scope.menuItems.push();
             };
 
             $scope.$watch("arviointiFields.teksti.visible", $scope.updateMenu);

@@ -15,14 +15,11 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import com.google.common.base.Optional;
-import static com.google.common.base.Optional.of;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine.OsaTyyppi;
-import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.dto.yl.lukio.OppiaineJarjestysDto;
@@ -35,16 +32,10 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
 import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
-import static fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
-import java.util.*;
-import static java.util.Comparator.*;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +43,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+
+import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
+import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
+import static fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS;
+import static java.util.Comparator.*;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 /**
  *
@@ -246,8 +246,8 @@ public class OppiaineServiceImpl implements OppiaineService {
     private void setOriginalReferences(Oppiaine original, OppiaineBaseUpdateDto dto) {
         // keep the parent reference the same (could not haven been modified in perusopetus but could be
         // modified in lukiokoulutus through structure)
-        dto.setOppiaine(original.getOppiaine() != null ? of(new EntityReference(original.getOppiaine().getId()))
-                : Optional.absent());
+        dto.setOppiaine(original.getOppiaine() != null ? Optional.of(new Reference(original.getOppiaine().getId()))
+                : Optional.empty());
     }
 
     @Override
@@ -490,7 +490,7 @@ public class OppiaineServiceImpl implements OppiaineService {
                             +" to restore from Lukioperuste at revision="+tryRestoreFromRevision));
             LukioOppiaineUpdateDto lukioOppiaine = mapper.map(oldOppiaine, new LukioOppiaineUpdateDto());
             if (oldOppiaine.getOppiaine() != null) {
-                lukioOppiaine.setOppiaine(of(new EntityReference(
+                lukioOppiaine.setOppiaine(Optional.of(new Reference(
                         lookupOrRestoreOppiaine(perusteId, oldOppiaine.getOppiaine().getId(),
                                 tryRestoreFromRevision, byId, sisalto).getId())));
             }

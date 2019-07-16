@@ -16,24 +16,26 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
-import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -64,6 +66,11 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private GeneerinenArviointiasteikko geneerinenArviointiasteikko;
 
     @Getter
     @Setter
@@ -121,8 +128,8 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     @Override
-    public EntityReference getReference() {
-        return new EntityReference(getId());
+    public Reference getReference() {
+        return new Reference(getId());
     }
 
     @Override
@@ -220,6 +227,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setTavoitteet(other.getTavoitteet());
             this.setKoodi(other.getKoodi());
             this.setTyyppi(other.getTyyppi());
+            this.setGeneerinenArviointiasteikko(other.getGeneerinenArviointiasteikko());
             this.setKuvaus(other.getKuvaus());
             this.setValmaTelmaSisalto(other.getValmaTelmaSisalto());
             this.setVapaatTekstit(other.getVapaatTekstit());

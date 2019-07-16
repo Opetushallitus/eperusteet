@@ -1,14 +1,12 @@
 package fi.vm.sade.eperusteet.service;
 
 
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -23,18 +21,20 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @DirtiesContext
 @Transactional
 public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
-
 
     @Autowired
     protected PerusteprojektiService perusteprojektiService;
@@ -76,6 +76,35 @@ public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
         peruste = projekti.getPeruste();
         suoritustapa = peruste.getSuoritustapa(Suoritustapakoodi.REFORMI);
         rakenne = suoritustapa.getRakenne();
+    }
+
+
+    protected ArviointiAsteikkoDto addArviointiasteikot() {
+        TekstiPalanen osaamistasoOtsikko = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko"));
+        em.persist(osaamistasoOtsikko);
+
+        List<Osaamistaso> osaamistasot = Stream.of(
+                Osaamistaso.builder()
+                        .id(2L)
+                        .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 1")).build(),
+                Osaamistaso.builder()
+                        .id(3L)
+                        .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 2")).build(),
+                Osaamistaso.builder()
+                        .id(4L)
+                        .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 3")).build())
+                .peek(em::persist)
+                .collect(Collectors.toList());
+
+
+        ArviointiAsteikko asteikko = ArviointiAsteikko.builder()
+                .id(1L)
+                .osaamistasot(osaamistasot)
+                .build();
+
+        em.persist(asteikko);
+        em.flush();
+        return mapper.map(asteikko, ArviointiAsteikkoDto.class);
     }
 
     protected RakenneModuuliDto getRakenneDto() {

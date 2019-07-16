@@ -56,6 +56,6 @@ public class Maarayskirje implements Serializable {
                     @JoinColumn(name = "maarayskirje_id")},
             inverseJoinColumns = {
                     @JoinColumn(name = "liite_id")})
-    private Map<Kieli, Liite> liitteet;
+    private Map<Kieli, Liite> liitteet = new HashMap<>();
 
 }

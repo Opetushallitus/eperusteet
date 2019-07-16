@@ -15,11 +15,12 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Optional;
 
 /**
  *
@@ -30,5 +31,8 @@ import lombok.Setter;
 public class TavoitteenArviointiDto implements ReferenceableDto {
     private Long id;
     private Optional<LokalisoituTekstiDto> arvioinninKohde;
+    private Optional<LokalisoituTekstiDto> valttavanOsaamisenKuvaus;
+    private Optional<LokalisoituTekstiDto> tyydyttavanOsaamisenKuvaus;
     private Optional<LokalisoituTekstiDto> hyvanOsaamisenKuvaus;
+    private Optional<LokalisoituTekstiDto> kiitettavanOsaamisenKuvaus;
 }

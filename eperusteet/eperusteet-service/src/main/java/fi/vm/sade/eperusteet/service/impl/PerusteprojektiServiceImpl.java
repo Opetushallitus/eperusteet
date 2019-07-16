@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -40,7 +41,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.repository.*;
@@ -72,7 +73,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
@@ -81,6 +85,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
@@ -163,6 +168,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
 
     @Autowired
+    private MaarayskirjeStatusRepository maarayskirjeStatusRepository;
+
+    @Autowired
     private ProjektiValidator projektiValidator;
 
     @Autowired
@@ -170,6 +178,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private TutkintonimikeKoodiService tutkintonimikeKoodiService;
+
+    @Autowired
+    private PlatformTransactionManager tm;
+
+    @Autowired
+    private LocalizedMessagesService messages;
 
     @Override
     @Transactional(readOnly = true)
@@ -204,89 +218,145 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @IgnorePerusteUpdateCheck
-    @Transactional
-    public void validoiPerusteetTask() {
-        Set<Perusteprojekti> projektit = new HashSet<>();
-        projektit.addAll(repository.findAllValidoimattomat());
-        projektit.addAll(repository.findAllValidoimattomatUudet());
+    @Transactional(propagation = Propagation.NEVER)
+    public void validoiPerusteetTask(int max) {
+
+        // Haetaan validoitavat projektit
+        TransactionTemplate template = new TransactionTemplate(tm);
+        List<PerusteprojektiValidointiDto> projektit = template.execute(status -> mapper.mapAsList(Stream
+                .concat(
+                        repository.findAllValidoimattomat().stream(),
+                        repository.findAllValidoimattomatUudet().stream()
+                )
+                .collect(Collectors.toList()), PerusteprojektiValidointiDto.class));
+
         log.debug("Tarkastetaan " + projektit.size() + " perustetta.");
 
-        for (Perusteprojekti pp : projektit) {
+        int counter = 1;
+
+        for (PerusteprojektiValidointiDto pp : projektit) {
             try {
-                if (pp.getTila() != JULKAISTU || pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
+                if (pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
                     continue;
                 }
 
-                ValidointiStatus vs = validointiStatusRepository.findOneByPeruste(pp.getPeruste());
-                boolean vaatiiValidoinnin = vs == null
-                        || !vs.isVaihtoOk()
-                        || pp.getPeruste().getGlobalVersion().getAikaleima().after(vs.getLastCheck());
-
-                if (!vaatiiValidoinnin) {
-                    continue;
+                if (max > 0 && counter > max) {
+                    break;
                 }
 
-                log.debug("Perusteen ajastettu validointi: " + pp.getPeruste().getId());
+                validoiPerusteTask(pp, counter);
 
-                TilaUpdateStatus status = projektiValidator.run(pp.getId(), JULKAISTU);
-
-                if (vs != null) {
-                    mapper.map(status, vs);
-                }
-                else {
-                    vs = mapper.map(status, ValidointiStatus.class);
-                }
-
-                vs.setPeruste(pp.getPeruste());
-                vs.setLastCheck(pp.getPeruste().getGlobalVersion().getAikaleima());
-
-                validointiStatusRepository.save(vs);
+            } catch (RuntimeException e) {
+                log.error(e.getLocalizedMessage(), e);
             }
-            catch (AuthenticationCredentialsNotFoundException ex) {
-                log.debug(ex.getMessage());
-            }
+            counter++;
         }
+    }
+
+    @Transactional(propagation = Propagation.NEVER)
+    private void validoiPerusteTask(PerusteprojektiValidointiDto pp, int counter) {
+
+        TransactionTemplate template = new TransactionTemplate(tm);
+
+        template.execute(status -> {
+
+            Peruste peruste = perusteRepository.findOne(pp.getPeruste().getId());
+            ValidointiStatus vs = validointiStatusRepository.findOneByPeruste(peruste);
+            boolean vaatiiValidoinnin = vs == null
+                    || !vs.isVaihtoOk()
+                    || peruste.getGlobalVersion().getAikaleima().after(vs.getLastCheck());
+
+            if (!vaatiiValidoinnin) {
+                return true;
+            }
+
+            log.debug(String.format("%04d", counter) + " Perusteen ajastettu validointi: " + peruste.getId());
+
+            TilaUpdateStatus tilaUpdateStatus = projektiValidator.run(pp.getId(), JULKAISTU);
+
+            if (vs != null) {
+                mapper.map(tilaUpdateStatus, vs);
+            }
+            else {
+                vs = mapper.map(tilaUpdateStatus, ValidointiStatus.class);
+            }
+
+            vs.setPeruste(peruste);
+            vs.setLastCheck(peruste.getGlobalVersion().getAikaleima());
+
+            validointiStatusRepository.save(vs);
+
+            return true;
+        });
     }
 
     @Override
     @IgnorePerusteUpdateCheck
-    @Transactional
+    @Transactional(propagation = Propagation.NEVER)
     public void tarkistaKooditTask() {
-        Set<Perusteprojekti> projektit = new HashSet<>();
-        projektit.addAll(repository.findAllKoodiValidoimattomat());
-        projektit.addAll(repository.findAllKoodiValidoimattomatUudet());
+
+        // Haetaan tarkistettavat projektit
+        TransactionTemplate template = new TransactionTemplate(tm);
+        List<PerusteprojektiKoulutuskoodiDto> projektit = template.execute(status -> mapper.mapAsList(Stream
+                .concat(
+                        repository.findAllKoodiValidoimattomat().stream(),
+                        repository.findAllKoodiValidoimattomatUudet().stream()
+                )
+                .collect(Collectors.toList()), PerusteprojektiKoulutuskoodiDto.class));
 
         log.debug("Tarkastetaan " + projektit.size() + " perusteen koulutuskoodit.");
 
-        for (Perusteprojekti pp : projektit) {
-            Peruste peruste = pp.getPeruste();
-            KoulutuskoodiStatus status = koulutuskoodiStatusRepository.findOneByPeruste(peruste);
-            boolean vaatiiTarkistuksen = status == null
-                    || !status.isKooditOk()
-                    || pp.getPeruste().getGlobalVersion().getAikaleima().after(status.getLastCheck());
+        int counter = 1;
 
-            if (!vaatiiTarkistuksen) {
-                return;
+        for (PerusteprojektiKoulutuskoodiDto pp : projektit) {
+            try {
+
+                tarkistaKoodi(pp, counter);
+
+            } catch (RuntimeException e) {
+                log.error(e.getLocalizedMessage(), e);
             }
 
-            if (status == null) {
-                status = new KoulutuskoodiStatus();
-            }
-
-            tarkistaTutkinnonKoodit(peruste, status);
-
-            koulutuskoodiStatusRepository.save(status);
+            counter++;
         }
     }
 
-    private void tarkistaTutkinnonKoodit(Peruste p, KoulutuskoodiStatus status) {
+    @Transactional(propagation = Propagation.NEVER)
+    private void tarkistaKoodi(PerusteprojektiKoulutuskoodiDto pp, int counter) {
+
+        TransactionTemplate template = new TransactionTemplate(tm);
+
+        template.execute(status -> {
+            Peruste peruste = perusteRepository.findOne(pp.getPeruste().getId());
+            KoulutuskoodiStatus koulutuskoodiStatus = koulutuskoodiStatusRepository.findOneByPeruste(peruste);
+            boolean vaatiiTarkistuksen = koulutuskoodiStatus == null
+                    || !koulutuskoodiStatus.isKooditOk()
+                    || peruste.getGlobalVersion().getAikaleima().after(koulutuskoodiStatus.getLastCheck());
+
+            if (!vaatiiTarkistuksen) {
+                return false;
+            }
+
+            if (koulutuskoodiStatus == null) {
+                koulutuskoodiStatus = new KoulutuskoodiStatus();
+            }
+
+            tarkistaTutkinnonKoodit(peruste, koulutuskoodiStatus, counter);
+
+            koulutuskoodiStatusRepository.save(koulutuskoodiStatus);
+
+            return true;
+        });
+    }
+
+    private void tarkistaTutkinnonKoodit(Peruste p, KoulutuskoodiStatus status, int counter) {
         status.setLastCheck(new Date());
         status.setPeruste(p);
 
         Set<Koulutus> koulutuskoodit = p.getKoulutukset();
 
         if (p.getSuoritustavat() != null && p.getSuoritustavat().size() > 0) {
-            log.debug("Tarkistetaan perustetta: " + p.getNimi().toString());
+            log.debug(String.format("%04d", counter) + " Tarkistetaan perustetta: " + p.getNimi().toString());
 
             log.debug("  Käydään lävitse tutkinnon osat suoritustapa kerrallaan.");
             for (Suoritustapa st : p.getSuoritustavat()) {
@@ -784,7 +854,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
             tiedoteDto.setId(null);
             tiedoteDto.setJulkinen(true);
-            tiedoteDto.setPerusteprojekti(new EntityReference(projekti.getId()));
+            tiedoteDto.setPerusteprojekti(new Reference(projekti.getId()));
             tiedoteService.addTiedote(tiedoteDto);
 
             // Dokumentit generoidaan automaattisesti julkaisun yhteydessä
@@ -1117,78 +1187,140 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-    @Transactional
     @IgnorePerusteUpdateCheck
+    @Transactional(propagation = Propagation.NEVER)
     public void lataaMaarayskirjeetTask() {
-        List<Perusteprojekti> projektit = repository.findAll().stream()
-                .filter(projekti -> projekti.getTila().equals(JULKAISTU))
-                .collect(Collectors.toList());
 
-        log.debug("Tarkastetaan " + projektit.size() + " perustetta (vain julkaistut).");
+        // Haetaan maarayskirjeen latausta tarvitsevat projektit
+        TransactionTemplate template = new TransactionTemplate(tm);
+        List<PerusteprojektiMaarayskirjeDto> projektit = template.execute(status -> mapper.mapAsList(Stream
+                .concat(
+                        repository.findAllMaarayskirjeet().stream(),
+                        repository.findAllMaarayskirjeetUudet().stream()
+                )
+                .collect(Collectors.toList()), PerusteprojektiMaarayskirjeDto.class));
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        log.debug("Tarkastetaan " + projektit.size() + " perusteen maarayskirjeet");
 
-        projektit.forEach(projekti -> {
-            Peruste peruste = projekti.getPeruste();
-            Maarayskirje maarayskirje = peruste.getMaarayskirje();
+        int counter = 1;
+        for (PerusteprojektiMaarayskirjeDto pp : projektit) {
+            try {
 
-            // Koitetaan ladata määräyskirjeet, jos niitä ei ole vielä haettu
-            if (maarayskirje != null) {
+                lataaPerusteenMaarayskirje(pp, counter);
 
-                log.debug("Aloitetaan " + peruste.getId() + " määräyskirjeen läpikäyminen.");
+            } catch (RuntimeException e) {
+                log.error(e.getLocalizedMessage(), e);
+            }
+
+            counter++;
+
+        }
+    }
+
+    private void lataaPerusteenMaarayskirje(PerusteprojektiMaarayskirjeDto pp, int counter) {
+
+        TransactionTemplate template = new TransactionTemplate(tm);
+
+        template.execute(status -> {
+            Peruste peruste = perusteRepository.findOne(pp.getPeruste().getId());
+
+            MaarayskirjeStatus mks = maarayskirjeStatusRepository.findOneByPeruste(peruste);
+            boolean vaatiiLataamisen = mks == null
+                    || !mks.isLataaminenOk()
+                    || peruste.getGlobalVersion().getAikaleima().after(mks.getLastCheck());
+
+            if (!vaatiiLataamisen) {
+                return true;
+            }
+
+            // Jos kyseessä uusi julkaistu peruste
+            if (mks == null) {
+                mks = new MaarayskirjeStatus();
+                mks.setPeruste(peruste);
+            }
+
+            mks.setLastCheck(new Date());
+            mks.setLataaminenOk(true);
+
+            // Tee varsinainen lataaminen
+            lataaMaarayskirje(peruste, mks, counter);
+
+            maarayskirjeStatusRepository.save(mks);
+
+            return true;
+        });
+    }
+
+    private void lataaMaarayskirje(Peruste peruste, MaarayskirjeStatus mks, int counter) {
+        Maarayskirje maarayskirje = peruste.getMaarayskirje();
+
+        // Koitetaan ladata määräyskirjeet, jos niitä ei ole vielä haettu
+        if (maarayskirje != null) {
+
+            log.debug(String.format("%04d", counter)
+                    + " Aloitetaan muuttuneen perusteen " + peruste.getId() + " määräyskirjeen läpikäyminen");
 
 
-                Map<Kieli, String> urls = maarayskirje.getUrl();
-                Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet() != null
-                        ? maarayskirje.getLiitteet()
-                        : new HashMap<>();
+            Map<Kieli, String> urls = maarayskirje.getUrl();
+            Map<Kieli, Liite> liitteet = maarayskirje.getLiitteet() != null
+                    ? maarayskirje.getLiitteet()
+                    : new HashMap<>();
 
-                if (urls != null) {
-                    urls.forEach((kieli, url) -> {
+            if (urls != null) {
+                for (Map.Entry<Kieli, String> entry : urls.entrySet()) {
+                    Kieli kieli = entry.getKey();
+                    String url = entry.getValue();
 
-                        if (!liitteet.containsKey(kieli)) {
-                            log.debug("Koitetaan ladata määräyskirje " + url + " osoitteesta.");
+                    if (kieli != null && !ObjectUtils.isEmpty(url) && !liitteet.containsKey(kieli)) {
 
-                            try {
-                                ResponseEntity<byte[]> res = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
+                        try {
 
-                                byte[] data = res.getBody();
-                                if (res.getStatusCode().equals(HttpStatus.OK) && data != null) {
-                                    String tyyppi = tika.detect(data);
-                                    if (DOCUMENT_TYPES.contains(tyyppi)) {
-                                        // Lisätään määräyskirje ja liitetään se perusteeseen
-                                        Liite liite = liiteRepository.add(tyyppi, "maarayskirje.pdf", data);
-                                        liitteet.put(kieli, liite);
-                                        peruste.attachLiite(liite);
+                            log.debug("Ladataan määräyskirje " + url);
 
-                                        // Päivitetään global version
-                                        Date muokattu = new Date();
-                                        if (peruste.getTila() == PerusteTila.VALMIS) {
-                                            perusteRepository.setRevisioKommentti("Perusteeseen lisätty määräyskirje");
-                                            peruste.muokattu();
-                                            muokattu = peruste.getMuokattu();
-                                        }
-                                        if (peruste.getGlobalVersion() == null) {
-                                            peruste.setGlobalVersion(new PerusteVersion(peruste));
-                                        }
-                                        peruste.getGlobalVersion().setAikaleima(muokattu);
+                            RestTemplate restTemplate = new RestTemplate();
+                            HttpHeaders headers = new HttpHeaders();
+                            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
+                            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+                            ResponseEntity<byte[]> res = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
+
+                            byte[] data = res.getBody();
+                            if (res.getStatusCode().equals(HttpStatus.OK) && data != null) {
+                                String mime = tika.detect(data);
+                                if (DOCUMENT_TYPES.contains(mime)) {
+                                    // Lisätään määräyskirje ja liitetään se perusteeseen
+                                    String nimi = messages.translate("maarayskirje", kieli);
+                                    if (ObjectUtils.isEmpty(nimi)) {
+                                        nimi = "maarayskirje";
                                     }
-                                }
-                            } catch (RestClientException e) {
-                                // Continue
-                                log.error(e.getLocalizedMessage());
-                            }
-                        } else {
-                            log.debug("Määräyskirje löytyy jo kielellä " + kieli);
-                        }
+                                    Liite liite = liiteRepository.add(LiiteTyyppi.MAARAYSKIRJE, mime, nimi + ".pdf", data);
+                                    liitteet.put(kieli, liite);
+                                    peruste.attachLiite(liite);
 
-                    });
+                                    // Päivitetään global version
+                                    Date muokattu = new Date();
+                                    if (peruste.getTila() == PerusteTila.VALMIS) {
+                                        perusteRepository.setRevisioKommentti("Perusteeseen lisätty määräyskirje");
+                                        peruste.muokattu();
+                                        muokattu = peruste.getMuokattu();
+                                    }
+                                    if (peruste.getGlobalVersion() == null) {
+                                        peruste.setGlobalVersion(new PerusteVersion(peruste));
+                                    }
+                                    peruste.getGlobalVersion().setAikaleima(muokattu);
+                                    log.debug("Määräyskirje " + url + " lataaminen onnistui");
+                                }
+                            }
+                        } catch (RestClientException | IllegalArgumentException | IllegalStateException e) {
+                            // Jos lataaminen ei onnistunut
+                            mks.setLataaminenOk(false);
+
+                            log.error("Määräyskirje " + url + " lataaminen epäonnistui: " + e.getLocalizedMessage());
+                        }
+                    }
                 }
             }
-        });
+        }
     }
 
 }

@@ -135,7 +135,11 @@
                     </div>
 
                     <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'">
-                        <kenttalistaus hide-empty-placeholder="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit" edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
+                        <kenttalistaus
+                            hide-empty-placeholder="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit"
+                            edit-enabled="editEnabled"
+                            object-promise="tutkinnonOsaPromise"
+                            fields="fields"></kenttalistaus>
 
                         <div class="to-vapaat-tekstit" ng-show="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit.length > 0">
                             <div ng-hide="editEnabled">

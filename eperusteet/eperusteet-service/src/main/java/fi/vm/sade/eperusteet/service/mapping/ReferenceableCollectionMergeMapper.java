@@ -15,39 +15,42 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
- * Kuvaa joukon A-alkioita joukoksi B-alkioita. Jos A:ta vastaava B on jo kohdejoukossa olemassa, mappaa alkion olemassa olevaan alkioon, muussa tapauksessa
- * lisää uuden alkion. Jos joukot tukevat järjestämistä, järjestys säilytetään. Kohdejoukosta poistetaan alkiot joita ei ole lähdejoukossa.
+ * Kuvaa joukon A-alkioita joukoksi B-alkioita. Jos A:ta vastaava B on jo kohdejoukossa olemassa,
+ * mappaa alkion olemassa olevaan alkioon, muussa tapauksessa lisää uuden alkion.
+ * Jos joukot tukevat järjestämistä, järjestys säilytetään.
+ * Kohdejoukosta poistetaan alkiot joita ei ole lähdejoukossa.
  *
  * @author jhyoty
  */
-@Slf4j
-public class ReferenceableCollectionMergeMapper extends CustomMapper<Collection<ReferenceableDto>, Collection<ReferenceableEntity>> {
+public class ReferenceableCollectionMergeMapper
+        extends CustomMapper<Collection<ReferenceableDto>,Collection<ReferenceableEntity>> {
 
     @Override
     public void mapBtoA(Collection<ReferenceableEntity> b, Collection<ReferenceableDto> a, MappingContext context) {
         a.clear();
-        Class<? extends ReferenceableDto> typeA = context.getResolvedDestinationType().getComponentType().getRawType().asSubclass(ReferenceableDto.class);
+        Class<? extends ReferenceableDto> typeA = context.getResolvedDestinationType()
+                .getComponentType().getRawType().asSubclass(ReferenceableDto.class);
         map(b, a, typeA, context);
     }
 
     @Override
     public void mapAtoB(Collection<ReferenceableDto> a, Collection<ReferenceableEntity> b, MappingContext context) {
         if (b.isEmpty()) {
-            Class<? extends ReferenceableEntity> typeB = context.getResolvedDestinationType().getComponentType().getRawType().asSubclass(ReferenceableEntity.class);
+            Class<? extends ReferenceableEntity> typeB = context.getResolvedDestinationType()
+                    .getComponentType().getRawType().asSubclass(ReferenceableEntity.class);
             map(a, b, typeB, context);
         } else {
             mergeMap(a, b, context);
@@ -55,9 +58,10 @@ public class ReferenceableCollectionMergeMapper extends CustomMapper<Collection<
     }
 
     private void mergeMap(Collection<ReferenceableDto> a, Collection<ReferenceableEntity> b, MappingContext context) {
-        ImmutableMap<Long, ReferenceableEntity> indx = Maps.uniqueIndex(b, indexFunction);
-
-        Class<? extends ReferenceableEntity> typeB = context.getResolvedDestinationType().getComponentType().getRawType().asSubclass(ReferenceableEntity.class);
+        Map<Serializable, ReferenceableEntity> indx = b.stream()
+                .collect(Collectors.toMap(ReferenceableEntity::getId, r -> r));
+        Class<? extends ReferenceableEntity> typeB = context.getResolvedDestinationType()
+                .getComponentType().getRawType().asSubclass(ReferenceableEntity.class);
 
         List<ReferenceableEntity> tmp = new ArrayList<>();
         for (ReferenceableDto f : a) {
@@ -78,11 +82,4 @@ public class ReferenceableCollectionMergeMapper extends CustomMapper<Collection<
         d.addAll(list);
     }
 
-    private final Function<ReferenceableEntity, Long> indexFunction = new Function<ReferenceableEntity, Long>() {
-        @Override
-        public Long apply(ReferenceableEntity input) {
-            return input.getId();
-        }
-
-    };
 }

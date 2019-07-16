@@ -71,6 +71,12 @@
                 </a>
             </th>
             <th width="10%">
+                <span kaanna="'voimassaoloAlkaa'"></span>
+            </th>
+            <th width="10%">
+                <span kaanna="'voimassaoloLoppuu'"></span>
+            </th>
+            <th width="10%">
                 <a class="action-link" ng-click="asetaJarjestys('luotu')">
                     <span ng-bind="'luotu' | kaanna"></span>
                     <span ng-show="jarjestysTapa === 'luotu'">
@@ -102,6 +108,8 @@
                       kaanna="'pohja'"></span>
             </td>
             <td ng-bind="'tila-' + pp.tila | kaanna"></td>
+            <td ng-bind="pp.peruste.voimassaoloAlkaa | aikaleima:'time':'date'"></td>
+            <td ng-bind="pp.peruste.voimassaoloLoppuu | aikaleima:'time':'date'"></td>
             <td ng-bind="pp.luotu | aikaleima:'time':'date'"></td>
             <td ng-bind="pp.globalVersion.aikaleima | aikaleima:'time':'date'"></td>
             <td>

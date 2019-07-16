@@ -1,6 +1,6 @@
 package fi.vm.sade.eperusteet.dto.fakes;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RefererDto {
-    private EntityReference ref;
-//    private java.util.Optional<EntityReference> javaOptional;
-    private com.google.common.base.Optional<EntityReference> googleOptional;
+    private Reference ref;
+    private java.util.Optional<Reference> javaOptional;
 }

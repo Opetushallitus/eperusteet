@@ -25,10 +25,9 @@ import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiPeruste;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -62,10 +61,10 @@ import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils
 /**
  * @author isaul
  */
+@Slf4j
 @Service
 public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DokumenttiNewBuilderServiceImpl.class);
     private static final float COMPRESSION_LEVEL = 0.9f;
 
     @Autowired
@@ -132,9 +131,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         // Tästä aloitetaan varsinaisen dokumentin muodostus
         addDokumentti(docBase);
-
-        // Tulostetaan dokumentti
-        LOG.debug(printDocument(docBase.getDocument()).toString());
 
         return doc;
     }
@@ -327,7 +323,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         tutkintonimike.setTextContent(meta.getNimi() + " (" + tnkoodi.getTutkintonimikeArvo() + ")");
                         tutkintonimikkeet.appendChild(tutkintonimike);
                     } else {
-                        LOG.debug("{} was no match", meta.getKieli());
+                        log.warn("{} was no match", meta.getKieli());
                     }
                 }
             });
@@ -864,10 +860,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 continue;
             }
 
-            String otsikkoTeksti = tyyppi == TutkinnonOsaTyyppi.NORMAALI
-                    ? getTextString(docBase, ka.getOtsikko())
-                    : messages.translate("docgen.tutke2.arvioinnin_kohteet.title", docBase.getKieli());
-            addTeksti(docBase, otsikkoTeksti, "h6");
+            if (TutkinnonOsaTyyppi.NORMAALI.equals(tyyppi)) {
+                String otsikkoTeksti = getTextString(docBase, ka.getOtsikko());
+                addTeksti(docBase, otsikkoTeksti, "h6");
+            }
 
             for (ArvioinninKohde kohde : arvioinninKohteet) {
                 TekstiPalanen otsikko = kohde.getOtsikko();
@@ -1205,13 +1201,21 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     kohdeTr.appendChild(kohdeTd);
                     kohdeTd.setTextContent(getTextString(docBase, tavoitteenArviointi.getArvioinninKohde()));
 
-                    Element hyvanOsaamisenKuvausTd = docBase.getDocument().createElement("td");
-                    kohdeTr.appendChild(hyvanOsaamisenKuvausTd);
-                    hyvanOsaamisenKuvausTd.setTextContent(getTextString(docBase,
-                            tavoitteenArviointi.getHyvanOsaamisenKuvaus()));
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getValttavanOsaamisenKuvaus());
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getTyydyttavanOsaamisenKuvaus());
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getHyvanOsaamisenKuvaus());
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getKiitettavanOsaamisenKuvaus());
                 });
             }
         });
+    }
+
+    private void lisaaOsaamisenKuvaukset(DokumenttiPeruste docBase, Element kohdeTr, TekstiPalanen osaamisenKuvaus) {
+        if (osaamisenKuvaus != null) {
+            Element td = docBase.getDocument().createElement("td");
+            kohdeTr.appendChild(td);
+            td.setTextContent(getTextString(docBase, osaamisenKuvaus));
+        }
     }
 
     private void addKurssit(DokumenttiPeruste docBase, List<AIPEKurssi> kurssit) {
@@ -1459,7 +1463,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             }
 
         } catch (XPathExpressionException | IOException | NullPointerException e) {
-            LOG.error(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
         }
     }
 }

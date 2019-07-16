@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.test.util;
 
-import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
@@ -360,6 +359,10 @@ public abstract class TestUtils {
 
     public static LokalisoituTekstiDto lt(String teksti) {
         return new LokalisoituTekstiDto(null, Collections.singletonMap(Kieli.FI, teksti));
+    }
+
+    public static LokalisoituTekstiDto lt(String teksti, Kieli kieli) {
+        return new LokalisoituTekstiDto(null, Collections.singletonMap(kieli, teksti));
     }
 
     public static Optional<LokalisoituTekstiDto> olt(String teksti) {

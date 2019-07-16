@@ -16,13 +16,13 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.dto.ReferenceableDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  *
@@ -34,5 +34,5 @@ public class AIPEOppiaineBaseDto implements AIPEHasId {
     private Long id;
     private UUID tunniste;
     private Optional<LokalisoituTekstiDto> nimi;
-    private EntityReference oppiaine;
+    private Reference oppiaine;
 }

@@ -27,8 +27,9 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
+import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -187,9 +188,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private LiiteRepository liiteRepository;
+
     @Override
-    public List<PerusteDto> getUusimmat() {
-        return mapper.mapAsList(perusteet.findAllUusimmat(new PageRequest(0, 10)), PerusteDto.class);
+    public List<PerusteDto> getUusimmat(Set<Kieli> kielet) {
+        return mapper.mapAsList(perusteet.findAllUusimmat(kielet, new PageRequest(0, 10)), PerusteDto.class);
     }
 
     @Override
@@ -671,7 +675,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             Maarayskirje maarayskirje = updated.getMaarayskirje();
             MaarayskirjeDto maarayskirjeDto = perusteDto.getMaarayskirje();
             if (maarayskirje != null && maarayskirjeDto != null) {
-                Map<Kieli, LiiteDto> dtoLiitteet = maarayskirjeDto.getLiitteet();
+                Map<Kieli, LiiteBaseDto> dtoLiitteet = maarayskirjeDto.getLiitteet();
                 if (!ObjectUtils.isEmpty(dtoLiitteet)) {
                     dtoLiitteet.forEach((kieli, liiteDto) -> {
                         Peruste peruste = perusteet.findOne(perusteId);
@@ -695,7 +699,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             if (updated.getMuutosmaaraykset() != null) {
                 for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
+                    Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
+                    Map<Kieli, Liite> tempLiitteet = new HashMap<>();
+                    liitteet.forEach((kieli, liiteId) -> {
+                        Liite liite = liiteRepository.findOne(perusteId, liiteId.getId());
+                        if (liite != null) {
+                            tempLiitteet.put(kieli, liite);
+                        }
+                    });
+
                     muutosmaarays.setPeruste(current);
+                    muutosmaarays.setLiitteet(tempLiitteet);
                 }
             }
 
@@ -705,7 +719,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             if (current.getTila() == PerusteTila.VALMIS) {
                 current = updateValmisPeruste(current, updated);
-            } else {
+            }
+            else {
                 // FIXME: refactor
                 current.setDiaarinumero(updated.getDiaarinumero());
                 current.setKielet(updated.getKielet());
@@ -765,7 +780,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setKuvaus(updated.getKuvaus());
         current.setNimi(updated.getNimi());
         current.setPaatospvm(updated.getPaatospvm());
-        current.setDiaarinumero(updated.getDiaarinumero());
         current.setKoulutusvienti(updated.isKoulutusvienti());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
@@ -991,9 +1005,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
         List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = mapper.mapAsList(tutkintonimikeKoodiRepository.findByPerusteId(peruste.getId()), TutkintonimikeKoodiDto.class);
-        Map<EntityReference, String> tovToKoodiMap = suoritustapa.getTutkinnonOsat().stream()
+        Map<Reference, String> tovToKoodiMap = suoritustapa.getTutkinnonOsat().stream()
                 .collect(Collectors.toMap(
-                        tosa -> new EntityReference(tosa.getId()),
+                        tosa -> new Reference(tosa.getId()),
                         tosa -> (tosa.getTutkinnonOsa().getKoodi() != null)
                                 ? tosa.getTutkinnonOsa().getKoodi().getUri()
                                 : ""));
@@ -1073,7 +1087,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     private void tarkistaUniikitKoodit(RakenneModuuliDto rakenneModuuli,
                                        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit,
-                                       Map<EntityReference, String> tovToKoodiUriMap) {
+                                       Map<Reference, String> tovToKoodiUriMap) {
         Map<String, List<RakenneModuuliDto>> tutkintonimikeRyhmat = new HashMap<>();
         Map<String, List<RakenneModuuliDto>> osaamisalaRyhmat = new HashMap<>();
         Stack<RakenneModuuliDto> stack = new Stack<>();
@@ -1306,6 +1320,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public TutkinnonOsaViiteDto getTutkinnonOsaViite(Long perusteId, Suoritustapakoodi suoritustapakoodi, Long viiteId) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
+        TutkinnonOsa tutkinnonOsa = viite.getTutkinnonOsa();
 
         if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
