@@ -508,6 +508,7 @@
                     <url>${eperusteet.devdb.jdbcurl}</url>
                     <user>${eperusteet.devdb.user}</user>
                     <password>${eperusteet.devdb.password}</password>
+                    <table>schema_version</table>
                     <outOfOrder>true</outOfOrder>
                 </configuration>
                 <dependencies>
