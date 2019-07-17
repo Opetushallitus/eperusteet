@@ -71,8 +71,15 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Lops2019OppiaineTavoitteet tavoitteet;
 
+    public void setOppimaarat(List<Lops2019Oppiaine> oppimaarat) {
+        if (this.oppimaarat == null) {
+            this.oppimaarat = new ArrayList<>();
+        }
+        this.oppimaarat.clear();
+        this.oppimaarat.addAll(oppimaarat);
+    }
+
     @Getter
-    @Setter
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "yl_lops2019_oppiaine_oppimaara",
             joinColumns = @JoinColumn(name = "oppiaine_id"),

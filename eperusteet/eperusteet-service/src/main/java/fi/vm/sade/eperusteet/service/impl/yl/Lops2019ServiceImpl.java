@@ -1,5 +1,9 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
@@ -11,10 +15,12 @@ import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019LaajaAlainenRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -26,8 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -44,6 +51,9 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Autowired
     private Lops2019OppiaineRepository oppiaineRepository;
+
+    @Autowired
+    private PerusteRepository perusteRepository;
 
     @Autowired
     private Lops2019ModuuliRepository moduuliRepository;
@@ -135,10 +145,47 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         return mapper.map(oppiaine, Lops2019OppiaineDto.class);
     }
 
+    private Lops2019Oppiaine findOppiaine(Long perusteId, Long oppiaineId) {
+        // FIXME: Mappaa taaksepäin perusteen sisältöön
+        Lops2019Oppiaine oa = oppiaineRepository.findOne(oppiaineId);
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        boolean perusteHasOppiaine = peruste.getLops2019Sisalto().getOppiaineet().stream()
+                .map(x -> Stream.concat(Stream.of(oa), oa.getOppimaarat().stream()))
+                .flatMap(x -> x)
+                .anyMatch(oa::equals);
+        if (!perusteHasOppiaine) {
+            throw new BusinessRuleViolationException("oppiainetta-ei-ole");
+        }
+        return oa;
+    }
+
+    @Override
+    public void palautaOppiaineenModuulit(Long perusteId, Long id) {
+        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, id);
+        Set<Long> nykyiset = oppiaine.getModuulit().stream()
+                .map(AbstractAuditedReferenceableEntity::getId)
+                .collect(Collectors.toSet());
+        Set<Lops2019Moduuli> poistetutModuulit = oppiaineRepository.getRevisions(id).stream()
+                .map(rev -> oppiaineRepository.findRevision(id, rev.getNumero()))
+                .map(Lops2019Oppiaine::getModuulit)
+                .flatMap(Collection::stream)
+                .filter(moduuli -> {
+                    return !nykyiset.contains(moduuli.getId());
+                })
+                .map(moduuli -> {
+                    moduuli.setId(null);
+                    return moduuli;
+                })
+                .collect(Collectors.toSet());
+        List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
+        moduulit.addAll(poistetutModuulit);
+        oppiaine.setModuulit(moduulit);
+        oppiaineRepository.save(oppiaine);
+    }
+
     @Override
     public Lops2019OppiaineDto getOppiaine(Long perusteId, Long oppiaineId) {
-        // Todo: tarkista, että kuuluu perusteeseen
-        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
+        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, oppiaineId);
         Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
 
         // Haetaan manuaalisesti oppimäärät ja moduulit
@@ -154,10 +201,18 @@ public class Lops2019ServiceImpl implements Lops2019Service {
             throw new BusinessRuleViolationException("oppimaaralla-ei-voi-olla-oppimaaria");
         }
 
-        // Todo: tarkista, että kuuluu perusteeseen
-        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(dto.getId());
+        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, dto.getId());
+        Map<Long, Lops2019Oppiaine> oppiaineetMap = oppiaine.getOppimaarat().stream()
+                .collect(Collectors.toMap(AbstractAuditedReferenceableEntity::getId, o -> o));
 
+        List<Lops2019Oppiaine> collected = dto.getOppimaarat().stream()
+                .map(om -> om.getId() != null
+                        ? oppiaineetMap.get(om.getId())
+                        : mapper.map(om, Lops2019Oppiaine.class))
+                .collect(Collectors.toList());
+        dto.setOppimaarat(null);
         mapper.map(dto, oppiaine);
+        oppiaine.setOppimaarat(collected);
 
         // Asetetaan oppimäärien järjetys
         List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
@@ -212,8 +267,7 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Override
     public Lops2019ModuuliDto getModuuli(Long perusteId, Long oppiaineId, Long moduuliId) {
-        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
-        // Todo: tarkista, että kuuluu perusteeseen
+        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, oppiaineId);
         Optional<Lops2019Moduuli> moduuliOptional = oppiaine.getModuulit().stream()
                 .filter(moduuli -> moduuli.getId().equals(moduuliId))
                 .findAny();

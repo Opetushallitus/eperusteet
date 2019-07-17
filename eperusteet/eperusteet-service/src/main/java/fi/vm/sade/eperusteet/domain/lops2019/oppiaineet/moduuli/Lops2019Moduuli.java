@@ -79,6 +79,10 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity {
             inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
     private Lops2019Oppiaine oppiaine; // Moduuli viittaus oppiaineeseen/oppimäärään
 
+    public void asetaOppiaine(Lops2019Oppiaine oa) {
+        this.oppiaine = oa;
+    }
+
     public void setSisallot(List<Lops2019ModuuliSisalto> sisallot) {
         this.sisallot.clear();
         if (sisallot != null) {

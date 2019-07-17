@@ -56,4 +56,7 @@ public interface Lops2019Service {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void removeModuuli(@P("perusteId") Long perusteId, Long oppiaineId, Long moduuliId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void palautaOppiaineenModuulit(@P("perusteId") Long perusteId, Long id);
 }

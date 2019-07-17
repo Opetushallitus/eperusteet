@@ -111,6 +111,15 @@ public class Lops2019Controller {
         return ResponseEntity.ok(service.getOppiaine(perusteId, id));
     }
 
+    @RequestMapping(value = "/oppiaineet/{id}/palautamoduulit", method = POST)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void palautaOppiaineenModuulit(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long id
+    ) {
+        service.palautaOppiaineenModuulit(perusteId, id);
+    }
+
     @RequestMapping(value = "/oppiaineet/{id}", method = PUT)
     public ResponseEntity<Lops2019OppiaineDto> updateOppiaine(
             @PathVariable final Long perusteId,
