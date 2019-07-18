@@ -106,6 +106,8 @@
     <bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate">
 <!--        <property name="initOnMigrate" value="${flyway.initOnMigrate}"/>-->
         <property name="dataSource" ref="dataSource"/>
+        <property name="outOfOrder" value="true"/>
+        <property name="table" value="schema_version"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">

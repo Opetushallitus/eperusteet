@@ -88,10 +88,16 @@
         </property>
     </bean>
 
-    <bean id="flyway"
-          class="com.googlecode.flyway.core.Flyway"
-          depends-on="dataSource">
+<!--    <bean id="flyway"-->
+<!--          class="com.googlecode.flyway.core.Flyway"-->
+<!--          depends-on="dataSource">-->
+<!--        <property name="dataSource" ref="dataSource"/>-->
+<!--    </bean>-->
+
+    <bean id="flyway" class="org.flywaydb.core.Flyway">
         <property name="dataSource" ref="dataSource"/>
+        <property name="outOfOrder" value="true"/>
+        <property name="table" value="schema_version"/>
     </bean>
 
     <bean id="dbinit" class="fi.vm.sade.eperusteet.service.test.DbInitializer" depends-on="flyway" init-method="initDb">
