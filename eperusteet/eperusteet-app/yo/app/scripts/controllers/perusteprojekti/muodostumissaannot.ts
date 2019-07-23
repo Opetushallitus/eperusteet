@@ -22,25 +22,26 @@ angular
     .controller(
         "PerusteprojektiMuodostumissaannotCtrl",
         (
+            $q,
             $scope,
             $stateParams,
             $timeout,
-            PerusteenRakenne,
-            Notifikaatiot,
+            Algoritmit,
+            AutomaattitallennusService,
             Editointikontrollit,
-            PerusteProjektiService,
             Kommentit,
             KommentitBySuoritustapa,
             Lukitus,
-            VersionHelper,
             Muodostumissaannot,
-            virheService,
+            Notifikaatiot,
+            PerusteProjektiService,
             PerusteProjektiSivunavi,
-            perusteprojektiTiedot,
-            $q,
+            PerusteenOsat,
+            PerusteenRakenne,
             Varmistusdialogi,
-            Algoritmit,
-            PerusteenOsat
+            VersionHelper,
+            perusteprojektiTiedot,
+            virheService,
         ) => {
             $scope.editoi = false;
             $scope.suoritustapa = $stateParams.suoritustapa;
@@ -73,6 +74,7 @@ angular
             }
 
             function successCb(res) {
+                AutomaattitallennusService.stop();
                 res.$suoritustapa = $scope.suoritustapa;
                 res.$resolved = true;
                 $scope.rakenne = res;
@@ -145,7 +147,13 @@ angular
 
             haeRakenne(versio).then(() => {
                 Editointikontrollit.registerCallback({
-                    edit: () => {
+                    async edit() {
+                        await AutomaattitallennusService.start(
+                            "rakenne" + $scope.rakenne.$peruste.id + $scope.rakenne.$suoritustapa,
+                            () => $scope.rakenne.rakenne,
+                            (data: any) => {
+                                $scope.rakenne.rakenne = angular.copy(data);
+                            });
                         $scope.editoi = true;
                     },
                     asyncValidate: cb => {

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.LiiteService;
@@ -85,7 +86,7 @@ public class LiitetiedostoController {
         @RequestParam("file") Part file,
         UriComponentsBuilder ucb
     ) throws IOException, HttpMediaTypeNotSupportedException {
-        UUID uuid = upload(perusteId, nimi, file, IMAGE_TYPES);
+        UUID uuid = upload(perusteId, nimi, file, LiiteTyyppi.KUVA, IMAGE_TYPES);
 
         HttpHeaders h = new HttpHeaders();
         h.setLocation(ucb.path("/perusteet/{perusteId}/kuvat/{id}").buildAndExpand(perusteId, uuid.toString()).toUri());
@@ -101,9 +102,10 @@ public class LiitetiedostoController {
             @P("perusteId") Long perusteId,
             @RequestParam("nimi") String nimi,
             @RequestParam("file") Part file,
+            @RequestParam("tyyppi") String tyyppi,
             UriComponentsBuilder ucb
     ) throws IOException, HttpMediaTypeNotSupportedException {
-        UUID uuid = upload(perusteId, nimi, file, DOCUMENT_TYPES);
+        UUID uuid = upload(perusteId, nimi, file, LiiteTyyppi.of(tyyppi), DOCUMENT_TYPES);
 
         HttpHeaders h = new HttpHeaders();
         h.setLocation(ucb.path("/perusteet/{perusteId}/liitteet/{id}").buildAndExpand(perusteId, uuid.toString()).toUri());
@@ -122,14 +124,14 @@ public class LiitetiedostoController {
     ) throws IOException {
         LiiteDto dto = liitteet.get(perusteId, id);
         if (dto != null) {
-            if (DOCUMENT_TYPES.contains(dto.getTyyppi())) {
+            if (DOCUMENT_TYPES.contains(dto.getMime())) {
                 response.setHeader("Content-disposition", "inline; filename=\"" + dto.getNimi() + "\"");
             }
 
             if (etag != null && dto.getId().toString().equals(etag)) {
                 response.setStatus(HttpStatus.NOT_MODIFIED.value());
             } else {
-                response.setHeader("Content-Type", dto.getTyyppi());
+                response.setHeader("Content-Type", dto.getMime());
                 response.setHeader("ETag", id.toString());
                 try (OutputStream os = response.getOutputStream()) {
                     liitteet.export(perusteId, id, os);
@@ -167,6 +169,7 @@ public class LiitetiedostoController {
             Long perusteId,
             String nimi,
             Part file,
+            LiiteTyyppi tyyppi,
             Set<String> tyypit
     ) throws IOException, HttpMediaTypeNotSupportedException {
         final long koko = file.getSize();
@@ -177,12 +180,12 @@ public class LiitetiedostoController {
                 throw new IOException("luku epäonnistui");
             }
             pis.unread(buf);
-            String tyyppi = tika.detect(buf);
-            if (!tyypit.contains(tyyppi)) {
-                throw new HttpMediaTypeNotSupportedException(tyyppi + " ei ole tuettu");
+            String mime = tika.detect(buf);
+            if (!tyypit.contains(mime)) {
+                throw new HttpMediaTypeNotSupportedException(mime + " ei ole tuettu");
             }
 
-            return liitteet.add(perusteId, tyyppi, nimi, koko, pis);
+            return liitteet.add(perusteId, tyyppi, mime, nimi, koko, pis);
         }
     }
 

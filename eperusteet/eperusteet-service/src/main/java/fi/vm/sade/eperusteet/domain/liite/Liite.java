@@ -44,9 +44,15 @@ public class Liite implements Serializable {
     private UUID id;
 
     @Getter
+    @Setter
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private LiiteTyyppi tyyppi = LiiteTyyppi.TUNTEMATON;
+
+    @Getter
     @NotNull
     @Basic(optional = false)
-    private String tyyppi;
+    private String mime;
     
     @Getter
     //@NotNull
@@ -75,11 +81,12 @@ public class Liite implements Serializable {
         //JPA
     }
 
-    public Liite(String tyyppi, String nimi, Blob data) {
+    public Liite(LiiteTyyppi tyyppi, String mime, String nimi, Blob data) {
         this.id = UUID.randomUUID();
         this.luotu = new Date();
         this.nimi = nimi;
         this.tyyppi = tyyppi;
+        this.mime = mime;
         this.data = data;
     }
 

@@ -15,15 +15,15 @@
  */
 
 export interface INotifikaatiot {
-    normaali: (msg: string | Object, ilmanKuvaa?: boolean) => void;
-    onnistui: (msg: string | Object, ilmanKuvaa?: boolean) => void;
-    varoitus: (msg: string | Object, ilmanKuvaa?: boolean) => void;
-    fataali: (msg: string | Object, cb: Function) => void;
-    serverCb: (msg: string | Object) => void;
+    normaali: (msg: string | object, ilmanKuvaa?: boolean) => void;
+    onnistui: (msg: string | object, ilmanKuvaa?: boolean) => void;
+    varoitus: (msg: string | object, ilmanKuvaa?: boolean) => void;
+    fataali: (msg: string | object, cb: Function) => void;
+    serverCb: (msg: string | object) => void;
     serverLukitus: (response: any) => void;
     viestit: () => any[];
     paivita: () => void;
-    poista: (i: string | Object) => void;
+    poista: (i: string | object) => void;
 }
 
 import * as angular from "angular";

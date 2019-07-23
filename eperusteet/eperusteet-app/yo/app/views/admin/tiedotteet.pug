@@ -1,7 +1,7 @@
 // admin/tiedotteet.html
 .admin-tiedotteet
   .hallintapainikkeet
-    button.btn.btn-default(icon-role='add', kaanna='uusi-tiedote', ng-click='edit()')
+    button.btn.btn-default(icon-role='add', kaanna='uusi-tiedote', ng-click='edit({ julkinen: true})')
   h2
     span(kaanna="'tiedotteet'")
     ohje(teksti='ohje-tiedotteet')

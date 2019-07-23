@@ -31,8 +31,8 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
+import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -194,6 +194,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private EntityManager em;
+
+    @Autowired
+    private LiiteRepository liiteRepository;
 
     @Override
     public List<PerusteDto> getUusimmat(Set<Kieli> kielet) {
@@ -695,7 +698,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             Maarayskirje maarayskirje = updated.getMaarayskirje();
             MaarayskirjeDto maarayskirjeDto = perusteDto.getMaarayskirje();
             if (maarayskirje != null && maarayskirjeDto != null) {
-                Map<Kieli, LiiteDto> dtoLiitteet = maarayskirjeDto.getLiitteet();
+                Map<Kieli, LiiteBaseDto> dtoLiitteet = maarayskirjeDto.getLiitteet();
                 if (!ObjectUtils.isEmpty(dtoLiitteet)) {
                     dtoLiitteet.forEach((kieli, liiteDto) -> {
                         Peruste peruste = perusteet.findOne(perusteId);
@@ -719,7 +722,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             if (updated.getMuutosmaaraykset() != null) {
                 for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
+                    Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
+                    Map<Kieli, Liite> tempLiitteet = new HashMap<>();
+                    liitteet.forEach((kieli, liiteId) -> {
+                        Liite liite = liiteRepository.findOne(perusteId, liiteId.getId());
+                        if (liite != null) {
+                            tempLiitteet.put(kieli, liite);
+                        }
+                    });
+
                     muutosmaarays.setPeruste(current);
+                    muutosmaarays.setLiitteet(tempLiitteet);
                 }
             }
 
@@ -1330,6 +1343,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public TutkinnonOsaViiteDto getTutkinnonOsaViite(Long perusteId, Suoritustapakoodi suoritustapakoodi, Long viiteId) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
+        TutkinnonOsa tutkinnonOsa = viite.getTutkinnonOsa();
 
         if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");

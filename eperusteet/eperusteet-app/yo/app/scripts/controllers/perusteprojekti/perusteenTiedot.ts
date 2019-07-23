@@ -55,6 +55,7 @@ angular
         $scope,
         $stateParams,
         $state,
+        Restangular,
         SERVICE_LOC,
         Koodisto,
         Perusteet,
@@ -213,25 +214,26 @@ angular
         $scope.$koodistoResolved = false;
         $scope.$perusteellaTutkintonimikkeet = PerusteenTutkintonimikkeet.perusteellaTutkintonimikkeet($scope.peruste);
         $scope.kieliOrder = Kieli.kieliOrder;
-        $scope.maarayskirje = {
+        $scope.liite = {
             files: []
         };
         $scope.liitteet = [];
         $scope.liitteetUrl =  window.location.origin + SERVICE_LOC + "/perusteet/" + $scope.peruste.id + "/liitteet/";
 
         $scope.getLiitteet = async () => {
-            $scope.liitteet = await Api.one("perusteet", $scope.peruste.id).all("liitteet").getList();
+            $scope.liitteet = Restangular.stripRestangular(await Api.one("perusteet", $scope.peruste.id).all("liitteet").getList());
         };
         $scope.getLiitteet();
 
-        $scope.saveLiite = async () => {
+        $scope.saveLiite = async (tyyppi) => {
             try {
-                const image = $scope.maarayskirje.files[0];
+                const image = $scope.liite.files[0];
                 const url = SERVICE_LOC + "/perusteet/" + $scope.peruste.id + "/liitteet";
                 const data = {
                     url: url,
                     fields: {
-                        nimi: image.name
+                        nimi: image.name,
+                        tyyppi: tyyppi
                     },
                     file: image
                 };
@@ -239,13 +241,13 @@ angular
                 await Upload.upload(data);
 
                 $scope.message = "liitetiedosto-tallennettu";
-                $scope.maarayskirje.files = [];
+                $scope.liite.files = [];
 
                 await $scope.getLiitteet();
 
             } catch (err) {
                 $scope.message = err.syy || "liitetiedosto-tallennusvirhe";
-                $scope.maarayskirje.files = [];
+                $scope.liite.files = [];
             }
         };
 
@@ -361,6 +363,31 @@ angular
             });
         $scope.poistaMuutosmaarays = muutosmaarays => _.remove($scope.editablePeruste.muutosmaaraykset, muutosmaarays);
 
+        $scope.poistaLiite = async liite => {
+            await Api.one("perusteet", $scope.peruste.id).one("liitteet", liite.id).remove();
+            _.remove($scope.liitteet, liite);
+            _.each($scope.editablePeruste.maarayskirje.liitteet, (l: any, kieli) => {
+                if (l.id === liite.id) {
+                    delete $scope.editablePeruste.maarayskirje.liitteet[kieli];
+                    delete $scope.peruste.maarayskirje.liitteet[kieli];
+                }
+            });
+            _.each($scope.editablePeruste.muutosmaaraykset, muutosmaarays => {
+                _.each(muutosmaarays.liitteet, (l: any, kieli) => {
+                    if (l.id === liite.id) {
+                        delete muutosmaarays.liitteet[kieli];
+                    }
+                });
+            });
+            _.each($scope.peruste.muutosmaaraykset, muutosmaarays => {
+                _.each(muutosmaarays.liitteet, (l: any, kieli) => {
+                    if (l.id === liite.id) {
+                        delete muutosmaarays.liitteet[kieli];
+                    }
+                });
+            });
+        };
+
         PerusteenTutkintonimikkeet.get($scope.peruste.id, $scope);
 
         $scope.poistaTutkintonimike = function(nimike) {
@@ -450,6 +477,24 @@ angular
             if (!$scope.editablePeruste.voimassaoloLoppuu) {
                 delete $scope.editablePeruste.siirtymaPaattyy;
             }
+            // Poistetaan määräyskirjeen tyhjät kentät
+            if ($scope.editablePeruste.maarayskirje.liitteet) {
+                _.each($scope.editablePeruste.maarayskirje.liitteet, (value, key) => {
+                    if (_.isEmpty(value)) {
+                        delete $scope.editablePeruste.maarayskirje.liitteet[key];
+                    }
+                });
+            }
+            // Poistetaan muutoskirjeen tyhjät kentät
+            _.each($scope.editablePeruste.muutosmaaraykset, muutosmaarays => {
+                if (muutosmaarays.liitteet) {
+                    _.each(muutosmaarays.liitteet, (value, key) => {
+                        if (_.isEmpty(value)) {
+                            delete muutosmaarays.liitteet[key];
+                        }
+                    });
+                }
+            });
             Perusteet.save(
                 { perusteId: $scope.peruste.id },
                 $scope.editablePeruste,

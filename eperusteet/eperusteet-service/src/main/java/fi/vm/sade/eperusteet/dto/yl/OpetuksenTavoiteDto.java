@@ -43,5 +43,6 @@ public class OpetuksenTavoiteDto implements ReferenceableDto {
     private Optional<LokalisoituTekstiDto> arvioinninOtsikko;
     private Optional<LokalisoituTekstiDto> arvioinninKuvaus;
     private Optional<LokalisoituTekstiDto> arvioinninOsaamisenKuvaus;
+    private Optional<LokalisoituTekstiDto> tavoitteistaJohdetutOppimisenTavoitteet;
 
 }

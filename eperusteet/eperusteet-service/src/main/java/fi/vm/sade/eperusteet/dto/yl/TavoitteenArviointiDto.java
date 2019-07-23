@@ -31,5 +31,8 @@ import java.util.Optional;
 public class TavoitteenArviointiDto implements ReferenceableDto {
     private Long id;
     private Optional<LokalisoituTekstiDto> arvioinninKohde;
+    private Optional<LokalisoituTekstiDto> valttavanOsaamisenKuvaus;
+    private Optional<LokalisoituTekstiDto> tyydyttavanOsaamisenKuvaus;
     private Optional<LokalisoituTekstiDto> hyvanOsaamisenKuvaus;
+    private Optional<LokalisoituTekstiDto> kiitettavanOsaamisenKuvaus;
 }

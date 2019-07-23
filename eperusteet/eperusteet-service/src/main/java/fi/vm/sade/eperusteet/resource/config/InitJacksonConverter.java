@@ -10,6 +10,13 @@ import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 public class InitJacksonConverter {
+    static public MappingModule createMappingModule() {
+        MappingModule module = new MappingModule();
+        module.addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
+        module.addDeserializer(PerusteenOsaUpdateDto.class, new PerusteenOsaUpdateDtoDeserializer());
+        return module;
+    }
+
     static public void configureObjectMapper(ObjectMapper mapper) {
         mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
@@ -17,14 +24,12 @@ public class InitJacksonConverter {
         mapper.registerModule(new Jdk8Module());
         mapper.registerModule(createMappingModule());
         mapper.setPropertyNamingStrategy(new ReferenceNamingStrategy());
-
     }
 
-    static public MappingModule createMappingModule() {
-        MappingModule module = new MappingModule();
-        module.addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
-        module.addDeserializer(PerusteenOsaUpdateDto.class, new PerusteenOsaUpdateDtoDeserializer());
-        return module;
+    static public ObjectMapper createMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        configureObjectMapper(mapper);
+        return mapper;
     }
 
     static public MappingJackson2HttpMessageConverter createConverter() {

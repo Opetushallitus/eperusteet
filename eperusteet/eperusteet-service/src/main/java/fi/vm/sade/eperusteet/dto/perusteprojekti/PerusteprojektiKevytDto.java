@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,6 +45,7 @@ public class PerusteprojektiKevytDto implements Serializable  {
     private Set<String> suoritustavat;
     private Date luotu;
     private PerusteVersionDto globalVersion;
+    private PerusteBaseDto peruste;
 
     public PerusteprojektiKevytDto() {
     }

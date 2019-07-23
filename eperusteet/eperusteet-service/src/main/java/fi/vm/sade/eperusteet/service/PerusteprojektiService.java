@@ -43,7 +43,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface PerusteprojektiService {
 
-    void validoiPerusteetTask();
+    void validoiPerusteetTask(int max);
 
     void tarkistaKooditTask();
 

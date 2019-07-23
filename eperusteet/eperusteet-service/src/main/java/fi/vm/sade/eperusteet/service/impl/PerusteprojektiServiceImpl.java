@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -214,7 +215,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
-    public void validoiPerusteetTask() {
+    public void validoiPerusteetTask(int max) {
 
         // Haetaan validoitavat projektit
         TransactionTemplate template = new TransactionTemplate(tm);
@@ -233,6 +234,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             try {
                 if (pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
                     continue;
+                }
+
+                if (max > 0 && counter > max) {
+                    break;
                 }
 
                 validoiPerusteTask(pp, counter);
@@ -1291,14 +1296,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                             byte[] data = res.getBody();
                             if (res.getStatusCode().equals(HttpStatus.OK) && data != null) {
-                                String tyyppi = tika.detect(data);
-                                if (DOCUMENT_TYPES.contains(tyyppi)) {
+                                String mime = tika.detect(data);
+                                if (DOCUMENT_TYPES.contains(mime)) {
                                     // Lisätään määräyskirje ja liitetään se perusteeseen
                                     String nimi = messages.translate("maarayskirje", kieli);
                                     if (ObjectUtils.isEmpty(nimi)) {
                                         nimi = "maarayskirje";
                                     }
-                                    Liite liite = liiteRepository.add(tyyppi, nimi + ".pdf", data);
+                                    Liite liite = liiteRepository.add(LiiteTyyppi.MAARAYSKIRJE, mime, nimi + ".pdf", data);
                                     liitteet.put(kieli, liite);
                                     peruste.attachLiite(liite);
 

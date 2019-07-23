@@ -1,0 +1,90 @@
+.geneerinen-arviointi-2019
+  .geneeriset
+    .geneerinen(ng-repeat="geneerinen in geneeriset")
+      .geneerinen-heading
+        h3
+          span.mr-2(ng-bind="geneerinen.nimi | kaanna")
+          .badge.badge(
+            ng-show="geneerinen.julkaistu",
+            kaanna="'julkaistu'")
+
+      .geneerinen-body
+        .perustiedot
+          .nimi
+            label(kaanna="'asteikon-nimi'")
+            input.form-control(
+              ng-disabled="geneerinen.julkaistu",
+              ng-model="geneerinen.nimi",
+              slocalized)
+          .kohde
+            label(kaanna="'arvioinnin-kohde'")
+            input.form-control(
+              ng-disabled="geneerinen.julkaistu",
+              ng-model="geneerinen.kohde",
+              slocalized)
+
+        .osaamistasot
+          .osaamistaso(ng-repeat="ot in geneerinen.osaamistasonKriteerit")
+            .asteikko(ng-bind="arviointiasteikotMap[geneerinen._arviointiAsteikko].$$tasoMap[ot._osaamistaso].otsikko | kaanna")
+            .kriteerit
+              .kriteeri(ng-repeat="kriteeri in ot.kriteerit")
+                input.form-control(
+                  ng-show="geneerinen.julkaistu",
+                  ng-model="kriteeri",
+                  disabled,
+                  slocalized)
+                .input-group(ng-hide="geneerinen.julkaistu")
+                  input.form-control(
+                    ng-model="kriteeri",
+                    slocalized)
+                  span.input-group-btn
+                    button.btn.btn-danger(
+                      kaanna="'poista'",
+                      ng-click="poistaKriteeri(ot, kriteeri)")
+
+              .alert.alert-info(ng-show="ot.kriteerit.length === 0", kaanna="'kriteereita-ei-lisatty'")
+
+              .lisays(ng-hide="geneerinen.julkaistu")
+                button.btn.btn-default(
+                  ng-click="lisaaKriteeri(ot)",
+                  kaanna="'lisaa-kriteeri'")
+
+        .actions
+          button.btn.btn-default(
+            ng-hide="geneerinen.julkaistu",
+            ng-click="poista(geneerinen)",
+            kaanna="'poista'")
+
+          button.btn.btn-default(
+            ng-show="geneerinen.julkaistu",
+            ng-click="kopioi(geneerinen)",
+            kaanna="'kopioi'")
+
+          button.btn.btn-default(
+            ng-show="!geneerinen.julkaistu",
+            ng-click="paivita(geneerinen)",
+            kaanna="'tallenna'")
+
+          button.btn.btn-default(
+            ng-show="!geneerinen.julkaistu",
+            ng-click="julkaise(geneerinen)",
+            kaanna="'julkaise'")
+
+
+  hr
+
+  div
+    .radio(ng-repeat="asteikko in arviointiasteikot")
+      label
+        input.form-control(
+          type="radio",
+          ng-value="asteikko.id",
+          ng-model="uusiArviointi.arviointiAsteikko")
+        span {{ asteikko.otsikko | kaanna }}
+          span(ng-repeat="ot in asteikko.osaamistasot")
+            span {{ ot.otsikko | kaanna }}
+            span.mr-2.ml-2(ng-if="!$last") /
+
+    button.btn.btn-primary(
+      ng-click="lisaa()",
+      kaanna="'lisaa-geneerinen-arviointi'")

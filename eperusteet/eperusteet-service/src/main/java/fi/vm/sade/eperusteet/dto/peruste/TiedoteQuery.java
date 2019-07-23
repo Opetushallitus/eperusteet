@@ -30,6 +30,7 @@ public class TiedoteQuery {
     private List<Kieli> kieli;
     private String nimi;
     private Long perusteId;
+    private Boolean perusteeton; // Jos true, palauttaa vain ne tiedotteet, jotka eivät liity mihinkään perusteeseen
     private Boolean julkinen; // Jos null, haetaan julkiset ja sisäiset
     private Boolean yleinen; // Jos halutaan esittää mm. etusivulla
 }

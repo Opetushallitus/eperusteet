@@ -1,0 +1,41 @@
+<!-- modals/validointivirheet.html -->
+<div class="modal-header">
+    <h3 kaanna>validointivirheet-header</h3>
+</div>
+<div class="modal-body ">
+    <h3 kaanna>korjaa-virheet</h3>
+    <table class="table table-striped">
+        <tr>
+            <th class="col-md-4" kaanna>viesti</th>
+            <th class="col-md-2" kaanna>suoritustapa</th>
+            <th class="col-md-6" kaanna>lisatieto</th>
+        </tr>
+        <tr ng-repeat="info in data.infot">
+            <td>{{info.viesti | kaanna}}</td>
+            <td>{{info.suoritustapa | kaanna}}</td>
+            <td>
+                <ul ng-if="info.nimet" class="list-unstyled">
+                    <li ng-repeat="nimi in info.nimet">
+                        {{nimi| kaanna}}
+                    </li>
+                </ul>
+                <ul ng-if="info.validointi" class="list-unstyled">
+                    <li ng-repeat="ongelma in info.validointi.ongelmat">
+                        <span ng-show="ongelma.ryhma.teksti">
+                            <b>{{ongelma.ryhma.teksti | kaanna}}</b>:
+                        </span>
+                        {{ongelma.ongelma | kaanna}}
+                    </li>
+                </ul>
+                <p ng-if="info.kielet" kaanna="'puuttuvat-kaannokset-kielilla'"></p>
+                <ul ng-if="info.kielet">
+                    <li ng-repeat="kieli in info.kielet">
+                        <span kaanna="kieli"></span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+    <button class="btn btn-primary btn-xs" ng-click="ok()" kaanna>ok</button>
+</div>
