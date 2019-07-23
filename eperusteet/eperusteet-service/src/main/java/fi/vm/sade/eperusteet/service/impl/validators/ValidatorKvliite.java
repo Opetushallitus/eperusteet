@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -39,6 +39,11 @@ public class ValidatorKvliite implements Validator {
         TilaUpdateStatus result = new TilaUpdateStatus();
         tarkistaKvliite(julkinenKVLiite, vaaditutKielet, result);
         return result;
+    }
+
+    @Override
+    public boolean applicableToteutus(KoulutustyyppiToteutus toteutus) {
+        return true;
     }
 
     @Override

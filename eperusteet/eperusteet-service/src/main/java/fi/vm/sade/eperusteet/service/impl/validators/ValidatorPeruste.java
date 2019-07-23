@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
@@ -63,6 +63,10 @@ public class ValidatorPeruste implements Validator {
     @Autowired
     private KoodistoClient koodistoService;
 
+    @Override
+    public boolean applicableToteutus(KoulutustyyppiToteutus toteutus) {
+        return true;
+    }
 
     private void validoiLukio(Peruste peruste, ProjektiTila tila, TilaUpdateStatus updateStatus) {
         LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();

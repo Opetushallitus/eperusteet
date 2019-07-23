@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -19,6 +20,9 @@ public interface Validator {
 
     @PreAuthorize("isAuthenticated()")
     boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi);
+
+    @PreAuthorize("isAuthenticated()")
+    boolean applicableToteutus(KoulutustyyppiToteutus toteutus);
 
     @PreAuthorize("isAuthenticated()")
     default boolean applicableTila(ProjektiTila tila) {

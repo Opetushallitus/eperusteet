@@ -21,6 +21,7 @@ package fi.vm.sade.eperusteet.domain.yl;
  * Date: 13.11.2015
  * Time: 16.05
  */
+@Deprecated
 public interface Koodillinen {
     String getKoodiArvo();
 

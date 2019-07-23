@@ -27,6 +27,7 @@ public class ProjektiValidatorImpl implements ProjektiValidator {
         TilaUpdateStatus result = new TilaUpdateStatus();
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
         Peruste peruste = projekti.getPeruste();
+        KoulutustyyppiToteutus toteutus = peruste.getToteutus();
         PerusteTyyppi tyyppi = peruste.getTyyppi();
         KoulutusTyyppi kt = peruste.getKoulutustyyppi() != null
             ? KoulutusTyyppi.of(peruste.getKoulutustyyppi())
@@ -34,6 +35,10 @@ public class ProjektiValidatorImpl implements ProjektiValidator {
 
         for (Validator validator : validators) {
             if (!validator.applicableKoulutustyyppi(kt)) {
+                continue;
+            }
+
+            if (toteutus != null && !validator.applicableToteutus(toteutus)) {
                 continue;
             }
 

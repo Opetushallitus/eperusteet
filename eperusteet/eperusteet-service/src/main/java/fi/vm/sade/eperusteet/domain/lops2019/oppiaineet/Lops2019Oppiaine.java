@@ -3,8 +3,10 @@ package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.lops2019.Koodillinen;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -19,7 +21,7 @@ import java.util.List;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine")
-public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity {
+public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity implements Koodillinen, Nimetty {
 
     @Getter
     @Setter
