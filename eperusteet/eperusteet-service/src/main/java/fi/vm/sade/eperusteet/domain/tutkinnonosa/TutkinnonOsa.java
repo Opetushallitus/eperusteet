@@ -55,11 +55,18 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Deprecated
     private TekstiPalanen ammattitaitovaatimukset;
+
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Ammattitaitovaatimukset2019 ammattitaitovaatimukset2019;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Deprecated
     private TekstiPalanen ammattitaidonOsoittamistavat;
 
     @ValidHtml
@@ -85,6 +92,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Getter
     @Setter
     @OrderColumn(name = "jarjestys")
+    @Deprecated
     private List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

@@ -552,8 +552,8 @@
                         <type>${hibernate.export.type}</type>
                         <target>SCRIPT</target>
                         <driverClassName>org.postgresql.Driver</driverClassName>
-<!--                        <hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>-->
-                        <hibernateDialect>fi.vm.sade.eperusteet.repository.dialect.CustomPostgreSqlDialect</hibernateDialect>
+                        <hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>
+<!--                        <hibernateDialect>fi.vm.sade.eperusteet.repository.dialect.CustomPostgreSqlDialect</hibernateDialect>-->
                         <url/>
                         <username/>
                         <password/>

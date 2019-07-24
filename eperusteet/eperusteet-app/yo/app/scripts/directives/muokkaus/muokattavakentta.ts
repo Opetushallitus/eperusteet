@@ -189,6 +189,15 @@ angular
                             "edit-enabled": "editEnabled"
                         }
                     ],
+                    ammattitaitovaatimukset2019: [
+                        "",
+                        "<tutkinnonosan-ammattitaitovaatimukset2019>",
+                        {
+                            "editointi-sallittu": "true",
+                            "edit-enabled": "editEnabled",
+                            ammattitaitovaatimukset: "object." + scope.field.path,
+                        }
+                    ],
                     geneerinenarviointi: [
                         "",
                         "<tutkinnonosangeneerisetammattitaitovaatimukset>",
