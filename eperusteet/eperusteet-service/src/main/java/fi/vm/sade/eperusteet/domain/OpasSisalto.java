@@ -34,7 +34,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @Table(name = "opas_sisalto")
-public class OpasSisalto extends AbstractAuditedReferenceableEntity {
+public class OpasSisalto extends AbstractAuditedReferenceableEntity implements PerusteenSisalto {
 
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

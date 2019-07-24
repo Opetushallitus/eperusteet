@@ -620,7 +620,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (peruste == null) {
             throw new NotExistsException("Perustetta ei ole olemassa");
         }
-        PerusteenOsaViite sisalto = peruste.getSisalto(suoritustapakoodi);
+        PerusteenOsaViite sisalto = peruste.getSisallot(suoritustapakoodi);
         if (sisalto == null) {
             throw new NotExistsException("Perusteen sisältörakennetta ei ole olemassa");
         }
@@ -1386,7 +1386,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (peruste == null) {
             throw new NotExistsException("Perustetta ei ole olemassa");
         }
-        PerusteenOsaViite sisalto = peruste.getSisalto(suoritustapakoodi);
+        PerusteenOsaViite sisalto = peruste.getSisallot(suoritustapakoodi);
         if (sisalto == null) {
             throw new NotExistsException("Perusteen sisältörakennetta ei ole olemassa");
         }

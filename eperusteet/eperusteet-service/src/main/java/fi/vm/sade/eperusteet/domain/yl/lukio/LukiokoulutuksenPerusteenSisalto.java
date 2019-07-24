@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.PerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
@@ -36,7 +37,7 @@ import java.util.Set;
 @Entity
 @Audited
 @Table(name = "yl_lukiokoulutuksen_perusteen_sisalto", schema = "public")
-public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto {
+public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto implements PerusteenSisalto {
 
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

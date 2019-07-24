@@ -38,7 +38,7 @@ import java.util.Set;
 @Entity
 @Table(name = "suoritustapa")
 @Audited
-public class Suoritustapa implements Serializable, ReferenceableEntity {
+public class Suoritustapa implements Serializable, ReferenceableEntity, PerusteenSisalto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.domain.lops2019;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.PerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
@@ -20,7 +21,7 @@ import java.util.List;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_sisalto")
-public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity {
+public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity implements PerusteenSisalto {
 
     @NotNull
     @RelatesToPeruste

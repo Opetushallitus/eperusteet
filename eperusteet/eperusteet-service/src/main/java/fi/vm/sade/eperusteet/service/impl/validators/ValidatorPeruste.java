@@ -499,7 +499,7 @@ public class ValidatorPeruste implements Validator {
 
                 // Osaamisaloilla täytyy olla tekstikuvaukset
                 if (peruste.getOsaamisalat() != null && peruste.getOsaamisalat().size() > 0) {
-                    PerusteenOsaViite sisalto = peruste.getSisalto(null);
+                    PerusteenOsaViite sisalto = peruste.getSisallot(null);
                     if (sisalto != null) {
                         Set<Koodi> kuvaukselliset = flattenSisalto(sisalto).stream()
                                 .filter(osa -> osa.getPerusteenOsa() instanceof TekstiKappale)

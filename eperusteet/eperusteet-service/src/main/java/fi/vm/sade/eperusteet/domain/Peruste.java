@@ -242,6 +242,25 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     private Perusteprojekti perusteprojekti;
 
+    public Set<PerusteenSisalto> getSisallot() {
+        if (this.getPerusopetuksenPerusteenSisalto() != null) {
+            return Collections.singleton(this.getPerusopetuksenPerusteenSisalto());
+        }
+        else if (this.getLops2019Sisalto() != null) {
+            return Collections.singleton(this.getLops2019Sisalto());
+        }
+        else if (this.getEsiopetuksenPerusteenSisalto() != null) {
+            return Collections.singleton(this.getEsiopetuksenPerusteenSisalto());
+        }
+        else if (this.getLukiokoulutuksenPerusteenSisalto() != null) {
+            return Collections.singleton(this.getLukiokoulutuksenPerusteenSisalto());
+        }
+        else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
+            return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
+        }
+        return Collections.singleton(null);
+    }
+
     public void attachLiite(Liite liite) {
         liitteet.add(liite);
     }
@@ -289,7 +308,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     /*
     Palauttaa suoritustavan mukaisen sisällön.
     */
-    public PerusteenOsaViite getSisalto(Suoritustapakoodi suoritustapakoodi) {
+    public PerusteenOsaViite getSisallot(Suoritustapakoodi suoritustapakoodi) {
         if (this.tyyppi == PerusteTyyppi.OPAS) {
             return this.getOppaanSisalto().getSisalto();
         }

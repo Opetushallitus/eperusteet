@@ -126,7 +126,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.setKvLiiteJulkinenDto(perusteService.getJulkinenKVLiite(peruste.getId()));
         docBase.setDokumentti(dokumentti);
         docBase.setMapper(mapper);
-        docBase.setSisalto(peruste.getSisalto(dokumentti.getSuoritustapakoodi()));
+        docBase.setSisalto(peruste.getSisallot(dokumentti.getSuoritustapakoodi()));
         docBase.setAipeOpetuksenSisalto(peruste.getAipeOpetuksenPerusteenSisalto());
 
         // Tästä aloitetaan varsinaisen dokumentin muodostus

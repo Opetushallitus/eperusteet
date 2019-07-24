@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.PerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -38,7 +39,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @Table(name = "tpo_perusteen_sisalto")
-public class TpoOpetuksenSisalto extends AbstractAuditedReferenceableEntity {
+public class TpoOpetuksenSisalto extends AbstractAuditedReferenceableEntity implements PerusteenSisalto {
 
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

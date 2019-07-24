@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.PerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +36,7 @@ import java.util.Set;
 @Entity
 @Audited
 @Table(name = "yl_perusop_perusteen_sisalto")
-public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto {
+public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto implements PerusteenSisalto {
 
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

@@ -76,7 +76,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         log.info("Mahdollisesti korjattavien perusteiden määrä: " + korjattavat.size());
 
         for (Peruste peruste : korjattavat) {
-            PerusteenOsaViite sisalto = peruste.getSisalto(Suoritustapakoodi.REFORMI);
+            PerusteenOsaViite sisalto = peruste.getSisallot(Suoritustapakoodi.REFORMI);
             Set<Koodi> osaamisalat = new HashSet<>(peruste.getOsaamisalat());
             int kaikkiOsaamisalat = osaamisalat.size();
 

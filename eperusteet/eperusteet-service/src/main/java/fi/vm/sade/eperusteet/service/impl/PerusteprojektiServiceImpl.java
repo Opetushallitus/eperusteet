@@ -67,7 +67,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -929,29 +928,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     private void setPerusteTila(Peruste peruste, PerusteTila tila) {
-
-        // Asetetaan perusteen osien tilat
-        for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
-            setSisaltoTila(peruste, suoritustapa.getSisalto(), tila);
-            for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
-                setOsatTila(peruste, tutkinnonosaViite, tila);
+        // Asetetaan sisältöjen tilat
+        if (peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
+            for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
+                setSisaltoTila(peruste, suoritustapa.getSisalto(), tila);
+                for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
+                    setOsatTila(peruste, tutkinnonosaViite, tila);
+                }
             }
         }
-
-        if (peruste.getPerusopetuksenPerusteenSisalto() != null) {
-            setSisaltoTila(peruste, peruste.getPerusopetuksenPerusteenSisalto().getSisalto(), tila);
-        }
-
-        if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
-            setSisaltoTila(peruste, peruste.getEsiopetuksenPerusteenSisalto().getSisalto(), tila);
-        }
-
-        if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
-            setSisaltoTila(peruste, peruste.getLukiokoulutuksenPerusteenSisalto().getSisalto(), tila);
-        }
-
-        if (peruste.getAipeOpetuksenPerusteenSisalto() != null) {
-            setSisaltoTila(peruste, peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(), tila);
+        else {
+            peruste.getSisallot().forEach(sisalto ->
+                setSisaltoTila(peruste, sisalto.getSisalto(), tila));
         }
 
         peruste.asetaTila(tila);
@@ -1020,7 +1008,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private PerusteenOsaViite setSisaltoTila(Peruste peruste, PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
         // Perusteen osan tilan poistaminen valmiista edellyttää ettei mikään muu perusteen osaa käyttävä peruste
         // ole julkaistuna.
-        if (sisaltoRoot.getPerusteenOsa() != null) {
+        if (sisaltoRoot != null && sisaltoRoot.getPerusteenOsa() != null) {
             boolean salliTilamuutos = true;
             if (sisaltoRoot.getPerusteenOsa().getTila() == PerusteTila.VALMIS) {
                 Set<Peruste> perusteet = perusteetJoissaJulkaistuna(sisaltoRoot.getPerusteenOsa());
@@ -1042,7 +1030,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
         }
 
-        if (sisaltoRoot.getLapset() != null) {
+        if (sisaltoRoot != null && sisaltoRoot.getLapset() != null) {
             for (PerusteenOsaViite lapsi : sisaltoRoot.getLapset()) {
                 setSisaltoTila(peruste, lapsi, tila);
             }

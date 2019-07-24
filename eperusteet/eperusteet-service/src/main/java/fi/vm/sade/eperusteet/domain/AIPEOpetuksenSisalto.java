@@ -35,7 +35,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @Table(name = "yl_aipe_opetuksensisalto")
-public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto {
+public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto implements PerusteenSisalto {
 
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
