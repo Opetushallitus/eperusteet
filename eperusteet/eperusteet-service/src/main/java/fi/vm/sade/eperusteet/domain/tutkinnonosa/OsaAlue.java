@@ -99,7 +99,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @ValidKoodisto(koodisto = "ammatillisenoppiaineet")
     private Koodi koodi;
 

@@ -121,7 +121,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Koodi koodi;
 
     public Osaamistavoite() {

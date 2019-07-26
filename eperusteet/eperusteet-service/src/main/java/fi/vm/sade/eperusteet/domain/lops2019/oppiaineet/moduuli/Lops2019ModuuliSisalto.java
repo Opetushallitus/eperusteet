@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli;
 
+import fi.vm.sade.eperusteet.domain.Copyable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
@@ -11,13 +12,14 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @Entity
 @Audited
 @Table(name = "yl_lops2019_moduuli_sisalto")
-public class Lops2019ModuuliSisalto {
+public class Lops2019ModuuliSisalto implements Copyable<Lops2019ModuuliSisalto> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -37,4 +39,14 @@ public class Lops2019ModuuliSisalto {
             inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> sisallot = new ArrayList<>();
+
+    @Override
+    public Lops2019ModuuliSisalto copy(boolean deep) {
+        Lops2019ModuuliSisalto result = new Lops2019ModuuliSisalto();
+        result.setKohde(TekstiPalanen.of(this.getKohde()));
+        result.sisallot.addAll(this.getSisallot().stream()
+                .map(TekstiPalanen::of)
+                .collect(Collectors.toList()));
+        return result;
+    }
 }

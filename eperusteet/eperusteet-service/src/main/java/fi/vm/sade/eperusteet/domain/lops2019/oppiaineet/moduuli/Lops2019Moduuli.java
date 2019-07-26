@@ -1,8 +1,6 @@
 package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Koodillinen;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -18,24 +16,25 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Audited
 @Table(name = "yl_lops2019_moduuli")
-public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity implements Nimetty, Koodillinen {
+public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity implements Nimetty, Koodillinen, Copyable<Lops2019Moduuli> {
 
     @Getter
     @Setter
     @NotNull
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
     @Getter
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
@@ -52,7 +51,7 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity implemen
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Koodi koodi;
 
     @Getter
@@ -90,5 +89,27 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity implemen
         if (sisallot != null) {
             this.sisallot.addAll(sisallot);
         }
+    }
+
+    @Override
+    public Lops2019Moduuli copy(boolean deep) {
+        Lops2019Moduuli result = new Lops2019Moduuli();
+        result.setPakollinen(this.getPakollinen());
+        result.setLaajuus(this.getLaajuus());
+//        result.setKoodi(this.getKoodi());
+        result.setNimi(TekstiPalanen.of(this.getNimi()));
+        result.setKuvaus(TekstiPalanen.of(this.getKuvaus()));
+
+        if (deep) {
+            if (this.tavoitteet != null) {
+                result.setTavoitteet(this.getTavoitteet().copy());
+            }
+            if (this.sisallot != null) {
+                result.sisallot = this.getSisallot().stream()
+                        .map(Copyable::copy)
+                        .collect(Collectors.toList());
+            }
+        }
+        return result;
     }
 }

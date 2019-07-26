@@ -1,9 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
@@ -165,20 +162,28 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         Set<Long> nykyiset = oppiaine.getModuulit().stream()
                 .map(AbstractAuditedReferenceableEntity::getId)
                 .collect(Collectors.toSet());
-        Set<Lops2019Moduuli> poistetutModuulit = oppiaineRepository.getRevisions(id).stream()
+        Set<Long> kaikki = oppiaineRepository.getRevisions(id).stream()
                 .map(rev -> oppiaineRepository.findRevision(id, rev.getNumero()))
                 .map(Lops2019Oppiaine::getModuulit)
                 .flatMap(Collection::stream)
-                .filter(moduuli -> {
-                    return !nykyiset.contains(moduuli.getId());
-                })
-                .map(moduuli -> {
-                    moduuli.setId(null);
-                    return moduuli;
-                })
+                .map(AbstractAuditedReferenceableEntity::getId)
                 .collect(Collectors.toSet());
+        kaikki.removeAll(nykyiset);
         List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
-        moduulit.addAll(poistetutModuulit);
+        kaikki.forEach(moduuliId -> {
+            List<Revision> revisions = moduuliRepository.getRevisions(moduuliId);
+            revisions.sort(Comparator.comparingInt(Revision::getNumero).reversed());
+            if (revisions.size() > 1) {
+                Lops2019Moduuli poistettu = moduuliRepository.findRevision(moduuliId, revisions.get(1).getNumero());
+                Lops2019Moduuli kopio = poistettu.copy();
+                kopio.setKoodi(null); // Koodit pitää asettaa uudestaan
+                kopio = moduuliRepository.save(kopio);
+                moduulit.add(kopio);
+            }
+        });
+        for (int i = 0; i < moduulit.size(); i++) {
+            moduulit.get(i).setJarjestys(i);
+        }
         oppiaine.setModuulit(moduulit);
         oppiaineRepository.save(oppiaine);
     }

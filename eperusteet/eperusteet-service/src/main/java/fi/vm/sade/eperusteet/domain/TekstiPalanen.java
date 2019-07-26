@@ -113,6 +113,13 @@ public class TekstiPalanen implements Serializable {
         return new TekstiPalanen(tmp, tunniste);
     }
 
+    public static TekstiPalanen of(TekstiPalanen other) {
+        if (other != null) {
+            return of(other.getTeksti(), other.getTunniste());
+        }
+        return null;
+    }
+
     public static TekstiPalanen of(Map<Kieli, String> tekstit) {
         return of(tekstit, null);
     }
