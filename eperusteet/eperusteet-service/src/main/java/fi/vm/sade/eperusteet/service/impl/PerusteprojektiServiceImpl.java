@@ -938,8 +938,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
         }
         else {
-            peruste.getSisallot().forEach(sisalto ->
-                setSisaltoTila(peruste, sisalto.getSisalto(), tila));
+            peruste.getSisallot().forEach(sisalto -> {
+                setSisaltoTila(peruste, sisalto.getSisalto(), tila);
+            });
         }
 
         peruste.asetaTila(tila);

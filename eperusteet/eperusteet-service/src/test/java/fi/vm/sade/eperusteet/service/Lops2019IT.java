@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
+import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -69,7 +70,7 @@ public class Lops2019IT extends AbstractIntegrationTest {
         PerusteKaikkiDto perusteDto = readPerusteFile();
         Lops2019SisaltoDto lops2019SisaltoDto = perusteDto.getLops2019Sisalto();
         Assert.notNull(lops2019SisaltoDto, "Perusteen sisältö puuttuu");
-        List<Lops2019OppiaineDto> oppiaineetDto = lops2019SisaltoDto.getOppiaineet();
+        List<Lops2019OppiaineKaikkiDto> oppiaineetDto = lops2019SisaltoDto.getOppiaineet();
         Assert.notNull(oppiaineetDto, "Perusteen oppiaineet puuttuvat");
         Peruste peruste = mapper.map(perusteDto, Peruste.class);
         Lops2019Sisalto lops2019Sisalto = peruste.getLops2019Sisalto();

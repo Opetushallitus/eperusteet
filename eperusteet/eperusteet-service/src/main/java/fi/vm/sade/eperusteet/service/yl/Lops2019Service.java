@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.yl;
 
+import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
@@ -38,6 +39,9 @@ public interface Lops2019Service {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     Lops2019OppiaineDto addOppiaine(@P("perusteId") Long perusteId, Lops2019OppiaineDto dto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    Lops2019OppiaineKaikkiDto getOppiaineKaikki(Long perusteId, Long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     Lops2019OppiaineDto getOppiaine(@P("perusteId") Long perusteId, Long oppiaineId);

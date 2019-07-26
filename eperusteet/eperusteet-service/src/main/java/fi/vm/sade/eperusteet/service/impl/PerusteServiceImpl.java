@@ -31,6 +31,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -575,9 +576,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     private void getLops2019KaikkiRakenne(PerusteKaikkiDto perusteDto, Peruste peruste) {
         lops2019Service.getOppiaineet(peruste.getId()).forEach(oppiaine -> {
-            Lops2019OppiaineDto oa = lops2019Service.getOppiaine(peruste.getId(), oppiaine.getId());
-            List<Lops2019OppiaineDto> oppimaarat = oa.getOppimaarat().stream()
-                    .map(om -> lops2019Service.getOppiaine(peruste.getId(), om.getId()))
+            Lops2019OppiaineKaikkiDto oa = lops2019Service.getOppiaineKaikki(peruste.getId(), oppiaine.getId());
+            List<Lops2019OppiaineKaikkiDto> oppimaarat = oa.getOppimaarat().stream()
+                    .map(om -> lops2019Service.getOppiaineKaikki(peruste.getId(), om.getId()))
                     .collect(Collectors.toList());
             oa.setOppimaarat(oppimaarat);
             perusteDto.getLops2019Sisalto().getOppiaineet().add(oa);

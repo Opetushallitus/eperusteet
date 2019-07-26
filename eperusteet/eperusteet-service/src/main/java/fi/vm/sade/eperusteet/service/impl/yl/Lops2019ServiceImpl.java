@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019Laaja
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
+import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
@@ -186,6 +187,19 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         }
         oppiaine.setModuulit(moduulit);
         oppiaineRepository.save(oppiaine);
+    }
+
+    @Override
+    public Lops2019OppiaineKaikkiDto getOppiaineKaikki(Long perusteId, Long oppiaineId) {
+        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, oppiaineId);
+        Lops2019OppiaineKaikkiDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineKaikkiDto.class);
+
+        // FIXME: Miksi?
+        // Haetaan manuaalisesti oppimäärät ja moduulit
+        oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineKaikkiDto.class));
+        oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class));
+
+        return oppiaineDto;
     }
 
     @Override

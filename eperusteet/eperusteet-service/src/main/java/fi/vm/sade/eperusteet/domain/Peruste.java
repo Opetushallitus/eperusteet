@@ -243,22 +243,27 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private Perusteprojekti perusteprojekti;
 
     public Set<PerusteenSisalto> getSisallot() {
-        if (this.getPerusopetuksenPerusteenSisalto() != null) {
-            return Collections.singleton(this.getPerusopetuksenPerusteenSisalto());
+        if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
+            return Collections.singleton(this.getOppaanSisalto());
         }
-        else if (this.getLops2019Sisalto() != null) {
-            return Collections.singleton(this.getLops2019Sisalto());
+        else {
+            if (this.getPerusopetuksenPerusteenSisalto() != null) {
+                return Collections.singleton(this.getPerusopetuksenPerusteenSisalto());
+            }
+            else if (this.getLops2019Sisalto() != null) {
+                return Collections.singleton(this.getLops2019Sisalto());
+            }
+            else if (this.getEsiopetuksenPerusteenSisalto() != null) {
+                return Collections.singleton(this.getEsiopetuksenPerusteenSisalto());
+            }
+            else if (this.getLukiokoulutuksenPerusteenSisalto() != null) {
+                return Collections.singleton(this.getLukiokoulutuksenPerusteenSisalto());
+            }
+            else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
+                return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
+            }
         }
-        else if (this.getEsiopetuksenPerusteenSisalto() != null) {
-            return Collections.singleton(this.getEsiopetuksenPerusteenSisalto());
-        }
-        else if (this.getLukiokoulutuksenPerusteenSisalto() != null) {
-            return Collections.singleton(this.getLukiokoulutuksenPerusteenSisalto());
-        }
-        else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
-            return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
-        }
-        return Collections.singleton(null);
+        return new HashSet<>();
     }
 
     public void attachLiite(Liite liite) {

@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 public class Lops2019SisaltoDto {
     private Lops2019LaajaAlainenOsaaminenKokonaisuusDto laajaAlainenOsaaminen;
-    private List<Lops2019OppiaineDto> oppiaineet;
+    private List<Lops2019OppiaineKaikkiDto> oppiaineet;
     private PerusteenOsaViiteDto.Laaja sisalto;
 }
 
