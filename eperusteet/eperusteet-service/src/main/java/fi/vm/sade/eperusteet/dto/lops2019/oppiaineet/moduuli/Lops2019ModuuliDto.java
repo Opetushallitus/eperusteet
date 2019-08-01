@@ -15,7 +15,6 @@ import java.util.List;
 public class Lops2019ModuuliDto extends Lops2019ModuuliBaseDto {
     private LokalisoituTekstiDto kuvaus;
     private BigDecimal laajuus;
-    private KoodiDto koodi;
     private Lops2019ModuuliTavoiteDto tavoitteet;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

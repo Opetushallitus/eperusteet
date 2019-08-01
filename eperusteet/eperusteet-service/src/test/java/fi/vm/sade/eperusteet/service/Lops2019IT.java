@@ -8,34 +8,47 @@ import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019ArviointiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliTavoiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
+import fi.vm.sade.eperusteet.service.util.PerusteprojektiTestHelper;
+import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 @Slf4j
 @Transactional
 @DirtiesContext
-public class Lops2019IT extends AbstractIntegrationTest {
+public class Lops2019IT extends AbstractPerusteprojektiTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -50,7 +63,18 @@ public class Lops2019IT extends AbstractIntegrationTest {
     private PerusteService perusteService;
 
     @Autowired
-    public PerusteprojektiTestUtils ppTestUtils;
+    private PerusteprojektiTestUtils ppTestUtils;
+
+    @Autowired
+    private Lops2019Service lops2019Service;
+
+    @Autowired
+    private PerusteprojektiTestHelper projektiHelper;
+
+    @Before
+    public void beforeEach() {
+        projektiHelper.setup(KoulutusTyyppi.LUKIOKOULUTUS, KoulutustyyppiToteutus.LOPS2019);
+    }
 
     @Before
     public void setup() {
@@ -60,12 +84,14 @@ public class Lops2019IT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Rollback
     public void readJsonToDto() throws IOException {
         PerusteKaikkiDto perusteDto = readPerusteFile();
         Assert.notNull(perusteDto, "Perusteen lukeminen epäonnistui");
     }
 
     @Test
+    @Rollback
     public void convertDtoToEntity() throws IOException {
         PerusteKaikkiDto perusteDto = readPerusteFile();
         Lops2019SisaltoDto lops2019SisaltoDto = perusteDto.getLops2019Sisalto();
@@ -81,6 +107,7 @@ public class Lops2019IT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Rollback
     public void createLops2019Peruste() throws IOException {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
             ppl.setKoulutustyyppi(KoulutusTyyppi.LUKIOKOULUTUS.toString());
@@ -115,5 +142,69 @@ public class Lops2019IT extends AbstractIntegrationTest {
     private PerusteKaikkiDto readPerusteFile() throws IOException {
         Resource resource = new ClassPathResource("material/lops.json");
         return objectMapper.readValue(resource.getFile(), PerusteKaikkiDto.class);
+    }
+
+    @Test
+    @Rollback
+    public void testOppiaineet() {
+        Lops2019OppiaineDto oa = new Lops2019OppiaineDto();
+        { // Oppiaine
+            oa.setNimi(LokalisoituTekstiDto.of("oppiaine"));
+            oa.setKoodi(KoodiDto.of("oppiaine", "123"));
+            oa.setArviointi(Lops2019ArviointiDto.builder()
+                    .kuvaus(LokalisoituTekstiDto.of("arviointi"))
+                    .build());
+        }
+
+        Lops2019OppiaineDto lisatty = lops2019Service.addOppiaine(projektiHelper.getPerusteId(), oa);
+
+        { // Oppimaara
+            Lops2019OppiaineDto om = new Lops2019OppiaineDto();
+            om.setNimi(LokalisoituTekstiDto.of("oppimaara"));
+            om.setKoodi(KoodiDto.of("oppiaine", "1234"));
+            om.setArviointi(Lops2019ArviointiDto.builder()
+                    .kuvaus(LokalisoituTekstiDto.of("arviointi"))
+                    .build());
+            lisatty.getOppimaarat().add(om);
+            lisatty = lops2019Service.updateOppiaine(projektiHelper.getPerusteId(), lisatty);
+        }
+
+        Long moduuli1 = 0L;
+
+        { // Moduuli 1
+            Lops2019ModuuliBaseDto moduuli = new Lops2019ModuuliBaseDto();
+            moduuli.setNimi(LokalisoituTekstiDto.of("moduuli 1"));
+            moduuli.setPakollinen(false);
+            Lops2019OppiaineDto om = lisatty.getOppimaarat().get(0);
+            om.getModuulit().add(moduuli);
+            om = lops2019Service.updateOppiaine(projektiHelper.getPerusteId(), om);
+
+            Lops2019ModuuliBaseDto moduuliBaseDto = om.getModuulit().get(0);
+            Lops2019ModuuliDto moduuliDto = lops2019Service.getModuuli(projektiHelper.getPerusteId(), om.getId(), moduuliBaseDto.getId());
+            moduuli1 = moduuliDto.getId();
+            moduuliDto.setKoodi(KoodiDto.of("moduulit", "123"));
+            moduuliDto.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
+            Lops2019ModuuliTavoiteDto tavoite = new Lops2019ModuuliTavoiteDto();
+            tavoite.setKohde(LokalisoituTekstiDto.of("kohde"));
+            moduuliDto.setTavoitteet(tavoite);
+            lops2019Service.updateModuuli(projektiHelper.getPerusteId(), moduuliDto);
+        }
+
+        { // Moduuli 2
+            Lops2019ModuuliBaseDto moduuli = new Lops2019ModuuliBaseDto();
+            moduuli.setNimi(LokalisoituTekstiDto.of("moduuli 2"));
+            moduuli.setPakollinen(false);
+            Lops2019OppiaineDto om = lisatty.getOppimaarat().get(0);
+            om.getModuulit().add(moduuli);
+            lops2019Service.updateOppiaine(projektiHelper.getPerusteId(), om);
+        }
+
+        lisatty = lops2019Service.getOppiaine(projektiHelper.getPerusteId(), lisatty.getId());
+        assertThat(lisatty.getOppimaarat()).hasSize(1);
+        Lops2019ModuuliDto moduuliDto = lops2019Service.getModuuli(
+                projektiHelper.getPerusteId(),
+                lisatty.getOppimaarat().get(0).getId(),
+                moduuli1);
+        assertThat(moduuliDto.getTavoitteet().getKohde().get(Kieli.FI)).isEqualTo("kohde");
     }
 }

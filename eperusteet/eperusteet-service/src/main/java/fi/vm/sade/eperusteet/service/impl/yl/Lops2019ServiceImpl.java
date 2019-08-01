@@ -224,30 +224,32 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         Map<Long, Lops2019Oppiaine> oppiaineetMap = oppiaine.getOppimaarat().stream()
                 .collect(Collectors.toMap(AbstractAuditedReferenceableEntity::getId, o -> o));
 
-        List<Lops2019Oppiaine> collected = dto.getOppimaarat().stream()
-                .map(om -> om.getId() != null
-                        ? oppiaineetMap.get(om.getId())
-                        : mapper.map(om, Lops2019Oppiaine.class))
-                .collect(Collectors.toList());
-        dto.setOppimaarat(null);
-        mapper.map(dto, oppiaine);
-        oppiaine.setOppimaarat(collected);
+        if (dto.getOppimaarat() != null) {
+            List<Lops2019Oppiaine> collected = dto.getOppimaarat().stream()
+                    .map(om -> om.getId() != null
+                            ? oppiaineetMap.get(om.getId())
+                            : mapper.map(om, Lops2019Oppiaine.class))
+                    .collect(Collectors.toList());
+            dto.setOppimaarat(null);
+            mapper.map(dto, oppiaine);
+            oppiaine.setOppimaarat(collected);
 
-        // Asetetaan oppimäärien järjetys
-        List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
-        if (!ObjectUtils.isEmpty(oppimaarat)) {
-            for (int i = 0; i < oppimaarat.size(); i++) {
-                Lops2019Oppiaine oppimaara = oppimaarat.get(i);
-                oppimaara.setJarjestys(i);
+            // Asetetaan oppimäärien järjetys
+            List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
+            if (!ObjectUtils.isEmpty(oppimaarat)) {
+                for (int i = 0; i < oppimaarat.size(); i++) {
+                    Lops2019Oppiaine oppimaara = oppimaarat.get(i);
+                    oppimaara.setJarjestys(i);
+                }
             }
-        }
 
-        // Asetetaan moduulien järjetys
-        List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
-        if (!ObjectUtils.isEmpty(moduulit)) {
-            for (int i = 0; i < moduulit.size(); i++) {
-                Lops2019Moduuli moduuli = moduulit.get(i);
-                moduuli.setJarjestys(i);
+            // Asetetaan moduulien järjetys
+            List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
+            if (!ObjectUtils.isEmpty(moduulit)) {
+                for (int i = 0; i < moduulit.size(); i++) {
+                    Lops2019Moduuli moduuli = moduulit.get(i);
+                    moduuli.setJarjestys(i);
+                }
             }
         }
 
