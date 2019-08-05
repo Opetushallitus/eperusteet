@@ -454,7 +454,7 @@ angular
             }
         },
         cancel: () => {
-            $scope.oppiaine = moduuli.clone();
+            $scope.moduuli = moduuli.clone();
             $scope.moduuli.tavoitteet = $scope.moduuli.tavoitteet || {};
         },
         notify: value => {
