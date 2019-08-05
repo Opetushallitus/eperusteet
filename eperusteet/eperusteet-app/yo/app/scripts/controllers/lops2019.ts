@@ -81,6 +81,7 @@ angular
     $scope,
     Api,
     Editointikontrollit,
+    Notifikaatiot,
     laajaalaiset
 ) {
     $scope.laajaalaiset = laajaalaiset.clone();
@@ -105,8 +106,13 @@ angular
             // Todo: Hae uusin versio
         },
         save: async () => {
-            laajaalaiset = (await $scope.laajaalaiset.save());
-            $scope.laajaalaiset = laajaalaiset.clone();
+            try {
+                laajaalaiset = await $scope.laajaalaiset.save();
+                $scope.laajaalaiset = laajaalaiset.clone();
+                Notifikaatiot.onnistui("tallennus-onnistui");
+            } catch (e) {
+                Notifikaatiot.serverCb(e);
+            }
         },
         cancel: () => {
             $scope.laajaalaiset = laajaalaiset.clone();
@@ -121,6 +127,7 @@ angular
     $uibModal,
     Api,
     Editointikontrollit,
+    Notifikaatiot,
     oppiaineet
 ) {
     $scope.oppiaineet = oppiaineet.clone();
@@ -148,8 +155,12 @@ angular
                 };
             }
         }).result.then(async uusi => {
-            const oppiaine = await $scope.oppiaineet.all("uusi").post(uusi);
-            $scope.oppiaineet.push(oppiaine);
+            try {
+                const oppiaine = await $scope.oppiaineet.all("uusi").post(uusi);
+                $scope.oppiaineet.push(oppiaine);
+            } catch (e) {
+                Notifikaatiot.serverCb(e);
+            }
         });
     };
 
@@ -171,8 +182,13 @@ angular
             // Todo: Hae uusin versio
         },
         save: async () => {
-            oppiaineet = (await $scope.oppiaineet.post($scope.oppiaineet.plain()));
-            $scope.oppiaineet = oppiaineet.clone();
+            try {
+                oppiaineet = await $scope.oppiaineet.post($scope.oppiaineet.plain());
+                $scope.oppiaineet = oppiaineet.clone();
+                Notifikaatiot.onnistui("tallennus-onnistui");
+            } catch (e) {
+                Notifikaatiot.serverCb(e);
+            }
         },
         cancel: () => {
             $scope.oppiaineet = oppiaineet.clone();
@@ -189,6 +205,7 @@ angular
     Editointikontrollit,
     Varmistusdialogi,
     Koodisto,
+    Notifikaatiot,
     oppiaine
 ) {
     $scope.oppiaine = oppiaine.clone();
@@ -281,14 +298,19 @@ angular
             otsikko: "poistetaanko-oppiaine",
             primaryBtn: "poista",
             successCb: async () => {
-                await $scope.oppiaine.remove();
-                await Editointikontrollit.cancelEditing();
-                if ($scope.oppiaine._oppiaine) {
-                    $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaine", {
-                        oppiaineId: $scope.oppiaine._oppiaine
-                    });
-                } else {
-                    $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaineet");
+                try {
+                    await $scope.oppiaine.remove();
+                    await Editointikontrollit.cancelEditing();
+
+                    if ($scope.oppiaine._oppiaine) {
+                        $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaine", {
+                            oppiaineId: $scope.oppiaine._oppiaine
+                        });
+                    } else {
+                        $state.go("root.perusteprojekti.suoritustapa.lops2019oppiaineet");
+                    }
+                } catch (e) {
+                    Notifikaatiot.serverCb(e);
                 }
             }
         })();
@@ -351,8 +373,9 @@ angular
                 oppiaine = await $scope.oppiaine.save();
                 $scope.oppiaine = oppiaine.clone();
                 $scope.oppiaine.tavoitteet = $scope.oppiaine.tavoitteet || {};
+                Notifikaatiot.onnistui("tallennus-onnistui");
             } catch (e) {
-                // Todo: virheviesti
+                Notifikaatiot.serverCb(e);
             }
         },
         cancel: () => {
@@ -371,6 +394,7 @@ angular
     Editointikontrollit,
     Varmistusdialogi,
     Koodisto,
+    Notifikaatiot,
     moduuli
 ) {
     $scope.moduuli = moduuli.clone();
@@ -408,7 +432,7 @@ angular
                         oppiaineId: $stateParams.oppiaineId
                     });
                 } catch (e) {
-                    // Todo: virheviesti
+                    Notifikaatiot.serverCb(e);
                 }
             }
         })();
@@ -449,8 +473,9 @@ angular
                 moduuli = await $scope.moduuli.save();
                 $scope.moduuli = moduuli.clone();
                 $scope.moduuli.tavoitteet = $scope.moduuli.tavoitteet || {};
+                Notifikaatiot.onnistui("tallennus-onnistui");
             } catch (e) {
-                // Todo: virheviesti
+                Notifikaatiot.serverCb(e);
             }
         },
         cancel: () => {
