@@ -1,6 +1,4 @@
 {
-    "OPINTOVIIKKO": "ov",
-    "OSAAMISPISTE": "osp",
     "aihekokonaisuudet": "Aihekokonaisuudet",
     "aihekokonaisuudet-ei-otsikkoa": "Aihekokonaisuuksien yleiskuvausta ei ole vielä määritelty",
     "aihekokonaisuudet-palautettu": "Valittu versio palautettu onnistuneesti",
@@ -888,6 +886,7 @@
     "poista-osaamiskokonaisuus": "Poista osaamiskokonaisuus",
     "poista-osio": "Poista osio",
     "poista-projektista": "Poista projektista",
+    "poista-sisalto": "Poista sisältö",
     "poista-suosikeista": "Poista suosikeista",
     "poista-tekstikappale-otsikko": "Poista tekstikappale",
     "poista-tekstikappale-teksti": "Tekstikappale \"{{nimi}}\" poistetaan. Oletko varma?",
