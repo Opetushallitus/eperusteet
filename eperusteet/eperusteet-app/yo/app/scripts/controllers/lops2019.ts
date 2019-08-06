@@ -112,6 +112,7 @@ angular
                 Notifikaatiot.onnistui("tallennus-onnistui");
             } catch (e) {
                 Notifikaatiot.serverCb(e);
+                $scope.laajaalaiset = laajaalaiset.clone();
             }
         },
         cancel: () => {
@@ -188,6 +189,7 @@ angular
                 Notifikaatiot.onnistui("tallennus-onnistui");
             } catch (e) {
                 Notifikaatiot.serverCb(e);
+                $scope.oppiaineet = oppiaineet.clone();
             }
         },
         cancel: () => {
@@ -376,6 +378,8 @@ angular
                 Notifikaatiot.onnistui("tallennus-onnistui");
             } catch (e) {
                 Notifikaatiot.serverCb(e);
+                $scope.oppiaine = oppiaine.clone();
+                $scope.oppiaine.tavoitteet = $scope.oppiaine.tavoitteet || {};
             }
         },
         cancel: () => {
@@ -476,6 +480,8 @@ angular
                 Notifikaatiot.onnistui("tallennus-onnistui");
             } catch (e) {
                 Notifikaatiot.serverCb(e);
+                $scope.moduuli = moduuli.clone();
+                $scope.moduuli.tavoitteet = $scope.moduuli.tavoitteet || {};
             }
         },
         cancel: () => {

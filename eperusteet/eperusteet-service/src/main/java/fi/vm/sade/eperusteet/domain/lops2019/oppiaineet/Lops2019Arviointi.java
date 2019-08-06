@@ -24,4 +24,8 @@ public class Lops2019Arviointi {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
+    public boolean structureEquals(Lops2019Arviointi other) {
+        return true;
+    }
 }

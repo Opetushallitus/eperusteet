@@ -10,6 +10,9 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
 @Getter
@@ -33,4 +36,24 @@ public class Lops2019OppiaineTavoitteet {
             joinColumns = @JoinColumn(name = "tavoitteet_id"),
             inverseJoinColumns = @JoinColumn(name = "tavoitealue_id"))
     private List<Lops2019OppiaineTavoitealue> tavoitealueet = new ArrayList<>();
+
+    public boolean structureEquals(Lops2019OppiaineTavoitteet other) {
+        boolean result = refXnor(this.getTavoitealueet(), other.getTavoitealueet());
+
+        if (this.getTavoitealueet() != null && other.getTavoitealueet() != null) {
+            result &= this.getTavoitealueet().size() == other.getTavoitealueet().size();
+            for (Lops2019OppiaineTavoitealue ta : this.getTavoitealueet()) {
+                if (!result) {
+                    break;
+                }
+                for (Lops2019OppiaineTavoitealue ota : other.getTavoitealueet()) {
+                    if (Objects.equals(ta.getId(), ota.getId())) {
+                        result &= ta.structureEquals(ota);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
 }

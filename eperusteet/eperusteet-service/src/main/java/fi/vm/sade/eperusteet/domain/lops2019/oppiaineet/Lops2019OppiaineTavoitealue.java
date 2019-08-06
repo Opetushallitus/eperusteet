@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine_tavoitealue")
@@ -50,4 +52,24 @@ public class Lops2019OppiaineTavoitealue {
             inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> tavoitteet = new ArrayList<>();
+
+    public boolean structureEquals(Lops2019OppiaineTavoitealue other) {
+        boolean result = refXnor(this.getTavoitteet(), other.getTavoitteet());
+
+        if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
+            result &= this.getTavoitteet().size() == other.getTavoitteet().size();
+            for (TekstiPalanen t : this.getTavoitteet()) {
+                if (!result) {
+                    break;
+                }
+                for (TekstiPalanen ot : other.getTavoitteet()) {
+                    if (t.getId().equals(ot.getId())) {
+                        result &= t.equals(ot);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
 }

@@ -9,7 +9,10 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Getter
 @Setter
@@ -37,4 +40,25 @@ public class Lops2019OppiaineLaajaAlainenOsaaminen {
     private Set<Koodi> koodit;
 
     private Integer jarjestys;
+
+    public boolean structureEquals(Lops2019OppiaineLaajaAlainenOsaaminen other) {
+        boolean result = Objects.equals(this.getId(), other.getId());
+
+        result &= refXnor(this.getKuvaus(), other.getKuvaus());
+        result &= refXnor(this.getKoodit(), other.getKoodit());
+
+        if (this.getKoodit() != null && other.getKoodit() != null) {
+            result &= this.getKoodit().size() == other.getKoodit().size();
+            for (Koodi k : this.getKoodit()) {
+                if (!result) {
+                    break;
+                }
+                for (Koodi ok : other.getKoodit()) {
+                    result &= Objects.equals(k, ok);
+                }
+            }
+        }
+
+        return result;
+    }
 }

@@ -8,6 +8,9 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Getter
 @Setter
@@ -32,5 +35,26 @@ public class Lops2019LaajaAlainenOsaaminenKokonaisuus {
         if (laajaAlaiset != null) {
             this.laajaAlaisetOsaamiset.addAll(laajaAlaiset);
         }
+    }
+
+    public boolean structureEquals(Lops2019LaajaAlainenOsaaminenKokonaisuus other) {
+        boolean result = Objects.equals(this.getId(), other.getId());
+        result &= refXnor(this.getLaajaAlaisetOsaamiset(), other.getLaajaAlaisetOsaamiset());
+
+        if (this.getLaajaAlaisetOsaamiset() != null && other.getLaajaAlaisetOsaamiset() != null) {
+            result &= this.getLaajaAlaisetOsaamiset().size() == other.getLaajaAlaisetOsaamiset().size();
+            for (Lops2019LaajaAlainenOsaaminen lao : this.getLaajaAlaisetOsaamiset()) {
+                if (!result) {
+                    break;
+                }
+                for (Lops2019LaajaAlainenOsaaminen olao : other.getLaajaAlaisetOsaamiset()) {
+                    if (Objects.equals(lao.getId(), olao.getId())) {
+                        result &= lao.structureEquals(olao);
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 }

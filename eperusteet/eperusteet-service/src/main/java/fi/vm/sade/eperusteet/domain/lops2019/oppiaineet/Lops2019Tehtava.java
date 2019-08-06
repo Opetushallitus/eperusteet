@@ -24,4 +24,8 @@ public class Lops2019Tehtava {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
+    public boolean structureEquals(Lops2019Tehtava other) {
+        return true;
+    }
 }

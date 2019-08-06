@@ -12,7 +12,10 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Getter
 @Setter
@@ -47,6 +50,18 @@ public class Lops2019ModuuliSisalto implements Copyable<Lops2019ModuuliSisalto> 
         result.sisallot.addAll(this.getSisallot().stream()
                 .map(TekstiPalanen::of)
                 .collect(Collectors.toList()));
+        return result;
+    }
+
+    public boolean structureEquals(Lops2019ModuuliSisalto other) {
+        boolean result = Objects.equals(this.getId(), other.getId());
+        result &= refXnor(this.getKohde(), other.getKohde());
+        result &= refXnor(this.getSisallot(), other.getSisallot());
+
+        if (this.getSisallot() != null && other.getSisallot() != null) {
+            result &= this.getSisallot().size() == other.getSisallot().size();
+        }
+
         return result;
     }
 }

@@ -9,6 +9,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -23,4 +24,8 @@ public class Lops2019Painopiste extends AbstractAuditedReferenceableEntity {
     private TekstiPalanen nimi;
 
     private Integer jarjestys;
+
+    public boolean structureEquals(Lops2019Painopiste other) {
+        return Objects.equals(this.getId(), other.getId());
+    }
 }

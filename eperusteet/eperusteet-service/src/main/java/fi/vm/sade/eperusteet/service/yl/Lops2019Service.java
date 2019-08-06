@@ -22,7 +22,7 @@ public interface Lops2019Service {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     Lops2019LaajaAlainenOsaaminenKokonaisuusDto getLaajaAlainenOsaaminenKokonaisuus(@P("perusteId") Long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     Lops2019LaajaAlainenOsaaminenKokonaisuusDto updateLaajaAlainenOsaaminenKokonaisuus(
             @P("perusteId") Long perusteId,
             Lops2019LaajaAlainenOsaaminenKokonaisuusDto dto
@@ -46,7 +46,7 @@ public interface Lops2019Service {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     Lops2019OppiaineDto getOppiaine(@P("perusteId") Long perusteId, Long oppiaineId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     Lops2019OppiaineDto updateOppiaine(@P("perusteId") Long perusteId, Lops2019OppiaineDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
@@ -55,7 +55,7 @@ public interface Lops2019Service {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     Lops2019ModuuliDto getModuuli(@P("perusteId") Long perusteId, Long oppiaineId, Long moduuliId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     Lops2019ModuuliDto updateModuuli(@P("perusteId") Long perusteId, Lops2019ModuuliDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")

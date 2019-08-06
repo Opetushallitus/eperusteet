@@ -15,6 +15,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -45,6 +46,6 @@ public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity implemen
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
     public boolean containsViite(PerusteenOsaViite viite) {
-        return viite != null && sisalto.getId().equals(viite.getRoot().getId());
+        return viite != null && viite.getRoot() != null && Objects.equals(sisalto.getId(), viite.getRoot().getId());
     }
 }
