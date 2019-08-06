@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Koodillinen;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019OppiaineTavoitteet;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import lombok.Getter;
@@ -16,7 +17,11 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
 @Audited
@@ -110,6 +115,41 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity implemen
                         .collect(Collectors.toList());
             }
         }
+        return result;
+    }
+
+    public boolean structureEquals(Lops2019Moduuli other) {
+        boolean result = Objects.equals(this.getId(), other.getId());
+
+        result &= refXnor(this.getNimi(), other.getNimi());
+        result &= refXnor(this.getKuvaus(), other.getKuvaus());
+        result &= Objects.equals(this.getPakollinen(), other.getPakollinen());
+        result &= Objects.equals(this.getLaajuus(), other.getLaajuus());
+        result &= Objects.equals(this.getKoodi(), other.getKoodi());
+        result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
+        result &= refXnor(this.getSisallot(), other.getSisallot());
+        result &= identityEquals(this.getOppiaine(), other.getOppiaine());
+
+        if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
+            result &= this.getTavoitteet().structureEquals(other.getTavoitteet());
+        }
+
+        // sisallot
+        if (this.getSisallot() != null && other.getSisallot() != null) {
+            result &= this.getSisallot().size() == other.getSisallot().size();
+            for (Lops2019ModuuliSisalto s : this.getSisallot()) {
+                if (!result) {
+                    break;
+                }
+                for (Lops2019ModuuliSisalto os : other.getSisallot()) {
+                    if (Objects.equals(s.getId(), os.getId())) {
+                        result &= s.structureEquals(os);
+                        break;
+                    }
+                }
+            }
+        }
+
         return result;
     }
 }

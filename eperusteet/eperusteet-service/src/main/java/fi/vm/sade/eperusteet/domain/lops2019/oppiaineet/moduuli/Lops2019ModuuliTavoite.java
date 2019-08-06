@@ -12,7 +12,10 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Getter
 @Setter
@@ -51,6 +54,17 @@ public class Lops2019ModuuliTavoite implements Copyable<Lops2019ModuuliTavoite> 
         result.tavoitteet.addAll(this.getTavoitteet().stream()
             .map(TekstiPalanen::of)
             .collect(Collectors.toList()));
+        return result;
+    }
+
+    public boolean structureEquals(Lops2019ModuuliTavoite other) {
+        boolean result = Objects.equals(this.getId(), other.getId());
+        result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
+
+        if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
+            result &= this.getTavoitteet().size() == other.getTavoitteet().size();
+        }
+
         return result;
     }
 }

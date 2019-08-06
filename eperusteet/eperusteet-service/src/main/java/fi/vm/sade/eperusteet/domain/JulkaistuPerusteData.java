@@ -1,12 +1,10 @@
 package fi.vm.sade.eperusteet.domain;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.repository.dialect.JsonBType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.*;
-import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import javax.persistence.Entity;

@@ -17,6 +17,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
 @Audited
@@ -100,5 +104,39 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
             joinColumns = {@JoinColumn(name = "oppimaara_id", insertable = false, updatable = false)},
             inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
     private Lops2019Oppiaine oppiaine; // Oppimäärän viittaus oppiaineeseen
+
+    public boolean structureEquals(Lops2019Oppiaine other) {
+        boolean result = Objects.equals(this.getId(), other.getId());
+        result &= refXnor(this.getNimi(), other.getNimi());
+        result &= Objects.equals(this.getKoodi(), other.getKoodi());
+        result &= refXnor(this.getModuulit(), other.getModuulit());
+        result &= refXnor(this.getLaajaAlaisetOsaamiset(), other.getLaajaAlaisetOsaamiset());
+        result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
+        result &= refXnor(this.getOppimaarat(), other.getOppimaarat());
+
+        // laajaAlaisetOsaamiset
+        if (this.getLaajaAlaisetOsaamiset() != null && other.getLaajaAlaisetOsaamiset() != null) {
+            result &= this.getLaajaAlaisetOsaamiset().size() == other.getLaajaAlaisetOsaamiset().size();
+            for (Lops2019OppiaineLaajaAlainenOsaaminen lao : this.getLaajaAlaisetOsaamiset()) {
+                if (!result) {
+                    break;
+                }
+                for (Lops2019OppiaineLaajaAlainenOsaaminen olao : other.getLaajaAlaisetOsaamiset()) {
+                    if (Objects.equals(lao.getId(), olao.getId())) {
+                        result &= lao.structureEquals(olao);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // tavoitteet
+        if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
+            result &= this.getTavoitteet().structureEquals(other.getTavoitteet());
+
+        }
+
+        return result;
+    }
 
 }

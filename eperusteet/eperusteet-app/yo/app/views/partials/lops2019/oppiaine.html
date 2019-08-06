@@ -75,7 +75,7 @@
                 <div ng-bind-html="oppiaine.arviointi.kuvaus | kaanna | unsafe"></div>
             </div>
 
-            <div ng-if="oppiaine.moduulit">
+            <div ng-if="oppiaine.moduulit && oppiaine.moduulit.length > 0">
                 <h2 kaanna="'moduulit'"></h2>
                 <div ng-repeat="moduuli in oppiaine.moduulit" class="moduuli" ng-class="{'moduuli-pakollinen': moduuli.pakollinen}">
                     <a ui-sref="root.perusteprojekti.suoritustapa.lops2019moduuli({oppiaineId: oppiaine.id, moduuliId: moduuli.id})">
@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <div ng-if="oppiaine.oppimaarat && !oppiaine._oppiaine">
+            <div ng-if="oppiaine.oppimaarat && oppiaine.oppimaarat.length > 0 && !oppiaine._oppiaine">
                 <h2 kaanna="'oppimaarat'"></h2>
                 <div ng-repeat="oppimaara in oppiaine.oppimaarat">
                     <a ui-sref="root.perusteprojekti.suoritustapa.lops2019oppiaine({oppiaineId: oppimaara.id})">

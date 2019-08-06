@@ -9,6 +9,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -27,4 +28,8 @@ public class Lops2019TavoiteTavoite {
     private TekstiPalanen kuvaus;
 
     private Integer jarjestys;
+
+    public boolean structureEquals(Lops2019TavoiteTavoite other) {
+        return Objects.equals(this.getId(), other.getId());
+    }
 }

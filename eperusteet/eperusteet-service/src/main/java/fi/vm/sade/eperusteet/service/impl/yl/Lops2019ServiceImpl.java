@@ -220,7 +220,14 @@ public class Lops2019ServiceImpl implements Lops2019Service {
             throw new BusinessRuleViolationException("oppimaaralla-ei-voi-olla-oppimaaria");
         }
 
+        Peruste peruste = perusteRepository.findOne(perusteId);
         Lops2019Oppiaine oppiaine = findOppiaine(perusteId, dto.getId());
+
+        Lops2019Oppiaine updatedOppiaine = mapper.map(dto, Lops2019Oppiaine.class);
+        if (peruste.getTila() == PerusteTila.VALMIS && !oppiaine.structureEquals(updatedOppiaine)) {
+            throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+        }
+
         Map<Long, Lops2019Oppiaine> oppiaineetMap = oppiaine.getOppimaarat().stream()
                 .collect(Collectors.toMap(AbstractAuditedReferenceableEntity::getId, o -> o));
 
@@ -231,7 +238,7 @@ public class Lops2019ServiceImpl implements Lops2019Service {
                             : mapper.map(om, Lops2019Oppiaine.class))
                     .collect(Collectors.toList());
             dto.setOppimaarat(null);
-            mapper.map(dto, oppiaine);
+            oppiaine = updatedOppiaine;
             oppiaine.setOppimaarat(collected);
 
             // Asetetaan oppimäärien järjetys
@@ -290,7 +297,7 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     public Lops2019ModuuliDto getModuuli(Long perusteId, Long oppiaineId, Long moduuliId) {
         Lops2019Oppiaine oppiaine = findOppiaine(perusteId, oppiaineId);
         Optional<Lops2019Moduuli> moduuliOptional = oppiaine.getModuulit().stream()
-                .filter(moduuli -> moduuli.getId().equals(moduuliId))
+                .filter(moduuli -> Objects.equals(moduuli.getId(), moduuliId))
                 .findAny();
 
         return moduuliOptional.map(lops2019Moduuli -> mapper.map(lops2019Moduuli, Lops2019ModuuliDto.class))
