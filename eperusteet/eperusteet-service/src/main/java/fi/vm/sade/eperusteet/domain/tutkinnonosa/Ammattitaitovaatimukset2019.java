@@ -12,8 +12,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 
 @Entity
 @Table(name = "ammattitaitovaatimukset2019")
@@ -27,12 +27,22 @@ public class Ammattitaitovaatimukset2019 extends AbstractAuditedReferenceableEnt
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kohde;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "ammattitaitovaatimukset2019_ammattitaitovaatimus2019",
-            joinColumns = @JoinColumn(name = "ammattitaitovaatimukset_id"),
-            inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimus_id"))
     @Getter
     @Setter
     @OrderColumn(name = "jarjestys")
-    private Set<Ammattitaitovaatimus2019> vaatimukset = new HashSet<>();
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "ammattitaitovaatimukset2019_ammattitaitovaatimus",
+            joinColumns = @JoinColumn(name = "ammattitaitovaatimukset_id"),
+            inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimus_id"))
+    private List<Ammattitaitovaatimus2019> vaatimukset = new ArrayList<>();
+
+    @Getter
+    @Setter
+    @OrderColumn(name = "jarjestys")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "ammattitaitovaatimukset2019_kohdealue",
+            joinColumns = @JoinColumn(name = "ammattitaitovaatimukset_id"),
+            inverseJoinColumns = @JoinColumn(name = "kohdealue_id"))
+    private List<Ammattitaitovaatimus2019Kohdealue> kohdealueet = new ArrayList<>();
+
 }

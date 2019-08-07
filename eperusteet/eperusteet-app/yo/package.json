@@ -3,9 +3,9 @@
   "name": "yo",
   "private": true,
   "scripts": {
-    "dev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.dev.js",
-    "build": "./node_modules/webpack/bin/webpack.js --config webpack.prod.js",
-    "unit": "./node_modules/jest/bin/jest.js --runInBand --no-cache --verbose",
+    "dev": "npx webpack-dev-server --config webpack.dev.js",
+    "build": "npx webpack --config webpack.prod.js",
+    "unit": "npx jest --runInBand --no-cache --verbose",
     "unit:watch": "./node_modules/jest/bin/jest.js --watch --notify",
     "unit:debug": "node --inspect --debug-brk ./node_modules/jest/bin/jest.js --runInBand --verbose",
     "dbnuke": "docker-compose rm app_db",

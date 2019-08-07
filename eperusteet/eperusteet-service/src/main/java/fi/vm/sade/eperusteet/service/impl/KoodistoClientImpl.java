@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -63,9 +65,14 @@ public class KoodistoClientImpl implements KoodistoClient {
     public List<KoodistoKoodiDto> getAll(String koodisto) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi/";
-        KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
-        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
-        return koodistoDtot;
+        try {
+            KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
+            List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
+            return koodistoDtot;
+        }
+        catch (HttpServerErrorException ex) {
+            throw new BusinessRuleViolationException("koodistoa-ei-loytynyt");
+        }
     }
 
     @Override
@@ -149,10 +156,6 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public void addNimiAndUri(KoodiDto koodi) {
-        // TODO: poista kun ammattitaitovaatimuskoodisto on luotu
-        if ("ammattitaitovaatimukset".equals(koodi.getKoodisto())) {
-            return;
-        }
         KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri(), koodi.getVersio());
         if (koodistoKoodi != null) {
             koodi.setArvo(koodistoKoodi.getKoodiArvo());

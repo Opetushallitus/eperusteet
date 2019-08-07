@@ -145,7 +145,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         viite = tutkinnonOsaViiteRepository.save(viite);
         TutkinnonOsaViiteDto uusiViiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
 
-        if(viiteDto.getTutkinnonOsaDto() != null) {
+        if (viiteDto.getTutkinnonOsaDto() != null) {
             uusiViiteDto.setTutkinnonOsaDto(perusteenOsaService.update(viiteDto.getTutkinnonOsaDto()));
         }
 
