@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
-
 import * as angular from "angular";
 import _ from "lodash";
 
@@ -21,7 +5,13 @@ angular
     .module("eperusteApp")
     .service("Koodisto", function($http, $uibModal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot, Utils) {
         var taydennykset = [];
-        var koodistoVaihtoehdot = ["tutkinnonosat", "tutkintonimikkeet", "koulutus", "osaamisala"];
+        var koodistoVaihtoehdot = [
+            "ammattitaitovaatimukset",
+            "tutkinnonosat",
+            "tutkintonimikkeet",
+            "koulutus",
+            "osaamisala",
+        ];
         var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
         var lisaFiltteri = function() {
             return true;
@@ -101,7 +91,7 @@ angular
             });
         }
 
-        function modaali(successCb, resolve, failureCb, lisaf) {
+        function modaali(successCb, resolve, failureCb, lisaf, payload?) {
             if (filtteri) {
                 lisaFiltteri = lisaf;
             }
@@ -119,7 +109,7 @@ angular
                         controller: "KoodistoModalCtrl",
                         resolve: resolve
                     })
-                    .result.then(successCb, failureCb);
+                    .result.then((...args) => successCb(...args, payload), failureCb);
             };
         }
 
@@ -205,17 +195,18 @@ angular
                 valmis: "=",
                 filtteri: "=",
                 tyyppi: "@",
-                ylarelaatioTyyppi: "=?"
+                ylarelaatioTyyppi: "=?",
+                payload: "=?",
             },
             controller: function($scope) {
-                $scope.tyyppi = $scope.tyyppi || "tutkinnonosat";
+                $scope.tyyppi = $scope.tyyppi;
                 $scope.ylarelaatioTyyppi = $scope.ylarelaatiotyyppi || "";
 
                 if (!$scope.valmis) {
-                    console.log("koodisto-select: valmis-callback puuttuu");
+                    console.error("koodisto-select: valmis-callback puuttuu");
                     return;
                 } else if (_.indexOf(Koodisto.vaihtoehdot, $scope.tyyppi) === -1) {
-                    console.log(
+                    console.error(
                         "koodisto-select:",
                         $scope.tyyppi,
                         "ei vastaa mitään mitään vaihtoehtoa:",
@@ -230,9 +221,7 @@ angular
                 });
 
                 $scope.activate = function() {
-                    Koodisto.modaali(
-                        $scope.valmis,
-                        {
+                    Koodisto.modaali($scope.valmis, {
                             tyyppi: function() {
                                 return $scope.tyyppi;
                             },
@@ -241,7 +230,8 @@ angular
                             }
                         },
                         angular.noop,
-                        $scope.filtteri
+                        $scope.filtteri,
+                        $scope.payload,
                     )();
                 };
             }

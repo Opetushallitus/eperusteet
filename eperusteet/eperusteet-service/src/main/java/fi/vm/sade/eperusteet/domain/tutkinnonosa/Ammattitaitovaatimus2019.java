@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedEntity;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -9,7 +8,6 @@ import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 
@@ -24,7 +22,7 @@ public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity
     @Setter
     @Getter
     @Audited(targetAuditMode = NOT_AUDITED)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Koodi koodi;
 
     @ValidHtml
@@ -33,9 +31,4 @@ public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen vaatimus;
-
-    @Getter
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Ammattitaitovaatimus2019Kohdealue kohdealue;
 }
