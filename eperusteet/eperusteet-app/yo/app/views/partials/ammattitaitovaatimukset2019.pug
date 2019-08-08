@@ -31,8 +31,8 @@ div.ammattitaitovaatimukset-2019(ng-show="!loading" ng-cloak)
           li.rivi(ng-repeat="vaatimus in kohdealue.vaatimukset")
             span(ng-bind="vaatimus.vaatimus | kaanna")
             =" ("
-            span(ng-show="vaatimus.koodi", ng-bind="vaatimus.koodi.arvo")
-            b(ng-bind="'koodi-puuttuu' | kaanna")
+            b(ng-show="vaatimus.koodi", ng-bind="vaatimus.koodi.arvo")
+            b(ng-hide="vaatimus.koodi", ng-bind="'koodi-puuttuu' | kaanna")
             =")"
 
   div(ng-if="editEnabled")

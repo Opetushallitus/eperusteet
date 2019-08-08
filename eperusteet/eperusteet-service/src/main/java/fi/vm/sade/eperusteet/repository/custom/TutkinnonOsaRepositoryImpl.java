@@ -53,7 +53,7 @@ public class TutkinnonOsaRepositoryImpl implements TutkinnonOsaRepositoryCustom 
     }
 
     private Predicate buildPredicate(Root<TutkinnonOsa> root, CriteriaBuilder cb, TutkinnonOsaQueryDto queryDto) {
-        Predicate pred = cb.equal(root.get(TutkinnonOsa_.tila), PerusteTila.VALMIS);
+        Predicate pred = cb.equal(root.get(TutkinnonOsa_.tila), PerusteTila.LUONNOS);
 
         if (StringUtils.isNotEmpty(queryDto.getNimi())) {
             Expression<String> nimiLit = cb.literal(RepositoryUtil.kuten(queryDto.getNimi()));
