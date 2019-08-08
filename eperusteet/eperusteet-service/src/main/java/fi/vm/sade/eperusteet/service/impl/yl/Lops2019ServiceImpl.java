@@ -62,6 +62,11 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Override
     public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala dto) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
+        }
+
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         if (viiteId == null) {
             return viiteService.addSisalto(perusteId, sisalto.getSisalto().getId(), dto);
@@ -72,6 +77,11 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Override
     public void removeSisalto(Long perusteId, Long viiteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
+        }
+
         viiteService.removeSisalto(perusteId, viiteId);
     }
 
@@ -88,10 +98,27 @@ public class Lops2019ServiceImpl implements Lops2019Service {
             Long perusteId,
             Lops2019LaajaAlainenOsaaminenKokonaisuusDto dto
     ) {
+
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         List<Lops2019LaajaAlainenOsaaminen> laajaAlaiset = mapper.mapAsList(dto.getLaajaAlaisetOsaamiset(),
                 Lops2019LaajaAlainenOsaaminen.class);
-        sisalto.getLaajaAlainenOsaaminen().setLaajaAlaisetOsaamiset(laajaAlaiset);
+
+        Peruste peruste = perusteRepository.findOne(perusteId);
+
+        Lops2019LaajaAlainenOsaaminenKokonaisuus kokonaisuus = sisalto.getLaajaAlainenOsaaminen();
+
+        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
+            kokonaisuus.getLaajaAlaisetOsaamiset().forEach(lao -> {
+                laajaAlaiset.forEach(olao -> {
+                    if (Objects.equals(lao.getId(), olao.getId()) && !lao.structureEquals(olao)) {
+                        throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
+                    }
+                });
+            });
+        }
+
+        kokonaisuus.setLaajaAlaisetOsaamiset(laajaAlaiset);
+
         sisalto = sisaltoRepository.save(sisalto);
 
         return mapper.map(sisalto.getLaajaAlainenOsaaminen(), Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
@@ -100,6 +127,12 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     @Override
     public Lops2019LaajaAlainenOsaaminenDto addLaajaAlainenOsaaminen(Long perusteId) {
         Lops2019LaajaAlainenOsaaminen laajaAlainenOsaaminen = new Lops2019LaajaAlainenOsaaminen();
+
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
+        }
+
         laajaAlainenOsaaminen = laajaAlainenRepository.save(laajaAlainenOsaaminen);
 
         return mapper.map(laajaAlainenOsaaminen, Lops2019LaajaAlainenOsaaminenDto.class);
@@ -130,6 +163,11 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     public Lops2019OppiaineDto addOppiaine(Long perusteId, Lops2019OppiaineDto dto) {
         if (dto.getOppiaine() != null && !ObjectUtils.isEmpty(dto.getOppimaarat())) {
             throw new BusinessRuleViolationException("oppimaaralla-ei-voi-olla-oppimaaria");
+        }
+
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
 
         Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
@@ -224,8 +262,8 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         Lops2019Oppiaine oppiaine = findOppiaine(perusteId, dto.getId());
 
         Lops2019Oppiaine updatedOppiaine = mapper.map(dto, Lops2019Oppiaine.class);
-        if (peruste.getTila() == PerusteTila.VALMIS && !oppiaine.structureEquals(updatedOppiaine)) {
-            throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS) && !oppiaine.structureEquals(updatedOppiaine)) {
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
 
         Map<Long, Lops2019Oppiaine> oppiaineetMap = oppiaine.getOppimaarat().stream()
@@ -274,6 +312,11 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Override
     public void removeOppiaine(Long perusteId, Long oppiaineId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
+        }
+
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
         Lops2019Oppiaine parent = oppiaine.getOppiaine();
@@ -316,7 +359,12 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Override
     public void removeModuuli(Long perusteId, Long oppiaineId, Long moduuliId) {
-        Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
+        }
+
         Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
         Lops2019Moduuli moduuli = moduuliRepository.findOne(moduuliId);
         boolean removed = oppiaine.getModuulit().remove(moduuli);

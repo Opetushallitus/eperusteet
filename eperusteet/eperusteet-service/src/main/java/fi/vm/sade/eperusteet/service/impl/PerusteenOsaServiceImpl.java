@@ -180,7 +180,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
 
         if (current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
-            throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
 
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
