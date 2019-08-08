@@ -28,6 +28,7 @@ import fi.vm.sade.eperusteet.service.util.PerusteprojektiTestHelper;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
