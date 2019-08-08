@@ -512,5 +512,5 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     private static final String OPPIAINETTA_EI_OLE = "Pyydettyä oppiainetta ei ole";
-    private static final String VAIN_KORJAUKSET_SALLITTU = "Vain korjaukset sallittu";
+    private static final String VAIN_KORJAUKSET_SALLITTU = "vain-korjaukset-sallittu";
 }

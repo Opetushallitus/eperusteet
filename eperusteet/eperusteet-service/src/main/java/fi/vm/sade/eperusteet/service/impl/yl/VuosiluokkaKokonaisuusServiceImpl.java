@@ -151,7 +151,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(dto.getId());
         if ( sisalto.getPeruste().getTila() == PerusteTila.VALMIS ) {
             if ( !vk.getVuosiluokat().equals(dto.getVuosiluokat()) ) {
-                throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+                throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
             }
         }
         mapper.map(dto, vk);

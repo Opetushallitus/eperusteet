@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
@@ -124,7 +123,6 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
                 for (Lops2019OppiaineLaajaAlainenOsaaminen olao : other.getLaajaAlaisetOsaamiset()) {
                     if (Objects.equals(lao.getId(), olao.getId())) {
                         result &= lao.structureEquals(olao);
-                        break;
                     }
                 }
             }
@@ -134,6 +132,16 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
             result &= this.getTavoitteet().structureEquals(other.getTavoitteet());
 
+        }
+
+        // moduulit
+        if (this.getModuulit() != null && other.getModuulit() != null) {
+            result &= this.getModuulit().size() == other.getModuulit().size();
+        }
+
+        // oppimaarat
+        if (this.getOppimaarat() != null && other.getOppimaarat() != null) {
+            result &= this.getOppimaarat().size() == other.getOppimaarat().size();
         }
 
         return result;
