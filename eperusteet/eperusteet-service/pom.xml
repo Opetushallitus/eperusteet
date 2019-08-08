@@ -28,6 +28,7 @@
         <batik.version>1.9</batik.version>
         <fop.version>2.3</fop.version>
         <pdfbox.version>2.0.12</pdfbox.version>
+        <flyway.version>5.2.4</flyway.version>
         <springfox.version>2.7.0</springfox.version>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <hibernate.export.type>CREATE</hibernate.export.type>
@@ -58,7 +59,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>4.0.3</version>
+            <version>${flyway.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -503,7 +504,7 @@
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>5.2.4</version>
+                <version>${flyway.version}</version>
                 <configuration>
                     <url>${eperusteet.devdb.jdbcurl}</url>
                     <user>${eperusteet.devdb.user}</user>
