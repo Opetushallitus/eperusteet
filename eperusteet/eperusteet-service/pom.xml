@@ -510,6 +510,7 @@
                     <user>${eperusteet.devdb.user}</user>
                     <password>${eperusteet.devdb.password}</password>
                     <outOfOrder>true</outOfOrder>
+                    <table>schema_version</table>
                 </configuration>
                 <dependencies>
                     <dependency>
