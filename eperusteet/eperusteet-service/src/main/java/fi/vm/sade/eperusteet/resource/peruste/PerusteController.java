@@ -32,6 +32,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Controller
 @RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
-@Api(value = "Perusteet", description = "Perusteiden hallintaan liittyvät operaatiot")
+@Api(value = "Perusteet")
 public class PerusteController {
 
     @Autowired

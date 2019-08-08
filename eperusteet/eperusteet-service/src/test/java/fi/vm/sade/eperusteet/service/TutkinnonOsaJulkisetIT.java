@@ -157,7 +157,7 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
                                 .koodi(KoodiDto.of("ammatitaitovaatimukset", "1234"))
                                 .vaatimus(LokalisoituTekstiDto.of("1234"))
                             .build())
-                        .collect(Collectors.toSet()))
+                        .collect(Collectors.toList()))
                 .build();
         Ammattitaitovaatimukset2019 vaatimukset = mapper.map(vaatimuksetDto, Ammattitaitovaatimukset2019.class);
         tosa.setAmmattitaitovaatimukset2019(vaatimukset);
