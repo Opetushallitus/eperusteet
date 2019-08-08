@@ -510,6 +510,7 @@
                     <user>${eperusteet.devdb.user}</user>
                     <password>${eperusteet.devdb.password}</password>
                     <outOfOrder>true</outOfOrder>
+                    <validateOnMigrate>false</validateOnMigrate>
                 </configuration>
                 <dependencies>
                     <dependency>
