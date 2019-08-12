@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -102,6 +103,16 @@ public class ValidatorLops2019 implements Validator {
                             .forEach(moduuli -> {
                                 moduuliHelper.add(moduuli);
                                 validators.validKoodi(moduuli, status, "moduuli", "moduulikoodistolops2021");
+                                BigDecimal laajuus = moduuli.getLaajuus();
+                                if (laajuus == null
+                                        || laajuus.compareTo(BigDecimal.valueOf(1)) < 0
+                                        || laajuus.compareTo(BigDecimal.valueOf(4)) > 0) {
+                                    // Jos laajuutta ei ole määritetty tai se ei ole välillä 1-4
+                                    status.addErrorStatus("moduuli-laajuus-puuttuu",
+                                            Suoritustapakoodi.LUKIOKOULUTUS2019,
+                                            mapper.map(oa.getNimi(), LokalisoituTekstiDto.class),
+                                            mapper.map(moduuli.getNimi(), LokalisoituTekstiDto.class));
+                                }
                             });
                 });
 
