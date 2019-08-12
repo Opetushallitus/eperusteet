@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -63,4 +64,8 @@ public interface KoodistoClient {
 
     @PreAuthorize("permitAll()")
     void addNimiAndUri(KoodiDto koodi);
+
+    @PreAuthorize("isAuthenticated()")
+    KoodistoKoodiDto addKoodi(KoodistoKoodiDto koodi);
+
 }

@@ -43,7 +43,7 @@ public class AmmattitaitovaatimusRepositoryImpl implements AmmattitaitovaatimusR
     private TypedQuery<Perusteprojekti> getQuery(AmmattitaitovaatimusQueryDto queryDto) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Perusteprojekti> query = cb.createQuery(Perusteprojekti.class);
-        Predicate pred = buildPredicate(query.from(Perusteprojekti.class), cb, queryDto);
+        Predicate pred = buildPredicate(query.from(Perusteprojekti.class), query, cb, queryDto);
         query.where(pred).distinct(true);
         return em.createQuery(query);
     }
@@ -52,39 +52,50 @@ public class AmmattitaitovaatimusRepositoryImpl implements AmmattitaitovaatimusR
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Perusteprojekti> root = query.from(Perusteprojekti.class);
-        Predicate pred = buildPredicate(root, cb, queryDto);
+        Predicate pred = buildPredicate(root, query, cb, queryDto);
         query.select(cb.countDistinct(root)).where(pred);
         return em.createQuery(query);
     }
 
-    private Predicate buildPredicate(Root<Perusteprojekti> root, CriteriaBuilder cb, AmmattitaitovaatimusQueryDto queryDto) {
+    private Predicate buildPredicate(Root<Perusteprojekti> root, CriteriaQuery query, CriteriaBuilder cb, AmmattitaitovaatimusQueryDto queryDto) {
         if (StringUtils.isEmpty(queryDto.getUri())) {
             throw new BusinessRuleViolationException("uri-puuttuu");
         }
 
         Predicate pred = cb.equal(root.get(Perusteprojekti_.tila), ProjektiTila.LAADINTA);
 
-        Join<TutkinnonOsaViite, TutkinnonOsa> osa = root.join(Perusteprojekti_.peruste)
+        pred = cb.and(pred, cb.or(
+                cb.exists(kohdealueettomat(cb, query, queryDto)),
+                cb.exists(kohdealueelliset(cb, query, queryDto))));
+        return pred;
+    }
+
+    private Join<TutkinnonOsaViite, TutkinnonOsa> joinTutkinonOsat(Root<Perusteprojekti> root) {
+        return root.join(Perusteprojekti_.peruste)
                 .join(Peruste_.suoritustavat)
                 .join(Suoritustapa_.tutkinnonOsat)
                 .join(TutkinnonOsaViite_.tutkinnonOsa);
-        Join<TutkinnonOsa, Ammattitaitovaatimukset2019> vaatimukset = osa.join(TutkinnonOsa_.ammattitaitovaatimukset2019);
+    }
 
-        if (false) {
-            Join<Ammattitaitovaatimus2019, Koodi> kohdealueettomat = vaatimukset
-                    .join(Ammattitaitovaatimukset2019_.vaatimukset)
-                    .join(Ammattitaitovaatimus2019_.koodi);
-            Predicate kohdealueettamotPredicate = cb.equal(kohdealueettomat.get(Koodi_.uri), queryDto.getUri());
-        }
+    private Subquery<Perusteprojekti> kohdealueettomat(CriteriaBuilder cb, CriteriaQuery query, AmmattitaitovaatimusQueryDto queryDto) {
+        Subquery<Perusteprojekti> subquery = query.subquery(Perusteprojekti.class);
+        Root<Perusteprojekti> root = subquery.from(Perusteprojekti.class);
+        Join<Ammattitaitovaatimus2019, Koodi> koodi = joinTutkinonOsat(root)
+                .join(TutkinnonOsa_.ammattitaitovaatimukset2019)
+                .join(Ammattitaitovaatimukset2019_.vaatimukset)
+                .join(Ammattitaitovaatimus2019_.koodi);
+        return subquery.select(root).where(cb.equal(koodi.get(Koodi_.uri), queryDto.getUri()));
+    }
 
-        Join<Ammattitaitovaatimus2019, Koodi> kohdealueelliset = vaatimukset
+    private Subquery<Perusteprojekti> kohdealueelliset(CriteriaBuilder cb, CriteriaQuery query, AmmattitaitovaatimusQueryDto queryDto) {
+        Subquery<Perusteprojekti> subquery = query.subquery(Perusteprojekti.class);
+        Root<Perusteprojekti> root = subquery.from(Perusteprojekti.class);
+        Join<Ammattitaitovaatimus2019, Koodi> koodi = joinTutkinonOsat(root)
+                .join(TutkinnonOsa_.ammattitaitovaatimukset2019)
                 .join(Ammattitaitovaatimukset2019_.kohdealueet)
                 .join(Ammattitaitovaatimus2019Kohdealue_.vaatimukset)
                 .join(Ammattitaitovaatimus2019_.koodi);
-
-        Predicate kohdealueellisetPredicate = cb.equal(kohdealueelliset.get(Koodi_.uri), queryDto.getUri());
-        pred = cb.and(pred, kohdealueellisetPredicate);
-        return pred;
+        return subquery.select(root).where(cb.equal(koodi.get(Koodi_.uri), queryDto.getUri()));
     }
 
 }

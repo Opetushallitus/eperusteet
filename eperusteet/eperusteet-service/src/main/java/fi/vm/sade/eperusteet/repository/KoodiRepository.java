@@ -27,4 +27,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface KoodiRepository extends JpaRepository<Koodi, Long> {
     Koodi findOneByUriAndVersio(String uri, Long versio);
+
+    Koodi findFirstByKoodistoOrderByUriDesc(String koodisto);
 }

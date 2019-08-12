@@ -14,5 +14,34 @@
              empty-placeholder="{{ vateConverter('perusteella-ei-viela-tutkinnonosia') }}" koulutustyyppi="peruste.koulutustyyppi"
              show-laajuus="true" url-generator="getHref(value)" yksikko="{{yksikko[suoritustapa]}}">
         </div>
+        <hr>
+        <h3 ng-bind="'ammattitaitovaatimusten-hallinta' | kaanna"></h3>
+        <div ng-show="koodittomat || koodilliset">
+            <table class="table">
+                <tr>
+                    <th ng-bind="'nimi' | kaanna"></th>
+                    <th ng-bind="'koodi' | kaanna"></th>
+                </tr>
+                <tr class="danger" ng-repeat="vaatimus in koodittomat">
+                    <td ng-bind="vaatimus.vaatimus | kaanna"></td>
+                    <td>-</td>
+                </tr>
+                <tr class="success" ng-repeat="vaatimus in koodilliset">
+                    <td ng-bind="vaatimus.koodi.nimi | kaanna"></td>
+                    <td ng-bind="vaatimus.koodi.arvo">v</td>
+                </tr>
+            </table>
+        </div>
+        <button
+            ng-disabled="avDisabled",
+            class="btn btn-default"
+            ng-click="tarkistaAmmattitaitovaatimukset()"
+            ng-bind="'tarkista-ammattitaitovaatimukset' | kaanna"></button>
+        <button
+            ng-disabled="avDisabled",
+            ng-show="koodittomat"
+            class="btn btn-primary"
+            ng-click="lisaaKoodittomat()"
+            ng-bind="'lisaa-koodittomat-koodistoon' | kaanna"></button>
     </div>
 </div>

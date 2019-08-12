@@ -22,6 +22,7 @@ package fi.vm.sade.eperusteet.service.audit;
  */
 public enum EperusteetMessageFields {
     AIHEKOKONAISUUS,
+    AMMATTITAITOVAATIMUS,
     DOKUMENTTI,
     KAYTTAJA,
     KOMMENTTI,

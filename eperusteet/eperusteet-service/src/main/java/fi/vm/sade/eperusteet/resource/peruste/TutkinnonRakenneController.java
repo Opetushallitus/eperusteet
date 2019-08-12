@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
@@ -29,6 +30,8 @@ import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
 import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
+
+import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -73,6 +76,9 @@ public class TutkinnonRakenneController {
 
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
+
+    @Autowired
+    private AmmattitaitovaatimusService ammattitaitovaatimusService;
 
     /**
      * Luo ja liittää uuden tutkinnon osa perusteeseen.

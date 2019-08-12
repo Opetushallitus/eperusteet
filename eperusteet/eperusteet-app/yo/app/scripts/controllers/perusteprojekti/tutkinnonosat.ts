@@ -24,6 +24,7 @@ angular
         $state,
         $stateParams,
         $rootScope,
+        Api,
         perusteprojektiTiedot,
         PerusteProjektiService,
         PerusteenRakenne,
@@ -69,6 +70,39 @@ angular
             });
         }
         haeTutkinnonosat();
+
+        $scope.lisaaKoodittomat = async () => {
+            try {
+                $scope.avDisabled = true;
+                const koodit = _(await Api.all(`/perusteet/${$scope.peruste.id}/tutkinnonosat/ammattitaitovaatimuskoodisto`).customPOST())
+                    .value();
+                $scope.tarkistaAmmattitaitovaatimukset();
+                Notifikaatiot.onnistui("koodien-lisays-onnistui");
+            }
+            catch (err) {
+                console.error("Koodittomien lisäys epäonnistui", err);
+            }
+            finally {
+                $scope.avDisabled = false;
+            }
+        };
+
+        $scope.tarkistaAmmattitaitovaatimukset = async () => {
+            try {
+                $scope.avDisabled = true;
+                const vaatimukset = _(await Api.all(`/perusteet/${$scope.peruste.id}/tutkinnonosat/ammattitaitovaatimukset`).getList())
+                    .map(x => x.plain())
+                    .value();
+                $scope.koodilliset = _.filter(vaatimukset, "koodi");
+                $scope.koodittomat = _.reject(vaatimukset, "koodi");
+            }
+            catch (err) {
+                console.error("Lataus epäonnistui", err);
+            }
+            finally {
+                $scope.avDisabled = false;
+            }
+        };
 
         $scope.tuoSuoritustavasta = TutkinnonOsanTuonti.suoritustavoista(
             perusteprojektiTiedot.getPeruste(),

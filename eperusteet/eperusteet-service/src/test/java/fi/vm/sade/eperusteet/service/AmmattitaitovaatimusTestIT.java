@@ -87,7 +87,6 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         }
 
         perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-        assertThat(perusteet.getTotalElements()).isEqualTo(1);
         assertThat(perusteet.getContent().get(0).getId()).isEqualTo(aPeruste.getId());
 
         {
@@ -112,7 +111,6 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         }
 
         perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-        assertThat(perusteet.getTotalElements()).isEqualTo(2);
         assertThat(perusteet.getContent())
                 .extracting(PerusteBaseDto::getId)
                 .containsExactlyInAnyOrder(aPeruste.getId(), bPeruste.getId());

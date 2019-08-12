@@ -131,4 +131,8 @@ public class KoodistoClientMock implements KoodistoClient {
         return Collections.emptyList();
     }
 
+    @Override
+    public KoodistoKoodiDto addKoodi(KoodistoKoodiDto koodi) {
+        return koodi;
+    }
 }
