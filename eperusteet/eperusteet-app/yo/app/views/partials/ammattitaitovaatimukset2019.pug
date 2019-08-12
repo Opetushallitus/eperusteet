@@ -1,3 +1,12 @@
+mixin koodi
+  span(ng-bind="vaatimus.vaatimus | kaanna")
+  =" ("
+  a(ng-show="vaatimus.koodi", ng-href="https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodi/{{ vaatimus.koodi.uri }}/{{ vaatimus.koodi.versio }}")
+    b(ng-bind="vaatimus.koodi.arvo")
+  b(ng-hide="vaatimus.koodi", ng-bind="'koodi-puuttuu' | kaanna")
+  =")"
+
+
 mixin vaatimus
   span(ng-bind="(vaatimus.koodi ? vaatimus.koodi.nimi : vaatimus.vaatimus) | kaanna")
 
@@ -24,16 +33,12 @@ div.ammattitaitovaatimukset-2019(ng-show="!loading" ng-cloak)
     .kohde(ng-bind="ammattitaitovaatimukset.kohde | kaanna")
     ul.vaatimukset
       li.rivi(ng-repeat="vaatimus in ammattitaitovaatimukset.vaatimukset")
-        span(ng-bind="vaatimus.vaatimus | kaanna")
+        +koodi
       li.alue(ng-repeat="kohdealue in ammattitaitovaatimukset.kohdealueet")
         div(ng-bind="kohdealue.kuvaus | kaanna")
         ul
           li.rivi(ng-repeat="vaatimus in kohdealue.vaatimukset")
-            span(ng-bind="vaatimus.vaatimus | kaanna")
-            =" ("
-            b(ng-show="vaatimus.koodi", ng-bind="vaatimus.koodi.arvo")
-            b(ng-hide="vaatimus.koodi", ng-bind="'koodi-puuttuu' | kaanna")
-            =")"
+            +koodi
 
   div(ng-if="editEnabled")
     div.ammattitaitovaatimukset

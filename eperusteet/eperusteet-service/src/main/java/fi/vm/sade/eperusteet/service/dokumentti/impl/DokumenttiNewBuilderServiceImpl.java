@@ -544,7 +544,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
             TutkinnonOsaTyyppi tyyppi = osa.getTyyppi();
             if (tyyppi == TutkinnonOsaTyyppi.NORMAALI) {
-                //addKoodi(docBase, osa);
+                //addKoodit(docBase, osa);
                 addTavoitteet(docBase, osa);
                 addAmmattitaitovaatimukset(docBase, osa.getAmmattitaitovaatimuksetLista(), osa.getAmmattitaitovaatimukset());
                 addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());

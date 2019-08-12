@@ -15,6 +15,14 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import fi.vm.sade.eperusteet.service.util.RestClientFactory;
+import fi.vm.sade.javautils.http.OphHttpClient;
+import fi.vm.sade.javautils.http.OphHttpEntity;
+import fi.vm.sade.javautils.http.OphHttpRequest;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
@@ -24,6 +32,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,11 +41,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static javax.servlet.http.HttpServletResponse.*;
 
 /**
  *
@@ -57,8 +66,13 @@ public class KoodistoClientImpl implements KoodistoClient {
     private static final String LATEST = CODEELEMENT + "/latest/";
 
     @Autowired
+    RestClientFactory restClientFactory;
+
+    @Autowired
     @Koodisto
     private DtoMapper mapper;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     @Cacheable("koodistot")
@@ -178,4 +192,41 @@ public class KoodistoClientImpl implements KoodistoClient {
         return koodi;
     }
 
+    @Override
+    public KoodistoKoodiDto addKoodi(KoodistoKoodiDto koodi) {
+        OphHttpClient client = restClientFactory.get(koodistoServiceUrl, true);
+
+        String url = koodistoServiceUrl
+                + CODEELEMENT
+                + "/" + koodi.getKoodisto().getKoodistoUri();
+//                    + "/j_spring_cas_security_check";
+        try {
+            String dataStr = objectMapper.writeValueAsString(koodi);
+            OphHttpRequest request = OphHttpRequest.Builder
+                    .post(url)
+                    .addHeader("Content-Type", "application/json;charset=UTF-8")
+                    .setEntity(new OphHttpEntity.Builder()
+                            .content(dataStr)
+                            .contentType(ContentType.APPLICATION_JSON)
+                            .build())
+                    .build();
+
+            return client.<KoodistoKoodiDto>execute(request)
+                    .handleErrorStatus(SC_UNAUTHORIZED, SC_FORBIDDEN, SC_METHOD_NOT_ALLOWED, SC_BAD_REQUEST, SC_INTERNAL_SERVER_ERROR)
+                    .with(res -> {
+                        return Optional.empty();
+                    })
+                    .expectedStatus(SC_OK, SC_CREATED)
+                    .mapWith(text -> {
+                        try {
+                            return objectMapper.readValue(text, KoodistoKoodiDto.class);
+                        } catch (IOException e) {
+                            throw new BusinessRuleViolationException("koodin-parsinta-epaonnistui");
+                        }
+                    })
+                    .orElse(null);
+        } catch (JsonProcessingException e) {
+            throw new BusinessRuleViolationException("koodin-lisays-epaonnistui");
+        }
+    }
 }

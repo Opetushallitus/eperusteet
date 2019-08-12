@@ -20,9 +20,13 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
+import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
@@ -44,10 +48,8 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINTONIMIKEKOODI;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.*;
+import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Controller
@@ -63,6 +65,9 @@ public class PerusteController {
 
     @Autowired
     private PerusteService service;
+
+    @Autowired
+    private AmmattitaitovaatimusService ammattitaitovaatimusService;
 
     @RequestMapping(value = "/info", method = GET)
     @ResponseBody
@@ -287,4 +292,20 @@ public class PerusteController {
     private <T> ResponseEntity<T> handleGet(Long perusteId, int age, Supplier<T> response) {
         return CacheableResponse.create(service.getPerusteVersion(perusteId), age, response::get);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/{perusteId}/tutkinnonosat/ammattitaitovaatimuskoodisto", method = POST)
+    public List<KoodiDto> pushAmmattitaitovaatimuksetToKoodisto(
+            @PathVariable("perusteId") final Long perusteId) {
+        return audit.withAudit(LogMessage.builder(perusteId, AMMATTITAITOVAATIMUS, LISAYS),
+                (Void) -> ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(perusteId));
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/{perusteId}/tutkinnonosat/ammattitaitovaatimukset", method = GET)
+    public List<Ammattitaitovaatimus2019Dto> getAmmattitaitovaatimukset(
+            @PathVariable("perusteId") final Long perusteId) {
+        return ammattitaitovaatimusService.getAmmattitaitovaatimukset(perusteId);
+    }
+
 }

@@ -17,8 +17,8 @@
 package fi.vm.sade.eperusteet.dto.koodisto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Date;
 
@@ -29,6 +29,9 @@ import java.util.Date;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class KoodistoKoodiDto {
     private String koodiUri;
     private String koodiArvo;
