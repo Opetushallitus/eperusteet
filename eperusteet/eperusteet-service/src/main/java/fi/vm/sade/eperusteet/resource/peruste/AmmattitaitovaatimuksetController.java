@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,6 +33,18 @@ public class AmmattitaitovaatimuksetController {
     public Page<PerusteBaseDto> getPerusteet(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         Page<PerusteBaseDto> result = ammattitaitovaatimusService.findPerusteet(p, pquery);
+        return result;
+    }
+
+    @RequestMapping(value = "/tutkinnonosat", method = GET)
+    @ApiOperation(value = "Ammattitaitovaatimuksen sisältävien perusteiden haku")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query")
+    })
+    public Page<TutkinnonOsaViiteKontekstiDto> getTutkinnonOsat(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        Page<TutkinnonOsaViiteKontekstiDto> result = ammattitaitovaatimusService.findTutkinnonOsat(p, pquery);
         return result;
     }
 

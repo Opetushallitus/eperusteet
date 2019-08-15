@@ -17,6 +17,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
@@ -60,10 +61,14 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         });
         PerusteDto bPeruste = ppTestUtils.initPeruste(bProjekti.getPeruste().getIdLong());
 
-        AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
-        pquery.setUri("ammattitaitovaatimukset_1000");
-        Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-        assertThat(perusteet.getTotalElements()).isEqualTo(0);
+        {
+            AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
+            pquery.setUri("ammattitaitovaatimukset_1000");
+            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
+            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            assertThat(perusteet.getTotalElements()).isEqualTo(0);
+            assertThat(tosat.getTotalElements()).isEqualTo(0);
+        }
 
         { // Vaatimukset
             Ammattitaitovaatimukset2019 vaatimukset = new Ammattitaitovaatimukset2019();
@@ -86,8 +91,17 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             em.flush();
         }
 
-        perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-        assertThat(perusteet.getContent().get(0).getId()).isEqualTo(aPeruste.getId());
+        ppTestUtils.julkaise(aProjekti.getId(), true);
+        {
+            AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
+            pquery.setUri("ammattitaitovaatimukset_1000");
+            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
+            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            assertThat(tosat.getTotalElements()).isEqualTo(1);
+            assertThat(perusteet.getContent())
+                    .extracting(PerusteBaseDto::getId)
+                    .containsExactlyInAnyOrder(aPeruste.getId());
+        }
 
         {
             Ammattitaitovaatimukset2019 vaatimukset = new Ammattitaitovaatimukset2019();
@@ -110,10 +124,17 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             em.flush();
         }
 
-        perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-        assertThat(perusteet.getContent())
-                .extracting(PerusteBaseDto::getId)
-                .containsExactlyInAnyOrder(aPeruste.getId(), bPeruste.getId());
+        {
+            AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
+            pquery.setUri("ammattitaitovaatimukset_1000");
+            ppTestUtils.julkaise(bProjekti.getId(), true);
+            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
+            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            assertThat(tosat.getTotalElements()).isEqualTo(2);
+            assertThat(perusteet.getContent())
+                    .extracting(PerusteBaseDto::getId)
+                    .containsExactlyInAnyOrder(aPeruste.getId(), bPeruste.getId());
+        }
 
     }
 

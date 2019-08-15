@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
@@ -14,8 +13,12 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
@@ -23,6 +26,10 @@ import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -91,8 +98,23 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     }
 
     @Override
+    public Page<TutkinnonOsaViiteKontekstiDto> findTutkinnonOsat(PageRequest p, AmmattitaitovaatimusQueryDto pquery) {
+        Page<TutkinnonOsaViite> result = ammattitaitovaatimusRepository.findTutkinnonOsatBy(p, pquery);
+        Page<TutkinnonOsaViiteKontekstiDto> resultDto = result.map(tov -> {
+            TutkinnonOsaViiteKontekstiDto tovkDto = mapper.map(tov, TutkinnonOsaViiteKontekstiDto.class);
+            TutkinnonOsa tosa = tov.getTutkinnonOsa();
+            Peruste peruste = tov.getSuoritustapa().getPerusteet().iterator().next();
+            tovkDto.setPeruste(mapper.map(peruste, PerusteInfoDto.class));
+            tovkDto.setTutkinnonOsaDto(mapper.map(tosa, TutkinnonOsaDto.class));
+            tovkDto.setSuoritustapa(mapper.map(tov.getSuoritustapa(), SuoritustapaDto.class));
+            return tovkDto;
+        });
+        return resultDto;
+    }
+
+    @Override
     public Page<PerusteBaseDto> findPerusteet(PageRequest p, AmmattitaitovaatimusQueryDto pquery) {
-        Page<Peruste> result = ammattitaitovaatimusRepository.findBy(p, pquery);
+        Page<Peruste> result = ammattitaitovaatimusRepository.findPerusteetBy(p, pquery);
         Page<PerusteBaseDto> resultDto = result.map(peruste -> mapper.map(peruste, PerusteBaseDto.class));
         return resultDto;
     }
@@ -109,9 +131,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     }
 
     private List<Ammattitaitovaatimus2019> getVaatimukset(Peruste peruste) {
-        return peruste.getSuoritustavat().stream()
-                .map(Suoritustapa::getTutkinnonOsat)
-                .flatMap(Collection::stream)
+        return getTutkinnonOsaViitteet(peruste).stream()
                 .map(TutkinnonOsaViite::getTutkinnonOsa)
                 .map(TutkinnonOsa::getAmmattitaitovaatimukset2019)
                 .filter(Objects::nonNull)
@@ -125,6 +145,35 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 })
                 .flatMap(x -> x)
                 .collect(Collectors.toList());
+    }
+
+    private List<TutkinnonOsaViite> getTutkinnonOsaViitteet(Peruste peruste) {
+        return peruste.getSuoritustavat().stream()
+                .map(Suoritustapa::getTutkinnonOsat)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateAmmattitaitovaatimukset(Long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        List<TutkinnonOsaViite> tovs = getTutkinnonOsaViitteet(peruste);
+        for (TutkinnonOsaViite tov : tovs) {
+            if (tov.getTutkinnonOsa().getAmmattitaitovaatimukset() != null) {
+                TekstiPalanen tekstit = tov.getTutkinnonOsa().getAmmattitaitovaatimukset();
+                Map<Kieli, String> kohde = new HashMap<>();
+                Map<Kieli, List<String>> vaatimukset = new HashMap<>();
+                tekstit.getTeksti().forEach((key, value) -> {
+                    Document doc = Jsoup.parse(value);
+                    List<String> items = doc.select("li").stream()
+                            .map(Element::text)
+                            .collect(Collectors.toList());
+                    kohde.put(key, doc.select("p").text());
+                    vaatimukset.put(key, items);
+                });
+                Ammattitaitovaatimukset2019 av = new Ammattitaitovaatimukset2019();
+            }
+        }
     }
 
     @Override

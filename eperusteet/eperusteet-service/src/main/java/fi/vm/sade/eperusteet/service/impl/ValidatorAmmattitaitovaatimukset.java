@@ -84,7 +84,7 @@ public class ValidatorAmmattitaitovaatimukset implements Validator {
 
     @Override
     public boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi) {
-        return tyyppi.isAmmatillinen();
+        return tyyppi != null && tyyppi.isAmmatillinen();
     }
 
     @Override
