@@ -17,6 +17,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.util.List;
+import java.util.Set;
 
 
 @Slf4j
@@ -26,7 +28,54 @@ public class AmmattitaitovaatimusRepositoryImpl implements AmmattitaitovaatimusR
     private EntityManager em;
 
     @Override
-    public Page<Peruste> findBy(PageRequest page, AmmattitaitovaatimusQueryDto pquery) {
+    public Page<TutkinnonOsaViite> findTutkinnonOsatBy(PageRequest page, AmmattitaitovaatimusQueryDto pquery) {
+        TypedQuery<TutkinnonOsaViite> query = getTosaQuery(pquery);
+        TypedQuery<Long> tosaCountQuery = getTosaCountQuery(pquery);
+        if (page != null) {
+            query.setFirstResult(page.getOffset());
+            query.setMaxResults(page.getPageSize());
+        }
+        Page<TutkinnonOsaViite> result = new PageImpl<>(
+                query.getResultList(),
+                page,
+                tosaCountQuery.getSingleResult());
+        return result;
+    }
+
+    private TypedQuery<Long> getTosaCountQuery(AmmattitaitovaatimusQueryDto pquery) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Perusteprojekti> root = query.from(Perusteprojekti.class);
+        Predicate pred = buildTosaPredicate(root, query, cb, pquery);
+        SetJoin<Suoritustapa, TutkinnonOsaViite> join = root.join(Perusteprojekti_.peruste)
+                .join(Peruste_.suoritustavat)
+                .join(Suoritustapa_.tutkinnonOsat);
+        query.select(cb.countDistinct(join)).where(pred);
+        return em.createQuery(query);
+    }
+
+    private TypedQuery<TutkinnonOsaViite> getTosaQuery(AmmattitaitovaatimusQueryDto pquery) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<TutkinnonOsaViite> query = cb.createQuery(TutkinnonOsaViite.class);
+        Root<Perusteprojekti> root = query.from(Perusteprojekti.class);
+        SetJoin<Suoritustapa, TutkinnonOsaViite> join = root.join(Perusteprojekti_.peruste)
+                .join(Peruste_.suoritustavat)
+                .join(Suoritustapa_.tutkinnonOsat);
+        Predicate pred = buildTosaPredicate(root, query, cb, pquery);
+        query.select(join).where(pred).distinct(true);
+        return em.createQuery(query);
+    }
+
+    private Predicate buildTosaPredicate(Root<Perusteprojekti> root, CriteriaQuery query, CriteriaBuilder cb, AmmattitaitovaatimusQueryDto queryDto) {
+        Predicate pred = cb.equal(root.get(Perusteprojekti_.tila), ProjektiTila.JULKAISTU);
+        pred = cb.and(pred, cb.or(
+                cb.exists(kohdealueettomat(cb, query, queryDto)),
+                cb.exists(kohdealueelliset(cb, query, queryDto))));
+        return pred;
+    }
+
+    @Override
+    public Page<Peruste> findPerusteetBy(PageRequest page, AmmattitaitovaatimusQueryDto pquery) {
         TypedQuery<Long> countQuery = getCountQuery(pquery);
         TypedQuery<Perusteprojekti> query = getQuery(pquery);
         if (page != null) {
@@ -62,7 +111,7 @@ public class AmmattitaitovaatimusRepositoryImpl implements AmmattitaitovaatimusR
             throw new BusinessRuleViolationException("uri-puuttuu");
         }
 
-        Predicate pred = cb.equal(root.get(Perusteprojekti_.tila), ProjektiTila.LAADINTA);
+        Predicate pred = cb.equal(root.get(Perusteprojekti_.tila), ProjektiTila.JULKAISTU);
 
         pred = cb.and(pred, cb.or(
                 cb.exists(kohdealueettomat(cb, query, queryDto)),
