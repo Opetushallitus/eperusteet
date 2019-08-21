@@ -1,8 +1,10 @@
 package fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -27,29 +29,17 @@ public class Lops2019LaajaAlainenOsaaminen extends AbstractAuditedReferenceableE
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ValidKoodisto(koodisto = "laajaalainenosaaminenlops2021")
+    private Koodi koodi;
+
     @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
-
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen opinnot;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "yl_lops2019_laaja_alainen_osaaminen_tavoite",
-            joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"),
-            inverseJoinColumns = @JoinColumn(name = "tavoite_id"))
-    @OrderBy("jarjestys, id")
-    private List<Lops2019Tavoite> tavoitteet = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "yl_lops2019_laaja_alainen_osaaminen_painopiste",
-            joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"),
-            inverseJoinColumns = @JoinColumn(name = "painopiste_id"))
-    @OrderBy("jarjestys, id")
-    private List<Lops2019Painopiste> painopisteet = new ArrayList<>();
 
     private Integer jarjestys;
 
@@ -57,45 +47,8 @@ public class Lops2019LaajaAlainenOsaaminen extends AbstractAuditedReferenceableE
         boolean result = Objects.equals(this.getId(), other.getId());
 
         result &= refXnor(this.getNimi(), other.getNimi());
-
-        // tavoitteet
-        result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
-
-        if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
-            result &= this.getTavoitteet().size() == other.getTavoitteet().size();
-
-            for (Lops2019Tavoite t : this.getTavoitteet()) {
-                if (!result) {
-                    break;
-                }
-
-                for (Lops2019Tavoite ot :other.getTavoitteet()) {
-                    if (Objects.equals(t.getId(), ot.getId())) {
-                        result &= t.structureEquals(ot);
-                    }
-                }
-            }
-        }
-
-
-        // painopisteet
-        result &= refXnor(this.getPainopisteet(), other.getPainopisteet());
-
-        if (this.getPainopisteet() != null && other.getPainopisteet() != null) {
-            result &= this.getPainopisteet().size() == other.getPainopisteet().size();
-
-            for (Lops2019Painopiste p : this.getPainopisteet()) {
-                if (!result) {
-                    break;
-                }
-
-                for (Lops2019Painopiste op :other.getPainopisteet()) {
-                    if (Objects.equals(p.getId(), op.getId())) {
-                        result &= p.structureEquals(op);
-                    }
-                }
-            }
-        }
+        result &= Objects.equals(this.getKoodi(), other.getKoodi());
+        result &= refXnor(this.getKuvaus(), other.getKuvaus());
 
         return result;
     }

@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.lops2019.Koodillinen;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +38,8 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ValidKoodisto(koodisto = "oppiaineetjaoppimaaratlops2021")
     private Koodi koodi;
 
     @Getter

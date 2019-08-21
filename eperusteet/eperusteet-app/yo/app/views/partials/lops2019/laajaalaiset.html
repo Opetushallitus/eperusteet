@@ -13,25 +13,11 @@
         <div ng-repeat="osaaminen in laajaalaiset.laajaAlaisetOsaamiset">
             <div ng-if="!editEnabled">
                 <h2 ng-bind="osaaminen.nimi || 'nimeton' | kaanna"></h2>
-                <div ng-if="osaaminen.tavoitteet && osaaminen.tavoitteet.length > 0">
-                    <strong kaanna="'tavoitealueet'"></strong>
-                    <div ng-repeat="tavoitealue in osaaminen.tavoitteet">
-                        <p kaanna="tavoitealue.kohde"></p>
-                        <ul>
-                            <li ng-repeat="tavoite in tavoitealue.tavoitteet">
-                                <span ng-bind="tavoite.kuvaus || 'nimeton' | kaanna"></span>
-                            </li>
-                        </ul>
-                    </div>
+                <div ng-if="osaaminen.koodi">
+                    <strong kaanna="'koodi'"></strong>
+                    <p>{{osaaminen.koodi.arvo | kaanna}}</p>
                 </div>
-                <div ng-if="osaaminen.painopisteet && osaaminen.painopisteet.length > 0">
-                    <strong kaanna="'painopisteet'"></strong>
-                    <ul>
-                        <li ng-repeat="painopiste in osaaminen.painopisteet">
-                            <span ng-bind="painopiste.nimi || 'nimeton' | kaanna"></span>
-                        </li>
-                    </ul>
-                </div>
+                <div ng-bind-html="osaaminen.kuvaus | kaanna | unsafe" ng-if="osaaminen.kuvaus"></div>
             </div>
             <div ng-if="editEnabled">
                 <div class="clearfix">
@@ -43,66 +29,28 @@
                 <label for="{{'nimi-input-' + $index}}" class="header">{{'nimi' | kaanna}}</label>
                 <input id="{{'nimi-input-' + $index}}" class="form-control" ng-model="osaaminen.nimi" slocalized>
 
-                <strong class="header" kaanna="'tavoitealueet'"></strong>
-                <div>
-                    <div ng-repeat="tavoitealue in osaaminen.tavoitteet" class="tavoitealue">
-                        <label for="{{'tavoitealue-nimi-input-' + $index}}" class="header">{{'kohde' | kaanna}}</label>
-                        <input id="{{'tavoitealue-nimi-input-' + $index}}" class="form-control" ng-model="tavoitealue.kohde" slocalized style="margin-bottom: 10px">
-
-                        <div ng-repeat="tavoite in tavoitealue.tavoitteet" style="margin-bottom: 10px; margin-left: 40px">
-                            <div class="input-group">
-                                <input class="form-control" ng-model="tavoite.kuvaus" slocalized>
-                                <span class="input-group-btn">
-                                    <button icon-role="remove"
-                                            class="btn btn-warning"
-                                            ng-click="remove(tavoitealue.tavoitteet, tavoite)"
-                                            kaanna="'poista'"></button>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="clearfix">
-                            <button icon-role="remove"
-                                    class="btn btn-warning pull-right"
-                                    ng-click="remove(osaaminen.tavoitteet, tavoitealue)"
-                                    kaanna="'poista'"></button>
-                            <button icon-role="add"
-                                    class="btn btn-primary pull-right"
-                                    ng-click="add(tavoitealue, 'tavoitteet')"
-                                    kaanna="'lisaa-tavoite'"
-                                    style="margin-right: 10px"></button>
-                        </div>
-                    </div>
-                    <div class="clearfix">
-                        <button icon-role="add"
-                                class="btn btn-primary pull-right"
-                                ng-click="add(osaaminen, 'tavoitteet')"
-                                kaanna="'lisaa-tavoitealue'"></button>
-                    </div>
+                <label for="{{'koodi-input-' + $index}}" class="header" kaanna="koodi"></label>
+                <div class="input-group">
+                    <input id="{{'koodi-input-' + $index}}"
+                           class="form-control"
+                           type="text"
+                           ng-model="osaaminen.koodi.arvo"
+                           editointi-kontrolli
+                           ng-disabled="true">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" ng-click="openKoodisto(osaaminen, 'laajaalainenosaaminenlops2021', false)" kaanna="hae-koodistosta"></button>
+                    </span>
                 </div>
 
-                <strong class="header" kaanna="'painopisteet'"></strong>
-                <div>
-                    <div ng-repeat="painopiste in osaaminen.painopisteet" style="margin-bottom: 10px">
-                        <div class="input-group">
-                            <input class="form-control" ng-model="painopiste.nimi" slocalized>
-                            <span class="input-group-btn">
-                                <button icon-role="remove"
-                                        class="btn btn-warning"
-                                        ng-click="remove(osaaminen.painopisteet, painopiste)"
-                                        kaanna="'poista'"></button>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="clearfix">
-                        <button icon-role="add"
-                                class="btn btn-primary pull-right"
-                                ng-click="add(osaaminen, 'painopisteet')"
-                                kaanna="'lisaa-painopiste'"></button>
-                    </div>
-                </div>
-
+                <label for="{{'kuvaus-input-' + $index}}" class="header" kaanna="kuvaus"></label>
+                <div id="{{'kuvaus-input-' + $index}}"
+                     ng-model="osaaminen.kuvaus"
+                     slocalized
+                     ckeditor
+                     editor-placeholder="laaja-alainen-osaaminen-kuvaus"></div>
             </div>
-            <hr/>
+            <hr ng-show="!$last"/>
+            <div style="margin-bottom: 10px" ng-show="$last"></div>
         </div>
 
         <div class="pull-right" ng-if="editEnabled">

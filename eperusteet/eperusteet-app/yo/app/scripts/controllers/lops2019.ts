@@ -82,7 +82,8 @@ angular
     Api,
     Editointikontrollit,
     Notifikaatiot,
-    laajaalaiset
+    laajaalaiset,
+    Koodisto
 ) {
     $scope.laajaalaiset = laajaalaiset.clone();
 
@@ -99,6 +100,41 @@ angular
 
     $scope.edit = () => {
         Editointikontrollit.startEditing();
+    };
+
+    $scope.openKoodisto = (target, koodisto, isArray) => {
+        Koodisto.modaali(
+            koodi => {
+                const valittu = {
+                    arvo: koodi.koodiArvo,
+                    uri: koodi.koodiUri,
+                    nimi: koodi.nimi,
+                    koodisto: koodi.koodisto.koodistoUri,
+                    versio: koodi.versio
+                };
+
+                if (isArray) {
+                    if (!target) {
+                        target = [];
+                    }
+                    target.push(valittu);
+                } else {
+                    target.koodi = valittu;
+                }
+
+                // Muutetaan lao nimi
+                target.nimi = Lokalisointi.merge(target.nimi, koodi.nimi);
+            },
+            {
+                tyyppi: () => {
+                    return koodisto; // Todo: uusi koodisto hahtuvalla
+                },
+                ylarelaatioTyyppi: () => {
+                    return "";
+                },
+                tarkista: _.constant(true)
+            }
+        )();
     };
 
     Editointikontrollit.registerCallback({

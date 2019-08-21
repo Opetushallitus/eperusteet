@@ -330,39 +330,16 @@
         "nimi": {
           "fi": "Hyvinvointiosaaminen"
         },
+        "koodi": {
+          "uri": "oppiaineet_bi",
+          "arvo": "BI",
+          "nimi": {
+            "fi": "Biologia"
+          }
+        },
         "kuvaus": {
           "fi": "Aihealueen opinnoilla tavoitellaan osaamista, jota opiskelija tarvitsee lisätäkseen hyvinvointiaan ja lukio-opiskelusta saamaansa motivaatiota ja iloa. Aihealue pyrkii varmistamaan osaltaan, että jokaisen lukiolaisen ainutlaatuisuus ja merkityksellisyys tulisi tunnistetuksi ja tunnustetuksi. Aihealueen keskeisiä teemoja ovat itsetuntemus, elämänhallinta sekä terveyttä, hyvinvointia ja turvallisuutta edistävät tiedot, taidot, asenteet, arvot ja tahto."
-        },
-        "opinnot": {
-          "fi": "Aihealueen opinnot ovat osa lukion hyvinvointia ja turvallisuutta ylläpitävää toimintakulttuuria, jossa yhteisöllisyys ja keskinäinen huolenpito korostuvat. Hyvinvointi- ja turvallisuusnäkökulmat liittyvät myös opiskelijakunnan toimintaan, kodin ja oppilaitoksen yhteistyöhön, oppilaitosruokailuun sekä opiskeluhuoltoon. Aihealueen toteuttamiseksi lukio voi tehdä yhteistyötä nuoriso-, liikunta-, kulttuuri- ja sosiaalitoimen sekä poliisin ja pelastuslaitoksen sekä erilaisten järjestöjen kanssa."
-        },
-        "tavoitteet": [{
-          "kohde": {
-            "fi": "Opiskelija"
-          },
-          "tavoitteet": [{
-            "kuvaus": {
-              "fi": "saa rohkaisua oman identiteettinsä rakentamiseen, oppii tunnistamaan vahvuuksiaan ja kehittämistä kaipaavia puoliaan (opiskelijana, lukiolaisena); saa monenlaisen oppimisen ja siinä onnistumisen kokemuksia, omaksuu epävarmuuden sietokykyä (sinnikkyyttä) ja vahvistaa luottamustaan siihen, että elämä kantaa. "
-            }
-          }, {
-            "kuvaus": {
-              "fi": "lisää ymmärrystään ja vastuutaan sitoutumisesta elämänmittaiseen fyysiseen aktiivisuuteen sekä terveyttä ja toimintakykyä edistäviin elintapoihin"
-            }
-          }]
-        }],
-        "painopisteet": [{
-          "nimi": {
-            "fi": "Omien vahvuuksien tunnistaminen ja käyttäminen sekä identiteetin rakentaminen"
-          }
-        }, {
-          "nimi": {
-            "fi": "Huolenpito itsestä ja muista"
-          }
-        }, {
-          "nimi": {
-            "fi": "Epävarmuuden sietokyky / Sinnikkyys muutosten ja yllätysten maailmassa"
-          }
-        }]
+        }
       }, {
         "id": 102,
         "nimi": {
