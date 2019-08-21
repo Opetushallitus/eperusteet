@@ -30,34 +30,10 @@ public class Lops2019OppiaineLaajaAlainenOsaaminen {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
-    @Getter
-    @Setter
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JoinTable(name = "yl_lops2019_oppiaine_laaja_alainen_osaaminen_koodi",
-            joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"),
-            inverseJoinColumns = @JoinColumn(name = "koodi_id"))
-    private Set<Koodi> koodit;
-
-    private Integer jarjestys;
-
     public boolean structureEquals(Lops2019OppiaineLaajaAlainenOsaaminen other) {
         boolean result = Objects.equals(this.getId(), other.getId());
 
         result &= refXnor(this.getKuvaus(), other.getKuvaus());
-        result &= refXnor(this.getKoodit(), other.getKoodit());
-
-        if (this.getKoodit() != null && other.getKoodit() != null) {
-            result &= this.getKoodit().size() == other.getKoodit().size();
-            for (Koodi k : this.getKoodit()) {
-                if (!result) {
-                    break;
-                }
-                for (Koodi ok : other.getKoodit()) {
-                    result &= Objects.equals(k, ok);
-                }
-            }
-        }
 
         return result;
     }

@@ -9,9 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -30,7 +27,7 @@ public class Lops2019OppiaineBaseDto implements ReferenceableDto {
     private Lops2019TehtavaDto tehtava;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<Lops2019OppiaineLaajaAlainenOsaaminenDto> laajaAlaisetOsaamiset;
+    private Lops2019OppiaineLaajaAlainenOsaaminenDto laajaAlaisetOsaamiset;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Lops2019OppiaineTavoitteetDto tavoitteet;
