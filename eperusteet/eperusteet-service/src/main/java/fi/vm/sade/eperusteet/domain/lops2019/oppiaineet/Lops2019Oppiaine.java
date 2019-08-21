@@ -65,12 +65,9 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
 
     @Getter
     @Setter
-    @OrderColumn
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "yl_lops2019_oppiaine_laaja_alaiset_osaamiset",
-            joinColumns = @JoinColumn(name = "oppiaine_id"),
-            inverseJoinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"))
-    private List<Lops2019OppiaineLaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new ArrayList<>();
+    @JoinColumn(name="lao_id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Lops2019OppiaineLaajaAlainenOsaaminen laajaAlaisetOsaamiset;
 
     @Getter
     @Setter
@@ -111,24 +108,8 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         result &= refXnor(this.getNimi(), other.getNimi());
         result &= Objects.equals(this.getKoodi(), other.getKoodi());
         result &= refXnor(this.getModuulit(), other.getModuulit());
-        result &= refXnor(this.getLaajaAlaisetOsaamiset(), other.getLaajaAlaisetOsaamiset());
         result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
         result &= refXnor(this.getOppimaarat(), other.getOppimaarat());
-
-        // laajaAlaisetOsaamiset
-        if (this.getLaajaAlaisetOsaamiset() != null && other.getLaajaAlaisetOsaamiset() != null) {
-            result &= this.getLaajaAlaisetOsaamiset().size() == other.getLaajaAlaisetOsaamiset().size();
-            for (Lops2019OppiaineLaajaAlainenOsaaminen lao : this.getLaajaAlaisetOsaamiset()) {
-                if (!result) {
-                    break;
-                }
-                for (Lops2019OppiaineLaajaAlainenOsaaminen olao : other.getLaajaAlaisetOsaamiset()) {
-                    if (Objects.equals(lao.getId(), olao.getId())) {
-                        result &= lao.structureEquals(olao);
-                    }
-                }
-            }
-        }
 
         // tavoitteet
         if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
