@@ -147,7 +147,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
         Lops2019OppiaineDto oa = new Lops2019OppiaineDto();
         { // Oppiaine
             oa.setNimi(LokalisoituTekstiDto.of("oppiaine"));
-            oa.setKoodi(KoodiDto.of("oppiaine", "123"));
+            oa.setKoodi(KoodiDto.of("oppiaineetjaoppimaaratlops2021", "123"));
             oa.setArviointi(Lops2019ArviointiDto.builder()
                     .kuvaus(LokalisoituTekstiDto.of("arviointi"))
                     .build());
@@ -158,7 +158,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
         { // Oppimaara
             Lops2019OppiaineDto om = new Lops2019OppiaineDto();
             om.setNimi(LokalisoituTekstiDto.of("oppimaara"));
-            om.setKoodi(KoodiDto.of("oppiaine", "1234"));
+            om.setKoodi(KoodiDto.of("oppiaineetjaoppimaaratlops2021", "1234"));
             om.setArviointi(Lops2019ArviointiDto.builder()
                     .kuvaus(LokalisoituTekstiDto.of("arviointi"))
                     .build());
@@ -179,7 +179,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
             Lops2019ModuuliBaseDto moduuliBaseDto = om.getModuulit().get(0);
             Lops2019ModuuliDto moduuliDto = lops2019Service.getModuuli(projektiHelper.getPerusteId(), om.getId(), moduuliBaseDto.getId());
             moduuli1 = moduuliDto.getId();
-            moduuliDto.setKoodi(KoodiDto.of("moduulit", "123"));
+            moduuliDto.setKoodi(KoodiDto.of("moduulikoodistolops2021", "123"));
             moduuliDto.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
             Lops2019ModuuliTavoiteDto tavoite = new Lops2019ModuuliTavoiteDto();
             tavoite.setKohde(LokalisoituTekstiDto.of("kohde"));
