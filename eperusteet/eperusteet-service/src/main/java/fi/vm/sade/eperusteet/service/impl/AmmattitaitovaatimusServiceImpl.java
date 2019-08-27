@@ -119,15 +119,23 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         return resultDto;
     }
 
+    // FIXME
     private long nextKoodiId() {
-        Koodi viimeisinKoodi = koodiRepository.findFirstByKoodistoOrderByUriDesc("ammattitaitovaatimukset");
-        if (viimeisinKoodi != null) {
-            KoodiDto koodiDto = mapper.map(viimeisinKoodi, KoodiDto.class);
-            if (koodiDto.getArvo() != null) {
-                return Long.valueOf(koodiDto.getArvo()) + 1;
-            }
+        List<KoodistoKoodiDto> koodit = koodistoClient.getAll("ammattitaitovaatimukset");
+        if (koodit.size() == 0) {
+            return 1000L;
         }
-        return 1000L;
+        else {
+            koodit.sort(Comparator.comparing(KoodistoKoodiDto::getKoodiArvo));
+            for (int idx = 0; idx < koodit.size() - 2; ++idx) {
+                long a = Long.parseLong(koodit.get(idx).getKoodiArvo()) + 1;
+                long b = Long.parseLong(koodit.get(idx + 1).getKoodiArvo());
+                if (a < b) {
+                    return a;
+                }
+            }
+            return Long.parseLong(koodit.get(koodit.size() - 1).getKoodiArvo()) + 1;
+        }
     }
 
     private List<Ammattitaitovaatimus2019> getVaatimukset(Peruste peruste) {
@@ -194,11 +202,19 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                                 .map((k) -> KoodistoMetadataDto.of(k.getValue(), k.getKey().toString().toUpperCase(), k.getValue()))
                                 .toArray(KoodistoMetadataDto[]::new))
                         .build();
-                uusiKoodi = koodistoClient.addKoodi(uusiKoodi);
+                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodi(uusiKoodi);
+                if (lisattyKoodi == null
+                        || lisattyKoodi.getKoodisto() == null
+                        || lisattyKoodi.getKoodisto().getKoodistoUri() == null
+                        || lisattyKoodi.getKoodiUri() == null) {
+                    log.error("Koodin lisääminen epäonnistui {} {}", uusiKoodi, lisattyKoodi);
+                    continue;
+                }
+
                 Koodi koodi = new Koodi();
-                koodi.setKoodisto(uusiKoodi.getKoodisto().getKoodistoUri());
-                koodi.setUri(uusiKoodi.getKoodiUri());
-                koodi.setVersio(uusiKoodi.getVersio() != null ? Long.valueOf(uusiKoodi.getVersio()) : null);
+                koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
+                koodi.setUri(lisattyKoodi.getKoodiUri());
+                koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
                 v.setKoodi(koodi);
                 koodit.add(mapper.map(koodi, KoodiDto.class));
                 ammattitaitovaatimusRepository.save(v);
