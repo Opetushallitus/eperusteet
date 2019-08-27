@@ -197,8 +197,8 @@ public class KoodistoClientImpl implements KoodistoClient {
         OphHttpClient client = restClientFactory.get(koodistoServiceUrl, true);
 
         String url = koodistoServiceUrl
-                + CODEELEMENT
-                + "/" + koodi.getKoodisto().getKoodistoUri();
+                + CODEELEMENT + "/"
+                + koodi.getKoodisto().getKoodistoUri();
 //                    + "/j_spring_cas_security_check";
         try {
             String dataStr = objectMapper.writeValueAsString(koodi);
