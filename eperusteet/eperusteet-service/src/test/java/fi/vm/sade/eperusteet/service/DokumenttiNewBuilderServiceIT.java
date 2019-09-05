@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -86,6 +87,7 @@ public class DokumenttiNewBuilderServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Ignore
     @Transactional
     public void testPerustePDFLuonti() throws IOException, TransformerException, ParserConfigurationException {
         for (Kieli kieli : Kieli.values()) {

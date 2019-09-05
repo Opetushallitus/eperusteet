@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.w3c.dom.Document;
@@ -63,6 +64,7 @@ import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils
  */
 @Slf4j
 @Service
+@Profile("!test")
 public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderService {
 
     private static final float COMPRESSION_LEVEL = 0.9f;
