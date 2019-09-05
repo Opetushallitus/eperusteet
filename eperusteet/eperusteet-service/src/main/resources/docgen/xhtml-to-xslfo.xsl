@@ -1124,7 +1124,7 @@
                                 <xsl:text>Koulutuskoodit</xsl:text>
                             </xsl:if>
                             <xsl:if test="/html/@lang='sv'">
-                                <xsl:text>Koulutuskoodit</xsl:text>
+                                <xsl:text>Utbildningskoder</xsl:text>
                             </xsl:if>
                         </xsl:if>
                     </fo:block>
@@ -1148,7 +1148,7 @@
                                 <xsl:text>Osaamisalat</xsl:text>
                             </xsl:if>
                             <xsl:if test="/html/@lang='sv'">
-                                <xsl:text>Osaamisalat</xsl:text>
+                                <xsl:text>Kompetensområden</xsl:text>
                             </xsl:if>
                         </xsl:if>
                     </fo:block>
@@ -1172,7 +1172,7 @@
                                 <xsl:text>Tutkintonimikkeet</xsl:text>
                             </xsl:if>
                             <xsl:if test="/html/@lang='sv'">
-                                <xsl:text>Tutkintonimikkeet</xsl:text>
+                                <xsl:text>Examensbenämningar</xsl:text>
                             </xsl:if>
                         </xsl:if>
                     </fo:block>
