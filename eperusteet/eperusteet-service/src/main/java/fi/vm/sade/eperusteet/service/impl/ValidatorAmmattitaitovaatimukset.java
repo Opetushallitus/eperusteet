@@ -5,7 +5,6 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -24,9 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 @Transactional
@@ -83,8 +80,18 @@ public class ValidatorAmmattitaitovaatimukset implements Validator {
     }
 
     @Override
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
     public boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi) {
         return tyyppi != null && tyyppi.isAmmatillinen();
+    }
+
+    @Override
+    public boolean applicableToteutus(KoulutustyyppiToteutus toteutus) {
+        return true;
     }
 
     @Override
