@@ -69,7 +69,7 @@ public class DokumenttiController {
                 Suoritustapakoodi.of(suoritustapakoodi),
                 GeneratorVersion.of(version));
 
-        if (createDtoFor.getTila() != DokumenttiTila.EPAONNISTUI) {
+        if (createDtoFor != null && createDtoFor.getTila() != DokumenttiTila.EPAONNISTUI) {
             service.setStarted(createDtoFor);
             service.generateWithDto(createDtoFor);
             status = HttpStatus.ACCEPTED;

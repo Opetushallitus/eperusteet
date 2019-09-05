@@ -42,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
@@ -68,6 +69,7 @@ import java.util.Set;
  */
 @Slf4j
 @Service
+@Profile("!test")
 public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired

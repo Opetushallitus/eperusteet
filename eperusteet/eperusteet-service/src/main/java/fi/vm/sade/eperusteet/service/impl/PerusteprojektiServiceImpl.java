@@ -839,8 +839,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                                                     suoritustapa.getSuoritustapakoodi(),
                                                     GeneratorVersion.UUSI
                                             );
-                                            dokumenttiService.setStarted(createDtoFor);
-                                            dokumenttiService.generateWithDto(createDtoFor);
+                                            if (createDtoFor != null ) {
+                                                dokumenttiService.setStarted(createDtoFor);
+                                                dokumenttiService.generateWithDto(createDtoFor);
+                                            }
                                         } catch (DokumenttiException e) {
                                             log.error(e.getLocalizedMessage(), e);
                                         }
