@@ -64,7 +64,6 @@ import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils
  */
 @Slf4j
 @Service
-@Profile("!test")
 public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderService {
 
     private static final float COMPRESSION_LEVEL = 0.9f;

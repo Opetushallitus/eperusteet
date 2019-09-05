@@ -69,7 +69,7 @@ import java.util.Set;
  */
 @Slf4j
 @Service
-@Profile("!test")
+@Profile("default")
 public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
