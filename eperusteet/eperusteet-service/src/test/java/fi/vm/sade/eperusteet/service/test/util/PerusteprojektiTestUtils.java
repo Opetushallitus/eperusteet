@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -50,6 +51,9 @@ public class PerusteprojektiTestUtils {
 
     @Autowired
     private ArviointiAsteikkoRepository arviointiAsteikkoRepository;
+
+    @Autowired
+    private PerusteprojektiRepository perusteprojektiRepository;
 
     @Autowired
     private EntityManager em;
@@ -150,12 +154,25 @@ public class PerusteprojektiTestUtils {
     }
 
     public void julkaise(Long projektiId) {
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, null);
-        assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, null);
-        assertThat(status.isVaihtoOk()).isTrue();
-        status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, TestUtils.createTiedote());
-        assertThat(status.isVaihtoOk()).isTrue();
+        julkaise(projektiId, false);
+    }
+
+    public void julkaise(Long projektiId, boolean force) {
+        if (force) {
+            Perusteprojekti projekti = perusteprojektiRepository.findOne(projektiId);
+            projekti.setTila(ProjektiTila.JULKAISTU);
+            projekti.getPeruste().asetaTila(PerusteTila.VALMIS);
+            perusteprojektiRepository.save(projekti);
+            em.flush();
+        }
+        else {
+            TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, null);
+            assertThat(status.isVaihtoOk()).isTrue();
+            status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VALMIS, null);
+            assertThat(status.isVaihtoOk()).isTrue();
+            status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, TestUtils.createTiedote());
+            assertThat(status.isVaihtoOk()).isTrue();
+        }
     }
 
     public void asetaMuodostumiset(Long perusteId) {

@@ -314,6 +314,12 @@ angular
                     collapsible: true
                 },
                 {
+                    path: "tutkinnonOsa.ammattitaitovaatimukset2019",
+                    localeKey: "tutkinnon-osan-ammattitaitovaatimukset-2019",
+                    type: "ammattitaitovaatimukset2019",
+                    collapsible: true,
+                },
+                {
                     path: "tutkinnonOsa._geneerinenArviointiasteikko",
                     localeKey: "tutkinnon-osan-geneerinen-arviointi",
                     type: "geneerinenarviointi",
@@ -673,7 +679,6 @@ angular
                 if ($scope.arviointiHelper) {
                     $scope.arviointiHelper.setMenu($scope.menuItems);
                 }
-                $scope.menuItems.push();
             };
 
             $scope.$watch("arviointiFields.teksti.visible", $scope.updateMenu);

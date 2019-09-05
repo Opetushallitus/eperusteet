@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -39,6 +40,7 @@ import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -370,6 +372,38 @@ public class DtoMapperConfig {
                         } catch (RestClientException | AccessDeniedException ex) {
                             logger.error(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
                         }
+                    }
+                })
+                .register();
+
+        factory.classMap(Koodi.class, KoodiDto.class)
+                .byDefault()
+                .customize(new CustomMapper<Koodi, KoodiDto>() {
+                    @Override
+                    public void mapAtoB(Koodi a, KoodiDto b, MappingContext context) {
+                        try {
+                            koodistoClient.addNimiAndUri(b);
+                        } catch (RestClientException | AccessDeniedException ex) {
+                            logger.error(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
+                        }
+                    }
+                })
+                .register();
+
+        factory.classMap(Ammattitaitovaatimus2019.class, Ammattitaitovaatimus2019Dto.class)
+                .byDefault()
+                .customize(new CustomMapper<Ammattitaitovaatimus2019, Ammattitaitovaatimus2019Dto>() {
+                    @Override
+                    public void mapAtoB(Ammattitaitovaatimus2019 source, Ammattitaitovaatimus2019Dto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        if (target.getKoodi() != null) {
+                            target.setVaatimus(new LokalisoituTekstiDto(target.getKoodi().getNimi()));
+                        }
+                    }
+
+                    @Override
+                    public void mapBtoA(Ammattitaitovaatimus2019Dto source, Ammattitaitovaatimus2019 target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
                     }
                 })
                 .register();

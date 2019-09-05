@@ -64,6 +64,7 @@ import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils
  */
 @Slf4j
 @Service
+@Profile("!test")
 public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderService {
 
     private static final float COMPRESSION_LEVEL = 0.9f;
@@ -93,7 +94,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     @Override
     public Document generateXML(Peruste peruste, Dokumentti dokumentti)
             throws ParserConfigurationException, IOException, TransformerException {
-
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document doc = docBuilder.newDocument();
@@ -545,7 +545,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
             TutkinnonOsaTyyppi tyyppi = osa.getTyyppi();
             if (tyyppi == TutkinnonOsaTyyppi.NORMAALI) {
-                //addKoodi(docBase, osa);
+                //addKoodit(docBase, osa);
                 addTavoitteet(docBase, osa);
                 addAmmattitaitovaatimukset(docBase, osa.getAmmattitaitovaatimuksetLista(), osa.getAmmattitaitovaatimukset());
                 addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());

@@ -637,3 +637,30 @@ $sisalto-min-height: 450px;
 .table-cell-fixed {
     width: 280px;
 }
+
+.ammattitaitovaatimukset-2019 {
+    .handle {
+        user-select: none;
+    }
+
+    .ammattitaitovaatimukset {
+        .kohde {
+            margin-bottom: 10px;
+        }
+        .vaatimus {
+            margin-bottom: 4px;
+        }
+        .kohdealueet {
+            margin-top: 20px;
+
+            .actions {
+                margin-top: 20px;
+            }
+        }
+        .kohdealue {
+            margin-top: 10px;
+            border: 1px solid #d9edf7;
+            border-top: none;
+        }
+    }
+}

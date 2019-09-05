@@ -55,11 +55,18 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Deprecated
     private TekstiPalanen ammattitaitovaatimukset;
+
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    private Ammattitaitovaatimukset2019 ammattitaitovaatimukset2019;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Deprecated
     private TekstiPalanen ammattitaidonOsoittamistavat;
 
     @ValidHtml
@@ -85,6 +92,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Getter
     @Setter
     @OrderColumn(name = "jarjestys")
+    @Deprecated
     private List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -198,6 +206,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             result &= refXnor(getAmmattitaidonOsoittamistavat(), that.getAmmattitaidonOsoittamistavat());
             result &= refXnor(getAmmattitaitovaatimukset(), that.getAmmattitaitovaatimukset());
             result &= refXnor(getArviointi(), that.getArviointi());
+            result &= Objects.equals(that.getAmmattitaitovaatimukset2019(), this.getAmmattitaitovaatimukset2019());
             if (result && getArviointi() != null) {
                 result &= getArviointi().structureEquals(that.getArviointi());
             }
@@ -222,6 +231,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             TutkinnonOsa other = (TutkinnonOsa) perusteenOsa;
             this.setArviointi(other.getArviointi());
             this.setAmmattitaitovaatimukset(other.getAmmattitaitovaatimukset());
+            this.setAmmattitaitovaatimukset2019(other.getAmmattitaitovaatimukset2019());
             this.setAmmattitaitovaatimuksetLista(connectAmmattitaitovaatimusListToTutkinnonOsa(other));
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
             this.setTavoitteet(other.getTavoitteet());

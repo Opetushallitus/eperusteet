@@ -58,6 +58,7 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private List<KevytTekstiKappaleDto> vapaatTekstit;
     private TutkinnonOsaTyyppi tyyppi;
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
+    private Ammattitaitovaatimukset2019Dto ammattitaitovaatimukset2019;
 
     public TutkinnonOsaDto() {
     }

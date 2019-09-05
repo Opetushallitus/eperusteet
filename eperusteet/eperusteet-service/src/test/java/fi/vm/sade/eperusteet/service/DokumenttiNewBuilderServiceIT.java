@@ -89,6 +89,7 @@ public class DokumenttiNewBuilderServiceIT extends AbstractIntegrationTest {
     @Test
     @Ignore
     @Transactional
+    @Ignore
     public void testPerustePDFLuonti() throws IOException, TransformerException, ParserConfigurationException {
         for (Kieli kieli : Kieli.values()) {
             Dokumentti dokumentti = new Dokumentti();

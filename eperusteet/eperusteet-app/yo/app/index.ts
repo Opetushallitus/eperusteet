@@ -209,3 +209,4 @@ import "scripts/directives/perustetoisetprojektit"
 import "scripts/components/tavoitteet/tavoitteet"
 import "scripts/directives/ckeditor";
 import "scripts/directives/tutkinnonosangeneerisetammattitaitovaatimukset";
+import "scripts/directives/tutkinnonosanammattitaitovaatimukset2019";

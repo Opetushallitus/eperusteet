@@ -1,0 +1,81 @@
+mixin koodi
+  span(ng-bind="vaatimus.vaatimus | kaanna")
+  =" ("
+  a(ng-show="vaatimus.koodi", ng-href="https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodi/{{ vaatimus.koodi.uri }}/{{ vaatimus.koodi.versio }}")
+    b(ng-bind="vaatimus.koodi.arvo")
+  b(ng-hide="vaatimus.koodi", ng-bind="'koodi-puuttuu' | kaanna")
+  =")"
+
+
+mixin vaatimus
+  span(ng-bind="(vaatimus.koodi ? vaatimus.koodi.nimi : vaatimus.vaatimus) | kaanna")
+
+
+mixin vaatimusEdit
+  .vaatimus
+    .input-group
+      .input-group-addon.handle
+        span(icon-role="sort")
+      input.form-control(ng-model="vaatimus.vaatimus", slocalized)
+      .input-group-btn
+        koodisto-select(
+          tyyppi="ammattitaitovaatimukset",
+          valmis="koodiSelector",
+          payload="vaatimus")
+        button.btn.btn-link(
+          ng-click="poistaVaatimus(vaatimus, kohdealue)",
+          ng-bind="'poista-kohdealue' | kaanna")
+
+
+div.ammattitaitovaatimukset-2019(ng-show="!loading" ng-cloak)
+  div(ng-if="!editEnabled")
+    .ammattitaitovaatimukset
+      .kohde(ng-bind="ammattitaitovaatimukset.kohde | kaanna")
+      ul.vaatimukset
+        li.rivi(ng-repeat="vaatimus in ammattitaitovaatimukset.vaatimukset")
+          +koodi
+        li.alue(ng-repeat="kohdealue in ammattitaitovaatimukset.kohdealueet")
+          div(ng-bind="kohdealue.kuvaus | kaanna")
+          ul
+            li.rivi(ng-repeat="vaatimus in kohdealue.vaatimukset")
+              +koodi
+
+  div(ng-if="editEnabled")
+    div.ammattitaitovaatimukset
+      div
+        .kohde
+          input.form-control(ng-model="ammattitaitovaatimukset.kohde", slocalized)
+        .kohdealueettomat
+          .vaatimus(ng-model="ammattitaitovaatimukset.vaatimukset", ui-sortable="sortableOptionsAmmattitaitovaatimukset")
+            div(ng-repeat="vaatimus in ammattitaitovaatimukset.vaatimukset")
+              +vaatimusEdit
+          button.btn.btn-link(
+            ng-click="addVaatimus()",
+            ng-bind="'lisaa-vaatimus-ilman-kohdealuetta' | kaanna")
+
+        .kohdealueet
+          h2(ng-bind="'ammattitaito-kohdealueet' | kaanna")
+          div(ng-model="ammattitaitovaatimukset.kohdealueet", ui-sortable="sortableOptionsKohdealue")
+            .kohdealue(ng-repeat="kohdealue in ammattitaitovaatimukset.kohdealueet")
+              .panel.panel-info
+                .panel-heading
+                  .input-group
+                    .input-group-addon.handle
+                      span(icon-role="sort")
+                    input.form-control(ng-model="kohdealue.kuvaus", slocalized)
+                    .input-group-btn
+                      button.btn.btn-link(
+                        ng-click="poistaKohdealue(kohdealue)",
+                        ng-bind="'poista-kohdealue' | kaanna")
+                .panel-body
+                  div(ng-model="kohdealue.vaatimukset", ui-sortable="sortableOptionsAmmattitaitovaatimukset")
+                    .vaatimus(ng-repeat="vaatimus in kohdealue.vaatimukset")
+                      +vaatimusEdit
+                  button.btn.btn-link(
+                    ng-click="addVaatimus(kohdealue)",
+                    ng-bind="'lisaa-vaatimus' | kaanna")
+          .actions
+            button.btn.btn-link(
+              ng-click="addKohdealue()",
+              ng-bind="'lisaa-kohdealue' | kaanna")
+
