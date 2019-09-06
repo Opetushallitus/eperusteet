@@ -4,13 +4,20 @@
 </div>
 <div class="modal-body ">
     <h3 kaanna>korjaa-virheet</h3>
+
+    <ep-pagination ng-model="nykyinen"
+                    ng-change="valitseSivu"
+                    total-items="kokonaismaara"
+                    items-per-page="itemsPerPage">
+    </ep-pagination>
+    
     <table class="table table-striped">
         <tr>
             <th class="col-md-4" kaanna>viesti</th>
             <th class="col-md-2" kaanna>suoritustapa</th>
             <th class="col-md-6" kaanna>lisatieto</th>
         </tr>
-        <tr ng-repeat="info in data.infot">
+        <tr ng-repeat="info in sivutettuData">
             <td>{{info.viesti | kaanna}}</td>
             <td>{{info.suoritustapa | kaanna}}</td>
             <td>

@@ -24,7 +24,11 @@ angular.module("eperusteApp")
 })
 .controller("ValidointiCtrl", function($scope, $uibModalInstance, validointidata) {
     $scope.data = validointidata;
-
+    $scope.itemsPerPage = 5;
+    $scope.nykyinen = 1;
+    $scope.kokonaismaara = $scope.data.infot.length;
+    $scope.sivutettuData = [];
+    
     $scope.ok = function() {
         $uibModalInstance.close();
     };
@@ -32,4 +36,16 @@ angular.module("eperusteApp")
     $scope.peruuta = function() {
         $uibModalInstance.dismiss();
     };
+
+    $scope.valitseSivu = (sivu) => {
+        $scope.nykyinen = sivu;
+        $scope.asetaSivuData();
+    }
+
+    $scope.asetaSivuData = () => {
+        const sivuIndex = ($scope.nykyinen - 1)  * $scope.itemsPerPage;
+        $scope.sivutettuData = $scope.data.infot.slice(sivuIndex, sivuIndex + $scope.itemsPerPage);
+    }
+
+    $scope.asetaSivuData();
 });
