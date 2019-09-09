@@ -14,11 +14,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hibernate.version>4.3.9.Final</hibernate.version>
         <spring.version>4.3.12.RELEASE</spring.version>
-        <spring.security.version>4.2.4.RELEASE</spring.security.version>
-        <spring.data.jpa.version>1.11.13.RELEASE</spring.data.jpa.version>
+        <spring.security.version>4.2.13.RELEASE</spring.security.version>
+        <spring.data.jpa.version>1.11.22.RELEASE</spring.data.jpa.version>
         <logback.version>1.2.0</logback.version>
         <postgresql.version>9.4.1211</postgresql.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.version>2.9.9</jackson.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
@@ -33,6 +33,7 @@
         <springfox.version>2.7.0</springfox.version>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <hibernate.export.type>CREATE</hibernate.export.type>
+        <apache.httpcomponents.version>4.5.3</apache.httpcomponents.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -65,7 +66,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.2</version>
+            <version>${apache.httpcomponents.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -75,7 +76,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient-cache</artifactId>
-            <version>4.5.2</version>
+            <version>${apache.httpcomponents.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -129,7 +130,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
+            <version>2.9.9.3</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -185,12 +186,12 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>24.1.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.2.4.Final</version>
+            <version>5.2.5.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -358,7 +359,7 @@
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-support-distributed-ehcache</artifactId>
-            <version>3.3.3</version>
+            <version>3.5.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.sf.ehcache</groupId>
@@ -404,7 +405,7 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>1.19.1</version>
+            <version>1.22</version>
         </dependency>
         <dependency>
             <groupId>fi.ratamaa</groupId>
