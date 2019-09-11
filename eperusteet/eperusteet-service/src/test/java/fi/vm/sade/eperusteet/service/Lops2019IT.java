@@ -24,10 +24,12 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
+import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.service.util.PerusteprojektiTestHelper;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -38,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -144,6 +146,137 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
     @Test
     @Rollback
     public void testOppiaineet() {
+        Pair<Lops2019OppiaineDto, Long> pair = createOppiaine();
+        Lops2019OppiaineDto lisatty = pair.getFirst();
+        Long moduuli1 = pair.getSecond();
+
+        lisatty = lops2019Service.getOppiaine(projektiHelper.getPerusteId(), lisatty.getId());
+        assertThat(lisatty.getOppimaarat()).hasSize(1);
+        Lops2019ModuuliDto moduuliDto = lops2019Service.getModuuli(
+                projektiHelper.getPerusteId(),
+                lisatty.getOppimaarat().get(0).getId(),
+                moduuli1);
+        assertThat(moduuliDto.getTavoitteet().getKohde().get(Kieli.FI)).isEqualTo("kohde");
+    }
+
+    @Test
+    public void testKielletytRakennemuutokset() {
+        Long perusteId = createLops2019PerusteAndChangeTilaJulkaistu();
+
+        // Yritetään lisätä laaja-alainen osaaminen
+        assertThatExceptionOfType(BusinessRuleViolationException.class)
+                .isThrownBy(() -> lops2019Service.addLaajaAlainenOsaaminen(perusteId));
+
+        // Yritetään lisätä oppiaine
+        assertThatExceptionOfType(BusinessRuleViolationException.class)
+                .isThrownBy(() -> {
+                    Lops2019OppiaineDto oppiaineDto = new Lops2019OppiaineDto();
+                    oppiaineDto.setNimi(LokalisoituTekstiDto.of("oppiaine"));
+                    lops2019Service.addOppiaine(perusteId, oppiaineDto);
+                });
+
+        // Yritetään lisätä moduuli
+        List<Lops2019OppiaineDto> oppiaineet = lops2019Service.getOppiaineet(perusteId);
+        assertThat(oppiaineet).isNotEmpty();
+
+        Lops2019OppiaineDto oppiaineDto = oppiaineet.get(0);
+        List<Lops2019ModuuliBaseDto> moduulit = oppiaineDto.getModuulit();
+        Lops2019ModuuliBaseDto moduuliDto = new Lops2019ModuuliBaseDto();
+        moduuliDto.setNimi(LokalisoituTekstiDto.of("moduuli"));
+        moduuliDto.setPakollinen(true);
+
+        KoodiDto koodiDto = new KoodiDto();
+        koodiDto.setUri("moduulikoodistolops2021_moduuli");
+        koodiDto.setKoodisto("moduulikoodistolops2021");
+        koodiDto.setVersio(1L);
+        moduuliDto.setKoodi(koodiDto);
+
+        moduulit.add(moduuliDto);
+
+        assertThatExceptionOfType(BusinessRuleViolationException.class)
+                .isThrownBy(() -> lops2019Service.updateOppiaine(perusteId, oppiaineDto));
+
+    }
+
+    @Test
+    @Rollback
+    public void testOppiaineSort() {
+        Pair<Lops2019OppiaineDto, Long> pair = createOppiaine();
+        Lops2019OppiaineDto luotuOppiaine = pair.getFirst();
+        createPlainOppiaine();
+
+        checkLaajaOppiaine(luotuOppiaine.getId());
+
+        List<Lops2019OppiaineDto> oppiaineet = lops2019Service.getOppiaineet(projektiHelper.getPerusteId());
+        Collections.reverse(oppiaineet);
+        lops2019Service.sortOppiaineet(projektiHelper.getPerusteId(), oppiaineet);
+
+        checkLaajaOppiaine(luotuOppiaine.getId());
+    }
+
+    @Test
+    @Ignore("oppiaineRepository.getRevisions(oaId) ei palauta revisioita testeissä")
+    @Rollback
+    public void testOppiaineidenPalautus() {
+
+        Pair<Lops2019OppiaineDto, Long> pair = createOppiaine();
+        Lops2019OppiaineDto luotuOppiaine = pair.getFirst();
+        createPlainOppiaine();
+
+        // Tarkistetaan lähtörakenne
+        checkLaajaOppiaine(luotuOppiaine.getId());
+
+        // Poistetaan oppimäärä
+        List<Lops2019OppiaineDto> oppiaineet = lops2019Service.getOppiaineet(projektiHelper.getPerusteId());
+        Optional<Lops2019OppiaineDto> oppiaineOptional = oppiaineet.stream()
+                .filter(oa -> Objects.equals(oa.getId(), pair.getFirst().getId()))
+                .findAny();
+        assertThat(oppiaineOptional).isPresent();
+        Lops2019OppiaineDto oppiaine = oppiaineOptional.get();
+        oppiaine.getOppimaarat().clear();
+        lops2019Service.updateOppiaine(projektiHelper.getPerusteId(), oppiaine);
+
+
+        // Yritetään palauttaa oppimäärä
+        lops2019Service.palautaSisaltoOppiaineet(projektiHelper.getPerusteId());
+
+        // Tarkistetaan loppurakenne
+        oppiaineet = lops2019Service.getOppiaineet(projektiHelper.getPerusteId());
+        checkLaajaOppiaine(oppiaineet.get(0).getId());
+    }
+
+    private void checkLaajaOppiaine(Long oppiaineId) {
+        List<Lops2019OppiaineDto> oppiaineet = lops2019Service.getOppiaineet(projektiHelper.getPerusteId());
+        Optional<Lops2019OppiaineDto> oppiaine = oppiaineet.stream()
+                .filter(oa -> Objects.equals(oa.getId(), oppiaineId))
+                .findAny();
+
+        assertThat(oppiaine).isPresent();
+
+        {
+            Lops2019OppiaineDto oppiaineLaaja = lops2019Service.getOppiaine(projektiHelper.getPerusteId(), oppiaine.get().getId());
+            List<Lops2019OppiaineDto> oppimaarat = oppiaineLaaja.getOppimaarat();
+            assertThat(oppimaarat).hasSize(1);
+            Lops2019OppiaineDto oppimaaraLaaja = lops2019Service.getOppiaine(projektiHelper.getPerusteId(), oppimaarat.get(0).getId());
+            List<Lops2019ModuuliBaseDto> moduulit = oppimaaraLaaja.getModuulit();
+            assertThat(moduulit).hasSize(1);
+        }
+    }
+
+    private Lops2019OppiaineDto createPlainOppiaine() {
+        Lops2019OppiaineDto oa = new Lops2019OppiaineDto();
+        { // Oppiaine
+            oa.setNimi(LokalisoituTekstiDto.of("plainoppiaine"));
+            oa.setKoodi(KoodiDto.of("oppiaineetjaoppimaaratlops2021", "111"));
+            oa.setArviointi(Lops2019ArviointiDto.builder()
+                    .kuvaus(LokalisoituTekstiDto.of("arviointi"))
+                    .build());
+        }
+
+        return lops2019Service.addOppiaine(projektiHelper.getPerusteId(), oa);
+    }
+
+    private Pair<Lops2019OppiaineDto, Long> createOppiaine() {
         Lops2019OppiaineDto oa = new Lops2019OppiaineDto();
         { // Oppiaine
             oa.setNimi(LokalisoituTekstiDto.of("oppiaine"));
@@ -196,52 +329,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
             lops2019Service.updateOppiaine(projektiHelper.getPerusteId(), om);
         }
 
-        lisatty = lops2019Service.getOppiaine(projektiHelper.getPerusteId(), lisatty.getId());
-        assertThat(lisatty.getOppimaarat()).hasSize(1);
-        Lops2019ModuuliDto moduuliDto = lops2019Service.getModuuli(
-                projektiHelper.getPerusteId(),
-                lisatty.getOppimaarat().get(0).getId(),
-                moduuli1);
-        assertThat(moduuliDto.getTavoitteet().getKohde().get(Kieli.FI)).isEqualTo("kohde");
-    }
-
-    @Test
-    public void testKielletytRakennemuutokset() {
-        Long perusteId = createLops2019PerusteAndChangeTilaJulkaistu();
-
-        // Yritetään lisätä laaja-alainen osaaminen
-        assertThatExceptionOfType(BusinessRuleViolationException.class)
-                .isThrownBy(() -> lops2019Service.addLaajaAlainenOsaaminen(perusteId));
-
-        // Yritetään lisätä oppiaine
-        assertThatExceptionOfType(BusinessRuleViolationException.class)
-                .isThrownBy(() -> {
-                    Lops2019OppiaineDto oppiaineDto = new Lops2019OppiaineDto();
-                    oppiaineDto.setNimi(LokalisoituTekstiDto.of("oppiaine"));
-                    lops2019Service.addOppiaine(perusteId, oppiaineDto);
-                });
-
-        // Yritetään lisätä moduuli
-        List<Lops2019OppiaineDto> oppiaineet = lops2019Service.getOppiaineet(perusteId);
-        assertThat(oppiaineet).isNotEmpty();
-
-        Lops2019OppiaineDto oppiaineDto = oppiaineet.get(0);
-        List<Lops2019ModuuliBaseDto> moduulit = oppiaineDto.getModuulit();
-        Lops2019ModuuliBaseDto moduuliDto = new Lops2019ModuuliBaseDto();
-        moduuliDto.setNimi(LokalisoituTekstiDto.of("moduuli"));
-        moduuliDto.setPakollinen(true);
-
-        KoodiDto koodiDto = new KoodiDto();
-        koodiDto.setUri("moduulikoodistolops2021_moduuli");
-        koodiDto.setKoodisto("moduulikoodistolops2021");
-        koodiDto.setVersio(1L);
-        moduuliDto.setKoodi(koodiDto);
-
-        moduulit.add(moduuliDto);
-
-        assertThatExceptionOfType(BusinessRuleViolationException.class)
-                .isThrownBy(() -> lops2019Service.updateOppiaine(perusteId, oppiaineDto));
-
+        return new Pair<>(lisatty, moduuli1);
     }
 
     private Long createLops2019PerusteAndChangeTilaJulkaistu() {
