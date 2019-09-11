@@ -141,7 +141,6 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     @Override
     public List<Lops2019OppiaineDto> getOppiaineet(Long perusteId) {
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-
         return mapper.mapAsList(sisalto.getOppiaineet(), Lops2019OppiaineDto.class);
     }
 
@@ -163,37 +162,47 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     @Override
     public void palautaSisaltoOppiaineet(Long perusteId) {
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        Long id = sisalto.getId();
+        Long sisaltoId = sisalto.getId();
 
-        Set<Long> nykyiset = sisalto.getOppiaineet().stream()
-                .map(AbstractAuditedReferenceableEntity::getId)
-                .collect(Collectors.toSet());
-        Set<Long> kaikki = sisaltoRepository.getRevisions(id).stream()
-                .map(rev -> sisaltoRepository.findRevision(id, rev.getNumero()))
-                .map(Lops2019Sisalto::getOppiaineet)
-                .flatMap(Collection::stream)
-                .map(AbstractAuditedReferenceableEntity::getId)
-                .collect(Collectors.toSet());
-        kaikki.removeAll(nykyiset);
-
+        // Lisätään nykyiset versiot
         List<Lops2019Oppiaine> oppiaineet = sisalto.getOppiaineet();
-        kaikki.forEach(oppiaineId -> {
-            List<Revision> revisions = oppiaineRepository.getRevisions(oppiaineId);
-            revisions.sort(Comparator.comparingInt(Revision::getNumero).reversed());
-            if (revisions.size() > 1) {
-                // Palautetaan toisiksi uusin versio
-                Lops2019Oppiaine poistettu = oppiaineRepository.findRevision(oppiaineId, revisions.get(1).getNumero());
-                Lops2019Oppiaine kopio = poistettu.copy();
-                kopio = oppiaineRepository.save(kopio);
-                oppiaineet.add(kopio);
+        List<Lops2019Oppiaine> palautetut = new ArrayList<>();
+
+        oppiaineet.forEach(oa -> {
+            Long oaId = oa.getId();
+            ArrayList<Lops2019Oppiaine> oppiaineVersiot = new ArrayList<>();
+            oppiaineVersiot.add(oa);
+
+            // Haetaan eri versiot mukaan
+            List<Revision> revisions = oppiaineRepository.getRevisions(oaId);
+            revisions.forEach(rev -> {
+                Lops2019Oppiaine oppiaineRevision = oppiaineRepository.findRevision(oaId, rev.getNumero());
+                oppiaineVersiot.add(oppiaineRevision);
+            });
+
+            // Yritetään palauttaa viimeisin versio, jossa on oppimäärät tai moduulit tallessa
+            boolean found = false;
+            for (Lops2019Oppiaine rev : oppiaineVersiot) {
+                if (!ObjectUtils.isEmpty(rev.getOppimaarat()) || !ObjectUtils.isEmpty(rev.getModuulit())) {
+                    palautetut.add(rev.copy());
+                    found = true;
+                    break;
+                }
+            }
+            // Jos ei löytynyt palautettavaa versioita, säilytetään nykyinen
+            if (!found && oppiaineVersiot.size() > 0) {
+                palautetut.add(oppiaineVersiot.get(0));
             }
         });
 
-        for (int i = 0; i < oppiaineet.size(); i++) {
-            oppiaineet.get(i).setJarjestys(i);
+        // Asetetaan järjestys, jotta kopiot ovat oikeassa järjestyksessä
+        for (int i = 0; i < palautetut.size(); i++) {
+            palautetut.get(i).setJarjestys(i);
         }
 
-        sisalto.setOppiaineet(oppiaineet);
+        sisalto.getOppiaineet().clear();
+        sisalto.getOppiaineet().addAll(palautetut);
+
         sisaltoRepository.save(sisalto);
     }
 
