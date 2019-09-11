@@ -60,6 +60,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
+
     @Autowired
     private PerusteenOsaService perusteenOsaService;
 
