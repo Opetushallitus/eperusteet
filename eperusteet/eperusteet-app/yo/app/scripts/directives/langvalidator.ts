@@ -39,19 +39,22 @@ export const LangValidator = (Kaanna, $compile, PerusteprojektiTiedotService, na
                 }
 
                 const peruste = (await PerusteprojektiTiedotService).getPeruste();
-                if (_.isObject($scope.kentta) && _.size($scope.kentta) > 0 && peruste && _.isArray(peruste.kielet)) {
-                    $scope.virheet = _.filter(peruste.kielet, (kieli: string) => {
-                        if (_.isArray($scope.kentta)) {
-                            return _.some($scope.kentta, field => field && !field[kieli]);
-                        }
-                        else {
-                            return !$scope.kentta[kieli];
-                        }
-                    });
+                if (!peruste || !_.isArray(peruste.kielet)) {
+                    return;
                 }
-                else {
-                    $scope.virheet = [];
-                }
+
+                $scope.virheet = _(_.isArray($scope.kentta) ? $scope.kentta : [$scope.kentta])
+                    .filter(_.isObject)
+                    .map((obj: any) => {
+                        return _(peruste.kielet)
+                            .filter((kieli) => !obj[kieli])
+                            .value();
+                    })
+                    .filter(langs => _.size(langs) > 0 && _.size(langs) < _.size(peruste.kielet))
+                    .flatten()
+                    .uniq()
+                    .value();
+
                 $timeout(() => $scope.$apply());
             }
 
