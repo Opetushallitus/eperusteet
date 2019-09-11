@@ -81,6 +81,7 @@ angular
             );
         }
 
+
         const varivalinta =
             "ng-class=\"{vieras: rakenne.rooli === 'vieras', maarittelematon: rakenne.rooli === 'määrittelemätön', tyhja: rakenne.osat.length === 0, " +
             "tutkintonimike: rakenne.rooli === 'tutkintonimike', suljettu: rakenne.$collapsed, osaamisala: rakenne.rooli === 'osaamisala'}\"";
