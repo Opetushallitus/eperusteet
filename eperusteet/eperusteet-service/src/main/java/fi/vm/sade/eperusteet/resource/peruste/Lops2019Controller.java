@@ -93,6 +93,14 @@ public class Lops2019Controller {
                 (Void) -> ResponseEntity.ok(service.sortOppiaineet(perusteId, oppiaineet)));
     }
 
+    @RequestMapping(value = "/palautaoppiaineet", method = GET)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void palautaSisaltoOppiaineet(
+            @PathVariable final Long perusteId
+    ) {
+        service.palautaSisaltoOppiaineet(perusteId);
+    }
+
     @RequestMapping(value = "/oppiaineet/uusi", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Lops2019OppiaineDto> addOppiaine(

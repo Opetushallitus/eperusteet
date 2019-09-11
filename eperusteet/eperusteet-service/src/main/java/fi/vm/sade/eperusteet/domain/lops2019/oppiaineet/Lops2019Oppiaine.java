@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.Copyable;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.lops2019.Koodillinen;
@@ -13,19 +14,21 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine")
-public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity implements Koodillinen, Nimetty {
+public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity implements Koodillinen, Nimetty, Copyable<Lops2019Oppiaine> {
 
     @Getter
     @Setter
@@ -130,4 +133,36 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         return result;
     }
 
+    @Override
+    public Lops2019Oppiaine copy(boolean deep) {
+        Lops2019Oppiaine oppiaine = new Lops2019Oppiaine();
+        oppiaine.setNimi(TekstiPalanen.of(this.getNimi()));
+//        result.setKoodi(this.getKoodi());
+        if (deep) {
+            if (this.getArviointi() != null) {
+                oppiaine.setArviointi(this.getArviointi().copy());
+            }
+            if (this.getTehtava() != null) {
+                oppiaine.setTehtava(this.getTehtava().copy());
+            }
+            if (this.getLaajaAlaisetOsaamiset() != null) {
+                oppiaine.setLaajaAlaisetOsaamiset(this.getLaajaAlaisetOsaamiset().copy());
+            }
+            if (this.getTavoitteet() != null) {
+                oppiaine.setTavoitteet(this.getTavoitteet().copy());
+            }
+            if (this.moduulit != null) {
+                oppiaine.setModuulit(this.getModuulit().stream()
+                        .map(Copyable::copy)
+                        .collect(Collectors.toList()));
+            }
+            if (this.getOppimaarat() != null) {
+                oppiaine.setOppimaarat(this.getOppimaarat().stream()
+                        .map(Copyable::copy)
+                        .collect(Collectors.toList()));
+            }
+        }
+
+        return oppiaine;
+    }
 }

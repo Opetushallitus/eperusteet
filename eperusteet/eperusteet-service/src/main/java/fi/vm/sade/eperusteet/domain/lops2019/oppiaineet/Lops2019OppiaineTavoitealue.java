@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet;
 
+import fi.vm.sade.eperusteet.domain.Copyable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
@@ -12,13 +13,14 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine_tavoitealue")
-public class Lops2019OppiaineTavoitealue {
+public class Lops2019OppiaineTavoitealue implements Copyable<Lops2019OppiaineTavoitealue> {
 
     @Id
     @Getter
@@ -71,5 +73,20 @@ public class Lops2019OppiaineTavoitealue {
         }
 
         return result;
+    }
+
+    @Override
+    public Lops2019OppiaineTavoitealue copy(boolean deep) {
+        Lops2019OppiaineTavoitealue tavoitealue = new Lops2019OppiaineTavoitealue();
+        tavoitealue.setNimi(TekstiPalanen.of(this.getNimi()));
+        tavoitealue.setKohde(TekstiPalanen.of(this.getKohde()));
+        if (deep) {
+            if (this.getTavoitteet() != null) {
+                tavoitealue.setTavoitteet(this.getTavoitteet().stream()
+                        .map(TekstiPalanen::of)
+                        .collect(Collectors.toList()));
+            }
+        }
+        return tavoitealue;
     }
 }
