@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet;
 
+import fi.vm.sade.eperusteet.domain.Copyable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine_arviointi")
-public class Lops2019Arviointi {
+public class Lops2019Arviointi implements Copyable<Lops2019Arviointi> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -27,5 +28,12 @@ public class Lops2019Arviointi {
 
     public boolean structureEquals(Lops2019Arviointi other) {
         return true;
+    }
+
+    @Override
+    public Lops2019Arviointi copy(boolean deep) {
+        Lops2019Arviointi arviointi = new Lops2019Arviointi();
+        arviointi.setKuvaus(TekstiPalanen.of(this.getKuvaus()));
+        return arviointi;
     }
 }

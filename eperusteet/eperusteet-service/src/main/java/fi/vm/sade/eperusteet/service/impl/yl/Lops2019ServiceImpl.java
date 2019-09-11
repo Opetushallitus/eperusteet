@@ -152,11 +152,49 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         // Asetetaan järjestysnumero jokaiselle oppiaineelle
         for (int i = 0; i < oppiaineet.size(); i++) {
             Lops2019Oppiaine oppiaine = oppiaineet.get(i);
+            oppiaine = oppiaineRepository.findOne(oppiaine.getId());
             oppiaine.setJarjestys(i);
             oppiaineRepository.save(oppiaine);
         }
 
         return mapper.mapAsList(oppiaineet, Lops2019OppiaineDto.class);
+    }
+
+    @Override
+    public void palautaSisaltoOppiaineet(Long perusteId) {
+        Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        Long id = sisalto.getId();
+
+        Set<Long> nykyiset = sisalto.getOppiaineet().stream()
+                .map(AbstractAuditedReferenceableEntity::getId)
+                .collect(Collectors.toSet());
+        Set<Long> kaikki = sisaltoRepository.getRevisions(id).stream()
+                .map(rev -> sisaltoRepository.findRevision(id, rev.getNumero()))
+                .map(Lops2019Sisalto::getOppiaineet)
+                .flatMap(Collection::stream)
+                .map(AbstractAuditedReferenceableEntity::getId)
+                .collect(Collectors.toSet());
+        kaikki.removeAll(nykyiset);
+
+        List<Lops2019Oppiaine> oppiaineet = sisalto.getOppiaineet();
+        kaikki.forEach(oppiaineId -> {
+            List<Revision> revisions = oppiaineRepository.getRevisions(oppiaineId);
+            revisions.sort(Comparator.comparingInt(Revision::getNumero).reversed());
+            if (revisions.size() > 1) {
+                // Palautetaan toisiksi uusin versio
+                Lops2019Oppiaine poistettu = oppiaineRepository.findRevision(oppiaineId, revisions.get(1).getNumero());
+                Lops2019Oppiaine kopio = poistettu.copy();
+                kopio = oppiaineRepository.save(kopio);
+                oppiaineet.add(kopio);
+            }
+        });
+
+        for (int i = 0; i < oppiaineet.size(); i++) {
+            oppiaineet.get(i).setJarjestys(i);
+        }
+
+        sisalto.setOppiaineet(oppiaineet);
+        sisaltoRepository.save(sisalto);
     }
 
     @Override

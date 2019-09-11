@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet;
 
+import fi.vm.sade.eperusteet.domain.Copyable;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -19,7 +20,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine_laaja_alainen_osaaminen")
-public class Lops2019OppiaineLaajaAlainenOsaaminen {
+public class Lops2019OppiaineLaajaAlainenOsaaminen implements Copyable<Lops2019OppiaineLaajaAlainenOsaaminen> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -36,5 +37,12 @@ public class Lops2019OppiaineLaajaAlainenOsaaminen {
         result &= refXnor(this.getKuvaus(), other.getKuvaus());
 
         return result;
+    }
+
+    @Override
+    public Lops2019OppiaineLaajaAlainenOsaaminen copy(boolean deep) {
+        Lops2019OppiaineLaajaAlainenOsaaminen lao = new Lops2019OppiaineLaajaAlainenOsaaminen();
+        lao.setKuvaus(TekstiPalanen.of(this.getKuvaus()));
+        return lao;
     }
 }
