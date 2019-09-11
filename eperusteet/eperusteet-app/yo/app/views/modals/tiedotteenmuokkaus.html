@@ -9,9 +9,9 @@
     <tr>
       <td class="has-checkbox"><input id="julkinen-valinta" ng-model="model.julkinen" type="checkbox" class="form-control"></td>
       <td><label for="julkinen-valinta" kaanna>julkinen-tiedote</label></td>
-        <td><ohje teksti="'ohje-julkinen-tiedote'" suunta="right"></ohje></td>
+      <td><ohje teksti="'ohje-julkinen-tiedote'" suunta="right"></ohje></td>
     </tr>
-    <tr>
+    <tr ng-if="model.julkinen">
       <td class="has-checkbox"><input id="yleinen-valinta" ng-model="model.yleinen" type="checkbox" class="form-control"></td>
       <td><label for="yleinen-valinta" kaanna="'yleinen-tiedote'"></label></td>
       <td><ohje teksti="'ohje-yleinen-tiedote'" suunta="right"></ohje></td>
@@ -19,6 +19,7 @@
     <tr ng-if="perusteprojektiId">
       <td class="has-checkbox"><input id="liita-perusteprojekti-valinta" ng-model="model.$liitaPerusteprojekti" type="checkbox" class="form-control"></td>
       <td><label for="liita-perusteprojekti-valinta" kaanna>liita-perusteprojekti-tiedotteeseen</label></td>
+      <td><ohje teksti="'ohje-perusteprojektiliitos-tiedote'" suunta="right"></ohje></td>
     </tr>
   </table>
   <h3 kaanna="'otsikko'"></h3>
