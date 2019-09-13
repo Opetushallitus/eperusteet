@@ -1,9 +1,11 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
 import fi.vm.sade.eperusteet.service.audit.LogMessage;
@@ -93,12 +95,31 @@ public class Lops2019Controller {
                 (Void) -> ResponseEntity.ok(service.sortOppiaineet(perusteId, oppiaineet)));
     }
 
-    @RequestMapping(value = "/palautaoppiaineet", method = GET)
+    @RequestMapping(value = "/oppiaineet/{oppiaineId}/versiot/{rev}/palauta", method = GET)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void palautaSisaltoOppiaineet(
-            @PathVariable final Long perusteId
+    public void palautaOppiaineenSisalto(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long oppiaineId,
+            @PathVariable final int rev
     ) {
-        service.palautaSisaltoOppiaineet(perusteId);
+        service.restoreOppiaineRevisionInplace(perusteId, oppiaineId, rev);
+    }
+
+    @RequestMapping(value = "/oppiaineet/{oppiaineId}/versiot", method = GET)
+    public List<Revision> getOppiaineenVersiot(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long oppiaineId
+    ) {
+        return service.getOppiaineRevisions(perusteId, oppiaineId);
+    }
+
+    @RequestMapping(value = "/oppiaineet/{oppiaineId}/versiot/{rev}", method = GET)
+    public Lops2019OppiaineKaikkiDto getOppiaineenVersioData(
+            @PathVariable final Long perusteId,
+            @PathVariable final Long oppiaineId,
+            @PathVariable final int rev
+    ) {
+        return service.getOppiaineRevisionData(perusteId, oppiaineId, rev);
     }
 
     @RequestMapping(value = "/oppiaineet/uusi", method = POST)

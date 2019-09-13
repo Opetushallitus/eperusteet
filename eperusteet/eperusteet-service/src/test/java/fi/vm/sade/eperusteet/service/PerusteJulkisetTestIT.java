@@ -1,13 +1,11 @@
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaamisenTavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.ValmaTelmaSisalto;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;

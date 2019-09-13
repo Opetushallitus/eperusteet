@@ -138,19 +138,20 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         Lops2019Oppiaine oppiaine = new Lops2019Oppiaine();
         oppiaine.setNimi(TekstiPalanen.of(this.getNimi()));
 //        result.setKoodi(this.getKoodi());
+        if (this.getArviointi() != null) {
+            oppiaine.setArviointi(this.getArviointi().copy());
+        }
+        if (this.getTehtava() != null) {
+            oppiaine.setTehtava(this.getTehtava().copy());
+        }
+        if (this.getLaajaAlaisetOsaamiset() != null) {
+            oppiaine.setLaajaAlaisetOsaamiset(this.getLaajaAlaisetOsaamiset().copy());
+        }
+        if (this.getTavoitteet() != null) {
+            oppiaine.setTavoitteet(this.getTavoitteet().copy());
+        }
+
         if (deep) {
-            if (this.getArviointi() != null) {
-                oppiaine.setArviointi(this.getArviointi().copy());
-            }
-            if (this.getTehtava() != null) {
-                oppiaine.setTehtava(this.getTehtava().copy());
-            }
-            if (this.getLaajaAlaisetOsaamiset() != null) {
-                oppiaine.setLaajaAlaisetOsaamiset(this.getLaajaAlaisetOsaamiset().copy());
-            }
-            if (this.getTavoitteet() != null) {
-                oppiaine.setTavoitteet(this.getTavoitteet().copy());
-            }
             if (this.moduulit != null) {
                 oppiaine.setModuulit(this.getModuulit().stream()
                         .map(Copyable::copy)

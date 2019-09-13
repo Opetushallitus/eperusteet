@@ -24,11 +24,15 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,6 +41,9 @@ import java.util.stream.Stream;
 @Service
 @Transactional
 public class Lops2019ServiceImpl implements Lops2019Service {
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private PerusteenOsaViiteService viiteService;
@@ -61,13 +68,13 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     protected DtoMapper mapper;
 
     @Override
-    public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala dto) {
-        Peruste peruste = perusteRepository.findOne(perusteId);
+    public PerusteenOsaViiteDto.Matala addSisalto(final Long perusteId, final Long viiteId, final PerusteenOsaViiteDto.Matala dto) {
+        final Peruste peruste = perusteRepository.findOne(perusteId);
         if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
             throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
 
-        Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         if (viiteId == null) {
             return viiteService.addSisalto(perusteId, sisalto.getSisalto().getId(), dto);
         } else {
@@ -76,8 +83,8 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public void removeSisalto(Long perusteId, Long viiteId) {
-        Peruste peruste = perusteRepository.findOne(perusteId);
+    public void removeSisalto(final Long perusteId, final Long viiteId) {
+        final Peruste peruste = perusteRepository.findOne(perusteId);
         if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
             throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
@@ -86,26 +93,26 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public Lops2019LaajaAlainenOsaaminenKokonaisuusDto getLaajaAlainenOsaaminenKokonaisuus(Long perusteId) {
-        Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        Lops2019LaajaAlainenOsaaminenKokonaisuus kokonaisuus = sisalto.getLaajaAlainenOsaaminen();
+    public Lops2019LaajaAlainenOsaaminenKokonaisuusDto getLaajaAlainenOsaaminenKokonaisuus(final Long perusteId) {
+        final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        final Lops2019LaajaAlainenOsaaminenKokonaisuus kokonaisuus = sisalto.getLaajaAlainenOsaaminen();
 
         return mapper.map(kokonaisuus, Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
     }
 
     @Override
     public Lops2019LaajaAlainenOsaaminenKokonaisuusDto updateLaajaAlainenOsaaminenKokonaisuus(
-            Long perusteId,
-            Lops2019LaajaAlainenOsaaminenKokonaisuusDto dto
+            final Long perusteId,
+            final Lops2019LaajaAlainenOsaaminenKokonaisuusDto dto
     ) {
 
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        List<Lops2019LaajaAlainenOsaaminen> laajaAlaiset = mapper.mapAsList(dto.getLaajaAlaisetOsaamiset(),
+        final List<Lops2019LaajaAlainenOsaaminen> laajaAlaiset = mapper.mapAsList(dto.getLaajaAlaisetOsaamiset(),
                 Lops2019LaajaAlainenOsaaminen.class);
 
-        Peruste peruste = perusteRepository.findOne(perusteId);
+        final Peruste peruste = perusteRepository.findOne(perusteId);
 
-        Lops2019LaajaAlainenOsaaminenKokonaisuus kokonaisuus = sisalto.getLaajaAlainenOsaaminen();
+        final Lops2019LaajaAlainenOsaaminenKokonaisuus kokonaisuus = sisalto.getLaajaAlainenOsaaminen();
 
         if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
             kokonaisuus.getLaajaAlaisetOsaamiset().forEach(lao -> {
@@ -125,10 +132,10 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public Lops2019LaajaAlainenOsaaminenDto addLaajaAlainenOsaaminen(Long perusteId) {
+    public Lops2019LaajaAlainenOsaaminenDto addLaajaAlainenOsaaminen(final Long perusteId) {
         Lops2019LaajaAlainenOsaaminen laajaAlainenOsaaminen = new Lops2019LaajaAlainenOsaaminen();
 
-        Peruste peruste = perusteRepository.findOne(perusteId);
+        final Peruste peruste = perusteRepository.findOne(perusteId);
         if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
             throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
@@ -139,14 +146,14 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public List<Lops2019OppiaineDto> getOppiaineet(Long perusteId) {
-        Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+    public List<Lops2019OppiaineDto> getOppiaineet(final Long perusteId) {
+        final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         return mapper.mapAsList(sisalto.getOppiaineet(), Lops2019OppiaineDto.class);
     }
 
     @Override
-    public List<Lops2019OppiaineDto> sortOppiaineet(Long perusteId, List<Lops2019OppiaineDto> dtos) {
-        List<Lops2019Oppiaine> oppiaineet = mapper.mapAsList(dtos, Lops2019Oppiaine.class);
+    public List<Lops2019OppiaineDto> sortOppiaineet(final Long perusteId, final List<Lops2019OppiaineDto> dtos) {
+        final List<Lops2019Oppiaine> oppiaineet = mapper.mapAsList(dtos, Lops2019Oppiaine.class);
 
         // Asetetaan järjestysnumero jokaiselle oppiaineelle
         for (int i = 0; i < oppiaineet.size(); i++) {
@@ -160,29 +167,86 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public void palautaSisaltoOppiaineet(Long perusteId) {
+    public Lops2019OppiaineKaikkiDto getOppiaineRevisionData(final Long perusteId, final Long oppiaineId, final int rev) {
+        final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        final Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
+        if (!sisalto.getOppiaineet().contains(oppiaine)) {
+            throw new BusinessRuleViolationException("vain-omaa-paatason-voi-muokata");
+        }
+
+        final Lops2019Oppiaine oa = oppiaineRepository.findRevision(oppiaineId, rev);
+        final Lops2019OppiaineKaikkiDto oaDto = mapper.map(oa, Lops2019OppiaineKaikkiDto.class);
+        final List<Lops2019OppiaineKaikkiDto> omt = oa.getOppimaarat().stream()
+                .map(om -> {
+                    Lops2019OppiaineKaikkiDto omDto = mapper.map(om, Lops2019OppiaineKaikkiDto.class);
+                    omDto.setModuulit(mapper.mapAsList(om.getModuulit(), Lops2019ModuuliDto.class));
+                    return omDto;
+                })
+                .collect(Collectors.toList());
+        final List<Lops2019ModuuliDto> moduulit = mapper.mapAsList(oa.getModuulit(), Lops2019ModuuliDto.class);
+        oaDto.setOppimaarat(omt);
+        oaDto.setModuulit(moduulit);
+        return oaDto;
+    }
+
+    @Override
+    @Transactional
+    public void restoreOppiaineRevisionInplace(final Long perusteId, final Long oppiaineId, final int rev) {
         Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        Long sisaltoId = sisalto.getId();
+        final Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
+        if (!sisalto.getOppiaineet().contains(oppiaine)) {
+            throw new BusinessRuleViolationException("vain-omaa-paatason-voi-muokata");
+        }
+
+        Lops2019Oppiaine oa = oppiaineRepository.findRevision(oppiaineId, rev);
+        if (oa != null) {
+            oa = oa.copy(true);
+            oa.setId(oppiaine.getId());
+            sisalto.getOppiaineet().removeIf(lops2019Oppiaine -> Objects.equals(lops2019Oppiaine.getId(), oppiaine.getId()));
+            sisalto = sisaltoRepository.save(sisalto);
+//            oppiaineRepository.delete(oppiaine);
+            final Lops2019Oppiaine saved = oppiaineRepository.save(oa);
+            sisalto.getOppiaineet().add(saved);
+            sisaltoRepository.save(sisalto);
+        }
+    }
+
+    @Override
+    public List<Revision> getOppiaineRevisions(final Long perusteId, final Long oppiaineId) {
+        final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        final Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
+        if (!sisalto.getOppiaineet().contains(oppiaine)) {
+            throw new BusinessRuleViolationException("vain-omaa-paatason-voi-muokata");
+        }
+
+        final List<Revision> revs = oppiaineRepository.getRevisions(oppiaineId);
+        return revs;
+    }
+
+    @Override
+    public void palautaSisaltoOppiaineet(final Long perusteId) {
+        final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        final Long sisaltoId = sisalto.getId();
 
         // Lisätään nykyiset versiot
-        List<Lops2019Oppiaine> oppiaineet = sisalto.getOppiaineet();
-        List<Lops2019Oppiaine> palautetut = new ArrayList<>();
+        final List<Lops2019Oppiaine> oppiaineet = sisalto.getOppiaineet();
+        final List<Lops2019Oppiaine> palautetut = new ArrayList<>();
 
         oppiaineet.forEach(oa -> {
-            Long oaId = oa.getId();
-            ArrayList<Lops2019Oppiaine> oppiaineVersiot = new ArrayList<>();
+            final Long oaId = oa.getId();
+            final ArrayList<Lops2019Oppiaine> oppiaineVersiot = new ArrayList<>();
             oppiaineVersiot.add(oa);
 
             // Haetaan eri versiot mukaan
-            List<Revision> revisions = oppiaineRepository.getRevisions(oaId);
+            final List<Revision> revisions = oppiaineRepository.getRevisions(oaId);
             revisions.forEach(rev -> {
-                Lops2019Oppiaine oppiaineRevision = oppiaineRepository.findRevision(oaId, rev.getNumero());
+                final Lops2019Oppiaine oppiaineRevision = oppiaineRepository.findRevision(oaId, rev.getNumero());
                 oppiaineVersiot.add(oppiaineRevision);
             });
 
             // Yritetään palauttaa viimeisin versio, jossa on oppimäärät tai moduulit tallessa
             boolean found = false;
-            for (Lops2019Oppiaine rev : oppiaineVersiot) {
+            for (final Lops2019Oppiaine rev : oppiaineVersiot) {
                 if (!ObjectUtils.isEmpty(rev.getOppimaarat()) || !ObjectUtils.isEmpty(rev.getModuulit())) {
                     palautetut.add(rev.copy());
                     found = true;
@@ -207,12 +271,12 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public Lops2019OppiaineDto addOppiaine(Long perusteId, Lops2019OppiaineDto dto) {
+    public Lops2019OppiaineDto addOppiaine(final Long perusteId, final Lops2019OppiaineDto dto) {
         if (dto.getOppiaine() != null && !ObjectUtils.isEmpty(dto.getOppimaarat())) {
             throw new BusinessRuleViolationException("oppimaaralla-ei-voi-olla-oppimaaria");
         }
 
-        Peruste peruste = perusteRepository.findOne(perusteId);
+        final Peruste peruste = perusteRepository.findOne(perusteId);
         if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
             throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
@@ -222,17 +286,17 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         oppiaine = oppiaineRepository.save(oppiaine);
 
         // Lisätään sisältöön viittaus oppiaineeseen
-        Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         sisalto.getOppiaineet().add(oppiaine);
 
         return mapper.map(oppiaine, Lops2019OppiaineDto.class);
     }
 
-    private Lops2019Oppiaine findOppiaine(Long perusteId, Long oppiaineId) {
+    private Lops2019Oppiaine findOppiaine(final Long perusteId, final Long oppiaineId) {
         // FIXME: Mappaa taaksepäin perusteen sisältöön
-        Lops2019Oppiaine oa = oppiaineRepository.findOne(oppiaineId);
-        Peruste peruste = perusteRepository.findOne(perusteId);
-        boolean perusteHasOppiaine = peruste.getLops2019Sisalto().getOppiaineet().stream()
+        final Lops2019Oppiaine oa = oppiaineRepository.findOne(oppiaineId);
+        final Peruste peruste = perusteRepository.findOne(perusteId);
+        final boolean perusteHasOppiaine = peruste.getLops2019Sisalto().getOppiaineet().stream()
                 .map(x -> Stream.concat(Stream.of(oa), oa.getOppimaarat().stream()))
                 .flatMap(x -> x)
                 .anyMatch(oa::equals);
@@ -243,24 +307,24 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public void palautaOppiaineenModuulit(Long perusteId, Long id) {
-        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, id);
-        Set<Long> nykyiset = oppiaine.getModuulit().stream()
+    public void palautaOppiaineenModuulit(final Long perusteId, final Long id) {
+        final Lops2019Oppiaine oppiaine = this.findOppiaine(perusteId, id);
+        final Set<Long> nykyiset = oppiaine.getModuulit().stream()
                 .map(AbstractAuditedReferenceableEntity::getId)
                 .collect(Collectors.toSet());
-        Set<Long> kaikki = oppiaineRepository.getRevisions(id).stream()
+        final Set<Long> kaikki = oppiaineRepository.getRevisions(id).stream()
                 .map(rev -> oppiaineRepository.findRevision(id, rev.getNumero()))
                 .map(Lops2019Oppiaine::getModuulit)
                 .flatMap(Collection::stream)
                 .map(AbstractAuditedReferenceableEntity::getId)
                 .collect(Collectors.toSet());
         kaikki.removeAll(nykyiset);
-        List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
+        final List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
         kaikki.forEach(moduuliId -> {
-            List<Revision> revisions = moduuliRepository.getRevisions(moduuliId);
+            final List<Revision> revisions = moduuliRepository.getRevisions(moduuliId);
             revisions.sort(Comparator.comparingInt(Revision::getNumero).reversed());
             if (revisions.size() > 1) {
-                Lops2019Moduuli poistettu = moduuliRepository.findRevision(moduuliId, revisions.get(1).getNumero());
+                final Lops2019Moduuli poistettu = moduuliRepository.findRevision(moduuliId, revisions.get(1).getNumero());
                 Lops2019Moduuli kopio = poistettu.copy();
                 kopio.setKoodi(null); // Koodit pitää asettaa uudestaan
                 kopio = moduuliRepository.save(kopio);
@@ -275,9 +339,9 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public Lops2019OppiaineKaikkiDto getOppiaineKaikki(Long perusteId, Long oppiaineId) {
-        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, oppiaineId);
-        Lops2019OppiaineKaikkiDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineKaikkiDto.class);
+    public Lops2019OppiaineKaikkiDto getOppiaineKaikki(final Long perusteId, final Long oppiaineId) {
+        final Lops2019Oppiaine oppiaine = this.findOppiaine(perusteId, oppiaineId);
+        final Lops2019OppiaineKaikkiDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineKaikkiDto.class);
 
         // FIXME: Miksi?
         // Haetaan manuaalisesti oppimäärät ja moduulit
@@ -288,9 +352,9 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public Lops2019OppiaineDto getOppiaine(Long perusteId, Long oppiaineId) {
-        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, oppiaineId);
-        Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
+    public Lops2019OppiaineDto getOppiaine(final Long perusteId, final Long oppiaineId) {
+        final Lops2019Oppiaine oppiaine = this.findOppiaine(perusteId, oppiaineId);
+        final Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
 
         // Haetaan manuaalisesti oppimäärät ja moduulit
         oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class));
@@ -300,24 +364,24 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public Lops2019OppiaineDto updateOppiaine(Long perusteId, Lops2019OppiaineDto dto) {
+    public Lops2019OppiaineDto updateOppiaine(final Long perusteId, final Lops2019OppiaineDto dto) {
         if (dto.getOppiaine() != null && !ObjectUtils.isEmpty(dto.getOppimaarat())) {
             throw new BusinessRuleViolationException("oppimaaralla-ei-voi-olla-oppimaaria");
         }
 
-        Peruste peruste = perusteRepository.findOne(perusteId);
-        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, dto.getId());
+        final Peruste peruste = perusteRepository.findOne(perusteId);
+        Lops2019Oppiaine oppiaine = this.findOppiaine(perusteId, dto.getId());
 
-        Lops2019Oppiaine updatedOppiaine = mapper.map(dto, Lops2019Oppiaine.class);
+        final Lops2019Oppiaine updatedOppiaine = mapper.map(dto, Lops2019Oppiaine.class);
         if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS) && !oppiaine.structureEquals(updatedOppiaine)) {
             throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
 
-        Map<Long, Lops2019Oppiaine> oppiaineetMap = oppiaine.getOppimaarat().stream()
+        final Map<Long, Lops2019Oppiaine> oppiaineetMap = oppiaine.getOppimaarat().stream()
                 .collect(Collectors.toMap(AbstractAuditedReferenceableEntity::getId, o -> o));
 
         if (dto.getOppimaarat() != null) {
-            List<Lops2019Oppiaine> collected = dto.getOppimaarat().stream()
+            final List<Lops2019Oppiaine> collected = dto.getOppimaarat().stream()
                     .map(om -> om.getId() != null
                             ? oppiaineetMap.get(om.getId())
                             : mapper.map(om, Lops2019Oppiaine.class))
@@ -327,19 +391,19 @@ public class Lops2019ServiceImpl implements Lops2019Service {
             oppiaine.setOppimaarat(collected);
 
             // Asetetaan oppimäärien järjetys
-            List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
+            final List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
             if (!ObjectUtils.isEmpty(oppimaarat)) {
                 for (int i = 0; i < oppimaarat.size(); i++) {
-                    Lops2019Oppiaine oppimaara = oppimaarat.get(i);
+                    final Lops2019Oppiaine oppimaara = oppimaarat.get(i);
                     oppimaara.setJarjestys(i);
                 }
             }
 
             // Asetetaan moduulien järjetys
-            List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
+            final List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
             if (!ObjectUtils.isEmpty(moduulit)) {
                 for (int i = 0; i < moduulit.size(); i++) {
-                    Lops2019Moduuli moduuli = moduulit.get(i);
+                    final Lops2019Moduuli moduuli = moduulit.get(i);
                     moduuli.setJarjestys(i);
                 }
             }
@@ -348,7 +412,7 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         // Tallennetaan muokattu oppiaine
         oppiaine = oppiaineRepository.save(oppiaine);
 
-        Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
+        final Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
 
         // Haetaan manuaalisesti oppimäärät ja moduulit mukaan
         oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class));
@@ -358,17 +422,17 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public void removeOppiaine(Long perusteId, Long oppiaineId) {
-        Peruste peruste = perusteRepository.findOne(perusteId);
+    public void removeOppiaine(final Long perusteId, final Long oppiaineId) {
+        final Peruste peruste = perusteRepository.findOne(perusteId);
         if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
             throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
 
-        Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
-        Lops2019Oppiaine parent = oppiaine.getOppiaine();
+        final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        final Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
+        final Lops2019Oppiaine parent = oppiaine.getOppiaine();
 
-        boolean removed;
+        final boolean removed;
 
         if (parent != null) {
             removed = parent.getOppimaarat().remove(oppiaine);
@@ -384,9 +448,9 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public Lops2019ModuuliDto getModuuli(Long perusteId, Long oppiaineId, Long moduuliId) {
-        Lops2019Oppiaine oppiaine = findOppiaine(perusteId, oppiaineId);
-        Optional<Lops2019Moduuli> moduuliOptional = oppiaine.getModuulit().stream()
+    public Lops2019ModuuliDto getModuuli(final Long perusteId, final Long oppiaineId, final Long moduuliId) {
+        final Lops2019Oppiaine oppiaine = this.findOppiaine(perusteId, oppiaineId);
+        final Optional<Lops2019Moduuli> moduuliOptional = oppiaine.getModuulit().stream()
                 .filter(moduuli -> Objects.equals(moduuli.getId(), moduuliId))
                 .findAny();
 
@@ -395,7 +459,7 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public Lops2019ModuuliDto updateModuuli(Long perusteId, Lops2019ModuuliDto dto) {
+    public Lops2019ModuuliDto updateModuuli(final Long perusteId, final Lops2019ModuuliDto dto) {
         Lops2019Moduuli moduuli = moduuliRepository.findOne(dto.getId());
 
         mapper.map(dto, moduuli);
@@ -405,16 +469,16 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     }
 
     @Override
-    public void removeModuuli(Long perusteId, Long oppiaineId, Long moduuliId) {
+    public void removeModuuli(final Long perusteId, final Long oppiaineId, final Long moduuliId) {
 
-        Peruste peruste = perusteRepository.findOne(perusteId);
+        final Peruste peruste = perusteRepository.findOne(perusteId);
         if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
             throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
 
-        Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
-        Lops2019Moduuli moduuli = moduuliRepository.findOne(moduuliId);
-        boolean removed = oppiaine.getModuulit().remove(moduuli);
+        final Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
+        final Lops2019Moduuli moduuli = moduuliRepository.findOne(moduuliId);
+        final boolean removed = oppiaine.getModuulit().remove(moduuli);
 
         // Poistetaan, jos viitattu perusteen sisällöstä
         if (removed) {
