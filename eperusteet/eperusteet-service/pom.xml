@@ -28,7 +28,7 @@
         <slf4j.version>1.7.21</slf4j.version>
         <batik.version>1.9</batik.version>
         <surefire.version>2.22.2</surefire.version>
-        <failsafe.plugin>2.22.2</failsafe.plugin>
+        <failsafe.version>2.22.2</failsafe.version>
         <fop.version>2.3</fop.version>
         <pdfbox.version>2.0.12</pdfbox.version>
         <flyway.version>5.2.4</flyway.version>
@@ -475,9 +475,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${failsafe.version}</version>
                 <configuration>
-                    <parallel>classesAndMethods</parallel>
-                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                    <argLine>-Xmx2048m -XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC</argLine>
+<!--                    <parallel>classesAndMethods</parallel>-->
+<!--                    <useUnlimitedThreads>true</useUnlimitedThreads>-->
+                    <reuseForks>false</reuseForks>
                     <reportFormat>plain</reportFormat>
                     <argLine>${failsafeArgLine}</argLine>
                     <systemPropertyVariables>
