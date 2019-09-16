@@ -74,7 +74,7 @@ public class LukiokoulutuksenPerusteenSisalto extends AbstractOppiaineOpetuksenS
     public LukiokoulutuksenPerusteenSisalto kloonaa(Peruste peruste) {
         LukiokoulutuksenPerusteenSisalto kopio = new LukiokoulutuksenPerusteenSisalto();
         kopio.peruste = peruste;
-        kopio.sisalto = this.sisalto.kloonaa();
+        kopio.sisalto = this.sisalto.copy();
         kopio.opetussuunnitelma = this.opetussuunnitelma.kloonaa(kopio);
         kopio.aihekokonaisuudet =  this.aihekokonaisuudet.kloonaa();
         kopio.aihekokonaisuudet.setSisalto(kopio);
