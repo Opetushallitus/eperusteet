@@ -1,3 +1,7 @@
+.modal-dialog {
+    width: 1000px;
+}
+
 .modal-body {
     .results {
         min-height: 400px;
@@ -6,5 +10,14 @@
         display: block;
         height: 30px;
         padding: 10px 0 10px 0;
+    }
+
+    .popup-navi {
+        text-align: center;
+
+        .linkDisabled {
+            pointer-events: none;
+            color: grey;
+        }
     }
 }

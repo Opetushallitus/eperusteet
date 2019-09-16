@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.dto.koodisto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
@@ -27,6 +28,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
+@ToString
 public class KoodistoMetadataDto {
     private String nimi;
     private String kieli;

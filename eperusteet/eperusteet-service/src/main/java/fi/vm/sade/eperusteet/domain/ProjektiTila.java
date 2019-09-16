@@ -104,6 +104,11 @@ public enum ProjektiTila {
         return EnumSet.noneOf(ProjektiTila.class);
     }
 
+    public static Set<ProjektiTila> kaytossaOlevatTilat() {
+        return EnumSet.of(LAADINTA, VIIMEISTELY, JULKAISTU, VALMIS, KOMMENTOINTI);
+    }
+
+
     public boolean isOneOf(ProjektiTila... tilat) {
         for (ProjektiTila toinen : tilat) {
             if (toinen.toString().equals(this.tila)) {

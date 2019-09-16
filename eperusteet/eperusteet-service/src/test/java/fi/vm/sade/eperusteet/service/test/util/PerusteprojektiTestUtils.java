@@ -159,11 +159,7 @@ public class PerusteprojektiTestUtils {
 
     public void julkaise(Long projektiId, boolean force) {
         if (force) {
-            Perusteprojekti projekti = perusteprojektiRepository.findOne(projektiId);
-            projekti.setTila(ProjektiTila.JULKAISTU);
-            projekti.getPeruste().asetaTila(PerusteTila.VALMIS);
-            perusteprojektiRepository.save(projekti);
-            em.flush();
+            asetaProjektiTilaan(projektiId, ProjektiTila.JULKAISTU);
         }
         else {
             TilaUpdateStatus status = perusteprojektiService.updateTila(projektiId, ProjektiTila.VIIMEISTELY, null);
@@ -173,6 +169,14 @@ public class PerusteprojektiTestUtils {
             status = perusteprojektiService.updateTila(projektiId, ProjektiTila.JULKAISTU, TestUtils.createTiedote());
             assertThat(status.isVaihtoOk()).isTrue();
         }
+    }
+
+    public void asetaProjektiTilaan(Long projektiId, ProjektiTila tila) {
+        Perusteprojekti projekti = perusteprojektiRepository.findOne(projektiId);
+        projekti.setTila(tila);
+        projekti.getPeruste().asetaTila(PerusteTila.VALMIS);
+        perusteprojektiRepository.save(projekti);
+        em.flush();
     }
 
     public void asetaMuodostumiset(Long perusteId) {

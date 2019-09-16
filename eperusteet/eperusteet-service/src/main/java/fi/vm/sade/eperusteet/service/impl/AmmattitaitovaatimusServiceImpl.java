@@ -9,12 +9,14 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdeal
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -107,6 +109,10 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
             tovkDto.setPeruste(mapper.map(peruste, PerusteInfoDto.class));
             tovkDto.setTutkinnonOsaDto(mapper.map(tosa, TutkinnonOsaDto.class));
             tovkDto.setSuoritustapa(mapper.map(tov.getSuoritustapa(), SuoritustapaDto.class));
+
+            PerusteprojektiKevytDto perusteprojekti = new PerusteprojektiKevytDto();
+            perusteprojekti.setId(peruste.getPerusteprojekti().getId());
+            tovkDto.setPerusteProjekti(perusteprojekti);
             return tovkDto;
         });
         return resultDto;
