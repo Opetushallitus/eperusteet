@@ -17,9 +17,12 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoPageDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.KoodistoPagedService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,6 +47,9 @@ public class KoodistoController {
     @Autowired
     KoodistoClient service;
 
+    @Autowired
+    KoodistoPagedService koodistoPagedService;
+
     @RequestMapping(value = "/{koodisto}", method = GET)
     public ResponseEntity<List<KoodistoKoodiDto>> kaikki(
         @PathVariable("koodisto") final String koodisto,
@@ -51,6 +57,15 @@ public class KoodistoController {
         return new ResponseEntity<>(haku == null || haku.isEmpty()
                 ? service.getAll(koodisto)
                 : service.filterBy(koodisto, haku), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/sivutettu/{koodisto}", method = GET)
+    public ResponseEntity<Page<KoodistoKoodiDto>> kaikkiSivutettuna(
+            @PathVariable("koodisto") final String koodisto,
+            @RequestParam(value = "haku", required = false)  final String haku,
+            KoodistoPageDto koodistoPageDto) {
+
+        return new ResponseEntity<>(koodistoPagedService.getAllPaged(koodisto, haku, koodistoPageDto), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{koodisto}/{koodi}", method = GET)

@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto.koodisto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Arrays;
 import lombok.*;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -40,4 +41,19 @@ public class KoodistoKoodiDto {
     private KoodistoDto koodisto;
     private Date voimassaAlkuPvm;
     private Date voimassaLoppuPvm;
+
+    public KoodistoMetadataDto getMetadataName(String kieli) {
+        if(metadata == null) {
+            return null;
+        }
+
+        return Arrays.asList(metadata).stream()
+                .filter(metadata -> metadata.getKieli().equals(kieli))
+                .findFirst()
+                .orElse(
+                        Arrays.asList(metadata).stream()
+                                .findFirst()
+                                .orElse(null)
+                );
+    }
 }

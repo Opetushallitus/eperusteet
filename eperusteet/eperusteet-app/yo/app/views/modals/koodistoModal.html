@@ -14,14 +14,56 @@
     <div class="results">
         <table class="table table-striped">
             <tr>
-                <th class="col-xs-3" kaanna="'koodi'"></th>
+                <th class="col-xs-2" kaanna="'koodi'"></th>
                 <th class="col-xs-6" kaanna="'nimi'"></th>
-                <th class="col-xs-3" kaanna="'voimaantulo-pvm'"></th>
+                <th class="col-xs-1" kaanna="'voimaantulo-pvm'"></th>
+                <th class="col-xs-3" kaanna="'muissa-tutkinnon-osissa'"></th>
             </tr>
-            <tr ng-repeat="l in loydetyt | startFrom:itemsPerPage*(nykyinen-1) | limitTo:itemsPerPage">
+            <tr ng-repeat="l in loydetyt">
                 <td><a class="action-link" ng-click="ok(l)">{{ l.koodiArvo }}</a></td>
-                <td>{{l.nimi | kaanna }}</td>
+                <td>{{l.nimi | kaanna }} </td>
                 <td>{{l.voimassaAlkuPvm | date:'dd.MM.yyyy'}}</td>
+                <td><span ng-show="!tutkinnonosaviitteet[l.koodiUri]"><small-spinner></small-spinner></span>
+
+                        <a ng-if="haetaanAmmattitaitovaatimukset() && tutkinnonosaviitteet[l.koodiUri].data.length > 0"
+                                uib-popover-template="'ammattitaitovaatimus-templ'" 
+                                type="button" 
+                                class="action-link" 
+                                popover-placement="right"
+                                popover-title="{{'ammattitaitovaatimukset-muualla' | kaanna}}"
+                                popover-trigger="'outsideClick'">
+                                {{'näytä' | kaanna}}
+                        </a>
+    
+                        <script type="text/ng-template" id="ammattitaitovaatimus-templ">
+                            
+                            <div>
+                                <h5 kaanna kaanna-values="{kokonaismaara:tutkinnonosaviitteet[l.koodiUri]['kokonaismäärä']}">tutkinnon-osien-kokonaismaara</h5>
+                                <span ng-show="!tutkinnonosaviitteet[l.koodiUri] || tutkinnonosaviitteet[l.koodiUri].lataa"><small-spinner></small-spinner></span>
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th class="col-xs-6" kaanna="'peruste'"></th>
+                                        <th class="col-xs-6" kaanna="'tutkinnon-osa'"></th>
+                                    </tr>
+    
+                                    <tr ng-repeat="tutkinnonosa in tutkinnonosaviitteet[l.koodiUri].data">
+                                        <td><a ng-href="{{getPerusteenUrl(tutkinnonosa.perusteProjekti, tutkinnonosa.peruste)}}"
+                                            ng-click="peruuta()">{{tutkinnonosa.peruste.nimi | kaanna}}</a></td>
+                                        <td><a ng-href="{{getTutkinnonosaUrl(tutkinnonosa)}}"
+                                            ng-click="peruuta()">{{tutkinnonosa.tutkinnonOsa.nimi | kaanna}}</a></td>    
+                                    </tr> 
+                                </table>    
+                                
+                                <div class="popup-navi" ng-if="tutkinnonosaviitteet[l.koodiUri].sivukoko < tutkinnonosaviitteet[l.koodiUri]['kokonaismäärä']">
+                                    <a ng-class="tutkinnonosaviitteet[l.koodiUri].sivu === 0 ? 'linkDisabled' : 'action-link'"
+                                        ng-click="haeAmmattitaitovaatimuksenTutkintoosa(l.koodiUri, tutkinnonosaviitteet[l.koodiUri].sivu-1)"><<</a>
+                                    <a ng-class="tutkinnonosaviitteet[l.koodiUri].data.length < tutkinnonosaviitteet[l.koodiUri].sivukoko ? 'linkDisabled' : 'action-link'"
+                                        ng-click="haeAmmattitaitovaatimuksenTutkintoosa(l.koodiUri, tutkinnonosaviitteet[l.koodiUri].sivu+1)">>></a>
+                                </div>
+                            </div>
+                        </script>
+
+                </td>
             </tr>
         </table>
     </div>

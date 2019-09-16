@@ -3,7 +3,8 @@ import _ from "lodash";
 
 angular
     .module("eperusteApp")
-    .service("Koodisto", function($http, $uibModal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot, Utils) {
+    .service("Koodisto", function($http, $uibModal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot, Utils, Api) {
+
         var taydennykset = [];
         var koodistoVaihtoehdot = [
             "ammattitaitovaatimukset",
@@ -17,12 +18,18 @@ angular
             return true;
         };
 
+        function haeSivutettu(koodisto, cb, sivu, sivukoko, nimirajaus) {
+            const sivutettu = Api.one("/koodisto/sivutettu/"+koodisto+"?sivukoko="+sivukoko+"&sivu="+sivu+"&haku="+nimirajaus).get();
+            cb();
+            return sivutettu;
+        }
+
         function hae(koodisto, cb) {
             if (!_.isEmpty(taydennykset) && koodisto === nykyinenKoodisto) {
                 cb();
                 return;
             }
-            $http.get(SERVICE_LOC + "/koodisto/" + koodisto).then(res => {
+            $http.get(SERVICE_LOC + "/koodisto/sivutettu/" + koodisto + "?sivukoko=").then(res => {
                 taydennykset = koodistoMapping(res.data);
                 nykyinenKoodisto = koodisto;
                 taydennykset = _.sortBy(taydennykset, Utils.nameSort);
@@ -113,25 +120,34 @@ angular
             };
         }
 
+        function haeAmmattitaitovaatimuksenTutkintoosa(koodiUri, sivu) {
+            return Api.one("/ammattitaitovaatimukset/tutkinnonosat?kaikki=true&uri=" + koodiUri+"&sivu="+sivu+"&sivukoko=2").get();
+        }
+
         return {
             hae: hae,
             filtteri: filtteri,
             vaihtoehdot: _.clone(koodistoVaihtoehdot),
             modaali: modaali,
             haeAlarelaatiot: haeAlarelaatiot,
-            haeYlarelaatiot: haeYlarelaatiot
+            haeYlarelaatiot: haeYlarelaatiot,
+            haeAmmattitaitovaatimuksenTutkintoosa: haeAmmattitaitovaatimuksenTutkintoosa,
+            haeSivutettu: haeSivutettu,
+            koodistoMapping: koodistoMapping
         };
     })
     .controller("KoodistoModalCtrl", function(
         $scope,
         $uibModalInstance,
         $timeout,
+        $state,
         Koodisto,
         tyyppi,
         ylarelaatioTyyppi,
         TutkinnonOsanKoodiUniqueResource,
         Notifikaatiot,
-        tarkista
+        tarkista,
+        PerusteProjektiService
     ) {
         $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
         $scope.tyyppi = tyyppi;
@@ -142,32 +158,47 @@ angular
         $scope.nykyinen = 1;
         $scope.lataa = true;
         $scope.syote = "";
+        $scope.tutkinnonosaviitteet = {};
+        $scope.nimirajaus = "";
+
+        $scope.haeSivutettu = _.debounce(async () => {
+            const sivutettuData = await Koodisto.haeSivutettu($scope.tyyppi, hakuCb, $scope.nykyinen-1, $scope.itemsPerPage, $scope.nimirajaus);
+
+            $scope.loydetyt = sivutettuData.data;
+            $scope.loydetyt = Koodisto.koodistoMapping($scope.loydetyt);
+            $scope.totalItems = sivutettuData.kokonaismäärä;
+
+            if ($scope.haetaanAmmattitaitovaatimukset()) {
+                _.forEach($scope.loydetyt, (rivi: any) => {
+                    $scope.haeAmmattitaitovaatimuksenTutkintoosa(rivi.koodiUri, 0);
+                });
+            }
+
+        }, 300);
+
 
         $scope.valitseSivu = function(sivu) {
             if (sivu > 0 && sivu <= Math.ceil($scope.totalItems / $scope.itemsPerPage)) {
                 $scope.nykyinen = sivu;
             }
+
+            $scope.haeSivutettu();
         };
 
         $scope.haku = function(rajaus) {
-            $scope.loydetyt = Koodisto.filtteri(rajaus);
-            $scope.totalItems = _.size($scope.loydetyt);
-            $scope.valitseSivu(1);
+            $scope.nimirajaus = rajaus;
+            $scope.nykyinen = 1;
+            $scope.haeSivutettu();
         };
 
         function hakuCb() {
             $scope.lataa = false;
-            $scope.haku("");
             $timeout(function() {
                 $("#koodisto_modal_autofocus").focus();
             }, 0);
         }
 
-        if ($scope.ylarelaatioTyyppi === "") {
-            Koodisto.hae($scope.tyyppi, hakuCb);
-        } else {
-            Koodisto.haeYlarelaatiot($scope.ylarelaatioTyyppi, $scope.tyyppi, hakuCb);
-        }
+        $scope.haeSivutettu();
 
         $scope.ok = function(koodi) {
             if (tarkista) {
@@ -185,6 +216,31 @@ angular
         $scope.peruuta = function() {
             $uibModalInstance.dismiss();
         };
+
+        $scope.haeAmmattitaitovaatimuksenTutkintoosa = async (koodiUri, sivu) => {
+            if($scope.tutkinnonosaviitteet[koodiUri]) {
+                $scope.tutkinnonosaviitteet[koodiUri].lataa = true;
+            }
+            const tutkinnonosat = await Koodisto.haeAmmattitaitovaatimuksenTutkintoosa(koodiUri, sivu);
+            $scope.tutkinnonosaviitteet[koodiUri] = tutkinnonosat;
+            $scope.tutkinnonosaviitteet[koodiUri].lataa = false;
+        } 
+
+        $scope.haetaanAmmattitaitovaatimukset = () => {
+            return $scope.tyyppi === 'ammattitaitovaatimukset';
+        }
+
+        $scope.getPerusteenUrl = (projekti, peruste) => {
+            return PerusteProjektiService.getUrl(projekti, peruste);
+        }
+
+        $scope.getTutkinnonosaUrl = function(tutkinnonosa) {
+            return $state.href(
+                "root.perusteprojekti.suoritustapa.tutkinnonosa",
+                { tutkinnonOsaViiteId: tutkinnonosa.id, versio: "" }
+            );
+        };
+
     })
     .directive("koodistoSelect", function(Koodisto) {
         return {

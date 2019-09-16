@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
@@ -21,6 +22,10 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -51,15 +56,6 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     @Test
     @Rollback
     public void testAmmattitaitovaatimuskoodinAvullaPeruste() {
-        PerusteprojektiDto aProjekti = ppTestUtils.createPerusteprojekti(config -> {
-            config.setReforminMukainen(true);
-        });
-        PerusteDto aPeruste = ppTestUtils.initPeruste(aProjekti.getPeruste().getIdLong());
-
-        PerusteprojektiDto bProjekti = ppTestUtils.createPerusteprojekti(config -> {
-            config.setReforminMukainen(true);
-        });
-        PerusteDto bPeruste = ppTestUtils.initPeruste(bProjekti.getPeruste().getIdLong());
 
         {
             AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
@@ -70,72 +66,85 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             assertThat(tosat.getTotalElements()).isEqualTo(0);
         }
 
-        { // Vaatimukset
-            Ammattitaitovaatimukset2019 vaatimukset = new Ammattitaitovaatimukset2019();
-            Ammattitaitovaatimus2019 vaatimus = new Ammattitaitovaatimus2019();
-            Ammattitaitovaatimus2019Kohdealue kohdealue = new Ammattitaitovaatimus2019Kohdealue();
-            kohdealue.setVaatimukset(Lists.newArrayList(vaatimus));
+        PerusteprojektiDto perusteprojekti1 = lisaaPerusteKoodistolla(Arrays.asList("ammattitaitovaatimukset_1000"), ProjektiTila.JULKAISTU);
+        PerusteprojektiDto perusteprojekti2 = lisaaPerusteKoodistolla(Arrays.asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_2000"), ProjektiTila.LAADINTA);
+        PerusteprojektiDto perusteprojekti3 = lisaaPerusteKoodistolla(Arrays.asList("ammattitaitovaatimukset_2000", "ammattitaitovaatimukset_3000"), ProjektiTila.VALMIS);
 
-            vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
+        PerusteprojektiDto perusteProjektiPoistettu = lisaaPerusteKoodistolla(
+                Arrays.asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_2000", "ammattitaitovaatimukset_3000"), ProjektiTila.POISTETTU);
 
-            Koodi koodi = new Koodi();
-            koodi.setUri("ammattitaitovaatimukset_1000");
-            koodi.setKoodisto("ammattitaitovaatimukset");
-            vaatimus.setKoodi(koodi);
-
-            Peruste peruste = perusteRepository.findOne(aPeruste.getId());
-            TutkinnonOsaViiteDto tosa = ppTestUtils.addTutkinnonOsa(peruste.getId());
-            TutkinnonOsaViite tov = tovRepository.findOne(tosa.getId());
-            tov.getTutkinnonOsa().setAmmattitaitovaatimukset2019(vaatimukset);
-            tovRepository.save(tov);
-            em.flush();
-        }
-
-        ppTestUtils.julkaise(aProjekti.getId(), true);
         {
             AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
+            pquery.setKaikki(true);
+            pquery.setUri("ammattitaitovaatimukset_1000");
+            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
+            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            assertThat(tosat.getTotalElements()).isEqualTo(2);
+            assertThat(perusteet.getContent())
+                    .extracting(PerusteBaseDto::getId)
+                    .containsExactlyInAnyOrder(perusteprojekti1.getPeruste().getIdLong(), perusteprojekti2.getPeruste().getIdLong());
+        }
+
+        {
+            AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
+            pquery.setKaikki(true);
+            pquery.setUri("ammattitaitovaatimukset_2000");
+            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
+            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            assertThat(tosat.getTotalElements()).isEqualTo(2);
+            assertThat(perusteet.getContent())
+                    .extracting(PerusteBaseDto::getId)
+                    .containsExactlyInAnyOrder(perusteprojekti2.getPeruste().getIdLong(), perusteprojekti3.getPeruste().getIdLong());
+        }
+
+        {
+            AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
+            pquery.setKaikki(false);
             pquery.setUri("ammattitaitovaatimukset_1000");
             Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
             Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
             assertThat(tosat.getTotalElements()).isEqualTo(1);
             assertThat(perusteet.getContent())
                     .extracting(PerusteBaseDto::getId)
-                    .containsExactlyInAnyOrder(aPeruste.getId());
+                    .containsExactlyInAnyOrder(perusteprojekti1.getPeruste().getIdLong());
         }
 
-        {
-            Ammattitaitovaatimukset2019 vaatimukset = new Ammattitaitovaatimukset2019();
+    }
+
+    private PerusteprojektiDto lisaaPerusteKoodistolla(Collection<String> koodiUrit, ProjektiTila tila) {
+
+        PerusteprojektiDto aProjekti = ppTestUtils.createPerusteprojekti(config -> {
+            config.setReforminMukainen(true);
+        });
+        PerusteDto aPeruste = ppTestUtils.initPeruste(aProjekti.getPeruste().getIdLong());
+
+        Ammattitaitovaatimukset2019 vaatimukset = new Ammattitaitovaatimukset2019();
+        Ammattitaitovaatimus2019Kohdealue kohdealue = new Ammattitaitovaatimus2019Kohdealue();
+        kohdealue.setVaatimukset(createVaatimukset(koodiUrit));
+
+        vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
+
+        Peruste peruste = perusteRepository.findOne(aPeruste.getId());
+        TutkinnonOsaViiteDto tosa = ppTestUtils.addTutkinnonOsa(peruste.getId());
+        TutkinnonOsaViite tov = tovRepository.findOne(tosa.getId());
+        tov.getTutkinnonOsa().setAmmattitaitovaatimukset2019(vaatimukset);
+        tovRepository.save(tov);
+        em.flush();
+
+        ppTestUtils.asetaProjektiTilaan(aProjekti.getId(), tila);
+
+        return aProjekti;
+    }
+
+    private List<Ammattitaitovaatimus2019> createVaatimukset(Collection<String> koodiUrit) {
+        return koodiUrit.stream().map(koodiUri -> {
             Ammattitaitovaatimus2019 vaatimus = new Ammattitaitovaatimus2019();
-            Ammattitaitovaatimus2019Kohdealue kohdealue = new Ammattitaitovaatimus2019Kohdealue();
-            kohdealue.setVaatimukset(Lists.newArrayList(vaatimus));
-
-            vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
-
             Koodi koodi = new Koodi();
-            koodi.setUri("ammattitaitovaatimukset_1000");
+            koodi.setUri(koodiUri);
             koodi.setKoodisto("ammattitaitovaatimukset");
             vaatimus.setKoodi(koodi);
-
-            Peruste peruste = perusteRepository.findOne(bPeruste.getId());
-            TutkinnonOsaViiteDto tosa = ppTestUtils.addTutkinnonOsa(peruste.getId());
-            TutkinnonOsaViite tov = tovRepository.findOne(tosa.getId());
-            tov.getTutkinnonOsa().setAmmattitaitovaatimukset2019(vaatimukset);
-            tovRepository.save(tov);
-            em.flush();
-        }
-
-        {
-            AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
-            pquery.setUri("ammattitaitovaatimukset_1000");
-            ppTestUtils.julkaise(bProjekti.getId(), true);
-            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
-            assertThat(tosat.getTotalElements()).isEqualTo(2);
-            assertThat(perusteet.getContent())
-                    .extracting(PerusteBaseDto::getId)
-                    .containsExactlyInAnyOrder(aPeruste.getId(), bPeruste.getId());
-        }
-
+            return vaatimus;
+        }).collect(Collectors.toList());
     }
 
 
