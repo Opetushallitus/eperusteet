@@ -32,6 +32,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  *
@@ -56,7 +57,7 @@ import java.util.List;
     name = "PerusteenOsaViite.rootId",
     columns = {@ColumnResult(name="id", type=Long.class)}
 )
-public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
+public class PerusteenOsaViite implements ReferenceableEntity, Serializable, Copyable<PerusteenOsaViite> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -143,35 +144,35 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     public PerusteenOsaViite() {
     }
 
-    public PerusteenOsaViite(Suoritustapa suoritustapa) {
+    public PerusteenOsaViite(final Suoritustapa suoritustapa) {
         this.suoritustapa= suoritustapa;
     }
 
-    public PerusteenOsaViite(PerusopetuksenPerusteenSisalto sisalto) {
+    public PerusteenOsaViite(final PerusopetuksenPerusteenSisalto sisalto) {
         this.perusopetuksenPerusteenSisalto = sisalto;
     }
 
-    public PerusteenOsaViite(LukiokoulutuksenPerusteenSisalto sisalto) {
+    public PerusteenOsaViite(final LukiokoulutuksenPerusteenSisalto sisalto) {
         this.lukiokoulutuksenPerusteenSisalto = sisalto;
     }
 
-    public PerusteenOsaViite(Lops2019Sisalto sisalto) {
+    public PerusteenOsaViite(final Lops2019Sisalto sisalto) {
         this.lops2019Sisalto = sisalto;
     }
 
-    public PerusteenOsaViite(EsiopetuksenPerusteenSisalto sisalto) {
+    public PerusteenOsaViite(final EsiopetuksenPerusteenSisalto sisalto) {
         this.esiopetuksenPerusteenSisalto = sisalto;
     }
 
-    public PerusteenOsaViite(OpasSisalto sisalto) {
+    public PerusteenOsaViite(final OpasSisalto sisalto) {
         this.opasSisalto = sisalto;
     }
 
-    public PerusteenOsaViite(AIPEOpetuksenSisalto sisalto) {
+    public PerusteenOsaViite(final AIPEOpetuksenSisalto sisalto) {
         this.aipeSisalto = sisalto;
     }
 
-    public PerusteenOsaViite(TpoOpetuksenSisalto sisalto) {
+    public PerusteenOsaViite(final TpoOpetuksenSisalto sisalto) {
         this.tpoOpetuksenSisalto = sisalto;
     }
 
@@ -188,15 +189,16 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
         return root;
     }
 
-    public PerusteenOsaViite kloonaa() {
-        PerusteenOsaViite pov = new PerusteenOsaViite();
-        if (getPerusteenOsa() != null) {
-            pov.setPerusteenOsa(getPerusteenOsa());
+    @Override
+    public PerusteenOsaViite copy(final boolean deep) {
+        final PerusteenOsaViite pov = new PerusteenOsaViite();
+        if (this.getPerusteenOsa() != null) {
+            pov.setPerusteenOsa(this.getPerusteenOsa());
         }
 
-        List<PerusteenOsaViite> uudetLapset = new ArrayList<>();
-        for (PerusteenOsaViite lapsi : lapset) {
-            PerusteenOsaViite kloonattu = lapsi.kloonaa();
+        final List<PerusteenOsaViite> uudetLapset = new ArrayList<>();
+        for (final PerusteenOsaViite lapsi : lapset) {
+            final PerusteenOsaViite kloonattu = lapsi.copy();
             kloonattu.setVanhempi(pov);
             uudetLapset.add(kloonattu);
         }

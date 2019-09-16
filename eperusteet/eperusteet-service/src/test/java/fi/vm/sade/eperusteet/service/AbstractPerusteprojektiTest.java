@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 
 @DirtiesContext
 @Transactional
-public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
+abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTest {
 
     @Autowired
     protected PerusteprojektiService perusteprojektiService;

@@ -175,17 +175,25 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         }
 
         final Lops2019Oppiaine oa = oppiaineRepository.findRevision(oppiaineId, rev);
+        if (oa == null) {
+            throw new BusinessRuleViolationException("versiota-ei-loytynyt");
+        }
         final Lops2019OppiaineKaikkiDto oaDto = mapper.map(oa, Lops2019OppiaineKaikkiDto.class);
-        final List<Lops2019OppiaineKaikkiDto> omt = oa.getOppimaarat().stream()
-                .map(om -> {
-                    Lops2019OppiaineKaikkiDto omDto = mapper.map(om, Lops2019OppiaineKaikkiDto.class);
-                    omDto.setModuulit(mapper.mapAsList(om.getModuulit(), Lops2019ModuuliDto.class));
-                    return omDto;
-                })
-                .collect(Collectors.toList());
-        final List<Lops2019ModuuliDto> moduulit = mapper.mapAsList(oa.getModuulit(), Lops2019ModuuliDto.class);
-        oaDto.setOppimaarat(omt);
-        oaDto.setModuulit(moduulit);
+        if (oa.getOppimaarat() != null) {
+            final List<Lops2019OppiaineKaikkiDto> omt = oa.getOppimaarat().stream()
+                    .map(om -> {
+                        Lops2019OppiaineKaikkiDto omDto = mapper.map(om, Lops2019OppiaineKaikkiDto.class);
+                        omDto.setModuulit(mapper.mapAsList(om.getModuulit(), Lops2019ModuuliDto.class));
+                        return omDto;
+                    })
+                    .collect(Collectors.toList());
+            oaDto.setOppimaarat(omt);
+        }
+
+        if (oa.getModuulit() != null) {
+            final List<Lops2019ModuuliDto> moduulit = mapper.mapAsList(oa.getModuulit(), Lops2019ModuuliDto.class);
+            oaDto.setModuulit(moduulit);
+        }
         return oaDto;
     }
 
@@ -215,10 +223,6 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     public List<Revision> getOppiaineRevisions(final Long perusteId, final Long oppiaineId) {
         final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         final Lops2019Oppiaine oppiaine = oppiaineRepository.findOne(oppiaineId);
-        if (!sisalto.getOppiaineet().contains(oppiaine)) {
-            throw new BusinessRuleViolationException("vain-omaa-paatason-voi-muokata");
-        }
-
         final List<Revision> revs = oppiaineRepository.getRevisions(oppiaineId);
         return revs;
     }

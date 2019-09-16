@@ -1,9 +1,6 @@
 package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.Copyable;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Koodillinen;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -28,7 +25,11 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine")
-public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity implements Koodillinen, Nimetty, Copyable<Lops2019Oppiaine> {
+public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity implements
+        Koodillinen,
+        StructurallyComparable<Lops2019Oppiaine>,
+        Nimetty,
+        Copyable<Lops2019Oppiaine> {
 
     @Getter
     @Setter
@@ -78,7 +79,7 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Lops2019OppiaineTavoitteet tavoitteet;
 
-    public void setOppimaarat(List<Lops2019Oppiaine> oppimaarat) {
+    public void setOppimaarat(final List<Lops2019Oppiaine> oppimaarat) {
         if (this.oppimaarat == null) {
             this.oppimaarat = new ArrayList<>();
         }
@@ -106,8 +107,9 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
             inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
     private Lops2019Oppiaine oppiaine; // Oppimäärän viittaus oppiaineeseen
 
-    public boolean structureEquals(Lops2019Oppiaine other) {
-        boolean result = Objects.equals(this.getId(), other.getId());
+    @Override
+    public boolean structureEquals(final Lops2019Oppiaine other) {
+        boolean result = true;
         result &= refXnor(this.getNimi(), other.getNimi());
         result &= Objects.equals(this.getKoodi(), other.getKoodi());
         result &= refXnor(this.getModuulit(), other.getModuulit());
@@ -134,36 +136,37 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     }
 
     @Override
-    public Lops2019Oppiaine copy(boolean deep) {
-        Lops2019Oppiaine oppiaine = new Lops2019Oppiaine();
-        oppiaine.setNimi(TekstiPalanen.of(this.getNimi()));
-//        result.setKoodi(this.getKoodi());
+    public Lops2019Oppiaine copy(final boolean deep) {
+        final Lops2019Oppiaine result = new Lops2019Oppiaine();
+        result.setNimi(TekstiPalanen.of(this.getNimi()));
+        result.setKoodi(this.getKoodi());
+
         if (this.getArviointi() != null) {
-            oppiaine.setArviointi(this.getArviointi().copy());
+            result.setArviointi(this.getArviointi().copy());
         }
         if (this.getTehtava() != null) {
-            oppiaine.setTehtava(this.getTehtava().copy());
+            result.setTehtava(this.getTehtava().copy());
         }
         if (this.getLaajaAlaisetOsaamiset() != null) {
-            oppiaine.setLaajaAlaisetOsaamiset(this.getLaajaAlaisetOsaamiset().copy());
+            result.setLaajaAlaisetOsaamiset(this.getLaajaAlaisetOsaamiset().copy());
         }
         if (this.getTavoitteet() != null) {
-            oppiaine.setTavoitteet(this.getTavoitteet().copy());
+            result.setTavoitteet(this.getTavoitteet().copy());
         }
 
         if (deep) {
             if (this.moduulit != null) {
-                oppiaine.setModuulit(this.getModuulit().stream()
+                result.setModuulit(this.getModuulit().stream()
                         .map(Copyable::copy)
                         .collect(Collectors.toList()));
             }
             if (this.getOppimaarat() != null) {
-                oppiaine.setOppimaarat(this.getOppimaarat().stream()
+                result.setOppimaarat(this.getOppimaarat().stream()
                         .map(Copyable::copy)
                         .collect(Collectors.toList()));
             }
         }
 
-        return oppiaine;
+        return result;
     }
 }

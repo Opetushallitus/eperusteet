@@ -1,28 +1,35 @@
 package fi.vm.sade.eperusteet.domain.lops2019;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.PerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Getter
 @Setter
 @Entity
 @Audited
 @Table(name = "yl_lops2019_sisalto")
-public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity implements PerusteenSisalto {
+public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity implements
+        PerusteenSisalto,
+        StructurallyComparable<Lops2019Sisalto>,
+        Copyable<Lops2019Sisalto> {
 
     @NotNull
     @RelatesToPeruste
@@ -45,7 +52,41 @@ public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity implemen
     @JoinColumn(name="sisalto_id")
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
-    public boolean containsViite(PerusteenOsaViite viite) {
+    public boolean containsViite(final PerusteenOsaViite viite) {
         return viite != null && viite.getRoot() != null && Objects.equals(sisalto.getId(), viite.getRoot().getId());
+    }
+
+    @Override
+    public boolean structureEquals(Lops2019Sisalto other) {
+        boolean result = true;
+        result &= refXnor(this.getLaajaAlainenOsaaminen(), other.getLaajaAlainenOsaaminen());
+
+        if (this.getOppiaineet().size() == other.getOppiaineet().size()) {
+            result &= IntStream.range(0, this.getOppiaineet().size())
+                    .allMatch(idx -> this.getOppiaineet().get(idx)
+                            .structureEquals(other.getOppiaineet().get(idx)));
+        }
+        else {
+            return false;
+        }
+
+        return result;
+    }
+
+    @Override
+    public Lops2019Sisalto copy(boolean deep) {
+        Lops2019Sisalto result = new Lops2019Sisalto();
+        result.setPeruste(null);
+        result.setLaajaAlainenOsaaminen(this.getLaajaAlainenOsaaminen().copy());
+        if (deep) {
+            if (this.sisalto != null) {
+                PerusteenOsaViite kopio = this.sisalto.copy();
+                result.setSisalto(kopio);
+            }
+            result.setOppiaineet(this.oppiaineet.stream()
+                    .map(oa -> oa.copy(true))
+                    .collect(Collectors.toList()));
+        }
+        return result;
     }
 }

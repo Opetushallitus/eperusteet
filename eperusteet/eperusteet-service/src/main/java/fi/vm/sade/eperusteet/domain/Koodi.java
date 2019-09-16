@@ -21,7 +21,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -36,7 +38,7 @@ import java.util.Objects;
 @Entity
 @Immutable
 @Table(name = "koodi")
-@EqualsAndHashCode(of = {"koodisto", "uri", "versio"})
+@EqualsAndHashCode(of = {"uri", "versio"})
 public class Koodi implements Serializable {
 
     @Id
@@ -48,11 +50,13 @@ public class Koodi implements Serializable {
     @Getter
     @Setter
     @NotNull
+    @NotEmpty
     private String uri; // Uniikki koodistosta minkä sisällöstä ei voi päätellä mitään
 
     @Getter
     @Setter
     @NotNull
+    @NotEmpty
     private String koodisto;
 
     @Getter
@@ -62,13 +66,13 @@ public class Koodi implements Serializable {
     public Koodi() {
     }
 
-    public Koodi(String uri, String koodisto) {
+    public Koodi(final String uri, final String koodisto) {
         this.uri = uri;
         this.koodisto = koodisto;
         this.versio = null;
     }
 
-    public static void validateChange(Koodi a, Koodi b) {
+    public static void validateChange(final Koodi a, final Koodi b) {
         if (a != null && !Objects.equals(a, b)) {
             throw new BusinessRuleViolationException("koodia-ei-voi-muuttaa");
         }
@@ -76,15 +80,16 @@ public class Koodi implements Serializable {
 
     @PrePersist
     public void onPrePersist() {
-        if (!ObjectUtils.isEmpty(getUri())) {
-            String[] osat = getUri().split("_");
-            if (osat.length > 1) {
-                String uriKoodisto = osat[0];
-                if (!getKoodisto().equals(uriKoodisto)) {
-                    throw new BusinessRuleViolationException("uri: " + getUri() + " ei vastaa koodistoa: " + getKoodisto());
-                }
-            }
+        final String[] osat = this.getUri().split("_");
+        if (osat.length < 2) {
+            throw new BusinessRuleViolationException("virheellinen-koodi-uri");
+        }
+
+        final String uriKoodisto = osat[0];
+        if (StringUtils.isEmpty(this.koodisto)) {
+            this.koodisto = uriKoodisto;
+        } else if (!Objects.equals(this.getKoodisto(), uriKoodisto)) {
+            throw new BusinessRuleViolationException("uri: " + this.getUri() + " ei vastaa koodistoa: " + this.getKoodisto());
         }
     }
-
 }

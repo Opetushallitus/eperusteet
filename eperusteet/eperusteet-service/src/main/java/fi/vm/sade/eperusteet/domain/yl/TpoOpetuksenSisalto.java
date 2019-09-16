@@ -58,7 +58,7 @@ public class TpoOpetuksenSisalto extends AbstractAuditedReferenceableEntity impl
     public TpoOpetuksenSisalto kloonaa(Peruste peruste) {
         TpoOpetuksenSisalto tpoSisalto = new TpoOpetuksenSisalto();
         tpoSisalto.setPeruste(peruste);
-        tpoSisalto.setSisalto(sisalto.kloonaa());
+        tpoSisalto.setSisalto(sisalto.copy());
         return tpoSisalto;
     }
 

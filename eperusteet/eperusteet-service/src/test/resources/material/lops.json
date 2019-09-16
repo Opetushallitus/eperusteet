@@ -331,11 +331,8 @@
           "fi": "Hyvinvointiosaaminen"
         },
         "koodi": {
-          "uri": "oppiaineet_bi",
-          "arvo": "BI",
-          "nimi": {
-            "fi": "Biologia"
-          }
+          "uri": "laajaalainenosaaminenlops2021_1",
+          "arvo": "1"
         },
         "kuvaus": {
           "fi": "Aihealueen opinnoilla tavoitellaan osaamista, jota opiskelija tarvitsee lisätäkseen hyvinvointiaan ja lukio-opiskelusta saamaansa motivaatiota ja iloa. Aihealue pyrkii varmistamaan osaltaan, että jokaisen lukiolaisen ainutlaatuisuus ja merkityksellisyys tulisi tunnistetuksi ja tunnustetuksi. Aihealueen keskeisiä teemoja ovat itsetuntemus, elämänhallinta sekä terveyttä, hyvinvointia ja turvallisuutta edistävät tiedot, taidot, asenteet, arvot ja tahto."
@@ -344,26 +341,46 @@
         "id": 102,
         "nimi": {
           "fi": "Vuorovaikutusosaaminen"
+        },
+        "koodi": {
+          "uri": "laajaalainenosaaminenlops2021_2",
+          "arvo": "2"
         }
       }, {
         "id": 103,
         "nimi": {
           "fi": "Monitieteinen ja luova osaaminen"
+        },
+        "koodi": {
+          "uri": "laajaalainenosaaminenlops2021_3",
+          "arvo": "3"
         }
       }, {
         "id": 104,
         "nimi": {
           "fi": "Yhteiskunnallinen osaaminen"
+        },
+        "koodi": {
+          "uri": "laajaalainenosaaminenlops2021_4",
+          "arvo": "4"
         }
       }, {
         "id": 105,
         "nimi": {
           "fi": "Eettinen ja ympäristöosaaminen"
+        },
+        "koodi": {
+          "uri": "laajaalainenosaaminenlops2021_5",
+          "arvo": "5"
         }
       }, {
         "id": 106,
         "nimi": {
           "fi": "Globaali- ja kulttuuriosaaminen"
+        },
+        "koodi": {
+          "uri": "laajaalainenosaaminenlops2021_6",
+          "arvo": "6"
         }
       }]
     },
@@ -373,7 +390,7 @@
         "fi": "Biologia"
       },
       "koodi": {
-        "uri": "oppiaineet_bi",
+        "uri": "oppiaineetjaoppimaaratlops2021_bi",
         "arvo": "BI",
         "nimi": {
           "fi": "Biologia"
@@ -741,7 +758,7 @@
         "fi": "Matematiikka"
       },
       "koodi": {
-        "uri": "oppiaineet_ma",
+        "uri": "oppiaineetjaoppimaaratlops2021_ma",
         "arvo": "MA",
         "nimi": {
           "fi": "Matematiikka"
@@ -782,7 +799,7 @@
           "fi": "Matematiikan yhteinen opintokokonaisuus"
         },
         "koodi": {
-          "uri": "oppiaineet_may",
+          "uri": "oppiaineetjaoppimaaratlops2021_may",
           "arvo": "MAY",
           "koodisto": "oppiaineet"
         },
@@ -827,7 +844,7 @@
           "fi": "Matematiikan lyhyt oppimäärä"
         },
         "koodi": {
-          "uri": "oppiaineet_mab",
+          "uri": "oppiaineetjaoppimaaratlops2021_mab",
           "arvo": "MAB",
           "koodisto": "oppiaineet"
         },
@@ -875,7 +892,7 @@
           "fi": "Matematiikan pitkä oppimäärä"
         },
         "koodi": {
-          "uri": "oppiaineet_maa",
+          "uri": "oppiaineetjaoppimaaratlops2021_maa",
           "arvo": "MAA",
           "koodisto": "oppiaineet",
           "nimi": {

@@ -83,7 +83,7 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto imple
     public AIPEOpetuksenSisalto kloonaa(Peruste peruste) {
         AIPEOpetuksenSisalto kopio = new AIPEOpetuksenSisalto();
         kopio.peruste = peruste;
-        kopio.sisalto = this.sisalto.kloonaa();
+        kopio.sisalto = this.sisalto.copy();
         return kopio;
     }
 

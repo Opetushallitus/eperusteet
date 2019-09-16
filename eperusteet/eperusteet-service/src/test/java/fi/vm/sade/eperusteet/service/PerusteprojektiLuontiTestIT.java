@@ -41,7 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
 
-@DirtiesContext
 @Transactional
 public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 

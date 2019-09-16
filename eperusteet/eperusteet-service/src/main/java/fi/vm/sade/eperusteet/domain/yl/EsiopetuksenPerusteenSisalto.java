@@ -58,7 +58,7 @@ public class EsiopetuksenPerusteenSisalto extends AbstractAuditedReferenceableEn
     public EsiopetuksenPerusteenSisalto kloonaa(Peruste peruste) {
         EsiopetuksenPerusteenSisalto eps = new EsiopetuksenPerusteenSisalto();
         eps.setPeruste(peruste);
-        eps.setSisalto(sisalto.kloonaa());
+        eps.setSisalto(sisalto.copy());
         return eps;
     }
 

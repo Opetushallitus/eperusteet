@@ -30,7 +30,6 @@ public class Lops2019OppiaineTavoitealue implements Copyable<Lops2019OppiaineTav
 
     @Getter
     @Setter
-    @NotNull
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

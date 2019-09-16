@@ -21,8 +21,7 @@ import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  *
@@ -30,6 +29,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private String koulutustyyppi;
@@ -48,8 +50,5 @@ public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
         this.tila = tila;
         this.tyyppi = tyyppi;
         this.ryhmaOid = ryhmaOid;
-    }
-
-    public PerusteprojektiLuontiDto() {
     }
 }

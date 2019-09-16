@@ -32,7 +32,6 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
-import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -1600,7 +1599,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     private PerusopetuksenPerusteenSisalto kloonaaPerusopetuksenSisalto(Peruste uusi, PerusopetuksenPerusteenSisalto vanha) {
         PerusopetuksenPerusteenSisalto sisalto = new PerusopetuksenPerusteenSisalto();
-        sisalto.setSisalto(vanha.getSisalto().kloonaa());
+        sisalto.setSisalto(vanha.getSisalto().copy());
         sisalto.setPeruste(uusi);
 
         Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper = new HashMap<>();

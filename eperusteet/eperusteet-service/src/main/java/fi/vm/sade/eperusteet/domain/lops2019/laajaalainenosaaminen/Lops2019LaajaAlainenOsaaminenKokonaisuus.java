@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen;
 
 
+import fi.vm.sade.eperusteet.domain.Copyable;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
@@ -17,7 +19,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_laaja_alainen_osaaminen_kokonaisuus")
-public class Lops2019LaajaAlainenOsaaminenKokonaisuus {
+public class Lops2019LaajaAlainenOsaaminenKokonaisuus implements Copyable<Lops2019LaajaAlainenOsaaminenKokonaisuus> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -57,4 +59,14 @@ public class Lops2019LaajaAlainenOsaaminenKokonaisuus {
 
         return result;
     }
+
+    @Override
+    public Lops2019LaajaAlainenOsaaminenKokonaisuus copy(boolean deep) {
+        Lops2019LaajaAlainenOsaaminenKokonaisuus result = new Lops2019LaajaAlainenOsaaminenKokonaisuus();
+        result.setLaajaAlaisetOsaamiset(this.laajaAlaisetOsaamiset.stream()
+            .map(Lops2019LaajaAlainenOsaaminen::copy)
+            .collect(Collectors.toList()));
+        return result;
+    }
+
 }

@@ -53,7 +53,7 @@ public class OpasSisalto extends AbstractAuditedReferenceableEntity implements P
     public OpasSisalto kloonaa(Peruste peruste) {
         OpasSisalto eps = new OpasSisalto();
         eps.setPeruste(peruste);
-        eps.setSisalto(sisalto.kloonaa());
+        eps.setSisalto(sisalto.copy());
         return eps;
     }
 
