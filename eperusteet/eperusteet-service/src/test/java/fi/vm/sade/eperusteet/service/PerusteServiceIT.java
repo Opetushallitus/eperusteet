@@ -271,7 +271,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void testTutkinnonOsaViiteByKoodiUri() {
         Suoritustapa s = peruste.getSuoritustapa(Suoritustapakoodi.OPS);
 
-        String koodiUri = TestUtils.uniikkiString();
+        String koodiUri = "tutkinnonosat_" + TestUtils.uniikkiString();
         TutkinnonOsaViiteDto viiteDto = luoKoodillinenTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, koodiUri);
 
         TutkinnonOsaViiteDto haettuViiteDto = perusteService.getTutkinnonOsaViiteByKoodiUri(

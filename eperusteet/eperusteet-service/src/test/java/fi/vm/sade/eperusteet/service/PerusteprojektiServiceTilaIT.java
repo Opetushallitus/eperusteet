@@ -597,12 +597,10 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         to.setTila(tila);
 
         KoodiDto koodiDto = new KoodiDto();
-        koodiDto.setUri(TestUtils.uniikkiString());
         koodiDto.setArvo(TestUtils.uniikkiString());
         koodiDto.setKoodisto("tutkinnonosat");
+        koodiDto.setUri(koodiDto.getKoodisto() + "_" + koodiDto.getArvo());
         to.setKoodi(koodiDto);
-        to.setKoodiArvo(TestUtils.uniikkiString());
-        to.setKoodiUri(TestUtils.uniikkiString());
 
         TutkinnonOsaViiteDto tov = new TutkinnonOsaViiteDto();
         tov.setTutkinnonOsaDto(to);

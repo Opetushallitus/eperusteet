@@ -82,7 +82,7 @@ public class Koodi implements Serializable {
     public void onPrePersist() {
         final String[] osat = this.getUri().split("_");
         if (osat.length < 2) {
-            throw new BusinessRuleViolationException("virheellinen-koodi-uri");
+            throw new BusinessRuleViolationException("virheellinen-koodi-uri: " + this.getUri());
         }
 
         final String uriKoodisto = osat[0];
