@@ -431,6 +431,14 @@ angular
                     perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService
                 }
             })
+            .state("root.perusteprojektiwizard.tuonti", {
+                url: "/tuonti",
+                template: require("views/partials/perusteprojekti/tuonti.pug"),
+                controller: "ProjektinTuontiCtrl",
+                resolve: {
+                    perusteprojektiTiedot: PerusteprojektiTiedotService => PerusteprojektiTiedotService
+                }
+            })
             .state("root.perusteprojektiwizard.tiedot", {
                 url: "/perustiedot",
                 template: require("views/partials/perusteprojekti/tiedot.html"),
