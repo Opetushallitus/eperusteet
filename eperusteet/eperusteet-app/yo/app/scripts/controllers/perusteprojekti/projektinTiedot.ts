@@ -16,6 +16,8 @@
 
 import * as angular from "angular";
 import _ from "lodash";
+import { saveAs } from 'file-saver';
+
 
 angular
     .module("eperusteApp")
@@ -79,21 +81,36 @@ angular
             $uibModalInstance.dismiss();
         };
     })
+    .controller("ProjektinTuontiCtrl", function(
+        $scope,
+        Api,
+    ) {
+        $scope.loadFile = () => {
+            const reader = new FileReader();
+            const files = (document.getElementById("tiedostohaku") as any).files;
+            reader.onload = async (e: any) => {
+                const data = JSON.parse(e.target.result);
+                const perusteRes = await Api.one("maintenance/import").customPOST(data);
+            };
+            reader.readAsText(files.item(0));
+        };
+    })
     .controller("ProjektinTiedotCtrl", function(
         $scope,
         $state,
         $stateParams,
-        $uibModal,
         $timeout,
         $translate,
-        PerusteprojektiResource,
-        PerusteProjektiService,
-        perusteprojektiTiedot,
-        Notifikaatiot,
-        Perusteet,
+        $uibModal,
+        Api,
         Editointikontrollit,
+        Notifikaatiot,
         Organisaatioryhmat,
-        YleinenData
+        PerusteProjektiService,
+        Perusteet,
+        PerusteprojektiResource,
+        YleinenData,
+        perusteprojektiTiedot,
     ) {
         PerusteProjektiService.watcher($scope, "projekti");
         $scope.lang = $translate.use() || $translate.preferredLanguage();
@@ -137,6 +154,14 @@ angular
 
         $scope.muokkaa = function() {
             Editointikontrollit.startEditing();
+        };
+
+        $scope.lataaProjektiData = async function() {
+            const perusteRes = await Api.one("maintenance/export/" + $scope.projekti._peruste).get();
+            const data = new Blob([JSON.stringify(perusteRes.plain())], {
+                type: "text/plain;charset=utf-8",
+            });
+            saveAs(data, "projekti.json");
         };
 
         $scope.puhdistaValinta = function() {

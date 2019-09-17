@@ -23,6 +23,10 @@ public class PerusteFactory<T> {
 
     @PreAuthorize("permitAll()")
     public T getStrategy(KoulutustyyppiToteutus toteutus) {
+        if (toteutus == null) {
+            throw new BusinessRuleViolationException("toteutus-on-pakollinen");
+        }
+
         switch (toteutus) {
             case LOPS2019: return strategyLops2019;
             case PERUSOPETUS: return strategyPerusopetus;

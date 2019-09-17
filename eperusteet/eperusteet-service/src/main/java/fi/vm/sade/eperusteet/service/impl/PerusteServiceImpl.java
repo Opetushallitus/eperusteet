@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
@@ -104,7 +105,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
 
     @Autowired
-    private PerusteRepository perusteet;
+    private PerusteRepository perusteRepository;
 
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
@@ -200,12 +201,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public List<PerusteDto> getUusimmat(Set<Kieli> kielet) {
-        return mapper.mapAsList(perusteet.findAllUusimmat(kielet, new PageRequest(0, 10)), PerusteDto.class);
+        return mapper.mapAsList(perusteRepository.findAllUusimmat(kielet, new PageRequest(0, 10)), PerusteDto.class);
     }
 
     @Override
     public List<PerusteKoosteDto> getKooste() {
-        return perusteet.findAllPerusteet().stream()
+        return perusteRepository.findAllPerusteet().stream()
                 .filter(peruste -> peruste.getTila() == PerusteTila.VALMIS)
                 .filter(peruste -> peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen())
                 .map(peruste -> {
@@ -248,14 +249,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public List<PerusteInfoDto> getAllInfo() {
-        return mapper.mapAsList(perusteet.findAll(), PerusteInfoDto.class);
+        return mapper.mapAsList(perusteRepository.findAll(), PerusteInfoDto.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PerusteInfoDto> getAllPerusopetusInfo() {
         List<Peruste> res = new ArrayList<>();
-        List<Peruste> perusopetus = perusteet.findAllByKoulutustyyppi(KoulutusTyyppi.PERUSOPETUS.toString());
+        List<Peruste> perusopetus = perusteRepository.findAllByKoulutustyyppi(KoulutusTyyppi.PERUSOPETUS.toString());
         for (Peruste p : perusopetus) {
             if (p.getTila() == PerusteTila.VALMIS) {
                 res.add(p);
@@ -283,7 +284,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             List<KoodistoKoodiDto> osaamisalakoodit = koodistoService.filterBy("osaamisala", pquery.getNimi());
             Set<Long> osaamisalat = getPerusteetByUris(
                         osaamisalakoodit.stream().map(KoodistoKoodiDto::getKoodiUri),
-                        perusteet::findAllByOsaamisala)
+                        perusteRepository::findAllByOsaamisala)
                     .map(Peruste::getId)
                     .collect(Collectors.toSet());
             koodistostaLoydetyt.addAll(osaamisalat);
@@ -301,7 +302,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         // Lisätään mahdolliset perusteet hakujoukkoon
-        Page<Peruste> result = perusteet.findBy(page, pquery, koodistostaLoydetyt)
+        Page<Peruste> result = perusteRepository.findBy(page, pquery, koodistostaLoydetyt)
                 .map(p -> { // Collect tutkintonimikkeet for easy display in list views
                     p.setTutkintonimikeKoodit(tutkintonimikeKoodiRepository.findByPerusteId(p.getId()).stream()
                         .map(tutkintonimikeKoodi -> new Koodi(tutkintonimikeKoodi.getTutkintonimikeUri(), "tutkintonimikkeet"))
@@ -321,12 +322,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     .collect(Collectors.toSet());
 
             if (!korvattavatDiaarinumerot.isEmpty()) {
-                Set<Peruste> korvattavat = perusteet.findAllByDiaarinumerot(korvattavatDiaarinumerot);
+                Set<Peruste> korvattavat = perusteRepository.findAllByDiaarinumerot(korvattavatDiaarinumerot);
                 List<PerusteInfoDto> korvattavatDto = mapper.mapAsList(korvattavat, PerusteInfoDto.class);
                 haettu.setKorvattavatPerusteet(korvattavatDto);
             }
 
-            Set<Peruste> korvaajat = perusteet.findAllKorvaavatByDiaarinumero(haettu.getDiaarinumero());
+            Set<Peruste> korvaajat = perusteRepository.findAllKorvaavatByDiaarinumero(haettu.getDiaarinumero());
             List<PerusteInfoDto> korvaajatDto = mapper.mapAsList(korvaajat, PerusteInfoDto.class);
             haettu.setKorvaavatPerusteet(korvaajatDto);
         }
@@ -360,14 +361,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery) {
         pquery.setTila(PerusteTila.VALMIS.toString());
 
-        Page<Peruste> result = perusteet.findBy(page, pquery);
+        Page<Peruste> result = perusteRepository.findBy(page, pquery);
         return new PageDto<>(result, PerusteInfoDto.class, page, mapper);
     }
 
     @Override
     @Transactional(readOnly = true)
     public PerusteInfoDto getMeta(final Long id) {
-        Peruste p = perusteet.findOne(id);
+        Peruste p = perusteRepository.findOne(id);
         if (p.getTila() != PerusteTila.VALMIS) {
             throw new BusinessRuleViolationException("vain-julkaistuille-perusteille");
         }
@@ -393,10 +394,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteDto get(final Long id) {
-        Peruste p = perusteet.findOne(id);
+        Peruste p = perusteRepository.findOne(id);
         PerusteDto dto = mapper.map(p, PerusteDto.class);
         if (dto != null) {
-            Revision latestRevision = perusteet.getLatestRevisionId(id);
+            Revision latestRevision = perusteRepository.getLatestRevisionId(id);
             if (latestRevision != null) {
                 dto.setRevision(latestRevision.getNumero());
                 if (dto.getSuoritustavat() != null && !dto.getSuoritustavat().isEmpty()) {
@@ -411,7 +412,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getAmosaaYhteinenPohja() {
-        List<Peruste> loydetyt = perusteet.findAllAmosaaYhteisetPohjat();
+        List<Peruste> loydetyt = perusteRepository.findAllAmosaaYhteisetPohjat();
 
         if (loydetyt.size() == 1) {
             return getKokoSisalto(loydetyt.get(0).getId());
@@ -431,14 +432,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public List<PerusteHakuDto> getAmosaaOpsit() {
-        List<Peruste> amosaaPerusteet = perusteet.findAllAmosaa();
+        List<Peruste> amosaaPerusteet = perusteRepository.findAllAmosaa();
         return mapper.mapAsList(amosaaPerusteet, PerusteHakuDto.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
-        List<Peruste> loydetyt = perusteet.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
+        List<Peruste> loydetyt = perusteRepository.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
 
         Peruste peruste = null;
 
@@ -480,7 +481,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @IgnorePerusteUpdateCheck
     @Transactional(readOnly = true)
     public Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(final Long perusteId) {
-        Peruste peruste = perusteet.findOne(perusteId);
+        Peruste peruste = perusteRepository.findOne(perusteId);
         Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> osaamisalakuvaukset = new HashMap<>();
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
 
@@ -496,13 +497,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteVersionDto getPerusteVersion(final long id) {
-        return perusteet.getGlobalPerusteVersion(id);
+        return perusteRepository.getGlobalPerusteVersion(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Revision getLastModifiedRevision(final Long id) {
-        PerusteTila tila = perusteet.getTila(id);
+        PerusteTila tila = perusteRepository.getTila(id);
         if (tila == null) {
             return null;
         }
@@ -510,7 +511,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             //luonnos-tilassa olevan perusteen viimeisimmän muokkauksen määrittäminen on epäluotettavaa.
             return Revision.DRAFT;
         }
-        return perusteet.getLatestRevisionId(id);
+        return perusteRepository.getLatestRevisionId(id);
     }
 
     @Override
@@ -524,10 +525,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteKaikkiDto getKokoSisalto(final Long id, Integer perusteRev) {
         Peruste peruste;
         if (perusteRev != null) {
-            peruste = perusteet.findRevision(id, perusteRev);
+            peruste = perusteRepository.findRevision(id, perusteRev);
         }
         else {
-            peruste = perusteet.findOne(id);
+            peruste = perusteRepository.findOne(id);
         }
 
         if (peruste == null) {
@@ -548,7 +549,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             getLops2019KaikkiRakenne(perusteDto, peruste);
         }
 
-        Revision rev = perusteet.getLatestRevisionId(id);
+        Revision rev = perusteRepository.getLatestRevisionId(id);
         if (rev != null) {
             perusteDto.setRevision(rev.getNumero());
         }
@@ -602,7 +603,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteDto getByIdAndSuoritustapa(final Long id, Suoritustapakoodi suoritustapakoodi) {
-        Peruste p = perusteet.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
+        Peruste p = perusteRepository.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
         return mapper.map(p, PerusteDto.class);
     }
 
@@ -616,7 +617,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     public <T extends PerusteenOsaViiteDto.Puu<?, ?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view) {
 
-        Peruste peruste = perusteet.findOne(perusteId);
+        Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
             throw new NotExistsException("Perustetta ei ole olemassa");
         }
@@ -633,13 +634,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 //    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS') " +
 //            "or hasPermission(#event.perusteId, 'peruste', 'TILANVAIHTO')")
     public void onApplicationEvent(@P("event") PerusteUpdatedEvent event) {
-        Peruste peruste = perusteet.findOne(event.getPerusteId());
+        Peruste peruste = perusteRepository.findOne(event.getPerusteId());
         if (peruste == null) {
             return;
         }
         Date muokattu = new Date();
         if (peruste.getTila() == PerusteTila.VALMIS) {
-            perusteet.setRevisioKommentti("Perusteen sisältöä korjattu");
+            perusteRepository.setRevisioKommentti("Perusteen sisältöä korjattu");
             peruste.muokattu();
             muokattu = peruste.getMuokattu();
         }
@@ -660,14 +661,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public PerusteDto update(Long perusteId, PerusteDto perusteDto) {
-        Peruste current = perusteet.findOne(perusteId);
+        Peruste current = perusteRepository.findOne(perusteId);
 
         if (current == null || current.getTila() == PerusteTila.POISTETTU) {
             throw new NotExistsException("Päivitettävää perustetta ei ole olemassa tai se on poistettu");
         }
 
         if (current.getTyyppi() == PerusteTyyppi.OPAS) {
-            perusteet.lock(current);
+            perusteRepository.lock(current);
             Peruste updated = mapper.map(perusteDto, Peruste.class);
             current.setKielet(updated.getKielet());
             current.setKuvaus(updated.getKuvaus());
@@ -683,14 +684,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setKoulutukset(null);
             current.setMaarayskirje(null);
             current.setMuutosmaaraykset(null);
-            perusteet.save(current);
+            perusteRepository.save(current);
         }
         else {
             if (!isDiaariValid(perusteDto.getDiaarinumero())) {
                 throw new BusinessRuleViolationException("diaarinumero-ei-validi");
             }
 
-            perusteet.lock(current);
+            perusteRepository.lock(current);
             Peruste updated = mapper.map(perusteDto, Peruste.class);
 
 
@@ -701,7 +702,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 Map<Kieli, LiiteBaseDto> dtoLiitteet = maarayskirjeDto.getLiitteet();
                 if (!ObjectUtils.isEmpty(dtoLiitteet)) {
                     dtoLiitteet.forEach((kieli, liiteDto) -> {
-                        Peruste peruste = perusteet.findOne(perusteId);
+                        Peruste peruste = perusteRepository.findOne(perusteId);
                         if (kieli != null && liiteDto != null) {
                             Liite liite = liitteet.findOne(liiteDto.getId());
 
@@ -761,14 +762,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 current.setKoulutusvienti(updated.isKoulutusvienti());
             }
         }
-        perusteet.save(current);
+        perusteRepository.save(current);
         PerusteDto result = mapper.map(current, PerusteDto.class);
         return result;
     }
 
     @Override
     public PerusteDto updateFull(Long id, PerusteDto perusteDto) {
-        Peruste current = perusteet.findOne(id);
+        Peruste current = perusteRepository.findOne(id);
         update(id, perusteDto);
 
         if (current.getTyyppi() != PerusteTyyppi.OPAS) {
@@ -790,7 +791,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
         }
 
-        perusteet.save(current);
+        perusteRepository.save(current);
         return mapper.map(current, PerusteDto.class);
     }
 
@@ -887,7 +888,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public List<Revision> getRakenneVersiot(Long id, Suoritustapakoodi suoritustapakoodi) {
         List<Revision> versiot = new ArrayList<>();
 
-        Peruste peruste = perusteet.findOne(id);
+        Peruste peruste = perusteRepository.findOne(id);
         if (peruste == null) {
             throw new EntityNotFoundException("Perustetta ei löytynyt id:llä: " + id);
         }
@@ -904,7 +905,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private Suoritustapa haeSuoritustapaVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
-        Peruste peruste = perusteet.findOne(id);
+        Peruste peruste = perusteRepository.findOne(id);
         if (peruste == null) {
             throw new EntityNotFoundException("Perustetta ei löytynyt id:llä: " + id);
         }
@@ -925,7 +926,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public RakenneModuuliDto revertRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
         Suoritustapa suoritustapaVersio = haeSuoritustapaVersio(id, suoritustapakoodi, versioId);
-        Peruste peruste = perusteet.findOne(id);
+        Peruste peruste = perusteRepository.findOne(id);
         Set<TutkinnonOsaViite> rakenneTovat = suoritustapaVersio.getTutkinnonOsat();
 
         Map<Long, TutkinnonOsaViite> tovat = new HashMap<>();
@@ -955,7 +956,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
-        Peruste peruste = perusteet.findOne(perusteid);
+        Peruste peruste = perusteRepository.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
     }
@@ -963,7 +964,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public List<TutkinnonOsaTilaDto> getTutkinnonOsienTilat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
-        Peruste peruste = perusteet.findOne(perusteid);
+        Peruste peruste = perusteRepository.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat().stream()
                 .map(TutkinnonOsaViite::getTutkinnonOsa)
@@ -973,7 +974,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi, Integer revisio) {
-        Peruste peruste = perusteet.findOne(perusteid);
+        Peruste peruste = perusteRepository.findOne(perusteid);
         Suoritustapa suoritustapa = suoritustapaRepository.findRevision(peruste.getSuoritustapa(suoritustapakoodi).getId(), revisio);
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
     }
@@ -986,7 +987,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, UpdateDto<RakenneModuuliDto> rakenne) {
         RakenneModuuliDto updated = updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne.getDto());
         if (rakenne.getMetadata() != null) {
-            perusteet.setRevisioKommentti(rakenne.getMetadata().getKommentti());
+            perusteRepository.setRevisioKommentti(rakenne.getMetadata().getKommentti());
         }
         return updated;
     }
@@ -1017,7 +1018,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             rakenne.getMuodostumisSaanto().setKoko(null);
         }
 
-        Peruste peruste = perusteet.findOne(perusteId);
+        Peruste peruste = perusteRepository.findOne(perusteId);
 
         Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteId, suoritustapakoodi);
         if (rakenneId == null) {
@@ -1054,7 +1055,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         boolean rakenneMuuttunut = moduuli.isSame(nykyinen, 0, true).isPresent();
         if (rakenneMuuttunut) {
-            if (perusteet.findOne(perusteId).getTila() == PerusteTila.VALMIS) {
+            if (perusteRepository.findOne(perusteId).getTila() == PerusteTila.VALMIS) {
                 Optional<AbstractRakenneOsa.RakenneOsaVirhe> muutosVirheellinen = moduuli.isSame(nykyinen, 0, false);
                 if (muutosVirheellinen.isPresent()) {
                     throw new BusinessRuleViolationException(muutosVirheellinen.get().getMessage());
@@ -1295,7 +1296,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
-        final Peruste peruste = perusteet.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
+        final Peruste peruste = perusteRepository.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
 
         // Workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa
         suoritustapaRepository.lock(suoritustapa, false);
@@ -1357,7 +1358,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private Suoritustapa getSuoritustapaEntity(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
-        if (!perusteet.exists(perusteid)) {
+        if (!perusteRepository.exists(perusteid)) {
             throw new NotExistsException("Perustetta ei ole olemassa");
         }
         Suoritustapa suoritustapa = suoritustapaRepository.findByPerusteAndKoodi(perusteid, suoritustapakoodi);
@@ -1382,7 +1383,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional
     public PerusteenOsaViiteDto.Matala addSisaltoUUSI(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite) {
-        Peruste peruste = perusteet.findOne(perusteId);
+        Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
             throw new NotExistsException("Perustetta ei ole olemassa");
         }
@@ -1426,7 +1427,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public TutkintonimikeKoodiDto addTutkintonimikeKoodi(Long perusteId, TutkintonimikeKoodiDto dto) {
-        Peruste peruste = perusteet.findOne(perusteId);
+        Peruste peruste = perusteRepository.findOne(perusteId);
         dto.setPeruste(peruste.getReference());
         TutkintonimikeKoodi tnk = mapper.map(dto, TutkintonimikeKoodi.class);
         TutkintonimikeKoodi saved = tutkintonimikeKoodiRepository.save(tnk);
@@ -1439,6 +1440,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (Objects.equals(tnk.getPeruste().getId(), perusteId)) {
             tutkintonimikeKoodiRepository.delete(tutkintonimikeKoodiId);
         }
+    }
+
+    @Override
+    public PerusteprojektiImportDto getPerusteExport(Long perusteId) {
+        Peruste peruste = perusteRepository.getOne(perusteId);
+        PerusteprojektiLuontiDto projekti = mapper.map(peruste.getPerusteprojekti(), PerusteprojektiLuontiDto.class);
+        PerusteKaikkiDto data = getKokoSisalto(perusteId);
+        return new PerusteprojektiImportDto(projekti, data);
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
@@ -1577,7 +1586,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         for (Suoritustapa suoritustapa : suoritustavat) {
             suoritustapa.getPerusteet().add(peruste);
         }
-        perusteet.save(peruste);
+        perusteRepository.save(peruste);
         lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
     }
@@ -1625,7 +1634,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @SuppressWarnings("ServiceMethodEntity")
     public Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi) {
-        Peruste vanha = perusteet.getOne(luontiDto.getPerusteId());
+        Peruste vanha = perusteRepository.getOne(luontiDto.getPerusteId());
         Peruste peruste = new Peruste();
         peruste.setTyyppi(tyyppi);
         peruste.setKuvaus(vanha.getKuvaus());
@@ -1656,7 +1665,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             EsiopetuksenPerusteenSisalto uusiSisalto = kloonaaEsiopetuksenSisalto(peruste, vanha.getEsiopetuksenPerusteenSisalto());
             uusiSisalto.setPeruste(peruste);
             peruste.setSisalto(uusiSisalto);
-            peruste = perusteet.save(peruste);
+            peruste = perusteRepository.save(peruste);
         } else {
             Set<Suoritustapa> suoritustavat = vanha.getSuoritustavat();
             Set<Suoritustapa> uudetSuoritustavat = new HashSet<>();
@@ -1673,9 +1682,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             for (Suoritustapa uusi : uudetSuoritustavat) {
                 uusi.getPerusteet().add(peruste);
             }
-            peruste = perusteet.save(peruste);
+            peruste = perusteRepository.save(peruste);
 
-            peruste = perusteet.save(peruste);
+            peruste = perusteRepository.save(peruste);
             if (KoulutusTyyppi.PERUSOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
                 peruste.setSisalto(kloonaaPerusopetuksenSisalto(peruste, vanha.getPerusopetuksenPerusteenSisalto()));
             } else {
@@ -1706,7 +1715,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private LukiokoulutuksenYleisetTavoitteetDto getYeisettavoitteetLatestOrByVersion(long perusteId, Integer revision) {
-        Peruste peruste = perusteet.getOne(perusteId);
+        Peruste peruste = perusteRepository.getOne(perusteId);
         OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = peruste.getLukiokoulutuksenPerusteenSisalto().getOpetuksenYleisetTavoitteet();
 
         if (revision != null) {
@@ -1723,7 +1732,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional
     public void tallennaYleisetTavoitteet(Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto) {
-        Peruste peruste = perusteet.getOne(perusteId);
+        Peruste peruste = perusteRepository.getOne(perusteId);
         LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();
         OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = sisalto.getOpetuksenYleisetTavoitteet();
         if (opetuksenYleisetTavoitteet == null) {
@@ -1749,7 +1758,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     @Override
     public List<Revision> getYleisetTavoitteetVersiot(Long perusteId) {
-        Peruste peruste = perusteet.getOne(perusteId);
+        Peruste peruste = perusteRepository.getOne(perusteId);
         OpetuksenYleisetTavoitteet opetuksenYleisetTavoitteet = peruste.getLukiokoulutuksenPerusteenSisalto().getOpetuksenYleisetTavoitteet();
         if (opetuksenYleisetTavoitteet != null) {
             return lukioYleisetTavoitteetRepository.getRevisions(opetuksenYleisetTavoitteet.getId());
@@ -1815,7 +1824,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @IgnorePerusteUpdateCheck
     public KVLiiteJulkinenDto getJulkinenKVLiite(long perusteId) {
-        Peruste peruste = perusteet.getOne(perusteId);
+        Peruste peruste = perusteRepository.getOne(perusteId);
         PerusteDto perusteDto = mapper.map(peruste, PerusteDto.class);
         KVLiiteJulkinenDto kvliiteDto = mapper.map(peruste.getKvliite(), KVLiiteJulkinenDto.class);
 
