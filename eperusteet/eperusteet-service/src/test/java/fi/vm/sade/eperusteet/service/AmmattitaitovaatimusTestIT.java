@@ -37,6 +37,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @DirtiesContext
+@ActiveProfiles(profiles = {"test", "realPermissions"})
 public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
 
     @Autowired

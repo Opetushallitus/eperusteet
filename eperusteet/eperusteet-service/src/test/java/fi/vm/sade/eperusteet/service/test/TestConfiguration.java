@@ -11,13 +11,13 @@ import org.springframework.security.access.PermissionEvaluator;
 @ImportResource("/it-test-context.xml")
 public class TestConfiguration {
 
-    @Profile("!mockPermissions")
+    @Profile("realPermissions")
     @Bean("testPermissionEvaluator")
     public PermissionEvaluator testPermissionEvaluator() {
         return new fi.vm.sade.eperusteet.service.security.PermissionEvaluator();
     }
 
-    @Profile("mockPermissions")
+    @Profile("!realPermissions")
     @Bean("testPermissionEvaluator")
     public PermissionEvaluator testPermissionEvaluatorMocked() {
         return new TestPermissionEvaluator();
