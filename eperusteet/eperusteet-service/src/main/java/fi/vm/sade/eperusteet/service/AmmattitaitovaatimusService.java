@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -24,7 +25,6 @@ public interface AmmattitaitovaatimusService {
     @PreAuthorize("permitAll()")
     Page<PerusteBaseDto> findPerusteet(PageRequest p, AmmattitaitovaatimusQueryDto pquery);
 
-    //@PostAuthorize("hasPermission(filterObject.peruste.id, 'peruste', 'LUKU')")
     @PreAuthorize("permitAll()")
     Page<TutkinnonOsaViiteKontekstiDto> findTutkinnonOsat(PageRequest p, AmmattitaitovaatimusQueryDto pquery);
 

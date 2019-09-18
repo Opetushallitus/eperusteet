@@ -26,10 +26,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,6 +114,24 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
                     .containsExactlyInAnyOrder(perusteprojekti1.getPeruste().getIdLong());
         }
 
+    }
+
+    @Test
+    public void testfindTutkinnonOsat_accessDenied() {
+
+        loginAsUser("test8");
+
+        AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
+        pquery.setKaikki(true);
+        pquery.setUri("ammattitaitovaatimukset_1000");
+
+        Assertions.assertThatThrownBy(() -> {
+            ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+        }).isInstanceOf(AccessDeniedException.class);
+
+        loginAsUser("test");
+        Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+        assertThat(tosat.getTotalElements()).isEqualTo(0);
     }
 
     private PerusteprojektiDto lisaaPerusteKoodistolla(Collection<String> koodiUrit, ProjektiTila tila) {

@@ -98,7 +98,8 @@
 
     <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean"/>
 
-    <bean id="testPermissionEvaluator" class="fi.vm.sade.eperusteet.service.test.TestPermissionEvaluator"/>
+<!--    <bean id="testPermissionEvaluator" class="fi.vm.sade.eperusteet.service.test.TestPermissionEvaluator"/>-->
+    <bean id="testPermissionEvaluator" class="fi.vm.sade.eperusteet.service.security.PermissionEvaluator"/>
 
     <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="testPermissionEvaluator"/>
@@ -112,7 +113,7 @@
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider>
             <security:user-service>
-                <security:user name="test" password="test" authorities="ROLE_USER"/>
+                <security:user name="test" password="test" authorities="ROLE_USER, ROLE_APP_EPERUSTEET, ROLE_APP_EPERUSTEET_CRUD, ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"/>
                 <security:user name="test1" password="test" authorities="ROLE_USER"/>
                 <security:user name="test2" password="test" authorities="ROLE_USER"/>
                 <security:user name="test3" password="test" authorities="ROLE_USER"/>
