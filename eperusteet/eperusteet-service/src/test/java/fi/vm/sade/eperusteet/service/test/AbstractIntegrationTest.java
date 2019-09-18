@@ -33,7 +33,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author jhyoty
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("/it-test-context.xml")
+@ContextConfiguration(classes = TestConfiguration.class)
 @ActiveProfiles(profiles = "test")
 public class AbstractIntegrationTest {
 

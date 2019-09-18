@@ -24,17 +24,24 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.TestConfiguration;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.io.IOException;
@@ -42,6 +49,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.*;
 import static org.junit.Assert.*;
@@ -51,6 +63,7 @@ import static org.junit.Assert.*;
  * @author jhyoty
  */
 @DirtiesContext
+@ActiveProfiles(profiles = {"test", "mockPermissions"})
 public class OppiaineServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -63,12 +76,25 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
     @Autowired
     private PerusteService perusteService;
 
+    @Autowired
+    private PerusteRepository perusteRepository;
+
     private Long perusteId;
 
     @Before
     public void setup() {
+
+        SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+        ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test","test"));
+        SecurityContextHolder.setContext(ctx);
+
+        // PerusteUpdateStoreImpl @scope:n takia
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
         Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSOPETUS, null, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         perusteId = peruste.getId();
+
     }
 
     @Test
@@ -180,6 +206,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         ks.setNimi(Optional.of(lt("Nimi")));
         vkDto.setSisaltoalueet(Lists.newArrayList(ks));
         PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
+
         OppiaineDto oa1 = service.addOppiaine(perusteId, oppiaineDto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
         assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         assertEquals(0, oa1.getOppimaarat().size());
