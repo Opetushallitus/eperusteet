@@ -83,18 +83,8 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-
-        SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-        ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test","test"));
-        SecurityContextHolder.setContext(ctx);
-
-        // PerusteUpdateStoreImpl @scope:n takia
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
         Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSOPETUS, null, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         perusteId = peruste.getId();
-
     }
 
     @Test
