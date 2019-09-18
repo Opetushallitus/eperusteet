@@ -174,6 +174,7 @@ public class PermissionManager {
             Map<Permission, Set<String>> perm = Maps.newHashMap();
 
             perm.put(LUONTI, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
+            perm.put(LUKU, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
             tmp.put(null, perm);
 
             perm = Maps.newHashMap();

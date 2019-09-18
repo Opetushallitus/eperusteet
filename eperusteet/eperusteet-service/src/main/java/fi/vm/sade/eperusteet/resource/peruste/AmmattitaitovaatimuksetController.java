@@ -46,8 +46,7 @@ public class AmmattitaitovaatimuksetController {
     })
     public Page<TutkinnonOsaViiteKontekstiDto> getTutkinnonOsat(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-        Page<TutkinnonOsaViiteKontekstiDto> result = ammattitaitovaatimusService.findTutkinnonOsat(p, pquery);
-        return result;
+        return ammattitaitovaatimusService.findTutkinnonOsat(p, pquery);
     }
 
 }

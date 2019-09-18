@@ -27,6 +27,8 @@ import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,6 +37,9 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +69,9 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
 
     @Autowired
     private KoodistoClient koodistoClient;
+
+    @Autowired
+    private PermissionManager permissionManager;
 
     @Override
     public void addAmmattitaitovaatimuskoodit() {
@@ -101,6 +109,14 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
 
     @Override
     public Page<TutkinnonOsaViiteKontekstiDto> findTutkinnonOsat(PageRequest p, AmmattitaitovaatimusQueryDto pquery) {
+
+        if(pquery.isKaikki()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if(!permissionManager.hasPermission(authentication, null, PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.LUKU)) {
+                throw new AccessDeniedException("Pääsy evätty");
+            }
+        }
+
         Page<TutkinnonOsaViite> result = ammattitaitovaatimusRepository.findTutkinnonOsatBy(p, pquery);
         Page<TutkinnonOsaViiteKontekstiDto> resultDto = result.map(tov -> {
             TutkinnonOsaViiteKontekstiDto tovkDto = mapper.map(tov, TutkinnonOsaViiteKontekstiDto.class);

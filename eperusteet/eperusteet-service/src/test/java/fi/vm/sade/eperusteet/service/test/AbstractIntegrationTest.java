@@ -48,4 +48,14 @@ public class AbstractIntegrationTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
+    public void loginAsUser(String user) {
+        SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+        ctx.setAuthentication(new UsernamePasswordAuthenticationToken(user,"test"));
+        SecurityContextHolder.setContext(ctx);
+    }
+
+    public void invalidateAuthentication() {
+        SecurityContextHolder.clearContext();
+    }
+
 }

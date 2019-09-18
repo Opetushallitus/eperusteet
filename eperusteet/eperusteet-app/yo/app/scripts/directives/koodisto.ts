@@ -19,7 +19,13 @@ angular
         };
 
         function haeSivutettu(koodisto, cb, sivu, sivukoko, nimirajaus) {
-            const sivutettu = Api.one("/koodisto/sivutettu/"+koodisto+"?sivukoko="+sivukoko+"&sivu="+sivu+"&haku="+nimirajaus).get();
+            const sivutettu = Api.one("/koodisto/sivutettu/"+koodisto).get(
+                {
+                    sivukoko,
+                    sivu,
+                    haku: nimirajaus
+                }
+            );
             cb();
             return sivutettu;
         }
@@ -29,7 +35,7 @@ angular
                 cb();
                 return;
             }
-            $http.get(SERVICE_LOC + "/koodisto/sivutettu/" + koodisto + "?sivukoko=").then(res => {
+            $http.get(SERVICE_LOC + "/koodisto/sivutettu/" + koodisto).then(res => {
                 taydennykset = koodistoMapping(res.data);
                 nykyinenKoodisto = koodisto;
                 taydennykset = _.sortBy(taydennykset, Utils.nameSort);
@@ -121,7 +127,14 @@ angular
         }
 
         function haeAmmattitaitovaatimuksenTutkintoosa(koodiUri, sivu) {
-            return Api.one("/ammattitaitovaatimukset/tutkinnonosat?kaikki=true&uri=" + koodiUri+"&sivu="+sivu+"&sivukoko=2").get();
+            return Api.one("/ammattitaitovaatimukset/tutkinnonosat").get(
+                {
+                    kaikki:true,
+                    uri:koodiUri,
+                    sivu,
+                    sivukoko:10
+                }
+            );
         }
 
         return {

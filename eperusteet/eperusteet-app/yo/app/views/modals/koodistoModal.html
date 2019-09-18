@@ -17,15 +17,15 @@
                 <th class="col-xs-2" kaanna="'koodi'"></th>
                 <th class="col-xs-6" kaanna="'nimi'"></th>
                 <th class="col-xs-1" kaanna="'voimaantulo-pvm'"></th>
-                <th class="col-xs-3" kaanna="'muissa-tutkinnon-osissa'"></th>
+                <th class="col-xs-3" kaanna="'muissa-tutkinnon-osissa'" ng-if="haetaanAmmattitaitovaatimukset()"></th>
             </tr>
             <tr ng-repeat="l in loydetyt">
                 <td><a class="action-link" ng-click="ok(l)">{{ l.koodiArvo }}</a></td>
                 <td>{{l.nimi | kaanna }} </td>
                 <td>{{l.voimassaAlkuPvm | date:'dd.MM.yyyy'}}</td>
-                <td><span ng-show="!tutkinnonosaviitteet[l.koodiUri]"><small-spinner></small-spinner></span>
+                <td ng-if="haetaanAmmattitaitovaatimukset()"><span ng-show="!tutkinnonosaviitteet[l.koodiUri]"><small-spinner></small-spinner></span>
 
-                        <a ng-if="haetaanAmmattitaitovaatimukset() && tutkinnonosaviitteet[l.koodiUri].data.length > 0"
+                        <a ng-if="tutkinnonosaviitteet[l.koodiUri].data.length > 0"
                                 uib-popover-template="'ammattitaitovaatimus-templ'" 
                                 type="button" 
                                 class="action-link" 
