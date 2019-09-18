@@ -63,7 +63,6 @@ import static org.junit.Assert.*;
  * @author jhyoty
  */
 @DirtiesContext
-@ActiveProfiles(profiles = {"test", "mockPermissions"})
 public class OppiaineServiceIT extends AbstractIntegrationTest {
 
     @Autowired
