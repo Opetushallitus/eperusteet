@@ -6,24 +6,27 @@ import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.KieliConverter;
 import fi.vm.sade.eperusteet.service.TiedoteService;
-import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.List;
-
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TIEDOTE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  *
@@ -33,9 +36,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping("/tiedotteet")
 @Api(value = "Tiedotteet", description = "Tiedotteiden hallinta")
 public class TiedoteController {
-
-    @Autowired
-    private EperusteetAudit audit;
 
     @Autowired
     private TiedoteService tiedoteService;
@@ -78,8 +78,7 @@ public class TiedoteController {
     @InternalApi
     @RequestMapping(method = POST)
     public TiedoteDto addTiedote(@RequestBody TiedoteDto tiedoteDto) {
-        return audit.withAudit(LogMessage.builder(null, TIEDOTE, LISAYS),
-                (Void) -> tiedoteService.addTiedote(tiedoteDto));
+        return tiedoteService.addTiedote(tiedoteDto);
     }
 
     @InternalApi
@@ -87,19 +86,14 @@ public class TiedoteController {
     public TiedoteDto updateTiedote(
         @PathVariable("id") final Long id,
         @RequestBody TiedoteDto tiedoteDto) {
-        return audit.withAudit(LogMessage.builder(null, TIEDOTE, MUOKKAUS), (Void) -> {
-            tiedoteDto.setId(id);
-            return tiedoteService.updateTiedote(tiedoteDto);
-        });
+        tiedoteDto.setId(id);
+        return tiedoteService.updateTiedote(tiedoteDto);
     }
 
     @InternalApi
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(value = "/{id}", method = DELETE)
     public void deleteTiedote(@PathVariable("id") final Long id) {
-        audit.withAudit(LogMessage.builder(null, TIEDOTE, POISTO), (Void) -> {
-            tiedoteService.removeTiedote(id);
-            return null;
-        });
+        tiedoteService.removeTiedote(id);
     }
 }

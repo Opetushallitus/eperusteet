@@ -25,9 +25,6 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.OpasService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
-import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields;
-import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -37,15 +34,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import springfox.documentation.annotations.ApiIgnore;
 
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LUONTI;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -53,13 +49,10 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  *
  * @author nkala
  */
-@Controller
+@RestController
 @RequestMapping("/oppaat")
 @InternalApi
 public class OpasController {
-
-    @Autowired
-    private EperusteetAudit audit;
 
     @Autowired
     private PerusteprojektiService perusteprojektiService;
@@ -79,10 +72,8 @@ public class OpasController {
     public ResponseEntity<OpasDto> add(
             @RequestBody OpasLuontiDto dto,
             UriComponentsBuilder ucb) {
-        return audit.withAudit(LogMessage.builder(null, EperusteetMessageFields.OPAS, LUONTI), (Void) -> {
-            OpasDto resultDto = service.save(dto);
-            return new ResponseEntity<>(resultDto, buildHeadersFor(resultDto.getId(), ucb), HttpStatus.CREATED);
-        });
+        OpasDto resultDto = service.save(dto);
+        return new ResponseEntity<>(resultDto, buildHeadersFor(resultDto.getId(), ucb), HttpStatus.CREATED);
     }
 
     @RequestMapping(method = GET)

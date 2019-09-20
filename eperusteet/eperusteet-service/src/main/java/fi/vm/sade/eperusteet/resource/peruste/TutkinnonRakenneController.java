@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
@@ -28,33 +27,29 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
-import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
-import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
-
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.ArrayList;
 import java.util.List;
-import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.SUORITUSTAVANRAKENNE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSA;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TUTKINNONOSAVIITE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.KLOONAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LIITOS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.PALAUTUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
-import fi.vm.sade.eperusteet.service.audit.LogMessage;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
+import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 /**
  *
@@ -64,9 +59,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}")
 @InternalApi
 public class TutkinnonRakenneController {
-
-    @Autowired
-    private EperusteetAudit audit;
 
     @Autowired
     private PerusteenOsaViiteService perusteenOsaViiteService;
@@ -96,12 +88,10 @@ public class TutkinnonRakenneController {
             @PathVariable final Suoritustapakoodi suoritustapakoodi,
             @RequestBody TutkinnonOsaViiteDto osa
     ) {
-        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, LISAYS), (Void) -> {
-            if (osa.getTutkinnonOsa() != null) {
-                return perusteService.attachTutkinnonOsa(perusteId, suoritustapakoodi, osa);
-            }
-            return perusteService.addTutkinnonOsa(perusteId, suoritustapakoodi, osa);
-        });
+        if (osa.getTutkinnonOsa() != null) {
+            return perusteService.attachTutkinnonOsa(perusteId, suoritustapakoodi, osa);
+        }
+        return perusteService.addTutkinnonOsa(perusteId, suoritustapakoodi, osa);
     }
 
     /**
@@ -119,9 +109,7 @@ public class TutkinnonRakenneController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @RequestBody TutkinnonOsaViiteDto osa) {
-        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, LIITOS), (Void) -> {
-            return perusteService.attachTutkinnonOsa(perusteId, suoritustapakoodi, osa);
-        });
+        return perusteService.attachTutkinnonOsa(perusteId, suoritustapakoodi, osa);
     }
 
     @RequestMapping(value = "/rakenne", method = GET)
@@ -204,8 +192,7 @@ public class TutkinnonRakenneController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("osanId") final Long id) {
-        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, KLOONAUS),
-                (Void) -> perusteenOsaViiteService.kloonaaTutkinnonOsa(perusteId, suoritustapakoodi, id));
+        return perusteenOsaViiteService.kloonaaTutkinnonOsa(perusteId, suoritustapakoodi, id);
     }
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}", method = DELETE)
@@ -214,10 +201,7 @@ public class TutkinnonRakenneController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("osanId") final Long osanId) {
-        audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSAVIITE, POISTO), (Void) -> {
             perusteService.removeTutkinnonOsa(perusteId, suoritustapakoodi, osanId);
-            return null;
-        });
     }
 
     @RequestMapping(value = "/rakenne/palauta/{versioId}", method = POST)
@@ -227,14 +211,11 @@ public class TutkinnonRakenneController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("versioId") final Integer versioId) {
-        return audit.withAudit(LogMessage.builder(perusteId, SUORITUSTAVANRAKENNE, PALAUTUS)
-                .palautus(perusteId, versioId.longValue()), (Void) -> {
-            RakenneModuuliDto t = perusteService.revertRakenneVersio(perusteId, suoritustapakoodi, versioId);
-            if (t == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<>(t, HttpStatus.OK);
-        });
+        RakenneModuuliDto t = perusteService.revertRakenneVersio(perusteId, suoritustapakoodi, versioId);
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/rakenne", method = POST)
@@ -243,8 +224,7 @@ public class TutkinnonRakenneController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @RequestBody UpdateDto<RakenneModuuliDto> rakenne) {
-        return audit.withAudit(LogMessage.builder(perusteId, SUORITUSTAVANRAKENNE, MUOKKAUS),
-                (Void) -> perusteService.updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne));
+        return perusteService.updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne);
     }
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}", method = POST)
@@ -254,8 +234,7 @@ public class TutkinnonRakenneController {
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("osanId") final Long osanId,
             @RequestBody TutkinnonOsaViiteUpdateDto osa) {
-        return audit.withAudit(LogMessage.builder(perusteId, TUTKINNONOSA, LISAYS),
-                (Void) -> perusteService.updateTutkinnonOsa(perusteId, suoritustapakoodi, osa));
+        return perusteService.updateTutkinnonOsa(perusteId, suoritustapakoodi, osa);
     }
 
     @RequestMapping(value = "/tutkinnonosat/{viiteId}", method = GET)

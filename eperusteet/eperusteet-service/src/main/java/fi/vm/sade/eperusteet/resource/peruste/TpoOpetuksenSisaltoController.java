@@ -2,27 +2,27 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
-import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.yl.TpoOpetuksenSisaltoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TAITEENALA;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.*;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @RequestMapping("/perusteet/{perusteId}/tpoopetus")
 @InternalApi
 public class TpoOpetuksenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(AIPEOpetuksenSisaltoController.class);
-
-    @Autowired
-    private EperusteetAudit audit;
 
     @Autowired
     TpoOpetuksenSisaltoService sisalto;
@@ -40,8 +40,7 @@ public class TpoOpetuksenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @RequestBody TaiteenalaDto taiteenalaDto
     ) {
-        return audit.withAudit(LogMessage.builder(perusteId, TAITEENALA, LISAYS),
-                (Void) -> ResponseEntity.ok(sisalto.addTaiteenala(perusteId, taiteenalaDto)));
+        return ResponseEntity.ok(sisalto.addTaiteenala(perusteId, taiteenalaDto));
     }
 
     @RequestMapping(value = "/taiteenalat/{taiteenalaId}", method = GET)
@@ -57,10 +56,7 @@ public class TpoOpetuksenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("taiteenalaId") final Long taiteenalaId
     ) {
-        audit.withAudit(LogMessage.builder(perusteId, TAITEENALA, POISTO), (Void) -> {
-            sisalto.removeTaiteenala(perusteId, taiteenalaId);
-            return null;
-        });
+        sisalto.removeTaiteenala(perusteId, taiteenalaId);
         return ResponseEntity.ok().build();
     }
 
@@ -71,7 +67,6 @@ public class TpoOpetuksenSisaltoController {
             @PathVariable("taiteenalaId") final Long taiteenalaId,
             @RequestBody TaiteenalaDto taiteenalaDto
     ) {
-        return audit.withAudit(LogMessage.builder(perusteId, TAITEENALA, MUOKKAUS),
-                (Void) -> ResponseEntity.ok(sisalto.updateTaiteenala(perusteId, taiteenalaId, taiteenalaDto)));
+        return ResponseEntity.ok(sisalto.updateTaiteenala(perusteId, taiteenalaId, taiteenalaDto));
     }
 }

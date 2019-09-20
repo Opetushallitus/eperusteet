@@ -132,4 +132,6 @@
         <property name="allowIfAllAbstainDecisions" value="true"/>
     </bean>
 
+    <bean id="auditConfiguration" class="fi.vm.sade.eperusteet.service.audit.AuditConfiguration" />
+
 </beans>
