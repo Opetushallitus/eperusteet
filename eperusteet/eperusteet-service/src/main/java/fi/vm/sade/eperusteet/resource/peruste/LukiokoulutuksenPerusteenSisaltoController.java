@@ -26,7 +26,18 @@ import fi.vm.sade.eperusteet.dto.yl.LukioOppiaineUpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.*;
+import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuudetYleiskuvausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioAihekokonaisuusLuontiDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioAihekokonaisuusMuokkausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukioOpetussuunnitelmaRakenneRevisionDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiListausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiOppaineMuokkausDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiTarkasteleDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.OppaineKurssiTreeStructureDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
@@ -34,34 +45,30 @@ import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.AIHEKOKONAISUUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.KURSSI;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.OPPIAINE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PERUSTEENOSA;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.RAKENNE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.TEKSTIKAPPALE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.YLEISKUVAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.YLEISTAVOITE;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.KLOONAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.PALAUTUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
-import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
-import fi.vm.sade.eperusteet.service.yl.*;
+import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
+import fi.vm.sade.eperusteet.service.yl.KurssiService;
+import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
+import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import java.util.List;
 import java.util.Set;
-import static java.util.stream.Collectors.toList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
+
+import static java.util.stream.Collectors.toList;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * User: tommiratamaa
@@ -73,9 +80,6 @@ import org.springframework.web.servlet.view.RedirectView;
 @InternalApi
 public class LukiokoulutuksenPerusteenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(LukiokoulutuksenPerusteenSisaltoController.class);
-
-    @Autowired
-    private EperusteetAudit audit;
 
     @Autowired
     private LukiokoulutuksenPerusteenSisaltoService sisallot;
@@ -108,9 +112,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @ResponseStatus(HttpStatus.CREATED)
     public OppiaineDto addOppiaine(@PathVariable("perusteId") final Long perusteId,
                                    @RequestBody OppiaineDto dto) {
-        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, LISAYS), (Void) -> {
-            return oppiaineet.addOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
-        });
+        return oppiaineet.addOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }
 
     @RequestMapping(value = "/rakenne/versiot", method = GET)
@@ -129,9 +131,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     @RequestMapping(value = "/rakenne/versiot/{revision}/palauta", method = POST)
     public LukioOpetussuunnitelmaRakenneRevisionDto<OppiaineSuppeaDto> restorRakenneRevision(
             @PathVariable("perusteId") final Long perusteId, @PathVariable("revision") final Integer revision) {
-        return audit.withAudit(LogMessage.builder(perusteId, RAKENNE, PALAUTUS), (Void) -> {
-            return sisallot.revertukioRakenneByRevision(perusteId, revision);
-        });
+        return sisallot.revertukioRakenneByRevision(perusteId, revision);
     }
 
     @RequestMapping(value = "/kurssit", method = POST)
@@ -139,9 +139,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public RedirectView addKurssi(
             @PathVariable("perusteId") final Long perusteId,
             @RequestBody LukioKurssiLuontiDto kurssi) {
-        return audit.withAudit(LogMessage.builder(perusteId, KURSSI, LISAYS), (Void) -> {
-            return new RedirectView("kurssit/" + kurssit.createLukiokurssi(perusteId, kurssi), true);
-        });
+        return new RedirectView("kurssit/" + kurssit.createLukiokurssi(perusteId, kurssi), true);
     }
 
     @RequestMapping(value = "/kurssit", method = GET)
@@ -177,11 +175,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") Long id,
             @PathVariable("version") Integer version) {
-        return audit.withAudit(LogMessage.builder(perusteId, KURSSI, PALAUTUS)
-                .add("kurssi", id.toString())
-                .add("versio", version.toString()), (Void) -> {
-            return kurssit.revertLukiokurssiTarkasteleDtoByIdAndVersion(perusteId, id, version);
-        });
+        return kurssit.revertLukiokurssiTarkasteleDtoByIdAndVersion(perusteId, id, version);
     }
 
     @RequestMapping(value = "/kurssit/{id}", method = DELETE)
@@ -189,10 +183,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public void deleteKurssi(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") Long id) {
-        audit.withAudit(LogMessage.builder(perusteId, KURSSI, POISTO), (Void) -> {
-            kurssit.deleteLukiokurssi(perusteId, id);
-            return null;
-        });
+        kurssit.deleteLukiokurssi(perusteId, id);
     }
 
     @RequestMapping(value = "/kurssit/{id}", method = POST)
@@ -202,9 +193,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @RequestBody LukiokurssiMuokkausDto kurssi) {
         assertKurssiId(kurssiId, kurssi);
         kurssit.updateLukiokurssi(perusteId, kurssi);
-        return audit.withAudit(LogMessage.builder(perusteId, KURSSI, LISAYS), (Void) -> {
-            return new RedirectView("" + kurssiId, true);
-        });
+        return new RedirectView("" + kurssiId, true);
     }
 
     @RequestMapping(value = "/kurssit/{id}/oppiaineet", method = POST)
@@ -212,11 +201,9 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long kurssiId,
             @RequestBody LukiokurssiOppaineMuokkausDto kurssi) {
-        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, LISAYS), (Void) -> {
-            assertKurssiId(kurssiId, kurssi);
-            kurssit.updateLukiokurssiOppiaineRelations(perusteId, kurssi);
-            return new RedirectView("", true);
-        });
+        assertKurssiId(kurssiId, kurssi);
+        kurssit.updateLukiokurssiOppiaineRelations(perusteId, kurssi);
+        return new RedirectView("", true);
     }
 
     private void assertKurssiId(Long kurssiId, IdHolder kurssi) {
@@ -264,10 +251,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id,
             @PathVariable("revisio") final Integer revisio) {
-        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, PALAUTUS)
-                .palautus(id, revisio.longValue()), (Void) -> {
-            return oppiaineet.revertOppiaine(perusteId, id, revisio, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
-        });
+        return oppiaineet.revertOppiaine(perusteId, id, revisio, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/oppimaarat", method = GET)
@@ -282,10 +266,8 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id,
             @RequestBody UpdateDto<LukioOppiaineUpdateDto> dto) {
-        return audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, LISAYS), (Void) -> {
-            dto.getDto().setId(id);
-            return oppiaineet.updateOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
-        });
+        dto.getDto().setId(id);
+        return oppiaineet.updateOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = DELETE)
@@ -293,10 +275,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public void deleteOppiaine(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id) {
-        audit.withAudit(LogMessage.builder(perusteId, OPPIAINE, POISTO), (Void) -> {
-            oppiaineet.deleteOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
-            return null;
-        });
+        oppiaineet.deleteOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.LUKIOKOULUTUS);
     }
 
     @RequestMapping(value = "/rakenne", method = POST)
@@ -304,10 +283,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public void updateStructure(
             @PathVariable("perusteId") final Long perusteId,
             @RequestBody OppaineKurssiTreeStructureDto structureDto) {
-        audit.withAudit(LogMessage.builder(perusteId, RAKENNE, MUOKKAUS), (Void) -> {
-            kurssit.updateTreeStructure(perusteId, structureDto, null);
-            return null;
-        });
+        kurssit.updateTreeStructure(perusteId, structureDto, null);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = GET)
@@ -322,10 +298,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public void deleteSisalto(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id) {
-        audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSA, POISTO), (Void) -> {
-            sisallot.removeSisalto(perusteId, id);
-            return null;
-        });
+        sisallot.removeSisalto(perusteId, id);
     }
 
     @RequestMapping(value = "/sisalto", method = POST)
@@ -333,13 +306,11 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public PerusteenOsaViiteDto.Matala addSisalto(
             @PathVariable("perusteId") final Long perusteId,
             @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
-        return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSA, LISAYS), (Void) -> {
-            if (dto == null || (dto.getPerusteenOsa() == null && dto.getPerusteenOsaRef() == null)) {
-                return sisallot.addSisalto(perusteId, null, null);
-            } else {
-                return sisallot.addSisalto(perusteId, null, dto);
-            }
-        });
+        if (dto == null || (dto.getPerusteenOsa() == null && dto.getPerusteenOsaRef() == null)) {
+            return sisallot.addSisalto(perusteId, null, null);
+        } else {
+            return sisallot.addSisalto(perusteId, null, dto);
+        }
     }
 
     @RequestMapping(value = "/sisalto/{id}/lapset", method = POST)
@@ -347,9 +318,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id,
             @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
-        return audit.withAudit(LogMessage.builder(perusteId, PERUSTEENOSA, LISAYS), (Void) -> {
-            return sisallot.addSisalto(perusteId, id, dto);
-        });
+        return sisallot.addSisalto(perusteId, id, dto);
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = POST)
@@ -358,19 +327,14 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id,
             @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Suppea pov) {
-        audit.withAudit(LogMessage.builder(perusteId, RAKENNE, MUOKKAUS), (Void) -> {
-            viittet.reorderSubTree(perusteId, id, pov);
-            return null;
-        });
+        viittet.reorderSubTree(perusteId, id, pov);
     }
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id) {
-        return audit.withAudit(LogMessage.builder(perusteId, TEKSTIKAPPALE, KLOONAUS), (Void) -> {
-            return viittet.kloonaaTekstiKappale(perusteId, id);
-        });
+        return viittet.kloonaaTekstiKappale(perusteId, id);
     }
 
     @RequestMapping(value = "/aihekokonaisuudet", method = GET)
@@ -390,10 +354,8 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public RedirectView updateAihekokonaisuudetYleiskuvaus(
             @PathVariable("perusteId") final Long perusteId,
             @RequestBody AihekokonaisuudetYleiskuvausDto AihekokonaisuudetYleiskuvausDto) {
-        return audit.withAudit(LogMessage.builder(perusteId, YLEISKUVAUS, LISAYS), (Void) -> {
-            aihekokonaisuudet.tallennaYleiskuvaus(perusteId, AihekokonaisuudetYleiskuvausDto);
-            return new RedirectView("yleiskuvaus", true);
-        });
+        aihekokonaisuudet.tallennaYleiskuvaus(perusteId, AihekokonaisuudetYleiskuvausDto);
+        return new RedirectView("yleiskuvaus", true);
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/yleiskuvaus/versiot", method = GET)
@@ -433,10 +395,8 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public ResponseEntity<AihekokonaisuudetYleiskuvausDto> palautaAihekokonaisuudetYleiskuvaus(
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("revisio") final int revisio) {
-        return audit.withAudit(LogMessage.builder(perusteId, YLEISKUVAUS, PALAUTUS), (Void) -> {
-            AihekokonaisuudetYleiskuvausDto dto = aihekokonaisuudet.palautaAihekokonaisuudetYleiskuvaus(perusteId, revisio);
-            return new ResponseEntity<>(dto, HttpStatus.OK);
-        });
+        AihekokonaisuudetYleiskuvausDto dto = aihekokonaisuudet.palautaAihekokonaisuudetYleiskuvaus(perusteId, revisio);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/{id}", method = GET)
@@ -451,13 +411,11 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long aihekokonaisuusId,
             @RequestBody LukioAihekokonaisuusMuokkausDto aihekokonaisuus) {
-        return audit.withAudit(LogMessage.builder(perusteId, AIHEKOKONAISUUS, LISAYS), (Void) -> {
-            if (!aihekokonaisuus.getId().equals(aihekokonaisuusId)) {
-                throw new NotExistsException("Aihekokonaisuutta ei löytynyt");
-            }
-            aihekokonaisuudet.muokkaaAihekokonaisuutta(perusteId, aihekokonaisuus);
-            return new RedirectView("" + aihekokonaisuusId, true);
-        });
+        if (!aihekokonaisuus.getId().equals(aihekokonaisuusId)) {
+            throw new NotExistsException("Aihekokonaisuutta ei löytynyt");
+        }
+        aihekokonaisuudet.muokkaaAihekokonaisuutta(perusteId, aihekokonaisuus);
+        return new RedirectView("" + aihekokonaisuusId, true);
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/{id}", method = DELETE)
@@ -465,10 +423,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public void deleteAihekokonaisuus(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long aihekokonaisuusId) {
-        audit.withAudit(LogMessage.builder(perusteId, AIHEKOKONAISUUS, POISTO), (Void) -> {
-            aihekokonaisuudet.poistaAihekokonaisuus(perusteId, aihekokonaisuusId);
-            return null;
-        });
+        aihekokonaisuudet.poistaAihekokonaisuus(perusteId, aihekokonaisuusId);
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/aihekokonaisuus", method = POST)
@@ -476,9 +431,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public RedirectView addAihekokonaisuus(
             @PathVariable("perusteId") final Long perusteId,
             @RequestBody LukioAihekokonaisuusLuontiDto aihekokonaisuusLuontiDto) {
-        return audit.withAudit(LogMessage.builder(perusteId, AIHEKOKONAISUUS, LISAYS), (Void) -> {
-            return new RedirectView("" + aihekokonaisuudet.luoAihekokonaisuus(perusteId, aihekokonaisuusLuontiDto), true);
-        });
+        return new RedirectView("" + aihekokonaisuudet.luoAihekokonaisuus(perusteId, aihekokonaisuusLuontiDto), true);
     }
 
     @RequestMapping(value = "/aihekokonaisuudet/{id}/versiot", method = GET)
@@ -501,11 +454,8 @@ public class LukiokoulutuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("id") final Long id,
             @PathVariable("revisio") final int revisio) {
-        return audit.withAudit(LogMessage.builder(perusteId, AIHEKOKONAISUUS, PALAUTUS)
-                .palautus(id, Integer.valueOf(revisio).longValue()), (Void) -> {
-            LukioAihekokonaisuusMuokkausDto dto = aihekokonaisuudet.palautaAihekokonaisuus(perusteId, id, revisio);
-            return new ResponseEntity<>(dto, HttpStatus.OK);
-        });
+        LukioAihekokonaisuusMuokkausDto dto = aihekokonaisuudet.palautaAihekokonaisuus(perusteId, id, revisio);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/yleisettavoitteet", method = GET)
@@ -519,10 +469,8 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public RedirectView updateYleisetTavoitteet(
             @PathVariable("perusteId") final Long perusteId,
             @RequestBody LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto) {
-        return audit.withAudit(LogMessage.builder(perusteId, YLEISTAVOITE, LISAYS), (Void) -> {
-            perusteet.tallennaYleisetTavoitteet(perusteId, lukiokoulutuksenYleisetTavoitteetDto);
-            return new RedirectView("yleisettavoitteet", true);
-        });
+        perusteet.tallennaYleisetTavoitteet(perusteId, lukiokoulutuksenYleisetTavoitteetDto);
+        return new RedirectView("yleisettavoitteet", true);
     }
 
     @RequestMapping(value = "/yleisettavoitteet/versiot", method = GET)
@@ -542,11 +490,8 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     public ResponseEntity<LukiokoulutuksenYleisetTavoitteetDto> palautaYleisetTavoitteet(
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("revisio") final int revisio) {
-        return audit.withAudit(LogMessage.builder(perusteId, YLEISTAVOITE, PALAUTUS)
-                .palautus(perusteId, Integer.valueOf(revisio).longValue()), (Void) -> {
-            LukiokoulutuksenYleisetTavoitteetDto dto = perusteet.palautaYleisetTavoitteet(perusteId, revisio);
-            return new ResponseEntity<>(dto, HttpStatus.OK);
-        });
+        LukiokoulutuksenYleisetTavoitteetDto dto = perusteet.palautaYleisetTavoitteet(perusteId, revisio);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, Supplier<T> response) {

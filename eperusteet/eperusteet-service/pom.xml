@@ -16,14 +16,14 @@
         <spring.version>4.3.23.RELEASE</spring.version>
         <spring.security.version>4.2.13.RELEASE</spring.security.version>
         <spring.data.jpa.version>1.11.22.RELEASE</spring.data.jpa.version>
-        <logback.version>1.2.0</logback.version>
+        <logback.version>1.2.3</logback.version>
         <postgresql.version>9.4.1211</postgresql.version>
         <jackson.version>2.9.9</jackson.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
         <jsoup.version>1.9.2</jsoup.version>
-        <eperusteet.backend-utils.version>1.4-SNAPSHOT</eperusteet.backend-utils.version>
+        <eperusteet.backend-utils.version>1.8-SNAPSHOT</eperusteet.backend-utils.version>
         <ehcache.version>2.6.11</ehcache.version>
         <slf4j.version>1.7.21</slf4j.version>
         <batik.version>1.9</batik.version>
@@ -322,9 +322,7 @@
         <dependency>
             <groupId>fi.vm.sade</groupId>
             <artifactId>auditlogger</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-            <!--https://github.com/Opetushallitus/valinta-tulos-service/tree/topic/valintalaskenta-ui-tallennus-valintarekisteriin-->
-            <!--<version>7.0.0-rc1-SNAPSHOT</version>-->
+            <version>8.3.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
@@ -437,6 +435,16 @@
             <groupId>fi.vm.sade.eperusteet</groupId>
             <artifactId>eperusteet-backend-utils</artifactId>
             <version>${eperusteet.backend-utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
         </dependency>
     </dependencies>
     <build>

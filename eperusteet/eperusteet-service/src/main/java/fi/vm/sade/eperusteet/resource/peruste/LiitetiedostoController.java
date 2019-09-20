@@ -19,8 +19,17 @@ import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.LiiteService;
-import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import fi.vm.sade.eperusteet.service.audit.LogMessage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PushbackInputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -30,19 +39,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PushbackInputStream;
-import java.util.*;
-
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.KUVA;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
 
 /**
  *
@@ -51,9 +55,6 @@ import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
 @RestController
 @RequestMapping("/perusteet/{perusteId}")
 public class LiitetiedostoController {
-
-    @Autowired
-    private EperusteetAudit audit;
 
     private static final int BUFSIZE = 64 * 1024;
     final Tika tika = new Tika();
@@ -90,7 +91,6 @@ public class LiitetiedostoController {
 
         HttpHeaders h = new HttpHeaders();
         h.setLocation(ucb.path("/perusteet/{perusteId}/kuvat/{id}").buildAndExpand(perusteId, uuid.toString()).toUri());
-        audit.withAudit(LogMessage.builder(perusteId, KUVA, LISAYS));
 
         return new ResponseEntity<>(uuid.toString(), h, HttpStatus.CREATED);
     }
@@ -109,7 +109,6 @@ public class LiitetiedostoController {
 
         HttpHeaders h = new HttpHeaders();
         h.setLocation(ucb.path("/perusteet/{perusteId}/liitteet/{id}").buildAndExpand(perusteId, uuid.toString()).toUri());
-        audit.withAudit(LogMessage.builder(perusteId, KUVA, LISAYS));
 
         return new ResponseEntity<>(uuid.toString(), h, HttpStatus.CREATED);
     }
@@ -149,10 +148,7 @@ public class LiitetiedostoController {
         @PathVariable("perusteId") Long perusteId,
         @PathVariable("id") UUID id
     ) {
-        audit.withAudit(LogMessage.builder(perusteId, KUVA, POISTO), (Void) -> {
-            liitteet.delete(perusteId, id);
-            return null;
-        });
+        liitteet.delete(perusteId, id);
     }
 
     @RequestMapping(value = "/kuvat", method = RequestMethod.GET)

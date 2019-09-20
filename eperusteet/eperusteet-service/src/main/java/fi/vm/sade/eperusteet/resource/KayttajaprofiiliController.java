@@ -21,26 +21,20 @@ import fi.vm.sade.eperusteet.dto.kayttaja.SuosikkiDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.SuosikkiService;
-import fi.vm.sade.eperusteet.service.audit.EperusteetAudit;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.PREFERENSSI;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetMessageFields.SUOSIKKI;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.LISAYS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.MUOKKAUS;
-import static fi.vm.sade.eperusteet.service.audit.EperusteetOperation.POISTO;
-import fi.vm.sade.eperusteet.service.audit.LogMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
@@ -50,9 +44,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/kayttajaprofiili")
 @InternalApi
 public class KayttajaprofiiliController {
-
-    @Autowired
-    private EperusteetAudit audit;
 
     @Autowired
     private KayttajaprofiiliService service;
@@ -74,34 +65,27 @@ public class KayttajaprofiiliController {
     @ResponseBody
     public ResponseEntity<KayttajaProfiiliDto> addSuosikki(
             @RequestBody SuosikkiDto suosikkiDto) {
-        return audit.withAudit(LogMessage.builder(null, SUOSIKKI, LISAYS), (Void) -> {
-            KayttajaProfiiliDto profiiliDto = service.addSuosikki(suosikkiDto);
-            return new ResponseEntity<>(profiiliDto, HttpStatus.CREATED);
-        });
+        KayttajaProfiiliDto profiiliDto = service.addSuosikki(suosikkiDto);
+        return new ResponseEntity<>(profiiliDto, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/preferenssi", method = POST, consumes="application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public void setPreferenssi(
             @RequestBody KayttajaprofiiliPreferenssiDto preferenssiDto) {
-        audit.withAudit(LogMessage.builder(null, PREFERENSSI, LISAYS), (Void) -> {
-            service.setPreference(preferenssiDto);
-            return null;
-        });
+        service.setPreference(preferenssiDto);
     }
 
     @RequestMapping(value = "/suosikki/{suosikkiId}", method = DELETE)
     @ResponseBody
     public ResponseEntity<KayttajaProfiiliDto> delete(
             @PathVariable("suosikkiId") final Long suosikkiId) {
-        return audit.withAudit(LogMessage.builder(null, SUOSIKKI, POISTO), (Void) -> {
-            SuosikkiDto suosikki = suosikkiService.get(suosikkiId);
-            if (suosikki == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            KayttajaProfiiliDto k = service.deleteSuosikki(suosikkiId);
-            return new ResponseEntity<>(k, HttpStatus.OK);
-        });
+        SuosikkiDto suosikki = suosikkiService.get(suosikkiId);
+        if (suosikki == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        KayttajaProfiiliDto k = service.deleteSuosikki(suosikkiId);
+        return new ResponseEntity<>(k, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/suosikki/{suosikkiId}", method = {PUT, POST})
@@ -110,9 +94,7 @@ public class KayttajaprofiiliController {
             @RequestBody SuosikkiDto suosikkiDto,
             @PathVariable("suosikkiId") final Long suosikkiId
     ) {
-        return audit.withAudit(LogMessage.builder(null, SUOSIKKI, MUOKKAUS), (Void) -> {
-            KayttajaProfiiliDto k = service.updateSuosikki(suosikkiId, suosikkiDto);
-            return new ResponseEntity<>(k, HttpStatus.OK);
-        });
+        KayttajaProfiiliDto k = service.updateSuosikki(suosikkiId, suosikkiDto);
+        return new ResponseEntity<>(k, HttpStatus.OK);
     }
 }
