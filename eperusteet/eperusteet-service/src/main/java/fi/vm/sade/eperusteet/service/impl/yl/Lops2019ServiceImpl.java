@@ -12,7 +12,10 @@ import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAla
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliSisaltoDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliTavoiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019LaajaAlainenRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
@@ -465,6 +468,33 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     @Override
     public Lops2019ModuuliDto updateModuuli(final Long perusteId, final Lops2019ModuuliDto dto) {
         Lops2019Moduuli moduuli = moduuliRepository.findOne(dto.getId());
+
+        // Poistetaan tyhjät tavoitteet
+        if (dto.getTavoitteet() != null) {
+            List<LokalisoituTekstiDto> tavoitteet = dto.getTavoitteet().getTavoitteet();
+            if (!ObjectUtils.isEmpty(tavoitteet)) {
+                List<LokalisoituTekstiDto> filtered = tavoitteet.stream()
+                        .filter(t -> t.getId() != null || (t.getTekstit() != null && t.getTekstit().size() > 0))
+                        .collect(Collectors.toList());
+                tavoitteet.clear();
+                tavoitteet.addAll(filtered);
+            }
+        }
+
+        // Poistetaan tyhjät sisällöt
+        if (!ObjectUtils.isEmpty(dto.getSisallot())) {
+            dto.getSisallot().stream()
+                    .forEach(s -> {
+                        List<LokalisoituTekstiDto> sisallot = s.getSisallot();
+                        if (!ObjectUtils.isEmpty(sisallot)) {
+                            List<LokalisoituTekstiDto> filtered = sisallot.stream()
+                                    .filter(t -> t.getId() != null || (t.getTekstit() != null && t.getTekstit().size() > 0))
+                                    .collect(Collectors.toList());
+                            sisallot.clear();
+                            sisallot.addAll(filtered);
+                        }
+                    });
+        }
 
         mapper.map(dto, moduuli);
 

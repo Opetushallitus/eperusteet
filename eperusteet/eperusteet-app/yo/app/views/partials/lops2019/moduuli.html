@@ -42,9 +42,11 @@
                 <p>{{moduuli.laajuus}}</p>
             </div>
 
-            <div ng-if="moduuli.tavoitteet && moduuli.tavoitteet.kohde">
+            <div ng-if="moduuli.tavoitteet">
                 <strong class="header" kaanna="'tavoitteet'"></strong>
-                <p kaanna="moduuli.tavoitteet.kohde"></p>
+                <p>
+                    <span ng-bind="moduuli.tavoitteet.kohde || 'nimeton' | kaanna"></span>
+                </p>
                 <ul>
                     <li ng-repeat="tavoite in moduuli.tavoitteet.tavoitteet">
                         <span ng-bind="tavoite || 'nimeton' | kaanna"></span>
@@ -55,7 +57,7 @@
             <div ng-if="moduuli.sisallot && moduuli.sisallot.length > 0">
                 <strong class="header" kaanna="'sisallot'"></strong>
                 <div ng-repeat="sisalto in moduuli.sisallot">
-                    <p kaanna="sisalto.kohde"></p>
+                    <p ng-if="sisalto.kohde" kaanna="sisalto.kohde"></p>
                     <ul>
                         <li ng-repeat="osa in sisalto.sisallot">
                             <span ng-bind="osa || 'nimeton' | kaanna"></span>
