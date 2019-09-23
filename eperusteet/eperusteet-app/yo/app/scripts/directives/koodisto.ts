@@ -137,6 +137,10 @@ angular
             );
         }
 
+        function lisaaKoodistoKoodi(koodistonimi, koodinimi) {
+            return Api.one("/koodisto/"+koodistonimi).post("", koodinimi);
+        }
+
         return {
             hae: hae,
             filtteri: filtteri,
@@ -146,7 +150,8 @@ angular
             haeYlarelaatiot: haeYlarelaatiot,
             haeAmmattitaitovaatimuksenTutkintoosa: haeAmmattitaitovaatimuksenTutkintoosa,
             haeSivutettu: haeSivutettu,
-            koodistoMapping: koodistoMapping
+            koodistoMapping: koodistoMapping,
+            lisaaKoodistoKoodi: lisaaKoodistoKoodi
         };
     })
     .controller("KoodistoModalCtrl", function(

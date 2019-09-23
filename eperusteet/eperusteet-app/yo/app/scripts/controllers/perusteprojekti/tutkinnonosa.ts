@@ -371,9 +371,18 @@ angular
                 Varmistusdialogi.dialogi({
                     otsikko: "varmista-lisays",
                     teksti: Kaanna.kaanna("koodi-lisays-varmistus"),
-                    primaryBtn: "poista",
-                    successCb: function() {
-                        console.log('lisattiin');
+                    primaryBtn: "ok",
+                    successCb: async function() {
+                        
+                        const koodi = await Koodisto.lisaaKoodistoKoodi("tutkinnonosat", $scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi);
+
+                        $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodi = {
+                            uri: koodi.koodiUri,
+                            arvo: koodi.koodiArvo,
+                            versio: koodi.versio,
+                            koodisto: koodi.koodisto.koodistoUri
+                        };
+
                     }
                 })();
             };
