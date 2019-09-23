@@ -19,6 +19,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpEntity;
@@ -37,6 +40,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -70,6 +74,12 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Autowired
     RestClientFactory restClientFactory;
+
+    @Autowired
+    KoodistoClient self; // for cacheable
+
+    @Autowired
+    CacheManager cacheManager;
 
     @Autowired
     @Koodisto
@@ -230,6 +240,51 @@ public class KoodistoClientImpl implements KoodistoClient {
                     .orElse(null);
         } catch (JsonProcessingException e) {
             throw new BusinessRuleViolationException("koodin-lisays-epaonnistui");
+        }
+    }
+
+    @Override
+    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi) {
+        long seuraavaKoodi = nextKoodiId(koodistonimi);
+
+        KoodistoKoodiDto uusiKoodi = KoodistoKoodiDto.builder()
+                .koodiArvo(Long.toString(seuraavaKoodi))
+                .koodiUri(koodistonimi + "_" + seuraavaKoodi)
+                .koodisto(KoodistoDto.of(koodistonimi))
+                .voimassaAlkuPvm(new Date())
+                .metadata(koodinimi.getTekstit().entrySet().stream()
+                        .map((k) -> KoodistoMetadataDto.of(k.getValue(), k.getKey().toString().toUpperCase(), k.getValue()))
+                        .toArray(KoodistoMetadataDto[]::new))
+                .build();
+        KoodistoKoodiDto lisattyKoodi = addKoodi(uusiKoodi);
+        if (lisattyKoodi == null
+                || lisattyKoodi.getKoodisto() == null
+                || lisattyKoodi.getKoodisto().getKoodistoUri() == null
+                || lisattyKoodi.getKoodiUri() == null) {
+            log.error("Koodin lisääminen epäonnistui {} {}", uusiKoodi, lisattyKoodi);
+        } else {
+            cacheManager.getCache("koodistot").evict(koodistonimi);
+        }
+
+        return lisattyKoodi;
+    }
+
+    @Override
+    public long nextKoodiId(String koodistonimi) {
+        List<KoodistoKoodiDto> koodit = self.getAll(koodistonimi);
+        if (koodit.size() == 0) {
+            return 1000L;
+        }
+        else {
+            koodit.sort(Comparator.comparing(KoodistoKoodiDto::getKoodiArvo));
+            for (int idx = 0; idx < koodit.size() - 2; ++idx) {
+                long a = Long.parseLong(koodit.get(idx).getKoodiArvo()) + 1;
+                long b = Long.parseLong(koodit.get(idx + 1).getKoodiArvo());
+                if (a < b) {
+                    return a;
+                }
+            }
+            return Long.parseLong(koodit.get(koodit.size() - 1).getKoodiArvo()) + 1;
         }
     }
 }

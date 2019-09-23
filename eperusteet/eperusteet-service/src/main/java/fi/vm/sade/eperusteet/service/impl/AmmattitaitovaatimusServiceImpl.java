@@ -252,4 +252,5 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         List<Ammattitaitovaatimus2019> vaatimukset = getVaatimukset(peruste);
         return mapper.mapAsList(vaatimukset, Ammattitaitovaatimus2019Dto.class);
     }
+
 }

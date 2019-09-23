@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -67,5 +68,11 @@ public interface KoodistoClient {
 
     @PreAuthorize("isAuthenticated()")
     KoodistoKoodiDto addKoodi(KoodistoKoodiDto koodi);
+
+    @PreAuthorize("isAuthenticated()")
+    KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi);
+
+    @PreAuthorize("isAuthenticated()")
+    long nextKoodiId(String koodistonimi);
 
 }
