@@ -31,6 +31,8 @@ import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,7 @@ import static javax.servlet.http.HttpServletResponse.*;
  *
  * @author nkala
  */
+@Slf4j
 @Service
 @Profile("default")
 public class KoodistoClientImpl implements KoodistoClient {

@@ -133,6 +133,7 @@ angular
             YleinenData,
             localStorageService,
             virheService,
+            Kaanna
         ) => {
             Utils.scrollTo("#ylasivuankkuri");
 
@@ -365,6 +366,17 @@ angular
                     tarkista: _.constant(true)
                 }
             );
+
+            $scope.koodistoLisaysClick = function() {
+                Varmistusdialogi.dialogi({
+                    otsikko: "varmista-lisays",
+                    teksti: Kaanna.kaanna("koodi-lisays-varmistus"),
+                    primaryBtn: "poista",
+                    successCb: function() {
+                        console.log('lisattiin');
+                    }
+                })();
+            };
 
             $scope.cleanKoodi = () => {
                 $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodi = null;
