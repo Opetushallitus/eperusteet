@@ -387,6 +387,10 @@ angular
                 })();
             };
 
+            $scope.tutkinnonOsanimiOk = () => {
+                return Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi;
+            }
+
             $scope.cleanKoodi = () => {
                 $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodi = null;
                 $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodiUri = null;

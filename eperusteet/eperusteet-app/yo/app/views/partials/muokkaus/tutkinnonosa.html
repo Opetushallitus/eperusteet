@@ -119,6 +119,7 @@
                                     kaanna="'tyhjenna-koodin-arvo'"></button>
                                 <button 
                                     ng-show="!(editableTutkinnonOsaViite.tutkinnonOsa.koodi || editableTutkinnonOsaViite.tutkinnonOsa.koodiUri)"
+                                    ng-disabled="!tutkinnonOsanimiOk()"
                                     class="btn btn-default" 
                                     ng-click="koodistoLisaysClick()" 
                                     kaanna="'lisaa-koodistoon'"></button>    
