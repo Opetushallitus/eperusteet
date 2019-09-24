@@ -402,14 +402,6 @@ angular
                     }
                 }
             })
-            .state("root.perusteprojekti.projektiryhma", {
-                url: "/projektiryhma",
-                template: require("views/partials/perusteprojekti/projektiryhma.html"),
-                controller: "ProjektiryhmaCtrl",
-                onEnter: PerusteProjektiSivunavi => {
-                    PerusteProjektiSivunavi.setVisible(false);
-                }
-            })
             .state("root.perusteprojekti.termisto", {
                 url: "/termisto",
                 template: require("views/partials/perusteprojekti/termisto.html"),
