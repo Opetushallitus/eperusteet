@@ -12,8 +12,11 @@ import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpRequest;
 import fi.vm.sade.javautils.http.OphHttpResponse;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -54,7 +57,9 @@ public class KoodistoClientImplTest {
 
     @Before
     public void setup() {
-        when(self.getAll("koodisto")).thenReturn(emptyList());
+        when(self.getAll("overkoodisto")).thenReturn(createKoodistoAllOver());
+        when(self.getAll("tyhjakoodisto")).thenReturn(emptyList());
+        when(self.getAll("koodisto")).thenReturn(createKoodistoAll());
         doReturn(koodistoKoodiDto()).when(koodistoClient).addKoodi(any(KoodistoKoodiDto.class));
         when(cacheManager.getCache("koodistot")).thenReturn(cache());
     }
@@ -79,6 +84,57 @@ public class KoodistoClientImplTest {
 
         assertThat(koodistoKoodiDto).isNull();
         verifyZeroInteractions(cacheManager);
+    }
+
+    @Test
+    public void testNextKoodiId_multiple() {
+        {
+            Collection<Long> ids = koodistoClient.nextKoodiId("koodisto", 10);
+            assertThat(ids)
+                    .containsExactly(1003l, 1004l, 1007l, 1008l, 1009l, 1014l, 1015l, 1016l, 1017l, 1018l);
+        }
+
+        {
+            Collection<Long> ids = koodistoClient.nextKoodiId("overkoodisto", 5);
+            assertThat(ids)
+                    .containsExactly(2000l, 2003l, 2004l, 2005l, 2006l);
+        }
+
+    }
+
+    @Test
+    public void testNextKoodiId_single() {
+        Long id = koodistoClient.nextKoodiId("koodisto");
+        assertThat(id).isEqualTo(1003l);
+    }
+
+    @Test
+    public void testNextKoodiId_empty() {
+        Long id = koodistoClient.nextKoodiId("tyhjakoodisto");
+        assertThat(id).isEqualTo(1000l);
+    }
+
+    private List<KoodistoKoodiDto> createKoodistoAll() {
+        return Arrays.asList(
+                KoodistoKoodiDto.builder().koodiArvo("1000").build(),
+                KoodistoKoodiDto.builder().koodiArvo("1001").build(),
+                KoodistoKoodiDto.builder().koodiArvo("1002").build(),
+                KoodistoKoodiDto.builder().koodiArvo("1005").build(),
+                KoodistoKoodiDto.builder().koodiArvo("1006").build(),
+                KoodistoKoodiDto.builder().koodiArvo("1010").build(),
+                KoodistoKoodiDto.builder().koodiArvo("1011").build(),
+                KoodistoKoodiDto.builder().koodiArvo("1012").build(),
+                KoodistoKoodiDto.builder().koodiArvo("1013").build(),
+                KoodistoKoodiDto.builder().koodiArvo("2000").build()
+        );
+    }
+
+    private List<KoodistoKoodiDto> createKoodistoAllOver() {
+        return Arrays.asList(
+                KoodistoKoodiDto.builder().koodiArvo("1999").build(),
+                KoodistoKoodiDto.builder().koodiArvo("2001").build(),
+                KoodistoKoodiDto.builder().koodiArvo("2002").build()
+        );
     }
 
     private KoodistoKoodiDto koodistoKoodiDto() {

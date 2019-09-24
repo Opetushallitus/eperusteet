@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import java.util.Collection;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -150,5 +151,10 @@ public class KoodistoClientMock implements KoodistoClient {
     @Override
     public long nextKoodiId(String koodistonimi) {
         return 0;
+    }
+
+    @Override
+    public Collection<Long> nextKoodiId(String koodistonimi, int count) {
+        return null;
     }
 }

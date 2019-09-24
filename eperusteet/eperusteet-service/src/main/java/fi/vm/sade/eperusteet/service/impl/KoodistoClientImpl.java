@@ -274,22 +274,28 @@ public class KoodistoClientImpl implements KoodistoClient {
         return lisattyKoodi;
     }
 
-    @Override
     public long nextKoodiId(String koodistonimi) {
+        return nextKoodiId(koodistonimi, 1).stream().findFirst().get();
+    }
+
+    @Override
+    public Collection<Long> nextKoodiId(String koodistonimi, int count) {
         List<KoodistoKoodiDto> koodit = self.getAll(koodistonimi);
         if (koodit.size() == 0) {
-            return 1000L;
+            koodit = Collections.singletonList(KoodistoKoodiDto.builder().koodiArvo("999").build());
         }
-        else {
-            koodit.sort(Comparator.comparing(KoodistoKoodiDto::getKoodiArvo));
-            for (int idx = 0; idx < koodit.size() - 2; ++idx) {
-                long a = Long.parseLong(koodit.get(idx).getKoodiArvo()) + 1;
-                long b = Long.parseLong(koodit.get(idx + 1).getKoodiArvo());
-                if (a < b) {
-                    return a;
-                }
+
+        List<Long> ids = new ArrayList<>();
+        List<Long> currentIds = koodit.stream().map(k -> Long.parseLong(k.getKoodiArvo())).collect(Collectors.toList());
+        Long max = currentIds.stream().mapToLong(Long::longValue).max().getAsLong();
+        Long min = currentIds.stream().mapToLong(Long::longValue).min().getAsLong();
+
+        for(Long ind = min; ind <= max + count && ids.size() < count; ind++) {
+            if(!currentIds.contains(ind)) {
+                ids.add(ind);
             }
-            return Long.parseLong(koodit.get(koodit.size() - 1).getKoodiArvo()) + 1;
         }
+
+       return ids;
     }
 }
