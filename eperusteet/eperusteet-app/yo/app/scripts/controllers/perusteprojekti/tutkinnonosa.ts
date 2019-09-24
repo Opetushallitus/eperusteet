@@ -388,7 +388,7 @@ angular
             };
 
             $scope.tutkinnonOsanimiOk = () => {
-                return Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi;
+                return Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi);
             }
 
             $scope.cleanKoodi = () => {
