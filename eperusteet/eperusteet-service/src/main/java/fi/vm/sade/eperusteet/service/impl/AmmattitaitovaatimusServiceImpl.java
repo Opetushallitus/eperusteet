@@ -191,14 +191,15 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     public List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(Long perusteId) {
         List<KoodiDto> koodit = new ArrayList<>();
         Peruste peruste = perusteRepository.findOne(perusteId);
-        long seuraavaKoodi = koodistoClient.nextKoodiId("ammattitaitovaatimukset");
 
-        List<Ammattitaitovaatimus2019> vaatimukset = getVaatimukset(peruste);
+        List<Ammattitaitovaatimus2019> vaatimukset = getVaatimukset(peruste).stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList());
+        Stack<Long> koodiStack = new Stack<>();
+        koodiStack.addAll(koodistoClient.nextKoodiId("ammattitaitovaatimukset", vaatimukset.size()));
+
         for (Ammattitaitovaatimus2019 v : vaatimukset) {
-            if (v.getKoodi() == null) {
 
                 LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(null, v.getVaatimus().getTeksti());
-                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("ammattitaitovaatimukset", lokalisoituTekstiDto, seuraavaKoodi);
+                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("ammattitaitovaatimukset", lokalisoituTekstiDto, koodiStack.pop());
 
                 if (lisattyKoodi == null) {
                     log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, lisattyKoodi);
@@ -212,8 +213,6 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 v.setKoodi(koodi);
                 koodit.add(mapper.map(koodi, KoodiDto.class));
                 ammattitaitovaatimusRepository.save(v);
-                ++seuraavaKoodi;
-            }
         }
         return koodit;
     }
