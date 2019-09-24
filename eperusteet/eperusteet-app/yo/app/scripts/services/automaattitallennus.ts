@@ -78,7 +78,14 @@ angular
                 }
             },
             save(id: string, data: any) {
-                const dataStr = JSON.stringify(data);
+
+                const dataStr = JSON.stringify(data, (key, value) => {
+                    if (_.startsWith(key, '$')) {
+                        return;
+                    }
+                    return value;
+                });
+
                 window.localStorage.setItem(id, dataStr);
             },
             load(id: string) {
