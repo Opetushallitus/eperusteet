@@ -246,7 +246,11 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi) {
         long seuraavaKoodi = nextKoodiId(koodistonimi);
+        return addKoodiNimella(koodistonimi, koodinimi, seuraavaKoodi);
+    }
 
+    @Override
+    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
         KoodistoKoodiDto uusiKoodi = KoodistoKoodiDto.builder()
                 .koodiArvo(Long.toString(seuraavaKoodi))
                 .koodiUri(koodistonimi + "_" + seuraavaKoodi)
@@ -262,6 +266,7 @@ public class KoodistoClientImpl implements KoodistoClient {
                 || lisattyKoodi.getKoodisto().getKoodistoUri() == null
                 || lisattyKoodi.getKoodiUri() == null) {
             log.error("Koodin lisääminen epäonnistui {} {}", uusiKoodi, lisattyKoodi);
+            return null;
         } else {
             cacheManager.getCache("koodistot").evict(koodistonimi);
         }

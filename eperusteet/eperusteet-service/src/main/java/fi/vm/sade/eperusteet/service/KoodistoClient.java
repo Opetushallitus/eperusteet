@@ -73,6 +73,10 @@ public interface KoodistoClient {
     KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi);
 
     @PreAuthorize("isAuthenticated()")
+    KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi);
+
+    @PreAuthorize("isAuthenticated()")
     long nextKoodiId(String koodistonimi);
+
 
 }

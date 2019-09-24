@@ -143,6 +143,11 @@ public class KoodistoClientMock implements KoodistoClient {
     }
 
     @Override
+    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
+        return null;
+    }
+
+    @Override
     public long nextKoodiId(String koodistonimi) {
         return 0;
     }
