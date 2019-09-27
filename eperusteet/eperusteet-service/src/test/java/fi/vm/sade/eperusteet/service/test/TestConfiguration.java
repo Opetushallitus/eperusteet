@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.PermissionEvaluator;
 
 @Configuration
-@ImportResource("/it-test-context.xml")
+@ImportResource("classpath:it-test-context.xml")
 public class TestConfiguration {
 
     @Profile("realPermissions")
