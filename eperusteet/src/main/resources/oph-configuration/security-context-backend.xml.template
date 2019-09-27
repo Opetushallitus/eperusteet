@@ -11,12 +11,20 @@
     </http>
 
     <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex" pattern="/j_spring_cas_security_check.*">
+		<intercept-url pattern="/api/**" access="isAuthenticated()" method="POST"/>
+		<intercept-url pattern="/api/**" access="isAuthenticated()" method="PUT"/>
+		<intercept-url pattern="/api/**" access="isAuthenticated()" method="DELETE"/>
+		<intercept-url pattern="/api/**" access="isAuthenticated()" method="PATCH"/>
         <intercept-url pattern="/**" access="${spring_security_default_access}"/>
         <custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
         <custom-filter ref="casFilter" position="CAS_FILTER"/>
     </http>
 
     <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex">
+		<intercept-url pattern="/api/**" access="isAuthenticated()" method="POST"/>
+		<intercept-url pattern="/api/**" access="isAuthenticated()" method="PUT"/>
+		<intercept-url pattern="/api/**" access="isAuthenticated()" method="DELETE"/>
+		<intercept-url pattern="/api/**" access="isAuthenticated()" method="PATCH"/>
         <intercept-url pattern="(/.*)?/secured(/.*)?" access="isAuthenticated()"/>
         <intercept-url pattern="/public(/.*)?" access="permitAll"/>
         <intercept-url pattern="/**" access="${spring_security_default_access}"/>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Disable security on static resources -->
+    <security:http pattern="/static/**" security="none"/>
+
+    <!-- Enable Spring Security -->
+    <security:http use-expressions="true">
+        <security:http-basic/>
+        <security:intercept-url pattern="/**" access="isAuthenticated()" method="POST"/>
+        <security:intercept-url pattern="/**" access="isAuthenticated()" method="PUT"/>
+        <security:intercept-url pattern="/**" access="isAuthenticated()" method="DELETE"/>
+        <security:intercept-url pattern="/" access="permitAll"/>
+        <security:intercept-url pattern="/index.html" access="permitAll"/>
+        <security:intercept-url pattern="/**" access="permitAll"/>
+        <security:csrf disabled="true" />
+    </security:http>
+
+    <!-- Configures a custom login filter bean -->
+    <bean id="loginFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="filterProcessesUrl" value="/api/login"/>
+        <property name="usernameParameter" value="username"/>
+        <property name="passwordParameter" value="password"/>
+        <property name="postOnly" value="true"/>
+    </bean>
+
+    <!-- Configures in-memory implementation of the UserDetailsService implementation -->
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="user" password="password" authorities="ROLE_USER"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
+    <context:component-scan base-package="fi.vm.sade.eperusteet.resource" />
+</beans>
