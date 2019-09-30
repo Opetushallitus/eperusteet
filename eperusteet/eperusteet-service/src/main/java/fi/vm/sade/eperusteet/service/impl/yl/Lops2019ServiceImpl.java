@@ -387,32 +387,44 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         final Map<Long, Lops2019Oppiaine> oppiaineetMap = oppiaine.getOppimaarat().stream()
                 .collect(Collectors.toMap(AbstractAuditedReferenceableEntity::getId, o -> o));
 
-        if (dto.getOppimaarat() != null) {
-            final List<Lops2019Oppiaine> collected = dto.getOppimaarat().stream()
-                    .map(om -> om.getId() != null
-                            ? oppiaineetMap.get(om.getId())
-                            : mapper.map(om, Lops2019Oppiaine.class))
-                    .collect(Collectors.toList());
-            dto.setOppimaarat(null);
-            oppiaine = updatedOppiaine;
-            oppiaine.setOppimaarat(collected);
+        final Map<Long, Lops2019Moduuli> moduulitMap = oppiaine.getModuulit().stream()
+                .collect(Collectors.toMap(AbstractAuditedReferenceableEntity::getId, o -> o));
 
-            // Asetetaan oppimäärien järjetys
-            final List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
-            if (!ObjectUtils.isEmpty(oppimaarat)) {
-                for (int i = 0; i < oppimaarat.size(); i++) {
-                    final Lops2019Oppiaine oppimaara = oppimaarat.get(i);
-                    oppimaara.setJarjestys(i);
-                }
+
+        final List<Lops2019Oppiaine> collectedOppimaarat = dto.getOppimaarat().stream()
+                .map(om -> om.getId() != null
+                        ? oppiaineetMap.get(om.getId())
+                        : mapper.map(om, Lops2019Oppiaine.class))
+                .collect(Collectors.toList());
+
+        final List<Lops2019Moduuli> collectedModuulit = dto.getModuulit().stream()
+                .map(m -> m.getId() != null
+                        ? moduulitMap.get(m.getId())
+                        : mapper.map(m, Lops2019Moduuli.class))
+                .collect(Collectors.toList());
+
+        dto.setOppimaarat(null);
+        dto.setModuulit(null);
+
+        oppiaine = updatedOppiaine;
+        oppiaine.setOppimaarat(collectedOppimaarat);
+        oppiaine.setModuulit(collectedModuulit);
+
+        // Asetetaan oppimäärien järjetys
+        final List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
+        if (!ObjectUtils.isEmpty(oppimaarat)) {
+            for (int i = 0; i < oppimaarat.size(); i++) {
+                final Lops2019Oppiaine oppimaara = oppimaarat.get(i);
+                oppimaara.setJarjestys(i);
             }
+        }
 
-            // Asetetaan moduulien järjetys
-            final List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
-            if (!ObjectUtils.isEmpty(moduulit)) {
-                for (int i = 0; i < moduulit.size(); i++) {
-                    final Lops2019Moduuli moduuli = moduulit.get(i);
-                    moduuli.setJarjestys(i);
-                }
+        // Asetetaan moduulien järjetys
+        final List<Lops2019Moduuli> moduulit = oppiaine.getModuulit();
+        if (!ObjectUtils.isEmpty(moduulit)) {
+            for (int i = 0; i < moduulit.size(); i++) {
+                final Lops2019Moduuli moduuli = moduulit.get(i);
+                moduuli.setJarjestys(i);
             }
         }
 
