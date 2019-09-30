@@ -67,7 +67,18 @@
 
             <div ng-if="oppiaine.moduulit && oppiaine.moduulit.length > 0">
                 <h2 kaanna="'moduulit'"></h2>
-                <div ng-repeat="moduuli in oppiaine.moduulit" class="moduuli" ng-class="{'moduuli-pakollinen': moduuli.pakollinen}">
+
+                <h3 kaanna="'pakolliset-moduulit'"></h3>
+                <div ng-bind-html="oppiaine.pakollisetModuulitKuvaus | kaanna | unsafe"></div>
+                <div ng-repeat="moduuli in oppiaine.moduulit | filter: { pakollinen: true }" class="moduuli" ng-class="{'moduuli-pakollinen': moduuli.pakollinen}">
+                    <a ui-sref="root.perusteprojekti.suoritustapa.lops2019moduuli({oppiaineId: oppiaine.id, moduuliId: moduuli.id})">
+                        <span ng-bind="moduuli.nimi || 'nimeton' | kaanna"></span>
+                    </a>
+                </div>
+
+                <h3 kaanna="'valinnaiset-moduulit'"></h3>
+                <div ng-bind-html="oppiaine.valinnaisetModuulitKuvaus | kaanna | unsafe"></div>
+                <div ng-repeat="moduuli in oppiaine.moduulit | filter: { pakollinen: false }" class="moduuli" ng-class="{'moduuli-pakollinen': moduuli.pakollinen}">
                     <a ui-sref="root.perusteprojekti.suoritustapa.lops2019moduuli({oppiaineId: oppiaine.id, moduuliId: moduuli.id})">
                         <span ng-bind="moduuli.nimi || 'nimeton' | kaanna"></span>
                     </a>
@@ -174,6 +185,18 @@
                  editor-placeholder="oppiaineen-arviointi-kuvaus-placeholder"></div>
 
             <h2 kaanna="'moduulit'"></h2>
+            <h3 kaanna="'pakolliset-moduulit'"></h3>
+            <div ng-model="oppiaine.pakollisetModuulitKuvaus"
+                 slocalized
+                 ckeditor
+                 editor-placeholder="pakolliset-moduulit-kuvaus-placeholder"></div>
+
+            <h3 kaanna="'valinnaiset-moduulit'"></h3>
+            <div ng-model="oppiaine.valinnaisetModuulitKuvaus"
+                 slocalized
+                 ckeditor
+                 editor-placeholder="valinnaiset-moduulit-kuvaus-placeholder"></div>
+
             <div style="margin-bottom: 10px;"
                  ui-sortable="sortableOptions"
                  ng-model="oppiaine.moduulit">

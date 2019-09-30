@@ -11,7 +11,6 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -45,6 +44,23 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @ValidKoodisto(koodisto = "oppiaineetjaoppimaaratlops2021")
     private Koodi koodi;
+
+    @Getter
+    @Setter
+    @JoinColumn(name = "pakolliset_moduulit_kuvaus_id")
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen pakollisetModuulitKuvaus;
+
+    @Getter
+    @Setter
+    @JoinColumn(name = "valinnaiset_moduulit_kuvaus_id")
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen valinnaisetModuulitKuvaus;
+
 
     @Getter
     @Setter
