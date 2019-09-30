@@ -1,0 +1,4 @@
+ALTER TABLE yl_lops2019_oppiaine ADD COLUMN pakolliset_moduulit_kuvaus_id int8;
+ALTER TABLE yl_lops2019_oppiaine ADD COLUMN valinnaiset_moduulit_kuvaus_id int8;
+ALTER TABLE yl_lops2019_oppiaine_aud ADD COLUMN pakolliset_moduulit_kuvaus_id int8;
+ALTER TABLE yl_lops2019_oppiaine_aud ADD COLUMN valinnaiset_moduulit_kuvaus_id int8;
