@@ -79,14 +79,6 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Lops2019OppiaineTavoitteet tavoitteet;
 
-    public void setOppimaarat(final List<Lops2019Oppiaine> oppimaarat) {
-        if (this.oppimaarat == null) {
-            this.oppimaarat = new ArrayList<>();
-        }
-        this.oppimaarat.clear();
-        this.oppimaarat.addAll(oppimaarat);
-    }
-
     @Getter
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "yl_lops2019_oppiaine_oppimaara",
@@ -106,6 +98,22 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
             joinColumns = {@JoinColumn(name = "oppimaara_id", insertable = false, updatable = false)},
             inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
     private Lops2019Oppiaine oppiaine; // Oppimäärän viittaus oppiaineeseen
+
+    public void setOppimaarat(final List<Lops2019Oppiaine> oppimaarat) {
+        if (this.oppimaarat == null) {
+            this.oppimaarat = new ArrayList<>();
+        }
+        this.oppimaarat.clear();
+        this.oppimaarat.addAll(oppimaarat);
+    }
+
+    public void setModuulit(List<Lops2019Moduuli> moduulit) {
+        if (this.moduulit == null) {
+            this.moduulit = new ArrayList<>();
+        }
+        this.moduulit.clear();
+        this.moduulit.addAll(moduulit);
+    }
 
     @Override
     public boolean structureEquals(final Lops2019Oppiaine other) {
