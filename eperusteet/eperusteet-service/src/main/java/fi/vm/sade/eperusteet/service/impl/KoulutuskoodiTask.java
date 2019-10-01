@@ -17,12 +17,12 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
-import fi.vm.sade.eperusteet.service.ScheduledTask;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KoulutuskoodiTask implements ScheduledTask {
+public class KoulutuskoodiTask extends AbstractScheduledTask {
 
     @Autowired
     private PerusteprojektiService perusteprojektiService;
@@ -38,7 +38,7 @@ public class KoulutuskoodiTask implements ScheduledTask {
     }
 
     @Override
-    public void execute() {
+    public void executeTask(Date viimeisinajoaika) {
         // Etsi tutkinnon osien ja koulutuskoodien eroavaisuudet
         perusteprojektiService.tarkistaKooditTask();
     }

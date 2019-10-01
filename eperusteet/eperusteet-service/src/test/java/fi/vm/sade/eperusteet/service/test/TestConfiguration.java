@@ -1,5 +1,7 @@
 package fi.vm.sade.eperusteet.service.test;
 
+import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
+import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -21,5 +23,10 @@ public class TestConfiguration {
     @Bean("testPermissionEvaluator")
     public PermissionEvaluator testPermissionEvaluatorMocked() {
         return new TestPermissionEvaluator();
+    }
+
+    @Bean
+    public OphClientHelper ophClientHelper() {
+        return Mockito.mock(OphClientHelper.class);
     }
 }

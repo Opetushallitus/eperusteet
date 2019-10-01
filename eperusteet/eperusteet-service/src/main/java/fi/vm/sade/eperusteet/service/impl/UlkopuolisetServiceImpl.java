@@ -22,12 +22,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import fi.vm.sade.eperusteet.service.UlkopuolisetService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import java.io.IOException;
-import java.util.Optional;
-
+import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpRequest;
+import java.io.IOException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

@@ -15,11 +15,14 @@
  */
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
 import fi.vm.sade.eperusteet.dto.koodisto.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import java.util.Collection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,9 @@ import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
 @Service
 @Profile("test")
 public class KoodistoClientMock implements KoodistoClient {
+
+    @Autowired
+    OphClientHelper mockedOphClientHelper;
 
     @Override
     public KoodistoKoodiDto get(String koodisto, String koodi) {
@@ -156,5 +162,15 @@ public class KoodistoClientMock implements KoodistoClient {
     @Override
     public Collection<Long> nextKoodiId(String koodistonimi, int count) {
         return null;
+    }
+
+    @Override
+    public void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+        mockedOphClientHelper.post("", "koodirelaatio" + parentKoodi + lapsiKoodi);
+    }
+
+    @Override
+    public void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+        mockedOphClientHelper.post("", "koodistorelaatio" + parentKoodi + lapsiKoodi);
     }
 }

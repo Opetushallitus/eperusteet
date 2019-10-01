@@ -19,9 +19,8 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.service.ScheduledTask;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class DokumenttiTask implements ScheduledTask {
 
     @Autowired

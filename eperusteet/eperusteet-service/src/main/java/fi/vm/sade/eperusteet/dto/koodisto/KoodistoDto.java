@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto.koodisto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,8 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KoodistoDto {
     private String koodistoUri;
+
+    private KoodistoVersioDto latestKoodistoVersio;
 
     public static KoodistoDto of(String uri) {
         KoodistoDto result = new KoodistoDto();

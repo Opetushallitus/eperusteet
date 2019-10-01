@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Component;
  * @author nkala
  */
 @Component
-public class RestClientFactory {
+public class RestClientFactoryImpl implements RestClientFactory {
 
     private static final String CALLER_ID = "1.2.246.562.10.00000000001.eperusteet";
 
@@ -46,6 +47,7 @@ public class RestClientFactory {
 
     private final ConcurrentMap<String, OphHttpClient> cache = new ConcurrentHashMap<>();
 
+    @Override
     public OphHttpClient get(String service, boolean requireCas) {
         if (cache.containsKey(service)) {
             return cache.get(service);

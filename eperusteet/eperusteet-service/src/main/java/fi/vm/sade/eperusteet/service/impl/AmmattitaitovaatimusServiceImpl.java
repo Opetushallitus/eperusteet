@@ -1,6 +1,15 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
@@ -9,10 +18,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdeal
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
-import fi.vm.sade.eperusteet.dto.Reference;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
@@ -20,20 +26,34 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.repository.AmmattitaitovaatimusRepository;
+import fi.vm.sade.eperusteet.repository.ArvioinninKohdealueRepository;
+import fi.vm.sade.eperusteet.repository.KoodiRepository;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
-import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Stack;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,9 +62,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -72,6 +89,12 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
 
     @Autowired
     private PermissionManager permissionManager;
+
+    @Autowired
+    private TutkinnonOsaViiteService tutkinnonOsaViiteService;
+
+    @Autowired
+    private PerusteService perusteService;
 
     @Override
     public void addAmmattitaitovaatimuskoodit() {
@@ -224,4 +247,58 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         return mapper.mapAsList(vaatimukset, Ammattitaitovaatimus2019Dto.class);
     }
 
+    @Override
+    public void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika, ProjektiTila projektiTila, PerusteTyyppi perusteTyyppi) {
+
+        List<Peruste> perusteet;
+        if (projektiPaivitysAika == null) {
+            perusteet = perusteRepository.findByPerusteprojektiTilaAndTyyppi(projektiTila, perusteTyyppi);
+        } else {
+            perusteet = perusteRepository.findByPerusteprojektiTilaAndGlobalVersionaikaleimaGreaterThanEqualAndTyyppi(projektiTila, projektiPaivitysAika, perusteTyyppi);
+        }
+
+        log.debug("Löytyi {} kpl perusteita", perusteet.size());
+        perusteet.forEach(peruste -> {
+            getTutkinnonOsaViitteet(peruste).forEach(tutkinnonOsaViiteRef -> {
+                TutkinnonOsaViiteDto tutkinnonOsaViite = perusteService.getTutkinnonOsaViite(peruste.getId(), tutkinnonOsaViiteRef.getSuoritustapa().getSuoritustapakoodi(), tutkinnonOsaViiteRef.getId());
+
+                if (tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi() != null) {
+                    addTutkintoOsaKooditToKoulutus(peruste, tutkinnonOsaViite);
+
+                    if (tutkinnonOsaViite.getTutkinnonOsaDto().getAmmattitaitovaatimukset2019() != null) {
+                        addAmmattitaitovaatimusKooditToTutkintoOsa(tutkinnonOsaViite);
+                    }
+                }
+            });
+        });
+    }
+
+    private void addAmmattitaitovaatimusKooditToTutkintoOsa(TutkinnonOsaViiteDto tutkinnonOsaViite) {
+        List<KoodistoKoodiDto> alarelaatiot = koodistoClient.getAlarelaatio(tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri());
+
+        log.debug("tutkinnonOsaViite, {}", tutkinnonOsaViite.getId());
+        log.debug("ammattitaitovaatimuksia {} kpl", tutkinnonOsaViite.getTutkinnonOsaDto().getAmmattitaitovaatimukset2019().getVaatimukset().size());
+
+        tutkinnonOsaViite.getTutkinnonOsaDto().getAmmattitaitovaatimukset2019().getVaatimukset().forEach(vaatimus -> {
+            if (!alarelaatiot.stream().filter(alarelaatio -> alarelaatio.getKoodiUri().equals(vaatimus.getKoodi().getUri())).findFirst().isPresent()) {
+                log.debug("Lisätään relaatiot {} <- {}", tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri(), vaatimus.getKoodi().getUri());
+                koodistoClient.addKoodirelaatio(tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri(), vaatimus.getKoodi().getUri(), KoodiRelaatioTyyppi.SISALTYY);
+            }
+        });
+    }
+
+    private void addTutkintoOsaKooditToKoulutus(Peruste peruste, TutkinnonOsaViiteDto tutkinnonOsaViite) {
+        if (peruste.getKoulutukset() != null) {
+            peruste.getKoulutukset().forEach(koulutus -> {
+
+                log.debug("kasitellaan koulutusuri: {}", koulutus.getKoulutuskoodiUri());
+                List<KoodistoKoodiDto> alarelaatiot = koodistoClient.getAlarelaatio(koulutus.getKoulutuskoodiUri());
+
+                if (!alarelaatiot.stream().filter(alarelaatio -> alarelaatio.getKoodiUri().equals(tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri())).findFirst().isPresent()) {
+                    log.debug("Lisätään relaatiot {} <- {}", koulutus.getKoulutuskoodiUri(), tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri());
+                    koodistoClient.addKoodirelaatio(koulutus.getKoulutuskoodiUri(), tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri(), KoodiRelaatioTyyppi.SISALTYY);
+                }
+            });
+        }
+    }
 }

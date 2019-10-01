@@ -2,28 +2,27 @@ package fi.vm.sade.eperusteet.service;
 
 
 import com.google.common.collect.Lists;
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.KoodiTest;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
-import java.util.Arrays;
+import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
@@ -32,15 +31,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 
 @Transactional
@@ -60,6 +58,9 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     @Autowired
     private TutkinnonOsaViiteRepository tovRepository;
 
+    @Autowired
+    private OphClientHelper ophClientHelper;
+
     @Test
     @Rollback
     public void testAmmattitaitovaatimuskoodinAvullaPeruste() {
@@ -73,12 +74,12 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             assertThat(tosat.getTotalElements()).isEqualTo(0);
         }
 
-        PerusteprojektiDto perusteprojekti1 = lisaaPerusteKoodistolla(Arrays.asList("ammattitaitovaatimukset_1000"), ProjektiTila.JULKAISTU);
-        PerusteprojektiDto perusteprojekti2 = lisaaPerusteKoodistolla(Arrays.asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_2000"), ProjektiTila.LAADINTA);
-        PerusteprojektiDto perusteprojekti3 = lisaaPerusteKoodistolla(Arrays.asList("ammattitaitovaatimukset_2000", "ammattitaitovaatimukset_3000"), ProjektiTila.VALMIS);
+        PerusteprojektiDto perusteprojekti1 = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_1000"), ProjektiTila.JULKAISTU);
+        PerusteprojektiDto perusteprojekti2 = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_2000"), ProjektiTila.LAADINTA);
+        PerusteprojektiDto perusteprojekti3 = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_2000", "ammattitaitovaatimukset_3000"), ProjektiTila.VALMIS);
 
         PerusteprojektiDto perusteProjektiPoistettu = lisaaPerusteKoodistolla(
-                Arrays.asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_2000", "ammattitaitovaatimukset_3000"), ProjektiTila.POISTETTU);
+                asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_2000", "ammattitaitovaatimukset_3000"), ProjektiTila.POISTETTU);
 
         {
             AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
@@ -136,6 +137,32 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         assertThat(tosat.getTotalElements()).isEqualTo(0);
     }
 
+    @Test
+    public void testLisaaAmmattitaitovaatimusTutkinnonosaKoodistoon() {
+
+        loginAsUser("test");
+
+        PerusteprojektiDto perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_1001", "ammattitaitovaatimukset_1002"), ProjektiTila.JULKAISTU);
+        lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_1000", "koulutus_1001"));
+        perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_2000"), ProjektiTila.JULKAISTU);
+        lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_2000"));
+        perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_3000"), ProjektiTila.VALMIS);
+        lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_3000", "koulutus_3001"));
+
+        updateKaikkienPerusteenOsienTilat(PerusteTila.VALMIS);
+
+        ammattitaitovaatimusService.lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(new GregorianCalendar(2017, 1, 1).getTime(), ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI);
+
+        //posturl mockitettu KoodistoMockissa
+        verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1000" + "tutkinnonosat_200530");
+        verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1001" + "tutkinnonosat_200530");
+        verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_2000" + "tutkinnonosat_200530");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1000");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1001");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1002");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_2000");
+    }
+
     private PerusteprojektiDto lisaaPerusteKoodistolla(Collection<String> koodiUrit, ProjektiTila tila) {
 
         PerusteprojektiDto aProjekti = ppTestUtils.createPerusteprojekti(config -> {
@@ -148,6 +175,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         kohdealue.setVaatimukset(createVaatimukset(koodiUrit));
 
         vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
+        vaatimukset.setVaatimukset(createVaatimukset(koodiUrit));
 
         Peruste peruste = perusteRepository.findOne(aPeruste.getId());
         TutkinnonOsaViiteDto tosa = ppTestUtils.addTutkinnonOsa(peruste.getId());
@@ -171,6 +199,5 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             return vaatimus;
         }).collect(Collectors.toList());
     }
-
 
 }
