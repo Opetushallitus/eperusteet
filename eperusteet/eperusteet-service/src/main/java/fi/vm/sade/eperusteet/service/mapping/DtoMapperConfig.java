@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;

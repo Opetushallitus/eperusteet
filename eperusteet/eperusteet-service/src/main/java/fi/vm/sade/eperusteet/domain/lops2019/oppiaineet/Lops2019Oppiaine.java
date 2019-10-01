@@ -47,7 +47,6 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     private Koodi koodi;
 
     @Getter
-    @Setter
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "yl_lops2019_oppiaine_moduuli",
             joinColumns = @JoinColumn(name = "oppiaine_id"),
@@ -107,7 +106,7 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         this.oppimaarat.addAll(oppimaarat);
     }
 
-    public void setModuulit(List<Lops2019Moduuli> moduulit) {
+    public void setModuulit(final List<Lops2019Moduuli> moduulit) {
         if (this.moduulit == null) {
             this.moduulit = new ArrayList<>();
         }

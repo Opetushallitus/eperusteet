@@ -380,9 +380,6 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         Lops2019Oppiaine oppiaine = this.findOppiaine(perusteId, dto.getId());
 
         final Lops2019Oppiaine updatedOppiaine = mapper.map(dto, Lops2019Oppiaine.class);
-        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS) && !oppiaine.structureEquals(updatedOppiaine)) {
-            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
-        }
 
         final Map<Long, Lops2019Oppiaine> oppiaineetMap = oppiaine.getOppimaarat().stream()
                 .collect(Collectors.toMap(AbstractAuditedReferenceableEntity::getId, o -> o));
@@ -403,12 +400,14 @@ public class Lops2019ServiceImpl implements Lops2019Service {
                         : mapper.map(m, Lops2019Moduuli.class))
                 .collect(Collectors.toList());
 
-        dto.setOppimaarat(null);
-        dto.setModuulit(null);
+        updatedOppiaine.setOppimaarat(collectedOppimaarat);
+        updatedOppiaine.setModuulit(collectedModuulit);
+
+        if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS) && !oppiaine.structureEquals(updatedOppiaine)) {
+            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
+        }
 
         oppiaine = updatedOppiaine;
-        oppiaine.setOppimaarat(collectedOppimaarat);
-        oppiaine.setModuulit(collectedModuulit);
 
         // Asetetaan oppimäärien järjetys
         final List<Lops2019Oppiaine> oppimaarat = oppiaine.getOppimaarat();
@@ -495,17 +494,16 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
         // Poistetaan tyhjät sisällöt
         if (!ObjectUtils.isEmpty(dto.getSisallot())) {
-            dto.getSisallot().stream()
-                    .forEach(s -> {
-                        List<LokalisoituTekstiDto> sisallot = s.getSisallot();
-                        if (!ObjectUtils.isEmpty(sisallot)) {
-                            List<LokalisoituTekstiDto> filtered = sisallot.stream()
-                                    .filter(t -> t.getId() != null || (t.getTekstit() != null && t.getTekstit().size() > 0))
-                                    .collect(Collectors.toList());
-                            sisallot.clear();
-                            sisallot.addAll(filtered);
-                        }
-                    });
+            dto.getSisallot().forEach(s -> {
+                List<LokalisoituTekstiDto> sisallot = s.getSisallot();
+                if (!ObjectUtils.isEmpty(sisallot)) {
+                    List<LokalisoituTekstiDto> filtered = sisallot.stream()
+                            .filter(t -> t.getId() != null || (t.getTekstit() != null && t.getTekstit().size() > 0))
+                            .collect(Collectors.toList());
+                    sisallot.clear();
+                    sisallot.addAll(filtered);
+                }
+            });
         }
 
         mapper.map(dto, moduuli);

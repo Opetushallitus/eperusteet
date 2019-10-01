@@ -187,7 +187,6 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
         assertThat(oppiaineet).isNotEmpty();
 
         final Lops2019OppiaineDto oppiaineDto = oppiaineet.get(0);
-        final List<Lops2019ModuuliBaseDto> moduulit = oppiaineDto.getModuulit();
         final Lops2019ModuuliBaseDto moduuliDto = new Lops2019ModuuliBaseDto();
         moduuliDto.setNimi(LokalisoituTekstiDto.of("moduuli"));
         moduuliDto.setPakollinen(true);
@@ -198,8 +197,9 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
         koodiDto.setVersio(1L);
         moduuliDto.setKoodi(koodiDto);
 
-        moduulit.add(moduuliDto);
+        oppiaineDto.getModuulit().add(moduuliDto);
 
+        // Yritetään tehdä oppiaineen rakennemuutos
         assertThatExceptionOfType(BusinessRuleViolationException.class)
                 .isThrownBy(() -> lops2019Service.updateOppiaine(perusteId, oppiaineDto));
 
@@ -290,7 +290,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
             assertThat(oppimaarat).hasSize(1);
             final Lops2019OppiaineDto oppimaaraLaaja = lops2019Service.getOppiaine(projektiHelper.getPerusteId(), oppimaarat.get(0).getId());
             final List<Lops2019ModuuliBaseDto> moduulit = oppimaaraLaaja.getModuulit();
-            assertThat(moduulit).hasSize(1);
+            assertThat(moduulit).hasSize(2);
         }
     }
 
@@ -331,12 +331,12 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
         }
 
         Long moduuli1 = 0L;
+        Lops2019OppiaineDto om = lisatty.getOppimaarat().get(0);
 
         { // Moduuli 1
             final Lops2019ModuuliBaseDto moduuli = new Lops2019ModuuliBaseDto();
             moduuli.setNimi(LokalisoituTekstiDto.of("moduuli 1"));
             moduuli.setPakollinen(false);
-            Lops2019OppiaineDto om = lisatty.getOppimaarat().get(0);
             om.getModuulit().add(moduuli);
             om = lops2019Service.updateOppiaine(projektiHelper.getPerusteId(), om);
 
@@ -355,7 +355,6 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
             final Lops2019ModuuliBaseDto moduuli = new Lops2019ModuuliBaseDto();
             moduuli.setNimi(LokalisoituTekstiDto.of("moduuli 2"));
             moduuli.setPakollinen(false);
-            final Lops2019OppiaineDto om = lisatty.getOppimaarat().get(0);
             om.getModuulit().add(moduuli);
             lops2019Service.updateOppiaine(projektiHelper.getPerusteId(), om);
         }
