@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -79,5 +80,13 @@ public interface KoodistoClient {
 
     @PreAuthorize("isAuthenticated()")
     Collection<Long> nextKoodiId(String koodistonimi, int count);
+
+    // FIXME mika on oikea?
+    @PreAuthorize("isAuthenticated()")
+    void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi);
+
+    // FIXME mika on oikea?
+    @PreAuthorize("isAuthenticated()")
+    void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi);
 
 }

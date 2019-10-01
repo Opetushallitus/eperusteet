@@ -16,11 +16,14 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
+import java.util.Collection;
+import java.util.Set;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -47,6 +50,9 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
 
     @Autowired
     protected PerusteenOsaService perusteenOsaService;
+
+    @Autowired
+    private PerusteenOsaRepository perusteenOsaRepo;
 
     @Autowired
     protected PerusteprojektiRepository perusteprojektiRepository;
@@ -151,5 +157,26 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
     @Test
     public void noop() {
 
+    }
+
+    protected void updateKaikkienPerusteenOsienTilat(PerusteTila tila) {
+        perusteenOsaRepo.findAll().forEach((perusteenOsa -> {
+            perusteenOsa.asetaTila(tila);
+            perusteenOsaRepo.save(perusteenOsa);
+        }));
+    }
+
+    protected void lisaaKoulutukset(Long id, Collection<String> koodiUris) {
+        Peruste peruste = perusteRepository.getOne(id);
+
+        Set<Koulutus> koulutukset = koodiUris.stream().map(uri -> {
+            Koulutus koulutus = new Koulutus();
+            koulutus.setKoulutuskoodiUri(uri);
+            koulutus.setKoulutuskoodiArvo(uri);
+            return koulutus;
+        }).collect(Collectors.toSet());
+
+        peruste.setKoulutukset(koulutukset);
+        perusteRepository.save(peruste);
     }
 }

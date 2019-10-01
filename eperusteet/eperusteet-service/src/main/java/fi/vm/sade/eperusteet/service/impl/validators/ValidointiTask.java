@@ -17,16 +17,16 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
-import fi.vm.sade.eperusteet.service.ScheduledTask;
+import fi.vm.sade.eperusteet.service.impl.AbstractScheduledTask;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 @Component
 @Profile("!test")
-public class ValidointiTask implements ScheduledTask {
+public class ValidointiTask extends AbstractScheduledTask {
     private static AtomicBoolean isUpdating = new AtomicBoolean(false);
 
     @Autowired
@@ -43,7 +43,7 @@ public class ValidointiTask implements ScheduledTask {
     }
 
     @Override
-    public void execute() {
+    public void executeTask(Date viimeisinAjoaika) {
         if (!isUpdating.get()) {
             if (isUpdating.compareAndSet(false, true)) {
                 try {

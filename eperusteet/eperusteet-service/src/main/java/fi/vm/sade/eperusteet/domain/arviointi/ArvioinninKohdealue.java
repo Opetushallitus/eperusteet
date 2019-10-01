@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import lombok.Getter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
@@ -62,7 +63,7 @@ public class ArvioinninKohdealue implements Serializable {
 
     // Käytetään reformin mukaisten perusteiden vanhojen arvioinnin kohdealueiden yhdistämiseen
     @Getter
-    @ValidKoodisto(koodisto = "ammattitaitovaatimukset")
+    @ValidKoodisto(koodisto = KoodistoUriArvo.AMMATTITAITOVAATIMUKSET)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Koodi koodi;

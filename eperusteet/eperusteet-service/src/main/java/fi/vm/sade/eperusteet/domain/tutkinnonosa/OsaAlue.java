@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -100,7 +101,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @ValidKoodisto(koodisto = "ammatillisenoppiaineet")
+    @ValidKoodisto(koodisto = KoodistoUriArvo.AMMATILLISENOPPIAINEET)
     private Koodi koodi;
 
     public OsaAlue() {

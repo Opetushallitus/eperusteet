@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -18,7 +19,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Audited
 public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity {
 
-    @ValidKoodisto(koodisto = "ammattitaitovaatimukset")
+    @ValidKoodisto(koodisto = KoodistoUriArvo.AMMATTITAITOVAATIMUKSET)
     @Setter
     @Getter
     @Audited(targetAuditMode = NOT_AUDITED)

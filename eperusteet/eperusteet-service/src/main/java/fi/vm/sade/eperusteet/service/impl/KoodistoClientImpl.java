@@ -16,42 +16,59 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.service.util.RestClientFactory;
-import fi.vm.sade.javautils.http.OphHttpClient;
-import fi.vm.sade.javautils.http.OphHttpEntity;
-import fi.vm.sade.javautils.http.OphHttpRequest;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoSuhdeDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoSuhteillaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
-import lombok.extern.java.Log;
+import fi.vm.sade.eperusteet.utils.client.OphClientException;
+import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
+import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
+import fi.vm.sade.javautils.http.OphHttpClient;
+import fi.vm.sade.javautils.http.OphHttpEntity;
+import fi.vm.sade.javautils.http.OphHttpRequest;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static javax.servlet.http.HttpServletResponse.*;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_CREATED;
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 /**
  *
@@ -66,11 +83,17 @@ public class KoodistoClientImpl implements KoodistoClient {
     private String koodistoServiceUrl;
 
     private static final String KOODISTO_API = "/rest/json/";
+    private static final String KOODISTO_REST_API = "/rest";
     private static final String YLARELAATIO = "relaatio/sisaltyy-ylakoodit/";
     private static final String ALARELAATIO = "relaatio/sisaltyy-alakoodit/";
     private static final String RINNASTEINEN = "relaatio/rinnasteinen/";
     private static final String CODEELEMENT = "/rest/codeelement";
     private static final String LATEST = CODEELEMENT + "/latest/";
+    private static final String CODES = "/rest/codes";
+    private static final String GET_CODES_WITH_URI = CODES + "/{codesUri}";
+    private static final String GET_CODES_WITH_URI_AND_VERSION = GET_CODES_WITH_URI + "/{version}";
+    private static final String ADD_CODE_ELEMENT_RELATION = CODEELEMENT + "/addrelation/{codeElementUri}/{codeElementUriToAdd}/{relationType}";
+    private static final String ADD_CODE_RELATION = CODES + "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}";
 
     @Autowired
     RestClientFactory restClientFactory;
@@ -80,6 +103,9 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Autowired
     CacheManager cacheManager;
+
+    @Autowired
+    OphClientHelper ophClientHelper;
 
     @Autowired
     @Koodisto
@@ -274,6 +300,7 @@ public class KoodistoClientImpl implements KoodistoClient {
         return lisattyKoodi;
     }
 
+    @Override
     public long nextKoodiId(String koodistonimi) {
         return nextKoodiId(koodistonimi, 1).stream().findFirst().get();
     }
@@ -298,4 +325,58 @@ public class KoodistoClientImpl implements KoodistoClient {
 
        return ids;
     }
+
+    @Override
+    public void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+
+        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+                .path(ADD_CODE_ELEMENT_RELATION)
+                .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
+
+        log.debug("url: {}", uri.toString());
+        ophClientHelper.post(koodistoServiceUrl, uri.toString());
+
+        if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
+            cacheManager.getCache("koodistot").evict("alarelaatio:" + parentKoodi);
+            cacheManager.getCache("koodistot").evict("ylarelaatio:" + lapsiKoodi);
+        } else if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
+            cacheManager.getCache("koodistot").evict("rinnasteiset:" + parentKoodi);
+        }
+    }
+
+    @Override
+    public void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+
+        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+                .path(GET_CODES_WITH_URI)
+                .buildAndExpand(parentKoodi);
+
+        log.debug("uri : {}", uri.toString());
+
+        KoodistoDto koodistoDto = ophClientHelper.get(koodistoServiceUrl, uri.toString(), KoodistoDto.class);
+        if (koodistoDto == null) {
+            throw new BusinessRuleViolationException("koodistoa " + parentKoodi + " ei loydy.");
+        }
+
+        uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+                .path(GET_CODES_WITH_URI_AND_VERSION)
+                .buildAndExpand(parentKoodi, koodistoDto.getLatestKoodistoVersio().getVersio());
+        KoodistoSuhteillaDto koodistoSuhteillaDto = ophClientHelper.get(koodistoServiceUrl, uri.toString(), KoodistoSuhteillaDto.class);
+
+        if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY) &&
+                koodistoSuhteillaDto.getIncludesCodes().stream().filter(koodistoSuhdeDto -> koodistoSuhdeDto.getCodesUri().equals(lapsiKoodi)).findFirst().isPresent()) {
+
+            log.debug("{} sisaltyy jo koodistoon {}", lapsiKoodi, parentKoodi);
+            return;
+        }
+
+        uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+                .path(ADD_CODE_RELATION)
+                .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
+
+        ophClientHelper.post(koodistoServiceUrl, uri.toString());
+
+        log.debug("lisättiin koodi {} koodin {} lapseksi", parentKoodi, lapsiKoodi);
+    }
+
 }

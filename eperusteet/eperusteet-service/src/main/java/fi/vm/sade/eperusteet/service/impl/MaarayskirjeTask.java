@@ -1,12 +1,12 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
-import fi.vm.sade.eperusteet.service.ScheduledTask;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MaarayskirjeTask implements ScheduledTask {
+public class MaarayskirjeTask extends AbstractScheduledTask {
 
     @Autowired
     private PerusteprojektiService perusteprojektiService;
@@ -22,7 +22,7 @@ public class MaarayskirjeTask implements ScheduledTask {
     }
 
     @Override
-    public void execute() {
+    public void executeTask(Date viimeisinajoaika) {
         perusteprojektiService.lataaMaarayskirjeetTask();
     }
 

@@ -3,8 +3,10 @@ package fi.vm.sade.eperusteet.repository;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+import java.util.Date;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -79,4 +81,17 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
 
     @Query("select p from Peruste p where p.tila = 'VALMIS' AND p.tyyppi = 'NORMAALI' AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18')")
     List<Peruste> findAllAmosaa();
+
+    @Query("SELECT p FROM Peruste p " +
+            "WHERE p.perusteprojekti.tila = :projektitila " +
+            "AND tyyppi = :perustetyyppi")
+    List<Peruste> findByPerusteprojektiTilaAndTyyppi(
+            @Param("projektitila") ProjektiTila projektitila, @Param("perustetyyppi") PerusteTyyppi perustetyyppi);
+
+    @Query("SELECT p FROM Peruste p " +
+            "WHERE p.perusteprojekti.tila = :projektitila " +
+            "AND globalVersion.aikaleima >= :aikaleima " +
+            "AND tyyppi = :perustetyyppi")
+    List<Peruste> findByPerusteprojektiTilaAndGlobalVersionaikaleimaGreaterThanEqualAndTyyppi(
+            @Param("projektitila") ProjektiTila projektitila, @Param("aikaleima") Date aikaleima, @Param("perustetyyppi") PerusteTyyppi perustetyyppi);
 }
