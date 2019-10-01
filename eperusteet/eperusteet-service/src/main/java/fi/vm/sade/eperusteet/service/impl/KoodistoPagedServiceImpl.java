@@ -29,10 +29,10 @@ public class KoodistoPagedServiceImpl implements KoodistoPagedService {
     public Page<KoodistoKoodiDto> getAllPaged(String koodisto, String nimiFilter, KoodistoPageDto koodistoPageDto) {
 
         List<KoodistoKoodiDto> koodistoList = koodistoClient.getAll(koodisto).stream()
-                .filter(koodistoDto ->  StringUtils.isEmpty(nimiFilter) ||
-                            (koodistoDto.getMetadataName(koodistoPageDto.getKieli()) != null
-                                    && koodistoDto.getMetadataName(koodistoPageDto.getKieli()).getNimi().toLowerCase().contains(nimiFilter.toLowerCase()))
-                )
+                .filter(koodistoDto ->  StringUtils.isEmpty(nimiFilter)
+                        || (koodistoDto.getKoodiArvo() != null && koodistoDto.getKoodiArvo().toLowerCase().contains(nimiFilter.toLowerCase()))
+                        || (koodistoDto.getMetadataName(koodistoPageDto.getKieli()) != null
+                                    && koodistoDto.getMetadataName(koodistoPageDto.getKieli()).getNimi().toLowerCase().contains(nimiFilter.toLowerCase())))
                 .collect(Collectors.toList());
 
         koodistoList.sort(Comparator.comparing((KoodistoKoodiDto o) -> o.getMetadataName(koodistoPageDto.getKieli()) != null ?
