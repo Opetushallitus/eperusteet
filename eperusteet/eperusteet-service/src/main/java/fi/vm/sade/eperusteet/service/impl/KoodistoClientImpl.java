@@ -183,7 +183,7 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public void addNimiAndUri(KoodiDto koodi) {
-        KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri(), koodi.getVersio());
+        KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri());
         if (koodistoKoodi != null) {
             koodi.setArvo(koodistoKoodi.getKoodiArvo());
             koodi.setNimi(metadataToLocalized(koodistoKoodi));
@@ -274,6 +274,7 @@ public class KoodistoClientImpl implements KoodistoClient {
         return lisattyKoodi;
     }
 
+    @Override
     public long nextKoodiId(String koodistonimi) {
         return nextKoodiId(koodistonimi, 1).stream().findFirst().get();
     }
