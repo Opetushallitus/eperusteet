@@ -85,7 +85,7 @@ public class PerusteController {
     @RequestMapping(value = "/info", method = GET)
     @ResponseBody
     @InternalApi
-    public Page<PerusteInfoDto> getAllInfo(PerusteQuery pquery) {
+    public Page<PerusteInfoDto> getAllPerusteetInfo(PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findByInfo(p, pquery);
     }
@@ -100,13 +100,13 @@ public class PerusteController {
     @RequestMapping(value = "/kooste", method = GET)
     @ResponseBody
     @ApiIgnore
-    public ResponseEntity<List<PerusteKoosteDto>> getKooste() {
+    public ResponseEntity<List<PerusteKoosteDto>> getPerusteKooste() {
         return new ResponseEntity<>(service.getKooste(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/uusimmat", method = GET)
     @ResponseBody
-    public ResponseEntity<List<PerusteDto>> getUusimmat(@RequestParam(defaultValue = "fi") String kieli) {
+    public ResponseEntity<List<PerusteDto>> getUusimmatPerusteet(@RequestParam(defaultValue = "fi") String kieli) {
         HashSet<Kieli> kielet = new HashSet<>();
         kielet.add(Kieli.of(kieli));
         return new ResponseEntity<>(service.getUusimmat(kielet), HttpStatus.OK);
@@ -144,7 +144,7 @@ public class PerusteController {
             @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),
             @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä")
     })
-    public Page<PerusteHakuDto> getAll(@ApiIgnore PerusteQuery pquery) {
+    public Page<PerusteHakuDto> getAllPerusteet(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findJulkinenBy(p, pquery);
     }
@@ -153,7 +153,7 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     @ApiOperation(value = "perusteiden sisäinen haku")
-    public Page<PerusteHakuInternalDto> getAllInternal(@ApiIgnore PerusteQuery pquery) {
+    public Page<PerusteHakuInternalDto> getAllPerusteetInternal(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findByInternal(p, pquery);
     }
@@ -162,7 +162,7 @@ public class PerusteController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     @InternalApi
-    public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
+    public PerusteDto updatePeruste(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
         return service.updateFull(id, perusteDto);
     }
 
@@ -177,14 +177,14 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)
     @ResponseBody
     @InternalApi
-    public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
+    public ResponseEntity<TutkintonimikeKoodiDto> removeTutkintonimikekoodi(
             @PathVariable("perusteId") final long id,
             @PathVariable("tutkintonimikeKoodiId") final Long tnkId) {
         service.removeTutkintonimikeKoodi(id, tnkId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = {POST, PUT})
+    @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = POST)
     @ResponseBody
     @InternalApi
     public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
@@ -192,6 +192,16 @@ public class PerusteController {
             @RequestBody final TutkintonimikeKoodiDto tnk) {
         TutkintonimikeKoodiDto tutkintonimikeKoodi = service.addTutkintonimikeKoodi(id, tnk);
         return new ResponseEntity<>(tutkintonimikeKoodi, HttpStatus.OK);
+    }
+
+    // Openapi generator
+    @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = PUT)
+    @ResponseBody
+    @InternalApi
+    public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodiPut(
+            @PathVariable("perusteId") final long id,
+            @RequestBody final TutkintonimikeKoodiDto tnk) {
+        return addTutkintonimikekoodi(id, tnk);
     }
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = GET)
@@ -225,7 +235,7 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}", method = GET)
     @ResponseBody
     @ApiOperation(value = "perusteen tietojen haku")
-    public ResponseEntity<PerusteDto> get(@PathVariable("perusteId") final long id) {
+    public ResponseEntity<PerusteDto> getPerusteenTiedot(@PathVariable("perusteId") final long id) {
 
         return handleGet(id, 1, () -> service.get(id));
     }
@@ -233,7 +243,7 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/version", method = GET)
     @ResponseBody
     @ApiOperation(value = "perusteen uusin versio")
-    public PerusteVersionDto getVersion(@PathVariable("perusteId") final long id) {
+    public PerusteVersionDto getPerusteVersion(@PathVariable("perusteId") final long id) {
         return service.getPerusteVersion(id);
     }
 
