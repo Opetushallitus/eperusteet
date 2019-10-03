@@ -6,9 +6,7 @@ import fi.vm.sade.eperusteet.service.ScheduledTask;
 import fi.vm.sade.eperusteet.service.SkeduloituajoService;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
-//@Transactional
 public abstract class AbstractScheduledTask implements ScheduledTask {
 
     @Autowired
