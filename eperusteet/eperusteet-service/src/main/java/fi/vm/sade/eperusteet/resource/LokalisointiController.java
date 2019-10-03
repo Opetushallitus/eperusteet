@@ -40,7 +40,7 @@ public class LokalisointiController {
     private LokalisointiService lokalisointiService;
 
     @RequestMapping(value = "/eperusteet-opintopolku", method = GET)
-    public List<LokalisointiDto> getAll(@RequestParam(value = "locale", defaultValue = "fi") final String kieli) {
+    public List<LokalisointiDto> getAllKaannokset(@RequestParam(value = "locale", defaultValue = "fi") final String kieli) {
         return lokalisointiService.getAllByCategoryAndLocale("eperusteet-opintopolku", kieli);
     }
 }

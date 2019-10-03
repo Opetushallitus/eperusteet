@@ -57,12 +57,12 @@ public class TiedoteController {
             @ApiImplicitParam(name = "yleinen", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae yleiset tiedotteet")
     })
     @RequestMapping(value = "/haku", method = GET)
-    public Page<TiedoteDto> findBy(@ApiIgnore TiedoteQuery pquery) {
+    public Page<TiedoteDto> findTiedotteetBy(@ApiIgnore TiedoteQuery pquery) {
         return tiedoteService.findBy(pquery);
     }
 
     @RequestMapping(method = GET)
-    public List<TiedoteDto> getAll(
+    public List<TiedoteDto> getAllTiedotteet(
         @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,
         @RequestParam(value = "perusteId", required = false) Long perusteId,
         @RequestParam(value = "alkaen", required = false, defaultValue = "0") Long alkaen
@@ -71,7 +71,7 @@ public class TiedoteController {
     }
 
     @RequestMapping(value = "/{id}", method = GET)
-    public TiedoteDto get(@PathVariable("id") final Long id) {
+    public TiedoteDto getTiedote(@PathVariable("id") final Long id) {
         return tiedoteService.getTiedote(id);
     }
 

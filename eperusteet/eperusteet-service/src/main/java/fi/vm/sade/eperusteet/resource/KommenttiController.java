@@ -63,25 +63,29 @@ public class KommenttiController {
     }
 
     @RequestMapping(value = "/perusteprojekti/{id}/suoritustapa/{suoritustapa}", method = GET)
-    public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id, @PathVariable("suoritustapa") final String suoritustapa) {
+    public ResponseEntity<List<KommenttiDto>> getAllKommentitBySuoritustapa(
+            @PathVariable("id") final long id,
+            @PathVariable("suoritustapa") final String suoritustapa) {
         List<KommenttiDto> t = service.getAllBySuoritustapa(id, suoritustapa);
         return new ResponseEntity<>(rikastaKommentit(t), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/perusteprojekti/{id}/perusteenosa/{perusteenOsaId}", method = GET)
-    public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id, @PathVariable("perusteenOsaId") final long perusteenOsaId) {
+    public ResponseEntity<List<KommenttiDto>> getAllKommentitByPerusteenOsa(
+            @PathVariable("id") final long id,
+            @PathVariable("perusteenOsaId") final long perusteenOsaId) {
         List<KommenttiDto> t = service.getAllByPerusteenOsa(id, perusteenOsaId);
         return new ResponseEntity<>(rikastaKommentit(t), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/perusteprojekti/{id}", method = GET)
-    public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id) {
+    public ResponseEntity<List<KommenttiDto>> getAllKommentit(@PathVariable("id") final long id) {
         List<KommenttiDto> t = service.getAllByPerusteprojekti(id);
         return new ResponseEntity<>(rikastaKommentit(t), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/ylin/{id}", method = GET)
-    public ResponseEntity<List<KommenttiDto>> getAllByYlin(@PathVariable("id") final long id) {
+    public ResponseEntity<List<KommenttiDto>> getAllKommentitByYlin(@PathVariable("id") final long id) {
         List<KommenttiDto> t = service.getAllByYlin(id);
         return new ResponseEntity<>(rikastaKommentit(t), HttpStatus.OK);
     }
@@ -93,23 +97,23 @@ public class KommenttiController {
     }
 
     @RequestMapping(value = "/{id}", method = GET)
-    public ResponseEntity<KommenttiDto> get(@PathVariable("id") final long id) {
+    public ResponseEntity<KommenttiDto> getKommentti(@PathVariable("id") final long id) {
         KommenttiDto t = service.get(id);
         return new ResponseEntity<>(t, t == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
     @RequestMapping(method = {POST, PUT})
-    public ResponseEntity<KommenttiDto> add(@RequestBody KommenttiDto body) {
+    public ResponseEntity<KommenttiDto> addKommentti(@RequestBody KommenttiDto body) {
         return new ResponseEntity<>(service.add(body), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = {POST, PUT})
-    public ResponseEntity<KommenttiDto> update(@PathVariable("id") final long id, @RequestBody KommenttiDto body) {
+    public ResponseEntity<KommenttiDto> updateKommentti(@PathVariable("id") final long id, @RequestBody KommenttiDto body) {
         return new ResponseEntity<>(service.update(id, body), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)
-    public void delete(@PathVariable("id") final long id) {
+    public void deleteKommentti(@PathVariable("id") final long id) {
         service.delete(id);
     }
 }

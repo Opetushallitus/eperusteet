@@ -69,7 +69,7 @@ public class OpasController {
     @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public ResponseEntity<OpasDto> add(
+    public ResponseEntity<OpasDto> addOpas(
             @RequestBody OpasLuontiDto dto,
             UriComponentsBuilder ucb) {
         OpasDto resultDto = service.save(dto);
@@ -87,14 +87,14 @@ public class OpasController {
             @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "muokattu", dataType = "long", paramType = "query", value = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)"),
     })
-    public Page<PerusteHakuDto> getAll(@ApiIgnore PerusteQuery pquery) {
+    public Page<PerusteHakuDto> getAllOppaat(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findBy(p, pquery);
     }
 
     @RequestMapping(value = "/projektit", method = GET)
     @ResponseBody
-    public Page<PerusteprojektiKevytDto> getAllKevyt(PerusteprojektiQueryDto pquery) {
+    public Page<PerusteprojektiKevytDto> getAllOppaatKevyt(PerusteprojektiQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
         Page<PerusteprojektiKevytDto> page = service.findProjektiBy(p, pquery);
         return page;

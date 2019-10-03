@@ -40,7 +40,7 @@ public class OpintoalaController {
 
     @RequestMapping(method = GET)
     @ResponseBody
-    public List<OpintoalaDto> getAll() {
+    public List<OpintoalaDto> getAllOpintoalat() {
         List<OpintoalaDto> olist = service.getAll();
         return olist;
     }
