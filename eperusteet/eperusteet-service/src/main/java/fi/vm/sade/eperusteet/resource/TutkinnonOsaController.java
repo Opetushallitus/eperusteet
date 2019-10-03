@@ -63,7 +63,7 @@ public class TutkinnonOsaController {
     @RequestMapping(value = "/koodi/uniikki/{koodiUri}", method = GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity<BooleanDto> get(@PathVariable("koodiUri") final String koodiUri) {
+    public ResponseEntity<BooleanDto> getTutkinnonOsaByKoodi(@PathVariable("koodiUri") final String koodiUri) {
         try {
             perusteenOsaService.onkoTutkinnonOsanKoodiKaytossa(koodiUri);
         } catch (BusinessRuleViolationException ex) {

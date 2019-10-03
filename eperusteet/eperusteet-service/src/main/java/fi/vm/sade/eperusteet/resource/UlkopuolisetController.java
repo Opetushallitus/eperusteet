@@ -49,7 +49,7 @@ public class UlkopuolisetController {
 
     @RequestMapping(value = "/organisaatioryhmat/{oid}", method = GET)
     @ResponseBody
-    public ResponseEntity<JsonNode> getOrganisaatioRyhmat(@PathVariable(value = "oid") final String oid) {
+    public ResponseEntity<JsonNode> getOrganisaatioRyhmatByOid(@PathVariable(value = "oid") final String oid) {
         JsonNode ryhma = service.getRyhma(oid);
         return new ResponseEntity<>(ryhma, HttpStatus.OK);
     }

@@ -53,7 +53,7 @@ public class KayttajaprofiiliController {
 
     @RequestMapping(value = "", method = GET)
     @ResponseBody
-    public ResponseEntity<KayttajaProfiiliDto> get() {
+    public ResponseEntity<KayttajaProfiiliDto> getKayttajaprofiili() {
         KayttajaProfiiliDto k = service.get();
         if (k == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -63,7 +63,7 @@ public class KayttajaprofiiliController {
 
     @RequestMapping(value = "/suosikki", method = POST, consumes="application/json")
     @ResponseBody
-    public ResponseEntity<KayttajaProfiiliDto> addSuosikki(
+    public ResponseEntity<KayttajaProfiiliDto> addKayttajaprofiiliSuosikki(
             @RequestBody SuosikkiDto suosikkiDto) {
         KayttajaProfiiliDto profiiliDto = service.addSuosikki(suosikkiDto);
         return new ResponseEntity<>(profiiliDto, HttpStatus.CREATED);
@@ -71,14 +71,14 @@ public class KayttajaprofiiliController {
 
     @RequestMapping(value = "/preferenssi", method = POST, consumes="application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void setPreferenssi(
+    public void setKayttajaprofiiliPreferenssi(
             @RequestBody KayttajaprofiiliPreferenssiDto preferenssiDto) {
         service.setPreference(preferenssiDto);
     }
 
     @RequestMapping(value = "/suosikki/{suosikkiId}", method = DELETE)
     @ResponseBody
-    public ResponseEntity<KayttajaProfiiliDto> delete(
+    public ResponseEntity<KayttajaProfiiliDto> deleteKayttajaprofiiliSuosikki(
             @PathVariable("suosikkiId") final Long suosikkiId) {
         SuosikkiDto suosikki = suosikkiService.get(suosikkiId);
         if (suosikki == null) {
@@ -88,13 +88,14 @@ public class KayttajaprofiiliController {
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/suosikki/{suosikkiId}", method = {PUT, POST})
+    @RequestMapping(value = "/suosikki/{suosikkiId}", method = POST)
     @ResponseBody
-    public ResponseEntity<KayttajaProfiiliDto> update(
+    public ResponseEntity<KayttajaProfiiliDto> updateKayttajaprofiiliSuosikki(
             @RequestBody SuosikkiDto suosikkiDto,
             @PathVariable("suosikkiId") final Long suosikkiId
     ) {
         KayttajaProfiiliDto k = service.updateSuosikki(suosikkiId, suosikkiDto);
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
+
 }

@@ -71,13 +71,13 @@ public class PerusteenOsaController {
 
     @RequestMapping(method = GET, params = "nimi")
     @ResponseBody
-    public List<PerusteenOsaDto.Suppea> getAllWithName(@RequestParam("nimi") final String name) {
+    public List<PerusteenOsaDto.Suppea> getPerusteenOsatAllWithName(@RequestParam("nimi") final String name) {
         return service.getAllWithName(name);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteenOsaDto.Laaja> get(@PathVariable("id") final Long id) {
+    public ResponseEntity<PerusteenOsaDto.Laaja> getPerusteenOsa(@PathVariable("id") final Long id) {
         return CacheableResponse.create(service.getLastModifiedRevision(id), 1, new Supplier<PerusteenOsaDto.Laaja>() {
             @Override
             public PerusteenOsaDto.Laaja get() {
@@ -95,7 +95,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/viite/{viiteId}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteenOsaDto.Laaja> getByViite(@PathVariable("viiteId") final Long viiteId) {
+    public ResponseEntity<PerusteenOsaDto.Laaja> getPerusteenOsatByViite(@PathVariable("viiteId") final Long viiteId) {
         PerusteenOsaDto.Laaja t = service.getByViite(viiteId);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -105,7 +105,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}/versiot", method = GET)
     @ResponseBody
-    public List<CombinedDto<Revision, HenkiloTietoDto>> getVersiot(@PathVariable("id") final Long id) {
+    public List<CombinedDto<Revision, HenkiloTietoDto>> getPerusteenOsaVersiot(@PathVariable("id") final Long id) {
         List<Revision> versiot = service.getVersiot(id);
         List<CombinedDto<Revision, HenkiloTietoDto>> laajennetut = new ArrayList<>();
         for (Revision r : versiot) {
@@ -117,7 +117,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/versio/{versioId}", method = GET)
     @ResponseBody
     @CacheControl(age = CacheControl.ONE_YEAR)
-    public ResponseEntity<PerusteenOsaDto.Laaja> getVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+    public ResponseEntity<PerusteenOsaDto.Laaja> getPerusteenOsaVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
         PerusteenOsaDto.Laaja t = service.getVersio(id, versioId);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -127,7 +127,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}/palauta/{versioId}", method = POST)
     @ResponseBody
-    public ResponseEntity<PerusteenOsaDto.Laaja> revertToVersio(
+    public ResponseEntity<PerusteenOsaDto.Laaja> revertPerusteenOsaToVersio(
             @PathVariable("id") final Long id,
             @PathVariable("versioId") final Integer versioId) {
         PerusteenOsaDto.Laaja t = service.revertToVersio(id, versioId);
@@ -136,7 +136,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/viite/{id}/versiot", method = GET)
     @ResponseBody
-    public List<CombinedDto<Revision, HenkiloTietoDto>> getViiteVersiot(@PathVariable("id") final Long id) {
+    public List<CombinedDto<Revision, HenkiloTietoDto>> getPerusteenOsaViiteVersiot(@PathVariable("id") final Long id) {
         List<Revision> versiot = service.getVersiotByViite(id);
         List<CombinedDto<Revision, HenkiloTietoDto>> laajennetut = new ArrayList<>();
         for (Revision r : versiot) {
@@ -148,7 +148,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/viite/{id}/versio/{versioId}", method = GET)
     @ResponseBody
     @CacheControl(age = CacheControl.ONE_YEAR)
-    public ResponseEntity<PerusteenOsaDto> getVersioByViite(
+    public ResponseEntity<PerusteenOsaDto> getPerusteenOsaVersioByViite(
             @PathVariable("id") final Long id,
             @PathVariable("versioId") final Integer versioId) {
         PerusteenOsaDto p = service.getVersioByViite(id, versioId);
@@ -160,7 +160,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseBody
-    public PerusteenOsaDto.Laaja update(
+    public PerusteenOsaDto.Laaja updatePerusteenOsa(
             @PathVariable("id") final Long id,
             @RequestBody PerusteenOsaUpdateDto dto) {
         return service.update(dto);
@@ -310,7 +310,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}/lukko", method = GET)
     @ResponseBody
-    public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id,
+    public ResponseEntity<LukkoDto> checkPerusteenOsaLock(@PathVariable("id") final Long id,
         @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
         HttpServletResponse response) {
         LukkoDto lock = service.getLock(id);
@@ -318,9 +318,9 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(lock, lock == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}/lukko", method = {POST, PUT})
+    @RequestMapping(value = "/{id}/lukko", method = POST)
     @ResponseBody
-    public ResponseEntity<LukkoDto> lock(
+    public ResponseEntity<LukkoDto> lockPerusteenOsa(
             @PathVariable("id") final Long id,
             @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
             HttpServletResponse response) {
@@ -329,9 +329,19 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(lock, HttpStatus.OK);
     }
 
+    // Swagger generator vaatii
+    @RequestMapping(value = "/{id}/lukko", method = PUT)
+    @ResponseBody
+    public ResponseEntity<LukkoDto> lockPerusteenOsaPut(
+            @PathVariable("id") final Long id,
+            @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+            HttpServletResponse response) {
+        return lockPerusteenOsa(id, eTag, response);
+    }
+
     @RequestMapping(value = "/{id}/lukko", method = DELETE)
     @ResponseBody
-    public void unlock(@PathVariable("id") final Long id) {
+    public void unlockPerusteenOsa(@PathVariable("id") final Long id) {
         service.unlock(id);
     }
 
@@ -346,7 +356,7 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(lock, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/tutkinnonosaviite/{viiteId}/lukko", method = {POST, PUT})
+    @RequestMapping(value = "/tutkinnonosaviite/{viiteId}/lukko", method = POST)
     @ResponseBody
     public ResponseEntity<LukkoDto> lockByTutkinnonOsaViite(
             @PathVariable("viiteId") final Long viiteId,
@@ -355,6 +365,15 @@ public class PerusteenOsaController {
         LukkoDto lock = tutkinnonOsaViiteService.lockPerusteenOsa(viiteId);
         response.addHeader("ETag", String.valueOf(tutkinnonOsaViiteService.getLatestRevision(viiteId)));
         return new ResponseEntity<>(lock, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/tutkinnonosaviite/{viiteId}/lukko", method = PUT)
+    @ResponseBody
+    public ResponseEntity<LukkoDto> lockByTutkinnonOsaViitePut(
+            @PathVariable("viiteId") final Long viiteId,
+            @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+            HttpServletResponse response) {
+        return lockByTutkinnonOsaViite(viiteId, eTag, response);
     }
 
     @RequestMapping(value = "/tutkinnonosaviite/{viiteId}/lukko", method = DELETE)
@@ -367,7 +386,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public void delete(@PathVariable final Long id) {
+    public void deletePerusteenOsa(@PathVariable final Long id) {
         service.delete(id);
     }
 

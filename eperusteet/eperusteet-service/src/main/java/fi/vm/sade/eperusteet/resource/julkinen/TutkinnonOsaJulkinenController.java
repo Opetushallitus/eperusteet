@@ -41,7 +41,7 @@ public class TutkinnonOsaJulkinenController {
                     value = "tutkinnonosakoodi",
                     example = "tutkinnonosat_123456"),
     })
-    public Page<TutkinnonOsaDto> getAll(@ApiIgnore TutkinnonOsaQueryDto pquery) {
+    public Page<TutkinnonOsaDto> getAllTutkinnonOsatBy(@ApiIgnore TutkinnonOsaQueryDto pquery) {
         return service.findTutkinnonOsatBy(pquery);
     }
 

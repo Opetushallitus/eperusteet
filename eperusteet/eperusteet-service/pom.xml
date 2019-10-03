@@ -27,11 +27,13 @@
         <ehcache.version>2.6.11</ehcache.version>
         <slf4j.version>1.7.21</slf4j.version>
         <batik.version>1.9</batik.version>
+        <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
         <surefire.version>2.22.2</surefire.version>
         <failsafe.version>2.22.2</failsafe.version>
         <fop.version>2.3</fop.version>
         <pdfbox.version>2.0.12</pdfbox.version>
         <flyway.version>5.2.4</flyway.version>
+        <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
         <springfox.version>2.7.0</springfox.version>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <hibernate.export.type>CREATE</hibernate.export.type>
@@ -611,6 +613,89 @@
         <finalName>eperusteet-service</finalName>
     </build>
     <profiles>
+        <profile>
+            <id>generate-openapi</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.kongchen</groupId>
+                        <artifactId>swagger-maven-plugin</artifactId>
+                        <version>${swagger-maven-plugin-version}</version>
+                        <configuration>
+                            <apiSources>
+                                <apiSource>
+                                    <springmvc>true</springmvc>
+                                    <schemes>
+                                        <scheme>http</scheme>
+                                        <scheme>https</scheme>
+                                    </schemes>
+                                    <basePath>/api</basePath>
+                                    <locations>
+                                        <location>${eperusteet.resources}.julkinen.*</location>
+
+                                        <location>${eperusteet.resources}.AbstractLockController</location>
+                                        <location>${eperusteet.resources}.ArviointiAsteikkoController</location>
+                                        <location>${eperusteet.resources}.DokumenttiController</location>
+                                        <location>${eperusteet.resources}.GeneerinenArviointiasteikkoController</location>
+                                        <location>${eperusteet.resources}.KoodistoController</location>
+                                        <location>${eperusteet.resources}.KoulutusalaController</location>
+                                        <location>${eperusteet.resources}.LokalisointiController</location>
+                                        <location>${eperusteet.resources}.OpasController</location>
+                                        <location>${eperusteet.resources}.OpintoalaController</location>
+                                        <location>${eperusteet.resources}.PerusteenOsaController</location>
+                                        <location>${eperusteet.resources}.PerusteprojektiController</location>
+                                        <location>${eperusteet.resources}.TiedoteController</location>
+                                        <location>${eperusteet.resources}.TutkinnonOsaController</location>
+                                        <location>${eperusteet.resources}.UlkopuolisetController</location>
+
+                                        <location>${eperusteet.resources}.AIPEOpetuksenSisaltoController</location>
+                                        <location>${eperusteet.resources}.AmmattitaitovaatimuksetController</location>
+                                        <location>${eperusteet.resources}.JulkaisuController</location>
+                                        <location>${eperusteet.resources}.LaajaalainenOsaaminenLockController</location>
+                                        <location>${eperusteet.resources}.LiitetiedostoController</location>
+                                        <location>${eperusteet.resources}.Lops2019Controller</location>
+<!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuudetLockController</location>-->
+<!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuusLockController</location>-->
+<!--                                        <location>${eperusteet.resources}.LukiokoulutuksenPerusteenSisaltoController</location>-->
+<!--                                        <location>${eperusteet.resources}.LukiokoulutusJulkisetPerusteenSisallotController</location>-->
+<!--                                        <location>${eperusteet.resources}.LukiokurssiLockController</location>-->
+<!--                                        <location>${eperusteet.resources}.LukioOpetussuunnitelmaRakenneLockController</location>-->
+<!--                                        <location>${eperusteet.resources}.LukioOppiaineLockController</location>-->
+<!--                                        <location>${eperusteet.resources}.LukioYleisetTavoitteetLockController</location>-->
+                                        <location>${eperusteet.resources}.PerusopetuksenPerusteenSisaltoController</location>
+                                        <location>${eperusteet.resources}.PerusopetusOppiaineLockController</location>
+                                        <location>${eperusteet.resources}.PerusteController</location>
+                                        <location>${eperusteet.resources}.PerusteenSisaltoController</location>
+                                        <location>${eperusteet.resources}.TermistoController</location>
+<!--                                        <location>${eperusteet.resources}.TpoOpetuksenSisaltoController</location>-->
+                                        <location>${eperusteet.resources}.TutkinnonRakenneController</location>
+<!--                                        <location>${eperusteet.resources}.TutkinnonRakenneLockController</location>-->
+<!--                                        <location>${eperusteet.resources}.VuosiluokkaKokonaisuusLockController</location>-->
+
+                                        <!--                                        <location>${eperusteet.resources}.peruste.*</location>-->
+                                    </locations>
+                                    <modelSubstitute>/substitutes.map</modelSubstitute>
+                                    <info>
+                                        <title>ePerusteet api</title>
+                                        <version>v1</version>
+                                    </info>
+                                    <swaggerFileName>eperusteet.spec</swaggerFileName>
+                                    <swaggerDirectory>target/openapi</swaggerDirectory>
+                                </apiSource>
+                            </apiSources>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>generate-db-diagram</id>
             <build>

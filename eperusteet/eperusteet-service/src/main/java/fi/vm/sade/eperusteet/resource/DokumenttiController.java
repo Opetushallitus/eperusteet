@@ -52,7 +52,7 @@ public class DokumenttiController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation("luo dokumentti")
-    public ResponseEntity<DokumenttiDto> create(
+    public ResponseEntity<DokumenttiDto> createDokumentti(
             @RequestParam("perusteId") final long perusteId,
             @RequestParam(value = "kieli", defaultValue = "fi") final String kieli,
             @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi,
@@ -78,7 +78,7 @@ public class DokumenttiController {
     @RequestMapping(value = "/{dokumenttiId}", method = RequestMethod.GET, produces = "application/pdf")
     @ResponseBody
     @CacheControl(age = CacheControl.ONE_YEAR, nonpublic = false)
-    public ResponseEntity<Object> get(@PathVariable("dokumenttiId") final Long dokumenttiId) {
+    public ResponseEntity<Object> getDokumentti(@PathVariable("dokumenttiId") final Long dokumenttiId) {
         byte[] pdfdata = service.get(dokumenttiId);
 
         if (pdfdata == null || pdfdata.length == 0) {
@@ -128,7 +128,7 @@ public class DokumenttiController {
 
     @RequestMapping(method = RequestMethod.GET, params = "perusteId")
     @ResponseBody
-    public ResponseEntity<DokumenttiDto> getLatest(
+    public ResponseEntity<DokumenttiDto> getLatestDokumentti(
             @RequestParam("perusteId") final Long perusteId,
             @RequestParam(defaultValue = "fi") final String kieli,
             @RequestParam("suoritustapa") final String suoritustapa,
@@ -153,7 +153,7 @@ public class DokumenttiController {
 
     @RequestMapping(value = "/{dokumenttiId}/tila", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<DokumenttiDto> query(@PathVariable("dokumenttiId") final Long dokumenttiId) {
+    public ResponseEntity<DokumenttiDto> queryDokumenttiTila(@PathVariable("dokumenttiId") final Long dokumenttiId) {
         DokumenttiDto dto = service.query(dokumenttiId);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
