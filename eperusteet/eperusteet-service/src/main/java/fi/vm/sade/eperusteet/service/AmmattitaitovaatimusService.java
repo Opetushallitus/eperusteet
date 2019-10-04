@@ -40,5 +40,5 @@ public interface AmmattitaitovaatimusService {
     List<Ammattitaitovaatimus2019Dto> getAmmattitaitovaatimukset(@P("perusteId") Long perusteId);
 
     @PreAuthorize("isAuthenticated()")
-    void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika, ProjektiTila projektiTila, PerusteTyyppi perusteTyyppi);
+    void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika);
 }

@@ -17,11 +17,6 @@ public class MaarayskirjeTask extends AbstractScheduledTask {
     }
 
     @Override
-    public String getName() {
-        return "maarayskirje";
-    }
-
-    @Override
     public void executeTask(Date viimeisinajoaika) {
         perusteprojektiService.lataaMaarayskirjeetTask();
     }

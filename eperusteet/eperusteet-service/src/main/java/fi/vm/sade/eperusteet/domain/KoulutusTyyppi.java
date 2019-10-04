@@ -16,6 +16,8 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -74,5 +76,9 @@ public enum KoulutusTyyppi {
 
     public boolean isAmmatillinen() {
         return isOneOf(AMMATTITUTKINTO, ERIKOISAMMATTITUTKINTO, PERUSTUTKINTO);
+    }
+
+    public static List<String> ammatilliset() {
+        return Arrays.asList(AMMATTITUTKINTO.toString(), ERIKOISAMMATTITUTKINTO.toString(), PERUSTUTKINTO.toString());
     }
 }

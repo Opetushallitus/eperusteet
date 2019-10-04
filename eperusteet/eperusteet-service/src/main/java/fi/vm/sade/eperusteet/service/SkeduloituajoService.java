@@ -5,7 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface SkeduloituajoService {
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     SkeduloituAjo lisaaUusiAjo(String nimi);
 
 }

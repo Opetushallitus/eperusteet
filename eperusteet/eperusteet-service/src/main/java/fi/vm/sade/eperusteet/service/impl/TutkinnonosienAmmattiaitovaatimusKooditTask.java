@@ -33,16 +33,11 @@ public class TutkinnonosienAmmattiaitovaatimusKooditTask extends AbstractSchedul
     }
 
     @Override
-    public String getName() {
-        return "tutkinnonosienAmmattiaitovaatimusKooditTask";
-    }
-
-    @Override
     public void executeTask(Date viimeisinajoaika) {
 
         koodistoClient.addKoodistoRelaatio(KoodistoUriArvo.KOULUTUS, KoodistoUriArvo.TUTKINNONOSAT, KoodiRelaatioTyyppi.SISALTYY);
         koodistoClient.addKoodistoRelaatio(KoodistoUriArvo.TUTKINNONOSAT, KoodistoUriArvo.AMMATTITAITOVAATIMUKSET, KoodiRelaatioTyyppi.SISALTYY);
-        ammattitaitovaatimusService.lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(viimeisinajoaika, ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI);
+        ammattitaitovaatimusService.lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(viimeisinajoaika);
 
     }
 }

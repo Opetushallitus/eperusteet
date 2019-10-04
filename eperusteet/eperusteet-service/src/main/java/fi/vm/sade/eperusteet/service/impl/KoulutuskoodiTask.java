@@ -33,11 +33,6 @@ public class KoulutuskoodiTask extends AbstractScheduledTask {
     }
 
     @Override
-    public String getName() {
-        return "koulutuskoodi";
-    }
-
-    @Override
     public void executeTask(Date viimeisinajoaika) {
         // Etsi tutkinnon osien ja koulutuskoodien eroavaisuudet
         perusteprojektiService.tarkistaKooditTask();

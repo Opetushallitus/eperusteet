@@ -81,12 +81,10 @@ public interface KoodistoClient {
     @PreAuthorize("isAuthenticated()")
     Collection<Long> nextKoodiId(String koodistonimi, int count);
 
-    // FIXME mika on oikea?
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi);
 
-    // FIXME mika on oikea?
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi);
 
 }

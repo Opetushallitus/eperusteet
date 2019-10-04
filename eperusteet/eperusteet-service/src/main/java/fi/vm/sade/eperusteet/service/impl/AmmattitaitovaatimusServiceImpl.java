@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -50,7 +51,6 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -248,13 +248,13 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     }
 
     @Override
-    public void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika, ProjektiTila projektiTila, PerusteTyyppi perusteTyyppi) {
+    public void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika) {
 
         List<Peruste> perusteet;
         if (projektiPaivitysAika == null) {
-            perusteet = perusteRepository.findByPerusteprojektiTilaAndTyyppi(projektiTila, perusteTyyppi);
+            perusteet = perusteRepository.findByTilaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset());
         } else {
-            perusteet = perusteRepository.findByPerusteprojektiTilaAndGlobalVersionaikaleimaGreaterThanEqualAndTyyppi(projektiTila, projektiPaivitysAika, perusteTyyppi);
+            perusteet = perusteRepository.findByTilaVersioaikaleimaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, projektiPaivitysAika, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset());
         }
 
         log.debug("Löytyi {} kpl perusteita", perusteet.size());
@@ -266,14 +266,14 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                     addTutkintoOsaKooditToKoulutus(peruste, tutkinnonOsaViite);
 
                     if (tutkinnonOsaViite.getTutkinnonOsaDto().getAmmattitaitovaatimukset2019() != null) {
-                        addAmmattitaitovaatimusKooditToTutkintoOsa(tutkinnonOsaViite);
+                        addAmmattitaitovaatimusKooditToTutkinnonOsa(tutkinnonOsaViite);
                     }
                 }
             });
         });
     }
 
-    private void addAmmattitaitovaatimusKooditToTutkintoOsa(TutkinnonOsaViiteDto tutkinnonOsaViite) {
+    private void addAmmattitaitovaatimusKooditToTutkinnonOsa(TutkinnonOsaViiteDto tutkinnonOsaViite) {
         List<KoodistoKoodiDto> alarelaatiot = koodistoClient.getAlarelaatio(tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri());
 
         log.debug("tutkinnonOsaViite, {}", tutkinnonOsaViite.getId());
