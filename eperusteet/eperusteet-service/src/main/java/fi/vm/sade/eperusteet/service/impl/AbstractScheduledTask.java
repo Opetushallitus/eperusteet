@@ -18,6 +18,11 @@ public abstract class AbstractScheduledTask implements ScheduledTask {
     public abstract void executeTask(Date viimeisinajoaika);
 
     @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
     public void execute() {
         SkeduloituAjo skeduloituajo = skeduloituajoRepository.findByNimi(getName());
         if (skeduloituajo == null) {

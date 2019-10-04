@@ -38,11 +38,6 @@ public class ValidointiTask extends AbstractScheduledTask {
     }
 
     @Override
-    public String getName() {
-        return "validointi";
-    }
-
-    @Override
     public void executeTask(Date viimeisinAjoaika) {
         if (!isUpdating.get()) {
             if (isUpdating.compareAndSet(false, true)) {

@@ -84,14 +84,17 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
 
     @Query("SELECT p FROM Peruste p " +
             "WHERE p.perusteprojekti.tila = :projektitila " +
-            "AND tyyppi = :perustetyyppi")
-    List<Peruste> findByPerusteprojektiTilaAndTyyppi(
-            @Param("projektitila") ProjektiTila projektitila, @Param("perustetyyppi") PerusteTyyppi perustetyyppi);
+            "AND tyyppi = :perustetyyppi " +
+            "AND koulutustyyppi IN :koulutustyypit")
+    List<Peruste> findByTilaTyyppiKoulutustyyppi(
+            @Param("projektitila") ProjektiTila projektitila, @Param("perustetyyppi") PerusteTyyppi perustetyyppi, @Param("koulutustyypit") List<String> koulutustyypit);
 
     @Query("SELECT p FROM Peruste p " +
             "WHERE p.perusteprojekti.tila = :projektitila " +
             "AND globalVersion.aikaleima >= :aikaleima " +
-            "AND tyyppi = :perustetyyppi")
-    List<Peruste> findByPerusteprojektiTilaAndGlobalVersionaikaleimaGreaterThanEqualAndTyyppi(
-            @Param("projektitila") ProjektiTila projektitila, @Param("aikaleima") Date aikaleima, @Param("perustetyyppi") PerusteTyyppi perustetyyppi);
+            "AND tyyppi = :perustetyyppi " +
+            "AND koulutustyyppi IN (:koulutustyypit)")
+    List<Peruste> findByTilaVersioaikaleimaTyyppiKoulutustyyppi(
+            @Param("projektitila") ProjektiTila projektitila, @Param("aikaleima") Date aikaleima, @Param("perustetyyppi") PerusteTyyppi perustetyyppi, @Param("koulutustyypit") List<String> koulutustyypit);
+
 }
