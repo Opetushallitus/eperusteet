@@ -62,6 +62,7 @@ public class PerusteprojektiTestUtils {
         return createPerusteprojekti((PerusteprojektiLuontiDto pp) -> {});
     }
 
+
     public PerusteprojektiDto createPerusteprojekti(Consumer<PerusteprojektiLuontiDto> withPerusteprojekti) {
         PerusteprojektiLuontiDto result = new PerusteprojektiLuontiDto();
         result.setReforminMukainen(false);

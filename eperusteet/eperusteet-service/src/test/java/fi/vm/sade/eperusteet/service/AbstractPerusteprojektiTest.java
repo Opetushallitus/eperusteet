@@ -181,7 +181,4 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
         perusteRepository.save(peruste);
     }
 
-    protected void setPerusteKoulutustyyppi(Long id, String koulutustyyppi) {
-        em.createNativeQuery("UPDATE peruste SET koulutustyyppi = '" + koulutustyyppi + "' WHERE id = " + id).executeUpdate();
-    }
 }
