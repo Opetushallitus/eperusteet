@@ -43,8 +43,8 @@ public class TutkinnonosienAmmattiaitovaatimusKooditTaskIT extends AbstractInteg
 
         task.execute();
 
-        assertThat(skeduloituajoRepository.findByNimi("tutkinnonosienAmmattiaitovaatimusKooditTask")).isNotNull();
-        assertThat(skeduloituajoRepository.findByNimi("tutkinnonosienAmmattiaitovaatimusKooditTask").getViimeisinajo()).isNotNull();
+        assertThat(skeduloituajoRepository.findByNimi("TutkinnonosienAmmattiaitovaatimusKooditTask")).isNotNull();
+        assertThat(skeduloituajoRepository.findByNimi("TutkinnonosienAmmattiaitovaatimusKooditTask").getViimeisinajo()).isNotNull();
         verify(ophClientHelper).post("", "koodistorelaatio" + KoodistoUriArvo.KOULUTUS + KoodistoUriArvo.TUTKINNONOSAT);
         verify(ophClientHelper).post("", "koodistorelaatio" + KoodistoUriArvo.TUTKINNONOSAT + KoodistoUriArvo.AMMATTITAITOVAATIMUKSET);
     }

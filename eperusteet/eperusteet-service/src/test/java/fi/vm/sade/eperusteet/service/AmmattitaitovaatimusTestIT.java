@@ -152,8 +152,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_2000"));
 
         // not found perusteet
-        perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_X000"), ProjektiTila.JULKAISTU);
-        setPerusteKoulutustyyppi(new Long(perusteprojekti.getPeruste().getId()), KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS.toString());
+        perusteprojekti = lisaaPerusteKoodistollaJaKoulutustyypilla(asList("ammattitaitovaatimukset_X000"), ProjektiTila.JULKAISTU, KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS);
 
         perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_3000"), ProjektiTila.VALMIS);
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_3000", "koulutus_3001"));
@@ -193,6 +192,21 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         TutkinnonOsaViite tov = tovRepository.findOne(tosa.getId());
         tov.getTutkinnonOsa().setAmmattitaitovaatimukset2019(vaatimukset);
         tovRepository.save(tov);
+        em.flush();
+
+        ppTestUtils.asetaProjektiTilaan(aProjekti.getId(), tila);
+
+        return aProjekti;
+    }
+
+    private PerusteprojektiDto lisaaPerusteKoodistollaJaKoulutustyypilla(Collection<String> koodiUrit, ProjektiTila tila, KoulutusTyyppi koulutustyyppi) {
+
+        PerusteprojektiDto aProjekti = ppTestUtils.createPerusteprojekti(config -> {
+            config.setReforminMukainen(false);
+            config.setKoulutustyyppi(koulutustyyppi.toString());
+        });
+        PerusteDto aPeruste = ppTestUtils.initPeruste(aProjekti.getPeruste().getIdLong());
+
         em.flush();
 
         ppTestUtils.asetaProjektiTilaan(aProjekti.getId(), tila);

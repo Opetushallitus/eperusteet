@@ -19,7 +19,7 @@ public abstract class AbstractScheduledTask implements ScheduledTask {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return this.getClass().getSimpleName();
     }
 
     @Override
