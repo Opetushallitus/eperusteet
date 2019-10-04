@@ -22,7 +22,7 @@ public class EraAjoController {
     @Autowired
     OphClientHelper helper;
 
-    @RequestMapping(value = "/{nimi}/execute", method = RequestMethod.POST)
+    @RequestMapping(value = "/{nimi}/execute", method = RequestMethod.GET)
     public void executeTask(@PathVariable String nimi) {
         tasks.get(nimi).execute();
     }
