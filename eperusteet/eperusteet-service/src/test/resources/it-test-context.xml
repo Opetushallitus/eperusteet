@@ -39,6 +39,7 @@
     <bean id="cacheManager" class="org.springframework.cache.concurrent.ConcurrentMapCacheManager"/>
 
     <!-- import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/ -->
+    <context:component-scan base-package="fi.vm.sade.eperusteet.utils"/>
     <context:component-scan base-package="fi.vm.sade.eperusteet.service">
         <context:exclude-filter type="regex" expression="fi.vm.sade.eperusteet.service.impl.DokumenttiServiceImpl"/>
     </context:component-scan>
@@ -132,7 +133,5 @@
         </constructor-arg>
         <property name="allowIfAllAbstainDecisions" value="true"/>
     </bean>
-
-    <bean id="auditConfiguration" class="fi.vm.sade.eperusteet.service.audit.AuditConfiguration" />
 
 </beans>
