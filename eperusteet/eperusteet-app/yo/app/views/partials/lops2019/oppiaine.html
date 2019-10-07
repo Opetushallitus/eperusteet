@@ -104,20 +104,26 @@
             <input id="oppiaine-nimi-input"
                    class="form-control"
                    ng-model="oppiaine.nimi"
-                   slocalized
-                   style="margin-bottom: 10px">
+                   slocalized>
 
-            <label for="koodi-input" class="header" kaanna="koodi"></label>
-            <div class="input-group">
-                <input id="koodi-input"
-                       class="form-control"
-                       type="text"
-                       ng-model="oppiaine.koodi.arvo"
-                       editointi-kontrolli
-                       ng-disabled="true">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" ng-click="openKoodisto(oppiaine, 'oppiaineetjaoppimaaratlops2021', false)" kaanna="hae-koodistosta"></button>
-                </span>
+            <div style="margin-bottom: 10px">
+                <label for="koodi-input" class="header" kaanna="koodi"></label>
+                <div class="input-group">
+                    <input id="koodi-input"
+                           class="form-control"
+                           type="text"
+                           ng-model="oppiaine.koodi.arvo"
+                           editointi-kontrolli
+                           ng-disabled="true">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" ng-click="openKoodisto(oppiaine, 'oppiaineetjaoppimaaratlops2021', false)" kaanna="hae-koodistosta"></button>
+                    </span>
+                </div>
+                <button icon-role="remove"
+                        class="btn btn-warning pull-right"
+                        ng-click="oppiaine.koodi = null"
+                        kaanna="'poista'"
+                        style="margin-top: 10px"></button>
             </div>
 
             <h2 kaanna="'oppiaine-ja-tehtava'"></h2>
