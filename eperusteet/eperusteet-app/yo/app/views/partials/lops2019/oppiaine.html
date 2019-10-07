@@ -43,14 +43,14 @@
                 <div ng-bind-html="oppiaine.laajaAlaisetOsaamiset.kuvaus | kaanna | unsafe"></div>
             </div>
 
-            <div ng-if="oppiaine.tavoitteet && oppiaine.tavoitteet.kuvaus">
+            <div ng-if="oppiaine.tavoitteet">
                 <h2 kaanna="'tavoitteet'"></h2>
                 <div ng-bind-html="oppiaine.tavoitteet.kuvaus | kaanna | unsafe"></div>
                 <div ng-if="oppiaine.tavoitteet.tavoitealueet && oppiaine.tavoitteet.tavoitealueet.length > 0">
                     <h3 kaanna="'tavoitealueet'"></h3>
                     <div ng-repeat="tavoitealue in oppiaine.tavoitteet.tavoitealueet">
-                        <strong kaanna="tavoitealue.nimi"></strong>
-                        <p kaanna="tavoitealue.kohde"></p>
+                        <strong ng-if="tavoitealue.nimi" kaanna="tavoitealue.nimi"></strong>
+                        <p ng-if="tavoitealue.kohde" kaanna="tavoitealue.kohde"></p>
                         <ul>
                             <li ng-repeat="tavoite in tavoitealue.tavoitteet">
                                 <span ng-bind="tavoite || 'nimeton' | kaanna"></span>

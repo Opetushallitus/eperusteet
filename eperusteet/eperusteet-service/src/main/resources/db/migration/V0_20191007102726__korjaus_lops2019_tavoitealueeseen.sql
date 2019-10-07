@@ -1,0 +1,1 @@
+ALTER TABLE yl_lops2019_oppiaine_tavoitealue ALTER COLUMN nimi_id DROP NOT NULL;
