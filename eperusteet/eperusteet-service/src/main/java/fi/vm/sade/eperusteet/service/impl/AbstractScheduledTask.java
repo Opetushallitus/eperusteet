@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.domain.SkeduloituAjo;
 import fi.vm.sade.eperusteet.repository.SkeduloituajoRepository;
 import fi.vm.sade.eperusteet.service.ScheduledTask;
 import fi.vm.sade.eperusteet.service.SkeduloituajoService;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +23,7 @@ public abstract class AbstractScheduledTask implements ScheduledTask {
         return this.getClass().getSimpleName();
     }
 
+    @IgnorePerusteUpdateCheck
     @Override
     public void execute() {
         SkeduloituAjo skeduloituajo = skeduloituajoRepository.findByNimi(getName());
