@@ -29,6 +29,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -51,6 +54,8 @@ public class OpintoalaServiceImpl implements OpintoalaService {
 
     private static final String OPINTOALA_URI = "opintoalaoph2002";
 
+    @Autowired
+    HttpEntity httpEntity;
 
     @Override
     @Cacheable("opintoalat")
@@ -58,8 +63,8 @@ public class OpintoalaServiceImpl implements OpintoalaService {
         RestTemplate restTemplate = new RestTemplate();
         String url = KOODISTO_REST_SERVICE + KOODISTO_REST_URL + OPINTOALA_URI + "/koodi/";
         try {
-            KoodistoKoodiDto[] opintoalat = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
-            return mapper.mapAsList(Arrays.asList(opintoalat), OpintoalaDto.class);
+            ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
+            return mapper.mapAsList(Arrays.asList(response.getBody()), OpintoalaDto.class);
         }
         catch (HttpServerErrorException ex) {
         }

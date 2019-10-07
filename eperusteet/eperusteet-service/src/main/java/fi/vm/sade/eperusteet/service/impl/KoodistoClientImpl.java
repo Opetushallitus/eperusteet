@@ -148,8 +148,8 @@ public class KoodistoClientImpl implements KoodistoClient {
         }
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + koodistoUri + "/koodi/" + koodiUri + (versio != null ? "?koodistoVersio=" + versio.toString() : "");
-        KoodistoKoodiDto re = restTemplate.getForObject(url, KoodistoKoodiDto.class);
-        return re;
+        ResponseEntity<KoodistoKoodiDto> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto.class);
+        return response.getBody();
     }
 
     @Override
@@ -173,8 +173,8 @@ public class KoodistoClientImpl implements KoodistoClient {
     public List<KoodistoKoodiDto> getAlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + ALARELAATIO + koodi;
-        KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
-        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
+        ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
+        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
         return koodistoDtot;
     }
 
@@ -182,16 +182,16 @@ public class KoodistoClientImpl implements KoodistoClient {
     public KoodistoKoodiLaajaDto getAllByVersio(String koodi, String versio) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + CODEELEMENT + "/" + koodi + "/" + versio;
-        KoodistoKoodiLaajaDto koodiVersio = restTemplate.getForObject(url, KoodistoKoodiLaajaDto.class);
-        return koodiVersio;
+        ResponseEntity<KoodistoKoodiLaajaDto> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiLaajaDto.class);
+        return response.getBody();
     }
 
     @Override
     public KoodistoKoodiDto getLatest(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + LATEST + koodi;
-        KoodistoKoodiDto result = restTemplate.getForObject(url, KoodistoKoodiDto.class);
-        return result;
+        ResponseEntity<KoodistoKoodiDto> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto.class);
+        return response.getBody();
     }
 
     @Override
@@ -199,8 +199,8 @@ public class KoodistoClientImpl implements KoodistoClient {
     public List<KoodistoKoodiDto> getYlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + YLARELAATIO + koodi;
-        KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
-        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
+        ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
+        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
         return koodistoDtot;
     }
 
@@ -209,8 +209,8 @@ public class KoodistoClientImpl implements KoodistoClient {
     public List<KoodistoKoodiDto> getRinnasteiset(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + RINNASTEINEN + koodi;
-        KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
-        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
+        ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
+        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
         return koodistoDtot;
     }
 

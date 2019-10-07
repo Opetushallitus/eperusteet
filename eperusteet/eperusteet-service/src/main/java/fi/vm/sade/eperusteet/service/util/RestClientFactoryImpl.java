@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RestClientFactoryImpl implements RestClientFactory {
 
-    public static final String CALLER_ID = "1.2.246.562.10.00000000001.eperusteet";
+    private static final String CALLER_ID = "1.2.246.562.10.00000000001.eperusteet";
 
     private static final int TIMEOUT = 60000;
 
@@ -74,5 +74,10 @@ public class RestClientFactoryImpl implements RestClientFactory {
             cache.putIfAbsent(service, client);
             return cache.get(service);
         }
+    }
+
+    @Override
+    public String getCallerId() {
+        return CALLER_ID;
     }
 }
