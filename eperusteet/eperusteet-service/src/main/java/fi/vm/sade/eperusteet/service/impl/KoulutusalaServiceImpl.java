@@ -25,6 +25,9 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -44,12 +47,15 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
     @Koodisto
     private DtoMapper mapper;
 
+    @Autowired
+    HttpEntity httpEntity;
+
     @Override
     @Cacheable("koulutusalat")
     public List<KoulutusalaDto> getAll() {
         RestTemplate restTemplate = new RestTemplate();
-        KoodistoKoodiDto[] koulutusalat = restTemplate.getForObject(KOODISTO_REST_URL + KOULUTUSALA_URI + "/koodi/", KoodistoKoodiDto[].class);
-        List<KoulutusalaDto> koulutusalatDtos = mapper.mapAsList(Arrays.asList(koulutusalat), KoulutusalaDto.class);
+        ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(KOODISTO_REST_URL + KOULUTUSALA_URI + "/koodi/", HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
+        List<KoulutusalaDto> koulutusalatDtos = mapper.mapAsList(Arrays.asList(response.getBody()), KoulutusalaDto.class);
 
         for (KoulutusalaDto koulutusalaDto : koulutusalatDtos) {
             KoodistoKoodiDto[] opintoalat = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + koulutusalaDto.getKoodi(), KoodistoKoodiDto[].class);

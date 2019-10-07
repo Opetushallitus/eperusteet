@@ -252,6 +252,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Autowired
     private LocalizedMessagesService messages;
 
+    @Autowired
+    HttpHeaders httpHeaders;
+
     @Override
     @Transactional(readOnly = true)
     public List<PerusteprojektiInfoDto> getBasicInfo() {
@@ -1351,9 +1354,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                             log.debug("Ladataan määräyskirje " + url);
 
                             RestTemplate restTemplate = new RestTemplate();
-                            HttpHeaders headers = new HttpHeaders();
-                            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
-                            HttpEntity<String> entity = new HttpEntity<>(headers);
+                            httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
+                            HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
 
                             ResponseEntity<byte[]> res = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
 

@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.dto.LokalisointiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepositoryCustom;
@@ -25,6 +26,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -53,13 +57,16 @@ public class LokalisointiServiceImpl implements LokalisointiService {
     @Autowired
     private TekstiPalanenRepositoryCustom tekstiPalanenRepository;
 
+    @Autowired
+    HttpEntity httpEntity;
+
     @Override
     public List<LokalisointiDto> getAllByCategoryAndLocale(String category, String locale) {
         RestTemplate restTemplate = new RestTemplate();
         String url = lokalisointiServiceUrl + "category=" + category + "&locale=" + locale;
         try {
-            LokalisointiDto[] result = restTemplate.getForObject(url, LokalisointiDto[].class);
-            return Arrays.asList(result);
+            ResponseEntity<LokalisointiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, LokalisointiDto[].class);
+            return Arrays.asList(response.getBody());
         } catch (RestClientException e) {
             LOG.error(e.getLocalizedMessage());
             return new ArrayList<>();
@@ -73,7 +80,9 @@ public class LokalisointiServiceImpl implements LokalisointiService {
         String url = lokalisointiServiceUrl + "category=" + category + "&locale=" + locale + "&key=" + key;
         LokalisointiDto[] re;
         try {
-            re = restTemplate.getForObject(url, LokalisointiDto[].class);
+            ResponseEntity<LokalisointiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, LokalisointiDto[].class);
+            re = response.getBody();
+
         } catch (RestClientException ex) {
             LOG.error("Rest client error: {}", ex.getLocalizedMessage());
             re = new LokalisointiDto[]{};
