@@ -40,6 +40,7 @@ import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
@@ -295,6 +296,10 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(Lops2019Moduuli.class, Lops2019ModuuliBaseDto.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(Lops2019Moduuli.class, Lops2019ModuuliDto.class)
                 .byDefault()
                 .register();
 
