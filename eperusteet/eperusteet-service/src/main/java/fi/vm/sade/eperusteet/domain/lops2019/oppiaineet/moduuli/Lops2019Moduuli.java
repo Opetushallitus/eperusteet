@@ -3,7 +3,6 @@ package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Koodillinen;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
-import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019OppiaineTavoitteet;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;

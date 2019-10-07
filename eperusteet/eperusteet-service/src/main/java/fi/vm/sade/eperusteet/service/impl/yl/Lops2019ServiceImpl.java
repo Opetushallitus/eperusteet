@@ -503,9 +503,6 @@ public class Lops2019ServiceImpl implements Lops2019Service {
 
         mapper.map(dto, moduuli);
 
-        Koodi uusiKoodi = mapper.map(dto.getKoodi(), Koodi.class);
-        moduuli.setKoodi(uusiKoodi);
-
         moduuli = moduuliRepository.save(moduuli);
         return mapper.map(moduuli, Lops2019ModuuliDto.class);
     }

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019ArviointiDto;
@@ -274,6 +276,28 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
                 .contains(KoulutusTyyppi.LUKIOKOULUTUS.toString(), KoulutustyyppiToteutus.LOPS2019);
         assertThat(peruste.getLops2019Sisalto().structureEquals(alkuperainen.getLops2019Sisalto()))
                 .isTrue();
+    }
+
+    @Test
+    public void testModuuliKoodiMapping() {
+        Lops2019ModuuliDto dto = new Lops2019ModuuliDto();
+        dto.setId(1L);
+        KoodiDto koodiDto = new KoodiDto();
+        koodiDto.setVersio(1L);
+        koodiDto.setKoodisto(KoodistoUriArvo.MODUULIKOODISTOLOPS2021);
+        koodiDto.setUri(KoodistoUriArvo.MODUULIKOODISTOLOPS2021 + "_abc1");
+        dto.setKoodi(koodiDto);
+
+        Lops2019Moduuli moduuli = new Lops2019Moduuli();
+
+        mapper.map(dto, moduuli);
+
+        assertThat(moduuli).isNotNull();
+        assertThat(moduuli.getId()).isEqualTo(dto.getId());
+        assertThat(moduuli.getKoodi()).isNotNull();
+        assertThat(moduuli.getKoodi().getKoodisto()).isEqualTo(koodiDto.getKoodisto());
+        assertThat(moduuli.getKoodi().getUri()).isEqualTo(koodiDto.getUri());
+        assertThat(moduuli.getKoodi().getVersio()).isEqualTo(koodiDto.getVersio());
     }
 
     private void checkLaajaOppiaine(final Long oppiaineId) {
