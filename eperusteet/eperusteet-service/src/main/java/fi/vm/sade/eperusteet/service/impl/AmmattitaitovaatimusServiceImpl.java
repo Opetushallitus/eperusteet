@@ -38,6 +38,7 @@ import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
@@ -247,6 +248,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         return mapper.mapAsList(vaatimukset, Ammattitaitovaatimus2019Dto.class);
     }
 
+    @IgnorePerusteUpdateCheck
     @Override
     public void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika) {
 
