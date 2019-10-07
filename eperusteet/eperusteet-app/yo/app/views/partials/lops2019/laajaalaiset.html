@@ -29,25 +29,34 @@
                 <label for="{{'nimi-input-' + $index}}" class="header">{{'nimi' | kaanna}}</label>
                 <input id="{{'nimi-input-' + $index}}" class="form-control" ng-model="osaaminen.nimi" slocalized>
 
-                <label for="{{'koodi-input-' + $index}}" class="header" kaanna="koodi"></label>
-                <div class="input-group">
-                    <input id="{{'koodi-input-' + $index}}"
-                           class="form-control"
-                           type="text"
-                           ng-model="osaaminen.koodi.arvo"
-                           editointi-kontrolli
-                           ng-disabled="true">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" ng-click="openKoodisto(osaaminen, 'laajaalainenosaaminenlops2021', false)" kaanna="hae-koodistosta"></button>
-                    </span>
+                <div class="clearfix">
+                    <label for="{{'koodi-input-' + $index}}" class="header" kaanna="koodi"></label>
+                    <div class="input-group">
+                        <input id="{{'koodi-input-' + $index}}"
+                               class="form-control"
+                               type="text"
+                               ng-model="osaaminen.koodi.arvo"
+                               editointi-kontrolli
+                               ng-disabled="true">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="openKoodisto(osaaminen, 'laajaalainenosaaminenlops2021', false)" kaanna="hae-koodistosta"></button>
+                        </span>
+                    </div>
+                    <button icon-role="remove"
+                            class="btn btn-warning pull-right"
+                            ng-click="osaaminen.koodi = null"
+                            kaanna="'poista'"
+                            style="margin-top: 10px"></button>
                 </div>
 
-                <label for="{{'kuvaus-input-' + $index}}" class="header" kaanna="kuvaus"></label>
-                <div id="{{'kuvaus-input-' + $index}}"
-                     ng-model="osaaminen.kuvaus"
-                     slocalized
-                     ckeditor
-                     editor-placeholder="laaja-alainen-osaaminen-kuvaus"></div>
+                <div>
+                    <label for="{{'kuvaus-input-' + $index}}" class="header" kaanna="kuvaus"></label>
+                    <div id="{{'kuvaus-input-' + $index}}"
+                         ng-model="osaaminen.kuvaus"
+                         slocalized
+                         ckeditor
+                         editor-placeholder="laaja-alainen-osaaminen-kuvaus"></div>
+                </div>
             </div>
             <hr ng-show="!$last"/>
             <div style="margin-bottom: 10px" ng-show="$last"></div>
