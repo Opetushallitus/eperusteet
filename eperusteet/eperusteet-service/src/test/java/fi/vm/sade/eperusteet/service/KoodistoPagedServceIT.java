@@ -29,7 +29,7 @@ public class KoodistoPagedServceIT{
 
     @Before
     public void setup() {
-        Mockito.when(koodistoClient.getAll(Mockito.any())).thenReturn(createKoodisto());
+        Mockito.when(koodistoClient.getAll(Mockito.any(), Mockito.anyBoolean())).thenReturn(createKoodisto());
     }
 
     @Test
