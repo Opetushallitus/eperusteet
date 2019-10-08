@@ -48,7 +48,7 @@ public class KoodistoKoodiDto {
         }
 
         return Arrays.asList(metadata).stream()
-                .filter(metadata -> metadata.getKieli().equals(kieli))
+                .filter(metadata -> metadata.getKieli().equalsIgnoreCase(kieli))
                 .findFirst()
                 .orElse(
                         Arrays.asList(metadata).stream()

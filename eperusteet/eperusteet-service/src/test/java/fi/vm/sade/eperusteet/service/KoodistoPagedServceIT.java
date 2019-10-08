@@ -65,7 +65,8 @@ public class KoodistoPagedServceIT{
                 }),
                 IntStream.range(0, 10).mapToObj(i -> {
                     KoodistoKoodiDto koodisto = new KoodistoKoodiDto();
-                    koodisto.setMetadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("1nimi"+i, "fi", "kuvaus"+1)});
+                    koodisto.setMetadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("nämar" + i, "SV", "kuvaukserna" + 1),
+                            KoodistoMetadataDto.of("1nimi" + i, "FI", "kuvaus" + 1)});
                     return koodisto;
                 }),
                 IntStream.range(0, 10).mapToObj(i -> {
