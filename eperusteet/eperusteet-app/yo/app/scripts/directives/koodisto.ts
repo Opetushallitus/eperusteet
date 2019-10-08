@@ -3,7 +3,7 @@ import _ from "lodash";
 
 angular
     .module("eperusteApp")
-    .service("Koodisto", function($http, $uibModal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot, Utils, Api) {
+    .service("Koodisto", function($http, $uibModal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot, Utils, Api, Kieli) {
 
         var taydennykset = [];
         var koodistoVaihtoehdot = [
@@ -23,7 +23,8 @@ angular
                 {
                     sivukoko,
                     sivu,
-                    haku: nimirajaus
+                    haku: nimirajaus,
+                    kieli: Kieli.getSisaltokieli()
                 }
             );
             cb();
