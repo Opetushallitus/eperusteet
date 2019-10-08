@@ -121,16 +121,20 @@ public class KoodistoClientImpl implements KoodistoClient {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    @Cacheable("koodistot")
     public List<KoodistoKoodiDto> getAll(String koodisto) {
+        return self.getAll(koodisto, false);
+    }
+
+    @Override
+    @Cacheable("koodistot")
+    public List<KoodistoKoodiDto> getAll(String koodisto, boolean onlyValidKoodis) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi/";
+        String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi?onlyValidKoodis=" + onlyValidKoodis;
         try {
             ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
             List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
             return koodistoDtot;
-        }
-        catch (HttpServerErrorException ex) {
+        } catch (HttpServerErrorException ex) {
             throw new BusinessRuleViolationException("koodistoa-ei-loytynyt");
         }
     }

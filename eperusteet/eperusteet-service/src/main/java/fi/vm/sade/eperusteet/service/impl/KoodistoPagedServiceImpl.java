@@ -28,7 +28,7 @@ public class KoodistoPagedServiceImpl implements KoodistoPagedService {
     @Override
     public Page<KoodistoKoodiDto> getAllPaged(String koodisto, String nimiFilter, KoodistoPageDto koodistoPageDto) {
 
-        List<KoodistoKoodiDto> koodistoList = koodistoClient.getAll(koodisto).stream()
+        List<KoodistoKoodiDto> koodistoList = koodistoClient.getAll(koodisto, koodistoPageDto.isOnlyValidKoodis()).stream()
                 .filter(koodistoDto ->  StringUtils.isEmpty(nimiFilter)
                         || (koodistoDto.getKoodiArvo() != null && koodistoDto.getKoodiArvo().toLowerCase().contains(nimiFilter.toLowerCase()))
                         || (koodistoDto.getMetadataName(koodistoPageDto.getKieli()) != null

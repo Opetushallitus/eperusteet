@@ -18,13 +18,14 @@ angular
             return true;
         };
 
-        function haeSivutettu(koodisto, cb, sivu, sivukoko, nimirajaus) {
+        function haeSivutettu(koodisto, cb, sivu, sivukoko, nimirajaus, vainValidit) {
             const sivutettu = Api.one("/koodisto/sivutettu/"+koodisto).get(
                 {
                     sivukoko,
                     sivu,
                     haku: nimirajaus,
-                    kieli: Kieli.getSisaltokieli()
+                    kieli: Kieli.getSisaltokieli(),
+                    onlyValidKoodis: vainValidit
                 }
             );
             cb();
@@ -179,9 +180,10 @@ angular
         $scope.syote = "";
         $scope.tutkinnonosaviitteet = {};
         $scope.nimirajaus = "";
+        $scope.vainValidit = false;
 
         $scope.haeSivutettu = _.debounce(async () => {
-            const sivutettuData = await Koodisto.haeSivutettu($scope.tyyppi, hakuCb, $scope.nykyinen-1, $scope.itemsPerPage, $scope.nimirajaus);
+            const sivutettuData = await Koodisto.haeSivutettu($scope.tyyppi, hakuCb, $scope.nykyinen-1, $scope.itemsPerPage, $scope.nimirajaus, $scope.vainValidit);
 
             $scope.loydetyt = sivutettuData.data;
             $scope.loydetyt = Koodisto.koodistoMapping($scope.loydetyt);
