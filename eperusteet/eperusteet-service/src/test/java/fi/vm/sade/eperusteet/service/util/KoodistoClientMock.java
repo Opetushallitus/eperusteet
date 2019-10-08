@@ -120,6 +120,11 @@ public class KoodistoClientMock implements KoodistoClient {
     }
 
     @Override
+    public List<KoodistoKoodiDto> getAll(String koodisto, boolean onlyValidKoodis) {
+        return null;
+    }
+
+    @Override
     public List<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
         return Collections.emptyList();
     }

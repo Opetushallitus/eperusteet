@@ -7,6 +7,12 @@
     <input id="koodisto_modal_autofocus" ng-change="haku(syote, kieli)" type="text" ng-model="syote"
            class="form-control"
            placeholder="{{ 'rajaa-tuloksia' | kaanna }}" ng-disabled="lataa">
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" ng-model="vainValidit" ng-change="haku(syote)">
+            <span ng-bind="'nayta-myos-vanhentuneet' | kaanna"></span>
+        </label>
+    </div>       
     <p class="results-amount">
         <span ng-show="!!syote">{{totalItems}} {{'hakutulosta' | kaanna}}</span>
         <span ng-show="lataa">{{ 'haetaan-koodistosta' | kaanna }}<small-spinner></small-spinner></span>

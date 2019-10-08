@@ -14,4 +14,5 @@ public class KoodistoPageDto {
     private int sivu = 0;
     private int sivukoko = 25;
     private String kieli = Kieli.FI.toString();
+    private boolean onlyValidKoodis;
 }
