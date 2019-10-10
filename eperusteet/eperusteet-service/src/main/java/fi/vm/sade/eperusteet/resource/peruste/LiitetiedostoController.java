@@ -116,9 +116,20 @@ public class LiitetiedostoController {
         return new ResponseEntity<>(uuid.toString(), h, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = { "/kuvat/{id}", "/liitteet/{id}" }, method = RequestMethod.GET)
+    // For swagger
+    @RequestMapping(value = "/kuvat/{id}", method = RequestMethod.GET)
+    public void getKuva(
+            @PathVariable("perusteId") Long perusteId,
+            @PathVariable("id") UUID id,
+            @RequestHeader(value = "If-None-Match", required = false) String etag,
+            HttpServletResponse response
+    ) throws IOException {
+        getLiite(perusteId, id, etag, response);
+    }
+
+    @RequestMapping(value = "/liitteet/{id}", method = RequestMethod.GET)
     @CacheControl(age = CacheControl.ONE_YEAR)
-    public void get(
+    public void getLiite(
         @PathVariable("perusteId") Long perusteId,
         @PathVariable("id") UUID id,
         @RequestHeader(value = "If-None-Match", required = false) String etag,
