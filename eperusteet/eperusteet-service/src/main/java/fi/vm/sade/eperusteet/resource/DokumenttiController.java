@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.resource.util.CacheControl;
 
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/dokumentit")
 @InternalApi
+@Api(value = "Dokumentit")
 public class DokumenttiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiController.class);

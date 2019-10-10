@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
+import io.swagger.annotations.Api;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -54,6 +56,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @RestController
 @RequestMapping("/perusteet/{perusteId}")
+@Api("Liitetiedostot")
 public class LiitetiedostoController {
 
     private static final int BUFSIZE = 64 * 1024;
