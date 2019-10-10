@@ -1,11 +1,20 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.service.exception.SkeduloituAjoAlreadyRunningException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.*;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
@@ -13,13 +22,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @Configuration
 @EnableScheduling
@@ -77,6 +79,8 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
                             task.execute();
                             done++;
                             log.debug(task.getName() + " is done.");
+                        } catch (SkeduloituAjoAlreadyRunningException e) {
+                            log.debug(task.getName() + " is already running.");
                         } catch (RuntimeException e) {
                             log.error("Error occurred while running " + task.getName() + " job:", e);
                         }

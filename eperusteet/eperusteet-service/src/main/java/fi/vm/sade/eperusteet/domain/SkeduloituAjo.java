@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +31,14 @@ public class SkeduloituAjo implements Serializable {
     @Column(name = "nimi", nullable = false, unique = true, updatable = false)
     private String nimi;
 
-    private Date viimeisinajo;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private SkeduloituAjoStatus status = SkeduloituAjoStatus.PYSAYTETTY;
+
+    @Column(name = "viimeisin_ajo_kaynnistys")
+    private Date viimeisinAjoKaynnistys;
+
+    @Column(name = "viimeisin_ajo_lopetus")
+    private Date viimeisinAjoLopetus;
 
 }
