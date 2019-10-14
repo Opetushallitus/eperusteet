@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @RestController
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapa}")
 @InternalApi
+@Api(value = "Sisallot")
 public class PerusteenSisaltoController {
 
     @Autowired
@@ -91,7 +93,7 @@ public class PerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto/{parentId}/lapsi/{childId}", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public PerusteenOsaViiteDto.Matala addSisaltoLapsi(
+    public PerusteenOsaViiteDto.Matala addSisaltoUusiLapsi(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("parentId") final Long parentId,
@@ -124,23 +126,36 @@ public class PerusteenSisaltoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeSisaltoViite(
         @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi,
         @PathVariable("id") final Long id) {
         viiteService.removeSisalto(perusteId, id);
     }
 
 
-    @RequestMapping(value = "/sisalto/{id}", method = {POST, PUT})
+    @RequestMapping(value = "/sisalto/{id}", method = {POST})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateSisaltoViite(
+    public void updateSisaltoViiteWithPost(
         @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi,
         @PathVariable("id") final Long id,
         @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja pov) {
+        viiteService.reorderSubTree(perusteId, id, pov);
+    }
+
+    @RequestMapping(value = "/sisalto/{id}", method = {PUT})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateSisaltoViiteWithPut(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("id") final Long id,
+            @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja pov) {
         viiteService.reorderSubTree(perusteId, id, pov);
     }
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
         @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi,
         @PathVariable("id") final Long id) {
        return viiteService.kloonaaTekstiKappale(perusteId, id);
     }

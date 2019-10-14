@@ -662,7 +662,7 @@
 <!--                                        <location>${eperusteet.resources}.peruste.PerusopetuksenPerusteenSisaltoController</location>-->
 <!--                                        <location>${eperusteet.resources}.peruste.PerusopetusOppiaineLockController</location>-->
                                         <location>${eperusteet.resources}.peruste.PerusteController</location>
-<!--                                        <location>${eperusteet.resources}.peruste.PerusteenSisaltoController</location>-->
+                                        <location>${eperusteet.resources}.peruste.PerusteenSisaltoController</location>
 <!--                                        <location>${eperusteet.resources}.peruste.TermistoController</location>-->
 <!--                                        <location>${eperusteet.resources}.peruste.TutkinnonRakenneController</location>-->
 <!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuudetLockController</location>-->
