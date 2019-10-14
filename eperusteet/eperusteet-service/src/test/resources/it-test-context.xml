@@ -42,6 +42,8 @@
     <context:component-scan base-package="fi.vm.sade.eperusteet.utils"/>
     <context:component-scan base-package="fi.vm.sade.eperusteet.service">
         <context:exclude-filter type="regex" expression="fi.vm.sade.eperusteet.service.impl.DokumenttiServiceImpl"/>
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession"/>
     </context:component-scan>
     <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>
 
