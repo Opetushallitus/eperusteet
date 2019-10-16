@@ -15,13 +15,16 @@
  */
 package fi.vm.sade.eperusteet.domain.yl;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 
+import java.util.Arrays;
 import javax.persistence.*;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -30,6 +33,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.beans.BeanUtils;
 
 /**
  *
@@ -38,42 +42,22 @@ import java.util.Set;
 @Entity
 @Table(name = "yl_tavoitteen_arviointi")
 @Audited
+@Getter
+@Setter
 public class TavoitteenArviointi extends AbstractReferenceableEntity {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Getter
-    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen arvioinninKohde;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Getter
-    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    private TekstiPalanen valttavanOsaamisenKuvaus;
+    private TekstiPalanen osaamisenKuvaus;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Getter
-    @Setter
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    private TekstiPalanen tyydyttavanOsaamisenKuvaus;
-
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Getter
-    @Setter
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    private TekstiPalanen hyvanOsaamisenKuvaus;
-
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @Getter
-    @Setter
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    private TekstiPalanen kiitettavanOsaamisenKuvaus;
+    private Integer arvosana;
 
     @Getter
     @RelatesToPeruste
@@ -86,11 +70,17 @@ public class TavoitteenArviointi extends AbstractReferenceableEntity {
 
     public TavoitteenArviointi kloonaa() {
         TavoitteenArviointi klooni = new TavoitteenArviointi();
-        klooni.setArvioinninKohde(arvioinninKohde);
-        klooni.setHyvanOsaamisenKuvaus(valttavanOsaamisenKuvaus);
-        klooni.setHyvanOsaamisenKuvaus(tyydyttavanOsaamisenKuvaus);
-        klooni.setHyvanOsaamisenKuvaus(hyvanOsaamisenKuvaus);
-        klooni.setHyvanOsaamisenKuvaus(kiitettavanOsaamisenKuvaus);
+        BeanUtils.copyProperties(this, klooni);
         return klooni;
     }
+
+    @Deprecated
+    public TekstiPalanen getHyvanOsaamisenKuvaus() {
+        if (arvosana == null || arvosana == 8) {
+            return osaamisenKuvaus;
+        }
+
+        return null;
+    }
+
 }

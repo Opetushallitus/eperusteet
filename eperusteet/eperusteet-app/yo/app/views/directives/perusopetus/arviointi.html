@@ -1,60 +1,29 @@
 <div>
     <table class="table table-bordered perusopetuksen-arviointi">
         <thead>
-        <tr ng-show="editMode">
-            <th>
-                <input class="form-control"
-                       placeholder="{{ 'arvioinnin-kohde' | kaanna }}"
-                       slocalized
-                       ng-model="atavoite.arvioinninKuvaus">
-            </th>
-            <th>
-                <input class="form-control"
-                       placeholder="{{ 'arvion-hyva-osaaminen' | kaanna }}"
-                       slocalized
-                       ng-model="atavoite.arvioinninOsaamisenKuvaus">
-            </th>
-            <th>
-            </th>
-        </tr>
-        <tr ng-hide="editMode">
-            <th ng-bind="atavoite.arvioinninKuvaus || 'arvioinnin-kohde' | kaanna"></th>
-            <th ng-bind="atavoite.arvioinninOsaamisenKuvaus || 'arvion-hyva-osaaminen' | kaanna"></th>
+        <tr>
+            <th width="40%">{{'osaamisen-kuvaus' | kaanna}}</th>
+            <th width="60%">{{'arvion-kuvaus' | kaanna}}</th>
+            <th ng-show="editMode"></th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="arviointi in model">
+        <tr ng-repeat="arviointi in model | orderBy:(!editMode ? '-arvosana':'')">
             <td>
-                <span ng-if="!editMode">{{arviointi.arvioinninKohde | kaanna}}</span>
-                <span ng-if="editMode">
-              <input ng-model="arviointi.arvioinninKohde" slocalized class="form-control">
-            </span>
+                <span ng-if="!editMode">{{arvosanaNumerolla(arviointi.arvosana).teksti}}</span>
+                <select ng-if="editMode" 
+                    title="arvosana"
+                    class="form-control"
+                    ng-model="arviointi.arvosana">
+                    <option ng-repeat="arvosana in arvosanat" ng-value="{{arvosana.numero}}">{{arvosana.teksti}}</option>
+                </select>
             </td>
-            <!-- TODO: Myöhemmin käyttöön -->
-            <!-- <td> -->
-            <!--     <span ng&#45;if="!editMode">{{arviointi.valttavanOsaamisenKuvaus | kaanna}}</span> -->
-            <!--     <span ng&#45;if="editMode"> -->
-            <!--         <textarea ng&#45;model="arviointi.valttavanOsaamisenKuvaus" slocalized class="form&#45;control msd&#45;elastic"></textarea> -->
-            <!--     </span> -->
-            <!-- </td> -->
-            <!-- <td> -->
-            <!--     <span ng&#45;if="!editMode">{{arviointi.tyydyttavanOsaamisenKuvaus | kaanna}}</span> -->
-            <!--     <span ng&#45;if="editMode"> -->
-            <!--         <textarea ng&#45;model="arviointi.tyydyttavanOsaamisenKuvaus" slocalized class="form&#45;control msd&#45;elastic"></textarea> -->
-            <!--     </span> -->
-            <!-- </td> -->
             <td>
-                <span ng-if="!editMode">{{arviointi.hyvanOsaamisenKuvaus | kaanna}}</span>
+                <span ng-if="!editMode">{{arviointi.osaamisenKuvaus | kaanna}}</span>
                 <span ng-if="editMode">
-                    <textarea ng-model="arviointi.hyvanOsaamisenKuvaus" slocalized class="form-control msd-elastic"></textarea>
+                    <textarea ng-model="arviointi.osaamisenKuvaus" slocalized class="form-control msd-elastic"></textarea>
                 </span>
             </td>
-            <!-- <td> -->
-            <!--     <span ng&#45;if="!editMode">{{arviointi.kiitettavanOsaamisenKuvaus | kaanna}}</span> -->
-            <!--     <span ng&#45;if="editMode"> -->
-            <!--         <textarea ng&#45;model="arviointi.kiitettavanOsaamisenKuvaus" slocalized class="form&#45;control msd&#45;elastic"></textarea> -->
-            <!--     </span> -->
-            <!-- </td> -->
             <td ng-if="editMode">
                 <a icon-role="remove" ng-click="removeKohde($index)" title="{{'poista'|kaanna}}"></a>
             </td>

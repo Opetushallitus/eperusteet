@@ -1339,10 +1339,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     kohdeTr.appendChild(kohdeTd);
                     kohdeTd.setTextContent(getTextString(docBase, tavoitteenArviointi.getArvioinninKohde()));
 
-                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getValttavanOsaamisenKuvaus());
-                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getTyydyttavanOsaamisenKuvaus());
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getOsaamisenKuvaus());
                     lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getHyvanOsaamisenKuvaus());
-                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getKiitettavanOsaamisenKuvaus());
                 });
             }
         });
