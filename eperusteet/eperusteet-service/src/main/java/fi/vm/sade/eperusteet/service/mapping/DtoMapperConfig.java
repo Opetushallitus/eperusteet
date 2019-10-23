@@ -386,7 +386,7 @@ public class DtoMapperConfig {
                         try {
                             koodistoClient.addNimiAndUri(b);
                         } catch (RestClientException | AccessDeniedException ex) {
-                            logger.error(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
+                            logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
                         }
                     }
                 })
@@ -431,7 +431,7 @@ public class DtoMapperConfig {
                                 b.setOsaamisalakoodiArvo(koodi.getArvo());
                             }
                         } catch (RestClientException | AccessDeniedException ex) {
-                            logger.error(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
+                            logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
                         }
                     }
                 })
