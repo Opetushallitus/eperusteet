@@ -65,7 +65,8 @@ angular.module("eperusteApp").config($stateProvider => {
             laajaalainen: (laajaalaiset, $stateParams, Api, isOsaaminen, isNew) =>
                 isOsaaminen && !isNew
                     ? laajaalaiset.get($stateParams.osanId)
-                    : Api.restangularizeElement(laajaalaiset, {}, "")
+                    : Api.restangularizeElement(laajaalaiset, {}, ""),
+            oppiaineet: (vaihe, isVaihe) => isVaihe ? vaihe.all("oppiaineet").getList() : null
         },
         controller: (
             $scope,
@@ -84,7 +85,8 @@ angular.module("eperusteApp").config($stateProvider => {
             isVaihe,
             isNew,
             AIPEService,
-            versiot
+            versiot,
+            oppiaineet
         ) => {
             $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
             $scope.isNew = isNew;
@@ -100,6 +102,7 @@ angular.module("eperusteApp").config($stateProvider => {
                 $scope.isVaihe = () => $state.is("root.perusteprojekti.suoritustapa.aipeosaalue");
                 $scope.dataObject = vaihe;
                 $scope.versiot = versiot;
+                $scope.dataObject.oppiaineet = oppiaineet;
             }
 
             $scope.edit = () => {
