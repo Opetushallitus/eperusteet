@@ -33,18 +33,12 @@ angular
     })
     .controller("PerusopetuksenArviointiController", function($scope, Kaanna) {
 
-        $scope.arvosanat = [];
-
-        function asetaArvosanat() {
-            $scope.arvosanat =  [5,6,7,8,9,10].map(numero => {
-                return {
-                    numero, 
-                    teksti: Kaanna.kaanna("osaamisen-kuvaus-arvosanalle_"+numero)
-                }
-            });
-        }
-
-        asetaArvosanat();
+        $scope.arvosanat =  [5,6,7,8,9,10].map(numero => {
+            return {
+                numero, 
+                teksti: Kaanna.kaanna("osaamisen-kuvaus-arvosanalle_"+numero)
+            }
+        });
 
         $scope.arvosanaNumerolla = (numero) => {
             return (<any[]>$scope.arvosanat).find(arvosana => arvosana.numero == numero);            

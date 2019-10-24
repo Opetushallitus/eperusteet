@@ -186,12 +186,8 @@ angular
         $scope.addArviointi = function(tavoite) {
             tavoite.arvioinninkohteet = [{
                 arvioinninKohde: {},
-                // TODO: myöhemmin käyttöön
-                // valttavanOsaamisenKuvaus: {},
-                // tyydyttavanOsaamisenKuvaus: {},
                 hyvanOsaamisenKuvaus: {},
                 osaamisenKuvaus: {},
-                // kiitettavanOsaamisenKuvaus: {},
             }];
         };
 
@@ -278,4 +274,5 @@ angular
 
             return tavoite.arvioinninKuvaus;
         }
+        
     });
