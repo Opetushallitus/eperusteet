@@ -658,7 +658,7 @@
                                         <location>${eperusteet.resources}.peruste.JulkaisuController</location>
 <!--                                        <location>${eperusteet.resources}.peruste.LaajaalainenOsaaminenLockController</location>-->
                                         <location>${eperusteet.resources}.peruste.LiitetiedostoController</location>
-<!--                                        <location>${eperusteet.resources}.peruste.Lops2019Controller</location>-->
+                                        <location>${eperusteet.resources}.peruste.Lops2019Controller</location>
 <!--                                        <location>${eperusteet.resources}.peruste.PerusopetuksenPerusteenSisaltoController</location>-->
 <!--                                        <location>${eperusteet.resources}.peruste.PerusopetusOppiaineLockController</location>-->
                                         <location>${eperusteet.resources}.peruste.PerusteController</location>

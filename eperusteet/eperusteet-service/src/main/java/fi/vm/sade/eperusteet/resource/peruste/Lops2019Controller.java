@@ -9,6 +9,8 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import java.util.List;
+
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @InternalApi
 @RestController
 @RequestMapping("/perusteet/{perusteId}/lops2019")
+@Api("Lops2019")
 public class Lops2019Controller {
 
     @Autowired
