@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;

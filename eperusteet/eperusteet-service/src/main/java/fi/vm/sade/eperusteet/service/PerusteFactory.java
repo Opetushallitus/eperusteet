@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +23,31 @@ public class PerusteFactory<T> {
     private T strategyYksinkertainen;
 
     @PreAuthorize("permitAll()")
-    public T getStrategy(KoulutustyyppiToteutus toteutus) {
-        if (toteutus == null) {
-            throw new BusinessRuleViolationException("toteutus-on-pakollinen");
+    public T getStrategy(KoulutustyyppiToteutus toteutus, KoulutusTyyppi kt) {
+        if (toteutus != null) {
+            switch (toteutus) {
+                case LOPS2019: return strategyLops2019;
+                case PERUSOPETUS: return strategyPerusopetus;
+                case YKSINKERTAINEN: return strategyYksinkertainen;
+            }
+        } else if (kt != null) {
+            if (kt.isYksinkertainen()) {
+                return strategyYksinkertainen;
+            } else if (kt == KoulutusTyyppi.PERUSOPETUS){
+                return strategyPerusopetus;
+            }
         }
+        throw new BusinessRuleViolationException("toteutusta-ei-loytynyt");
+    }
 
-        switch (toteutus) {
-            case LOPS2019: return strategyLops2019;
-            case PERUSOPETUS: return strategyPerusopetus;
-            case YKSINKERTAINEN: return strategyYksinkertainen;
-            default:
-                throw new BusinessRuleViolationException("toteutusta-ei-loytynyt");
-        }
+    @PreAuthorize("permitAll()")
+    public T getStrategy(KoulutustyyppiToteutus toteutus, String kt) {
+        KoulutusTyyppi koulutusTyyppi = kt != null ? KoulutusTyyppi.of(kt) : null;
+        return this.getStrategy(toteutus, koulutusTyyppi);
+    }
+
+    @PreAuthorize("permitAll()")
+    public T getStrategy(KoulutustyyppiToteutus toteutus) {
+        return this.getStrategy(toteutus, (KoulutusTyyppi) null);
     }
 }
