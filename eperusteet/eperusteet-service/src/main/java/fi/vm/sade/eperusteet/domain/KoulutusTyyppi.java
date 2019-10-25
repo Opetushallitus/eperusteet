@@ -74,6 +74,10 @@ public enum KoulutusTyyppi {
         return isOneOf(VALMA, TELMA);
     }
 
+    public boolean isYksinkertainen() {
+        return isOneOf(LISAOPETUS, ESIOPETUS, VARHAISKASVATUS, PERUSOPETUSVALMISTAVA);
+    }
+
     public boolean isAmmatillinen() {
         return isOneOf(AMMATTITUTKINTO, ERIKOISAMMATTITUTKINTO, PERUSTUTKINTO);
     }

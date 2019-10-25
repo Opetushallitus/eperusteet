@@ -19,18 +19,7 @@ import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
@@ -164,6 +153,13 @@ public class PerusteController {
     @InternalApi
     public PerusteDto updatePeruste(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
         return service.updateFull(id, perusteDto);
+    }
+
+    @RequestMapping(value = "/{perusteId}/navigaatio", method = GET)
+    public NavigationNodeDto getNavigation(
+            @PathVariable final Long perusteId
+    ) {
+        return service.getNavigation(perusteId);
     }
 
     @RequestMapping(value = "/{perusteId}/kvliite", method = GET)

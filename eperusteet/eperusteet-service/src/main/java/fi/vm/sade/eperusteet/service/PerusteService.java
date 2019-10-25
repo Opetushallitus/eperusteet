@@ -222,4 +222,7 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteprojektiImportDto getPerusteExport(@P("perusteId") Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    NavigationNodeDto getNavigation(@P("perusteId") Long perusteId);
 }

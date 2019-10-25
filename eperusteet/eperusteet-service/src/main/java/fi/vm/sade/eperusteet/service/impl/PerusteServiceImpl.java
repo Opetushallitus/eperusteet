@@ -202,6 +202,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private LiiteRepository liiteRepository;
 
+    @Autowired
+    @PerusteprojektiQualifier(KoulutustyyppiToteutus.LOPS2019)
+    private NavigationBuilder strategyLops2019;
+
+    /*
+    @Autowired
+    private PerusteFactory<NavigationBuilder> navigationBuilder;
+     */
+
     @Override
     public List<PerusteDto> getUusimmat(Set<Kieli> kielet) {
         return mapper.mapAsList(perusteRepository.findAllUusimmat(kielet, new PageRequest(0, 10)), PerusteDto.class);
@@ -1451,6 +1460,22 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         PerusteprojektiLuontiDto projekti = mapper.map(peruste.getPerusteprojekti(), PerusteprojektiLuontiDto.class);
         PerusteKaikkiDto data = getKokoSisalto(perusteId);
         return new PerusteprojektiImportDto(projekti, data);
+    }
+
+    @Override
+    public NavigationNodeDto getNavigation(Long perusteId) {
+        Peruste peruste = getPeruste(perusteId);
+        return null;
+        //NavigationBuilder builder = navigationBuilder.getStrategy(peruste.getToteutus(), peruste.getKoulutustyyppi());
+        //return builder.buildNavigation(peruste);
+    }
+
+    private Peruste getPeruste(Long perusteId) {
+        Peruste peruste = perusteRepository.getOne(perusteId);
+        if (peruste == null) {
+            throw new BusinessRuleViolationException("peruste-puuttuu");
+        }
+        return peruste;
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
