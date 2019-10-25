@@ -15,25 +15,25 @@
  */
 package fi.vm.sade.eperusteet.domain.yl;
 
-import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-
-import java.util.Arrays;
-import javax.persistence.*;
-
-import lombok.Data;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import java.util.HashSet;
-import java.util.Set;
-import org.springframework.beans.BeanUtils;
 
 /**
  *
@@ -70,7 +70,9 @@ public class TavoitteenArviointi extends AbstractReferenceableEntity {
 
     public TavoitteenArviointi kloonaa() {
         TavoitteenArviointi klooni = new TavoitteenArviointi();
-        BeanUtils.copyProperties(this, klooni);
+        klooni.setArvioinninKohde(arvioinninKohde);
+        klooni.setOsaamisenKuvaus(osaamisenKuvaus);
+        klooni.setArvosana(arvosana);
         return klooni;
     }
 
