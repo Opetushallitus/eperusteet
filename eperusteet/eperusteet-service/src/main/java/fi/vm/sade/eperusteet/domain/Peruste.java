@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -26,6 +27,8 @@ import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
+import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -46,7 +49,8 @@ import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 @Entity
 @Table(name = "peruste")
 @Audited
-public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity, WithPerusteTila {
+public class Peruste extends AbstractAuditedEntity
+        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -193,7 +197,6 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
 
-    @Getter
     @Setter
     @Enumerated(EnumType.STRING)
     private KoulutustyyppiToteutus toteutus;
@@ -308,6 +311,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         if (muutosmaaraykset != null) {
             this.muutosmaaraykset.addAll(muutosmaaraykset);
         }
+    }
+
+    public KoulutustyyppiToteutus getToteutus() {
+        return PerusteUtils.getToteutus(this.toteutus, getKoulutustyyppi(), getTyyppi());
     }
 
     /*

@@ -25,9 +25,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
-import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
-import fi.vm.sade.eperusteet.service.KoodistoClient;
-import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -61,6 +59,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
 @Api(value = "Perusteet")
 public class PerusteController {
+
+    @Autowired
+    private PerusteDispatcher dispatcher;
 
     @Autowired
     private KoodistoClient koodistoService;
@@ -159,7 +160,8 @@ public class PerusteController {
     public NavigationNodeDto getNavigation(
             @PathVariable final Long perusteId
     ) {
-        return service.getNavigation(perusteId);
+        return dispatcher.get(perusteId, NavigationBuilder.class)
+                .buildNavigation(perusteId);
     }
 
     @RequestMapping(value = "/{perusteId}/kvliite", method = GET)

@@ -22,8 +22,14 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.Navigable;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.Getter;
 import lombok.Setter;
+import ma.glasnost.orika.Mapper;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -33,6 +39,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -57,7 +65,11 @@ import java.util.Stack;
     name = "PerusteenOsaViite.rootId",
     columns = {@ColumnResult(name="id", type=Long.class)}
 )
-public class PerusteenOsaViite implements ReferenceableEntity, Serializable, Copyable<PerusteenOsaViite> {
+public class PerusteenOsaViite implements
+        ReferenceableEntity,
+        Serializable,
+        Copyable<PerusteenOsaViite>,
+        Navigable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -204,5 +216,19 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable, Cop
         }
         pov.setLapset(uudetLapset);
         return pov;
+    }
+
+    @Override
+    public NavigationNodeDto constructNavigation(DtoMapper mapper) {
+        return NavigationNodeDto
+                .of(NavigationType.viite, this.getPerusteenOsa() != null
+                                ? mapper.map(
+                                        this.getPerusteenOsa().getNimi(),
+                                        LokalisoituTekstiDto.class)
+                                : null,
+                        getId())
+                .addAll(getLapset().stream()
+                    .map(node -> node.constructNavigation(mapper))
+                    .collect(Collectors.toList()));
     }
 }

@@ -1,13 +1,13 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
-import fi.vm.sade.eperusteet.service.ImportService;
-import fi.vm.sade.eperusteet.service.PerusteprojektiQualifier;
+import fi.vm.sade.eperusteet.service.PerusteImport;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Set;
 import java.util.Stack;
 
 @Component
 @Transactional
-@PerusteprojektiQualifier(KoulutustyyppiToteutus.LOPS2019)
-public class Lops2019ImportServiceImpl implements ImportService {
+public class PerusteImportLops2019 implements PerusteImport {
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
 
@@ -36,6 +36,11 @@ public class Lops2019ImportServiceImpl implements ImportService {
     @Autowired
     @Dto
     private DtoMapper mapper;
+
+    @Override
+    public Set<KoulutustyyppiToteutus> getTyypit() {
+        return Sets.newHashSet(KoulutustyyppiToteutus.LOPS2019);
+    }
 
     private void resaveTekstikappaleet(final PerusteenOsaViite root) {
         final Stack<PerusteenOsaViite> stack = new Stack<>();
