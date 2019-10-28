@@ -59,7 +59,6 @@ import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
-import net.sf.ehcache.CacheManager;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,9 +105,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         "koulutus_355412", "koulutus_324126", "koulutus_355413", "koulutus_324127", "koulutus_358412", "koulutus_327126",
         "koulutus_354708",
         "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
-
-    @Autowired
-    private CacheManager cacheManager;
 
     @Autowired
     private PerusteDispatcher dispatcher;
