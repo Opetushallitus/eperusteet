@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  *
  * @author harrik
  */
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 public @interface Dto {

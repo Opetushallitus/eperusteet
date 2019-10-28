@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
  * @author jhyoty
  */
 @Component
+@Dto
 public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TekstiPalanenConverter.class);

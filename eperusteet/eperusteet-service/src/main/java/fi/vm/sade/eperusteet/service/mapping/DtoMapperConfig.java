@@ -35,6 +35,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
@@ -55,6 +56,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.*;
+import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory.Builder;
@@ -86,8 +88,8 @@ public class DtoMapperConfig {
     private KoodistoClient koodistoClient;
 
     static public DefaultMapperFactory createFactory(
-            TekstiPalanenConverter tekstiPalanenConverter,
-            ReferenceableEntityConverter cachedEntityConverter,
+            BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
+            BidirectionalConverter<ReferenceableEntity, Reference> cachedEntityConverter,
             KoodistokoodiConverter koodistokoodiConverter) {
         DefaultMapperFactory factory = new Builder() {
             @Override
@@ -134,9 +136,18 @@ public class DtoMapperConfig {
         })
                 .build();
 
-        factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
-        factory.getConverterFactory().registerConverter(cachedEntityConverter);
-        factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
+        if (tekstiPalanenConverter != null) {
+            factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
+        }
+
+        if (cachedEntityConverter != null) {
+            factory.getConverterFactory().registerConverter(cachedEntityConverter);
+        }
+
+        if (koodistokoodiConverter != null) {
+            factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
+        }
+
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
         factory.getConverterFactory().registerConverter(new PassThroughConverter(Instant.class));
 
@@ -148,10 +159,26 @@ public class DtoMapperConfig {
     }
 
     @Bean
+    @UncachedDto
+    public DtoMapper uncachedDtoMapper(
+            @UncachedDto BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
+            @UncachedDto BidirectionalConverter<ReferenceableEntity, Reference> cachedEntityConverter,
+            KoodistokoodiConverter koodistokoodiConverter) {
+        return dtoMapper(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter);
+    }
+
+    @Bean
     @Dto
-    public DtoMapper dtoMapper(
-            TekstiPalanenConverter tekstiPalanenConverter,
-            ReferenceableEntityConverter cachedEntityConverter,
+    public DtoMapper normalDtoMapper(
+            @Dto BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
+            @Dto BidirectionalConverter<ReferenceableEntity, Reference> cachedEntityConverter,
+            KoodistokoodiConverter koodistokoodiConverter) {
+        return dtoMapper(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter);
+    }
+
+    private DtoMapper dtoMapper(
+            BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
+            BidirectionalConverter<ReferenceableEntity, Reference> cachedEntityConverter,
             KoodistokoodiConverter koodistokoodiConverter) {
         DefaultMapperFactory factory = createFactory(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter);
 

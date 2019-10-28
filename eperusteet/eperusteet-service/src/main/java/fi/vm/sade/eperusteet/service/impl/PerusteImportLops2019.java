@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.service.PerusteImport;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.UncachedDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class PerusteImportLops2019 implements PerusteImport {
     private EntityManager em;
 
     @Autowired
-    @Dto
+    @UncachedDto
     private DtoMapper mapper;
 
     @Override
