@@ -324,6 +324,11 @@
          eternal="false"
          timeToLiveSeconds="3600"
          overflowToDisk="false" />
+    <cache name="peruste-navigation"
+           maxElementsInMemory="500"
+           eternal="false"
+           timeToLiveSeconds="3600"
+           overflowToDisk="false" />
     <cache name="lokalisoinnit"
          maxElementsInMemory="1000"
          eternal="false"
