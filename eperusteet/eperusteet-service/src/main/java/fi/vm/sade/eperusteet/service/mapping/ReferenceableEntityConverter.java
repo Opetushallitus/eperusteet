@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -31,6 +32,7 @@ import javax.persistence.PersistenceContext;
  * @author teele1
  */
 @Component
+@Dto
 public class ReferenceableEntityConverter extends BidirectionalConverter<ReferenceableEntity, Reference> {
 
     @PersistenceContext
