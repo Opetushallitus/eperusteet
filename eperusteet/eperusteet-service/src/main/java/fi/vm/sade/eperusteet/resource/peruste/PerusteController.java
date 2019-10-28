@@ -61,9 +61,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 public class PerusteController {
 
     @Autowired
-    private PerusteDispatcher dispatcher;
-
-    @Autowired
     private KoodistoClient koodistoService;
 
     @Autowired
@@ -160,8 +157,7 @@ public class PerusteController {
     public NavigationNodeDto getNavigation(
             @PathVariable final Long perusteId
     ) {
-        return dispatcher.get(perusteId, NavigationBuilder.class)
-                .buildNavigation(perusteId);
+        return service.buildNavigation(perusteId);
     }
 
     @RequestMapping(value = "/{perusteId}/kvliite", method = GET)

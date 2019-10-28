@@ -30,9 +30,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.Reference;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -61,9 +59,11 @@ import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import net.sf.ehcache.CacheManager;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -108,6 +108,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
 
     @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
+    private PerusteDispatcher dispatcher;
+
+    @Autowired
     private PerusteRepository perusteRepository;
 
     @Autowired
@@ -133,6 +139,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private KoodiRepository koodiRepository;
+
+    @Autowired
+    PerusteService self;
 
     @Autowired
     @Dto
@@ -1462,14 +1471,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return new PerusteprojektiImportDto(projekti, data);
     }
 
-    @Override
-    public NavigationNodeDto getNavigation(Long perusteId) {
-        Peruste peruste = getPeruste(perusteId);
-        return null;
-        //NavigationBuilder builder = navigationBuilder.getStrategy(peruste.getToteutus(), peruste.getKoulutustyyppi());
-        //return builder.buildNavigation(peruste);
-    }
-
     private Peruste getPeruste(Long perusteId) {
         Peruste peruste = perusteRepository.getOne(perusteId);
         if (peruste == null) {
@@ -1989,4 +1990,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return viiteDto;
     }
 
+    @Override
+    @Cacheable("peruste-navigation")
+    public NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm) {
+        return dispatcher.get(perusteId, NavigationBuilder.class)
+                .buildNavigation(perusteId);
+    }
+
+    @Override
+    public NavigationNodeDto buildNavigation(Long perusteId) {
+        Peruste peruste = getPeruste(perusteId);
+        return self.buildNavigationWithDate(perusteId, peruste.getGlobalVersion().getAikaleima());
+    }
 }

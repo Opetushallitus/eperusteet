@@ -26,12 +26,14 @@ import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -223,6 +225,10 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteprojektiImportDto getPerusteExport(@P("perusteId") Long perusteId);
 
+    @Cacheable("peruste-navigation")
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto getNavigation(@P("perusteId") Long perusteId);
+    NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    NavigationNodeDto buildNavigation(Long perusteId);
 }
