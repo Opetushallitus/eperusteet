@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.domain;
 import java.io.Serializable;
 import java.text.Normalizer;
 import java.util.*;
-import java.util.stream.Collectors;
 import javax.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.Cache;

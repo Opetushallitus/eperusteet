@@ -60,7 +60,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
     private DtoMapper mapper;
 
     @Autowired
-    private PerusteFactory<ImportService> importService;
+    private PerusteDispatcher importService;
 
     @Autowired
     private PerusteRepository repository;
@@ -263,7 +263,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
                 .build(), perusteData);
         idto.getProjekti().setNimi("projekti");
         idto.getProjekti().setDiaarinumero("1234");
-        final PerusteprojektiDto lisatty = importService.getStrategy(idto.getPeruste().getToteutus())
+        final PerusteprojektiDto lisatty = importService.get(idto.getPeruste(), PerusteImport.class)
                 .tuoPerusteprojekti(idto);
         assertThat(lisatty)
                 .extracting("nimi", "diaarinumero")

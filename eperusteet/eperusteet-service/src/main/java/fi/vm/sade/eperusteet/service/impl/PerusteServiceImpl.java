@@ -202,9 +202,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private LiiteRepository liiteRepository;
 
-    @Autowired
-    @PerusteprojektiQualifier(KoulutustyyppiToteutus.LOPS2019)
-    private NavigationBuilder strategyLops2019;
+//    @Autowired
+//    @PerusteprojektiQualifier(KoulutustyyppiToteutus.LOPS2019)
+//    private NavigationBuilder strategyLops2019;
 
     /*
     @Autowired

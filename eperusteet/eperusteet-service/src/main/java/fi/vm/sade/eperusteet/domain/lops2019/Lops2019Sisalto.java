@@ -4,6 +4,8 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
+import fi.vm.sade.eperusteet.dto.peruste.Navigable;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;

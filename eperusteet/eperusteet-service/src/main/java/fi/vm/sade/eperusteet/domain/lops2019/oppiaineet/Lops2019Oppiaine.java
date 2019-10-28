@@ -7,6 +7,12 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+import fi.vm.sade.eperusteet.dto.peruste.Navigable;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -29,6 +35,7 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         Koodillinen,
         StructurallyComparable<Lops2019Oppiaine>,
         Nimetty,
+        Navigable,
         Copyable<Lops2019Oppiaine> {
 
     @Getter
@@ -193,4 +200,18 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
 
         return result;
     }
+
+    @Override
+    public NavigationNodeDto constructNavigation(DtoMapper mapper) {
+        return NavigationNodeDto
+            .of(NavigationType.oppiaine, mapper.map(this.getNimi(), LokalisoituTekstiDto.class), this.getId())
+                .meta("koodi", mapper.map(getKoodi(), KoodiDto.class))
+                .add(NavigationNodeDto.of(NavigationType.oppimaarat)
+                    .addAll(getOppimaarat().stream()
+                        .map(node -> node.constructNavigation(mapper))))
+                .add(NavigationNodeDto.of(NavigationType.moduulit)
+                    .addAll(getModuulit().stream()
+                        .map(node -> node.constructNavigation(mapper))));
+    }
+
 }

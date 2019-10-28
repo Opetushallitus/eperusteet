@@ -4,12 +4,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
-import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
-import fi.vm.sade.eperusteet.service.ImportService;
-import fi.vm.sade.eperusteet.service.MaintenanceService;
-import fi.vm.sade.eperusteet.service.PerusteFactory;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -29,7 +24,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Profile("!test")
 public class MaintenanceController {
     @Autowired
-    private PerusteFactory<ImportService> importService;
+    private PerusteDispatcher dispatcher;
 
     @Autowired
     private AmmattitaitovaatimusService ammattitaitovaatimusService;
@@ -76,7 +71,7 @@ public class MaintenanceController {
 
     @RequestMapping(value = "/import", method = POST)
     public PerusteprojektiDto tuoPeruste(@RequestBody final PerusteprojektiImportDto importDto) {
-        return importService.getStrategy(importDto.getPeruste().getToteutus())
+        return dispatcher.get(importDto.getPeruste(), PerusteImport.class)
                 .tuoPerusteprojekti(importDto);
     }
 

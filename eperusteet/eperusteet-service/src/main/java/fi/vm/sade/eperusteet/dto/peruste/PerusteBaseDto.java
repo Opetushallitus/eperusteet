@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
 import fi.vm.sade.eperusteet.dto.MuutosmaaraysDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -29,6 +30,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
+import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,7 +42,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class PerusteBaseDto implements Serializable {
+public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiable, Identifiable {
 
     private Long id;
     @JsonIgnore
@@ -75,4 +79,8 @@ public abstract class PerusteBaseDto implements Serializable {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<TutkintonimikeKoodiDto> tutkintonimikkeet;
+
+    public KoulutustyyppiToteutus getToteutus() {
+        return PerusteUtils.getToteutus(this.toteutus, this.koulutustyyppi, this.tyyppi);
+    }
 }
