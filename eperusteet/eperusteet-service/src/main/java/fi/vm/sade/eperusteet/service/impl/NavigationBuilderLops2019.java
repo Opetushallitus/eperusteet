@@ -2,11 +2,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.PerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
-import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -15,8 +11,6 @@ import fi.vm.sade.eperusteet.service.NavigationBuilder;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
-import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,27 +53,12 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
                     .map(oa -> oa.constructNavigation(mapper)));
     }
 
-    private NavigationNodeDto liitteet(Long perusteId) {
-        Peruste peruste = perusteRepository.findOne(perusteId);
-        Set<PerusteenSisalto> sisallot = peruste.getSisallot();
-
-        NavigationNodeDto result = NavigationNodeDto.of(NavigationType.root);
-        if (sisallot.size() > 0) {
-            PerusteenOsaViite sisalto = sisallot.iterator().next().getSisalto();
-            if (sisalto != null) {
-                result.addAll(sisalto.constructLiitteetNavigation(this.mapper));
-            }
-        }
-        return result;
-    }
-
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId) {
         NavigationNodeDto root = NavigationNodeDto.of(NavigationType.root)
             .addAll(dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId).getChildren())
             .add(laajaAlaiset(perusteId))
-            .add(oppiaineet(perusteId))
-            .addAll(liitteet(perusteId));
+            .add(oppiaineet(perusteId));
         return root;
     }
 }
