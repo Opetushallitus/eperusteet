@@ -37,7 +37,8 @@ public class NavigationBuilderDefault implements NavigationBuilder {
     public NavigationNodeDto buildNavigation(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         Set<PerusteenSisalto> sisallot = peruste.getSisallot();
-        NavigationNodeDto result = NavigationNodeDto.of(NavigationType.tiedot);
+
+        NavigationNodeDto result = NavigationNodeDto.of(NavigationType.root);
         if (sisallot.size() > 0) {
             PerusteenOsaViite sisalto = sisallot.iterator().next().getSisalto();
             if (sisalto != null) {
