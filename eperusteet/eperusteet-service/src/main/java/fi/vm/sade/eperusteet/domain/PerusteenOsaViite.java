@@ -220,19 +220,24 @@ public class PerusteenOsaViite implements
 
     @Override
     public NavigationNodeDto constructNavigation(DtoMapper mapper) {
-        boolean liite = false;
+        NavigationNodeDto navigation = NavigationNodeDto
+                .of(NavigationType.viite, this.getPerusteenOsa() != null
+                                ? mapper.map(
+                        this.getPerusteenOsa().getNimi(),
+                        LokalisoituTekstiDto.class)
+                                : null,
+                        getId());
+
+        // Lisätään liitetieto jos asetettu
         PerusteenOsa po = this.getPerusteenOsa();
         if (po instanceof TekstiKappale) {
             TekstiKappale tk = (TekstiKappale) po;
-            liite = tk.isLiite();
+            if (tk.isLiite()) {
+                navigation.meta("liite", true);
+            }
         }
-        return NavigationNodeDto
-                .of(NavigationType.viite, this.getPerusteenOsa() != null
-                                ? mapper.map(
-                                        this.getPerusteenOsa().getNimi(),
-                                        LokalisoituTekstiDto.class)
-                                : null,
-                        getId(), liite)
+
+        return navigation
                 .addAll(getLapset().stream()
                     .map(node -> node.constructNavigation(mapper))
                     .collect(Collectors.toList()));

@@ -18,7 +18,6 @@ public class NavigationNodeDto {
     private NavigationType type;
     private Map<String, Object> meta = new HashMap<>();
     private List<NavigationNodeDto> children = new ArrayList<>();
-    private boolean liite = false;
 
     static public NavigationNodeDto of(NavigationType type, LokalisoituTekstiDto label, Long id) {
         NavigationNodeDto result = new NavigationNodeDto();
@@ -28,18 +27,11 @@ public class NavigationNodeDto {
         return result;
     }
 
-    static public NavigationNodeDto of(NavigationType type, LokalisoituTekstiDto label, Long id, boolean liite) {
-        NavigationNodeDto result = NavigationNodeDto.of(type, label, id);
-        result.setLiite(liite);
-        return result;
-    }
-
     static public NavigationNodeDto of(NavigationType type) {
         return of(type, null, null);
     }
 
     public NavigationNodeDto meta(String key, Object value) {
-        ObjectMapper mapper = new ObjectMapper();
         meta.put(key, value);
         return this;
     }
