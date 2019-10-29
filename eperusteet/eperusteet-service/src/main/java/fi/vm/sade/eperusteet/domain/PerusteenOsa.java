@@ -137,6 +137,12 @@ public abstract class PerusteenOsa
         this.nimi = other.getNimi();
         this.valmis = other.getValmis();
         this.kaannettava = other.getKaannettava();
+        if (this instanceof TekstiKappale && other instanceof TekstiKappale) {
+            TekstiKappale tk = (TekstiKappale) this;
+            TekstiKappale otherTk = (TekstiKappale) other;
+            tk.setLiite(otherTk.isLiite());
+        }
     }
 
 }
+
