@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.*;
 

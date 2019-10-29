@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.LiitteetNavigable;
 import fi.vm.sade.eperusteet.dto.peruste.Navigable;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
@@ -69,7 +70,8 @@ public class PerusteenOsaViite implements
         ReferenceableEntity,
         Serializable,
         Copyable<PerusteenOsaViite>,
-        Navigable {
+        Navigable,
+        LiitteetNavigable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -220,6 +222,29 @@ public class PerusteenOsaViite implements
 
     @Override
     public NavigationNodeDto constructNavigation(DtoMapper mapper) {
+        // Ohitetaan jos tekstikappale liite
+        PerusteenOsa po = this.getPerusteenOsa();
+        if (po instanceof TekstiKappale) {
+            TekstiKappale tk = (TekstiKappale) po;
+            if (tk.isLiite()) {
+                return null;
+            }
+        }
+
+        return NavigationNodeDto
+                .of(NavigationType.viite, this.getPerusteenOsa() != null
+                                ? mapper.map(
+                        this.getPerusteenOsa().getNimi(),
+                        LokalisoituTekstiDto.class)
+                                : null,
+                        getId())
+                .addAll(getLapset().stream()
+                    .map(node -> node.constructNavigation(mapper))
+                    .collect(Collectors.toList()));
+    }
+
+    @Override
+    public NavigationNodeDto constructLiitteetNavigation(DtoMapper mapper) {
         NavigationNodeDto navigation = NavigationNodeDto
                 .of(NavigationType.viite, this.getPerusteenOsa() != null
                                 ? mapper.map(
@@ -235,11 +260,14 @@ public class PerusteenOsaViite implements
             if (tk.isLiite()) {
                 navigation.meta("liite", true);
             }
+            else {
+                return null;
+            }
         }
 
         return navigation
                 .addAll(getLapset().stream()
-                    .map(node -> node.constructNavigation(mapper))
-                    .collect(Collectors.toList()));
+                        .map(node -> node.constructLiitteetNavigation(mapper))
+                        .collect(Collectors.toList()));
     }
 }
