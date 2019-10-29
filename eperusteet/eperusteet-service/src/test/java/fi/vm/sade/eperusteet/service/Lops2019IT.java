@@ -136,6 +136,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
 
         Assert.notNull(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen(),
                 "Perusteen sisällön laaja-alainen osaaminen puuttuu");
+        assertThat(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset()).hasSize(6);
     }
 
     private Peruste updatePeruste(final Peruste peruste, final PerusteKaikkiDto uusi) {
