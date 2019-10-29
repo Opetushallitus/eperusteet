@@ -94,7 +94,6 @@ public class Lops2019ServiceImpl implements Lops2019Service {
     public Lops2019LaajaAlainenOsaaminenKokonaisuusDto getLaajaAlainenOsaaminenKokonaisuus(final Long perusteId) {
         final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         final Lops2019LaajaAlainenOsaaminenKokonaisuus kokonaisuus = sisalto.getLaajaAlainenOsaaminen();
-
         return mapper.map(kokonaisuus, Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
     }
 

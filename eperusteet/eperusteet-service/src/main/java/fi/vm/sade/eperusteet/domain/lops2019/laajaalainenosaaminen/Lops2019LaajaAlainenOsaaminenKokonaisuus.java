@@ -7,9 +7,7 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -30,9 +28,9 @@ public class Lops2019LaajaAlainenOsaaminenKokonaisuus implements Copyable<Lops20
     @JoinTable(name = "yl_lops2019_lao_kokonaisuus_lao",
             joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_kokonaisuus_id"),
             inverseJoinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"))
-    private List<Lops2019LaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new ArrayList<>();
+    private Set<Lops2019LaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new HashSet<>();
 
-    public void setLaajaAlaisetOsaamiset(List<Lops2019LaajaAlainenOsaaminen> laajaAlaiset) {
+    public void setLaajaAlaisetOsaamiset(Collection<Lops2019LaajaAlainenOsaaminen> laajaAlaiset) {
         this.laajaAlaisetOsaamiset.clear();
         if (laajaAlaiset != null) {
             this.laajaAlaisetOsaamiset.addAll(laajaAlaiset);
