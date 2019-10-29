@@ -22,7 +22,6 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.Reference;
-import fi.vm.sade.eperusteet.dto.peruste.LiitteetNavigable;
 import fi.vm.sade.eperusteet.dto.peruste.Navigable;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
@@ -30,7 +29,6 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.Getter;
 import lombok.Setter;
-import ma.glasnost.orika.Mapper;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -39,9 +37,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -70,8 +67,7 @@ public class PerusteenOsaViite implements
         ReferenceableEntity,
         Serializable,
         Copyable<PerusteenOsaViite>,
-        Navigable,
-        LiitteetNavigable {
+        Navigable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -222,17 +218,17 @@ public class PerusteenOsaViite implements
 
     @Override
     public NavigationNodeDto constructNavigation(DtoMapper mapper) {
-        // Ohitetaan jos tekstikappale liite
+        NavigationType type = NavigationType.viite;
         PerusteenOsa po = this.getPerusteenOsa();
         if (po instanceof TekstiKappale) {
             TekstiKappale tk = (TekstiKappale) po;
             if (tk.isLiite()) {
-                return null;
+                type = NavigationType.liite;
             }
         }
 
         return NavigationNodeDto
-                .of(NavigationType.viite, this.getPerusteenOsa() != null
+                .of(type, this.getPerusteenOsa() != null
                                 ? mapper.map(
                         this.getPerusteenOsa().getNimi(),
                         LokalisoituTekstiDto.class)
@@ -240,9 +236,11 @@ public class PerusteenOsaViite implements
                         getId())
                 .addAll(getLapset().stream()
                     .map(node -> node.constructNavigation(mapper))
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList()));
     }
 
+    /*
     @Override
     public NavigationNodeDto constructLiitteetNavigation(DtoMapper mapper) {
         NavigationNodeDto navigation = NavigationNodeDto
@@ -268,6 +266,8 @@ public class PerusteenOsaViite implements
         return navigation
                 .addAll(getLapset().stream()
                         .map(node -> node.constructLiitteetNavigation(mapper))
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
     }
+    */
 }
