@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.*;
@@ -19,12 +18,19 @@ public class NavigationNodeDto {
     private NavigationType type;
     private Map<String, Object> meta = new HashMap<>();
     private List<NavigationNodeDto> children = new ArrayList<>();
+    private boolean liite = false;
 
     static public NavigationNodeDto of(NavigationType type, LokalisoituTekstiDto label, Long id) {
         NavigationNodeDto result = new NavigationNodeDto();
         result.setType(type);
         result.setLabel(label);
         result.setId(id);
+        return result;
+    }
+
+    static public NavigationNodeDto of(NavigationType type, LokalisoituTekstiDto label, Long id, boolean liite) {
+        NavigationNodeDto result = NavigationNodeDto.of(type, label, id);
+        result.setLiite(liite);
         return result;
     }
 
