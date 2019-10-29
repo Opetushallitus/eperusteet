@@ -23,6 +23,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -47,6 +48,11 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi osaamisala;
+
+    @Getter
+    @Setter
+    @NotNull
+    private boolean liite = false;
 
     public TekstiKappale() {
     }
@@ -89,6 +95,8 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
             TekstiKappale that = (TekstiKappale)other;
             result = super.structureEquals(that);
             result &= getOsaamisala() == null || Objects.equals(getOsaamisala(), that.getOsaamisala());
+            // Sallitaan liitetiedon muutos julkaistulle perusteelle
+            // result &= Objects.equals(isLiite(), that.isLiite());
             result &= getTeksti() == null || refXnor(getTeksti(), that.getTeksti());
          }
         return result;

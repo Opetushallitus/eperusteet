@@ -220,13 +220,19 @@ public class PerusteenOsaViite implements
 
     @Override
     public NavigationNodeDto constructNavigation(DtoMapper mapper) {
+        boolean liite = false;
+        PerusteenOsa po = this.getPerusteenOsa();
+        if (po instanceof TekstiKappale) {
+            TekstiKappale tk = (TekstiKappale) po;
+            liite = tk.isLiite();
+        }
         return NavigationNodeDto
                 .of(NavigationType.viite, this.getPerusteenOsa() != null
                                 ? mapper.map(
                                         this.getPerusteenOsa().getNimi(),
                                         LokalisoituTekstiDto.class)
                                 : null,
-                        getId())
+                        getId(), liite)
                 .addAll(getLapset().stream()
                     .map(node -> node.constructNavigation(mapper))
                     .collect(Collectors.toList()));
