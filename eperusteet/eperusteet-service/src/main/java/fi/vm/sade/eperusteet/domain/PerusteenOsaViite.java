@@ -239,35 +239,4 @@ public class PerusteenOsaViite implements
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList()));
     }
-
-    /*
-    @Override
-    public NavigationNodeDto constructLiitteetNavigation(DtoMapper mapper) {
-        NavigationNodeDto navigation = NavigationNodeDto
-                .of(NavigationType.viite, this.getPerusteenOsa() != null
-                                ? mapper.map(
-                        this.getPerusteenOsa().getNimi(),
-                        LokalisoituTekstiDto.class)
-                                : null,
-                        getId());
-
-        // Lisätään liitetieto jos asetettu
-        PerusteenOsa po = this.getPerusteenOsa();
-        if (po instanceof TekstiKappale) {
-            TekstiKappale tk = (TekstiKappale) po;
-            if (tk.isLiite()) {
-                navigation.meta("liite", true);
-            }
-            else {
-                return null;
-            }
-        }
-
-        return navigation
-                .addAll(getLapset().stream()
-                        .map(node -> node.constructLiitteetNavigation(mapper))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList()));
-    }
-    */
 }
