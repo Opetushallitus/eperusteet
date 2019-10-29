@@ -60,7 +60,7 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId) {
         NavigationNodeDto root = NavigationNodeDto.of(NavigationType.root)
-            .addAll(dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId))
+            .addAll(dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId).getChildren())
             .add(laajaAlaiset(perusteId))
             .add(oppiaineet(perusteId));
         return root;
