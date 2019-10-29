@@ -115,6 +115,14 @@
                      muokkauskentta-raamit>
                     <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
                 </div>
+                <div ng-if="editEnabled">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="editableTekstikappale.liite">
+                            <span ng-bind="'liite-tekstikappale' | kaanna"></span>
+                        </label>
+                    </div>
+                </div>
                 <valmiskaannos ng-if="editEnabled" is-editing="editEnabled"
                                ng-model="editableTekstikappale"></valmiskaannos>
             </div>
