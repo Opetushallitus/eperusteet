@@ -28,7 +28,6 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.Getter;
 import lombok.Setter;
-import ma.glasnost.orika.Mapper;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -37,9 +36,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -218,15 +216,25 @@ public class PerusteenOsaViite implements
 
 //    @Override
     public NavigationNodeDto constructNavigation(DtoMapper mapper) {
+        NavigationType type = NavigationType.viite;
+        PerusteenOsa po = this.getPerusteenOsa();
+        if (po instanceof TekstiKappale) {
+            TekstiKappale tk = (TekstiKappale) po;
+            if (tk.isLiite()) {
+                type = NavigationType.liite;
+            }
+        }
+
         return NavigationNodeDto
-                .of(NavigationType.viite, this.getPerusteenOsa() != null
+                .of(type, this.getPerusteenOsa() != null
                                 ? mapper.map(
-                                        this.getPerusteenOsa().getNimi(),
-                                        LokalisoituTekstiDto.class)
+                        this.getPerusteenOsa().getNimi(),
+                        LokalisoituTekstiDto.class)
                                 : null,
                         getId())
                 .addAll(getLapset().stream()
                     .map(node -> node.constructNavigation(mapper))
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList()));
     }
 }

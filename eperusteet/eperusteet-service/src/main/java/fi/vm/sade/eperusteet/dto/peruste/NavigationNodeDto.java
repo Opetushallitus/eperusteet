@@ -1,7 +1,5 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.*;
 
@@ -33,7 +31,6 @@ public class NavigationNodeDto {
     }
 
     public NavigationNodeDto meta(String key, Object value) {
-        ObjectMapper mapper = new ObjectMapper();
         meta.put(key, value);
         return this;
     }

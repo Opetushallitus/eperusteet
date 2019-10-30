@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkinnonOsaQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektinPerusteenosaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
@@ -79,6 +80,9 @@ public interface PerusteenOsaService {
 
     @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'LUKU')")
     PerusteenOsaDto.Laaja getByViite(final Long viiteId);
+
+    @PostAuthorize("hasPermission(returnObject.perusteenOsa.id, 'perusteenosa', 'LUKU')")
+    PerusteenOsaViiteDto.Laaja getByViiteDeep(final Long viiteId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     List<Revision> getVersiot(@P("id") Long id);

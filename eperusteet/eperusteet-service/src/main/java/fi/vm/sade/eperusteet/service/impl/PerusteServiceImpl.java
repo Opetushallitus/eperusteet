@@ -1980,8 +1980,38 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Cacheable("peruste-navigation")
     public NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm) {
-        return dispatcher.get(perusteId, NavigationBuilder.class)
+        NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilder.class)
                 .buildNavigation(perusteId);
+        return siirraLiitteetLoppuun(navigationNodeDto);
+    }
+
+    private NavigationNodeDto siirraLiitteetLoppuun(NavigationNodeDto navigationNodeDto) {
+        Stack<NavigationNodeDto> stack = new Stack<>();
+        stack.push(navigationNodeDto);
+
+        List<NavigationNodeDto> liitteet = new ArrayList<>();
+
+        while (!stack.empty()) {
+            NavigationNodeDto head = stack.pop();
+
+            // Kerätään liitteet talteen
+            liitteet.addAll(head.getChildren().stream()
+                    .filter(child -> Objects.equals(child.getType(), NavigationType.liite))
+                    .collect(Collectors.toList()));
+
+            // Poistetaan liitteet
+            head.setChildren(head.getChildren().stream()
+                .filter(child -> !Objects.equals(child.getType(), NavigationType.liite))
+                .collect(Collectors.toList()));
+
+            // Käydään lävitse myös lapset
+            stack.addAll(head.getChildren());
+        }
+
+        // Lisätään liitteet loppuun
+        navigationNodeDto.getChildren().addAll(liitteet);
+
+        return navigationNodeDto;
     }
 
     @Override

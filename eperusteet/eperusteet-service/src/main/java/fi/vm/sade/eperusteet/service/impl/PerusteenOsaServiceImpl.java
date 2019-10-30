@@ -52,7 +52,6 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -130,6 +129,16 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
         return mapper.map(viite.getPerusteenOsa(), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteenOsaViiteDto.Laaja getByViiteDeep(Long viiteId) {
+        PerusteenOsaViite viite = perusteenOsaViiteRepository.findOne(viiteId);
+        if (viite == null || viite.getPerusteenOsa() == null) {
+            throw new BusinessRuleViolationException("Virheellinen viiteId");
+        }
+        return mapper.map(viite, PerusteenOsaViiteDto.Laaja.class);
     }
 
     @Override

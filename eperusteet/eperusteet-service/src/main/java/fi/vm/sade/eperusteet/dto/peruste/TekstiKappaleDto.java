@@ -36,6 +36,7 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto teksti;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private KoodiDto osaamisala;
+    private Boolean liite;
 
     public TekstiKappaleDto() {
     }

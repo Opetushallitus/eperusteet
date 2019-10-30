@@ -19,6 +19,7 @@ import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektinPerusteenosaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
@@ -97,6 +98,17 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<PerusteenOsaDto.Laaja> getPerusteenOsatByViite(@PathVariable("viiteId") final Long viiteId) {
         PerusteenOsaDto.Laaja t = service.getByViite(viiteId);
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/viite/{viiteId}/sisalto", method = GET)
+    public ResponseEntity<PerusteenOsaViiteDto.Laaja> getPerusteenOsatByViiteSisalto(
+            @PathVariable("viiteId") final Long viiteId
+    ) {
+        PerusteenOsaViiteDto.Laaja t = service.getByViiteDeep(viiteId);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

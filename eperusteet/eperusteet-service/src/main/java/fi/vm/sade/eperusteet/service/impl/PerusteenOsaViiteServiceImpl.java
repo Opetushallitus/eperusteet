@@ -43,7 +43,6 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,6 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.google.common.base.Functions;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
@@ -126,7 +125,7 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId) {
         return NavigationNodeDto.of(NavigationType.root)
-            .addAll(dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId))
+            .addAll(dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId).getChildren())
             .add(laajaAlaiset(perusteId))
             .add(oppiaineet(perusteId));
     }
