@@ -6,13 +6,14 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 public class Lops2019SisaltoDto {
     private Lops2019LaajaAlainenOsaaminenKokonaisuusDto laajaAlainenOsaaminen;
-    private List<Lops2019OppiaineKaikkiDto> oppiaineet;
+    private List<Lops2019OppiaineKaikkiDto> oppiaineet = new ArrayList<>();
     private PerusteenOsaViiteDto.Laaja sisalto;
 }
 

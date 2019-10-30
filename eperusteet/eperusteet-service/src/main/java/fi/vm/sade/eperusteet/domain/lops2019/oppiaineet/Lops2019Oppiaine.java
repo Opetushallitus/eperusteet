@@ -13,6 +13,7 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -146,21 +147,12 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         result &= refXnor(this.getModuulit(), other.getModuulit());
         result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
         result &= refXnor(this.getOppimaarat(), other.getOppimaarat());
+        result &= PerusteUtils.nestedStructureEquals(this.getModuulit(), other.getModuulit());
+        result &= PerusteUtils.nestedStructureEquals(this.getOppimaarat(), other.getOppimaarat());
 
         // tavoitteet
         if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
             result &= this.getTavoitteet().structureEquals(other.getTavoitteet());
-
-        }
-
-        // moduulit
-        if (this.getModuulit() != null && other.getModuulit() != null) {
-            result &= this.getModuulit().size() == other.getModuulit().size();
-        }
-
-        // oppimaarat
-        if (this.getOppimaarat() != null && other.getOppimaarat() != null) {
-            result &= this.getOppimaarat().size() == other.getOppimaarat().size();
         }
 
         return result;

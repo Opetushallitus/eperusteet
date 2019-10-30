@@ -45,13 +45,14 @@ import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @Transactional
 @DirtiesContext
-public class Lops2019IT extends AbstractPerusteprojektiTest {
+public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -60,7 +61,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
     private DtoMapper mapper;
 
     @Autowired
-    private PerusteDispatcher importService;
+    private PerusteDispatcher dispatcher;
 
     @Autowired
     private PerusteRepository repository;
@@ -223,6 +224,7 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
         this.checkLaajaOppiaine(luotuOppiaine.getId());
     }
 
+
     @Test
     @Ignore("oppiaineRepository.getRevisions(oaId) ei palauta revisioita testeissä")
     @Rollback
@@ -254,6 +256,17 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
         this.checkLaajaOppiaine(oppiaineet.get(0).getId());
     }
 
+    private Lops2019Oppiaine mapOppiaine(Lops2019OppiaineKaikkiDto oa) {
+        Lops2019Oppiaine result = mapper.map(oa, Lops2019Oppiaine.class);
+        result.setOppimaarat(oa.getOppimaarat().stream()
+                .map(this::mapOppiaine)
+                .collect(Collectors.toList()));
+        result.setModuulit(oa.getModuulit().stream()
+                .map(moduuli -> mapper.map(moduuli, Lops2019Moduuli.class))
+                .collect(Collectors.toList()));
+        return result;
+    }
+
     @Test
     public void testProjektinTuonti() throws IOException {
         final PerusteKaikkiDto perusteData = this.readPerusteFile();
@@ -262,9 +275,12 @@ public class Lops2019IT extends AbstractPerusteprojektiTest {
                 .koulutustyyppi(KoulutusTyyppi.LUKIOKOULUTUS.toString())
                 .toteutus(KoulutustyyppiToteutus.LOPS2019)
                 .build(), perusteData);
+        alkuperainen.getLops2019Sisalto().setOppiaineet(perusteData.getLops2019Sisalto().getOppiaineet().stream()
+                .map(this::mapOppiaine)
+                .collect(Collectors.toList()));
         idto.getProjekti().setNimi("projekti");
         idto.getProjekti().setDiaarinumero("1234");
-        final PerusteprojektiDto lisatty = importService.get(idto.getPeruste(), PerusteImport.class)
+        final PerusteprojektiDto lisatty = dispatcher.get(idto.getPeruste(), PerusteImport.class)
                 .tuoPerusteprojekti(idto);
         assertThat(lisatty)
                 .extracting("nimi", "diaarinumero")

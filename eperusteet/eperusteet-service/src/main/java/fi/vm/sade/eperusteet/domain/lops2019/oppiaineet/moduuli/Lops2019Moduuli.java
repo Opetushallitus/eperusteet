@@ -34,7 +34,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Audited
 @Table(name = "yl_lops2019_moduuli")
 public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
-        implements Nimetty, Koodillinen, Copyable<Lops2019Moduuli>, Navigable {
+        implements Nimetty, Koodillinen, Copyable<Lops2019Moduuli>, StructurallyComparable<Lops2019Moduuli>, Navigable {
 
     @Getter
     @Setter
@@ -110,7 +110,7 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
         Lops2019Moduuli result = new Lops2019Moduuli();
         result.setPakollinen(this.getPakollinen());
         result.setLaajuus(this.getLaajuus());
-//        result.setKoodi(this.getKoodi());
+        result.setKoodi(this.getKoodi());
         result.setNimi(TekstiPalanen.of(this.getNimi()));
         result.setKuvaus(TekstiPalanen.of(this.getKuvaus()));
 
@@ -127,8 +127,9 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
         return result;
     }
 
+    @Override
     public boolean structureEquals(Lops2019Moduuli other) {
-        boolean result = Objects.equals(this.getId(), other.getId());
+        boolean result = true;
 
         result &= refXnor(this.getNimi(), other.getNimi());
         result &= refXnor(this.getKuvaus(), other.getKuvaus());
@@ -137,7 +138,6 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
         result &= Objects.equals(this.getKoodi(), other.getKoodi());
         result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
         result &= refXnor(this.getSisallot(), other.getSisallot());
-        result &= identityEquals(this.getOppiaine(), other.getOppiaine());
 
         if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
             result &= this.getTavoitteet().structureEquals(other.getTavoitteet());

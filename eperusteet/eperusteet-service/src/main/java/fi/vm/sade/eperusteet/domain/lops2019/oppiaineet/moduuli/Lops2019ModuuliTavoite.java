@@ -58,7 +58,7 @@ public class Lops2019ModuuliTavoite implements Copyable<Lops2019ModuuliTavoite> 
     }
 
     public boolean structureEquals(Lops2019ModuuliTavoite other) {
-        boolean result = Objects.equals(this.getId(), other.getId());
+        boolean result = true;
         result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
 
         if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
