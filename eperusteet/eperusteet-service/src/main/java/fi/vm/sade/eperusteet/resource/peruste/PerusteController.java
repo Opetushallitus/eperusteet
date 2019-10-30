@@ -153,6 +153,7 @@ public class PerusteController {
         return service.updateFull(id, perusteDto);
     }
 
+    @InternalApi
     @RequestMapping(value = "/{perusteId}/navigaatio", method = GET)
     public NavigationNodeDto getNavigation(
             @PathVariable final Long perusteId
