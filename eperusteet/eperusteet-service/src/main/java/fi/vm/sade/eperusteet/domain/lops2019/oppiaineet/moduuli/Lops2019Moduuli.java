@@ -7,7 +7,6 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
-import fi.vm.sade.eperusteet.dto.peruste.Navigable;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -34,7 +33,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Audited
 @Table(name = "yl_lops2019_moduuli")
 public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
-        implements Nimetty, Koodillinen, Copyable<Lops2019Moduuli>, StructurallyComparable<Lops2019Moduuli>, Navigable {
+        implements Nimetty, Koodillinen, Copyable<Lops2019Moduuli>, StructurallyComparable<Lops2019Moduuli> {
 
     @Getter
     @Setter
@@ -162,12 +161,4 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
         return result;
     }
 
-    @Override
-    public NavigationNodeDto constructNavigation(DtoMapper mapper) {
-        return NavigationNodeDto.of(
-                NavigationType.moduuli,
-                mapper.map(getNimi(), LokalisoituTekstiDto.class),
-                getId())
-            .meta("koodi", mapper.map(getKoodi(), KoodiDto.class));
-    }
 }

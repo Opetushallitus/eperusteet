@@ -7,21 +7,12 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
-import fi.vm.sade.eperusteet.dto.peruste.Navigable;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -32,7 +23,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Audited
 @Table(name = "yl_lops2019_laaja_alainen_osaaminen")
 public class Lops2019LaajaAlainenOsaaminen extends AbstractAuditedReferenceableEntity
-        implements Copyable<Lops2019LaajaAlainenOsaaminen>, Navigable {
+        implements Copyable<Lops2019LaajaAlainenOsaaminen> {
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -73,12 +64,4 @@ public class Lops2019LaajaAlainenOsaaminen extends AbstractAuditedReferenceableE
         return result;
     }
 
-    @Override
-    public NavigationNodeDto constructNavigation(DtoMapper mapper) {
-        return NavigationNodeDto.of(
-                NavigationType.laajaalainen,
-                mapper.map(getNimi(), LokalisoituTekstiDto.class),
-                getId())
-            .meta("koodi", mapper.map(getKoodi(), KoodiDto.class));
-    }
 }
