@@ -444,9 +444,8 @@
         "pakollinen": true,
         "laajuus": 2,
         "koodi": {
-          "uri": "moduulit_bi1",
+          "uri": "moduulikoodistolops2021_bi1",
           "arvo": "BI1",
-          "koodisto": "moduulit",
           "nimi": {
             "fi": "Elämä ja evoluutio"
           }
@@ -497,9 +496,8 @@
         "pakollinen": true,
         "laajuus": 1,
         "koodi": {
-          "uri": "moduulit_bi2_1",
+          "uri": "moduulikoodistolops2021_bi2_1",
           "arvo": "BI2.1",
-          "koodisto": "moduulit",
           "nimi": {
             "fi": "Ekologian perusteet"
           }
@@ -550,9 +548,8 @@
         "pakollinen": true,
         "laajuus": 1,
         "koodi": {
-          "uri": "moduulit_bi2_2",
+          "uri": "moduulikoodistolops2021_bi2_2",
           "arvo": "BI2.2",
-          "koodisto": "moduulit",
           "nimi": {
             "fi": "Elämä ja evoluutio"
           }
@@ -603,9 +600,8 @@
         "pakollinen": false,
         "laajuus": 2,
         "koodi": {
-          "uri": "moduulit_bi3",
+          "uri": "moduulikoodistolops2021_bi3",
           "arvo": "BI3",
-          "koodisto": "moduulit",
           "nimi": {
             "fi": "Elämä ja evoluutio"
           }
@@ -656,9 +652,8 @@
         "pakollinen": false,
         "laajuus": 2,
         "koodi": {
-          "uri": "moduulit_bi4",
+          "uri": "moduulikoodistolops2021_bi4",
           "arvo": "BI4",
-          "koodisto": "moduulit",
           "nimi": {
             "fi": "Elämä ja evoluutio"
           }
@@ -709,9 +704,8 @@
         "pakollinen": false,
         "laajuus": 2,
         "koodi": {
-          "uri": "moduulit_bi5",
+          "uri": "moduulikoodistolops2021_bi5",
           "arvo": "BI5",
-          "koodisto": "moduulit",
           "nimi": {
             "fi": "Elämä ja evoluutio"
           }
@@ -800,8 +794,7 @@
         },
         "koodi": {
           "uri": "oppiaineetjaoppimaaratlops2021_may",
-          "arvo": "MAY",
-          "koodisto": "oppiaineet"
+          "arvo": "MAY"
         },
         "moduulit": [{
           "id": 100016,
@@ -811,9 +804,8 @@
           "pakollinen": true,
           "laajuus": 2,
           "koodi": {
-            "uri": "moduulit_may1",
-            "arvo": "MAY1",
-            "koodisto": "moduulit"
+            "uri": "moduulikoodistolops2021_may1",
+            "arvo": "MAY1"
           },
           "tavoitteet": {
             "kohde": {
@@ -845,8 +837,7 @@
         },
         "koodi": {
           "uri": "oppiaineetjaoppimaaratlops2021_mab",
-          "arvo": "MAB",
-          "koodisto": "oppiaineet"
+          "arvo": "MAB"
         },
         "moduulit": [{
           "id": 100002,
@@ -856,9 +847,8 @@
           "pakollinen": true,
           "laajuus": 2,
           "koodi": {
-            "uri": "moduulit_mab2",
+            "uri": "moduulikoodistolops2021_mab2",
             "arvo": "MAB2",
-            "koodisto": "moduulit",
             "nimi": {
               "fi": "Algebralliset funktiot ja yhtälöt"
             }
@@ -894,7 +884,6 @@
         "koodi": {
           "uri": "oppiaineetjaoppimaaratlops2021_maa",
           "arvo": "MAA",
-          "koodisto": "oppiaineet",
           "nimi": {
             "fi": "Matematiikkan pitkä oppimäärä"
           }
@@ -907,9 +896,8 @@
           "pakollinen": true,
           "laajuus": 3,
           "koodi": {
-            "uri": "moduulit_maa2",
+            "uri": "moduulikoodistolops2021_maa2",
             "arvo": "MAA2",
-            "koodisto": "moduulit",
             "nimi": {
               "fi": "Algebralliset funktiot ja yhtälöt"
             }
@@ -944,9 +932,8 @@
           "pakollinen": true,
           "laajuus": 3,
           "koodi": {
-            "uri": "moduulit_maa3",
-            "arvo": "MAA3",
-            "koodisto": "moduulit"
+            "uri": "moduulikoodistolops2021_maa3",
+            "arvo": "MAA3"
           },
           "tavoitteet": {
             "kohde": {
@@ -978,9 +965,8 @@
           "pakollinen": true,
           "laajuus": 3,
           "koodi": {
-            "uri": "moduulit_maa4",
-            "arvo": "MAA4",
-            "koodisto": "moduulit"
+            "uri": "moduulikoodistolops2021_maa4",
+            "arvo": "MAA4"
           },
           "tavoitteet": {
             "kohde": {
@@ -1012,9 +998,8 @@
           "pakollinen": true,
           "laajuus": 2,
           "koodi": {
-            "uri": "moduulit_maa5",
-            "arvo": "MAA5",
-            "koodisto": "moduulit"
+            "uri": "moduulikoodistolops2021_maa5",
+            "arvo": "MAA5"
           },
           "tavoitteet": {
             "kohde": {
@@ -1046,9 +1031,8 @@
           "pakollinen": true,
           "laajuus": 2,
           "koodi": {
-            "uri": "moduulit_maa6",
-            "arvo": "MAA6",
-            "koodisto": "moduulit"
+            "uri": "moduulikoodistolops2021_maa6",
+            "arvo": "MAA6"
           },
           "tavoitteet": {
             "kohde": {
@@ -1080,9 +1064,8 @@
           "pakollinen": true,
           "laajuus": 2,
           "koodi": {
-            "uri": "moduulit_maa7",
-            "arvo": "MAA7",
-            "koodisto": "moduulit"
+            "uri": "moduulikoodistolops2021_maa7",
+            "arvo": "MAA7"
           },
           "tavoitteet": {
             "kohde": {
@@ -1114,9 +1097,8 @@
           "pakollinen": true,
           "laajuus": 2,
           "koodi": {
-            "uri": "moduulit_maa8",
-            "arvo": "MAA8",
-            "koodisto": "moduulit"
+            "uri": "moduulikoodistolops2021_maa8",
+            "arvo": "MAA8"
           },
           "tavoitteet": {
             "kohde": {
@@ -1148,9 +1130,8 @@
           "pakollinen": true,
           "laajuus": 1,
           "koodi": {
-            "uri": "moduulit_maa9",
-            "arvo": "MAA9",
-            "koodisto": "moduulit"
+            "uri": "moduulikoodistolops2021_maa9",
+            "arvo": "MAA9"
           },
           "tavoitteet": {
             "kohde": {
@@ -1182,9 +1163,8 @@
           "pakollinen": false,
           "laajuus": 2,
           "koodi": {
-            "uri": "moduulit_maa10",
+            "uri": "moduulikoodistolops2021_maa10",
             "arvo": "MAA10",
-            "koodisto": "moduulit",
             "nimi": {
               "fi": "3D-grafiikka"
             }
@@ -1225,9 +1205,8 @@
           "pakollinen": false,
           "laajuus": 2,
           "koodi": {
-            "uri": "moduulit_maa11",
+            "uri": "moduulikoodistolops2021_maa11",
             "arvo": "MAA11",
-            "koodisto": "moduulit",
             "nimi": {
               "fi": "3D-grafiikka"
             }
@@ -1268,9 +1247,8 @@
           "pakollinen": false,
           "laajuus": 2,
           "koodi": {
-            "uri": "moduulit_maa12",
+            "uri": "moduulikoodistolops2021_maa12",
             "arvo": "MAA12",
-            "koodisto": "moduulit",
             "nimi": {
               "fi": "3D-grafiikka"
             }

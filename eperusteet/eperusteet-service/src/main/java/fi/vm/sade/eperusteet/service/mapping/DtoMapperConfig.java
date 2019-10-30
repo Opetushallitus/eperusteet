@@ -40,6 +40,7 @@ import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -315,6 +316,10 @@ public class DtoMapperConfig {
 
         factory.classMap(LukiokurssiMuokkausDto.class, Lukiokurssi.class)
                 .exclude("oppiaineet")
+                .byDefault()
+                .register();
+
+        factory.classMap(Lops2019Oppiaine.class, Lops2019OppiaineBaseDto.class)
                 .byDefault()
                 .register();
 

@@ -22,7 +22,6 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.Reference;
-import fi.vm.sade.eperusteet.dto.peruste.Navigable;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -66,8 +65,7 @@ import java.util.stream.Collectors;
 public class PerusteenOsaViite implements
         ReferenceableEntity,
         Serializable,
-        Copyable<PerusteenOsaViite>,
-        Navigable {
+        Copyable<PerusteenOsaViite> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -216,7 +214,7 @@ public class PerusteenOsaViite implements
         return pov;
     }
 
-    @Override
+//    @Override
     public NavigationNodeDto constructNavigation(DtoMapper mapper) {
         NavigationType type = NavigationType.viite;
         PerusteenOsa po = this.getPerusteenOsa();

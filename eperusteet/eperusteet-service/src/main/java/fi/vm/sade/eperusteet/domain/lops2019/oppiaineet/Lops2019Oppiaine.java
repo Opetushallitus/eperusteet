@@ -7,12 +7,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
-import fi.vm.sade.eperusteet.dto.peruste.Navigable;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -35,7 +30,6 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         Koodillinen,
         StructurallyComparable<Lops2019Oppiaine>,
         Nimetty,
-        Navigable,
         Copyable<Lops2019Oppiaine> {
 
     @Getter
@@ -146,21 +140,12 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         result &= refXnor(this.getModuulit(), other.getModuulit());
         result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
         result &= refXnor(this.getOppimaarat(), other.getOppimaarat());
+        result &= PerusteUtils.nestedStructureEquals(this.getModuulit(), other.getModuulit());
+        result &= PerusteUtils.nestedStructureEquals(this.getOppimaarat(), other.getOppimaarat());
 
         // tavoitteet
         if (this.getTavoitteet() != null && other.getTavoitteet() != null) {
             result &= this.getTavoitteet().structureEquals(other.getTavoitteet());
-
-        }
-
-        // moduulit
-        if (this.getModuulit() != null && other.getModuulit() != null) {
-            result &= this.getModuulit().size() == other.getModuulit().size();
-        }
-
-        // oppimaarat
-        if (this.getOppimaarat() != null && other.getOppimaarat() != null) {
-            result &= this.getOppimaarat().size() == other.getOppimaarat().size();
         }
 
         return result;
@@ -199,19 +184,6 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         }
 
         return result;
-    }
-
-    @Override
-    public NavigationNodeDto constructNavigation(DtoMapper mapper) {
-        return NavigationNodeDto
-            .of(NavigationType.oppiaine, mapper.map(this.getNimi(), LokalisoituTekstiDto.class), this.getId())
-                .meta("koodi", mapper.map(getKoodi(), KoodiDto.class))
-                .add(NavigationNodeDto.of(NavigationType.oppimaarat)
-                    .addAll(getOppimaarat().stream()
-                        .map(node -> node.constructNavigation(mapper))))
-                .add(NavigationNodeDto.of(NavigationType.moduulit)
-                    .addAll(getModuulit().stream()
-                        .map(node -> node.constructNavigation(mapper))));
     }
 
 }

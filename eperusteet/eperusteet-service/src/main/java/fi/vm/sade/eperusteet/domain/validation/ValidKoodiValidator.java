@@ -18,7 +18,8 @@ public class ValidKoodiValidator implements ConstraintValidator<ValidKoodisto, K
     @Override
     public boolean isValid(Koodi koodi, ConstraintValidatorContext context) {
         if (koodi != null && !ObjectUtils.isEmpty(koodisto)) {
-            return Objects.equals(koodisto, koodi.getKoodisto());
+            boolean isValid = Objects.equals(koodisto, koodi.getKoodisto());
+            return isValid;
         }
         else {
             return true;
