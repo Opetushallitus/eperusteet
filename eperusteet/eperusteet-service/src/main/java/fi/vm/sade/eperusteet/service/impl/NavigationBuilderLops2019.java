@@ -86,7 +86,8 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
                         NavigationType.moduuli,
                         mapper.map(m.getNimi(), LokalisoituTekstiDto.class),
                         m.getId())
-                    .meta("koodi", mapper.map(m.getKoodi(), KoodiDto.class))))));
+                    .meta("koodi", mapper.map(m.getKoodi(), KoodiDto.class))
+                    .meta("tyyppi", m.getPakollinen() != null && m.getPakollinen() ? "pakollinen" : "valinnainen" )))));
 
         return result;
     }
