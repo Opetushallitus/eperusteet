@@ -545,11 +545,14 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
             TutkinnonOsaTyyppi tyyppi = osa.getTyyppi();
             if (tyyppi == TutkinnonOsaTyyppi.NORMAALI) {
-                //addKoodit(docBase, osa);
                 addTavoitteet(docBase, osa);
-                addAmmattitaitovaatimukset(docBase, osa.getAmmattitaitovaatimuksetLista(), osa.getAmmattitaitovaatimukset());
-                addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());
+                addAmmattitaitovaatimukset(docBase,
+                        osa.getAmmattitaitovaatimukset2019(),
+                        osa.getAmmattitaitovaatimuksetLista(),
+                        osa.getAmmattitaitovaatimukset());
+                addGeneerinenArviointi(docBase, osa.getGeneerinenArviointiasteikko());
                 addArviointi(docBase, osa.getArviointi(), tyyppi);
+                addValmatelmaSisalto(docBase, osa.getValmaTelmaSisalto());
                 addAmmattitaidonOsoittamistavat(docBase, osa);
                 addVapaatTekstit(docBase, osa);
             } else if (TutkinnonOsaTyyppi.isTutke(tyyppi)) {
@@ -691,6 +694,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     private void addAmmattitaitovaatimukset(
             DokumenttiPeruste docBase,
+            Ammattitaitovaatimukset2019 ammattitaitovaatimukset2019,
             List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista,
             TekstiPalanen ammattitaitovaatimukset
     ) {
@@ -700,8 +704,59 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
 
         addTeksti(docBase, messages.translate("docgen.ammattitaitovaatimukset.title", docBase.getKieli()), "h5");
+
         if (StringUtils.isNotEmpty(ammattitaitovaatimuksetText)) {
             addTeksti(docBase, ammattitaitovaatimuksetText, "div");
+        }
+
+        {
+            TekstiPalanen kohde = ammattitaitovaatimukset2019.getKohde();
+            List<Ammattitaitovaatimus2019> vaatimukset = ammattitaitovaatimukset2019.getVaatimukset();
+            List<Ammattitaitovaatimus2019Kohdealue> kohdealueet = ammattitaitovaatimukset2019.getKohdealueet();
+
+            addTeksti(docBase, getTextString(docBase, kohde), "p");
+
+            Element listaEl = docBase.getDocument().createElement("ul");
+            docBase.getBodyElement().appendChild(listaEl);
+
+            vaatimukset.forEach(vaatimus -> {
+                Element vaatimusEl = docBase.getDocument().createElement("li");
+                String rivi = getTextString(docBase, vaatimus.getVaatimus());
+                if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
+                    rivi += " (" + vaatimus.getKoodi().getUri() + ")";
+                }
+                vaatimusEl.setTextContent(rivi);
+                listaEl.appendChild(vaatimusEl);
+            });
+
+            kohdealueet.forEach(alue -> {
+                Element alueEl = docBase.getDocument().createElement("li");
+
+                TekstiPalanen kuvaus = alue.getKuvaus();
+                if (kuvaus != null) {
+                    Element kuvausEl = docBase.getDocument().createElement("p");
+                    kuvausEl.setTextContent(getTextString(docBase, kuvaus));
+                    alueEl.appendChild(kuvausEl);
+                }
+
+                Element alueListaEl = docBase.getDocument().createElement("ul");
+
+                alue.getVaatimukset().forEach(vaatimus -> {
+                    Element vaatimusEl = docBase.getDocument().createElement("li");
+
+                    String rivi = getTextString(docBase, vaatimus.getVaatimus());
+                    if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
+                        rivi += " (" + vaatimus.getKoodi().getUri() + ")";
+                    }
+                    vaatimusEl.setTextContent(rivi);
+
+                    alueListaEl.appendChild(vaatimusEl);
+                });
+
+                alueEl.appendChild(alueListaEl);
+
+                listaEl.appendChild(alueEl);
+            });
         }
 
         ammattitaitovaatimuksetLista.forEach(ka -> {
@@ -832,7 +887,74 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         });
     }
 
-    private void addArviointi(DokumenttiPeruste docBase, Arviointi arviointi, TutkinnonOsaTyyppi tyyppi) {
+    private void addGeneerinenArviointi(DokumenttiPeruste docBase, GeneerinenArviointiasteikko geneerinenArviointiasteikko) {
+        if (geneerinenArviointiasteikko != null) {
+            addTeksti(docBase, messages.translate("docgen.geneerinen-arviointi.title", docBase.getKieli()), "h5");
+
+            TekstiPalanen nimi = geneerinenArviointiasteikko.getNimi();
+            TekstiPalanen kohde = geneerinenArviointiasteikko.getKohde();
+            Set<GeneerisenOsaamistasonKriteeri> osaamistasonKriteerit = geneerinenArviointiasteikko.getOsaamistasonKriteerit();
+
+            Element taulukko = docBase.getDocument().createElement("table");
+            taulukko.setAttribute("border", "1");
+            docBase.getBodyElement().appendChild(taulukko);
+            Element tbody = docBase.getDocument().createElement("tbody");
+            taulukko.appendChild(tbody);
+
+            // Nimi ja kohde
+            {
+                Element tr = docBase.getDocument().createElement("tr");
+                tr.setAttribute("bgcolor", "#EEEEEE");
+                tbody.appendChild(tr);
+
+                Element th = docBase.getDocument().createElement("th");
+                th.setAttribute("colspan", "4");
+                th.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, nimi)));
+                Element kohdeEl = docBase.getDocument().createElement("p");
+                kohdeEl.setTextContent(getTextString(docBase, kohde));
+                th.appendChild(kohdeEl);
+                tr.appendChild(th);
+            }
+
+            // Osaamistason kriteerit
+            {
+                osaamistasonKriteerit.stream()
+                        .filter(ok -> ok.getOsaamistaso() != null && !ObjectUtils.isEmpty(ok.getKriteerit()))
+                        .sorted(Comparator.comparing(k -> k.getOsaamistaso().getId()))
+                        .forEach(osaamistasonKriteeri -> {
+                            Element tr = docBase.getDocument().createElement("tr");
+                            tbody.appendChild(tr);
+
+                            Element kriteeriTaso = docBase.getDocument().createElement("td");
+                            kriteeriTaso.setAttribute("colspan", "1");
+                            kriteeriTaso.setTextContent(getTextString(docBase,
+                                    osaamistasonKriteeri.getOsaamistaso().getOtsikko()));
+                            tr.appendChild(kriteeriTaso);
+
+                            Element kriteeriKriteerit = docBase.getDocument().createElement("td");
+                            kriteeriKriteerit.setAttribute("colspan", "3");
+
+                            Element kriteeriLista = docBase.getDocument().createElement("ul");
+                            kriteeriKriteerit.appendChild(kriteeriLista);
+
+                            osaamistasonKriteeri.getKriteerit().forEach(kriteeriKriteeri -> {
+                                String kriteeriKriteeriText = getTextString(docBase, kriteeriKriteeri);
+                                if (StringUtils.isNotEmpty(kriteeriKriteeriText)) {
+                                    addTeksti(docBase, kriteeriKriteeriText, "li", kriteeriLista);
+                                }
+                            });
+                            kriteeriKriteerit.appendChild(kriteeriLista);
+                            tr.appendChild(kriteeriKriteerit);
+                        });
+            }
+        }
+    }
+
+    private void addArviointi(
+            DokumenttiPeruste docBase,
+            Arviointi arviointi,
+            TutkinnonOsaTyyppi tyyppi
+    ) {
         if (arviointi == null) {
             return;
         }
@@ -848,6 +970,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
 
         addTeksti(docBase, messages.translate("docgen.arviointi.title", docBase.getKieli()), "h5");
+
         String lisatietoteksti = getTextString(docBase, arviointi.getLisatiedot());
         if (StringUtils.isNotEmpty(lisatietoteksti)) {
             addTeksti(docBase, lisatietoteksti, "div");
@@ -1025,7 +1148,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     }
 
                     if (!ammattitaitovaatimukset.isEmpty()) {
-                        addAmmattitaitovaatimukset(docBase, ammattitaitovaatimukset, null);
+                        addAmmattitaitovaatimukset(docBase, null, ammattitaitovaatimukset, null);
                     }
 
                 }
