@@ -12,6 +12,9 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
+import java.util.Objects;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
@@ -32,4 +35,15 @@ public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen vaatimus;
+
+    public boolean structureEquals(Ammattitaitovaatimus2019 other) {
+        if (this == other) {
+            return true;
+        }
+        boolean result = Objects.equals(getKoodi(), other.getKoodi());
+
+        result &= refXnor(getVaatimus(), other.getVaatimus());
+
+        return result;
+    }
 }
