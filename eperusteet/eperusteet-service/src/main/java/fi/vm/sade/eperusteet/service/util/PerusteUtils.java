@@ -58,6 +58,9 @@ public class PerusteUtils {
                 else if (kt == KoulutusTyyppi.LUKIOKOULUTUS) {
                     return KoulutustyyppiToteutus.LOPS;
                 }
+                else if (kt == KoulutusTyyppi.TPO) {
+                    return KoulutustyyppiToteutus.TPO;
+                }
             }
             return KoulutustyyppiToteutus.YKSINKERTAINEN;
         }
