@@ -9,10 +9,9 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
 @Table(name = "ammattitaitovaatimus2019_kohdealue")
@@ -35,4 +34,22 @@ public class Ammattitaitovaatimus2019Kohdealue extends AbstractAuditedReferencea
             inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimus_id"))
     private List<Ammattitaitovaatimus2019> vaatimukset = new ArrayList<>();
 
+    public boolean structureEquals(Ammattitaitovaatimus2019Kohdealue other) {
+        if (this == other) {
+            return true;
+        }
+        boolean result = refXnor(getKuvaus(), other.getKuvaus());
+
+        if (result && getVaatimukset() != null) {
+            Iterator<Ammattitaitovaatimus2019> i = getVaatimukset().iterator();
+            Iterator<Ammattitaitovaatimus2019> j = other.getVaatimukset().iterator();
+            while (result && i.hasNext() && j.hasNext()) {
+                result &= i.next().structureEquals(j.next());
+            }
+            result &= !i.hasNext();
+            result &= !j.hasNext();
+        }
+
+        return result;
+    }
 }
