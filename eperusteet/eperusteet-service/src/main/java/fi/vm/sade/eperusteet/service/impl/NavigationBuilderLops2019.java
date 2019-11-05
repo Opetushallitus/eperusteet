@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.utils.dto.peruste.lops2019.tutkinnonrakenne.KoodiDt
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -95,7 +96,11 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
     private NavigationNodeDto oppiaineet(Long perusteId) {
         final Lops2019Sisalto sisalto = lops2019SisaltoRepository.findByPerusteId(perusteId);
         List<Lops2019Oppiaine> oppiaineet = sisalto.getOppiaineet();
-        List<Lops2019Oppiaine> oppimaarat = lops2019OppiaineRepository.getOppimaaratByParents(oppiaineet);
+        List<Lops2019Oppiaine> oppimaarat = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(oppiaineet)) {
+            oppimaarat = lops2019OppiaineRepository.getOppimaaratByParents(oppiaineet);
+        }
+
         List<Lops2019Oppiaine> kaikki = new ArrayList<>();
         kaikki.addAll(oppiaineet);
         kaikki.addAll(oppimaarat);
@@ -109,7 +114,10 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
         });
 
         Map<Lops2019Oppiaine, List<Lops2019Moduuli>> moduulitMap = new HashMap<>();
-        List<Lops2019Moduuli> moduulit = lops2019ModuuliRepository.getModuulitByParents(kaikki);
+        List<Lops2019Moduuli> moduulit = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(kaikki)) {
+            moduulit = lops2019ModuuliRepository.getModuulitByParents(kaikki);
+        }
         moduulit.forEach(m -> {
             if (!moduulitMap.containsKey(m.getOppiaine())) {
                 moduulitMap.put(m.getOppiaine(), new ArrayList<>());
