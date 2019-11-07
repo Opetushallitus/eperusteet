@@ -47,7 +47,7 @@ public class TermistoController {
     private TermistoService termistoService;
 
     @RequestMapping(value = "/termisto", method = GET)
-    public List<TermiDto> getAll(
+    public List<TermiDto> getAllTermit(
         @PathVariable("perusteId") final Long perusteId) {
         return termistoService.getTermit(perusteId);
     }
