@@ -12,16 +12,17 @@ import json
 import openpyxl
 import sys
 
-if len(sys.argv) < 2:
-    print('Dependencies: sudo install pip openpyxl')
-    print('Usage: ' + sys.argv[0] + ' <from.json> [+ <locale_dir_1> + <locale_dir_2> + ...]')
+if len(sys.argv) < 3:
+    print('Dependencies: pip install openpyxl --user')
+    print('Usage: ' + sys.argv[0] + '<category> <from.json> [+ <locale_dir_1> + <locale_dir_2> + ...]')
     print('where <from.json> is saved from the localization service and locale_dirs contain locale-fi/sv/en-files.')
+    print('example: ./locale2excel.py eperusteet-opintopolku localisation.json /path/to/project/src/translations/')
     sys.exit(2)
 
 locales = []
 locales_lang = []
 try:
-    for i in range(2, len(sys.argv)):
+    for i in range(3, len(sys.argv)):
         for loc_file in glob.glob(sys.argv[i] + '/locale-??.json'):
             data = open(loc_file, encoding="utf8")
             locales.append(json.load(data))
@@ -30,7 +31,8 @@ except:
     print('Invalid directory or data in directory: ' + sys.argv[i])
     sys.exit(2)
 
-data = open(sys.argv[1], encoding="utf8")
+category = sys.argv[1]
+data = open(sys.argv[2], encoding="utf8")
 data_json = json.load(data)
 data.close()
 
@@ -38,12 +40,13 @@ workbook = openpyxl.Workbook()
 worksheet = workbook.active
 worksheet.title = "Lokalisoinnit"
 
-worksheet.cell('A1').value = 'Avain'
-worksheet.cell('B1').value = 'Suomi'
-worksheet.cell('C1').value = 'Ruotsi'
-worksheet.cell('D1').value = 'Englanti'
+worksheet['A1'] = 'kategoria'
+worksheet['B1'] = 'Avain'
+worksheet['C1'] = 'Suomi'
+worksheet['D1'] = 'Ruotsi'
+worksheet['E1'] = 'Englanti'
 
-filtered = list(filter(lambda l: 'eperusteet' in l['category'], data_json))
+filtered = list(filter(lambda l: category in l['category'], data_json))
 keys_from_service = set(map(lambda m: m['key'], filtered))
 keys_from_loc_files = set()
 
@@ -63,11 +66,13 @@ def localize(lang, key):
 
 idx = 2
 for key in sorted(keys):
-    values = list(filter(lambda l: l['key'] == key, filtered))
-    worksheet.cell('A' + str(idx)).value = key
-    worksheet.cell('B' + str(idx)).value = localize('fi', key)
-    worksheet.cell('C' + str(idx)).value = localize('sv', key)
-    worksheet.cell('D' + str(idx)).value = localize('en', key)
-    idx += 1
+    if key:
+        values = list(filter(lambda l: l['key'] == key, filtered))
+        worksheet['A' + str(idx)] = category
+        worksheet['B' + str(idx)] = key
+        worksheet['C' + str(idx)] = localize('fi', key)
+        worksheet['D' + str(idx)] = localize('sv', key)
+        worksheet['E' + str(idx)] = localize('en', key)
+        idx += 1
 
 workbook.save('lokaalit.xlsx')
