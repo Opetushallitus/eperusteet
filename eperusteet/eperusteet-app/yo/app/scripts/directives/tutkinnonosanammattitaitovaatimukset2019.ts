@@ -68,7 +68,6 @@ angular
                 teksti: "poistetaanko-vaatimus",
                 primaryBtn: "poista",
                 successCb() {
-                    console.log('poistetaan vaatimus');
                     if (kohdealue) {
                         _.remove(kohdealue.vaatimukset, vaatimus);
                     }
@@ -85,7 +84,6 @@ angular
                 teksti: "poistetaanko-kohdealue",
                 primaryBtn: "poista",
                 successCb() {
-                    console.log('poistetaan kohdealue');
                     _.remove($scope.ammattitaitovaatimukset.kohdealueet, kohdealue);
                 }
             })();
