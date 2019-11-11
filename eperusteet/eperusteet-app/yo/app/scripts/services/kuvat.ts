@@ -86,7 +86,7 @@ angular
 
         function setChosenValue(value) {
             var found = _.find($scope.images, function(image: any) {
-                return image.id === value;
+                return image.id === value.id;
             });
             $scope.model.chosen = found || null;
         }
@@ -130,7 +130,7 @@ angular
         $scope.setValue = function(value) {
             $scope.$apply(function() {
                 if (_.isEmpty($scope.images)) {
-                    setDeferred = value;
+                    setDeferred = value.id;
                 } else {
                     setChosenValue(value);
                 }
