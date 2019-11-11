@@ -29,7 +29,7 @@ CKEDITOR.dialog.add('epimageDialog', function(editor) {
                 type: 'html',
                 id: 'epimage-html',
                 validate: function() {
-                    return !this.getValue() ? kaanna('epimage-plugin-virhe-viite-tyhja') : true;
+                    return !this.getValue() && !this.getValue().id ? kaanna('epimage-plugin-virhe-viite-tyhja') : true;
                 },
                 html:
                     '<div ng-controller="EpImagePluginController" class="ckeplugin-ui-select">' +
@@ -63,7 +63,7 @@ CKEDITOR.dialog.add('epimageDialog', function(editor) {
                         controllerScope.init();
                         controllerScope.registerListener(function onChange(value) {
                             if (value && value.id) {
-                                self.setValue(value.id);
+                                self.setValue(value);
                             }
                         });
                     });
@@ -76,12 +76,17 @@ CKEDITOR.dialog.add('epimageDialog', function(editor) {
                 },
                 setup: function(element) {
                     var value = element.getAttribute('data-uid');
-                    controllerScope.setValue(value);
-                    this.setValue(value);
+                    controllerScope.setValue({
+                        id: value
+                    });
+                    this.setValue({
+                        id: value
+                    });
                 },
                 commit: function(element) {
-                    element.setAttribute('data-uid', this.getValue());
-                    element.setAttribute('src', controllerScope.urlForImage({id: this.getValue()}));
+                    const value = this.getValue();
+                    element.setAttribute('data-uid', value.id);
+                    element.setAttribute('src', controllerScope.urlForImage(value));
                 }
             }]
         }],
