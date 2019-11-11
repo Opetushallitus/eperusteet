@@ -82,7 +82,6 @@ public class JsonBType implements UserType, Serializable {
             e.printStackTrace();
             throw new BusinessRuleViolationException("copy-failed");
         }
-//        Object result = gson.fromJson(gson.toJson(value), value.getClass());
     }
 
     @Override

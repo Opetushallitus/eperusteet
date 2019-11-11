@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.dto.LokalisointiDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +35,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @InternalApi
 @RestController
 @RequestMapping("/lokalisointi")
+@Api("Lokalisointi")
 public class LokalisointiController {
 
     @Autowired

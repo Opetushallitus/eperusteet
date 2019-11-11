@@ -637,7 +637,6 @@
                                     <basePath>/api</basePath>
                                     <locations>
                                         <location>${eperusteet.resources}.julkinen.*</location>
-
                                         <location>${eperusteet.resources}.AbstractLockController</location>
                                         <location>${eperusteet.resources}.ArviointiAsteikkoController</location>
                                         <location>${eperusteet.resources}.DokumenttiController</location>
