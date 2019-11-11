@@ -303,6 +303,21 @@ angular
                     $("#toolbar").hide();
                 });
 
+                editor.on("loaded", function() {
+                    editor.filter.addTransformations([
+                        [
+                            {
+                                element: "img",
+                                right: function(el) {
+                                    el.attributes.src = EpImageService.getUrl({ id: el.attributes["data-uid"] });
+                                    delete el.attributes.height;
+                                    delete el.attributes.width;
+                                }
+                            }
+                        ]
+                    ]);
+                });
+
                 editor.on("instanceReady", function() {
                     ready = true;
                     if (deferredcall) {
