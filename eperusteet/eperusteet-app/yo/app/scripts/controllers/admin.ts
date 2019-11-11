@@ -182,6 +182,7 @@ angular
                             Notifikaatiot.onnistui("kopiointi-onnistui");
                         }
                         catch (err) {
+                            console.log(err);
                             Notifikaatiot.serverCb(err);
                         }
                     }
