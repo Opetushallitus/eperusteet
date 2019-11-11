@@ -699,7 +699,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             TekstiPalanen ammattitaitovaatimukset
     ) {
         String ammattitaitovaatimuksetText = getTextString(docBase, ammattitaitovaatimukset);
-        if (StringUtils.isEmpty(ammattitaitovaatimuksetText) && ammattitaitovaatimuksetLista.isEmpty()) {
+        // Ohitetaan jos ammattitaitovaatimuksia ei ole määritelty millään tavoilla
+        if (StringUtils.isEmpty(ammattitaitovaatimuksetText) && ammattitaitovaatimuksetLista.isEmpty() && ammattitaitovaatimukset2019 == null) {
             return;
         }
 
@@ -709,54 +710,60 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addTeksti(docBase, ammattitaitovaatimuksetText, "div");
         }
 
-        {
+        if (ammattitaitovaatimukset2019 != null) {
             TekstiPalanen kohde = ammattitaitovaatimukset2019.getKohde();
             List<Ammattitaitovaatimus2019> vaatimukset = ammattitaitovaatimukset2019.getVaatimukset();
             List<Ammattitaitovaatimus2019Kohdealue> kohdealueet = ammattitaitovaatimukset2019.getKohdealueet();
 
-            addTeksti(docBase, getTextString(docBase, kohde), "p");
+            if (kohde != null) {
+                addTeksti(docBase, getTextString(docBase, kohde), "p");
+            }
 
-            Element listaEl = docBase.getDocument().createElement("ul");
-            docBase.getBodyElement().appendChild(listaEl);
+            if (!ObjectUtils.isEmpty(vaatimukset) || !ObjectUtils.isEmpty(kohdealueet)) {
+                Element listaEl = docBase.getDocument().createElement("ul");
+                docBase.getBodyElement().appendChild(listaEl);
 
-            vaatimukset.forEach(vaatimus -> {
-                Element vaatimusEl = docBase.getDocument().createElement("li");
-                String rivi = getTextString(docBase, vaatimus.getVaatimus());
-                if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
-                    rivi += " (" + vaatimus.getKoodi().getUri() + ")";
-                }
-                vaatimusEl.setTextContent(rivi);
-                listaEl.appendChild(vaatimusEl);
-            });
-
-            kohdealueet.forEach(alue -> {
-                Element alueEl = docBase.getDocument().createElement("li");
-
-                TekstiPalanen kuvaus = alue.getKuvaus();
-                if (kuvaus != null) {
-                    Element kuvausEl = docBase.getDocument().createElement("p");
-                    kuvausEl.setTextContent(getTextString(docBase, kuvaus));
-                    alueEl.appendChild(kuvausEl);
-                }
-
-                Element alueListaEl = docBase.getDocument().createElement("ul");
-
-                alue.getVaatimukset().forEach(vaatimus -> {
+                vaatimukset.forEach(vaatimus -> {
                     Element vaatimusEl = docBase.getDocument().createElement("li");
-
                     String rivi = getTextString(docBase, vaatimus.getVaatimus());
                     if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
                         rivi += " (" + vaatimus.getKoodi().getUri() + ")";
                     }
                     vaatimusEl.setTextContent(rivi);
-
-                    alueListaEl.appendChild(vaatimusEl);
+                    listaEl.appendChild(vaatimusEl);
                 });
 
-                alueEl.appendChild(alueListaEl);
+                kohdealueet.forEach(alue -> {
+                    Element alueEl = docBase.getDocument().createElement("li");
 
-                listaEl.appendChild(alueEl);
-            });
+                    TekstiPalanen kuvaus = alue.getKuvaus();
+                    if (kuvaus != null) {
+                        Element kuvausEl = docBase.getDocument().createElement("p");
+                        kuvausEl.setTextContent(getTextString(docBase, kuvaus));
+                        alueEl.appendChild(kuvausEl);
+                    }
+
+                    if (!ObjectUtils.isEmpty(alue.getVaatimukset())) {
+                        Element alueListaEl = docBase.getDocument().createElement("ul");
+
+                        alue.getVaatimukset().forEach(vaatimus -> {
+                            Element vaatimusEl = docBase.getDocument().createElement("li");
+
+                            String rivi = getTextString(docBase, vaatimus.getVaatimus());
+                            if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
+                                rivi += " (" + vaatimus.getKoodi().getUri() + ")";
+                            }
+                            vaatimusEl.setTextContent(rivi);
+
+                            alueListaEl.appendChild(vaatimusEl);
+                        });
+
+                        alueEl.appendChild(alueListaEl);
+                    }
+
+                    listaEl.appendChild(alueEl);
+                });
+            }
         }
 
         ammattitaitovaatimuksetLista.forEach(ka -> {
