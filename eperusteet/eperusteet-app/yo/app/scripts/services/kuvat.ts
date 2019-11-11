@@ -48,11 +48,16 @@ angular
         };
 
         this.getUrl = function(image) {
-            return (
-                (SERVICE_LOC + "/perusteet/:perusteId/kuvat").replace(":perusteId", "" + pts.getPeruste().id) +
-                "/" +
-                image.id
-            );
+            console.log('getUrl', image);
+            let extension = "";
+            if (image.mime) {
+                const mimeParts = image.mime.split("/");
+                extension = "." + (mimeParts.length === 2 ? mimeParts[1] : '');
+            }
+
+            return(SERVICE_LOC + "/perusteet/:perusteId/kuvat")
+              .replace(":perusteId", "" + pts.getPeruste().id)
+              + "/" + image.id + extension;
         };
     })
     .controller("EpImagePluginController", function($scope, EpImageService, Kaanna, Algoritmit, $timeout) {
@@ -94,6 +99,7 @@ angular
         }
 
         $scope.urlForImage = function(image) {
+            console.log('urlForImage', image);
             return $scope.service.getUrl(image);
         };
 
@@ -124,6 +130,7 @@ angular
 
         // data from plugin to angular model
         $scope.setValue = function(value) {
+            console.log('setValue', value);
             $scope.$apply(function() {
                 if (_.isEmpty($scope.images)) {
                     setDeferred = value;
@@ -141,6 +148,7 @@ angular
             var image = $scope.model.files[0];
             $scope.service.save(image).then(
                 function(res) {
+                    console.log('save', res);
                     $scope.message = "epimage-plugin-tallennettu";
                     $scope.model.files = [];
                     $timeout(function() {
@@ -159,25 +167,6 @@ angular
             );
         };
     })
-    // FIXME miksi näitä on kaksi?
-    .filter("kuvalinkit", function(EpImageService) {
-        return function(text) {
-            let modified = false;
-            const tmp = angular.element("<div>" + text + "</div>");
-            tmp.find("img[data-uid]").each(function() {
-                var el = angular.element(this);
-                var url = EpImageService.getUrl({ id: el.attr("data-uid") });
-                if (el.attr("src") !== url) {
-                    modified = true;
-                    el.attr("src", EpImageService.getUrl({ id: el.attr("data-uid") }));
-                }
-            });
-            if (modified) {
-                return tmp.html();
-            }
-            return text;
-        };
-    })
     .filter("kuvalinkit", () => {
         return text => {
             if (_.isUndefined(text) || _.isNull(text)) {
@@ -189,8 +178,7 @@ angular
                 let el = angular.element(this);
                 el.wrap("<figure></figure>");
                 if (el.attr("alt")) {
-                    el.parent().append("<figcaption>" + el.attr("alt") + "</figcaption>");
-                    el.parent().wrap('<div style="text-align: center;"></div>');
+                    el.parent().append("<figcaption style=\"text-align: center;\">" + el.attr("alt") + "</figcaption>");
                 }
             });
 

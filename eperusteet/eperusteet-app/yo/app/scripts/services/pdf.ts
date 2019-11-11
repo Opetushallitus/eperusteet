@@ -68,7 +68,7 @@ angular
         }
 
         function haeLinkki(tokenId) {
-            return SERVICE_LOC + "/dokumentit/" + tokenId;
+            return SERVICE_LOC + "/dokumentit/" + tokenId + ".pdf";
         }
 
         function haeUusin(perusteId, kieli, suoritustapa) {
