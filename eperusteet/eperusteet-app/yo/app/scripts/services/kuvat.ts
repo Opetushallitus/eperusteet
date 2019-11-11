@@ -48,6 +48,7 @@ angular
         };
 
         this.getUrl = function(image) {
+            console.log('getUrl', image);
             let extension = "";
             if (image.mime) {
                 const mimeParts = image.mime.split("/");
@@ -98,6 +99,7 @@ angular
         }
 
         $scope.urlForImage = function(image) {
+            console.log('urlForImage', image);
             return $scope.service.getUrl(image);
         };
 
@@ -128,6 +130,7 @@ angular
 
         // data from plugin to angular model
         $scope.setValue = function(value) {
+            console.log('setValue', value);
             $scope.$apply(function() {
                 if (_.isEmpty($scope.images)) {
                     setDeferred = value;
@@ -145,6 +148,7 @@ angular
             var image = $scope.model.files[0];
             $scope.service.save(image).then(
                 function(res) {
+                    console.log('save', res);
                     $scope.message = "epimage-plugin-tallennettu";
                     $scope.model.files = [];
                     $timeout(function() {

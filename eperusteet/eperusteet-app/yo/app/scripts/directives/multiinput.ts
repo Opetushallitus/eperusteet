@@ -51,9 +51,9 @@ angular.module("eperusteApp").directive("mlInput", function($translate, YleinenD
         },
         link: function(scope: any, element: any) {
             if (!scope.mlData) {
-                console.warn("You must set ml-data for ml-input.");
+                console.log("You must set ml-data for ml-input.");
             } else if (!_.isObject(scope.mlData)) {
-                console.warn("ml-data must be an object");
+                console.log("ml-data must be an object");
             }
             if (scope.$parent.inputElId) {
                 $timeout(function() {
