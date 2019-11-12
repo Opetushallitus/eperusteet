@@ -25,13 +25,17 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 /**
  *
@@ -77,11 +81,22 @@ public class DokumenttiController {
         return new ResponseEntity<>(createDtoFor, status);
     }
 
-    @RequestMapping(value = "/{dokumenttiId}", method = RequestMethod.GET, produces = "application/pdf")
+    @RequestMapping(value = "/{fileName}", method = RequestMethod.GET, produces = "application/pdf")
     @ResponseBody
     @CacheControl(age = CacheControl.ONE_YEAR, nonpublic = false)
-    public ResponseEntity<Object> getDokumentti(@PathVariable("dokumenttiId") final Long dokumenttiId) {
+    public ResponseEntity<Object> getDokumentti(
+            @PathVariable("fileName") String fileName
+    ) {
+        Long dokumenttiId = Long.valueOf(FilenameUtils.removeExtension(fileName));
+        String extension = FilenameUtils.getExtension(fileName);
+
         byte[] pdfdata = service.get(dokumenttiId);
+
+        // Tarkistetaan tiedostopääte jos asetettu kutsuun
+        if (!ObjectUtils.isEmpty(extension) && !Objects.equals(extension, "pdf")) {
+            LOG.error("Got wrong file extension");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         if (pdfdata == null || pdfdata.length == 0) {
             LOG.error("Got null or empty data from service");
