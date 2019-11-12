@@ -159,38 +159,24 @@ angular
             );
         };
     })
-    // FIXME miksi näitä on kaksi?
-    .filter("kuvalinkit", function(EpImageService) {
-        return function(text) {
-            let modified = false;
-            const tmp = angular.element("<div>" + text + "</div>");
-            tmp.find("img[data-uid]").each(function() {
-                var el = angular.element(this);
-                var url = EpImageService.getUrl({ id: el.attr("data-uid") });
-                if (el.attr("src") !== url) {
-                    modified = true;
-                    el.attr("src", EpImageService.getUrl({ id: el.attr("data-uid") }));
-                }
-            });
-            if (modified) {
-                return tmp.html();
-            }
-            return text;
-        };
-    })
-    .filter("kuvalinkit", () => {
+    .filter("kuvalinkit", (EpImageService) => {
         return text => {
-            if (_.isUndefined(text) || _.isNull(text)) {
-                return "";
+            if (_.isEmpty(text)) {
+                return text;
             }
 
             const tmp = angular.element("<div>" + text + "</div>");
-            tmp.find("img").each(function() {
+            tmp.find("img[data-uid]").each(function() {
                 let el = angular.element(this);
+
+                var url = EpImageService.getUrl({ id: el.attr("data-uid") });
+                if (el.attr("src") !== url) {
+                    el.attr("src", EpImageService.getUrl({ id: el.attr("data-uid") }));
+                }
+
                 el.wrap("<figure></figure>");
                 if (el.attr("alt")) {
-                    el.parent().append("<figcaption>" + el.attr("alt") + "</figcaption>");
-                    el.parent().wrap('<div style="text-align: center;"></div>');
+                    el.parent().append("<figcaption style=\"text-align: center;\">" + el.attr("alt") + "</figcaption>");
                 }
             });
 
