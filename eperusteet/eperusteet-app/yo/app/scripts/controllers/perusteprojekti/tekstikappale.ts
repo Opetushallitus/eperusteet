@@ -76,7 +76,6 @@ angular
         };
 
         this.delete = async function(viiteId, isNew, then?) {
-            console.log("delete", viiteId, isNew, then);
             function commonCb(tyyppi) {
                 deleteDone = true;
                 if (isNew !== true) {
