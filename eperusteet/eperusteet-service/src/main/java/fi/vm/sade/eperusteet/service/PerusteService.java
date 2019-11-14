@@ -223,6 +223,9 @@ public interface PerusteService {
     KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<KVLiiteTasoDto> haeTasot(Long perusteId, Peruste peruste);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteprojektiImportDto getPerusteExport(@P("perusteId") Long perusteId);
 
     @Cacheable("peruste-navigation")

@@ -1098,6 +1098,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
+    @Override
     @Transactional
     public void updateAllTutkinnonOsaJarjestys(Long perusteId, RakenneModuuliDto rakenne) {
         // Lista tutkinnon osista tutkinnon muodostumisen mukaan
@@ -1899,13 +1900,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
 
         if (!ObjectUtils.isEmpty(peruste.getKoulutukset())) {
-            kvliiteDto.setTasot(haeTasot(peruste));
+            kvliiteDto.setTasot(haeTasot(peruste.getId(), peruste));
         }
 
         return kvliiteDto;
     }
 
-    private List<KVLiiteTasoDto> haeTasot(Peruste peruste) {
+    @Override
+    public List<KVLiiteTasoDto> haeTasot(Long perusteId, Peruste peruste) {
         Set<String> tasokoodiFilter = new HashSet<>();
         return peruste.getKoulutukset().stream()
                 .map(Koulutus::getKoulutuskoodiUri)
