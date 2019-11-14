@@ -27,7 +27,7 @@ public class ValidatorKvliiteTaso implements Validator {
     @Autowired
     private PerusteService perusteService;
 
-    private final List<String> koodiTarkistus = Arrays.asList("nqf", "eqf", "isced");
+    private final List<String> koodiTarkistus = Arrays.asList("nqf_", "eqf_", "isced2011koulutusastetaso1_");
 
     @Override
     public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila tila) {

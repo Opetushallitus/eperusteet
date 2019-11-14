@@ -1908,6 +1908,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public List<KVLiiteTasoDto> haeTasot(Long perusteId, Peruste peruste) {
+
+        if (ObjectUtils.isEmpty(peruste.getKoulutukset())) {
+            return Collections.emptyList();
+        }
+
         Set<String> tasokoodiFilter = new HashSet<>();
         return peruste.getKoulutukset().stream()
                 .map(Koulutus::getKoulutuskoodiUri)

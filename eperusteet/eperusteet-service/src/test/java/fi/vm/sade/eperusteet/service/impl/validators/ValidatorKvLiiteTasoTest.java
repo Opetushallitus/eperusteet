@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ValidatorKvLiiteTasoTest {
@@ -36,40 +35,41 @@ public class ValidatorKvLiiteTasoTest {
 
     @Test
     public void testKaikkiLoyty_one() {
-        Mockito.when(perusteService.haeTasot(Mockito.any(), Mockito.any())).thenReturn(buildTasot("isced_xxxxxxxxx"));
+        Mockito.when(perusteService.haeTasot(Mockito.any(), Mockito.any())).thenReturn(buildTasot("isced2011koulutusastetaso1_xxxxxxxxx"));
         Assertions.assertThat(validatorKvliiteTaso.validate(null, null).getInfot()).isNotEmpty();
     }
 
     @Test
     public void testKaikkiLoyty_two() {
-        Mockito.when(perusteService.haeTasot(Mockito.any(), Mockito.any())).thenReturn(buildTasot("isced_xxxxxxxxx", "nqf_xxxxx"));
+        Mockito.when(perusteService.haeTasot(Mockito.any(), Mockito.any())).thenReturn(buildTasot("isced2011koulutusastetaso1_xxxxxxxxx", "nqf_xxxxx"));
         Assertions.assertThat(validatorKvliiteTaso.validate(null, null).getInfot()).isNotEmpty();
     }
 
     @Test
     public void testKaikkiLoyty_all() {
-        Mockito.when(perusteService.haeTasot(Mockito.any(), Mockito.any())).thenReturn(buildTasot("eqf", "nqf", "isced"));
+        Mockito.when(perusteService.haeTasot(Mockito.any(), Mockito.any())).thenReturn(buildTasot("eqf_1", "nqf_2", "isced2011koulutusastetaso1_3"));
         Assertions.assertThat(validatorKvliiteTaso.validate(null, null).getInfot()).isEmpty();
     }
 
     @Test
     public void testKaikkiLoyty_multi() {
         Mockito.when(perusteService.haeTasot(Mockito.any(), Mockito.any())).thenReturn(
-                buildTasot("nqf123213", "eqf12332", "isced1313", "nqf3232", "eqf32323", "isced12", "nqf32321", "eqf1233", "isced3232", "nqf123", "eqf2131", "isced3231"));
+                buildTasot("nqf_123213", "eqf_12332", "isced2011koulutusastetaso1_1313",
+                        "nqf3232", "eqf_32323", "isced_12", "nqf_32321", "eqf_1233", "isced_3232", "nqf_123", "eqf_2131", "isced_d3231"));
         Assertions.assertThat(validatorKvliiteTaso.validate(null, null).getInfot()).isEmpty();
     }
 
     @Test
     public void testKaikkiLoyty_multi_different() {
         Mockito.when(perusteService.haeTasot(Mockito.any(), Mockito.any())).thenReturn(
-                buildTasot("XXX", "XXXX", "isced", "nqf", "XXXeqf", "XXd", "XXX", "XXXX", "XXX", "XXXX", "eqf", "XXXX"));
+                buildTasot("XXX", "XXXX", "isced2011koulutusastetaso1_", "nqf_", "XXXeqf", "XXd", "XXX", "XXXX", "XXX", "XXXX", "eqf_", "XXXX"));
         Assertions.assertThat(validatorKvliiteTaso.validate(null, null).getInfot()).isEmpty();
     }
 
     @Test
     public void testKaikkiLoyty_multi_not_found() {
         Mockito.when(perusteService.haeTasot(Mockito.any(), Mockito.any())).thenReturn(
-                buildTasot("XXX", "XXXX", "XXXX", "nqf", "XXXeqf", "XXd", "XXX", "XXXX", "XXX", "XXXX", "eqf", "XXXX"));
+                buildTasot("XXX", "XXXX", "XXXX", "nqf_", "XXXeqf", "XXd", "XXX", "XXXX", "XXX", "XXXX", "eqf_", "XXXX"));
         Assertions.assertThat(validatorKvliiteTaso.validate(null, null).getInfot()).isNotEmpty();
     }
 
