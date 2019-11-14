@@ -227,8 +227,8 @@ public interface PerusteService {
 
     @Cacheable("peruste-navigation")
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm);
+    NavigationNodeDto buildNavigationWithDate(@P("perusteId") Long perusteId, Date pvm);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto buildNavigation(Long perusteId);
+    NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId);
 }
