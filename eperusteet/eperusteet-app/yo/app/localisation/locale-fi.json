@@ -357,6 +357,7 @@
     "kvliite-validointi-pohjakoulutusvaatimukset": "Pohjakoulutusvaatimukset ei ole lokalisoitu kv-liitettä varten",
     "kvliite-validointi-saados-perusta": "Säädösperusta ei ole lokalisoitu kv-liitettä varten",
     "kvliite-validointi-suorittaneen-osaaminen": "Tutkinnon suorittaneen osaaminen ei ole lokalisoitu kv-liitettä varten",
+    "kvliite-validointi-taso-koodi-puute": "Koulutuskoodirelaatioista puuttuu tasot.",
     "kvliite-validointi-tasot": "Tutkinnon taso ei ole määritelty kv-liitettä varten",
     "kvliite-validointi-tutkinnon-virallinen-asema": "Tutkinnon virallinen asema ei ole lokalisoitu kv-liitettä varten",
     "kvliite-validointi-tutkinnosta-paattava-viranomainen": "Tutkinnosta päättävän kansallisen/alueellisen viranomaisen nimi ja asema ei ole lokalisoitu kv-liitettä varten",
