@@ -147,12 +147,14 @@ angular
                     .reverse()
                     .each(function(eo: any) {
                         // "Kovakoodatut" Hostit haetaan yleiselta datalta
-                        eo.$url = YleinenData.getPerusteEsikatseluHost() + "/lukio/" + eo.id;
+                        eo.$url = YleinenData.getPerusteEsikatseluHost($scope.isPerusteUusiToteutus(eo)) + "/lukio/" + eo.id;
                     })
                     .value();
             },
             Notifikaatiot.serverCb
         );
+
+        $scope.isPerusteUusiToteutus = peruste => _.includes(['lops2019'], peruste.toteutus);
     })
     .controller("HakuCtrl", function(
         $scope,
