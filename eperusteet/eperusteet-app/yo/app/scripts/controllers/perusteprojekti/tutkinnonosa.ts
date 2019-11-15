@@ -321,7 +321,7 @@ angular
                     collapsible: true,
                 },
                 {
-                    path: "tutkinnonOsa._geneerinenArviointiasteikko",
+                    path: "tutkinnonOsa.geneerinenArviointiasteikko",
                     localeKey: "tutkinnon-osan-geneerinen-arviointi",
                     type: "geneerinenarviointi",
                     collapsible: true,
@@ -373,7 +373,7 @@ angular
                     teksti: Kaanna.kaanna("koodi-lisays-varmistus"),
                     primaryBtn: "ok",
                     successCb: async function() {
-                        
+
                         const koodi = await Koodisto.lisaaKoodistoKoodi("tutkinnonosat", $scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi);
 
                         $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodi = {
