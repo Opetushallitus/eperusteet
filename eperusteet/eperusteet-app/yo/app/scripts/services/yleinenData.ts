@@ -355,18 +355,19 @@ export default function($rootScope, $translate, Arviointiasteikot, Notifikaatiot
         valitseSuoritustapaKoulutustyypille,
         showKoulutukset,
 
-        getPerusteEsikatseluHost() {
+        getPerusteEsikatseluHost(beta) {
             const host = $location.host();
             const kieli = Kieli.getSisaltokieli();
+            const betaUrl = beta ? 'beta/' : '';
             if (host.indexOf("localhost") > -1) {
                 //localhost - dev
-                return "http://localhost:9020/#/" + kieli;
+                return `http://localhost:9020/${betaUrl}#/${kieli}`;
             } else if (host.indexOf("virkailija.testiopintopolku.fi") > -1) {
                 // QA
-                return "https://eperusteet.testiopintopolku.fi/#/" + kieli;
+                return `https://eperusteet.testiopintopolku.fi/${betaUrl}#/${kieli}`;
             } else {
                 // Tuotanto
-                return "https://eperusteet.opintopolku.fi/#/" + kieli;
+                return `https://eperusteet.opintopolku.fi/${betaUrl}#/${kieli}`;
             }
         },
 
