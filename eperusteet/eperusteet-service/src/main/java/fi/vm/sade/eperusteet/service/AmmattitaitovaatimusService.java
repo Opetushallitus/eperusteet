@@ -36,7 +36,10 @@ public interface AmmattitaitovaatimusService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(@P("perusteId") Long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteprojektiId, 'perusteprojekti', 'TILANVAIHTO')")
+    List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(@P("perusteprojektiId") Long perusteprojektiId, @P("perusteId") Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<Ammattitaitovaatimus2019Dto> getAmmattitaitovaatimukset(@P("perusteId") Long perusteId);
 
     @PreAuthorize("isAuthenticated()")
