@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -50,6 +51,7 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private List<OsaAlueKokonaanDto> osaAlueet;
     private TutkinnonOsaTyyppi tyyppi;
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
+    private GeneerinenArviointiasteikkoDto geneerinenArviointiasteikko;
 
     public String getKoodiUri() {
         KoodiDto koodi = this.getKoodi();
