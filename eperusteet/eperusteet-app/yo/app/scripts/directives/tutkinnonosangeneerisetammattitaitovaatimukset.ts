@@ -11,21 +11,18 @@ angular
             geneeriset = (await Api.all("geneerinenarviointi").getList()).plain();
             $scope.arviointiasteikot = await ArviointiasteikkoHelper.getMappedArviointiasteikot();
             $scope.geneeriset = _.filter(geneeriset, "julkaistu");
-
-            if($scope.geneerinen) {
-                $scope.valittuId = _.parseInt($scope.geneerinen.id);
-                $scope.valittu = _(geneeriset)
-                    .filter({ id: $scope.valittuId })
-                    .first();
-            }
+            const asteikkoId = _.parseInt($scope.geneerinen);
+            $scope.valittu = _(geneeriset)
+                .filter({ id: asteikkoId })
+                .first();
+            $scope.state.valittu = asteikkoId;
         }
 
         $scope.changeGeneerinen = (id) => {
-            $scope.valittuId = id;
+            $scope.geneerinen = id;
             $scope.valittu = _(geneeriset)
                 .filter({ id: _.parseInt(id) })
                 .first();
-            $scope.geneerinen = $scope.valittu;
         };
         init();
     })

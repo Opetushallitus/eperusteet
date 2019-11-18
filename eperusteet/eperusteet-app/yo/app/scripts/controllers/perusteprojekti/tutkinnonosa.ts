@@ -321,7 +321,7 @@ angular
                     collapsible: true,
                 },
                 {
-                    path: "tutkinnonOsa.geneerinenArviointiasteikko",
+                    path: "tutkinnonOsa._geneerinenArviointiasteikko",
                     localeKey: "tutkinnon-osan-geneerinen-arviointi",
                     type: "geneerinenarviointi",
                     collapsible: true,
