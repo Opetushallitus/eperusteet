@@ -212,6 +212,11 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     }
 
     @Override
+    public List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(Long perusteprojektiId, Long perusteId) {
+        return addAmmattitaitovaatimuskooditToKoodisto(perusteId);
+    }
+
+    @Override
     public List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(Long perusteId) {
         List<KoodiDto> koodit = new ArrayList<>();
         Peruste peruste = perusteRepository.findOne(perusteId);

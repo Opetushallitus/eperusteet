@@ -91,6 +91,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.ValidointiStatusRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
+import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
@@ -251,6 +252,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private LocalizedMessagesService messages;
+
+    @Autowired
+    private AmmattitaitovaatimusService ammattitaitovaatimusService;
 
     @Autowired
     HttpHeaders httpHeaders;
@@ -888,6 +892,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     + tila.toString() + "' ei mahdollinen";
             updateStatus.addStatus(viesti);
             return updateStatus;
+        }
+
+        // Lisätään koodittomat ammattiatitovaatimukset koodistoon
+        if (tila == ProjektiTila.JULKAISTU) {
+            ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(projekti.getId(), peruste.getId());
         }
 
         // Dokumentit generoidaan automaattisesti julkaisun yhteydessä
