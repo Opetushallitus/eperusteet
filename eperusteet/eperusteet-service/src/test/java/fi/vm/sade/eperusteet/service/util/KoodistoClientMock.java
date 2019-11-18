@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -169,7 +170,7 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public Collection<Long> nextKoodiId(String koodistonimi, int count) {
-        return null;
+        return IntStream.range(0, count).boxed().map(operand -> new Long(operand)).collect(Collectors.toList());
     }
 
     @Override
