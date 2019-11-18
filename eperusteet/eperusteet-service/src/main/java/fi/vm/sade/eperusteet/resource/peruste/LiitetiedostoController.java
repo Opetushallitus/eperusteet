@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.util.*;
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -174,7 +175,7 @@ public class LiitetiedostoController {
 
         // Tarkistetaan tiedostopääte jos asetettu kutsuun
         if (!ObjectUtils.isEmpty(extension)) {
-            isCorrectExtension = Objects.equals(dto.getMime(), topLevelMediaType + "/" + extension);
+            isCorrectExtension = Objects.equals(dto.getMime(), new MimetypesFileTypeMap().getContentType(fileName));
         }
 
         if (dto != null && isCorrectExtension) {
