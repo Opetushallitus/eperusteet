@@ -24,8 +24,8 @@ div
         label
           input(
             type="radio",
-            ng-click="changeGeneerinen(asteikko.id)",
-            ng-model="valittuId",
+            ng-change="changeGeneerinen(asteikko.id)",
+            ng-model="state.valittu",
             name="optionsRadios",
             ng-value="asteikko.id")
           span(ng-bind="asteikko.nimi | kaanna")
