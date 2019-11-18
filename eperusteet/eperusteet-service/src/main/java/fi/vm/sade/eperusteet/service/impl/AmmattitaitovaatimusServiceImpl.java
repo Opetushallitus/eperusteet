@@ -165,6 +165,12 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         return resultDto;
     }
 
+    @Override
+    public List<Ammattitaitovaatimus2019> getVaatimukset(Long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        return getVaatimukset(peruste);
+    }
+
     private List<Ammattitaitovaatimus2019> getVaatimukset(Peruste peruste) {
         return getTutkinnonOsaViitteet(peruste).stream()
                 .map(TutkinnonOsaViite::getTutkinnonOsa)

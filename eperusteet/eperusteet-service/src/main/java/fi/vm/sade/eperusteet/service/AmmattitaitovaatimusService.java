@@ -1,7 +1,9 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
@@ -44,4 +46,7 @@ public interface AmmattitaitovaatimusService {
 
     @PreAuthorize("isAuthenticated()")
     void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<Ammattitaitovaatimus2019> getVaatimukset(Long perusteId);
 }

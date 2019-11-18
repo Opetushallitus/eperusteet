@@ -16,6 +16,8 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -24,6 +26,8 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus.Status;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimukset2019Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.Reference;
@@ -31,11 +35,18 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Ongelma;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.*;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -87,6 +98,13 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     @Autowired
     private PerusteprojektiTestUtils ppTestUtils;
 
+    @Autowired
+    private AmmattitaitovaatimusService ammattitaitovaatimusService;
+
+    @Autowired
+    @Dto
+    protected DtoMapper mapper;
+
     private final String ryhmaId = "1.2.246.562.28.11287634288";
     private final LaajuusYksikko yksikko = LaajuusYksikko.OSAAMISPISTE;
     private final String yhteistyotaho = TestUtils.uniikkiString();
@@ -112,7 +130,6 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
     @Before
     public void setUp() {
-
     }
 
     @After
@@ -318,11 +335,16 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     public void testUpdateTilaValmisToJulkaistu() {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VALMIS, null, PerusteTila.LUONNOS);
+        TutkinnonOsaViiteDto osaDto = luoTutkinnonOsa(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoAmmattitaitovaatimukset());
         PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+
         final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
         lockService.lock(ctx);
-        perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+        perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS, osaDto));
         ppTestUtils.luoValidiKVLiite(projektiDto.getPeruste().getIdLong());
+
+        List<Ammattitaitovaatimus2019> vaatimukset = ammattitaitovaatimusService.getVaatimukset(ctx.getPerusteId());
+        assertThat(vaatimukset.stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList())).hasSize(1);
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, TestUtils.createTiedote());
         tulostaInfo(status);
@@ -342,6 +364,11 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
             return null;
         });
         lockService.unlock(ctx);
+
+        vaatimukset = ammattitaitovaatimusService.getVaatimukset(ctx.getPerusteId());
+        assertThat(vaatimukset).hasSize(1);
+        assertThat(vaatimukset.stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList())).hasSize(0);
+
     }
 
     @Test
@@ -583,16 +610,39 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     private TutkinnonOsaViiteDto luoTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi) {
+        return luoTutkinnonOsa(id, suoritustapakoodi, null);
+    }
+
+    private TutkinnonOsaViiteDto luoTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, Ammattitaitovaatimukset2019Dto ammattitaitovaatimukset2019Dto) {
         TutkinnonOsaViiteDto dto = new TutkinnonOsaViiteDto(BigDecimal.ONE, 1, TestUtils.lt(TestUtils.uniikkiString()), TutkinnonOsaTyyppi.NORMAALI);
         TutkinnonOsaDto tosa = new TutkinnonOsaDto();
         tosa.setNimi(dto.getNimi());
+        tosa.setAmmattitaitovaatimukset2019(ammattitaitovaatimukset2019Dto);
+        tosa.setKoodi(KoodiDto.of("tutkinnonOsa", "1234"));
 
         dto.setTutkinnonOsaDto(tosa);
         TutkinnonOsaViiteDto lisatty = perusteService.addTutkinnonOsa(id, suoritustapakoodi, dto);
         return lisatty;
     }
 
+    private Ammattitaitovaatimukset2019Dto luoAmmattitaitovaatimukset() {
+        Ammattitaitovaatimukset2019Dto vaatimuksetDto = Ammattitaitovaatimukset2019Dto.builder()
+                .kohde(LokalisoituTekstiDto.of("kohde"))
+                .vaatimukset(Stream.of(
+                        Ammattitaitovaatimus2019Dto.builder()
+                                .vaatimus(LokalisoituTekstiDto.of("1234"))
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+        Ammattitaitovaatimukset2019 vaatimukset = mapper.map(vaatimuksetDto, Ammattitaitovaatimukset2019.class);
+        return vaatimuksetDto;
+    }
+
     private RakenneOsaDto teeRakenneOsaDto(long id, Suoritustapakoodi suoritustapa, PerusteTila tila, Integer laajuus) {
+        return teeRakenneOsaDto(id, suoritustapa, tila, laajuus, new TutkinnonOsaViiteDto());
+    }
+
+    private RakenneOsaDto teeRakenneOsaDto(long id, Suoritustapakoodi suoritustapa, PerusteTila tila, Integer laajuus, TutkinnonOsaViiteDto tov) {
         TutkinnonOsaDto to = new TutkinnonOsaDto();
         to.setTila(tila);
 
@@ -602,11 +652,10 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         koodiDto.setUri(koodiDto.getKoodisto() + "_" + koodiDto.getArvo());
         to.setKoodi(koodiDto);
 
-        TutkinnonOsaViiteDto tov = new TutkinnonOsaViiteDto();
         tov.setTutkinnonOsaDto(to);
         tov.setLaajuus(new BigDecimal(laajuus));
 
-        TutkinnonOsaViiteDto luotuDto = perusteService.addTutkinnonOsa(id, suoritustapa, tov);
+        TutkinnonOsaViiteDto luotuDto = tov.getId() == null ? perusteService.addTutkinnonOsa(id, suoritustapa, tov) : tov;
 
         asetaPerusteenOsanTila(new Long(luotuDto.getTutkinnonOsa().getId()), tila);
 
@@ -632,14 +681,18 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     private RakenneModuuliDto luoValidiRakenne(Long id, Suoritustapakoodi suoritustapa, PerusteTila tila) {
+        return luoValidiRakenne(id, suoritustapa, tila, new TutkinnonOsaViiteDto());
+    }
+
+    private RakenneModuuliDto luoValidiRakenne(Long id, Suoritustapakoodi suoritustapa, PerusteTila tila, TutkinnonOsaViiteDto tov) {
         RakenneModuuliDto rakenne = teeRyhma(
-            10, 20, 1, 1,
-            teeRakenneOsaDto(id, suoritustapa, tila, 10),
-            teeRyhma(
-                10, 10, 1, 1,
+                10, 20, 1, 1,
                 teeRakenneOsaDto(id, suoritustapa, tila, 10),
-                teeRakenneOsaDto(id, suoritustapa, tila, 20)
-            )
+                teeRyhma(
+                        10, 10, 1, 1,
+                        teeRakenneOsaDto(id, suoritustapa, tila, 10),
+                        teeRakenneOsaDto(id, suoritustapa, tila, 20, tov)
+                )
         );
 
         return rakenne;
