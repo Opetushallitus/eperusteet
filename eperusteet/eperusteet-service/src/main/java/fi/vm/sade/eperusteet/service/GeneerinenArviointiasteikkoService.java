@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface GeneerinenArviointiasteikkoService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     List<GeneerinenArviointiasteikkoDto> getAll();
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PostAuthorize("returnObject == null or returnObject.julkaistu or isAuthenticated()")
     GeneerinenArviointiasteikkoDto getOne(Long id);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
