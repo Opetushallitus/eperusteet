@@ -495,15 +495,6 @@ public class DtoMapperConfig {
         return new DtoMapperImpl(factory.getMapperFacade());
     }
 
-    private static String getName(Attribute self, String otherwise) {
-        if (self != null) {
-            return self.getName();
-        }
-        else {
-            return otherwise;
-        }
-    }
-
     private static void perusteenOsaViiteMapping(DefaultMapperFactory factory, Class<? extends PerusteenOsaViiteDto<?>> dtoClass) {
         // Pelkästään yliluokan mappauksen konffaus ei toiminut
         factory.classMap(dtoClass, PerusteenOsaViite.class)
