@@ -9,6 +9,7 @@ public class KoodistoUriArvo {
 
     public static final String AMMATTITAITOVAATIMUKSET = "ammattitaitovaatimukset";
     public static final String TUTKINNONOSAT = "tutkinnonosat";
+    public static final String TUTKINTO = "tutkinto";
     public static final String KOULUTUS = "koulutus";
     public static final String TUTKINTONIMIKKEET = "tutkintonimikkeet";
     public static final String AMMATILLISENOPPIAINEET = "ammatillisenoppiaineet";

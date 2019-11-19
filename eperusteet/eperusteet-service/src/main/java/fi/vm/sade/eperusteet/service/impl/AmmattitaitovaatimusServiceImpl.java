@@ -52,6 +52,7 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -266,6 +267,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
 
                 if (tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi() != null) {
                     addTutkintoOsaKooditToKoulutus(peruste, tutkinnonOsaViite);
+                    addTutkintoOsaKooditToTutkintonimikkeet(peruste, tutkinnonOsaViite);
 
                     if (tutkinnonOsaViite.getTutkinnonOsaDto().getAmmattitaitovaatimukset2019() != null) {
                         addAmmattitaitovaatimusKooditToTutkinnonOsa(tutkinnonOsaViite);
@@ -302,5 +304,18 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 }
             });
         }
+    }
+
+    private void addTutkintoOsaKooditToTutkintonimikkeet(Peruste peruste, TutkinnonOsaViiteDto tutkinnonOsaViite) {
+        perusteService.getTutkintonimikeKoodit(peruste.getId()).forEach(tutkintonimikeKoodi -> {
+            log.debug("kasitellaan tutkintonimikeKoodit: {}", tutkintonimikeKoodi.getTutkintonimikeUri());
+            List<KoodistoKoodiDto> alarelaatiot = koodistoClient.getAlarelaatio(tutkintonimikeKoodi.getTutkintonimikeUri());
+
+            if (!alarelaatiot.stream().filter(alarelaatio -> alarelaatio.getKoodiUri().equals(tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri())).findFirst().isPresent()) {
+                log.debug("Lisätään relaatiot {} <- {}", tutkintonimikeKoodi.getTutkintonimikeUri(), tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri());
+                koodistoClient.addKoodirelaatio(tutkintonimikeKoodi.getTutkintonimikeUri(), tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri(), KoodiRelaatioTyyppi.SISALTYY);
+            }
+        });
+
     }
 }

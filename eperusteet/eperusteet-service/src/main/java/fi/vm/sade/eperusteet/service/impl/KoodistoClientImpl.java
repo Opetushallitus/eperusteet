@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Throwables;
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
@@ -345,13 +346,18 @@ public class KoodistoClientImpl implements KoodistoClient {
                 .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
 
         log.debug("url: {}", uri.toString());
-        ophClientHelper.post(koodistoServiceUrl, uri.toString());
+        try {
+            ophClientHelper.post(koodistoServiceUrl, uri.toString());
 
-        if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
-            cacheManager.getCache("koodistot").evict("alarelaatio:" + parentKoodi);
-            cacheManager.getCache("koodistot").evict("ylarelaatio:" + lapsiKoodi);
-        } else if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
-            cacheManager.getCache("koodistot").evict("rinnasteiset:" + parentKoodi);
+            if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
+                cacheManager.getCache("koodistot").evict("alarelaatio:" + parentKoodi);
+                cacheManager.getCache("koodistot").evict("ylarelaatio:" + lapsiKoodi);
+            } else if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
+                cacheManager.getCache("koodistot").evict("rinnasteiset:" + parentKoodi);
+            }
+        } catch (Exception e) {
+            log.error("Error with addKoodiRelaatio: {} <- {}", parentKoodi, lapsiKoodi);
+            log.error(e.getMessage());
         }
     }
 
@@ -385,9 +391,13 @@ public class KoodistoClientImpl implements KoodistoClient {
                 .path(ADD_CODE_RELATION)
                 .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
 
-        ophClientHelper.post(koodistoServiceUrl, uri.toString());
-
-        log.debug("lisättiin koodi {} koodin {} lapseksi", parentKoodi, lapsiKoodi);
+        try {
+            ophClientHelper.post(koodistoServiceUrl, uri.toString());
+            log.debug("lisättiin koodi {} koodin {} lapseksi", parentKoodi, lapsiKoodi);
+        } catch (Exception e) {
+            log.error("Error with addKoodiRelaatio: {} <- {}", parentKoodi, lapsiKoodi);
+            log.error(e.getMessage());
+        }
     }
 
 }
