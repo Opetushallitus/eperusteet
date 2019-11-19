@@ -92,4 +92,12 @@ public class Koodi implements Serializable {
             throw new BusinessRuleViolationException("uri: " + this.getUri() + " ei vastaa koodistoa: " + this.getKoodisto());
         }
     }
+
+
+    static public Koodi of(String koodisto, String arvo) {
+        Koodi result = new Koodi();
+        result.setUri(koodisto + "_" + arvo);
+        result.setKoodisto(koodisto);
+        return result;
+    }
 }

@@ -1978,7 +1978,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    @Cacheable("peruste-navigation")
+//    @Cacheable("peruste-navigation")
     public NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilder.class)
                 .buildNavigation(perusteId);

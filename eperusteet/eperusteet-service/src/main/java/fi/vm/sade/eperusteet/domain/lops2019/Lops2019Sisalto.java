@@ -4,8 +4,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -24,6 +23,9 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_sisalto")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Lops2019Sisalto extends AbstractAuditedReferenceableEntity implements
         PerusteenSisalto,
         StructurallyComparable<Lops2019Sisalto>,

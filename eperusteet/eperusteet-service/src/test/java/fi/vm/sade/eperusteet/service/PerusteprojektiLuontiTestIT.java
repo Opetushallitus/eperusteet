@@ -324,9 +324,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         Peruste peruste = new Peruste();
         peruste.setPerusteprojekti(projekti);
         PerusteHakuInternalDto hakuDto = mapper.map(peruste, PerusteHakuInternalDto.class);
-        assertThat(hakuDto)
-                .extracting("perusteprojekti.id")
-                .containsExactly(42L);
+        assertThat(hakuDto.getPerusteprojekti().getId()).isEqualTo(42L);
     }
 
     @Test
@@ -524,9 +522,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
                 .extracting(Koodi::getUri, Koodi::getKoodisto)
                 .contains("osaamisala_1234", "osaamisala");
         OsaamisalaDto oaMapped = mapper.map(koodi, OsaamisalaDto.class);
-        assertThat(oaMapped)
-                .extracting(OsaamisalaDto::getOsaamisalakoodiUri)
-                .contains("osaamisala_1234");
+        assertThat(oaMapped.getOsaamisalakoodiUri()).isEqualTo("osaamisala_1234");
     }
 
     @Test

@@ -8,8 +8,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.service.util.PerusteUtils;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -26,6 +25,9 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_oppiaine")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity implements
         Koodillinen,
         StructurallyComparable<Lops2019Oppiaine>,
@@ -115,6 +117,10 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
             joinColumns = {@JoinColumn(name = "oppimaara_id", insertable = false, updatable = false)},
             inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
     private Lops2019Oppiaine oppiaine; // Oppimäärän viittaus oppiaineeseen
+
+    public void asetaOppiaine(Lops2019Oppiaine oppiaine) {
+        this.oppiaine = oppiaine;
+    }
 
     public void setOppimaarat(final List<Lops2019Oppiaine> oppimaarat) {
         if (this.oppimaarat == null) {

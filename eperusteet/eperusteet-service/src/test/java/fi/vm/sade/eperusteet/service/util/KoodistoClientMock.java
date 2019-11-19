@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
@@ -110,8 +111,14 @@ public class KoodistoClientMock implements KoodistoClient {
     }
 
     @Override
-    public void addNimiAndUri(KoodiDto koodi) {
-        koodi.setNimi(lt(uniikkiString()).asMap());
+    public void addNimiAndArvo(KoodiDto koodi) {
+        if (koodi != null) {
+            koodi.setNimi(lt(uniikkiString()).asMap());
+            if (koodi.getUri() != null) {
+                String[] s = koodi.getUri().split("_");
+                koodi.setArvo(s[s.length - 1]);
+            }
+        }
     }
 
     @Override

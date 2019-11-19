@@ -22,7 +22,6 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoSuhdeDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoSuhteillaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -30,7 +29,7 @@ import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
-import fi.vm.sade.eperusteet.utils.client.OphClientException;
+import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
@@ -53,11 +52,9 @@ import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -219,7 +216,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
-    public void addNimiAndUri(KoodiDto koodi) {
+    public void addNimiAndArvo(KoodiDto koodi) {
         KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri());
         if (koodistoKoodi != null) {
             koodi.setArvo(koodistoKoodi.getKoodiArvo());
@@ -238,7 +235,7 @@ public class KoodistoClientImpl implements KoodistoClient {
         koodi.setUri(koodiUri);
         koodi.setKoodisto(koodisto);
         koodi.setVersio(versio);
-        addNimiAndUri(koodi);
+        addNimiAndArvo(koodi);
         return koodi;
     }
 

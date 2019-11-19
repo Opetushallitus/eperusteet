@@ -213,28 +213,4 @@ public class PerusteenOsaViite implements
         pov.setLapset(uudetLapset);
         return pov;
     }
-
-//    @Override
-    public NavigationNodeDto constructNavigation(DtoMapper mapper) {
-        NavigationType type = NavigationType.viite;
-        PerusteenOsa po = this.getPerusteenOsa();
-        if (po instanceof TekstiKappale) {
-            TekstiKappale tk = (TekstiKappale) po;
-            if (tk.isLiite()) {
-                type = NavigationType.liite;
-            }
-        }
-
-        return NavigationNodeDto
-                .of(type, this.getPerusteenOsa() != null
-                                ? mapper.map(
-                        this.getPerusteenOsa().getNimi(),
-                        LokalisoituTekstiDto.class)
-                                : null,
-                        getId())
-                .addAll(getLapset().stream()
-                    .map(node -> node.constructNavigation(mapper))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList()));
-    }
 }
