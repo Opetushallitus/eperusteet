@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -71,6 +72,9 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
     @Autowired
     @LockCtx(TutkinnonRakenneLockContext.class)
     protected LockService<TutkinnonRakenneLockContext> lockService;
+
+    @Autowired
+    TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
 
     protected Perusteprojekti projekti;
     protected Peruste peruste;
@@ -184,14 +188,13 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
     protected void lisaaTutkintonimikkeet(Long id, Collection<String> koodiUris) {
         Peruste peruste = perusteRepository.getOne(id);
 
-        Set<Koodi> tutkintonimikekoodit = koodiUris.stream().map(uri -> {
-            Koodi koodi = new Koodi();
-            koodi.setUri(uri);
-            return koodi;
-        }).collect(Collectors.toSet());
+        koodiUris.forEach(koodiUri -> {
+            TutkintonimikeKoodi tutkintonimikeKoodi = new TutkintonimikeKoodi();
+            tutkintonimikeKoodi.setTutkintonimikeUri(koodiUri);
+            tutkintonimikeKoodi.setTutkintonimikeArvo(koodiUri);
+            tutkintonimikeKoodi.setPeruste(peruste);
 
-        peruste.setTutkintonimikeKoodit(tutkintonimikekoodit);
-        perusteRepository.save(peruste);
+            tutkintonimikeKoodiRepository.save(tutkintonimikeKoodi);
+        });
     }
-
 }
