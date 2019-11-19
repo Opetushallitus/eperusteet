@@ -11,7 +11,7 @@ public interface GeneerinenArviointiasteikkoService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     List<GeneerinenArviointiasteikkoDto> getAll();
 
-    @PostAuthorize("returnObject == null or returnObject.julkaistu or isAuthenticated()")
+    @PostAuthorize("returnObject == null or returnObject.julkaistu or hasPermission(null, 'perusteprojekti', 'LUONTI')")
     GeneerinenArviointiasteikkoDto getOne(Long id);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
