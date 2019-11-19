@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "puutteelliset-osaamisalat": "ts-node ./puutteellisetosaamisalat.js",
-    "ammattitaitovaatimuskoodisto": "ts-node ./ammattitaitovaatimuskoodisto.ts"
+    "ammattitaitovaatimuskoodisto": "ts-node ./ammattitaitovaatimuskoodisto.ts",
+    "paivita-kaannostiedostot": "ts-node ./synckaannokset.ts"
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +19,8 @@
     "csv": "^4.0.0",
     "csv-writer": "^1.2.0",
     "lodash": "^4.17.11",
-    "qs": "^6.5.2"
+    "qs": "^6.5.2",
+    "xlsx": "^0.15.2"
   },
   "devDependencies": {
     "ts-node": "^7.0.1",
