@@ -181,4 +181,17 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
         perusteRepository.save(peruste);
     }
 
+    protected void lisaaTutkintonimikkeet(Long id, Collection<String> koodiUris) {
+        Peruste peruste = perusteRepository.getOne(id);
+
+        Set<Koodi> tutkintonimikekoodit = koodiUris.stream().map(uri -> {
+            Koodi koodi = new Koodi();
+            koodi.setUri(uri);
+            return koodi;
+        }).collect(Collectors.toSet());
+
+        peruste.setTutkintonimikeKoodit(tutkintonimikekoodit);
+        perusteRepository.save(peruste);
+    }
+
 }
