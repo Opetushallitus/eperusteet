@@ -108,7 +108,7 @@ function mergeLang(lang: string, ...blobs: object[]) {
       const val = blob[lang][key];
       if (val) {
         result[key] = val;
-        continue;
+        // console.log('setting locale', key, lang, val)
       }
     }
   }
@@ -119,7 +119,7 @@ function mergeLang(lang: string, ...blobs: object[]) {
 /**
  * merge
  *
- * Yhdistetään eri lähteiden käännösavaimet yhdeksi. Ensimmäisenä ilmennyt käännösavain valitaan
+ * Yhdistetään eri lähteiden käännösavaimet yhdeksi. Viimeisenä ilmennyt käännösavain valitaan
  * lopputulokseen.
  *
  * @param {object[]} ...blobs eri lähteiden käännösolioita
@@ -138,7 +138,6 @@ function merge(...blobs: object[]) {
 
 function writeLocales(locales, targetRootDir: string) {
   _.forEach(locales, (v, lang) => {
-    // const targetFile = join(targetRootDir, `locale-${lang}.json`);
     const targetFile = `./locale-${lang}.json`;
     writeFileSync(targetFile, JSON.stringify(v, null, 2));
   });
@@ -149,7 +148,7 @@ async function main() {
   const excel = readXlsx(locfile);
   const devs = lokalisaatioJsons(targetDir);
   const palvelu = await lokalisaatio();
-  const newLocales = merge(excel, palvelu, devs);
+  const newLocales = merge(devs, palvelu, excel);
   writeLocales(newLocales, targetDir);
 }
 
