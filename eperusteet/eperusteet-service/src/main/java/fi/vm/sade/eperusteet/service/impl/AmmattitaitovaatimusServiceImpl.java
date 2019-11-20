@@ -219,6 +219,14 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     }
 
     @Override
+    public void addAmmattitaitovaatimuskooditToKoodisto() {
+        perusteRepository.findByTilaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)
+                .forEach(peruste -> {
+                    addAmmattitaitovaatimuskooditToKoodisto(peruste.getId());
+                });
+    }
+
+    @Override
     public List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(Long perusteprojektiId, Long perusteId) {
         return addAmmattitaitovaatimuskooditToKoodisto(perusteId);
     }
@@ -234,21 +242,21 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
 
         for (Ammattitaitovaatimus2019 v : vaatimukset) {
 
-                LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(null, v.getVaatimus().getTeksti());
-                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("ammattitaitovaatimukset", lokalisoituTekstiDto, koodiStack.pop());
+            LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(null, v.getVaatimus().getTeksti());
+            KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("ammattitaitovaatimukset", lokalisoituTekstiDto, koodiStack.pop());
 
-                if (lisattyKoodi == null) {
-                    log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, lisattyKoodi);
-                    continue;
-                }
+            if (lisattyKoodi == null) {
+                log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, lisattyKoodi);
+                continue;
+            }
 
-                Koodi koodi = new Koodi();
-                koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
-                koodi.setUri(lisattyKoodi.getKoodiUri());
-                koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
-                v.setKoodi(koodi);
-                koodit.add(mapper.map(koodi, KoodiDto.class));
-                ammattitaitovaatimusRepository.save(v);
+            Koodi koodi = new Koodi();
+            koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
+            koodi.setUri(lisattyKoodi.getKoodiUri());
+            koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
+            v.setKoodi(koodi);
+            koodit.add(mapper.map(koodi, KoodiDto.class));
+            ammattitaitovaatimusRepository.save(v);
         }
         return koodit;
     }
@@ -266,9 +274,10 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
 
         List<Peruste> perusteet;
         if (projektiPaivitysAika == null) {
-            perusteet = perusteRepository.findByTilaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset());
+            perusteet = perusteRepository.findByTilaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI);
         } else {
-            perusteet = perusteRepository.findByTilaVersioaikaleimaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, projektiPaivitysAika, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset());
+            perusteet = perusteRepository.findByTilaVersioaikaleimaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, projektiPaivitysAika, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(),
+                    Suoritustapakoodi.REFORMI);
         }
 
         log.debug("Löytyi {} kpl perusteita", perusteet.size());

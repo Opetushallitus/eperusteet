@@ -35,6 +35,9 @@ public interface AmmattitaitovaatimusService {
 
     void updateAmmattitaitovaatimukset(Long perusteId);
 
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    void addAmmattitaitovaatimuskooditToKoodisto();
+
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(@P("perusteId") Long perusteId);
 
