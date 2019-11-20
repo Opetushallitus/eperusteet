@@ -734,14 +734,17 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 });
 
                 kohdealueet.forEach(alue -> {
-                    Element alueEl = docBase.getDocument().createElement("li");
+//                    Element alueEl = docBase.getDocument().createElement("li");
 
                     TekstiPalanen kuvaus = alue.getKuvaus();
                     if (kuvaus != null) {
-                        Element kuvausEl = docBase.getDocument().createElement("p");
-                        kuvausEl.setTextContent(getTextString(docBase, kuvaus));
-                        alueEl.appendChild(kuvausEl);
+//                        Element kuvausEl = docBase.getDocument().createElement("p");
+//                        kuvausEl.setTextContent(getTextString(docBase, kuvaus));
+//                        alueEl.appendChild(kuvausEl);
+                        addTeksti(docBase, getTextString(docBase, kuvaus), "p");
                     }
+
+//                    Element alueEl = docBase.getDocument().createElement("li");
 
                     if (!ObjectUtils.isEmpty(alue.getVaatimukset())) {
                         Element alueListaEl = docBase.getDocument().createElement("ul");
@@ -758,10 +761,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                             alueListaEl.appendChild(vaatimusEl);
                         });
 
-                        alueEl.appendChild(alueListaEl);
+//                        alueEl.appendChild(alueListaEl);
+//                        listaEl.appendChild(alueListaEl);
                     }
 
-                    listaEl.appendChild(alueEl);
                 });
             }
         }
