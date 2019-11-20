@@ -277,4 +277,5 @@ public class PerusteprojektiController {
             @PathVariable("perusteenOsaId") final Long perusteenOsaId) {
         return new ResponseEntity<>(service.isOwner(id, perusteenOsaId), HttpStatus.OK);
     }
+
 }

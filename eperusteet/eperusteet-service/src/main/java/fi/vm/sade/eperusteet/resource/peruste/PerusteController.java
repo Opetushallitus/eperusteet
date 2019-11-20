@@ -321,4 +321,11 @@ public class PerusteController {
         return ammattitaitovaatimusService.getAmmattitaitovaatimukset(perusteId);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/tutkinnonosat/ammattitaitovaatimuskoodisto", method = GET)
+    public void pushAllAmmattitaitovaatimuksetToKoodisto(
+            @PathVariable("perusteId") final Long perusteId) {
+        ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto();
+    }
+
 }
