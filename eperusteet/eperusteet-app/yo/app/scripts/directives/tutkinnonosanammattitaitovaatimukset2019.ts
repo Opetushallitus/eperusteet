@@ -11,8 +11,18 @@ angular
         Utils,
         Varmistusdialogi,
         YleinenData,
+        Kieli,
+        $translate,
+        Kaanna,
     ) {
-        $scope.ammattitaitovaatimukset = $scope.ammattitaitovaatimukset || {};
+
+        $scope.ammattitaitovaatimukset = $scope.ammattitaitovaatimukset ||
+        {
+            kohde: Kieli.SISALTOKIELET.reduce( (current, lang) => {
+                current[lang] = $translate.instant("opiskelija", {}, undefined, lang);
+                return current;
+              }, {})
+        };
 
         $scope.sortableOptionsKohdealue = {
             cursor: "move",
