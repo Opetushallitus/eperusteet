@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
@@ -22,11 +23,14 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,6 +148,46 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     @Test
     public void testLisaaAmmattitaitovaatimusTutkinnonosaKoodistoon() {
 
+        rakennaAmmattitaitovaatimusLatausPohjadata();
+
+        ammattitaitovaatimusService.lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(new GregorianCalendar(2017, 1, 1).getTime());
+
+        //posturl mockitettu KoodistoMockissa
+        verify(ophClientHelper, times(8)).post(any(), any());
+
+        verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1000" + "tutkinnonosat_200530");
+        verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1001" + "tutkinnonosat_200530");
+        verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_2000" + "tutkinnonosat_200530");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkintonimike_1000" + "tutkinnonosat_200530");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1000");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1001");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1002");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_2000");
+    }
+
+    @Test
+    public void test_findAmmattitaitovaatimusPerusteelliset() {
+
+        rakennaAmmattitaitovaatimusLatausPohjadata();
+
+        // kaikki
+        assertThat(perusteRepository.findAll()).hasSize(4);
+
+        // ammattivaatimuksilla 2
+        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(1970, 1, 1, 0, 0).toDate(),
+                PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)).hasSize(2);
+
+        // lukiolla 0
+        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(1970, 1, 1, 0, 0).toDate(),
+                PerusteTyyppi.NORMAALI, Arrays.asList(KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS.toString()), Suoritustapakoodi.LUKIOKOULUTUS)).hasSize(0);
+
+        // aikavertailulla 0
+        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(2020, 1, 1, 0, 0).toDate(),
+                PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)).hasSize(0);
+
+    }
+
+    private void rakennaAmmattitaitovaatimusLatausPohjadata() {
         loginAsUser("test");
 
         PerusteprojektiDto perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_1001", "ammattitaitovaatimukset_1002"), ProjektiTila.JULKAISTU);
@@ -160,19 +204,6 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
 
         updateKaikkienPerusteenOsienTilat(PerusteTila.VALMIS);
 
-        ammattitaitovaatimusService.lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(new GregorianCalendar(2017, 1, 1).getTime());
-
-        //posturl mockitettu KoodistoMockissa
-        verify(ophClientHelper, times(8)).post(any(), any());
-
-        verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1000" + "tutkinnonosat_200530");
-        verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1001" + "tutkinnonosat_200530");
-        verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_2000" + "tutkinnonosat_200530");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkintonimike_1000" + "tutkinnonosat_200530");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1000");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1001");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1002");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_2000");
     }
 
     private PerusteprojektiDto lisaaPerusteKoodistolla(Collection<String> koodiUrit, ProjektiTila tila) {
