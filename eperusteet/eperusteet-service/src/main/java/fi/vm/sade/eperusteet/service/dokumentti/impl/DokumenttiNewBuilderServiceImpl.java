@@ -734,19 +734,27 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 });
 
                 kohdealueet.forEach(alue -> {
-//                    Element alueEl = docBase.getDocument().createElement("li");
+                    Element alueEl = docBase.getDocument().createElement("div");
+                    docBase.getBodyElement().appendChild(alueEl);
 
                     TekstiPalanen kuvaus = alue.getKuvaus();
                     if (kuvaus != null) {
-//                        Element kuvausEl = docBase.getDocument().createElement("p");
-//                        kuvausEl.setTextContent(getTextString(docBase, kuvaus));
-//                        alueEl.appendChild(kuvausEl);
-                        addTeksti(docBase, getTextString(docBase, kuvaus), "p");
+                        Element kuvausEl = docBase.getDocument().createElement("strong");
+                        kuvausEl.setTextContent(getTextString(docBase, kuvaus));
+                        alueEl.appendChild(kuvausEl);
+//                        addTeksti(docBase, getTextString(docBase, kuvaus), "p");
                     }
 
 //                    Element alueEl = docBase.getDocument().createElement("li");
 
                     if (!ObjectUtils.isEmpty(alue.getVaatimukset())) {
+
+                        if (kohde != null) {
+                            Element kohdeEl = docBase.getDocument().createElement("p");
+                            kohdeEl.setTextContent(getTextString(docBase, kohde));
+                            alueEl.appendChild(kohdeEl);
+                        }
+
                         Element alueListaEl = docBase.getDocument().createElement("ul");
 
                         alue.getVaatimukset().forEach(vaatimus -> {
@@ -761,7 +769,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                             alueListaEl.appendChild(vaatimusEl);
                         });
 
-//                        alueEl.appendChild(alueListaEl);
+                        alueEl.appendChild(alueListaEl);
 //                        listaEl.appendChild(alueListaEl);
                     }
 
