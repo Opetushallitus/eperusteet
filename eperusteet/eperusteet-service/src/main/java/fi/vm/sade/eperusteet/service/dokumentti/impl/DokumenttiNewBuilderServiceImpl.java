@@ -742,10 +742,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         Element kuvausEl = docBase.getDocument().createElement("strong");
                         kuvausEl.setTextContent(getTextString(docBase, kuvaus));
                         alueEl.appendChild(kuvausEl);
-//                        addTeksti(docBase, getTextString(docBase, kuvaus), "p");
                     }
-
-//                    Element alueEl = docBase.getDocument().createElement("li");
 
                     if (!ObjectUtils.isEmpty(alue.getVaatimukset())) {
 
@@ -770,7 +767,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         });
 
                         alueEl.appendChild(alueListaEl);
-//                        listaEl.appendChild(alueListaEl);
                     }
 
                 });

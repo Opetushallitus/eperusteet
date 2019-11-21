@@ -13,14 +13,11 @@ angular
         YleinenData,
         Kieli,
         $translate,
-        Kaanna,
     ) {
 
         $scope.ammattitaitovaatimukset = $scope.ammattitaitovaatimukset ||
         {
             kohde: Kieli.SISALTOKIELET.reduce( (current, lang) => {
-                console.log("kaanna opiskelija " , Kaanna.kaanna("opiskelija"));
-                console.log("translate opiskelija ", $translate.instant("opiskelija", {}, undefined, lang));
                 current[lang] = $translate.instant("opiskelija", {}, undefined, lang);
                 return current;
               }, {})
