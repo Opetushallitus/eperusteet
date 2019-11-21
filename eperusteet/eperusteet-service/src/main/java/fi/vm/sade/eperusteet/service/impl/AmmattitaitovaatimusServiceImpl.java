@@ -53,6 +53,7 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -220,7 +221,8 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
 
     @Override
     public void addAmmattitaitovaatimuskooditToKoodisto() {
-        perusteRepository.findByTilaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)
+        perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(1970, 1, 1, 0, 0).toDate(),
+                PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)
                 .forEach(peruste -> {
                     addAmmattitaitovaatimuskooditToKoodisto(peruste.getId());
                 });
@@ -272,13 +274,8 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     @Override
     public void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika) {
 
-        List<Peruste> perusteet;
-        if (projektiPaivitysAika == null) {
-            perusteet = perusteRepository.findByTilaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI);
-        } else {
-            perusteet = perusteRepository.findByTilaVersioaikaleimaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, projektiPaivitysAika, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(),
-                    Suoritustapakoodi.REFORMI);
-        }
+        Date vrtAika = projektiPaivitysAika == null ? new DateTime(1970, 1, 1, 0, 0).toDate() : projektiPaivitysAika;
+        List<Peruste> perusteet = perusteet = perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, vrtAika, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI);
 
         log.debug("Löytyi {} kpl perusteita", perusteet.size());
         perusteet.forEach(peruste -> {
