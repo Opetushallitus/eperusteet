@@ -487,7 +487,7 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <configuration>
                     <path>/eperusteet-service</path>
-                    <contextReloadable>true</contextReloadable>
+                    <contextReloadable>false</contextReloadable>
                     <contextFile>${basedir}/src/test/config/context.xml</contextFile>
                 </configuration>
                 <dependencies>
