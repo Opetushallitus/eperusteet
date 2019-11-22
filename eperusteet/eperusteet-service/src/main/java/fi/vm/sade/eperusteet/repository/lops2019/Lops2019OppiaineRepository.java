@@ -13,4 +13,5 @@ import java.util.List;
 public interface Lops2019OppiaineRepository extends JpaWithVersioningRepository<Lops2019Oppiaine, Long> {
     @Query("SELECT om FROM Lops2019Oppiaine om WHERE om.oppiaine IN (:oppiaineet)")
     List<Lops2019Oppiaine> getOppimaaratByParents(@Param("oppiaineet") Collection<Lops2019Oppiaine> oppiaineet);
+
 }
