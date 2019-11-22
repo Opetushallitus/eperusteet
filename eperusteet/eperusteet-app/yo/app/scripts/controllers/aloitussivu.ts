@@ -35,8 +35,8 @@ angular
                     casTiedot: function(Profiili) {
                         return Profiili.casTiedot();
                     },
-                    async loadLangs($translate, Kieli) {
-                        await Promise.all(_.map(Kieli.SISALTOKIELET, (kieli) => $translate.use(kieli)));
+                    loadLangs($translate, Kieli, $stateParams) {
+                        _.forEach(Kieli.SISALTOKIELET, (kieli) => $translate.use(kieli));
                     },
                 },
                 onEnter: [
