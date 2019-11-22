@@ -34,7 +34,10 @@ angular
                     },
                     casTiedot: function(Profiili) {
                         return Profiili.casTiedot();
-                    }
+                    },
+                    async loadLangs($translate, Kieli) {
+                        await Promise.all(_.map(Kieli.SISALTOKIELET, (kieli) => $translate.use(kieli)));
+                    },
                 },
                 onEnter: [
                     "YleinenData",
