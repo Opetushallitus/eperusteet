@@ -298,7 +298,7 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         final Lops2019Oppiaine oa = oppiaineRepository.findOne(oppiaineId);
         final Peruste peruste = perusteRepository.findOne(perusteId);
         final boolean perusteHasOppiaine = peruste.getLops2019Sisalto().getOppiaineet().stream()
-                .map(x -> Stream.concat(Stream.of(oa), oa.getOppimaarat().stream()))
+                .map(x -> Stream.concat(Stream.of(x), x.getOppimaarat().stream()))
                 .flatMap(x -> x)
                 .anyMatch(oa::equals);
         if (!perusteHasOppiaine) {
