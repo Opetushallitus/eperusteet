@@ -88,6 +88,9 @@ public interface KoodistoClient {
     void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    void addKoodirelaatiot(String parentKoodi, List<String> lapsiKoodit, KoodiRelaatioTyyppi koodiRelaatioTyyppi);
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi);
 
 }

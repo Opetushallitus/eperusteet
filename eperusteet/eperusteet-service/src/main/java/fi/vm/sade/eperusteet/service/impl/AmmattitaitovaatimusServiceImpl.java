@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -44,6 +45,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -275,64 +277,66 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     public void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika) {
 
         Date vrtAika = projektiPaivitysAika == null ? new DateTime(1970, 1, 1, 0, 0).toDate() : projektiPaivitysAika;
-        List<Peruste> perusteet = perusteet = perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, vrtAika, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI);
+        List<Peruste> perusteet = perusteet = perusteRepository.findByTilaAikaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, vrtAika, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset());
 
         log.debug("Löytyi {} kpl perusteita", perusteet.size());
         perusteet.forEach(peruste -> {
-            getTutkinnonOsaViitteet(peruste).forEach(tutkinnonOsaViiteRef -> {
-                TutkinnonOsaViiteDto tutkinnonOsaViite = perusteService.getTutkinnonOsaViite(peruste.getId(), tutkinnonOsaViiteRef.getSuoritustapa().getSuoritustapakoodi(), tutkinnonOsaViiteRef.getId());
+            addTutkintoOsaKooditToTutkintonimikkeet(peruste);
 
-                if (tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi() != null) {
-                    addTutkintoOsaKooditToKoulutus(peruste, tutkinnonOsaViite);
-                    addTutkintoOsaKooditToTutkintonimikkeet(peruste, tutkinnonOsaViite);
-
-                    if (tutkinnonOsaViite.getTutkinnonOsaDto().getAmmattitaitovaatimukset2019() != null) {
-                        addAmmattitaitovaatimusKooditToTutkinnonOsa(tutkinnonOsaViite);
-                    }
-                }
-            });
+            List<TutkinnonOsa> tutkinnonOsat = getTutkinnonOsaViitteet(peruste).stream().map(TutkinnonOsaViite::getTutkinnonOsa).collect(Collectors.toList());
+            addTutkintoOsaKooditToKoulutus(peruste, tutkinnonOsat);
+            addAmmattitaitovaatimusKooditToTutkintoOsa(tutkinnonOsat);
         });
     }
 
-    private void addAmmattitaitovaatimusKooditToTutkinnonOsa(TutkinnonOsaViiteDto tutkinnonOsaViite) {
-        List<KoodistoKoodiDto> alarelaatiot = koodistoClient.getAlarelaatio(tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri());
-
-        log.debug("tutkinnonOsaViite, {}", tutkinnonOsaViite.getId());
-        log.debug("ammattitaitovaatimuksia {} kpl", tutkinnonOsaViite.getTutkinnonOsaDto().getAmmattitaitovaatimukset2019().getVaatimukset().size());
-
-        tutkinnonOsaViite.getTutkinnonOsaDto().getAmmattitaitovaatimukset2019().getVaatimukset().forEach(vaatimus -> {
-            if (!alarelaatiot.stream().filter(alarelaatio -> alarelaatio.getKoodiUri().equals(vaatimus.getKoodi().getUri())).findFirst().isPresent()) {
-                log.debug("Lisätään relaatiot {} <- {}", tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri(), vaatimus.getKoodi().getUri());
-                koodistoClient.addKoodirelaatio(tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri(), vaatimus.getKoodi().getUri(), KoodiRelaatioTyyppi.SISALTYY);
+    private void addAmmattitaitovaatimusKooditToTutkintoOsa(List<TutkinnonOsa> tutkinnonOsat) {
+        tutkinnonOsat.forEach(tutkinnonOsa -> {
+            if (tutkinnonOsa.getKoodi() != null) {
+                if (tutkinnonOsa.getAmmattitaitovaatimukset2019() != null) {
+                    addAlarelaatiot(tutkinnonOsa.getKoodi().getUri(), tutkinnonOsa.getAmmattitaitovaatimukset2019().getVaatimukset()
+                            .stream().map(vaatimus -> vaatimus.getKoodi().getUri()).collect(Collectors.toList()));
+                }
             }
         });
     }
 
-    private void addTutkintoOsaKooditToKoulutus(Peruste peruste, TutkinnonOsaViiteDto tutkinnonOsaViite) {
+    private void addTutkintoOsaKooditToKoulutus(Peruste peruste, List<TutkinnonOsa> tutkinnonOsat) {
         if (peruste.getKoulutukset() != null) {
             peruste.getKoulutukset().forEach(koulutus -> {
-
-                log.debug("kasitellaan koulutusuri: {}", koulutus.getKoulutuskoodiUri());
-                List<KoodistoKoodiDto> alarelaatiot = koodistoClient.getAlarelaatio(koulutus.getKoulutuskoodiUri());
-
-                if (!alarelaatiot.stream().filter(alarelaatio -> alarelaatio.getKoodiUri().equals(tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri())).findFirst().isPresent()) {
-                    log.debug("Lisätään relaatiot {} <- {}", koulutus.getKoulutuskoodiUri(), tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri());
-                    koodistoClient.addKoodirelaatio(koulutus.getKoulutuskoodiUri(), tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri(), KoodiRelaatioTyyppi.SISALTYY);
-                }
+                tutkinnonOsat.forEach(tutkinnonOsa -> {
+                    if (tutkinnonOsa.getKoodi() != null) {
+                        addAlarelaatiot(koulutus.getKoulutuskoodiUri(), Collections.singletonList(tutkinnonOsa.getKoodi().getUri()));
+                    }
+                });
             });
         }
     }
 
-    private void addTutkintoOsaKooditToTutkintonimikkeet(Peruste peruste, TutkinnonOsaViiteDto tutkinnonOsaViite) {
-        perusteService.getTutkintonimikeKoodit(peruste.getId()).forEach(tutkintonimikeKoodi -> {
-            log.debug("kasitellaan tutkintonimikeKoodit: {}", tutkintonimikeKoodi.getTutkintonimikeUri());
-            List<KoodistoKoodiDto> alarelaatiot = koodistoClient.getAlarelaatio(tutkintonimikeKoodi.getTutkintonimikeUri());
+    private void addTutkintoOsaKooditToTutkintonimikkeet(Peruste peruste) {
+        List<TutkintonimikeKoodiDto> tutkintonimikekoodit = perusteService.getTutkintonimikeKoodit(peruste.getId());
 
-            if (!alarelaatiot.stream().filter(alarelaatio -> alarelaatio.getKoodiUri().equals(tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri())).findFirst().isPresent()) {
-                log.debug("Lisätään relaatiot {} <- {}", tutkintonimikeKoodi.getTutkintonimikeUri(), tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri());
-                koodistoClient.addKoodirelaatio(tutkintonimikeKoodi.getTutkintonimikeUri(), tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi().getUri(), KoodiRelaatioTyyppi.SISALTYY);
+        tutkintonimikekoodit.forEach((tutkintonimikekoodi -> {
+            addAlarelaatiot(tutkintonimikekoodi.getTutkintonimikeUri(), Collections.singletonList(tutkintonimikekoodi.getTutkinnonOsaUri()));
+            addAlarelaatiot(tutkintonimikekoodi.getOsaamisalaUri(), Collections.singletonList(tutkintonimikekoodi.getTutkinnonOsaUri()));
+        }));
+
+    }
+
+    private void addAlarelaatiot(String koodiUri, List<String> lapsiKoodiUrit) {
+        if (koodiUri != null) {
+            log.debug("kasitellaan koodiUri: {}", koodiUri);
+            List<String> alarelaatiot = koodistoClient.getAlarelaatio(koodiUri).stream().map(KoodistoKoodiDto::getKoodiUri).collect(Collectors.toList());
+            lapsiKoodiUrit = lapsiKoodiUrit.stream()
+                    .filter(lapsiKoodiUri -> lapsiKoodiUri != null && !alarelaatiot.contains(lapsiKoodiUri))
+                    .collect(Collectors.toList());
+
+            log.debug("Lisätään relaatiot {} <- {}", koodiUri, lapsiKoodiUrit);
+
+            if (lapsiKoodiUrit.size() > 1) {
+                koodistoClient.addKoodirelaatiot(koodiUri, lapsiKoodiUrit, KoodiRelaatioTyyppi.SISALTYY);
+            } else if (lapsiKoodiUrit.size() == 1) {
+                koodistoClient.addKoodirelaatio(koodiUri, lapsiKoodiUrit.get(0), KoodiRelaatioTyyppi.SISALTYY);
             }
-        });
-
+        }
     }
 }

@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
  *
  * @author nkala
  */
+@Slf4j
 @Service
 @Profile("test")
 public class KoodistoClientMock implements KoodistoClient {
@@ -178,11 +180,19 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+        log.debug("koodirelaatio" + parentKoodi + lapsiKoodi);
         mockedOphClientHelper.post("", "koodirelaatio" + parentKoodi + lapsiKoodi);
     }
 
     @Override
+    public void addKoodirelaatiot(String parentKoodi, List<String> lapsiKoodit, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+        log.debug("koodirelaatio" + parentKoodi + lapsiKoodit);
+        mockedOphClientHelper.post("", "koodirelaatio" + parentKoodi + lapsiKoodit);
+    }
+
+    @Override
     public void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+        log.debug("koodistorelaatio" + parentKoodi + lapsiKoodi);
         mockedOphClientHelper.post("", "koodistorelaatio" + parentKoodi + lapsiKoodi);
     }
 }

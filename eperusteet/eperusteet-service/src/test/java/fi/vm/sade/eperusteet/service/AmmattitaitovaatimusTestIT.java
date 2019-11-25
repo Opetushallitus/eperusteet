@@ -33,6 +33,7 @@ import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.verification.VerificationMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -153,15 +154,15 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         ammattitaitovaatimusService.lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(new GregorianCalendar(2017, 1, 1).getTime());
 
         //posturl mockitettu KoodistoMockissa
-        verify(ophClientHelper, times(8)).post(any(), any());
+
+        verify(ophClientHelper, times(7)).post(any(), any());
 
         verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1000" + "tutkinnonosat_200530");
         verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1001" + "tutkinnonosat_200530");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "[ammattitaitovaatimukset_1000, ammattitaitovaatimukset_1001, ammattitaitovaatimukset_1002]");
+        verify(ophClientHelper).post("", "koodirelaatio" + "tutkintonimike_1000" + "tutkinnonosa_1000");
+        verify(ophClientHelper).post("", "koodirelaatio" + "osaamisala_1000" + "tutkinnonosa_1000");
         verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_2000" + "tutkinnonosat_200530");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkintonimike_1000" + "tutkinnonosat_200530");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1000");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1001");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_1002");
         verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_2000");
     }
 
@@ -194,7 +195,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_1000", "koulutus_1001"));
         perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_2000"), ProjektiTila.JULKAISTU);
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_2000"));
-        lisaaTutkintonimikkeet(new Long(perusteprojekti.getPeruste().getId()), asList("tutkintonimike_1000"));
+        lisaaTutkintonimikkeet(new Long(perusteprojekti.getPeruste().getId()), asList("1000"));
 
         // not found perusteet
         perusteprojekti = lisaaPerusteKoodistollaJaKoulutustyypilla(asList("ammattitaitovaatimukset_X000"), ProjektiTila.JULKAISTU, KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS);

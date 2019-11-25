@@ -190,8 +190,10 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
 
         koodiUris.forEach(koodiUri -> {
             TutkintonimikeKoodi tutkintonimikeKoodi = new TutkintonimikeKoodi();
-            tutkintonimikeKoodi.setTutkintonimikeUri(koodiUri);
+            tutkintonimikeKoodi.setTutkintonimikeUri("tutkintonimike_" + koodiUri);
             tutkintonimikeKoodi.setTutkintonimikeArvo(koodiUri);
+            tutkintonimikeKoodi.setTutkinnonOsaUri("tutkinnonosa_" + koodiUri);
+            tutkintonimikeKoodi.setOsaamisalaUri("osaamisala_" + koodiUri);
             tutkintonimikeKoodi.setPeruste(peruste);
 
             tutkintonimikeKoodiRepository.save(tutkintonimikeKoodi);

@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodiRelaatioMassaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
@@ -98,6 +99,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     private static final String GET_CODES_WITH_URI = CODES + "/{codesUri}";
     private static final String GET_CODES_WITH_URI_AND_VERSION = GET_CODES_WITH_URI + "/{version}";
     private static final String ADD_CODE_ELEMENT_RELATION = CODEELEMENT + "/addrelation/{codeElementUri}/{codeElementUriToAdd}/{relationType}";
+    private static final String ADD_CODE_ELEMENT_RELATIONS = CODEELEMENT + "/addrelations/";
     private static final String ADD_CODE_RELATION = CODES + "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}";
 
     @Autowired
@@ -357,6 +359,29 @@ public class KoodistoClientImpl implements KoodistoClient {
             }
         } catch (Exception e) {
             log.error("Error with addKoodiRelaatio: {} <- {}", parentKoodi, lapsiKoodi);
+            log.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public void addKoodirelaatiot(String parentKoodi, List<String> lapsiKoodit, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+
+        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+                .path(ADD_CODE_ELEMENT_RELATIONS).build();
+
+        KoodiRelaatioMassaDto dto = KoodiRelaatioMassaDto.builder()
+                .codeElementUri(parentKoodi)
+                .relationType(koodiRelaatioTyyppi.name())
+                .relations(lapsiKoodit)
+                .child(false)
+                .isChild(false)
+                .build();
+
+        log.debug("url: {}, dto: {}", uri.toString(), dto);
+        try {
+            ophClientHelper.post(koodistoServiceUrl, uri.toString(), dto, Object.class);
+        } catch (Exception e) {
+            log.error("Error with addKoodiRelaatio: {} <- {}", parentKoodi, lapsiKoodit);
             log.error(e.getMessage());
         }
     }

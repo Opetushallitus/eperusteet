@@ -419,6 +419,7 @@ public class DtoMapperConfig {
                         try {
                             koodistoClient.addNimiAndUri(b);
                         } catch (RestClientException | AccessDeniedException ex) {
+
                             logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
                         }
                     }
