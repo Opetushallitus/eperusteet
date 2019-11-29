@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa_;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite_;
+import fi.vm.sade.eperusteet.dto.peruste.KoulutusVientiEhto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
 import java.util.*;
@@ -182,11 +183,12 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, cb.or(preds.toArray(new Predicate[0])));
         }
 
-        if (pq.isKoulutusvienti()) {
-            pred = cb.and(pred, cb.isTrue(root.get(Peruste_.koulutusvienti)));
-        }
-        else {
-            pred = cb.and(pred, cb.isFalse(root.get(Peruste_.koulutusvienti)));
+        if (pq.getKoulutusvienti() != KoulutusVientiEhto.KAIKKI) {
+            if (pq.isKoulutusvienti()) {
+                pred = cb.and(pred, cb.isTrue(root.get(Peruste_.koulutusvienti)));
+            } else {
+                pred = cb.and(pred, cb.isFalse(root.get(Peruste_.koulutusvienti)));
+            }
         }
 
         if (pq.getDiaarinumero() != null) {
