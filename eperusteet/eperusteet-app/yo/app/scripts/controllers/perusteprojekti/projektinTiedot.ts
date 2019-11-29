@@ -44,7 +44,8 @@ angular
                         sivu: $scope.nykyinen - 1,
                         sivukoko: $scope.itemsPerPage,
                         tila: "valmis",
-                        perusteTyyppi: pohja ? "pohja" : "normaali"
+                        perusteTyyppi: pohja ? "pohja" : "normaali",
+                        koulutusvienti: "kaikki"
                     },
                     function(perusteet) {
                         $scope.perusteet = perusteet.data;
