@@ -66,7 +66,7 @@ angular.module("eperusteApp").config($stateProvider => {
                 isOsaaminen && !isNew
                     ? laajaalaiset.get($stateParams.osanId)
                     : Api.restangularizeElement(laajaalaiset, {}, ""),
-            oppiaineet: (vaihe, isVaihe) => isVaihe ? vaihe.all("oppiaineet").getList() : null
+            oppiaineet: (vaihe, isVaihe, isNew) => isVaihe && !isNew ? vaihe.all("oppiaineet").getList() : null
         },
         controller: (
             $scope,
