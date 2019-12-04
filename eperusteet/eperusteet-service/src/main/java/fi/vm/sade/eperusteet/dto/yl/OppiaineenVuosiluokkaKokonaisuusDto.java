@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.dto.yl;
 
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,6 +38,7 @@ public class OppiaineenVuosiluokkaKokonaisuusDto implements ReferenceableDto {
     private Optional<TekstiOsaDto> ohjaus;
     private Optional<TekstiOsaDto> arviointi;
     private Optional<TekstiOsaDto> sisaltoalueinfo;
+    private Optional<LokalisoituTekstiDto> vapaaTeksti;
     private List<OpetuksenTavoiteDto> tavoitteet;
     private List<KeskeinenSisaltoalueDto> sisaltoalueet;
 }

@@ -89,8 +89,9 @@ div
       h3.panel-title.osio-otsikko(ng-click='editableModel.tavoitteet.$isCollapsed = !editableModel.tavoitteet.$isCollapsed')
         span.glyphicon(ng-class="editableModel.tavoitteet.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'")
         span(ng-bind="'perusopetus-tavoitteet' | kaanna")
-
     .panel-body
+      div.vapaateksti(ng-if="editableModel.vapaaTeksti")
+        span(ng-bind-html="editableModel.vapaaTeksti | kaanna | unsafe")
       div(ng-show='editableModel.tavoitteet.length == 0')
         span(kaanna="'tyhja-placeholder-opetuksen-yleiset-tavoitteet'")
       div(ng-show="editableModel.tavoitteet.length > 0")
@@ -156,4 +157,7 @@ div
 
     // Tavoitteet
     h3.panel-title.osio-otsikko(ng-bind="'perusopetus-tavoitteet' | kaanna")
+    div.vapaateksti
+      h4(ng-bind="'vapaa-tekstisisalto' | kaanna")
+      #vapaa-teksti-input.msd-elastic(ckeditor, ng-model='editableModel.vapaaTeksti', slocalized)
     aipe-tavoitteet(model="editableModel.tavoitteet", laajaalaiset="laajaalaiset", vaihe="vaihe", editing="true")
