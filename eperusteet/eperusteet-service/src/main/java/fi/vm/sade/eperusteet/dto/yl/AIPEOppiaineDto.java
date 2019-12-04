@@ -49,4 +49,6 @@ public class AIPEOppiaineDto extends AIPEOppiaineSuppeaDto {
     private List<KeskeinenSisaltoalueDto> sisaltoalueet;
 
     private List<AIPEKurssiSuppeaDto> kurssit;
+
+    private Optional<LokalisoituTekstiDto> vapaaTeksti;
 }

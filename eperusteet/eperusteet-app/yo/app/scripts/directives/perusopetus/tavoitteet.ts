@@ -200,6 +200,10 @@ angular
         };
 
         $scope.paallekkaisiaArvioita = (tavoite) => {
+            if (!tavoite.arvioinninkohteet) {
+                return false;
+            }
+
             return new Set(tavoite.arvioinninkohteet.map(arviointi => arviointi.arvosana)).size !== tavoite.arvioinninkohteet.length;
         }
 
@@ -263,7 +267,7 @@ angular
         };
 
         $scope.getArvioinninKohteenTeksti = (tavoite) => {
-            
+
             const hyvanOsaamisenArvio = _.find(tavoite.arvioinninkohteet, (arvioinninkohde: any) => {
                 return arvioinninkohde.arvosana == 8
             });
@@ -274,5 +278,5 @@ angular
 
             return tavoite.arvioinninKuvaus;
         }
-        
+
     });

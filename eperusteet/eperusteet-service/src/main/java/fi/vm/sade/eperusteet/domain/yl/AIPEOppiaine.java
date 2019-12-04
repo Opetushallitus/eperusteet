@@ -135,6 +135,13 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @OrderBy("jarjestys, id")
     private List<AIPEKurssi> kurssit = new ArrayList<>();
 
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    private TekstiPalanen vapaaTeksti;
+
     @Getter
     @Setter
     private boolean koosteinen = false;
