@@ -241,6 +241,11 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         Peruste peruste = perusteRepository.findOne(perusteId);
 
         List<Ammattitaitovaatimus2019> vaatimukset = getVaatimukset(peruste).stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList());
+
+        if (vaatimukset.isEmpty()) {
+            return koodit;
+        }
+
         Stack<Long> koodiStack = new Stack<>();
         koodiStack.addAll(koodistoClient.nextKoodiId("ammattitaitovaatimukset", vaatimukset.size()));
 
