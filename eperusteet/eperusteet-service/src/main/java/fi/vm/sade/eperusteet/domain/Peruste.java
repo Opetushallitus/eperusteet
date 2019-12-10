@@ -103,7 +103,7 @@ public class Peruste extends AbstractAuditedEntity
     @Getter
     @Setter
     @NotNull(groups = { Valmis.class, ValmisPohja.class })
-    @Column(updatable = false, name = "koulutustyyppi")
+    @Column(name = "koulutustyyppi")
     private String koulutustyyppi;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})

@@ -97,6 +97,7 @@ angular
                     arviointiasteikko.osaamistasot[0].otsikko[kieli] = Kaanna.kaanna("kvliiteen-yksiportainen-arviointiasteikko", kieli);
                 });
             }
+            $scope.koulutustyypit = YleinenData.koulutustyypit;
             $scope.kvliite = kvliite;
             $scope.kvliitePeriytynyt = !kvliite || kvliite.periytynyt;
             $scope.peruste.kvliite = kvliite;
