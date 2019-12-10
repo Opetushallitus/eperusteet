@@ -1479,7 +1479,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
             pov.setVanhempi(sisalto);
             sisalto.getLapset().add(pov);
-        } else if (KoulutusTyyppi.LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+        } else if ((KoulutusTyyppi.LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+                || KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+                || KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS.toString().equals(peruste.getKoulutustyyppi()))
                 && KoulutustyyppiToteutus.LOPS2019.equals(peruste.getToteutus())) {
             // noop
         }
