@@ -83,6 +83,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.*;
+
 /**
  *
  * @author jhyoty
@@ -745,8 +747,23 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 }
             }
 
-            if (!current.getKoulutustyyppi().equals(updated.getKoulutustyyppi())) {
-                throw new BusinessRuleViolationException("Koulutustyyppiä ei voi vaihtaa");
+            if (!Objects.equals(current.getKoulutustyyppi(), updated.getKoulutustyyppi())) {
+                ArrayList<String> lukioKoulutustyypit = new ArrayList<>();
+                lukioKoulutustyypit.add(LUKIOKOULUTUS.toString());
+                lukioKoulutustyypit.add(AIKUISTENLUKIOKOULUTUS.toString());
+                lukioKoulutustyypit.add(LUKIOVALMISTAVAKOULUTUS.toString());
+
+                // Sallitaan jos sama sisältörakenne
+                if (lukioKoulutustyypit.contains(current.getKoulutustyyppi())
+                        && lukioKoulutustyypit.contains(updated.getKoulutustyyppi())) {
+                    // noop
+                } else {
+                    throw new BusinessRuleViolationException("Koulutustyypin sisällön rakenne täytyy olla sama");
+                }
+            }
+
+            if (!Objects.equals(current.getToteutus(), updated.getToteutus())) {
+                throw new BusinessRuleViolationException("Toteutustyyppiä ei voi vaihtaa");
             }
 
             if (current.getTila() == PerusteTila.VALMIS) {
@@ -768,6 +785,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
                 current.setPaatospvm(updated.getPaatospvm());
                 current.setKoulutusvienti(updated.isKoulutusvienti());
+                current.setKoulutustyyppi(updated.getKoulutustyyppi());
             }
         }
         perusteRepository.save(current);
@@ -813,6 +831,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setNimi(updated.getNimi());
         current.setPaatospvm(updated.getPaatospvm());
         current.setKoulutusvienti(updated.isKoulutusvienti());
+        current.setKoulutustyyppi(updated.getKoulutustyyppi());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
             throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");
@@ -1479,9 +1498,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
             pov.setVanhempi(sisalto);
             sisalto.getLapset().add(pov);
-        } else if ((KoulutusTyyppi.LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
-                || KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
-                || KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS.toString().equals(peruste.getKoulutustyyppi()))
+        } else if ((LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+                || AIKUISTENLUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+                || LUKIOVALMISTAVAKOULUTUS.toString().equals(peruste.getKoulutustyyppi()))
                 && KoulutustyyppiToteutus.LOPS2019.equals(peruste.getToteutus())) {
             // noop
         }
@@ -1575,9 +1594,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 || koulutustyyppi == KoulutusTyyppi.LISAOPETUS
                 || koulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
             peruste.setSisalto(new EsiopetuksenPerusteenSisalto());
-        } else if (koulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS
-                || koulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS
-                || koulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS) {
+        } else if (koulutustyyppi == LUKIOKOULUTUS
+                || koulutustyyppi == AIKUISTENLUKIOKOULUTUS
+                || koulutustyyppi == LUKIOVALMISTAVAKOULUTUS) {
             if (KoulutustyyppiToteutus.LOPS2019.equals(toteutus)) {
                 st = suoritustapaService.createSuoritustapa(Suoritustapakoodi.LUKIOKOULUTUS2019, LaajuusYksikko.OPINTOPISTE);
                 Lops2019Sisalto sisalto = new Lops2019Sisalto();

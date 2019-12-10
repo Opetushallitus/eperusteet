@@ -129,6 +129,16 @@ mixin kvliite()
               tr
                 th(kaanna='') voimassaolo-paattymispvm
                 td(pvm='peruste.voimassaoloLoppuu')
+        .panel.panel-default.panel-clean
+          .panel-heading
+            h3.panel-title(kaanna="'koulutustyyppi-label'")
+          .panel-body
+            div(ng-show='editEnabled')
+              select.form-control(ng-model='editablePeruste.koulutustyyppi'
+                ng-required='true'
+                ng-options='kt as (kt | kaanna) for kt in koulutustyypit')
+            div(ng-hide='editEnabled')
+              span {{ peruste.koulutustyyppi | kaanna }}
         div(ng-show='isAmmatillinen')
           +kvliiteKentta('suorittaneen-osaaminen', 'suorittaneenOsaaminen', 'true')
           +kvliiteKentta('tyotehtavat-joissa-voi-toimia', 'tyotehtavatJoissaVoiToimia', 'true')
