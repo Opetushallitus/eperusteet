@@ -13,6 +13,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -80,9 +81,6 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
     @Override
     public GeneerinenArviointiasteikkoDto update(Long id, GeneerinenArviointiasteikkoDto asteikkoDto) {
         GeneerinenArviointiasteikko asteikko = geneerinenArviointiasteikkoRepository.findOne(id);
-        if (asteikko.isJulkaistu()) {
-            throw new BusinessRuleViolationException("julkaistua-ei-voi-muokata");
-        }
 
         asteikkoDto.setId(id);
         ArviointiAsteikko arviointiAsteikko = asteikko.getArviointiAsteikko();
@@ -95,9 +93,8 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
 
     @Override
     public void remove(Long id) {
-        GeneerinenArviointiasteikko vanha = geneerinenArviointiasteikkoRepository.findOne(id);
-        if (vanha.isJulkaistu()) {
-            throw new BusinessRuleViolationException("julkaistua-ei-voi-muokata");
+        if (geneerinenArviointiasteikkoRepository.auditJulkaistu(id)) {
+            throw new BusinessRuleViolationException("julkaistua-ei-voi-poistaa");
         }
         geneerinenArviointiasteikkoRepository.delete(id);
     }

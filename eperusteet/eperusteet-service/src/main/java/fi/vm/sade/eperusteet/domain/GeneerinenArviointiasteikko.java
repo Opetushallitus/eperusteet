@@ -48,13 +48,8 @@ public class GeneerinenArviointiasteikko extends AbstractAuditedReferenceableEnt
     private Set<GeneerisenOsaamistasonKriteeri> osaamistasonKriteerit = new HashSet<>();
 
     @Getter
+    @Setter
     private boolean julkaistu;
-
-    public void setJulkaistu(boolean julkaistu) {
-        if (!this.julkaistu) {
-            this.julkaistu = julkaistu;
-        }
-    }
 
     @Override
     public GeneerinenArviointiasteikko copy(boolean deep) {

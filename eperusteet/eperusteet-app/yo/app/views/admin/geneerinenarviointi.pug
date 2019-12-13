@@ -61,6 +61,11 @@
             kaanna="'kopioi'")
 
           button.btn.btn-default(
+            ng-show="geneerinen.julkaistu",
+            ng-click="avaa(geneerinen)",
+            kaanna="'avaa'")
+
+          button.btn.btn-default(
             ng-show="!geneerinen.julkaistu",
             ng-click="paivita(geneerinen)",
             kaanna="'tallenna'")
