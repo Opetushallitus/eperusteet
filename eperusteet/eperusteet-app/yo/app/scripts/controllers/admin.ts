@@ -141,6 +141,23 @@ angular
             })();
         };
 
+        $scope.avaa = (el) => {
+            Varmistusdialogi.dialogi({
+                otsikko: "vahvista-avaus",
+                teksti: "haluatko-varmasti-avata",
+                primaryBtn: "avaa",
+                async successCb() {
+                    el.julkaistu = false;
+                    try {
+                        await $scope.paivita(el);
+                    }
+                    catch (err) {
+                        Notifikaatiot.serverCb(err);
+                    }
+                }
+            })();
+        };
+
         $scope.poista = (el) => {
             Varmistusdialogi.dialogi({
                 otsikko: "vahvista-poisto",
