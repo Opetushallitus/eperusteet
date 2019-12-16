@@ -923,7 +923,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                 Element th = docBase.getDocument().createElement("th");
                 th.setAttribute("colspan", "4");
-                th.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, nimi)));
+                // EP-1996
+                // th.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, nimi)));
                 Element kohdeEl = docBase.getDocument().createElement("p");
                 kohdeEl.setTextContent(getTextString(docBase, kohde));
                 th.appendChild(kohdeEl);
