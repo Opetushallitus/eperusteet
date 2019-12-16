@@ -69,8 +69,6 @@ public class ValidatorKvliite implements Validator {
         }
         tarkistaLokalisoituTekstiDto("kvliite-validointi-jatkoopinto-kelpoisuus",
                 julkinenKVLiite.getJatkoopintoKelpoisuus(), vaaditutKielet, virheellisetKielet);
-        tarkistaLokalisoituTekstiDto("kvliite-validointi-kansainvaliset-sopimukset",
-                julkinenKVLiite.getKansainvalisetSopimukset(), vaaditutKielet, virheellisetKielet);
         tarkistaLokalisoituTekstiDto("kvliite-validointi-saados-perusta",
                 julkinenKVLiite.getSaadosPerusta(), vaaditutKielet, virheellisetKielet);
         tarkistaLokalisoituTekstiDto("kvliite-validointi-pohjakoulutusvaatimukset",
