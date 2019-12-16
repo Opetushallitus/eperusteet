@@ -89,27 +89,30 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
         rakenne = suoritustapa.getRakenne();
     }
 
-
     protected ArviointiAsteikkoDto addArviointiasteikot() {
+        return addArviointiasteikot(0l);
+    }
+
+    protected ArviointiAsteikkoDto addArviointiasteikot(long plusId) {
         TekstiPalanen osaamistasoOtsikko = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko"));
         em.persist(osaamistasoOtsikko);
 
         List<Osaamistaso> osaamistasot = Stream.of(
                 Osaamistaso.builder()
-                        .id(2L)
+                        .id(2L + plusId)
                         .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 1")).build(),
                 Osaamistaso.builder()
-                        .id(3L)
+                        .id(3L + plusId)
                         .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 2")).build(),
                 Osaamistaso.builder()
-                        .id(4L)
+                        .id(4L + plusId)
                         .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 3")).build())
                 .peek(em::persist)
                 .collect(Collectors.toList());
 
 
         ArviointiAsteikko asteikko = ArviointiAsteikko.builder()
-                .id(1L)
+                .id(1L + plusId)
                 .osaamistasot(osaamistasot)
                 .build();
 

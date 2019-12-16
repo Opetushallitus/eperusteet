@@ -25,4 +25,8 @@ public interface GeneerinenArviointiasteikkoService {
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     GeneerinenArviointiasteikkoDto kopioi(Long id);
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    boolean geneerinenArviointiJulkaistu(Long id);
+
 }
