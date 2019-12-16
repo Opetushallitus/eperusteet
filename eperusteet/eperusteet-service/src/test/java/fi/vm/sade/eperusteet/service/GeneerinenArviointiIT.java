@@ -72,7 +72,7 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
     @Test
     @Rollback
     public void testJulkaisu() {
-        GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto();
+        GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(0);
         GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
 
         geneerinen.setJulkaistu(true);
@@ -89,18 +89,28 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         {
             TestTransaction.start();
             TestTransaction.flagForRollback();
-            GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto();
+
+            geneerinenArviointiasteikkoService.add(buildGeneerinenArviointiasteikkoDto(0));
+            GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(10);
             GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
 
             geneerinenArviointiasteikkoService.remove(geneerinen.getId());
             assertThat(geneerinenArviointiasteikkoRepository.findOne(geneerinen.getId())).isNull();
+            assertThat(geneerinenArviointiasteikkoRepository.count()).isEqualTo(1);
             TestTransaction.end();
         }
 
         {
             TestTransaction.start();
             TestTransaction.flagForCommit();
-            GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto();
+
+            geneerinenArviointiasteikkoService.add(buildGeneerinenArviointiasteikkoDto(0));
+            geneerinenArviointiasteikkoService.add(buildGeneerinenArviointiasteikkoDto(10));
+            GeneerinenArviointiasteikkoDto geneerinenNotDelete = geneerinenArviointiasteikkoService.add(buildGeneerinenArviointiasteikkoDto(20));
+            geneerinenNotDelete.setJulkaistu(true);
+            geneerinenArviointiasteikkoService.update(geneerinenNotDelete.getId(), geneerinenNotDelete);
+
+            GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(30);
             GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
 
             geneerinen.setJulkaistu(true);
@@ -112,6 +122,8 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
             assertThatThrownBy(() -> {
                 geneerinenArviointiasteikkoService.remove(geneerinen.getId());
             }).hasMessage("julkaistua-ei-voi-poistaa");
+
+            assertThat(geneerinenArviointiasteikkoRepository.count()).isEqualTo(4);
         }
     }
 
@@ -157,8 +169,8 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         assertThat(kopio.getOsaamistasonKriteerit()).hasSize(3);
     }
 
-    private GeneerinenArviointiasteikkoDto buildGeneerinenArviointiasteikkoDto() {
-        ArviointiAsteikkoDto asteikko = addArviointiasteikot();
+    private GeneerinenArviointiasteikkoDto buildGeneerinenArviointiasteikkoDto(long plusId) {
+        ArviointiAsteikkoDto asteikko = addArviointiasteikot(plusId);
 
         Set<GeneerisenArvioinninOsaamistasonKriteeriDto> kriteerit = Stream.of(
                 GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
