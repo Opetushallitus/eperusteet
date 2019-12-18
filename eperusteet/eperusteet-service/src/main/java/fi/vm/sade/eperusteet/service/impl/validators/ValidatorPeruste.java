@@ -362,7 +362,6 @@ public class ValidatorPeruste implements Validator {
 
         Set<Kieli> vaaditutKielet = peruste.getKielet();
         Map<String, String> virheellisetKielet = new HashMap<>();
-        tarkistaTekstipalanen("peruste-validointi-kuvaus", peruste.getKuvaus(), vaaditutKielet, virheellisetKielet);
         tarkistaTekstipalanen("peruste-validointi-nimi", peruste.getNimi(), vaaditutKielet, virheellisetKielet);
 
         if (peruste.getKoulutukset() != null) {
