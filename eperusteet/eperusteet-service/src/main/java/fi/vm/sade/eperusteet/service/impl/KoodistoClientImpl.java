@@ -139,7 +139,7 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public KoodistoKoodiDto get(String koodistoUri, String koodiUri) {
-        return get(koodistoUri, koodiUri, null);
+        return self.get(koodistoUri, koodiUri, null);
     }
 
     @Override
