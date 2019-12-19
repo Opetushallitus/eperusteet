@@ -313,6 +313,7 @@ public class Peruste extends AbstractAuditedEntity
         }
     }
 
+    @Override
     public KoulutustyyppiToteutus getToteutus() {
         return PerusteUtils.getToteutus(this.toteutus, getKoulutustyyppi(), getTyyppi());
     }

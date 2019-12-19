@@ -727,7 +727,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     Element vaatimusEl = docBase.getDocument().createElement("li");
                     String rivi = getTextString(docBase, vaatimus.getVaatimus());
                     if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
-                        rivi += " (" + vaatimus.getKoodi().getUri() + ")";
+                        KoodistoKoodiDto koodi = koodistoService.get(vaatimus.getKoodi().getKoodisto(), vaatimus.getKoodi().getUri());
+                        rivi += " (" + koodi.getKoodiArvo() + ")";
                     }
                     vaatimusEl.setTextContent(rivi);
                     listaEl.appendChild(vaatimusEl);
@@ -759,7 +760,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                             String rivi = getTextString(docBase, vaatimus.getVaatimus());
                             if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
-                                rivi += " (" + vaatimus.getKoodi().getUri() + ")";
+                                KoodistoKoodiDto koodi = koodistoService.get(vaatimus.getKoodi().getKoodisto(), vaatimus.getKoodi().getUri());
+                                rivi += " (" + koodi.getKoodiArvo() + ")";
                             }
                             vaatimusEl.setTextContent(rivi);
 
