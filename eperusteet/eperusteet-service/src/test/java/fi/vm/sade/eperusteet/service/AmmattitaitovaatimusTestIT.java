@@ -155,7 +155,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
 
         //posturl mockitettu KoodistoMockissa
 
-        verify(ophClientHelper, times(7)).post(any(), any());
+        verify(ophClientHelper, times(8)).post(any(), any());
 
         verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1000" + "tutkinnonosat_200530");
         verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_1001" + "tutkinnonosat_200530");
@@ -163,7 +163,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         verify(ophClientHelper).post("", "koodirelaatio" + "tutkintonimike_1000" + "tutkinnonosa_1000");
         verify(ophClientHelper).post("", "koodirelaatio" + "osaamisala_1000" + "tutkinnonosa_1000");
         verify(ophClientHelper).post("", "koodirelaatio" + "koulutus_2000" + "tutkinnonosat_200530");
-        verify(ophClientHelper).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_2000");
+        verify(ophClientHelper, Mockito.times(2)).post("", "koodirelaatio" + "tutkinnonosat_200530" + "ammattitaitovaatimukset_2000");
     }
 
     @Test
@@ -191,9 +191,9 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     private void rakennaAmmattitaitovaatimusLatausPohjadata() {
         loginAsUser("test");
 
-        PerusteprojektiDto perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_1001", "ammattitaitovaatimukset_1002"), ProjektiTila.JULKAISTU);
+        PerusteprojektiDto perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_1001", "ammattitaitovaatimukset_1002"), ProjektiTila.JULKAISTU, false);
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_1000", "koulutus_1001"));
-        perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_2000"), ProjektiTila.JULKAISTU);
+        perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_2000"), ProjektiTila.JULKAISTU, true);
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_2000"));
         lisaaTutkintonimikkeet(new Long(perusteprojekti.getPeruste().getId()), asList("1000"));
 
@@ -208,6 +208,10 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     }
 
     private PerusteprojektiDto lisaaPerusteKoodistolla(Collection<String> koodiUrit, ProjektiTila tila) {
+        return lisaaPerusteKoodistolla(koodiUrit, tila, true);
+    }
+
+    private PerusteprojektiDto lisaaPerusteKoodistolla(Collection<String> koodiUrit, ProjektiTila tila, boolean lisaaKohdealueelliset) {
 
         PerusteprojektiDto aProjekti = ppTestUtils.createPerusteprojekti(config -> {
             config.setReforminMukainen(true);
@@ -215,10 +219,13 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         PerusteDto aPeruste = ppTestUtils.initPeruste(aProjekti.getPeruste().getIdLong());
 
         Ammattitaitovaatimukset2019 vaatimukset = new Ammattitaitovaatimukset2019();
-        Ammattitaitovaatimus2019Kohdealue kohdealue = new Ammattitaitovaatimus2019Kohdealue();
-        kohdealue.setVaatimukset(createVaatimukset(koodiUrit));
 
-        vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
+        if (lisaaKohdealueelliset) {
+            Ammattitaitovaatimus2019Kohdealue kohdealue = new Ammattitaitovaatimus2019Kohdealue();
+            kohdealue.setVaatimukset(createVaatimukset(koodiUrit));
+            vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
+        }
+
         vaatimukset.setVaatimukset(createVaatimukset(koodiUrit));
 
         Peruste peruste = perusteRepository.findOne(aPeruste.getId());

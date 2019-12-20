@@ -300,6 +300,11 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 if (tutkinnonOsa.getAmmattitaitovaatimukset2019() != null) {
                     addAlarelaatiot(tutkinnonOsa.getKoodi().getUri(), tutkinnonOsa.getAmmattitaitovaatimukset2019().getVaatimukset()
                             .stream().map(vaatimus -> vaatimus.getKoodi().getUri()).collect(Collectors.toList()));
+
+                    addAlarelaatiot(tutkinnonOsa.getKoodi().getUri(), tutkinnonOsa.getAmmattitaitovaatimukset2019().getKohdealueet().stream()
+                            .map(Ammattitaitovaatimus2019Kohdealue::getVaatimukset)
+                            .flatMap(Collection::stream)
+                            .map(vaatimus -> vaatimus.getKoodi().getUri()).collect(Collectors.toList()));
                 }
             }
         });
