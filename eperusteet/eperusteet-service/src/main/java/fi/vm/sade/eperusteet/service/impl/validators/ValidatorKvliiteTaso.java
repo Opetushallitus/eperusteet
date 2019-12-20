@@ -32,9 +32,8 @@ public class ValidatorKvliiteTaso implements Validator {
     @Override
     public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila tila) {
         Peruste peruste = perusteRepository.findByPerusteprojektiId(perusteprojektiId);
-        List<KVLiiteTasoDto> tasot = perusteService.haeTasot(peruste.getId(), peruste);
         TilaUpdateStatus result = new TilaUpdateStatus();
-
+        List<KVLiiteTasoDto> tasot = perusteService.haeTasot(peruste.getId(), peruste);
         List<String> koodiUrit = tasot.stream().map(taso -> taso.getCodeUri()).collect(Collectors.toList());
 
         boolean kaikkiLoyty = new ArrayList<>(koodiTarkistus).stream()
@@ -68,5 +67,10 @@ public class ValidatorKvliiteTaso implements Validator {
     @Override
     public boolean applicableTila(ProjektiTila tila) {
         return tila.isOneOf(ProjektiTila.JULKAISTU);
+    }
+
+    @Override
+    public boolean applicablePeruste(Peruste peruste) {
+        return !peruste.isKoulutusvienti();
     }
 }

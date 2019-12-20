@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -32,5 +33,10 @@ public interface Validator {
     @PreAuthorize("isAuthenticated()")
     default boolean applicablePerustetyyppi(PerusteTyyppi tyyppi) {
         return PerusteTyyppi.NORMAALI.equals(tyyppi);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    default boolean applicablePeruste(Peruste peruste) {
+        return true;
     }
 }

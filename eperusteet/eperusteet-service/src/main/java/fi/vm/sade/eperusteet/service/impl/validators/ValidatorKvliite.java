@@ -56,6 +56,11 @@ public class ValidatorKvliite implements Validator {
         return tyyppi.isOneOf(PerusteTyyppi.NORMAALI);
     }
 
+    @Override
+    public boolean applicablePeruste(Peruste peruste) {
+        return !peruste.isKoulutusvienti();
+    }
+
     private void tarkistaKvliite(KVLiiteJulkinenDto julkinenKVLiite, Set<Kieli> vaaditutKielet, TilaUpdateStatus updateStatus) {
 
         Map<String, Set<Kieli>> virheellisetKielet = new HashMap<>();
