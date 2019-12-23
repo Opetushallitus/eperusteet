@@ -23,6 +23,7 @@ public class ProjektiValidatorImpl implements ProjektiValidator {
     @Autowired
     private List<Validator> validators;
 
+    @Override
     public TilaUpdateStatus run(Long perusteprojektiId, ProjektiTila tila) {
         TilaUpdateStatus result = new TilaUpdateStatus();
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
