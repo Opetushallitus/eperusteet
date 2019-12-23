@@ -1928,6 +1928,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     public List<KVLiiteTasoDto> haeTasot(Long perusteId, Peruste peruste) {
 
         if (ObjectUtils.isEmpty(peruste.getKoulutukset())) {
