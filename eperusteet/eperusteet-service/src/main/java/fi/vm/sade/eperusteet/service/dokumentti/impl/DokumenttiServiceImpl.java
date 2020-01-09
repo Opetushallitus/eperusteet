@@ -337,6 +337,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 meta.setSubject(messages.translate("docgen.meta.subject.peruste", kieli));
                 toReturn = pdfService.xhtml2pdf(doc, meta);
 
+                /*
                 // Validoidaan dokumnetti
                 result = DokumenttiUtils.validatePdf(toReturn);
                 if (result.isValid()) {
@@ -348,6 +349,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                     result.getErrorsList().forEach(error -> log
                             .debug("  - " + error.getDetails() + " (" + error.getErrorCode() + ")"));
                 }
+                */
 
                 break;
             case KVLIITE:
@@ -356,6 +358,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 meta.setSubject(messages.translate("docgen.meta.subject.kvliite", kieli));
                 toReturn = pdfService.xhtml2pdf(doc, version, meta);
 
+                /*
                 // Validoi kvliite
                 result = DokumenttiUtils.validatePdf(toReturn);
                 if (result.isValid()) {
@@ -366,6 +369,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                     result.getErrorsList().forEach(error -> log
                             .debug("  - " + error.getDetails() + " (" + error.getErrorCode() + ")"));
                 }
+                */
 
                 break;
             default:
