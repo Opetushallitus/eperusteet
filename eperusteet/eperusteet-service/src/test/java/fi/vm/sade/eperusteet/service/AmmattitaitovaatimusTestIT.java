@@ -183,7 +183,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
                 PerusteTyyppi.NORMAALI, Arrays.asList(KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS.toString()), Suoritustapakoodi.LUKIOKOULUTUS)).hasSize(0);
 
         // aikavertailulla 0
-        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(2020, 1, 1, 0, 0).toDate(),
+        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(2999, 1, 1, 0, 0).toDate(),
                 PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)).hasSize(0);
 
     }
