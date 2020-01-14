@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 
+import fi.vm.sade.eperusteet.dto.ParsitutAmmattitaitovaatimukset;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -67,6 +70,16 @@ public class MaintenanceController {
     public PerusteprojektiImportDto viePeruste(@PathVariable final Long perusteId) {
         PerusteprojektiImportDto result = perusteService.getPerusteExport(perusteId);
         return result;
+    }
+
+    @RequestMapping(value = "/lisaaAmmattitaitovaatimukset2019/{perusteId}", method = GET)
+    public void lisaaAmmattitaitovaatimuksetPerusteelle(@PathVariable final Long perusteId) {
+        ammattitaitovaatimusService.updateAmmattitaitovaatimukset(perusteId);
+    }
+
+    @RequestMapping(value = "/virheellisetAmmattitaitovaatimukset", method = GET)
+    public List<ParsitutAmmattitaitovaatimukset> virheellisetAmmattitaitovaatimukset() {
+        return ammattitaitovaatimusService.virheellisetAmmattitaitovaatimukset();
     }
 
     @RequestMapping(value = "/import", method = POST)

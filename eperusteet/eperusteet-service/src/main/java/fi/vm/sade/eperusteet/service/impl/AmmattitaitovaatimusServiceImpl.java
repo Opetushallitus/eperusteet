@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdeal
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
+import fi.vm.sade.eperusteet.dto.ParsitutAmmattitaitovaatimukset;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
@@ -28,7 +29,6 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.AmmattitaitovaatimusRepository;
@@ -47,14 +47,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -175,6 +172,23 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         return getVaatimukset(peruste);
     }
 
+    @Override
+    public List<ParsitutAmmattitaitovaatimukset> virheellisetAmmattitaitovaatimukset() {
+        return perusteRepository.findAllAmosaa().stream()
+                .filter(p -> p.getSuoritustavat().size() == 1
+                        && Suoritustapakoodi.REFORMI.equals(p.getSuoritustavat().iterator().next().getSuoritustapakoodi()))
+                .flatMap(peruste -> getTutkinnonOsaViitteet(peruste).stream()
+                    .filter(tov -> tov.getTutkinnonOsa().getAmmattitaitovaatimukset2019() == null)
+                    .filter(tov -> tov.getTutkinnonOsa().getAmmattitaitovaatimukset() != null)
+                    .map(tov -> parsiVanhatAmmattitaitovaatimukset(peruste, tov)))
+                .filter(x -> {
+                    int fi = x.getVaatimukset().getOrDefault(Kieli.FI, new ArrayList<>()).size();
+                    int sv = x.getVaatimukset().getOrDefault(Kieli.SV, new ArrayList<>()).size();
+                    return fi > 0 && sv > 0 && fi != sv;
+                })
+                .collect(Collectors.toList());
+    }
+
     private List<Ammattitaitovaatimus2019> getVaatimukset(Peruste peruste) {
         return getTutkinnonOsaViitteet(peruste).stream()
                 .map(TutkinnonOsaViite::getTutkinnonOsa)
@@ -199,24 +213,54 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 .collect(Collectors.toList());
     }
 
+    private ParsitutAmmattitaitovaatimukset parsiVanhatAmmattitaitovaatimukset(Peruste peruste, TutkinnonOsaViite tov) {
+        if (tov.getTutkinnonOsa().getAmmattitaitovaatimukset() == null) {
+            return null;
+        }
+        ParsitutAmmattitaitovaatimukset result = new ParsitutAmmattitaitovaatimukset();
+        TekstiPalanen tekstit = tov.getTutkinnonOsa().getAmmattitaitovaatimukset();
+        tekstit.getTeksti().forEach((key, value) -> {
+            Document doc = Jsoup.parse(value);
+            List<String> items = doc.select("li").stream()
+                    .map(Element::text)
+                    .collect(Collectors.toList());
+            result.getKohde().put(key, doc.select("p").text());
+            result.getVaatimukset().put(key, items);
+        });
+        result.setPerusteId(peruste.getId());
+        result.setTutkinnonOsa(tov.getTutkinnonOsa().getId());
+        result.setTutkinnonOsaViite(tov.getId());
+        return result;
+    }
+
     @Override
     public void updateAmmattitaitovaatimukset(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         List<TutkinnonOsaViite> tovs = getTutkinnonOsaViitteet(peruste);
         for (TutkinnonOsaViite tov : tovs) {
-            if (tov.getTutkinnonOsa().getAmmattitaitovaatimukset() != null) {
-                TekstiPalanen tekstit = tov.getTutkinnonOsa().getAmmattitaitovaatimukset();
-                Map<Kieli, String> kohde = new HashMap<>();
-                Map<Kieli, List<String>> vaatimukset = new HashMap<>();
-                tekstit.getTeksti().forEach((key, value) -> {
-                    Document doc = Jsoup.parse(value);
-                    List<String> items = doc.select("li").stream()
-                            .map(Element::text)
-                            .collect(Collectors.toList());
-                    kohde.put(key, doc.select("p").text());
-                    vaatimukset.put(key, items);
-                });
+            if (tov.getTutkinnonOsa().getAmmattitaitovaatimukset2019() != null) {
+                continue;
+            }
+            ParsitutAmmattitaitovaatimukset parsitut = parsiVanhatAmmattitaitovaatimukset(peruste, tov);
+            if (parsitut != null) {
+                List<String> fi = parsitut.getVaatimukset().getOrDefault(Kieli.FI, new ArrayList<>());
+                List<String> sv = parsitut.getVaatimukset().getOrDefault(Kieli.SV, new ArrayList<>());
+                boolean lisaaRuotsi = fi.size() == sv.size();
+
                 Ammattitaitovaatimukset2019 av = new Ammattitaitovaatimukset2019();
+                av.setKohde(TekstiPalanen.of(parsitut.getKohde()));
+                av.setVaatimukset(new ArrayList<>());
+
+                for (int idx = 0; idx < fi.size(); ++idx) {
+                    TekstiPalanen tp = TekstiPalanen.of(Kieli.FI, fi.get(idx));
+                    if (lisaaRuotsi) {
+                        tp.getTeksti().put(Kieli.SV, sv.get(idx));
+                    }
+                    av.getVaatimukset().add(Ammattitaitovaatimus2019.of(tp));
+                }
+
+                log.debug("Lisätty tutkinnon osan ammattitaitovaatimus");
+                tov.getTutkinnonOsa().setAmmattitaitovaatimukset2019(av);
             }
         }
     }
