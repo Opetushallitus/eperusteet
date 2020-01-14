@@ -36,6 +36,12 @@ public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen vaatimus;
 
+    public static Ammattitaitovaatimus2019 of(TekstiPalanen tp) {
+        Ammattitaitovaatimus2019 result = new Ammattitaitovaatimus2019();
+        result.setVaatimus(tp);
+        return result;
+    }
+
     public boolean structureEquals(Ammattitaitovaatimus2019 other) {
         if (this == other) {
             return true;
