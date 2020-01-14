@@ -35,14 +35,7 @@ import lombok.Setter;
 @Setter
 public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private final String osanTyyppi = "tutkinnonosa";
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LokalisoituTekstiDto tavoitteet;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private ArviointiDto arviointi;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LokalisoituTekstiDto ammattitaitovaatimukset;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
+
     private LokalisoituTekstiDto kuvaus;
     private Long opintoluokitus;
     private KoodiDto koodi;
@@ -52,6 +45,24 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private TutkinnonOsaTyyppi tyyppi;
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
     private GeneerinenArviointiasteikkoDto geneerinenArviointiasteikko;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Ammattitaitovaatimukset2019Dto ammattitaitovaatimukset2019;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
+
+    @Deprecated
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private LokalisoituTekstiDto tavoitteet;
+
+    @Deprecated
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private ArviointiDto arviointi;
+
+    @Deprecated
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private LokalisoituTekstiDto ammattitaitovaatimukset;
 
     public String getKoodiUri() {
         KoodiDto koodi = this.getKoodi();

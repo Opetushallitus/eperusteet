@@ -16,7 +16,9 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimukset2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -25,7 +27,6 @@ import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +34,6 @@ import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.verification.VerificationMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -66,6 +66,9 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
 
     @Autowired
     private TutkinnonOsaViiteRepository tovRepository;
+
+    @Autowired
+    private PerusteprojektiService perusteprojektiService;
 
     @Autowired
     private OphClientHelper ophClientHelper;
@@ -188,7 +191,21 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
 
     }
 
-    private void rakennaAmmattitaitovaatimusLatausPohjadata() {
+    @Test
+    public void test_kaikkiRajapinta() {
+        PerusteprojektiDto perusteprojektiDto = rakennaAmmattitaitovaatimusLatausPohjadata();
+        Long perusteId = perusteprojektiDto.getPeruste().getIdLong();
+        PerusteKaikkiDto kaikki = perusteService.getKokoSisalto(perusteId);
+        assertThat(kaikki).isNotNull();
+        Ammattitaitovaatimukset2019Dto av = kaikki.getTutkinnonOsat().get(0).getAmmattitaitovaatimukset2019();
+        assertThat(av).isNotNull()
+                    .returns(1, x -> x.getKohdealueet().size())
+                    .returns(1, x -> x.getKohdealueet().get(0).getVaatimukset().size())
+                    .returns(1, x -> x.getVaatimukset().size());
+
+    }
+
+    private PerusteprojektiDto rakennaAmmattitaitovaatimusLatausPohjadata() {
         loginAsUser("test");
 
         PerusteprojektiDto perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_1001", "ammattitaitovaatimukset_1002"), ProjektiTila.JULKAISTU, false);
@@ -204,6 +221,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_3000", "koulutus_3001"));
 
         updateKaikkienPerusteenOsienTilat(PerusteTila.VALMIS);
+        return perusteprojekti;
 
     }
 
