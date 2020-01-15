@@ -9,6 +9,11 @@ const defaultParams = {
     tyyppi: ["koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"],
 };
 
+export async function virheellisetTekstimuotoisetAmmattitaitovaatimukset() {
+    const res = await axios.get("https://virkailija.testiopintopolku.fi/eperusteet-service/api/maintenance/virheellisetAmmattitaitovaatimukset");
+    return res.data;
+}
+
 export async function* iteratePerusteet(params: any = {}) {
     let sivu = 0;
 

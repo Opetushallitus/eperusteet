@@ -227,6 +227,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
             result.getKohde().put(key, doc.select("p").text());
             result.getVaatimukset().put(key, items);
         });
+        result.setProjektiId(peruste.getPerusteprojekti().getId());
         result.setPerusteId(peruste.getId());
         result.setTutkinnonOsa(tov.getTutkinnonOsa().getId());
         result.setTutkinnonOsaViite(tov.getId());
