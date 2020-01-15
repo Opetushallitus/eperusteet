@@ -10,7 +10,8 @@ const defaultParams = {
 };
 
 export async function virheellisetTekstimuotoisetAmmattitaitovaatimukset() {
-    const res = await axios.get("https://virkailija.testiopintopolku.fi/eperusteet-service/api/maintenance/virheellisetAmmattitaitovaatimukset");
+    // const res = await axios.get("https://virkailija.testiopintopolku.fi/eperusteet-service/api/maintenance/virheellisetAmmattitaitovaatimukset");
+    const res = await axios.get("http://localhost:9000/eperusteet-service/api/maintenance/virheellisetAmmattitaitovaatimukset");
     return res.data;
 }
 

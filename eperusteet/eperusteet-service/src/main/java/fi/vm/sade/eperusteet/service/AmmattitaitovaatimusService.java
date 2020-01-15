@@ -50,6 +50,6 @@ public interface AmmattitaitovaatimusService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<Ammattitaitovaatimus2019> getVaatimukset(Long perusteId);
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PreAuthorize("permitAll()")
     List<ParsitutAmmattitaitovaatimukset> virheellisetAmmattitaitovaatimukset();
 }

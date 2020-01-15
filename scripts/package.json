@@ -6,6 +6,7 @@
   "scripts": {
     "puutteelliset-osaamisalat": "ts-node ./puutteellisetosaamisalat.js",
     "ammattitaitovaatimuskoodisto": "ts-node ./ammattitaitovaatimuskoodisto.ts",
+    "virheellisetTekstimuotoisetAmmattitaitovaatimukset": "ts-node ./virheellisetAmmattitaitovaatimukset.ts",
     "paivita-kaannostiedostot": "ts-node ./synckaannokset.ts"
   },
   "author": "",
