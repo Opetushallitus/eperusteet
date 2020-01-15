@@ -11,6 +11,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class ParsitutAmmattitaitovaatimukset {
+    Long projektiId;
     Long perusteId;
     Long tutkinnonOsa;
     Long tutkinnonOsaViite;
