@@ -151,9 +151,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             return fail("ryhman-osia-ei-voi-muuttaa");
         }
 
-        if ((this.getPakollinen() == null && vanha.getPakollinen() != null)
-                || (this.getPakollinen() != null && vanha.getPakollinen() == null)
-                || this.getPakollinen() != vanha.getPakollinen()) {
+        if (!this.getPakollinen().equals(vanha.getPakollinen())) {
             return fail("ryhman-pakollisuutta-ei-voi-muuttaa");
         }
 
