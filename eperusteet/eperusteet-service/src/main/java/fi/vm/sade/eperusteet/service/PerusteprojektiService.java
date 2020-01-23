@@ -121,5 +121,5 @@ public interface PerusteprojektiService {
     Page<KoulutuskoodiStatusDto> getKoodiongelmat(PageRequest p);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
-    TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila);
+    TilaUpdateStatus validoiProjekti(@P("id") Long id, ProjektiTila tila);
 }

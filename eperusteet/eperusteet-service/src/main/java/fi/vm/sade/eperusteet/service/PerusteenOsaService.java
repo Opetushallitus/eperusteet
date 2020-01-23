@@ -95,7 +95,7 @@ public interface PerusteenOsaService {
     LukkoDto lock(@P("id") final Long id);
 
     @PreAuthorize("isAuthenticated()")
-    void unlock(@P("id") final Long id);
+    void unlock(final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     LukkoDto getLock(@P("id") final Long id);
@@ -116,7 +116,7 @@ public interface PerusteenOsaService {
     List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueet(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueetVersio(Long id, Integer versioId);
+    List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueetVersio(@P("id") Long id, Integer versioId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     OsaamistavoiteLaajaDto addOsaamistavoite(@P("id") final Long id, final Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto);
@@ -125,7 +125,7 @@ public interface PerusteenOsaService {
     OsaamistavoiteLaajaDto updateOsaamistavoite(@P("id") final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteLaajaDto osaamistavoite);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    List<OsaamistavoiteLaajaDto> getOsaamistavoitteet(final Long id, final Long osaAlueId);
+    List<OsaamistavoiteLaajaDto> getOsaamistavoitteet(@P("id") final Long id, final Long osaAlueId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     void removeOsaamistavoite(@P("id") final Long id, final Long osaAlueId, final Long osaamistavoiteId);
@@ -143,7 +143,7 @@ public interface PerusteenOsaService {
     Revision getLastModifiedRevision(final Long id);
 
     @PreAuthorize("isAuthenticated()")
-    Set<PerusteprojektinPerusteenosaDto> getOwningProjektit(@P("id") Long id);
+    Set<PerusteprojektinPerusteenosaDto> getOwningProjektit(Long id);
 
     @PreAuthorize("permitAll()")
     Page<TutkinnonOsaDto> findTutkinnonOsatBy(TutkinnonOsaQueryDto pquery);
