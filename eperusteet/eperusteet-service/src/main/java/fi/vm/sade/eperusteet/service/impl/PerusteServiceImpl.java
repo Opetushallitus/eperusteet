@@ -641,9 +641,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-//    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS') " +
-//            "or hasPermission(#event.perusteId, 'peruste', 'TILANVAIHTO')")
-    public void onApplicationEvent(@P("event") PerusteUpdatedEvent event) {
+    public void onApplicationEvent(PerusteUpdatedEvent event) {
         Peruste peruste = perusteRepository.findOne(event.getPerusteId());
         if (peruste == null) {
             return;
@@ -1441,7 +1439,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
-    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId) {
+    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId) {
         return doGetTutkintonimikeKoodit(perusteId);
     }
 
