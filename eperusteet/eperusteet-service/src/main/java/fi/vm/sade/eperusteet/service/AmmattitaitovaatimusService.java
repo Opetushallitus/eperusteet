@@ -48,7 +48,7 @@ public interface AmmattitaitovaatimusService {
     void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<Ammattitaitovaatimus2019> getVaatimukset(Long perusteId);
+    List<Ammattitaitovaatimus2019> getVaatimukset(@P("perusteId") Long perusteId);
 
     @PreAuthorize("permitAll()")
     List<ParsitutAmmattitaitovaatimukset> virheellisetAmmattitaitovaatimukset();

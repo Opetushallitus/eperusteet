@@ -28,10 +28,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface TutkinnonOsaViiteService {
     @PreAuthorize("hasPermission(#id, 'tutkinnonosaviite', 'LUKU')")
-    public List<Revision> getVersiot(Long id);
+    public List<Revision> getVersiot(@P("id") Long id);
 
     @PreAuthorize("hasPermission(#id, 'tutkinnonosaviite', 'LUKU')")
-    public TutkinnonOsaViiteDto getVersio(Long id, Integer versioId);
+    public TutkinnonOsaViiteDto getVersio(@P("id") Long id, Integer versioId);
 
     @PreAuthorize("hasPermission(#id, 'tutkinnonosaviite', 'LUKU')")
     public Integer getLatestRevision(@P("id") final Long id);

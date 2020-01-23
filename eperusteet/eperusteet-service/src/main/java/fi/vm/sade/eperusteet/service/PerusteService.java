@@ -202,10 +202,10 @@ public interface PerusteService {
     Revision getLastModifiedRevision(final Long id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(long perusteId);
+    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(@P("perusteId") long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteetByVersion(long perusteId, int revision);
+    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteetByVersion(@P("perusteId") long perusteId, int revision);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void tallennaYleisetTavoitteet(@P("perusteId") Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto);
@@ -223,7 +223,7 @@ public interface PerusteService {
     KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<KVLiiteTasoDto> haeTasot(Long perusteId, Peruste peruste);
+    List<KVLiiteTasoDto> haeTasot(@P("perusteId") Long perusteId, Peruste peruste);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteprojektiImportDto getPerusteExport(@P("perusteId") Long perusteId);

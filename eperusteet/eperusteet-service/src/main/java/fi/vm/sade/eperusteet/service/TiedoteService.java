@@ -29,12 +29,12 @@ public interface TiedoteService {
     @PostAuthorize("returnObject == null or returnObject.julkinen or isAuthenticated()")
     TiedoteDto getTiedote(@P("tiedoteId") Long tiedoteId);
 
-    @PreAuthorize("hasPermission(#id, 'tiedote', 'LUONTI')")
+    @PreAuthorize("hasPermission(null, 'tiedote', 'LUONTI')")
     TiedoteDto addTiedote(TiedoteDto tiedoteDto);
 
-    @PreAuthorize("hasPermission(#id, 'tiedote', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(null, 'tiedote', 'MUOKKAUS')")
     TiedoteDto updateTiedote(TiedoteDto tiedoteDto);
 
-    @PreAuthorize("hasPermission(#id, 'tiedote', 'POISTO')")
+    @PreAuthorize("hasPermission(null, 'tiedote', 'POISTO')")
     void removeTiedote(Long tiedoteId);
 }
