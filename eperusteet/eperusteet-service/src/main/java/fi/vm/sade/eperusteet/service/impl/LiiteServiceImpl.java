@@ -83,7 +83,7 @@ public class LiiteServiceImpl implements LiiteService {
         Peruste peruste = perusteet.findOne(perusteId);
         Liite liite = liitteet.findOne(id);
 
-        if (!liite.getPerusteet().contains(peruste)) {
+        if (liite != null && liite.getPerusteet() != null && !liite.getPerusteet().contains(peruste)) {
             throw new BusinessRuleViolationException("kuva-ei-kuulu-julkaistuun-perusteeseen");
         }
 

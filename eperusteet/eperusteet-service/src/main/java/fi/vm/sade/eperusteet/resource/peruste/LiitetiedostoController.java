@@ -174,7 +174,7 @@ public class LiitetiedostoController {
         boolean isCorrectExtension = true;
 
         // Tarkistetaan tiedostopääte jos asetettu kutsuun
-        if (!ObjectUtils.isEmpty(extension)) {
+        if (!ObjectUtils.isEmpty(extension) && dto != null) {
             isCorrectExtension = Objects.equals(dto.getMime(), new MimetypesFileTypeMap().getContentType(fileName));
         }
 
