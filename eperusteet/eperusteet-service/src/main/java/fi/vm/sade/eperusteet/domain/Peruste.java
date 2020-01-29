@@ -264,6 +264,8 @@ public class Peruste extends AbstractAuditedEntity
             }
             else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
+            } else if (this.getTpoOpetuksenSisalto() != null) {
+                return Collections.singleton(this.getTpoOpetuksenSisalto());
             }
         }
         return new HashSet<>();
