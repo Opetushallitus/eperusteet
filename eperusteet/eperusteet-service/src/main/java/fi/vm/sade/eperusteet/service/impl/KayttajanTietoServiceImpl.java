@@ -25,10 +25,12 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpRequest;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -75,6 +77,16 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @PostConstruct
     public void configureMapper() {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
+    @Override
+    public KayttajanTietoDto haeKirjautaunutKayttaja() {
+        Principal ap = SecurityUtil.getAuthenticatedPrincipal();
+        KayttajanTietoDto kayttaja = hae(ap.getName());
+        if (kayttaja == null) { //"fallback" jos integraatio on rikki eikä löydä käyttäjän tietoja
+            kayttaja = new KayttajanTietoDto(ap.getName());
+        }
+        return kayttaja;
     }
 
     @Override

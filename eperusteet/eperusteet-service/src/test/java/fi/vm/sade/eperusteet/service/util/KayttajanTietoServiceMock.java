@@ -34,6 +34,11 @@ import org.springframework.stereotype.Service;
 public class KayttajanTietoServiceMock implements KayttajanTietoService {
 
     @Override
+    public KayttajanTietoDto haeKirjautaunutKayttaja() {
+        return hae(null);
+    }
+
+    @Override
     public KayttajanTietoDto hae(String oid) {
         return null;
     }
