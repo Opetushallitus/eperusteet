@@ -27,6 +27,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class KayttajanTietoDto {
+    public KayttajanTietoDto(String oidHenkilo) {
+        this.oidHenkilo = oidHenkilo;
+    }
+
     String kutsumanimi;
     String etunimet;
     String sukunimi;
