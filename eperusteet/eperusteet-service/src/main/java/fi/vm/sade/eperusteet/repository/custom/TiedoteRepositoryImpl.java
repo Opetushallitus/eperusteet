@@ -152,6 +152,15 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
             pred = cb.and(pred, cb.equal(root.get(Tiedote_.yleinen), tq.getYleinen()));
         }
 
+        if (!ObjectUtils.isEmpty(tq.getTiedoteJulkaisupaikat())) {
+            Optional<Predicate> julkaisupaikkaPred = tq.getTiedoteJulkaisupaikat().stream()
+                    .map((julkaispupaikka) -> cb.equal(root.get(Tiedote_.julkaisupaikat), julkaispupaikka))
+                    .reduce(cb::or);
+            if (julkaisupaikkaPred.isPresent()) {
+                pred = cb.and(pred, julkaisupaikkaPred.get());
+            }
+        }
+
         return pred;
     }
 }

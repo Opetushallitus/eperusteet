@@ -74,7 +74,7 @@ public abstract class AbstractAuditedEntity implements Serializable {
     }
 
     @PreUpdate
-    private void preupdate() {
+    protected void preupdate() {
         muokattu = new Date();
         muokkaaja = SecurityUtil.getAuthenticatedPrincipal().getName();
     }

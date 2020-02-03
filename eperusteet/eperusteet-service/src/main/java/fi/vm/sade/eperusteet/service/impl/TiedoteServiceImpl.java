@@ -121,6 +121,7 @@ public class TiedoteServiceImpl implements TiedoteService {
         Tiedote tiedote = repository.findOne(tiedoteDto.getId());
         assertExists(tiedote, "Päivitettävää tietoa ei ole olemassa");
         mapper.map(tiedoteDto, tiedote);
+        tiedote.preupdate();
         tiedote = repository.save(tiedote);
         return mapper.map(tiedote, TiedoteDto.class);
     }
