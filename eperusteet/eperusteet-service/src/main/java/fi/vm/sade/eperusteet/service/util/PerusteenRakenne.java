@@ -133,7 +133,7 @@ public class PerusteenRakenne {
         // Juurisolmulle pitää aina määrittää muodostumissääntö
         if (syvyys == 0) {
             MuodostumisSaanto rootms = rakenne.getMuodostumisSaanto();
-            if (rootms == null || rootms.laajuusMinimi() == null) {
+            if (rootms == null || rootms.getLaajuus() == null || rootms.getLaajuus().getMinimi() == null) {
                 validointi.ongelmat.add(new Ongelma("tutkinnolle-ei-maaritetty-kokonaislaajuutta", rakenne.getNimi(), 0));
             }
         }
