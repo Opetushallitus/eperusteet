@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.repository.custom;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Query;
 import org.springframework.data.domain.Page;
@@ -153,12 +154,30 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
         }
 
         if (!ObjectUtils.isEmpty(tq.getTiedoteJulkaisupaikat())) {
-            Optional<Predicate> julkaisupaikkaPred = tq.getTiedoteJulkaisupaikat().stream()
-                    .map((julkaispupaikka) -> cb.equal(root.get(Tiedote_.julkaisupaikat), julkaispupaikka))
+            SetJoin<Tiedote, TiedoteJulkaisuPaikka> julkaisupaikat = root.join(Tiedote_.julkaisupaikat);
+            Optional<Predicate> kieliPred = tq.getTiedoteJulkaisupaikat().stream()
+                    .map((julkaisupaikka) -> cb.equal(julkaisupaikat, julkaisupaikka))
                     .reduce(cb::or);
-            if (julkaisupaikkaPred.isPresent()) {
-                pred = cb.and(pred, julkaisupaikkaPred.get());
+
+            if (kieliPred.isPresent()) {
+                pred = cb.and(pred, kieliPred.get());
             }
+        }
+
+        if (!ObjectUtils.isEmpty(tq.getKoulutustyypit())) {
+            SetJoin<Tiedote, KoulutusTyyppi> koulutustyypit = root.join(Tiedote_.koulutustyypit);
+            Optional<Predicate> kieliPred = tq.getKoulutustyypit().stream()
+                    .map((koulutustyyppi) -> cb.equal(koulutustyypit, koulutustyyppi))
+                    .reduce(cb::or);
+
+            if (kieliPred.isPresent()) {
+                pred = cb.and(pred, kieliPred.get());
+            }
+        }
+
+        if (!ObjectUtils.isEmpty(tq.getPerusteIds())) {
+            Join<Tiedote, Peruste> perusteet = root.join(Tiedote_.perusteet);
+            pred = cb.and(pred, perusteet.get(Peruste_.id).in(tq.getPerusteIds()));
         }
 
         return pred;

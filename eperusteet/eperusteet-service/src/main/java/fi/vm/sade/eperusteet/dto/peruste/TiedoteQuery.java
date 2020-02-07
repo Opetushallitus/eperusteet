@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.TiedoteJulkaisuPaikka;
 import java.util.Set;
 import lombok.Getter;
@@ -36,4 +37,6 @@ public class TiedoteQuery {
     private Boolean julkinen; // Jos null, haetaan julkiset ja sisäiset
     private Boolean yleinen; // Jos halutaan esittää mm. etusivulla
     private Set<TiedoteJulkaisuPaikka> tiedoteJulkaisupaikat;
+    private Set<KoulutusTyyppi> koulutustyypit;
+    private Set<Long> perusteIds;
 }
