@@ -13,6 +13,7 @@ angular
         YleinenData,
         Kieli,
         $translate,
+        Koodisto,
     ) {
 
         $scope.ammattitaitovaatimukset = $scope.ammattitaitovaatimukset ||
@@ -45,7 +46,22 @@ angular
                 uri: koodi.koodiUri,
                 koodisto: koodi.koodisto.koodistoUri,
             };
-            vaatimus.vaatimus = koodi.nimi;
+
+            if (koodi.nimi) {
+                vaatimus.vaatimus = koodi.nimi;
+            } else if (!_.isEmpty(koodi.metadata)) {
+
+                const nimi = {
+                    fi: "",
+                    sv: "",
+                    en: ""
+                };
+                _.forEach(koodi.metadata, function(obj) {
+                    nimi[obj.kieli.toLowerCase()] = obj.nimi;
+                });
+
+                vaatimus.vaatimus = nimi;
+            }
         };
 
         $scope.addVaatimus = (kohdealue?) => {
@@ -101,6 +117,26 @@ angular
         $scope.toggleVaatimus = (vaatimus) => {
             vaatimus.$$open = !vaatimus.$$open;
         };
+
+        $scope.tarkistaKoodistosta = _.debounce(async (vaatimus) => {
+
+            if(_.size(vaatimus.vaatimus[Kieli.getSisaltokieli()]) > 3 && !vaatimus.koodi) {
+                vaatimus.haku = true;
+                const sivutettuData = await Koodisto.haeSivutettu('ammattitaitovaatimukset', () => {}, 0, 9999, vaatimus.vaatimus[Kieli.getSisaltokieli()], false);
+                vaatimus.koodivastaavuus = (_.chain(sivutettuData.data) as any)
+                    .filter((koodi: any) => _.size(_.filter(koodi.metadata, (metadata: any) => metadata.nimi === vaatimus.vaatimus[Kieli.getSisaltokieli()])) > 0)
+                    .head()
+                    .value();
+
+                vaatimus.haku = false;
+            }
+
+        }, 500);
+
+        $scope.kaytaKoodistosta = (vaatimus) => {
+            $scope.koodiSelector(vaatimus.koodivastaavuus, vaatimus);
+            vaatimus.koodivastaavuus = null;
+        }
     })
     .directive("tutkinnonosanAmmattitaitovaatimukset2019", function(YleinenData, $timeout) {
         return {
