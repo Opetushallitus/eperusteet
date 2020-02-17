@@ -16,15 +16,22 @@ mixin vaatimusEdit
     .input-group
       .input-group-addon.handle
         span(icon-role="sort")
-      input.form-control(ng-model="vaatimus.vaatimus", slocalized)
+      input.form-control(ng-if="!vaatimus.koodi", ng-model="vaatimus.vaatimus", slocalized, ng-model-options="{ debounce: 300 }", ng-keyup="tarkistaKoodistosta(vaatimus)")
+      span.form-control(ng-if="vaatimus.koodi", ng-disabled="true") {{vaatimus.vaatimus | kaanna}} ({{vaatimus.koodi.arvo}})
       .input-group-btn
+        ohje(ng-if="vaatimus.koodivastaavuus",style="padding-left: 20px",teksti="ammattitaitovaatimus-koodisto-puute")
+        button.btn.btn-link(ng-if="vaatimus.koodivastaavuus", ng-click="kaytaKoodistosta(vaatimus)", ng-bind="'kayta-koodistosta' | kaanna", style="margin-right: 20px")
         koodisto-select(
           tyyppi="ammattitaitovaatimukset",
           valmis="koodiSelector",
-          payload="vaatimus")
+          payload="vaatimus",
+          nimifilter="vaatimus.vaatimus")
         button.btn.btn-link(
           ng-click="poistaVaatimus(vaatimus, kohdealue)",
           ng-bind="'poista-kohdealue' | kaanna")
+        span(ng-show="vaatimus.haku", style="padding-left: 4px")
+          small-spinner
+        span(ng-if="!vaatimus.haku", style="padding-left: 27px")
 
 
 div.ammattitaitovaatimukset-2019(ng-show="!loading" ng-cloak)
