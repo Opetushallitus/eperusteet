@@ -72,6 +72,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RequestMapping("/perusteprojektit")
 @Api("Perusteprojektit")
 @InternalApi
+@Api(value = "Perusteprojektit")
 public class PerusteprojektiController {
 
     @Autowired
