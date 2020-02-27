@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.OpasService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -51,6 +52,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  */
 @RestController
 @RequestMapping("/oppaat")
+@Api(value = "Oppaat")
 @InternalApi
 public class OpasController {
 
@@ -83,8 +85,7 @@ public class OpasController {
             @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", defaultValue = "fi", value = "perusteen nimen kieli"),
-            @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", defaultValue = "fi", value = "oppaan nimen kieli"),
             @ApiImplicitParam(name = "muokattu", dataType = "long", paramType = "query", value = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)"),
     })
     public Page<PerusteHakuDto> getAllOppaat(@ApiIgnore PerusteQuery pquery) {
@@ -92,8 +93,8 @@ public class OpasController {
         return service.findBy(p, pquery);
     }
 
-    @RequestMapping(value = "/projektit", method = GET)
     @ResponseBody
+    @RequestMapping(value = "/projektit", method = GET)
     public Page<PerusteprojektiKevytDto> getAllOppaatKevyt(PerusteprojektiQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
         Page<PerusteprojektiKevytDto> page = service.findProjektiBy(p, pquery);

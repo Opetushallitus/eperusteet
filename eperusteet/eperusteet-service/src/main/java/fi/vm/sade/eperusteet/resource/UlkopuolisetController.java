@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.resource;
 import com.fasterxml.jackson.databind.JsonNode;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.UlkopuolisetService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  */
 @RestController
 @RequestMapping("/ulkopuoliset")
+@Api("Ulkopuoliset")
 @InternalApi
 public class UlkopuolisetController {
     @Autowired
