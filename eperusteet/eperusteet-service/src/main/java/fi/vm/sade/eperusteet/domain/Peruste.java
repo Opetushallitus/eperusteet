@@ -39,6 +39,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 
@@ -250,7 +251,10 @@ public class Peruste extends AbstractAuditedEntity
             return Collections.singleton(this.getOppaanSisalto());
         }
         else {
-            if (this.getPerusopetuksenPerusteenSisalto() != null) {
+            if (KoulutustyyppiToteutus.AMMATILLINEN.equals(this.getToteutus())) {
+                return new HashSet<>(this.getSuoritustavat());
+            }
+            else if (this.getPerusopetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getPerusopetuksenPerusteenSisalto());
             }
             else if (this.getLops2019Sisalto() != null) {
@@ -264,7 +268,8 @@ public class Peruste extends AbstractAuditedEntity
             }
             else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
-            } else if (this.getTpoOpetuksenSisalto() != null) {
+            }
+            else if (this.getTpoOpetuksenSisalto() != null) {
                 return Collections.singleton(this.getTpoOpetuksenSisalto());
             }
         }

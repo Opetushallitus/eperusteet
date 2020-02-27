@@ -7,5 +7,6 @@ public enum NavigationType {
     liitteet, liite,
     laajaalaiset, laajaalainen,
     oppiaineet, oppimaarat, oppiaine,
-    moduulit, moduuli
+    moduulit, moduuli,
+    muodostuminen, tutkinnonosat, tutkinnonosa, tutkinnonosaviite, osaalue;
 }
