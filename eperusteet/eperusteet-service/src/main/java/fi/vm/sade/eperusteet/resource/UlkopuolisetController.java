@@ -38,6 +38,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RequestMapping("/ulkopuoliset")
 @Api("Ulkopuoliset")
 @InternalApi
+@Api("Ulkopuoliset")
 public class UlkopuolisetController {
     @Autowired
     private UlkopuolisetService service;

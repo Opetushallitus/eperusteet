@@ -23,7 +23,7 @@
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
         <jsoup.version>1.9.2</jsoup.version>
-        <eperusteet.backend-utils.version>2.2-SNAPSHOT</eperusteet.backend-utils.version>
+        <eperusteet.backend-utils.version>2.3-SNAPSHOT</eperusteet.backend-utils.version>
         <ehcache.version>2.6.11</ehcache.version>
         <slf4j.version>1.7.21</slf4j.version>
         <batik.version>1.9</batik.version>
@@ -662,9 +662,11 @@
 <!--                                        <location>${eperusteet.resources}.peruste.PerusopetusOppiaineLockController</location>-->
                                         <location>${eperusteet.resources}.peruste.PerusteController</location>
                                         <location>${eperusteet.resources}.peruste.PerusteenSisaltoController</location>
+                                        <location>${eperusteet.resources}.peruste.PerusteenMuokkaustietoController
+                                        </location>
                                         <location>${eperusteet.resources}.peruste.TermistoController</location>
                                         <location>${eperusteet.resources}.KayttajanTietoController</location>
-<!--                                        <location>${eperusteet.resources}.peruste.TutkinnonRakenneController</location>-->
+                                        <location>${eperusteet.resources}.peruste.TutkinnonRakenneController</location>
 <!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuudetLockController</location>-->
 <!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuusLockController</location>-->
 <!--                                        <location>${eperusteet.resources}.LukiokoulutuksenPerusteenSisaltoController</location>-->
