@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
 import fi.vm.sade.eperusteet.service.util.PerusteUtils;
@@ -51,7 +52,7 @@ import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 @Table(name = "peruste")
 @Audited
 public class Peruste extends AbstractAuditedEntity
-        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable {
+        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable, HistoriaTapahtuma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -500,6 +501,11 @@ public class Peruste extends AbstractAuditedEntity
 
 
         throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.peruste;
     }
 
     public interface Valmis {}
