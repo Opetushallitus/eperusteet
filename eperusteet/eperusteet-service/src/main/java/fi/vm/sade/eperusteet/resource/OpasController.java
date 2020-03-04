@@ -52,9 +52,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  */
 @RestController
 @RequestMapping("/oppaat")
-@Api(value = "Oppaat")
+@Api("Oppaat")
 @InternalApi
-@Api(value = "Oppaat")
 public class OpasController {
 
     @Autowired
