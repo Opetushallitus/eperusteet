@@ -9,6 +9,7 @@ public enum TiedoteJulkaisuPaikka {
     OPINTOPOLKU("opintopolku"),
     OPINTOPOLKU_ETUSIVU("opintopolku_etusivu"),
     OPS("ops"),
+    LOPS("lops"),
     AMOSAA("amosaa");
 
     private String paikka;
