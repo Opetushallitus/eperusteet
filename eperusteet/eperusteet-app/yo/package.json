@@ -114,6 +114,6 @@
     "node": ">= 10.15.0"
   },
   "resolutions": {
-    "angular-translate/angular":"1.6.6"
+    "angular-translate/angular": "1.6.6"
   }
 }
