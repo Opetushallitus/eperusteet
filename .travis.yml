@@ -28,14 +28,14 @@ install:
 
 script:
   # Rakennetaan uusi UI
-  - export EPERUSTEET_SERVICE_DIR=$TRAVIS_BUILD_DIR/eperusteet-service
-  - cd eperusteet-ui
-  - git rev-parse HEAD
-  - cd eperusteet-frontend-utils/vue && yarn install && yarn gen:api:eperusteet && rm -rf node_modules && cd ../..
-  - yarn install
-  - yarn run gen:api
-  - yarn run build
-  - cd ..
+  # - export EPERUSTEET_SERVICE_DIR=$TRAVIS_BUILD_DIR/eperusteet-service
+  # - cd eperusteet-ui
+  # - git rev-parse HEAD
+  # - cd eperusteet-frontend-utils/vue && yarn install && yarn gen:api:eperusteet && rm -rf node_modules && cd ../..
+  # - yarn install
+  # - yarn run gen:api
+  # - yarn run build
+  # - cd ..
 
 
   - cd ${ARTIFACT_NAME}
