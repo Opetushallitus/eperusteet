@@ -182,7 +182,7 @@ public class TutkinnonRakenneController {
 
     @RequestMapping(value = "/tutkinnonosat/versiot/{versio}", method = GET)
     @ResponseBody
-    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(
+    public List<TutkinnonOsaViiteDto> getTutkinnonOsaVersiot(
             @PathVariable("perusteId") final Long id,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("versio") final Integer versio) {
