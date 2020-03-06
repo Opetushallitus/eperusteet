@@ -31,6 +31,7 @@ import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import io.swagger.annotations.Api;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @RestController
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}")
 @InternalApi
+@Api("TutkinnonRakenne")
 public class TutkinnonRakenneController {
 
     @Autowired
@@ -155,7 +157,7 @@ public class TutkinnonRakenneController {
 
     @RequestMapping(value = "/tutkinnonosat", method = GET)
     @ResponseBody
-    public ResponseEntity<List<TutkinnonOsaViiteDto>> getTutkinnonOsat(
+    public ResponseEntity<List<TutkinnonOsaViiteDto>> getPerusteenTutkinnonOsat(
         @PathVariable("perusteId") final Long id,
         @PathVariable final Suoritustapakoodi suoritustapakoodi
     ) {
@@ -180,7 +182,7 @@ public class TutkinnonRakenneController {
 
     @RequestMapping(value = "/tutkinnonosat/versiot/{versio}", method = GET)
     @ResponseBody
-    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(
+    public List<TutkinnonOsaViiteDto> getTutkinnonOsaVersiot(
             @PathVariable("perusteId") final Long id,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("versio") final Integer versio) {

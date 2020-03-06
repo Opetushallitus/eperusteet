@@ -39,6 +39,7 @@ public class PerusteKevytDto {
     private PerusteTyyppi tyyppi;
     private String koulutustyyppi;
     private boolean esikatseltavissa;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<SuoritustapaDto> suoritustavat;
 }

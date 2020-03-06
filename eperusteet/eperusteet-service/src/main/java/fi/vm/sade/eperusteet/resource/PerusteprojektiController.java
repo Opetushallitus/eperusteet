@@ -70,6 +70,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Slf4j
 @RestController
 @RequestMapping("/perusteprojektit")
+@Api("Perusteprojektit")
 @InternalApi
 @Api(value = "Perusteprojektit")
 public class PerusteprojektiController {

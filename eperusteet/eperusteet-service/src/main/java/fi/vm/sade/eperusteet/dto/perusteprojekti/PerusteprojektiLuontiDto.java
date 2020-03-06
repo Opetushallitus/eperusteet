@@ -23,6 +23,8 @@ import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import lombok.*;
 
+import java.util.Date;
+
 /**
  *
  * @author harrik
@@ -42,6 +44,9 @@ public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private PerusteTyyppi tyyppi;
     private String ryhmaOid;
     private boolean reforminMukainen = true;
+    private Date voimassaoloAlkaa;
+    private Date lausuntakierrosAlkaa;
+    private Date johtokunnanKasittely;
 
     public PerusteprojektiLuontiDto(String koulutustyyppi, LaajuusYksikko laajuusYksikko, Long perusteId, ProjektiTila tila, PerusteTyyppi tyyppi, String ryhmaOid) {
         this.koulutustyyppi = koulutustyyppi;

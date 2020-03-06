@@ -209,6 +209,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private LiiteRepository liiteRepository;
 
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
+
     @Override
     public List<PerusteDto> getUusimmat(Set<Kieli> kielet) {
         return mapper.mapAsList(perusteRepository.findAllUusimmat(kielet, new PageRequest(0, 10)), PerusteDto.class);
@@ -816,6 +819,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         perusteRepository.save(current);
+        muokkausTietoService.addOpsMuokkausTieto(id, current, MuokkausTapahtuma.PAIVITYS);
+
         return mapper.map(current, PerusteDto.class);
     }
 

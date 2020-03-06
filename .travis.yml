@@ -21,11 +21,23 @@ env:
     - secure: "YU91n/1seuU03KphWAujw/3NdQbWj9JGKFjlIjZHURv+h7fHFNONNlpcd3a7hSMghN0CgcYXywjjSbWvG1qmYVHWktQVczMIziXT5nZRTp23JvobrUzk6ywVz7JHidEbV8nIpDuYMInavQvEtVCuGFKxh1N+4NQZEMBrDCZoKJY="
 
 install:
+  - git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
   - git clone https://github.com/Opetushallitus/ci-tools.git
   - source ci-tools/common/setup-tools.sh
   - export ARTIFACT_NAME="eperusteet"
 
 script:
+  # Rakennetaan uusi UI
+  # - export EPERUSTEET_SERVICE_DIR=$TRAVIS_BUILD_DIR/eperusteet-service
+  # - cd eperusteet-ui
+  # - git rev-parse HEAD
+  # - cd eperusteet-frontend-utils/vue && yarn install && yarn gen:api:eperusteet && rm -rf node_modules && cd ../..
+  # - yarn install
+  # - yarn run gen:api
+  # - yarn run build
+  # - cd ..
+
+
   - cd ${ARTIFACT_NAME}
 
   - mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}

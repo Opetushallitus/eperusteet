@@ -23,7 +23,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -46,6 +48,7 @@ public class PerusteprojektiDto implements Serializable {
     private ProjektiTila tila;
     private String ryhmaOid;
     private boolean esikatseltavissa = false;
+    private List<TavoitepaivamaaraDto> tavoitepaivamaarat = new ArrayList<>();
 
     public PerusteprojektiDto(String nimi, Reference peruste, String diaarinumero, Date paatosPvm, Date toimikausiAlku, Date toimikausiLoppu, String tehtavaluokka, String tehtava, String yhteistyotaho, ProjektiTila tila, String ryhmaOid) {
         this.nimi = nimi;

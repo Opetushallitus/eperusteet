@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpRequest;
@@ -65,6 +66,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     private String koServiceUrl;
 
     private static final String HENKILO_API = "/henkilo/";
+    private static final String HENKILOT_BY_LIST = HENKILO_API + "henkilotByHenkiloOidList";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -73,6 +75,9 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
 
     @Autowired
     RestClientFactory restClientFactory;
+
+    @Autowired
+    OphClientHelper ophClientHelper;
 
     @PostConstruct
     public void configureMapper() {
@@ -123,6 +128,11 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
                     }
                 })
                 .orElse(null);
+    }
+
+    @Override
+    public List<KayttajanTietoDto> haeKayttajatiedot(List<String> oid) {
+        return ophClientHelper.postAsList(onrServiceUrl, onrServiceUrl + HENKILOT_BY_LIST, oid, KayttajanTietoDto.class);
     }
 
     @Override
