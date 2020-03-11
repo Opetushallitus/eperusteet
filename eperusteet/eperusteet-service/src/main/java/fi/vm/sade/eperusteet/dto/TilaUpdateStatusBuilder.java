@@ -73,9 +73,19 @@ public class TilaUpdateStatusBuilder {
         return this;
     }
 
+    public TilaUpdateStatusBuilder addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, ValidointiKategoria validointiKategoria) {
+        status.addStatus(viesti, suoritustapa, validointi, null, null, validointiKategoria);
+        return this;
+    }
+
     public TilaUpdateStatusBuilder addErrorStatus(String viesti, Suoritustapakoodi suoritustapa, LokalisoituTekstiDto... dto) {
         status.addStatus(viesti, suoritustapa, null, asList(dto));
         status.setVaihtoOk(false);
+        return this;
+    }
+
+    public TilaUpdateStatusBuilder addStatus(String viesti, ValidointiKategoria validointiKategoria) {
+        status.addStatus(viesti, null, null, null, null, validointiKategoria);
         return this;
     }
 
