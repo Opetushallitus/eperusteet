@@ -165,6 +165,13 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet));
     }
 
+    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet, ValidointiKategoria validointiKategoria) {
+        if (infot == null) {
+            infot = new ArrayList<>();
+        }
+        infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet, validointiKategoria));
+    }
+
     @Getter
     @Setter
     public static class Status {
@@ -173,6 +180,7 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         List<LokalisoituTekstiDto> nimet = new ArrayList<>();
         Suoritustapakoodi suoritustapa;
         Set<Kieli> kielet;
+        ValidointiKategoria validointiKategoria = ValidointiKategoria.MAARITTELEMATON;
 
         public Status() {
         }
@@ -190,6 +198,15 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
             this.nimet = nimet;
             this.suoritustapa = suoritustapa;
             this.kielet = kielet;
+        }
+
+        public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet, ValidointiKategoria validointiKategoria) {
+            this.viesti = viesti;
+            this.validointi = validointi;
+            this.nimet = nimet;
+            this.suoritustapa = suoritustapa;
+            this.kielet = kielet;
+            this.validointiKategoria = validointiKategoria;
         }
     }
 
