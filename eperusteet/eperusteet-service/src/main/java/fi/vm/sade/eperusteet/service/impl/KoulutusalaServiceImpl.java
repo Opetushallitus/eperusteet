@@ -58,8 +58,8 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
         List<KoulutusalaDto> koulutusalatDtos = mapper.mapAsList(Arrays.asList(response.getBody()), KoulutusalaDto.class);
 
         for (KoulutusalaDto koulutusalaDto : koulutusalatDtos) {
-            KoodistoKoodiDto[] opintoalat = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + koulutusalaDto.getKoodi(), KoodistoKoodiDto[].class);
-            koulutusalaDto.setOpintoalat(mapper.mapAsList(Arrays.asList(opintoalat), OpintoalaDto.class));
+            ResponseEntity<KoodistoKoodiDto[]> opintoalat = restTemplate.exchange(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + koulutusalaDto.getKoodi(), HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
+            koulutusalaDto.setOpintoalat(mapper.mapAsList(Arrays.asList(opintoalat.getBody()), OpintoalaDto.class));
         }
 
         return koulutusalatDtos;
