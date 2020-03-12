@@ -223,6 +223,19 @@ public class PerusteenOsaViite implements
             if (tk.isLiite()) {
                 type = NavigationType.liite;
             }
+            else if (tk.getTunniste() != null) {
+                switch (tk.getTunniste()) {
+                    case NORMAALI:
+                        type = NavigationType.viite;
+                        break;
+                    case LAAJAALAINENOSAAMINEN:
+                        type = NavigationType.laajaalaiset;
+                        break;
+                    case RAKENNE:
+                        type = NavigationType.muodostuminen;
+                        break;
+                }
+            }
         }
 
         return NavigationNodeDto
