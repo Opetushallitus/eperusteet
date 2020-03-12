@@ -52,7 +52,7 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
         NavigationNodeDto tekstit = dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId);
         return NavigationNodeDto.of(NavigationType.root)
                 .addAll(tekstit.getChildren())
-                .add(tutkinnonMuodostuminen(perusteId))
+//                .add(tutkinnonMuodostuminen(perusteId))
                 .add(tutkinnonOsat(perusteId));
     }
 
