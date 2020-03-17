@@ -1,5 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
+import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
 import fi.vm.sade.eperusteet.dto.GeneerisenArvioinninOsaamistasonKriteeriDto;
 import fi.vm.sade.eperusteet.dto.Reference;
@@ -59,6 +61,7 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
                 .nimi(LokalisoituTekstiDto.of("otsikko"))
                 .kohde(LokalisoituTekstiDto.of("otsikko"))
                 .osaamistasonKriteerit(kriteerit)
+                .koulutustyypit(Sets.newHashSet(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO, KoulutusTyyppi.PERUSTUTKINTO))
                 .build();
 
         GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
@@ -67,6 +70,9 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         assertThat(geneerinen.getArviointiAsteikko()).isNotNull();
         assertThat(geneerinen.getKohde()).isNotNull();
         assertThat(geneerinen.getOsaamistasonKriteerit()).hasSize(3);
+        assertThat(geneerinen.getKoulutustyypit()).hasSize(2);
+        assertThat(geneerinen.getKoulutustyypit()).containsExactlyInAnyOrder(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO, KoulutusTyyppi.PERUSTUTKINTO);
+
     }
 
     @Test
@@ -78,6 +84,19 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         geneerinen.setJulkaistu(true);
         GeneerinenArviointiasteikkoDto julkaistu = geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
         assertThat(julkaistu.isJulkaistu()).isTrue();
+    }
+
+    @Test
+    @Rollback
+    public void testValittavissa() {
+        GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(0);
+        GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
+
+        assertThat(geneerinen.isValittavissa()).isFalse();
+
+        geneerinen.setValittavissa(true);
+        GeneerinenArviointiasteikkoDto valittavissa = geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
+        assertThat(valittavissa.isValittavissa()).isTrue();
     }
 
     @Test
@@ -166,6 +185,7 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         GeneerinenArviointiasteikkoDto kopio = geneerinenArviointiasteikkoService.kopioi(geneerinen.getId());
         assertThat(kopio.getId()).isNotEqualTo(geneerinen.getId());
         assertThat(kopio.isJulkaistu()).isFalse();
+        assertThat(kopio.isValittavissa()).isTrue();
         assertThat(kopio.getOsaamistasonKriteerit()).hasSize(3);
     }
 

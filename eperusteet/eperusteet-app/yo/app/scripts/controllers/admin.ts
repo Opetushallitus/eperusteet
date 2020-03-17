@@ -85,9 +85,32 @@ angular
             });
     })
     .controller("GeneerinenArviointiController",
-        ($timeout, $scope, geneeriset, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot, Varmistusdialogi) => {
+        ($timeout, $scope, geneeriset, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot, Varmistusdialogi, Kaanna, YleinenData) => {
 
-        $scope.geneeriset = geneeriset;
+        $scope.koulutustyypit = function(geneerinen) {
+            return _.map(YleinenData.koulutustyypit, function(item) {
+                return {
+                    value: item,
+                    label: Kaanna.kaanna(item),
+                    selected: geneerinen.koulutustyypit.indexOf(item) > -1
+                };
+            });
+        };
+
+        $scope.geneeriset = _.map(geneeriset, (geneerinen: any) => {
+            return {
+                ...geneerinen,
+                koulutustyyppivalinnat: $scope.koulutustyypit(geneerinen),
+            }
+        });
+
+        $scope.updateKoulutustyypit = function(kt, geneerinen) {
+            if (kt.selected) {
+                geneerinen.koulutustyypit.push(kt.value);
+            } else {
+                geneerinen.koulutustyypit = _.remove(geneerinen.koulutustyypit, kt.value);
+            }
+        };
 
         $scope.arviointiasteikot = _(arviointiasteikot)
             .sortBy(aa => _.size(aa.osaamistasot))
@@ -119,6 +142,7 @@ angular
                     fi: "Opiskelija",
                     sv: "Den studerande"
                 },
+                valittavissa: true,
             });
             $scope.geneeriset.push(geneerinen);
         };
@@ -148,6 +172,40 @@ angular
                 primaryBtn: "avaa",
                 async successCb() {
                     el.julkaistu = false;
+                    try {
+                        await $scope.paivita(el);
+                    }
+                    catch (err) {
+                        Notifikaatiot.serverCb(err);
+                    }
+                }
+            })();
+        };
+
+        $scope.poistaValittavuus = (el) => {
+            Varmistusdialogi.dialogi({
+                otsikko: "vahvista-kaytosta-poisto",
+                teksti: "haluatko-varmasti-poistaa-arvioinnin-kaytosta",
+                primaryBtn: "avaa",
+                async successCb() {
+                    el.valittavissa = false;
+                    try {
+                        await $scope.paivita(el);
+                    }
+                    catch (err) {
+                        Notifikaatiot.serverCb(err);
+                    }
+                }
+            })();
+        };
+
+        $scope.lisaaValittavuus = (el) => {
+            Varmistusdialogi.dialogi({
+                otsikko: "vahvista-kaytto",
+                teksti: "haluatko-varmasti-ottaa-arvioinnin-kayttoon",
+                primaryBtn: "avaa",
+                async successCb() {
+                    el.valittavissa = true;
                     try {
                         await $scope.paivita(el);
                     }
