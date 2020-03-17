@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -18,5 +19,7 @@ public class GeneerinenArviointiasteikkoDto {
     private LokalisoituTekstiDto kohde;
     private Reference arviointiAsteikko;
     private boolean julkaistu;
+    private boolean valittavissa;
+    private Set<KoulutusTyyppi> koulutustyypit;
     private Set<GeneerisenArvioinninOsaamistasonKriteeriDto> osaamistasonKriteerit = new HashSet<>();
 }
