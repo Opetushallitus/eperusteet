@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.dto.koodisto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Arrays;
+
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.*;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -41,6 +43,10 @@ public class KoodistoKoodiDto {
     private KoodistoDto koodisto;
     private Date voimassaAlkuPvm;
     private Date voimassaLoppuPvm;
+
+    public LokalisoituTekstiDto getNimi() {
+
+    }
 
     public KoodistoMetadataDto getMetadataName(String kieli) {
         if(metadata == null) {
