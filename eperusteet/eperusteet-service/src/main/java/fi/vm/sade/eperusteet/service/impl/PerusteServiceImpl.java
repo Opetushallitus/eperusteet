@@ -755,11 +755,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 lukioKoulutustyypit.add(LUKIOVALMISTAVAKOULUTUS.toString());
 
                 // Sallitaan jos sama sisältörakenne
-                if (lukioKoulutustyypit.contains(current.getKoulutustyyppi())
-                        && lukioKoulutustyypit.contains(updated.getKoulutustyyppi())) {
+                if (lukioKoulutustyypit.contains(current.getKoulutustyyppi()) || lukioKoulutustyypit.contains(updated.getKoulutustyyppi())) {
+                    if (lukioKoulutustyypit.contains(current.getKoulutustyyppi()) && lukioKoulutustyypit.contains(updated.getKoulutustyyppi())) {
                     // noop
-                } else {
-                    throw new BusinessRuleViolationException("Koulutustyypin sisällön rakenne täytyy olla sama");
+                    } else {
+                        throw new BusinessRuleViolationException("Koulutustyypin sisällön rakenne täytyy olla sama");
+                    }
                 }
             }
 
