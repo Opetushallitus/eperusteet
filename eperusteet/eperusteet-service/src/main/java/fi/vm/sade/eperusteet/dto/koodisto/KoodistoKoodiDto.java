@@ -44,10 +44,6 @@ public class KoodistoKoodiDto {
     private Date voimassaAlkuPvm;
     private Date voimassaLoppuPvm;
 
-    public LokalisoituTekstiDto getNimi() {
-
-    }
-
     public KoodistoMetadataDto getMetadataName(String kieli) {
         if(metadata == null) {
             return null;
