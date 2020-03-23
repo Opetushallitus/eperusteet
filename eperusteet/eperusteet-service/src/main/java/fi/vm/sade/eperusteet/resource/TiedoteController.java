@@ -57,6 +57,7 @@ public class TiedoteController {
             @ApiImplicitParam(name = "yleinen", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae yleiset tiedotteet"),
             @ApiImplicitParam(name = "tiedoteJulkaisupaikat", dataType = "string", paramType = "query", allowMultiple = true, value = "tiedotteen julkaisupaikat"),
             @ApiImplicitParam(name = "perusteIds", dataType = "long", paramType = "query", allowMultiple = true, value = "tiedotteen perusteiden"),
+            @ApiImplicitParam(name = "koulutustyypit", dataType = "string", paramType = "query", allowMultiple = true, value = "tiedotteen koulutustyypit"),
     })
     @RequestMapping(value = "/haku", method = GET)
     public Page<TiedoteDto> findTiedotteetBy(@ApiIgnore TiedoteQuery pquery) {
