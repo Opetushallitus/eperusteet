@@ -17,6 +17,12 @@ sync_localisations:
 	@node ./tools/lokalisointi/sync_locales.js eperusteet/eperusteet-app/yo/app/localisation
 
 # Generoi lista puutteellisista osaamisaloista
+gen_openapi:
+	@cd eperusteet/eperusteet-service/ \
+		&& mvn clean compile -P generate-openapi \
+		&& cp target/openapi/eperusteet.spec.json ../../generated
+
+# Generoi lista puutteellisista osaamisaloista
 gen_puutteelliset_osaamisalat:
 	@cd scripts && yarn install
 	@cd scripts && yarn run puutteelliset-osaamisalat
