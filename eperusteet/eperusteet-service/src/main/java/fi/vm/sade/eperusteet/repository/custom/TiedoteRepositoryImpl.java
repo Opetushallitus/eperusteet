@@ -153,10 +153,10 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
             pred = cb.and(pred, cb.equal(root.get(Tiedote_.yleinen), tq.getYleinen()));
         }
 
-        if (!ObjectUtils.isEmpty(tq.getTiedoteJulkaisupaikat())) {
+        if (!ObjectUtils.isEmpty(tq.getTiedoteJulkaisuPaikka())) {
             SetJoin<Tiedote, TiedoteJulkaisuPaikka> julkaisupaikat = root.join(Tiedote_.julkaisupaikat);
-            Optional<Predicate> kieliPred = tq.getTiedoteJulkaisupaikat().stream()
-                    .map((julkaisupaikka) -> cb.equal(julkaisupaikat, julkaisupaikka))
+            Optional<Predicate> kieliPred = tq.getTiedoteJulkaisuPaikka().stream()
+                    .map((julkaisupaikka) -> cb.equal(julkaisupaikat, TiedoteJulkaisuPaikka.of(julkaisupaikka)))
                     .reduce(cb::or);
 
             if (kieliPred.isPresent()) {
@@ -164,14 +164,14 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
             }
         }
 
-        if (!ObjectUtils.isEmpty(tq.getKoulutustyypit())) {
+        if (!ObjectUtils.isEmpty(tq.getKoulutusTyyppi())) {
             SetJoin<Tiedote, KoulutusTyyppi> koulutustyypit = root.join(Tiedote_.koulutustyypit);
-            Optional<Predicate> kieliPred = tq.getKoulutustyypit().stream()
-                    .map((koulutustyyppi) -> cb.equal(koulutustyypit, koulutustyyppi))
+            Optional<Predicate> koulutustyyppiPred = tq.getKoulutusTyyppi().stream()
+                    .map((koulutustyyppi) -> cb.equal(koulutustyypit, KoulutusTyyppi.of(koulutustyyppi)))
                     .reduce(cb::or);
 
-            if (kieliPred.isPresent()) {
-                pred = cb.and(pred, kieliPred.get());
+            if (koulutustyyppiPred.isPresent()) {
+                pred = cb.and(pred, koulutustyyppiPred.get());
             }
         }
 

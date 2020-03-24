@@ -36,7 +36,8 @@ public class TiedoteQuery {
     private Boolean perusteeton; // Jos true, palauttaa vain ne tiedotteet, jotka eivät liity mihinkään perusteeseen
     private Boolean julkinen; // Jos null, haetaan julkiset ja sisäiset
     private Boolean yleinen; // Jos halutaan esittää mm. etusivulla
-    private Set<TiedoteJulkaisuPaikka> tiedoteJulkaisupaikat;
-    private Set<KoulutusTyyppi> koulutustyypit;
-    private Set<Long> perusteIds;
+    private List<String> tiedoteJulkaisuPaikka;
+    private List<String> koulutusTyyppi;
+    private List<Long> perusteIds;
+
 }

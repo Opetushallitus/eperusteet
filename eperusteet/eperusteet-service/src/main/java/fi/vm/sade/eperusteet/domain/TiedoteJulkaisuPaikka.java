@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,5 +18,15 @@ public enum TiedoteJulkaisuPaikka {
     @Override
     public String toString() {
         return paikka;
+    }
+
+    @JsonCreator
+    public static TiedoteJulkaisuPaikka of(String paikka) {
+        for (TiedoteJulkaisuPaikka s : values()) {
+            if (s.paikka.equalsIgnoreCase(paikka)) {
+                return s;
+            }
+        }
+        throw new IllegalArgumentException(paikka + " ei ole kelvollinen TiedoteJulkaisuPaikka");
     }
 }

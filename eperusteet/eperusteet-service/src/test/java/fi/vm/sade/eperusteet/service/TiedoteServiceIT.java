@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -67,7 +68,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
     @Autowired
     private DtoMapper dtoMapper;
 
-    private Set<Long> perusteIds = new HashSet<>();
+    private List<Long> perusteIds = new ArrayList<>();
     private PerusteKevytDto perusteDto1;
 
     @Autowired
@@ -206,14 +207,14 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
     public void testHakuJulkaisupaikat() {
         {
             TiedoteQuery tq = new TiedoteQuery();
-            tq.setTiedoteJulkaisupaikat(Sets.newHashSet(TiedoteJulkaisuPaikka.AMOSAA, TiedoteJulkaisuPaikka.OPS));
+            tq.setTiedoteJulkaisuPaikka(Arrays.asList(TiedoteJulkaisuPaikka.AMOSAA.toString(), TiedoteJulkaisuPaikka.OPS.toString()));
             Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
             assertEquals(1, tiedotteet.getTotalElements());
         }
 
         {
             TiedoteQuery tq = new TiedoteQuery();
-            tq.setTiedoteJulkaisupaikat(Sets.newHashSet(TiedoteJulkaisuPaikka.OPS));
+            tq.setTiedoteJulkaisuPaikka(Arrays.asList(TiedoteJulkaisuPaikka.OPS.toString()));
             Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
             assertEquals(0, tiedotteet.getTotalElements());
         }
@@ -223,14 +224,14 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
     public void testHakuKoulutuspaikat() {
         {
             TiedoteQuery tq = new TiedoteQuery();
-            tq.setKoulutustyypit(Sets.newHashSet(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.LUKIOKOULUTUS));
+            tq.setKoulutusTyyppi(Arrays.asList(KoulutusTyyppi.PERUSTUTKINTO.toString(), KoulutusTyyppi.LUKIOKOULUTUS.toString()));
             Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
             assertEquals(1, tiedotteet.getTotalElements());
         }
 
         {
             TiedoteQuery tq = new TiedoteQuery();
-            tq.setKoulutustyypit(Sets.newHashSet(KoulutusTyyppi.LUKIOKOULUTUS));
+            tq.setKoulutusTyyppi(Arrays.asList(KoulutusTyyppi.LUKIOKOULUTUS.toString()));
             Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
             assertEquals(0, tiedotteet.getTotalElements());
         }
@@ -248,14 +249,14 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
         {
             TiedoteQuery tq = new TiedoteQuery();
-            tq.setPerusteIds(Sets.newHashSet(perusteDto1.getId(), 999l));
+            tq.setPerusteIds(Arrays.asList(perusteDto1.getId(), 999l));
             Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
             assertEquals(1, tiedotteet.getTotalElements());
         }
 
         {
             TiedoteQuery tq = new TiedoteQuery();
-            tq.setPerusteIds(Sets.newHashSet(999l));
+            tq.setPerusteIds(Arrays.asList(999l));
             Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
             assertEquals(0, tiedotteet.getTotalElements());
         }
