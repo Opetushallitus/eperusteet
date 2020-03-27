@@ -87,6 +87,7 @@ public class OpasController {
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", defaultValue = "fi", value = "oppaan nimen kieli"),
             @ApiImplicitParam(name = "muokattu", dataType = "long", paramType = "query", value = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)"),
+            @ApiImplicitParam(name = "koulutustyyppi", dataType = "string", paramType = "query", allowMultiple = true, value = "koulutustyyppi (koodistokoodi)"),
     })
     public Page<PerusteHakuDto> getAllOppaat(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
