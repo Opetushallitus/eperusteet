@@ -2062,17 +2062,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public List<PerusteTekstikappaleillaDto> findByTekstikappaleenTutkinnonosa(String tekstikappaleenTutkinnonosa) {
-        List<TekstiKappale> tekstiKappales = tekstikappaleRepository.findByTutkinnonosaUri(tekstikappaleenTutkinnonosa);
+    public List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi) {
+        List<TekstiKappale> tekstiKappales = tekstikappaleRepository.findByKooditUri(koodi);
         return tekstikappaleidenPerusteet(tekstiKappales);
     }
 
     private List<PerusteTekstikappaleillaDto> tekstikappaleidenPerusteet(List<TekstiKappale> osat) {
 
         Map<Peruste, List<TekstiKappale>> tekstikappaleetPerusteilla = new HashMap<>();
-        osat.forEach(osa -> {
 
-            final List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
+        osat.forEach(osa -> {
+            List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
             Set<Peruste> perusteet = roots.isEmpty() ? Collections.emptySet() : perusteRepository.findPerusteetBySisaltoRoots(roots, PerusteTila.VALMIS);
 
             perusteet.forEach(peruste -> {
@@ -2087,7 +2087,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         List<PerusteTekstikappaleillaDto> perusteetTekstikappaleilla = new ArrayList<>();
         tekstikappaleetPerusteilla.forEach((peruste, tekstikappaleet) -> {
             perusteetTekstikappaleilla.add(PerusteTekstikappaleillaDto.builder()
-                    .perusteDto(mapper.map(peruste, PerusteDto.class))
+                    .peruste(mapper.map(peruste, PerusteDto.class))
                     .tekstikappeet(mapper.mapAsList(tekstikappaleet, TekstiKappaleDto.class))
                     .build());
         });

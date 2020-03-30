@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TekstikappaleRepository extends JpaRepository<TekstiKappale, Long> {
 
-    List<TekstiKappale> findByTutkinnonosaUri(String tutkinnonosaUri);
+    List<TekstiKappale> findByKooditUri(String koodi);
 }

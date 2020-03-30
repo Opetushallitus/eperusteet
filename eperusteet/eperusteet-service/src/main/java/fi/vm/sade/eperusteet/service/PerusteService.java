@@ -237,5 +237,5 @@ public interface PerusteService {
     NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId);
 
     @PreAuthorize("isAuthenticated()")
-    List<PerusteTekstikappaleillaDto> findByTekstikappaleenTutkinnonosa(String tekstikappaleenTutkinnonosa);
+    List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi);
 }
