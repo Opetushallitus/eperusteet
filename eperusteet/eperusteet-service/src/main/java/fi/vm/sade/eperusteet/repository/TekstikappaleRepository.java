@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TekstikappaleRepository extends JpaRepository<TekstiKappale, Long> {
-
+    
     List<TekstiKappale> findByKooditUri(String koodi);
 }
