@@ -19,18 +19,23 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Assert;
@@ -53,6 +58,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.Assert.*;
 
 /**
@@ -87,6 +94,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private PerusteprojektiTestUtils ppTestUtils;
 
     private Peruste peruste;
+
+    @PersistenceContext
+    private EntityManager em;
+
+    @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
 
     public PerusteServiceIT() {
     }
@@ -281,6 +294,83 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         assertEquals(koodiUri, haettuViiteDto.getTutkinnonOsaDto().getKoodi().getUri());
         // Testataan myös vanhan muotoinen uri
         assertEquals(koodiUri, haettuViiteDto.getTutkinnonOsaDto().getKoodiUri());
+    }
+
+    @Test
+    public void testFindByTekstikappaleenTutkinnonosa() {
+
+        Long ekaId = lisaaPerusteTekstikappaleKoodilla("koodi_123");
+        Long tokaId = lisaaPerusteTekstikappaleKoodilla("koodi_123");
+        Long kolmasId = lisaaPerusteTekstikappaleKoodilla("koodi_222");
+
+        {
+            List<PerusteTekstikappaleillaDto> perusteTekstikappaleilla = perusteService.findByTekstikappaleenTutkinnonosa("koodi_123");
+
+            assertThat(perusteTekstikappaleilla).hasSize(2);
+            assertThat(perusteTekstikappaleilla).extracting("perusteDto.id").containsExactlyInAnyOrder(ekaId, tokaId);
+            assertThat(perusteTekstikappaleilla).extracting("tekstikappeet").hasSize(2);
+            assertThat(perusteTekstikappaleilla).flatExtracting("tekstikappeet").extracting("tutkinnonosa.uri").containsExactlyInAnyOrder("koodi_123", "koodi_123");
+        }
+
+        {
+            List<PerusteTekstikappaleillaDto> perusteTekstikappaleilla = perusteService.findByTekstikappaleenTutkinnonosa("koodi_222");
+            assertThat(perusteTekstikappaleilla).hasSize(1);
+            assertThat(perusteTekstikappaleilla).extracting("perusteDto.id").contains(kolmasId);
+            assertThat(perusteTekstikappaleilla).extracting("tekstikappeet").hasSize(1);
+            assertThat(perusteTekstikappaleilla).flatExtracting("tekstikappeet").first().extracting("tutkinnonosa.uri").contains("koodi_222");
+        }
+
+    }
+
+    private Long lisaaPerusteTekstikappaleKoodilla(String koodiUri) {
+        Peruste peruste = new Peruste();
+        peruste.asetaTila(PerusteTila.VALMIS);
+        em.persist(peruste);
+        Long perusteId = peruste.getId();
+
+        Suoritustapa suoritustapa = new Suoritustapa();
+        suoritustapa.setSuoritustapakoodi(Suoritustapakoodi.NAYTTO);
+        em.persist(suoritustapa);
+        peruste.getSuoritustavat().add(suoritustapa);
+        suoritustapa.getPerusteet().add(peruste);
+
+        PerusteenOsaViite juuri = new PerusteenOsaViite();
+        juuri.setLapset(new ArrayList<>());
+        juuri.setVanhempi(null);
+
+        juuri = perusteenOsaViiteRepository.save(juuri);
+        suoritustapa.setSisalto(juuri);
+        juuri.setSuoritustapa(suoritustapa);
+
+        PerusteenOsaViite lapsi = new PerusteenOsaViite();
+        TekstiKappale tekstikappale = new TekstiKappale();
+        em.persist(tekstikappale);
+
+//        tekstikappaleId = tekstikappale.getId();
+        lapsi.setPerusteenOsa(tekstikappale);
+        lapsi.setVanhempi(juuri);
+        lapsi.setLapset(new ArrayList<>());
+        lapsi = perusteenOsaViiteRepository.save(lapsi);
+
+        PerusteenOsaViite lapsenlapsi = new PerusteenOsaViite();
+
+        Koodi koodi = new Koodi();
+        koodi.setUri(koodiUri);
+        tekstikappale = new TekstiKappale();
+        tekstikappale.setTutkinnonosa(koodi);
+        em.persist(tekstikappale);
+
+        lapsenlapsi.setPerusteenOsa(tekstikappale);
+        lapsenlapsi.setVanhempi(lapsi);
+        lapsenlapsi.setLapset(new ArrayList<>());
+        lapsenlapsi = perusteenOsaViiteRepository.save(lapsenlapsi);
+
+        lapsi.getLapset().add(lapsenlapsi);
+        juuri.getLapset().add(lapsi);
+
+        em.flush();
+
+        return perusteId;
     }
 
     private TutkinnonOsaViiteDto luoKoodillinenTutkinnonOsa(

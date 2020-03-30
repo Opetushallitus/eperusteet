@@ -17,7 +17,10 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
@@ -347,6 +350,12 @@ public class PerusteController {
     public void pushAllAmmattitaitovaatimuksetToKoodisto(
             @PathVariable("perusteId") final Long perusteId) {
         ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto();
+    }
+
+    @RequestMapping(value = "/tekstikappalentutkinnonosa", method = GET)
+    @ResponseBody
+    public List<PerusteTekstikappaleillaDto> getPerusteetWithtekstikappaleenTutkinnonosa(@RequestParam(value = "koodi", required = false) final String koodi) {
+        return service.findByTekstikappaleenTutkinnonosa(koodi);
     }
 
 }

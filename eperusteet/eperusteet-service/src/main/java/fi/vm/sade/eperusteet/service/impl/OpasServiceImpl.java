@@ -21,7 +21,6 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
 import fi.vm.sade.eperusteet.dto.opas.OpasDto;
 import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
@@ -42,6 +41,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
+
 /**
  *
  * @author nkala
@@ -58,9 +59,6 @@ public class OpasServiceImpl implements OpasService {
 
     @Autowired
     private PerusteRepository perusteRepository;
-
-    @Autowired
-    private PerusteRepository perusteet;
 
     @Autowired
     @Dto
@@ -99,7 +97,7 @@ public class OpasServiceImpl implements OpasService {
     public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
         pquery.setTila(PerusteTila.VALMIS.toString());
         pquery.setPerusteTyyppi(PerusteTyyppi.OPAS.toString());
-        Page<Peruste> result = perusteet.findBy(page, pquery);
+        Page<Peruste> result = perusteRepository.findBy(page, pquery);
         PageDto<Peruste, PerusteHakuDto> resultDto = new PageDto<>(result, PerusteHakuDto.class, page, mapper);
         return resultDto;
     }

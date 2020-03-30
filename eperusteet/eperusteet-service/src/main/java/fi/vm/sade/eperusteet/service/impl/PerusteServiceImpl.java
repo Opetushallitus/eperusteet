@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
@@ -137,6 +138,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private KoodiRepository koodiRepository;
+
+    @Autowired
+    private TekstikappaleRepository tekstikappaleRepository;
+
+    @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
 
     @Autowired
     PerusteService self;
@@ -2052,5 +2059,39 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public NavigationNodeDto buildNavigation(Long perusteId) {
         Peruste peruste = getPeruste(perusteId);
         return self.buildNavigationWithDate(perusteId, peruste.getGlobalVersion().getAikaleima());
+    }
+
+    @Override
+    public List<PerusteTekstikappaleillaDto> findByTekstikappaleenTutkinnonosa(String tekstikappaleenTutkinnonosa) {
+        List<TekstiKappale> tekstiKappales = tekstikappaleRepository.findByTutkinnonosaUri(tekstikappaleenTutkinnonosa);
+        return tekstikappaleidenPerusteet(tekstiKappales);
+    }
+
+    private List<PerusteTekstikappaleillaDto> tekstikappaleidenPerusteet(List<TekstiKappale> osat) {
+
+        Map<Peruste, List<TekstiKappale>> tekstikappaleetPerusteilla = new HashMap<>();
+        osat.forEach(osa -> {
+
+            final List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
+            Set<Peruste> perusteet = roots.isEmpty() ? Collections.emptySet() : perusteRepository.findPerusteetBySisaltoRoots(roots, PerusteTila.VALMIS);
+
+            perusteet.forEach(peruste -> {
+                if (tekstikappaleetPerusteilla.get(peruste) == null) {
+                    tekstikappaleetPerusteilla.put(peruste, new ArrayList<>());
+                }
+                tekstikappaleetPerusteilla.get(peruste).add(osa);
+            });
+
+        });
+
+        List<PerusteTekstikappaleillaDto> perusteetTekstikappaleilla = new ArrayList<>();
+        tekstikappaleetPerusteilla.forEach((peruste, tekstikappaleet) -> {
+            perusteetTekstikappaleilla.add(PerusteTekstikappaleillaDto.builder()
+                    .perusteDto(mapper.map(peruste, PerusteDto.class))
+                    .tekstikappeet(mapper.mapAsList(tekstikappaleet, TekstiKappaleDto.class))
+                    .build());
+        });
+
+        return perusteetTekstikappaleilla;
     }
 }
