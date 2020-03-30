@@ -2070,7 +2070,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private List<PerusteTekstikappaleillaDto> tekstikappaleidenPerusteet(List<TekstiKappale> osat) {
 
         Map<Peruste, List<TekstiKappale>> tekstikappaleetPerusteilla = new HashMap<>();
-
         osat.forEach(osa -> {
             List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
             Set<Peruste> perusteet = roots.isEmpty() ? Collections.emptySet() : perusteRepository.findPerusteetBySisaltoRoots(roots, PerusteTila.VALMIS);
