@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
@@ -299,30 +300,64 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Test
     public void testFindByTekstikappaleenTutkinnonosa() {
 
-        Long ekaId = lisaaPerusteTekstikappaleKoodilla("koodi_123");
-        Long tokaId = lisaaPerusteTekstikappaleKoodilla("koodi_123");
-        Long kolmasId = lisaaPerusteTekstikappaleKoodilla("koodi_222");
+        Long ekaId = lisaaPerusteTekstikappaleKoodilla(Arrays.asList("koodi_111"));
+        Long tokaId = lisaaPerusteTekstikappaleKoodilla(Arrays.asList("koodi_111"));
+        Long kolmasId = lisaaPerusteTekstikappaleKoodilla(Arrays.asList("koodi_111", "koodi_222"));
+        Long neljasId = lisaaPerusteTekstikappaleKoodilla(Arrays.asList("koodi_222"));
+        Long viidesId = lisaaPerusteTekstikappaleKoodilla(Arrays.asList("koodi_333"));
 
         {
-            List<PerusteTekstikappaleillaDto> perusteTekstikappaleilla = perusteService.findByTekstikappaleenTutkinnonosa("koodi_123");
+            List<PerusteTekstikappaleillaDto> perusteTekstikappaleilla = perusteService.findByTekstikappaleKoodi("koodi_111");
 
-            assertThat(perusteTekstikappaleilla).hasSize(2);
-            assertThat(perusteTekstikappaleilla).extracting("perusteDto.id").containsExactlyInAnyOrder(ekaId, tokaId);
-            assertThat(perusteTekstikappaleilla).extracting("tekstikappeet").hasSize(2);
-            assertThat(perusteTekstikappaleilla).flatExtracting("tekstikappeet").extracting("tutkinnonosa.uri").containsExactlyInAnyOrder("koodi_123", "koodi_123");
+            assertThat(perusteTekstikappaleilla).hasSize(3);
+            assertThat(perusteTekstikappaleilla)
+                    .extracting("peruste.id")
+                    .containsExactlyInAnyOrder(ekaId, tokaId, kolmasId);
+            assertThat(perusteTekstikappaleilla)
+                    .extracting("tekstikappeet")
+                    .hasSize(3);
+            assertThat(perusteTekstikappaleilla)
+                    .flatExtracting("tekstikappeet")
+                    .flatExtracting("koodit")
+                    .extracting("uri")
+                    .containsExactlyInAnyOrder("koodi_111", "koodi_111", "koodi_111", "koodi_222");
         }
 
         {
-            List<PerusteTekstikappaleillaDto> perusteTekstikappaleilla = perusteService.findByTekstikappaleenTutkinnonosa("koodi_222");
+            List<PerusteTekstikappaleillaDto> perusteTekstikappaleilla = perusteService.findByTekstikappaleKoodi("koodi_222");
+            assertThat(perusteTekstikappaleilla).hasSize(2);
+            assertThat(perusteTekstikappaleilla)
+                    .extracting("peruste.id")
+                    .containsExactlyInAnyOrder(kolmasId, neljasId);
+            assertThat(perusteTekstikappaleilla)
+                    .extracting("tekstikappeet")
+                    .hasSize(2);
+            assertThat(perusteTekstikappaleilla)
+                    .flatExtracting("tekstikappeet")
+                    .flatExtracting("koodit")
+                    .extracting("uri")
+                    .containsExactlyInAnyOrder("koodi_111", "koodi_222", "koodi_222");
+        }
+
+        {
+            List<PerusteTekstikappaleillaDto> perusteTekstikappaleilla = perusteService.findByTekstikappaleKoodi("koodi_333");
             assertThat(perusteTekstikappaleilla).hasSize(1);
-            assertThat(perusteTekstikappaleilla).extracting("perusteDto.id").contains(kolmasId);
-            assertThat(perusteTekstikappaleilla).extracting("tekstikappeet").hasSize(1);
-            assertThat(perusteTekstikappaleilla).flatExtracting("tekstikappeet").first().extracting("tutkinnonosa.uri").contains("koodi_222");
+            assertThat(perusteTekstikappaleilla)
+                    .extracting("peruste.id")
+                    .containsExactlyInAnyOrder(viidesId);
+            assertThat(perusteTekstikappaleilla)
+                    .extracting("tekstikappeet")
+                    .hasSize(1);
+            assertThat(perusteTekstikappaleilla)
+                    .flatExtracting("tekstikappeet")
+                    .flatExtracting("koodit")
+                    .extracting("uri")
+                    .containsExactlyInAnyOrder("koodi_333");
         }
 
     }
 
-    private Long lisaaPerusteTekstikappaleKoodilla(String koodiUri) {
+    private Long lisaaPerusteTekstikappaleKoodilla(List<String> koodiUrit) {
         Peruste peruste = new Peruste();
         peruste.asetaTila(PerusteTila.VALMIS);
         em.persist(peruste);
@@ -354,10 +389,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         PerusteenOsaViite lapsenlapsi = new PerusteenOsaViite();
 
-        Koodi koodi = new Koodi();
-        koodi.setUri(koodiUri);
         tekstikappale = new TekstiKappale();
-        tekstikappale.setTutkinnonosa(koodi);
+        tekstikappale.setKoodit(koodiUrit.stream().map(koodiUri -> new Koodi(koodiUri, "")).collect(Collectors.toList()));
         em.persist(tekstikappale);
 
         lapsenlapsi.setPerusteenOsa(tekstikappale);

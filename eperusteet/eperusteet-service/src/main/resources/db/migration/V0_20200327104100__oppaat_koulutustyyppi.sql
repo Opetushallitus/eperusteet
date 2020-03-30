@@ -1,9 +1,35 @@
 UPDATE peruste SET koulutustyyppi = 'koulutustyyppi_1' WHERE tyyppi = 'OPAS' AND koulutustyyppi IS NULL;
 
-ALTER TABLE tekstikappale ADD COLUMN tutkinnonosa_id int8;
-ALTER TABLE tekstikappale_aud ADD COLUMN tutkinnonosa_id int8;
+create table tekstikappale_koodi (
+    tekstikappale_id int8 not null,
+    koodi_id int8 not null
+);
 
-alter table tekstikappale
-    add constraint FK_9hc0iolbqc6h2ffb5jyy3563e
-    foreign key (tutkinnonosa_id)
+create table tekstikappale_koodi_AUD (
+    REV int4 not null,
+    tekstikappale_id int8 not null,
+    koodi_id int8 not null,
+    REVTYPE int2,
+    REVEND int4,
+    primary key (REV, tekstikappale_id, koodi_id)
+);
+
+alter table tekstikappale_koodi
+    add constraint FK_k0daabryvw3txwf19tqv7eeol
+    foreign key (koodi_id)
     references koodi;
+
+alter table tekstikappale_koodi
+    add constraint FK_r2hxe8aii6yy9bou7xxwqxmcr
+    foreign key (tekstikappale_id)
+    references tekstikappale;
+
+alter table tekstikappale_koodi_AUD
+    add constraint FK_kt8gqyt49fkcsk52e3j63ct3g
+    foreign key (REV)
+    references revinfo;
+
+alter table tekstikappale_koodi_AUD
+    add constraint FK_1eiet16enb7c6xgcnjg3gqc1d
+    foreign key (REVEND)
+    references revinfo;

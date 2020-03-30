@@ -352,10 +352,10 @@ public class PerusteController {
         ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto();
     }
 
-    @RequestMapping(value = "/tekstikappalentutkinnonosa", method = GET)
+    @RequestMapping(value = "/tekstikappale", method = GET)
     @ResponseBody
-    public List<PerusteTekstikappaleillaDto> getPerusteetWithtekstikappaleenTutkinnonosa(@RequestParam(value = "koodi", required = false) final String koodi) {
-        return service.findByTekstikappaleenTutkinnonosa(koodi);
+    public List<PerusteTekstikappaleillaDto> getPerusteetWithTekstikappaleKoodi(@RequestParam(value = "koodi", required = true) final String koodi) {
+        return service.findByTekstikappaleKoodi(koodi);
     }
 
 }

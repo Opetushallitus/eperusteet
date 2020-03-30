@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PerusteTekstikappaleillaDto {
 
-    private PerusteDto perusteDto;
+    private PerusteDto peruste;
     private List<TekstiKappaleDto> tekstikappeet;
 
 }
