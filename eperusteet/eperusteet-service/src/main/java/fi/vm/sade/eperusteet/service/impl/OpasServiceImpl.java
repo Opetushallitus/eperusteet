@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.OpasSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -81,6 +82,8 @@ public class OpasServiceImpl implements OpasService {
 
         Peruste peruste = new Peruste();
         peruste.setTyyppi(PerusteTyyppi.OPAS);
+        peruste.setOppaanKoulutustyypit(opasDto.getOppaanKoulutustyypit());
+        peruste.setOppaanPerusteet(Sets.newHashSet(mapper.mapAsList(opasDto.getOppaanPerusteet(), Peruste.class)));
 
         peruste.setSisalto(new OpasSisalto());
 
