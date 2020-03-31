@@ -247,6 +247,24 @@ public class Peruste extends AbstractAuditedEntity
     @Setter
     private Perusteprojekti perusteprojekti;
 
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToMany
+    @JoinTable(name = "opas_peruste",
+            joinColumns = @JoinColumn(name = "opas_id"),
+            inverseJoinColumns = @JoinColumn(name = "peruste_id"))
+    private Set<Peruste> oppaanPerusteet = new HashSet<>();
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @Getter
+    @Setter
+    @CollectionTable(name = "opas_koulutustyyppi",
+            joinColumns = @JoinColumn(name = "opas_id"))
+    @Column(name = "koulutustyyppi")
+    private Set<KoulutusTyyppi> oppaanKoulutustyypit = new HashSet<>();
+
     public Set<PerusteenSisalto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
             return Collections.singleton(this.getOppaanSisalto());

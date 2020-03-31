@@ -18,16 +18,19 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
 import fi.vm.sade.eperusteet.dto.MuutosmaaraysDto;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -80,6 +83,13 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<TutkintonimikeKoodiDto> tutkintonimikkeet;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Set<Reference> oppaanPerusteet;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Set<KoulutusTyyppi> oppaanKoulutustyypit;
+
+    @Override
     public KoulutustyyppiToteutus getToteutus() {
         return PerusteUtils.getToteutus(this.toteutus, this.koulutustyyppi, this.tyyppi);
     }
