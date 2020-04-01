@@ -132,7 +132,8 @@ public class PerusteController {
             @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
             @ApiImplicitParam(name = "tutkinnonosat", dataType = "boolean", paramType = "query", value = "hae myös tutkinnon osista"),
             @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),
-            @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä")
+            @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä"),
+            @ApiImplicitParam(name = "perusteTyyppi", dataType = "string", paramType = "query", value = "Perusteen tyyppi"),
     })
     public Page<PerusteHakuDto> getAllPerusteet(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
@@ -162,7 +163,8 @@ public class PerusteController {
             @ApiImplicitParam(name = "tutkinnonosat", dataType = "boolean", paramType = "query", value = "hae myös tutkinnon osista"),
             @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),
             @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä"),
-            @ApiImplicitParam(name = "tila", dataType = "string", paramType = "query", allowMultiple = true, value = "Sallitut tilat")
+            @ApiImplicitParam(name = "tila", dataType = "string", paramType = "query", allowMultiple = true, value = "Sallitut tilat"),
+            @ApiImplicitParam(name = "perusteTyyppi", dataType = "string", paramType = "query", value = "Perusteen tyyppi"),
     })
     public Page<PerusteHakuInternalDto> getAllPerusteetInternal(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));

@@ -16,18 +16,30 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.OpasSisalto;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.opas.OpasDto;
 import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import java.util.Arrays;
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +50,15 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import static org.assertj.core.api.Assertions.*;
+
 /**
  *
  * @author nkala
  */
 @Transactional
 @DirtiesContext
-public class OpasServiceIT {
+public class OpasServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteRepository perusteRepository;
@@ -122,6 +136,53 @@ public class OpasServiceIT {
     @Test
     @Rollback(true)
     public void teeOpasprojekti() {
+        {
+            OpasLuontiDto opasLuontiDto = new OpasLuontiDto();
+            opasLuontiDto.setNimi("Opas 1");
+            opasLuontiDto.setRyhmaOid(ryhmaId);
+
+            OpasDto opasDto = opasService.save(opasLuontiDto);
+
+            assertThat(opasDto).isNotNull();
+
+            PerusteKaikkiDto perusteKaikki = perusteService.getKokoSisalto(opasDto.getPeruste().getIdLong());
+            assertThat(perusteKaikki.getOppaanKoulutustyypit()).isNull();
+            assertThat(perusteKaikki.getOppaanPerusteet()).hasSize(0);
+
+            Peruste peruste = perusteRepository.getOne(opasDto.getPeruste().getIdLong());
+            assertThat(peruste.getOppaanSisalto().getSisalto()).isNotNull();
+            assertThat(peruste.getOppaanSisalto().getSisalto().getLapset()).hasSize(0);
+        }
+
+        {
+            Peruste p = TestUtils.teePeruste();
+            OpasSisalto opasSisalto = new OpasSisalto();
+            PerusteenOsaViite viite = new PerusteenOsaViite();
+            PerusteenOsaViite viiteLapsi = new PerusteenOsaViite();
+            viite.setLapset(Arrays.asList(viiteLapsi));
+            opasSisalto.setSisalto(viite);
+            p.setSisalto(opasSisalto);
+            Peruste pohjaperuste = perusteRepository.save(p);
+
+            OpasLuontiDto opasLuontiDto = new OpasLuontiDto();
+            opasLuontiDto.setNimi("Opas 1");
+            opasLuontiDto.setRyhmaOid(ryhmaId);
+            opasLuontiDto.setPohjaId(p.getId());
+            opasLuontiDto.setOppaanKoulutustyypit(Sets.newHashSet(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO));
+            opasLuontiDto.setOppaanPerusteet(Sets.newHashSet(mapper.map(pohjaperuste, PerusteKevytDto.class)));
+
+            OpasDto opasDto = opasService.save(opasLuontiDto);
+
+            assertThat(opasDto).isNotNull();
+
+            PerusteKaikkiDto perusteKaikki = perusteService.getKokoSisalto(opasDto.getPeruste().getIdLong());
+            assertThat(perusteKaikki.getOppaanKoulutustyypit()).containsExactlyInAnyOrder(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO);
+            assertThat(perusteKaikki.getOppaanPerusteet()).extracting("id").contains(pohjaperuste.getId());
+
+            Peruste peruste = perusteRepository.getOne(opasDto.getPeruste().getIdLong());
+            assertThat(peruste.getOppaanSisalto().getSisalto()).isNotNull();
+            assertThat(peruste.getOppaanSisalto().getSisalto().getLapset()).hasSize(1);
+        }
     }
 
 }
