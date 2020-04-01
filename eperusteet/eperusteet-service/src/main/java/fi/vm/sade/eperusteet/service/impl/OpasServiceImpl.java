@@ -28,14 +28,17 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.OpasService;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,6 +65,12 @@ public class OpasServiceImpl implements OpasService {
     private PerusteRepository perusteRepository;
 
     @Autowired
+    private PerusteRepository perusteet;
+
+    @Autowired
+    private PerusteService perusteService;
+
+    @Autowired
     @Dto
     private DtoMapper mapper;
 
@@ -82,10 +91,17 @@ public class OpasServiceImpl implements OpasService {
 
         Peruste peruste = new Peruste();
         peruste.setTyyppi(PerusteTyyppi.OPAS);
-        peruste.setOppaanKoulutustyypit(opasDto.getOppaanKoulutustyypit());
-        peruste.setOppaanPerusteet(Sets.newHashSet(mapper.mapAsList(opasDto.getOppaanPerusteet(), Peruste.class)));
-
         peruste.setSisalto(new OpasSisalto());
+
+        if (opasDto.getPohjaId() != null) {
+            Peruste vanha = perusteRepository.getOne(opasDto.getPohjaId());
+            peruste.setSisalto(vanha.getOppaanSisalto().kloonaa(peruste));
+        }
+
+        peruste.setOppaanKoulutustyypit(opasDto.getOppaanKoulutustyypit());
+        if (!CollectionUtils.isEmpty(opasDto.getOppaanPerusteet())) {
+            peruste.setOppaanPerusteet(Sets.newHashSet(mapper.mapAsList(opasDto.getOppaanPerusteet(), Peruste.class)));
+        }
 
         perusteRepository.save(peruste);
 

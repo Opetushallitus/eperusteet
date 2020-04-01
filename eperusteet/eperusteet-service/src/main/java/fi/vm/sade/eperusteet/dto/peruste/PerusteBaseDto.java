@@ -25,17 +25,14 @@ import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
 import fi.vm.sade.eperusteet.dto.MuutosmaaraysDto;
-import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
 import fi.vm.sade.eperusteet.service.util.PerusteUtils;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -84,7 +81,7 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     List<TutkintonimikeKoodiDto> tutkintonimikkeet;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Set<Reference> oppaanPerusteet;
+    private Set<PerusteKevytDto> oppaanPerusteet;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<KoulutusTyyppi> oppaanKoulutustyypit;
