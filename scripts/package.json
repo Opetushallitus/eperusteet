@@ -4,10 +4,11 @@
   "description": "",
   "private": true,
   "scripts": {
-    "puutteelliset-osaamisalat": "ts-node ./puutteellisetosaamisalat.js",
+    "ammatillisten-tutkintojen-kuvaukset": "ts-node ./ammatillisten-tutkintojen-kuvaukset.ts",
     "ammattitaitovaatimuskoodisto": "ts-node ./ammattitaitovaatimuskoodisto.ts",
-    "virheellisetTekstimuotoisetAmmattitaitovaatimukset": "ts-node ./virheellisetAmmattitaitovaatimukset.ts",
-    "paivita-kaannostiedostot": "ts-node ./synckaannokset.ts"
+    "paivita-kaannostiedostot": "ts-node ./synckaannokset.ts",
+    "puutteelliset-osaamisalat": "ts-node ./puutteellisetosaamisalat.js",
+    "virheellisetTekstimuotoisetAmmattitaitovaatimukset": "ts-node ./virheellisetAmmattitaitovaatimukset.ts"
   },
   "author": "",
   "license": "ISC",
@@ -17,8 +18,8 @@
     "@types/qs": "^6.5.1",
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
-    "csv": "^4.0.0",
     "csv-writer": "^1.2.0",
+    "csv": "^4.0.0",
     "lodash": "^4.17.11",
     "qs": "^6.5.2",
     "xlsx": "^0.15.2"

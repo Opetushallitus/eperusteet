@@ -22,6 +22,9 @@ export async function* iteratePerusteet(params: any = {}) {
 
     while (true) {
         const res = await axios.get(PerusteEndpoint, {
+            headers: {
+                'Caller-Id': '1.2.246.562.10.00000000001.eperusteet_scripts'
+            },
             params: { ...params, sivu, sivukoko: 100 },
             paramsSerializer(params) {
                 return qs.stringify(params, { arrayFormat: "repeat" });
