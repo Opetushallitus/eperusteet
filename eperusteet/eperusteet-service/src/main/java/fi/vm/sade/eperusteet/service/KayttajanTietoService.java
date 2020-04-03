@@ -49,6 +49,6 @@ public interface KayttajanTietoService {
     @PreAuthorize("isAuthenticated()")
     KayttajanProjektitiedotDto haePerusteprojekti(String oid, Long projektiId);
 
-    @PreAuthorize("isAuthenticated()")
-    JsonNode getOrganisaatioVirkailijat(Set<String> organisaatioOids);
+    @PreAuthorize("hasPermission(#organisaatioOid, 'organisaatio', new String[]{'LUKU'})")
+    JsonNode getOrganisaatioVirkailijat(String organisaatioOid);
 }

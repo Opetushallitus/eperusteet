@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -224,12 +225,12 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     }
 
     @Override
-    public JsonNode getOrganisaatioVirkailijat(Set<String> organisaatioOids) {
+    public JsonNode getOrganisaatioVirkailijat(String organisaatioOid) {
         OphHttpClient client = restClientFactory.get(koServiceUrl, true);
         String url = koServiceUrl + VIRKAILIJA_HAKU;
 
         Map<String, Object> criteria = new HashMap<>();
-        criteria.put("organisaatioOids", organisaatioOids);
+        criteria.put("organisaatioOids", Sets.newHashSet(organisaatioOid));
         criteria.put("duplikaatti", false);
         criteria.put("passivoitu", false);
 

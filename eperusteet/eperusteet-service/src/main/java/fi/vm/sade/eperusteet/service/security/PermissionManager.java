@@ -98,7 +98,8 @@ public class PermissionManager {
         PERUSTEENOSA("perusteenosa"),
         TUTKINNONOSAVIITE("tutkinnonosaviite"),
         PERUSTEENOSAVIITE("perusteenosaviite"),
-        TIEDOTE("tiedote");
+        TIEDOTE("tiedote"),
+        ORGANISAATIO("organisaatio");
 
         private final String target;
 
@@ -317,6 +318,18 @@ public class PermissionManager {
             allowedRolesTmp.put(Target.ARVIOINTIASTEIKKO, tmp);
         }
 
+        // Organisaatio
+        {
+            Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
+            Map<Permission, Set<String>> perm = Maps.newHashMap();
+            perm.put(LUONTI, r0);
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r0);
+            perm.put(POISTO, r0);
+            tmp.put(null, perm);
+            allowedRolesTmp.put(Target.ORGANISAATIO, tmp);
+        }
+
         if (LOG.isTraceEnabled()) {
             assert (allowedRolesTmp.keySet().containsAll(EnumSet.allOf(Target.class)));
             for (Map.Entry<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> t : allowedRolesTmp.entrySet()) {
@@ -355,6 +368,10 @@ public class PermissionManager {
 
         if (Target.TIEDOTE.equals(targetType) || Target.ARVIOINTIASTEIKKO.equals(targetType)) {
             return hasAnyRole(authentication, getAllowedRoles(targetType, permission));
+        }
+
+        if (Target.ORGANISAATIO.equals(targetType)) {
+            return hasAnyRole(authentication, String.valueOf(targetId), getAllowedRoles(targetType, permission));
         }
 
         if (Target.TUTKINNONOSAVIITE.equals(targetType)) {

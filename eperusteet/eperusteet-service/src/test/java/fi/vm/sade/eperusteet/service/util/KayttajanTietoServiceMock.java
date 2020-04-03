@@ -66,7 +66,7 @@ public class KayttajanTietoServiceMock implements KayttajanTietoService {
     }
 
     @Override
-    public JsonNode getOrganisaatioVirkailijat(Set<String> organisaatioOids) {
+    public JsonNode getOrganisaatioVirkailijat(String organisaatioOids) {
         return null;
     }
 
