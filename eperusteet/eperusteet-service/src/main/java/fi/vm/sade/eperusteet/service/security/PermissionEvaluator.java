@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.service.security.PermissionManager.Permission;
 import fi.vm.sade.eperusteet.service.security.PermissionManager.Target;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 

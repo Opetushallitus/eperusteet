@@ -64,6 +64,6 @@ public class UlkopuolisetController {
     @RequestMapping(value = "/organisaatiovirkailijat/{oid}", method = GET)
     @ResponseBody
     public ResponseEntity<JsonNode> getOrganisaatioVirkailijat(@PathVariable(value = "oid") final String oid) {
-        return new ResponseEntity<>(kayttajanTietoService.getOrganisaatioVirkailijat(Sets.newHashSet(oid)), HttpStatus.OK);
+        return new ResponseEntity<>(kayttajanTietoService.getOrganisaatioVirkailijat(oid), HttpStatus.OK);
     }
 }
