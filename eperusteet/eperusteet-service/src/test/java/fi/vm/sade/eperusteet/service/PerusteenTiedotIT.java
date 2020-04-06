@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -58,6 +59,7 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
     @Autowired
     private TutkintonimikeKoodiService tutkintonimikeKoodiService;
 
+    @Override
     @Before
     public void setup() {
         super.setup();
@@ -66,12 +68,13 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
     @Test
     @Rollback
     public void testPerusteprojektinMetatiedoissaTuleeOsaamisalat() {
-        KoodiDto osaamisala = KoodiDto.of("osaamisalat", "1234");
+        KoodiDto tutkinnonosat = KoodiDto.of("tutkinnonosat", "1234");
+        KoodiDto osaamisala = KoodiDto.of("osaamisala", "1234");
         PerusteDto perusteDto = perusteService.get(this.peruste.getId());
 
         perusteDto.setOsaamisalat(new HashSet<>(Collections.singletonList(osaamisala)));
         PerusteDto updated = perusteService.update(this.peruste.getId(), perusteDto);
-        this.uusiTekstiKappale(LokalisoituTekstiDto.of("oa nimi"), LokalisoituTekstiDto.of("oa teksti"), osaamisala);
+        this.uusiTekstiKappale(LokalisoituTekstiDto.of("oa nimi"), LokalisoituTekstiDto.of("oa teksti"), osaamisala, Arrays.asList(tutkinnonosat, osaamisala));
 
         Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> kuvaukset = perusteService.getOsaamisalaKuvaukset(this.peruste.getId());
         TekstiKappaleDto tk = kuvaukset.values().iterator().next().values().iterator().next().get(0);
@@ -83,6 +86,26 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
                 .containsExactly(
                         osaamisala.getUri(),
                         osaamisala.getKoodisto());
+        assertThat(tk.getKoodit()).extracting("uri").containsExactlyInAnyOrder("tutkinnonosat_1234", "osaamisala_1234");
+    }
+
+    @Test
+    @Rollback
+    public void testTekstikappaleKoodeilla_paivitys() {
+        this.uusiTekstiKappale(LokalisoituTekstiDto.of("oa nimi"), LokalisoituTekstiDto.of("oa teksti"), null);
+
+        Peruste peruste = perusteRepository.findOne(this.peruste.getId());
+        TekstiKappale tekstikappale = (TekstiKappale) peruste.getSuoritustavat().iterator().next().getSisalto().getLapset().get(1).getPerusteenOsa();
+        TekstiKappaleDto tk = mapper.map(tekstikappale, TekstiKappaleDto.class);
+
+        assertThat(tk.getKoodit()).isNull();
+
+        KoodiDto tutkinnonosat = KoodiDto.of("tutkinnonosat", "1234");
+        KoodiDto osaamisala = KoodiDto.of("osaamisala", "1234");
+        tk.setKoodit(Arrays.asList(tutkinnonosat, osaamisala));
+
+        tk = perusteenOsaService.update(tk);
+        assertThat(tk.getKoodit()).extracting("uri").containsExactlyInAnyOrder("tutkinnonosat_1234", "osaamisala_1234");
     }
 
     private Koodi getFirstAmmattitaitovaatimuskoodi() {
