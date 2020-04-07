@@ -12,7 +12,6 @@ import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
-import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -27,7 +26,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -233,7 +231,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
         ppTestUtils.julkaise(projekti.getId());
         PageRequest preq = new PageRequest(0, 10);
-        Page<ValidationDto> virheelliset = perusteprojektiService.getVirheelliset(preq);
+        Page<TilaUpdateStatus> virheelliset = perusteprojektiService.getVirheelliset(preq);
         assertThat(virheelliset)
                 .isEmpty();
     }
