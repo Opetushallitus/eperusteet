@@ -33,7 +33,6 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
@@ -103,7 +102,7 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/virheelliset", method = GET)
     @ResponseBody
     @Description("Lista julkaistujen perusteprojektien virheistä. Tätä käytetään helpottamaan perusteiden korjausta validointisääntöjen muuttuessa.")
-    public ResponseEntity<Page<ValidationDto>> getVirheellisetPerusteprojektit(
+    public ResponseEntity<Page<TilaUpdateStatus>> getVirheellisetPerusteprojektit(
             @RequestParam(defaultValue = "0") Integer sivu,
             @RequestParam(defaultValue = "10") Integer sivukoko
     ) {

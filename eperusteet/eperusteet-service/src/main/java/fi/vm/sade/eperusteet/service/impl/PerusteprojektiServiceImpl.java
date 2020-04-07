@@ -79,7 +79,6 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.repository.KoulutuskoodiStatusRepository;
 import fi.vm.sade.eperusteet.repository.MaarayskirjeStatusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -564,11 +563,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ValidationDto> getVirheelliset(PageRequest p) {
+    public Page<TilaUpdateStatus> getVirheelliset(PageRequest p) {
         Page<ValidointiStatus> virheelliset = validointiStatusRepository.findVirheelliset(p);
-        Page<ValidationDto> result = virheelliset
+        Page<TilaUpdateStatus> result = virheelliset
                 .map(validation -> {
-                    ValidationDto dto = mapper.map(validation, ValidationDto.class);
+                    TilaUpdateStatus dto = mapper.map(validation, TilaUpdateStatus.class);
                     dto.setPerusteprojekti(mapper.map(validation.getPeruste().getPerusteprojekti(), PerusteprojektiListausDto.class));
                     return dto;
                 });
