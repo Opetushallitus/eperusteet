@@ -86,6 +86,8 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<KoulutusTyyppi> oppaanKoulutustyypit;
 
+    private Set<PerusteAikatauluDto> perusteenAikataulut;
+
     @Override
     public KoulutustyyppiToteutus getToteutus() {
         return PerusteUtils.getToteutus(this.toteutus, this.koulutustyyppi, this.tyyppi);

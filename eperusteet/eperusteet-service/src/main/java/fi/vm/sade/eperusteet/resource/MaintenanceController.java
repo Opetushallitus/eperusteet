@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 @RequestMapping(value = "/maintenance")
 @Profile("!test")
+@Api("Maintenance")
 public class MaintenanceController {
     @Autowired
     private PerusteDispatcher dispatcher;

@@ -265,6 +265,11 @@ public class Peruste extends AbstractAuditedEntity
     @Column(name = "koulutustyyppi")
     private Set<KoulutusTyyppi> oppaanKoulutustyypit = new HashSet<>();
 
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private Set<PerusteAikataulu> perusteenAikataulut;
+
     public Set<PerusteenSisalto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
             return Collections.singleton(this.getOppaanSisalto());
