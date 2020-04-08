@@ -651,6 +651,7 @@
                                         <location>${eperusteet.resources}.TiedoteController</location>
                                         <location>${eperusteet.resources}.TutkinnonOsaController</location>
                                         <location>${eperusteet.resources}.UlkopuolisetController</location>
+                                        <location>${eperusteet.resources}.MaintenanceController</location>
 
 <!--                                        <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>-->
 <!--                                        <location>${eperusteet.resources}.peruste.AmmattitaitovaatimuksetController</location>-->

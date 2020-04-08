@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.KVLiite;
@@ -30,6 +31,7 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Maarayskirje;
 import fi.vm.sade.eperusteet.domain.MaarayskirjeStatus;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteAikataulu;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteVersion;
@@ -126,6 +128,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -790,6 +793,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (tyyppi == PerusteTyyppi.POHJA) {
             TekstiPalanen pnimi = TekstiPalanen.of(Kieli.FI, perusteprojektiDto.getNimi());
             peruste.setNimi(pnimi);
+        }
+
+        if (perusteprojektiDto.getKuvaus() != null) {
+            peruste.setKuvaus(mapper.map(perusteprojektiDto.getKuvaus(), TekstiPalanen.class));
+        }
+
+        if (!CollectionUtils.isEmpty(perusteprojektiDto.getPerusteenAikataulut())) {
+            List<PerusteAikataulu> aikataulut = mapper.mapAsList(perusteprojektiDto.getPerusteenAikataulut(), PerusteAikataulu.class);
+            peruste.setPerusteenAikataulut(Sets.newHashSet(aikataulut));
         }
 
         perusteprojekti.setPeruste(peruste);
