@@ -150,15 +150,13 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         Predicate diaarissa = cb.equal(targetDiaari, diaarihaku);
         Predicate result = cb.or(nimessa, diaarissa);
 
-        if (pq.getTyyppi() == null) {
-            result = cb.and(result, cb.notEqual(tyyppi, PerusteTyyppi.OPAS));
-            if (!ObjectUtils.isEmpty(pq.getKoulutustyyppi())) {
-                Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
-                result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
-            }
-        }
-        else {
+        if (pq.getTyyppi() != null) {
             result = cb.and(result, cb.equal(tyyppi, pq.getTyyppi()));
+        }
+
+        if (!ObjectUtils.isEmpty(pq.getKoulutustyyppi())) {
+            Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
+            result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
         }
 
         if (!ObjectUtils.isEmpty(pq.getTila())) {

@@ -15,25 +15,16 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidateDateRange;
 import java.util.Date;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 /**
  *
  * @author harrik
@@ -108,6 +99,20 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Enumerated(EnumType.STRING)
     @NotNull
     private ProjektiTila tila = ProjektiTila.LAADINTA;
+
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private ProjektiKuvaus tyyppi = ProjektiKuvaus.PERUSTEEN_KORJAUS;
+
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Deprecated
+    private TekstiPalanen kuvaus;
 
     public Perusteprojekti() {
     }

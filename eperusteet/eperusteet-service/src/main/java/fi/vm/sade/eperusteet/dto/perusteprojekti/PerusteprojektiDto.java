@@ -17,8 +17,10 @@
 package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.domain.ProjektiKuvaus;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,6 +47,8 @@ public class PerusteprojektiDto implements Serializable {
     private String tehtavaluokka;
     private String tehtava;
     private String yhteistyotaho;
+    private ProjektiKuvaus tyyppi = ProjektiKuvaus.PERUSTEEN_KORJAUS;
+    private LokalisoituTekstiDto kuvaus;
     private ProjektiTila tila;
     private String ryhmaOid;
     private boolean esikatseltavissa = false;
