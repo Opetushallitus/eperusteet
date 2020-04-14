@@ -2092,6 +2092,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return tekstikappaleidenPerusteet(tekstiKappales);
     }
 
+    @Override
+    public List<PerusteKevytDto> getAllOppaidenPerusteet() {
+        List<Peruste> oppaidenPerusteet = perusteRepository.findOppaidenPerusteet();
+        return mapper.mapAsList(oppaidenPerusteet, PerusteKevytDto.class);
+    }
+
     private List<PerusteTekstikappaleillaDto> tekstikappaleidenPerusteet(List<TekstiKappale> osat) {
 
         Map<Peruste, List<TekstiKappale>> tekstikappaleetPerusteilla = new HashMap<>();

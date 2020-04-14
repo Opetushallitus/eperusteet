@@ -241,4 +241,7 @@ public interface PerusteService {
 
     @PreAuthorize("isAuthenticated()")
     List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi);
+
+    @PreAuthorize("isAuthenticated()")
+    List<PerusteKevytDto> getAllOppaidenPerusteet();
 }
