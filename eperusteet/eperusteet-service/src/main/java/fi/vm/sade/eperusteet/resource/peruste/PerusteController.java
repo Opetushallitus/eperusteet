@@ -371,4 +371,11 @@ public class PerusteController {
         return service.findByTekstikappaleKoodi(koodi);
     }
 
+    @RequestMapping(value = "/oppaiden", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteKevytDto>> getAllOppaidenPerusteet() {
+        List<PerusteKevytDto> poi = service.getAllOppaidenPerusteet();
+        return new ResponseEntity<>(poi, HttpStatus.OK);
+    }
+
 }
