@@ -195,6 +195,17 @@ public class PerusteController {
         return service.getJulkinenKVLiite(id);
     }
 
+    @RequestMapping(value = "/{perusteId}/kvliite", method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    @InternalApi
+    public PerusteDto updateKvLiite(
+            @PathVariable("perusteId") final long id,
+            @RequestBody KVLiiteJulkinenDto kvliiteDto
+    ) {
+        return service.updateKvLiite(id, kvliiteDto);
+    }
+
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)
     @ResponseBody
     @InternalApi
