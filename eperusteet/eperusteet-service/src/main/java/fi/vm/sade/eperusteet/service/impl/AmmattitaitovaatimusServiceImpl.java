@@ -47,7 +47,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -291,12 +294,21 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
             return koodit;
         }
 
+        Map<Map<Kieli, String>, List<Ammattitaitovaatimus2019>> uniqueVaatimukset = new LinkedHashMap<>();
+        vaatimukset.forEach(vaatimus -> {
+            if (uniqueVaatimukset.get(vaatimus.getVaatimus().getTeksti()) == null) {
+                uniqueVaatimukset.put(vaatimus.getVaatimus().getTeksti(), new ArrayList<>());
+            }
+
+            uniqueVaatimukset.get(vaatimus.getVaatimus().getTeksti()).add(vaatimus);
+        });
+
         Stack<Long> koodiStack = new Stack<>();
-        koodiStack.addAll(koodistoClient.nextKoodiId("ammattitaitovaatimukset", vaatimukset.size()));
+        koodiStack.addAll(koodistoClient.nextKoodiId("ammattitaitovaatimukset", uniqueVaatimukset.keySet().size()));
 
-        for (Ammattitaitovaatimus2019 v : vaatimukset) {
+        for (Map<Kieli, String> teksti : uniqueVaatimukset.keySet()) {
 
-            LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(null, v.getVaatimus().getTeksti());
+            LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(null, teksti);
             KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("ammattitaitovaatimukset", lokalisoituTekstiDto, koodiStack.pop());
 
             if (lisattyKoodi == null) {
@@ -308,9 +320,12 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
             koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
             koodi.setUri(lisattyKoodi.getKoodiUri());
             koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
-            v.setKoodi(koodi);
             koodit.add(mapper.map(koodi, KoodiDto.class));
-            ammattitaitovaatimusRepository.save(v);
+
+            uniqueVaatimukset.get(teksti).forEach(ammattitaitovaatimus2019 -> {
+                ammattitaitovaatimus2019.setKoodi(koodi);
+                ammattitaitovaatimusRepository.save(ammattitaitovaatimus2019);
+            });
         }
         return koodit;
     }
