@@ -91,6 +91,16 @@ public class PerusteenSisaltoController {
         return new ResponseEntity<>(service.addSisaltoLapsi(perusteId, perusteenosaViiteId, null), HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/sisalto/{parentId}/lapsi/viitteella", method = POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public PerusteenOsaViiteDto.Matala addSisaltoUusiLapsiViitteella(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa,
+            @PathVariable("parentId") final Long parentId,
+            @RequestBody(required = false) final PerusteenOsaViiteDto.Matala dto) {
+        return service.addSisaltoLapsi(perusteId, parentId, dto);
+    }
+
     @RequestMapping(value = "/sisalto/{parentId}/lapsi/{childId}", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public PerusteenOsaViiteDto.Matala addSisaltoUusiLapsi(
