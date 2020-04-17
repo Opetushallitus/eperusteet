@@ -1,0 +1,19 @@
+jobs:
+	specfile:
+		runs-on: ubuntu-latest
+
+		steps:
+			- uses: actions/checkout@v2
+
+			- name: Generate eperusteet.spec.yml
+				uses: actions/setup-java@v1
+				with:
+					java-version: 1.8
+				run:
+					cd eperusteet/eperusteet-service/ && mvn clean compile -P generate-openapi
+
+			- name: Upload specfile
+				uses: actions/upload-artifact@v1
+				with:
+					name: specfile
+					path: eperusteet/eperusteet-service/target/openapi/eperusteet.spec.json
