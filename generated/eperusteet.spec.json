@@ -5811,6 +5811,13 @@
         "yhteystiedot" : {
           "type" : "object"
         },
+        "oikeudet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
+        },
         "perusteprojekti" : {
           "type" : "integer",
           "format" : "int64"
@@ -6218,6 +6225,13 @@
         },
         "yhteystiedot" : {
           "type" : "object"
+        },
+        "oikeudet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
         }
       }
     },
@@ -7963,15 +7977,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -8003,15 +8017,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -8043,15 +8057,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -8083,15 +8097,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -8123,15 +8137,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -8163,15 +8177,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -8203,15 +8217,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -8243,15 +8257,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -8283,15 +8297,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -8323,15 +8337,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -9518,6 +9532,13 @@
         "yhteistyotaho" : {
           "type" : "string"
         },
+        "projektiKuvaus" : {
+          "type" : "string",
+          "enum" : [ "PERUSTEEN_UUDISTUS", "PERUSTEEN_KORJAUS" ]
+        },
+        "kuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
         "tila" : {
           "type" : "string",
           "enum" : [ "POISTETTU", "LAADINTA", "KOMMENTOINTI", "VIIMEISTELY", "VALMIS", "JULKAISTU" ]
@@ -9690,6 +9711,13 @@
         "yhteistyotaho" : {
           "type" : "string"
         },
+        "projektiKuvaus" : {
+          "type" : "string",
+          "enum" : [ "PERUSTEEN_UUDISTUS", "PERUSTEEN_KORJAUS" ]
+        },
+        "kuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
         "tila" : {
           "type" : "string",
           "enum" : [ "POISTETTU", "LAADINTA", "KOMMENTOINTI", "VIIMEISTELY", "VALMIS", "JULKAISTU" ]
@@ -9746,9 +9774,6 @@
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
           }
-        },
-        "kuvaus" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
         }
       }
     },

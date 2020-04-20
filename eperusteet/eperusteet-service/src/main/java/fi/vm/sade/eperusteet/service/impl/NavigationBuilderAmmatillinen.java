@@ -51,9 +51,9 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     public NavigationNodeDto buildNavigation(Long perusteId) {
         NavigationNodeDto tekstit = dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId);
         return NavigationNodeDto.of(NavigationType.root)
-                .addAll(tekstit.getChildren())
+                .add(tutkinnonOsat(perusteId))
+                .addAll(tekstit.getChildren());
 //                .add(tutkinnonMuodostuminen(perusteId))
-                .add(tutkinnonOsat(perusteId));
     }
 
     private NavigationNodeDto tutkinnonOsat(Long perusteId) {

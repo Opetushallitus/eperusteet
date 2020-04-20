@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +51,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -95,10 +99,18 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Override
     public KayttajanTietoDto haeKirjautaunutKayttaja() {
         Principal ap = SecurityUtil.getAuthenticatedPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         KayttajanTietoDto kayttaja = hae(ap.getName());
         if (kayttaja == null) { //"fallback" jos integraatio on rikki eikä löydä käyttäjän tietoja
             kayttaja = new KayttajanTietoDto(ap.getName());
         }
+        Set<String> oikeudet = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(auth -> !auth.startsWith("ROLE_APP_EPERUSTEET_YLOPS"))
+                .filter(auth -> !auth.startsWith("ROLE_APP_EPERUSTEET_AMOSAA"))
+                .filter(auth -> auth.startsWith("ROLE_APP_EPERUSTEET"))
+                .collect(Collectors.toSet());
+        kayttaja.setOikeudet(oikeudet);
         return kayttaja;
     }
 

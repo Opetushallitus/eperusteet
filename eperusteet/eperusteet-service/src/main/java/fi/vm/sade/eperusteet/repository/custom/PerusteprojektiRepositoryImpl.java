@@ -137,9 +137,9 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
     }
 
     private Predicate buildPredicate(
-        Root<Perusteprojekti> root,
-        CriteriaBuilder cb,
-        PerusteprojektiQueryDto pq
+            Root<Perusteprojekti> root,
+            CriteriaBuilder cb,
+            PerusteprojektiQueryDto pq
     ) {
         Expression<String> targetName = cb.lower(root.get(Perusteprojekti_.nimi));
         Expression<Diaarinumero> targetDiaari = root.get(Perusteprojekti_.diaarinumero);

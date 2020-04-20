@@ -20,6 +20,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author nkala
@@ -37,4 +41,5 @@ public class KayttajanTietoDto {
     String oidHenkilo;
     String kieliKoodi;
     JsonNode yhteystiedot;
+    Set<String> oikeudet = new HashSet<>();
 }
