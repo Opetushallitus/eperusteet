@@ -38,10 +38,7 @@ public class PerusteAikataulu extends AbstractAuditedEntity {
     @Id
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "peruste_id")
-    @Getter
-    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
     private Peruste peruste;
 
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

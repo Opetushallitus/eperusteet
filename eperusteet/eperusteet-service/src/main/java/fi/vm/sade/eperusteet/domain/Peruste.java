@@ -266,9 +266,8 @@ public class Peruste extends AbstractAuditedEntity
     private Set<KoulutusTyyppi> oppaanKoulutustyypit = new HashSet<>();
 
     @Getter
-    @Setter
-    @OneToMany(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    private Set<PerusteAikataulu> perusteenAikataulut;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "peruste", orphanRemoval = true)
+    private Set<PerusteAikataulu> perusteenAikataulut = new HashSet<>();
 
     public Set<PerusteenSisalto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
@@ -341,6 +340,13 @@ public class Peruste extends AbstractAuditedEntity
         this.muutosmaaraykset.clear();
         if (muutosmaaraykset != null) {
             this.muutosmaaraykset.addAll(muutosmaaraykset);
+        }
+    }
+
+    public void setPerusteenAikataulut(List<PerusteAikataulu> perusteenAikataulut) {
+        this.perusteenAikataulut.clear();
+        if (perusteenAikataulut != null) {
+            this.perusteenAikataulut.addAll(perusteenAikataulut);
         }
     }
 

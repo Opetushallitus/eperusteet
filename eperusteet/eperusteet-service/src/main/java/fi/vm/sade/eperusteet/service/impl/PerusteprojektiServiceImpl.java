@@ -800,8 +800,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         if (!CollectionUtils.isEmpty(perusteprojektiDto.getPerusteenAikataulut())) {
-            List<PerusteAikataulu> aikataulut = mapper.mapAsList(perusteprojektiDto.getPerusteenAikataulut(), PerusteAikataulu.class);
-            peruste.setPerusteenAikataulut(Sets.newHashSet(aikataulut));
+            List<PerusteAikataulu> aikataulut = mapper.mapAsList(perusteprojektiDto.getPerusteenAikataulut(), PerusteAikataulu.class).stream().map(aikataulu -> {
+                aikataulu.setPeruste(peruste);
+                return aikataulu;
+            }).collect(Collectors.toList());
+            peruste.setPerusteenAikataulut(aikataulut);
         }
 
         perusteprojekti.setPeruste(peruste);
