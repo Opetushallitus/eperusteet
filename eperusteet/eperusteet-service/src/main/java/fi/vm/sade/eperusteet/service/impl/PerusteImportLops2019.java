@@ -16,6 +16,8 @@ import fi.vm.sade.eperusteet.service.PerusteImport;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.UncachedDto;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,6 +97,13 @@ public class PerusteImportLops2019 implements PerusteImport {
         peruste.setId(null);
         peruste.setPerusteprojekti(projekti);
         peruste.setSisalto(peruste.getLops2019Sisalto().copy(true));
+        if (!CollectionUtils.isEmpty(peruste.getPerusteenAikataulut())) {
+            List<PerusteAikataulu> aikataulut = mapper.mapAsList(peruste.getPerusteenAikataulut(), PerusteAikataulu.class).stream().map(aikataulu -> {
+                aikataulu.setPeruste(peruste);
+                return aikataulu;
+            }).collect(Collectors.toList());
+            peruste.setPerusteenAikataulut(aikataulut);
+        }
         this.resaveTekstikappaleet(peruste.getLops2019Sisalto().getSisalto());
 
         projekti.setPeruste(peruste);
