@@ -47,7 +47,7 @@ public class PerusteprojektiDto implements Serializable {
     private String tehtavaluokka;
     private String tehtava;
     private String yhteistyotaho;
-    private ProjektiKuvaus tyyppi = ProjektiKuvaus.PERUSTEEN_KORJAUS;
+    private ProjektiKuvaus projektiKuvaus = ProjektiKuvaus.PERUSTEEN_KORJAUS;
     private LokalisoituTekstiDto kuvaus;
     private ProjektiTila tila;
     private String ryhmaOid;

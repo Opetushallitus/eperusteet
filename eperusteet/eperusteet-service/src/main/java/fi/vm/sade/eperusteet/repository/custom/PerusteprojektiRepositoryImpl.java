@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepositoryCustom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -35,7 +36,9 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -134,9 +137,9 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
     }
 
     private Predicate buildPredicate(
-        Root<Perusteprojekti> root,
-        CriteriaBuilder cb,
-        PerusteprojektiQueryDto pq
+            Root<Perusteprojekti> root,
+            CriteriaBuilder cb,
+            PerusteprojektiQueryDto pq
     ) {
         Expression<String> targetName = cb.lower(root.get(Perusteprojekti_.nimi));
         Expression<Diaarinumero> targetDiaari = root.get(Perusteprojekti_.diaarinumero);
@@ -150,14 +153,35 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         Predicate diaarissa = cb.equal(targetDiaari, diaarihaku);
         Predicate result = cb.or(nimessa, diaarissa);
 
-        if (pq.getTyyppi() != null) {
+        if (pq.getTyyppi() == null) {
+            result = cb.and(result, cb.notEqual(tyyppi, PerusteTyyppi.OPAS));
+        }
+        else {
             result = cb.and(result, cb.equal(tyyppi, pq.getTyyppi()));
         }
 
         if (!ObjectUtils.isEmpty(pq.getKoulutustyyppi())) {
-            Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
-            result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
+            if (PerusteTyyppi.OPAS.equals(pq.getTyyppi())) {
+                SetJoin<Peruste, KoulutusTyyppi> koulutustyypit = joined.join(Peruste_.oppaanKoulutustyypit);
+
+                result = cb.and(result, cb.or(
+                        joined.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()),
+                        pq.getKoulutustyyppi().stream()
+                                .map((koulutustyyppi) -> cb.equal(koulutustyypit, KoulutusTyyppi.of(koulutustyyppi)))
+                                .reduce(cb::or)
+                                .get()));
+
+            } else {
+                Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
+                result = cb.and(result, peruste.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
+            }
         }
+
+        if (PerusteTyyppi.OPAS.equals(pq.getTyyppi()) && !CollectionUtils.isEmpty(pq.getPerusteet())) {
+            SetJoin<Peruste, Peruste> perusteet = joined.join(Peruste_.oppaanPerusteet);
+            result = cb.and(result, perusteet.get(Peruste_.id).in(pq.getPerusteet()));
+        }
+
 
         if (!ObjectUtils.isEmpty(pq.getTila())) {
             return cb.and(result, root.get(Perusteprojekti_.tila).in(pq.getTila()));

@@ -104,7 +104,7 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Setter
     @Enumerated(EnumType.STRING)
     @NotNull
-    private ProjektiKuvaus tyyppi = ProjektiKuvaus.PERUSTEEN_KORJAUS;
+    private ProjektiKuvaus projektiKuvaus = ProjektiKuvaus.PERUSTEEN_KORJAUS;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

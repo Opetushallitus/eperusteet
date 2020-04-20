@@ -16,7 +16,7 @@ gen_schema:
 sync_localisations:
 	@node ./tools/lokalisointi/sync_locales.js eperusteet/eperusteet-app/yo/app/localisation
 
-# Generoi lista puutteellisista osaamisaloista
+# Generoi openapi-kuvauksen
 gen_openapi:
 	@cd eperusteet/eperusteet-service/ \
 		&& mvn clean compile -P generate-openapi \

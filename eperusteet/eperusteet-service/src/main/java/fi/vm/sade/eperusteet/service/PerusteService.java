@@ -223,6 +223,9 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 
+    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
+    PerusteDto updateKvLiite(@P("perusteId") Long perusteId, KVLiiteJulkinenDto kvliiteDto);
+
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<KVLiiteTasoDto> haeTasot(@P("perusteId") Long perusteId, Peruste peruste);
 
@@ -238,4 +241,7 @@ public interface PerusteService {
 
     @PreAuthorize("isAuthenticated()")
     List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi);
+
+    @PreAuthorize("isAuthenticated()")
+    List<PerusteKevytDto> getAllOppaidenPerusteet();
 }

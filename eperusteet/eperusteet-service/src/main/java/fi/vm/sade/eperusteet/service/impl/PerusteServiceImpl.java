@@ -1940,6 +1940,31 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    public PerusteDto updateKvLiite(Long id, KVLiiteJulkinenDto kvliiteDto) {
+        Peruste current = perusteRepository.findOne(id);
+
+        KVLiite liite = current.getKvliite();
+
+        if (current.getKvliite() == null) {
+            liite = mapper.map(kvliiteDto, KVLiite.class);
+            liite.setPeruste(current);
+            liite = kvliiteRepository.save(liite);
+            current.setKvliite(liite);
+        }
+        else if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
+            throw new BusinessRuleViolationException("virheellinen-liite");
+        }
+        else {
+            kvliiteDto.setId(liite.getId());
+            mapper.map(kvliiteDto, liite);
+        }
+
+        muokkausTietoService.addOpsMuokkausTieto(id, current, MuokkausTapahtuma.PAIVITYS);
+
+        return mapper.map(current, PerusteDto.class);
+    }
+
+    @Override
     @IgnorePerusteUpdateCheck
     public List<KVLiiteTasoDto> haeTasot(Long perusteId, Peruste peruste) {
 
@@ -2065,6 +2090,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi) {
         List<TekstiKappale> tekstiKappales = tekstikappaleRepository.findByKooditUri(koodi);
         return tekstikappaleidenPerusteet(tekstiKappales);
+    }
+
+    @Override
+    public List<PerusteKevytDto> getAllOppaidenPerusteet() {
+        List<Peruste> oppaidenPerusteet = perusteRepository.findOppaidenPerusteet();
+        return mapper.mapAsList(oppaidenPerusteet, PerusteKevytDto.class);
     }
 
     private List<PerusteTekstikappaleillaDto> tekstikappaleidenPerusteet(List<TekstiKappale> osat) {

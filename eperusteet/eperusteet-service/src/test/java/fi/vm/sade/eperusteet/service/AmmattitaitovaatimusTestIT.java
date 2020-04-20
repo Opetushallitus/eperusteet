@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service;
 
 
 import com.google.common.collect.Lists;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -9,6 +10,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
@@ -19,6 +21,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimukset2019Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -29,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
@@ -203,6 +207,46 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
                     .returns(1, x -> x.getKohdealueet().get(0).getVaatimukset().size())
                     .returns(1, x -> x.getVaatimukset().size());
 
+    }
+
+    @Test
+    public void test_addAmmattitaitovaatimuskooditToKoodisto() {
+
+        PerusteprojektiDto aProjekti = ppTestUtils.createPerusteprojekti(config -> {
+            config.setReforminMukainen(true);
+        });
+        PerusteDto aPeruste = ppTestUtils.initPeruste(aProjekti.getPeruste().getIdLong());
+
+        Ammattitaitovaatimukset2019 vaatimukset = new Ammattitaitovaatimukset2019();
+        Ammattitaitovaatimus2019Kohdealue kohdealue = new Ammattitaitovaatimus2019Kohdealue();
+        kohdealue.setVaatimukset(Arrays.asList(
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti1")),
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti1")),
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti2")),
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti2")),
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti3"))
+        ));
+        vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
+
+
+        Peruste peruste = perusteRepository.findOne(aPeruste.getId());
+        TutkinnonOsaViiteDto tosa = ppTestUtils.addTutkinnonOsa(peruste.getId());
+        TutkinnonOsaViite tov = tovRepository.findOne(tosa.getId());
+        tov.getTutkinnonOsa().setAmmattitaitovaatimukset2019(vaatimukset);
+        tovRepository.save(tov);
+        em.flush();
+
+        List<KoodiDto> lisatytKoodit = ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(peruste.getId());
+        assertThat(lisatytKoodit).hasSize(3);
+        assertThat(lisatytKoodit).extracting("uri").containsExactlyInAnyOrder("ammattitaitovaatimukset_0", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_2");
+
+        List<Ammattitaitovaatimus2019> tallennetutVaatimukset = tovRepository.findOne(tosa.getId()).getTutkinnonOsa().getAmmattitaitovaatimukset2019().getKohdealueet().stream()
+                .map(kohdealue2 -> kohdealue.getVaatimukset())
+                .flatMap(x -> x.stream())
+                .collect(Collectors.toList());
+
+        assertThat(tallennetutVaatimukset).hasSize(5);
+        assertThat(tallennetutVaatimukset).extracting("koodi.uri").containsExactlyInAnyOrder("ammattitaitovaatimukset_0", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_2", "ammattitaitovaatimukset_2");
     }
 
     private PerusteprojektiDto rakennaAmmattitaitovaatimusLatausPohjadata() {

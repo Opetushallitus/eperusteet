@@ -195,6 +195,17 @@ public class PerusteController {
         return service.getJulkinenKVLiite(id);
     }
 
+    @RequestMapping(value = "/{perusteId}/kvliite", method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    @InternalApi
+    public PerusteDto updateKvLiite(
+            @PathVariable("perusteId") final long id,
+            @RequestBody KVLiiteJulkinenDto kvliiteDto
+    ) {
+        return service.updateKvLiite(id, kvliiteDto);
+    }
+
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)
     @ResponseBody
     @InternalApi
@@ -358,6 +369,13 @@ public class PerusteController {
     @ResponseBody
     public List<PerusteTekstikappaleillaDto> getPerusteetWithTekstikappaleKoodi(@RequestParam(value = "koodi", required = true) final String koodi) {
         return service.findByTekstikappaleKoodi(koodi);
+    }
+
+    @RequestMapping(value = "/oppaiden", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteKevytDto>> getAllOppaidenPerusteet() {
+        List<PerusteKevytDto> poi = service.getAllOppaidenPerusteet();
+        return new ResponseEntity<>(poi, HttpStatus.OK);
     }
 
 }

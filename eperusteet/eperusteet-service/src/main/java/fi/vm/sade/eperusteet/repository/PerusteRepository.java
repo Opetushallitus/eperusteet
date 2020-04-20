@@ -116,4 +116,8 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             @Param("koulutustyypit") List<String> koulutustyypit);
 
     Peruste findByPerusteprojektiId(Long id);
+
+    @Query("SELECT DISTINCT p.oppaanPerusteet FROM Peruste p JOIN p.oppaanPerusteet op WHERE size(p.oppaanPerusteet) > 0 AND op.tila = 'VALMIS'")
+    List<Peruste> findOppaidenPerusteet();
+
 }
