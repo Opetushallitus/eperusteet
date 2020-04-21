@@ -256,6 +256,8 @@
     "koodi-ei-loydy": "Yhtään valittavaa koodia ei löytynyt",
     "koodi-lisays-varmistus": "Lisätäänkö tutkinnon osan nimi koodistoon?",
     "koodi-puuttuu": "Koodi puuttuu",
+    "tiedosto-puuttuu": "Tiedostoa ei ole valittu",
+    "tiedosto-lahetys-epaonnistui": "Tiedoston lähetys epäonnistui",
     "koodi-virhe-1": "Koodia ei ole asetettu.",
     "koodi-virhe-2": "Käyttämälläsi koodilla löytyi jo tutkinnon osa.",
     "koodi-virhe-3": "Seuraavat kentät ovat vaadittuja: ",

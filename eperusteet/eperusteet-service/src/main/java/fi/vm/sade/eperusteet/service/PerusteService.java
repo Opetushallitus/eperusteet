@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -33,11 +32,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipOutputStream;
 
 /**
  *
@@ -230,7 +232,10 @@ public interface PerusteService {
     List<KVLiiteTasoDto> haeTasot(@P("perusteId") Long perusteId, Peruste peruste);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    PerusteprojektiImportDto getPerusteExport(@P("perusteId") Long perusteId);
+    void exportPeruste(@P("perusteId") Long perusteId, ZipOutputStream zipOutputStream) throws IOException;
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    void importPeruste(MultipartHttpServletRequest request) throws IOException;
 
     @Cacheable("peruste-navigation")
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
