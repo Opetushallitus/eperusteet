@@ -103,7 +103,6 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
-    @NotNull
     @Column(name = "projekti_kuvaus")
     private ProjektiKuvaus projektiKuvaus = ProjektiKuvaus.PERUSTEEN_KORJAUS;
 
