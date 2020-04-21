@@ -703,6 +703,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setMaarayskirje(null);
             current.setMuutosmaaraykset(null);
             current.setKoulutustyyppi(updated.getKoulutustyyppi());
+            current.setOppaanPerusteet(updated.getOppaanPerusteet());
+            current.setOppaanKoulutustyypit(updated.getOppaanKoulutustyypit());
             perusteRepository.save(current);
         }
         else {
