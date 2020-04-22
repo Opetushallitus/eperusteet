@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -258,6 +259,16 @@ public class TutkinnonRakenneController {
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("koodiUri") final String koodiUri) {
         return perusteService.getTutkinnonOsaViiteByKoodiUri(id, suoritustapakoodi, koodiUri);
+    }
+
+    @RequestMapping(value = "/tutkinnonosat/kaikki/koodi/{koodiUri}", method = GET)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public TutkinnonOsaKaikkiDto getTutkinnonOsaKaikkiDtoByKoodi(
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            @PathVariable("koodiUri") final String koodiUri) {
+        return perusteService.getTutkinnonOsaKaikkiDtoByKoodiUri(id, suoritustapakoodi, koodiUri);
     }
 
 }
