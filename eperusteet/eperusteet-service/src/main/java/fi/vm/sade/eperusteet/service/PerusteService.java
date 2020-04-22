@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -220,9 +219,6 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     TutkinnonOsaViiteDto getTutkinnonOsaViiteByKoodiUri(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapakoodi, String koodiUri);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    TutkinnonOsaKaikkiDto getTutkinnonOsaKaikkiDtoByKoodiUri(Long perusteId, Suoritustapakoodi suoritustapakoodi, String koodiUri);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);

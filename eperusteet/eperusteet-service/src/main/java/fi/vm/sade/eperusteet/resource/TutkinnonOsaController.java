@@ -15,7 +15,9 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
@@ -102,5 +104,13 @@ public class TutkinnonOsaController {
             @PathVariable("versioId") final Integer versioId) {
         TutkinnonOsaViiteDto t = tutkinnonOsaViiteService.revertToVersio(id, versioId);
         return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/kaikki/{koodiUri}", method = GET)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<TutkinnonOsaKaikkiDto> getTutkinnonOsaKaikkiDtoByKoodi(
+            @PathVariable("koodiUri") final String koodiUri) {
+        return perusteenOsaService.getTutkinnonOsaKaikkiDtoByKoodi(koodiUri);
     }
 }
