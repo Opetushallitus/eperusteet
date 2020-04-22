@@ -2046,18 +2046,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public TutkinnonOsaKaikkiDto getTutkinnonOsaKaikkiDtoByKoodiUri(Long perusteId, Suoritustapakoodi suoritustapakoodi, String koodiUri) {
-        final Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
-        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOneByKoodiUri(koodiUri, suoritustapakoodi);
-
-        if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)) {
-            throw new BusinessRuleViolationException("Virheellinen viiteId");
-        }
-
-        return mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaKaikkiDto.class);
-    }
-
-    @Override
 //    @Cacheable("peruste-navigation")
     public NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilder.class)

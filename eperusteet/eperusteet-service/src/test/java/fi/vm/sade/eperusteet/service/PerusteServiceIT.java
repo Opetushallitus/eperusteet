@@ -23,7 +23,6 @@ import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -296,20 +295,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         assertEquals(koodiUri, haettuViiteDto.getTutkinnonOsaDto().getKoodi().getUri());
         // Testataan myös vanhan muotoinen uri
         assertEquals(koodiUri, haettuViiteDto.getTutkinnonOsaDto().getKoodiUri());
-    }
-
-    @Test
-    public void testTutkinnonOsaKaikkiDtoByKoodiUri() {
-        Suoritustapa s = peruste.getSuoritustapa(Suoritustapakoodi.OPS);
-
-        String koodiUri = "tutkinnonosat_" + TestUtils.uniikkiString();
-        TutkinnonOsaViiteDto viiteDto = luoKoodillinenTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, koodiUri);
-
-        TutkinnonOsaKaikkiDto haettuKaikkidto = perusteService.getTutkinnonOsaKaikkiDtoByKoodiUri(
-                peruste.getId(), s.getSuoritustapakoodi(), koodiUri);
-
-        assertEquals(viiteDto.getTutkinnonOsa().getIdLong(), haettuKaikkidto.getId());
-        assertEquals(koodiUri, haettuKaikkidto.getKoodi().getUri());
     }
 
     @Test
