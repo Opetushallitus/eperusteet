@@ -81,6 +81,15 @@ public class Liite implements Serializable {
         //JPA
     }
 
+    public Liite(UUID uuid, LiiteTyyppi tyyppi, String mime, String nimi, Blob data) {
+        this.id = uuid;
+        this.luotu = new Date();
+        this.nimi = nimi;
+        this.tyyppi = tyyppi;
+        this.mime = mime;
+        this.data = data;
+    }
+
     public Liite(LiiteTyyppi tyyppi, String mime, String nimi, Blob data) {
         this.id = UUID.randomUUID();
         this.luotu = new Date();

@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -64,6 +65,7 @@ import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.mime.MimeTypeException;
@@ -84,6 +86,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -1523,12 +1526,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         // Liitteet
         List<Liite> liitteet = this.liitteet.findByPerusteId(perusteId);
+        zipOutputStream.putNextEntry(new ZipEntry("liitteet.json"));
+        objectMapper.writeValue(zipOutputStream, mapper.mapAsList(liitteet, LiiteDto.class));
+
         for (Liite liite : liitteet) {
             try {
                 Blob data = liite.getData();
                 MimeTypes mimeTypes = MimeTypes.getDefaultMimeTypes();
                 String extension = mimeTypes.forName(liite.getMime()).getExtension();
-                zipOutputStream.putNextEntry(new ZipEntry("liitteet/" + liite.getId() + extension));
+                zipOutputStream.putNextEntry(new ZipEntry("liitetiedostot/" + liite.getId() + extension));
                 IOUtils.copy(data.getBinaryStream(), zipOutputStream);
             } catch (MimeTypeException | SQLException e) {
                 log.error(e.getLocalizedMessage(), e);
@@ -1541,6 +1547,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         PerusteprojektiLuontiDto perusteprojektiDto = null;
         PerusteKaikkiDto perusteKaikkiDto = null;
         List<TermiDto> termit = new ArrayList<>();
+        HashMap<UUID, byte[]> liitetiedostot = new HashMap<>();
+        List<LiiteDto> liitteet = new ArrayList<>();
 
         Iterator<String> it = request.getFileNames();
         while (it.hasNext()) {
@@ -1548,6 +1556,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             ZipEntry entry;
             while((entry = zipInputStream.getNextEntry()) != null) {
                 String entryName = entry.getName();
+
+                if (entryName.startsWith("liitetiedostot/")) {
+                    // Käytetään tiedostonimestä otettua UUID:tä
+                    UUID uuid = UUID.fromString(FilenameUtils.removeExtension(new File(entry.getName()).getName()));
+                    liitetiedostot.put(uuid, IOUtils.toByteArray(zipInputStream));
+                    continue;
+                }
 
                 switch (entryName) {
                     case "perusteprojekti.json":
@@ -1559,6 +1574,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     case "termit.json":
                         termit = objectMapper.readValue(zipInputStream, new TypeReference<List<TermiDto>>(){});
                         break;
+                    case "liitteet.json":
+                        liitteet = objectMapper.readValue(zipInputStream, new TypeReference<List<LiiteDto>>(){});
+                        break;
                     default:
                         log.warn("Tuntematon tiedosto: " + entryName);
                         break;
@@ -1568,8 +1586,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             zipInputStream.close();
         }
 
-        // TODO: poista termit uutena, kopioi liitteet
-        PerusteprojektiImportDto importDto = new PerusteprojektiImportDto(perusteprojektiDto, perusteKaikkiDto);
+        PerusteprojektiImportDto importDto = new PerusteprojektiImportDto(perusteprojektiDto, perusteKaikkiDto, termit, liitetiedostot, liitteet);
         dispatcher.get(importDto.getPeruste(), PerusteImport.class)
                 .tuoPerusteprojekti(importDto);
     }
