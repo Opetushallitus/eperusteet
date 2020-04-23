@@ -83,7 +83,7 @@ public class MaintenanceController {
         String archiveFilename = new SimpleDateFormat("yyyyMMddHHmmss'.zip'").format(new Date());
         return ResponseEntity
                 .ok()
-                .header("Content-Disposition", "attachment; filename=\"" + perusteId + "-" + archiveFilename + "\"")
+                .header("Content-Disposition", "attachment; filename=\"peruste-" + perusteId + "-" + archiveFilename + "\"")
                 .body(out -> {
                     ZipOutputStream zipOutputStream = new ZipOutputStream(out);
                     perusteService.exportPeruste(perusteId, zipOutputStream);

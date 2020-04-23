@@ -84,6 +84,7 @@ angular
     })
     .controller("ProjektinTuontiCtrl", function(
         $scope,
+        $state,
         Api,
         Notifikaatiot,
     ) {
@@ -99,15 +100,14 @@ angular
             const formData = new FormData();
             const req = new XMLHttpRequest();
             req.onreadystatechange = () => {
-                if (req.readyState !== XMLHttpRequest.DONE) {
-                    return;
-                }
-
-                if (req.status === 200) {
-                    Notifikaatiot.onnistui("tallennettu");
-                } else {
-                    console.error(req.status);
-                    Notifikaatiot.fataali("tiedosto-lahetys-epaonnistui");
+                if (req.readyState === XMLHttpRequest.DONE) {
+                    if (req.status === 200) {
+                        Notifikaatiot.onnistui("tallennettu");
+                        $state.go("root.admin.perusteprojektit");
+                    } else {
+                        console.error(req.status);
+                        Notifikaatiot.fataali("tiedosto-lahetys-epaonnistui");
+                    }
                 }
             };
 
