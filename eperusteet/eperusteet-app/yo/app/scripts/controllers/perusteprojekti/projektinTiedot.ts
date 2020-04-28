@@ -178,7 +178,7 @@ angular
         };
 
         $scope.lataaProjektiData = async function() {
-            window.location = await Api.one("maintenance/export/" + $scope.projekti._peruste).getRequestedUrl();
+            location.href = await Api.one("maintenance/export/" + $scope.projekti._peruste).getRequestedUrl();
         };
 
         $scope.puhdistaValinta = function() {
