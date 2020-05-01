@@ -17,7 +17,9 @@
     "analyze": "xdg-open .bundle_stats.html",
     "build:analyze": "npm run build && npm run analyze",
     "analyze-stats": "./node_modules/webpack/bin/webpack.js --config webpack.prod.js --json | webpack-bundle-size-analyzer",
-    "analyze-sourcemap": "npm run build && source-map-explorer dist/app.js"
+    "analyze-sourcemap": "npm run build && source-map-explorer dist/app.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "angular": "1.6.6",
@@ -47,7 +49,7 @@
     "es6-promise": "4.1.1",
     "file-saver": "^2.0.2",
     "fork-ts-checker-webpack-plugin": "0.2.8",
-    "jquery": "2.1.4",
+    "jquery": "3.5.0",
     "jquery-sticky": "1.0.4",
     "jquery-ui": "1.12.1",
     "js-xlsx": "SheetJS/js-xlsx",
@@ -60,7 +62,8 @@
     "ui-select": "0.19.8",
     "webpack-bundle-size-analyzer": "2.7.0",
     "webpack-node-externals": "1.6.0",
-    "webpack-visualizer-plugin": "0.1.11"
+    "webpack-visualizer-plugin": "0.1.11",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@types/angular": "1.6.6",
@@ -115,5 +118,6 @@
   },
   "resolutions": {
     "angular-translate/angular": "1.6.6"
-  }
+  },
+  "snyk": true
 }
