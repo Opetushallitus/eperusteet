@@ -6,9 +6,10 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
 
-/**
+/**login
  * @author isaul
  */
 @Getter
@@ -17,5 +18,5 @@ public class MuutosmaaraysDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto url;
-    private Map<Kieli, LiiteBaseDto> liitteet;
+    private Map<Kieli, LiiteBaseDto> liitteet = new HashMap<>();
 }

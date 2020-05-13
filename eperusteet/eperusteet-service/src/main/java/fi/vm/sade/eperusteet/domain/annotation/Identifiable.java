@@ -20,6 +20,8 @@ package fi.vm.sade.eperusteet.domain.annotation;
  * User: tommiratamaa
  * Date: 27.11.2015
  * Time: 15.52
+ *
+ * NOTE: Käytetään interceptoreissa.
  */
 public interface Identifiable {
     Long getId();

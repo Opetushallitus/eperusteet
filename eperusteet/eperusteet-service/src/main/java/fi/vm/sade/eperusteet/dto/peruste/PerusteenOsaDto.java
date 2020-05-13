@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
@@ -39,7 +40,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public abstract class PerusteenOsaDto {
+public abstract class PerusteenOsaDto implements ReferenceableDto {
     private Long id;
     private Date luotu;
     private Date muokattu;

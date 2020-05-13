@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.Sortable;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -162,6 +163,23 @@ public class TutkinnonRakenneController {
         @PathVariable final Suoritustapakoodi suoritustapakoodi
     ) {
         return CacheableResponse.create(perusteService.getPerusteVersion(id), 1, () -> perusteService.getTutkinnonOsat(id, suoritustapakoodi));
+    }
+
+    /**
+     * Järjestää tutkinnon suoritustavan tutkinnon osat
+     *
+     * @param id perusteen id
+     * @param suoritustapakoodi suoritustapa
+     * @return Tutkinnon osa lista
+     */
+    @RequestMapping(value = "/tutkinnonosat/jarjesta", method = POST)
+    @ResponseBody
+    @InternalApi
+    public ResponseEntity<List<Sortable>> sortPerusteenOsaViitteet(
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            List<Sortable> sorted) {
+        return ResponseEntity.ok(perusteenOsaViiteService.sort(id, suoritustapakoodi, sorted));
     }
 
     /**
