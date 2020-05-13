@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepositoryCustom;
 import java.io.InputStream;
 import java.sql.Blob;
+import java.util.UUID;
 import javax.persistence.EntityManager;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -48,6 +49,15 @@ public class LiiteRepositoryImpl implements LiiteRepositoryCustom {
         Session session = em.unwrap(Session.class);
         Blob blob = Hibernate.getLobCreator(session).createBlob(bytes);
         Liite liite = new Liite(tyyppi, mime, nimi, blob);
+        em.persist(liite);
+        return liite;
+    }
+
+    @Override
+    public Liite add(UUID uuid, LiiteTyyppi tyyppi, String mime, String nimi, byte[] bytes) {
+        Session session = em.unwrap(Session.class);
+        Blob blob = Hibernate.getLobCreator(session).createBlob(bytes);
+        Liite liite = new Liite(uuid, tyyppi, mime, nimi, blob);
         em.persist(liite);
         return liite;
     }

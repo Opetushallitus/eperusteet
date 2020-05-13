@@ -1,4 +1,4 @@
 div
   h2(ng-bind="'perusteprojektin-tuonti' | kaanna")
-  input(id="tiedostohaku" type="file")
+  input(id="tiedostohaku" type="file" accept="application/zip")
   button.btn.btn-primary(ng-click="loadFile()", ng-bind="'laheta-peruste' | kaanna")

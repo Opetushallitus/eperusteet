@@ -274,7 +274,7 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
         final PerusteprojektiImportDto idto = new PerusteprojektiImportDto(PerusteprojektiLuontiDto.builder()
                 .koulutustyyppi(KoulutusTyyppi.LUKIOKOULUTUS.toString())
                 .toteutus(KoulutustyyppiToteutus.LOPS2019)
-                .build(), perusteData);
+                .build(), perusteData, new ArrayList<>(), new HashMap<>(), new ArrayList<>());
         alkuperainen.getLops2019Sisalto().setOppiaineet(perusteData.getLops2019Sisalto().getOppiaineet().stream()
                 .map(this::mapOppiaine)
                 .collect(Collectors.toList()));

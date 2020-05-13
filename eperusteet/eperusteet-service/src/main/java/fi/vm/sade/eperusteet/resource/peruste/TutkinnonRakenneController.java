@@ -277,5 +277,4 @@ public class TutkinnonRakenneController {
             @PathVariable("koodiUri") final String koodiUri) {
         return perusteService.getTutkinnonOsaViiteByKoodiUri(id, suoritustapakoodi, koodiUri);
     }
-
 }

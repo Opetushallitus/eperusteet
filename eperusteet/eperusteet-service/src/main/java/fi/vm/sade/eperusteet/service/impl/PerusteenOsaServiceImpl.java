@@ -709,4 +709,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         return tosa;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<TutkinnonOsaKaikkiDto> getTutkinnonOsaKaikkiDtoByKoodi(String koodiUri) {
+        return mapper.mapAsList(tutkinnonOsaRepo.findByKoodiUriAndValmiitPerusteet(koodiUri), TutkinnonOsaKaikkiDto.class);
+    }
+
 }
