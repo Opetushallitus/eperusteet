@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+import fi.vm.sade.eperusteet.dto.Sortable;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
@@ -36,7 +37,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 @AllArgsConstructor
-public class TutkinnonOsaViiteDto implements ReferenceableDto {
+public class TutkinnonOsaViiteDto implements ReferenceableDto, Sortable {
 
     private Long id;
     private BigDecimal laajuus;

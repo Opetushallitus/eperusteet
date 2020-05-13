@@ -744,15 +744,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
                     Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
                     Map<Kieli, Liite> tempLiitteet = new HashMap<>();
-                    liitteet.forEach((kieli, liiteId) -> {
-                        Liite liite = liiteRepository.findOne(perusteId, liiteId.getId());
-                        if (liite != null) {
-                            tempLiitteet.put(kieli, liite);
-                        }
-                    });
+                    if (muutosmaarays.getLiitteet() != null) {
+                        liitteet.forEach((kieli, liiteId) -> {
+                            Liite liite = liiteRepository.findOne(perusteId, liiteId.getId());
+                            if (liite != null) {
+                                tempLiitteet.put(kieli, liite);
+                            }
+                        });
 
-                    muutosmaarays.setPeruste(current);
-                    muutosmaarays.setLiitteet(tempLiitteet);
+                        muutosmaarays.setPeruste(current);
+                        muutosmaarays.setLiitteet(tempLiitteet);
+                    }
                 }
             }
 

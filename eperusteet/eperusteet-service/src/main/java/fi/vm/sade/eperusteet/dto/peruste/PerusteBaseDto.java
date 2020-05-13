@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
 import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -56,7 +57,7 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     private Set<Kieli> kielet;
     private LokalisoituTekstiDto kuvaus;
     private MaarayskirjeDto maarayskirje;
-    private List<MuutosmaaraysDto> muutosmaaraykset;
+    private List<MuutosmaaraysDto> muutosmaaraykset = new ArrayList<>();
 
     private String diaarinumero;
     private Date voimassaoloAlkaa;

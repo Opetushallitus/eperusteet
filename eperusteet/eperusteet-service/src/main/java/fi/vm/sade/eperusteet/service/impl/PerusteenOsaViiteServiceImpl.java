@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.Sortable;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -40,9 +41,8 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionChecker;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -258,6 +258,14 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             lapset.add(updateTraverse(pov, x, refs));
         }
         return repository.save(pov);
+    }
+
+    @Override
+    public List<Sortable> sort(Long id, Suoritustapakoodi suoritustapakoodi, List<Sortable> sorted) {
+        List<TutkinnonOsaViite> viitteet = tutkinnonOsaViiteRepository.findByPeruste(id, suoritustapakoodi);
+        viitteet = GenericAlgorithms.sort(sorted, viitteet);
+        tutkinnonOsaViiteRepository.save(viitteet);
+        return sorted;
     }
 
 }
