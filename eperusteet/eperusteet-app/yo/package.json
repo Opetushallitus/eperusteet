@@ -46,7 +46,7 @@
     "eperusteet-frontend-utils": "Opetushallitus/eperusteet-frontend-utils#master",
     "es6-promise": "4.1.1",
     "file-saver": "^2.0.2",
-    "fork-ts-checker-webpack-plugin": "0.2.8",
+    "fork-ts-checker-webpack-plugin": "0.5.2",
     "jquery": "2.1.4",
     "jquery-sticky": "1.0.4",
     "jquery-ui": "1.12.1",
