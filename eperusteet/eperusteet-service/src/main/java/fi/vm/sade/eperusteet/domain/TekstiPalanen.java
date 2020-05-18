@@ -71,6 +71,13 @@ public class TekstiPalanen implements Serializable {
         return map;
     }
 
+    static public String getOrDefault(TekstiPalanen tk, Kieli kieli, String otherwise) {
+        if (tk == null) {
+            return otherwise;
+        }
+        return tk.getTeksti().getOrDefault(kieli, otherwise);
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -119,12 +126,23 @@ public class TekstiPalanen implements Serializable {
         return null;
     }
 
+    public static TekstiPalanen empty() {
+        return of(new HashMap<>(), null);
+    }
+
     public static TekstiPalanen of(Map<Kieli, String> tekstit) {
         return of(tekstit, null);
     }
 
     public static TekstiPalanen of(Kieli kieli, String teksti) {
         return of(Collections.singletonMap(kieli, teksti));
+    }
+
+    public static TekstiPalanen of(String suomeksi, String ruotsiksi) {
+        Map<Kieli, String> tekstit = new HashMap<>();
+        tekstit.put(Kieli.FI, suomeksi);
+        tekstit.put(Kieli.SV, ruotsiksi);
+        return of(tekstit);
     }
 
     @Override
