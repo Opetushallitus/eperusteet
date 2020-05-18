@@ -167,7 +167,15 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
         Jsoup.isValid(ruotsi, Whitelist.relaxed());
         assertThat(suomi).isEqualTo("<dl><dt><i>kohdeSuomi</i></dt><dd style=\"display: list-item;\">kohdealueetonSuomi</dd></dl><b>kohdealueSuomi</b><dl><dt><i>kohdeSuomi</i></dt><dd style=\"display: list-item;\">kohdealueellinenSuomi</dd></dl>");
         assertThat(ruotsi).isEqualTo("<dl><dt><i>kohdeRuotsi</i></dt><dd style=\"display: list-item;\">kohdealueetonRuotsi</dd></dl><b>kohdealueRuotsi</b><dl><dt><i>kohdeRuotsi</i></dt><dd style=\"display: list-item;\">kohdealueellinenRuotsi</dd></dl>");
+    }
 
+    @Test
+    @Rollback
+    public void testAmmattiatitovaatimustenSiirtoVanhaanKenttaanVanhaRakenne() {
+        TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
+        tutkinnonOsa.setAmmattitaitovaatimukset(TekstiPalanen.of(Kieli.FI, "xyz"));
+        TutkinnonOsaKaikkiDto tutkinnonOsaKaikkiDto = mapper.map(tutkinnonOsa, TutkinnonOsaKaikkiDto.class);
+        assertThat(tutkinnonOsaKaikkiDto.getAmmattitaitovaatimukset().getTekstit().get(Kieli.FI)).isEqualTo("xyz");
     }
 
     @Test
