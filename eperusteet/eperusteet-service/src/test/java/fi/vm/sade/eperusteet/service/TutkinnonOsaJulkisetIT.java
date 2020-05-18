@@ -3,14 +3,13 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.TutkinnonOsaQueryDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimukset2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
@@ -19,6 +18,8 @@ import fi.vm.sade.eperusteet.repository.ArvioinninKohdealueRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -141,6 +141,33 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
         assertThat(viitteet.get(0))
                 .extracting("id", "peruste.id", "suoritustapa.suoritustapakoodi")
                 .contains(tov.getId(), peruste.getId(), suoritustapa.getSuoritustapakoodi());
+    }
+
+    @Test
+    @Rollback
+    public void testAmmattiatitovaatimustenSiirtoVanhaanKenttaan() {
+        TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
+        Ammattitaitovaatimukset2019 av2019 = new Ammattitaitovaatimukset2019();
+        av2019.setKohde(TekstiPalanen.of("kohdeSuomi", "kohdeRuotsi"));
+        av2019.setVaatimukset(Collections.singletonList(Ammattitaitovaatimus2019.of(TekstiPalanen.of("kohdealueetonSuomi", "kohdealueetonRuotsi"))));
+
+        { // Kohdealue
+            Ammattitaitovaatimus2019Kohdealue kohdealue = new Ammattitaitovaatimus2019Kohdealue();
+            kohdealue.setKuvaus(TekstiPalanen.of("kohdealueSuomi", "kohdealueRuotsi"));
+            kohdealue.setVaatimukset(Collections.singletonList(Ammattitaitovaatimus2019.of(TekstiPalanen.of("kohdealueellinenSuomi", "kohdealueellinenRuotsi"))));
+            av2019.getKohdealueet().add(kohdealue);
+        }
+
+        tutkinnonOsa.setAmmattitaitovaatimukset2019(av2019);
+        TutkinnonOsaKaikkiDto tutkinnonOsaKaikkiDto = mapper.map(tutkinnonOsa, TutkinnonOsaKaikkiDto.class);
+        LokalisoituTekstiDto teksti = tutkinnonOsaKaikkiDto.getAmmattitaitovaatimukset();
+        String suomi = teksti.getTekstit().get(Kieli.FI);
+        String ruotsi = teksti.getTekstit().get(Kieli.SV);
+        Jsoup.isValid(suomi, Whitelist.relaxed());
+        Jsoup.isValid(ruotsi, Whitelist.relaxed());
+        assertThat(suomi).isEqualTo("<dl><dt><i>kohdeSuomi</i></dt><dd style=\"display: list-item;\">kohdealueetonSuomi</dd></dl><b>kohdealueSuomi</b><dl><dt><i>kohdeSuomi</i></dt><dd style=\"display: list-item;\">kohdealueellinenSuomi</dd></dl>");
+        assertThat(ruotsi).isEqualTo("<dl><dt><i>kohdeRuotsi</i></dt><dd style=\"display: list-item;\">kohdealueetonRuotsi</dd></dl><b>kohdealueRuotsi</b><dl><dt><i>kohdeRuotsi</i></dt><dd style=\"display: list-item;\">kohdealueellinenRuotsi</dd></dl>");
+
     }
 
     @Test

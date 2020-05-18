@@ -19,10 +19,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import lombok.Getter;
 import org.springframework.util.ObjectUtils;
 
+import java.text.Normalizer;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -62,6 +64,20 @@ public class LokalisoituTekstiDto {
         Map<Kieli, String> kaannokset = new HashMap<>();
         kaannokset.put(kieli, teksti);
         return new LokalisoituTekstiDto(null, kaannokset);
+    }
+
+    static public String getOrDefault(LokalisoituTekstiDto tk, Kieli kieli, String otherwise) {
+        if (tk == null) {
+            return otherwise;
+        }
+        return tk.tekstit.getOrDefault(kieli, otherwise);
+    }
+
+    public static LokalisoituTekstiDto of(Map<Kieli, String> tekstit) {
+        if (tekstit == null) {
+            return null;
+        }
+        return new LokalisoituTekstiDto(null, null, tekstit);
     }
 
     @JsonCreator
