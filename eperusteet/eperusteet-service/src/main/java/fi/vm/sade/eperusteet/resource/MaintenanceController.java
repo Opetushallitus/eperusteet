@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.resource;
 
 
 import fi.vm.sade.eperusteet.dto.ParsitutAmmattitaitovaatimukset;
+import fi.vm.sade.eperusteet.dto.YllapitoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -106,4 +108,14 @@ public class MaintenanceController {
         return ammattitaitovaatimusService.virheellisetAmmattitaitovaatimukset();
     }
 
+    @RequestMapping(value = "/yllapito", method = GET)
+    public List<YllapitoDto> sallitutYllapidot() {
+        return maintenanceService.getSallitutYllapidot();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/ammattitaitovaatimuskoodisto", method = GET)
+    public void pushAllAmmattitaitovaatimuksetToKoodisto() {
+        ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto();
+    }
 }

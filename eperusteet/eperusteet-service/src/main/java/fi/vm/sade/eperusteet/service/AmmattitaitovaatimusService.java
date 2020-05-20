@@ -39,7 +39,7 @@ public interface AmmattitaitovaatimusService {
     List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    List<KoodiDto> addArvioinninKohdealueetToKoodisto(Long perusteId);
+    List<KoodiDto> addArvioinninKohdealueetToKoodisto(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteprojektiId, 'perusteprojekti', 'TILANVAIHTO')")
     List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(@P("perusteprojektiId") Long perusteprojektiId, @P("perusteId") Long perusteId);

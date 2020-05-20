@@ -64,6 +64,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -285,6 +286,8 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     }
 
     @Override
+    @Async
+    @IgnorePerusteUpdateCheck
     public void addAmmattitaitovaatimuskooditToKoodisto() {
         perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(1970, 1, 1, 0, 0).toDate(),
                 PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)
