@@ -44,6 +44,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -54,6 +55,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
@@ -209,6 +211,19 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 .collect(Collectors.toList());
     }
 
+    private List<ArvioinninKohdealue> getArvioinninKohdealueet(Peruste peruste) {
+        return peruste.getSuoritustavat().stream()
+                .map(Suoritustapa::getTutkinnonOsat)
+                .flatMap(Collection::stream)
+                .map(TutkinnonOsaViite::getTutkinnonOsa)
+                .map(TutkinnonOsa::getArviointi)
+                .filter(Objects::nonNull)
+                .map(Arviointi::getArvioinninKohdealueet)
+                .flatMap(Collection::stream)
+                .filter(arvioinninKohdealue -> Objects.isNull(arvioinninKohdealue.getKoodi()))
+                .collect(Collectors.toList());
+    }
+
     private List<TutkinnonOsaViite> getTutkinnonOsaViitteet(Peruste peruste) {
         return peruste.getSuoritustavat().stream()
                 .map(Suoritustapa::getTutkinnonOsat)
@@ -275,12 +290,16 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)
                 .forEach(peruste -> {
                     addAmmattitaitovaatimuskooditToKoodisto(peruste.getId());
+                    addArvioinninKohdealueetToKoodisto(peruste.getId());
                 });
     }
 
     @Override
     public List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(Long perusteprojektiId, Long perusteId) {
-        return addAmmattitaitovaatimuskooditToKoodisto(perusteId);
+        return Stream.concat(
+                addAmmattitaitovaatimuskooditToKoodisto(perusteId).stream(),
+                addArvioinninKohdealueetToKoodisto(perusteId).stream())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -325,6 +344,53 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
             uniqueVaatimukset.get(teksti).forEach(ammattitaitovaatimus2019 -> {
                 ammattitaitovaatimus2019.setKoodi(koodi);
                 ammattitaitovaatimusRepository.save(ammattitaitovaatimus2019);
+            });
+        }
+        return koodit;
+    }
+
+    @Override
+    public List<KoodiDto> addArvioinninKohdealueetToKoodisto(Long perusteId) {
+        List<KoodiDto> koodit = new ArrayList<>();
+        Peruste peruste = perusteRepository.findOne(perusteId);
+
+        List<ArvioinninKohdealue> arvioinninKohdealiueet = getArvioinninKohdealueet(peruste).stream().filter(kohdealue -> kohdealue.getKoodi() == null).collect(Collectors.toList());
+
+        if (arvioinninKohdealiueet.isEmpty()) {
+            return koodit;
+        }
+
+        Map<Map<Kieli, String>, List<ArvioinninKohdealue>> uniqueKohdealueet = new LinkedHashMap<>();
+        arvioinninKohdealiueet.forEach(vaatimus -> {
+            if (uniqueKohdealueet.get(vaatimus.getOtsikko().getTeksti()) == null) {
+                uniqueKohdealueet.put(vaatimus.getOtsikko().getTeksti(), new ArrayList<>());
+            }
+
+            uniqueKohdealueet.get(vaatimus.getOtsikko().getTeksti()).add(vaatimus);
+        });
+
+        Stack<Long> koodiStack = new Stack<>();
+        koodiStack.addAll(koodistoClient.nextKoodiId("ammattitaitovaatimukset", uniqueKohdealueet.keySet().size()));
+
+        for (Map<Kieli, String> teksti : uniqueKohdealueet.keySet()) {
+
+            LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(null, teksti);
+            KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("ammattitaitovaatimukset", lokalisoituTekstiDto, koodiStack.pop());
+
+            if (lisattyKoodi == null) {
+                log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, lisattyKoodi);
+                continue;
+            }
+
+            Koodi koodi = new Koodi();
+            koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
+            koodi.setUri(lisattyKoodi.getKoodiUri());
+            koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
+            koodit.add(mapper.map(koodi, KoodiDto.class));
+
+            uniqueKohdealueet.get(teksti).forEach(kohdealue -> {
+                kohdealue.setKoodi(koodi);
+                arvioinninKohdealueRepository.save(kohdealue);
             });
         }
         return koodit;
