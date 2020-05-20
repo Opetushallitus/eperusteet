@@ -9,6 +9,7 @@
     "aipe-opetuksen-sisalto-puuttuu": "Aikuisten perusopetuksen sisältö puuttuu",
     "aipe-oppiaine-palautettu": "AIPE oppiaine palautettu",
     "aipe-vaihe-palautettu": "AIPE vaihe palautettu",
+    "ajo-kaynnistetty": "Ajo käynnistetty",
     "alkuun": "Alkuun",
     "aloita-raahaamalla-puuhun": "Tuo ryhmiä tai tutkinnon osia tähän.",
     "aloitus-ennen-lopetusta": "Toimikauden aloituspäivämäärän täytyy olla ennen päättymisajankohtaa.",
@@ -25,6 +26,7 @@
     "ammattitaito-uusi-kohdealue-placeholder": "Kohdealueen nimi",
     "ammattitaito-uusi-vaatimus-placeholder": "Ammattitaitovaatimuksen teksti",
     "ammattitaitovaatimukset": "Ammattitaitovaatimukset",
+    "ammattitaitovaatimukset-koodistoon": "Ammattitaitovaatimukset koodistoon",
     "ammattitaitovaatimukset-muualla": "Ammattitaitovaatimukset jotka käytössä muualla",
     "ammattitaitovaatimuksetLista": "Ammattitaitovaatimukset",
     "ammattitaitovaatimusten-hallinta": "Ammattitaitovaatimusten hallinta",
@@ -102,6 +104,7 @@
     "ei-osaamisalan-kuvausta": "Ei osaamisalan kuvausta",
     "ei-projekteja": "Sinulla ei ole käynnissä olevia perusteprojekteja.",
     "ei-päättymis-päivämäärää": "Ei määritetty",
+    "ei-sallittuja-toimintoja": "Ei sallittuja toimintoja",
     "ei-suosikkeja": "Et ole lisännyt vielä suosikkeja.",
     "ei-tekstikappaleita": "Yhtään tekstikappaletta ei löytynyt.",
     "ei-termeja": "Yhtään käsitettä ei ole määritelty.",
@@ -232,6 +235,7 @@
     "kasitteet": "Käsitteet",
     "katselet-vanhaa-versiota": "Tarkastelet vanhaa versiota sivusta.",
     "katso-uusin-versio": "Katso uusin versio",
+    "kaynnista": "Käynnistä",
     "kayttaja": "Käyttäjä",
     "kayta-koodistosta": "Käytä koodistosta",
     "kelvoton-pvm": "Kelvoton päivämäärä",
@@ -1280,6 +1284,7 @@
     "tyyppi-tutkintokohtainen": "Tutkintokohtainen",
     "tyyppi-yhteinen": "Yhteinen",
     "ui-kieli": "Käyttöliittymäkieli",
+    "url": "URL",
     "useita-oppimaaria": "Useita oppimääriä",
     "uusi": "Uusi",
     "uusi-koulutuksenosa": "Uusi koulutuksen osa",
@@ -1414,5 +1419,6 @@
     "yleisettavoitteet-ei-otsikkoa": "Opetuksen yleisiä tavoitteita ei ole vielä määritelty",
     "yleisettavoitteet-kuvaus-placeholder": "Kirjoita opetuksen yleisten tavoitteiden kuvaus",
     "ylikirjoita-uusi-sisältö": "Jatka muokkaamista",
-    "ylikirjoittaessasi-voit-palauttaa": "Jatkaessasi voit ylikirjoittaa toisten muutokset. Ne säilyvät edelleen muutoshistoriassa ja voit palauttaa ne sieltä"
+    "ylikirjoittaessasi-voit-palauttaa": "Jatkaessasi voit ylikirjoittaa toisten muutokset. Ne säilyvät edelleen muutoshistoriassa ja voit palauttaa ne sieltä",
+    "yllapito": "Ylläpito"
 }
