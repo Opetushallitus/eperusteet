@@ -26,11 +26,11 @@
         <eperusteet.backend-utils.version>2.3-SNAPSHOT</eperusteet.backend-utils.version>
         <ehcache.version>2.6.11</ehcache.version>
         <slf4j.version>1.7.21</slf4j.version>
-        <batik.version>1.9</batik.version>
+        <batik.version>1.13</batik.version>
         <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
         <surefire.version>2.22.2</surefire.version>
         <failsafe.version>2.22.2</failsafe.version>
-        <fop.version>2.3</fop.version>
+        <fop.version>2.5</fop.version>
         <pdfbox.version>2.0.12</pdfbox.version>
         <flyway.version>5.2.4</flyway.version>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
@@ -394,6 +394,12 @@
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
             <version>${fop.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
