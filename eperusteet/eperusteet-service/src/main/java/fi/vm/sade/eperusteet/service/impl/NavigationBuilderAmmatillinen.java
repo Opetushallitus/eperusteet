@@ -3,21 +3,17 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.LokalisointiDto;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
-import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
-import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
-import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,18 +52,39 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
 //                .add(tutkinnonMuodostuminen(perusteId))
     }
 
+    private NavigationNodeDto buildTutkinnonOsa(TutkinnonOsaViite tosa) {
+        NavigationNodeDto result = NavigationNodeDto.of(
+                NavigationType.tutkinnonosaviite,
+                mapper.map(tosa.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class),
+                tosa.getId())
+                .meta("koodi", mapper.map(tosa.getTutkinnonOsa().getKoodi(), KoodiDto.class))
+                .meta("laajuus", tosa.getLaajuus());
+        if (tosa.getTutkinnonOsa() != null && tosa.getTutkinnonOsa().getTyyppi() != TutkinnonOsaTyyppi.NORMAALI) {
+            result.add(NavigationNodeDto.of(NavigationType.osaalueet)
+                    .addAll(tosa.getTutkinnonOsa().getOsaAlueet().stream()
+                    .map(osaAlue -> buildOsaAlue(tosa, osaAlue))
+                .collect(Collectors.toList())));
+        }
+        return result;
+    }
+
+    private NavigationNodeDto buildOsaAlue(TutkinnonOsaViite tosa, OsaAlue osaAlue) {
+        return NavigationNodeDto.of(
+                NavigationType.osaalue,
+                mapper.map(osaAlue.getNimi(), LokalisoituTekstiDto.class),
+                osaAlue.getId())
+                .meta("koodi", mapper.map(osaAlue.getKoodi(), KoodiDto.class))
+                .meta("tutkinnonOsa", tosa.getTutkinnonOsa().getId())
+                .meta("tutkinnonOsaViite", tosa.getId());
+    }
+
     private NavigationNodeDto tutkinnonOsat(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         return NavigationNodeDto.of(NavigationType.tutkinnonosat, null, perusteId)
                 .addAll(peruste.getSuoritustavat().stream()
                         .map(Suoritustapa::getTutkinnonOsat)
                         .flatMap(Collection::stream)
-                        .map(tosa -> NavigationNodeDto.of(
-                                NavigationType.tutkinnonosaviite,
-                                mapper.map(tosa.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class),
-                                tosa.getId())
-                                .meta("koodi", mapper.map(tosa.getTutkinnonOsa().getKoodi(), KoodiDto.class))
-                                .meta("laajuus", tosa.getLaajuus()))
+                        .map(this::buildTutkinnonOsa)
                         .collect(Collectors.toList()));
     }
 

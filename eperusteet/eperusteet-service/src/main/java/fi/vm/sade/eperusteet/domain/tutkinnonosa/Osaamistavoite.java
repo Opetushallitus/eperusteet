@@ -86,9 +86,14 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     private TekstiPalanen tunnustaminen;
 
     @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private GeneerinenArviointiasteikko geneerinenArviointiasteikko;
+
+    @Getter
+    @Deprecated
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Arviointi arviointi;
-
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "ammattitaitovaatimuksenkohdealue_osaamistavoite",

@@ -1,16 +1,25 @@
 package fi.vm.sade.eperusteet.service;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.GeneerinenArviointiasteikko;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
+import fi.vm.sade.eperusteet.dto.Arviointi2020Dto;
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
 import fi.vm.sade.eperusteet.dto.GeneerisenArvioinninOsaamistasonKriteeriDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Osaamistavoite2020Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+
+import lombok.SneakyThrows;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -187,6 +196,75 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         assertThat(kopio.isJulkaistu()).isFalse();
         assertThat(kopio.isValittavissa()).isTrue();
         assertThat(kopio.getOsaamistasonKriteerit()).hasSize(3);
+    }
+
+    @SneakyThrows
+    @Test
+    @Rollback
+    public void testOsaamistavoiteMapping() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        OsaamistavoiteLaajaDto a = new OsaamistavoiteLaajaDto();
+        Osaamistavoite2020Dto b = new Osaamistavoite2020Dto();
+
+        { // Vanha
+            String str = objectMapper.writeValueAsString(a);
+            OsaamistavoiteDto target = objectMapper.readValue(str, OsaamistavoiteDto.class);
+            assertThat(objectMapper.readTree(str).get("type").asText()).isEqualTo("osaamistavoite2014");
+            assertThat(target).isExactlyInstanceOf(OsaamistavoiteLaajaDto.class);
+        }
+        { // Uusi
+            String str = objectMapper.writeValueAsString(b);
+            OsaamistavoiteDto target = objectMapper.readValue(str, OsaamistavoiteDto.class);
+            assertThat(objectMapper.readTree(str).get("type").asText()).isEqualTo("osaamistavoite2020");
+            assertThat(target).isExactlyInstanceOf(Osaamistavoite2020Dto.class);
+        }
+    }
+
+    @Test
+    @Rollback
+    public void testGeneerinenArviointiMapping() {
+        GeneerinenArviointiasteikkoDto asteikkoDto = buildGeneerinenArviointiasteikkoDto(10);
+        asteikkoDto.setOsaamistasonKriteerit(Stream.of(
+                GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
+                        .osaamistaso(Reference.of(12L))
+                        .kriteerit(Stream.of(
+                                LokalisoituTekstiDto.of("x"),
+                                LokalisoituTekstiDto.of("y"),
+                                LokalisoituTekstiDto.of("z"))
+                                .collect(Collectors.toList()))
+                        .build(),
+                GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
+                        .osaamistaso(Reference.of(13L))
+                        .kriteerit(Stream.of(
+                                LokalisoituTekstiDto.of("a"),
+                                LokalisoituTekstiDto.of("b"),
+                                LokalisoituTekstiDto.of("c"))
+                                .collect(Collectors.toList()))
+                        .build(),
+                GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
+                        .osaamistaso(Reference.of(14L))
+                        .build())
+                .collect(Collectors.toSet()));
+
+        asteikkoDto = geneerinenArviointiasteikkoService.add(asteikkoDto);
+        GeneerinenArviointiasteikko geneerinen = geneerinenArviointiasteikkoRepository.getOne(asteikkoDto.getId());
+
+        { // Arviointi
+            Arviointi2020Dto arviointiDto = mapper.map(geneerinen, Arviointi2020Dto.class);
+            assertThat(arviointiDto.getOsaamistasonKriteerit().get(0).getOsaamistaso().getOtsikko().get(Kieli.FI))
+                    .isEqualTo("Taso 1");
+            assertThat(arviointiDto.getOsaamistasonKriteerit().get(0).getKriteerit().get(0).get(Kieli.FI))
+                    .isEqualTo("x");
+            assertThat(arviointiDto.getOsaamistasonKriteerit().get(2).getOsaamistaso().getOtsikko().get(Kieli.FI))
+                    .isEqualTo("Taso 3");
+        }
+
+        { // Osaamistavoite
+            Osaamistavoite osaamistavoite = new Osaamistavoite();
+            osaamistavoite.setGeneerinenArviointiasteikko(geneerinen);
+            Osaamistavoite2020Dto tavoiteDto = mapper.map(osaamistavoite, Osaamistavoite2020Dto.class);
+            assertThat(tavoiteDto.getArviointi()).isNotNull();
+        }
     }
 
     private GeneerinenArviointiasteikkoDto buildGeneerinenArviointiasteikkoDto(long plusId) {

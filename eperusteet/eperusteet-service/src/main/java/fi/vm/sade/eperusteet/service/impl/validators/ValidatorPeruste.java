@@ -618,9 +618,8 @@ public class ValidatorPeruste implements Validator {
                         String arvo = osaDto.getKoodiArvo();
 
                         // Tarkistetaan onko sama koodi useammassa tutkinnon osassa
-                        if (uniikitKoodit.contains(uri)) {
-                            uniikitKooditTosat.add(new LokalisoituTekstiDto(tosa.getNimi().getId(),
-                                    tosa.getNimi().getTeksti()));
+                        if (tosa.getNimi() != null && uniikitKoodit.contains(uri)) {
+                            uniikitKooditTosat.add(new LokalisoituTekstiDto(tosa.getNimi().getId(), tosa.getNimi().getTeksti()));
                         } else {
                             uniikitKoodit.add(uri);
                         }

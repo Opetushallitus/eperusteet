@@ -32,6 +32,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "osaamistaso")
 @Builder
+@EqualsAndHashCode(of = { "id" })
 @NoArgsConstructor
 @AllArgsConstructor
 public class Osaamistaso implements Serializable, ReferenceableEntity {

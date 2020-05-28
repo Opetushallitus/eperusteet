@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.Sortable;
+import fi.vm.sade.eperusteet.dto.SortableDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -261,7 +262,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     }
 
     @Override
-    public List<Sortable> sort(Long id, Suoritustapakoodi suoritustapakoodi, List<Sortable> sorted) {
+    public <T extends Sortable> List<T> sort(Long id, Suoritustapakoodi suoritustapakoodi, List<T> sorted) {
         List<TutkinnonOsaViite> viitteet = tutkinnonOsaViiteRepository.findByPeruste(id, suoritustapakoodi);
         viitteet = GenericAlgorithms.sort(sorted, viitteet);
         tutkinnonOsaViiteRepository.save(viitteet);

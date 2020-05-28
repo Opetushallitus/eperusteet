@@ -16,7 +16,10 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -25,12 +28,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * Ammatillisten yhteisten osaamistavoitteet
  *
  * @author harrik
  */
 @Getter
 @Setter
-public class OsaamistavoiteDto {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Osaamistavoite2020Dto.class),
+        @JsonSubTypes.Type(value = OsaamistavoiteLaajaDto.class),
+})
+public abstract class OsaamistavoiteDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
     private boolean pakollinen;

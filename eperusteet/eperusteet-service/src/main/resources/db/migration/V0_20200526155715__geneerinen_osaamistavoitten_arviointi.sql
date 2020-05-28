@@ -1,0 +1,2 @@
+ALTER TABLE osaamistavoite ADD COLUMN geneerinenArviointiasteikko_id BIGINT REFERENCES geneerinenarviointiasteikko(id);
+ALTER TABLE osaamistavoite_aud ADD COLUMN geneerinenArviointiasteikko_id BIGINT;

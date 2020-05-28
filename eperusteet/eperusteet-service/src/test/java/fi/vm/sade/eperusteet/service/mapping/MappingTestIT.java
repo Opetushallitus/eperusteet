@@ -33,6 +33,9 @@ public class MappingTestIT extends AbstractPerusteprojektiTest {
     @Autowired
     private KoodistokoodiConverter koodistokoodiConverter;
 
+    @Autowired
+    private ArviointiConverter arviointiConverter;
+
     @Override
     @Before
     public void setup() {

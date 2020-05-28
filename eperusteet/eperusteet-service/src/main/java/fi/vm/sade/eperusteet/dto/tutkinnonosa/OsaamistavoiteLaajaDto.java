@@ -16,6 +16,9 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
+import com.fasterxml.jackson.annotation.*;
+import fi.vm.sade.eperusteet.dto.Arviointi2020Dto;
+import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.Reference;
@@ -31,6 +34,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@JsonTypeName("osaamistavoite2014")
 public class OsaamistavoiteLaajaDto extends OsaamistavoiteDto {
     private LokalisoituTekstiDto tavoitteet;
     private LokalisoituTekstiDto tunnustaminen;

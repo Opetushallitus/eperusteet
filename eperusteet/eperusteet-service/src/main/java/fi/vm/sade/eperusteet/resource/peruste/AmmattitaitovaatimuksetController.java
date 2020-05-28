@@ -18,7 +18,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @RequestMapping(value = "/ammattitaitovaatimukset")
-@Api(value = "Perusteet")
+@Api(value = "Ammattitaitovaatimukset")
 public class AmmattitaitovaatimuksetController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class AmmattitaitovaatimuksetController {
             @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "uri", dataType = "string", paramType = "query")
     })
-    public Page<PerusteBaseDto> getPerusteet(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
+    public Page<PerusteBaseDto> getPerusteetByAmmattitaitovaatimus(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         Page<PerusteBaseDto> result = ammattitaitovaatimusService.findPerusteet(p, pquery);
         return result;
@@ -42,9 +42,10 @@ public class AmmattitaitovaatimuksetController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "uri", dataType = "string", paramType = "query")
+            @ApiImplicitParam(name = "uri", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "kaikki", dataType = "boolean", paramType = "query"),
     })
-    public Page<TutkinnonOsaViiteKontekstiDto> getTutkinnonOsat(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
+    public Page<TutkinnonOsaViiteKontekstiDto> getTutkinnonOsatByAmmattitaitovaatimus(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return ammattitaitovaatimusService.findTutkinnonOsat(p, pquery);
     }
