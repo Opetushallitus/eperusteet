@@ -5898,6 +5898,23 @@
         }
       }
     },
+    "Arviointi2020Dto" : {
+      "type" : "object",
+      "properties" : {
+        "kohde" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "arviointiAsteikko" : {
+          "$ref" : "#/definitions/Reference"
+        },
+        "osaamistasonKriteerit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamistasonKriteerit2020Dto"
+          }
+        }
+      }
+    },
     "ArviointiAsteikkoDto" : {
       "type" : "object",
       "properties" : {
@@ -8038,8 +8055,41 @@
         }
       }
     },
+    "OsaamistasonKriteerit2020Dto" : {
+      "type" : "object",
+      "properties" : {
+        "osaamistaso" : {
+          "$ref" : "#/definitions/OsaamistasoDto"
+        },
+        "kriteerit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          }
+        }
+      }
+    },
+    "Osaamistavoite2020Dto" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/OsaamistavoiteDto"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "esitieto" : {
+            "$ref" : "#/definitions/Reference"
+          },
+          "tunnustaminen" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "arviointi" : {
+            "$ref" : "#/definitions/Arviointi2020Dto"
+          }
+        }
+      } ]
+    },
     "OsaamistavoiteDto" : {
       "type" : "object",
+      "discriminator" : "type",
       "properties" : {
         "id" : {
           "type" : "integer",
@@ -8070,53 +8120,31 @@
       }
     },
     "OsaamistavoiteLaajaDto" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "nimi" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "pakollinen" : {
-          "type" : "boolean"
-        },
-        "laajuus" : {
-          "type" : "number"
-        },
-        "kieli" : {
-          "type" : "string",
-          "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
-        },
-        "koodi" : {
-          "$ref" : "#/definitions/KoodiDto"
-        },
-        "koodiUri" : {
-          "type" : "string"
-        },
-        "koodiArvo" : {
-          "type" : "string"
-        },
-        "tavoitteet" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "tunnustaminen" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "arviointi" : {
-          "$ref" : "#/definitions/ArviointiDto"
-        },
-        "ammattitaitovaatimuksetLista" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
+      "allOf" : [ {
+        "$ref" : "#/definitions/OsaamistavoiteDto"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "tavoitteet" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "tunnustaminen" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "arviointi" : {
+            "$ref" : "#/definitions/ArviointiDto"
+          },
+          "ammattitaitovaatimuksetLista" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
+            }
+          },
+          "esitieto" : {
+            "$ref" : "#/definitions/Reference"
           }
-        },
-        "esitieto" : {
-          "$ref" : "#/definitions/Reference"
         }
-      }
+      } ]
     },
     "Page" : {
       "type" : "object",
@@ -8135,12 +8163,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8175,12 +8203,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8215,12 +8243,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8255,12 +8283,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8295,12 +8323,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8335,12 +8363,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8375,12 +8403,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8415,12 +8443,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8455,12 +8483,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8495,12 +8523,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8535,12 +8563,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -8575,12 +8603,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",

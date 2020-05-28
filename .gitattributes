@@ -2,4 +2,4 @@ yarn.lock merge=ours
 package-lock.json merge=ours
 yarn.lock -diff
 yarn.lock linguist-vendored
-generated/* linguist-vendored
+generated/**/* linguist-generated=true
