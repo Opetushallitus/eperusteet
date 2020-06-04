@@ -42,7 +42,7 @@
     "angular-ui-utils": "0.1.1",
     "angularjs-slider": "5.8.7",
     "babel-plugin-angularjs-annotate": "0.8.2",
-    "ckeditor": "4.7.0",
+    "ckeditor": "4.12.1",
     "eperusteet-frontend-utils": "Opetushallitus/eperusteet-frontend-utils#master",
     "es6-promise": "4.1.1",
     "file-saver": "^2.0.2",
