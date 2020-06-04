@@ -44,7 +44,7 @@
     "babel-plugin-angularjs-annotate": "0.8.2",
     "ckeditor": "4.7.0",
     "eperusteet-frontend-utils": "Opetushallitus/eperusteet-frontend-utils#master",
-    "es6-promise": "4.1.1",
+    "es6-promise": "4.2.8",
     "file-saver": "^2.0.2",
     "fork-ts-checker-webpack-plugin": "0.2.8",
     "jquery": "2.1.4",
