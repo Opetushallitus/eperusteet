@@ -20,7 +20,7 @@
     "analyze-sourcemap": "npm run build && source-map-explorer dist/app.js"
   },
   "dependencies": {
-    "angular": "1.6.6",
+    "angular": "1.8.0",
     "angular-animate": "1.6.6",
     "angular-cache": "4.4.2",
     "angular-cookies": "1.6.6",
@@ -33,8 +33,8 @@
     "angular-route": "1.6.6",
     "angular-sanitize": "1.6.6",
     "angular-spinner": "0.8.0",
-    "angular-translate": "2.18.1",
-    "angular-translate-loader-static-files": "2.15.2",
+    "angular-translate": "2.18.2",
+    "angular-translate-loader-static-files": "2.18.0",
     "angular-ui-bootstrap": "2.5.0",
     "angular-ui-router": "0.4.2",
     "angular-ui-sortable": "https://github.com/nkala/ui-sortable.git#v0.13.4xx",
