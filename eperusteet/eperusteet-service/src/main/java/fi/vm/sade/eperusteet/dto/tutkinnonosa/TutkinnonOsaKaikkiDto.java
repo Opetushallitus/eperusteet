@@ -127,7 +127,7 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
 
                 tekstit.put(kieli, root.toString());
             }
-            return LokalisoituTekstiDto.of(tekstit);
+            return LokalisoituTekstiDto.of(tekstit.isEmpty() ? null : tekstit);
         }
         return ammattitaitovaatimukset;
     }
