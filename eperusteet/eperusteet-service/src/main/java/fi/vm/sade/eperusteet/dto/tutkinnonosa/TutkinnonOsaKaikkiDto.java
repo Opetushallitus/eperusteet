@@ -103,7 +103,9 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
 
                         if (ka.getKuvaus() != null) {
                             String nimi = LokalisoituTekstiDto.getOrDefault(ka.getKuvaus(), kieli, null);
-                            root.append("<b>").append(nimi).append("</b>");
+                            if (nimi != null) {
+                                root.append("<b>").append(nimi).append("</b>");
+                            }
                         }
 
                         root.append("<dl>");
@@ -122,7 +124,11 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
                     }
                 }
 
-                tekstit.put(kieli, root.toString());
+                String result = root.toString().replaceAll("<dl></dl>", "");
+
+                if (!result.isEmpty()) {
+                    tekstit.put(kieli, result);
+                }
             }
             return LokalisoituTekstiDto.of(tekstit.isEmpty() ? null : tekstit);
         }
