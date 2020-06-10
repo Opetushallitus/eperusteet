@@ -71,17 +71,14 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private ArviointiDto arviointi;
 
     @Deprecated
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LokalisoituTekstiDto ammattitaitovaatimukset;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public LokalisoituTekstiDto getAmmattitaitovaatimukset() {
         if (ammattitaitovaatimukset == null && ammattitaitovaatimukset2019 != null) {
             Map<Kieli, String> tekstit = new HashMap<>();
             for (Kieli kieli : Kieli.values()) {
                 StringBuilder root = new StringBuilder();
-                if (ammattitaitovaatimukset2019.getKohde() == null) {
-                    continue;
-                }
                 String kohde = LokalisoituTekstiDto.getOrDefault(ammattitaitovaatimukset2019.getKohde(), kieli, null);
                 root.append("<dl>");
                 if (kohde != null) {
