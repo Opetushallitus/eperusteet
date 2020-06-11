@@ -56,6 +56,8 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private TutkinnonOsaTyyppi tyyppi;
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
     private GeneerinenArviointiasteikkoDto geneerinenArviointiasteikko;
+    
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<KevytTekstiKappaleDto> vapaatTekstit;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
