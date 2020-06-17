@@ -22,6 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Arviointi2020Dto {
+    private Long id;
     private LokalisoituTekstiDto kohde;
     private Reference arviointiAsteikko;
     private List<OsaamistasonKriteerit2020Dto> osaamistasonKriteerit = new ArrayList<>();

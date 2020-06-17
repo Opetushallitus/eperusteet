@@ -1401,7 +1401,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             tutkinnonOsaViiteRepository.setRevisioKommentti(osa.getMetadata().getKommentti());
         }
         return updated;
-
     }
 
     @Override

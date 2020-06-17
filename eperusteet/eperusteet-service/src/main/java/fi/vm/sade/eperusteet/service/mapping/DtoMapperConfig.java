@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
@@ -49,7 +50,7 @@ import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.Osaamistavoite2020Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -191,7 +192,8 @@ public class DtoMapperConfig {
             BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
             BidirectionalConverter<ReferenceableEntity, Reference> cachedEntityConverter,
             KoodistokoodiConverter koodistokoodiConverter,
-            ArviointiConverter arviointiConverter) {
+            ArviointiConverter arviointiConverter
+    ) {
         DefaultMapperFactory factory = createFactory(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter, arviointiConverter);
 
         factory.classMap(Referer.class, RefererDto.class)
@@ -310,8 +312,7 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
 
-        factory.classMap(Osaamistavoite.class, Osaamistavoite2020Dto.class)
-                .fieldAToB("geneerinenArviointiasteikko", "arviointi")
+        factory.classMap(OsaAlue.class, OsaAlueDto.class)
                 .byDefault()
                 .register();
 

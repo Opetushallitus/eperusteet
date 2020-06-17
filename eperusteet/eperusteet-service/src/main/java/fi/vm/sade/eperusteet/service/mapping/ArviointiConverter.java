@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 @Component
 public class ArviointiConverter extends BidirectionalConverter<GeneerinenArviointiasteikko, Arviointi2020Dto> {
 
+    @Autowired
+    private GeneerinenArviointiasteikkoRepository geneerinenArviointiasteikkoRepository;
+
     @Override
     public Arviointi2020Dto convertTo(GeneerinenArviointiasteikko geneerinenArviointiasteikko, Type<Arviointi2020Dto> type, MappingContext mappingContext) {
         if (geneerinenArviointiasteikko == null) {
@@ -35,6 +38,7 @@ public class ArviointiConverter extends BidirectionalConverter<GeneerinenArvioin
         }
 
         Arviointi2020Dto result = new Arviointi2020Dto();
+        result.setId(geneerinenArviointiasteikko.getId());
         ArviointiAsteikko asteikko = geneerinenArviointiasteikko.getArviointiAsteikko();
         result.setArviointiAsteikko(geneerinenArviointiasteikko.getArviointiAsteikko().getReference());
         result.setKohde(mapperFacade.map(geneerinenArviointiasteikko.getKohde(), LokalisoituTekstiDto.class));
@@ -55,6 +59,7 @@ public class ArviointiConverter extends BidirectionalConverter<GeneerinenArvioin
 
     @Override
     public GeneerinenArviointiasteikko convertFrom(Arviointi2020Dto arviointi2020Dto, Type<GeneerinenArviointiasteikko> type, MappingContext mappingContext) {
-        return null;
+        GeneerinenArviointiasteikko result = geneerinenArviointiasteikkoRepository.getOne(arviointi2020Dto.getId());
+        return result;
     }
 }

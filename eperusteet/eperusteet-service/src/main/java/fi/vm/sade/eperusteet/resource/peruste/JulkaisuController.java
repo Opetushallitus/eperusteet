@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping(value = "/perusteet/{perusteId}/julkaisu", produces = "application/json;charset=UTF-8")
 @Api(value = "Julkaisut")
 @Description("Perusteiden julkaisut")
-@Profile("!test")
+//@Profile("!test")
 public class JulkaisuController {
 
     @Autowired
@@ -29,8 +30,18 @@ public class JulkaisuController {
     @RequestMapping(method = GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<JulkaisuBaseDto> getJulkaisu(
+    public List<JulkaisuBaseDto> getJulkaisut(
             @PathVariable("perusteId") final long id) {
         return julkaisutService.getJulkaisut(id);
     }
+
+    @RequestMapping(method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public JulkaisuBaseDto teeJulkaisu(
+            @PathVariable("perusteId") final long perusteId,
+            JulkaisuBaseDto julkaisuBaseDto) {
+        return julkaisutService.teeJulkaisu(perusteId, julkaisuBaseDto);
+    }
+
 }

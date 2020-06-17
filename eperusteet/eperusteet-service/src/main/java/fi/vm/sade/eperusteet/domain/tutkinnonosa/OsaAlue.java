@@ -16,10 +16,7 @@
 
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.PartialMergeable;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
@@ -59,20 +56,37 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     private TekstiPalanen nimi;
 
     @Getter
+    @Enumerated(EnumType.STRING)
+    private OsaAlueTyyppi tyyppi = OsaAlueTyyppi.OSAALUE2014;
+
+    @Getter
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
-    // Ei käytössä Valma/Telma perusteissa
     @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private GeneerinenArviointiasteikko geneerinenArviointiasteikko;
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private Osaamistavoite pakollisetOsaamistavoitteet;
+
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private Osaamistavoite valinnaisetOsaamistavoitteet;
+
+    // Ei käytössä Valma/Telma perusteissa
+    @Deprecated
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_osaalue_osaamistavoite",
-               joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"),
-               inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
+            joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"),
+            inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
     @OrderColumn
     private List<Osaamistavoite> osaamistavoitteet;
+
 
     @Getter
     @Setter
@@ -125,6 +139,27 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
                 this.osaamistavoitteet.add(t);
             }
         }
+    }
+
+    public Osaamistavoite getValinnaisetOsaamistavoitteet() {
+        if (OsaAlueTyyppi.OSAALUE2020.equals(this.tyyppi)) {
+            return valinnaisetOsaamistavoitteet;
+        }
+        return null;
+    }
+
+    public Osaamistavoite getPakollisetOsaamistavoitteet() {
+        if (OsaAlueTyyppi.OSAALUE2020.equals(this.tyyppi)) {
+            return pakollisetOsaamistavoitteet;
+        }
+        return null;
+    }
+
+    public List<Osaamistavoite> getOsaamistavoitteet() {
+        if (OsaAlueTyyppi.OSAALUE2014.equals(this.tyyppi)) {
+            return osaamistavoitteet;
+        }
+        return null;
     }
 
     public void setOsaamistavoitteet(List<Osaamistavoite> osaamistavoitteet) {
@@ -195,6 +230,12 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
             }
         }
         return tempList;
+    }
+
+    public void setTyyppi(OsaAlueTyyppi tyyppi) {
+        if (this.tyyppi == null) {
+            this.tyyppi = tyyppi;
+        }
     }
 
 }

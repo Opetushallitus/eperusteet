@@ -141,7 +141,6 @@ public class PerusteenSisaltoController {
         viiteService.removeSisalto(perusteId, id);
     }
 
-
     @RequestMapping(value = "/sisalto/{id}", method = {POST})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSisaltoViiteWithPost(

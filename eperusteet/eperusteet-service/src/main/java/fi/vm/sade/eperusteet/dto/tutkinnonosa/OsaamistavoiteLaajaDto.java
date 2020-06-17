@@ -34,7 +34,6 @@ import java.util.List;
  */
 @Getter
 @Setter
-@JsonTypeName("osaamistavoite2014")
 public class OsaamistavoiteLaajaDto extends OsaamistavoiteDto {
     private LokalisoituTekstiDto tavoitteet;
     private LokalisoituTekstiDto tunnustaminen;

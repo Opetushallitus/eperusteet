@@ -35,13 +35,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        property = "type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = Osaamistavoite2020Dto.class),
-        @JsonSubTypes.Type(value = OsaamistavoiteLaajaDto.class),
-})
 public abstract class OsaamistavoiteDto {
     private Long id;
     private LokalisoituTekstiDto nimi;

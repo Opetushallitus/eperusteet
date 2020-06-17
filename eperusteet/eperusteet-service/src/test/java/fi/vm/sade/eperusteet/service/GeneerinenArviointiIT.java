@@ -1,21 +1,18 @@
 package fi.vm.sade.eperusteet.service;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.GeneerinenArviointiasteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.dto.Arviointi2020Dto;
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
 import fi.vm.sade.eperusteet.dto.GeneerisenArvioinninOsaamistasonKriteeriDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.Osaamistavoite2020Dto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
 
@@ -25,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -198,25 +196,19 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         assertThat(kopio.getOsaamistasonKriteerit()).hasSize(3);
     }
 
+
     @SneakyThrows
     @Test
     @Rollback
     public void testOsaamistavoiteMapping() {
         ObjectMapper objectMapper = new ObjectMapper();
         OsaamistavoiteLaajaDto a = new OsaamistavoiteLaajaDto();
-        Osaamistavoite2020Dto b = new Osaamistavoite2020Dto();
 
         { // Vanha
             String str = objectMapper.writeValueAsString(a);
             OsaamistavoiteDto target = objectMapper.readValue(str, OsaamistavoiteDto.class);
             assertThat(objectMapper.readTree(str).get("type").asText()).isEqualTo("osaamistavoite2014");
             assertThat(target).isExactlyInstanceOf(OsaamistavoiteLaajaDto.class);
-        }
-        { // Uusi
-            String str = objectMapper.writeValueAsString(b);
-            OsaamistavoiteDto target = objectMapper.readValue(str, OsaamistavoiteDto.class);
-            assertThat(objectMapper.readTree(str).get("type").asText()).isEqualTo("osaamistavoite2020");
-            assertThat(target).isExactlyInstanceOf(Osaamistavoite2020Dto.class);
         }
     }
 
@@ -261,9 +253,8 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
 
         { // Osaamistavoite
             Osaamistavoite osaamistavoite = new Osaamistavoite();
-            osaamistavoite.setGeneerinenArviointiasteikko(geneerinen);
             Osaamistavoite2020Dto tavoiteDto = mapper.map(osaamistavoite, Osaamistavoite2020Dto.class);
-            assertThat(tavoiteDto.getArviointi()).isNotNull();
+
         }
     }
 
