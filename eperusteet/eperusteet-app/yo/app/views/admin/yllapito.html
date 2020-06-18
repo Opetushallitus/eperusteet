@@ -1,0 +1,21 @@
+<h2 ng-bind="'yllapito' | kaanna"></h2>
+
+<span ng-if="yllapidot.length === 0" ng-bind="'ei-sallittuja-toimintoja' | kaanna"></span>
+
+<table class="table table-striped admin-table" ng-if="yllapidot.length > 0">
+  <tr>
+    <th ng-bind="'toiminto' | kaanna"></th>
+    <th ng-bind="'url' | kaanna"></th>
+    <th></th>
+
+
+  </tr>
+  <tr ng-repeat="yllapito in yllapidot">
+    <td ng-bind="yllapito.ominaisuus | kaanna"></td>
+    <td ng-bind="yllapito.url"></td>
+    <td>
+      <button kaanna="'kaynnista'" type="button" class="btn btn-default rivinappi" ng-click="kaynnista(yllapito)"></button>
+    </td>
+  </tr>
+
+</table>

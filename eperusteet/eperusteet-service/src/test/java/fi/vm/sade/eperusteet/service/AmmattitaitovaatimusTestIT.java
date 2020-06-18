@@ -11,6 +11,8 @@ import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
+import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
@@ -247,6 +249,46 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
 
         assertThat(tallennetutVaatimukset).hasSize(5);
         assertThat(tallennetutVaatimukset).extracting("koodi.uri").containsExactlyInAnyOrder("ammattitaitovaatimukset_0", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_2", "ammattitaitovaatimukset_2");
+    }
+
+    @Test
+    public void test_addArvioinninKohdealueetToKoodisto() {
+
+        PerusteprojektiDto aProjekti = ppTestUtils.createPerusteprojekti(config -> {
+            config.setReforminMukainen(true);
+        });
+        PerusteDto aPeruste = ppTestUtils.initPeruste(aProjekti.getPeruste().getIdLong());
+
+        Arviointi arviointi = new Arviointi();
+        arviointi.setArvioinninKohdealueet(Arrays.asList(
+                arvioinninKohdealue(TekstiPalanen.of(Kieli.FI, "teksti1")),
+                arvioinninKohdealue(TekstiPalanen.of(Kieli.FI, "teksti1")),
+                arvioinninKohdealue(TekstiPalanen.of(Kieli.FI, "teksti2")),
+                arvioinninKohdealue(TekstiPalanen.of(Kieli.FI, "teksti2")),
+                arvioinninKohdealue(TekstiPalanen.of(Kieli.FI, "teksti3"))
+        ));
+
+        Peruste peruste = perusteRepository.findOne(aPeruste.getId());
+        TutkinnonOsaViiteDto tosa = ppTestUtils.addTutkinnonOsa(peruste.getId());
+        TutkinnonOsaViite tov = tovRepository.findOne(tosa.getId());
+        tov.getTutkinnonOsa().setArviointi(arviointi);
+        tovRepository.save(tov);
+        em.flush();
+
+        List<KoodiDto> lisatytKoodit = ammattitaitovaatimusService.addArvioinninKohdealueetToKoodisto(peruste.getId());
+        assertThat(lisatytKoodit).hasSize(3);
+        assertThat(lisatytKoodit).extracting("uri").containsExactlyInAnyOrder("ammattitaitovaatimukset_0", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_2");
+
+        List<ArvioinninKohdealue> tallennetutVaatimukset = tovRepository.findOne(tosa.getId()).getTutkinnonOsa().getArviointi().getArvioinninKohdealueet().stream().collect(Collectors.toList());
+
+        assertThat(tallennetutVaatimukset).hasSize(5);
+        assertThat(tallennetutVaatimukset).extracting("koodi.uri").containsExactlyInAnyOrder("ammattitaitovaatimukset_0", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_2", "ammattitaitovaatimukset_2");
+    }
+
+    private ArvioinninKohdealue arvioinninKohdealue(TekstiPalanen tekstipalanen) {
+        ArvioinninKohdealue kohdealue = new ArvioinninKohdealue();
+        kohdealue.setOtsikko(tekstipalanen);
+        return kohdealue;
     }
 
     private PerusteprojektiDto rakennaAmmattitaitovaatimusLatausPohjadata() {

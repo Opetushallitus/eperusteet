@@ -358,13 +358,6 @@ public class PerusteController {
         return ammattitaitovaatimusService.getAmmattitaitovaatimukset(perusteId);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/tutkinnonosat/ammattitaitovaatimuskoodisto", method = GET)
-    public void pushAllAmmattitaitovaatimuksetToKoodisto(
-            @PathVariable("perusteId") final Long perusteId) {
-        ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto();
-    }
-
     @RequestMapping(value = "/tekstikappale", method = GET)
     @ResponseBody
     public List<PerusteTekstikappaleillaDto> getPerusteetWithTekstikappaleKoodi(@RequestParam(value = "koodi", required = true) final String koodi) {

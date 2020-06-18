@@ -12,8 +12,7 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -32,6 +31,9 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Entity
 @Audited
 @Table(name = "yl_lops2019_moduuli")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
         implements Nimetty, Koodillinen, Copyable<Lops2019Moduuli>, StructurallyComparable<Lops2019Moduuli> {
 

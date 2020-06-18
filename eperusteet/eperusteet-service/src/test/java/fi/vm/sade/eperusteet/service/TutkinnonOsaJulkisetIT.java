@@ -172,6 +172,15 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
 
     @Test
     @Rollback
+    public void testAmmattiatitovaatimustenSiirtoVanhaanKenttaanVanhaRakenne() {
+        TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
+        tutkinnonOsa.setAmmattitaitovaatimukset(TekstiPalanen.of(Kieli.FI, "xyz"));
+        TutkinnonOsaKaikkiDto tutkinnonOsaKaikkiDto = mapper.map(tutkinnonOsa, TutkinnonOsaKaikkiDto.class);
+        assertThat(tutkinnonOsaKaikkiDto.getAmmattitaitovaatimukset().getTekstit().get(Kieli.FI)).isEqualTo("xyz");
+    }
+
+    @Test
+    @Rollback
     public void testAmmattitaitovaatimukset2019() {
         TutkinnonOsa tosa = new TutkinnonOsa();
         tosa.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);

@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.*;
 
@@ -11,10 +12,11 @@ import java.util.stream.Stream;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NavigationNodeDto {
+public class NavigationNodeDto implements KoodillinenDto {
     private Long id;
     private LokalisoituTekstiDto label;
     private NavigationType type;
+    private KoodiDto koodi;
     private Map<String, Object> meta = new HashMap<>();
     private List<NavigationNodeDto> children = new ArrayList<>();
 
@@ -28,6 +30,11 @@ public class NavigationNodeDto {
 
     static public NavigationNodeDto of(NavigationType type) {
         return of(type, null, null);
+    }
+
+    public NavigationNodeDto koodi(KoodiDto koodi) {
+        this.koodi = koodi;
+        return this;
     }
 
     public NavigationNodeDto meta(String key, Object value) {

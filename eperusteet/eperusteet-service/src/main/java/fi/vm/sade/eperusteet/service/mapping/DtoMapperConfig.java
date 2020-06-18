@@ -28,10 +28,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
-import fi.vm.sade.eperusteet.domain.yl.Oppiaine_;
-import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.domain.yl.Taiteenala;
+import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
@@ -79,6 +76,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestClientException;
 
+import javax.persistence.metamodel.Attribute;
 import java.time.Instant;
 
 /**
@@ -89,8 +87,12 @@ import java.time.Instant;
 public class DtoMapperConfig {
     private static final Logger logger = LoggerFactory.getLogger(DtoMapperConfig.class);
 
-    @Autowired
     private KoodistoClient koodistoClient;
+
+    @Autowired
+    public DtoMapperConfig(KoodistoClient koodistoClient) {
+        this.koodistoClient = koodistoClient;
+    }
 
     static public DefaultMapperFactory createFactory(
             BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
@@ -400,7 +402,7 @@ public class DtoMapperConfig {
                             KoodiDto koodiDto = new KoodiDto();
                             koodiDto.setUri(target.getKoulutuskoodiUri());
                             koodiDto.setKoodisto("koulutus");
-                            koodistoClient.addNimiAndUri(koodiDto);
+                            koodistoClient.addNimiAndArvo(koodiDto);
                             target.setNimi(new LokalisoituTekstiDto(koodiDto.getNimi()));
                         } catch (RestClientException | AccessDeniedException ex) {
                             logger.error(ex.getLocalizedMessage());
@@ -418,7 +420,7 @@ public class DtoMapperConfig {
                             KoodiDto koodiDto = new KoodiDto();
                             koodiDto.setUri(target.getTutkintonimikeUri());
                             koodiDto.setKoodisto("tutkintonimikkeet");
-                            koodistoClient.addNimiAndUri(koodiDto);
+                            koodistoClient.addNimiAndArvo(koodiDto);
                             target.setNimi(koodiDto.getNimi());
                         } catch (RestClientException | AccessDeniedException ex) {
                             logger.error(ex.getLocalizedMessage());
@@ -433,7 +435,7 @@ public class DtoMapperConfig {
                     @Override
                     public void mapAtoB(Koodi a, KoodiDto b, MappingContext context) {
                         try {
-                            koodistoClient.addNimiAndUri(b);
+                            koodistoClient.addNimiAndArvo(b);
                         } catch (RestClientException | AccessDeniedException ex) {
 
                             logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
@@ -488,19 +490,19 @@ public class DtoMapperConfig {
                 .register();
 
         //YL
-        factory.classMap(OppiaineDto.class, Oppiaine.class)
-                .mapNulls(false)
-                .fieldBToA(Oppiaine_.vuosiluokkakokonaisuudet.getName(), Oppiaine_.vuosiluokkakokonaisuudet.getName())
-                .byDefault()
-                .register();
-
         factory.classMap(LukioOppiaineUpdateDto.class, Oppiaine.class)
                 .mapNulls(true)
                 .byDefault()
                 .register();
 
+        factory.classMap(OppiaineDto.class, Oppiaine.class)
+                .mapNulls(false)
+                .fieldBToA("vuosiluokkakokonaisuudet", "vuosiluokkakokonaisuudet")
+                .byDefault()
+                .register();
+
         factory.classMap(OppiaineSuppeaDto.class, Oppiaine.class)
-                .fieldBToA(Oppiaine_.muokattu.getName(), Oppiaine_.muokattu.getName())
+                .fieldBToA("muokattu", "muokattu")
                 .byDefault()
                 .register();
 

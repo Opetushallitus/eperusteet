@@ -82,6 +82,11 @@ angular
                         return Arviointiasteikot.list({}).$promise;
                     }
                 }
+            })
+            .state("root.admin.yllapito", {
+                url: "/yllapito",
+                template: require("views/admin/yllapito.html"),
+                controller: "YllapitoController"
             });
     })
     .controller("GeneerinenArviointiController",
@@ -546,4 +551,19 @@ angular
                 });
             };
         }
-    );
+    )
+    .controller("YllapitoController", ($location, $scope, $state, Api, Notifikaatiot) => {
+        const yllapito = Api.one("maintenance").one("yllapito");
+        $scope.yllapidot = [];
+
+        $scope.updateYllapitoList = async () => {
+            $scope.yllapidot = await yllapito.get();
+        };
+
+        $scope.updateYllapitoList();
+
+        $scope.kaynnista = async (yllapito) => {
+            await Api.one(yllapito.url).get();
+            Notifikaatiot.onnistui("ajo-kaynnistetty");
+        };
+    });
