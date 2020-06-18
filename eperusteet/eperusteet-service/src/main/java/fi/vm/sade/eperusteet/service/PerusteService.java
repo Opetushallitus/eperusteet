@@ -237,7 +237,6 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void importPeruste(MultipartHttpServletRequest request) throws IOException;
 
-    @Cacheable("peruste-navigation")
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     NavigationNodeDto buildNavigationWithDate(@P("perusteId") Long perusteId, Date pvm);
 

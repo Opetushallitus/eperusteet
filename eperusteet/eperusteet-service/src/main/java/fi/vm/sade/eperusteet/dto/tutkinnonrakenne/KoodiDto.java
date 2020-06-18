@@ -15,7 +15,9 @@
  */
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.service.util.Pair;
 import lombok.*;
 
 import java.util.Map;

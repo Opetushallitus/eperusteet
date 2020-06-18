@@ -217,7 +217,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
-    public void addNimiAndUri(KoodiDto koodi) {
+    public void addNimiAndArvo(KoodiDto koodi) {
         KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri());
         if (koodistoKoodi != null) {
             koodi.setArvo(koodistoKoodi.getKoodiArvo());
@@ -236,7 +236,7 @@ public class KoodistoClientImpl implements KoodistoClient {
         koodi.setUri(koodiUri);
         koodi.setKoodisto(koodisto);
         koodi.setVersio(versio);
-        addNimiAndUri(koodi);
+        addNimiAndArvo(koodi);
         return koodi;
     }
 

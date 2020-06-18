@@ -214,7 +214,6 @@ public class PerusteenOsaViite implements
         return pov;
     }
 
-//    @Override
     public NavigationNodeDto constructNavigation(DtoMapper mapper) {
         NavigationType type = NavigationType.viite;
         PerusteenOsa po = this.getPerusteenOsa();
