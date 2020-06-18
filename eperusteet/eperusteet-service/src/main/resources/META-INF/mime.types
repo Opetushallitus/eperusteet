@@ -1,0 +1,4 @@
+type=image/jpeg                                  exts=jpeg,jpg,jfif,pjpeg,pjp
+type=image/png                                   exts=png
+type=application/pdf                             exts=pdf
+type=image/svg+xml                               exts=svg

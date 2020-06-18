@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodiRelaatioMassaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
@@ -29,7 +30,6 @@ import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
-import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
@@ -94,6 +94,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     private static final String GET_CODES_WITH_URI = CODES + "/{codesUri}";
     private static final String GET_CODES_WITH_URI_AND_VERSION = GET_CODES_WITH_URI + "/{version}";
     private static final String ADD_CODE_ELEMENT_RELATION = CODEELEMENT + "/addrelation/{codeElementUri}/{codeElementUriToAdd}/{relationType}";
+    private static final String ADD_CODE_ELEMENT_RELATIONS = CODEELEMENT + "/addrelations/";
     private static final String ADD_CODE_RELATION = CODES + "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}";
 
     @Autowired
@@ -123,7 +124,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
-    @Cacheable("koodistot")
+    @Cacheable(value = "koodistot", key = "#p0 + #p1")
     public List<KoodistoKoodiDto> getAll(String koodisto, boolean onlyValidKoodis) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi?onlyValidKoodis=" + onlyValidKoodis;
@@ -138,7 +139,7 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public KoodistoKoodiDto get(String koodistoUri, String koodiUri) {
-        return get(koodistoUri, koodiUri, null);
+        return self.get(koodistoUri, koodiUri, null);
     }
 
     @Override
@@ -285,6 +286,10 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
+
+        cacheManager.getCache("koodistot").evict(koodistonimi + false);
+        cacheManager.getCache("koodistot").evict(koodistonimi + true);
+
         KoodistoKoodiDto uusiKoodi = KoodistoKoodiDto.builder()
                 .koodiArvo(Long.toString(seuraavaKoodi))
                 .koodiUri(koodistonimi + "_" + seuraavaKoodi)
@@ -301,8 +306,6 @@ public class KoodistoClientImpl implements KoodistoClient {
                 || lisattyKoodi.getKoodiUri() == null) {
             log.error("Koodin lisääminen epäonnistui {} {}", uusiKoodi, lisattyKoodi);
             return null;
-        } else {
-            cacheManager.getCache("koodistot").evict(koodistonimi);
         }
 
         return lisattyKoodi;
@@ -342,13 +345,41 @@ public class KoodistoClientImpl implements KoodistoClient {
                 .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
 
         log.debug("url: {}", uri.toString());
-        ophClientHelper.post(koodistoServiceUrl, uri.toString());
+        try {
+            ophClientHelper.post(koodistoServiceUrl, uri.toString());
 
-        if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
-            cacheManager.getCache("koodistot").evict("alarelaatio:" + parentKoodi);
-            cacheManager.getCache("koodistot").evict("ylarelaatio:" + lapsiKoodi);
-        } else if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
-            cacheManager.getCache("koodistot").evict("rinnasteiset:" + parentKoodi);
+            if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
+                cacheManager.getCache("koodistot").evict("alarelaatio:" + parentKoodi);
+                cacheManager.getCache("koodistot").evict("ylarelaatio:" + lapsiKoodi);
+            } else if (koodiRelaatioTyyppi.equals(KoodiRelaatioTyyppi.SISALTYY)) {
+                cacheManager.getCache("koodistot").evict("rinnasteiset:" + parentKoodi);
+            }
+        } catch (Exception e) {
+            log.error("Error with addKoodiRelaatio: {} <- {}", parentKoodi, lapsiKoodi);
+            log.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public void addKoodirelaatiot(String parentKoodi, List<String> lapsiKoodit, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+
+        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+                .path(ADD_CODE_ELEMENT_RELATIONS).build();
+
+        KoodiRelaatioMassaDto dto = KoodiRelaatioMassaDto.builder()
+                .codeElementUri(parentKoodi)
+                .relationType(koodiRelaatioTyyppi.name())
+                .relations(lapsiKoodit)
+                .child(false)
+                .isChild(false)
+                .build();
+
+        log.debug("url: {}, dto: {}", uri.toString(), dto);
+        try {
+            ophClientHelper.post(koodistoServiceUrl, uri.toString(), dto, Object.class);
+        } catch (Exception e) {
+            log.error("Error with addKoodiRelaatio: {} <- {}", parentKoodi, lapsiKoodit);
+            log.error(e.getMessage());
         }
     }
 
@@ -382,9 +413,13 @@ public class KoodistoClientImpl implements KoodistoClient {
                 .path(ADD_CODE_RELATION)
                 .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
 
-        ophClientHelper.post(koodistoServiceUrl, uri.toString());
-
-        log.debug("lisättiin koodi {} koodin {} lapseksi", parentKoodi, lapsiKoodi);
+        try {
+            ophClientHelper.post(koodistoServiceUrl, uri.toString());
+            log.debug("lisättiin koodi {} koodin {} lapseksi", parentKoodi, lapsiKoodi);
+        } catch (Exception e) {
+            log.error("Error with addKoodiRelaatio: {} <- {}", parentKoodi, lapsiKoodi);
+            log.error(e.getMessage());
+        }
     }
 
 }

@@ -16,31 +16,36 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.OpasSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
 import fi.vm.sade.eperusteet.dto.opas.OpasDto;
 import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.OpasService;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
 
 /**
  *
@@ -63,6 +68,9 @@ public class OpasServiceImpl implements OpasService {
     private PerusteRepository perusteet;
 
     @Autowired
+    private PerusteService perusteService;
+
+    @Autowired
     @Dto
     private DtoMapper mapper;
 
@@ -83,8 +91,17 @@ public class OpasServiceImpl implements OpasService {
 
         Peruste peruste = new Peruste();
         peruste.setTyyppi(PerusteTyyppi.OPAS);
-
         peruste.setSisalto(new OpasSisalto());
+
+        if (opasDto.getPohjaId() != null) {
+            Peruste vanha = perusteRepository.getOne(opasDto.getPohjaId());
+            peruste.setSisalto(vanha.getOppaanSisalto().kloonaa(peruste));
+        }
+
+        peruste.setOppaanKoulutustyypit(opasDto.getOppaanKoulutustyypit());
+        if (!CollectionUtils.isEmpty(opasDto.getOppaanPerusteet())) {
+            peruste.setOppaanPerusteet(Sets.newHashSet(mapper.mapAsList(opasDto.getOppaanPerusteet(), Peruste.class)));
+        }
 
         perusteRepository.save(peruste);
 
@@ -99,7 +116,7 @@ public class OpasServiceImpl implements OpasService {
     public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
         pquery.setTila(PerusteTila.VALMIS.toString());
         pquery.setPerusteTyyppi(PerusteTyyppi.OPAS.toString());
-        Page<Peruste> result = perusteet.findBy(page, pquery);
+        Page<Peruste> result = perusteRepository.findBy(page, pquery);
         PageDto<Peruste, PerusteHakuDto> resultDto = new PageDto<>(result, PerusteHakuDto.class, page, mapper);
         return resultDto;
     }

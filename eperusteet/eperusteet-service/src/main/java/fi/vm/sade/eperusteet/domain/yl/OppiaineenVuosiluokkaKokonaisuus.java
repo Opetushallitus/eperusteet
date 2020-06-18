@@ -16,7 +16,9 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +27,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
 
@@ -85,6 +88,13 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     @JoinTable
     @OrderColumn
     private List<KeskeinenSisaltoalue> sisaltoalueet = new ArrayList<>();
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    private TekstiPalanen vapaaTeksti;
 
     public List<OpetuksenTavoite> getTavoitteet() {
         return new ArrayList<>(tavoitteet);
@@ -170,6 +180,8 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
             OpetuksenTavoite klooni = tavoite.kloonaa(keskeinenSisaltoalueMapper, laajainenOsaaminenMapper, kohdealueMapper);
             ovlk.addOpetuksenTavoite(klooni);
         }
+
+        ovlk.setVapaaTeksti(vapaaTeksti);
 
         return ovlk;
     }

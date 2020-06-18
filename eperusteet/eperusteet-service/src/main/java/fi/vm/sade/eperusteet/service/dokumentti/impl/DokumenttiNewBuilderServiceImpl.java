@@ -727,23 +727,32 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     Element vaatimusEl = docBase.getDocument().createElement("li");
                     String rivi = getTextString(docBase, vaatimus.getVaatimus());
                     if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
-                        rivi += " (" + vaatimus.getKoodi().getUri() + ")";
+                        KoodistoKoodiDto koodi = koodistoService.get(vaatimus.getKoodi().getKoodisto(), vaatimus.getKoodi().getUri());
+                        rivi += " (" + koodi.getKoodiArvo() + ")";
                     }
                     vaatimusEl.setTextContent(rivi);
                     listaEl.appendChild(vaatimusEl);
                 });
 
                 kohdealueet.forEach(alue -> {
-                    Element alueEl = docBase.getDocument().createElement("li");
+                    Element alueEl = docBase.getDocument().createElement("div");
+                    docBase.getBodyElement().appendChild(alueEl);
 
                     TekstiPalanen kuvaus = alue.getKuvaus();
                     if (kuvaus != null) {
-                        Element kuvausEl = docBase.getDocument().createElement("p");
+                        Element kuvausEl = docBase.getDocument().createElement("strong");
                         kuvausEl.setTextContent(getTextString(docBase, kuvaus));
                         alueEl.appendChild(kuvausEl);
                     }
 
                     if (!ObjectUtils.isEmpty(alue.getVaatimukset())) {
+
+                        if (kohde != null) {
+                            Element kohdeEl = docBase.getDocument().createElement("p");
+                            kohdeEl.setTextContent(getTextString(docBase, kohde));
+                            alueEl.appendChild(kohdeEl);
+                        }
+
                         Element alueListaEl = docBase.getDocument().createElement("ul");
 
                         alue.getVaatimukset().forEach(vaatimus -> {
@@ -751,7 +760,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                             String rivi = getTextString(docBase, vaatimus.getVaatimus());
                             if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
-                                rivi += " (" + vaatimus.getKoodi().getUri() + ")";
+                                KoodistoKoodiDto koodi = koodistoService.get(vaatimus.getKoodi().getKoodisto(), vaatimus.getKoodi().getUri());
+                                rivi += " (" + koodi.getKoodiArvo() + ")";
                             }
                             vaatimusEl.setTextContent(rivi);
 
@@ -761,7 +771,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         alueEl.appendChild(alueListaEl);
                     }
 
-                    listaEl.appendChild(alueEl);
                 });
             }
         }
@@ -916,7 +925,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                 Element th = docBase.getDocument().createElement("th");
                 th.setAttribute("colspan", "4");
-                th.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, nimi)));
+                // EP-1996
+                // th.appendChild(newBoldElement(docBase.getDocument(), getTextString(docBase, nimi)));
                 Element kohdeEl = docBase.getDocument().createElement("p");
                 kohdeEl.setTextContent(getTextString(docBase, kohde));
                 th.appendChild(kohdeEl);
@@ -1332,10 +1342,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     kohdeTr.appendChild(kohdeTd);
                     kohdeTd.setTextContent(getTextString(docBase, tavoitteenArviointi.getArvioinninKohde()));
 
-                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getValttavanOsaamisenKuvaus());
-                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getTyydyttavanOsaamisenKuvaus());
+                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getOsaamisenKuvaus());
                     lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getHyvanOsaamisenKuvaus());
-                    lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getKiitettavanOsaamisenKuvaus());
                 });
             }
         });

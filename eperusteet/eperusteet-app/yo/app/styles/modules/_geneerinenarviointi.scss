@@ -77,6 +77,20 @@
                         }
                     }
                 }
+
+                .koulutustyypit {
+                    padding: 10px;
+
+                    label {
+                        display: block;
+                    }
+
+                    .checkbox {
+                        padding-left: 10px;
+                        display: inline-block;
+                        width: 33%;
+                    }
+                }
             }
 
         }

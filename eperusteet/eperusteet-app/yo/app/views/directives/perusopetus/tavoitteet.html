@@ -1,3 +1,8 @@
+<div class="vapaateksti" ng-show="model.vapaaTeksti || editMode">
+    <span ng-show="!editMode" ng-bind-html="model.vapaaTeksti | kaanna | unsafe"></span>
+    <div ng-show="editMode" ckeditor ng-model="model.vapaaTeksti" slocalized editor-placeholder="vapaa-tekstisisalto"></div>
+</div>
+
 <div class="opetuksen-tavoitteet" ui-tree="treeOptions"
      data-drag-enabled="editMode && !currentEditable" data-empty-placeholder-enabled="false">
     <div class="panel panel-default panel-small arviointi-kohdealueet">
@@ -32,7 +37,7 @@
                                 <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" slocalized
                                      editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
 
-                                <h4 kaanna="tavoitteista-johdetut-oppimisen-tavoitteet"></h4>
+                                <h4 ng-show="tavoite.$editing || tavoite.tavoitteistaJohdetutOppimisenTavoitteet" kaanna="tavoitteista-johdetut-oppimisen-tavoitteet"></h4>
                                 <p ng-show="!tavoite.$editing" ng-bind-html="tavoite.tavoitteistaJohdetutOppimisenTavoitteet | kaanna | unsafe"></p>
                                 <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoitteistaJohdetutOppimisenTavoitteet" slocalized
                                      editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
@@ -73,11 +78,28 @@
                                     </div>
 
                                     <div ng-if="tavoite.$editing || hasArviointi(tavoite)">
+
+                                        <h4 ng-if="!tavoite.$editing"
+                                            kaanna="'arvioinnin-kohde'"></h4>
+                                        <span ng-if="!tavoite.$editing"
+                                            kaanna="getArvioinninKohteenTeksti(tavoite) || 'ei-asetettu'"></span>
+
                                         <h4 ng-if="!tavoite.$editing"
                                             kaanna="tavoite.arvioinninOtsikko || 'arviointi'"></h4>
 
                                         <div ng-if="tavoite.$editing">
                                             <h4 kaanna="'arviointi'"></h4>
+                                            <div class="arvioinnin-otsikko">
+                                                <label kaanna="'arvioinnin-kohde'"></label>
+                                                <div class="arvioinnin-muokkaus-kentta">
+                                                    <input placeholder="{{ 'arvioinnin-kohde' | kaanna }}"
+                                                            type="text"
+                                                            class="form-control"
+                                                            slocalized
+                                                            ng-model="tavoite.arvioinninKuvaus">
+                                                </div>
+
+                                            </div>
                                             <div class="arvioinnin-otsikko">
                                                 <label kaanna="'arvioinnin-otsikko'"></label>
                                                 <div class="arvioinnin-muokkaus-kentta">
@@ -87,6 +109,7 @@
                                                            slocalized
                                                            ng-model="tavoite.arvioinninOtsikko">
                                                 </div>
+
                                             </div>
                                             <div class="clearfix"></div>
                                         </div>
@@ -100,6 +123,11 @@
                                              edit-mode="tavoite.$editing"></div>
                                     </div>
                                 </div>
+
+                                <h4 kaanna="vapaa-tekstisisalto"ng-if="tavoite.vapaaTeksti || tavoite.$editing"></h4>
+                                <p ng-show="!tavoite.$editing" ng-bind-html="tavoite.vapaaTeksti | kaanna | unsafe"></p>
+                                <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.vapaaTeksti" slocalized
+                                    editor-placeholder="vapaa-tekstisisalto"></div>
                             </div>
                             <div class="muokkausnappi" ng-if="editMode" ng-show="tavoite.$editing">
                                 <button class="btn btn-default" kaanna="peruuta" ng-click="tavoiteFn.cancel()"></button>

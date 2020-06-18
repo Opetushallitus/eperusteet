@@ -99,7 +99,7 @@
                                     <div ng-show="isVaTe && $laajuusRangena">
                                         <div class="laajuuserotin"></div>
                                         <div class="pull-left">
-                                            <numberinput label-id="laajuus-input" luokka="form-control" model="editableTutkinnonOsaViite.laajuusMaksimi" min="0" max="999" type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
+                                            <numberinput label-id="laajuus-input-maksimi" luokka="form-control" model="editableTutkinnonOsaViite.laajuusMaksimi" min="0" max="999" type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
                                         </div>
                                     </div>
                                     <div class="pull-left addon">
@@ -117,12 +117,12 @@
                                     class="btn btn-danger"
                                     ng-click="cleanKoodi()"
                                     kaanna="'tyhjenna-koodin-arvo'"></button>
-                                <button 
+                                <button
                                     ng-show="!(editableTutkinnonOsaViite.tutkinnonOsa.koodi || editableTutkinnonOsaViite.tutkinnonOsa.koodiUri)"
                                     ng-disabled="!tutkinnonOsanimiOk()"
-                                    class="btn btn-default" 
-                                    ng-click="koodistoLisaysClick()" 
-                                    kaanna="'lisaa-koodistoon'"></button>    
+                                    class="btn btn-default"
+                                    ng-click="koodistoLisaysClick()"
+                                    kaanna="'lisaa-koodistoon'"></button>
                             </div>
                         </div>
                     </form>

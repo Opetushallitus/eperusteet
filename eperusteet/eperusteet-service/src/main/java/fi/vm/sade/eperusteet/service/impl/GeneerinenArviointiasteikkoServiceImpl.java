@@ -6,19 +6,19 @@ import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.GeneerinenArviointiasteikkoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -80,9 +80,6 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
     @Override
     public GeneerinenArviointiasteikkoDto update(Long id, GeneerinenArviointiasteikkoDto asteikkoDto) {
         GeneerinenArviointiasteikko asteikko = geneerinenArviointiasteikkoRepository.findOne(id);
-        if (asteikko.isJulkaistu()) {
-            throw new BusinessRuleViolationException("julkaistua-ei-voi-muokata");
-        }
 
         asteikkoDto.setId(id);
         ArviointiAsteikko arviointiAsteikko = asteikko.getArviointiAsteikko();
@@ -95,9 +92,8 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
 
     @Override
     public void remove(Long id) {
-        GeneerinenArviointiasteikko vanha = geneerinenArviointiasteikkoRepository.findOne(id);
-        if (vanha.isJulkaistu()) {
-            throw new BusinessRuleViolationException("julkaistua-ei-voi-muokata");
+        if (geneerinenArviointiJulkaistu(id)) {
+            throw new BusinessRuleViolationException("julkaistua-ei-voi-poistaa");
         }
         geneerinenArviointiasteikkoRepository.delete(id);
     }
@@ -110,5 +106,15 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
         }
         GeneerinenArviointiasteikko uusi = vanha.copy();
         return mapper.map(uusi, GeneerinenArviointiasteikkoDto.class);
+    }
+
+    @Override
+    public boolean geneerinenArviointiJulkaistu(Long id) {
+        List<Revision> revisiot = geneerinenArviointiasteikkoRepository.getRevisions(id);
+        Optional<GeneerinenArviointiasteikko> julkaistu = revisiot.stream()
+                .map(revisio -> geneerinenArviointiasteikkoRepository.findRevision(id, revisio.getNumero()))
+                .filter(GeneerinenArviointiasteikko::isJulkaistu)
+                .findFirst();
+        return julkaistu.isPresent();
     }
 }

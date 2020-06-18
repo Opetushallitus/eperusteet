@@ -17,8 +17,11 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.UlkopuolisetService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +38,14 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  */
 @RestController
 @RequestMapping("/ulkopuoliset")
+@Api("Ulkopuoliset")
 @InternalApi
 public class UlkopuolisetController {
     @Autowired
     private UlkopuolisetService service;
+
+    @Autowired
+    private KayttajanTietoService kayttajanTietoService;
 
     @RequestMapping(value = "/organisaatioryhmat", method = GET)
     @ResponseBody
@@ -52,5 +59,11 @@ public class UlkopuolisetController {
     public ResponseEntity<JsonNode> getOrganisaatioRyhmatByOid(@PathVariable(value = "oid") final String oid) {
         JsonNode ryhma = service.getRyhma(oid);
         return new ResponseEntity<>(ryhma, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/organisaatiovirkailijat/{oid}", method = GET)
+    @ResponseBody
+    public ResponseEntity<JsonNode> getOrganisaatioVirkailijat(@PathVariable(value = "oid") final String oid) {
+        return new ResponseEntity<>(kayttajanTietoService.getOrganisaatioVirkailijat(oid), HttpStatus.OK);
     }
 }

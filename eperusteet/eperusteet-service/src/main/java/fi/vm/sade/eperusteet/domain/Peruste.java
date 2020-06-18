@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
 import fi.vm.sade.eperusteet.service.util.PerusteUtils;
@@ -39,6 +40,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 
@@ -50,7 +52,7 @@ import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 @Table(name = "peruste")
 @Audited
 public class Peruste extends AbstractAuditedEntity
-        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable {
+        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable, HistoriaTapahtuma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -103,7 +105,7 @@ public class Peruste extends AbstractAuditedEntity
     @Getter
     @Setter
     @NotNull(groups = { Valmis.class, ValmisPohja.class })
-    @Column(updatable = false, name = "koulutustyyppi")
+    @Column(name = "koulutustyyppi")
     private String koulutustyyppi;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -245,12 +247,37 @@ public class Peruste extends AbstractAuditedEntity
     @Setter
     private Perusteprojekti perusteprojekti;
 
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToMany
+    @JoinTable(name = "opas_peruste",
+            joinColumns = @JoinColumn(name = "opas_id"),
+            inverseJoinColumns = @JoinColumn(name = "peruste_id"))
+    private Set<Peruste> oppaanPerusteet = new HashSet<>();
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @Getter
+    @Setter
+    @CollectionTable(name = "opas_koulutustyyppi",
+            joinColumns = @JoinColumn(name = "opas_id"))
+    @Column(name = "koulutustyyppi")
+    private Set<KoulutusTyyppi> oppaanKoulutustyypit = new HashSet<>();
+
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "peruste", orphanRemoval = true)
+    private Set<PerusteAikataulu> perusteenAikataulut = new HashSet<>();
+
     public Set<PerusteenSisalto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
             return Collections.singleton(this.getOppaanSisalto());
         }
         else {
-            if (this.getPerusopetuksenPerusteenSisalto() != null) {
+            if (KoulutustyyppiToteutus.AMMATILLINEN.equals(this.getToteutus())) {
+                return new HashSet<>(this.getSuoritustavat());
+            }
+            else if (this.getPerusopetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getPerusopetuksenPerusteenSisalto());
             }
             else if (this.getLops2019Sisalto() != null) {
@@ -264,6 +291,9 @@ public class Peruste extends AbstractAuditedEntity
             }
             else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
+            }
+            else if (this.getTpoOpetuksenSisalto() != null) {
+                return Collections.singleton(this.getTpoOpetuksenSisalto());
             }
         }
         return new HashSet<>();
@@ -313,6 +343,14 @@ public class Peruste extends AbstractAuditedEntity
         }
     }
 
+    public void setPerusteenAikataulut(List<PerusteAikataulu> perusteenAikataulut) {
+        this.perusteenAikataulut.clear();
+        if (perusteenAikataulut != null) {
+            this.perusteenAikataulut.addAll(perusteenAikataulut);
+        }
+    }
+
+    @Override
     public KoulutustyyppiToteutus getToteutus() {
         return PerusteUtils.getToteutus(this.toteutus, getKoulutustyyppi(), getTyyppi());
     }
@@ -492,6 +530,11 @@ public class Peruste extends AbstractAuditedEntity
 
 
         throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.peruste;
     }
 
     public interface Valmis {}

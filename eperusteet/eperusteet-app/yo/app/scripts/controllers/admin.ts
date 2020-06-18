@@ -82,12 +82,40 @@ angular
                         return Arviointiasteikot.list({}).$promise;
                     }
                 }
+            })
+            .state("root.admin.yllapito", {
+                url: "/yllapito",
+                template: require("views/admin/yllapito.html"),
+                controller: "YllapitoController"
             });
     })
     .controller("GeneerinenArviointiController",
-        ($timeout, $scope, geneeriset, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot, Varmistusdialogi) => {
+        ($timeout, $scope, geneeriset, arviointiasteikot, Editointikontrollit, Arviointiasteikot, Notifikaatiot, Varmistusdialogi, Kaanna, YleinenData) => {
 
-        $scope.geneeriset = geneeriset;
+        $scope.koulutustyypit = function(geneerinen) {
+            return _.map(YleinenData.koulutustyypit, function(item) {
+                return {
+                    value: item,
+                    label: Kaanna.kaanna(item),
+                    selected: geneerinen.koulutustyypit.indexOf(item) > -1
+                };
+            });
+        };
+
+        $scope.geneeriset = _.map(geneeriset, (geneerinen: any) => {
+            return {
+                ...geneerinen,
+                koulutustyyppivalinnat: $scope.koulutustyypit(geneerinen),
+            }
+        });
+
+        $scope.updateKoulutustyypit = function(kt, geneerinen) {
+            if (kt.selected) {
+                geneerinen.koulutustyypit.push(kt.value);
+            } else {
+                geneerinen.koulutustyypit = _.remove(geneerinen.koulutustyypit, kt.value);
+            }
+        };
 
         $scope.arviointiasteikot = _(arviointiasteikot)
             .sortBy(aa => _.size(aa.osaamistasot))
@@ -119,6 +147,7 @@ angular
                     fi: "Opiskelija",
                     sv: "Den studerande"
                 },
+                valittavissa: true,
             });
             $scope.geneeriset.push(geneerinen);
         };
@@ -133,6 +162,57 @@ angular
                     try {
                         await $scope.paivita(el);
                         Notifikaatiot.onnistui("julkaisu-onnistui");
+                    }
+                    catch (err) {
+                        Notifikaatiot.serverCb(err);
+                    }
+                }
+            })();
+        };
+
+        $scope.avaa = (el) => {
+            Varmistusdialogi.dialogi({
+                otsikko: "vahvista-avaus",
+                teksti: "haluatko-varmasti-avata",
+                primaryBtn: "avaa",
+                async successCb() {
+                    el.julkaistu = false;
+                    try {
+                        await $scope.paivita(el);
+                    }
+                    catch (err) {
+                        Notifikaatiot.serverCb(err);
+                    }
+                }
+            })();
+        };
+
+        $scope.poistaValittavuus = (el) => {
+            Varmistusdialogi.dialogi({
+                otsikko: "vahvista-kaytosta-poisto",
+                teksti: "haluatko-varmasti-poistaa-arvioinnin-kaytosta",
+                primaryBtn: "avaa",
+                async successCb() {
+                    el.valittavissa = false;
+                    try {
+                        await $scope.paivita(el);
+                    }
+                    catch (err) {
+                        Notifikaatiot.serverCb(err);
+                    }
+                }
+            })();
+        };
+
+        $scope.lisaaValittavuus = (el) => {
+            Varmistusdialogi.dialogi({
+                otsikko: "vahvista-kaytto",
+                teksti: "haluatko-varmasti-ottaa-arvioinnin-kayttoon",
+                primaryBtn: "avaa",
+                async successCb() {
+                    el.valittavissa = true;
+                    try {
+                        await $scope.paivita(el);
                     }
                     catch (err) {
                         Notifikaatiot.serverCb(err);
@@ -471,4 +551,19 @@ angular
                 });
             };
         }
-    );
+    )
+    .controller("YllapitoController", ($location, $scope, $state, Api, Notifikaatiot) => {
+        const yllapito = Api.one("maintenance").one("yllapito");
+        $scope.yllapidot = [];
+
+        $scope.updateYllapitoList = async () => {
+            $scope.yllapidot = await yllapito.get();
+        };
+
+        $scope.updateYllapitoList();
+
+        $scope.kaynnista = async (yllapito) => {
+            await Api.one(yllapito.url).get();
+            Notifikaatiot.onnistui("ajo-kaynnistetty");
+        };
+    });

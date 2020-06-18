@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.dto.koodisto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Arrays;
+
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.*;
 import org.springframework.data.repository.NoRepositoryBean;
 

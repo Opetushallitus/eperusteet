@@ -49,7 +49,8 @@ angular
         $stateParams,
         ProxyService,
         Oppiaineet,
-        Kaanna
+        Kaanna,
+        Notifikaatiot
     ) {
         $scope.osaamiset = $scope.providedOsaamiset || OsanMuokkausHelper.getOsaamiset();
         if (_.isEmpty($scope.osaamiset)) {
@@ -185,11 +186,8 @@ angular
         $scope.addArviointi = function(tavoite) {
             tavoite.arvioinninkohteet = [{
                 arvioinninKohde: {},
-                // TODO: myöhemmin käyttöön
-                // valttavanOsaamisenKuvaus: {},
-                // tyydyttavanOsaamisenKuvaus: {},
                 hyvanOsaamisenKuvaus: {},
-                // kiitettavanOsaamisenKuvaus: {},
+                osaamisenKuvaus: {},
             }];
         };
 
@@ -201,18 +199,33 @@ angular
             return !item.$hidden;
         };
 
+        $scope.paallekkaisiaArvioita = (tavoite) => {
+            if (!tavoite.arvioinninkohteet) {
+                return false;
+            }
+
+            return new Set(tavoite.arvioinninkohteet.map(arviointi => arviointi.arvosana)).size !== tavoite.arvioinninkohteet.length;
+        }
+
         $scope.tavoiteFn = {
             edit: function(tavoite) {
                 tavoite.$editing = true;
                 tavoite.$$accordionOpen = true;
                 $scope.currentEditable = tavoite;
                 cloner.clone(tavoite);
+                tavoite.arvioinninkohteet = _(tavoite.arvioinninkohteet).sortBy("arvosana").reverse().value()
             },
             remove: function($index) {
                 $scope.model.tavoitteet.splice($index, 1);
                 $scope.mapModel(true);
             },
             ok: function() {
+
+                if($scope.paallekkaisiaArvioita($scope.currentEditable)) {
+                    Notifikaatiot.varoitus('arviointi-paallekkaisia-osaamisia');
+                    return;
+                }
+
                 $rootScope.$broadcast("notifyCKEditor");
                 $scope.currentEditable.$editing = false;
                 $scope.currentEditable.$new = false;
@@ -252,4 +265,18 @@ angular
                 tavoite.$$accordionOpen = !tavoite.$$accordionOpen;
             }
         };
+
+        $scope.getArvioinninKohteenTeksti = (tavoite) => {
+
+            const hyvanOsaamisenArvio = _.find(tavoite.arvioinninkohteet, (arvioinninkohde: any) => {
+                return arvioinninkohde.arvosana == 8
+            });
+
+            if(hyvanOsaamisenArvio && !_.isEmpty(hyvanOsaamisenArvio.arvioinninKohde)) {
+                return hyvanOsaamisenArvio.arvioinninKohde;
+            }
+
+            return tavoite.arvioinninKuvaus;
+        }
+
     });

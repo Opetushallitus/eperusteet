@@ -12,6 +12,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
@@ -349,7 +350,7 @@ public class ValidatorPeruste implements Validator {
 
         for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
             status.setVaihtoOk(false);
-            status.addStatus(entry.getKey());
+            status.addStatus(entry.getKey(), ValidointiKategoria.TEKSTI);
         }
     }
 
@@ -362,7 +363,6 @@ public class ValidatorPeruste implements Validator {
 
         Set<Kieli> vaaditutKielet = peruste.getKielet();
         Map<String, String> virheellisetKielet = new HashMap<>();
-        tarkistaTekstipalanen("peruste-validointi-kuvaus", peruste.getKuvaus(), vaaditutKielet, virheellisetKielet);
         tarkistaTekstipalanen("peruste-validointi-nimi", peruste.getNimi(), vaaditutKielet, virheellisetKielet);
 
         if (peruste.getKoulutukset() != null) {
@@ -534,7 +534,9 @@ public class ValidatorPeruste implements Validator {
                             if (!validointi.ongelmat.isEmpty()) {
                                 updateStatus.addStatus("rakenteen-validointi-virhe",
                                         suoritustapa.getSuoritustapakoodi(),
-                                        validointi);
+                                        validointi,
+                                        null,
+                                        ValidointiKategoria.RAKENNE);
                                 updateStatus.setVaihtoOk(false);
                             }
                         }
@@ -675,7 +677,7 @@ public class ValidatorPeruste implements Validator {
                 Map<String, String> lokalisointivirheet = tarkistaPerusteenTekstipalaset(projekti.getPeruste());
                 for (Map.Entry<String, String> entry : lokalisointivirheet.entrySet()) {
                     updateStatus.setVaihtoOk(false);
-                    updateStatus.addStatus(entry.getKey());
+                    updateStatus.addStatus(entry.getKey(), ValidointiKategoria.KIELISISALTO);
                 }
 
                 // Tarkista KV-liite
@@ -693,12 +695,12 @@ public class ValidatorPeruste implements Validator {
                 if (!projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
                     Diaarinumero diaarinumero = projekti.getPeruste().getDiaarinumero();
                     if (diaarinumero == null) {
-                        updateStatus.addStatus("peruste-ei-diaarinumeroa");
+                        updateStatus.addStatus("peruste-ei-diaarinumeroa", ValidointiKategoria.PERUSTE);
                         updateStatus.setVaihtoOk(false);
                     }
 
                     if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
-                        updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
+                        updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa", ValidointiKategoria.PERUSTE);
                         updateStatus.setVaihtoOk(false);
                     }
                 }

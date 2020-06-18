@@ -1,10 +1,5 @@
 package fi.vm.sade.eperusteet.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum SkeduloituAjoStatus {
 
     AJOSSA("ajossa"),
@@ -12,4 +7,14 @@ public enum SkeduloituAjoStatus {
     AJOVIRHE("ajovirhe");
 
     private String status;
+
+    SkeduloituAjoStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return status;
+    }
+
 }

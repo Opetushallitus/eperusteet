@@ -31,7 +31,7 @@
     <formfield ng-if="$parent.wizardissa() && !isOpas" label="koulutustyyppi-label" ng-hide="projekti.perusteId"
                model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit" placeholder="valitse-koulutustyyppi"></formfield>
 
-    <formfield ng-if="$parent.wizardissa() && !isOpas && projekti.koulutustyyppi === 'koulutustyyppi_2'" label="toteutus-label" ng-hide="projekti.perusteId"
+    <formfield ng-if="$parent.wizardissa() && !isOpas && (projekti.koulutustyyppi === 'koulutustyyppi_2' || projekti.koulutustyyppi === 'koulutustyyppi_14' || projekti.koulutustyyppi === 'koulutustyyppi_23')" label="toteutus-label" ng-hide="projekti.perusteId"
                model="projekti" model-var="toteutus" required="required" options="toteutukset" placeholder="valitse-toteutus"></formfield>
 
     <span ng-if="!$parent.pohja() && !isOpas">

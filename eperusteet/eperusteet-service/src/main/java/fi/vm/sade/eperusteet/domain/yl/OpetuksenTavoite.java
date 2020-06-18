@@ -79,6 +79,13 @@ public class OpetuksenTavoite extends AbstractReferenceableEntity {
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    private TekstiPalanen vapaaTeksti;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen arvioinninOsaamisenKuvaus;
 
     @Getter
@@ -155,6 +162,7 @@ public class OpetuksenTavoite extends AbstractReferenceableEntity {
             kohteet.add(kohde.kloonaa());
         }
         klooni.setArvioinninkohteet(kohteet);
+        klooni.setVapaaTeksti(vapaaTeksti);
 
         return klooni;
     }

@@ -21,7 +21,12 @@ import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteAikatauluDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.Set;
 import lombok.*;
+
+import java.util.Date;
 
 /**
  *
@@ -42,6 +47,11 @@ public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private PerusteTyyppi tyyppi;
     private String ryhmaOid;
     private boolean reforminMukainen = true;
+    private Date voimassaoloAlkaa;
+    private Date lausuntakierrosAlkaa;
+    private Date johtokunnanKasittely;
+    private Set<PerusteAikatauluDto> perusteenAikataulut;
+    private LokalisoituTekstiDto kuvaus;
 
     public PerusteprojektiLuontiDto(String koulutustyyppi, LaajuusYksikko laajuusYksikko, Long perusteId, ProjektiTila tila, PerusteTyyppi tyyppi, String ryhmaOid) {
         this.koulutustyyppi = koulutustyyppi;

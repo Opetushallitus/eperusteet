@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.KVLiite;
@@ -30,6 +31,7 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Maarayskirje;
 import fi.vm.sade.eperusteet.domain.MaarayskirjeStatus;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteAikataulu;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteVersion;
@@ -79,7 +81,6 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.repository.KoulutuskoodiStatusRepository;
 import fi.vm.sade.eperusteet.repository.MaarayskirjeStatusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -91,6 +92,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.ValidointiStatusRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
+import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
@@ -126,6 +128,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,6 +254,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private LocalizedMessagesService messages;
+
+    @Autowired
+    private AmmattitaitovaatimusService ammattitaitovaatimusService;
 
     @Autowired
     HttpHeaders httpHeaders;
@@ -560,11 +566,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ValidationDto> getVirheelliset(PageRequest p) {
+    public Page<TilaUpdateStatus> getVirheelliset(PageRequest p) {
         Page<ValidointiStatus> virheelliset = validointiStatusRepository.findVirheelliset(p);
-        Page<ValidationDto> result = virheelliset
+        Page<TilaUpdateStatus> result = virheelliset
                 .map(validation -> {
-                    ValidationDto dto = mapper.map(validation, ValidationDto.class);
+                    TilaUpdateStatus dto = mapper.map(validation, TilaUpdateStatus.class);
                     dto.setPerusteprojekti(mapper.map(validation.getPeruste().getPerusteprojekti(), PerusteprojektiListausDto.class));
                     return dto;
                 });
@@ -789,6 +795,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste.setNimi(pnimi);
         }
 
+        if (perusteprojektiDto.getKuvaus() != null) {
+            peruste.setKuvaus(mapper.map(perusteprojektiDto.getKuvaus(), TekstiPalanen.class));
+        }
+
+        if (!CollectionUtils.isEmpty(perusteprojektiDto.getPerusteenAikataulut())) {
+            List<PerusteAikataulu> aikataulut = mapper.mapAsList(perusteprojektiDto.getPerusteenAikataulut(), PerusteAikataulu.class).stream().map(aikataulu -> {
+                aikataulu.setPeruste(peruste);
+                return aikataulu;
+            }).collect(Collectors.toList());
+            peruste.setPerusteenAikataulut(aikataulut);
+        }
+
         perusteprojekti.setPeruste(peruste);
         perusteprojekti = repository.saveAndFlush(perusteprojekti);
 
@@ -888,6 +906,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     + tila.toString() + "' ei mahdollinen";
             updateStatus.addStatus(viesti);
             return updateStatus;
+        }
+
+        // Lisätään koodittomat ammattiatitovaatimukset koodistoon
+        if (tila == ProjektiTila.JULKAISTU) {
+            ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(projekti.getId(), peruste.getId());
         }
 
         // Dokumentit generoidaan automaattisesti julkaisun yhteydessä

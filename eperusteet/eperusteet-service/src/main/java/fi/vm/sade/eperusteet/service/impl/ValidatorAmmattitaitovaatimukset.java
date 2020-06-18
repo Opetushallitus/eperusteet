@@ -25,9 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
-@Transactional
-@Slf4j
+@Deprecated
 public class ValidatorAmmattitaitovaatimukset implements Validator {
 
     @Autowired

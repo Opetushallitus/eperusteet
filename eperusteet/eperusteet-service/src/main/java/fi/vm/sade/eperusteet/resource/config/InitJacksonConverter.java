@@ -1,5 +1,7 @@
 package fi.vm.sade.eperusteet.resource.config;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -29,6 +31,15 @@ public class InitJacksonConverter {
     static public ObjectMapper createMapper() {
         ObjectMapper mapper = new ObjectMapper();
         configureObjectMapper(mapper);
+        return mapper;
+    }
+
+    static public ObjectMapper createImportExportMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        configureObjectMapper(mapper);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+        mapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         return mapper;
     }
 

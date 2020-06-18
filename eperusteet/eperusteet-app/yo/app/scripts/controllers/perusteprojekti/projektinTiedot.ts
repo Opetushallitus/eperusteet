@@ -44,7 +44,8 @@ angular
                         sivu: $scope.nykyinen - 1,
                         sivukoko: $scope.itemsPerPage,
                         tila: "valmis",
-                        perusteTyyppi: pohja ? "pohja" : "normaali"
+                        perusteTyyppi: pohja ? "pohja" : "normaali",
+                        koulutusvienti: "kaikki"
                     },
                     function(perusteet) {
                         $scope.perusteet = perusteet.data;
@@ -83,16 +84,36 @@ angular
     })
     .controller("ProjektinTuontiCtrl", function(
         $scope,
+        $state,
         Api,
+        Notifikaatiot,
     ) {
         $scope.loadFile = () => {
-            const reader = new FileReader();
             const files = (document.getElementById("tiedostohaku") as any).files;
-            reader.onload = async (e: any) => {
-                const data = JSON.parse(e.target.result);
-                const perusteRes = await Api.one("maintenance/import").customPOST(data);
+            if (files.length === 0) {
+                Notifikaatiot.varoitus("tiedosto-puuttuu");
+                return;
+            }
+
+            const file = files.item(0);
+
+            const formData = new FormData();
+            const req = new XMLHttpRequest();
+            req.onreadystatechange = () => {
+                if (req.readyState === XMLHttpRequest.DONE) {
+                    if (req.status === 200) {
+                        Notifikaatiot.onnistui("tallennettu");
+                        $state.go("root.admin.perusteprojektit");
+                    } else {
+                        console.error(req.status);
+                        Notifikaatiot.fataali("tiedosto-lahetys-epaonnistui");
+                    }
+                }
             };
-            reader.readAsText(files.item(0));
+
+            formData.append("file", file);
+            req.open("POST", Api.one("maintenance/import").getRequestedUrl());
+            req.send(formData);
         };
     })
     .controller("ProjektinTiedotCtrl", function(
@@ -157,11 +178,7 @@ angular
         };
 
         $scope.lataaProjektiData = async function() {
-            const perusteRes = await Api.one("maintenance/export/" + $scope.projekti._peruste).get();
-            const data = new Blob([JSON.stringify(perusteRes.plain())], {
-                type: "text/plain;charset=utf-8",
-            });
-            saveAs(data, "projekti.json");
+            location.href = await Api.one("maintenance/export/" + $scope.projekti._peruste).getRequestedUrl();
         };
 
         $scope.puhdistaValinta = function() {

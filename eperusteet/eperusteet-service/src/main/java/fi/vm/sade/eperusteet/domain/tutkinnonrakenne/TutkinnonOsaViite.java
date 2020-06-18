@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.Sortable;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -38,7 +39,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "tutkinnonosaviite")
 @Audited
-public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
+public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Sortable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

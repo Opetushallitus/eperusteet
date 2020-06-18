@@ -16,8 +16,8 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -32,11 +32,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipOutputStream;
 
 /**
  *
@@ -202,10 +205,10 @@ public interface PerusteService {
     Revision getLastModifiedRevision(final Long id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(long perusteId);
+    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteet(@P("perusteId") long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteetByVersion(long perusteId, int revision);
+    LukiokoulutuksenYleisetTavoitteetDto getYleisetTavoitteetByVersion(@P("perusteId") long perusteId, int revision);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void tallennaYleisetTavoitteet(@P("perusteId") Long perusteId, LukiokoulutuksenYleisetTavoitteetDto lukiokoulutuksenYleisetTavoitteetDto);
@@ -222,12 +225,27 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    PerusteprojektiImportDto getPerusteExport(@P("perusteId") Long perusteId);
+    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
+    PerusteDto updateKvLiite(@P("perusteId") Long perusteId, KVLiiteJulkinenDto kvliiteDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm);
+    List<KVLiiteTasoDto> haeTasot(@P("perusteId") Long perusteId, Peruste peruste);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto buildNavigation(Long perusteId);
+    void exportPeruste(@P("perusteId") Long perusteId, ZipOutputStream zipOutputStream) throws IOException;
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    void importPeruste(MultipartHttpServletRequest request) throws IOException;
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    NavigationNodeDto buildNavigationWithDate(@P("perusteId") Long perusteId, Date pvm);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId);
+
+    @PreAuthorize("isAuthenticated()")
+    List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi);
+
+    @PreAuthorize("isAuthenticated()")
+    List<PerusteKevytDto> getAllOppaidenPerusteet();
 }

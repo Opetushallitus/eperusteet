@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -54,7 +55,10 @@ public class TiedoteController {
             @ApiImplicitParam(name = "perusteId", dataType = "long", paramType = "query", value = "hae perusteeseen liitetyt tiedotteet"),
             @ApiImplicitParam(name = "perusteeton", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae perusteettomat tiedotteet"),
             @ApiImplicitParam(name = "julkinen", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae julkiset tiedotteet"),
-            @ApiImplicitParam(name = "yleinen", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae yleiset tiedotteet")
+            @ApiImplicitParam(name = "yleinen", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae yleiset tiedotteet"),
+            @ApiImplicitParam(name = "tiedoteJulkaisuPaikka", dataType = "string", paramType = "query", allowMultiple = true, value = "tiedotteen julkaisupaikat"),
+            @ApiImplicitParam(name = "perusteIds", dataType = "long", paramType = "query", allowMultiple = true, value = "tiedotteen perusteiden"),
+            @ApiImplicitParam(name = "koulutusTyyppi", dataType = "string", paramType = "query", allowMultiple = true, value = "tiedotteen koulutustyypit"),
     })
     @RequestMapping(value = "/haku", method = GET)
     public Page<TiedoteDto> findTiedotteetBy(@ApiIgnore TiedoteQuery pquery) {

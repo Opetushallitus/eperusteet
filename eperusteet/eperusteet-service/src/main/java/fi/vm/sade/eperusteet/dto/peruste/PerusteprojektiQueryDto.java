@@ -38,6 +38,7 @@ public class PerusteprojektiQueryDto {
     private Set<String> koulutustyyppi;
     private String jarjestysTapa;
     private Boolean jarjestysOrder;
+    private Set<Long> perusteet;
 
     public void setTila(ProjektiTila tila) {
         this.tila = new HashSet<>();

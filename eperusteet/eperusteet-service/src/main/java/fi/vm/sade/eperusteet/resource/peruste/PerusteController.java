@@ -17,7 +17,10 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
@@ -129,7 +132,8 @@ public class PerusteController {
             @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
             @ApiImplicitParam(name = "tutkinnonosat", dataType = "boolean", paramType = "query", value = "hae myös tutkinnon osista"),
             @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),
-            @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä")
+            @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä"),
+            @ApiImplicitParam(name = "perusteTyyppi", dataType = "string", paramType = "query", value = "Perusteen tyyppi"),
     })
     public Page<PerusteHakuDto> getAllPerusteet(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
@@ -138,8 +142,30 @@ public class PerusteController {
 
     @RequestMapping(value = "/internal", method = GET)
     @ResponseBody
-    @InternalApi
     @ApiOperation(value = "perusteiden sisäinen haku")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "tuleva", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös tulevatperusteet"),
+            @ApiImplicitParam(name = "siirtyma", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös siirtymäajalla olevat perusteet"),
+            @ApiImplicitParam(name = "voimassaolo", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös voimassaolevat perusteet"),
+            @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös poistuneet perusteet"),
+            @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "koulutusala", dataType = "string", paramType = "query", allowMultiple = true),
+            @ApiImplicitParam(name = "koulutustyyppi", dataType = "string", paramType = "query", allowMultiple = true, value = "koulutustyyppi (koodistokoodi)"),
+            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, value = "perusteen kieli"),
+            @ApiImplicitParam(name = "opintoala", dataType = "string", paramType = "query", allowMultiple = true, value = "opintoalakoodi"),
+            @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
+            @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "muokattu", dataType = "long", paramType = "query", value = "Perustetta muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC). Huomioi koko perusteen sisällön."),
+            @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
+            @ApiImplicitParam(name = "tutkinnonosat", dataType = "boolean", paramType = "query", value = "hae myös tutkinnon osista"),
+            @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),
+            @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä"),
+            @ApiImplicitParam(name = "tila", dataType = "string", paramType = "query", allowMultiple = true, value = "Sallitut tilat"),
+            @ApiImplicitParam(name = "perusteTyyppi", dataType = "string", paramType = "query", value = "Perusteen tyyppi"),
+    })
     public Page<PerusteHakuInternalDto> getAllPerusteetInternal(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findByInternal(p, pquery);
@@ -167,6 +193,17 @@ public class PerusteController {
     public KVLiiteJulkinenDto getKvLiite(
             @PathVariable("perusteId") final long id) {
         return service.getJulkinenKVLiite(id);
+    }
+
+    @RequestMapping(value = "/{perusteId}/kvliite", method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    @InternalApi
+    public PerusteDto updateKvLiite(
+            @PathVariable("perusteId") final long id,
+            @RequestBody KVLiiteJulkinenDto kvliiteDto
+    ) {
+        return service.updateKvLiite(id, kvliiteDto);
     }
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)
@@ -319,6 +356,19 @@ public class PerusteController {
     public List<Ammattitaitovaatimus2019Dto> getAmmattitaitovaatimukset(
             @PathVariable("perusteId") final Long perusteId) {
         return ammattitaitovaatimusService.getAmmattitaitovaatimukset(perusteId);
+    }
+
+    @RequestMapping(value = "/tekstikappale", method = GET)
+    @ResponseBody
+    public List<PerusteTekstikappaleillaDto> getPerusteetWithTekstikappaleKoodi(@RequestParam(value = "koodi", required = true) final String koodi) {
+        return service.findByTekstikappaleKoodi(koodi);
+    }
+
+    @RequestMapping(value = "/oppaiden", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteKevytDto>> getAllOppaidenPerusteet() {
+        List<PerusteKevytDto> poi = service.getAllOppaidenPerusteet();
+        return new ResponseEntity<>(poi, HttpStatus.OK);
     }
 
 }

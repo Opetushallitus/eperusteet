@@ -18,19 +18,19 @@
         <spring.data.jpa.version>1.11.22.RELEASE</spring.data.jpa.version>
         <logback.version>1.2.3</logback.version>
         <postgresql.version>9.4.1211</postgresql.version>
-        <jackson.version>2.9.9</jackson.version>
+        <jackson.version>2.10.2</jackson.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
         <jsoup.version>1.9.2</jsoup.version>
-        <eperusteet.backend-utils.version>2.2-SNAPSHOT</eperusteet.backend-utils.version>
+        <eperusteet.backend-utils.version>2.3-SNAPSHOT</eperusteet.backend-utils.version>
         <ehcache.version>2.6.11</ehcache.version>
         <slf4j.version>1.7.21</slf4j.version>
-        <batik.version>1.9</batik.version>
+        <batik.version>1.13</batik.version>
         <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
         <surefire.version>2.22.2</surefire.version>
         <failsafe.version>2.22.2</failsafe.version>
-        <fop.version>2.3</fop.version>
+        <fop.version>2.5</fop.version>
         <pdfbox.version>2.0.12</pdfbox.version>
         <flyway.version>5.2.4</flyway.version>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
@@ -400,6 +400,12 @@
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
             <version>${fop.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
@@ -493,7 +499,7 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <configuration>
                     <path>/eperusteet-service</path>
-                    <contextReloadable>true</contextReloadable>
+                    <contextReloadable>false</contextReloadable>
                     <contextFile>${basedir}/src/test/config/context.xml</contextFile>
                 </configuration>
                 <dependencies>
@@ -657,6 +663,7 @@
                                         <location>${eperusteet.resources}.TiedoteController</location>
                                         <location>${eperusteet.resources}.TutkinnonOsaController</location>
                                         <location>${eperusteet.resources}.UlkopuolisetController</location>
+                                        <location>${eperusteet.resources}.MaintenanceController</location>
 
 <!--                                        <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>-->
 <!--                                        <location>${eperusteet.resources}.peruste.AmmattitaitovaatimuksetController</location>-->
@@ -668,8 +675,13 @@
 <!--                                        <location>${eperusteet.resources}.peruste.PerusopetusOppiaineLockController</location>-->
                                         <location>${eperusteet.resources}.peruste.PerusteController</location>
                                         <location>${eperusteet.resources}.peruste.PerusteenSisaltoController</location>
+                                        <location>${eperusteet.resources}.peruste.PerusteenMuokkaustietoController
+                                        </location>
                                         <location>${eperusteet.resources}.peruste.TermistoController</location>
-<!--                                        <location>${eperusteet.resources}.peruste.TutkinnonRakenneController</location>-->
+                                        <location>${eperusteet.resources}.KayttajanTietoController</location>
+                                        <location>${eperusteet.resources}.peruste.TutkinnonRakenneController</location>
+                                        <location>${eperusteet.resources}.peruste.PerusteAikatauluController</location>
+<!--                                        <location>${eperusteet.resources}.peruste.TutkinnonRakenneLockController</location>-->
 <!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuudetLockController</location>-->
 <!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuusLockController</location>-->
 <!--                                        <location>${eperusteet.resources}.LukiokoulutuksenPerusteenSisaltoController</location>-->

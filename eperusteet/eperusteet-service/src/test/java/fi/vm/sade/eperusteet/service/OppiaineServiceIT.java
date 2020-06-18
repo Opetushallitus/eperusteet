@@ -32,6 +32,10 @@ import fi.vm.sade.eperusteet.service.test.TestConfiguration;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -141,14 +145,12 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         tavoiteDto.setKohdealueet(Collections.singleton(new Reference(oa.getKohdealueet().iterator().next().getId())));
         tavoiteDto.setSisaltoalueet(Collections.singleton(new Reference(vkDto.getSisaltoalueet().get(0).getId())));
         tavoiteDto.setTavoite(olt("Tässäpä jokin kiva tavoite"));
-        TavoitteenArviointiDto arvio = new TavoitteenArviointiDto();
-        arvio.setArvioinninKohde(olt("Kohde"));
-        arvio.setValttavanOsaamisenKuvaus(olt("Kuvaus 1"));
-        arvio.setTyydyttavanOsaamisenKuvaus(olt("Kuvaus 2"));
-        arvio.setHyvanOsaamisenKuvaus(olt("Kuvaus 3"));
-        arvio.setKiitettavanOsaamisenKuvaus(olt("Kuvaus 4"));
-        tavoiteDto.setArvioinninkohteet(new HashSet<>());
-        tavoiteDto.getArvioinninkohteet().add(arvio);
+        tavoiteDto.setVapaaTeksti(olt("vapaa teksti kentta"));
+        tavoiteDto.setArvioinninkohteet(Sets.newHashSet(
+                arvio("Kohde", "osaamisenkuvaus", "hyvakuvaus", 8),
+                arvio(null, "osaamisenkuvaus2", "hyvakuvaus2", 9)));
+
+        tavoiteDto.setArvioinninKuvaus(olt("arvioinnin kohde"));
         vkDto.getTavoitteet().add(tavoiteDto);
 
         lc = OppiaineLockContext.of(OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS, perusteId, oa.getId(), vkDto.getId());
@@ -157,7 +159,22 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), new UpdateDto<>(vkDto));
         assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
 
-        assertEquals("Kohde", vkDto.getTavoitteet().get(0).getArvioinninkohteet().iterator().next().getArvioinninKohde().get().get(Kieli.FI));
+        List<TavoitteenArviointiDto> arvioinnit = new ArrayList<>(vkDto.getTavoitteet().get(0).getArvioinninkohteet()).stream()
+                .sorted(Comparator.comparing(arviointi -> arviointi.getArvosana().get()))
+                .collect(Collectors.toList());
+
+        assertEquals("Kohde", arvioinnit.get(0).getArvioinninKohde().get().get(Kieli.FI));
+        assertEquals("osaamisenkuvaus", arvioinnit.get(0).getOsaamisenKuvaus().get().get(Kieli.FI));
+        assertEquals("osaamisenkuvaus", arvioinnit.get(0).getHyvanOsaamisenKuvaus().get().get(Kieli.FI));
+        assertEquals(new Integer(8), arvioinnit.get(0).getArvosana().get());
+
+        assertNull(arvioinnit.get(1).getArvioinninKohde());
+        assertEquals("osaamisenkuvaus2", arvioinnit.get(1).getOsaamisenKuvaus().get().get(Kieli.FI));
+        assertNull(arvioinnit.get(1).getHyvanOsaamisenKuvaus());
+        assertEquals(new Integer(9), arvioinnit.get(1).getArvosana().get());
+
+        assertEquals("arvioinnin kohde", vkDto.getTavoitteet().get(0).getArvioinninKuvaus().get().get(Kieli.FI));
+        assertEquals("vapaa teksti kentta", vkDto.getTavoitteet().get(0).getVapaaTeksti().get().get(Kieli.FI));
 
         vkDto.getSisaltoalueet().clear();
         vkDto.getTavoitteet().clear();
@@ -224,4 +241,14 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceIT.class);
+
+    private TavoitteenArviointiDto arvio(String kohde, String kuvaus, String hyvakuvaus, Integer arvosana) {
+        TavoitteenArviointiDto arvio = new TavoitteenArviointiDto();
+        arvio.setArvioinninKohde(olt(kohde));
+        arvio.setOsaamisenKuvaus(olt(kuvaus));
+        arvio.setHyvanOsaamisenKuvaus(olt(hyvakuvaus));
+        arvio.setArvosana(Optional.of(arvosana));
+
+        return arvio;
+    }
 }

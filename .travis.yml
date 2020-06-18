@@ -9,23 +9,43 @@ services:
   - docker
 
 cache:
+  yarn: true
   directories:
     - $HOME/.m2
     - $HOME/.cache/yarn
 
 env:
   global:
+    - NODE_VERSION="10.16.0"
     # AWS_ACCESS_KEY_ID
     - secure: "FYD48mr1LheMzHUzqO4OdZ3pkidAeBqMXSpojSNyI1CTwovT25HamkIgbi4tPdigehqQEoFg057MtkhoosLYpP+06OaDpCV9vo+yhVh8KL+fdW9zs+thlZHxRugI9+e5QtdiYbVhx6l8yp3TrY4fTu18URzDayCHd0qtF0D1Qqk="
     # AWS_SECRET_ACCESS_KEY
     - secure: "YU91n/1seuU03KphWAujw/3NdQbWj9JGKFjlIjZHURv+h7fHFNONNlpcd3a7hSMghN0CgcYXywjjSbWvG1qmYVHWktQVczMIziXT5nZRTp23JvobrUzk6ywVz7JHidEbV8nIpDuYMInavQvEtVCuGFKxh1N+4NQZEMBrDCZoKJY="
 
+before_install:
+  - nvm install $NODE_VERSION
+
 install:
+  - git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
   - git clone https://github.com/Opetushallitus/ci-tools.git
   - source ci-tools/common/setup-tools.sh
   - export ARTIFACT_NAME="eperusteet"
 
 script:
+  # Rakennetaan uusi UI
+  - export EPERUSTEET_SERVICE_DIR=$TRAVIS_BUILD_DIR/eperusteet/eperusteet-service
+  - cd eperusteet-ui
+  - yarn install --silent
+  - cd eperusteet-frontend-utils/vue
+  - yarn install --silent
+  - yarn gen:api:eperusteet
+  - rm -rf node_modules
+  - cd ../..
+  - git rev-parse HEAD
+  - yarn run build
+  - cd ..
+
+
   - cd ${ARTIFACT_NAME}
 
   - mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}

@@ -146,6 +146,8 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         result &= refXnor(this.getModuulit(), other.getModuulit());
         result &= refXnor(this.getTavoitteet(), other.getTavoitteet());
         result &= refXnor(this.getOppimaarat(), other.getOppimaarat());
+        result &= refXnor(this.getPakollisetModuulitKuvaus(), other.getPakollisetModuulitKuvaus());
+        result &= refXnor(this.getValinnaisetModuulitKuvaus(), other.getValinnaisetModuulitKuvaus());
         result &= PerusteUtils.nestedStructureEquals(this.getModuulit(), other.getModuulit());
         result &= PerusteUtils.nestedStructureEquals(this.getOppimaarat(), other.getOppimaarat());
 
@@ -175,6 +177,9 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         if (this.getTavoitteet() != null) {
             result.setTavoitteet(this.getTavoitteet().copy());
         }
+
+        result.setPakollisetModuulitKuvaus(this.getPakollisetModuulitKuvaus());
+        result.setValinnaisetModuulitKuvaus(this.getValinnaisetModuulitKuvaus());
 
         if (deep) {
             if (this.moduulit != null) {

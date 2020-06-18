@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -48,6 +49,16 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi osaamisala;
+
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "tekstikappale_koodi",
+            joinColumns = @JoinColumn(name = "tekstikappale_id"),
+            inverseJoinColumns = @JoinColumn(name = "koodi_id"))
+    @Column(name = "koodi_id")
+    private List<Koodi> koodit;
 
     @Getter
     @Setter
@@ -105,6 +116,7 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     private void copyState(TekstiKappale other) {
         this.setTeksti(other.getTeksti());
         this.setOsaamisala(other.getOsaamisala());
+        this.setKoodit(other.getKoodit());
     }
 
 }

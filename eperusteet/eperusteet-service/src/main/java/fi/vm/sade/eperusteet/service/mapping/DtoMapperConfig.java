@@ -38,6 +38,7 @@ import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -420,6 +421,7 @@ public class DtoMapperConfig {
                         try {
                             koodistoClient.addNimiAndArvo(b);
                         } catch (RestClientException | AccessDeniedException ex) {
+
                             logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
                         }
                     }
@@ -485,6 +487,18 @@ public class DtoMapperConfig {
 
         factory.classMap(OppiaineSuppeaDto.class, Oppiaine.class)
                 .fieldBToA("muokattu", "muokattu")
+                .byDefault()
+                .register();
+
+        factory.classMap(Lops2019OppiaineBaseDto.class, Lops2019Oppiaine.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(Lops2019OppiaineDto.class, Lops2019Oppiaine.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(Lops2019OppiaineKaikkiDto.class, Lops2019Oppiaine.class)
                 .byDefault()
                 .register();
 

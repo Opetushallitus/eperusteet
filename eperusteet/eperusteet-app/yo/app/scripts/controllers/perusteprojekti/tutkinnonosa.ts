@@ -373,7 +373,7 @@ angular
                     teksti: Kaanna.kaanna("koodi-lisays-varmistus"),
                     primaryBtn: "ok",
                     successCb: async function() {
-                        
+
                         const koodi = await Koodisto.lisaaKoodistoKoodi("tutkinnonosat", $scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi);
 
                         $scope.editableTutkinnonOsaViite.tutkinnonOsa.koodi = {

@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.dto.YllapitoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
@@ -11,6 +12,7 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.YllapitoRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.impl.validators.ValidointiTask;
@@ -55,6 +57,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Autowired
     private PlatformTransactionManager ptm;
+
+    @Autowired
+    private YllapitoRepository yllapitoRepository;
 
     @Autowired
     @Dto
@@ -146,6 +151,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                 log.error(ex.getLocalizedMessage(), ex);
             }
         }
+    }
+
+    @Override
+    public List<YllapitoDto> getSallitutYllapidot() {
+        return mapper.mapAsList(yllapitoRepository.findBySallittu(true), YllapitoDto.class);
     }
 
     @Transactional(propagation = Propagation.NEVER)

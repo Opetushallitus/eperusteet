@@ -25,14 +25,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -56,6 +54,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Deprecated
+    @Getter
     private TekstiPalanen ammattitaitovaatimukset;
 
     @Getter
@@ -153,9 +152,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.tavoitteet = tavoitteet;
     }
 
-    public TekstiPalanen getAmmattitaitovaatimukset() {
-        return ammattitaitovaatimukset;
-    }
 
     public void setAmmattitaitovaatimukset(TekstiPalanen ammattitaitovaatimukset) {
         this.ammattitaitovaatimukset = ammattitaitovaatimukset;

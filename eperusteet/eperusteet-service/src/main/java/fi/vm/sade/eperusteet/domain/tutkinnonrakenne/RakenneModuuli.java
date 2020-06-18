@@ -151,9 +151,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             return fail("ryhman-osia-ei-voi-muuttaa");
         }
 
-        if ((this.getPakollinen() == null && vanha.getPakollinen() != null)
-                || (this.getPakollinen() != null && vanha.getPakollinen() == null)
-                || this.getPakollinen() != vanha.getPakollinen()) {
+        if (!this.getPakollinen().equals(vanha.getPakollinen())) {
             return fail("ryhman-pakollisuutta-ei-voi-muuttaa");
         }
 
@@ -185,13 +183,16 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             return fail("ryhman-erikoisuustietoa-ei-voi-vaihtaa");
         }
 
-
         boolean muodostuminenMuuttunut = !Objects.equals(this.muodostumisSaanto, vanha.getMuodostumisSaanto());
-        if (depth == 0 && this.muodostumisSaanto != null && muodostuminenMuuttunut) {
+        boolean vanhaMuodostamissaantoMinimi = vanha.getMuodostumisSaanto() != null
+                && vanha.getMuodostumisSaanto().getLaajuus() != null
+                && vanha.getMuodostumisSaanto().getLaajuus().getMinimi() != null;
+
+        if (depth == 0 && this.muodostumisSaanto != null && muodostuminenMuuttunut && (includeText || vanhaMuodostamissaantoMinimi)) {
             return fail("ryhman-juuren-muodostumista-ei-voi-muuttaa");
         }
 
-        if (depth > 0 && muodostuminenMuuttunut) {
+        if (depth > 0 && muodostuminenMuuttunut && (includeText || vanhaMuodostamissaantoMinimi)) {
             return fail("ryhman-muodostumissaantoa-ei-voi-muuttaa");
         }
 

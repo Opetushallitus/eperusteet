@@ -50,7 +50,7 @@ public class PerusteQuery {
     private boolean tutkintonimikkeet = false;
     private boolean tutkinnonosat = false;
     private boolean osaamisalat = false;
-    private boolean koulutusvienti = false;
+    private KoulutusVientiEhto koulutusvienti = KoulutusVientiEhto.FALSE;
     private long nykyinenAika = new Date().getTime();
     private Boolean esikatseltavissa;
 
@@ -69,5 +69,13 @@ public class PerusteQuery {
 
     public void setTila(Set<String> tila) {
         this.tila = tila;
+    }
+
+    public void setKoulutusvienti(String koulutusvienti) {
+        this.koulutusvienti = KoulutusVientiEhto.of(koulutusvienti);
+    }
+
+    public boolean isKoulutusvienti() {
+        return koulutusvienti == KoulutusVientiEhto.TRUE || koulutusvienti == KoulutusVientiEhto.KAIKKI;
     }
 }

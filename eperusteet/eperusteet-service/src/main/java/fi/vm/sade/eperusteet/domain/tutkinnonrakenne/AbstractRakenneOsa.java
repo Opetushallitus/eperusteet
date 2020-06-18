@@ -67,6 +67,10 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
     @Setter
     private Boolean pakollinen = false;
 
+    public Boolean getPakollinen() {
+        return pakollinen != null ? pakollinen : false;
+    }
+
     public AbstractRakenneOsa() {
     }
 
@@ -101,7 +105,7 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
             return success();
         }
 
-        if (pakollinen != other.getPakollinen()) {
+        if (!getPakollinen().equals(other.getPakollinen())) {
             return fail("ryhman-pakollisuutta-ei-voi-muuttaa");
         }
         else if (!Objects.equals(tunniste, other.getTunniste())) {

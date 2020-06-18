@@ -21,7 +21,11 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -37,6 +41,7 @@ import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
  *
  * @author nkala
  */
+@Slf4j
 @Service
 @Profile("test")
 public class KoodistoClientMock implements KoodistoClient {
@@ -60,23 +65,24 @@ public class KoodistoClientMock implements KoodistoClient {
         result.setKoodiArvo(koodi);
         result.setVersio(versio);
 
-        // Lisätään nqf koodi
-        KoodiElementti[] elementit = new KoodiElementti[1];
-        KoodiElementti elementti = new KoodiElementti();
+        // Lisätään nqf, eqf, isced koodit
+        List<KoodiElementti> koodiElementit = Arrays.asList("nqf_4", "eqf_1", "isced2011koulutusastetaso1_5").stream().map(code -> {
+            KoodiElementti elementti = new KoodiElementti();
+            elementti.setCodeElementUri(code);
+            elementti.setCodeElementValue("4");
+            elementti.setCodeElementVersion(1L);
+            elementti.setPassive(false);
 
-        elementti.setCodeElementUri("nqf_4");
-        elementti.setCodeElementValue("4");
-        elementti.setCodeElementVersion(1L);
-        elementti.setPassive(false);
+            KoodistoMetadataDto[] parentMetadatas = new KoodistoMetadataDto[3];
+            parentMetadatas[0] = KoodistoMetadataDto.of(code, "SV", "Nationell referensram för examina (" + code + ")");
+            parentMetadatas[1] = KoodistoMetadataDto.of(code, "EN", "National Qualifications Framework (" + code + ")");
+            parentMetadatas[2] = KoodistoMetadataDto.of(code, "FI", "Kansallinen tutkintojen viitekehys (" + code + ")");
+            elementti.setParentMetadata(parentMetadatas);
+            return elementti;
+        }).collect(Collectors.toList());
 
-        KoodistoMetadataDto[] parentMetadatas = new KoodistoMetadataDto[3];
-        parentMetadatas[0] = KoodistoMetadataDto.of("nqf", "SV", "Nationell referensram för examina (nqf)");
-        parentMetadatas[1] = KoodistoMetadataDto.of("nqf", "EN", "National Qualifications Framework (nqf)");
-        parentMetadatas[2] = KoodistoMetadataDto.of("nqf", "FI", "Kansallinen tutkintojen viitekehys (nqf)");
-        elementti.setParentMetadata(parentMetadatas);
-
-        elementit[0] = elementti;
-        result.setIncludesCodeElements(elementit);
+        KoodiElementti[] elementit = new KoodiElementti[koodiElementit.size()];
+        result.setIncludesCodeElements(koodiElementit.toArray(elementit));
         return result;
     }
 
@@ -163,7 +169,10 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
-        return null;
+        return KoodistoKoodiDto.builder()
+                .koodisto(KoodistoDto.of(koodistonimi))
+                .koodiUri(koodistonimi + "_" + seuraavaKoodi)
+                .build();
     }
 
     @Override
@@ -173,16 +182,24 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public Collection<Long> nextKoodiId(String koodistonimi, int count) {
-        return null;
+        return IntStream.range(0, count).boxed().map(operand -> new Long(operand)).collect(Collectors.toList());
     }
 
     @Override
     public void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+        log.debug("koodirelaatio" + parentKoodi + lapsiKoodi);
         mockedOphClientHelper.post("", "koodirelaatio" + parentKoodi + lapsiKoodi);
     }
 
     @Override
+    public void addKoodirelaatiot(String parentKoodi, List<String> lapsiKoodit, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+        log.debug("koodirelaatio" + parentKoodi + lapsiKoodit);
+        mockedOphClientHelper.post("", "koodirelaatio" + parentKoodi + lapsiKoodit);
+    }
+
+    @Override
     public void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
+        log.debug("koodistorelaatio" + parentKoodi + lapsiKoodi);
         mockedOphClientHelper.post("", "koodistorelaatio" + parentKoodi + lapsiKoodi);
     }
 }

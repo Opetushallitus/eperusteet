@@ -21,13 +21,10 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import java.util.List;
+
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -37,40 +34,34 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  */
 @RestController
 @RequestMapping("/kayttajatieto")
+@Api("Kayttajat")
 @InternalApi
 public class KayttajanTietoController {
+
     @Autowired
     KayttajanTietoService service;
 
-    @RequestMapping(method = GET)
-    @ResponseBody
-    public ResponseEntity<KayttajanTietoDto> getOmaKayttaja() {
-        return new ResponseEntity<>(service.hae(null), HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.GET)
+    public KayttajanTietoDto getKirjautunutKayttajat() {
+        return service.haeKirjautaunutKayttaja();
     }
 
     @RequestMapping(value = "/{oid:.+}", method = GET)
-    @ResponseBody
-    public ResponseEntity<KayttajanTietoDto> getKayttaja(@PathVariable("oid") final String oid) {
-        return new ResponseEntity<>(service.hae(oid), HttpStatus.OK);
+    public KayttajanTietoDto getKayttaja(@PathVariable("oid") final String oid) {
+        return service.hae(oid);
     }
 
     @RequestMapping(value = "/{oid:.+}/perusteprojektit", method = GET)
-    @ResponseBody
-    public ResponseEntity<List<KayttajanProjektitiedotDto>> getKayttajanPerusteprojektit(@PathVariable("oid") final String oid) {
-        return new ResponseEntity<>(service.haePerusteprojektit(oid), HttpStatus.OK);
+    public List<KayttajanProjektitiedotDto> getKayttajanPerusteprojektit(@PathVariable("oid") final String oid) {
+        return service.haePerusteprojektit(oid);
     }
 
     @RequestMapping(value = "/{oid:.+}/perusteprojektit/{projektiId}", method = GET)
-    @ResponseBody
-    public ResponseEntity<KayttajanProjektitiedotDto> getKayttajanPerusteprojekti(
+    public KayttajanProjektitiedotDto getKayttajanPerusteprojekti(
             @PathVariable("oid") final String oid,
             @PathVariable("projektiId") final Long projektiId
     ) {
-        KayttajanProjektitiedotDto kayttajanProjektitiedot = service.haePerusteprojekti(oid, projektiId);
-        if (kayttajanProjektitiedot == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(kayttajanProjektitiedot, HttpStatus.OK);
+        return service.haePerusteprojekti(oid, projektiId);
     }
 
 }

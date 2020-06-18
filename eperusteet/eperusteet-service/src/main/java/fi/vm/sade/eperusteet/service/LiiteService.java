@@ -36,16 +36,16 @@ public interface LiiteService {
     UUID add(@P("perusteId") final Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LiiteDto get(Long perusteId, UUID id);
+    LiiteDto get(@P("perusteId") Long perusteId, UUID id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LiiteDto> getAll(Long perusteId);
+    List<LiiteDto> getAll(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LiiteDto> getAllByTyyppi(Long perusteId, Set<String> tyypit);
+    List<LiiteDto> getAllByTyyppi(@P("perusteId") Long perusteId, Set<String> tyypit);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void delete(Long perusteId, UUID id);
+    void delete(@P("perusteId") Long perusteId, UUID id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     void export(@P("perusteId") final Long perusteId, UUID id, OutputStream os);

@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.cache.Cache;
@@ -66,7 +67,7 @@ public class KoodistoClientImplTest {
         assertThat(koodistoKoodiDto.getMetadataName("FI"))
                 .isEqualToComparingFieldByField(KoodistoMetadataDto.of("koodinimi","fi","koodinimi"));
 
-        verify(cacheManager).getCache(eq("koodistot"));
+        verify(cacheManager, Mockito.times(2)).getCache(eq("koodistot"));
     }
 
     @Test
@@ -75,7 +76,8 @@ public class KoodistoClientImplTest {
         KoodistoKoodiDto koodistoKoodiDto = koodistoClient.addKoodiNimella("koodisto", LokalisoituTekstiDto.of(Kieli.FI, "koodinimi"));
 
         assertThat(koodistoKoodiDto).isNull();
-        verifyZeroInteractions(cacheManager);
+
+        verify(cacheManager, Mockito.times(2)).getCache(eq("koodistot"));
     }
 
     @Test

@@ -1,5 +1,6 @@
 import * as angular from "angular";
 import _ from "lodash";
+import { kieli } from "../services/yleinenData";
 
 angular
     .module("eperusteApp")
@@ -107,6 +108,7 @@ angular
         }
 
         function modaali(successCb, resolve, failureCb, lisaf, payload?) {
+
             if (filtteri) {
                 lisaFiltteri = lisaf;
             }
@@ -115,8 +117,12 @@ angular
                     {
                         tarkista: _.constant(false)
                     },
+                    {
+                        nimifilter: _.constant(false)
+                    },
                     resolve || {}
                 );
+
                 failureCb = failureCb || angular.noop;
                 $uibModal
                     .open({
@@ -167,7 +173,9 @@ angular
         TutkinnonOsanKoodiUniqueResource,
         Notifikaatiot,
         tarkista,
-        PerusteProjektiService
+        PerusteProjektiService,
+        nimifilter,
+        Kieli
     ) {
         $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
         $scope.tyyppi = tyyppi;
@@ -181,6 +189,11 @@ angular
         $scope.tutkinnonosaviitteet = {};
         $scope.nimirajaus = "";
         $scope.myosVanhentuneet = false;
+
+        if (_.isObject(nimifilter) && nimifilter[Kieli.getSisaltokieli()]) {
+            $scope.syote = nimifilter[Kieli.getSisaltokieli()];
+            $scope.nimirajaus = nimifilter[Kieli.getSisaltokieli()];
+        }
 
         $scope.haeSivutettu = _.debounce(async () => {
             const sivutettuData = await Koodisto.haeSivutettu($scope.tyyppi, hakuCb, $scope.nykyinen-1, $scope.itemsPerPage, $scope.nimirajaus, $scope.myosVanhentuneet);
@@ -245,7 +258,7 @@ angular
             const tutkinnonosat = await Koodisto.haeAmmattitaitovaatimuksenTutkintoosa(koodiUri, sivu);
             $scope.tutkinnonosaviitteet[koodiUri] = tutkinnonosat;
             $scope.tutkinnonosaviitteet[koodiUri].lataa = false;
-        } 
+        }
 
         $scope.haetaanAmmattitaitovaatimukset = () => {
             return $scope.tyyppi === 'ammattitaitovaatimukset';
@@ -274,6 +287,7 @@ angular
                 tyyppi: "@",
                 ylarelaatioTyyppi: "=?",
                 payload: "=?",
+                nimifilter: "=?",
             },
             controller: function($scope) {
                 $scope.tyyppi = $scope.tyyppi;
@@ -304,6 +318,9 @@ angular
                             },
                             ylarelaatioTyyppi: function() {
                                 return $scope.ylarelaatioTyyppi;
+                            },
+                            nimifilter: function() {
+                                return $scope.nimifilter;
                             }
                         },
                         angular.noop,

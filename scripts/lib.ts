@@ -9,6 +9,12 @@ const defaultParams = {
     tyyppi: ["koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"],
 };
 
+export async function virheellisetTekstimuotoisetAmmattitaitovaatimukset() {
+    // const res = await axios.get("https://virkailija.testiopintopolku.fi/eperusteet-service/api/maintenance/virheellisetAmmattitaitovaatimukset");
+    const res = await axios.get("http://localhost:9000/eperusteet-service/api/maintenance/virheellisetAmmattitaitovaatimukset");
+    return res.data;
+}
+
 export async function* iteratePerusteet(params: any = {}) {
     let sivu = 0;
 
@@ -16,6 +22,9 @@ export async function* iteratePerusteet(params: any = {}) {
 
     while (true) {
         const res = await axios.get(PerusteEndpoint, {
+            headers: {
+                'Caller-Id': '1.2.246.562.10.00000000001.eperusteet_scripts'
+            },
             params: { ...params, sivu, sivukoko: 100 },
             paramsSerializer(params) {
                 return qs.stringify(params, { arrayFormat: "repeat" });

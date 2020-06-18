@@ -17,14 +17,26 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
+import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -34,14 +46,7 @@ import lombok.Setter;
 @Setter
 public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private final String osanTyyppi = "tutkinnonosa";
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LokalisoituTekstiDto tavoitteet;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private ArviointiDto arviointi;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LokalisoituTekstiDto ammattitaitovaatimukset;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
+
     private LokalisoituTekstiDto kuvaus;
     private Long opintoluokitus;
     private KoodiDto koodi;
@@ -50,6 +55,87 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private List<OsaAlueKokonaanDto> osaAlueet;
     private TutkinnonOsaTyyppi tyyppi;
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
+    private GeneerinenArviointiasteikkoDto geneerinenArviointiasteikko;
+    private List<KevytTekstiKappaleDto> vapaatTekstit;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Ammattitaitovaatimukset2019Dto ammattitaitovaatimukset2019;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
+
+    @Deprecated
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private LokalisoituTekstiDto tavoitteet;
+
+    @Deprecated
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private ArviointiDto arviointi;
+
+    @Deprecated
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private LokalisoituTekstiDto ammattitaitovaatimukset;
+
+    public LokalisoituTekstiDto getAmmattitaitovaatimukset() {
+        if (ammattitaitovaatimukset == null && ammattitaitovaatimukset2019 != null) {
+            Map<Kieli, String> tekstit = new HashMap<>();
+            for (Kieli kieli : Kieli.values()) {
+                StringBuilder root = new StringBuilder();
+                String kohde = LokalisoituTekstiDto.getOrDefault(ammattitaitovaatimukset2019.getKohde(), kieli, null);
+                root.append("<dl>");
+                if (kohde != null) {
+                    root.append("<dt><i>").append(kohde).append("</i></dt>");
+                }
+
+                { // Kohdealueettomat
+                    for (Ammattitaitovaatimus2019Dto va : ammattitaitovaatimukset2019.getVaatimukset()) {
+                        String str = LokalisoituTekstiDto.getOrDefault(va.getVaatimus(), kieli, null);
+                        if (!StringUtils.isEmpty(str)) {
+                            root.append("<dd style=\"display: list-item;\">").append(str).append("</dd>");
+                        }
+                    }
+                    root.append("</dl>");
+                }
+
+                { // Kohdealueelliset
+                    for (AmmattitaitovaatimustenKohdealue2019Dto ka : ammattitaitovaatimukset2019.getKohdealueet()) {
+                        if (ka.getVaatimukset() == null || ka.getVaatimukset().isEmpty()) {
+                            continue;
+                        }
+
+                        if (ka.getKuvaus() != null) {
+                            String nimi = LokalisoituTekstiDto.getOrDefault(ka.getKuvaus(), kieli, null);
+                            if (nimi != null) {
+                                root.append("<b>").append(nimi).append("</b>");
+                            }
+                        }
+
+                        root.append("<dl>");
+
+                        if (kohde != null) {
+                            root.append("<dt><i>").append(kohde).append("</i></dt>");
+                        }
+
+                        for (Ammattitaitovaatimus2019Dto va : ka.getVaatimukset()) {
+                            String str = LokalisoituTekstiDto.getOrDefault(va.getVaatimus(), kieli, null);
+                            if (!StringUtils.isEmpty(str)) {
+                                root.append("<dd style=\"display: list-item;\">").append(str).append("</dd>");
+                            }
+                        }
+                        root.append("</dl>");
+                    }
+                }
+
+                String result = root.toString().replaceAll("<dl></dl>", "");
+
+                if (!result.isEmpty()) {
+                    tekstit.put(kieli, result);
+                }
+            }
+            return LokalisoituTekstiDto.of(tekstit.isEmpty() ? null : tekstit);
+        }
+        return ammattitaitovaatimukset;
+    }
 
     public String getKoodiUri() {
         KoodiDto koodi = this.getKoodi();

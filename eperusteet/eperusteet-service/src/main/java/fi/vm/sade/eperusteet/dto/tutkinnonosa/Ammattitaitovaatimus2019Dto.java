@@ -12,4 +12,11 @@ import lombok.*;
 public class Ammattitaitovaatimus2019Dto {
     private KoodiDto koodi;
     private LokalisoituTekstiDto vaatimus;
+
+    public LokalisoituTekstiDto getVaatimus() {
+        if (this.koodi != null) {
+            return new LokalisoituTekstiDto(this.koodi.getNimi());
+        }
+        return vaatimus;
+    }
 }

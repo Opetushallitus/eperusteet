@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -221,6 +222,31 @@ public class RakenneModuuliTestIT {
         Assert.assertTrue("Rakenteiden pitäisi olla erilaiset", rakenneOld.isSame(rakenneNew, false).isPresent());
     }
 
+    @Test
+    public void testIsSameMuodostumissaantoNull_pakollinenChecks() {
+        RakenneModuuli rakenneOld = new RakenneModuuli();
+        RakenneModuuli rakenneNew = new RakenneModuuli();
+
+        rakenneOld.setPakollinen(false);
+        rakenneNew.setPakollinen(null);
+
+        Assert.assertFalse("Rakenteiden pitäisi olla samat", rakenneOld.isSame(rakenneNew, false).isPresent());
+
+        rakenneOld.setPakollinen(null);
+        rakenneNew.setPakollinen(false);
+
+        Assert.assertFalse("Rakenteiden pitäisi olla samat", rakenneOld.isSame(rakenneNew, false).isPresent());
+
+        rakenneOld.setPakollinen(true);
+        rakenneNew.setPakollinen(null);
+
+        Assert.assertTrue("Rakenteiden pitäisi olla erilaiset", rakenneOld.isSame(rakenneNew, false).isPresent());
+
+        rakenneOld.setPakollinen(true);
+        rakenneNew.setPakollinen(false);
+
+        Assert.assertTrue("Rakenteiden pitäisi olla erilaiset", rakenneOld.isSame(rakenneNew, false).isPresent());
+    }
 
     @Test
     public void testOsaamisalatSamallaTasolla() {

@@ -18,15 +18,13 @@ package fi.vm.sade.eperusteet.dto;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -38,6 +36,14 @@ import static java.util.Arrays.asList;
  * @author harrik
  */
 public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
+    @Getter
+    @Setter
+    private PerusteprojektiListausDto perusteprojekti;
+
+    @Getter
+    @Setter
+    private Date lastCheck;
+
     @Getter
     @Setter
     List<Status> infot = new ArrayList<>();
@@ -165,14 +171,24 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet));
     }
 
+    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet, ValidointiKategoria validointiKategoria) {
+        if (infot == null) {
+            infot = new ArrayList<>();
+        }
+        infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet, validointiKategoria));
+    }
+
     @Getter
     @Setter
     public static class Status {
         String viesti;
+        PerusteprojektiListausDto perusteprojekti;
+        Date lastCheck;
         Validointi validointi;
         List<LokalisoituTekstiDto> nimet = new ArrayList<>();
         Suoritustapakoodi suoritustapa;
         Set<Kieli> kielet;
+        ValidointiKategoria validointiKategoria = ValidointiKategoria.MAARITTELEMATON;
 
         public Status() {
         }
@@ -190,6 +206,15 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
             this.nimet = nimet;
             this.suoritustapa = suoritustapa;
             this.kielet = kielet;
+        }
+
+        public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet, ValidointiKategoria validointiKategoria) {
+            this.viesti = viesti;
+            this.validointi = validointi;
+            this.nimet = nimet;
+            this.suoritustapa = suoritustapa;
+            this.kielet = kielet;
+            this.validointiKategoria = validointiKategoria;
         }
     }
 

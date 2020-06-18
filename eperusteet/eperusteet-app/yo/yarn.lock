@@ -303,10 +303,12 @@ angular-translate-loader-static-files@2.15.2:
   dependencies:
     angular-translate "~2.15.2"
 
-angular-translate@2.8.1:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/angular-translate/-/angular-translate-2.8.1.tgz#ba997c3557bc850c101a946b5938307c96971234"
-  integrity sha1-upl8NVe8hQwQGpRrWTgwfJaXEjQ=
+angular-translate@2.18.1:
+  version "2.18.1"
+  resolved "https://registry.yarnpkg.com/angular-translate/-/angular-translate-2.18.1.tgz#b29ed0d2f9bac44075e7aad3284166c59e150791"
+  integrity sha512-Mw0kFBqsv5j8ItL9IhRZunIlVmIRW6iFsiTmRs9wGr2QTt8z4rehYlWyHos8qnXc/kyOYJiW50iH50CSNHGB9A==
+  dependencies:
+    angular ">=1.2.26 <=1.7"
 
 angular-translate@~2.15.2:
   version "2.15.2"
@@ -341,7 +343,7 @@ angular-ui-utils@0.1.1:
   resolved "https://registry.yarnpkg.com/angular-ui-utils/-/angular-ui-utils-0.1.1.tgz#ff8b5c4abb2aebeb08ee05d09a78c4cfbfb65009"
   integrity sha1-/4tcSrsq6+sI7gXQmnjEz7+2UAk=
 
-angular@1.6.6, angular@>=1.0.6, "angular@>=1.2.26 <=1.6", angular@^1.0.8:
+angular@1.6.6, angular@>=1.0.6, "angular@>=1.2.26 <=1.6", "angular@>=1.2.26 <=1.7", angular@^1.0.8:
   version "1.6.6"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.6.tgz#fd5a3cfb437ce382d854ee01120797978527cb64"
   integrity sha1-/Vo8+0N844LYVO4BEgeXl4Uny2Q=

@@ -18,8 +18,8 @@ import _ from "lodash";
 import * as angular from "angular";
 
 const fi = require("../../localisation/locale-fi.json");
-const sv = require("../../localisation/locale-fi.json");
-const en = require("../../localisation/locale-fi.json");
+const sv = require("../../localisation/locale-sv.json");
+const en = require("../../localisation/locale-en.json");
 
 const Locales = {
     fi,

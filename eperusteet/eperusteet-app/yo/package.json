@@ -3,6 +3,7 @@
   "name": "yo",
   "private": true,
   "scripts": {
+    "copy": "cp -R ../../../eperusteet-ui/dist/ ./dist/uusi",
     "dev": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "unit": "jest --runInBand --no-cache --verbose",
@@ -32,7 +33,7 @@
     "angular-route": "1.6.6",
     "angular-sanitize": "1.6.6",
     "angular-spinner": "0.8.0",
-    "angular-translate": "2.8.1",
+    "angular-translate": "2.18.1",
     "angular-translate-loader-static-files": "2.15.2",
     "angular-ui-bootstrap": "2.5.0",
     "angular-ui-router": "0.4.2",
@@ -54,7 +55,6 @@
     "mathjax": "2.7.1",
     "moment": "2.22.2",
     "ng-file-upload": "12.2.13",
-    "node-gyp": "^5.0.3",
     "restangular": "1.6.1",
     "ui-select": "0.19.8",
     "webpack-bundle-size-analyzer": "2.7.0",
@@ -78,7 +78,6 @@
     "babel-preset-env": "1.6.1",
     "bootstrap": "3.3.7",
     "bootstrap-sass": "3.3.7",
-    "canvas": "2.0.1",
     "clean-webpack-plugin": "0.1.17",
     "copy-webpack-plugin": "4.0.1",
     "css-loader": "0.28.7",
@@ -90,7 +89,7 @@
     "image-webpack-loader": "3.4.2",
     "imports-loader": "0.7.1",
     "jest": "23.6.0",
-    "node-sass": "4.11.0",
+    "node-sass": "4.14.0",
     "nodemon": "1.12.1",
     "prettier": "1.6.1",
     "pug": "2.0.0-rc.4",
@@ -111,5 +110,8 @@
   },
   "engines": {
     "node": ">= 10.15.0"
+  },
+  "resolutions": {
+    "angular-translate/angular": "1.6.6"
   }
 }

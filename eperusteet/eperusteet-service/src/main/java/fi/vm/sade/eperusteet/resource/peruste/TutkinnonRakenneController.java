@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.Sortable;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -31,6 +32,7 @@ import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import io.swagger.annotations.Api;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @RestController
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}")
 @InternalApi
+@Api("TutkinnonRakenne")
 public class TutkinnonRakenneController {
 
     @Autowired
@@ -155,11 +158,28 @@ public class TutkinnonRakenneController {
 
     @RequestMapping(value = "/tutkinnonosat", method = GET)
     @ResponseBody
-    public ResponseEntity<List<TutkinnonOsaViiteDto>> getTutkinnonOsat(
+    public ResponseEntity<List<TutkinnonOsaViiteDto>> getPerusteenTutkinnonOsat(
         @PathVariable("perusteId") final Long id,
         @PathVariable final Suoritustapakoodi suoritustapakoodi
     ) {
         return CacheableResponse.create(perusteService.getPerusteVersion(id), 1, () -> perusteService.getTutkinnonOsat(id, suoritustapakoodi));
+    }
+
+    /**
+     * Järjestää tutkinnon suoritustavan tutkinnon osat
+     *
+     * @param id perusteen id
+     * @param suoritustapakoodi suoritustapa
+     * @return Tutkinnon osa lista
+     */
+    @RequestMapping(value = "/tutkinnonosat/jarjesta", method = POST)
+    @ResponseBody
+    @InternalApi
+    public ResponseEntity<List<Sortable>> sortPerusteenOsaViitteet(
+            @PathVariable("perusteId") final Long id,
+            @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+            List<Sortable> sorted) {
+        return ResponseEntity.ok(perusteenOsaViiteService.sort(id, suoritustapakoodi, sorted));
     }
 
     /**
@@ -180,7 +200,7 @@ public class TutkinnonRakenneController {
 
     @RequestMapping(value = "/tutkinnonosat/versiot/{versio}", method = GET)
     @ResponseBody
-    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(
+    public List<TutkinnonOsaViiteDto> getTutkinnonOsaVersiot(
             @PathVariable("perusteId") final Long id,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("versio") final Integer versio) {
@@ -257,5 +277,4 @@ public class TutkinnonRakenneController {
             @PathVariable("koodiUri") final String koodiUri) {
         return perusteService.getTutkinnonOsaViiteByKoodiUri(id, suoritustapakoodi, koodiUri);
     }
-
 }

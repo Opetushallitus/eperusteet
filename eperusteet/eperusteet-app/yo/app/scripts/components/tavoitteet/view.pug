@@ -16,8 +16,12 @@ mixin tavoite-naytto
     h4(kaanna="'laaja-alainen-osaaminen'")
     div(tag-cloud="tavoite.$osaaminen", openable="true", edit-mode="editing", add-label="lisaa-laaja-alainen-osaaminen")
 
+    h4(kaanna="'arvioinnin-kohde'")
+    p(kaanna="getArvioinninKohteenTeksti(tavoite) || 'ei-asetettu'")
+
     h4(kaanna="tavoite.arvioinninOtsikko || 'arviointi'")
     +arviointi
+    +vapaa-teksti
 
   .div(ng-hide="tavoite.$accordionOpen")
     .tavoite-collapser.action-link(ng-click="tavoite.$accordionOpen = true") …
@@ -25,23 +29,19 @@ mixin tavoite-naytto
 mixin arviointi
   table.table.table-default.table-bordered.perusopetuksen-arviointi
     thead
-      tr(ng-if="!editing")
-        th(ng-bind="tavoite.arvioinninKuvaus || 'arvioinnin-kohde' | kaanna")
-        th(ng-bind="tavoite.arvioinninOsaamisenKuvaus || 'arvion-hyva-osaaminen' | kaanna")
-      tr(ng-if="editing")
-        th
-          input.form-control(placeholder="{{'arvioinnin-kohde' | kaanna}}", slocalized, ng-model="tavoite.arvioinninKuvaus")
-        th
-          input.form-control(placeholder="{{'arvion-hyva-osaaminen' | kaanna}}", slocalized, ng-model="tavoite.arvioinninOsaamisenKuvaus")
-        th
+      tr
+        th(ng-bind="'osaamisen-kuvaus' | kaanna")
+        th(ng-bind="'arvion-kuvaus' | kaanna")
+        thead
     tbody
-      tr(ng-repeat="arvioinninKohde in tavoite.arvioinninkohteet")
+      tr(ng-repeat="arvioinninKohde in tavoite.arvioinninkohteet | orderBy:(!editing ? '-arvosana':'')")
         td
-          span(ng-if="!editing", kaanna="arvioinninKohde.arvioinninKohde")
-          input.form-control(ng-model='arvioinninKohde.arvioinninKohde', slocalized, ng-if="editing")
+          span(ng-if="!editing" kaanna="'osaamisen-kuvaus-arvosanalle_'+arvioinninKohde.arvosana")
+          select.form-control(ng-if="editing", ng-model='arvioinninKohde.arvosana')
+            option(ng-repeat="arvosana in arvosanat" ng-value="{{arvosana.numero}}") {{arvosana.teksti}}
         td
-          span(ng-if="!editing", kaanna="arvioinninKohde.hyvanOsaamisenKuvaus")
-          textarea.form-control.msd-elastic(ng-model='arvioinninKohde.hyvanOsaamisenKuvaus', slocalized , ng-if="editing")
+          span(ng-if="!editing", kaanna="arvioinninKohde.osaamisenKuvaus")
+          textarea.form-control.msd-elastic(ng-model='arvioinninKohde.osaamisenKuvaus', slocalized , ng-if="editing")
         td(ng-if="editing")
           a(icon-role="remove", ng-click="removeArvioinninKohde(tavoite, $index)", title="{{'poista' | kaanna}}", style="cursor: pointer;")
 
@@ -62,10 +62,19 @@ mixin tavoite-muokkaus
   h4(kaanna="'laaja-alainen-osaaminen'")
   div(tag-cloud="tavoite.$osaaminen", openable="true", edit-mode="editing", add-label="lisaa-laaja-alainen-osaaminen")
 
+  h4(kaanna="'arvioinnin-kohde'")
+  input.form-control(ng-model="tavoite.arvioinninKuvaus", slocalized, placeholder="{{'arvioinnin-kohde' | kaanna}}")
+
   h4(kaanna="'arviointi'")
   input.form-control(ng-model="tavoite.arvioinninOtsikko", slocalized, placeholder="{{'arvioinnin-otsikko' | kaanna}}")
   br
   +arviointi
+  +vapaa-teksti
+
+mixin vapaa-teksti
+  h4(ng-if="editing || tavoite.vapaaTeksti", kaanna="'vapaa-tekstisisalto'")
+  input.form-control(ng-if="editing", ng-model="tavoite.vapaaTeksti", slocalized, placeholder="{{'vapaa-tekstisisalto' | kaanna}}")
+  p(ng-if="!editing && tavoite.vapaaTeksti", kaanna="tavoite.vapaaTeksti")
 
 mixin tavoite-sisalto
   .tavoite-sisalto
@@ -74,7 +83,6 @@ mixin tavoite-sisalto
 
     .div(ng-if="editing")
       +tavoite-muokkaus
-
 
 mixin tavoite
   +tavoite-painikkeet

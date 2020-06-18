@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
@@ -29,8 +31,10 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -46,6 +50,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
@@ -59,35 +64,49 @@ import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.*;
 
 /**
  *
  * @author jhyoty
  */
 
+@Slf4j
 @Service
 @Transactional
 public class PerusteServiceImpl implements PerusteService, ApplicationListener<PerusteUpdatedEvent> {
@@ -135,6 +154,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private KoodiRepository koodiRepository;
+
+    @Autowired
+    private TekstikappaleRepository tekstikappaleRepository;
+
+    @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
 
     @Autowired
     PerusteService self;
@@ -206,6 +231,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private LiiteRepository liiteRepository;
+
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
+
+    @Autowired
+    private TermistoService termistoService;
+
+    private final ObjectMapper objectMapper = InitJacksonConverter.createImportExportMapper();
 
     @Override
     public List<PerusteDto> getUusimmat(Set<Kieli> kielet) {
@@ -639,9 +672,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-//    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS') " +
-//            "or hasPermission(#event.perusteId, 'peruste', 'TILANVAIHTO')")
-    public void onApplicationEvent(@P("event") PerusteUpdatedEvent event) {
+    public void onApplicationEvent(PerusteUpdatedEvent event) {
         Peruste peruste = perusteRepository.findOne(event.getPerusteId());
         if (peruste == null) {
             return;
@@ -692,6 +723,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setKoulutukset(null);
             current.setMaarayskirje(null);
             current.setMuutosmaaraykset(null);
+            current.setKoulutustyyppi(updated.getKoulutustyyppi());
+            current.setOppaanPerusteet(updated.getOppaanPerusteet());
+            current.setOppaanKoulutustyypit(updated.getOppaanKoulutustyypit());
             perusteRepository.save(current);
         }
         else {
@@ -733,20 +767,38 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 for (Muutosmaarays muutosmaarays : updated.getMuutosmaaraykset()) {
                     Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
                     Map<Kieli, Liite> tempLiitteet = new HashMap<>();
-                    liitteet.forEach((kieli, liiteId) -> {
-                        Liite liite = liiteRepository.findOne(perusteId, liiteId.getId());
-                        if (liite != null) {
-                            tempLiitteet.put(kieli, liite);
-                        }
-                    });
+                    if (muutosmaarays.getLiitteet() != null) {
+                        liitteet.forEach((kieli, liiteId) -> {
+                            Liite liite = liiteRepository.findOne(perusteId, liiteId.getId());
+                            if (liite != null) {
+                                tempLiitteet.put(kieli, liite);
+                            }
+                        });
 
-                    muutosmaarays.setPeruste(current);
-                    muutosmaarays.setLiitteet(tempLiitteet);
+                        muutosmaarays.setPeruste(current);
+                        muutosmaarays.setLiitteet(tempLiitteet);
+                    }
                 }
             }
 
-            if (!current.getKoulutustyyppi().equals(updated.getKoulutustyyppi())) {
-                throw new BusinessRuleViolationException("Koulutustyyppiä ei voi vaihtaa");
+            if (!Objects.equals(current.getKoulutustyyppi(), updated.getKoulutustyyppi())) {
+                ArrayList<String> lukioKoulutustyypit = new ArrayList<>();
+                lukioKoulutustyypit.add(LUKIOKOULUTUS.toString());
+                lukioKoulutustyypit.add(AIKUISTENLUKIOKOULUTUS.toString());
+                lukioKoulutustyypit.add(LUKIOVALMISTAVAKOULUTUS.toString());
+
+                // Sallitaan jos sama sisältörakenne
+                if (lukioKoulutustyypit.contains(current.getKoulutustyyppi()) || lukioKoulutustyypit.contains(updated.getKoulutustyyppi())) {
+                    if (lukioKoulutustyypit.contains(current.getKoulutustyyppi()) && lukioKoulutustyypit.contains(updated.getKoulutustyyppi())) {
+                    // noop
+                    } else {
+                        throw new BusinessRuleViolationException("Koulutustyypin sisällön rakenne täytyy olla sama");
+                    }
+                }
+            }
+
+            if (!Objects.equals(current.getToteutus(), updated.getToteutus())) {
+                throw new BusinessRuleViolationException("Toteutustyyppiä ei voi vaihtaa");
             }
 
             if (current.getTila() == PerusteTila.VALMIS) {
@@ -768,6 +820,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
                 current.setPaatospvm(updated.getPaatospvm());
                 current.setKoulutusvienti(updated.isKoulutusvienti());
+                current.setKoulutustyyppi(updated.getKoulutustyyppi());
             }
         }
         perusteRepository.save(current);
@@ -800,6 +853,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         perusteRepository.save(current);
+        muokkausTietoService.addOpsMuokkausTieto(id, current, MuokkausTapahtuma.PAIVITYS);
+
         return mapper.map(current, PerusteDto.class);
     }
 
@@ -813,6 +868,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setNimi(updated.getNimi());
         current.setPaatospvm(updated.getPaatospvm());
         current.setKoulutusvienti(updated.isKoulutusvienti());
+        current.setKoulutustyyppi(updated.getKoulutustyyppi());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
             throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");
@@ -1087,7 +1143,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         updateAllTutkinnonOsaJarjestys(perusteId, updated);
         return updated;
     }
-    
+
     private Stream<AbstractRakenneOsaDto> haeUniikitTutkinnonOsaViitteet(AbstractRakenneOsaDto root) {
         if (root instanceof RakenneModuuliDto) {
             return Stream.concat(Stream.of(root), ((RakenneModuuliDto) root).getOsat().stream()
@@ -1098,6 +1154,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
+    @Override
     @Transactional
     public void updateAllTutkinnonOsaJarjestys(Long perusteId, RakenneModuuliDto rakenne) {
         // Lista tutkinnon osista tutkinnon muodostumisen mukaan
@@ -1421,7 +1478,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
-    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId) {
+    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId) {
         return doGetTutkintonimikeKoodit(perusteId);
     }
 
@@ -1451,11 +1508,89 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public PerusteprojektiImportDto getPerusteExport(Long perusteId) {
+    public void exportPeruste(Long perusteId, ZipOutputStream zipOutputStream) throws IOException {
         Peruste peruste = perusteRepository.getOne(perusteId);
-        PerusteprojektiLuontiDto projekti = mapper.map(peruste.getPerusteprojekti(), PerusteprojektiLuontiDto.class);
-        PerusteKaikkiDto data = getKokoSisalto(perusteId);
-        return new PerusteprojektiImportDto(projekti, data);
+        PerusteprojektiLuontiDto projektiDto = mapper.map(peruste.getPerusteprojekti(), PerusteprojektiLuontiDto.class);
+        PerusteKaikkiDto perusteDto = getKokoSisalto(perusteId);
+
+        // Perusteprojekti
+        zipOutputStream.putNextEntry(new ZipEntry("perusteprojekti.json"));
+        objectMapper.writeValue(zipOutputStream, projektiDto);
+
+        // Peruste
+        zipOutputStream.putNextEntry(new ZipEntry("peruste.json"));
+        objectMapper.writeValue(zipOutputStream, perusteDto);
+
+        // Termit
+        List<TermiDto> termit = termistoService.getTermit(perusteId);
+        zipOutputStream.putNextEntry(new ZipEntry("termit.json"));
+        objectMapper.writeValue(zipOutputStream, termit);
+
+        // Liitteet
+        List<Liite> liitteet = this.liitteet.findByPerusteId(perusteId);
+        zipOutputStream.putNextEntry(new ZipEntry("liitteet.json"));
+        objectMapper.writeValue(zipOutputStream, mapper.mapAsList(liitteet, LiiteDto.class));
+
+        for (Liite liite : liitteet) {
+            try {
+                Blob data = liite.getData();
+                MimeTypes mimeTypes = MimeTypes.getDefaultMimeTypes();
+                String extension = mimeTypes.forName(liite.getMime()).getExtension();
+                zipOutputStream.putNextEntry(new ZipEntry("liitetiedostot/" + liite.getId() + extension));
+                IOUtils.copy(data.getBinaryStream(), zipOutputStream);
+            } catch (MimeTypeException | SQLException e) {
+                log.error(e.getLocalizedMessage(), e);
+            }
+        }
+    }
+
+    @Override
+    public void importPeruste(MultipartHttpServletRequest request) throws IOException {
+        PerusteprojektiLuontiDto perusteprojektiDto = null;
+        PerusteKaikkiDto perusteKaikkiDto = null;
+        List<TermiDto> termit = new ArrayList<>();
+        HashMap<UUID, byte[]> liitetiedostot = new HashMap<>();
+        List<LiiteDto> liitteet = new ArrayList<>();
+
+        Iterator<String> it = request.getFileNames();
+        while (it.hasNext()) {
+            ZipInputStream zipInputStream = new ZipInputStream(request.getFile(it.next()).getInputStream());
+            ZipEntry entry;
+            while((entry = zipInputStream.getNextEntry()) != null) {
+                String entryName = entry.getName();
+
+                if (entryName.startsWith("liitetiedostot/")) {
+                    // Käytetään tiedostonimestä otettua UUID:tä
+                    UUID uuid = UUID.fromString(FilenameUtils.removeExtension(new File(entry.getName()).getName()));
+                    liitetiedostot.put(uuid, IOUtils.toByteArray(zipInputStream));
+                    continue;
+                }
+
+                switch (entryName) {
+                    case "perusteprojekti.json":
+                        perusteprojektiDto = objectMapper.readValue(zipInputStream, PerusteprojektiLuontiDto.class);
+                        break;
+                    case "peruste.json":
+                        perusteKaikkiDto = objectMapper.readValue(zipInputStream, PerusteKaikkiDto.class);
+                        break;
+                    case "termit.json":
+                        termit = objectMapper.readValue(zipInputStream, new TypeReference<List<TermiDto>>(){});
+                        break;
+                    case "liitteet.json":
+                        liitteet = objectMapper.readValue(zipInputStream, new TypeReference<List<LiiteDto>>(){});
+                        break;
+                    default:
+                        log.warn("Tuntematon tiedosto: " + entryName);
+                        break;
+                }
+            }
+
+            zipInputStream.close();
+        }
+
+        PerusteprojektiImportDto importDto = new PerusteprojektiImportDto(perusteprojektiDto, perusteKaikkiDto, termit, liitetiedostot, liitteet);
+        dispatcher.get(importDto.getPeruste(), PerusteImport.class)
+                .tuoPerusteprojekti(importDto);
     }
 
     private Peruste getPeruste(Long perusteId) {
@@ -1478,7 +1613,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
             pov.setVanhempi(sisalto);
             sisalto.getLapset().add(pov);
-        } else if (KoulutusTyyppi.LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+        } else if ((LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+                || AIKUISTENLUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+                || LUKIOVALMISTAVAKOULUTUS.toString().equals(peruste.getKoulutustyyppi()))
                 && KoulutustyyppiToteutus.LOPS2019.equals(peruste.getToteutus())) {
             // noop
         }
@@ -1572,9 +1709,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 || koulutustyyppi == KoulutusTyyppi.LISAOPETUS
                 || koulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
             peruste.setSisalto(new EsiopetuksenPerusteenSisalto());
-        } else if (koulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS
-                || koulutustyyppi == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS
-                || koulutustyyppi == KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS) {
+        } else if (koulutustyyppi == LUKIOKOULUTUS
+                || koulutustyyppi == AIKUISTENLUKIOKOULUTUS
+                || koulutustyyppi == LUKIOVALMISTAVAKOULUTUS) {
             if (KoulutustyyppiToteutus.LOPS2019.equals(toteutus)) {
                 st = suoritustapaService.createSuoritustapa(Suoritustapakoodi.LUKIOKOULUTUS2019, LaajuusYksikko.OPINTOPISTE);
                 Lops2019Sisalto sisalto = new Lops2019Sisalto();
@@ -1899,13 +2036,45 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         kvliiteDto.setMuodostumisenKuvaus(muodostumistenKuvaukset);
 
         if (!ObjectUtils.isEmpty(peruste.getKoulutukset())) {
-            kvliiteDto.setTasot(haeTasot(peruste));
+            kvliiteDto.setTasot(haeTasot(peruste.getId(), peruste));
         }
 
         return kvliiteDto;
     }
 
-    private List<KVLiiteTasoDto> haeTasot(Peruste peruste) {
+    @Override
+    public PerusteDto updateKvLiite(Long id, KVLiiteJulkinenDto kvliiteDto) {
+        Peruste current = perusteRepository.findOne(id);
+
+        KVLiite liite = current.getKvliite();
+
+        if (current.getKvliite() == null) {
+            liite = mapper.map(kvliiteDto, KVLiite.class);
+            liite.setPeruste(current);
+            liite = kvliiteRepository.save(liite);
+            current.setKvliite(liite);
+        }
+        else if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
+            throw new BusinessRuleViolationException("virheellinen-liite");
+        }
+        else {
+            kvliiteDto.setId(liite.getId());
+            mapper.map(kvliiteDto, liite);
+        }
+
+        muokkausTietoService.addOpsMuokkausTieto(id, current, MuokkausTapahtuma.PAIVITYS);
+
+        return mapper.map(current, PerusteDto.class);
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    public List<KVLiiteTasoDto> haeTasot(Long perusteId, Peruste peruste) {
+
+        if (ObjectUtils.isEmpty(peruste.getKoulutukset())) {
+            return Collections.emptyList();
+        }
+
         Set<String> tasokoodiFilter = new HashSet<>();
         return peruste.getKoulutukset().stream()
                 .map(Koulutus::getKoulutuskoodiUri)
@@ -1978,7 +2147,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    @Cacheable("peruste-navigation")
+//    @Cacheable("peruste-navigation")
     public NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilder.class)
                 .buildNavigation(perusteId);
@@ -2018,5 +2187,44 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public NavigationNodeDto buildNavigation(Long perusteId) {
         Peruste peruste = getPeruste(perusteId);
         return self.buildNavigationWithDate(perusteId, peruste.getGlobalVersion().getAikaleima());
+    }
+
+    @Override
+    public List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi) {
+        List<TekstiKappale> tekstiKappales = tekstikappaleRepository.findByKooditUri(koodi);
+        return tekstikappaleidenPerusteet(tekstiKappales);
+    }
+
+    @Override
+    public List<PerusteKevytDto> getAllOppaidenPerusteet() {
+        List<Peruste> oppaidenPerusteet = perusteRepository.findOppaidenPerusteet();
+        return mapper.mapAsList(oppaidenPerusteet, PerusteKevytDto.class);
+    }
+
+    private List<PerusteTekstikappaleillaDto> tekstikappaleidenPerusteet(List<TekstiKappale> osat) {
+
+        Map<Peruste, List<TekstiKappale>> tekstikappaleetPerusteilla = new HashMap<>();
+        osat.forEach(osa -> {
+            List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
+            Set<Peruste> perusteet = roots.isEmpty() ? Collections.emptySet() : perusteRepository.findPerusteetBySisaltoRoots(roots, PerusteTila.VALMIS);
+
+            perusteet.forEach(peruste -> {
+                if (tekstikappaleetPerusteilla.get(peruste) == null) {
+                    tekstikappaleetPerusteilla.put(peruste, new ArrayList<>());
+                }
+                tekstikappaleetPerusteilla.get(peruste).add(osa);
+            });
+
+        });
+
+        List<PerusteTekstikappaleillaDto> perusteetTekstikappaleilla = new ArrayList<>();
+        tekstikappaleetPerusteilla.forEach((peruste, tekstikappaleet) -> {
+            perusteetTekstikappaleilla.add(PerusteTekstikappaleillaDto.builder()
+                    .peruste(mapper.map(peruste, PerusteDto.class))
+                    .tekstikappeet(mapper.mapAsList(tekstikappaleet, TekstiKappaleDto.class))
+                    .build());
+        });
+
+        return perusteetTekstikappaleilla;
     }
 }

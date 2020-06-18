@@ -17,6 +17,9 @@
 package fi.vm.sade.eperusteet.dto.opas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,4 +31,9 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class OpasLuontiDto extends OpasDto {
+
+    private Long pohjaId;
+    private Set<PerusteKevytDto> oppaanPerusteet;
+    private Set<KoulutusTyyppi> oppaanKoulutustyypit;
+
 }

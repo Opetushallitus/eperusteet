@@ -48,18 +48,26 @@ public class GeneerinenArviointiasteikko extends AbstractAuditedReferenceableEnt
     private Set<GeneerisenOsaamistasonKriteeri> osaamistasonKriteerit = new HashSet<>();
 
     @Getter
+    @Setter
     private boolean julkaistu;
 
-    public void setJulkaistu(boolean julkaistu) {
-        if (!this.julkaistu) {
-            this.julkaistu = julkaistu;
-        }
-    }
+    @Getter
+    @Setter
+    private boolean valittavissa = true;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @Getter
+    @Setter
+    @CollectionTable(name = "geneerinenarviointiasteikko_koulutustyyppi")
+    @Column(name = "koulutustyyppi")
+    private Set<KoulutusTyyppi> koulutustyypit;
 
     @Override
     public GeneerinenArviointiasteikko copy(boolean deep) {
         GeneerinenArviointiasteikko uusi = new GeneerinenArviointiasteikko();
         uusi.setJulkaistu(false);
+        uusi.setValittavissa(true);
         uusi.setArviointiAsteikko(this.arviointiAsteikko);
         uusi.setNimi(this.getNimi());
         uusi.setKohde(this.getKohde());

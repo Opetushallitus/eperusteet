@@ -66,6 +66,15 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
         "WHERE p.tila = ?2 AND (s.sisalto.id IN (?1) OR ps.sisalto.id IN (?1) OR eps.sisalto.id IN (?1) OR ls.id IN (?1) )")
     Set<Long> findBySisaltoRoots(Iterable<? extends Number> rootIds, PerusteTila tila);
 
+    @Query("SELECT p FROM Peruste p " +
+            "LEFT JOIN p.suoritustavat s " +
+            "LEFT JOIN p.perusopetuksenPerusteenSisalto ps " +
+            "LEFT JOIN p.lukiokoulutuksenPerusteenSisalto ls " +
+            "LEFT JOIN p.esiopetuksenPerusteenSisalto eps " +
+            "LEFT JOIN p.oppaanSisalto opp " +
+            "WHERE p.tila = ?2 AND (s.sisalto.id IN (?1) OR ps.sisalto.id IN (?1) OR eps.sisalto.id IN (?1) OR ls.id IN (?1) OR opp.sisalto.id IN (?1))")
+    Set<Peruste> findPerusteetBySisaltoRoots(Iterable<? extends Number> rootIds, PerusteTila tila);
+
     @Query("SELECT DISTINCT p.id FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat to WHERE p.tila = ?2 AND to.tutkinnonOsa.id = ?1")
     Set<Long> findByTutkinnonosaId(Long id, PerusteTila tila);
 
@@ -82,19 +91,33 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("select p from Peruste p where p.tila = 'VALMIS' AND p.tyyppi = 'NORMAALI' AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18')")
     List<Peruste> findAllAmosaa();
 
-    @Query("SELECT p FROM Peruste p " +
+    @Query("SELECT DISTINCT p FROM Peruste p " +
+            "JOIN FETCH p.suoritustavat s " +
+            "JOIN FETCH s.tutkinnonOsat t " +
             "WHERE p.perusteprojekti.tila = :projektitila " +
-            "AND tyyppi = :perustetyyppi " +
-            "AND koulutustyyppi IN :koulutustyypit")
-    List<Peruste> findByTilaTyyppiKoulutustyyppi(
-            @Param("projektitila") ProjektiTila projektitila, @Param("perustetyyppi") PerusteTyyppi perustetyyppi, @Param("koulutustyypit") List<String> koulutustyypit);
+            "AND p.globalVersion.aikaleima >= :aikaleima " +
+            "AND p.tyyppi = :perustetyyppi " +
+            "AND p.koulutustyyppi IN (:koulutustyypit) " +
+            "AND s.suoritustapakoodi = :suoritustapakoodi " +
+            "AND t.tutkinnonOsa.ammattitaitovaatimukset2019 IS NOT NULL")
+    List<Peruste> findAmmattitaitovaatimusPerusteelliset(
+            @Param("projektitila") ProjektiTila projektitila, @Param("aikaleima") Date aikaleima, @Param("perustetyyppi") PerusteTyyppi perustetyyppi,
+            @Param("koulutustyypit") List<String> koulutustyypit, @Param("suoritustapakoodi") Suoritustapakoodi suoritustapakoodi);
 
-    @Query("SELECT p FROM Peruste p " +
+    @Query("SELECT DISTINCT p FROM Peruste p " +
+            "JOIN FETCH p.suoritustavat s " +
+            "JOIN FETCH s.tutkinnonOsat t " +
             "WHERE p.perusteprojekti.tila = :projektitila " +
-            "AND globalVersion.aikaleima >= :aikaleima " +
-            "AND tyyppi = :perustetyyppi " +
-            "AND koulutustyyppi IN (:koulutustyypit)")
-    List<Peruste> findByTilaVersioaikaleimaTyyppiKoulutustyyppi(
-            @Param("projektitila") ProjektiTila projektitila, @Param("aikaleima") Date aikaleima, @Param("perustetyyppi") PerusteTyyppi perustetyyppi, @Param("koulutustyypit") List<String> koulutustyypit);
+            "AND p.globalVersion.aikaleima >= :aikaleima " +
+            "AND p.tyyppi = :perustetyyppi " +
+            "AND p.koulutustyyppi IN (:koulutustyypit)")
+    List<Peruste> findByTilaAikaTyyppiKoulutustyyppi(
+            @Param("projektitila") ProjektiTila projektitila, @Param("aikaleima") Date aikaleima, @Param("perustetyyppi") PerusteTyyppi perustetyyppi,
+            @Param("koulutustyypit") List<String> koulutustyypit);
+
+    Peruste findByPerusteprojektiId(Long id);
+
+    @Query("SELECT DISTINCT p.oppaanPerusteet FROM Peruste p JOIN p.oppaanPerusteet op WHERE size(p.oppaanPerusteet) > 0 AND op.tila = 'VALMIS'")
+    List<Peruste> findOppaidenPerusteet();
 
 }

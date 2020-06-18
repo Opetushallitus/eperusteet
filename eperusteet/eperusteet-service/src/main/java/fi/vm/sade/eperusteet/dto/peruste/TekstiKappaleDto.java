@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +37,7 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto teksti;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private KoodiDto osaamisala;
+    private List<KoodiDto> koodit;
     private Boolean liite;
 
     public TekstiKappaleDto() {

@@ -167,7 +167,7 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    public KommenttiDto update(Long kommenttiId, @P("kommenttidto") final KommenttiDto kommenttidto) {
+    public KommenttiDto update(Long kommenttiId, final KommenttiDto kommenttidto) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
         permissionChecker.checkPermission(kommentti.getPerusteprojektiId(), PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.LUKU);

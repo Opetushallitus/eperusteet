@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -26,13 +27,13 @@ import fi.vm.sade.eperusteet.dto.KoulutusDto;
 import fi.vm.sade.eperusteet.dto.MuutosmaaraysDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
+import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
-import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,7 +57,7 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     private Set<Kieli> kielet;
     private LokalisoituTekstiDto kuvaus;
     private MaarayskirjeDto maarayskirje;
-    private List<MuutosmaaraysDto> muutosmaaraykset;
+    private List<MuutosmaaraysDto> muutosmaaraykset = new ArrayList<>();
 
     private String diaarinumero;
     private Date voimassaoloAlkaa;
@@ -80,6 +81,15 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<TutkintonimikeKoodiDto> tutkintonimikkeet;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Set<PerusteKevytDto> oppaanPerusteet;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Set<KoulutusTyyppi> oppaanKoulutustyypit;
+
+    private Set<PerusteAikatauluDto> perusteenAikataulut;
+
+    @Override
     public KoulutustyyppiToteutus getToteutus() {
         return PerusteUtils.getToteutus(this.toteutus, this.koulutustyyppi, this.tyyppi);
     }

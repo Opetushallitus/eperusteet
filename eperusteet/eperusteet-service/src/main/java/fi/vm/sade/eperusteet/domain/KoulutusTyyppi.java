@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Arrays;
 import java.util.List;
-
 /**
  *
  * @author nkala

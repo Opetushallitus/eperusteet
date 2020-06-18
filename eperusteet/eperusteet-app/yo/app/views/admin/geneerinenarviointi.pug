@@ -49,6 +49,15 @@
                   ng-click="lisaaKriteeri(ot)",
                   kaanna="'lisaa-kriteeri'")
 
+        .koulutustyypit(ng-if="geneerinen.koulutustyypit.length > 0 || !geneerinen.julkaistu")
+          label(kaanna="'koulutustyypit'")
+          .checkbox(ng-if="!geneerinen.julkaistu" ng-repeat="kt in geneerinen.koulutustyyppivalinnat")
+            label
+              input(type="checkbox" ng-model="kt.selected" value="kt.value" ng-change="updateKoulutustyypit(kt, geneerinen)")
+              span(ng-bind="kt.label")
+          .koulutustyyppi(ng-if="geneerinen.julkaistu" ng-repeat="kt in geneerinen.koulutustyypit")
+            span(ng-bind="kt | kaanna")
+
         .actions
           button.btn.btn-default(
             ng-hide="geneerinen.julkaistu",
@@ -61,6 +70,11 @@
             kaanna="'kopioi'")
 
           button.btn.btn-default(
+            ng-show="geneerinen.julkaistu",
+            ng-click="avaa(geneerinen)",
+            kaanna="'avaa'")
+
+          button.btn.btn-default(
             ng-show="!geneerinen.julkaistu",
             ng-click="paivita(geneerinen)",
             kaanna="'tallenna'")
@@ -69,6 +83,16 @@
             ng-show="!geneerinen.julkaistu",
             ng-click="julkaise(geneerinen)",
             kaanna="'julkaise'")
+
+          button.btn.btn-default(
+            ng-show="geneerinen.valittavissa && geneerinen.julkaistu",
+            ng-click="poistaValittavuus(geneerinen)",
+            kaanna="'poista-valittavista'")
+
+          button.btn.btn-default(
+            ng-show="!geneerinen.valittavissa && geneerinen.julkaistu",
+            ng-click="lisaaValittavuus(geneerinen)",
+            kaanna="'lisaa-valittavaksi'")
 
 
   hr

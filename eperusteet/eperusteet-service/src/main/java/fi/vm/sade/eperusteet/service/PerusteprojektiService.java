@@ -22,7 +22,6 @@ import fi.vm.sade.eperusteet.dto.KoulutuskoodiStatusDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.validointi.ValidationDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
@@ -115,11 +114,11 @@ public interface PerusteprojektiService {
     List<PerusteenOsaTyoryhmaDto> getSisallonTyoryhmat(@P("id") Long perusteProjektiId);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    Page<ValidationDto> getVirheelliset(PageRequest p);
+    Page<TilaUpdateStatus> getVirheelliset(PageRequest p);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     Page<KoulutuskoodiStatusDto> getKoodiongelmat(PageRequest p);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
-    TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila);
+    TilaUpdateStatus validoiProjekti(@P("id") Long id, ProjektiTila tila);
 }

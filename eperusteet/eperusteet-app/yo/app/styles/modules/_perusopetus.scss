@@ -114,13 +114,21 @@ $osiot-box-height: 48px;
 $index-bubble-size: 24px;
 $tag-height: 28px;
 $tag-color: #fee7a4;
+
+.vapaateksti {
+    margin-bottom: 20px;
+}
+
 .opetuksen-tavoitteet {
     .arvioinnin-otsikko {
+        margin-bottom: 10px;
+        display: inline-block;
+        width: 100%;
+
         label {
             padding-top: 5px;
             float: left;
             width: 20%;
-            margin-bottom: 20px;
         }
         .arvioinnin-muokkaus-kentta {
             float: left;
@@ -143,6 +151,10 @@ $tag-color: #fee7a4;
     .added {
         opacity: 0.3;
         cursor: default;
+    }
+
+    .muokkausnappi {
+        margin-top: 10px;
     }
 }
 

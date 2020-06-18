@@ -97,7 +97,7 @@ public class TiedoteServiceImpl implements TiedoteService {
 
     @Override
     @Transactional(readOnly = true)
-    public TiedoteDto getTiedote(@P("tiedoteId") Long tiedoteId) {
+    public TiedoteDto getTiedote(Long tiedoteId) {
         Tiedote tiedote = repository.findOne(tiedoteId);
         TiedoteDto tdto = mapper.map(tiedote, TiedoteDto.class);
         if (tdto != null && SecurityUtil.isAuthenticated()) {
@@ -121,6 +121,7 @@ public class TiedoteServiceImpl implements TiedoteService {
         Tiedote tiedote = repository.findOne(tiedoteDto.getId());
         assertExists(tiedote, "Päivitettävää tietoa ei ole olemassa");
         mapper.map(tiedoteDto, tiedote);
+        tiedote.preupdate();
         tiedote = repository.save(tiedote);
         return mapper.map(tiedote, TiedoteDto.class);
     }

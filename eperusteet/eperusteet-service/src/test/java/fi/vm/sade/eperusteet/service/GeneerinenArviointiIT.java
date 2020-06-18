@@ -1,11 +1,16 @@
 package fi.vm.sade.eperusteet.service;
 
+import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
 import fi.vm.sade.eperusteet.dto.GeneerisenArvioinninOsaamistasonKriteeriDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -14,15 +19,23 @@ import org.springframework.test.annotation.Rollback;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Transactional
 @DirtiesContext
+@ActiveProfiles(profiles = {"test", "realPermissions"})
 public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
 
     @Autowired
     private GeneerinenArviointiasteikkoService geneerinenArviointiasteikkoService;
+
+    @Autowired
+    private GeneerinenArviointiasteikkoRepository geneerinenArviointiasteikkoRepository;
 
     @Test
     @Rollback
@@ -48,6 +61,7 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
                 .nimi(LokalisoituTekstiDto.of("otsikko"))
                 .kohde(LokalisoituTekstiDto.of("otsikko"))
                 .osaamistasonKriteerit(kriteerit)
+                .koulutustyypit(Sets.newHashSet(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO, KoulutusTyyppi.PERUSTUTKINTO))
                 .build();
 
         GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
@@ -56,48 +70,80 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         assertThat(geneerinen.getArviointiAsteikko()).isNotNull();
         assertThat(geneerinen.getKohde()).isNotNull();
         assertThat(geneerinen.getOsaamistasonKriteerit()).hasSize(3);
+        assertThat(geneerinen.getKoulutustyypit()).hasSize(2);
+        assertThat(geneerinen.getKoulutustyypit()).containsExactlyInAnyOrder(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO, KoulutusTyyppi.PERUSTUTKINTO);
+
     }
 
     @Test
     @Rollback
     public void testJulkaisu() {
-        ArviointiAsteikkoDto asteikko = addArviointiasteikot();
-
-        Set<GeneerisenArvioinninOsaamistasonKriteeriDto> kriteerit = Stream.of(
-                GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
-                        .osaamistaso(Reference.of(asteikko.getOsaamistasot().get(0).getId()))
-                        .build(),
-                GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
-                        .osaamistaso(Reference.of(asteikko.getOsaamistasot().get(1).getId()))
-                        .kriteerit(Stream.of(
-                                LokalisoituTekstiDto.of("a"),
-                                LokalisoituTekstiDto.of("b"),
-                                LokalisoituTekstiDto.of("c"))
-                                .collect(Collectors.toList()))
-                        .build())
-                .collect(Collectors.toSet());
-
-        GeneerinenArviointiasteikkoDto geneerinenDto = GeneerinenArviointiasteikkoDto.builder()
-                .arviointiAsteikko(Reference.of(asteikko.getId()))
-                .nimi(LokalisoituTekstiDto.of("otsikko"))
-                .kohde(LokalisoituTekstiDto.of("otsikko"))
-                .osaamistasonKriteerit(kriteerit)
-                .build();
-
+        GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(0);
         GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
 
         geneerinen.setJulkaistu(true);
         GeneerinenArviointiasteikkoDto julkaistu = geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
-
         assertThat(julkaistu.isJulkaistu()).isTrue();
+    }
 
-        assertThatThrownBy(() -> {
-            geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
-        }).hasMessage("julkaistua-ei-voi-muokata");
+    @Test
+    @Rollback
+    public void testValittavissa() {
+        GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(0);
+        GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
 
-        assertThatThrownBy(() -> {
+        assertThat(geneerinen.isValittavissa()).isFalse();
+
+        geneerinen.setValittavissa(true);
+        GeneerinenArviointiasteikkoDto valittavissa = geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
+        assertThat(valittavissa.isValittavissa()).isTrue();
+    }
+
+    @Test
+    @Rollback
+    public void testPoisto() {
+        TestTransaction.end();
+        loginAsUser("test");
+
+        {
+            TestTransaction.start();
+            TestTransaction.flagForRollback();
+
+            geneerinenArviointiasteikkoService.add(buildGeneerinenArviointiasteikkoDto(0));
+            GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(10);
+            GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
+
             geneerinenArviointiasteikkoService.remove(geneerinen.getId());
-        }).hasMessage("julkaistua-ei-voi-muokata");
+            assertThat(geneerinenArviointiasteikkoRepository.findOne(geneerinen.getId())).isNull();
+            assertThat(geneerinenArviointiasteikkoRepository.count()).isEqualTo(1);
+            TestTransaction.end();
+        }
+
+        {
+            TestTransaction.start();
+            TestTransaction.flagForCommit();
+
+            geneerinenArviointiasteikkoService.add(buildGeneerinenArviointiasteikkoDto(0));
+            geneerinenArviointiasteikkoService.add(buildGeneerinenArviointiasteikkoDto(10));
+            GeneerinenArviointiasteikkoDto geneerinenNotDelete = geneerinenArviointiasteikkoService.add(buildGeneerinenArviointiasteikkoDto(20));
+            geneerinenNotDelete.setJulkaistu(true);
+            geneerinenArviointiasteikkoService.update(geneerinenNotDelete.getId(), geneerinenNotDelete);
+
+            GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(30);
+            GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
+
+            geneerinen.setJulkaistu(true);
+            GeneerinenArviointiasteikkoDto julkaistu = geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
+            assertThat(julkaistu.isJulkaistu()).isTrue();
+
+            TestTransaction.end(); // commit jotta audit data ilmestyy tauluun
+
+            assertThatThrownBy(() -> {
+                geneerinenArviointiasteikkoService.remove(geneerinen.getId());
+            }).hasMessage("julkaistua-ei-voi-poistaa");
+
+            assertThat(geneerinenArviointiasteikkoRepository.count()).isEqualTo(4);
+        }
     }
 
     @Test
@@ -139,7 +185,33 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         GeneerinenArviointiasteikkoDto kopio = geneerinenArviointiasteikkoService.kopioi(geneerinen.getId());
         assertThat(kopio.getId()).isNotEqualTo(geneerinen.getId());
         assertThat(kopio.isJulkaistu()).isFalse();
+        assertThat(kopio.isValittavissa()).isTrue();
         assertThat(kopio.getOsaamistasonKriteerit()).hasSize(3);
+    }
+
+    private GeneerinenArviointiasteikkoDto buildGeneerinenArviointiasteikkoDto(long plusId) {
+        ArviointiAsteikkoDto asteikko = addArviointiasteikot(plusId);
+
+        Set<GeneerisenArvioinninOsaamistasonKriteeriDto> kriteerit = Stream.of(
+                GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
+                        .osaamistaso(Reference.of(asteikko.getOsaamistasot().get(0).getId()))
+                        .build(),
+                GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
+                        .osaamistaso(Reference.of(asteikko.getOsaamistasot().get(1).getId()))
+                        .kriteerit(Stream.of(
+                                LokalisoituTekstiDto.of("a"),
+                                LokalisoituTekstiDto.of("b"),
+                                LokalisoituTekstiDto.of("c"))
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toSet());
+
+        return GeneerinenArviointiasteikkoDto.builder()
+                .arviointiAsteikko(Reference.of(asteikko.getId()))
+                .nimi(LokalisoituTekstiDto.of("otsikko"))
+                .kohde(LokalisoituTekstiDto.of("otsikko"))
+                .osaamistasonKriteerit(kriteerit)
+                .build();
     }
 
 }

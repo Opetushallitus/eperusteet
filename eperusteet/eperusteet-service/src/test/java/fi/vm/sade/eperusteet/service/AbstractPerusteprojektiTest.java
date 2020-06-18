@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -72,6 +73,9 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
     @LockCtx(TutkinnonRakenneLockContext.class)
     protected LockService<TutkinnonRakenneLockContext> lockService;
 
+    @Autowired
+    TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
+
     protected Perusteprojekti projekti;
     protected Peruste peruste;
     protected Suoritustapa suoritustapa;
@@ -85,27 +89,30 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
         rakenne = suoritustapa.getRakenne();
     }
 
-
     protected ArviointiAsteikkoDto addArviointiasteikot() {
+        return addArviointiasteikot(0l);
+    }
+
+    protected ArviointiAsteikkoDto addArviointiasteikot(long plusId) {
         TekstiPalanen osaamistasoOtsikko = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko"));
         em.persist(osaamistasoOtsikko);
 
         List<Osaamistaso> osaamistasot = Stream.of(
                 Osaamistaso.builder()
-                        .id(2L)
+                        .id(2L + plusId)
                         .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 1")).build(),
                 Osaamistaso.builder()
-                        .id(3L)
+                        .id(3L + plusId)
                         .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 2")).build(),
                 Osaamistaso.builder()
-                        .id(4L)
+                        .id(4L + plusId)
                         .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 3")).build())
                 .peek(em::persist)
                 .collect(Collectors.toList());
 
 
         ArviointiAsteikko asteikko = ArviointiAsteikko.builder()
-                .id(1L)
+                .id(1L + plusId)
                 .osaamistasot(osaamistasot)
                 .build();
 
@@ -139,6 +146,10 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
     }
 
     protected PerusteenOsaViiteDto.Matala uusiTekstiKappale(LokalisoituTekstiDto nimi, LokalisoituTekstiDto teksti, KoodiDto osaamisala) {
+        return uusiTekstiKappale(nimi, teksti, osaamisala, null);
+    }
+
+    protected PerusteenOsaViiteDto.Matala uusiTekstiKappale(LokalisoituTekstiDto nimi, LokalisoituTekstiDto teksti, KoodiDto osaamisala, List<KoodiDto> koodit) {
         PerusteenOsaViiteDto.Matala pov = new PerusteenOsaViiteDto.Matala();
         TekstiKappaleDto tk = new TekstiKappaleDto();
         pov.setPerusteenOsa(tk);
@@ -148,6 +159,7 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
         tk.setNimi(nimi);
         tk.setTeksti(teksti);
         tk.setOsaamisala(osaamisala);
+        tk.setKoodit(koodit);
 
         perusteenOsaService.lock(tk.getId());
         perusteenOsaService.update(tk);
@@ -181,4 +193,18 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
         perusteRepository.save(peruste);
     }
 
+    protected void lisaaTutkintonimikkeet(Long id, Collection<String> koodiUris) {
+        Peruste peruste = perusteRepository.getOne(id);
+
+        koodiUris.forEach(koodiUri -> {
+            TutkintonimikeKoodi tutkintonimikeKoodi = new TutkintonimikeKoodi();
+            tutkintonimikeKoodi.setTutkintonimikeUri("tutkintonimike_" + koodiUri);
+            tutkintonimikeKoodi.setTutkintonimikeArvo(koodiUri);
+            tutkintonimikeKoodi.setTutkinnonOsaUri("tutkinnonosa_" + koodiUri);
+            tutkintonimikeKoodi.setOsaamisalaUri("osaamisala_" + koodiUri);
+            tutkintonimikeKoodi.setPeruste(peruste);
+
+            tutkintonimikeKoodiRepository.save(tutkintonimikeKoodi);
+        });
+    }
 }

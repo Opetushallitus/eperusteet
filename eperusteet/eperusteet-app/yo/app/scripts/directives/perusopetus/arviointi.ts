@@ -31,7 +31,19 @@ angular
             controller: "PerusopetuksenArviointiController"
         };
     })
-    .controller("PerusopetuksenArviointiController", function($scope) {
+    .controller("PerusopetuksenArviointiController", function($scope, Kaanna) {
+
+        $scope.arvosanat =  [5,6,7,8,9,10].map(numero => {
+            return {
+                numero, 
+                teksti: Kaanna.kaanna("osaamisen-kuvaus-arvosanalle_"+numero)
+            }
+        });
+
+        $scope.arvosanaNumerolla = (numero) => {
+            return (<any[]>$scope.arvosanat).find(arvosana => arvosana.numero == numero);            
+        }
+
         $scope.addKohde = function() {
             $scope.model.push({});
         };
