@@ -57,11 +57,21 @@ public class TiedoteServiceImpl implements TiedoteService {
             tquery.setJulkinen(true);
         }
 
+        String jarjestys = "luotu";
+        if (tquery.getJarjestys() != null && tquery.getJarjestys().equals("muokattu")) {
+            jarjestys = "muokattu";
+        }
+
+        boolean nouseva = false;
+        if (tquery.getJarjestysNouseva() != null && tquery.getJarjestysNouseva()) {
+            nouseva = true;
+        }
+
         PageRequest pageRequest = new PageRequest(
                 tquery.getSivu(),
                 tquery.getSivukoko(),
-                Sort.Direction.DESC,
-                "luotu"
+                nouseva ? Sort.Direction.ASC :  Sort.Direction.DESC,
+                jarjestys
         );
 
         Page<Tiedote> tiedotteet = tiedoteRepositoryCustom.findBy(pageRequest, tquery);

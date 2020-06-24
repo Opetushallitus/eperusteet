@@ -61,8 +61,8 @@ public class TiedoteController {
             @ApiImplicitParam(name = "koulutusTyyppi", dataType = "string", paramType = "query", allowMultiple = true, value = "tiedotteen koulutustyypit"),
     })
     @RequestMapping(value = "/haku", method = GET)
-    public Page<TiedoteDto> findTiedotteetBy(@ApiIgnore TiedoteQuery pquery) {
-        return tiedoteService.findBy(pquery);
+    public Page<TiedoteDto> findTiedotteetBy(@ApiIgnore TiedoteQuery tquery) {
+        return tiedoteService.findBy(tquery);
     }
 
     @RequestMapping(method = GET)
