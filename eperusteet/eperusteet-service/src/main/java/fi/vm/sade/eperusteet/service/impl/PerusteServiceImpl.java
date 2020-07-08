@@ -823,7 +823,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 current.setKoulutustyyppi(updated.getKoulutustyyppi());
             }
         }
+
         perusteRepository.save(current);
+        muokkausTietoService.addMuokkaustieto(perusteId, current, MuokkausTapahtuma.JARJESTETTY);
         PerusteDto result = mapper.map(current, PerusteDto.class);
         return result;
     }
@@ -853,7 +855,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         perusteRepository.save(current);
-        muokkausTietoService.addOpsMuokkausTieto(id, current, MuokkausTapahtuma.PAIVITYS);
+        muokkausTietoService.addMuokkaustieto(id, current, MuokkausTapahtuma.PAIVITYS);
 
         return mapper.map(current, PerusteDto.class);
     }
@@ -1013,6 +1015,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 tov.setId(utov.getId());
             }
         }
+
+        muokkausTietoService.addMuokkaustieto(id, peruste, MuokkausTapahtuma.JARJESTETTY);
         return updateTutkinnonRakenne(id, suoritustapakoodi, mapper.map(suoritustapaVersio.getRakenne(), RakenneModuuliDto.class));
     }
 
@@ -1316,6 +1320,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     throw new BusinessRuleViolationException("Tutkinnonosa on käytössä");
                 }
                 suoritustapa.getTutkinnonOsat().remove(viite);
+                muokkausTietoService.addMuokkaustieto(id, viite, MuokkausTapahtuma.POISTO);
             } else {
                 throw new BusinessRuleViolationException("Tutkinnonosa ei kuulu tähän suoritustapaan");
             }
@@ -1353,6 +1358,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else {
             throw new BusinessRuleViolationException("Viite tutkinnon osaan on jo olemassa");
         }
+        muokkausTietoService.addMuokkaustieto(id, viite, MuokkausTapahtuma.LUONTI);
         return mapper.map(viite, TutkinnonOsaViiteDto.class);
 
     }
@@ -1388,6 +1394,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         TutkinnonOsaViiteDto dto = tutkinnonOsaViiteService.update(osa);
+        muokkausTietoService.addMuokkaustieto(id, viite, MuokkausTapahtuma.PAIVITYS);
         onApplicationEvent(PerusteUpdatedEvent.of(this, id));
         return dto;
     }
@@ -2061,7 +2068,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             mapper.map(kvliiteDto, liite);
         }
 
-        muokkausTietoService.addOpsMuokkausTieto(id, current, MuokkausTapahtuma.PAIVITYS);
+        muokkausTietoService.addMuokkaustieto(id, current, MuokkausTapahtuma.PAIVITYS);
 
         return mapper.map(current, PerusteDto.class);
     }

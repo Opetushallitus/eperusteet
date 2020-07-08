@@ -16,13 +16,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.google.common.collect.Sets;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.Sortable;
@@ -34,6 +28,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -82,6 +77,9 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     @Autowired
     private PerusteRepository perusteet;
 
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
+
     @Override
     @Transactional(readOnly = false)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(Long perusteId, Long id) {
@@ -93,6 +91,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             uusi.asetaTila(PerusteTila.LUONNOS);
             pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
         }
+        muokkausTietoService.addMuokkaustieto(perusteId, pov, MuokkausTapahtuma.KOPIOINTI);
         return mapper.map(pov, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja.class);
     }
 
@@ -107,6 +106,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
                 TutkinnonOsa uusi = new TutkinnonOsa(to);
                 uusi.asetaTila(PerusteTila.LUONNOS);
                 tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
+                muokkausTietoService.addMuokkaustieto(perusteId, tov, MuokkausTapahtuma.KOPIOINTI);
                 return mapper.map(tov, TutkinnonOsaViiteDto.class);
             }
         }
@@ -134,6 +134,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             throw new BusinessRuleViolationException("Sisällöllä on lapsia, ei voida poistaa");
         }
 
+        muokkausTietoService.addMuokkaustieto(perusteId, viite, MuokkausTapahtuma.POISTO);
         if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(PerusteTila.LUONNOS)
                 && findViitteet(perusteId, id).size() == 1) {
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
@@ -148,6 +149,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     @Override
     @Transactional
     public void reorderSubTree(Long perusteId, Long rootViiteId, PerusteenOsaViiteDto.Puu<?, ?> uusi) {
+        Peruste peruste = perusteet.findOne(perusteId);
         PerusteenOsaViite viite = findViite(perusteId, rootViiteId);
         repository.lock(viite.getRoot());
         Set<PerusteenOsaViite> refs = Sets.newIdentityHashSet();
@@ -158,6 +160,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         if (viite.getPerusteenOsa() != null) {
             viite.getPerusteenOsa().muokattu();
         }
+        muokkausTietoService.addMuokkaustieto(perusteId, peruste, MuokkausTapahtuma.JARJESTETTY);
     }
 
     @Override
@@ -214,6 +217,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             }
         }
         repository.flush();
+        muokkausTietoService.addMuokkaustieto(perusteId, uusiViite, MuokkausTapahtuma.LUONTI);
         return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
     }
 
@@ -263,7 +267,9 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Override
     public <T extends Sortable> List<T> sort(Long id, Suoritustapakoodi suoritustapakoodi, List<T> sorted) {
+        Peruste peruste = perusteet.findOne(id);
         List<TutkinnonOsaViite> viitteet = tutkinnonOsaViiteRepository.findByPeruste(id, suoritustapakoodi);
+        muokkausTietoService.addMuokkaustieto(id, peruste, MuokkausTapahtuma.JARJESTETTY);
         viitteet = GenericAlgorithms.sort(sorted, viitteet);
         tutkinnonOsaViiteRepository.save(viitteet);
         return sorted;

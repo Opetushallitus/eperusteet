@@ -35,6 +35,7 @@ import org.hibernate.envers.NotAudited;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -65,7 +66,8 @@ import java.util.stream.Collectors;
 public class PerusteenOsaViite implements
         ReferenceableEntity,
         Serializable,
-        Copyable<PerusteenOsaViite> {
+        Copyable<PerusteenOsaViite>,
+        HistoriaTapahtuma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -249,4 +251,37 @@ public class PerusteenOsaViite implements
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList()));
     }
+
+
+
+    @Override
+    public Date getLuotu() {
+        return this.perusteenOsa.getLuotu();
+    }
+
+    @Override
+    public Date getMuokattu() {
+        return this.perusteenOsa.getMuokattu();
+    }
+
+    @Override
+    public String getLuoja() {
+        return this.perusteenOsa.getLuoja();
+    }
+
+    @Override
+    public String getMuokkaaja() {
+        return this.perusteenOsa.getMuokkaaja();
+    }
+
+    @Override
+    public TekstiPalanen getNimi() {
+        return this.perusteenOsa.getNimi();
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.viite;
+    }
+
 }

@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.Ammattitaitovaatimuk
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -298,5 +299,10 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     public void setTyyppi(TutkinnonOsaTyyppi tyyppi) {
         this.tyyppi = tyyppi == null ? TutkinnonOsaTyyppi.NORMAALI : tyyppi;
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.tutkinnonosa;
     }
 }

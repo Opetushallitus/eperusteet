@@ -1,10 +1,13 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Lukko;
+import fi.vm.sade.eperusteet.domain.OsaAlueLockCtx;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlueTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
@@ -81,7 +84,11 @@ public class OsaAlueServiceImpl implements OsaAlueService {
     @Override
     public OsaAlueLaajaDto updateOsaAlue(Long viiteId, Long osaAlueId, OsaAlueLaajaDto osaAlue) {
         OsaAlue oa = findOne(viiteId, osaAlueId, false);
-        return null;
+        OsaAlue uusi = mapper.map(osaAlue, OsaAlue.class);
+        oa.mergeState(uusi);
+        oa = osaAlueRepository.save(oa);
+        OsaAlueLaajaDto osaAlueDto = mapper.map(oa, OsaAlueLaajaDto.class);
+        return osaAlueDto;
     }
 
     @Override
@@ -91,4 +98,23 @@ public class OsaAlueServiceImpl implements OsaAlueService {
         tov.getTutkinnonOsa().getOsaAlueet().remove(oa);
         osaAlueRepository.delete(oa);
     }
+
+
+    @Override
+    public LukkoDto getOsaAlueLock(Long viiteId, Long osaAlueId) {
+        Lukko lock = lockManager.getLock(osaAlueId);
+        return mapper.map(lock, LukkoDto.class);
+    }
+
+    @Override
+    public LukkoDto lockOsaAlue(Long viiteId, Long osaAlueId) {
+        Lukko lock = lockManager.lock(osaAlueId);
+        return mapper.map(lock, LukkoDto.class);
+    }
+
+    @Override
+    public void unlockOsaAlue(Long viiteId, Long osaAlueId) {
+        lockManager.unlock(osaAlueId);
+    }
+
 }

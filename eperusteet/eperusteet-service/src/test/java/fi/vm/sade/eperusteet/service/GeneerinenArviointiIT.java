@@ -204,12 +204,12 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         ObjectMapper objectMapper = new ObjectMapper();
         OsaamistavoiteLaajaDto a = new OsaamistavoiteLaajaDto();
 
-        { // Vanha
-            String str = objectMapper.writeValueAsString(a);
-            OsaamistavoiteDto target = objectMapper.readValue(str, OsaamistavoiteDto.class);
-            assertThat(objectMapper.readTree(str).get("type").asText()).isEqualTo("osaamistavoite2014");
-            assertThat(target).isExactlyInstanceOf(OsaamistavoiteLaajaDto.class);
-        }
+//        { // Vanha
+//            String str = objectMapper.writeValueAsString(a);
+//            OsaamistavoiteDto target = objectMapper.readValue(str, OsaamistavoiteDto.class);
+//            assertThat(objectMapper.readTree(str).get("type").asText()).isEqualTo("osaamistavoite2014");
+//            assertThat(target).isExactlyInstanceOf(OsaamistavoiteLaajaDto.class);
+//        }
     }
 
     @Test

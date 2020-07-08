@@ -10,5 +10,5 @@ public enum NavigationType {
     moduulit, moduuli,
     muodostuminen, tutkinnonosat, tutkinnonosa, tutkinnonosaviite,
     osaalueet, osaalue,
-    peruste;
+    peruste, lukiorakenne, aihekokonaisuudet, opetuksenyleisettavoitteet, tekstikappale, taiteenala;
 }

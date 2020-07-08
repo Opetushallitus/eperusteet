@@ -88,6 +88,7 @@ public class PerusteNavigationIT {
         DtoMapper dtoMapper = new DtoMapperConfig(koodistoClient).normalDtoMapper(
                 new TekstiPalanenConverter(),
                 new ReferenceableEntityConverter(),
+                new ArviointiConverter(),
                 new KoodistokoodiConverter());
 
         this.navigationBuilderDefault = new NavigationBuilderDefault(dtoMapper, this.perusteRepository);
