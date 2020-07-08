@@ -40,7 +40,7 @@
     "angular-ui-sortable": "https://github.com/nkala/ui-sortable.git#v0.13.4xx",
     "angular-ui-tree": "2.22.6",
     "angular-ui-utils": "0.1.1",
-    "angularjs-slider": "5.8.7",
+    "angularjs-slider": "5.9.0",
     "babel-plugin-angularjs-annotate": "0.8.2",
     "ckeditor": "4.7.0",
     "eperusteet-frontend-utils": "Opetushallitus/eperusteet-frontend-utils#master",
