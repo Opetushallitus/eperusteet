@@ -259,13 +259,12 @@ public class TutkinnonRakenneController {
 
     @RequestMapping(value = "/tutkinnonosat/{viiteId}", method = GET)
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public TutkinnonOsaViiteDto getTutkinnonOsaViite(
+    public ResponseEntity<TutkinnonOsaViiteDto> getTutkinnonOsaViite(
             @PathVariable("perusteId") final Long id,
             @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
             @PathVariable("viiteId") final Long viiteId) {
         TutkinnonOsaViiteDto result = perusteService.getTutkinnonOsaViite(id, suoritustapakoodi, viiteId);
-        return result;
+        return ResponseEntity.ok(result);
     }
 
     @RequestMapping(value = "/tutkinnonosat/koodi/{koodiUri}", method = GET)
