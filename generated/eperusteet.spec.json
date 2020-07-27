@@ -723,6 +723,17 @@
         }
       }
     },
+    "/maintenance/ammattitaitovaatimuskoodisto" : {
+      "get" : {
+        "tags" : [ "Maintenance" ],
+        "operationId" : "pushAllAmmattitaitovaatimuksetToKoodisto",
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
     "/maintenance/arvioinninammattitaitovaatimukset" : {
       "get" : {
         "tags" : [ "Maintenance" ],
@@ -829,6 +840,23 @@
               "type" : "array",
               "items" : {
                 "$ref" : "#/definitions/ParsitutAmmattitaitovaatimukset"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maintenance/yllapito" : {
+      "get" : {
+        "tags" : [ "Maintenance" ],
+        "operationId" : "sallitutYllapidot",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/YllapitoDto"
               }
             }
           }
@@ -2223,25 +2251,6 @@
                 "$ref" : "#/definitions/PerusteTekstikappaleillaDto"
               }
             }
-          }
-        }
-      }
-    },
-    "/perusteet/tutkinnonosat/ammattitaitovaatimuskoodisto" : {
-      "get" : {
-        "tags" : [ "Perusteet" ],
-        "operationId" : "pushAllAmmattitaitovaatimuksetToKoodisto",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation"
           }
         }
       }
@@ -7295,6 +7304,9 @@
           "type" : "string",
           "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "peruste" ]
         },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
         "meta" : {
           "type" : "object",
           "additionalProperties" : {
@@ -8058,15 +8070,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -8098,15 +8110,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -8138,15 +8150,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -8178,15 +8190,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -8218,15 +8230,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -8258,15 +8270,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -8298,15 +8310,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -8338,15 +8350,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -8378,15 +8390,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -8418,15 +8430,15 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -10474,6 +10486,12 @@
         "geneerinenArviointiasteikko" : {
           "$ref" : "#/definitions/GeneerinenArviointiasteikkoDto"
         },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
+        },
         "ammattitaitovaatimukset2019" : {
           "$ref" : "#/definitions/Ammattitaitovaatimukset2019Dto"
         },
@@ -10863,6 +10881,24 @@
         },
         "paikallisestiPaatettavatAsiat" : {
           "$ref" : "#/definitions/TekstiOsaDto"
+        }
+      }
+    },
+    "YllapitoDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "ominaisuus" : {
+          "type" : "string"
+        },
+        "sallittu" : {
+          "type" : "boolean"
+        },
+        "url" : {
+          "type" : "string"
         }
       }
     }
