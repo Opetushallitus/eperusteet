@@ -104,7 +104,7 @@ public class PerusteNavigationIT {
 
     @Test
     public void testYksinkertainenNavigation() {
-        NavigationNodeDto navigationNodeDto = navigationBuilderDefault.buildNavigation(42L);
+        NavigationNodeDto navigationNodeDto = navigationBuilderDefault.buildNavigation(42L, "fi");
         assertThat(navigationNodeDto).isNotNull();
         assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
         assertThat(navigationNodeDto.getChildren().get(0))
@@ -114,7 +114,7 @@ public class PerusteNavigationIT {
 
     @Test
     public void testLops2019Navigaatio() {
-        NavigationNodeDto navigationNodeDto = navigationBuilderLops2019.buildNavigation(42L);
+        NavigationNodeDto navigationNodeDto = navigationBuilderLops2019.buildNavigation(42L, "fi");
         assertThat(navigationNodeDto).isNotNull();
         assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
 

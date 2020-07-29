@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
@@ -44,4 +46,22 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
     private Optional<LokalisoituTekstiDto> nimi;
     private Optional<Long> jnro;
     private Date muokattu;
+
+    @JsonIgnore
+    public LokalisoituTekstiDto getNimiOrDefault(LokalisoituTekstiDto defaultNimi) {
+        if (nimi != null) {
+            return nimi.orElse(defaultNimi);
+        } else {
+            return defaultNimi;
+        }
+    }
+
+    @JsonIgnore
+    public Long getJnroOrDefault(Long defaultJnro) {
+        if (jnro != null) {
+            return jnro.orElse(defaultJnro);
+        } else {
+            return defaultJnro;
+        }
+    }
 }

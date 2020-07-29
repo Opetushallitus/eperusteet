@@ -2148,9 +2148,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
 //    @Cacheable("peruste-navigation")
-    public NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm) {
+    public NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm, String kieli) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilder.class)
-                .buildNavigation(perusteId);
+                .buildNavigation(perusteId, kieli);
         return siirraLiitteetLoppuun(navigationNodeDto);
     }
 
@@ -2184,9 +2184,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId) {
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         Peruste peruste = getPeruste(perusteId);
-        return self.buildNavigationWithDate(perusteId, peruste.getGlobalVersion().getAikaleima());
+        return self.buildNavigationWithDate(perusteId, peruste.getGlobalVersion().getAikaleima(), kieli);
     }
 
     @Override

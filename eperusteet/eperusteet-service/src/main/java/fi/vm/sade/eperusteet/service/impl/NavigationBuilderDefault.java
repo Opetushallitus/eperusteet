@@ -61,7 +61,7 @@ public class NavigationBuilderDefault implements NavigationBuilder {
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId) {
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         Set<PerusteenSisalto> sisallot = peruste.getSisallot();
         NavigationNodeDto result = NavigationNodeDto.of(NavigationType.root);
