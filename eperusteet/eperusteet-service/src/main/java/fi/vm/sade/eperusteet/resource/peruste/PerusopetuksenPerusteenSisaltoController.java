@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.yl.*;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @RestController
 @RequestMapping("/perusteet/{perusteId}/perusopetus")
+@Api(value = "PerusopetuksenPerusteenSisalto")
 @InternalApi
 public class PerusopetuksenPerusteenSisaltoController {
 
@@ -72,7 +74,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     private PerusteService perusteet;
 
     @RequestMapping(value = "/oppiaineet", method = GET)
-    public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(
+    public ResponseEntity<List<OppiaineSuppeaDto>> getPerusopetusOppiaineet(
         @PathVariable("perusteId") final Long perusteId) {
         return handleGet(perusteId, new Supplier<List<OppiaineSuppeaDto>>() {
             @Override
@@ -84,14 +86,14 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public OppiaineDto addOppiaine(
+    public OppiaineDto addPerusopetusOppiaine(
         @PathVariable("perusteId") final Long perusteId,
         @RequestBody OppiaineDto dto) {
         return oppiaineet.addOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = GET)
-    public ResponseEntity<OppiaineDto> getOppiaine(
+    public ResponseEntity<OppiaineDto> getPerusopetusOppiaine(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
 
@@ -105,7 +107,7 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet/{id}/versiot/{revisio}", method = GET)
     @CacheControl(age = CacheControl.ONE_YEAR)
-    public OppiaineDto getOppiaine(
+    public OppiaineDto getOppiaineRevisiolla(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
         @PathVariable("revisio") final Integer revisio) {
@@ -113,7 +115,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/oppimaarat", method = GET)
-    public ResponseEntity<List<OppiaineSuppeaDto>> getOppimaarat(
+    public ResponseEntity<List<OppiaineSuppeaDto>> getPerusopetusOppimaarat(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
 
@@ -127,7 +129,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = POST)
-    public OppiaineDto updateOppiaine(
+    public OppiaineDto updatePerusopetusOppiaine(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
         @RequestBody UpdateDto<OppiaineDto> dto) {
@@ -137,7 +139,7 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOppiaine(
+    public void deletePerusopetusOppiaine(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
         oppiaineet.deleteOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
@@ -327,7 +329,7 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}/versiot/{versioId}", method = GET)
     @CacheControl(age = CacheControl.ONE_YEAR)
-    public LaajaalainenOsaaminenDto getOsaaminen(
+    public LaajaalainenOsaaminenDto getOsaaminenVersiolla(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
         @PathVariable("versioId") final int versioId) {
@@ -348,7 +350,7 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOsaaminen(
+    public void deletePerusopetusOsaaminen(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
         osaamiset.deleteLaajaalainenOsaaminen(perusteId, id);
@@ -356,7 +358,7 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSisalto(
+    public void deletePerusopetusSisalto(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
         sisallot.removeSisalto(perusteId, id);
@@ -364,7 +366,7 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public PerusteenOsaViiteDto.Matala addSisalto(
+    public PerusteenOsaViiteDto.Matala addPerusopetusSisalto(
         @PathVariable("perusteId") final Long perusteId,
         @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
         if (dto == null || (dto.getPerusteenOsa() == null && dto.getPerusteenOsaRef() == null)) {
@@ -375,7 +377,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto/{id}/lapset", method = POST)
-    public PerusteenOsaViiteDto.Matala addSisalto(
+    public PerusteenOsaViiteDto.Matala addPerusopetuksenSisaltoLapsi(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
         @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
@@ -393,7 +395,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
-    public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
+    public PerusteenOsaViiteDto.Laaja kloonaaPerusteenTekstiKappale(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
         return viittet.kloonaaTekstiKappale(perusteId, id);

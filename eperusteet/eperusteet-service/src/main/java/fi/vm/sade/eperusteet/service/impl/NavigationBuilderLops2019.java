@@ -174,9 +174,9 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId) {
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilder.class);
-        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId);
+        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
         return NavigationNodeDto.of(NavigationType.root)
             .addAll(basicNavigation.getChildren())
             .add(laajaAlaiset(perusteId))
