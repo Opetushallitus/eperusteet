@@ -1216,7 +1216,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 List<RakenneModuuliDto> moduulit = tutkintonimikeRyhmat.get(tk.getTutkintonimikeUri());
 
                 // Käydään läpi vain päällekkäiset tutkintonimikeryhmät
-                if (moduulit.size() < 2) {
+                if (moduulit == null || moduulit.size() < 2) {
                     continue;
                 }
 
@@ -1837,7 +1837,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
             peruste = perusteRepository.save(peruste);
 
-            peruste = perusteRepository.save(peruste);
             if (KoulutusTyyppi.PERUSOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
                 peruste.setSisalto(kloonaaPerusopetuksenSisalto(peruste, vanha.getPerusopetuksenPerusteenSisalto()));
             } else {
