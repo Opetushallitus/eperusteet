@@ -10,5 +10,6 @@ public enum NavigationType {
     moduulit, moduuli,
     muodostuminen, tutkinnonosat, tutkinnonosa, tutkinnonosaviite, osaalue,
     peruste,
-    perusopetusoppiaineet, perusopetusoppiaine, vuosiluokkakokonaisuus;
+    perusopetusoppiaineet, perusopetusoppiaine, vuosiluokkakokonaisuus,
+    aipevaihe, aipekurssi, aipeoppiaine;
 }

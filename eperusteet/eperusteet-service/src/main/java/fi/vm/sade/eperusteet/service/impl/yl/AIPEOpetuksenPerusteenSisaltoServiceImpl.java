@@ -318,6 +318,18 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     @Override
+    public List<AIPEVaiheDto> getVaiheetKaikki(Long perusteId) {
+        return getPeruste(perusteId).getAipeOpetuksenPerusteenSisalto().getVaiheet().stream()
+                .map(vaihe -> {
+                    AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
+                    dto.setOppiaineet(mapper.mapAsList(vaihe.getOppiaineet(), AIPEOppiaineLaajaDto.class));
+                    dto.setOpetuksenKohdealueet(mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public AIPEVaiheDto addVaihe(Long perusteId, AIPEVaiheDto vaiheDto) {
         vaiheDto.setId(null);
         Peruste peruste = getPeruste(perusteId);
@@ -339,7 +351,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
             AIPEVaihe.validateChange(vaihe, uusivaihe, false);
         }
 
-        vaihe = vaiheRepository.save(vaihe);
+        vaihe = vaiheRepository.save(uusivaihe);
         return mapper.map(vaihe, AIPEVaiheDto.class);
     }
 

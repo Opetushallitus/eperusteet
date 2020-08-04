@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
+import io.swagger.annotations.Api;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  */
 @RestController
 @RequestMapping("/perusteet/{perusteId}/aipeopetus")
+@Api(value = "Aipeopetuksensisalto")
 @InternalApi
 public class AIPEOpetuksenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(AIPEOpetuksenSisaltoController.class);
@@ -163,14 +165,14 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/laajaalaiset", method = GET)
-    public ResponseEntity<List<LaajaalainenOsaaminenDto>> getOsaamiset(
+    public ResponseEntity<List<LaajaalainenOsaaminenDto>> getAipeOsaamiset(
             @PathVariable final Long perusteId
     ) {
         return ResponseEntity.ok(sisalto.getLaajaalaiset(perusteId));
     }
 
     @RequestMapping(value = "/laajaalaiset", method = POST)
-    public ResponseEntity<LaajaalainenOsaaminenDto> addOsaaminen(
+    public ResponseEntity<LaajaalainenOsaaminenDto> addAipeOsaaminen(
             @PathVariable final Long perusteId,
             @RequestBody LaajaalainenOsaaminenDto loDto
     ) {
@@ -187,7 +189,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/laajaalaiset/{laajaalainenId}", method = PUT)
-    public ResponseEntity<LaajaalainenOsaaminenDto> updateOsaaminen(
+    public ResponseEntity<LaajaalainenOsaaminenDto> updateAipeOsaaminen(
             @PathVariable final Long perusteId,
             @PathVariable final Long laajaalainenId,
             @RequestBody LaajaalainenOsaaminenDto loDto
@@ -196,7 +198,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/laajaalaiset/{laajalainenId}", method = GET)
-    public ResponseEntity<LaajaalainenOsaaminenDto> getOsaaminen(
+    public ResponseEntity<LaajaalainenOsaaminenDto> getAipeOsaaminen(
             @PathVariable final Long perusteId,
             @PathVariable final Long laajalainenId
     ) {
@@ -204,7 +206,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/laajaalaiset/{laajaalainenId}", method = DELETE)
-    public ResponseEntity deleteOsaaminen(
+    public ResponseEntity deleteAipeOsaaminen(
             @PathVariable final Long perusteId,
             @PathVariable final Long laajaalainenId
     ) {
@@ -213,7 +215,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/kohdealueet", method = GET)
-    public ResponseEntity<List<OpetuksenKohdealueDto>> getKohdealueet(
+    public ResponseEntity<List<OpetuksenKohdealueDto>> getAipeKohdealueet(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId
     ) {
@@ -221,7 +223,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet", method = GET)
-    public ResponseEntity<List<AIPEOppiaineSuppeaDto>> getOppiaineet(
+    public ResponseEntity<List<AIPEOppiaineSuppeaDto>> getAipeOppiaineet(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId
     ) {
@@ -229,7 +231,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet", method = POST)
-    public ResponseEntity<AIPEOppiaineSuppeaDto> addOppiaine(
+    public ResponseEntity<AIPEOppiaineSuppeaDto> addAipeOppiaine(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @RequestBody AIPEOppiaineDto oppiaineDto
@@ -238,7 +240,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}", method = PUT)
-    public ResponseEntity<AIPEOppiaineSuppeaDto> updateOppiaine(
+    public ResponseEntity<AIPEOppiaineSuppeaDto> updateAipeOppiaine(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId,
@@ -248,7 +250,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}", method = DELETE)
-    public ResponseEntity removeOppiaine(
+    public ResponseEntity removeAipeOppiaine(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId
@@ -258,7 +260,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}", method = GET)
-    public ResponseEntity<AIPEOppiaineDto> getOppiaine(
+    public ResponseEntity<AIPEOppiaineDto> getAipeOppiaine(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId,
@@ -268,7 +270,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/versiot", method = GET)
-    public ResponseEntity<List<Revision>> getOppiaineVersio(
+    public ResponseEntity<List<Revision>> getAipeOppiaineVersio(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("vaiheId") final Long vaiheId,
             @PathVariable final Long oppiaineId
@@ -277,7 +279,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/palauta/{rev}", method = POST)
-    public AIPEOppiaineDto revertOppiaine(
+    public AIPEOppiaineDto revertAipeOppiaine(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId,
@@ -287,7 +289,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/oppimaarat", method = GET)
-    public ResponseEntity<List<AIPEOppiaineSuppeaDto>> getOppimaarat(
+    public ResponseEntity<List<AIPEOppiaineSuppeaDto>> getAipeOppimaarat(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId
@@ -296,7 +298,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/oppimaarat", method = POST)
-    public ResponseEntity<AIPEOppiaineDto> addOppimaara(
+    public ResponseEntity<AIPEOppiaineDto> addAipeOppimaara(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId,
@@ -306,7 +308,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit", method = GET)
-    public ResponseEntity<List<AIPEKurssiSuppeaDto>> getKurssit(
+    public ResponseEntity<List<AIPEKurssiSuppeaDto>> getAipeKurssit(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId
@@ -315,7 +317,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit/{kurssiId}", method = GET)
-    public ResponseEntity<AIPEKurssiDto> getKurssit(
+    public ResponseEntity<AIPEKurssiDto> getAipeKurssi(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId,
@@ -325,7 +327,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit", method = POST)
-    public ResponseEntity<AIPEKurssiDto> addKurssi(
+    public ResponseEntity<AIPEKurssiDto> addAipeKurssi(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId,
@@ -335,7 +337,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit/{kurssiId}", method = PUT)
-    public ResponseEntity<AIPEKurssiDto> updateKurssi(
+    public ResponseEntity<AIPEKurssiDto> updateAipeKurssi(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId,
@@ -346,7 +348,7 @@ public class AIPEOpetuksenSisaltoController {
     }
 
     @RequestMapping(value = "/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit/{kurssiId}", method = DELETE)
-    public ResponseEntity removeKurssi(
+    public ResponseEntity removeAipeKurssi(
             @PathVariable final Long perusteId,
             @PathVariable final Long vaiheId,
             @PathVariable final Long oppiaineId,
