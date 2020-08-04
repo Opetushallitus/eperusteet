@@ -1,8 +1,6 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKoosteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 

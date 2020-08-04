@@ -716,7 +716,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
 
         KoulutusTyyppi koulutustyyppi = KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi());
-        if (koulutustyyppi != null && !koulutustyyppi.isAmmatillinen()) {
+        if (!koulutustyyppi.isAmmatillinen()) {
             perusteprojektiDto.setReforminMukainen(false);
         }
 
@@ -734,10 +734,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         if (tyyppi != PerusteTyyppi.POHJA) {
-            if (koulutustyyppi == null) {
-                throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla koulutustyyppi");
-            }
-
             if (yksikko == null && koulutustyyppi
                     .isOneOf(KoulutusTyyppi.PERUSTUTKINTO,
                             KoulutusTyyppi.AMMATTITUTKINTO,
