@@ -5,14 +5,16 @@ import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +34,14 @@ public class NavigationBuilderTaiteenPerusopetus implements NavigationBuilder {
     @Autowired
     private PerusteenOsaService service;
 
-    private final List<String> alaOsat = Arrays.asList("aikuistenOpetus", "kasvatus", "oppimisenArviointiOpetuksessa", "teemaopinnot", "tyotavatOpetuksessa", "yhteisetOpinnot") ;
+    private final Map<String, Function<TaiteenalaDto, KevytTekstiKappaleDto>> alaOsat = new LinkedHashMap<String, Function<TaiteenalaDto, KevytTekstiKappaleDto>>() {{
+        put("aikuistenOpetus", TaiteenalaDto::getAikuistenOpetus);
+        put("kasvatus", TaiteenalaDto::getKasvatus);
+        put("oppimisenArviointiOpetuksessa", TaiteenalaDto::getOppimisenArviointiOpetuksessa);
+        put("teemaopinnot", TaiteenalaDto::getTeemaopinnot);
+        put("tyotavatOpetuksessa", TaiteenalaDto::getTyotavatOpetuksessa);
+        put("yhteisetOpinnot", TaiteenalaDto::getYhteisetOpinnot);
+    }};
 
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
@@ -40,20 +49,23 @@ public class NavigationBuilderTaiteenPerusopetus implements NavigationBuilder {
         NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
 
         basicNavigation.getChildren().forEach(navigationNodeDto -> {
-            TaiteenalaDto.Laaja taiteenaladto = service.getByViite(navigationNodeDto.getId());
-            navigationNodeDto.addAll(alaOsat.stream().map(alaosa -> {
-                try {
-                    Field field =  taiteenaladto.getClass().getDeclaredField(alaosa);
-                    field.setAccessible(true);
-                    KevytTekstiKappaleDto tekstikappale = (KevytTekstiKappaleDto) field.get(taiteenaladto);
-                    return NavigationNodeDto.of(NavigationType.taiteenosa, tekstikappale.getNimi()).meta("alaosa", alaosa);
-                }catch(Exception e) {
-                    return null;
-                }
-            }).filter(x -> x!=null));
+            PerusteenOsaDto.Laaja viite = service.getByViite(navigationNodeDto.getId());
 
+            if (viite instanceof TaiteenalaDto) {
+                TaiteenalaDto taiteenaladto = (TaiteenalaDto) service.getByViite(navigationNodeDto.getId());
+
+                navigationNodeDto.addAll(alaOsat.keySet().stream().map(alaosa -> {
+                    KevytTekstiKappaleDto tekstikappale = alaOsat.get(alaosa).apply(taiteenaladto);
+                    if (tekstikappale != null) {
+                        return NavigationNodeDto.of(NavigationType.taiteenosa, tekstikappale.getNimi()).meta("alaosa", alaosa);
+                    } else {
+                        return null;
+                    }
+                }).filter(Objects::nonNull));
+            }
         });
 
         return basicNavigation;
     }
+
 }
