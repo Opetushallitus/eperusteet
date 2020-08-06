@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 @Component
 @Transactional
@@ -74,7 +75,7 @@ public class NavigationBuilderPerusopetus implements NavigationBuilder {
                 .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
                 .map(oppiaine ->
                 NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimiOrDefault(null), oppiaine.getId()).meta("vlkId", vlkId)
-                        .addAll(oppiaine.getOppimaarat() != null ? oppimaarat(oppiaine.getOppimaarat(), vlkId, kieli) : null)
+                        .add(!ObjectUtils.isEmpty(oppiaine.getOppimaarat()) ? oppimaarat(oppiaine.getOppimaarat(), vlkId, kieli) : null)
         ).collect(Collectors.toList());
     }
 
@@ -85,23 +86,26 @@ public class NavigationBuilderPerusopetus implements NavigationBuilder {
                         .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
                         .map(oppiaine ->
                         NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimiOrDefault(null), oppiaine.getId())
-                                .addAll(oppiaine.getOppimaarat() != null ? oppimaarat(oppiaine.getOppimaarat(), null, kieli) : null)
+                                .add(!ObjectUtils.isEmpty(oppiaine.getOppimaarat()) ? oppimaarat(oppiaine.getOppimaarat(), null, kieli) : null)
                 ).collect(Collectors.toList()));
     }
 
-    private List<NavigationNodeDto> oppimaarat(Set<OppiaineSuppeaDto> oppimaarat, Long vlkId, String kieli) {
-        return oppimaarat.stream()
-                .sorted(Comparator.comparing(oppiaine -> LokalisoituTekstiDto.getOrDefault(oppiaine.getNimiOrDefault(LokalisoituTekstiDto.of("")), Kieli.of(kieli), "")))
-                .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
-                .map(oppimaara -> {
-            NavigationNodeDto node = NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppimaara.getNimiOrDefault(null), oppimaara.getId());
-            if (vlkId != null) {
-                node = node.meta("vlkId", vlkId);
-            }
+    private NavigationNodeDto oppimaarat(Set<OppiaineSuppeaDto> oppimaarat, Long vlkId, String kieli) {
+        return NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)
+                .addAll(
+                        oppimaarat.stream()
+                                .sorted(Comparator.comparing(oppiaine -> LokalisoituTekstiDto.getOrDefault(oppiaine.getNimiOrDefault(LokalisoituTekstiDto.of("")), Kieli.of(kieli), "")))
+                                .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
+                                .map(oppimaara -> {
+                                    NavigationNodeDto node = NavigationNodeDto
+                                            .of(NavigationType.perusopetusoppiaine, oppimaara.getNimiOrDefault(null), oppimaara.getId());
+                                    if (vlkId != null) {
+                                        node = node.meta("vlkId", vlkId);
+                                    }
 
-            return node;
-        })
-                .collect(Collectors.toList());
+                                    return node;
+                                })
+                                .collect(Collectors.toList()));
     }
 
 }
