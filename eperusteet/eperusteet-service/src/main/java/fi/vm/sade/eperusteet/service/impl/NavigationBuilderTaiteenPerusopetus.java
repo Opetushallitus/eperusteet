@@ -34,15 +34,6 @@ public class NavigationBuilderTaiteenPerusopetus implements NavigationBuilder {
     @Autowired
     private PerusteenOsaService service;
 
-    private final Map<String, Function<TaiteenalaDto, KevytTekstiKappaleDto>> alaOsat = new LinkedHashMap<String, Function<TaiteenalaDto, KevytTekstiKappaleDto>>() {{
-        put("aikuistenOpetus", TaiteenalaDto::getAikuistenOpetus);
-        put("kasvatus", TaiteenalaDto::getKasvatus);
-        put("oppimisenArviointiOpetuksessa", TaiteenalaDto::getOppimisenArviointiOpetuksessa);
-        put("teemaopinnot", TaiteenalaDto::getTeemaopinnot);
-        put("tyotavatOpetuksessa", TaiteenalaDto::getTyotavatOpetuksessa);
-        put("yhteisetOpinnot", TaiteenalaDto::getYhteisetOpinnot);
-    }};
-
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilder.class);
@@ -54,8 +45,8 @@ public class NavigationBuilderTaiteenPerusopetus implements NavigationBuilder {
             if (viite instanceof TaiteenalaDto) {
                 TaiteenalaDto taiteenaladto = (TaiteenalaDto) service.getByViite(navigationNodeDto.getId());
 
-                navigationNodeDto.addAll(alaOsat.keySet().stream().map(alaosa -> {
-                    KevytTekstiKappaleDto tekstikappale = alaOsat.get(alaosa).apply(taiteenaladto);
+                navigationNodeDto.addAll(taiteenaladto.getOsaavainMap().keySet().stream().map(alaosa -> {
+                    KevytTekstiKappaleDto tekstikappale = taiteenaladto.getOsaavainMap().get(alaosa);
                     if (tekstikappale != null) {
                         return NavigationNodeDto.of(NavigationType.taiteenosa, tekstikappale.getNimi()).meta("alaosa", alaosa);
                     } else {
