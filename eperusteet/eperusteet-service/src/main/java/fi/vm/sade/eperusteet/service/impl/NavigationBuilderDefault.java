@@ -42,6 +42,8 @@ public class NavigationBuilderDefault implements NavigationBuilder {
             TekstiKappale tk = (TekstiKappale) po;
             if (tk.isLiite()) {
                 type = NavigationType.liite;
+            } else if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
+                type = NavigationType.muodostuminen;
             }
         }
 
