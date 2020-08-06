@@ -141,7 +141,8 @@ public class PerusopetusPerusteNavigationIT extends AbstractIntegrationTest {
         assertThat(navigationNodeDto.getChildren().get(1).getChildren()).extracting("type")
                 .containsOnly(NavigationType.perusopetusoppiaine);
         assertThat(navigationNodeDto.getChildren().get(2).getChildren()).hasSize(4); // oppiaineet
-        assertThat(navigationNodeDto.getChildren().get(2).getChildren().get(0).getChildren()).hasSize(2); // oppiaineen oppimaarat
+        assertThat(navigationNodeDto.getChildren().get(2).getChildren().get(0).getChildren()).hasSize(1); // oppiaineen oppimaarat
+        assertThat(navigationNodeDto.getChildren().get(2).getChildren().get(0).getChildren().get(0).getChildren()).hasSize(2); // oppiaineen oppimaarat
     }
 
     private OppiaineSuppeaDto addOppimaara(VuosiluokkaKokonaisuusDto vk, String nimi, Long jnro, OppiaineDto oppiaine) {
