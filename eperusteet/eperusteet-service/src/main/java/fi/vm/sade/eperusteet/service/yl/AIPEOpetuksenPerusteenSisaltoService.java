@@ -124,4 +124,7 @@ public interface AIPEOpetuksenPerusteenSisaltoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     AIPEOppiaineDto revertOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<AIPEVaiheDto> getVaiheetKaikki(Long perusteId);
 }

@@ -57,7 +57,7 @@ script:
 
   - cd ..
 
-  - export BASE_IMAGE="baseimage-war:master"
+  - export BASE_IMAGE="baseimage-war-openjdk8:master"
   - ./ci-tools/common/pull-image.sh
   - ./ci-tools/build/build-war.sh ${ARTIFACT_NAME}
 

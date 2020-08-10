@@ -19,7 +19,7 @@
                     <th kaanna>voimaantulo-pvm</th>
                 </tr>
                 <tr ng-repeat="peruste in perusteet">
-                    <td><a class="action-link" ng-click="ok(peruste)">{{peruste.perusteprojekti.nimi}}</a></td>
+                    <td><a class="action-link" ng-click="ok(peruste)">{{peruste.nimi | kaanna}}</a></td>
                     <td>{{ peruste.tutkintokoodi | kaanna }}</td>
                     <td>{{ peruste.voimassaoloAlkaa | aikaleima:'time':'date' }}</td>
                 </tr>

@@ -44,8 +44,8 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId) {
-        NavigationNodeDto tekstit = dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId);
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
+        NavigationNodeDto tekstit = dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId, kieli);
         return NavigationNodeDto.of(NavigationType.root)
                 .add(tutkinnonOsat(perusteId))
                 .addAll(tekstit.getChildren());

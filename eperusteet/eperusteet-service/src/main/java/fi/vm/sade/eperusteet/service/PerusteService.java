@@ -238,10 +238,10 @@ public interface PerusteService {
     void importPeruste(MultipartHttpServletRequest request) throws IOException;
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto buildNavigationWithDate(@P("perusteId") Long perusteId, Date pvm);
+    NavigationNodeDto buildNavigationWithDate(@P("perusteId") Long perusteId, Date pvm, String kieli);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId);
+    NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId, String kieli);
 
     @PreAuthorize("isAuthenticated()")
     List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi);

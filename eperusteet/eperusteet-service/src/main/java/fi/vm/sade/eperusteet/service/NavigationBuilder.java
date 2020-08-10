@@ -13,7 +13,7 @@ public interface NavigationBuilder extends PerusteToteutus {
     }
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    default NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId) {
+    default NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId, String kieli) {
         throw new BusinessRuleViolationException("ei-tuettu");
     }
 }

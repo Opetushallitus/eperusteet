@@ -682,6 +682,10 @@
                                         <location>${eperusteet.resources}.KayttajanTietoController</location>
                                         <location>${eperusteet.resources}.peruste.TutkinnonRakenneController</location>
                                         <location>${eperusteet.resources}.peruste.PerusteAikatauluController</location>
+                                        <location>
+                                            ${eperusteet.resources}.peruste.PerusopetuksenPerusteenSisaltoController
+                                        </location>
+                                        <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>
 <!--                                        <location>${eperusteet.resources}.peruste.TutkinnonRakenneLockController</location>-->
 <!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuudetLockController</location>-->
 <!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuusLockController</location>-->

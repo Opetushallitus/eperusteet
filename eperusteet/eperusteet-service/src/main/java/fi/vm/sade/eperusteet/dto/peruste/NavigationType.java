@@ -8,7 +8,9 @@ public enum NavigationType {
     laajaalaiset, laajaalainen,
     oppiaineet, oppimaarat, oppiaine,
     moduulit, moduuli,
-    muodostuminen, tutkinnonosat, tutkinnonosa, tutkinnonosaviite,
-    osaalueet, osaalue,
-    peruste, lukiorakenne, aihekokonaisuudet, opetuksenyleisettavoitteet, tekstikappale, taiteenala;
+    muodostuminen, tutkinnonosat, tutkinnonosa, tutkinnonosaviite, osaalue, osaalueet,
+    peruste, lukiorakenne, aihekokonaisuudet, opetuksenyleisettavoitteet, tekstikappale, taiteenala,
+    perusopetusoppiaineet, perusopetusoppiaine, vuosiluokkakokonaisuus,
+    aipevaihe, aipekurssi, aipeoppiaine,
+    kurssit;
 }

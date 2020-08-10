@@ -115,11 +115,11 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
                 .meta("koodi", mapper.map(oa.getKoodi(), KoodiDto.class));
 
         Optional.ofNullable(oppimaaratMap.get(oa.getId()))
-            .ifPresent(oppimaarat -> result.add(NavigationNodeDto.of(NavigationType.oppimaarat)
+                .ifPresent(oppimaarat -> result.add(NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)
                 .addAll(oppimaarat.stream().map(om -> mapOppiaine(om, oppimaaratMap, moduulitMap)))));
 
         Optional.ofNullable(moduulitMap.get(oa.getId()))
-            .ifPresent(moduulit -> result.add(NavigationNodeDto.of(NavigationType.moduulit)
+                .ifPresent(moduulit -> result.add(NavigationNodeDto.of(NavigationType.moduulit).meta("navigation-subtype", true)
                 .addAll(moduulit.stream()
                     .map(m -> NavigationNodeDto.of(
                         NavigationType.moduuli,
@@ -174,9 +174,9 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId) {
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilder.class);
-        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId);
+        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
         return NavigationNodeDto.of(NavigationType.root)
             .addAll(basicNavigation.getChildren())
             .add(laajaAlaiset(perusteId))

@@ -42,6 +42,8 @@ public class NavigationBuilderDefault implements NavigationBuilder {
             TekstiKappale tk = (TekstiKappale) po;
             if (tk.isLiite()) {
                 type = NavigationType.liite;
+            } else if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
+                type = NavigationType.muodostuminen;
             }
         }
 
@@ -61,7 +63,7 @@ public class NavigationBuilderDefault implements NavigationBuilder {
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId) {
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         Set<PerusteenSisalto> sisallot = peruste.getSisallot();
         NavigationNodeDto result = NavigationNodeDto.of(NavigationType.root);

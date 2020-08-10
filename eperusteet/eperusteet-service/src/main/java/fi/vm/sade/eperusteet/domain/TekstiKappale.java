@@ -17,6 +17,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
@@ -24,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -118,7 +121,15 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     private void copyState(TekstiKappale other) {
         this.setTeksti(other.getTeksti());
         this.setOsaamisala(other.getOsaamisala());
-        this.setKoodit(other.getKoodit());
+        List<Koodi> oKoodit = other.getKoodit();
+        if (!ObjectUtils.isEmpty(oKoodit)) {
+            ArrayList<Koodi> koodit = new ArrayList<>();
+            for (Koodi oKoodi : oKoodit) {
+                Koodi koodi = new Koodi(oKoodi.getUri(), oKoodi.getKoodisto());
+                koodit.add(koodi);
+            }
+            this.setKoodit(koodit);
+        }
     }
 
     @Override

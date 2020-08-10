@@ -50,4 +50,6 @@ public class AIPEOppiaineLaajaDto extends AIPEOppiaineSuppeaDto {
 
     private List<AIPEKurssiDto> kurssit;
 
+    private List<AIPEOppiaineLaajaDto> oppimaarat;
+
 }
