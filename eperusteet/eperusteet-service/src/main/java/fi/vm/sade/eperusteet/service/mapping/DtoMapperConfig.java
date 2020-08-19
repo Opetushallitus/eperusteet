@@ -46,9 +46,7 @@ import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
@@ -314,10 +312,6 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
 
-        factory.classMap(OsaAlue.class, OsaAlueDto.class)
-                .byDefault()
-                .register();
-
         factory.classMap(TutkinnonOsaViiteDto.class, TutkinnonOsaViite.class)
                 .fieldBToA("tutkinnonOsa.nimi", "nimi")
                 .fieldBToA("tutkinnonOsa.tyyppi", "tyyppi")
@@ -340,6 +334,16 @@ public class DtoMapperConfig {
 
         factory.classMap(Lops2019Oppiaine.class, Lops2019OppiaineBaseDto.class)
                 .byDefault()
+                .register();
+
+        factory.classMap(Osaamistavoite2020Dto.class, Osaamistavoite.class)
+                .byDefault()
+                .field("tavoitteet", "tavoitteet2020")
+                .register();
+
+        factory.classMap(OsaAlue.class, OsaAlueLaajaDto.class)
+                .byDefault()
+                .field("geneerinenArviointiasteikko", "arviointi")
                 .register();
 
         factory.classMap(Lops2019Oppiaine.class, Lops2019OppiaineKaikkiDto.class)

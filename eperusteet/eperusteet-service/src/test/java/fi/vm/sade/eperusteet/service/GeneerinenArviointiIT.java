@@ -254,7 +254,15 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         { // Osaamistavoite
             Osaamistavoite osaamistavoite = new Osaamistavoite();
             Osaamistavoite2020Dto tavoiteDto = mapper.map(osaamistavoite, Osaamistavoite2020Dto.class);
+        }
 
+        { // OsaAlue
+            OsaAlueLaajaDto oaDto = new OsaAlueLaajaDto();
+            Arviointi2020Dto arviointi2020Dto = new Arviointi2020Dto();
+            arviointi2020Dto.setId(geneerinen.getId());
+            oaDto.setArviointi(arviointi2020Dto);
+            OsaAlue oa = mapper.map(oaDto, OsaAlue.class);
+            assertThat(oa.getGeneerinenArviointiasteikko()).isNotNull();
         }
     }
 

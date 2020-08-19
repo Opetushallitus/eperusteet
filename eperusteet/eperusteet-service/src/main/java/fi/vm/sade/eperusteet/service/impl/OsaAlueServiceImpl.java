@@ -1,15 +1,15 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Lukko;
-import fi.vm.sade.eperusteet.domain.OsaAlueLockCtx;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlueTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
+import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
 import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
@@ -23,6 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -38,18 +41,24 @@ public class OsaAlueServiceImpl implements OsaAlueService {
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
 
     @Autowired
+    private GeneerinenArviointiasteikkoRepository geneerinenArviointiasteikkoRepository;
+
+    @Autowired
     @Dto
     private DtoMapper mapper;
 
     private OsaAlue findOne(Long viiteId, Long osaAlueId, boolean readonly) {
-        OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
+        OsaAlue osaAlue = osaAlueRepository.getOne(osaAlueId);
         if (osaAlue == null) {
             throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
         }
 
-        TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.findOne(viiteId);
-
-        if (!osaAlue.getTutkinnonOsat().contains(tov.getTutkinnonOsa())) {
+        TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(viiteId);
+        Set<Long> osat = osaAlue.getTutkinnonOsat().stream()
+                .map(PerusteenOsa::getId)
+                .collect(Collectors.toSet());
+        Long tosaId = tov.getTutkinnonOsa().getId();
+        if (!osat.contains(tosaId)) {
             throw new EntityNotFoundException("viite-ei-omista-osa-alueetta");
         }
 
@@ -75,10 +84,27 @@ public class OsaAlueServiceImpl implements OsaAlueService {
 
         TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(viiteId);
         OsaAlue osaAlue = mapper.map(osaAlueDto, OsaAlue.class);
+        updateGeneerinen(osaAlue, osaAlueDto);
         osaAlue = osaAlueRepository.save(osaAlue);
         tov.getTutkinnonOsa().getOsaAlueet().add(osaAlue);
 //        tutkinnonOsaRepo.save(tutkinnonOsa);
         return mapper.map(osaAlue, OsaAlueLaajaDto.class);
+    }
+
+    private void updateGeneerinen(OsaAlue osaAlue, OsaAlueLaajaDto dto) {
+        if (dto == null || dto.getArviointi() == null) {
+            return;
+        }
+
+        if (osaAlue.getGeneerinenArviointiasteikko() != null && Objects.equals(osaAlue.getGeneerinenArviointiasteikko().getId(), dto.getArviointi().getId())) {
+            return;
+        }
+
+        GeneerinenArviointiasteikko arviointi = geneerinenArviointiasteikkoRepository.getOne(dto.getArviointi().getId());
+        if (!arviointi.isJulkaistu()) {
+            throw new BusinessRuleViolationException("vain-julkaistun-voi-valita");
+        }
+        osaAlue.setGeneerinenArviointiasteikko(arviointi);
     }
 
     @Override
@@ -86,6 +112,7 @@ public class OsaAlueServiceImpl implements OsaAlueService {
         OsaAlue oa = findOne(viiteId, osaAlueId, false);
         OsaAlue uusi = mapper.map(osaAlue, OsaAlue.class);
         oa.mergeState(uusi);
+        updateGeneerinen(oa, osaAlue);
         oa = osaAlueRepository.save(oa);
         OsaAlueLaajaDto osaAlueDto = mapper.map(oa, OsaAlueLaajaDto.class);
         return osaAlueDto;

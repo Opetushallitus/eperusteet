@@ -56,8 +56,9 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     private TekstiPalanen nimi;
 
     @Getter
+    @Setter
     @Enumerated(EnumType.STRING)
-    private OsaAlueTyyppi tyyppi = OsaAlueTyyppi.OSAALUE2014;
+    private OsaAlueTyyppi tyyppi;
 
     @Getter
     @Setter
@@ -70,6 +71,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     private GeneerinenArviointiasteikko geneerinenArviointiasteikko;
+
     @Setter
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private Osaamistavoite pakollisetOsaamistavoitteet;
@@ -86,7 +88,6 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
             inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
     @OrderColumn
     private List<Osaamistavoite> osaamistavoitteet;
-
 
     @Getter
     @Setter
@@ -156,7 +157,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     }
 
     public List<Osaamistavoite> getOsaamistavoitteet() {
-        if (OsaAlueTyyppi.OSAALUE2014.equals(this.tyyppi)) {
+        if (this.tyyppi == null || OsaAlueTyyppi.OSAALUE2014.equals(this.tyyppi)) {
             return osaamistavoitteet;
         }
         return null;
@@ -177,7 +178,11 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         if (updated != null) {
             this.setNimi(updated.getNimi());
             this.setKuvaus(updated.getKuvaus());
+            this.setTyyppi(updated.getTyyppi());
             this.koodi = updated.getKoodi();
+            this.setGeneerinenArviointiasteikko(updated.getGeneerinenArviointiasteikko());
+            this.setPakollisetOsaamistavoitteet(updated.getPakollisetOsaamistavoitteet());
+            this.setValinnaisetOsaamistavoitteet(updated.getValinnaisetOsaamistavoitteet());
 
             if (updated.getOsaamistavoitteet() != null) {
                 this.setOsaamistavoitteet(mergeOsaamistavoitteet(this.getOsaamistavoitteet(), updated.getOsaamistavoitteet()));
@@ -231,11 +236,4 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         }
         return tempList;
     }
-
-    public void setTyyppi(OsaAlueTyyppi tyyppi) {
-        if (this.tyyppi == null) {
-            this.tyyppi = tyyppi;
-        }
-    }
-
 }
