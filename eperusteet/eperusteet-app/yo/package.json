@@ -58,7 +58,7 @@
     "restangular": "1.6.1",
     "ui-select": "0.19.8",
     "webpack-bundle-size-analyzer": "2.7.0",
-    "webpack-node-externals": "1.6.0",
+    "webpack-node-externals": "1.7.2",
     "webpack-visualizer-plugin": "0.1.11"
   },
   "devDependencies": {
