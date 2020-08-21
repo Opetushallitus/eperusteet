@@ -17,9 +17,6 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.TiedoteJulkaisuPaikka;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,5 +36,6 @@ public class TiedoteQuery {
     private List<String> tiedoteJulkaisuPaikka;
     private List<String> koulutusTyyppi;
     private List<Long> perusteIds;
-
+    private String jarjestys;
+    private Boolean jarjestysNouseva;
 }

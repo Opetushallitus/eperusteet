@@ -22,6 +22,8 @@ import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,4 +51,16 @@ public class TaiteenalaDto extends PerusteenOsaDto.Laaja {
     public String getOsanTyyppi() {
         return "taiteenala";
     }
+
+    public Map<String, KevytTekstiKappaleDto> getOsaavainMap() {
+        return new LinkedHashMap<String, KevytTekstiKappaleDto>() {{
+            put("aikuistenOpetus", getAikuistenOpetus());
+            put("kasvatus", getKasvatus());
+            put("oppimisenArviointiOpetuksessa", getOppimisenArviointiOpetuksessa());
+            put("teemaopinnot", getTeemaopinnot());
+            put("tyotavatOpetuksessa", getTyotavatOpetuksessa());
+            put("yhteisetOpinnot", getYhteisetOpinnot());
+        }};
+    }
+
 }

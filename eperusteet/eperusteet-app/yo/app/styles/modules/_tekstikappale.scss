@@ -5,10 +5,19 @@
     .list-group-item {
         border: 0;
     }
+    table {
+        width: auto !important;
+    }
 }
 
 .edit-tekstikappale {
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.vaihtoehtoisenkentanraami {
+    table {
+        width: auto !important;
+    }
 }

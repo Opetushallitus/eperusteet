@@ -28,6 +28,10 @@ public class NavigationNodeDto implements KoodillinenDto {
         return result;
     }
 
+    static public NavigationNodeDto of(NavigationType type, LokalisoituTekstiDto label) {
+        return of(type, label, null);
+    }
+
     static public NavigationNodeDto of(NavigationType type) {
         return of(type, null, null);
     }

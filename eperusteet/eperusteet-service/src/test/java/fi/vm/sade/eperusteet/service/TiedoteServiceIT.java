@@ -5,7 +5,6 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TiedoteJulkaisuPaikka;
 import fi.vm.sade.eperusteet.dto.Reference;
@@ -22,23 +21,14 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.*;
 import javax.persistence.EntityManager;
-import javax.swing.text.html.parser.Entity;
-import org.assertj.core.api.Assertions;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
-
-import java.util.Date;
-import java.util.List;
-import org.springframework.test.context.TestPropertySource;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -201,6 +191,27 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         tq.setJulkinen(false);
         Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
         assertEquals(1, tiedotteet.getTotalElements());
+    }
+
+    @Test
+    public void testPerusteeton() {
+        TiedoteQuery tq = new TiedoteQuery();
+        tq.setPerusteeton(true);
+        Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
+        assertEquals(0, tiedotteet.getTotalElements());
+    }
+
+    @Test
+    public void testTiedoteJarjestys() {
+        TiedoteQuery tq = new TiedoteQuery();
+        tq.setJarjestys("muokattu");
+        tq.setJarjestysNouseva(true);
+        Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
+        Iterator<TiedoteDto> iterator = tiedotteet.iterator();
+        TiedoteDto t1 = iterator.next();
+        assertEquals(30, (long) t1.getId());
+        TiedoteDto t2 = iterator.next();
+        assertEquals(31L, (long) t2.getId());
     }
 
     @Test

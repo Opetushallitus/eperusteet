@@ -131,17 +131,17 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
             pred = cb.and(pred, nimessa);
         }
 
-        Join<Perusteprojekti, Peruste> peruste = null;
-        if (!ObjectUtils.isEmpty(tq.getPerusteeton())) {
-            peruste = root.join(Tiedote_.perusteprojekti).join(Perusteprojekti_.peruste);
-            pred = cb.and(pred, cb.isNull(peruste));
+        if (tq.getPerusteeton() != null) {
+            if (tq.getPerusteeton()) {
+                pred = cb.and(pred, cb.isEmpty(root.get(Tiedote_.perusteet)));
+            }
+            else {
+                pred = cb.and(pred, cb.isNotEmpty(root.get(Tiedote_.perusteet)));
+            }
         }
 
-
         if (!ObjectUtils.isEmpty(tq.getPerusteId())) {
-            if (peruste == null) {
-                peruste = root.join(Tiedote_.perusteprojekti).join(Perusteprojekti_.peruste);
-            }
+            Join<Perusteprojekti, Peruste> peruste = root.join(Tiedote_.perusteprojekti).join(Perusteprojekti_.peruste);
             pred = cb.and(pred, cb.equal(peruste.get(Peruste_.id), tq.getPerusteId()));
         }
 
@@ -155,12 +155,12 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
 
         if (!ObjectUtils.isEmpty(tq.getTiedoteJulkaisuPaikka())) {
             SetJoin<Tiedote, TiedoteJulkaisuPaikka> julkaisupaikat = root.join(Tiedote_.julkaisupaikat);
-            Optional<Predicate> kieliPred = tq.getTiedoteJulkaisuPaikka().stream()
+            Optional<Predicate> julkaisuPaikkaPred = tq.getTiedoteJulkaisuPaikka().stream()
                     .map((julkaisupaikka) -> cb.equal(julkaisupaikat, TiedoteJulkaisuPaikka.of(julkaisupaikka)))
                     .reduce(cb::or);
 
-            if (kieliPred.isPresent()) {
-                pred = cb.and(pred, kieliPred.get());
+            if (julkaisuPaikkaPred.isPresent()) {
+                pred = cb.and(pred, julkaisuPaikkaPred.get());
             }
         }
 

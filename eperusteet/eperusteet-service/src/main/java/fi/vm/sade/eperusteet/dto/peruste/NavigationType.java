@@ -12,5 +12,6 @@ public enum NavigationType {
     peruste, lukiorakenne, aihekokonaisuudet, opetuksenyleisettavoitteet, tekstikappale, taiteenala,
     perusopetusoppiaineet, perusopetusoppiaine, vuosiluokkakokonaisuus,
     aipevaihe, aipekurssi, aipeoppiaine,
-    kurssit;
+    kurssit,
+    taiteenosa;
 }
