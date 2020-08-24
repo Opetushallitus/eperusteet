@@ -21,6 +21,8 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -44,8 +46,7 @@ import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
@@ -94,7 +95,8 @@ public class DtoMapperConfig {
     static public DefaultMapperFactory createFactory(
             BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
             BidirectionalConverter<ReferenceableEntity, Reference> cachedEntityConverter,
-            KoodistokoodiConverter koodistokoodiConverter) {
+            KoodistokoodiConverter koodistokoodiConverter,
+            ArviointiConverter arviointiConverter) {
         DefaultMapperFactory factory = new Builder() {
             @Override
             public DefaultMapperFactory build() {
@@ -152,6 +154,10 @@ public class DtoMapperConfig {
             factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         }
 
+        if (arviointiConverter != null) {
+            factory.getConverterFactory().registerConverter(arviointiConverter);
+        }
+
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
         factory.getConverterFactory().registerConverter(new PassThroughConverter(Instant.class));
 
@@ -167,8 +173,9 @@ public class DtoMapperConfig {
     public DtoMapper uncachedDtoMapper(
             @UncachedDto BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
             @UncachedDto BidirectionalConverter<ReferenceableEntity, Reference> cachedEntityConverter,
+            ArviointiConverter arviointiConverter,
             KoodistokoodiConverter koodistokoodiConverter) {
-        return dtoMapper(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter);
+        return dtoMapper(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter, arviointiConverter);
     }
 
     @Bean
@@ -176,15 +183,18 @@ public class DtoMapperConfig {
     public DtoMapper normalDtoMapper(
             @Dto BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
             @Dto BidirectionalConverter<ReferenceableEntity, Reference> cachedEntityConverter,
+            ArviointiConverter arviointiConverter,
             KoodistokoodiConverter koodistokoodiConverter) {
-        return dtoMapper(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter);
+        return dtoMapper(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter, arviointiConverter);
     }
 
     private DtoMapper dtoMapper(
             BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> tekstiPalanenConverter,
             BidirectionalConverter<ReferenceableEntity, Reference> cachedEntityConverter,
-            KoodistokoodiConverter koodistokoodiConverter) {
-        DefaultMapperFactory factory = createFactory(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter);
+            KoodistokoodiConverter koodistokoodiConverter,
+            ArviointiConverter arviointiConverter
+    ) {
+        DefaultMapperFactory factory = createFactory(tekstiPalanenConverter, cachedEntityConverter, koodistokoodiConverter, arviointiConverter);
 
         factory.classMap(Referer.class, RefererDto.class)
                 .byDefault()
@@ -324,6 +334,16 @@ public class DtoMapperConfig {
 
         factory.classMap(Lops2019Oppiaine.class, Lops2019OppiaineBaseDto.class)
                 .byDefault()
+                .register();
+
+        factory.classMap(Osaamistavoite2020Dto.class, Osaamistavoite.class)
+                .byDefault()
+                .field("tavoitteet", "tavoitteet2020")
+                .register();
+
+        factory.classMap(OsaAlue.class, OsaAlueLaajaDto.class)
+                .byDefault()
+                .field("geneerinenArviointiasteikko", "arviointi")
                 .register();
 
         factory.classMap(Lops2019Oppiaine.class, Lops2019OppiaineKaikkiDto.class)

@@ -20,6 +20,8 @@ import fi.vm.sade.eperusteet.dto.Reference;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -130,4 +132,8 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
         }
     }
 
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.tekstikappale;
+    }
 }

@@ -42,7 +42,8 @@ public class AmmattitaitovaatimuksetController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "uri", dataType = "string", paramType = "query")
+            @ApiImplicitParam(name = "uri", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "kaikki", dataType = "boolean", paramType = "query"),
     })
     public Page<TutkinnonOsaViiteKontekstiDto> getTutkinnonOsatByAmmattitaitovaatimus(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));

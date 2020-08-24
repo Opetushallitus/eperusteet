@@ -73,11 +73,18 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
 
     @Getter
     @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    private Ammattitaitovaatimukset2019 tavoitteet2020;
+
+    @Deprecated
+    @Getter
+    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen tavoitteet;
 
+    @Deprecated
     @Getter
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
@@ -86,9 +93,9 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     private TekstiPalanen tunnustaminen;
 
     @Getter
+    @Deprecated
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Arviointi arviointi;
-
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "ammattitaitovaatimuksenkohdealue_osaamistavoite",
@@ -96,9 +103,11 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
             inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimuksenkohdealue_id"))
     @Getter
     @Setter
+    @Deprecated
     @OrderColumn(name = "jarjestys")
     private List<AmmattitaitovaatimuksenKohdealue> ammattitaitovaatimuksetLista = new ArrayList<>();
 
+    @Deprecated
     @RelatesToPeruste
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
@@ -118,6 +127,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @Enumerated(EnumType.STRING)
     private Kieli kieli; // Jos osaamistavoiteesta on vain yksi kieliversio, määritellään se tässä
 
+    @Deprecated
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

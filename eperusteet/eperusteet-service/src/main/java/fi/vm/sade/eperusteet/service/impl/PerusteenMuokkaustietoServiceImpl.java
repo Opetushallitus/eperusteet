@@ -4,7 +4,6 @@ import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.PerusteenMuokkaustieto;
 import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
-import fi.vm.sade.eperusteet.dto.PerusteenMuokkaustietoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.repository.PerusteenMuokkaustietoRepository;
@@ -39,10 +38,10 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
     private DtoMapper mapper;
 
     @Override
-    public List<MuokkaustietoKayttajallaDto> getPerusteenMuokkausTietos(Long opsId, Date viimeisinLuontiaika, int lukumaara) {
+    public List<MuokkaustietoKayttajallaDto> getPerusteenMuokkausTietos(Long perusteId, Date viimeisinLuontiaika, int lukumaara) {
 
         List<MuokkaustietoKayttajallaDto> muokkaustiedot = mapper
-                .mapAsList(muokkausTietoRepository.findTop10ByPerusteIdAndLuotuBeforeOrderByLuotuDesc(opsId, viimeisinLuontiaika, lukumaara), MuokkaustietoKayttajallaDto.class);
+                .mapAsList(muokkausTietoRepository.findTop10ByPerusteIdAndLuotuBeforeOrderByLuotuDesc(perusteId, viimeisinLuontiaika, lukumaara), MuokkaustietoKayttajallaDto.class);
 
         Map<String, KayttajanTietoDto> kayttajatiedot = kayttajanTietoService
                 .haeKayttajatiedot(muokkaustiedot.stream().map(MuokkaustietoKayttajallaDto::getMuokkaaja).collect(Collectors.toList()))
@@ -54,22 +53,22 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
     }
 
     @Override
-    public void addOpsMuokkausTieto(Long opsId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma) {
-        addOpsMuokkausTieto(opsId, historiaTapahtuma, muokkausTapahtuma, historiaTapahtuma.getNavigationType(), null);
+    public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma) {
+        addMuokkaustieto(perusteId, historiaTapahtuma, muokkausTapahtuma, historiaTapahtuma.getNavigationType(), null);
     }
 
     @Override
-    public void addOpsMuokkausTieto(Long opsId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, String lisatieto) {
-        addOpsMuokkausTieto(opsId, historiaTapahtuma, muokkausTapahtuma, historiaTapahtuma.getNavigationType(), lisatieto);
+    public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, String lisatieto) {
+        addMuokkaustieto(perusteId, historiaTapahtuma, muokkausTapahtuma, historiaTapahtuma.getNavigationType(), lisatieto);
     }
 
     @Override
-    public void addOpsMuokkausTieto(Long opsId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, NavigationType navigationType) {
-        addOpsMuokkausTieto(opsId, historiaTapahtuma, muokkausTapahtuma, navigationType, null);
+    public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, NavigationType navigationType) {
+        addMuokkaustieto(perusteId, historiaTapahtuma, muokkausTapahtuma, navigationType, null);
     }
 
     @Override
-    public void addOpsMuokkausTieto(Long opsId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, NavigationType navigationType, String lisatieto) {
+    public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, NavigationType navigationType, String lisatieto) {
         try {
             // Merkataan aiemmat tapahtumat poistetuksi
             if (Objects.equals(muokkausTapahtuma.getTapahtuma(), MuokkausTapahtuma.POISTO.toString())) {
@@ -82,7 +81,7 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
 
             // Lisäään uusi tapahtuma
             PerusteenMuokkaustieto muokkaustieto = PerusteenMuokkaustieto.builder()
-                    .perusteId(opsId)
+                    .perusteId(perusteId)
                     .nimi(historiaTapahtuma.getNimi())
                     .tapahtuma(muokkausTapahtuma)
                     .muokkaaja(SecurityUtil.getAuthenticatedPrincipal().getName())

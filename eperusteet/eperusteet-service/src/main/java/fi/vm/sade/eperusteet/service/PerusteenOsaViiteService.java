@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.Sortable;
+import fi.vm.sade.eperusteet.dto.SortableDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import org.springframework.security.access.method.P;
@@ -53,6 +54,6 @@ public interface PerusteenOsaViiteService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     PerusteenOsaViiteDto.Matala addSisaltoJulkaistuun(@P("perusteId") Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala viiteDto);
 
-    @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
-    List<Sortable> sort(Long id, Suoritustapakoodi suoritustapakoodi, List<Sortable> sorted);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    <T extends Sortable> List<T> sort(@P("perusteId") Long id, Suoritustapakoodi suoritustapakoodi, List<T> sorted);
 }

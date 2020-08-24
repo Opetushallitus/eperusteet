@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.yl.NimettyKoodillinen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -104,5 +105,10 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     }
     public Stream<NimettyKoodillinen> koodilliset() {
         return concat(oppiaineetMaarineen(), kurssit());
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.lukiorakenne;
     }
 }

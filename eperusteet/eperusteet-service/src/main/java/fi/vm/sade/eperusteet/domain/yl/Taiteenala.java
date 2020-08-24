@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -121,4 +122,8 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
         setOppimisenArviointiOpetuksessa(KevytTekstiKappale.getCopy(other.getOppimisenArviointiOpetuksessa()));
     }
 
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.taiteenala;
+    }
 }

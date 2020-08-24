@@ -40,7 +40,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "perusteenosa")
 public abstract class PerusteenOsa
     extends AbstractAuditedEntity
-    implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity {
+    implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity, HistoriaTapahtuma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

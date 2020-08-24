@@ -667,6 +667,7 @@
 
 <!--                                        <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>-->
                                         <location>${eperusteet.resources}.peruste.AmmattitaitovaatimuksetController</location>
+                                        <location>${eperusteet.resources}.peruste.OsaAlueController</location>
                                         <location>${eperusteet.resources}.peruste.JulkaisuController</location>
 <!--                                        <location>${eperusteet.resources}.peruste.LaajaalainenOsaaminenLockController</location>-->
                                         <location>${eperusteet.resources}.peruste.LiitetiedostoController</location>

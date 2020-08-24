@@ -3,17 +3,19 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.GeneerinenArviointiasteikko;
 import fi.vm.sade.eperusteet.domain.GeneerisenOsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
+import fi.vm.sade.eperusteet.dto.GeneerisenArvioinninOsaamistasonKriteeriDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.GeneerinenArviointiasteikkoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,10 +66,15 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
     public GeneerinenArviointiasteikkoDto add(GeneerinenArviointiasteikkoDto asteikkoDto) {
         GeneerinenArviointiasteikko asteikko = mapper.map(asteikkoDto, GeneerinenArviointiasteikko.class);
         asteikko.setId(null);
+        final Map<Long, List<LokalisoituTekstiDto>> kriteerit = asteikkoDto.getOsaamistasonKriteerit().stream()
+                .collect(Collectors.toMap(
+                        k -> k.getOsaamistaso().getIdLong(),
+                        k -> k.getKriteerit() != null ? k.getKriteerit() : new ArrayList<>()));
         Set<GeneerisenOsaamistasonKriteeri> osaamistasot = asteikko.getArviointiAsteikko().getOsaamistasot().stream()
                 .map(taso -> {
                     GeneerisenOsaamistasonKriteeri uusi = new GeneerisenOsaamistasonKriteeri();
                     uusi.setOsaamistaso(taso);
+                    uusi.setKriteerit(mapper.mapAsList(kriteerit.getOrDefault(taso.getId(), new ArrayList<>()), TekstiPalanen.class));
                     return uusi;
                 })
                 .collect(Collectors.toSet());

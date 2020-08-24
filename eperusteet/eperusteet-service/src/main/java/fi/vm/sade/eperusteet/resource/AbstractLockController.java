@@ -49,7 +49,8 @@ public abstract class AbstractLockController<T> {
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity<LukkoDto> lock(@RequestBody T ctx,
+    public ResponseEntity<LukkoDto> lock(
+            @RequestBody T ctx,
             @RequestHeader(value = "If-Match", required = false) String eTag) {
         handleContext(ctx);
         LukkoDto lock = service().lock(ctx, revisionOf(eTag));

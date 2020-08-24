@@ -36,6 +36,8 @@
   }, {
     "name" : "Oppaat"
   }, {
+    "name" : "OsaAlueet"
+  }, {
     "name" : "PerusopetuksenPerusteenSisalto"
   }, {
     "name" : "Perusteenosat",
@@ -149,6 +151,11 @@
           "in" : "query",
           "required" : false,
           "type" : "string"
+        }, {
+          "name" : "kaikki",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
         } ],
         "responses" : {
           "200" : {
@@ -3452,7 +3459,24 @@
     "/perusteet/{perusteId}/julkaisu" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
-        "operationId" : "getJulkaisu",
+        "operationId" : "getJulkaisut",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : ""
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Julkaisut" ],
+        "operationId" : "teeJulkaisu",
         "produces" : [ "application/json;charset=UTF-8" ],
         "parameters" : [ {
           "name" : "perusteId",
@@ -5567,6 +5591,16 @@
           "required" : true,
           "type" : "string",
           "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/SortableDto"
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -5574,7 +5608,7 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/Sortable"
+                "$ref" : "#/definitions/SortableDto"
               }
             }
           }
@@ -7448,6 +7482,189 @@
         }
       }
     },
+    "/tutkinnonosat/{viiteId}/osaalueet" : {
+      "post" : {
+        "tags" : [ "OsaAlueet" ],
+        "operationId" : "addOsaAlueV2",
+        "parameters" : [ {
+          "name" : "viiteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/OsaAlueLaajaDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaAlueLaajaDto"
+            }
+          }
+        }
+      }
+    },
+    "/tutkinnonosat/{viiteId}/osaalueet/{osaAlueId}" : {
+      "get" : {
+        "tags" : [ "OsaAlueet" ],
+        "operationId" : "getOsaAlueV2",
+        "parameters" : [ {
+          "name" : "viiteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "osaAlueId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaAlueLaajaDto"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "OsaAlueet" ],
+        "operationId" : "updateOsaAlueV2",
+        "parameters" : [ {
+          "name" : "viiteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "osaAlueId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/OsaAlueLaajaDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaAlueLaajaDto"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "OsaAlueet" ],
+        "operationId" : "removeOsaAlueV2",
+        "parameters" : [ {
+          "name" : "viiteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "osaAlueId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : ""
+          }
+        }
+      }
+    },
+    "/tutkinnonosat/{viiteId}/osaalueet/{osaAlueId}/lukko" : {
+      "get" : {
+        "tags" : [ "OsaAlueet" ],
+        "operationId" : "getOsaAlueLock",
+        "parameters" : [ {
+          "name" : "viiteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "osaAlueId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "OsaAlueet" ],
+        "operationId" : "lockOsaAlue",
+        "parameters" : [ {
+          "name" : "viiteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "osaAlueId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "OsaAlueet" ],
+        "operationId" : "unlockOsaAlue",
+        "parameters" : [ {
+          "name" : "viiteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "osaAlueId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : ""
+          }
+        }
+      }
+    },
     "/ulkopuoliset/organisaatioryhmat" : {
       "get" : {
         "tags" : [ "Ulkopuoliset" ],
@@ -7976,6 +8193,10 @@
     "Ammattitaitovaatimukset2019Dto" : {
       "type" : "object",
       "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "kohde" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
@@ -8111,6 +8332,27 @@
         },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
+        }
+      }
+    },
+    "Arviointi2020Dto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "kohde" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "arviointiAsteikko" : {
+          "$ref" : "#/definitions/Reference"
+        },
+        "osaamistasonKriteerit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamistasonKriteerit2020Dto"
+          }
         }
       }
     },
@@ -9529,7 +9771,7 @@
         },
         "tapahtuma" : {
           "type" : "string",
-          "enum" : [ "LUONTI", "PAIVITYS", "PALAUTUS", "POISTO" ]
+          "enum" : [ "LUONTI", "PAIVITYS", "PALAUTUS", "JARJESTETTY", "KOPIOINTI", "POISTO" ]
         },
         "perusteId" : {
           "type" : "integer",
@@ -9541,7 +9783,7 @@
         },
         "kohde" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "peruste", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa" ]
         },
         "luotu" : {
           "type" : "string",
@@ -9594,7 +9836,7 @@
         },
         "type" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "peruste", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa" ]
         },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
@@ -10077,6 +10319,10 @@
         "kuvaus" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
+        "tyyppi" : {
+          "type" : "string",
+          "enum" : [ "OSAALUE2014", "OSAALUE2020" ]
+        },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
         },
@@ -10108,6 +10354,10 @@
         "kuvaus" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
+        "tyyppi" : {
+          "type" : "string",
+          "enum" : [ "OSAALUE2014", "OSAALUE2020" ]
+        },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
         },
@@ -10123,6 +10373,15 @@
         },
         "valmaTelmaSisalto" : {
           "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
+        },
+        "arviointi" : {
+          "$ref" : "#/definitions/Arviointi2020Dto"
+        },
+        "pakollisetOsaamistavoitteet" : {
+          "$ref" : "#/definitions/Osaamistavoite2020Dto"
+        },
+        "valinnaisetOsaamistavoitteet" : {
+          "$ref" : "#/definitions/Osaamistavoite2020Dto"
         },
         "osaamistavoitteet" : {
           "type" : "array",
@@ -10145,6 +10404,10 @@
         "kuvaus" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
+        "tyyppi" : {
+          "type" : "string",
+          "enum" : [ "OSAALUE2014", "OSAALUE2020" ]
+        },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
         },
@@ -10160,6 +10423,15 @@
         },
         "valmaTelmaSisalto" : {
           "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
+        },
+        "arviointi" : {
+          "$ref" : "#/definitions/Arviointi2020Dto"
+        },
+        "pakollisetOsaamistavoitteet" : {
+          "$ref" : "#/definitions/Osaamistavoite2020Dto"
+        },
+        "valinnaisetOsaamistavoitteet" : {
+          "$ref" : "#/definitions/Osaamistavoite2020Dto"
         },
         "osaamistavoitteet" : {
           "type" : "array",
@@ -10257,6 +10529,54 @@
         }
       }
     },
+    "OsaamistasonKriteerit2020Dto" : {
+      "type" : "object",
+      "properties" : {
+        "osaamistaso" : {
+          "$ref" : "#/definitions/OsaamistasoDto"
+        },
+        "kriteerit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          }
+        }
+      }
+    },
+    "Osaamistavoite2020Dto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "pakollinen" : {
+          "type" : "boolean"
+        },
+        "laajuus" : {
+          "type" : "number"
+        },
+        "kieli" : {
+          "type" : "string",
+          "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
+        },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "koodiUri" : {
+          "type" : "string"
+        },
+        "koodiArvo" : {
+          "type" : "string"
+        },
+        "tavoitteet" : {
+          "$ref" : "#/definitions/Ammattitaitovaatimukset2019Dto"
+        }
+      }
+    },
     "OsaamistavoiteDto" : {
       "type" : "object",
       "properties" : {
@@ -10348,6 +10668,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10361,19 +10694,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10388,6 +10708,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10401,19 +10734,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10428,6 +10748,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10441,19 +10774,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10468,6 +10788,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10481,19 +10814,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10508,6 +10828,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10521,19 +10854,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10548,6 +10868,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10561,19 +10894,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10588,6 +10908,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10601,19 +10934,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10628,6 +10948,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10641,19 +10974,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10668,6 +10988,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10681,19 +11014,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10708,6 +11028,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10721,19 +11054,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10748,6 +11068,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10761,19 +11094,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -10788,6 +11108,19 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -10801,19 +11134,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -12319,7 +12639,7 @@
     "Sort" : {
       "type" : "object"
     },
-    "Sortable" : {
+    "SortableDto" : {
       "type" : "object",
       "properties" : {
         "id" : {

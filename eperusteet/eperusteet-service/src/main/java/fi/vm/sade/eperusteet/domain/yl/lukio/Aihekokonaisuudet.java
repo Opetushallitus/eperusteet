@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -97,5 +98,10 @@ public class Aihekokonaisuudet extends PerusteenOsa {
     @Override
     public Reference getReference() {
         return new Reference(getId());
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.aihekokonaisuudet;
     }
 }

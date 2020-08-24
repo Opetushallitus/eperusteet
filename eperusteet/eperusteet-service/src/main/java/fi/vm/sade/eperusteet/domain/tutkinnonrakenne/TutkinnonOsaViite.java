@@ -15,11 +15,14 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.Sortable;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -39,7 +42,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "tutkinnonosaviite")
 @Audited
-public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Sortable {
+public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Sortable, HistoriaTapahtuma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -108,5 +111,36 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Sor
             return true;
         }
         return false;
+    }
+
+
+    @Override
+    public Date getLuotu() {
+        return this.tutkinnonOsa.getLuotu();
+    }
+
+    @Override
+    public Date getMuokattu() {
+        return this.tutkinnonOsa.getMuokattu();
+    }
+
+    @Override
+    public String getLuoja() {
+        return this.tutkinnonOsa.getLuoja();
+    }
+
+    @Override
+    public String getMuokkaaja() {
+        return this.tutkinnonOsa.getMuokkaaja();
+    }
+
+    @Override
+    public TekstiPalanen getNimi() {
+        return this.tutkinnonOsa.getNimi();
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.viite;
     }
 }
