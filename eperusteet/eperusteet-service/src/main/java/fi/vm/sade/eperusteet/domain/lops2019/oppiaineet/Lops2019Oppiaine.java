@@ -149,7 +149,7 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         result &= refXnor(this.getPakollisetModuulitKuvaus(), other.getPakollisetModuulitKuvaus());
         result &= refXnor(this.getValinnaisetModuulitKuvaus(), other.getValinnaisetModuulitKuvaus());
         result &= PerusteUtils.nestedStructureEquals(this.getModuulit(), other.getModuulit());
-        result &= PerusteUtils.nestedStructureEquals(this.getOppimaarat(), other.getOppimaarat());
+        result &= PerusteUtils.nestedStructureEquals(this.getOppimaarat(), other.getOppimaarat(), true);
 
         // tavoitteet
         if (this.getTavoitteet() != null && other.getTavoitteet() != null) {

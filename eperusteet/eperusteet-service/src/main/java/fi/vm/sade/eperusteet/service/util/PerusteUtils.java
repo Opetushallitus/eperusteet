@@ -20,19 +20,30 @@ public class PerusteUtils {
     }
 
     static public <T extends StructurallyComparable<T>> boolean nestedStructureEquals(Collection<T> a, Collection<T> b) {
+        return nestedStructureEquals(a, b, false);
+    }
+
+    static public <T extends StructurallyComparable<T>> boolean nestedStructureEquals(Collection<T> a, Collection<T> b, boolean isOrderFree) {
         boolean result = refXnor(a, b);
         if (a != null && b != null) {
             if (a.size() != b.size()) {
                 return false;
             }
             else {
-                Iterator<T> aiter = a.iterator();
-                Iterator<T> biter = b.iterator();
-                while (aiter.hasNext()) {
-                    T av = aiter.next();
-                    T bv = biter.next();
-                    if (!av.structureEquals(bv)) {
-                        return false;
+                if (isOrderFree) {
+                    for (T bv : b) {
+                        result &= a.stream().anyMatch(ab -> ab.structureEquals(bv));
+                    }
+                }
+                else {
+                    Iterator<T> aiter = a.iterator();
+                    Iterator<T> biter = b.iterator();
+                    while (aiter.hasNext()) {
+                        T av = aiter.next();
+                        T bv = biter.next();
+                        if (!av.structureEquals(bv)) {
+                            return false;
+                        }
                     }
                 }
             }
