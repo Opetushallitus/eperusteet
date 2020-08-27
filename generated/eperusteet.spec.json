@@ -3473,23 +3473,6 @@
             "description" : ""
           }
         }
-      },
-      "post" : {
-        "tags" : [ "Julkaisut" ],
-        "operationId" : "teeJulkaisu",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : ""
-          }
-        }
       }
     },
     "/perusteet/{perusteId}/kaikki" : {
@@ -6475,6 +6458,32 @@
             "schema" : {
               "$ref" : "#/definitions/PerusteVersionDto"
             }
+          }
+        }
+      }
+    },
+    "/perusteet/{projektiId}/julkaisu" : {
+      "post" : {
+        "tags" : [ "Julkaisut" ],
+        "operationId" : "teeJulkaisu",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "projektiId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/JulkaisuBaseDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : ""
           }
         }
       }
@@ -10674,12 +10683,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -10714,12 +10723,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -10754,12 +10763,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -10794,12 +10803,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -10834,12 +10843,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -10874,12 +10883,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -10914,12 +10923,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -10954,12 +10963,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -10994,12 +11003,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -11034,12 +11043,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -11074,12 +11083,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -11114,12 +11123,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",

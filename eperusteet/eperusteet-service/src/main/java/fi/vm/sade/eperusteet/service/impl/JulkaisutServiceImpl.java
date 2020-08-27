@@ -65,17 +65,21 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    public JulkaisuBaseDto teeJulkaisu(long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
-        Peruste peruste = perusteRepository.findOne(perusteId);
+    public JulkaisuBaseDto teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+        Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
+
+        if (perusteprojekti == null) {
+            throw new BusinessRuleViolationException("projektia-ei-ole");
+        }
+
+        Peruste peruste = perusteprojekti.getPeruste();
 
         if (peruste == null) {
             throw new BusinessRuleViolationException("perustetta-ei-ole");
         }
 
-        Perusteprojekti perusteprojekti = peruste.getPerusteprojekti();
-
-        if (perusteprojekti == null) {
-            throw new BusinessRuleViolationException("projektia-ei-ole");
+        if (julkaisuBaseDto.getPeruste() != null && !Objects.equals(peruste.getId(), julkaisuBaseDto.getPeruste().getId())) {
+            throw new BusinessRuleViolationException("vain-oman-perusteen-voi-julkaista");
         }
 
         { // Validoinnit
@@ -87,7 +91,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 }
             }
 
-            TilaUpdateStatus status = perusteprojektiService.validoiProjekti(perusteId, ProjektiTila.JULKAISTU);
+            TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
 
             if (!status.isVaihtoOk()) {
                 throw new BusinessRuleViolationException("projekti-ei-validi");
