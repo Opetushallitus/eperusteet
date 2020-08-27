@@ -115,8 +115,16 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
                 .meta("koodi", mapper.map(oa.getKoodi(), KoodiDto.class));
 
         Optional.ofNullable(oppimaaratMap.get(oa.getId()))
-                .ifPresent(oppimaarat -> result.add(NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)
-                .addAll(oppimaarat.stream().map(om -> mapOppiaine(om, oppimaaratMap, moduulitMap)))));
+                .ifPresent(oppimaarat -> {
+                    List<Lops2019Oppiaine> omList = oa.getOppimaarat();
+                    if (!ObjectUtils.isEmpty(omList)) {
+                        result.add(NavigationNodeDto.of(NavigationType.oppimaarat)
+                                .meta("navigation-subtype", true)
+                                .addAll(omList.stream().map(om -> mapOppiaine(om, oppimaaratMap, moduulitMap))));
+                    }
+                });
+
+
 
         Optional.ofNullable(moduulitMap.get(oa.getId()))
                 .ifPresent(moduulit -> result.add(NavigationNodeDto.of(NavigationType.moduulit).meta("navigation-subtype", true)
