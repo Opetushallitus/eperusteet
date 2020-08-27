@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
@@ -188,8 +189,24 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
         // Yritetään lisätä moduuli
         final List<Lops2019OppiaineDto> oppiaineet = lops2019Service.getOppiaineet(perusteId);
         assertThat(oppiaineet).isNotEmpty();
-
         final Lops2019OppiaineDto oppiaineDto = oppiaineet.get(0);
+
+        // Vaihdetaan oppimäärien järjestystä
+        Lops2019OppiaineDto oppiaine = lops2019Service.getOppiaine(perusteId, oppiaineDto.getId());
+        final List<Lops2019OppiaineDto> oppimaarat = oppiaine.getOppimaarat();
+        assertThat(oppimaarat).hasSize(2);
+        List<Lops2019OppiaineDto> uudetOppimaarat = new ArrayList<>();
+        uudetOppimaarat.add(oppimaarat.get(1));
+        uudetOppimaarat.add(oppimaarat.get(0));
+        oppiaineDto.setOppimaarat(uudetOppimaarat);
+        lops2019Service.updateOppiaine(perusteId, oppiaineDto);
+
+        // Yritetään poistaa oppimäärä
+        uudetOppimaarat.remove(0);
+        oppiaineDto.setOppimaarat(uudetOppimaarat);
+        assertThatExceptionOfType(BusinessRuleViolationException.class)
+                .isThrownBy(() -> lops2019Service.updateOppiaine(perusteId, oppiaineDto));
+
         final Lops2019ModuuliBaseDto moduuliDto = new Lops2019ModuuliBaseDto();
         moduuliDto.setNimi(LokalisoituTekstiDto.of("moduuli"));
         moduuliDto.setPakollinen(true);
@@ -205,7 +222,6 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
         // Yritetään tehdä oppiaineen rakennemuutos
         assertThatExceptionOfType(BusinessRuleViolationException.class)
                 .isThrownBy(() -> lops2019Service.updateOppiaine(perusteId, oppiaineDto));
-
     }
 
     @Test
@@ -425,7 +441,31 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
         koodiDto.setVersio(1L);
         oppiaineDto.setKoodi(koodiDto);
 
-        lops2019Service.addOppiaine(perusteId, oppiaineDto);
+        Lops2019OppiaineDto dto = lops2019Service.addOppiaine(perusteId, oppiaineDto);
+
+
+        Lops2019OppiaineDto oppimaara1Dto = new Lops2019OppiaineDto();
+        oppimaara1Dto.setNimi(LokalisoituTekstiDto.of("om1"));
+        oppimaara1Dto.setOppiaine(Reference.of(dto.getId()));
+        final KoodiDto koodi1Dto = new KoodiDto();
+        koodi1Dto.setUri("oppiaineetjaoppimaaratlops2021_om1");
+        koodi1Dto.setKoodisto("oppiaineetjaoppimaaratlops2021");
+        koodi1Dto.setVersio(1L);
+        oppimaara1Dto.setKoodi(koodi1Dto);
+        dto.getOppimaarat().add(oppimaara1Dto);
+
+        Lops2019OppiaineDto oppimaara2Dto = new Lops2019OppiaineDto();
+        oppimaara2Dto.setNimi(LokalisoituTekstiDto.of("om2"));
+        oppimaara2Dto.setOppiaine(Reference.of(dto.getId()));
+        final KoodiDto koodi2Dto = new KoodiDto();
+        koodi2Dto.setUri("oppiaineetjaoppimaaratlops2021_om2");
+        koodi2Dto.setKoodisto("oppiaineetjaoppimaaratlops2021");
+        koodi2Dto.setVersio(1L);
+        oppimaara2Dto.setKoodi(koodi2Dto);
+        dto.getOppimaarat().add(oppimaara2Dto);
+
+        lops2019Service.updateOppiaine(perusteId, dto);
+
 
         // Julkaistaan peruste
         ppTestUtils.julkaise(pp.getId());
