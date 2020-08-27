@@ -10,6 +10,6 @@ public interface JulkaisutService {
     @PreAuthorize("permitAll()")
     List<JulkaisuBaseDto> getJulkaisut(long id);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'TILANVAIHTO')")
-    JulkaisuBaseDto teeJulkaisu(@P("perusteId") long perusteId, JulkaisuBaseDto julkaisuBaseDto);
+    @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
+    JulkaisuBaseDto teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 }

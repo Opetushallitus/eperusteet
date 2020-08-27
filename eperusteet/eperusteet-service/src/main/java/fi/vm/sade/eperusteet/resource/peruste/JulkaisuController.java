@@ -8,26 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping(value = "/perusteet/{perusteId}/julkaisu", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
 @Api(value = "Julkaisut")
 @Description("Perusteiden julkaisut")
-//@Profile("!test")
 public class JulkaisuController {
 
     @Autowired
     private JulkaisutService julkaisutService;
 
-    @RequestMapping(method = GET)
+    @RequestMapping(method = GET, value = "/{perusteId}/julkaisu")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<JulkaisuBaseDto> getJulkaisut(
@@ -35,13 +30,13 @@ public class JulkaisuController {
         return julkaisutService.getJulkaisut(id);
     }
 
-    @RequestMapping(method = POST)
+    @RequestMapping(method = POST, value = "/{projektiId}/julkaisu")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public JulkaisuBaseDto teeJulkaisu(
-            @PathVariable("perusteId") final long perusteId,
-            JulkaisuBaseDto julkaisuBaseDto) {
-        return julkaisutService.teeJulkaisu(perusteId, julkaisuBaseDto);
+            @PathVariable("projektiId") final long projektiId,
+            @RequestBody JulkaisuBaseDto julkaisuBaseDto) {
+        return julkaisutService.teeJulkaisu(projektiId, julkaisuBaseDto);
     }
 
 }
