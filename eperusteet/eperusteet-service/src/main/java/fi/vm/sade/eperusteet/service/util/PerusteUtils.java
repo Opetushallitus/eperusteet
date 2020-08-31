@@ -66,7 +66,7 @@ public class PerusteUtils {
                 else if (kt == KoulutusTyyppi.PERUSOPETUS) {
                     return KoulutustyyppiToteutus.PERUSOPETUS;
                 }
-                else if (kt == KoulutusTyyppi.LUKIOKOULUTUS) {
+                else if (kt == KoulutusTyyppi.LUKIOKOULUTUS || kt == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS) {
                     return KoulutustyyppiToteutus.LOPS;
                 }
                 else if (kt == KoulutusTyyppi.TPO) {
