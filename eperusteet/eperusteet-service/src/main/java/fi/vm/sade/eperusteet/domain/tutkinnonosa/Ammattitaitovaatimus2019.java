@@ -22,7 +22,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Audited
 public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity {
 
-    @ValidKoodisto(koodisto = KoodistoUriArvo.AMMATTITAITOVAATIMUKSET)
+    @ValidKoodisto(koodisto = { KoodistoUriArvo.AMMATTITAITOVAATIMUKSET, KoodistoUriArvo.OSAAMISTAVOITTEET })
     @Setter
     @Getter
     @Audited(targetAuditMode = NOT_AUDITED)

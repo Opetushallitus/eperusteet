@@ -360,6 +360,11 @@ public class PermissionManager {
     }
 
     @Transactional(readOnly = true)
+    public boolean hasPerustePermission(Authentication authentication, Long perusteId, Permission permission) {
+        return hasPermission(authentication, perusteId, Target.PERUSTE, permission);
+    }
+
+    @Transactional(readOnly = true)
     public boolean hasPermission(Authentication authentication, Serializable targetId, Target targetType, Permission permission) {
 
         if (LOG.isTraceEnabled()) {

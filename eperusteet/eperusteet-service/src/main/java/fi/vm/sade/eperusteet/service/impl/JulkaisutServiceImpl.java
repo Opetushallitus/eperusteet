@@ -17,6 +17,7 @@ import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import net.sf.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -113,6 +114,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         ObjectNode data = objectMapper.valueToTree(sisalto);
         julkaisu.setData(new JulkaistuPerusteData(data));
         julkaisu = julkaisutRepository.save(julkaisu);
+        CacheManager.getInstance().getCache("amosaaperusteet").removeAll();
         return mapper.map(julkaisu, JulkaisuBaseDto.class);
     }
 
