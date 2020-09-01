@@ -17,4 +17,5 @@ public class KoodistoUriArvo {
     public static final String LAAJAALAINENOSAAMINENLOPS2021 = "laajaalainenosaaminenlops2021";
     public static final String MODUULIKOODISTOLOPS2021 = "moduulikoodistolops2021";
 
+    public static final String OSAAMISTAVOITTEET = "osaamistavoitteet";
 }

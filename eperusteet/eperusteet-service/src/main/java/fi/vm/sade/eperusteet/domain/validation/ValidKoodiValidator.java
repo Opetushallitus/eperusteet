@@ -5,21 +5,23 @@ import org.springframework.util.ObjectUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class ValidKoodiValidator implements ConstraintValidator<ValidKoodisto, Koodi> {
-    private String koodisto = "";
+    private List<String> koodistot = new ArrayList<>();
 
     @Override
     public void initialize(ValidKoodisto constraintAnnotation) {
-        koodisto = constraintAnnotation.koodisto();
+        koodistot = Arrays.asList(constraintAnnotation.koodisto());
     }
 
     @Override
     public boolean isValid(Koodi koodi, ConstraintValidatorContext context) {
-        if (koodi != null && !ObjectUtils.isEmpty(koodisto)) {
-            boolean isValid = Objects.equals(koodisto, koodi.getKoodisto());
-            return isValid;
+        if (koodi != null && !ObjectUtils.isEmpty(koodistot)) {
+            return koodistot.stream().anyMatch(k -> k.equals(koodi.getKoodisto()));
         }
         else {
             return true;

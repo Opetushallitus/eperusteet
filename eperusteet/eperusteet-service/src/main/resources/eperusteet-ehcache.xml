@@ -334,4 +334,9 @@
          eternal="false"
          timeToLiveSeconds="600"
          overflowToDisk="false" />
+    <cache name="amosaaperusteet"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToLiveSeconds="3600"
+           overflowToDisk="false" />
 </ehcache>

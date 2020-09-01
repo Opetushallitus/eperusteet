@@ -88,7 +88,14 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("select v from PerusteVersion v where v.peruste.id = ?1")
     PerusteVersion getPerusteVersionEntityByPeruste(long perusteId);
 
-    @Query("select p from Peruste p where p.tila = 'VALMIS' AND p.tyyppi = 'NORMAALI' AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18')")
+    @Query("SELECT p " +
+            "FROM Peruste p " +
+            "WHERE p.tila = 'VALMIS' AND p.tyyppi = 'NORMAALI' " +
+            "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18')" +
+            "   AND (p.voimassaoloLoppuu IS NULL " +
+            "       OR p.voimassaoloLoppuu > NOW() " +
+            "       OR (p.siirtymaPaattyy IS NOT NULL " +
+            "           AND p.siirtymaPaattyy > NOW()))")
     List<Peruste> findAllAmosaa();
 
     @Query("SELECT DISTINCT p FROM Peruste p " +

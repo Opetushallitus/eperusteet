@@ -15,8 +15,10 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
@@ -61,6 +63,7 @@ import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
@@ -72,9 +75,12 @@ import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -238,7 +244,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private TermistoService termistoService;
 
-    private final ObjectMapper objectMapper = InitJacksonConverter.createImportExportMapper();
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
+
+    @Autowired
+    private PermissionManager permissionManager;
+
+    private final ObjectMapper ieMapper = InitJacksonConverter.createImportExportMapper();
+    private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
     @Override
     public List<PerusteDto> getUusimmat(Set<Kieli> kielet) {
@@ -473,12 +486,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public List<PerusteHakuDto> getAmosaaOpsit() {
-        List<Peruste> amosaaPerusteet = perusteRepository.findAllAmosaa();
-        return mapper.mapAsList(amosaaPerusteet, PerusteHakuDto.class);
+        Set<Peruste> perusteet = julkaisutRepository.findAmosaaJulkaisut();
+        perusteet.addAll(perusteRepository.findAllAmosaa());
+        List<PerusteHakuDto> result = perusteet.stream()
+                .map(p -> mapper.map(p, PerusteHakuDto.class))
+                .collect(Collectors.toList());
+        return result;
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable("amosaaperusteet")
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
         List<Peruste> loydetyt = perusteRepository.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
 
@@ -565,6 +583,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getKokoSisalto(final Long id, Integer perusteRev) {
         Peruste peruste;
+        boolean hasPermission = permissionManager.hasPerustePermission(SecurityContextHolder.getContext().getAuthentication(), id, PermissionManager.Permission.LUKU);
         if (perusteRev != null) {
             peruste = perusteRepository.findRevision(id, perusteRev);
         }
@@ -576,19 +595,38 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             return null;
         }
 
-        PerusteKaikkiDto perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
+        PerusteKaikkiDto perusteDto = null;
 
-        if (peruste.getTpoOpetuksenSisalto() != null) {
-            perusteDto.setTpoOpetuksenSisalto(mapper.map(peruste.getTpoOpetuksenSisalto(), TPOOpetuksenSisaltoDto.class));
+        if (perusteRev == null && !hasPermission && Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
+            JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+            if (julkaisu != null) {
+                ObjectNode data = julkaisu.getData().getData();
+                try {
+                    perusteDto = objectMapper.treeToValue(data, PerusteKaikkiDto.class);
+                } catch (JsonProcessingException e) {
+                    throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
+                }
+            }
+            else {
+                throw new AccessDeniedException("ei-riittavia-oikeuksia");
+            }
+        }
+        else {
+            perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
         }
 
-        if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
-            updateLukioKaikkiRakenne(perusteDto, peruste);
-        }
+        // Kokeillaan ilman
+//        if (peruste.getTpoOpetuksenSisalto() != null) {
+//            perusteDto.setTpoOpetuksenSisalto(mapper.map(peruste.getTpoOpetuksenSisalto(), TPOOpetuksenSisaltoDto.class));
+//        }
+//
+//        if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
+//            updateLukioKaikkiRakenne(perusteDto, peruste);
+//        }
 
-        if (peruste.getLops2019Sisalto() != null) {
-            getLops2019KaikkiRakenne(perusteDto, peruste);
-        }
+//        if (peruste.getLops2019Sisalto() != null) {
+//            getLops2019KaikkiRakenne(perusteDto, peruste);
+//        }
 
         Revision rev = perusteRepository.getLatestRevisionId(id);
         if (rev != null) {
@@ -598,19 +636,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             perusteDto.setRevision(0);
         }
 
-        if (perusteDto.getSuoritustavat() != null
-                && !perusteDto.getSuoritustavat().isEmpty()
-                && peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
-            perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
-
-            Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
-            for (Suoritustapa st : peruste.getSuoritustavat()) {
-                for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
-                    tutkinnonOsat.add(t.getTutkinnonOsa());
-                }
-            }
-            perusteDto.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaKaikkiDto.class));
-        }
+        // Kokeillaan ilman
+//        if (perusteDto.getSuoritustavat() != null
+//                && !perusteDto.getSuoritustavat().isEmpty()
+//                && peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
+//            perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
+//
+//            Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
+//            for (Suoritustapa st : peruste.getSuoritustavat()) {
+//                for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
+//                    tutkinnonOsat.add(t.getTutkinnonOsa());
+//                }
+//            }
+//            perusteDto.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaKaikkiDto.class));
+//        }
 
         return perusteDto;
     }
@@ -1521,21 +1560,21 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         // Perusteprojekti
         zipOutputStream.putNextEntry(new ZipEntry("perusteprojekti.json"));
-        objectMapper.writeValue(zipOutputStream, projektiDto);
+        ieMapper.writeValue(zipOutputStream, projektiDto);
 
         // Peruste
         zipOutputStream.putNextEntry(new ZipEntry("peruste.json"));
-        objectMapper.writeValue(zipOutputStream, perusteDto);
+        ieMapper.writeValue(zipOutputStream, perusteDto);
 
         // Termit
         List<TermiDto> termit = termistoService.getTermit(perusteId);
         zipOutputStream.putNextEntry(new ZipEntry("termit.json"));
-        objectMapper.writeValue(zipOutputStream, termit);
+        ieMapper.writeValue(zipOutputStream, termit);
 
         // Liitteet
         List<Liite> liitteet = this.liitteet.findByPerusteId(perusteId);
         zipOutputStream.putNextEntry(new ZipEntry("liitteet.json"));
-        objectMapper.writeValue(zipOutputStream, mapper.mapAsList(liitteet, LiiteDto.class));
+        ieMapper.writeValue(zipOutputStream, mapper.mapAsList(liitteet, LiiteDto.class));
 
         for (Liite liite : liitteet) {
             try {
@@ -1574,16 +1613,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
                 switch (entryName) {
                     case "perusteprojekti.json":
-                        perusteprojektiDto = objectMapper.readValue(zipInputStream, PerusteprojektiLuontiDto.class);
+                        perusteprojektiDto = ieMapper.readValue(zipInputStream, PerusteprojektiLuontiDto.class);
                         break;
                     case "peruste.json":
-                        perusteKaikkiDto = objectMapper.readValue(zipInputStream, PerusteKaikkiDto.class);
+                        perusteKaikkiDto = ieMapper.readValue(zipInputStream, PerusteKaikkiDto.class);
                         break;
                     case "termit.json":
-                        termit = objectMapper.readValue(zipInputStream, new TypeReference<List<TermiDto>>(){});
+                        termit = ieMapper.readValue(zipInputStream, new TypeReference<List<TermiDto>>(){});
                         break;
                     case "liitteet.json":
-                        liitteet = objectMapper.readValue(zipInputStream, new TypeReference<List<LiiteDto>>(){});
+                        liitteet = ieMapper.readValue(zipInputStream, new TypeReference<List<LiiteDto>>(){});
                         break;
                     default:
                         log.warn("Tuntematon tiedosto: " + entryName);

@@ -72,10 +72,10 @@ public interface PerusteService {
     @PreAuthorize("permitAll()")
     boolean isDiaariValid(String diaarinumero);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("permitAll()")
     PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("permitAll()")
     PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id, Integer rev);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
