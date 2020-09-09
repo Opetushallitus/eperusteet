@@ -12,12 +12,12 @@
     <name>eperusteet-service</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>4.3.9.Final</hibernate.version>
+        <hibernate.version>5.2.0.Final</hibernate.version>
         <spring.version>4.3.23.RELEASE</spring.version>
-        <spring.security.version>4.2.13.RELEASE</spring.security.version>
+        <spring.security.version>4.2.16.RELEASE</spring.security.version>
         <spring.data.jpa.version>1.11.22.RELEASE</spring.data.jpa.version>
         <logback.version>1.2.3</logback.version>
-        <postgresql.version>9.4.1211</postgresql.version>
+        <postgresql.version>42.2.13</postgresql.version>
         <jackson.version>2.10.2</jackson.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
@@ -206,7 +206,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.2.5.Final</version>
+            <version>6.0.19.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
