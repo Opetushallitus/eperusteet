@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Tiedote;
+import fi.vm.sade.eperusteet.domain.TiedoteJulkaisuPaikka;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
@@ -16,8 +17,10 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -54,7 +57,11 @@ public class TiedoteServiceImpl implements TiedoteService {
     public Page<TiedoteDto> findBy(TiedoteQuery tquery) {
         // Sisäiset tiedotteet vaativat kirjautumisen
         if (!SecurityUtil.isAuthenticated()) {
-            tquery.setJulkinen(true);
+            if (ObjectUtils.isEmpty(tquery.getTiedoteJulkaisuPaikka())) {
+                tquery.setJulkinen(true);
+            } else {
+                tquery.setTiedoteJulkaisuPaikka(Arrays.asList(TiedoteJulkaisuPaikka.OPINTOPOLKU.toString(), TiedoteJulkaisuPaikka.OPINTOPOLKU_ETUSIVU.toString()));
+            }
         }
 
         String jarjestys = "luotu";

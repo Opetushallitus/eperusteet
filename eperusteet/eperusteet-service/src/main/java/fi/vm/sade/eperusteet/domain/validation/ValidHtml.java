@@ -44,12 +44,12 @@ public @interface ValidHtml {
     	MINIMAL(Whitelist.none()),
     	SIMPLIFIED(Whitelist.none().addTags("p", "strong", "em", "s", "ol", "li", "ul")),
     	NORMAL(Whitelist.none()
-    			.addTags("p", "span", "strong", "em", "s", "ol", "li", "ul", "blockquote", "table", "caption",
+				.addTags("p", "span", "strong", "em", "s", "ol", "li", "ul", "blockquote", "table", "caption",
 						"tbody", "tr", "td", "hr", "pre", "th", "thead", "a", "abbr")
-    			.addAttributes("table", "align", "border", "cellpadding", "cellspacing", "style", "summary")
+				.addAttributes("table", "align", "border", "cellpadding", "cellspacing", "style", "summary")
 				.addAttributes("th", "scope", "colspan", "rowspan", "style")
 				.addAttributes("td", "colspan", "rowspan", "style")
-				.addAttributes("a", "href", "target")
+				.addAttributes("a", "href", "target", "rel")
 				.addAttributes("img", "data-uid", "src", "alt", "height", "width", "style")
 				.addAttributes("abbr", "data-viite")
 				.addAttributes("span", "class"));
