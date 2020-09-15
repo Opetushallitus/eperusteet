@@ -50,7 +50,7 @@ public final class SecurityUtil {
     public static boolean isAuthenticated() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null
-            && !(authentication instanceof AnonymousAuthenticationToken)
-            && authentication.isAuthenticated();
+                && !(authentication instanceof AnonymousAuthenticationToken)
+                && authentication.isAuthenticated();
     }
 }

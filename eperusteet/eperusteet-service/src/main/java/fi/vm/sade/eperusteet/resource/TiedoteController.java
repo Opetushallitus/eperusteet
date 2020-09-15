@@ -66,12 +66,12 @@ public class TiedoteController {
     public Page<TiedoteDto> findTiedotteetBy(@ApiIgnore TiedoteQuery tquery) {
         return tiedoteService.findBy(tquery);
     }
-
+    
     @RequestMapping(method = GET)
     public List<TiedoteDto> getAllTiedotteet(
-        @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,
-        @RequestParam(value = "perusteId", required = false) Long perusteId,
-        @RequestParam(value = "alkaen", required = false, defaultValue = "0") Long alkaen
+            @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,
+            @RequestParam(value = "perusteId", required = false) Long perusteId,
+            @RequestParam(value = "alkaen", required = false, defaultValue = "0") Long alkaen
     ) {
         return tiedoteService.getAll(vainJulkiset, alkaen, perusteId);
     }
