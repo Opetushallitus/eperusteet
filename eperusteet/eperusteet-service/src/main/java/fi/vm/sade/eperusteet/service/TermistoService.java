@@ -21,13 +21,15 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- *
  * @author apvilkko
  */
 public interface TermistoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TermiDto> getTermit(@P("perusteId") Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    TermiDto getTermi(@P("perusteId") Long perusteId, String avain);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     TermiDto addTermi(@P("perusteId") Long perusteId, TermiDto dto);

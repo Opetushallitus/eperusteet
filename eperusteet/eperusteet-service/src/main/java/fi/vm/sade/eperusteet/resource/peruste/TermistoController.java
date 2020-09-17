@@ -55,17 +55,24 @@ public class TermistoController {
     @RequestMapping(value = "/termisto", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     public TermiDto addTermi(
-        @PathVariable("perusteId") final Long perusteId,
-        @RequestBody TermiDto dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody TermiDto dto) {
         dto.setId(null);
         return termistoService.addTermi(perusteId, dto);
     }
 
+    @RequestMapping(value = "/termisto/{avain}", method = GET)
+    public TermiDto getTermi(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("avain") final String avain) {
+        return termistoService.getTermi(perusteId, avain);
+    }
+
     @RequestMapping(value = "/termisto/{id}", method = POST)
     public TermiDto updateTermi(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id,
-        @RequestBody TermiDto dto) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @RequestBody TermiDto dto) {
         dto.setId(id);
         return termistoService.updateTermi(perusteId, dto);
     }
