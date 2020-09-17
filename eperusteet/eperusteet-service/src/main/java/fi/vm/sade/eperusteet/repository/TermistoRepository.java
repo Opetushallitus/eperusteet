@@ -22,10 +22,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- *
  * @author apvilkko
  */
 @Repository
 public interface TermistoRepository extends JpaRepository<Termi, Long> {
     List<Termi> findByPerusteId(Long perusteId);
+
+    Termi findByPerusteIdAndAvain(Long perusteId, String avain);
 }

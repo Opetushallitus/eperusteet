@@ -13,5 +13,6 @@ public enum NavigationType {
     perusopetusoppiaineet, perusopetusoppiaine, vuosiluokkakokonaisuus,
     aipevaihe, aipekurssi, aipeoppiaine,
     kurssit,
-    taiteenosa;
+    taiteenosa,
+    termi;
 }
