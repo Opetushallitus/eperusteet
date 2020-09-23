@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
-import fi.vm.sade.eperusteet.dto.peruste.JulkaisuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -13,17 +12,18 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +31,9 @@ import java.util.Objects;
 @Service
 @Transactional
 public class JulkaisutServiceImpl implements JulkaisutService {
+
+    @Value("${fi.vm.sade.eperusteet.salli_virheelliset:false}")
+    private boolean salliVirheelliset;
 
     @Dto
     @Autowired
@@ -50,6 +53,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Autowired
     private PerusteService perusteService;
+
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
@@ -94,7 +100,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
             TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
 
-            if (!status.isVaihtoOk()) {
+            if (!salliVirheelliset && !status.isVaihtoOk()) {
                 throw new BusinessRuleViolationException("projekti-ei-validi");
             }
         }
@@ -103,7 +109,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        PerusteKaikkiDto sisalto = perusteService.getKokoSisalto(peruste.getId());
+        PerusteKaikkiDto sisalto = perusteService.getJulkaistuSisalto(peruste.getId());
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
         julkaisu.setRevision((int)julkaisutCount);
         julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Julkaisu"));
@@ -114,7 +120,15 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         ObjectNode data = objectMapper.valueToTree(sisalto);
         julkaisu.setData(new JulkaistuPerusteData(data));
         julkaisu = julkaisutRepository.save(julkaisu);
-        CacheManager.getInstance().getCache("amosaaperusteet").removeAll();
+        {
+            Cache amosaaperusteet = CacheManager.getInstance().getCache("amosaaperusteet");
+            if (amosaaperusteet != null) {
+                amosaaperusteet.removeAll();
+            }
+        }
+
+        muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
+
         return mapper.map(julkaisu, JulkaisuBaseDto.class);
     }
 

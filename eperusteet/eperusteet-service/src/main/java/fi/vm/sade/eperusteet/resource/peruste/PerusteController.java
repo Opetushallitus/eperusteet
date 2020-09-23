@@ -17,9 +17,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -328,7 +326,7 @@ public class PerusteController {
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
             @PathVariable("perusteId") final long id,
             @RequestParam(value = "rev", required = false) final Integer rev) {
-        return handleGet(id, 3600, () -> service.getKokoSisalto(id, rev));
+        return handleGet(id, 3600, () -> service.getJulkaistuSisalto(id, rev));
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)

@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -46,7 +47,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +60,6 @@ import java.util.List;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.Assert.*;
 
 /**
@@ -94,13 +93,16 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Autowired
     private PerusteprojektiTestUtils ppTestUtils;
 
-    private Peruste peruste;
+    @Autowired
+    private PerusteprojektiRepository perusteprojektiRepository;
 
     @PersistenceContext
     private EntityManager em;
 
     @Autowired
     private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
+
+    private Peruste peruste;
 
     public PerusteServiceIT() {
     }
@@ -113,7 +115,13 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri","koulutusalakoodi","opintoalakoodi");
         koulutus = koulutusRepository.save(koulutus);
 
+        Perusteprojekti pp = new Perusteprojekti();
+        pp.setNimi("projekti");
+        pp.setDiaarinumero(new Diaarinumero("OPH-12345-1234"));
+        pp = perusteprojektiRepository.save(pp);
+
         Peruste p = TestUtils.teePeruste();
+        p.setPerusteprojekti(pp);
         p.setSiirtymaPaattyy(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         p.asetaTila(PerusteTila.LUONNOS);
@@ -243,7 +251,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
         assertEquals(new Reference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
 
-        PerusteKaikkiDto kokoSisalto = perusteService.getKokoSisalto(peruste.getId());
+        PerusteKaikkiDto kokoSisalto = perusteService.getJulkaistuSisalto(peruste.getId());
         assertNotNull(kokoSisalto.getTutkinnonOsat());
         Assertions.assertThat(kokoSisalto.getSuoritustavat()).hasSize(1);
         Assertions.assertThat(kokoSisalto.getTutkinnonOsat()).hasSize(2);
