@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.util.StringUtils;
@@ -44,6 +45,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Table(name = "tutkinnonosa")
 @JsonTypeName("tutkinnonosa")
 @Audited
+@Slf4j
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @ValidHtml
@@ -191,10 +193,10 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     @Override
-    public boolean structureEquals(PerusteenOsa other) {
+    public boolean structureEquals(PerusteenOsa updated) {
         boolean result = false;
-        if (other instanceof TutkinnonOsa) {
-            TutkinnonOsa that = (TutkinnonOsa) other;
+        if (updated instanceof TutkinnonOsa) {
+            TutkinnonOsa that = (TutkinnonOsa) updated;
             result = super.structureEquals(that);
             result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
             result &= Objects.equals(getTyyppi(), that.getTyyppi());
@@ -203,10 +205,17 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             result &= refXnor(getAmmattitaidonOsoittamistavat(), that.getAmmattitaidonOsoittamistavat());
             result &= refXnor(getAmmattitaitovaatimukset(), that.getAmmattitaitovaatimukset());
             result &= refXnor(getArviointi(), that.getArviointi());
-            result &= Objects.equals(that.getAmmattitaitovaatimukset2019(), this.getAmmattitaitovaatimukset2019());
+
+            if (result && that.getAmmattitaitovaatimukset2019() != null && getAmmattitaitovaatimukset2019() != null) {
+                result &= that.getAmmattitaitovaatimukset2019().structureEquals(that.getAmmattitaitovaatimukset2019());
+            }
+
             if (result && getArviointi() != null) {
                 result &= getArviointi().structureEquals(that.getArviointi());
             }
+
+            log.debug("Tutkinnon osa update status: ", result);
+
             result &= refXnor(getOsaAlueet(), that.getOsaAlueet());
             if (result && getOsaAlueet() != null) {
                 Iterator<OsaAlue> i = getOsaAlueet().iterator();
@@ -217,6 +226,9 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
                 result &= !i.hasNext();
                 result &= !j.hasNext();
             }
+
+
+            log.debug("Tutkinnon osa osa-alue update status: ", result);
         }
         return result;
     }

@@ -32,6 +32,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
@@ -73,16 +74,19 @@ public interface PerusteService {
     boolean isDiaariValid(String diaarinumero);
 
     @PreAuthorize("permitAll()")
-    PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id);
+    PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id);
 
     @PreAuthorize("permitAll()")
-    PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id, Integer rev);
+    PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, Integer rev);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     PerusteDto update(@P("perusteId") Long perusteId, PerusteDto perusteDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     PerusteDto updateFull(@P("perusteId") Long perusteId, PerusteDto perusteDto);
+
+    @Transactional(readOnly = true)
+    PerusteKaikkiDto getKaikkiSisalto(Long id, Integer perusteRev);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteDto getByIdAndSuoritustapa(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);

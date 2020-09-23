@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
@@ -201,7 +200,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     public void test_kaikkiRajapinta() {
         PerusteprojektiDto perusteprojektiDto = rakennaAmmattitaitovaatimusLatausPohjadata();
         Long perusteId = perusteprojektiDto.getPeruste().getIdLong();
-        PerusteKaikkiDto kaikki = perusteService.getKokoSisalto(perusteId);
+        PerusteKaikkiDto kaikki = perusteService.getJulkaistuSisalto(perusteId);
         assertThat(kaikki).isNotNull();
         Ammattitaitovaatimukset2019Dto av = kaikki.getTutkinnonOsat().get(0).getAmmattitaitovaatimukset2019();
         assertThat(av).isNotNull()

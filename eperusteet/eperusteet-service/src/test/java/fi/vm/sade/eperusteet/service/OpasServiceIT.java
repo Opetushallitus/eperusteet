@@ -24,8 +24,6 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.opas.OpasDto;
 import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -39,7 +37,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.Arrays;
-import org.assertj.core.api.Assertions;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +143,7 @@ public class OpasServiceIT extends AbstractIntegrationTest {
 
             assertThat(opasDto).isNotNull();
 
-            PerusteKaikkiDto perusteKaikki = perusteService.getKokoSisalto(opasDto.getPeruste().getIdLong());
+            PerusteKaikkiDto perusteKaikki = perusteService.getJulkaistuSisalto(opasDto.getPeruste().getIdLong());
             assertThat(perusteKaikki.getOppaanKoulutustyypit()).isNull();
             assertThat(perusteKaikki.getOppaanPerusteet()).hasSize(0);
 
@@ -175,7 +173,7 @@ public class OpasServiceIT extends AbstractIntegrationTest {
 
             assertThat(opasDto).isNotNull();
 
-            PerusteKaikkiDto perusteKaikki = perusteService.getKokoSisalto(opasDto.getPeruste().getIdLong());
+            PerusteKaikkiDto perusteKaikki = perusteService.getJulkaistuSisalto(opasDto.getPeruste().getIdLong());
             assertThat(perusteKaikki.getOppaanKoulutustyypit()).containsExactlyInAnyOrder(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO);
             assertThat(perusteKaikki.getOppaanPerusteet()).extracting("id").contains(pohjaperuste.getId());
 

@@ -172,7 +172,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
             log.info("Luodaan julkaisu perusteelle: " + peruste.getId());
 
-            PerusteKaikkiDto sisalto = perusteService.getKokoSisalto(peruste.getId());
+            PerusteKaikkiDto sisalto = perusteService.getJulkaistuSisalto(peruste.getId());
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(julkaisut.size());
             julkaisu.setLuoja("");

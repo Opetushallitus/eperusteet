@@ -172,9 +172,11 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
                 .isNull();
 
         // Julkaistu ei näy koska voimassaolo ei ole vielä alkanut
-        ppTestUtils.julkaise(projekti.getId());
-        assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
-                .hasFieldOrPropertyWithValue("id", perusteDto.getId());
+        ppTestUtils.julkaise(projekti.getId(), true);
+        {
+            PerusteInfoDto peruste = perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero()));
+            assertThat(peruste).hasFieldOrPropertyWithValue("id", perusteDto.getId());
+        }
 
         // Julkaistu ja voimassaoleva näkyy
         perusteDto = ppTestUtils.editPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {

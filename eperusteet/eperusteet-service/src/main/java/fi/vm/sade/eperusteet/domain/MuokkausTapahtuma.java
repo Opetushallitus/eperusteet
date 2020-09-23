@@ -11,6 +11,7 @@ public enum MuokkausTapahtuma {
     PALAUTUS("palautus"),
     JARJESTETTY("jarjestetty"),
     KOPIOINTI("kopiointi"),
+    JULKAISU("julkaisu"),
     POISTO("poisto");
 
     private String tapahtuma;

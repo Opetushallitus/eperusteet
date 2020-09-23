@@ -5,7 +5,6 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaamisenTavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.ValmaTelmaSisalto;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
@@ -145,7 +144,7 @@ public class PerusteJulkisetTestIT extends AbstractIntegrationTest {
 
         ppTestUtils.julkaise(pp.getId());
 
-        PerusteKaikkiDto tpoPeruste = perusteService.getKokoSisalto(perusteDto.getId());
+        PerusteKaikkiDto tpoPeruste = perusteService.getJulkaistuSisalto(perusteDto.getId());
         assertThat(tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset()).hasSize(1);
         assertThat((TaiteenalaDto)tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset().get(0).getPerusteenOsa())
                 .extracting(

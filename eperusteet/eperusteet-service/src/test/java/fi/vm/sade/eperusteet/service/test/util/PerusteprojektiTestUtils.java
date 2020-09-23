@@ -175,7 +175,15 @@ public class PerusteprojektiTestUtils {
     public void asetaProjektiTilaan(Long projektiId, ProjektiTila tila) {
         Perusteprojekti projekti = perusteprojektiRepository.findOne(projektiId);
         projekti.setTila(tila);
-        projekti.getPeruste().asetaTila(PerusteTila.VALMIS);
+        if (tila.isOneOf(ProjektiTila.POISTETTU)) {
+            projekti.getPeruste().asetaTila(PerusteTila.POISTETTU);
+        }
+        else if (tila.isOneOf(ProjektiTila.VALMIS, ProjektiTila.VIIMEISTELY, ProjektiTila.JULKAISTU)) {
+            projekti.getPeruste().asetaTila(PerusteTila.VALMIS);
+        }
+        else {
+            projekti.getPeruste().asetaTila(PerusteTila.LUONNOS);
+        }
         perusteprojektiRepository.save(projekti);
         em.flush();
     }

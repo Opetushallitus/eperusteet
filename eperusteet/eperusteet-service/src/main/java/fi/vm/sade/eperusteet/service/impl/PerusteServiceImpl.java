@@ -469,14 +469,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         List<Peruste> loydetyt = perusteRepository.findAllAmosaaYhteisetPohjat();
 
         if (loydetyt.size() == 1) {
-            return getKokoSisalto(loydetyt.get(0).getId());
+            return getJulkaistuSisalto(loydetyt.get(0).getId());
         } else {
             Optional<Peruste> op = loydetyt.stream()
                     .filter((p) -> p.getVoimassaoloAlkaa() != null && p.getVoimassaoloAlkaa().before(new Date()))
                     .reduce((current, next) -> next.getVoimassaoloAlkaa().after(current.getVoimassaoloAlkaa()) ? next : current);
 
             if (op.isPresent()) {
-                return getKokoSisalto(op.get().getId());
+                return getJulkaistuSisalto(op.get().getId());
             }
         }
 
@@ -485,6 +485,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable("amosaaperusteet")
     public List<PerusteHakuDto> getAmosaaOpsit() {
         Set<Peruste> perusteet = julkaisutRepository.findAmosaaJulkaisut();
         perusteet.addAll(perusteRepository.findAllAmosaa());
@@ -496,7 +497,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable("amosaaperusteet")
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
         List<Peruste> loydetyt = perusteRepository.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
 
@@ -575,13 +575,47 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    public PerusteKaikkiDto getKokoSisalto(final Long id) {
-        return getKokoSisalto(id, null);
+    public PerusteKaikkiDto getJulkaistuSisalto(final Long id) {
+        return getJulkaistuSisalto(id, null);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PerusteKaikkiDto getKokoSisalto(final Long id, Integer perusteRev) {
+    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer perusteRev) {
+        Peruste peruste;
+        boolean hasPermission = permissionManager.hasPerustePermission(SecurityContextHolder.getContext().getAuthentication(), id, PermissionManager.Permission.LUKU);
+        if (perusteRev != null) {
+            peruste = perusteRepository.findRevision(id, perusteRev);
+        }
+        else {
+            peruste = perusteRepository.getOne(id);
+        }
+
+        if (peruste == null) {
+            return null;
+        }
+
+        if (perusteRev == null && !hasPermission && Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
+            JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+            if (julkaisu != null) {
+                ObjectNode data = julkaisu.getData().getData();
+                try {
+                    return objectMapper.treeToValue(data, PerusteKaikkiDto.class);
+                } catch (JsonProcessingException e) {
+                    throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
+                }
+            }
+            else {
+                throw new AccessDeniedException("ei-riittavia-oikeuksia");
+            }
+        }
+
+        return getKaikkiSisalto(id, perusteRev);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteKaikkiDto getKaikkiSisalto(final Long id, Integer perusteRev) {
         Peruste peruste;
         boolean hasPermission = permissionManager.hasPerustePermission(SecurityContextHolder.getContext().getAuthentication(), id, PermissionManager.Permission.LUKU);
         if (perusteRev != null) {
@@ -598,35 +632,22 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         PerusteKaikkiDto perusteDto = null;
 
         if (perusteRev == null && !hasPermission && Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
-            JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
-            if (julkaisu != null) {
-                ObjectNode data = julkaisu.getData().getData();
-                try {
-                    perusteDto = objectMapper.treeToValue(data, PerusteKaikkiDto.class);
-                } catch (JsonProcessingException e) {
-                    throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
-                }
-            }
-            else {
-                throw new AccessDeniedException("ei-riittavia-oikeuksia");
-            }
-        }
-        else {
-            perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
+            throw new AccessDeniedException("ei-riittavia-oikeuksia");
         }
 
-        // Kokeillaan ilman
-//        if (peruste.getTpoOpetuksenSisalto() != null) {
-//            perusteDto.setTpoOpetuksenSisalto(mapper.map(peruste.getTpoOpetuksenSisalto(), TPOOpetuksenSisaltoDto.class));
-//        }
-//
-//        if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
-//            updateLukioKaikkiRakenne(perusteDto, peruste);
-//        }
+        perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
 
-//        if (peruste.getLops2019Sisalto() != null) {
-//            getLops2019KaikkiRakenne(perusteDto, peruste);
-//        }
+        if (peruste.getTpoOpetuksenSisalto() != null) {
+            perusteDto.setTpoOpetuksenSisalto(mapper.map(peruste.getTpoOpetuksenSisalto(), TPOOpetuksenSisaltoDto.class));
+        }
+
+        if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
+            updateLukioKaikkiRakenne(perusteDto, peruste);
+        }
+
+        if (peruste.getLops2019Sisalto() != null) {
+            getLops2019KaikkiRakenne(perusteDto, peruste);
+        }
 
         Revision rev = perusteRepository.getLatestRevisionId(id);
         if (rev != null) {
@@ -636,20 +657,19 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             perusteDto.setRevision(0);
         }
 
-        // Kokeillaan ilman
-//        if (perusteDto.getSuoritustavat() != null
-//                && !perusteDto.getSuoritustavat().isEmpty()
-//                && peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
-//            perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
-//
-//            Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
-//            for (Suoritustapa st : peruste.getSuoritustavat()) {
-//                for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
-//                    tutkinnonOsat.add(t.getTutkinnonOsa());
-//                }
-//            }
-//            perusteDto.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaKaikkiDto.class));
-//        }
+        if (perusteDto.getSuoritustavat() != null
+                && !perusteDto.getSuoritustavat().isEmpty()
+                && peruste.getLukiokoulutuksenPerusteenSisalto() == null) {
+            perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
+
+            Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
+            for (Suoritustapa st : peruste.getSuoritustavat()) {
+                for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
+                    tutkinnonOsat.add(t.getTutkinnonOsa());
+                }
+            }
+            perusteDto.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaKaikkiDto.class));
+        }
 
         return perusteDto;
     }
@@ -1556,7 +1576,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public void exportPeruste(Long perusteId, ZipOutputStream zipOutputStream) throws IOException {
         Peruste peruste = perusteRepository.getOne(perusteId);
         PerusteprojektiLuontiDto projektiDto = mapper.map(peruste.getPerusteprojekti(), PerusteprojektiLuontiDto.class);
-        PerusteKaikkiDto perusteDto = getKokoSisalto(perusteId);
+        PerusteKaikkiDto perusteDto = getJulkaistuSisalto(perusteId);
 
         // Perusteprojekti
         zipOutputStream.putNextEntry(new ZipEntry("perusteprojekti.json"));
