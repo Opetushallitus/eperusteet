@@ -11,10 +11,11 @@
         <tr ng-repeat="arviointi in model | orderBy:(!editMode ? '-arvosana':'')">
             <td>
                 <span ng-if="!editMode">{{arvosanaNumerolla(arviointi.arvosana).teksti}}</span>
-                <select ng-if="editMode" 
+                <select ng-if="editMode"
                     title="arvosana"
                     class="form-control"
                     ng-model="arviointi.arvosana">
+                    <option value=""></option>
                     <option ng-repeat="arvosana in arvosanat" ng-value="{{arvosana.numero}}">{{arvosana.teksti}}</option>
                 </select>
             </td>
