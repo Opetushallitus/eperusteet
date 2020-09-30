@@ -34,7 +34,7 @@ mixin arviointi
         th(ng-bind="'arvion-kuvaus' | kaanna")
         thead
     tbody
-      tr(ng-repeat="arvioinninKohde in tavoite.arvioinninkohteet | orderBy:(!editing ? '-arvosana':'')")
+      tr(ng-repeat="arvioinninKohde in tavoite.arvioinninkohteet | orderBy:(!editing ? 'arvosana':'')")
         td
           span(ng-if="!editing && arvioinninKohde.arvosana" kaanna="'osaamisen-kuvaus-arvosanalle_'+arvioinninKohde.arvosana")
           select.form-control(ng-if="editing", ng-model='arvioinninKohde.arvosana')
