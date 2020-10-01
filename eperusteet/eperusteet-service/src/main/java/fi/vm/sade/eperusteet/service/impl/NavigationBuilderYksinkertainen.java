@@ -49,7 +49,7 @@ public class NavigationBuilderYksinkertainen implements NavigationBuilder {
 
         Peruste peruste = perusteRepository.getOne(perusteId);
 
-        if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.AIKUISTENPERUSOPETUS)) {
+        if (peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.AIKUISTENPERUSOPETUS)) {
             return basicNavigation.addAll(navigationBuilderAipe.buildNavigation(perusteId, kieli));
         }
 

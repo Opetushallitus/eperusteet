@@ -62,15 +62,14 @@ public class PerusteUtils {
             if (kt != null) {
                 if (kt.isAmmatillinen()) {
                     return KoulutustyyppiToteutus.AMMATILLINEN;
-                }
-                else if (kt == KoulutusTyyppi.PERUSOPETUS) {
+                } else if (kt == KoulutusTyyppi.PERUSOPETUS) {
                     return KoulutustyyppiToteutus.PERUSOPETUS;
-                }
-                else if (kt == KoulutusTyyppi.LUKIOKOULUTUS || kt == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS) {
+                } else if (kt == KoulutusTyyppi.LUKIOKOULUTUS || kt == KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS) {
                     return KoulutustyyppiToteutus.LOPS;
-                }
-                else if (kt == KoulutusTyyppi.TPO) {
+                } else if (kt == KoulutusTyyppi.TPO) {
                     return KoulutustyyppiToteutus.TPO;
+                } else if (kt == KoulutusTyyppi.VAPAASIVISTYSTYO) {
+                    return KoulutustyyppiToteutus.VST;
                 }
             }
             return KoulutustyyppiToteutus.YKSINKERTAINEN;
