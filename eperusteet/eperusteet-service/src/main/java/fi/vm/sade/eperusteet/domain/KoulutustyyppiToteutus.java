@@ -31,7 +31,8 @@ public enum KoulutustyyppiToteutus {
     LOPS("lops"),
     AMMATILLINEN("ammatillinen"),
     TPO("taiteenperusopetus"),
-    LOPS2019("lops2019");
+    LOPS2019("lops2019"),
+    VST("vapaasivistystyo");
 
     private final String tyyppi;
 
