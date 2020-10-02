@@ -28,6 +28,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
@@ -894,7 +895,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste current = perusteRepository.findOne(id);
         update(id, perusteDto);
 
-        if (current.getTyyppi() != PerusteTyyppi.OPAS) {
+        if (current.getTyyppi() != PerusteTyyppi.OPAS && perusteDto.getKvliite() != null) {
             KVLiite liite = current.getKvliite();
             KVLiiteDto kvliiteDto = perusteDto.getKvliite();
 
@@ -903,11 +904,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 liite.setPeruste(current);
                 liite = kvliiteRepository.save(liite);
                 current.setKvliite(liite);
-            }
-            else if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
+            } else if (kvliiteDto.getId() != null && !kvliiteDto.getId().equals(liite.getId())) {
                 throw new BusinessRuleViolationException("virheellinen-liite");
-            }
-            else {
+            } else {
                 kvliiteDto.setId(liite.getId());
                 mapper.map(kvliiteDto, liite);
             }
@@ -1790,10 +1789,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 aihekokonaisuudetService.initAihekokonaisuudet(sisalto);
                 initLukioOpetussuunitelmaRakenne(peruste, sisalto);
             }
-        }
-        else if (koulutustyyppi == KoulutusTyyppi.AIKUISTENPERUSOPETUS) {
+        } else if (koulutustyyppi == KoulutusTyyppi.AIKUISTENPERUSOPETUS) {
             AIPEOpetuksenSisalto sisalto = new AIPEOpetuksenSisalto();
             peruste.setSisalto(sisalto);
+        } else if (koulutustyyppi == VAPAASIVISTYSTYO) {
+            peruste.setSisalto(new VapaasivistystyoSisalto());
         }
 
         if (st != null) {

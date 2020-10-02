@@ -28,6 +28,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
@@ -38,6 +39,8 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
@@ -49,11 +52,15 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.*;
 import ma.glasnost.orika.converter.BidirectionalConverter;
@@ -64,6 +71,7 @@ import ma.glasnost.orika.metadata.MapperKey;
 import ma.glasnost.orika.metadata.Type;
 import ma.glasnost.orika.metadata.TypeFactory;
 import ma.glasnost.orika.unenhance.HibernateUnenhanceStrategy;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +82,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestClientException;
 
-import javax.persistence.metamodel.Attribute;
 import java.time.Instant;
 
 /**
@@ -86,6 +93,9 @@ public class DtoMapperConfig {
     private static final Logger logger = LoggerFactory.getLogger(DtoMapperConfig.class);
 
     private KoodistoClient koodistoClient;
+
+    @Autowired
+    private OpintokokonaisuusMapper opintokokonaisuusMapper;
 
     @Autowired
     public DtoMapperConfig(KoodistoClient koodistoClient) {
@@ -525,6 +535,12 @@ public class DtoMapperConfig {
         perusteenOsaViiteMapping(factory, PerusteenOsaViiteDto.Matala.class);
         perusteenOsaViiteMapping(factory, PerusteenOsaViiteDto.Suppea.class);
         perusteenOsaViiteMapping(factory, PerusteenOsaViiteDto.Laaja.class);
+
+        factory.classMap(OpintokokonaisuusDto.class, Opintokokonaisuus.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .customize(opintokokonaisuusMapper)
+                .register();
 
         return new DtoMapperImpl(factory.getMapperFacade());
     }
