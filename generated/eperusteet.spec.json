@@ -5314,7 +5314,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "If-None-Match",
           "in" : "header",
@@ -5344,7 +5344,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "in" : "body",
           "name" : "body",
@@ -5378,7 +5378,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "versioId",
           "in" : "path",
@@ -5411,7 +5411,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "versioId",
           "in" : "path",
@@ -5473,7 +5473,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         } ],
         "responses" : {
           "200" : {
@@ -5501,7 +5501,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "in" : "body",
           "name" : "body",
@@ -5536,7 +5536,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "in" : "body",
           "name" : "body",
@@ -5573,7 +5573,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "in" : "body",
           "name" : "body",
@@ -5613,7 +5613,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "koodiUri",
           "in" : "path",
@@ -5642,7 +5642,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         } ],
         "responses" : {
           "200" : {
@@ -5672,7 +5672,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "versio",
           "in" : "path",
@@ -5708,7 +5708,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "osanId",
           "in" : "path",
@@ -5746,7 +5746,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "osanId",
           "in" : "path",
@@ -5776,7 +5776,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "osanId",
           "in" : "path",
@@ -5809,7 +5809,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "viiteId",
           "in" : "path",
@@ -5844,7 +5844,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         } ],
         "responses" : {
           "200" : {
@@ -5939,7 +5939,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "id",
           "in" : "path",
@@ -5974,7 +5974,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "id",
           "in" : "path",
@@ -6009,7 +6009,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "id",
           "in" : "path",
@@ -6039,7 +6039,7 @@
           "in" : "path",
           "required" : true,
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         }, {
           "name" : "id",
           "in" : "path",
@@ -8606,7 +8606,7 @@
         },
         "suoritustapakoodi" : {
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         },
         "generatorVersion" : {
           "type" : "string",
@@ -8649,7 +8649,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO" ]
           }
         },
         "osaamistasonKriteerit" : {
@@ -8942,6 +8942,10 @@
     "KoodiDto" : {
       "type" : "object",
       "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "nimi" : {
           "type" : "object",
           "additionalProperties" : {
@@ -9112,7 +9116,7 @@
         },
         "suoritustapa" : {
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         },
         "viite" : {
           "$ref" : "#/definitions/TutkinnonOsaViiteDto"
@@ -9818,7 +9822,7 @@
         },
         "tapahtuma" : {
           "type" : "string",
-          "enum" : [ "LUONTI", "PAIVITYS", "PALAUTUS", "JARJESTETTY", "KOPIOINTI", "POISTO" ]
+          "enum" : [ "LUONTI", "PAIVITYS", "PALAUTUS", "JARJESTETTY", "KOPIOINTI", "JULKAISU", "POISTO" ]
         },
         "perusteId" : {
           "type" : "integer",
@@ -9830,7 +9834,7 @@
         },
         "kohde" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus" ]
         },
         "luotu" : {
           "type" : "string",
@@ -9883,7 +9887,7 @@
         },
         "type" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus" ]
         },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
@@ -9987,7 +9991,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO" ]
           }
         }
       }
@@ -10095,6 +10099,40 @@
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         }
       }
+    },
+    "OpintokokonaisuusDto" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Laaja"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "nimiKoodi" : {
+            "$ref" : "#/definitions/KoodiDto"
+          },
+          "laajuus" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "kuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "opetuksenTavoiteOtsikko" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "opetuksenTavoitteet" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/KoodiDto"
+            }
+          },
+          "arvioinnit" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/LokalisoituTekstiDto"
+            }
+          }
+        }
+      } ]
     },
     "OppiaineDto" : {
       "type" : "object",
@@ -10729,11 +10767,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -10769,11 +10807,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -10809,11 +10847,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -10849,11 +10887,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -10889,11 +10927,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -10929,11 +10967,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -10969,11 +11007,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -11009,11 +11047,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -11049,11 +11087,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -11089,11 +11127,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -11129,11 +11167,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -11169,11 +11207,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -11289,7 +11327,7 @@
         },
         "toteutus" : {
           "type" : "string",
-          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019" ]
+          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO" ]
         },
         "koulutukset" : {
           "type" : "array",
@@ -11394,7 +11432,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO" ]
           }
         },
         "perusteenAikataulut" : {
@@ -11424,7 +11462,7 @@
         },
         "toteutus" : {
           "type" : "string",
-          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019" ]
+          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO" ]
         },
         "koulutukset" : {
           "type" : "array",
@@ -11529,7 +11567,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO" ]
           }
         },
         "perusteenAikataulut" : {
@@ -11569,7 +11607,7 @@
         },
         "toteutus" : {
           "type" : "string",
-          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019" ]
+          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO" ]
         },
         "koulutukset" : {
           "type" : "array",
@@ -11674,7 +11712,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO" ]
           }
         },
         "perusteenAikataulut" : {
@@ -11738,7 +11776,7 @@
         },
         "toteutus" : {
           "type" : "string",
-          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019" ]
+          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO" ]
         },
         "koulutukset" : {
           "type" : "array",
@@ -11843,7 +11881,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO" ]
           }
         },
         "perusteenAikataulut" : {
@@ -11947,7 +11985,7 @@
         },
         "toteutus" : {
           "type" : "string",
-          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019" ]
+          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO" ]
         },
         "koulutukset" : {
           "type" : "array",
@@ -12052,7 +12090,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO" ]
           }
         },
         "perusteenAikataulut" : {
@@ -12092,6 +12130,9 @@
         },
         "tpo" : {
           "$ref" : "#/definitions/TPOOpetuksenSisaltoDto"
+        },
+        "vst" : {
+          "$ref" : "#/definitions/VapaasivistystyoSisaltoDto"
         }
       }
     },
@@ -12428,7 +12469,7 @@
         },
         "toteutus" : {
           "type" : "string",
-          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019" ]
+          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO" ]
         },
         "tyyppi" : {
           "type" : "string",
@@ -12554,7 +12595,7 @@
         },
         "toteutus" : {
           "type" : "string",
-          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019" ]
+          "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO" ]
         },
         "tyyppi" : {
           "type" : "string",
@@ -12723,7 +12764,7 @@
         },
         "suoritustapa" : {
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         },
         "kielet" : {
           "type" : "array",
@@ -12747,7 +12788,7 @@
       "properties" : {
         "suoritustapakoodi" : {
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         },
         "laajuusYksikko" : {
           "type" : "string",
@@ -12760,7 +12801,7 @@
       "properties" : {
         "suoritustapakoodi" : {
           "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019" ]
+          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
         },
         "laajuusYksikko" : {
           "type" : "string",
@@ -12997,7 +13038,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO" ]
           }
         },
         "perusteet" : {
@@ -13724,6 +13765,14 @@
           "items" : {
             "$ref" : "#/definitions/OsaamisenTavoiteDto"
           }
+        }
+      }
+    },
+    "VapaasivistystyoSisaltoDto" : {
+      "type" : "object",
+      "properties" : {
+        "sisalto" : {
+          "$ref" : "#/definitions/Laaja"
         }
       }
     },

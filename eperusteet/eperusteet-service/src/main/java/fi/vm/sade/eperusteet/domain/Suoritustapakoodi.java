@@ -35,7 +35,8 @@ public enum Suoritustapakoodi {
     AIPE("aipe"),
     TPO("tpo"),
     LUKIOKOULUTUS("lukiokoulutus"),
-    LUKIOKOULUTUS2019("lukiokoulutus2019");
+    LUKIOKOULUTUS2019("lukiokoulutus2019"),
+    VAPAASIVISTYSTYO("vapaasivistystyo");
 
     private final String koodi;
 

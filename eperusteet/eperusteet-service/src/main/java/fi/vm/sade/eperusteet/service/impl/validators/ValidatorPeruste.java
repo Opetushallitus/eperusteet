@@ -385,6 +385,13 @@ public class ValidatorPeruste implements Validator {
             }
         }
 
+        // VST
+        if (peruste.getVstSisalto() != null) {
+            for (PerusteenOsaViite lapsi : peruste.getVstSisalto().getSisalto().getLapset()) {
+                tarkistaSisalto(lapsi, vaaditutKielet, virheellisetKielet);
+            }
+        }
+
         // Perusopetus
         if (peruste.getPerusopetuksenPerusteenSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getPerusopetuksenPerusteenSisalto().getSisalto().getLapset()) {

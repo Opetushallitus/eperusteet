@@ -6,7 +6,6 @@ import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.StructurallyComparable;
 import lombok.experimental.UtilityClass;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -69,7 +68,7 @@ public class PerusteUtils {
                 } else if (kt == KoulutusTyyppi.TPO) {
                     return KoulutustyyppiToteutus.TPO;
                 } else if (kt == KoulutusTyyppi.VAPAASIVISTYSTYO) {
-                    return KoulutustyyppiToteutus.VST;
+                    return KoulutustyyppiToteutus.VAPAASIVISTYSTYO;
                 }
             }
             return KoulutustyyppiToteutus.YKSINKERTAINEN;

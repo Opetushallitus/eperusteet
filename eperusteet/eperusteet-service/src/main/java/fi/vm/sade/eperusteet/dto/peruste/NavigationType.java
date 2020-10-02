@@ -14,5 +14,6 @@ public enum NavigationType {
     aipevaihe, aipekurssi, aipeoppiaine,
     kurssit,
     taiteenosa,
-    termi;
+    termi,
+    opintokokonaisuus;
 }

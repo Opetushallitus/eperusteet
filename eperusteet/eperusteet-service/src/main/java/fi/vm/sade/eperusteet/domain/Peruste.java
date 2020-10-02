@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
@@ -40,7 +41,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 
@@ -195,6 +195,10 @@ public class Peruste extends AbstractAuditedEntity
     private OpasSisalto oppaanSisalto;
 
     @Getter
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private VapaasivistystyoSisalto vstSisalto;
+
+    @Getter
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
@@ -291,9 +295,10 @@ public class Peruste extends AbstractAuditedEntity
             }
             else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
-            }
-            else if (this.getTpoOpetuksenSisalto() != null) {
+            } else if (this.getTpoOpetuksenSisalto() != null) {
                 return Collections.singleton(this.getTpoOpetuksenSisalto());
+            } else if (this.getVstSisalto() != null) {
+                return Collections.singleton(this.getVstSisalto());
             }
         }
         return new HashSet<>();
@@ -435,6 +440,12 @@ public class Peruste extends AbstractAuditedEntity
                     return this.getSuoritustavat().iterator().next().getSisalto();
                 }
                 break;
+            case VAPAASIVISTYSTYO:
+                VapaasivistystyoSisalto vstSisalto = this.getVstSisalto();
+                if (vstSisalto != null) {
+                    return vstSisalto.getSisalto();
+                }
+                break;
         }
 
         return null;
@@ -484,6 +495,12 @@ public class Peruste extends AbstractAuditedEntity
         this.lops2019Sisalto.setPeruste(this);
     }
 
+    @JsonIgnore
+    public void setSisalto(VapaasivistystyoSisalto sisalto) {
+        this.vstSisalto = sisalto;
+        this.vstSisalto.setPeruste(this);
+    }
+
     // Käytetään ainoastaan testaamiseen
     @Deprecated
     public void setLops2019Sisalto(Lops2019Sisalto lops2019Sisalto) {
@@ -526,6 +543,10 @@ public class Peruste extends AbstractAuditedEntity
 
         if (this.oppaanSisalto != null) {
             return this.oppaanSisalto.containsViite(viite);
+        }
+
+        if (this.vstSisalto != null) {
+            return this.vstSisalto.containsViite(viite);
         }
 
 
