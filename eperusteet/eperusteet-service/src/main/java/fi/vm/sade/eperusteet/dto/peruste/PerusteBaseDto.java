@@ -23,10 +23,12 @@ import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
+import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
 import fi.vm.sade.eperusteet.dto.MuutosmaaraysDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoDto;
 import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
 import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import java.io.Serializable;
@@ -88,6 +90,9 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     private Set<KoulutusTyyppi> oppaanKoulutustyypit;
 
     private Set<PerusteAikatauluDto> perusteenAikataulut;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private VapaasivistystyoSisaltoDto vstSisalto;
 
     @Override
     public KoulutustyyppiToteutus getToteutus() {

@@ -7,12 +7,14 @@ import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -588,6 +590,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             if (po instanceof Taiteenala) {
                 Taiteenala taiteenala = (Taiteenala) po;
                 addTaiteenala(docBase, taiteenala, po, lapsi);
+            } else if (po instanceof Opintokokonaisuus) {
+                Opintokokonaisuus opintokokonaisuus = (Opintokokonaisuus) po;
+                addOpintokokonaisuus(docBase, opintokokonaisuus, po, lapsi);
             } else if (po instanceof TekstiKappale) {
                 TekstiKappale tk = (TekstiKappale) po;
                 addTekstikappale(docBase, tk, po, lapsi);
@@ -674,6 +679,62 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         // Yhteiset opinnot
         addTaiteenalaSisalto(docBase, taiteenala.getYhteisetOpinnot(), "docgen.taiteenala.yhteiset-opinnot");
+    }
+
+    private void addOpintokokonaisuus(DokumenttiPeruste docBase, Opintokokonaisuus opintokokonaisuus, PerusteenOsa po,
+                                      PerusteenOsaViite lapsi) {
+
+        // Nimi
+        KoodiDto nimiKoodiDto = mapper.map(opintokokonaisuus.getNimiKoodi(), KoodiDto.class);
+        if (nimiKoodiDto != null) {
+            LokalisoituTekstiDto nimi = new LokalisoituTekstiDto(nimiKoodiDto.getNimi());
+            String laajuusSuffix = ", " + opintokokonaisuus.getLaajuus() + " " + messages.translate("docgen.laajuus.op", docBase.getKieli());
+            addHeader(docBase, getTextString(docBase, nimi) + laajuusSuffix);
+        } else {
+            addHeader(docBase, messages.translate("docgen.opintokokonaisuus.nimeton-opintokokonaisuus", docBase.getKieli()));
+        }
+
+        // Kuvaus
+        String kuvaus = getTextString(docBase, opintokokonaisuus.getKuvaus());
+        if (StringUtils.isNotEmpty(kuvaus)) {
+            addTeksti(docBase, kuvaus, "div");
+        }
+
+        addTeksti(docBase, messages.translate("docgen.opetuksen-tavoitteet.title", docBase.getKieli()), "h5");
+        addTeksti(docBase, getTextString(docBase, opintokokonaisuus.getOpetuksenTavoiteOtsikko()), "h6");
+
+        Element tavoitteetEl = docBase.getDocument().createElement("ul");
+
+        opintokokonaisuus.getOpetuksenTavoitteet().forEach(tavoite -> {
+            Element tavoiteEl = docBase.getDocument().createElement("li");
+            KoodiDto tavoiteKoodiDto = mapper.map(tavoite, KoodiDto.class);
+
+            String rivi = getTextString(docBase, tavoiteKoodiDto.getNimi());
+            tavoiteEl.setTextContent(rivi);
+
+            tavoitteetEl.appendChild(tavoiteEl);
+        });
+        docBase.getBodyElement().appendChild(tavoitteetEl);
+
+
+        addTeksti(docBase, messages.translate("docgen.arviointi.title", docBase.getKieli()), "h5");
+        addTeksti(docBase, messages.translate("docgen.opintokokonaisuus.opiskelijan-osaamisen-arvioinnin-kohteet", docBase.getKieli()), "h6");
+
+        Element arvioinnitEl = docBase.getDocument().createElement("ul");
+        opintokokonaisuus.getArvioinnit().forEach(arviointi -> {
+            Element arviointiEl = docBase.getDocument().createElement("li");
+
+            String rivi = getTextString(docBase, arviointi);
+            arviointiEl.setTextContent(rivi);
+
+            arvioinnitEl.appendChild(arviointiEl);
+        });
+        docBase.getBodyElement().appendChild(arvioinnitEl);
+
+        docBase.getGenerator().increaseDepth();
+        addTekstikappaleet(docBase, lapsi);
+        docBase.getGenerator().decreaseDepth();
+        docBase.getGenerator().increaseNumber();
     }
 
     private void addTaiteenalaSisalto(DokumenttiPeruste docBase, KevytTekstiKappale tekstiKappale, String placeholder) {
