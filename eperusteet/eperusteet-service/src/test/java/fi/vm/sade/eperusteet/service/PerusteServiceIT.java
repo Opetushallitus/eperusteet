@@ -22,8 +22,10 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -362,6 +364,21 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
                     .extracting("uri")
                     .containsExactlyInAnyOrder("koodi_333");
         }
+
+    }
+
+    @Test
+    public void testOpintokokonaisuus_insert() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.VAPAASIVISTYSTYO.toString());
+        });
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        OpintokokonaisuusDto opintokokonaisuusDto = new OpintokokonaisuusDto();
+        PerusteenOsaViiteDto.Matala viiteDto = new PerusteenOsaViiteDto.Matala(opintokokonaisuusDto);
+
+        PerusteenOsaViiteDto.Matala uusiOpintokokonaisuusDto = perusteService.addSisaltoUUSI(perusteDto.getId(), null, viiteDto);
+        assertThat(uusiOpintokokonaisuusDto.getId()).isNotNull();
 
     }
 

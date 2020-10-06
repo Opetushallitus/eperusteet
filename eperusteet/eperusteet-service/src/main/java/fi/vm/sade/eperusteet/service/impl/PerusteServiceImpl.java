@@ -19,7 +19,32 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import fi.vm.sade.eperusteet.domain.KVLiite;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Maarayskirje;
+import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
+import fi.vm.sade.eperusteet.domain.Muutosmaarays;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteVersion;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
@@ -29,7 +54,12 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
-import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
@@ -37,24 +67,78 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
-import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
-import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteTasoDto;
+import fi.vm.sade.eperusteet.dto.peruste.KoosteenOsaamisalaDto;
+import fi.vm.sade.eperusteet.dto.peruste.MaarayskirjeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.peruste.TermiDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
-import fi.vm.sade.eperusteet.dto.util.*;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.PageDto;
+import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
-import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
+import fi.vm.sade.eperusteet.repository.KVLiiteRepository;
+import fi.vm.sade.eperusteet.repository.KoodiRepository;
+import fi.vm.sade.eperusteet.repository.KoulutusRepository;
+import fi.vm.sade.eperusteet.repository.LukioYleisetTavoitteetRepository;
+import fi.vm.sade.eperusteet.repository.OppiaineRepository;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.RakenneRepository;
+import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
+import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
+import fi.vm.sade.eperusteet.repository.TekstikappaleRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
+import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
-import fi.vm.sade.eperusteet.service.*;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
+import fi.vm.sade.eperusteet.service.NavigationBuilder;
+import fi.vm.sade.eperusteet.service.PerusteDispatcher;
+import fi.vm.sade.eperusteet.service.PerusteImport;
+import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.TermistoService;
+import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
+import fi.vm.sade.eperusteet.service.VapaasivistystyoSisaltoService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -68,6 +152,38 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Stack;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -88,25 +204,10 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.*;
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS;
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOKOULUTUS;
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS;
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.VAPAASIVISTYSTYO;
 
 /**
  *
@@ -250,6 +351,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private PermissionManager permissionManager;
+
+    @Autowired
+    private VapaasivistystyoSisaltoService vapaasivistystyoSisaltoService;
 
     private final ObjectMapper ieMapper = InitJacksonConverter.createImportExportMapper();
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
@@ -787,8 +891,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setOppaanPerusteet(updated.getOppaanPerusteet());
             current.setOppaanKoulutustyypit(updated.getOppaanKoulutustyypit());
             perusteRepository.save(current);
-        }
-        else {
+        } else {
             if (!isDiaariValid(perusteDto.getDiaarinumero())) {
                 throw new BusinessRuleViolationException("diaarinumero-ei-validi");
             }
@@ -881,6 +984,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 current.setPaatospvm(updated.getPaatospvm());
                 current.setKoulutusvienti(updated.isKoulutusvienti());
                 current.setKoulutustyyppi(updated.getKoulutustyyppi());
+
+                if (updated.getVstSisalto() != null) {
+                    current.setSisalto(updated.getVstSisalto());
+                }
             }
         }
 
@@ -910,6 +1017,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 kvliiteDto.setId(liite.getId());
                 mapper.map(kvliiteDto, liite);
             }
+        }
+
+        if (perusteDto.getVstSisalto() != null) {
+            vapaasivistystyoSisaltoService.update(id, perusteDto.getVstSisalto());
         }
 
         perusteRepository.save(current);

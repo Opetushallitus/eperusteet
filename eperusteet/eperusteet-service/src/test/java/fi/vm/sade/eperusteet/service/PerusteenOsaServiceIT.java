@@ -29,12 +29,15 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
@@ -44,12 +47,16 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.util.Maps;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -198,6 +205,48 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(perusteenOsaService.getTutkinnonOsaKaikkiDtoByKoodi("tutkinnonosat_111")).hasSize(2);
         assertThat(perusteenOsaService.getTutkinnonOsaKaikkiDtoByKoodi("tutkinnonosat_222")).hasSize(1);
         assertThat(perusteenOsaService.getTutkinnonOsaKaikkiDtoByKoodi("tutkinnonosat_333")).hasSize(0);
+    }
+
+    @Test
+    public void testOpintokokonaisuus() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.VAPAASIVISTYSTYO.toString());
+        });
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        PerusteenOsaViiteDto.Matala viiteDto = new PerusteenOsaViiteDto.Matala(new OpintokokonaisuusDto());
+
+        PerusteenOsaViiteDto.Matala perusteViite = perusteService.addSisaltoUUSI(perusteDto.getId(), null, viiteDto);
+        OpintokokonaisuusDto opintokokonaisuusDto = (OpintokokonaisuusDto) perusteenOsaService.get(perusteViite.getPerusteenOsa().getId());
+        perusteenOsaService.lock(opintokokonaisuusDto.getId());
+
+        assertThat(opintokokonaisuusDto.getId()).isNotNull();
+
+        opintokokonaisuusDto.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
+        opintokokonaisuusDto.setLaajuus(1);
+        opintokokonaisuusDto.setNimiKoodi(KoodiDto.of("opintokokonaisuusnimikoodi", "arvi1"));
+        opintokokonaisuusDto.setNimi(LokalisoituTekstiDto.of("nimi"));
+        opintokokonaisuusDto.setOpetuksenTavoiteOtsikko(LokalisoituTekstiDto.of("opetuksentavoiteotsikko"));
+        opintokokonaisuusDto.setOpetuksenTavoitteet(Arrays.asList(koodiDto("nimi1"), koodiDto("nimi2")));
+        opintokokonaisuusDto.setArvioinnit(Arrays.asList(LokalisoituTekstiDto.of("arviointi1"), LokalisoituTekstiDto.of("arviointi2")));
+
+        opintokokonaisuusDto = perusteenOsaService.update(opintokokonaisuusDto);
+
+        assertThat(opintokokonaisuusDto.getNimi().get(Kieli.FI)).isEqualTo("nimi");
+        assertThat(opintokokonaisuusDto.getKuvaus().get(Kieli.FI)).isEqualTo("kuvaus");
+        assertThat(opintokokonaisuusDto.getLaajuus()).isEqualTo(1);
+        assertThat(opintokokonaisuusDto.getNimiKoodi()).isEqualTo(KoodiDto.of("opintokokonaisuusnimikoodi", "arvi1"));
+        assertThat(opintokokonaisuusDto.getOpetuksenTavoitteet()).hasSize(2);
+        assertThat(opintokokonaisuusDto.getOpetuksenTavoitteet()).extracting("uri").containsExactlyInAnyOrder("opintokokonaisuustavoitteet_0", "opintokokonaisuustavoitteet_1");
+        assertThat(opintokokonaisuusDto.getArvioinnit()).hasSize(2);
+        assertThat(opintokokonaisuusDto.getArvioinnit()).extracting("tekstit").containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "arviointi1"), Maps.newHashMap(Kieli.FI, "arviointi2"));
+    }
+
+    private KoodiDto koodiDto(String nimi) {
+        KoodiDto koodiDto = new KoodiDto();
+        koodiDto.setNimi(Maps.newHashMap("fi", nimi));
+
+        return koodiDto;
     }
 
     private TutkinnonOsaViiteDto luoKoodillinenTutkinnonOsa(

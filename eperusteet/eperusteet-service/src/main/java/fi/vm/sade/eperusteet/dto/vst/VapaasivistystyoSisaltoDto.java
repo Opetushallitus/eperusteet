@@ -5,5 +5,7 @@ import lombok.Data;
 
 @Data
 public class VapaasivistystyoSisaltoDto {
+    private Long id;
     private PerusteenOsaViiteDto.Laaja sisalto;
+    private Integer laajuus;
 }

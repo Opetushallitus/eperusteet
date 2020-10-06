@@ -33,6 +33,7 @@ create table vapaasivistystyo_perusteen_sisalto (
     luotu timestamp,
     muokattu timestamp,
     muokkaaja varchar(255),
+    laajuus int4,
     peruste_id int8 not null,
     sisalto_id int8,
     primary key (id)
@@ -47,6 +48,7 @@ create table vapaasivistystyo_perusteen_sisalto_AUD (
     luotu timestamp,
     muokattu timestamp,
     muokkaaja varchar(255),
+    laajuus int4,
     peruste_id int8,
     sisalto_id int8,
     primary key (id, REV)

@@ -34,27 +34,28 @@ import org.hibernate.envers.Audited;
 
 @Entity
 @Audited
+@Getter
+@Setter
 @Table(name = "vapaasivistystyo_perusteen_sisalto")
 public class VapaasivistystyoSisalto extends AbstractAuditedReferenceableEntity implements PerusteenSisalto {
 
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Getter
-    @Setter
     @NotNull
     @JoinColumn(nullable = false, updatable = false)
     private Peruste peruste;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-    @Getter
-    @Setter
     @JoinColumn
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
+
+    private Integer laajuus;
 
     public VapaasivistystyoSisalto kloonaa(Peruste peruste) {
         VapaasivistystyoSisalto vstSisalto = new VapaasivistystyoSisalto();
         vstSisalto.setPeruste(peruste);
         vstSisalto.setSisalto(sisalto.copy());
+        vstSisalto.setLaajuus(laajuus);
         return vstSisalto;
     }
 
