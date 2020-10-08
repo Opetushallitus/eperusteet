@@ -20,12 +20,17 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,6 +48,8 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 @Entity
 @Table(name = "opintokokonaisuus")
 @Audited
@@ -58,7 +65,7 @@ public class Opintokokonaisuus extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
-    private Integer laajuus;
+    private Integer minimilaajuus;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
@@ -117,8 +124,41 @@ public class Opintokokonaisuus extends PerusteenOsa implements Serializable {
     }
 
     @Override
-    public boolean structureEquals(PerusteenOsa other) {
-        return false;
+    public boolean structureEquals(PerusteenOsa updated) {
+        boolean result = false;
+        if (updated instanceof Opintokokonaisuus) {
+            Opintokokonaisuus that = (Opintokokonaisuus) updated;
+            result = super.structureEquals(that);
+            result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
+            result &= Objects.equals(getNimiKoodi(), that.getNimiKoodi());
+            result &= Objects.equals(getMinimilaajuus(), that.getMinimilaajuus());
+            result &= Objects.equals(getMinimilaajuus(), that.getMinimilaajuus());
+            result &= refXnor(getOpetuksenTavoiteOtsikko(), that.getOpetuksenTavoiteOtsikko());
+            result &= refXnor(getOpetuksenTavoitteet(), that.getOpetuksenTavoitteet());
+            result &= refXnor(getArvioinnit(), that.getArvioinnit());
+
+            if (result && getOpetuksenTavoitteet() != null) {
+                Iterator<Koodi> i = getOpetuksenTavoitteet().iterator();
+                Iterator<Koodi> j = that.getOpetuksenTavoitteet().iterator();
+                while (result && i.hasNext() && j.hasNext()) {
+                    result &= Objects.equals(i.next(), j.next());
+                }
+                result &= !i.hasNext();
+                result &= !j.hasNext();
+            }
+
+            if (result && getArvioinnit() != null) {
+                Iterator<TekstiPalanen> i = getArvioinnit().iterator();
+                Iterator<TekstiPalanen> j = that.getArvioinnit().iterator();
+                while (result && i.hasNext() && j.hasNext()) {
+                    result &= Objects.equals(i.next(), j.next());
+                }
+                result &= !i.hasNext();
+                result &= !j.hasNext();
+            }
+
+        }
+        return result;
     }
 
     private void copyState(Opintokokonaisuus other) {
@@ -129,7 +169,7 @@ public class Opintokokonaisuus extends PerusteenOsa implements Serializable {
         setNimi(other.getNimi());
         setNimiKoodi(other.getNimiKoodi());
         setKuvaus(other.getKuvaus());
-        setLaajuus((other.getLaajuus()));
+        setMinimilaajuus((other.getMinimilaajuus()));
         setOpetuksenTavoiteOtsikko((other.getOpetuksenTavoiteOtsikko()));
 
         this.opetuksenTavoitteet = new ArrayList<>();

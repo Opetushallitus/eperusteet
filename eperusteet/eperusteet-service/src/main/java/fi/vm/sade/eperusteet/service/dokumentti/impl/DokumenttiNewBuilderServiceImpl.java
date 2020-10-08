@@ -688,7 +688,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         KoodiDto nimiKoodiDto = mapper.map(opintokokonaisuus.getNimiKoodi(), KoodiDto.class);
         if (nimiKoodiDto != null) {
             LokalisoituTekstiDto nimi = new LokalisoituTekstiDto(nimiKoodiDto.getNimi());
-            String laajuusSuffix = ", " + opintokokonaisuus.getLaajuus() + " " + messages.translate("docgen.laajuus.op", docBase.getKieli());
+            String laajuusSuffix = ", " + opintokokonaisuus.getMinimilaajuus() + " " + messages.translate("docgen.laajuus.op", docBase.getKieli());
             addHeader(docBase, getTextString(docBase, nimi) + laajuusSuffix);
         } else {
             addHeader(docBase, messages.translate("docgen.opintokokonaisuus.nimeton-opintokokonaisuus", docBase.getKieli()));

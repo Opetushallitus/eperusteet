@@ -223,7 +223,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(opintokokonaisuusDto.getId()).isNotNull();
 
         opintokokonaisuusDto.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
-        opintokokonaisuusDto.setLaajuus(1);
+        opintokokonaisuusDto.setMinimilaajuus(1);
         opintokokonaisuusDto.setNimiKoodi(KoodiDto.of("opintokokonaisuusnimikoodi", "arvi1"));
         opintokokonaisuusDto.setNimi(LokalisoituTekstiDto.of("nimi"));
         opintokokonaisuusDto.setOpetuksenTavoiteOtsikko(LokalisoituTekstiDto.of("opetuksentavoiteotsikko"));
@@ -234,7 +234,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
         assertThat(opintokokonaisuusDto.getNimi().get(Kieli.FI)).isEqualTo("nimi");
         assertThat(opintokokonaisuusDto.getKuvaus().get(Kieli.FI)).isEqualTo("kuvaus");
-        assertThat(opintokokonaisuusDto.getLaajuus()).isEqualTo(1);
+        assertThat(opintokokonaisuusDto.getMinimilaajuus()).isEqualTo(1);
         assertThat(opintokokonaisuusDto.getNimiKoodi()).isEqualTo(KoodiDto.of("opintokokonaisuusnimikoodi", "arvi1"));
         assertThat(opintokokonaisuusDto.getOpetuksenTavoitteet()).hasSize(2);
         assertThat(opintokokonaisuusDto.getOpetuksenTavoitteet()).extracting("uri").containsExactlyInAnyOrder("opintokokonaisuustavoitteet_0", "opintokokonaisuustavoitteet_1");
