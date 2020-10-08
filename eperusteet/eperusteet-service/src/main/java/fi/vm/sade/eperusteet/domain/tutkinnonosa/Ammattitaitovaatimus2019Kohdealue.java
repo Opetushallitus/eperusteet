@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -16,6 +17,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Entity
 @Table(name = "ammattitaitovaatimus2019_kohdealue")
 @Audited
+@NoArgsConstructor
 public class Ammattitaitovaatimus2019Kohdealue extends AbstractAuditedReferenceableEntity {
 
     @ValidHtml
@@ -33,6 +35,17 @@ public class Ammattitaitovaatimus2019Kohdealue extends AbstractAuditedReferencea
             joinColumns = @JoinColumn(name = "kohdealue_id"),
             inverseJoinColumns = @JoinColumn(name = "ammattitaitovaatimus_id"))
     private List<Ammattitaitovaatimus2019> vaatimukset = new ArrayList<>();
+
+    public Ammattitaitovaatimus2019Kohdealue(Ammattitaitovaatimus2019Kohdealue other) {
+        this.kuvaus = other.kuvaus;
+
+        if (other.getVaatimukset() != null) {
+            this.vaatimukset = new ArrayList<>();
+            for (Ammattitaitovaatimus2019 vaatimus : other.getVaatimukset()) {
+                this.vaatimukset.add(Ammattitaitovaatimus2019.of(vaatimus.getVaatimus()));
+            }
+        }
+    }
 
     public boolean structureEquals(Ammattitaitovaatimus2019Kohdealue other) {
         if (this == other) {

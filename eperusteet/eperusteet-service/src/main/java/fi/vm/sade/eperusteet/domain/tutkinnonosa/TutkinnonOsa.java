@@ -283,6 +283,16 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
                 this.osaAlueet.add(new OsaAlue(o));
             }
         }
+
+        this.ammattitaitovaatimukset2019 = new Ammattitaitovaatimukset2019(other.getAmmattitaitovaatimukset2019());
+        this.geneerinenArviointiasteikko = other.getGeneerinenArviointiasteikko();
+
+        if (other.getVapaatTekstit() != null) {
+            this.vapaatTekstit = new ArrayList<>();
+            for (KevytTekstiKappale vapaaTeksti : other.getVapaatTekstit()) {
+                this.vapaatTekstit.add(new KevytTekstiKappale(vapaaTeksti));
+            }
+        }
     }
 
     private List<OsaAlue> mergeOsaAlueet(List<OsaAlue> current, List<OsaAlue> other) {
