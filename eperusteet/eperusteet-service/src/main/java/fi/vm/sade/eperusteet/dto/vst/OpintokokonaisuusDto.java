@@ -13,7 +13,7 @@ import lombok.Data;
 public class OpintokokonaisuusDto extends PerusteenOsaDto.Laaja {
 
     private KoodiDto nimiKoodi;
-    private Integer laajuus;
+    private Integer minimilaajuus;
     private LokalisoituTekstiDto kuvaus;
     private LokalisoituTekstiDto opetuksenTavoiteOtsikko;
     private List<KoodiDto> opetuksenTavoitteet = new ArrayList<>();

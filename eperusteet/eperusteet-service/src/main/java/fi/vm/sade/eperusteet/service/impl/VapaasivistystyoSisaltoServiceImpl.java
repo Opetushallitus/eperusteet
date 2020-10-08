@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
+import fi.vm.sade.eperusteet.dto.vst.KevytVapaasivistystyoSisaltoDto;
 import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoDto;
 import fi.vm.sade.eperusteet.repository.VapaasivistystyoSisaltoRepository;
 import fi.vm.sade.eperusteet.service.VapaasivistystyoSisaltoService;
@@ -20,7 +21,7 @@ public class VapaasivistystyoSisaltoServiceImpl implements VapaasivistystyoSisal
     private DtoMapper mapper;
 
     @Override
-    public VapaasivistystyoSisaltoDto update(Long perusteId, VapaasivistystyoSisaltoDto vapaasivistystyoSisaltoDto) {
+    public VapaasivistystyoSisaltoDto update(Long perusteId, KevytVapaasivistystyoSisaltoDto vapaasivistystyoSisaltoDto) {
         VapaasivistystyoSisalto vapaasivistystyoSisalto = vapaasivistystyoSisaltoRepository.getOne(vapaasivistystyoSisaltoDto.getId());
         vapaasivistystyoSisalto.setLaajuus(vapaasivistystyoSisaltoDto.getLaajuus());
         return mapper.map(vapaasivistystyoSisaltoRepository.save(vapaasivistystyoSisalto), VapaasivistystyoSisaltoDto.class);

@@ -9,7 +9,7 @@ drop table if exists vapaasivistystyo_perusteen_sisalto;
 drop table if exists vapaasivistystyo_perusteen_sisalto_AUD;
 
 create table opintokokonaisuus (
-    laajuus int4,
+    minimilaajuus int4,
     id int8 not null,
     kuvaus_id int8,
     nimiKoodi_id int8,
@@ -20,7 +20,7 @@ create table opintokokonaisuus (
 create table opintokokonaisuus_AUD (
     id int8 not null,
     REV int4 not null,
-    laajuus int4,
+    minimilaajuus int4,
     kuvaus_id int8,
     nimiKoodi_id int8,
     opetuksenTavoiteOtsikko_id int8,
