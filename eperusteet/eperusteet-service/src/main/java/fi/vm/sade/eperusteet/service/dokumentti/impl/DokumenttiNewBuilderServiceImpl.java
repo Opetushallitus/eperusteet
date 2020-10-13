@@ -180,6 +180,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             }
         }
 
+        if (!KoulutustyyppiToteutus.VAPAASIVISTYSTYO.equals(docBase.getPeruste().getToteutus())) {
+            Element etusivuYlaviite = docBase.getDocument().createElement("meta");
+            etusivuYlaviite.setAttribute("name", "etusivuYlaviite");
+            docBase.getHeadElement().appendChild(etusivuYlaviite);
+        }
+
         {
             Element description = docBase.getDocument().createElement("description");
             docBase.getHeadElement().appendChild(description);

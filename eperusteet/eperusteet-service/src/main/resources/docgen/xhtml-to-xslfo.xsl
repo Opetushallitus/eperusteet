@@ -90,7 +90,7 @@
             <fo:page-sequence master-reference="cover">
                 <fo:static-content flow-name="rb">
                     <fo:block font-size="18pt" font-weight="bold" text-align="center" margin-top="10mm">
-                        <xsl:if test="/html/@lang='fi' and /html/head/peruste">
+                        <xsl:if test="/html/@lang='fi' and /html/head/peruste and boolean(/html/head/meta[@name='etusivuYlaviite'])">
                             <xsl:text>Tutkinnon perusteet</xsl:text>
                         </xsl:if>
                     </fo:block>
