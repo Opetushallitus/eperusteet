@@ -19,13 +19,17 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
+import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.util.Pair;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +68,9 @@ public class PermissionManager {
 
     @Autowired
     private PerusteRepository perusteet;
+
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
 
     private static final Logger LOG = LoggerFactory.getLogger(PermissionManager.class);
 
@@ -416,6 +423,11 @@ public class PermissionManager {
                 if (Target.PERUSTE.equals(targetType)) {
                     List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaByPeruste((Long) targetId);
                     if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond()) {
+                        return true;
+                    }
+
+                    List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPerusteId((Long) targetId);
+                    if (CollectionUtils.isNotEmpty(julkaisut)) {
                         return true;
                     }
                 }

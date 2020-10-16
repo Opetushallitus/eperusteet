@@ -15,6 +15,8 @@ import java.util.Set;
 public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Long> {
     List<JulkaistuPeruste> findAllByPeruste(Peruste peruste);
 
+    List<JulkaistuPeruste> findAllByPerusteId(Long id);
+
     List<JulkaistuPeruste> findAllByPerusteOrderByRevisionDesc(@Param("peruste") Peruste peruste);
 
     JulkaistuPeruste findFirstByPerusteOrderByRevisionDesc(@Param("peruste") Peruste peruste);
@@ -27,7 +29,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "FROM JulkaistuPeruste jp " +
             "    INNER JOIN jp.peruste p " +
             "WHERE p.tyyppi = 'NORMAALI' " +
-            "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18') " +
+            "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18', 'koulutustyyppi_30') " +
             "   AND (p.voimassaoloLoppuu IS NULL " +
             "       OR p.voimassaoloLoppuu > NOW() " +
             "       OR (p.siirtymaPaattyy IS NOT NULL " +
