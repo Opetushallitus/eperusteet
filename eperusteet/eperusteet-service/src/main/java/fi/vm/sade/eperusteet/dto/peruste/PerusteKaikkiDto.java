@@ -69,6 +69,6 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     private TPOOpetuksenSisaltoDto tpoOpetuksenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("vst")
+    @JsonProperty("vapaasivistystyo")
     private VapaasivistystyoSisaltoDto vstSisalto;
 }
