@@ -21,7 +21,10 @@ public enum JarjestysTapa {
     NIMI("nimi"),
     TILA("tila"),
     LUOTU("luotu"),
-    MUOKATTU("muokattu");
+    MUOKATTU("muokattu"),
+    PERUSTE_VOIMASSAOLO_ALKAA("peruste.voimassaoloAlkaa"),
+    PERUSTE_VOIMASSAOLO_LOPPUU("peruste.voimassaoloLoppuu"),
+    KOULUTUSTYYPPI("koulutustyyppi");
 
     private final String tapa;
 
