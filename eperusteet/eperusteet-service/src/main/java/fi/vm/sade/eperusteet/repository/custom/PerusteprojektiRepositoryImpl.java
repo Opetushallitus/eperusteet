@@ -22,7 +22,6 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepositoryCustom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -39,6 +38,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -65,7 +65,7 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         }
 
         // SQL query
-        //log.debug(query.unwrap(Query.class).getQueryString());
+        // log.debug(query.unwrap(Query.class).getQueryString());
 
         List<Perusteprojekti> result = query.getResultList().stream()
                 .map(t -> t.get(0, Perusteprojekti.class))
@@ -95,6 +95,9 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         final Path<Date> perusteVersion = root.join(Perusteprojekti_.peruste)
                 .join(Peruste_.globalVersion)
                 .get(PerusteVersion_.aikaleima);
+        final Path<Date> voimassaoloAlkaa = root.join(Perusteprojekti_.peruste).get(Peruste_.voimassaoloAlkaa);
+        final Path<Date> voimassaoloLoppuu = root.join(Perusteprojekti_.peruste).get(Peruste_.voimassaoloLoppuu);
+        final Path<String> koulutustyyppi = root.join(Perusteprojekti_.peruste).get(Peruste_.koulutustyyppi);
 
         if (!StringUtils.isEmpty(pquery.getJarjestysTapa())) {
             Boolean jarjestysOrder = pquery.getJarjestysOrder();
@@ -114,6 +117,18 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
                     addOrderExpression(cb, order, perusteVersion, jarjestysOrder);
                     addOrderExpression(cb, order, nimi, false);
                     break;
+                case PERUSTE_VOIMASSAOLO_ALKAA:
+                    addOrderExpression(cb, order, voimassaoloAlkaa, jarjestysOrder);
+                    addOrderExpression(cb, order, nimi, false);
+                    break;
+                case PERUSTE_VOIMASSAOLO_LOPPUU:
+                    addOrderExpression(cb, order, voimassaoloLoppuu, jarjestysOrder);
+                    addOrderExpression(cb, order, nimi, false);
+                    break;
+                case KOULUTUSTYYPPI:
+                    addOrderExpression(cb, order, koulutustyyppi, jarjestysOrder);
+                    addOrderExpression(cb, order, nimi, false);
+                    break;
                 default:
                     addOrderExpression(cb, order, nimi, false);
                     break;
@@ -121,10 +136,9 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         } else {
             order.add(cb.asc(nimi));
         }
+
         order.add(cb.asc(root.get(Perusteprojekti_.id)));
-
-        query.multiselect(root, nimi, perusteVersion).where(pred).orderBy(order);
-
+        query.multiselect(root, nimi, perusteVersion, voimassaoloAlkaa, voimassaoloLoppuu, koulutustyyppi).where(pred).orderBy(order);
         return em.createQuery(query);
     }
 
