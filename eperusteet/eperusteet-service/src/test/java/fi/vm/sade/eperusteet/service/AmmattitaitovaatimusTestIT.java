@@ -204,9 +204,9 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         assertThat(kaikki).isNotNull();
         Ammattitaitovaatimukset2019Dto av = kaikki.getTutkinnonOsat().get(0).getAmmattitaitovaatimukset2019();
         assertThat(av).isNotNull()
-                    .returns(1, x -> x.getKohdealueet().size())
-                    .returns(1, x -> x.getKohdealueet().get(0).getVaatimukset().size())
-                    .returns(1, x -> x.getVaatimukset().size());
+                .returns(1, x -> x.getKohdealueet().size())
+                .returns(2, x -> x.getKohdealueet().get(0).getVaatimukset().size())
+                .returns(2, x -> x.getVaatimukset().size());
 
     }
 
@@ -293,16 +293,16 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     private PerusteprojektiDto rakennaAmmattitaitovaatimusLatausPohjadata() {
         loginAsUser("test");
 
-        PerusteprojektiDto perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_1001", "ammattitaitovaatimukset_1002"), ProjektiTila.JULKAISTU, false);
+        PerusteprojektiDto perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_1000", "ammattitaitovaatimukset_1001", "ammattitaitovaatimukset_1002", null), ProjektiTila.JULKAISTU, false);
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_1000", "koulutus_1001"));
-        perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_2000"), ProjektiTila.JULKAISTU, true);
+        perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_2000", null), ProjektiTila.JULKAISTU, true);
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_2000"));
         lisaaTutkintonimikkeet(new Long(perusteprojekti.getPeruste().getId()), asList("1000"));
 
         // not found perusteet
         perusteprojekti = lisaaPerusteKoodistollaJaKoulutustyypilla(asList("ammattitaitovaatimukset_X000"), ProjektiTila.JULKAISTU, KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS);
 
-        perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_3000"), ProjektiTila.VALMIS);
+        perusteprojekti = lisaaPerusteKoodistolla(asList("ammattitaitovaatimukset_3000", null), ProjektiTila.VALMIS);
         lisaaKoulutukset(new Long(perusteprojekti.getPeruste().getId()), asList("koulutus_3000", "koulutus_3001"));
 
         updateKaikkienPerusteenOsienTilat(PerusteTila.VALMIS);
@@ -364,7 +364,9 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             Koodi koodi = new Koodi();
             koodi.setUri(koodiUri);
             koodi.setKoodisto("ammattitaitovaatimukset");
-            vaatimus.setKoodi(koodi);
+            if (koodiUri != null) {
+                vaatimus.setKoodi(koodi);
+            }
             return vaatimus;
         }).collect(Collectors.toList());
     }
