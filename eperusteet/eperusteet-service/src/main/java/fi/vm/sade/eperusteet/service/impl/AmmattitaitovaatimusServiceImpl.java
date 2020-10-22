@@ -427,12 +427,14 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         tutkinnonOsat.forEach(tutkinnonOsa -> {
             if (tutkinnonOsa.getKoodi() != null) {
                 if (tutkinnonOsa.getAmmattitaitovaatimukset2019() != null) {
-                    addAlarelaatiot(tutkinnonOsa.getKoodi().getUri(), tutkinnonOsa.getAmmattitaitovaatimukset2019().getVaatimukset()
-                            .stream().map(vaatimus -> vaatimus.getKoodi().getUri()).collect(Collectors.toList()));
+                    addAlarelaatiot(tutkinnonOsa.getKoodi().getUri(), tutkinnonOsa.getAmmattitaitovaatimukset2019().getVaatimukset().stream()
+                            .filter(vaatimus -> vaatimus != null && vaatimus.getKoodi() != null)
+                            .map(vaatimus -> vaatimus.getKoodi().getUri()).collect(Collectors.toList()));
 
                     addAlarelaatiot(tutkinnonOsa.getKoodi().getUri(), tutkinnonOsa.getAmmattitaitovaatimukset2019().getKohdealueet().stream()
                             .map(Ammattitaitovaatimus2019Kohdealue::getVaatimukset)
                             .flatMap(Collection::stream)
+                            .filter(vaatimus -> vaatimus != null && vaatimus.getKoodi() != null)
                             .map(vaatimus -> vaatimus.getKoodi().getUri()).collect(Collectors.toList()));
                 }
             }

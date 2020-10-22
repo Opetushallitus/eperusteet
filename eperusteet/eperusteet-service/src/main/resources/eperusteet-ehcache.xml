@@ -300,10 +300,10 @@
          timeToLiveSeconds="600"
          overflowToDisk="false" />
     <cache name="koodistokoodit"
-         maxElementsInMemory="100"
-         eternal="false"
-         timeToLiveSeconds="600"
-         overflowToDisk="false" />
+           maxElementsInMemory="10000"
+           eternal="false"
+           timeToLiveSeconds="3600"
+           overflowToDisk="false" />
     <cache name="koodistot"
          maxElementsInMemory="20"
          eternal="false"
