@@ -34,7 +34,7 @@
         <pdfbox.version>2.0.12</pdfbox.version>
         <flyway.version>5.2.4</flyway.version>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
-        <springfox.version>2.7.0</springfox.version>
+        <springfox.version>2.10.0</springfox.version>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <hibernate.export.type>CREATE</hibernate.export.type>
         <apache.httpclient.version>4.5.3</apache.httpclient.version>
@@ -201,7 +201,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>24.1.1-jre</version>
+            <version>30.0-android</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
