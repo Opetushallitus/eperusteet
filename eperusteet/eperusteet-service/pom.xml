@@ -12,7 +12,7 @@
     <name>eperusteet-service</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>4.3.9.Final</hibernate.version>
+        <hibernate.version>5.3.18.Final</hibernate.version>
         <spring.version>4.3.23.RELEASE</spring.version>
         <spring.security.version>4.2.13.RELEASE</spring.security.version>
         <spring.data.jpa.version>1.11.22.RELEASE</spring.data.jpa.version>
