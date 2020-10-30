@@ -11,7 +11,8 @@ public enum TiedoteJulkaisuPaikka {
     OPINTOPOLKU_ETUSIVU("opintopolku_etusivu"),
     OPS("ops"),
     LOPS("lops"),
-    AMOSAA("amosaa");
+    AMOSAA("amosaa"),
+    VST("vst");
 
     private String paikka;
 
