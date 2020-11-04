@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,16 @@ public class MaintenanceController {
 
     @Autowired
     private Lops2019Service lops2019Service;
+
+    @Autowired
+    CacheManager cacheManager;
+
+    @RequestMapping(value = "/cacheclear/{cache}", method = GET)
+    public ResponseEntity clearCache(@PathVariable final String cache) {
+        cacheManager.getCache(cache).clear();
+        return ResponseEntity.status(HttpStatus.OK)
+                .build();
+    }
 
     @RequestMapping(value = "/arvioinninammattitaitovaatimukset", method = GET)
     public ResponseEntity createArvioinninAmmattitaitovaatimukset() {

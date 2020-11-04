@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.google.common.base.Throwables;
 import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.PerusteenMuokkaustieto;
@@ -13,6 +14,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,11 +45,14 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
         List<MuokkaustietoKayttajallaDto> muokkaustiedot = mapper
                 .mapAsList(muokkausTietoRepository.findTop10ByPerusteIdAndLuotuBeforeOrderByLuotuDesc(perusteId, viimeisinLuontiaika, lukumaara), MuokkaustietoKayttajallaDto.class);
 
-        Map<String, KayttajanTietoDto> kayttajatiedot = kayttajanTietoService
-                .haeKayttajatiedot(muokkaustiedot.stream().map(MuokkaustietoKayttajallaDto::getMuokkaaja).collect(Collectors.toList()))
-                .stream().collect(Collectors.toMap(kayttajanTieto -> kayttajanTieto.getOidHenkilo(), kayttajanTieto -> kayttajanTieto));
-
-        muokkaustiedot.forEach(muokkaustieto -> muokkaustieto.setKayttajanTieto(kayttajatiedot.get(muokkaustieto.getMuokkaaja())));
+        try {
+            Map<String, KayttajanTietoDto> kayttajatiedot = kayttajanTietoService
+                    .haeKayttajatiedot(muokkaustiedot.stream().map(MuokkaustietoKayttajallaDto::getMuokkaaja).collect(Collectors.toList()))
+                    .stream().collect(Collectors.toMap(kayttajanTieto -> kayttajanTieto.getOidHenkilo(), kayttajanTieto -> kayttajanTieto));
+            muokkaustiedot.forEach(muokkaustieto -> muokkaustieto.setKayttajanTieto(kayttajatiedot.get(muokkaustieto.getMuokkaaja())));
+        } catch (Exception ex) {
+            log.error(Throwables.getStackTraceAsString(ex));
+        }
 
         return muokkaustiedot;
     }
