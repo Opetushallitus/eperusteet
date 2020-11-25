@@ -172,6 +172,7 @@ public class PermissionManager {
 
             perm = Maps.newHashMap();
             perm.put(TILANVAIHTO, r1);
+            perm.put(LUKU, r1);
             tmp.put(ProjektiTila.POISTETTU, perm);
 
             allowedRolesTmp.put(Target.PERUSTE, tmp);
@@ -510,13 +511,15 @@ public class PermissionManager {
         Map<ProjektiTila, Map<Permission, Set<String>>> tempTargetKohtaiset = allowedRoles.get(targetType);
         Map<Permission, Set<String>> tempProjektitilaKohtaiset = tempTargetKohtaiset.get(tila);
         final Set<Pair<String, ProjektiTila>> projektitila = findPerusteProjektiTila(targetType, targetId);
-        for (Map.Entry<Permission, Set<String>> per : tempProjektitilaKohtaiset.entrySet()) {
-            boolean hasRole = false;
-            for (Pair<String, ProjektiTila> ppt : projektitila) {
-                hasRole = hasRole | hasAnyRole(authentication, ppt.getFirst(), per.getValue());
-            }
-            if (hasRole) {
-                permission.add(per.getKey());
+        if (tempProjektitilaKohtaiset != null) {
+            for (Map.Entry<Permission, Set<String>> per : tempProjektitilaKohtaiset.entrySet()) {
+                boolean hasRole = false;
+                for (Pair<String, ProjektiTila> ppt : projektitila) {
+                    hasRole = hasRole | hasAnyRole(authentication, ppt.getFirst(), per.getValue());
+                }
+                if (hasRole) {
+                    permission.add(per.getKey());
+                }
             }
         }
 
