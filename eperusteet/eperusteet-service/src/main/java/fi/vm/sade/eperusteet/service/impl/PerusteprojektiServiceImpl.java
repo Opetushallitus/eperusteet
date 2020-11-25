@@ -885,15 +885,21 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional
     public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, TiedoteDto tiedoteDto) {
 
-        TilaUpdateStatus updateStatus = validoiProjekti(id, tila);
+        Perusteprojekti projekti = repository.findOne(id);
+        Peruste peruste = projekti.getPeruste();
 
+        TilaUpdateStatus updateStatus;
+
+        if (projekti.getTila().equals(ProjektiTila.POISTETTU)) {
+            updateStatus = new TilaUpdateStatus();
+        } else {
+            updateStatus = validoiProjekti(id, tila);
+        }
+        
         // Perusteen tilan muutos
         if (!updateStatus.isVaihtoOk()) {
             return updateStatus;
         }
-
-        Perusteprojekti projekti = repository.findOne(id);
-        Peruste peruste = projekti.getPeruste();
 
         // Tarkistetaan mahdolliset tilat
         updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
