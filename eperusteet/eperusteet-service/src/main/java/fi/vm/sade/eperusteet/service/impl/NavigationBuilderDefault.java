@@ -72,9 +72,12 @@ public class NavigationBuilderDefault implements NavigationBuilder {
         NavigationNodeDto result = NavigationNodeDto.of(NavigationType.root);
 
         if (sisallot.size() > 0) {
-            PerusteenOsaViite sisalto = sisallot.iterator().next().getSisalto();
+            PerusteenSisalto sisalto = sisallot.iterator().next();
             if (sisalto != null) {
-                result.addAll(constructNavigation(sisalto));
+                PerusteenOsaViite sisaltoViite = sisalto.getSisalto();
+                if (sisaltoViite != null) {
+                    result.addAll(constructNavigation(sisaltoViite));
+                }
             }
         }
         return result;

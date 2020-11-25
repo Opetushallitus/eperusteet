@@ -31,6 +31,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -176,7 +177,7 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
 
         if (!ObjectUtils.isEmpty(pq.getKoulutustyyppi())) {
             if (PerusteTyyppi.OPAS.equals(pq.getTyyppi())) {
-                SetJoin<Peruste, KoulutusTyyppi> koulutustyypit = joined.join(Peruste_.oppaanKoulutustyypit);
+                SetJoin<Peruste, KoulutusTyyppi> koulutustyypit = joined.join(Peruste_.oppaanKoulutustyypit, JoinType.LEFT);
 
                 result = cb.and(result, cb.or(
                         joined.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()),
