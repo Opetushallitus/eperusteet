@@ -273,6 +273,12 @@ public class PerusteprojektiController {
         return new ResponseEntity<>(permission.getProjectPermissions(id), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/oikeudet", method = GET)
+    public ResponseEntity<Map<Long, Map<PermissionManager.Target, Set<PermissionManager.Permission>>>> getPerusteprojektienOikeudet(
+            @RequestParam(value = "ids") final List<Long> ids) {
+        return new ResponseEntity<>(ids.stream().collect(Collectors.toMap(id -> id, id -> permission.getProjectPermissions(id))), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}/oikeudet/{perusteenOsaId}", method = GET)
     public ResponseEntity<OmistajaDto> omistaaPerusteprojektiOsan(
             @PathVariable("id") final Long id,
