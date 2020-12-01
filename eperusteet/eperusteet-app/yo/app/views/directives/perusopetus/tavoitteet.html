@@ -1,6 +1,20 @@
+
+<div ng-show="editMode" class="vapaateksti">
+    <h3 kaanna="'otsikko'"></h3>
+    <div class="panel-body">
+        <input type="text" slocalized class="form-control" ng-model="model.opetuksenTavoitteetOtsikko">
+    </div>
+</div>
+
 <div class="vapaateksti" ng-show="model.vapaaTeksti || editMode">
     <span ng-show="!editMode" ng-bind-html="model.vapaaTeksti | kaanna | unsafe"></span>
-    <div ng-show="editMode" ckeditor ng-model="model.vapaaTeksti" slocalized editor-placeholder="vapaa-tekstisisalto"></div>
+
+    <div ng-show="editMode">
+        <h3 kaanna="'vapaa-tekstisisalto'"></h3>
+        <div class="panel-body">
+            <div ckeditor ng-model="model.vapaaTeksti" slocalized editor-placeholder="vapaa-tekstisisalto"></div>
+        </div>
+    </div>
 </div>
 
 <div class="opetuksen-tavoitteet" ui-tree="treeOptions"

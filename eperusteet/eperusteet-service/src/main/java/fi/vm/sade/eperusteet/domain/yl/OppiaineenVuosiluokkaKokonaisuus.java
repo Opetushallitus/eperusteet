@@ -79,6 +79,13 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
     private TekstiOsa sisaltoalueinfo;
 
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    private TekstiPalanen opetuksenTavoitteetOtsikko;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable
     @OrderColumn

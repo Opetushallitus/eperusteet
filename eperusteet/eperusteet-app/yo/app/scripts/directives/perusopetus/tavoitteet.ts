@@ -148,7 +148,7 @@ angular
                         var vuosiluokkakuvaus = _.find($scope.vuosiluokka.laajaalaisetOsaamiset, function(item: any) {
                             return "" + item._laajaalainenOsaaminen === "" + osaaminen.id;
                         });
-                        osaaminen.teksti = vuosiluokkakuvaus ? vuosiluokkakuvaus.kuvaus : "ei-kuvausta";
+                        osaaminen.teksti = vuosiluokkakuvaus ? vuosiluokkakuvaus.kuvaus : osaaminen.kuvaus;
                         osaaminen.extra =
                             '<div class="clearfix"><a class="pull-right" href="' +
                             $state.href("root.perusteprojekti.suoritustapa.osaalue", {
