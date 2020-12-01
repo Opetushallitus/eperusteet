@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -46,8 +47,8 @@ public class OpintokokonaisuusMapper extends CustomMapper<OpintokokonaisuusDto, 
                 KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.OPINTOKOKONAISUUSTAVOITTEET, lokalisoituTekstiDto, koodiStack.pop());
 
                 if (lisattyKoodi == null) {
-                    log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, lisattyKoodi);
-                    continue;
+                    log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, tavoite.getNimi());
+                    throw new BusinessRuleViolationException("tavoitteen-lisaaminen-epaonnistui");
                 }
 
                 tavoite.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());

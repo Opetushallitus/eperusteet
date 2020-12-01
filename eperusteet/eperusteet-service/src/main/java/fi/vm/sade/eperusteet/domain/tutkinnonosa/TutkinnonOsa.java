@@ -284,7 +284,10 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             }
         }
 
-        this.ammattitaitovaatimukset2019 = new Ammattitaitovaatimukset2019(other.getAmmattitaitovaatimukset2019());
+        if (other.getAmmattitaitovaatimukset2019() != null) {
+            this.ammattitaitovaatimukset2019 = new Ammattitaitovaatimukset2019(other.getAmmattitaitovaatimukset2019());
+        }
+
         this.geneerinenArviointiasteikko = other.getGeneerinenArviointiasteikko();
 
         if (other.getVapaatTekstit() != null) {
