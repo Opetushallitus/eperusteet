@@ -18,7 +18,7 @@
             <span ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model[path].otsikko) | unsafe"
                   termisto-viitteet="valitseKieli(model[path].otsikko)"></span>
             <span ng-if="type === 'sisaltoalueet'">{{ model.sisaltoalueinfo ? model.sisaltoalueinfo.otsikko : 'sisaltoalueet' | kaanna }}</span>
-            <span ng-if="type === 'tavoitteet'" kaanna="'opetuksen-tavoitteet'"></span>
+            <span ng-if="type === 'tavoitteet'">{{ model.opetuksenTavoitteetOtsikko ? model.opetuksenTavoitteetOtsikko : 'opetuksen-tavoitteet' | kaanna }}</span>
             <span ng-if="type === 'kohdealueet'" kaanna="'opetuksen-kohdealueet'"></span>
         </h3>
     </div>

@@ -178,6 +178,18 @@ $tag-color: #fee7a4;
     .tc-add-button {
         margin: 0;
     }
+
+    .popover-content {
+        ul {
+            list-style-type: disc;
+            margin-bottom: 10px;
+            li {
+                display: list-item;
+                margin-bottom: 0px;
+                height: auto;
+            }
+        }
+    }
 }
 
 .tavoite-sisalto {
