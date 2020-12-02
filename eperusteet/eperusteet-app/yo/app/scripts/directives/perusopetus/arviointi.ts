@@ -31,9 +31,13 @@ angular
             controller: "PerusopetuksenArviointiController"
         };
     })
-    .controller("PerusopetuksenArviointiController", function($scope, Kaanna) {
+    .controller("PerusopetuksenArviointiController", function($scope, Kaanna, Kieli) {
 
-        $scope.arvosanat =  [5,6,7,8,9,10].map(numero => {
+        $scope.getArvosanat = () => {
+            return Kieli.getUiKieli() === 'sv' ? [0,5,6,7,8,9,10] : [5,6,7,8,9,10];
+        };
+
+        $scope.arvosanat = $scope.getArvosanat().map(numero => {
             return {
                 numero,
                 teksti: Kaanna.kaanna("osaamisen-kuvaus-arvosanalle_"+numero)
