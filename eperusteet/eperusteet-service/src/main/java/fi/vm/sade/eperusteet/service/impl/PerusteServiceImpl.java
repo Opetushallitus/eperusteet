@@ -53,6 +53,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
@@ -207,6 +208,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS;
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.TUTKINTOONVALMENTAVA;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.VAPAASIVISTYSTYO;
 
 /**
@@ -1907,6 +1909,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste.setSisalto(sisalto);
         } else if (koulutustyyppi == VAPAASIVISTYSTYO) {
             peruste.setSisalto(new VapaasivistystyoSisalto());
+        } else if (koulutustyyppi == TUTKINTOONVALMENTAVA) {
+            peruste.setSisalto(new TutkintoonvalmentavaSisalto());
         }
 
         if (st != null) {

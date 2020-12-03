@@ -69,6 +69,8 @@ public class PerusteUtils {
                     return KoulutustyyppiToteutus.TPO;
                 } else if (kt == KoulutusTyyppi.VAPAASIVISTYSTYO) {
                     return KoulutustyyppiToteutus.VAPAASIVISTYSTYO;
+                } else if (kt == KoulutusTyyppi.TUTKINTOONVALMENTAVA) {
+                    return KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA;
                 }
             }
             return KoulutustyyppiToteutus.YKSINKERTAINEN;

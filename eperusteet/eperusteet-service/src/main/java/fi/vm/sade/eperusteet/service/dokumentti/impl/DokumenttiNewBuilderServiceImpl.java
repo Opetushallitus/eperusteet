@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
 import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
@@ -180,7 +181,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             }
         }
 
-        if (!KoulutustyyppiToteutus.VAPAASIVISTYSTYO.equals(docBase.getPeruste().getToteutus())) {
+        if (!KoulutustyyppiToteutus.VAPAASIVISTYSTYO.equals(docBase.getPeruste().getToteutus())
+                && !KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA.equals(docBase.getPeruste().getToteutus())) {
             Element etusivuYlaviite = docBase.getDocument().createElement("meta");
             etusivuYlaviite.setAttribute("name", "etusivuYlaviite");
             docBase.getHeadElement().appendChild(etusivuYlaviite);
@@ -599,6 +601,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             } else if (po instanceof Opintokokonaisuus) {
                 Opintokokonaisuus opintokokonaisuus = (Opintokokonaisuus) po;
                 addOpintokokonaisuus(docBase, opintokokonaisuus, po, lapsi);
+            } else if (po instanceof KoulutuksenOsa) {
+                KoulutuksenOsa koulutuksenOsa = (KoulutuksenOsa) po;
+                addKoulutuksenOsa(docBase, koulutuksenOsa, po, lapsi);
             } else if (po instanceof TekstiKappale) {
                 TekstiKappale tk = (TekstiKappale) po;
                 addTekstikappale(docBase, tk, po, lapsi);
@@ -736,6 +741,72 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             arvioinnitEl.appendChild(arviointiEl);
         });
         docBase.getBodyElement().appendChild(arvioinnitEl);
+
+        docBase.getGenerator().increaseDepth();
+        addTekstikappaleet(docBase, lapsi);
+        docBase.getGenerator().decreaseDepth();
+        docBase.getGenerator().increaseNumber();
+    }
+
+    private void addKoulutuksenOsa(DokumenttiPeruste docBase, KoulutuksenOsa koulutuksenOsa, PerusteenOsa po,
+                                   PerusteenOsaViite lapsi) {
+        if (koulutuksenOsa.getLaajuusMinimi().compareTo(koulutuksenOsa.getLaajuusMaksimi()) == 0) {
+            String nimiSuffix = String.format(", %d %s", koulutuksenOsa.getLaajuusMinimi(), messages.translate("docgen.laajuus.op", docBase.getKieli()));
+            addHeader(docBase, getTextString(docBase, koulutuksenOsa.getNimi()) + nimiSuffix);
+        } else {
+            String nimiSuffix = String.format(", %d - %d %s", koulutuksenOsa.getLaajuusMinimi(), koulutuksenOsa.getLaajuusMaksimi(), messages.translate("docgen.laajuus.op", docBase.getKieli()));
+            addHeader(docBase, getTextString(docBase, koulutuksenOsa.getNimi()) + nimiSuffix);
+        }
+
+        addTeksti(docBase, messages.translate("docgen.koulutustyyppi.title", docBase.getKieli()), "h5");
+        addTeksti(docBase, messages.translate("docgen.koulutuksenOsa.koulutustyyppi." + koulutuksenOsa.getKoulutusOsanKoulutustyyppi(), docBase.getKieli()), "div");
+
+        String kuvaus = getTextString(docBase, koulutuksenOsa.getKuvaus());
+        if (StringUtils.isNotEmpty(kuvaus)) {
+            addTeksti(docBase, kuvaus, "div");
+        }
+
+        addTeksti(docBase, messages.translate("docgen.opetuksen-tavoitteet.title", docBase.getKieli()), "h5");
+        addTeksti(docBase, messages.translate("docgen.info.opiskelija", docBase.getKieli()), "h6");
+
+        Element tavoitteetEl = docBase.getDocument().createElement("ul");
+
+        koulutuksenOsa.getTavoitteet().forEach(tavoite -> {
+            Element tavoiteEl = docBase.getDocument().createElement("li");
+
+            String rivi = getTextString(docBase, tavoite);
+            tavoiteEl.setTextContent(rivi);
+
+            tavoitteetEl.appendChild(tavoiteEl);
+        });
+        docBase.getBodyElement().appendChild(tavoitteetEl);
+
+        addTeksti(docBase, messages.translate("docgen.keskeinen-sisalto.title", docBase.getKieli()), "h5");
+        String keskeinenSisalto = getTextString(docBase, koulutuksenOsa.getKeskeinenSisalto());
+        if (StringUtils.isNotEmpty(keskeinenSisalto)) {
+            addTeksti(docBase, keskeinenSisalto, "div");
+        }
+
+
+        addTeksti(docBase, messages.translate("docgen.arviointi.title", docBase.getKieli()), "h5");
+        addTeksti(docBase, messages.translate("dockgen.koulutuksenosa.arviointi-hyvaksytty", docBase.getKieli()), "h6");
+
+        Element arvioinnitEl = docBase.getDocument().createElement("ul");
+        koulutuksenOsa.getArvioinnit().forEach(arviointi -> {
+            Element arviointiEl = docBase.getDocument().createElement("li");
+
+            String rivi = getTextString(docBase, arviointi);
+            arviointiEl.setTextContent(rivi);
+
+            arvioinnitEl.appendChild(arviointiEl);
+        });
+        docBase.getBodyElement().appendChild(arvioinnitEl);
+
+        addTeksti(docBase, messages.translate("docgen.valma.osaamisenarviointi.title", docBase.getKieli()), "h5");
+        String osaamisenArviointi = getTextString(docBase, koulutuksenOsa.getOsaamisenArvioinnista());
+        if (StringUtils.isNotEmpty(osaamisenArviointi)) {
+            addTeksti(docBase, osaamisenArviointi, "div");
+        }
 
         docBase.getGenerator().increaseDepth();
         addTekstikappaleet(docBase, lapsi);

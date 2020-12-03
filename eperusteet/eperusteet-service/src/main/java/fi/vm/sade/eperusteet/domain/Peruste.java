@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
+import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
@@ -199,6 +200,10 @@ public class Peruste extends AbstractAuditedEntity
     private VapaasivistystyoSisalto vstSisalto;
 
     @Getter
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private TutkintoonvalmentavaSisalto tuvasisalto;
+
+    @Getter
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
@@ -299,6 +304,8 @@ public class Peruste extends AbstractAuditedEntity
                 return Collections.singleton(this.getTpoOpetuksenSisalto());
             } else if (this.getVstSisalto() != null) {
                 return Collections.singleton(this.getVstSisalto());
+            } else if (this.getTuvasisalto() != null) {
+                return Collections.singleton(this.getTuvasisalto());
             }
         }
         return new HashSet<>();
@@ -446,6 +453,12 @@ public class Peruste extends AbstractAuditedEntity
                     return vstSisalto.getSisalto();
                 }
                 break;
+            case TUTKINTOONVALMENTAVA:
+                TutkintoonvalmentavaSisalto tuvaSisalto = this.getTuvasisalto();
+                if (tuvaSisalto != null) {
+                    return tuvaSisalto.getSisalto();
+                }
+                break;
         }
 
         return null;
@@ -501,6 +514,12 @@ public class Peruste extends AbstractAuditedEntity
         this.vstSisalto.setPeruste(this);
     }
 
+    @JsonIgnore
+    public void setSisalto(TutkintoonvalmentavaSisalto sisalto) {
+        this.tuvasisalto = sisalto;
+        this.tuvasisalto.setPeruste(this);
+    }
+
     // Käytetään ainoastaan testaamiseen
     @Deprecated
     public void setLops2019Sisalto(Lops2019Sisalto lops2019Sisalto) {
@@ -549,6 +568,9 @@ public class Peruste extends AbstractAuditedEntity
             return this.vstSisalto.containsViite(viite);
         }
 
+        if (this.tuvasisalto != null) {
+            return this.tuvasisalto.containsViite(viite);
+        }
 
         throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");
     }

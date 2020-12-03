@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.domain.tuva.KoulutusOsanKoulutustyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
@@ -36,6 +37,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -240,6 +242,48 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(opintokokonaisuusDto.getOpetuksenTavoitteet()).extracting("uri").containsExactlyInAnyOrder("opintokokonaisuustavoitteet_0", "opintokokonaisuustavoitteet_1");
         assertThat(opintokokonaisuusDto.getArvioinnit()).hasSize(2);
         assertThat(opintokokonaisuusDto.getArvioinnit()).extracting("tekstit").containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "arviointi1"), Maps.newHashMap(Kieli.FI, "arviointi2"));
+    }
+
+    @Test
+    public void testKoulutuksenosa() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString());
+        });
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        PerusteenOsaViiteDto.Matala viiteDto = new PerusteenOsaViiteDto.Matala(new KoulutuksenOsaDto());
+
+        PerusteenOsaViiteDto.Matala perusteViite = perusteService.addSisaltoUUSI(perusteDto.getId(), null, viiteDto);
+        KoulutuksenOsaDto koulutuksenOsaDto = (KoulutuksenOsaDto) perusteenOsaService.get(perusteViite.getPerusteenOsa().getId());
+        perusteenOsaService.lock(koulutuksenOsaDto.getId());
+
+        assertThat(koulutuksenOsaDto.getId()).isNotNull();
+
+        koulutuksenOsaDto.setKoulutusOsanKoulutustyyppi(KoulutusOsanKoulutustyyppi.AMMATILLINENKOULUTUS);
+        koulutuksenOsaDto.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
+        koulutuksenOsaDto.setLaajuusMinimi(1);
+        koulutuksenOsaDto.setLaajuusMaksimi(2);
+        koulutuksenOsaDto.setNimiKoodi(KoodiDto.of("opintokokonaisuusnimikoodi", "arvi1"));
+        koulutuksenOsaDto.setNimi(LokalisoituTekstiDto.of("nimi"));
+        koulutuksenOsaDto.setKeskeinenSisalto(LokalisoituTekstiDto.of("keskeinensisalto"));
+        koulutuksenOsaDto.setOsaamisenArvioinnista(LokalisoituTekstiDto.of("osaamisenarvioinnista"));
+        koulutuksenOsaDto.setTavoitteet(Arrays.asList(LokalisoituTekstiDto.of("tavoite1"), LokalisoituTekstiDto.of("tavoite2")));
+        koulutuksenOsaDto.setArvioinnit(Arrays.asList(LokalisoituTekstiDto.of("arviointi1"), LokalisoituTekstiDto.of("arviointi2")));
+
+        koulutuksenOsaDto = perusteenOsaService.update(koulutuksenOsaDto);
+
+        assertThat(koulutuksenOsaDto.getKoulutusOsanKoulutustyyppi()).isEqualTo(KoulutusOsanKoulutustyyppi.AMMATILLINENKOULUTUS);
+        assertThat(koulutuksenOsaDto.getNimi().get(Kieli.FI)).isEqualTo("nimi");
+        assertThat(koulutuksenOsaDto.getNimiKoodi()).isEqualTo(KoodiDto.of("opintokokonaisuusnimikoodi", "arvi1"));
+        assertThat(koulutuksenOsaDto.getLaajuusMinimi()).isEqualTo(1);
+        assertThat(koulutuksenOsaDto.getLaajuusMaksimi()).isEqualTo(2);
+        assertThat(koulutuksenOsaDto.getKuvaus().get(Kieli.FI)).isEqualTo("kuvaus");
+        assertThat(koulutuksenOsaDto.getKeskeinenSisalto().get(Kieli.FI)).isEqualTo("keskeinensisalto");
+        assertThat(koulutuksenOsaDto.getOsaamisenArvioinnista().get(Kieli.FI)).isEqualTo("osaamisenarvioinnista");
+        assertThat(koulutuksenOsaDto.getTavoitteet()).hasSize(2);
+        assertThat(koulutuksenOsaDto.getTavoitteet()).extracting("tekstit").containsExactly(Maps.newHashMap(Kieli.FI, "tavoite1"), Maps.newHashMap(Kieli.FI, "tavoite2"));
+        assertThat(koulutuksenOsaDto.getArvioinnit()).hasSize(2);
+        assertThat(koulutuksenOsaDto.getArvioinnit()).extracting("tekstit").containsExactly(Maps.newHashMap(Kieli.FI, "arviointi1"), Maps.newHashMap(Kieli.FI, "arviointi2"));
     }
 
     private KoodiDto koodiDto(String nimi) {
