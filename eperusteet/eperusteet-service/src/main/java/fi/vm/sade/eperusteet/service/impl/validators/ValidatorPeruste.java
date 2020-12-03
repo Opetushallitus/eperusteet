@@ -392,6 +392,13 @@ public class ValidatorPeruste implements Validator {
             }
         }
 
+        // TUVA
+        if (peruste.getTuvasisalto() != null) {
+            for (PerusteenOsaViite lapsi : peruste.getTuvasisalto().getSisalto().getLapset()) {
+                tarkistaSisalto(lapsi, vaaditutKielet, virheellisetKielet);
+            }
+        }
+
         // Perusopetus
         if (peruste.getPerusopetuksenPerusteenSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getPerusopetuksenPerusteenSisalto().getSisalto().getLapset()) {
