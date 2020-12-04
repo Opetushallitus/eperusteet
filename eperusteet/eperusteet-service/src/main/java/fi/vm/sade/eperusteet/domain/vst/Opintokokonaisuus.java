@@ -74,7 +74,7 @@ public class Opintokokonaisuus extends PerusteenOsa implements Serializable {
 
     @OrderColumn
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "opintokokonaisuus_opetuksen_tavoitteet",
             joinColumns = @JoinColumn(name = "peruste_id"),
             inverseJoinColumns = @JoinColumn(name = "opetuksentavoite_id"))

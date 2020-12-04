@@ -34,8 +34,6 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 public class KoodiDto {
-
-    private Long id;
     private Map<String, String> nimi;
     private String arvo;
     private String uri;
