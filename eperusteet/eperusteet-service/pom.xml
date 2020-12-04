@@ -37,7 +37,7 @@
         <springfox.version>2.7.0</springfox.version>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <hibernate.export.type>CREATE</hibernate.export.type>
-        <apache.httpclient.version>4.5.3</apache.httpclient.version>
+        <apache.httpclient.version>4.5.13</apache.httpclient.version>
     </properties>
     <dependencyManagement>
         <dependencies>
