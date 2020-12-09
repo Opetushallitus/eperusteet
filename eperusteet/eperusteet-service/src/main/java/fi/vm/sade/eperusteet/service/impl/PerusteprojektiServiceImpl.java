@@ -663,7 +663,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         String ryhmaOid = p.getRyhmaOid();
 
         // Ryhmä liian suuri haulle
-        if (ryhmaOid.equals("1.2.246.562.10.00000000001")) {
+        if ("1.2.246.562.10.00000000001".equals(ryhmaOid)) {
             return kayttajat;
         }
 
