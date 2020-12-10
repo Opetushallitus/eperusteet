@@ -143,7 +143,7 @@ public class OpasServiceIT extends AbstractIntegrationTest {
 
             assertThat(opasDto).isNotNull();
 
-            PerusteKaikkiDto perusteKaikki = perusteService.getJulkaistuSisalto(opasDto.getPeruste().getIdLong());
+            PerusteKaikkiDto perusteKaikki = perusteService.getKaikkiSisalto(opasDto.getPeruste().getIdLong());
             assertThat(perusteKaikki.getOppaanKoulutustyypit()).isNull();
             assertThat(perusteKaikki.getOppaanPerusteet()).hasSize(0);
 
@@ -173,13 +173,15 @@ public class OpasServiceIT extends AbstractIntegrationTest {
 
             assertThat(opasDto).isNotNull();
 
-            PerusteKaikkiDto perusteKaikki = perusteService.getJulkaistuSisalto(opasDto.getPeruste().getIdLong());
+            PerusteKaikkiDto perusteKaikki = perusteService.getKaikkiSisalto(opasDto.getPeruste().getIdLong());
             assertThat(perusteKaikki.getOppaanKoulutustyypit()).containsExactlyInAnyOrder(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO);
             assertThat(perusteKaikki.getOppaanPerusteet()).extracting("id").contains(pohjaperuste.getId());
 
             Peruste peruste = perusteRepository.getOne(opasDto.getPeruste().getIdLong());
             assertThat(peruste.getOppaanSisalto().getSisalto()).isNotNull();
             assertThat(peruste.getOppaanSisalto().getSisalto().getLapset()).hasSize(1);
+
+
         }
     }
 

@@ -253,7 +253,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
         assertEquals(new Reference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
 
-        PerusteKaikkiDto kokoSisalto = perusteService.getJulkaistuSisalto(peruste.getId());
+        PerusteKaikkiDto kokoSisalto = perusteService.getKaikkiSisalto(peruste.getId());
         assertNotNull(kokoSisalto.getTutkinnonOsat());
         Assertions.assertThat(kokoSisalto.getSuoritustavat()).hasSize(1);
         Assertions.assertThat(kokoSisalto.getTutkinnonOsat()).hasSize(2);
