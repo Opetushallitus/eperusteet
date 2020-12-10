@@ -426,11 +426,6 @@ public class PermissionManager {
                     if (!loydetyt.isEmpty() && loydetyt.get(0).getSecond()) {
                         return true;
                     }
-
-                    List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPerusteId((Long) targetId);
-                    if (CollectionUtils.isNotEmpty(julkaisut)) {
-                        return true;
-                    }
                 }
                 if (Target.PERUSTEENOSA.equals(targetType)) {
                     List<Pair<String, Boolean>> loydetyt = perusteProjektit.findEsikatseltavissaByPerusteenOsaId((Long) targetId);

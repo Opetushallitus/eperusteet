@@ -109,7 +109,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        PerusteKaikkiDto sisalto = perusteService.getJulkaistuSisalto(peruste.getId());
+        PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
         julkaisu.setRevision((int)julkaisutCount);
         julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Julkaisu"));
