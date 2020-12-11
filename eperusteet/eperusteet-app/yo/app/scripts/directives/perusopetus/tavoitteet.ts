@@ -272,7 +272,7 @@ angular
                 return arvioinninkohde.arvosana == 8
             });
 
-            if(hyvanOsaamisenArvio && !_.isEmpty(hyvanOsaamisenArvio.arvioinninKohde)) {
+            if(hyvanOsaamisenArvio && !_.isEmpty(hyvanOsaamisenArvio.arvioinninKohde) && _.size(tavoite.arvioinninkohteet) === 1) {
                 return hyvanOsaamisenArvio.arvioinninKohde;
             }
 
