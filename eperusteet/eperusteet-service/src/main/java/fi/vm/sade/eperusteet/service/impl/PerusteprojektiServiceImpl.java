@@ -757,11 +757,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 perusteprojekti.setToimikausiLoppu(jyrattava.getToimikausiLoppu());
             }
         }
-
-        if (perusteprojektiDto.getRyhmaOid() == null) {
-            throw new BusinessRuleViolationException("Perustetyöryhmä ei ole asetettu");
-        }
-
+        
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
             peruste = perusteService.luoPerusteRunko(koulutustyyppi, perusteprojektiDto.getToteutus(),
