@@ -63,7 +63,7 @@ angular
             }
         };
     })
-    .controller("EditointiCtrl", function($scope, $rootScope, Editointikontrollit) {
+    .controller("EditointiCtrl", function($scope, $rootScope, Editointikontrollit, $translate) {
         $scope.kommentti = "";
         $scope.hideControls = true;
 
@@ -110,4 +110,8 @@ angular
         $scope.cancel = function() {
             Editointikontrollit.cancelEditing();
         };
+
+        $scope.kaanna = (teksti) => {
+            return $translate.instant(teksti);
+        }
     });

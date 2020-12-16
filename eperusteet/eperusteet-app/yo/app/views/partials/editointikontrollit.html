@@ -3,19 +3,19 @@
     <div class="edit-control-content">
         <div class="edit-control-header">
             <span class="glyphicon glyphicon-pencil"></span>
-            {{'muokattavana' | kaanna}}
+            {{kaanna('muokattavana')}}
         </div>
         <div class="edit-control-buttons">
             <button class="btn btn-default"
-                    ng-click="cancel()">{{'peruuta' | kaanna}}</button>
+                    ng-click="cancel()">{{kaanna('peruuta')}}</button>
             <button class="btn btn-primary"
-                    ng-click="save()">{{'tallenna' | kaanna}}</button>
+                    ng-click="save()">{{kaanna('tallenna')}}</button>
         </div>
         <div class="edit-control-comment">
             <input class="form-control"
                    type="text"
                    ng-model="kommentti"
-                   placeholder="{{'kommentoi-muutosta' | kaanna}}">
+                   placeholder="{{kaanna('kommentoi-muutosta')}}">
         </div>
     </div>
 </div>
