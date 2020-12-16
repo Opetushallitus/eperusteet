@@ -76,11 +76,6 @@ angular
             }
         }
 
-        $scope.$on("$stateChangeStart", function() {
-            Editointikontrollit.unregisterCallback();
-            setEditControls();
-        });
-
         Editointikontrollit.registerCallbackListener(setEditControls);
 
         $scope.$on("editointikontrollitRefresh", function() {
