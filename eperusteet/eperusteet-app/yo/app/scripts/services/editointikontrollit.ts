@@ -217,6 +217,7 @@ angular.module("eperusteApp").factory("Editointikontrollit", ($rootScope, $q, Ut
         unregisterCallback: function() {
             scope.editingCallback = null;
             setEditMode(false);
+            cbListener();
         },
         editingEnabled: function() {
             return !!scope.editingCallback;
