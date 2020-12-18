@@ -30,12 +30,16 @@ import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import io.swagger.annotations.Api;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,6 +77,13 @@ public class TutkinnonOsaController {
         }
 
         return new ResponseEntity<>(new BooleanDto(true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/koodi/uniikit", method = GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<Map<String, Boolean>> getTutkinnonOsaByKoodit(@RequestParam(value = "koodiuri") final List<String> koodiUrit) {
+        return new ResponseEntity<>(perusteenOsaService.onkoTutkinnonOsanKoodiKaytossa(koodiUrit), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/viite/{id}/versiot", method = GET)

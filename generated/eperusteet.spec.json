@@ -4351,6 +4351,35 @@
         }
       }
     },
+    "/perusteet/{perusteId}/osaamisalat" : {
+      "post" : {
+        "tags" : [ "Perusteet" ],
+        "operationId" : "updateOsaamisalat",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/KoodiDto"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : ""
+          }
+        }
+      }
+    },
     "/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
@@ -6503,6 +6532,35 @@
         }
       }
     },
+    "/perusteet/{perusteId}/tutkintonimikkeet" : {
+      "post" : {
+        "tags" : [ "Perusteet" ],
+        "operationId" : "updateTutkintonimikkeet",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/TutkintonimikeKoodiDto"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : ""
+          }
+        }
+      }
+    },
     "/perusteet/{perusteId}/version" : {
       "get" : {
         "tags" : [ "Perusteet" ],
@@ -7475,6 +7533,27 @@
           "in" : "path",
           "required" : true,
           "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : ""
+          }
+        }
+      }
+    },
+    "/tutkinnonosat/koodi/uniikit" : {
+      "get" : {
+        "tags" : [ "TutkinnonosatPrivate" ],
+        "operationId" : "getTutkinnonOsaByKoodit",
+        "parameters" : [ {
+          "name" : "koodiuri",
+          "in" : "query",
+          "required" : true,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
         } ],
         "responses" : {
           "200" : {

@@ -164,6 +164,20 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, Boolean> onkoTutkinnonOsanKoodiKaytossa(final List<String> koodiUrit) {
+        Map<String, Boolean> booleanMap = koodiUrit.stream().collect(Collectors.toMap(koodiUri -> koodiUri, koodiUri -> false));
+        List<TutkinnonOsa> tosatByKoodi = tutkinnonOsaRepo.findByKoodiUriIn(koodiUrit);
+        for (TutkinnonOsa tosa : tosatByKoodi) {
+            if (tosa.getTila() == PerusteTila.VALMIS) {
+                booleanMap.put(tosa.getKoodi().getUri(), true);
+            }
+        }
+
+        return booleanMap;
+    }
+
     @Transactional
     private void tarkistaVoikoMuokata(PerusteenOsa osa) {
         if (osa != null && osa.getTila() == PerusteTila.POISTETTU) {
