@@ -1033,6 +1033,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return mapper.map(current, PerusteDto.class);
     }
 
+    @Override
+    public void updateOsaamisalat(Long id, Set<KoodiDto> osaamisalat) {
+        PerusteDto peruste = get(id);
+        peruste.setOsaamisalat(osaamisalat);
+        update(id, peruste);
+    }
+
     private Peruste updateValmisPeruste(Peruste current, Peruste updated) {
         current.setKielet(updated.getKielet());
         current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
@@ -1676,6 +1683,19 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         TutkintonimikeKoodi tnk = mapper.map(dto, TutkintonimikeKoodi.class);
         TutkintonimikeKoodi saved = tutkintonimikeKoodiRepository.save(tnk);
         return mapper.map(saved, TutkintonimikeKoodiDto.class);
+    }
+
+    @Override
+    public void updateTutkintonimikkeet(Long perusteId, List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
+        List<TutkintonimikeKoodiDto> perusteenTutkintonimikkeet = getTutkintonimikeKoodit(perusteId);
+        List<String> perusteenTutkintonimikeUrit = perusteenTutkintonimikkeet.stream().map(TutkintonimikeKoodiDto::getTutkintonimikeUri).collect(Collectors.toList());
+        List<String> tallennettavatTutkintonimikkeet = tutkintonimikeKoodiDtos.stream().map(TutkintonimikeKoodiDto::getTutkintonimikeUri).collect(Collectors.toList());
+        tutkintonimikeKoodiDtos.stream()
+                .filter(tutkintonimike -> !perusteenTutkintonimikeUrit.contains(tutkintonimike.getTutkintonimikeUri()))
+                .forEach(tutkintonimike -> addTutkintonimikeKoodi(perusteId, tutkintonimike));
+        perusteenTutkintonimikkeet.stream()
+                .filter(tutkintonimike -> !tallennettavatTutkintonimikkeet.contains(tutkintonimike.getTutkintonimikeUri()))
+                .forEach(tutkintonimike -> removeTutkintonimikeKoodi(perusteId, tutkintonimike.getId()));
     }
 
     @Override

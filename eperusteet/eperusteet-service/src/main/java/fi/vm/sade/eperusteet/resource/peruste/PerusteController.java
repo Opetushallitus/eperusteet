@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -225,6 +226,15 @@ public class PerusteController {
         return new ResponseEntity<>(tutkintonimikeKoodi, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{perusteId}/tutkintonimikkeet", method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    @InternalApi
+    public void updateTutkintonimikkeet(
+            @PathVariable("perusteId") final long id,
+            @RequestBody final List<TutkintonimikeKoodiDto> tutkintonimikkeet) {
+        service.updateTutkintonimikkeet(id, tutkintonimikkeet);
+    }
+
     // Openapi generator
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = PUT)
     @ResponseBody
@@ -254,6 +264,15 @@ public class PerusteController {
             response.add(new CombinedDto<>(tkd, nimet));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{perusteId}/osaamisalat", method = POST)
+    @InternalApi
+    @ResponseStatus(HttpStatus.OK)
+    public void updateOsaamisalat(
+            @PathVariable("perusteId") final long id,
+            @RequestBody final Set<KoodiDto> osaamisalat) {
+        service.updateOsaamisalat(id, osaamisalat);
     }
 
     @RequestMapping(value = "/{perusteId}/meta", method = GET)

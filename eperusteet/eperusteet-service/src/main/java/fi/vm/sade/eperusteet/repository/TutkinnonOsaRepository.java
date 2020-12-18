@@ -32,6 +32,9 @@ import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 @Repository
 public interface TutkinnonOsaRepository extends JpaWithVersioningRepository<TutkinnonOsa, Long> {
     List<TutkinnonOsa> findByKoodiUri(String koodiUri);
+
+    List<TutkinnonOsa> findByKoodiUriIn(List<String> koodiUris);
+
     List<TutkinnonOsa> findByNimiTekstiTekstiContainingIgnoreCase(String teksti);
 
     @Query("SELECT to FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat t JOIN t.tutkinnonOsa to WHERE to.koodi.uri = :koodiUri AND p.tila = 'VALMIS' ")
