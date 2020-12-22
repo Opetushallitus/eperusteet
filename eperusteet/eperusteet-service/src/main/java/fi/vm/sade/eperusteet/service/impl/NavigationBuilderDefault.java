@@ -39,15 +39,17 @@ public class NavigationBuilderDefault implements NavigationBuilder {
     private NavigationNodeDto constructNavigation(PerusteenOsaViite sisalto) {
         NavigationType type = NavigationType.viite;
         PerusteenOsa po = sisalto.getPerusteenOsa();
-        if (po instanceof TekstiKappale) {
-            TekstiKappale tk = (TekstiKappale) po;
-            if (tk.isLiite()) {
-                type = NavigationType.liite;
-            } else if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
-                type = NavigationType.muodostuminen;
+        if (po != null) {
+            if (po instanceof TekstiKappale) {
+                TekstiKappale tk = (TekstiKappale) po;
+                if (tk.isLiite()) {
+                    type = NavigationType.liite;
+                } else if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
+                    type = NavigationType.muodostuminen;
+                }
+            } else {
+                type = po.getNavigationType();
             }
-        } else if (po instanceof Opintokokonaisuus) {
-            type = NavigationType.opintokokonaisuus;
         }
 
         NavigationNodeDto result = NavigationNodeDto

@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaamisenTavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.ValmaTelmaSisalto;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
@@ -15,6 +16,7 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DirtiesContext
 @Transactional
@@ -66,6 +69,8 @@ public class PerusteJulkisetTestIT extends AbstractIntegrationTest {
     @Autowired
     public PerusteprojektiTestUtils ppTestUtils;
 
+    @Autowired
+    private JulkaisutService julkaisutService;
 
     // EP-1326
     @Test
@@ -137,16 +142,21 @@ public class PerusteJulkisetTestIT extends AbstractIntegrationTest {
         PerusteenOsaViiteDto.Matala taiteenalaviite = new PerusteenOsaViiteDto.Matala();
         taiteenalaviite.setPerusteenOsa(taiteenalaDto);
         taiteenalaviite = perusteService.addSisaltoUUSI(perusteDto.getId(), Suoritustapakoodi.TPO, taiteenalaviite);
-        taiteenalaDto = (TaiteenalaDto)taiteenalaviite.getPerusteenOsa();
+        taiteenalaDto = (TaiteenalaDto) taiteenalaviite.getPerusteenOsa();
         taiteenalaDto.setTeksti(LokalisoituTekstiDto.of("teksti"));
         perusteenOsaService.lock(taiteenalaDto.getId());
         taiteenalaDto = perusteenOsaService.update(taiteenalaDto);
+
+        assertThatThrownBy(() -> {
+            perusteService.getJulkaistuSisalto(perusteDto.getId());
+        }).isInstanceOf(BusinessRuleViolationException.class)
+                .hasMessageContaining("perustetta-ei-loydy");
 
         ppTestUtils.julkaise(pp.getId());
 
         PerusteKaikkiDto tpoPeruste = perusteService.getJulkaistuSisalto(perusteDto.getId());
         assertThat(tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset()).hasSize(1);
-        assertThat((TaiteenalaDto)tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset().get(0).getPerusteenOsa())
+        assertThat((TaiteenalaDto) tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset().get(0).getPerusteenOsa())
                 .extracting(
                         p -> p.getKoodi().getUri(),
                         p -> p.getTeemaopinnot().getNimi().get(Kieli.FI),

@@ -267,15 +267,6 @@ angular
         };
 
         $scope.getArvioinninKohteenTeksti = (tavoite) => {
-
-            const hyvanOsaamisenArvio = _.find(tavoite.arvioinninkohteet, (arvioinninkohde: any) => {
-                return arvioinninkohde.arvosana == 8
-            });
-
-            if(hyvanOsaamisenArvio && !_.isEmpty(hyvanOsaamisenArvio.arvioinninKohde)) {
-                return hyvanOsaamisenArvio.arvioinninKohde;
-            }
-
             return tavoite.arvioinninKuvaus;
         }
 

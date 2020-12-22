@@ -19,12 +19,14 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tuva.KoulutusOsanKoulutustyyppi;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -253,7 +255,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
         assertEquals(new Reference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
 
-        PerusteKaikkiDto kokoSisalto = perusteService.getJulkaistuSisalto(peruste.getId());
+        PerusteKaikkiDto kokoSisalto = perusteService.getKaikkiSisalto(peruste.getId());
         assertNotNull(kokoSisalto.getTutkinnonOsat());
         Assertions.assertThat(kokoSisalto.getSuoritustavat()).hasSize(1);
         Assertions.assertThat(kokoSisalto.getTutkinnonOsat()).hasSize(2);
@@ -368,7 +370,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testOpintokokonaisuus_insert() {
+    public void testVapaasivistystyo_insert() {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
             ppl.setKoulutustyyppi(KoulutusTyyppi.VAPAASIVISTYSTYO.toString());
         });
@@ -380,6 +382,17 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteenOsaViiteDto.Matala uusiOpintokokonaisuusDto = perusteService.addSisaltoUUSI(perusteDto.getId(), null, viiteDto);
         assertThat(uusiOpintokokonaisuusDto.getId()).isNotNull();
 
+    }
+
+    @Test
+    public void testTutkintoonvalmentava_insert() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString());
+        });
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+        PerusteenOsaViiteDto.Matala viiteDto = new PerusteenOsaViiteDto.Matala(new KoulutuksenOsaDto());
+        PerusteenOsaViiteDto.Matala uusiOpintokokonaisuusDto = perusteService.addSisaltoUUSI(perusteDto.getId(), null, viiteDto);
+        assertThat(uusiOpintokokonaisuusDto.getId()).isNotNull();
     }
 
     private Long lisaaPerusteTekstikappaleKoodilla(List<String> koodiUrit) {

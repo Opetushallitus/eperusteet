@@ -74,7 +74,7 @@ angular
                 '  </span>' +
                 '</span>' +
                 '<span ng-if="!onOsa(rakenne) && rakenne.nimi">' +
-                '  <strong>{{ rakenne.nimi || "nimetön" | kaanna }}</strong>' +
+                '  <strong>{{ osaNimi(rakenne) || "nimetön" | kaanna }}</strong>' +
                 '  <span ng-if="rakenne.pakollinen">({{"pakollinen" | kaanna}})</span>' +
                 '  <lang-validator kentta="[rakenne.nimi, rakenne.kuvaus]"></lang-validator>' +
                 '</span>'
@@ -320,6 +320,18 @@ angular
 
         $scope.onOsa = function(osa) {
             return osa._tutkinnonOsaViite || osa.erikoisuus;
+        };
+
+        $scope.osaNimi = function(osa) {
+            if (osa.rooli === 'osaamisala' && _.get(osa, 'osaamisala.nimi')) {
+                return osa.osaamisala.nimi;
+            }
+
+            if (osa.rooli === 'tutkintonimike' && _.get(osa, 'tutkintonimike.nimi')) {
+                return osa.tutkintonimike.nimi;
+            }
+
+            return osa.nimi;
         };
 
         $scope.rakenneosaModaali = Muodostumissaannot.rakenneosaModaali(function(rakenneosa) {

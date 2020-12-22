@@ -663,7 +663,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         String ryhmaOid = p.getRyhmaOid();
 
         // Ryhmä liian suuri haulle
-        if (ryhmaOid.equals("1.2.246.562.10.00000000001")) {
+        if ("1.2.246.562.10.00000000001".equals(ryhmaOid)) {
             return kayttajat;
         }
 
@@ -757,11 +757,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 perusteprojekti.setToimikausiLoppu(jyrattava.getToimikausiLoppu());
             }
         }
-
-        if (perusteprojektiDto.getRyhmaOid() == null) {
-            throw new BusinessRuleViolationException("Perustetyöryhmä ei ole asetettu");
-        }
-
+        
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
             peruste = perusteService.luoPerusteRunko(koulutustyyppi, perusteprojektiDto.getToteutus(),
@@ -1041,7 +1037,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
         else {
             peruste.getSisallot().forEach(sisalto -> {
-                setSisaltoTila(peruste, sisalto.getSisalto(), tila);
+                if (sisalto != null) {
+                    setSisaltoTila(peruste, sisalto.getSisalto(), tila);
+                }
             });
         }
 

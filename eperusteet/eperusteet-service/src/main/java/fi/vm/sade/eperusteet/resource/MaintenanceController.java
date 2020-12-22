@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.ParsitutAmmattitaitovaatimukset;
 import fi.vm.sade.eperusteet.dto.YllapitoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
@@ -102,6 +103,11 @@ public class MaintenanceController {
                     perusteService.exportPeruste(perusteId, zipOutputStream);
                     zipOutputStream.close();
                 });
+    }
+
+    @RequestMapping(value = "/export/{perusteId}/json", method = GET, produces = "application/json")
+    public ResponseEntity<PerusteKaikkiDto> viePerusteJson(@PathVariable final Long perusteId) {
+        return ResponseEntity.ok(perusteService.getKaikkiSisalto(perusteId));
     }
 
     @RequestMapping(value = "/import", method = POST)

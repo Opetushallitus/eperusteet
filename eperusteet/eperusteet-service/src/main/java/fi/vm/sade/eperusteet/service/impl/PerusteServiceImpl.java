@@ -53,6 +53,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
@@ -207,6 +208,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS;
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.TUTKINTOONVALMENTAVA;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.VAPAASIVISTYSTYO;
 
 /**
@@ -688,7 +690,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer perusteRev) {
         Peruste peruste;
-        boolean hasPermission = permissionManager.hasPerustePermission(SecurityContextHolder.getContext().getAuthentication(), id, PermissionManager.Permission.LUKU);
         if (perusteRev != null) {
             peruste = perusteRepository.findRevision(id, perusteRev);
         }
@@ -700,7 +701,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             return null;
         }
 
-        if (perusteRev == null && !hasPermission && Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
+        if (perusteRev == null && Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.LAADINTA)) {
             JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
             if (julkaisu != null) {
                 ObjectNode data = julkaisu.getData().getData();
@@ -709,13 +710,18 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 } catch (JsonProcessingException e) {
                     throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
                 }
-            }
-            else {
-                throw new AccessDeniedException("ei-riittavia-oikeuksia");
+            } else {
+                throw new BusinessRuleViolationException("perustetta-ei-loydy");
             }
         }
 
         return getKaikkiSisalto(id, perusteRev);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteKaikkiDto getKaikkiSisalto(final Long id) {
+        return getKaikkiSisalto(id, null);
     }
 
     @Override
@@ -725,8 +731,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         boolean hasPermission = permissionManager.hasPerustePermission(SecurityContextHolder.getContext().getAuthentication(), id, PermissionManager.Permission.LUKU);
         if (perusteRev != null) {
             peruste = perusteRepository.findRevision(id, perusteRev);
-        }
-        else {
+        } else {
             peruste = perusteRepository.findOne(id);
         }
 
@@ -757,8 +762,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Revision rev = perusteRepository.getLatestRevisionId(id);
         if (rev != null) {
             perusteDto.setRevision(rev.getNumero());
-        }
-        else {
+        } else {
             perusteDto.setRevision(0);
         }
 
@@ -1905,6 +1909,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste.setSisalto(sisalto);
         } else if (koulutustyyppi == VAPAASIVISTYSTYO) {
             peruste.setSisalto(new VapaasivistystyoSisalto());
+        } else if (koulutustyyppi == TUTKINTOONVALMENTAVA) {
+            peruste.setSisalto(new TutkintoonvalmentavaSisalto());
         }
 
         if (st != null) {

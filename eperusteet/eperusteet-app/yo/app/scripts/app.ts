@@ -355,6 +355,7 @@ angular
 
                     Varmistusdialogi.dialogi({
                         successCb: data => {
+                            Editointikontrollit.unregisterCallback();
                             $state.go(data.toState, data.toParams);
                         },
                         data: {
@@ -366,6 +367,8 @@ angular
                         lisaTeksti: "haluatko-jatkaa",
                         primaryBtn: "poistu-sivulta"
                     })();
+                } else {
+                    Editointikontrollit.unregisterCallback();
                 }
             });
 

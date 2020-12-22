@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
+import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
@@ -146,6 +147,13 @@ public class PerusteenOsaViite implements
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private VapaasivistystyoSisalto vstSisalto;
 
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private TutkintoonvalmentavaSisalto tuvaSisalto;
+
     @ManyToOne
     @Getter
     @Setter
@@ -196,6 +204,10 @@ public class PerusteenOsaViite implements
 
     public PerusteenOsaViite(final VapaasivistystyoSisalto sisalto) {
         this.vstSisalto = sisalto;
+    }
+
+    public PerusteenOsaViite(final TutkintoonvalmentavaSisalto sisalto) {
+        this.tuvaSisalto = sisalto;
     }
 
     @Override
