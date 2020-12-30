@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteLuontiDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
@@ -98,12 +99,28 @@ public class TutkinnonRakenneController {
         return perusteService.addTutkinnonOsa(perusteId, suoritustapakoodi, osa);
     }
 
+    @RequestMapping(value = "/tutkinnonosat/tuo", method = PUT)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public void attachTutkinnonOsat(
+            @PathVariable final Long perusteId,
+            @PathVariable final Suoritustapakoodi suoritustapakoodi,
+            @RequestBody List<TutkinnonOsaViiteLuontiDto> osat
+    ) {
+        osat.forEach(osa -> {
+            TutkinnonOsaViiteDto tutkinnonOsaViiteDto = perusteService.attachTutkinnonOsa(perusteId, suoritustapakoodi, osa);
+            if (osa.isKopioiMuokattavaksi()) {
+                perusteenOsaViiteService.kloonaaTutkinnonOsa(perusteId, suoritustapakoodi, tutkinnonOsaViiteDto.getId());
+            }
+        });
+    }
+
     /**
      * Liitää olemassa olevan tutkinnon osan perusteeseen
      *
-     * @param perusteId tutkinnon id
+     * @param perusteId         tutkinnon id
      * @param suoritustapakoodi suoritustapa (naytto,ops)
-     * @param osa liitettävä tutkinnon osa
+     * @param osa               liitettävä tutkinnon osa
      * @return tutkinnonosat
      */
     @RequestMapping(value = "/tutkinnonosat", method = PUT)

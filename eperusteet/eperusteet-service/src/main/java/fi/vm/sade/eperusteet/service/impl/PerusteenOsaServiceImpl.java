@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektinPerusteenosaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
@@ -34,6 +35,7 @@ import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -45,6 +47,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -86,6 +90,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Autowired
     private PerusteRepository perusteet;
+
+    @Autowired
+    private PerusteService perusteService;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -685,6 +692,30 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return tutkinnonOsaRepositoryCustom.findBy(p, pquery)
                 .map((osa) -> mapper.map(osa, TutkinnonOsaDto.class));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TutkinnonOsaViiteKontekstiDto> findAllTutkinnonOsatBy(TutkinnonOsaQueryDto pquery) {
+        Pageable pageable = new PageRequest(pquery.getSivu(), pquery.getSivukoko(), new Sort(Sort.Direction.fromString("ASC"), "teksti.teksti"));
+
+        Page<TutkinnonOsaViite> viitteet = tutkinnonOsaViiteRepository.findByPerusteAndNimi(Optional.ofNullable(pquery.getPerusteId()).orElse(0l), pquery.getNimi(), pquery.isVanhentuneet(), Kieli.of(pquery.getKieli()), pageable);
+
+        Page<TutkinnonOsaViiteKontekstiDto> resultDto = viitteet.map(tov -> {
+            TutkinnonOsaViiteKontekstiDto tovkDto = mapper.map(tov, TutkinnonOsaViiteKontekstiDto.class);
+            TutkinnonOsa tosa = tov.getTutkinnonOsa();
+            Peruste peruste = tov.getSuoritustapa().getPerusteet().iterator().next();
+            tovkDto.setPeruste(mapper.map(peruste, PerusteInfoDto.class));
+            tovkDto.setTutkinnonOsaDto(mapper.map(tosa, TutkinnonOsaDto.class));
+            tovkDto.setSuoritustapa(mapper.map(tov.getSuoritustapa(), SuoritustapaDto.class));
+
+            PerusteprojektiKevytDto perusteprojekti = new PerusteprojektiKevytDto();
+            perusteprojekti.setId(peruste.getPerusteprojekti().getId());
+            tovkDto.setPerusteProjekti(perusteprojekti);
+            return tovkDto;
+        });
+
+        return resultDto;
     }
 
     @Override

@@ -98,7 +98,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         if (tyyppi == PerusteTyyppi.NORMAALI) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, null, null, tyyppi, ryhmaId);
             ppldto.setReforminMukainen(false);
-            ppldto.setDiaarinumero(TestUtils.uniikkiString());
+            ppldto.setDiaarinumero(TestUtils.uniikkiDiaari());
             ppldto.setYhteistyotaho(yhteistyotaho);
             ppldto.setTehtava(tehtava);
         } else if (tyyppi == PerusteTyyppi.POHJA) {
@@ -195,7 +195,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.NORMAALI, ryhmaId);
         luontiDto.setReforminMukainen(false);
         luontiDto.setPerusteId(pp.getPeruste().getId());
-        luontiDto.setDiaarinumero(TestUtils.uniikkiString());
+        luontiDto.setDiaarinumero(TestUtils.uniikkiDiaari());
         luontiDto.setNimi(TestUtils.uniikkiString());
         PerusteprojektiDto uusiDto = service.save(luontiDto);
 
@@ -274,7 +274,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.NORMAALI, ryhmaId);
         luontiDto.setReforminMukainen(false);
         luontiDto.setPerusteId(pohjaDto.getId());
-        luontiDto.setDiaarinumero(TestUtils.uniikkiString());
+        luontiDto.setDiaarinumero(TestUtils.uniikkiDiaari());
         luontiDto.setNimi(TestUtils.uniikkiString());
         PerusteprojektiDto pp = service.save(luontiDto);
         PerusteDto perusteDto = perusteService.get(pp.getPeruste().getIdLong());

@@ -41,11 +41,23 @@ public class TutkinnonOsaJulkinenController {
                     value = "tutkinnonosakoodi",
                     example = "tutkinnonosat_123456"),
     })
-    public Page<TutkinnonOsaDto> getAllTutkinnonOsatBy(@ApiIgnore TutkinnonOsaQueryDto pquery) {
+    public Page<TutkinnonOsaDto> getAllTutkinnonOsatByKoodiUri(@ApiIgnore TutkinnonOsaQueryDto pquery) {
         return service.findTutkinnonOsatBy(pquery);
     }
 
-
+    @RequestMapping(method = GET, value = "/all")
+    @ResponseBody
+    @ApiOperation(value = "hae tutkinnon osia")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "perusteId", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "vanhentuneet", dataType = "boolean", paramType = "query"),
+    })
+    public Page<TutkinnonOsaViiteKontekstiDto> getAllTutkinnonOsatBy(@ApiIgnore TutkinnonOsaQueryDto pquery) {
+        return service.findAllTutkinnonOsatBy(pquery);
+    }
 
     @RequestMapping(method = GET, value = "/{tutkinnonOsaId}/viitteet")
     @ResponseBody

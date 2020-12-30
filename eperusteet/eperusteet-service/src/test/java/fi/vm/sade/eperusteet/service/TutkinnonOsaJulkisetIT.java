@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.repository.ArvioinninKohdealueRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
+import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import org.junit.Before;
@@ -62,6 +63,7 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
     @Autowired
     private PerusteenOsaService perusteenOsaService;
 
+    @Override
     @Before
     public void setup() {
         super.setup();
@@ -79,9 +81,104 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
     @Test
     @Rollback
     public void testTutkinnonOsienHaku() {
+        lisaaTutkinnonosaPerusteeseen();
+
+        Page<TutkinnonOsaDto> osat = perusteenOsaService.findTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
+                .sivukoko(10)
+                .koodiUri("tutkinnonosat_123456")
+                .build());
+
+        assertThat(osat.getTotalElements()).isEqualTo(1);
+        assertThat(osat.getContent().get(0).getKoodi().getUri())
+                .isEqualTo("tutkinnonosat_123456");
+
+    }
+
+    @Test
+    @Rollback
+    public void testfindAllTutkinnonOsatBy() {
+        lisaaTutkinnonosaPerusteeseen();
+
+        {
+            Page<TutkinnonOsaViiteKontekstiDto> osat = perusteenOsaService.findAllTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
+                    .sivukoko(10)
+                    .kieli("fi")
+                    .build());
+            assertThat(osat.getTotalElements()).isEqualTo(1);
+        }
+
+        {
+            Page<TutkinnonOsaViiteKontekstiDto> osat = perusteenOsaService.findAllTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
+                    .sivukoko(10)
+                    .kieli("fi")
+                    .nimi("")
+                    .build());
+            assertThat(osat.getTotalElements()).isEqualTo(1);
+        }
+
+        {
+            Page<TutkinnonOsaViiteKontekstiDto> osat = perusteenOsaService.findAllTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
+                    .sivukoko(10)
+                    .kieli("fi")
+                    .nimi("nimi")
+                    .build());
+            assertThat(osat.getTotalElements()).isEqualTo(1);
+        }
+
+        {
+            Page<TutkinnonOsaViiteKontekstiDto> osat = perusteenOsaService.findAllTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
+                    .sivukoko(10)
+                    .nimi("nimi")
+                    .kieli("sv")
+                    .build());
+            assertThat(osat.getTotalElements()).isEqualTo(0);
+        }
+
+        {
+            Page<TutkinnonOsaViiteKontekstiDto> osat = perusteenOsaService.findAllTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
+                    .sivukoko(10)
+                    .kieli("fi")
+                    .nimi("XXX")
+                    .build());
+            assertThat(osat.getTotalElements()).isEqualTo(0);
+        }
+
+        {
+            Page<TutkinnonOsaViiteKontekstiDto> osat = perusteenOsaService.findAllTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
+                    .sivukoko(10)
+                    .kieli("fi")
+                    .perusteId(peruste.getId())
+                    .build());
+            assertThat(osat.getTotalElements()).isEqualTo(1);
+        }
+
+        {
+            peruste.setVoimassaoloLoppuu(DateTime.now().minusYears(1).toDate());
+            peruste = perusteRepository.save(peruste);
+
+            Page<TutkinnonOsaViiteKontekstiDto> osat = perusteenOsaService.findAllTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
+                    .sivukoko(10)
+                    .kieli("fi")
+                    .perusteId(peruste.getId())
+                    .build());
+            assertThat(osat.getTotalElements()).isEqualTo(0);
+
+            osat = perusteenOsaService.findAllTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
+                    .sivukoko(10)
+                    .kieli("fi")
+                    .perusteId(peruste.getId())
+                    .vanhentuneet(true)
+                    .build());
+            assertThat(osat.getTotalElements()).isEqualTo(1);
+        }
+
+    }
+
+    private void lisaaTutkinnonosaPerusteeseen() {
         TutkinnonOsa tosa = new TutkinnonOsa();
         tosa.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
         tosa.asetaTila(PerusteTila.VALMIS);
+        tosa.setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
         tosa.setKoodi(new Koodi("tutkinnonosat_123456", "tutkinnonosat"));
         tosa = perusteenOsaRepository.save(tosa);
 
@@ -95,20 +192,11 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
 
         projekti.setTila(ProjektiTila.JULKAISTU);
         peruste.asetaTila(PerusteTila.VALMIS);
+        peruste.setPerusteprojekti(projekti);
         projekti = perusteprojektiRepository.save(projekti);
         peruste = perusteRepository.save(peruste);
         ammattitaitovaatimusService.addAmmattitaitovaatimuskoodit();
         em.flush();
-
-        Page<TutkinnonOsaDto> osat = perusteenOsaService.findTutkinnonOsatBy(TutkinnonOsaQueryDto.builder()
-                .sivukoko(10)
-                .koodiUri("tutkinnonosat_123456")
-                .build());
-
-        assertThat(osat.getTotalElements()).isEqualTo(1);
-        assertThat(osat.getContent().get(0).getKoodi().getUri())
-                .isEqualTo("tutkinnonosat_123456");
-
     }
 
     @Test

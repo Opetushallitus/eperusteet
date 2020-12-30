@@ -154,6 +154,9 @@ public interface PerusteenOsaService {
     Page<TutkinnonOsaDto> findTutkinnonOsatBy(TutkinnonOsaQueryDto pquery);
 
     @PreAuthorize("permitAll()")
+    Page<TutkinnonOsaViiteKontekstiDto> findAllTutkinnonOsatBy(TutkinnonOsaQueryDto pquery);
+
+    @PreAuthorize("permitAll()")
     List<TutkinnonOsaViiteKontekstiDto> findTutkinnonOsaViitteetByTutkinnonOsa(Long tutkinnonOsaId);
 
     @PreAuthorize("permitAll()")

@@ -799,6 +799,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste.setPerusteenAikataulut(aikataulut);
         }
 
+        if (perusteprojektiDto.getDiaarinumero() != null) {
+            peruste.setDiaarinumero(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
+        }
+
         perusteprojekti.setPeruste(peruste);
         perusteprojekti = repository.saveAndFlush(perusteprojekti);
 

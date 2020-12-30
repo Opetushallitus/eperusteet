@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -131,13 +132,15 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         this.kieli = o.kieli;
 
         IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
-        for ( Osaamistavoite ot : o.getOsaamistavoitteet() ) {
-            if ( identityMap.containsKey(ot) ) {
-                this.osaamistavoitteet.add(identityMap.get(ot));
-            } else {
-                Osaamistavoite t = new Osaamistavoite(ot, identityMap);
-                identityMap.put(ot, t);
-                this.osaamistavoitteet.add(t);
+        if (CollectionUtils.isNotEmpty(o.getOsaamistavoitteet())) {
+            for (Osaamistavoite ot : o.getOsaamistavoitteet()) {
+                if (identityMap.containsKey(ot)) {
+                    this.osaamistavoitteet.add(identityMap.get(ot));
+                } else {
+                    Osaamistavoite t = new Osaamistavoite(ot, identityMap);
+                    identityMap.put(ot, t);
+                    this.osaamistavoitteet.add(t);
+                }
             }
         }
     }
