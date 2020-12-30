@@ -162,7 +162,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         result.setReforminMukainen(true);
         result.setTyyppi(PerusteTyyppi.NORMAALI);
         result.setRyhmaOid("000");
-        result.setDiaarinumero(TestUtils.uniikkiString());
+        result.setDiaarinumero(TestUtils.uniikkiDiaari());
         PerusteprojektiDto pp = perusteprojektiService.save(result);
         return pp;
     }

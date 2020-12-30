@@ -327,6 +327,10 @@ public abstract class TestUtils {
         return "uniikki" + (++uniikki).toString();
     }
 
+    static public String uniikkiDiaari() {
+        return "123/123/" + String.format("%04d", ++uniikki);
+    }
+
     static public String uniikkiString(String prefix) {
         return prefix + (++uniikki).toString();
     }

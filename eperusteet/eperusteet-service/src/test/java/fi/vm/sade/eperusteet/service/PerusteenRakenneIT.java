@@ -395,7 +395,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
                 LaajuusYksikko.OSAAMISPISTE, null, null, PerusteTyyppi.NORMAALI, "1.2.246.562.28.11287634288");
         ppldto.setReforminMukainen(false);
         ppldto.setNimi(TestUtils.uniikkiString());
-        ppldto.setDiaarinumero(TestUtils.uniikkiString());
+        ppldto.setDiaarinumero(TestUtils.uniikkiDiaari());
         ppldto.setReforminMukainen(true);
         PerusteprojektiDto perusteprojektiDto = perusteprojektiService.save(ppldto);
 

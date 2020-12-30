@@ -93,7 +93,7 @@ public class OpasServiceIT extends AbstractIntegrationTest {
         if (tyyppi == PerusteTyyppi.NORMAALI) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, null, null, tyyppi, ryhmaId);
             ppldto.setReforminMukainen(false);
-            ppldto.setDiaarinumero(TestUtils.uniikkiString());
+            ppldto.setDiaarinumero(TestUtils.uniikkiDiaari());
             ppldto.setYhteistyotaho(yhteistyotaho);
             ppldto.setTehtava(tehtava);
         } else if (tyyppi == PerusteTyyppi.POHJA) {

@@ -72,7 +72,7 @@ public class PerusteprojektiTestUtils {
         result.setReforminMukainen(true);
         result.setTyyppi(PerusteTyyppi.NORMAALI);
         result.setRyhmaOid("000");
-        result.setDiaarinumero(TestUtils.uniikkiString());
+        result.setDiaarinumero(TestUtils.uniikkiDiaari());
         withPerusteprojekti.accept(result);
         PerusteprojektiDto pp = perusteprojektiService.save(result);
         em.flush();

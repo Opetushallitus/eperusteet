@@ -537,7 +537,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         PerusteprojektiLuontiDto ppldto;
         ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, perusteId, tila, tyyppi, ryhmaId);
         ppldto.setReforminMukainen(false);
-        ppldto.setDiaarinumero(TestUtils.uniikkiString());
+        ppldto.setDiaarinumero(TestUtils.uniikkiDiaari());
         ppldto.setYhteistyotaho(yhteistyotaho);
         ppldto.setTehtava(tehtava);
         Assert.assertNotNull(ppldto);
