@@ -54,6 +54,11 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    @ValidHtml
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen tavoitteenKuvaus;
+
     @OrderColumn
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
@@ -67,6 +72,16 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen keskeinenSisalto;
+
+    @ValidHtml
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen laajaAlaisenOsaamisenKuvaus;
+
+    @ValidHtml
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen arvioinninKuvaus;
 
     @OrderColumn
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
@@ -121,6 +136,9 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
             result &= refXnor(getKuvaus(), that.getKuvaus());
             result &= refXnor(getKeskeinenSisalto(), that.getKeskeinenSisalto());
             result &= refXnor(getOsaamisenArvioinnista(), that.getOsaamisenArvioinnista());
+            result &= refXnor(getTavoitteenKuvaus(), that.getTavoitteenKuvaus());
+            result &= refXnor(getLaajaAlaisenOsaamisenKuvaus(), that.getLaajaAlaisenOsaamisenKuvaus());
+            result &= refXnor(getArvioinninKuvaus(), that.getArvioinninKuvaus());
 
             if (result && getTavoitteet() != null) {
                 Iterator<TekstiPalanen> i = getTavoitteet().iterator();
@@ -131,17 +149,7 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
                 result &= !i.hasNext();
                 result &= !j.hasNext();
             }
-
-            if (result && getArvioinnit() != null) {
-                Iterator<TekstiPalanen> i = getArvioinnit().iterator();
-                Iterator<TekstiPalanen> j = that.getArvioinnit().iterator();
-                while (result && i.hasNext() && j.hasNext()) {
-                    result &= Objects.equals(i.next(), j.next());
-                }
-                result &= !i.hasNext();
-                result &= !j.hasNext();
-            }
-
+            
         }
         return result;
     }
@@ -158,8 +166,11 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
         setLaajuusMinimi(other.getLaajuusMinimi());
         setLaajuusMaksimi(other.getLaajuusMaksimi());
         setKeskeinenSisalto(other.getKeskeinenSisalto());
+        setLaajaAlaisenOsaamisenKuvaus(other.getLaajaAlaisenOsaamisenKuvaus());
         setOsaamisenArvioinnista(other.getOsaamisenArvioinnista());
+        setArvioinninKuvaus(other.getArvioinninKuvaus());
         setArvioinnit(other.getArvioinnit());
+        setTavoitteenKuvaus(other.getTavoitteenKuvaus());
         setTavoitteet(other.getTavoitteet());
     }
 
