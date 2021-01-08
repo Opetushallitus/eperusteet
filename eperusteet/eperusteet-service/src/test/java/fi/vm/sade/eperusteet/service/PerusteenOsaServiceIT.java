@@ -268,7 +268,9 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         koulutuksenOsaDto.setKeskeinenSisalto(LokalisoituTekstiDto.of("keskeinensisalto"));
         koulutuksenOsaDto.setOsaamisenArvioinnista(LokalisoituTekstiDto.of("osaamisenarvioinnista"));
         koulutuksenOsaDto.setTavoitteet(Arrays.asList(LokalisoituTekstiDto.of("tavoite1"), LokalisoituTekstiDto.of("tavoite2")));
-        koulutuksenOsaDto.setArvioinnit(Arrays.asList(LokalisoituTekstiDto.of("arviointi1"), LokalisoituTekstiDto.of("arviointi2")));
+        koulutuksenOsaDto.setTavoitteenKuvaus(LokalisoituTekstiDto.of("tavoitekuvaus"));
+        koulutuksenOsaDto.setLaajaAlaisenOsaamisenKuvaus(LokalisoituTekstiDto.of("laajaalainenosaaminen"));
+        koulutuksenOsaDto.setArvioinninKuvaus(LokalisoituTekstiDto.of("arvioinninkuvaus"));
 
         koulutuksenOsaDto = perusteenOsaService.update(koulutuksenOsaDto);
 
@@ -280,10 +282,11 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(koulutuksenOsaDto.getKuvaus().get(Kieli.FI)).isEqualTo("kuvaus");
         assertThat(koulutuksenOsaDto.getKeskeinenSisalto().get(Kieli.FI)).isEqualTo("keskeinensisalto");
         assertThat(koulutuksenOsaDto.getOsaamisenArvioinnista().get(Kieli.FI)).isEqualTo("osaamisenarvioinnista");
+        assertThat(koulutuksenOsaDto.getTavoitteenKuvaus().get(Kieli.FI)).isEqualTo("tavoitekuvaus");
+        assertThat(koulutuksenOsaDto.getLaajaAlaisenOsaamisenKuvaus().get(Kieli.FI)).isEqualTo("laajaalainenosaaminen");
+        assertThat(koulutuksenOsaDto.getArvioinninKuvaus().get(Kieli.FI)).isEqualTo("arvioinninkuvaus");
         assertThat(koulutuksenOsaDto.getTavoitteet()).hasSize(2);
         assertThat(koulutuksenOsaDto.getTavoitteet()).extracting("tekstit").containsExactly(Maps.newHashMap(Kieli.FI, "tavoite1"), Maps.newHashMap(Kieli.FI, "tavoite2"));
-        assertThat(koulutuksenOsaDto.getArvioinnit()).hasSize(2);
-        assertThat(koulutuksenOsaDto.getArvioinnit()).extracting("tekstit").containsExactly(Maps.newHashMap(Kieli.FI, "arviointi1"), Maps.newHashMap(Kieli.FI, "arviointi2"));
     }
 
     private KoodiDto koodiDto(String nimi) {

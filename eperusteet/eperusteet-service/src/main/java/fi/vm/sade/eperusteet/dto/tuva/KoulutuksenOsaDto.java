@@ -20,8 +20,11 @@ public class KoulutuksenOsaDto extends PerusteenOsaDto.Laaja {
     private Integer laajuusMaksimi;
     private KoulutusOsanKoulutustyyppi koulutusOsanKoulutustyyppi;
     private LokalisoituTekstiDto kuvaus;
+    private LokalisoituTekstiDto tavoitteenKuvaus;
     private List<LokalisoituTekstiDto> tavoitteet;
     private LokalisoituTekstiDto keskeinenSisalto;
+    private LokalisoituTekstiDto laajaAlaisenOsaamisenKuvaus;
+    private LokalisoituTekstiDto arvioinninKuvaus;
     private List<LokalisoituTekstiDto> arvioinnit;
     private LokalisoituTekstiDto osaamisenArvioinnista;
 
