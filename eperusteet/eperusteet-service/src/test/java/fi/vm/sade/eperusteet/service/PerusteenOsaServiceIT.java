@@ -266,9 +266,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         koulutuksenOsaDto.setNimiKoodi(KoodiDto.of("opintokokonaisuusnimikoodi", "arvi1"));
         koulutuksenOsaDto.setNimi(LokalisoituTekstiDto.of("nimi"));
         koulutuksenOsaDto.setKeskeinenSisalto(LokalisoituTekstiDto.of("keskeinensisalto"));
-        koulutuksenOsaDto.setOsaamisenArvioinnista(LokalisoituTekstiDto.of("osaamisenarvioinnista"));
         koulutuksenOsaDto.setTavoitteet(Arrays.asList(LokalisoituTekstiDto.of("tavoite1"), LokalisoituTekstiDto.of("tavoite2")));
-        koulutuksenOsaDto.setTavoitteenKuvaus(LokalisoituTekstiDto.of("tavoitekuvaus"));
         koulutuksenOsaDto.setLaajaAlaisenOsaamisenKuvaus(LokalisoituTekstiDto.of("laajaalainenosaaminen"));
         koulutuksenOsaDto.setArvioinninKuvaus(LokalisoituTekstiDto.of("arvioinninkuvaus"));
 
@@ -281,8 +279,6 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(koulutuksenOsaDto.getLaajuusMaksimi()).isEqualTo(2);
         assertThat(koulutuksenOsaDto.getKuvaus().get(Kieli.FI)).isEqualTo("kuvaus");
         assertThat(koulutuksenOsaDto.getKeskeinenSisalto().get(Kieli.FI)).isEqualTo("keskeinensisalto");
-        assertThat(koulutuksenOsaDto.getOsaamisenArvioinnista().get(Kieli.FI)).isEqualTo("osaamisenarvioinnista");
-        assertThat(koulutuksenOsaDto.getTavoitteenKuvaus().get(Kieli.FI)).isEqualTo("tavoitekuvaus");
         assertThat(koulutuksenOsaDto.getLaajaAlaisenOsaamisenKuvaus().get(Kieli.FI)).isEqualTo("laajaalainenosaaminen");
         assertThat(koulutuksenOsaDto.getArvioinninKuvaus().get(Kieli.FI)).isEqualTo("arvioinninkuvaus");
         assertThat(koulutuksenOsaDto.getTavoitteet()).hasSize(2);
