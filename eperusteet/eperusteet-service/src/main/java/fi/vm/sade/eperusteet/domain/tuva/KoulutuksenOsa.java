@@ -54,6 +54,7 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    @Deprecated
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -83,6 +84,7 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen arvioinninKuvaus;
 
+    @Deprecated
     @OrderColumn
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
@@ -92,6 +94,7 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> arvioinnit = new ArrayList<>();
 
+    @Deprecated
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -136,7 +139,6 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
             result &= refXnor(getKuvaus(), that.getKuvaus());
             result &= refXnor(getKeskeinenSisalto(), that.getKeskeinenSisalto());
             result &= refXnor(getOsaamisenArvioinnista(), that.getOsaamisenArvioinnista());
-            result &= refXnor(getTavoitteenKuvaus(), that.getTavoitteenKuvaus());
             result &= refXnor(getLaajaAlaisenOsaamisenKuvaus(), that.getLaajaAlaisenOsaamisenKuvaus());
             result &= refXnor(getArvioinninKuvaus(), that.getArvioinninKuvaus());
 
@@ -149,7 +151,6 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
                 result &= !i.hasNext();
                 result &= !j.hasNext();
             }
-            
         }
         return result;
     }
