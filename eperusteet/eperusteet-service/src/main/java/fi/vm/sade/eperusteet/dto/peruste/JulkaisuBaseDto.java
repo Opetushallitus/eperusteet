@@ -1,10 +1,9 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 @Getter
 @Setter

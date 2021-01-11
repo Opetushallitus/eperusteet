@@ -1,12 +1,15 @@
 package fi.vm.sade.eperusteet.service;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
@@ -31,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -64,6 +68,9 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     @Autowired
     private KoulutusRepository koulutusRepository;
+
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
 
     @Autowired
     @LockCtx(TutkinnonRakenneLockContext.class)
@@ -257,5 +264,40 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         pquery.setPoistunut(true);
         Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
+    }
+
+    @Test
+    public void testJulkaistu() {
+
+        PerusteprojektiDto projekti = createPeruste();
+        PerusteDto ap = perusteService.get(projekti.getPeruste().getIdLong());
+        gc.set(2017, Calendar.JUNE, 3);
+
+        ap.setVoimassaoloAlkaa(gc.getTime());
+        ap.setNimi(TestUtils.lt("ap"));
+        ap.getNimi().getTekstit().put(Kieli.FI, "ap_fi");
+        ap.getNimi().getTekstit().put(Kieli.SV, "ap_sv");
+        ap.setDiaarinumero("OPH-12345-1234");
+        perusteService.update(ap.getId(), ap);
+        teeJulkaisu(ap.getId());
+
+        PerusteQuery pquery = new PerusteQuery();
+        pquery.setNykyinenAika(nykyinenAika.getTime());
+        pquery.setVoimassaolo(true);
+        pquery.setJulkaistu(true);
+        pquery.setTila(Collections.emptySet());
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        assertEquals(8, perusteet.getTotalElements());
+        assertTrue(perusteet.getContent().stream().map(PerusteHakuDto::getId).anyMatch(id -> id.equals(ap.getId())));
+    }
+
+    private void teeJulkaisu(Long id) {
+        JulkaistuPeruste julkaisu = new JulkaistuPeruste();
+        julkaisu.setRevision((int) 1);
+        julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Julkaisu"));
+        julkaisu.setLuoja("test");
+        julkaisu.setLuotu(new Date());
+        julkaisu.setPeruste(perusteRepository.getOne(id));
+        julkaisutRepository.save(julkaisu);
     }
 }

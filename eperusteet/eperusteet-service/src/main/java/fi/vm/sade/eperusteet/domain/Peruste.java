@@ -32,16 +32,44 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
 import fi.vm.sade.eperusteet.service.util.PerusteUtils;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.*;
 
 import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 
@@ -281,12 +309,10 @@ public class Peruste extends AbstractAuditedEntity
     public Set<PerusteenSisalto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
             return Collections.singleton(this.getOppaanSisalto());
-        }
-        else {
+        } else {
             if (KoulutustyyppiToteutus.AMMATILLINEN.equals(this.getToteutus())) {
                 return new HashSet<>(this.getSuoritustavat());
-            }
-            else if (this.getPerusopetuksenPerusteenSisalto() != null) {
+            } else if (this.getPerusopetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getPerusopetuksenPerusteenSisalto());
             }
             else if (this.getLops2019Sisalto() != null) {
