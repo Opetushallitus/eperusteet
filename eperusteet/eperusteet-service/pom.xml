@@ -471,6 +471,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.9</version>
         </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sqs</artifactId>
+            <version>1.11.934</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
