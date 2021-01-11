@@ -42,6 +42,7 @@ public class PerusteQuery {
     private List<String> opintoala;
     private String suoritustapa;
     private Set<String> tila;
+    private boolean julkaistu;
     private String koulutuskoodi;
     private String perusteTyyppi;
     private String diaarinumero;

@@ -15,13 +15,26 @@
  */
 package fi.vm.sade.eperusteet.service.test.util;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliErikoisuus;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
@@ -29,11 +42,18 @@ import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
-import lombok.Getter;
-
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
+import lombok.Getter;
 
 import static org.junit.Assert.assertTrue;
 

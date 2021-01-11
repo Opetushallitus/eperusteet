@@ -2046,6 +2046,13 @@
           "description" : "Perusteen tyyppi",
           "required" : false,
           "type" : "string"
+        }, {
+          "name" : "julkaistu",
+          "in" : "query",
+          "description" : "julkaistut perusteet",
+          "required" : false,
+          "type" : "boolean",
+          "default" : false
         } ],
         "responses" : {
           "200" : {
@@ -9340,15 +9347,6 @@
           },
           "arvioinninKuvaus" : {
             "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "arvioinnit" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/LokalisoituTekstiDto"
-            }
-          },
-          "osaamisenArvioinnista" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
           }
         }
       } ]
@@ -11056,13 +11054,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11081,28 +11079,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PageKoodistoKoodiDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11121,28 +11119,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PageKoulutuskoodiStatusDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11161,28 +11159,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PagePerusteBaseDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11201,28 +11199,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PagePerusteHakuDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11241,28 +11239,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PagePerusteHakuInternalDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11281,28 +11279,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PagePerusteInfoDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11321,28 +11319,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PagePerusteprojektiKevytDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11361,28 +11359,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PageTiedoteDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11401,28 +11399,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PageTilaUpdateStatus" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11441,28 +11439,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PageTutkinnonOsaDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11481,28 +11479,28 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
     "PageTutkinnonOsaViiteKontekstiDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -11521,15 +11519,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },

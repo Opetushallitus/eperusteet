@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite_;
 import fi.vm.sade.eperusteet.dto.peruste.KoulutusVientiEhto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
+import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
@@ -264,11 +265,22 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         pred = cb.and(pred, tilat);
 
-        if (!ObjectUtils.isEmpty(pq.getTila())) {
+        if (!ObjectUtils.isEmpty(pq.getTila()) && !pq.isJulkaistu()) {
             Set<PerusteTila> perusteTilat = pq.getTila().stream()
                     .map(PerusteTila::of)
                     .collect(Collectors.toSet());
             pred = cb.and(pred, root.get(Peruste_.tila).in(perusteTilat));
+        } else if (pq.isJulkaistu()) {
+            Subquery perusteJulkaistuSubQuery = perusteJulkaistuSubQuery(root, cb);
+
+            if (ObjectUtils.isEmpty(pq.getTila())) {
+                pred = cb.and(pred, cb.greaterThan(perusteJulkaistuSubQuery, 0l));
+            } else {
+                Set<PerusteTila> perusteTilat = pq.getTila().stream()
+                        .map(PerusteTila::of)
+                        .collect(Collectors.toSet());
+                pred = cb.and(pred, cb.or(root.get(Peruste_.tila).in(perusteTilat), cb.greaterThan(perusteJulkaistuSubQuery, 0l)));
+            }
         }
 
         if (!StringUtils.isEmpty(pq.getPerusteTyyppi())) {
@@ -306,5 +318,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
 
         return pred;
+    }
+
+    private Subquery perusteJulkaistuSubQuery(Root<Peruste> root, CriteriaBuilder cb) {
+        Subquery sub = cb.createQuery(Peruste.class).subquery(Long.class);
+        Root subRoot = sub.from(JulkaistuPeruste.class);
+        Join<JulkaistuPeruste, Peruste> subAuthors = subRoot.join(JulkaistuPeruste_.peruste);
+        sub.select(cb.count(subRoot.get(JulkaistuPeruste_.id)));
+        sub.where(cb.equal(root.get(Peruste_.id), subAuthors.get(Peruste_.id)));
+        return sub;
     }
 }

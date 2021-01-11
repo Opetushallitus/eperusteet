@@ -15,8 +15,11 @@
  */
 package fi.vm.sade.eperusteet.service.security;
 
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste_;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.Peruste_;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.WithPerusteTila;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
@@ -25,6 +28,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -48,7 +53,7 @@ public class PermissionHelper {
                 tila = findPerusteTilaFor(PerusteenOsa.class, id);
                 break;
             case PERUSTE:
-                tila = findPerusteTilaFor(Peruste.class, id);
+                tila = julkaistuPeruste(id) ? PerusteTila.VALMIS : findPerusteTilaFor(Peruste.class, id);
                 break;
             default:
                 return null;
@@ -69,5 +74,17 @@ public class PermissionHelper {
         query.select(root.<PerusteTila>get("tila")).where(cb.equal(root.get("id"), id));
         List<PerusteTila> result = em.createQuery(query).getResultList();
         return result.isEmpty() ? null : result.get(0);
+    }
+
+    private boolean julkaistuPeruste(Serializable id) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<JulkaistuPeruste> query = cb.createQuery(JulkaistuPeruste.class);
+        Root<JulkaistuPeruste> root = query.from(JulkaistuPeruste.class);
+        Join<JulkaistuPeruste, Peruste> peruste = root.join(JulkaistuPeruste_.peruste);
+        Predicate perusteId = cb.equal(peruste.get(Peruste_.id), id);
+
+        query.select(root).where(perusteId);
+
+        return !em.createQuery(query).getResultList().isEmpty();
     }
 }
