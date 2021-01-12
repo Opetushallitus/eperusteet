@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteDokumenttiDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
@@ -105,6 +106,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     private PlatformTransactionManager tm;
+
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
 
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
@@ -247,7 +251,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             }
 
             String name = SecurityUtil.getAuthenticatedPrincipal().getName();
-            if (name.equals("anonymousUser") && !peruste.getTila().equals(PerusteTila.VALMIS)) {
+            if (name.equals("anonymousUser") && !peruste.getTila().equals(PerusteTila.VALMIS) && julkaisutRepository.findAllByPeruste(peruste).isEmpty()) {
                 return null;
             }
 
@@ -305,7 +309,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         if (dokumentti != null) {
             Peruste peruste = perusteRepository.findOne(dokumentti.getPerusteId());
             String name = SecurityUtil.getAuthenticatedPrincipal().getName();
-            if (name.equals("anonymousUser") && !peruste.getTila().equals(PerusteTila.VALMIS)) {
+            if (name.equals("anonymousUser") && !peruste.getTila().equals(PerusteTila.VALMIS) && julkaisutRepository.findAllByPeruste(peruste).isEmpty()) {
                 return null;
             }
         }
