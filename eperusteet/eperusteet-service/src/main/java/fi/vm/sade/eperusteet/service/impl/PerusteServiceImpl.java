@@ -710,7 +710,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 } catch (JsonProcessingException e) {
                     throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
                 }
-            } else {
+            } else if (!peruste.getPerusteprojekti().isEsikatseltavissa()) {
                 throw new BusinessRuleViolationException("perustetta-ei-loydy");
             }
         }
