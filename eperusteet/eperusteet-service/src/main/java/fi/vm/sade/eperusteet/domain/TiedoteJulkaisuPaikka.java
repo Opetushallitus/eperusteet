@@ -12,7 +12,8 @@ public enum TiedoteJulkaisuPaikka {
     OPS("ops"),
     LOPS("lops"),
     AMOSAA("amosaa"),
-    VST("vst");
+    VST("vst"),
+    TUVA("tuva");
 
     private String paikka;
 
