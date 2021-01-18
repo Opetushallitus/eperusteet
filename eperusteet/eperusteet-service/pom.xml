@@ -661,6 +661,7 @@
                                         <location>${eperusteet.resources}.PerusteenOsaController</location>
                                         <location>${eperusteet.resources}.PerusteprojektiController</location>
                                         <location>${eperusteet.resources}.TiedoteController</location>
+                                        <location>${eperusteet.resources}.TilastotController</location>
                                         <location>${eperusteet.resources}.TutkinnonOsaController</location>
                                         <location>${eperusteet.resources}.UlkopuolisetController</location>
                                         <location>${eperusteet.resources}.MaintenanceController</location>
