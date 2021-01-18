@@ -13,6 +13,7 @@ import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -896,7 +897,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         alue.getVaatimukset().forEach(vaatimus -> {
                             Element vaatimusEl = docBase.getDocument().createElement("li");
 
-                            String rivi = getTextString(docBase, vaatimus.getVaatimus());
+                            Ammattitaitovaatimus2019Dto vaatimusDto = mapper.map(vaatimus, Ammattitaitovaatimus2019Dto.class);
+                            String rivi = getTextString(docBase, vaatimusDto.getVaatimus());
                             if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
                                 KoodistoKoodiDto koodi = koodistoService.get(vaatimus.getKoodi().getKoodisto(), vaatimus.getKoodi().getUri());
                                 rivi += " (" + koodi.getKoodiArvo() + ")";
