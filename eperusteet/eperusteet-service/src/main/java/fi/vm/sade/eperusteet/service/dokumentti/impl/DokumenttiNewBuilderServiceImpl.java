@@ -171,21 +171,31 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         if (nimi != null && nimi.length() != 0) {
             title.appendChild(docBase.getDocument().createTextNode(nimi));
             docBase.getHeadElement().appendChild(title);
+
+            // Perusteen nimi
+            Element perusteenNimi = docBase.getDocument().createElement("meta");
+            perusteenNimi.setAttribute("name", "perusteenNimi");
+
             if (docBase.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
                 Element opas = docBase.getDocument().createElement("opas");
                 opas.setTextContent(nimi);
                 docBase.getHeadElement().appendChild(opas);
+                perusteenNimi.setAttribute("translate", messages.translate("oppaan-nimi", docBase.getKieli()));
             } else {
                 Element peruste = docBase.getDocument().createElement("peruste");
                 peruste.setTextContent(nimi);
                 docBase.getHeadElement().appendChild(peruste);
+                perusteenNimi.setAttribute("translate", messages.translate("perusteen-nimi", docBase.getKieli()));
             }
+
+            docBase.getHeadElement().appendChild(perusteenNimi);
         }
 
         if (!KoulutustyyppiToteutus.VAPAASIVISTYSTYO.equals(docBase.getPeruste().getToteutus())
                 && !KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA.equals(docBase.getPeruste().getToteutus())) {
             Element etusivuYlaviite = docBase.getDocument().createElement("meta");
             etusivuYlaviite.setAttribute("name", "etusivuYlaviite");
+            etusivuYlaviite.setAttribute("translate", messages.translate("tutkinnon-perusteet", docBase.getKieli()));
             docBase.getHeadElement().appendChild(etusivuYlaviite);
         }
 
@@ -221,11 +231,18 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
+        // sisallysluettelo
+        Element sisalto = docBase.getDocument().createElement("meta");
+        sisalto.setAttribute("name", "sisalto");
+        sisalto.setAttribute("translate", messages.translate("sisalto", docBase.getKieli()));
+        docBase.getHeadElement().appendChild(sisalto);
+
         // Voimaantulo
         if (docBase.getPeruste().getVoimassaoloAlkaa() != null) {
             Element description = docBase.getDocument().createElement("meta");
             description.setAttribute("name", "voimaantulo");
             description.setAttribute("content", dateFormat.format(docBase.getPeruste().getVoimassaoloAlkaa()));
+            description.setAttribute("translate", messages.translate("voimaantulo", docBase.getKieli()));
             docBase.getHeadElement().appendChild(description);
         }
 
@@ -234,6 +251,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             Element description = docBase.getDocument().createElement("meta");
             description.setAttribute("name", "voimassaolo-paattyminen");
             description.setAttribute("content", dateFormat.format(docBase.getPeruste().getVoimassaoloLoppuu()));
+            description.setAttribute("translate", messages.translate("voimassaolo-paattyminen", docBase.getKieli()));
             docBase.getHeadElement().appendChild(description);
         }
 
@@ -247,6 +265,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             Element diary = docBase.getDocument().createElement("meta");
             diary.setAttribute("name", "diary");
             diary.setAttribute("content", docBase.getPeruste().getDiaarinumero().toString());
+            diary.setAttribute("translate", messages.translate("maarayksen-diaarinumero", docBase.getKieli()));
             docBase.getHeadElement().appendChild(diary);
         }
 
@@ -254,6 +273,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         if (docBase.getPeruste().getKorvattavatDiaarinumerot() != null
                 && !docBase.getPeruste().getKorvattavatDiaarinumerot().isEmpty()) {
             Element korvaavat = docBase.getDocument().createElement("korvaavat");
+            korvaavat.setAttribute("translate", messages.translate("korvattavat-maaraykset", docBase.getKieli()));
 
             docBase.getPeruste().getKorvattavatDiaarinumerot().stream()
                     .map(Diaarinumero::getDiaarinumero)
@@ -270,6 +290,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         if (docBase.getPeruste().getMuutosmaaraykset() != null
                 && !docBase.getPeruste().getMuutosmaaraykset().isEmpty()) {
             Element muutosmaaraykset = docBase.getDocument().createElement("muutosmaaraykset");
+            muutosmaaraykset.setAttribute("translate", messages.translate("muutosmaaraykset", docBase.getKieli()));
 
             docBase.getPeruste().getMuutosmaaraykset().forEach(muutosmaarays -> {
                 Element muutosmaaraysEl = docBase.getDocument().createElement("muutosmaarays");
@@ -292,6 +313,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Koulutuskoodit
         if (docBase.getPeruste().getKoulutukset() != null && docBase.getPeruste().getKoulutukset().size() != 0) {
             Element koulutukset = docBase.getDocument().createElement("koulutukset");
+            koulutukset.setAttribute("translate", messages.translate("koulutukset", docBase.getKieli()));
+
             docBase.getPeruste().getKoulutukset().forEach(koulutus -> {
                 String koulutusNimi = getTextString(docBase, koulutus.getNimi());
                 if (StringUtils.isNotEmpty(koulutus.getKoulutuskoodiArvo())) {
@@ -307,6 +330,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Osaamisalat
         if (docBase.getPeruste().getOsaamisalat() != null && docBase.getPeruste().getOsaamisalat().size() != 0) {
             Element osaamisalat = docBase.getDocument().createElement("osaamisalat");
+            osaamisalat.setAttribute("translate", messages.translate("osaamisalat", docBase.getKieli()));
+
             docBase.getPeruste().getOsaamisalat().stream()
                     .map(oa -> mapper.map(oa, KoodiDto.class))
                     .forEach(osaamisala -> {
@@ -326,6 +351,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 .findByPerusteId(docBase.getPeruste().getId());
         if (nimikeKoodit != null && nimikeKoodit.size() != 0) {
             Element tutkintonimikkeet = docBase.getDocument().createElement("tutkintonimikkeet");
+            tutkintonimikkeet.setAttribute("translate", messages.translate("tutkintonimikkeet", docBase.getKieli()));
+
             nimikeKoodit.forEach(tnkoodi -> {
                 KoodistoKoodiDto koodiDto = koodistoService.get("tutkintonimikkeet", tnkoodi.getTutkintonimikeUri());
 
