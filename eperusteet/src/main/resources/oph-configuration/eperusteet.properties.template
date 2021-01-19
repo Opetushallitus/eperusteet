@@ -42,8 +42,8 @@ cas.service.oppijanumerorekisteri-service=https\://${host.virkailija}/oppijanume
 cas.service.kayttooikeus-service=https\://${host.virkailija}/kayttooikeus-service
 cas.service.eperusteet-service=https\://${host.virkailija}/eperusteet-service
 cas.service.organisaatio-service=https\://${host.virkailija}/organisaatio-service
-fi.vm.sade.eperusteet.eperusteet.amosaa.service=http://${host.virkailija}/eperusteet-amosaa-service
-fi.vm.sade.eperusteet.eperusteet.ylops.service=http://${host.virkailija}/eperusteet-ylops-service
+fi.vm.sade.eperusteet.eperusteet.amosaa.service=https://${host.virkailija}/eperusteet-amosaa-service
+fi.vm.sade.eperusteet.eperusteet.ylops.service=https://${host.virkailija}/eperusteet-ylops-service
 cas.user-search-base=ou\=people
 cas.user-search-filter=(|(mail\={0})(uid\={0}))
 customAttribute.webservice.url.backend=https://${host.virkailija}/authentication-service/services/customAttributeService
