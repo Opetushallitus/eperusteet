@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.service.YlopsClient;
 import io.swagger.annotations.Api;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class TilastotController {
     private YlopsClient ylopsClient;
 
     @RequestMapping(value = "/amosaa", method = GET)
-    public JsonNode getAmosaaTilastot() {
+    public List<Object> getAmosaaTilastot() {
         return amosaaClient.getTilastot();
     }
 
