@@ -778,16 +778,22 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     private void addKoulutuksenOsa(DokumenttiPeruste docBase, KoulutuksenOsa koulutuksenOsa, PerusteenOsa po,
                                    PerusteenOsaViite lapsi) {
-        if (koulutuksenOsa.getLaajuusMinimi().compareTo(koulutuksenOsa.getLaajuusMaksimi()) == 0) {
-            String nimiSuffix = String.format(", %d %s", koulutuksenOsa.getLaajuusMinimi(), messages.translate("docgen.laajuus.op", docBase.getKieli()));
+
+        Integer minimiLaajuus = koulutuksenOsa.getLaajuusMinimi() != null ? koulutuksenOsa.getLaajuusMinimi() : koulutuksenOsa.getLaajuusMaksimi() != null ? koulutuksenOsa.getLaajuusMaksimi() : 0;
+        Integer maksimiLaajuus = koulutuksenOsa.getLaajuusMaksimi() != null ? koulutuksenOsa.getLaajuusMaksimi() : koulutuksenOsa.getLaajuusMinimi() != null ? koulutuksenOsa.getLaajuusMinimi() : 0;
+
+        if (minimiLaajuus.compareTo(maksimiLaajuus) == 0) {
+            String nimiSuffix = String.format(", %d %s", minimiLaajuus, messages.translate("docgen.laajuus.op", docBase.getKieli()));
             addHeader(docBase, getTextString(docBase, koulutuksenOsa.getNimi()) + nimiSuffix);
         } else {
-            String nimiSuffix = String.format(", %d - %d %s", koulutuksenOsa.getLaajuusMinimi(), koulutuksenOsa.getLaajuusMaksimi(), messages.translate("docgen.laajuus.op", docBase.getKieli()));
+            String nimiSuffix = String.format(", %d - %d %s", minimiLaajuus, maksimiLaajuus, messages.translate("docgen.laajuus.op", docBase.getKieli()));
             addHeader(docBase, getTextString(docBase, koulutuksenOsa.getNimi()) + nimiSuffix);
         }
 
         addTeksti(docBase, messages.translate("docgen.koulutustyyppi.title", docBase.getKieli()), "h5");
-        addTeksti(docBase, messages.translate("docgen.koulutuksenOsa.koulutustyyppi." + koulutuksenOsa.getKoulutusOsanKoulutustyyppi(), docBase.getKieli()), "div");
+        if (koulutuksenOsa.getKoulutusOsanKoulutustyyppi() != null) {
+            addTeksti(docBase, messages.translate("docgen.koulutuksenOsa.koulutustyyppi." + koulutuksenOsa.getKoulutusOsanKoulutustyyppi(), docBase.getKieli()), "div");
+        }
 
         String kuvaus = getTextString(docBase, koulutuksenOsa.getKuvaus());
         if (StringUtils.isNotEmpty(kuvaus)) {
