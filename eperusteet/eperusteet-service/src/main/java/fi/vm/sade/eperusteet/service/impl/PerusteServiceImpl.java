@@ -357,6 +357,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private VapaasivistystyoSisaltoService vapaasivistystyoSisaltoService;
 
+    @Autowired
+    private KoodistoClient koodistoClient;
+
     private final ObjectMapper ieMapper = InitJacksonConverter.createImportExportMapper();
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
@@ -898,6 +901,22 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else {
             if (!isDiaariValid(perusteDto.getDiaarinumero())) {
                 throw new BusinessRuleViolationException("diaarinumero-ei-validi");
+            }
+
+            if (!ObjectUtils.isEmpty(perusteDto.getOsaamisalat().stream().filter(osaamisala -> osaamisala.getUri() == null))) {
+                perusteDto.setOsaamisalat(perusteDto.getOsaamisalat().stream().map(osaamisala -> {
+                    if (osaamisala.getUri() == null) {
+                        LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(osaamisala.getNimi());
+                        KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("osaamisala", lokalisoituTekstiDto);
+                        return KoodiDto.builder()
+                                .arvo(lisattyKoodi.getKoodiArvo())
+                                .uri(lisattyKoodi.getKoodiUri())
+                                .versio(Long.parseLong(lisattyKoodi.getVersio()))
+                                .build();
+                    }
+
+                    return osaamisala;
+                }).collect(Collectors.toSet()));
             }
 
             perusteRepository.lock(current);
@@ -1687,6 +1706,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public void updateTutkintonimikkeet(Long perusteId, List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
+        tutkintonimikeKoodiDtos = tutkintonimikeKoodiDtos.stream().map(tutkintonimike -> {
+            if (tutkintonimike.getTutkintonimikeUri() == null) {
+                LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(tutkintonimike.getNimi());
+                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkintonimikkeet", lokalisoituTekstiDto);
+                tutkintonimike.setTutkintonimikeArvo(lisattyKoodi.getKoodiArvo());
+                tutkintonimike.setTutkintonimikeUri(lisattyKoodi.getKoodiUri());
+                return tutkintonimike;
+            }
+            return tutkintonimike;
+        }).collect(Collectors.toList());
+
         List<TutkintonimikeKoodiDto> perusteenTutkintonimikkeet = getTutkintonimikeKoodit(perusteId);
         List<String> perusteenTutkintonimikeUrit = perusteenTutkintonimikkeet.stream().map(TutkintonimikeKoodiDto::getTutkintonimikeUri).collect(Collectors.toList());
         List<String> tallennettavatTutkintonimikkeet = tutkintonimikeKoodiDtos.stream().map(TutkintonimikeKoodiDto::getTutkintonimikeUri).collect(Collectors.toList());
