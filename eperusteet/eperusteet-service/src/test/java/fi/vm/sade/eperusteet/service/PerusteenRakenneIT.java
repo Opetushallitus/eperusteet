@@ -17,12 +17,15 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.permissions.PerusteenosanProjekti;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -30,6 +33,8 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -76,6 +81,12 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
     @Autowired
     @LockCtx(TutkinnonRakenneLockContext.class)
     private LockService<TutkinnonRakenneLockContext> lockService;
+
+    @Autowired
+    private PerusteenOsaViiteService perusteenOsaViiteService;
+
+    @Autowired
+    private TutkinnonOsaRepository tutkinnonOsaRepository;
 
     private Perusteprojekti projekti;
     private Peruste peruste;
@@ -452,6 +463,61 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.REFORMI, rakenne);
         lockService.unlock(ctx);
+
+    }
+
+    @Test
+    public void testTutkinnonOsaTuonti() {
+        Peruste peruste1 = testUtils.createPeruste();
+        Peruste peruste2 = testUtils.createPeruste();
+        Peruste peruste3 = testUtils.createPeruste();
+
+        TutkinnonOsaViiteDto tutkinnonOsaViiteDto1 = testUtils.addTutkinnonOsa(peruste1.getId());
+        TutkinnonOsaViiteDto tutkinnonOsaViiteDto2 = testUtils.addTutkinnonOsa(peruste1.getId());
+
+        List<TutkinnonOsaViiteDto> peruste1viitteet = perusteService.getTutkinnonOsat(peruste1.getId(), Suoritustapakoodi.REFORMI);
+        assertThat(peruste1viitteet).hasSize(2);
+        assertThat(peruste1viitteet).extracting("tutkinnonOsaDto.alkuperainenPeruste.id").containsExactly(peruste1.getId(), peruste1.getId());
+
+        perusteService.attachTutkinnonOsa(peruste2.getId(), Suoritustapakoodi.REFORMI, tutkinnonOsaViiteDto1);
+        List<TutkinnonOsaViiteDto> peruste2viitteet = perusteService.getTutkinnonOsat(peruste2.getId(), Suoritustapakoodi.REFORMI);
+        assertThat(peruste2viitteet).hasSize(1);
+        assertThat(peruste2viitteet).extracting("tutkinnonOsaDto.alkuperainenPeruste.id").containsExactly(peruste1.getId());
+        assertThat(peruste2viitteet).extracting("tutkinnonOsaDto.id").containsExactly(tutkinnonOsaViiteDto1.getTutkinnonOsa().getIdLong());
+
+        TutkinnonOsaViiteDto kopio = perusteService.attachTutkinnonOsa(peruste3.getId(), Suoritustapakoodi.REFORMI, tutkinnonOsaViiteDto2, mapper.map(peruste1, PerusteKevytDto.class));
+        perusteenOsaViiteService.kloonaaTutkinnonOsa(peruste3.getId(), Suoritustapakoodi.REFORMI, kopio.getId());
+        List<TutkinnonOsaViiteDto> peruste3viitteet = perusteService.getTutkinnonOsat(peruste3.getId(), Suoritustapakoodi.REFORMI);
+        assertThat(peruste3viitteet).hasSize(1);
+        assertThat(peruste3viitteet).extracting("tutkinnonOsaDto.alkuperainenPeruste.id").containsExactly(peruste3.getId());
+        assertThat(peruste3viitteet).extracting("tutkinnonOsaDto.id").isNotIn(tutkinnonOsaViiteDto1.getTutkinnonOsa().getIdLong(), tutkinnonOsaViiteDto2.getTutkinnonOsa().getIdLong());
+    }
+
+    @Test
+    public void testTutkinnonOsaTuonti_ei_perustetta() {
+        Peruste peruste1 = testUtils.createPeruste();
+        Peruste peruste2 = testUtils.createPeruste();
+        Peruste peruste3 = testUtils.createPeruste();
+
+        TutkinnonOsaViiteDto tutkinnonOsaViiteDto1 = testUtils.addTutkinnonOsa(peruste1.getId());
+        List<TutkinnonOsaViiteDto> peruste1viitteet = perusteService.getTutkinnonOsat(peruste1.getId(), Suoritustapakoodi.REFORMI);
+        assertThat(peruste1viitteet).extracting("tutkinnonOsaDto.alkuperainenPeruste.id").containsExactly(peruste1.getId());
+
+        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepository.findOne(tutkinnonOsaViiteDto1.getTutkinnonOsa().getIdLong());
+        tutkinnonOsa.asetaAlkuperainenPeruste(null);
+        tutkinnonOsaRepository.save(tutkinnonOsa);
+
+        perusteService.attachTutkinnonOsa(peruste2.getId(), Suoritustapakoodi.REFORMI, tutkinnonOsaViiteDto1);
+
+        List<TutkinnonOsaViiteDto> peruste2viitteet = perusteService.getTutkinnonOsat(peruste2.getId(), Suoritustapakoodi.REFORMI);
+        assertThat(peruste2viitteet).hasSize(1);
+        assertThat(peruste2viitteet.get(0)).extracting("tutkinnonOsaDto.alkuperainenPeruste").isNull();
+        assertThat(peruste2viitteet).extracting("tutkinnonOsaDto.id").containsExactly(tutkinnonOsaViiteDto1.getTutkinnonOsa().getIdLong());
+
+        perusteService.attachTutkinnonOsa(peruste3.getId(), Suoritustapakoodi.REFORMI, tutkinnonOsaViiteDto1, mapper.map(peruste1, PerusteKevytDto.class));
+        List<TutkinnonOsaViiteDto> peruste3viitteet = perusteService.getTutkinnonOsat(peruste2.getId(), Suoritustapakoodi.REFORMI);
+        assertThat(peruste3viitteet).hasSize(1);
+        assertThat(peruste3viitteet).extracting("tutkinnonOsaDto.alkuperainenPeruste.id").containsExactly(peruste1.getId());
 
     }
 

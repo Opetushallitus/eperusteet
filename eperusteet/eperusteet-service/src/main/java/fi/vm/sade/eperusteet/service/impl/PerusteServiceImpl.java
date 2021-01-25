@@ -159,6 +159,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1225,7 +1226,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         Peruste peruste = perusteRepository.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
-        return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
+        return new ArrayList<>(suoritustapa.getTutkinnonOsat().stream().map(tosaViite -> {
+            TutkinnonOsaViiteDto viiteDto = mapper.map(tosaViite, TutkinnonOsaViiteDto.class);
+            viiteDto.setTutkinnonOsaDto(mapper.map(tosaViite.getTutkinnonOsa(), TutkinnonOsaDto.class));
+            return viiteDto;
+        }).collect(Collectors.toSet()));
     }
 
     @Override
@@ -1532,6 +1537,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional
     public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
+        Peruste peruste = perusteRepository.findOne(id);
 
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
         suoritustapaRepository.lock(suoritustapa);
@@ -1550,8 +1556,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
             viite.setTutkinnonOsa(tutkinnonOsa);
         }
+        viite.getTutkinnonOsa().asetaAlkuperainenPeruste(peruste);
+
         viite.setSuoritustapa(suoritustapa);
         viite.setMuokattu(new Date());
+
         if (suoritustapa.getTutkinnonOsat().add(viite)) {
             viite = tutkinnonOsaViiteRepository.save(viite);
         } else {
@@ -1565,20 +1574,35 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional
     public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
+        return attachTutkinnonOsa(id, suoritustapakoodi, osa, null);
+    }
+
+    @Override
+    @Transactional
+    public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa, PerusteKevytDto alkuperainenPeruste) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
-        final Peruste peruste = perusteRepository.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
 
         // Workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa
         suoritustapaRepository.lock(suoritustapa, false);
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
         viite.setSuoritustapa(suoritustapa);
         viite.setMuokattu(new Date());
+
+        if (viite.getTutkinnonOsa().getAlkuperainenPeruste() == null && alkuperainenPeruste != null) {
+            Peruste peruste = perusteRepository.findOne(alkuperainenPeruste.getId());
+            viite.getTutkinnonOsa().asetaAlkuperainenPeruste(peruste);
+        }
+
         if (suoritustapa.getTutkinnonOsat().add(viite)) {
             viite = tutkinnonOsaViiteRepository.save(viite);
+            suoritustapaRepository.save(suoritustapa);
         } else {
             throw new BusinessRuleViolationException("Viite tutkinnon osaan on jo olemassa");
         }
-        return mapper.map(viite, TutkinnonOsaViiteDto.class);
+
+        TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
+        viiteDto.setTutkinnonOsaDto(mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class));
+        return viiteDto;
     }
 
     @Override
