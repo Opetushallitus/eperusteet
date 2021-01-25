@@ -58,8 +58,15 @@ public class PerusteprojektiTestUtils {
     @Autowired
     private EntityManager em;
 
+    public Peruste createPeruste() {
+        PerusteprojektiDto projektiDto = createPerusteprojekti();
+        Perusteprojekti projekti = perusteprojektiRepository.findOne(projektiDto.getId());
+        return projekti.getPeruste();
+    }
+    
     public PerusteprojektiDto createPerusteprojekti() {
-        return createPerusteprojekti((PerusteprojektiLuontiDto pp) -> {});
+        return createPerusteprojekti((PerusteprojektiLuontiDto pp) -> {
+        });
     }
 
 

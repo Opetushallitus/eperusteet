@@ -99,11 +99,13 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     @Transactional(readOnly = false)
     public TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long perusteId, Suoritustapakoodi tapa, Long id) {
         Suoritustapa suoritustapa = perusteet.findSuoritustapaByIdAndSuoritustapakoodi(perusteId, tapa);
+        Peruste peruste = perusteet.findOne(perusteId);
         if (suoritustapa != null) {
             TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(id);
             if (suoritustapa.getTutkinnonOsat().contains(tov)) {
                 TutkinnonOsa to = tov.getTutkinnonOsa();
                 TutkinnonOsa uusi = new TutkinnonOsa(to);
+                uusi.asetaAlkuperainenPeruste(peruste);
                 uusi.asetaTila(PerusteTila.LUONNOS);
                 tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
                 muokkausTietoService.addMuokkaustieto(perusteId, tov, MuokkausTapahtuma.KOPIOINTI);

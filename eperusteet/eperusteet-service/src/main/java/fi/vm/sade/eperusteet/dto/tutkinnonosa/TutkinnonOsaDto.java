@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -59,6 +60,7 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
     private Ammattitaitovaatimukset2019Dto ammattitaitovaatimukset2019;
     private Reference geneerinenArviointiasteikko;
+    private PerusteKevytDto alkuperainenPeruste;
 
     public TutkinnonOsaDto() {
     }

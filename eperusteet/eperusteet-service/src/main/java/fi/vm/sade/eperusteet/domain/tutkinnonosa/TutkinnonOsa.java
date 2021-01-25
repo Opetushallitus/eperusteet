@@ -129,6 +129,11 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @NotNull
     private TutkinnonOsaTyyppi tyyppi = TutkinnonOsaTyyppi.NORMAALI;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @Getter
+    @JoinColumn(name = "alkuperainen_peruste_id")
+    private Peruste alkuperainenPeruste;
+
     public TutkinnonOsa() {
     }
 
@@ -329,5 +334,9 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Override
     public NavigationType getNavigationType() {
         return NavigationType.tutkinnonosa;
+    }
+
+    public void asetaAlkuperainenPeruste(Peruste peruste) {
+        this.alkuperainenPeruste = peruste;
     }
 }

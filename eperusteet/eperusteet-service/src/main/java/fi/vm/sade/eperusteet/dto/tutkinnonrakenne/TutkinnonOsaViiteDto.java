@@ -55,7 +55,7 @@ public class TutkinnonOsaViiteDto implements ReferenceableDto, Sortable {
     public TutkinnonOsaViiteDto() {
     }
 
-    public TutkinnonOsaViiteDto (BigDecimal laajuus, Integer jarjestys, LokalisoituTekstiDto nimi, TutkinnonOsaTyyppi tyyppi) {
+    public TutkinnonOsaViiteDto(BigDecimal laajuus, Integer jarjestys, LokalisoituTekstiDto nimi, TutkinnonOsaTyyppi tyyppi) {
         this.laajuus = laajuus;
         this.jarjestys = jarjestys;
         this.nimi = nimi;
