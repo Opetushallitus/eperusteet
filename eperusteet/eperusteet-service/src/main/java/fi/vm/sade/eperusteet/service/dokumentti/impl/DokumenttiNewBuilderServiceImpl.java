@@ -898,10 +898,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 vaatimukset.forEach(vaatimus -> {
                     Element vaatimusEl = docBase.getDocument().createElement("li");
                     String rivi = getTextString(docBase, vaatimus.getVaatimus());
-                    if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
-                        KoodistoKoodiDto koodi = koodistoService.get(vaatimus.getKoodi().getKoodisto(), vaatimus.getKoodi().getUri());
-                        rivi += " (" + koodi.getKoodiArvo() + ")";
-                    }
                     vaatimusEl.setTextContent(rivi);
                     listaEl.appendChild(vaatimusEl);
                 });
@@ -926,21 +922,13 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         }
 
                         Element alueListaEl = docBase.getDocument().createElement("ul");
-
                         alue.getVaatimukset().forEach(vaatimus -> {
                             Element vaatimusEl = docBase.getDocument().createElement("li");
-
                             Ammattitaitovaatimus2019Dto vaatimusDto = mapper.map(vaatimus, Ammattitaitovaatimus2019Dto.class);
                             String rivi = getTextString(docBase, vaatimusDto.getVaatimus());
-                            if (vaatimus.getKoodi() != null && vaatimus.getKoodi().getUri() != null) {
-                                KoodistoKoodiDto koodi = koodistoService.get(vaatimus.getKoodi().getKoodisto(), vaatimus.getKoodi().getUri());
-                                rivi += " (" + koodi.getKoodiArvo() + ")";
-                            }
                             vaatimusEl.setTextContent(rivi);
-
                             alueListaEl.appendChild(vaatimusEl);
                         });
-
                         alueEl.appendChild(alueListaEl);
                     }
 
