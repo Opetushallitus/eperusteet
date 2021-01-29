@@ -271,8 +271,8 @@ public class Peruste extends AbstractAuditedEntity
     @Setter
     @CollectionTable(name = "peruste_kieli")
     @Column(name = "kieli")
-    @Size(min = 1, groups = { Valmis.class, ValmisPohja.class })
-    private Set<Kieli> kielet = EnumSet.of(Kieli.FI, Kieli.SV);
+    @Size(min = 1, groups = {Valmis.class, ValmisPohja.class})
+    private Set<Kieli> kielet = EnumSet.of(Kieli.FI);
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "peruste_liite", inverseJoinColumns = {@JoinColumn(name="liite_id")}, joinColumns = {@JoinColumn(name="peruste_id")})

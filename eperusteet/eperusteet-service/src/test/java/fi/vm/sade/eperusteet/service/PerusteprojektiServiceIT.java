@@ -596,6 +596,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         repository.save(pp);
         em.persist(pp);
 
+        pp.getPeruste().setKielet(EnumSet.of(Kieli.FI, Kieli.SV));
+        perusteRepository.save(pp.getPeruste());
+
         TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
         assertThat(status.isVaihtoOk()).isFalse();
 
