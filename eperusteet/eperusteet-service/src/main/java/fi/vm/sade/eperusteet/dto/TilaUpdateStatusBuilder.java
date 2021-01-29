@@ -21,7 +21,6 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -79,13 +78,23 @@ public class TilaUpdateStatusBuilder {
     }
 
     public TilaUpdateStatusBuilder addErrorStatus(String viesti, Suoritustapakoodi suoritustapa, LokalisoituTekstiDto... dto) {
-        status.addStatus(viesti, suoritustapa, null, asList(dto));
+        status.addStatus(viesti, suoritustapa, null, asList(dto), null, null, ValidointiStatusType.VIRHE);
         status.setVaihtoOk(false);
         return this;
     }
 
     public TilaUpdateStatusBuilder addStatus(String viesti, ValidointiKategoria validointiKategoria) {
         status.addStatus(viesti, null, null, null, null, validointiKategoria);
+        return this;
+    }
+
+    public TilaUpdateStatusBuilder addStatus(String viesti, Set<Kieli> kielet, ValidointiStatusType validointiStatusType) {
+        status.addStatus(viesti, null, null, null, kielet, null, validointiStatusType);
+        return this;
+    }
+
+    public TilaUpdateStatusBuilder addStatus(String viesti, ValidointiStatusType validointiStatusType) {
+        status.addStatus(viesti, null, null, null, null, null, validointiStatusType);
         return this;
     }
 
