@@ -186,6 +186,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
             this.setGeneerinenArviointiasteikko(updated.getGeneerinenArviointiasteikko());
             this.setPakollisetOsaamistavoitteet(updated.getPakollisetOsaamistavoitteet());
             this.setValinnaisetOsaamistavoitteet(updated.getValinnaisetOsaamistavoitteet());
+            this.setKieli(updated.kieli);
 
             if (updated.getOsaamistavoitteet() != null) {
                 this.setOsaamistavoitteet(mergeOsaamistavoitteet(this.getOsaamistavoitteet(), updated.getOsaamistavoitteet()));
