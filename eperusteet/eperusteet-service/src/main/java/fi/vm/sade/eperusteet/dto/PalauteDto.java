@@ -22,4 +22,8 @@ public class PalauteDto {
     private Date createdAt;
     private String key;
     private String data;
+
+    public void setUser_agent(String userAgent) {
+        this.userAgent = userAgent;
+    }
 }
