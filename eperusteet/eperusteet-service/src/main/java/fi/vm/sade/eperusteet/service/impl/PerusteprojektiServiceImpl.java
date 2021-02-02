@@ -62,6 +62,7 @@ import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
@@ -349,6 +350,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             log.debug(String.format("%04d", counter) + " Perusteen ajastettu validointi: " + peruste.getId());
 
             TilaUpdateStatus tilaUpdateStatus = projektiValidator.run(pp.getId(), JULKAISTU);
+            tilaUpdateStatus.setInfot(tilaUpdateStatus.getInfot().stream().filter(info -> info.getValidointiStatusType() != ValidointiStatusType.HUOMAUTUS).collect(Collectors.toList()));
 
             if (vs != null) {
                 mapper.map(tilaUpdateStatus, vs);
