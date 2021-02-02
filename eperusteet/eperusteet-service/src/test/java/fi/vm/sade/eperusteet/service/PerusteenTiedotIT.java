@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
@@ -198,11 +199,18 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
         status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
         assertThat(status)
                 .returns(false, from(TilaUpdateStatus::isVaihtoOk));
+
         assertThat(status.getInfot())
                 .extracting(TilaUpdateStatus.Status::getViesti)
                 .contains(
                         "koulutuskoodi-puuttuu",
                         "kvliite-validointi-tyotehtavat-joissa-voi-toimia");
+
+        assertThat(status.getInfot().stream().filter(info -> info.getViesti().equals("kvliite-validointi-tyotehtavat-joissa-voi-toimia")).findFirst().get())
+                .extracting("validointiStatusType").isEqualTo(ValidointiStatusType.HUOMAUTUS);
+        assertThat(status.getInfot().stream().filter(info -> info.getViesti().equals("koulutuskoodi-puuttuu")).findFirst().get())
+                .extracting("validointiStatusType").isEqualTo(ValidointiStatusType.VIRHE);
+
         status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.VIIMEISTELY);
         assertThat(status)
                 .returns(false, from(TilaUpdateStatus::isVaihtoOk));
