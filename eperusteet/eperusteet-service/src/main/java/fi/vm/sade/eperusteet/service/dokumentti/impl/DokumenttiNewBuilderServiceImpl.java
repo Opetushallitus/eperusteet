@@ -815,31 +815,22 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         });
         docBase.getBodyElement().appendChild(tavoitteetEl);
 
-        addTeksti(docBase, messages.translate("docgen.keskeinen-sisalto.title", docBase.getKieli()), "h5");
+        String laajaAlainenOsaaminenKuvaus = getTextString(docBase, koulutuksenOsa.getLaajaAlaisenOsaamisenKuvaus());
+        if (StringUtils.isNotEmpty(laajaAlainenOsaaminenKuvaus)) {
+            addTeksti(docBase, messages.translate("docgen.laaja_alainen_osaaminen.title", docBase.getKieli()), "h5");
+            addTeksti(docBase, laajaAlainenOsaaminenKuvaus, "div");
+        }
+
         String keskeinenSisalto = getTextString(docBase, koulutuksenOsa.getKeskeinenSisalto());
         if (StringUtils.isNotEmpty(keskeinenSisalto)) {
+            addTeksti(docBase, messages.translate("docgen.keskeinen-sisalto.title", docBase.getKieli()), "h5");
             addTeksti(docBase, keskeinenSisalto, "div");
         }
 
-
-        addTeksti(docBase, messages.translate("docgen.arviointi.title", docBase.getKieli()), "h5");
-        addTeksti(docBase, messages.translate("dockgen.koulutuksenosa.arviointi-hyvaksytty", docBase.getKieli()), "h6");
-
-        Element arvioinnitEl = docBase.getDocument().createElement("ul");
-        koulutuksenOsa.getArvioinnit().forEach(arviointi -> {
-            Element arviointiEl = docBase.getDocument().createElement("li");
-
-            String rivi = getTextString(docBase, arviointi);
-            arviointiEl.setTextContent(rivi);
-
-            arvioinnitEl.appendChild(arviointiEl);
-        });
-        docBase.getBodyElement().appendChild(arvioinnitEl);
-
-        addTeksti(docBase, messages.translate("docgen.valma.osaamisenarviointi.title", docBase.getKieli()), "h5");
-        String osaamisenArviointi = getTextString(docBase, koulutuksenOsa.getOsaamisenArvioinnista());
-        if (StringUtils.isNotEmpty(osaamisenArviointi)) {
-            addTeksti(docBase, osaamisenArviointi, "div");
+        String arvioinninKuvaus = getTextString(docBase, koulutuksenOsa.getArvioinninKuvaus());
+        if (StringUtils.isNotEmpty(arvioinninKuvaus)) {
+            addTeksti(docBase, messages.translate("docgen.arviointi.title", docBase.getKieli()), "h5");
+            addTeksti(docBase, arvioinninKuvaus, "div");
         }
 
         docBase.getGenerator().increaseDepth();
