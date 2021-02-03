@@ -82,8 +82,7 @@ public class ValidatorKvliite implements Validator {
         tarkistaLokalisoituTekstiDto("kvliite-validointi-nimi",
                 julkinenKVLiite.getNimi(), vaaditutKielet, virheellisetKielet);
         if (ObjectUtils.isEmpty(julkinenKVLiite.getTasot())) {
-//            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus("kvliite-validointi-tasot");
+            updateStatus.addStatus("kvliite-validointi-tasot", ValidointiStatusType.HUOMAUTUS);
         }
         Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus = julkinenKVLiite.getMuodostumisenKuvaus();
         if (!ObjectUtils.isEmpty(muodostumisenKuvaus)) {
