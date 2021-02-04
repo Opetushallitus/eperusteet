@@ -255,6 +255,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             docBase.getHeadElement().appendChild(description);
         }
 
+        Element pdfluotu = docBase.getDocument().createElement("meta");
+        pdfluotu.setAttribute("name", "pdfluotu");
+        pdfluotu.setAttribute("content", dateFormat.format(new Date()));
+        pdfluotu.setAttribute("translate", messages.translate("docgen.pdf-luotu", docBase.getKieli()));
+        docBase.getHeadElement().appendChild(pdfluotu);
+
         // Oppaille ei lisätä perusteiden tietoja
         if (docBase.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
             return;

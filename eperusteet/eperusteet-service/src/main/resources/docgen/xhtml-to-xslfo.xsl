@@ -238,6 +238,19 @@
                         </fo:table-row>
                     </xsl:if>
 
+                    <fo:table-row>
+                        <fo:table-cell>
+                            <fo:block font-weight="bold">
+                                <xsl:apply-templates select="/html/head/meta[@name='pdfluotu']/@translate"/>
+                            </fo:block>
+                        </fo:table-cell>
+                        <fo:table-cell>
+                            <fo:block>
+                                <xsl:apply-templates select="/html/head/meta[@name='pdfluotu']/@content"/>
+                            </fo:block>
+                        </fo:table-cell>
+                    </fo:table-row>
+
                 </fo:table-body>
             </fo:table>
         </xsl:if>
@@ -320,6 +333,19 @@
                             </fo:table-cell>
                         </fo:table-row>
                     </xsl:if>
+
+                    <fo:table-row>
+                        <fo:table-cell>
+                            <fo:block font-weight="bold">
+                                <xsl:apply-templates select="/html/head/meta[@name='pdfluotu']/@translate"/>
+                            </fo:block>
+                        </fo:table-cell>
+                        <fo:table-cell>
+                            <fo:block>
+                                <xsl:apply-templates select="/html/head/meta[@name='pdfluotu']/@content"/>
+                            </fo:block>
+                        </fo:table-cell>
+                    </fo:table-row>
 
                 </fo:table-body>
             </fo:table>
