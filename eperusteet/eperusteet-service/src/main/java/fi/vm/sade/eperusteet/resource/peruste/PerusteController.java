@@ -168,7 +168,7 @@ public class PerusteController {
             @ApiImplicitParam(name = "julkaistu", dataType = "boolean", paramType = "query", defaultValue = "false", value = "julkaistut perusteet"),
     })
     public Page<PerusteHakuInternalDto> getAllPerusteetInternal(@ApiIgnore PerusteQuery pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
         return service.findByInternal(p, pquery);
     }
 
