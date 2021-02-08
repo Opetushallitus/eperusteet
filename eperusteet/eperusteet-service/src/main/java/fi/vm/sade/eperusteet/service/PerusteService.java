@@ -120,6 +120,9 @@ public interface PerusteService {
     @PreAuthorize("isAuthenticated()")
     Page<PerusteHakuInternalDto> findByInternal(PageRequest page, PerusteQuery pquery);
 
+    @PreAuthorize("isAuthenticated()")
+    List<PerusteKevytDto> getPohjaperusteet(PerusteTyyppi tyyppi);
+
     @PreAuthorize("permitAll()")
     List<PerusteInfoDto> getAllPerusopetusInfo();
 
