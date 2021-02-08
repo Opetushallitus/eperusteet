@@ -1,0 +1,26 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.41.1/swagger-ui-bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.41.1/swagger-ui-standalone-preset.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.41.1/swagger-ui.min.css">
+<style>
+  pre, code {
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+    overflow-x: initial;
+  }
+</style>
+
+<script>
+  window.onload = function() {
+    const ui = SwaggerUIBundle({
+      url: "{{ include.url }}",
+      dom_id: '#swagger-ui',
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIStandalonePreset
+      ]
+    })
+
+    window.ui = ui
+  }
+</script>

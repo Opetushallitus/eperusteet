@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+  {%- include head.html -%}
+  {%- include swagger-ui.html url=page.swagger-src -%}
+  <body>
+    {%- include header.html -%}
+    <main class="page-content">
+      <div id="swagger-ui"></div>
+    </main>
+  </body>
+</html>

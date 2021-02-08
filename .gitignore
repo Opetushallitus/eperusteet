@@ -24,3 +24,5 @@ npm-debug.log
 /tools/lokalisointi/*.xlsx
 /tools/lokalisointi/*.txt
 /tools/lokalisointi/*.json
+
+**/.DS_Store
