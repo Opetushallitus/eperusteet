@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
@@ -170,6 +171,12 @@ public class PerusteController {
     public Page<PerusteHakuInternalDto> getAllPerusteetInternal(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
         return service.findByInternal(p, pquery);
+    }
+
+    @RequestMapping(value = "/internal/pohjat", method = GET)
+    @ResponseBody
+    public List<PerusteKevytDto> getPohjaperusteet(@RequestParam(value = "perustetyyppi", required = false, defaultValue = "normaali") final String perustetyyppi) {
+        return service.getPohjaperusteet(PerusteTyyppi.of(perustetyyppi));
     }
 
     @RequestMapping(value = "/{perusteId}", method = POST)

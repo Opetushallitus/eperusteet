@@ -2349,6 +2349,30 @@
         }
       }
     },
+    "/perusteet/internal/pohjat" : {
+      "get" : {
+        "tags" : [ "Perusteet" ],
+        "operationId" : "getPohjaperusteet",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perustetyyppi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/PerusteKevytDto"
+              }
+            }
+          }
+        }
+      }
+    },
     "/perusteet/kooste" : {
       "get" : {
         "tags" : [ "Perusteet" ],
@@ -11152,18 +11176,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11192,18 +11216,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11232,18 +11256,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11272,18 +11296,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11312,18 +11336,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11352,18 +11376,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11392,18 +11416,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11432,18 +11456,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11472,18 +11496,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11512,18 +11536,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11552,18 +11576,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
@@ -11592,18 +11616,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
         }
       }
     },
