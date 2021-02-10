@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import java.util.Date;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -128,4 +129,11 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     List<Peruste> findOppaidenPerusteet();
 
     List<Peruste> findByTilaAndTyyppiAndKoulutusvienti(PerusteTila tila, PerusteTyyppi tyyppi, boolean koulutusvienti);
+
+    @Query("SELECT DISTINCT p FROM Peruste p " +
+            "JOIN p.perusteenAikataulut aikataulu " +
+            "WHERE aikataulu.julkinen = true " +
+            "AND p.koulutustyyppi IN(:koulutustyypit) " +
+            "AND p.tila = 'LUONNOS' AND (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.id) = 0)")
+    Page<Peruste> findAllJulkaisuaikataulullisetPerusteet(@Param("koulutustyypit") List<String> koulutustyypit, Pageable pageable);
 }

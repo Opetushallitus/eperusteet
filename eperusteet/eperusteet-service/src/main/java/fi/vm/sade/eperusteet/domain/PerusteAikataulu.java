@@ -54,4 +54,7 @@ public class PerusteAikataulu extends AbstractAuditedEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date tapahtumapaiva;
 
+    @NotNull
+    private boolean julkinen = false;
+
 }

@@ -10,6 +10,9 @@ import lombok.ToString;
 public enum AikatauluTapahtuma {
 
     LUOMINEN("luominen"),
+    LAUSUNTOKIERROS("lausuntokierros"),
+    JOHTOKUNNANKASITTELY("johtokunnankasittely"),
+    ARVIOITUJULKAISUPAIVA("arvioitujulkaisupaiva"),
     TAVOITE("tavoite"),
     JULKAISU("julkaisu");
 

@@ -117,6 +117,9 @@ public interface PerusteService {
     @PreAuthorize("permitAll()")
     Page<PerusteHakuDto> findJulkinenBy(PageRequest page, PerusteQuery pquery);
 
+    @PreAuthorize("permitAll()")
+    Page<PerusteBaseDto> getJulkaisuAikatauluPerusteet(Integer sivu, Integer sivukoko, List<String> koulutusTyyppit);
+
     @PreAuthorize("isAuthenticated()")
     Page<PerusteHakuInternalDto> findByInternal(PageRequest page, PerusteQuery pquery);
 

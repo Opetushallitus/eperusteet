@@ -398,4 +398,15 @@ public class PerusteController {
         return new ResponseEntity<>(poi, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/aikataululliset", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Perusteet julkisilla aikatauluillla")
+    public Page<PerusteBaseDto> getJulkaisuAikatauluPerusteet(
+            @RequestParam(value = "sivu") final Integer sivu,
+            @RequestParam(value = "sivukoko") final Integer sivukoko,
+            @RequestParam(value = "koulutustyyppi") final List<String> koulutustyypit
+    ) {
+        return service.getJulkaisuAikatauluPerusteet(sivu, sivukoko, koulutustyypit);
+    }
+
 }

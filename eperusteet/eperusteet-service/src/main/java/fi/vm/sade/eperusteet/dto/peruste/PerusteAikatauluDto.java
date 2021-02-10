@@ -19,5 +19,6 @@ public class PerusteAikatauluDto {
     private LokalisoituTekstiDto tavoite;
     private AikatauluTapahtuma tapahtuma;
     private Date tapahtumapaiva;
+    private boolean julkinen;
 
 }
