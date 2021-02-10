@@ -78,6 +78,7 @@ import fi.vm.sade.eperusteet.dto.peruste.KoosteenOsaamisalaDto;
 import fi.vm.sade.eperusteet.dto.peruste.MaarayskirjeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
@@ -524,6 +525,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());
         }
         return findByImpl(page, pquery);
+    }
+
+    @Override
+    public Page<PerusteBaseDto> getJulkaisuAikatauluPerusteet(Integer sivu, Integer sivukoko, List<String> koulutusTyyppit) {
+        return perusteRepository.findAllJulkaisuaikataulullisetPerusteet(koulutusTyyppit, new PageRequest(sivu, Math.min(sivukoko, 20))).map(peruste -> mapper.map(peruste, PerusteBaseDto.class));
     }
 
     // Julkinen haku kevyemmällä paluuarvolla
