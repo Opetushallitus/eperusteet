@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
@@ -11,12 +12,15 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import java.util.Map;
+import java.util.stream.Collectors;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +61,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Autowired
     private PerusteenMuokkaustietoService muokkausTietoService;
 
+    @Autowired
+    private KayttajanTietoService kayttajanTietoService;
+
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
     @Override
@@ -68,6 +75,12 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         List<JulkaistuPeruste> one = julkaisutRepository.findAllByPeruste(peruste);
         List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(one, JulkaisuBaseDto.class);
+
+        Map<String, KayttajanTietoDto> kayttajatiedot = kayttajanTietoService
+                .haeKayttajatiedot(julkaisut.stream().map(JulkaisuBaseDto::getLuoja).collect(Collectors.toList()))
+                .stream().collect(Collectors.toMap(kayttajanTieto -> kayttajanTieto.getOidHenkilo(), kayttajanTieto -> kayttajanTieto));
+        julkaisut.forEach(julkaisu -> julkaisu.setKayttajanTieto(kayttajatiedot.get(julkaisu.getLuoja())));
+
         return julkaisut;
     }
 
@@ -111,8 +124,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
-        julkaisu.setRevision((int)julkaisutCount);
-        julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Julkaisu"));
+        julkaisu.setRevision((int) julkaisutCount);
+        julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
         julkaisu.setLuoja(username);
         julkaisu.setLuotu(version.getAikaleima());
         julkaisu.setPeruste(peruste);

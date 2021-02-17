@@ -16,8 +16,12 @@
 
 package fi.vm.sade.eperusteet.dto.kayttaja;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -30,6 +34,9 @@ import java.util.Set;
  */
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class KayttajanTietoDto {
     public KayttajanTietoDto(String oidHenkilo) {
         this.oidHenkilo = oidHenkilo;
