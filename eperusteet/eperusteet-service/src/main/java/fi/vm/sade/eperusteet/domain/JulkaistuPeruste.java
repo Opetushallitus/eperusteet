@@ -32,7 +32,6 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @NotNull
     private TekstiPalanen tiedote;
 
     @Temporal(TemporalType.TIMESTAMP)

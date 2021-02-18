@@ -19,6 +19,9 @@ import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.util.JsonMapper;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 import net.sf.ehcache.Cache;
@@ -64,6 +67,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
 
+    @Autowired
+    private JsonMapper jsonMapper;
+
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
     @Override
@@ -75,13 +81,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         List<JulkaistuPeruste> one = julkaisutRepository.findAllByPeruste(peruste);
         List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(one, JulkaisuBaseDto.class);
-
-        Map<String, KayttajanTietoDto> kayttajatiedot = kayttajanTietoService
-                .haeKayttajatiedot(julkaisut.stream().map(JulkaisuBaseDto::getLuoja).collect(Collectors.toList()))
-                .stream().collect(Collectors.toMap(kayttajanTieto -> kayttajanTieto.getOidHenkilo(), kayttajanTieto -> kayttajanTieto));
-        julkaisut.forEach(julkaisu -> julkaisu.setKayttajanTieto(kayttajatiedot.get(julkaisu.getLuoja())));
-
-        return julkaisut;
+        return taytaKayttajaTiedot(julkaisut);
     }
 
     @Override
@@ -102,27 +102,32 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             throw new BusinessRuleViolationException("vain-oman-perusteen-voi-julkaista");
         }
 
-        { // Validoinnit
+        // Validoinnit
+        PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
+        try {
+            ObjectNode perusteDataJson = (ObjectNode) jsonMapper.toJson(sisalto);
             List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPerusteOrderByRevisionDesc(perusteprojekti.getPeruste());
             if (julkaisut != null && julkaisut.size() > 0) {
                 JulkaistuPeruste last = julkaisut.get(julkaisut.size() - 1);
-                if (last.getLuotu().compareTo(perusteprojekti.getPeruste().getGlobalVersion().getAikaleima()) == 0) {
-                    throw new BusinessRuleViolationException("versiosta-jo-julkaisu");
+                if (last.getData().getHash() == perusteDataJson.hashCode()) {
+                    throw new BusinessRuleViolationException("ei-muuttunut-viime-julkaisun-jalkeen");
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BusinessRuleViolationException("julkaisun-tallennus-epaonnistui");
+        }
 
-            TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
+        TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
 
-            if (!salliVirheelliset && !status.isVaihtoOk()) {
-                throw new BusinessRuleViolationException("projekti-ei-validi");
-            }
+        if (!salliVirheelliset && !status.isVaihtoOk()) {
+            throw new BusinessRuleViolationException("projekti-ei-validi");
         }
 
         PerusteVersion version = peruste.getGlobalVersion();
         long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
         julkaisu.setRevision((int) julkaisutCount);
         julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
@@ -142,7 +147,19 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
 
-        return mapper.map(julkaisu, JulkaisuBaseDto.class);
+        return taytaKayttajaTiedot(mapper.map(julkaisu, JulkaisuBaseDto.class));
+    }
+
+    private List<JulkaisuBaseDto> taytaKayttajaTiedot(List<JulkaisuBaseDto> julkaisut) {
+        Map<String, KayttajanTietoDto> kayttajatiedot = kayttajanTietoService
+                .haeKayttajatiedot(julkaisut.stream().map(JulkaisuBaseDto::getLuoja).collect(Collectors.toList()))
+                .stream().collect(Collectors.toMap(kayttajanTieto -> kayttajanTieto.getOidHenkilo(), kayttajanTieto -> kayttajanTieto));
+        julkaisut.forEach(julkaisu -> julkaisu.setKayttajanTieto(kayttajatiedot.get(julkaisu.getLuoja())));
+        return julkaisut;
+    }
+
+    private JulkaisuBaseDto taytaKayttajaTiedot(JulkaisuBaseDto julkaisu) {
+        return taytaKayttajaTiedot(Arrays.asList(julkaisu)).get(0);
     }
 
 }
