@@ -67,9 +67,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
 
-    @Autowired
-    private JsonMapper jsonMapper;
-
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
     @Override
@@ -104,18 +101,13 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         // Validoinnit
         PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
-        try {
-            ObjectNode perusteDataJson = (ObjectNode) jsonMapper.toJson(sisalto);
-            List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPerusteOrderByRevisionDesc(perusteprojekti.getPeruste());
-            if (julkaisut != null && julkaisut.size() > 0) {
-                JulkaistuPeruste last = julkaisut.get(julkaisut.size() - 1);
-                if (last.getData().getHash() == perusteDataJson.hashCode()) {
-                    throw new BusinessRuleViolationException("ei-muuttunut-viime-julkaisun-jalkeen");
-                }
+        ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
+        List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPerusteOrderByRevisionDesc(perusteprojekti.getPeruste());
+        if (julkaisut != null && julkaisut.size() > 0) {
+            JulkaistuPeruste last = julkaisut.get(0);
+            if (last.getData().getHash() == perusteDataJson.hashCode()) {
+                throw new BusinessRuleViolationException("ei-muuttunut-viime-julkaisun-jalkeen");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new BusinessRuleViolationException("julkaisun-tallennus-epaonnistui");
         }
 
         TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
@@ -135,8 +127,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisu.setLuotu(version.getAikaleima());
         julkaisu.setPeruste(peruste);
 
-        ObjectNode data = objectMapper.valueToTree(sisalto);
-        julkaisu.setData(new JulkaistuPerusteData(data));
+        julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
         julkaisu = julkaisutRepository.save(julkaisu);
         {
             Cache amosaaperusteet = CacheManager.getInstance().getCache("amosaaperusteet");

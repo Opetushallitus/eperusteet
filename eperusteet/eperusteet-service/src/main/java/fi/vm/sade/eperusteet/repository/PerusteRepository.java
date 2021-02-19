@@ -92,7 +92,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT p " +
             "FROM Peruste p " +
             "WHERE p.tila = 'VALMIS' AND p.tyyppi = 'NORMAALI' " +
-            "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18', 'koulutustyyppi_30')" +
+            "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18', 'koulutustyyppi_10')" +
             "   AND (p.voimassaoloLoppuu IS NULL " +
             "       OR p.voimassaoloLoppuu > NOW() " +
             "       OR (p.siirtymaPaattyy IS NOT NULL " +
