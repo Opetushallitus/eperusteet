@@ -41,10 +41,10 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
     @NotNull
     private String luoja;
 
-//    @ElementCollection
-//    @NotNull
-//    @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-//    private Set<Long> dokumentit = new HashSet<>();
+    @ElementCollection
+    @NotNull
+    @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+    private Set<Long> dokumentit = new HashSet<>();
 
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private JulkaistuPerusteData data;

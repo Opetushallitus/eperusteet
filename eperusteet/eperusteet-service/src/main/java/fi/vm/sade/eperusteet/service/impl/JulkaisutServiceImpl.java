@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
@@ -16,14 +17,20 @@ import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.JsonMapper;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +42,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.stream.Collectors.toSet;
+
+@Slf4j
 @Service
 @Transactional
 public class JulkaisutServiceImpl implements JulkaisutService {
@@ -66,6 +76,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
+
+    @Autowired
+    private DokumenttiService dokumenttiService;
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
@@ -119,6 +132,29 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         PerusteVersion version = peruste.getGlobalVersion();
         long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
 
+        Set<Long> dokumentit = peruste.getSuoritustavat().stream()
+                .map(suoritustapa -> peruste.getKielet().stream()
+                        .map(kieli -> {
+                            try {
+                                DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
+                                        peruste.getId(),
+                                        kieli,
+                                        suoritustapa.getSuoritustapakoodi(),
+                                        GeneratorVersion.UUSI
+                                );
+                                dokumenttiService.generateWithDto(createDtoFor);
+                                return createDtoFor.getId();
+                            } catch (DokumenttiException e) {
+                                log.error(e.getLocalizedMessage(), e);
+                            }
+
+                            return null;
+                        })
+                        .collect(toSet()))
+                .filter(id -> id != null)
+                .flatMap(Collection::stream)
+                .collect(toSet());
+
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
         julkaisu.setRevision((int) julkaisutCount);
@@ -126,6 +162,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisu.setLuoja(username);
         julkaisu.setLuotu(version.getAikaleima());
         julkaisu.setPeruste(peruste);
+
+        if (!dokumentit.isEmpty()) {
+            julkaisu.setDokumentit(dokumentit);
+        }
 
         julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
         julkaisu = julkaisutRepository.save(julkaisu);

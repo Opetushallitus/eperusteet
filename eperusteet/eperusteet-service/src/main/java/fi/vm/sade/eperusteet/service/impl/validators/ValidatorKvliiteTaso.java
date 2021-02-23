@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteTasoDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -44,7 +45,7 @@ public class ValidatorKvliiteTaso implements Validator {
                 }).isEmpty();
 
         if (!kaikkiLoyty) {
-            result.addStatus("kvliite-validointi-taso-koodi-puute");
+            result.addStatus("kvliite-validointi-taso-koodi-puute", ValidointiStatusType.HUOMAUTUS);
         }
 
         return result;
