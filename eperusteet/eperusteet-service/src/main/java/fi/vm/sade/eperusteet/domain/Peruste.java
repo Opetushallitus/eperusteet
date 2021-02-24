@@ -69,6 +69,7 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
@@ -306,6 +307,11 @@ public class Peruste extends AbstractAuditedEntity
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peruste", orphanRemoval = true)
     private Set<PerusteAikataulu> perusteenAikataulut = new HashSet<>();
 
+    @NotAudited
+    @OneToMany(mappedBy = "peruste", fetch = FetchType.LAZY)
+    @Getter
+    private List<JulkaistuPeruste> julkaisut;
+
     public Set<PerusteenSisalto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
             return Collections.singleton(this.getOppaanSisalto());
@@ -314,17 +320,13 @@ public class Peruste extends AbstractAuditedEntity
                 return new HashSet<>(this.getSuoritustavat());
             } else if (this.getPerusopetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getPerusopetuksenPerusteenSisalto());
-            }
-            else if (this.getLops2019Sisalto() != null) {
+            } else if (this.getLops2019Sisalto() != null) {
                 return Collections.singleton(this.getLops2019Sisalto());
-            }
-            else if (this.getEsiopetuksenPerusteenSisalto() != null) {
+            } else if (this.getEsiopetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getEsiopetuksenPerusteenSisalto());
-            }
-            else if (this.getLukiokoulutuksenPerusteenSisalto() != null) {
+            } else if (this.getLukiokoulutuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getLukiokoulutuksenPerusteenSisalto());
-            }
-            else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
+            } else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
             } else if (this.getTpoOpetuksenSisalto() != null) {
                 return Collections.singleton(this.getTpoOpetuksenSisalto());

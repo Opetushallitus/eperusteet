@@ -130,6 +130,15 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
 
     List<Peruste> findByTilaAndTyyppiAndKoulutusvienti(PerusteTila tila, PerusteTyyppi tyyppi, boolean koulutusvienti);
 
+    @Query("SELECT distinct p FROM Peruste p " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.koulutustyyppi IS NOT NULL " +
+            "and p.tyyppi = 'NORMAALI' " +
+            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
+            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < NOW()) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW()))")
+    List<Peruste> findVoimassaolevatJulkaistutPerusteet();
+
     @Query("SELECT DISTINCT p FROM Peruste p " +
             "JOIN p.perusteenAikataulut aikataulu " +
             "WHERE aikataulu.julkinen = true " +
