@@ -179,6 +179,12 @@ public class PerusteController {
         return service.getPohjaperusteet(PerusteTyyppi.of(perustetyyppi));
     }
 
+    @RequestMapping(value = "/internal/julkaistut", method = GET)
+    @ResponseBody
+    public List<PerusteKevytDto> getJulkaistutPerusteet() {
+        return service.getJulkaistutPerusteet();
+    }
+
     @RequestMapping(value = "/{perusteId}", method = POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

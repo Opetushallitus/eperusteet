@@ -516,6 +516,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return mapper.mapAsList(perusteRepository.findByTilaAndTyyppiAndKoulutusvienti(PerusteTila.VALMIS, tyyppi, false), PerusteKevytDto.class);
     }
 
+    @Override
+    public List<PerusteKevytDto> getJulkaistutPerusteet() {
+        return mapper.mapAsList(perusteRepository.findVoimassaolevatJulkaistutPerusteet(), PerusteKevytDto.class);
+    }
+
     // Julkinen haku
     @Override
     @Transactional(readOnly = true)

@@ -272,4 +272,7 @@ public interface PerusteService {
 
     @PreAuthorize("isAuthenticated()")
     List<PerusteKevytDto> getAllOppaidenPerusteet();
+
+    @PreAuthorize("isAuthenticated()")
+    List<PerusteKevytDto> getJulkaistutPerusteet();
 }
