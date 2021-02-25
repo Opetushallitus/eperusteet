@@ -1751,7 +1751,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         tutkintonimikeKoodiDtos = tutkintonimikeKoodiDtos.stream().map(tutkintonimike -> {
             if (tutkintonimike.getTutkintonimikeUri() == null) {
                 LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(tutkintonimike.getNimi());
-                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkintonimikkeet", lokalisoituTekstiDto);
+                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkintonimikkeet", lokalisoituTekstiDto, 5);
                 tutkintonimike.setTutkintonimikeArvo(lisattyKoodi.getKoodiArvo());
                 tutkintonimike.setTutkintonimikeUri(lisattyKoodi.getKoodiUri());
                 return tutkintonimike;

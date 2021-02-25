@@ -168,6 +168,11 @@ public class KoodistoClientMock implements KoodistoClient {
     }
 
     @Override
+    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, int koodiArvoLength) {
+        return null;
+    }
+
+    @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
         return KoodistoKoodiDto.builder()
                 .koodisto(KoodistoDto.of(koodistonimi))
@@ -182,6 +187,11 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public Collection<Long> nextKoodiId(String koodistonimi, int count) {
+        return IntStream.range(0, count).boxed().map(operand -> new Long(operand)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<Long> nextKoodiId(String koodistonimi, int count, int koodiArvoLength) {
         return IntStream.range(0, count).boxed().map(operand -> new Long(operand)).collect(Collectors.toList());
     }
 

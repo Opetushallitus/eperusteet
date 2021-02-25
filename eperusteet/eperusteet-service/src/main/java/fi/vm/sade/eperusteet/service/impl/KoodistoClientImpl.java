@@ -285,6 +285,12 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
+    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, int koodiArvoLength) {
+        long seuraavaKoodi = nextKoodiId(koodistonimi, 1, koodiArvoLength).stream().findFirst().get();
+        return addKoodiNimella(koodistonimi, koodinimi, seuraavaKoodi);
+    }
+
+    @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
 
         cacheManager.getCache("koodistot").evict(koodistonimi + false);
@@ -318,23 +324,29 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public Collection<Long> nextKoodiId(String koodistonimi, int count) {
+        return nextKoodiId(koodistonimi, count, 4);
+    }
+
+    @Override
+    public Collection<Long> nextKoodiId(String koodistonimi, int count, int koodiArvoLength) {
         List<KoodistoKoodiDto> koodit = self.getAll(koodistonimi);
+        Long minAllowedArvo = Long.parseLong("10000".substring(0, koodiArvoLength));
         if (koodit.size() == 0) {
-            koodit = Collections.singletonList(KoodistoKoodiDto.builder().koodiArvo("999").build());
+            koodit = Collections.singletonList(KoodistoKoodiDto.builder().koodiArvo("99999".substring(0, koodiArvoLength - 1)).build());
         }
 
         List<Long> ids = new ArrayList<>();
         List<Long> currentIds = koodit.stream().map(k -> Long.parseLong(k.getKoodiArvo())).collect(Collectors.toList());
-        Long max = currentIds.stream().mapToLong(Long::longValue).max().getAsLong();
-        Long min = currentIds.stream().mapToLong(Long::longValue).min().getAsLong();
+        Long max = Long.max(currentIds.stream().mapToLong(Long::longValue).max().getAsLong(), minAllowedArvo);
+        Long min = Long.max(currentIds.stream().mapToLong(Long::longValue).min().getAsLong(), minAllowedArvo);
 
-        for(Long ind = min; ind <= max + count && ids.size() < count; ind++) {
-            if(!currentIds.contains(ind)) {
+        for (Long ind = min; ind <= max + count && ids.size() < count; ind++) {
+            if (!currentIds.contains(ind)) {
                 ids.add(ind);
             }
         }
 
-       return ids;
+        return ids;
     }
 
     @Override

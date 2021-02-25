@@ -94,22 +94,44 @@ public class KoodistoClientImplTest {
                     .containsExactly(2000l, 2003l, 2004l, 2005l, 2006l);
         }
 
+        {
+            Collection<Long> ids = koodistoClient.nextKoodiId("koodisto", 2, 5);
+            assertThat(ids)
+                    .containsExactly(10000l, 10001l);
+        }
+
     }
 
     @Test
     public void testNextKoodiId_single() {
-        Long id = koodistoClient.nextKoodiId("koodisto");
-        assertThat(id).isEqualTo(1003l);
+        {
+            Long id = koodistoClient.nextKoodiId("koodisto");
+            assertThat(id).isEqualTo(1003l);
+        }
+
+        {
+            Long id = koodistoClient.nextKoodiId("koodisto", 1, 5).stream().findFirst().get();
+            assertThat(id).isEqualTo(10000l);
+        }
     }
 
     @Test
     public void testNextKoodiId_empty() {
-        Long id = koodistoClient.nextKoodiId("tyhjakoodisto");
-        assertThat(id).isEqualTo(1000l);
+        {
+            Long id = koodistoClient.nextKoodiId("tyhjakoodisto");
+            assertThat(id).isEqualTo(1000l);
+        }
+
+        {
+            Long id = koodistoClient.nextKoodiId("tyhjakoodisto", 1, 5).stream().findFirst().get();
+            assertThat(id).isEqualTo(10000l);
+        }
+
     }
 
     private List<KoodistoKoodiDto> createKoodistoAll() {
         return Arrays.asList(
+                KoodistoKoodiDto.builder().koodiArvo("0010").build(),
                 KoodistoKoodiDto.builder().koodiArvo("1000").build(),
                 KoodistoKoodiDto.builder().koodiArvo("1001").build(),
                 KoodistoKoodiDto.builder().koodiArvo("1002").build(),
@@ -119,7 +141,8 @@ public class KoodistoClientImplTest {
                 KoodistoKoodiDto.builder().koodiArvo("1011").build(),
                 KoodistoKoodiDto.builder().koodiArvo("1012").build(),
                 KoodistoKoodiDto.builder().koodiArvo("1013").build(),
-                KoodistoKoodiDto.builder().koodiArvo("2000").build()
+                KoodistoKoodiDto.builder().koodiArvo("2000").build(),
+                KoodistoKoodiDto.builder().koodiArvo("15000").build()
         );
     }
 
