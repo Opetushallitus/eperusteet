@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.dto;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
@@ -197,6 +199,7 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         Set<Kieli> kielet;
         ValidointiKategoria validointiKategoria = ValidointiKategoria.MAARITTELEMATON;
         ValidointiStatusType validointiStatusType = ValidointiStatusType.VIRHE;
+        NavigationNodeDto navigationNode;
 
         public Status() {
         }
@@ -223,6 +226,7 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
             this.suoritustapa = suoritustapa;
             this.kielet = kielet;
             this.validointiKategoria = validointiKategoria;
+            this.navigationNode = kategoriaNavigationNode(validointiKategoria);
         }
 
         public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet, ValidointiKategoria validointiKategoria, ValidointiStatusType validointiStatusType) {
@@ -233,6 +237,22 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
             this.kielet = kielet;
             this.validointiKategoria = validointiKategoria;
             this.validointiStatusType = validointiStatusType;
+            this.navigationNode = kategoriaNavigationNode(validointiKategoria);
+        }
+
+        private NavigationNodeDto kategoriaNavigationNode(ValidointiKategoria validointiKategoria) {
+            if (validointiKategoria == null) {
+                return null;
+            }
+
+            switch (validointiKategoria) {
+                case PERUSTE:
+                    return NavigationNodeDto.of(NavigationType.tiedot);
+                case RAKENNE:
+                    return NavigationNodeDto.of(NavigationType.muodostuminen);
+                default:
+                    return null;
+            }
         }
     }
 

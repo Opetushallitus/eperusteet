@@ -371,6 +371,18 @@ public class ValidatorPeruste implements Validator {
             }
         }
 
+        return virheellisetKielet;
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, String> tarkistaPerusteenSisaltoTekstipalaset(Peruste peruste) {
+        if (peruste.getTyyppi() == PerusteTyyppi.POHJA) {
+            return new HashMap<>();
+        }
+
+        Set<Kieli> vaaditutKielet = peruste.getKielet();
+        Map<String, String> virheellisetKielet = new HashMap<>();
+
         // Esiopetus
         if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getEsiopetuksenPerusteenSisalto().getSisalto().getLapset()) {
@@ -459,7 +471,7 @@ public class ValidatorPeruste implements Validator {
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
                         || nimi.getTeksti().get(kieli).isEmpty()) {
-                    updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
+                    updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla", ValidointiKategoria.PERUSTE);
                     updateStatus.setVaihtoOk(false);
                     break;
                 }
@@ -686,8 +698,16 @@ public class ValidatorPeruste implements Validator {
 
             if (tila == ProjektiTila.JULKAISTU || tila == ProjektiTila.VALMIS) {
                 tarkistaPerusopetuksenPeruste(peruste, updateStatus);
+
                 // Tarkista että kaikki vaadittu kielisisältö on asetettu
-                Map<String, String> lokalisointivirheet = tarkistaPerusteenTekstipalaset(projekti.getPeruste());
+                Map<String, String> perusteenTiedotLokalisointiVirheet = tarkistaPerusteenTekstipalaset(projekti.getPeruste());
+                for (Map.Entry<String, String> entry : perusteenTiedotLokalisointiVirheet.entrySet()) {
+                    updateStatus.setVaihtoOk(false);
+                    updateStatus.addStatus(entry.getKey(), ValidointiKategoria.PERUSTE);
+                }
+
+                // Tarkista että kaikki vaadittu kielisisältö on asetettu
+                Map<String, String> lokalisointivirheet = tarkistaPerusteenSisaltoTekstipalaset(projekti.getPeruste());
                 for (Map.Entry<String, String> entry : lokalisointivirheet.entrySet()) {
                     updateStatus.setVaihtoOk(false);
                     updateStatus.addStatus(entry.getKey(), ValidointiKategoria.KIELISISALTO);
