@@ -100,6 +100,15 @@ public class LiiteServiceImpl implements LiiteService {
     }
 
     @Override
+    @Transactional
+    public UUID add(Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, byte[] bytearray) {
+        Liite liite = liitteet.add(tyyppi, mime, nimi, bytearray);
+        Peruste peruste = perusteet.findOne(perusteId);
+        peruste.attachLiite(liite);
+        return liite.getId();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<LiiteDto> getAll(Long perusteId) {
         List<Liite> loydetyt = liitteet.findByPerusteId(perusteId);

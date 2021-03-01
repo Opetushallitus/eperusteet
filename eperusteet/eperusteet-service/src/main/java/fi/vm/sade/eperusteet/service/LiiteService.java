@@ -27,13 +27,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- *
  * @author jhyoty
  */
 public interface LiiteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     UUID add(@P("perusteId") final Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
+    UUID add(@P("perusteId") final Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, byte[] bytearray);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     LiiteDto get(@P("perusteId") Long perusteId, UUID id);
