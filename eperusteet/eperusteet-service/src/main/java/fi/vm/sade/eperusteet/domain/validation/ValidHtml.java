@@ -50,7 +50,7 @@ public @interface ValidHtml {
 				.addAttributes("th", "scope", "colspan", "rowspan", "style")
 				.addAttributes("td", "colspan", "rowspan", "style")
 				.addAttributes("a", "href", "target", "rel")
-				.addAttributes("img", "data-uid", "src", "alt", "height", "width", "style")
+				.addAttributes("img", "data-uid", "src", "alt", "height", "width", "style", "figcaption")
 				.addAttributes("abbr", "data-viite")
 				.addAttributes("span", "class"));
 
