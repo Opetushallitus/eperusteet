@@ -73,6 +73,9 @@ public interface PerusteprojektiService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto);
 
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    PerusteprojektiDto savePohja(PerusteprojektiLuontiDto perusteprojektiDto);
+
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     PerusteprojektiDto update(@P("id") final Long id, PerusteprojektiDto perusteprojektiDto);
 
