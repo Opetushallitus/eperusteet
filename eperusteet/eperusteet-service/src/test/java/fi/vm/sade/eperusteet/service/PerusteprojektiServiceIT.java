@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.*;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -76,6 +77,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiTestUtils ppTestUtils;
+
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
 
     @Autowired
     @Dto
@@ -671,4 +675,48 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertNotNull(diaari);
         Assert.assertEquals(diaari.getId(), a.getPeruste().getId());
     }
+
+
+    @Test
+    @Rollback(true)
+    public void testDiaarinumerohakuTilat() {
+        PerusteprojektiLuontiDto adto = teePerusteprojektiLuontiDto(PerusteTyyppi.NORMAALI, KoulutusTyyppi.VAPAASIVISTYSTYO.toString());
+        adto.setDiaarinumero("OPH-1234-123");
+        PerusteprojektiDto ppDto = service.save(adto);
+        Perusteprojekti pp = repository.getOne(ppDto.getId());
+        pp.getPeruste().setPerusteprojekti(pp);
+        repository.flush();
+
+        { // Peruste luotu -> ei näy
+            PerusteInfoDto loydetty = perusteService.getByDiaari(new Diaarinumero(ppDto.getDiaarinumero()));
+            assertThat(loydetty).isNull();
+        }
+
+        { // Peruste julkaistu -> näkyy
+            pp.setTila(ProjektiTila.JULKAISTU);
+            pp.getPeruste().asetaTila(PerusteTila.VALMIS);
+            pp = repository.save(pp);
+            PerusteInfoDto loydetty = perusteService.getByDiaari(new Diaarinumero(ppDto.getDiaarinumero()));
+            assertThat(loydetty.getId()).isEqualTo(pp.getPeruste().getId());
+        }
+
+        { // Peruste luonnos josta julkaisu -> näkyy
+            JulkaistuPeruste julkaisu = new JulkaistuPeruste();
+            julkaisu.setPeruste(pp.getPeruste());
+            julkaisutRepository.save(julkaisu);
+            pp.setTila(ProjektiTila.LAADINTA);
+            pp.getPeruste().asetaTila(PerusteTila.LUONNOS);
+            PerusteInfoDto loydetty = perusteService.getByDiaari(new Diaarinumero(ppDto.getDiaarinumero()));
+            assertThat(loydetty.getId()).isEqualTo(pp.getPeruste().getId());
+        }
+
+        { // Peruste arkistoitu josta julkaisu -> ei näy
+            pp.setTila(ProjektiTila.POISTETTU);
+            pp.getPeruste().asetaTila(PerusteTila.POISTETTU);
+            PerusteInfoDto loydetty = perusteService.getByDiaari(new Diaarinumero(ppDto.getDiaarinumero()));
+            assertThat(loydetty).isNull();
+        }
+
+    }
+
 }

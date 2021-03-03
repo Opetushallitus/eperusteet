@@ -39,8 +39,11 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "WHERE p.paatospvm IS NOT NULL and p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and k IN (?1) ORDER BY p.paatospvm DESC")
     List<Peruste> findAllUusimmat(Set<Kieli> kielet, Pageable pageable);
 
-    @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero = ?1")
+    @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.diaarinumero = ?1")
     List<Peruste> findAllByDiaarinumero(Diaarinumero diaarinumero);
+
+    @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero = ?1")
+    List<Peruste> findAllValmiitByDiaarinumero(Diaarinumero diaarinumero);
 
     @Query("SELECT p from Peruste p WHERE p.tyyppi = 'AMOSAA_YHTEINEN' and p.tila = 'VALMIS'")
     List<Peruste> findAllAmosaaYhteisetPohjat();

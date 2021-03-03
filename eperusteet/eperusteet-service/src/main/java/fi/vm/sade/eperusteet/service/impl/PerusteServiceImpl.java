@@ -160,7 +160,6 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -627,12 +626,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
-        List<Peruste> loydetyt = perusteRepository.findByDiaarinumeroAndTila(diaarinumero, PerusteTila.VALMIS);
+        List<Peruste> kaikki = perusteRepository.findAllByDiaarinumero(diaarinumero);
+        Set<Peruste> loydetyt = kaikki.stream()
+                .filter(p -> !PerusteTila.POISTETTU.equals(p.getTila()))
+                .filter(p -> ProjektiTila.JULKAISTU.equals(p.getPerusteprojekti().getTila())
+                  || julkaisutRepository.countByPeruste(p) > 0)
+                .collect(Collectors.toSet());
 
         Peruste peruste = null;
 
         if (loydetyt.size() == 1) {
-            peruste = loydetyt.get(0);
+            peruste = loydetyt.iterator().next();
         } else {
             Optional<Peruste> op = loydetyt.stream()
                     .filter((p) -> p.getVoimassaoloAlkaa() != null)
