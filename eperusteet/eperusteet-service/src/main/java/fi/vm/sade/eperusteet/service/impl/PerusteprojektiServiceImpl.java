@@ -812,6 +812,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
+    @Transactional
+    public PerusteprojektiDto savePohja(PerusteprojektiLuontiDto perusteprojektiDto) {
+        return save(perusteprojektiDto);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public DiaarinumeroHakuDto onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero) {
         DiaarinumeroHakuDto reply = new DiaarinumeroHakuDto();

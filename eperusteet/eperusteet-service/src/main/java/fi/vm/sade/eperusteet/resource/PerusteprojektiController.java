@@ -186,6 +186,17 @@ public class PerusteprojektiController {
         return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
     }
 
+    @RequestMapping(method = POST, value = "/pohja")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public ResponseEntity<PerusteprojektiDto> addPerusteprojektiPohja(
+            @RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto,
+            UriComponentsBuilder ucb
+    ) {
+        PerusteprojektiDto perusteprojektiDto = service.savePohja(perusteprojektiLuontiDto);
+        return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
+    }
+
     private HttpHeaders buildHeadersFor(Long id, UriComponentsBuilder ucb) {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucb.path("/perusteprojektit/{id}").buildAndExpand(id).toUri());
