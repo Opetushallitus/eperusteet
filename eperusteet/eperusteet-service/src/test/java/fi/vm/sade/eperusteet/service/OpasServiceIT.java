@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.OpasSisalto;
@@ -30,6 +31,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -138,6 +140,7 @@ public class OpasServiceIT extends AbstractIntegrationTest {
             OpasLuontiDto opasLuontiDto = new OpasLuontiDto();
             opasLuontiDto.setNimi("Opas 1");
             opasLuontiDto.setRyhmaOid(ryhmaId);
+            opasLuontiDto.setLokalisoituNimi(LokalisoituTekstiDto.of("opasnimi"));
 
             OpasDto opasDto = opasService.save(opasLuontiDto);
 
@@ -149,6 +152,7 @@ public class OpasServiceIT extends AbstractIntegrationTest {
 
             Peruste peruste = perusteRepository.getOne(opasDto.getPeruste().getIdLong());
             assertThat(peruste.getOppaanSisalto().getSisalto()).isNotNull();
+            assertThat(peruste.getNimi().getTeksti().get(Kieli.FI)).isEqualTo("opasnimi");
             assertThat(peruste.getOppaanSisalto().getSisalto().getLapset()).hasSize(0);
         }
 
