@@ -191,8 +191,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             docBase.getHeadElement().appendChild(perusteenNimi);
         }
 
-        if (!KoulutustyyppiToteutus.VAPAASIVISTYSTYO.equals(docBase.getPeruste().getToteutus())
-                && !KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA.equals(docBase.getPeruste().getToteutus())) {
+        if (KoulutustyyppiToteutus.AMMATILLINEN.equals(docBase.getPeruste().getToteutus())) {
             Element etusivuYlaviite = docBase.getDocument().createElement("meta");
             etusivuYlaviite.setAttribute("name", "etusivuYlaviite");
             etusivuYlaviite.setAttribute("translate", messages.translate("tutkinnon-perusteet", docBase.getKieli()));
