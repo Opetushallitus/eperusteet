@@ -127,6 +127,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 
         // Lisätään taulukko
         Element table = docBase.getDocument().createElement("table");
+        table.setAttribute("border", "0");
         docBase.getBodyElement().appendChild(table);
         Element tr = docBase.getDocument().createElement("tr");
         table.appendChild(tr);
