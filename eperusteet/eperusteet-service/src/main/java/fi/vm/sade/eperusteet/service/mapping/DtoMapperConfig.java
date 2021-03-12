@@ -51,6 +51,7 @@ import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
@@ -305,6 +306,20 @@ public class DtoMapperConfig {
 
         factory.classMap(PerusteprojektiDto.class, Perusteprojekti.class)
                 .byDefault()
+                .register();
+
+        factory.classMap(Perusteprojekti.class, PerusteprojektiKevytDto.class)
+                .byDefault()
+                .favorExtension(true)
+                .customize(new CustomMapper<Perusteprojekti, PerusteprojektiKevytDto>() {
+                    @Override
+                    public void mapAtoB(Perusteprojekti source, PerusteprojektiKevytDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        if (CollectionUtils.isNotEmpty(source.getPeruste().getJulkaisut()) && !ProjektiTila.POISTETTU.equals(source.getTila())) {
+                            target.setTila(ProjektiTila.JULKAISTU);
+                        }
+                    }
+                })
                 .register();
 
         factory.classMap(PerusteprojektiInfoDto.class, Perusteprojekti.class)
