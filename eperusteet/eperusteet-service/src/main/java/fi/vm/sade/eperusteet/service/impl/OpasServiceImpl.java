@@ -117,6 +117,7 @@ public class OpasServiceImpl implements OpasService {
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
         pquery.setTila(PerusteTila.VALMIS.toString());
+        pquery.setJulkaistu(true);
         pquery.setPerusteTyyppi(PerusteTyyppi.OPAS.toString());
         Page<Peruste> result = perusteRepository.findBy(page, pquery);
         PageDto<Peruste, PerusteHakuDto> resultDto = new PageDto<>(result, PerusteHakuDto.class, page, mapper);
