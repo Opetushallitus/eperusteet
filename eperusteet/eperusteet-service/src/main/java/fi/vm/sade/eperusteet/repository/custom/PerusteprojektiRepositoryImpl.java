@@ -199,9 +199,16 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
 
 
         if (!ObjectUtils.isEmpty(pq.getTila())) {
-            return cb.and(result, root.get(Perusteprojekti_.tila).in(pq.getTila()));
-        } else {
-            return result;
+            Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
+
+            if (pq.getTila().contains(ProjektiTila.JULKAISTU)) {
+                result = cb.and(result, cb.or(root.get(Perusteprojekti_.tila).in(pq.getTila()), cb.isNotEmpty(peruste.get(Peruste_.julkaisut))));
+            } else {
+                result = cb.and(result, root.get(Perusteprojekti_.tila).in(pq.getTila()));
+                result = cb.and(result, cb.isEmpty(peruste.get(Peruste_.julkaisut)));
+            }
         }
+
+        return result;
     }
 }
