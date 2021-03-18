@@ -521,9 +521,10 @@
                 <version>${failsafe.version}</version>
                 <configuration>
                     <argLine>-Xmx2048m -XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC</argLine>
-<!--                    <parallel>classesAndMethods</parallel>-->
-<!--                    <useUnlimitedThreads>true</useUnlimitedThreads>-->
-                    <reuseForks>false</reuseForks>
+                    <!--                    <parallel>classesAndMethods</parallel>-->
+                    <!--                    <useUnlimitedThreads>true</useUnlimitedThreads>-->
+                    <forkCount>3</forkCount>
+                    <reuseForks>true</reuseForks>
                     <reportFormat>plain</reportFormat>
                     <argLine>${failsafeArgLine}</argLine>
                     <systemPropertyVariables>
@@ -544,6 +545,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
+                    <forkCount>3</forkCount>
+                    <reuseForks>true</reuseForks>
                     <argLine>${surefireArgLine}</argLine>
                     <systemPropertyVariables>
                         <eperusteet.ittestdb.user>${eperusteet.ittestdb.user}</eperusteet.ittestdb.user>
