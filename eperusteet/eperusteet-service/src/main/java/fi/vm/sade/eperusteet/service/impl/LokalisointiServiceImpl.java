@@ -158,6 +158,7 @@ public class LokalisointiServiceImpl implements LokalisointiService {
 
         try {
             LOG.info("Päivitetään käännökset: ", kaannokset);
+            httpHeaders.add("CSRF", "CachingRestClient");
             HttpEntity<List<LokalisointiDto>> request = new HttpEntity<>(kaannokset, httpHeaders);
             restTemplate.put(url, request);
         }
