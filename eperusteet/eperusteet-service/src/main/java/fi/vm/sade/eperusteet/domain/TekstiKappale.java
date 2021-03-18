@@ -55,6 +55,12 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi osaamisala;
 
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Koodi tutkintonimike;
+
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -111,6 +117,7 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
             TekstiKappale that = (TekstiKappale)other;
             result = super.structureEquals(that);
             result &= getOsaamisala() == null || Objects.equals(getOsaamisala(), that.getOsaamisala());
+            result &= getTutkintonimike() == null || Objects.equals(getTutkintonimike(), that.getTutkintonimike());
             // Sallitaan liitetiedon muutos julkaistulle perusteelle
             // result &= Objects.equals(isLiite(), that.isLiite());
             result &= getTeksti() == null || refXnor(getTeksti(), that.getTeksti());
@@ -121,6 +128,7 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     private void copyState(TekstiKappale other) {
         this.setTeksti(other.getTeksti());
         this.setOsaamisala(other.getOsaamisala());
+        this.setTutkintonimike(other.getTutkintonimike());
         List<Koodi> oKoodit = other.getKoodit();
         if (!ObjectUtils.isEmpty(oKoodit)) {
             ArrayList<Koodi> koodit = new ArrayList<>();
