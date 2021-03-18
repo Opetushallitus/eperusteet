@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,9 @@ public class LokalisointiServiceImpl implements LokalisointiService {
 
     @Autowired
     HttpEntity httpEntity;
+
+    @Autowired
+    HttpHeaders httpHeaders;
 
     @Override
     public List<LokalisointiDto> getAllByCategoryAndLocale(String category, String locale) {
@@ -153,7 +157,9 @@ public class LokalisointiServiceImpl implements LokalisointiService {
         String url = lokalisointiServiceUrl.substring(0, lokalisointiServiceUrl.length() - 1) + "/update";
 
         try {
-            restTemplate.put(url, kaannokset);
+            LOG.info("Päivitetään käännökset: ", kaannokset);
+            HttpEntity<List<LokalisointiDto>> request = new HttpEntity<>(kaannokset, httpHeaders);
+            restTemplate.put(url, request);
         }
         catch (HttpClientErrorException error) {
             throw new BusinessRuleViolationException("ei-riittavia-oikeuksia");
