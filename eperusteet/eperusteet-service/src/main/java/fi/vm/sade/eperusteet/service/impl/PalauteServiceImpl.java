@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
@@ -49,7 +50,10 @@ public class PalauteServiceImpl implements PalauteService {
     @Override
     public PalauteDto lahetaPalaute(PalauteDto palaute) throws JsonProcessingException {
         palaute.setCreatedAt(new Date());
-        palaute.setKey(PALAUTE_KEY);
+
+        if (ObjectUtils.isEmpty(palaute.getKey())) {
+            palaute.setKey(PALAUTE_KEY);
+        }
 
         log.debug("send feedback {}", objectMapper.writeValueAsString(palaute));
 
@@ -63,8 +67,8 @@ public class PalauteServiceImpl implements PalauteService {
     }
 
     @Override
-    public List<Object> getPalautteet() { // ei toimi kunnes palauteservicen kirjautuminen on korjattu
-        return ophClientHelper.getList(palauteServiceUrl, palauteServiceUrl + "/api/palaute", Object.class);
+    public List<Object> getPalautteet(String palautekanava) { // ei toimi kunnes palauteservicen kirjautuminen on korjattu
+        return ophClientHelper.getList(palauteServiceUrl, palauteServiceUrl + "/api/palaute?q=" + palautekanava, Object.class);
     }
 
 }

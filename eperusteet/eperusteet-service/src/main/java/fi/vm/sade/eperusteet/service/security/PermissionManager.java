@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.service.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -68,6 +69,9 @@ public class PermissionManager {
 
     @Autowired
     private JulkaisutRepository julkaisutRepository;
+
+    @Autowired
+    private Environment env;
 
     private static final Logger LOG = LoggerFactory.getLogger(PermissionManager.class);
     private static final String OPH_ADMIN = "ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001";
@@ -386,6 +390,10 @@ public class PermissionManager {
 
     @Transactional(readOnly = true)
     public boolean hasPermission(Authentication authentication, Serializable targetId, Target targetType, Permission permission) {
+
+        if (Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equals("developmentPermissionOverride"))) {
+            return true;
+        }
 
         if (LOG.isTraceEnabled()) {
             LOG.trace(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));

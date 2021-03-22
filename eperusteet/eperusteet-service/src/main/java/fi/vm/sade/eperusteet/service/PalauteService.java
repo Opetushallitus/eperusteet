@@ -12,5 +12,5 @@ public interface PalauteService {
     PalauteDto lahetaPalaute(PalauteDto palaute) throws JsonProcessingException;
 
     @PreAuthorize("isAuthenticated()")
-    List<Object> getPalautteet();
+    List<Object> getPalautteet(String palautekanava);
 }
