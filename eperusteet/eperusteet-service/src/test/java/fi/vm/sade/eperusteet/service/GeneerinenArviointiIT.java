@@ -5,6 +5,8 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.GeneerinenArviointiasteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.dto.Arviointi2020Dto;
@@ -14,8 +16,11 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
 
+import fi.vm.sade.eperusteet.repository.OsaamistasoRepository;
+import java.util.List;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +48,9 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
 
     @Autowired
     private GeneerinenArviointiasteikkoRepository geneerinenArviointiasteikkoRepository;
+
+    @Autowired
+    private OsaamistasoRepository osaamistasoRepository;
 
     @Test
     @Rollback
@@ -216,9 +224,10 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
     @Rollback
     public void testGeneerinenArviointiMapping() {
         GeneerinenArviointiasteikkoDto asteikkoDto = buildGeneerinenArviointiasteikkoDto(10);
+        List<Osaamistaso> osaamistasot = osaamistasoRepository.findAll();
         asteikkoDto.setOsaamistasonKriteerit(Stream.of(
                 GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
-                        .osaamistaso(Reference.of(12L))
+                        .osaamistaso(Reference.of(osaamistasot.get(0).getId()))
                         .kriteerit(Stream.of(
                                 LokalisoituTekstiDto.of("x"),
                                 LokalisoituTekstiDto.of("y"),
@@ -226,7 +235,7 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
                                 .collect(Collectors.toList()))
                         .build(),
                 GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
-                        .osaamistaso(Reference.of(13L))
+                        .osaamistaso(Reference.of(osaamistasot.get(1).getId()))
                         .kriteerit(Stream.of(
                                 LokalisoituTekstiDto.of("a"),
                                 LokalisoituTekstiDto.of("b"),
@@ -234,7 +243,7 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
                                 .collect(Collectors.toList()))
                         .build(),
                 GeneerisenArvioinninOsaamistasonKriteeriDto.builder()
-                        .osaamistaso(Reference.of(14L))
+                        .osaamistaso(Reference.of(osaamistasot.get(2).getId()))
                         .build())
                 .collect(Collectors.toSet()));
 

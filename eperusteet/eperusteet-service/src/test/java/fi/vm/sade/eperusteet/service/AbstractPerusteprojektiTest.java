@@ -99,20 +99,15 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
 
         List<Osaamistaso> osaamistasot = Stream.of(
                 Osaamistaso.builder()
-                        .id(2L + plusId)
                         .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 1")).build(),
                 Osaamistaso.builder()
-                        .id(3L + plusId)
                         .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 2")).build(),
                 Osaamistaso.builder()
-                        .id(4L + plusId)
                         .otsikko(TekstiPalanen.of(Kieli.FI, "Taso 3")).build())
                 .peek(em::persist)
                 .collect(Collectors.toList());
 
-
         ArviointiAsteikko asteikko = ArviointiAsteikko.builder()
-                .id(1L + plusId)
                 .osaamistasot(osaamistasot)
                 .build();
 
